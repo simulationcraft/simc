@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 7ee24a0f, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -10,6 +10,7 @@ Duration         : 3 seconds
 Cooldown         : 300 seconds
 Category         : 1162
 Category Cooldown: 300 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -40,7 +41,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2, #3), Frostbolt (343177 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effect#5), Slick Ice (327509 effects: #1, #2, #3), Frostbolt (343177 effect#1)
 Family Flags     : 5, 57
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -64,7 +65,7 @@ Resource         : 4% Base Mana (0) (id=27)
 Spell Level      : 18
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 9
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -103,7 +104,7 @@ Category         : 1588: Ice Ward (205036 effect#1)
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Frost Nova (343183 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Frost Nova (343183 effect#1)
 Family Flags     : 3, 6
 Attributes       : ........ ........ x....... ......x.   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -142,7 +143,7 @@ Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Fireball (157644 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Siphoned Malice (337090 effects: #1, #2), Fireball (343194 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Fireball (157644 effect#1), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Duplicative Incineration (278538 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Siphoned Malice (337090 effects: #1, #2), Fireball (343194 effect#1)
 Family Flags     : 0, 3, 67
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -169,6 +170,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -192,7 +194,7 @@ Resource         : 18% Base Mana (0) (id=91)
 Spell Level      : 17
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 30
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -220,7 +222,7 @@ Spell Type       : Magic
 Resource         : 10% Base Mana (0) (id=123)
 Spell Level      : 6
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Arcane Explosion (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Clearcasting (263725 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Arcane Explosion (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 12, 100
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -298,6 +300,7 @@ Duration         : 0.3 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (15 seconds cooldown)
 Category         : 1446: Flow of Time (336636 effect#1)
+Affecting spells : Reduced Blink GCD (44301 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 16
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -328,7 +331,7 @@ Range            : 40 yards
 Cast Time        : 4 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Flamestrike (321709 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Master Flame (336852 effects: #1, #2), Siphoned Malice (337090 effects: #1, #2), Flamestrike (343230 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Flamestrike (321709 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Master Flame (336852 effects: #1, #2), Siphoned Malice (337090 effects: #1, #2), Flamestrike (343230 effect#1)
 Family Flags     : 2, 3, 99
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -359,6 +362,7 @@ Cooldown         : 24 seconds
 Category         : 88
 Category Cooldown: 24 seconds
 Mechanic         : Interrupt
+Affecting spells : Improved Counterspell (24429 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 14
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
@@ -383,7 +387,7 @@ Spell Level      : 13
 Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 4
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -431,7 +435,7 @@ Spell Level      : 13
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 2.5 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Rule of Threes (187292 effect#1), Clearcasting (263725 effect#1), Rule of Threes (264774 effect#1), Clearcasting (277726 effects: #1, #2, #3), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Rule of Threes (187292 effect#1), Norgannon's Foresight (236380 effect#1), Clearcasting (263725 effect#1), Rule of Threes (264774 effect#1), Clearcasting (277726 effects: #1, #2, #3), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 11
 Attributes       : ........ ........ x....... .....x..   ..x....x ..x...x. ........ ..x.xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -463,7 +467,7 @@ Max Scaling Level: 30
 Cooldown         : 120 seconds
 Category         : 100
 Category Cooldown: 120 seconds
-Affecting spells : Icy Veins (12472 effect#2)
+Affecting spells : Icy Veins (12472 effect#2), Improved Mana Gems (37447 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 40
 Attributes       : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -487,7 +491,7 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 60 yards
 Velocity         : 50 yards/sec
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Arcane Pummeling (270670 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Arcane Pummeling (270670 effect#1), Cord of Infinity (281263 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Triggered by     : Arcane Missiles (5143)
 Family Flags     : 3, 21
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -515,7 +519,7 @@ Cast Time        : 4.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Wildfire (288755 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Siphoned Malice (337090 effects: #1, #2), Controlled Destruction (341325 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Hot Streak! (48108 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Wildfire (288755 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Firestorm (333100 effects: #1, #2), Alexstrasza's Fury (334277 effect#1), Siphoned Malice (337090 effects: #1, #2), Controlled Destruction (341325 effect#1)
 Family Flags     : 3, 22, 67
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -545,7 +549,7 @@ Category Cooldown: 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Glacial Insulation (235297 effect#1), Eldritch Warding (274379 effect#1)
+Affecting spells : Glacial Insulation (235297 effect#1), Norgannon's Foresight (236380 effect#1), Eldritch Warding (274379 effect#1)
 Family Flags     : 32, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -580,7 +584,7 @@ Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
-Affecting spells : Icy Veins (12472 effect#2), Overpowered (155147 effects: #1, #2, #3), Arcane Power (321739 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Overpowered (155147 effects: #1, #2, #3), Wild Arcanist (184903 effects: #1, #2, #3), Norgannon's Foresight (236380 effect#1), Arcane Power (321739 effect#1)
 Family Flags     : 51, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -594,14 +598,14 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=5130)     : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=5131)     : Apply Aura (6) | Modify Power Cost% (72)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0x1 | Target: Self (1)
                    Affected School(s): All
 #3 (id=5132)     : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 Description      : For $d, you deal $s1% more spell damage$?a343208[ and your spells cost $s2% less mana][].
 Tooltip          : Spell damage increased by $w1%.
@@ -615,8 +619,8 @@ Spell Level      : 27
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1671: Evocation (231565 effect#1)
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Slipstream (236457 effect#1)
+Category         : 1671: Evocation (231565 effect#1), Gravity Spiral (235273 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Slipstream (236457 effect#1)
 Family Flags     : 26, 67
 Attributes       : ........ ........ x....... ........   ......x. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ x....... ........ 
@@ -643,7 +647,7 @@ Spell Level      : 29
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
-Affecting spells : Thermal Void (155149 effect#2), Icy Veins (321702 effect#1)
+Affecting spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1), Icy Veins (321702 effect#1)
 Family Flags     : 46, 67, 105
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -659,7 +663,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=5359)     : Apply Aura (6) | Add Percent Modifier (108): Spell Pushback (9)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Replenish Mana (5405), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Rune of Power (116011), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537)
+                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Replenish Mana (5405), Pyroblast (11366), Arcane Power (12042), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Ebonbolt (257537)
                    Family Flags: 0, 2, 4, 5, 7, 11, 22, 24, 26, 29, 30, 40, 43, 44, 51, 56, 76, 101, 110, 123
 Description      : Accelerates your spellcasting for $d, granting $m1% haste and preventing damage from delaying your spellcasts.
 Tooltip          : Haste increased by $w1% and immune to pushback.
@@ -672,7 +676,7 @@ Range            : 50000 yards
 Duration         : 3 seconds
 Labels           : 1043: Shivering Core (336472 effect#2)
 Mechanic         : Snare
-Affecting spells : Frigid Winds (235224 effect#1)
+Affecting spells : Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 20
 Attributes       : ........ x....... ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ........ 
@@ -695,6 +699,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 9 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 27, 67
 Attributes       : ........ ........ .......x ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ..x..... ....x.x. 
@@ -763,7 +768,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5792)     : Apply Aura (6) | Unknown(112)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 911 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Ice Lance (30455), Flurry (44614), Frozen Orb (84721), Icicle (148022), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Ebonbolt (257538), Phoenix Flames (257542), Touch of the Magi (321507), Meteor (351140)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Ice Lance (30455), Flurry (44614), Frozen Orb (84721), Icicle (148022), Comet Storm (153595), Comet Storm (153596), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Frost Nova (235235), Ebonbolt (257538), Phoenix Flames (257542), Touch of the Magi (321507), Meteor (351140)
                    Family Flags: 5, 6, 7, 9, 17, 44, 52, 56, 64, 69, 78, 80, 96, 102, 107, 115, 117, 119, 120
 #2 (id=99824)    : Apply Aura (6) | Dummy (4)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -885,7 +890,7 @@ Spell Level      : 10
 Range            : 40 yards
 Cast Time        : 2.25 seconds
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Arcane Charge (36032 effects: #1, #4, #5), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Presence of Mind (205025 effect#1), Bone Chilling (205766 effects: #1, #2), Rhonin's Assaulting Armwraps (208081 effect#1), Norgannon's Foresight (236380 effect#1), Equipoise (264352 effect#1), Equipoise (264353 effect#1), Rule of Threes (264774 effect#1), Galvanizing Spark (278536 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #3, #7), Nether Precision (336889 effect#1), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 29
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -916,7 +921,7 @@ Spell Level      : 10
 Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 47 yards/sec
-Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effects: #1, #3), Lonely Winter (205024 effect#1), Chain Reaction (278310 effect#1), Whiteout (278541 effect#3), Radiant Spark Vulnerability (307454 effect#1), Ice Lance (343175 effect#1)
+Affecting spells : Shatter (12982 effect#1), Splitting Ice (56377 effects: #1, #3), Lonely Winter (205024 effect#1), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Chain Reaction (278310 effect#1), Whiteout (278541 effect#3), Radiant Spark Vulnerability (307454 effect#1), Ice Lance (343175 effect#1)
 Triggered by     : Fingers of Frost (44544)
 Family Flags     : 17, 104
 Attributes       : ........ ........ x.x..... ........   ...x...x ........ ........ ........ 
@@ -951,7 +956,7 @@ Range            : 35 yards
 GCD              : 1.5 seconds
 Duration         : 15 seconds
 Mechanic         : Snare
-Affecting spells : Slow (321747 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Slow (321747 effect#1)
 Family Flags     : 31, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -983,7 +988,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Alexstrasza's Fury (235870 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Dragon's Breath (321707 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Darckli's Dragonfire Diadem (207547 effects: #1, #2), Alexstrasza's Fury (235870 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Dragon's Breath (321707 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 23
 Attributes       : ........ ........ x...x... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1012,7 +1017,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Cooldown         : 30 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 43
 Attributes       : ........ ........ x....... ........   x....... ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1037,7 +1042,7 @@ Range            : 45 yards
 Cast Time        : 2.5 seconds
 GCD              : 1 seconds
 Velocity         : 16 yards/sec
-Affecting spells : Frost Mage (137020 effect#4)
+Affecting spells : Frost Mage (137020 effect#4), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 91
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1058,6 +1063,7 @@ Class            : Paladin, Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 20 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 54, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1092,7 +1098,7 @@ Category Cooldown: 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Frost Mage (137020 effect#4)
+Affecting spells : Frost Mage (137020 effect#4), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 73
 Attributes       : ........ ........ x....... ......x.   ...x...x ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1141,7 +1147,7 @@ Stacks           : 1 initial, 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Affecting spells : Mastery: Savant (190740 effects: #2, #3), Arcane Barrage (231564 effect#1), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Mastery: Savant (190740 effects: #2, #3), Arcane Barrage (231564 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Triggered by     : Arcane Blast (88084), Arcane Charge (190427)
 Family Flags     : 66, 67
 Attributes       : ........ x....... ..x..... ..x..x..   ........ ..x..... ........ ....x... 
@@ -1232,7 +1238,7 @@ Velocity         : 24 yards/sec
 Cooldown         : 3 seconds
 Category         : 1189
 Category Cooldown: 3 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Arcane Charge (36032 effects: #2, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Arcane Harmony (332777 effect#1), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Arcane Charge (36032 effects: #2, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Arcane Harmony (332777 effect#1), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 47
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1284,7 +1290,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 12 seconds
-Affecting spells : Mage (137018 effect#1)
+Affecting spells : Mage (137018 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 49, 67
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1309,7 +1315,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 48
 Attributes       : ........ ........ x.x..... x..x....   ........ ........ ........ ........ 
                  : x.x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1336,7 +1342,8 @@ Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 2 maximum
 Proc Chance      : 101%
-Triggered by     : Frigid Grasp (279685), Flash Freeze (288204), Freezing Winds (327478)
+Affecting spells : Norgannon's Foresight (236380 effect#1)
+Triggered by     : Lady Vashj's Grasp (208147), Frigid Grasp (279685), Flash Freeze (288204), Freezing Winds (327478)
 Family Flags     : 65, 67
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -1371,7 +1378,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 50 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Fireball (157644 effect#1), Brain Freeze (190446 effects: #1, #2)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Fireball (157644 effect#1), Brain Freeze (190446 effects: #1, #2), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 44
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1400,7 +1407,7 @@ GCD              : 1.5 seconds
 Duration         : 10 seconds
 Cooldown         : 240 seconds
 Mechanic         : Invulneraility
-Affecting spells : Winter's Protection (336613 effect#1), Cryo-Freeze (337123 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Winter's Protection (336613 effect#1), Cryo-Freeze (337123 effect#1)
 Family Flags     : 39, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x....x ........ ........ 
                  : ........ ........ .....x.. .....x..   ........ ........ ........ ........ 
@@ -1465,6 +1472,7 @@ Spell Level      : 1
 Duration         : 15 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 118
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1498,6 +1506,7 @@ Stacks           : 3 initial, 3 maximum
 Proc Chance      : 101%
 Proc Flags       : ...x.x.x .x...x.. .x...... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 53
 Attributes       : ........ ........ x....... .......x   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1655,6 +1664,7 @@ Range            : 40 yards
 Duration         : 5 seconds
 Cooldown         : 180 seconds
 Stance Mask      : 0x89000000
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 95
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   .......x ........ ........ .....x.. 
@@ -1841,6 +1851,7 @@ Spell Level      : 14
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1866,7 +1877,7 @@ Resource         : 4% Base Mana (0) (id=3379)
 Spell Level      : 49
 Duration         : 40 seconds
 Cooldown         : 300 seconds
-Affecting spells : Echoes of Elisande (320919 effect#1), Timebreaker's Paradox (320920 effects: #1, #2)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Echoes of Elisande (320919 effect#1), Timebreaker's Paradox (320920 effects: #1, #2)
 Family Flags     : 90
 Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
                  : ..xx.... ........ ........ ........   ........ ........ ........ ........ 
@@ -1928,6 +1939,7 @@ Proc Chance      : 101%
 Mechanic         : Freeze
 Proc Flags       : ...x.x.x .x.x.x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 70
 Attributes       : ........ ........ x....... x..xx...   .....x.. ........ .x...... ........ 
                  : ........ ......x. ........ ........   ........ ........ ........ ..x...x. 
@@ -1957,6 +1969,7 @@ Duration         : 15 seconds
 Cooldown         : 60 seconds
 Category         : 1269
 Category Cooldown: 60 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 93
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ....x... 
                  : ..x..... ........ ......x. ........   ........ ........ ........ ........ 
@@ -1979,7 +1992,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Mastery: Icicles (76613 effect#4), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#1), Deathborne (324220 effects: #2, #7), Unrelenting Cold (336460 effect#1), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Mastery: Icicles (76613 effect#4), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Mastery: Icicles (321684 effect#1), Deathborne (324220 effects: #2, #7), Unrelenting Cold (336460 effect#1), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 71, 78
 Attributes       : ........ ........ x......x x..x....   .....x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x.x.   ........ .x...... ........ ......x. 
@@ -2003,6 +2016,7 @@ Class            : Fire Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 42
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 42
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ...x.... ........ 
@@ -2228,7 +2242,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=120042)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Ring of Frost (113724), Rune of Power (116011), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443)
+                   Affected Spells: Frostbolt (116), Fireball (133), Conjure Mana Gem (759), Flamestrike (2120), Arcane Missiles (5143), Pyroblast (11366), Evocation (12051), Arcane Blast (30451), Summon Water Elemental (31687), Flurry (44614), Ring of Frost (113724), Rune of Power (116011), Conjure Familiar (126578), Conjure Refreshment (190336), Blizzard (190356), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Frostbolt (228597), Glacial Spike (228600), Ebonbolt (257537), Radiant Spark (307443)
                    Family Flags: 0, 2, 5, 11, 22, 24, 26, 29, 30, 43, 44, 56, 64, 76, 86, 92, 98, 110, 112, 127
 #2 (id=340801)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2246,6 +2260,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 6 seconds
 Cooldown         : 25 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Triggered by     : Cauterize (86949)
 Family Flags     : 87
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2276,7 +2291,7 @@ Range            : 40 yards
 Cooldown         : 0.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1500: Mage (137018 effect#2), Flame On (205029 effect#1), Flame On (205029 effect#2), Fire Blast (231567 effect#1), Memory of Lucid Dreams (303399 effect#1), Fiery Rush (363508 effect#1)
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 1, 3, 85
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2305,6 +2320,7 @@ Cooldown         : 60 seconds
 Category         : 1388
 Labels           : 892: Master of Time (342249 effect#1)
 Category Cooldown: 1 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2355,6 +2371,7 @@ GCD              : 1.5 seconds
 Cooldown         : 120 seconds
 Category         : 1162
 Category Cooldown: 120 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 31, 50
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2377,6 +2394,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 20 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Triggered by     : Greater Invisibility (110959)
 Family Flags     : 31, 54, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2403,7 +2421,7 @@ Class            : Frost Mage
 School           : Physical
 Spell Type       : None
 Spell Level      : 13
-Affecting spells : Frozen Touch (205030 effect#1)
+Affecting spells : Frozen Touch (205030 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 126
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2442,7 +2460,7 @@ Duration         : 10 seconds
 Cooldown         : 45 seconds
 Category         : 1437
 Category Cooldown: 45 seconds
-Affecting spells : Ice Floes (108839 effect#1)
+Affecting spells : Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 70, 112
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -2470,6 +2488,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : Aura (infinite)
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 50, 74
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2497,7 +2516,7 @@ Range            : 40 yards
 Max Targets      : 1
 GCD              : 1.5 seconds
 Duration         : 12 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 67, 89
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2525,7 +2544,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Travel Time      : 1.25 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 89
 Attributes       : ........ ........ x.x....x x..x....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ......x.   ........ ........ ........ .x....x. 
@@ -2553,7 +2572,7 @@ Duration         : 12 seconds
 Cooldown         : 10 seconds
 Charges          : 1 (45 seconds cooldown)
 Category         : 1593
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 76
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2580,6 +2599,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : None
 Duration         : 12 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 88
 Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... ........ ........ 
                  : ........ ......x. ........ ....xx..   ........ ........ x....... ........ 
@@ -2593,7 +2613,7 @@ Attributes       : ........ ........ ........ x..x...x   .....x.. ..x..... .....
 Effects          :
 #1 (id=130584)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.75000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=150697)   : Apply Aura (6) | Periodic Heal% (20): every 1.5 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2601,7 +2621,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.75000 | Target: Self (1)
 #4 (id=479812)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.75000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 Description      : $@spelldesc116011
 Tooltip          : Spell damage increased by $w1%.$?$w2=0[][
@@ -2628,13 +2648,13 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=131165)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=168860)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Target: Self (1)
 #3 (id=479798)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
@@ -2644,7 +2664,7 @@ Class            : Fire Mage
 School           : Fire
 Spell Type       : None
 Spell Level      : 23
-Affecting spells : Critical Mass (231630 effect#1)
+Affecting spells : Critical Mass (231630 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 113
 Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2706,6 +2726,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 58
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2748,6 +2769,7 @@ Spell Type       : None
 Spell Level      : 1
 Duration         : 10 seconds
 Cooldown         : 45 seconds
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Triggered by     : Ring of Frost (113724)
 Family Flags     : 70
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
@@ -2804,11 +2826,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191125)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191126)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -6 | Scaled Value: -6 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2857,11 +2879,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179703)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191121)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191122)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: -9 | Scaled Value: -9 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2911,11 +2933,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179704)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=191116)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=191117)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3007,7 +3029,7 @@ Spell Level      : 1
 Range            : 100 yards
 Velocity         : 25 yards/sec
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Splitting Ice (56377 effects: #1, #3), Mastery: Icicles (76613 effect#3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Flash Freeze (288164 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Splitting Ice (56377 effects: #1, #3), Mastery: Icicles (76613 effect#3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Flash Freeze (288164 effect#2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 115
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3031,7 +3053,7 @@ Resource         : 1% Base Mana (0) (id=9133)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 45 seconds
-Affecting spells : Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 122
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3055,7 +3077,7 @@ Resource         : 1% Base Mana (0) (id=9135)
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 30 seconds
-Affecting spells : Shatter (12982 effect#1), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Shatter (12982 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 120
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -3076,7 +3098,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 120
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -3125,7 +3147,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 83
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ ......xx 
@@ -3229,7 +3251,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 122
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ....x...   .......x ........ ........ ......x. 
@@ -3254,7 +3276,7 @@ Spell Level      : 33
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Affecting spells : Flame Accretion (337224 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Flame Accretion (337224 effect#1)
 Family Flags     : 35
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3277,7 +3299,7 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 10 maximum
 Proc Chance      : 101%
-Affecting spells : Flame Accretion (337224 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Flame Accretion (337224 effect#1)
 Triggered by     : Fireball (157642)
 Family Flags     : 35
 Attributes       : ........ ........ ........ x..x....   ........ ........ ........ ........ 
@@ -3392,7 +3414,7 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 121
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3420,7 +3442,7 @@ Spell Level      : 1
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 25 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 38
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -3451,7 +3473,7 @@ Cooldown         : 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 119
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -3585,7 +3607,7 @@ Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
-Affecting spells : Combustion (321710 effect#1), Fiery Rush (364476 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Combustion (321710 effect#1), Fiery Rush (364476 effect#1)
 Family Flags     : 58, 67
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3599,7 +3621,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
 Effects          :
 #1 (id=278782)   : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=290008)   : Apply Aura (6) | Modify Rating (189)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
@@ -3618,7 +3640,7 @@ Spell Level      : 5
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Cooldown         : 15 seconds
-Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 30
 Attributes       : ........ .....x.. x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3645,7 +3667,7 @@ Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 8 seconds
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#1), Freezing Rain (270232 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Blizzard (321696 effect#1), Shivering Core (336472 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Mage (137018 effect#1), Norgannon's Foresight (236380 effect#1), Freezing Rain (270232 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Blizzard (321696 effect#1), Shivering Core (336472 effect#1)
 Family Flags     : 7, 98
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3671,7 +3693,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Freezing Rain (270232 effect#2), Radiant Spark Vulnerability (307454 effect#1), Blizzard (321696 effect#1), Deathborne (324220 effects: #2, #7), Shivering Core (336472 effect#1), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Freezing Rain (270232 effect#2), Radiant Spark Vulnerability (307454 effect#1), Blizzard (321696 effect#1), Deathborne (324220 effects: #2, #7), Shivering Core (336472 effect#1), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 7
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -3724,6 +3746,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 114
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -3751,7 +3774,7 @@ Class            : Frost Mage
 School           : Frost
 Spell Type       : None
 Spell Level      : 32
-Affecting spells : Frozen Touch (205030 effect#1)
+Affecting spells : Frozen Touch (205030 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 79
 Attributes       : ......x. ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3947,7 +3970,7 @@ Class            : Mage
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 127
 Attributes       : ........ ........ ........ x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ........   ........ .x...... ........ ........ 
@@ -3973,7 +3996,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 2.25 seconds
 Cooldown         : 9 seconds
-Affecting spells : Ice Floes (108839 effect#1), Mage (137018 effect#1), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Ice Floes (108839 effect#1), Mage (137018 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 127
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4008,7 +4031,7 @@ Range            : 40 yards
 Cast Time        : 3 seconds
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
-Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Shatter (12982 effect#1), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 64, 101
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4082,7 +4105,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 5 seconds
 Cooldown         : 75 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Ray of Frost (208141 effects: #1, #2), Frigid Winds (235224 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Ray of Frost (208141 effects: #1, #2), Frigid Winds (235224 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 20, 56
 Attributes       : ........ ........ x....... ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4162,6 +4185,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : None
 Spell Level      : 1
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 106
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4190,7 +4214,7 @@ Stacks           : 2 initial, 2 maximum
 Proc Chance      : 100%
 Proc Flags       : ......x. x...x... x....... ........ 
                  : White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Presence of Mind (321742 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Presence of Mind (321742 effect#1)
 Family Flags     : 37
 Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4321,6 +4345,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : None
 Spell Level      : 1
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 81
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4362,7 +4387,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4406,7 +4431,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 82
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ........ ......x. ...x.... ....x.x.   x....... ........ ........ .x....x. 
@@ -4451,7 +4476,7 @@ Spell Type       : None
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Frigid Winds (235224 effect#1)
+Affecting spells : Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4489,11 +4514,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=304047)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=479797)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=716027)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4769,6 +4794,7 @@ Duration         : 0.65 seconds
 Cooldown         : 0.5 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1632: Flow of Time (336636 effect#2)
+Affecting spells : Reduced Blink GCD (44301 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 16
 Attributes       : ........ ........ x....... ........   ........ ..x....x ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4795,7 +4821,7 @@ Spell Level      : 1
 Range            : 100 yards
 Duration         : 5 seconds
 Labels           : 1107: Cone of Cold (343180 effect#1)
-Affecting spells : Frigid Winds (235224 effect#1)
+Affecting spells : Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -4842,7 +4868,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 49, 67
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4983,7 +5009,7 @@ School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
 Velocity         : 24 yards/sec
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5006,7 +5032,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 8 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Triggered by     : Conflagration (205023)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5031,7 +5057,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Duration         : 1 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Triggered by     : Flurry (44614)
 Family Flags     : 3, 20, 102
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
@@ -5083,7 +5109,7 @@ School           : Frost
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Icy Veins (12472 effect#2), Shatter (12982 effect#1), Frosty Zap (24392 effect#1), Improved Counterspell (24429 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Ice Form (198144 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Tunnel of Ice (277904 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Slick Ice (327509 effect#3), Siphoned Malice (337090 effects: #1, #2), Frostbolt (343177 effect#1)
 Triggered by     : Frostbolt (116)
 Family Flags     : 3, 5
 Attributes       : ........ ........ x......x x..x....   .....x.. ........ ........ ........ 
@@ -5107,7 +5133,7 @@ Spell Type       : Magic
 Spell Level      : 5
 Range            : 100 yards
 GCD              : 1.5 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Splitting Ice (56377 effect#3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Chain Reaction (278310 effect#1), Whiteout (278541 effect#3), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Ice Lance (343175 effect#1)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Splitting Ice (56377 effect#3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Lonely Winter (205024 effect#1), Bone Chilling (205766 effects: #1, #2), Magtheridon's Might (214404 effect#1), Norgannon's Foresight (236380 effect#1), Chain Reaction (278310 effect#1), Whiteout (278541 effect#3), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2), Ice Lance (343175 effect#1)
 Family Flags     : 3, 17
 Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -5154,7 +5180,7 @@ Duration         : 4 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 64
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -5179,7 +5205,7 @@ School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
 Travel Time      : 1 seconds
-Affecting spells : Shatter (12982 effect#1), Radiant Spark Vulnerability (307454 effect#1)
+Affecting spells : Shatter (12982 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1)
 Family Flags     : 120
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -5370,7 +5396,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 42
 Cooldown         : 300 seconds
-Affecting spells : Radiant Spark Vulnerability (307454 effect#1), Cold Snap (321699 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Cold Snap (321699 effect#1)
 Family Flags     : 34
 Attributes       : ........ ........ x....... .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -5444,7 +5470,7 @@ Cooldown         : 25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.. ........ ........ ........ 
                  : White Melee Taken, Yellow Melee Taken
-Affecting spells : Molten Skin (194315 effect#1), Eldritch Warding (274379 effect#1)
+Affecting spells : Molten Skin (194315 effect#1), Norgannon's Foresight (236380 effect#1), Eldritch Warding (274379 effect#1)
 Family Flags     : 94
 Attributes       : ........ ........ x.x..... ........   .......x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5478,7 +5504,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
 Labels           : 897: Blazing Barrier (321708 effect#1)
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5525,7 +5551,7 @@ Spell Level      : 11
 GCD              : 1.5 seconds
 Duration         : 60 seconds
 Cooldown         : 25 seconds
-Affecting spells : Eldritch Warding (274379 effect#1), Prismatic Barrier (321745 effects: #1, #2)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Eldritch Warding (274379 effect#1), Prismatic Barrier (321745 effects: #1, #2)
 Family Flags     : 68
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5788,7 +5814,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Arcane Explosion (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Explosive Echo (278537 effect#2), Radiant Spark Vulnerability (307454 effect#1), Arcane Explosion (321752 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 12
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -5836,7 +5862,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 40 yards
 Duration         : 4 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Mage (137018 effect#1), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 49, 67
 Attributes       : ........ ........ x....... ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6172,7 +6198,7 @@ Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Velocity         : 30 yards/sec
 Cooldown         : 45 seconds
-Affecting spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1)
+Affecting spells : Icy Veins (12472 effect#2), Splitting Ice (56377 effect#1), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 110
 Attributes       : ........ ........ x....... ........   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6193,7 +6219,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 117
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ......x. 
@@ -6221,7 +6247,7 @@ Travel Delay     : 0.1 seconds
 Charges          : 2 (25 seconds cooldown)
 Category         : 1633: Phoenix Flames (343222 effect#1), Fiery Rush (363508 effect#2)
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 125
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6243,7 +6269,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Fingers of Frost (44544 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Fingers of Frost (44544 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Triggered by     : Phoenix Flames (257541)
 Family Flags     : 3, 52, 125
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -7495,7 +7521,7 @@ Class            : Mage
 School           : Physical
 Spell Type       : None
 Duration         : 18 seconds
-Affecting spells : Amplification (236628 effect#1), Clearcasting (321758 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1), Amplification (236628 effect#1), Clearcasting (321758 effect#1)
 Family Flags     : 19
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7750,7 +7776,7 @@ Class            : Mage
 School           : Frost
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ .......x x..x....   .....x.. ........ ........ ........ 
                  : ..x..... ......x. ...x.... ........   ........ .x...... ........ ......x. 
@@ -8810,7 +8836,7 @@ Spell Type       : None
 Range            : 50000 yards
 Duration         : 3 seconds
 Mechanic         : Snare
-Affecting spells : Frigid Winds (235224 effect#1)
+Affecting spells : Frigid Winds (235224 effect#1), Norgannon's Foresight (236380 effect#1)
 Family Flags     : 20
 Attributes       : ........ ........ ........ ..x.....   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9005,7 +9031,7 @@ Labels           : 976
 Proc Chance      : 100%
 Proc Flags       : ........ x...x... x.x..... ........ 
                  : Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
-Affecting spells : Arcane Power (12042 effects: #1, #3), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Ice Floes (108839 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Mastery: Savant (190740 effect#5), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 75, 86
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -9054,7 +9080,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=786056)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Charge (36032), Arcane Barrage (44425), Frozen Orb (84721), Fire Blast (108853), Icicle (148022), Meteor (153561), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Fire Blast (319836), Meteor (351140)
+                   Affected Spells: Frostbolt (116), Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (5143), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Ice Lance (30455), Dragon's Breath (31661), Arcane Charge (36032), Arcane Barrage (44425), Frozen Orb (84721), Fire Blast (108853), Icicle (148022), Meteor (153561), Comet Storm (153595), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190356), Blizzard (190357), Cinderstorm (198928), Cinderstorm (198929), Glacial Spike (199786), Ray of Frost (205021), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Comet Storm (228601), Cold Snap (235219), Frost Nova (235235), Time and Space (240689), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Fire Blast (319836), Meteor (351140)
                    Family Flags: 0, 1, 2, 4, 5, 6, 7, 9, 11, 12, 17, 21, 22, 23, 28, 29, 34, 38, 41, 47, 56, 64, 66, 69, 71, 77, 78, 83, 85, 96, 102, 115, 117, 119, 120, 121, 122, 125, 127
 Description      : $@spelldesc307443
 Tooltip          : Damage taken from $@auracaster  increased by $w1%.
@@ -9071,6 +9097,7 @@ Duration         : 4 seconds
 Cooldown         : 60 seconds
 Labels           : 976
                  : 1048: Discipline of the Grove (336992 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 60
 Attributes       : ........ ........ x....... ........   ......x. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9113,6 +9140,7 @@ Stacks           : 3 initial, 3 maximum
 Proc Chance      : 100%
 Proc Flags       : ..x.x.x. x.x.x.x. x....... ........ 
                  : White Melee, Yellow Melee, White Ranged, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 75
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -9163,7 +9191,7 @@ Spell Type       : Magic
 Spell Level      : 48
 Range            : 50000 yards
 Duration         : 4 seconds
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ x....... ..x...x.   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9195,7 +9223,7 @@ GCD              : 1.5 seconds
 Cooldown         : 0.5 seconds
 Charges          : 1 (12 seconds cooldown)
 Category         : 1500: Mage (137018 effect#2), Flame On (205029 effect#1), Flame On (205029 effect#2), Fire Blast (231567 effect#1), Memory of Lucid Dreams (303399 effect#1), Fiery Rush (363508 effect#1)
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Fire Blast (231567 effect#2), Fire Blast (231568 effect#1), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 1, 3, 85
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9222,7 +9250,7 @@ Range            : 50000 yards
 Duration         : 10 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ x....... ..x...x.   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -9471,7 +9499,7 @@ GCD              : 1.5 seconds
 Cooldown         : 45 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Shatter (12982 effect#1), Mastery: Savant (190740 effect#5), Magi's Brand (337192 effect#1)
+Affecting spells : Shatter (12982 effect#1), Mastery: Savant (190740 effect#5), Norgannon's Foresight (236380 effect#1), Magi's Brand (337192 effect#1)
 Family Flags     : 80
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9704,7 +9732,7 @@ Range            : 40 yards
 Duration         : 6 seconds
 Cooldown         : 30 seconds
 Proc Chance      : 100%
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ..x..... 
@@ -9869,6 +9897,7 @@ Labels           : 976
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 75
 Attributes       : ........ ........ x....... .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9882,7 +9911,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
 Effects          :
 #2 (id=814109)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #3 (id=814395)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
@@ -9898,7 +9927,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19912 | Target: Self (1)
 #7 (id=844223)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 Description      : Transform into a powerful skeletal mage for $d. 
 
@@ -9911,7 +9940,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 48
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Triggered by     : Shifting Power (314791)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10968,11 +10997,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=834891)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 #2 (id=844222)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
+                   Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Blazing Barrier (235314), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140)
                    Family Flags: 3
 Description      : $@spelldesc337087
 Tooltip          : Spell Damage increased by ${$w1}.1%.
@@ -11189,7 +11218,7 @@ Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -11236,6 +11265,7 @@ Spell Level      : 19
 Duration         : 20 seconds
 Cooldown         : 60 seconds
 Labels           : 892: Master of Time (342249 effect#1)
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11282,6 +11312,7 @@ School           : Arcane
 Spell Type       : Magic
 Spell Level      : 24
 Category         : 1388
+Affecting spells : Norgannon's Foresight (236380 effect#1)
 Family Flags     : 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11509,7 +11540,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=844801)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Frost Nova (122)
+                   Affected Spells: Frost Nova (122), Frost Nova (235235)
                    Family Flags: 6
 Description      : Frost Nova duration is increased by ${$s1/1000} sec.
 
@@ -11638,7 +11669,7 @@ Class            : Mage
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
+Affecting spells : Arcane Power (12042 effects: #1, #3), Shatter (12982 effect#1), Rune of Power (116014 effects: #1, #4), Incanter's Flow (116267 effects: #1, #3), Fire Mage (137019 effects: #1, #2), Frost Mage (137020 effects: #1, #2), Arcane Mage (137021 effects: #1, #2), Combustion (190319 effect#1), Bone Chilling (205766 effects: #1, #2), Norgannon's Foresight (236380 effect#1), Radiant Spark Vulnerability (307454 effect#1), Deathborne (324220 effects: #2, #7), Siphoned Malice (337090 effects: #1, #2)
 Family Flags     : 3, 96, 122
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
