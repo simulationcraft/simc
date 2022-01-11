@@ -5837,12 +5837,14 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  // TODO: Remove these in 9.2
-  add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
-  add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
-  add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
-  add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
-  add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+  if ( !is_ptr() ) // TODO: PTR
+  {
+    add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
+    add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
+    add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
+    add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
+    add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+  }
 
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
