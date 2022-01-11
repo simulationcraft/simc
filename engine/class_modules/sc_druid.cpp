@@ -6807,7 +6807,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
       if ( stacks <= 0 )
       {
-        sim->print_debug( "ADAPTIVE_SWARM: expiring on final stack" );
+        sim->print_debug( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
         return;
       }
 
@@ -6861,7 +6861,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     swarm_target_t new_swarm_target( swarm_target_t exclude ) override
     {
-      auto tl = other->target_list();
+      auto tl = target_list();
 
       if ( exclude.player )
         tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
