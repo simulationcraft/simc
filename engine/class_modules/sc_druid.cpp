@@ -6815,7 +6815,7 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( !new_target )
       {
         new_target = new_swarm_target();
-        assert( new_target.player );
+        assert( !new_target == false );
         send_swarm( new_target, stacks );
       }
       else
@@ -6830,7 +6830,7 @@ struct adaptive_swarm_t : public druid_spell_t
         if ( !second_target )
         {
           second_target = new_swarm_target();
-          assert( second_target.player );
+          assert( !new_target == false );
           send_swarm( second_target, stacks );
         }
         else
@@ -7006,14 +7006,17 @@ struct adaptive_swarm_t : public druid_spell_t
 
       adaptive_swarm_base_t::impact( s );
 
+      adaptive_swarm_heal_event_t* swarm_event = nullptr;
+
       if ( swarm_target.event && swarm_target.event->remains() > 0_ms )
+        swarm_event = dynamic_cast<adaptive_swarm_heal_event_t*>( swarm_target.event );
+
+      if ( swarm_event )
       {
-        auto event = debug_cast<adaptive_swarm_heal_event_t*>( swarm_target.event );
-
-        existing = event->stacks;
+        existing = swarm_event->stacks;
         final = std::min( dot_max_stack, final + existing );
-
-        event->reschedule( dot_duration );
+        swarm_event->stacks = final;
+        swarm_event->reschedule( dot_duration );
       }
       else
       {
