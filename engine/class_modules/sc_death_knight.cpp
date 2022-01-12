@@ -7898,7 +7898,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
           if ( dk -> dbc -> ptr )
           {
             dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-              dk -> conduits.convocation_of_the_dead -> effectN(2).base_value() / 10 ) );
+              dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
           }
           else
           {
