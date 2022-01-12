@@ -375,6 +375,12 @@ struct player_t : public actor_t
   timespan_t default_item_group_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
+  struct unity_data_t
+  {
+    unsigned bonus_id;           // bonus_id for the unity effect
+    unsigned spell_id;           // spell_id granted by the bonus_id
+    unsigned covenant_spell_id;  // id for the actual covenant legendary effect
+  } unity;
 
   // Warlord's Unseeing Eye (6.2 Trinket)
   double warlords_unseeing_eye;
