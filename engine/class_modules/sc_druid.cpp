@@ -9250,6 +9250,7 @@ void druid_t::reset()
   persistent_event_delay.clear();
   lycaras_event = nullptr;
   lycaras_event_remains = 0_ms;
+  swarm_tracker.clear();
 
   if ( mastery.natures_guardian->ok() )
     recalculate_resource_max( RESOURCE_HEALTH );
