@@ -6832,7 +6832,7 @@ struct adaptive_swarm_t : public druid_spell_t
         if ( !second_target )
         {
           second_target = new_swarm_target();
-          assert( !new_target == false );
+          assert( !second_target == false );
           send_swarm( second_target, stacks );
         }
         else
