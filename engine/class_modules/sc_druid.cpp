@@ -9680,7 +9680,11 @@ std::unique_ptr<expr_t> druid_action_t<Base>::create_expression( util::string_vi
           return l->remains() < r->remains();
         } );
 
-        return func( static_cast<sw_event_t*>( tracker.front() ) );
+        auto sw_event = dynamic_cast<sw_event_t*>( tracker.front() );
+        if ( sw_event )
+          return func( sw_event );
+        else
+          return 0.0;
       }
     };
 
