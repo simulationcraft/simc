@@ -1794,6 +1794,8 @@ public:
     apply_dot_debuffs();
   }
 
+  std::unique_ptr<expr_t> create_expression( util::string_view ) override;
+
   druid_t* p() { return static_cast<druid_t*>( ab::player ); }
 
   const druid_t* p() const { return static_cast<druid_t*>( ab::player ); }
@@ -9649,6 +9651,62 @@ double druid_t::composite_spell_power_multiplier() const
 }
 
 // Expressions ==============================================================
+template <class Base>
+std::unique_ptr<expr_t> druid_action_t<Base>::create_expression( util::string_view name_str )
+{
+  auto splits = util::string_split<std::string_view>( name_str, "." );
+
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "dot" ) &&
+       util::str_compare_ci( splits[ 1 ], "adaptive_swarm_heal" ) )
+  {
+    using sw_event_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t::adaptive_swarm_heal_event_t;
+
+    struct adaptive_swarm_heal_expr_t : public expr_t
+    {
+      druid_t* player;
+      std::function<double( sw_event_t* )> func;
+
+      adaptive_swarm_heal_expr_t( druid_t* p, std::function<double( sw_event_t* )> f )
+        : expr_t( "dot.adaptive_swarm_heal" ), player( p ), func( std::move( f ) )
+      {}
+
+      double evaluate() override
+      {
+        if ( player->swarm_tracker.empty() )
+          return 0.0;
+
+        auto tracker = player->swarm_tracker;
+        range::sort( tracker, []( const event_t* l, const event_t* r ) {
+          return l->remains() < r->remains();
+        } );
+
+        return func( debug_cast<sw_event_t*>( tracker.front() ) );
+      }
+    };
+
+    if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+    {
+      return make_fn_expr( name_str, [ this ]() {
+        return p()->swarm_tracker.size();
+      } );
+    }
+    else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
+    {
+      return std::make_unique<adaptive_swarm_heal_expr_t>( p(), []( const sw_event_t* e ) {
+        return e->remains().total_seconds();
+      } );
+    }
+    else if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
+    {
+      return std::make_unique<adaptive_swarm_heal_expr_t>( p(), []( const sw_event_t* e ) {
+        return as<double>( e->stacks );
+      } );
+    }
+  }
+
+  return ab::create_expression( name_str );
+}
+
 std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::string_view name_str )
 {
   auto splits = util::string_split<std::string_view>( name_str, "." );
@@ -9693,7 +9751,7 @@ std::unique_ptr<expr_t> druid_t::create_action_expression( action_t& a, std::str
       source_action = find_action( "thrash_cat" );
     }
 
-    return make_fn_expr( "name_str", [ dot_action, source_action, multiplier, pmul ]() -> double {
+    return make_fn_expr( name_str, [ dot_action, source_action, multiplier, pmul ]() -> double {
       auto ticks_gained_func = []( double mod, action_t* dot_action, player_t* target, bool pmul ) -> double {
         action_state_t* state = dot_action->get_state();
         state->target = target;
