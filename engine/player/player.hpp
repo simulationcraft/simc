@@ -848,6 +848,7 @@ public:
   virtual void init();
   virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
+  virtual void init_unity();
   virtual void init_resources( bool force = false );
   virtual std::vector<std::string> get_item_actions();
   virtual std::vector<std::string> get_profession_actions();

@@ -1817,6 +1817,7 @@ void player_t::init_items()
   }
 
   init_meta_gem();
+  init_unity();
 
   // Needs to be initialized after old set bonus system
   if ( sets != nullptr )
@@ -1827,38 +1828,42 @@ void player_t::init_items()
   // these initialize the weapons, but don't have a return value (yet?)
   init_weapon( main_hand_weapon );
   init_weapon( off_hand_weapon );
+}
 
-  // Initialize Unity, the Shadowlands patch 9.2 auto swapping covenant legendary
-  if ( !is_enemy() && !is_pet() )
+// Initialize Unity, the Shadowlands patch 9.2 auto swapping covenant legendary
+void player_t::init_unity()
+{
+  if ( is_enemy() || is_pet() )
+    return;
+
+  covenant_e cov_type = covenant->type();
+  if ( cov_type == covenant_e::DISABLED || cov_type == covenant_e::INVALID )
+    return;
+
+  sim->print_debug( "Initializing Unity for {} with specialization {} and covenant {}.", *this,
+                    util::specialization_string( specialization() ), util::covenant_type_string( cov_type, true ) );
+
+  // find the unity runeforge entry for the spec
+  auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
+  if ( !unity_entries.empty() )
   {
-    covenant_e cov_type = covenant->type();
-
-    sim->print_debug( "Initializing Unity for {} with specialization {} and covenant {}.", *this,
-                      util::specialization_string( specialization() ), util::covenant_type_string( cov_type, true ) );
-
-    // find the unity runeforge entry for the spec
-    auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
-    if ( !unity_entries.empty() )
+    auto it = range::find( unity_entries, specialization(), &runeforge_legendary_entry_t::specialization_id );
+    if ( it != unity_entries.end() )
     {
-      auto it = range::find ( unity_entries, specialization(), &runeforge_legendary_entry_t::specialization_id );
-      if ( it != unity_entries.end() )
-      {
-        unity.bonus_id = it->bonus_id;
-        unity.spell_id = it->spell_id;
+      unity.bonus_id = it->bonus_id;
+      unity.spell_id = it->spell_id;
 
-        // The effect ordering is different than numerical ordering by covenant id. Currently this is the same order for
-        // all classes, but if that changes in the future, will need to be made virtual in player_t
-        static constexpr covenant_e idx_map[] = {
-            covenant_e::KYRIAN, covenant_e::VENTHYR, covenant_e::NECROLORD, covenant_e::NIGHT_FAE };
+      // The effect ordering is different than numerical ordering by covenant id. Currently this is the same order for
+      // all classes, but if that changes in the future, will need to be made virtual in player_t
+      static constexpr covenant_e idx_map[] = {
+        covenant_e::KYRIAN, covenant_e::VENTHYR, covenant_e::NECROLORD, covenant_e::NIGHT_FAE };
 
-        auto idx = std::distance( idx_map, range::find( idx_map, cov_type ) ) + 1;  // effects are 1-indexed
+      auto idx = std::distance( idx_map, range::find( idx_map, cov_type ) ) + 1;  // effects are 1-indexed
 
-        unity.covenant_spell_id =
-            find_spell( unity.spell_id )->effectN( idx ).trigger()->effectN( 1 ).trigger_spell_id();
+      unity.covenant_spell_id = find_spell( unity.spell_id )->effectN( idx ).trigger()->effectN( 1 ).trigger_spell_id();
 
-        sim->print_debug( "Unity found with bonus_id {}, spell_id {}, for covenant legendary {}.", unity.bonus_id,
-                          unity.spell_id, unity.covenant_spell_id );
-      }
+      sim->print_debug( "Unity found with bonus_id {}, spell_id {}, for covenant legendary {}.", unity.bonus_id,
+                        unity.spell_id, unity.covenant_spell_id );
     }
   }
 }
