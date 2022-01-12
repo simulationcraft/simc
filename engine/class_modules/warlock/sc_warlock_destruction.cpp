@@ -804,7 +804,7 @@ struct summon_infernal_t : public destruction_spell_t
 
     if ( p()->talents.rain_of_chaos->ok() )
     {
-      p()->buffs.rain_of_chaos->trigger();
+      p()->buffs.rain_of_chaos->extend_duration_or_trigger();
     }
   }
 
