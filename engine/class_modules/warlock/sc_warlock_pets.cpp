@@ -1764,6 +1764,30 @@ void infernal_t::demise()
 
 /// Infernal End
 
+/// Blasphemy Begin
+blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
+  : infernal_t( owner, name )
+{
+}
+
+struct blasphemous_existence_t : public warlock_pet_spell_t
+{
+  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "blasphemous_existence", p, p->find_spell( 367819 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+void blasphemy_t::init_base_stats()
+{
+  infernal_t::init_base_stats();
+
+  blasphemous_existence = new blasphemous_existence_t( this );
+}
+
+/// Blasphemy End
+
 }  // namespace destruction
 
 namespace affliction

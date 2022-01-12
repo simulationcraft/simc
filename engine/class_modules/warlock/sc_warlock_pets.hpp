@@ -549,6 +549,13 @@ struct infernal_t : public warlock_pet_t
   void arise() override;
   void demise() override;
 };
+
+struct blasphemy_t : public infernal_t
+{
+  blasphemy_t( warlock_t*, util::string_view = "blasphemy" );
+  action_t* blasphemous_existence;
+  void init_base_stats() override;
+};
 }  // namespace destruction
 
 namespace affliction
