@@ -712,13 +712,20 @@ struct chaos_bolt_t : public destruction_spell_t
           {
             p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
           }
-          
+
+          if ( p()->talents.rain_of_chaos->ok() )
+          {
+            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+          }
+
+          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
+
         p()->buffs.ritual_of_ruin->expire();
       }
 
-      // Impending Ruin stacking goes here
+      // Any changes to Impending Ruin must also be made in rain_of_fire_t!
       if ( shards_used > 0 )
       {
         int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
@@ -886,13 +893,19 @@ struct rain_of_fire_t : public destruction_spell_t
           {
             p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
           }
-          
+
+          if ( p()->talents.rain_of_chaos->ok() )
+          {
+            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+          }
+
+          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
         p()->buffs.ritual_of_ruin->expire();
       }
 
-      //Impending Ruin stacking goes here
+      // Any changes to Impending Ruin must also be made in chaos_bolt_t!
       if ( shards_used > 0 )
       {
         int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
