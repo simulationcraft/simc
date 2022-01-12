@@ -375,7 +375,7 @@ struct dot_expr_t : public expr_t
 
     dot_t*& dot = specific_dot[ dot_target ];
     if ( !dot )
-      dot = dot_target->get_dot( action->name_str, action->player );
+      dot = action->get_dot( dot_target );
 
     return dot;
   }
