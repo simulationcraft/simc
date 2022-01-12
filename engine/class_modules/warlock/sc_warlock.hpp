@@ -108,8 +108,8 @@ public:
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
-    spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
-        aod_infernals;  // Infernal(s) summoned by Avatar of Destruction
+    spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t>
+        blasphemy;  // T28 Destruction 4pc pet
 
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
@@ -409,8 +409,8 @@ public:
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
     propagate_const<buff_t*> dark_soul_instability;
-    propagate_const<buff_t*> herald_of_fire;
-    propagate_const<buff_t*> herald_of_chaos;
+    propagate_const<buff_t*> impending_ruin;
+    propagate_const<buff_t*> ritual_of_ruin;
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
