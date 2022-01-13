@@ -137,17 +137,39 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
     if ( !item.active() )
       continue;
 
-    for ( const auto& eff : item.parsed.data.effects )
+    bool found = false;
+
+    for ( auto id : item.parsed.bonus_id )
     {
-      auto entry = runeforge_legendary_entry_t::find_by_spellid( eff.spell_id, player.dbc->ptr );
+      auto entry = runeforge_legendary_entry_t::find( id, player.dbc->ptr );
       if ( !entry.empty() )
       {
         auto s_data = player.find_spell( entry.front().spell_id );
         if ( s_data->ok() )
         {
-          legendary_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n",
-                                        report_decorators::decorated_item( item ),
-                                        report_decorators::decorated_spell_data( *player.sim, s_data ) );
+          found = true;
+          legendary_str +=
+              fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
+                           report_decorators::decorated_spell_data( *player.sim, s_data ) );
+        }
+      }
+    }
+
+    // fallback to search via item effect spell id
+    if ( !found )
+    {
+      for ( const auto& eff : item.parsed.data.effects )
+      {
+        auto entry = runeforge_legendary_entry_t::find_by_spellid( eff.spell_id, player.dbc->ptr );
+        if ( !entry.empty() )
+        {
+          auto s_data = player.find_spell( entry.front().spell_id );
+          if ( s_data->ok() )
+          {
+            legendary_str +=
+                fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
+                             report_decorators::decorated_spell_data( *player.sim, s_data ) );
+          }
         }
       }
     }
