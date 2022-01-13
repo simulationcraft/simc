@@ -624,7 +624,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    allow_precombat( true )
 {
   if ( source )  // Player Buffs
   {
@@ -1238,6 +1239,12 @@ buff_t* buff_t::set_reverse_stack_count( int count )
 buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
 {
   stack_behavior = b;
+  return this;
+}
+
+buff_t* buff_t::set_allow_precombat( bool b )
+{
+  allow_precombat = b;
   return this;
 }
 
