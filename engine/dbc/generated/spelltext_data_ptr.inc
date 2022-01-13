@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41827
-static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15940> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12908,7 +12908,7 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 316871, "Reduce the duration of incoming crowd control effects by $316342s% while in a Vision of N'Zoth.", "Reduce the duration of incoming crowd control effects by $316342s% while in a Vision of N'Zoth.", 0 },
   { 316916, "$??s207311[Clawing Shadows][Scourge Strike] $?s223829[and Necrotic Strike hit][hits] up to ${$55090s4-1} enemies near the target while you remain in Death and Decay.", 0, "Rank 2" },
   { 316941, "Damage dealt reduces the cooldown of Dark Transformation by ${$47541s2/1000} sec.", 0, "Rank 2" },
-  { 316958, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t2} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t2}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", 0, "Venthyr" },
+  { 316958, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", 0, "Venthyr" },
   { 316961, "Reduces the cooldown by ${$s1/-1000} sec and increases the damage done by $s2%.", 0, "Rank 2" },
   { 316991, "Place an obelisk that harnesses the sun's wrath to strike at your enemies, dealing Fire damage.\r\n\r\nOnly usable in Uldum, Vale of Eternal Blossoms, Kul Tiras, Zandalar, and Nazjatar. Lasts for $d.", 0, 0 },
   { 317009, "Brand an enemy with the mark of the Venthyr, reducing their melee attack speed by $s3%, their casting speed by $s2%, and inflicting $o1 Shadow damage over $d.\r\n\r\nActivating Metamorphosis applies Sinful Brand to all nearby enemies.", "Suffering $w1 Shadow damage every $t1 sec. Casting speed slowed by $w2%. Melee attack speed slowed by $w3%.", "Venthyr" },
@@ -15613,8 +15613,11 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
   { 362629, "Your attacks have a chance to steal $362628s1 life from the enemy.", 0, 0 },
+  { 362699, "Protects from spell interruption and crowd control effects.", "Immune to interrupt and crowd control effects.", 0 },
   { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
+  { 363117, "Activate the Broker defenses, protecting yourself from spell interruption and crowd control effects. The defenses withstand up to $s1 $Leffect:effects; and persist for $362699d.", 0, 0 },
+  { 363121, "Duration of incoming crowd control effects increased by $s1%. Does not stack with similar effects. When affected, protects from the next spell interruption and crowd control effect, persisting for $362699d.", 0, "PvP Talent" },
   { 363327, "Activate the dimensional translators to cross a great distance in outdoor Shadowlands zones.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363328, "Greatly reduces fall damage taken in outdoor Shadowlands zones.", 0, 0 },
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${s4+s3*5}]?pc94651[${s4+s3*4}]?pc94650[${s4+s3*3}]?pc64649[${s4+s3*2}]?pc94746[${s4+s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
@@ -15936,10 +15939,12 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 367951, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", 0, 0 },
   { 367952, "Your offensive spells build stacks of Singularity, gaining $s1 Versatility and Speed per stack, up to $s4.\r\n\r\nUpon reaching $s4, these bonuses are doubled and persist for $s2 seconds. After it expires, you lose all stacks and must wait $s3 seconds before approaching the Singularity again.", 0, 0 },
   { 367953, "Your first attack on an enemy deals an additional $s1 shadow damage and dislodges their soul, manifesting nearby for $s2 seconds.\r\n\r\nSlaying this soul will send it to the afterlife it truly deserves, granting you a Twisted Boon for $s3 seconds based on its destination.", 0, 0 },
+  { 367954, "@spelldesc363560", "Minion damage increased by $w1%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.41827
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  316958,  0, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t2} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t2}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%." },
 } };
 
 // Spell description variables, wow build 9.2.0.41827
