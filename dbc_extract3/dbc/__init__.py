@@ -103,7 +103,8 @@ KEY_FIELD_HOTFIX_RECORD = {
     'ItemModifiedAppearance': 'id_item',
     'JournalEncounterItem'  : 'id_encounter',
     'AzeritePowerSetMember' : 'unk_28366',
-    'RenownRewards'         : 'id_covenant'
+    'RenownRewards'         : 'id_covenant',
+    'GarrTalent'            : 'id_garr_talent_tree'
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for

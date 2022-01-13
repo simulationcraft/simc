@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -970,7 +969,6 @@ Description      : A direct strike, dealing $s1 Physical damage.
 Variables        : $mult=${($max(0,$min($pl-12,8))*8.5+241)/309}
 
 Name             : Blood Fury (desc=Racial) (id=20572) 
-Hotfixed         : Attributes
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -1707,7 +1705,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -1732,7 +1729,6 @@ Description      : Activates your true form, increasing current movement speed b
 Tooltip          : True form activated, movement speed increased by an additional $s1%.
 
 Name             : Arcane Torrent (desc=Racial) (id=69179) 
-Hotfixed         : Attributes
 Class            : Warrior
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -2579,7 +2575,6 @@ Description      : Roar explosively, dealing $s1 Physical damage to enemies with
 Variables        : $critMult=${3}
 
 Name             : Die by the Sword (id=118038) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
@@ -3408,7 +3403,6 @@ Movement speed increased by $m2%.][]$?s208154[
 Damage taken reduced by $208154m3%.][]
 
 Name             : Enraged Regeneration (id=184364) [Spell Family (4)] 
-Hotfixed         : Attributes
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None

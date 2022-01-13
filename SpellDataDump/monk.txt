@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -244,7 +243,6 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Blood Fury (desc=Racial) (id=33697) 
-Hotfixed         : Attributes
 Class            : Shaman, Monk
 Race             : Orc (0x2)
 School           : Physical
@@ -2072,7 +2070,6 @@ Description      : Clears $s1% of your damage delayed with Stagger.$?s322510[
 Increases the absorption of your next Celestial Brew by up to $322510s1%, based on your current level of Stagger][]
 
 Name             : Renewing Mist (id=119607) [Spell Family (53)] 
-Hotfixed         : Learn Level (1 -> 0), Max Spell Level (1 -> 0), Attributes, Required Level (1 -> 0)
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -2095,7 +2092,6 @@ Effects          :
 Description      : $@spelldesc115151
 
 Name             : Renewing Mist (id=119611) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -3266,7 +3262,6 @@ Description      : $@spelldesc128845
 Tooltip          : Stunned.
 
 Name             : Arcane Torrent (desc=Racial) (id=129597) 
-Hotfixed         : Attributes
 Class            : Monk
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -4291,7 +4286,6 @@ Description      : $@spelldesc191837
 Tooltip          : Restoring $w2 health every $t2 sec.
 
 Name             : Gust of Mists (id=191894) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -4550,7 +4544,6 @@ Attributes       : ....x... ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=288833)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65520 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : AP Coefficient (0.3276 -> 0.6552)
 #2 (id=288837)   : Apply Aura (6) | Decrease Movement Speed% (33)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Snare | Target: Unknown(87) -> AOE enemy (instant) (16)
 #3 (id=335941)   : Apply Aura (6) | Dummy (4)
@@ -9820,7 +9813,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=815370)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 0.66667 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.666667)
 Description      : $@spelldesc325216
 
 Name             : Bonedust Brew (id=325218) [Spell Family (53)] 
@@ -9877,6 +9869,71 @@ Description      : Opens a mystic portal for $d. Every ${$t1*3} sec, it summons 
 
 Fallen $?$C1[Ox]?$C2[Crane][Tiger] adepts assist for an additional $s3 sec, and will also $?$C1[attack your enemies with Breath of Fire]?$C2[heal with Enveloping Mist][assault with Fists of Fury].
 Tooltip          : Summoning Ox, Crane, and Tiger adepts through the mirror.
+
+Name             : Fallen Order (id=327004) [Spell Family (53)] 
+Class            : Monk
+School           : Shadow
+Spell Type       : None
+Spell Level      : 48
+Range            : 100 yards
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=818301)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 168033 | Misc Value 2: 0x132b | Radius: 0 - 8 yards | Target: Unknown(87) -> Unknown(86)
+#2 (id=905418)   : Trigger Spell w/ Value (142): Windwalking
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 364944 | Target: Self (1)
+Description      : $@spelldesc326860
+
+Name             : Fallen Order (id=327005) [Spell Family (53)] 
+Class            : Monk
+School           : Shadow
+Spell Type       : None
+Spell Level      : 48
+Range            : 100 yards
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=818302)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 168073 | Misc Value 2: 0x132b | Target: Unknown(87)
+Description      : $@spelldesc326860
+
+Name             : Fallen Order (id=327006) [Spell Family (53)] 
+Class            : Monk
+School           : Shadow
+Spell Type       : None
+Spell Level      : 48
+Range            : 100 yards
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=818303)   : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 168074 | Misc Value 2: 0x139c | Target: Unknown(87)
+Description      : $@spelldesc326860
 
 Name             : Faeline Stomp (desc=Night Fae) (id=327104) [Spell Family (53)] 
 Class            : Monk
@@ -12426,7 +12483,6 @@ Variables        : $absorb=${($AP*6)*(1+$@versadmg)}
 
 
 Name             : Windwalking (id=364944) [Spell Family (53)] 
-Hotfixed         : NEW SPELL
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12435,6 +12491,7 @@ Range            : 100 yards
 Duration         : 10 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
+Triggered by     : Fallen Order (327004)
 Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
                  : x....... x.....x. ...x.... ....x...   ........ ........ xx..x... ..x..... 
                  : x......x ........ ....xx.. ........   ...x.... ........ .xx..... ........ 
@@ -12447,7 +12504,6 @@ Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...
 Effects          :
 #1 (id=905417)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
-Hotfixed         : NEW EFFECT
 Tooltip          : Movement speed increased by $s1%.
 
 

@@ -4,9 +4,9 @@
 // ==========================================================================
 
 #include "scale_factor_control.hpp"
-#include "sc_sim.hpp"
+#include "sim.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_scaling.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"

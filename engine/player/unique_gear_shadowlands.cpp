@@ -5,13 +5,13 @@
 
 #include "unique_gear_shadowlands.hpp"
 
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
-#include "sim/sc_cooldown.hpp"
+#include "sim/cooldown.hpp"
 #include "player/action_priority_list.hpp"
 #include "player/pet.hpp"
 #include "player/pet_spawner.hpp"
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "action/dot.hpp"
 #include "item/item.hpp"
 #include "class_modules/monk/sc_monk.hpp"
@@ -34,14 +34,14 @@ struct shadowlands_aoe_proc_t : public generic_aoe_proc_t
     // Default still seems to be 6, however shadowlands seems to indicate the maximum
     // number (slightly confusingly) in the tooltip data, which is referencable directly
     // from spell data
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 
   shadowlands_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 };
 
@@ -539,7 +539,7 @@ void soul_igniter( special_effect_t& effect )
       base_dd_min = e.player->find_spell( 345214 )->effectN( 2 ).min( e.item );
       base_dd_max = e.player->find_spell( 345214 )->effectN( 2 ).max( e.item );
       max_time_multiplier = e.player->find_spell( 345214 )->effectN( 4 ).percent();
-      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.player->find_spell( 345211 )->effectN( 2 ).base_value() );
     }
 
     double action_multiplier() const override
@@ -1053,7 +1053,7 @@ void satchel_of_misbegotten_minions( special_effect_t& effect )
     {
       base_dd_min = e.driver()->effectN( 1 ).min( e.item );
       base_dd_max = e.driver()->effectN( 1 ).max( e.item );
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
   };
 
@@ -1131,7 +1131,7 @@ void mistcaller_ocarina( special_effect_t& effect )
  */
 void unbound_changeling( special_effect_t& effect )
 {
-  auto stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
+  std::string_view stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
   if ( stat_type == "all" )
     effect.spell_id = 330765;
   else if ( stat_type == "crit" )
@@ -1593,7 +1593,7 @@ void decanter_of_animacharged_winds( special_effect_t& effect )
     splash_of_animacharged_wind_t( const special_effect_t& e ) :
       shadowlands_aoe_proc_t( e, "splash_of_animacharged_wind", e.trigger(), true )
     {
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
   };
 
@@ -1612,7 +1612,7 @@ void bloodspattered_scale( special_effect_t& effect )
     blood_barrier_t( const special_effect_t& e, buff_t* absorb_ ) :
       shadowlands_aoe_proc_t( e, "blood_barrier", e.trigger(), true ), absorb( absorb_ )
     {
-      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() + 1 );
+      max_scaling_targets = as<unsigned>( e.driver()->effectN( 2 ).base_value() );
     }
 
     void execute() override
@@ -2474,7 +2474,7 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time     = 2_s;  // base 2s channel for full effect
-        auto apl = player->precombat_action_list;
+        const auto& apl = player->precombat_action_list;
 
         auto it = range::find( apl, use_action );
         if ( it == apl.end() )
@@ -2781,7 +2781,7 @@ void soleahs_secret_technique( special_effect_t& effect )
   // Assuming you don't actually use this trinket during combat but rather beforehand
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  auto opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -2919,7 +2919,9 @@ void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int s
       buff =
           make_buff<stat_buff_t>( effect.player, "harsh_tutelage" + std::to_string( rank ),
                                   effect.player->find_spell( proc_id ) )
-              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) );
+              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) )
+              ->set_refresh_duration_callback(
+                     []( const buff_t* b, timespan_t d ) { return std::min( b->remains() + d, 9_s ); } );
     }
     effect.custom_buff = buff;
   }
@@ -3409,7 +3411,8 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
                 }
               }
 
-              report_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_spell_data( *player.sim, spell ), rank );
+              report_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n",
+                                         report_decorators::decorated_spell_data( *player.sim, spell ), rank );
             }
             break;
           }

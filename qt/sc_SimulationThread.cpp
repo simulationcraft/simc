@@ -5,7 +5,7 @@
 #include "sc_Workaround.hpp"
 #include "sim/plot.hpp"
 #include "sim/reforge_plot.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "sim/sim_control.hpp"
 #include "simulationcraftqt.hpp"

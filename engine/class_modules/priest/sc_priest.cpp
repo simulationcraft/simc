@@ -8,7 +8,7 @@
 
 #include "class_modules/apl/apl_priest.hpp"
 #include "sc_enums.hpp"
-#include "sim/sc_option.hpp"
+#include "sim/option.hpp"
 #include "tcb/span.hpp"
 
 #include "simulationcraft.hpp"
@@ -434,10 +434,9 @@ struct unholy_transfusion_t final : public priest_spell_t
 {
   double parent_targets = 1;
 
-  unholy_transfusion_t( priest_t& p, util::string_view options_str )
+  unholy_transfusion_t( priest_t& p )
     : priest_spell_t( "unholy_transfusion", p, p.covenant.unholy_nova->effectN( 2 ).trigger() )
   {
-    parse_options( options_str );
     background                 = true;
     hasted_ticks               = true;
     tick_may_crit              = true;
@@ -512,13 +511,15 @@ struct unholy_nova_healing_t final : public priest_heal_t
 
 struct unholy_nova_t final : public priest_spell_t
 {
+  // DoT spell trigger
   propagate_const<unholy_transfusion_t*> child_unholy_transfusion;
+  // Healing AoE trigger
   propagate_const<unholy_nova_healing_t*> child_unholy_nova_healing;
 
   unholy_nova_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "unholy_nova", p, p.covenant.unholy_nova ),
-      child_unholy_transfusion( nullptr ),
-      child_unholy_nova_healing( nullptr )
+      child_unholy_transfusion( new unholy_transfusion_t( p ) ),
+      child_unholy_nova_healing( new unholy_nova_healing_t( p ) )
   {
     parse_options( options_str );
     aoe      = -1;
@@ -527,12 +528,7 @@ struct unholy_nova_t final : public priest_spell_t
     // Radius for damage spell is stored in the DoT's spell radius
     radius = data().effectN( 2 ).trigger()->effectN( 1 ).radius_max();
 
-    // Create child for DoT spell trigger
-    child_unholy_transfusion = new unholy_transfusion_t( p, options_str );
     add_child( child_unholy_transfusion );
-
-    // Create child for Healing AoE trigger
-    child_unholy_nova_healing = new unholy_nova_healing_t( p );
     add_child( child_unholy_nova_healing );
 
     // Unholy Nova itself does NOT do damage, just the DoT
@@ -750,7 +746,7 @@ struct ascended_nova_t final : public priest_spell_t
 
   ascended_nova_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "ascended_nova", p, p.covenant.ascended_nova ),
-      child_ascended_nova_heal( nullptr ),
+      child_ascended_nova_heal( new ascended_nova_heal_t( p ) ),
       grants_stacks( as<int>( data().effectN( 3 ).base_value() ) )
   {
     parse_options( options_str );
@@ -759,7 +755,6 @@ struct ascended_nova_t final : public priest_spell_t
     radius                     = data().effectN( 1 ).radius_max();
     affected_by_shadow_weaving = true;
 
-    child_ascended_nova_heal = new ascended_nova_heal_t( priest() );
     add_child( child_ascended_nova_heal );
   }
 
@@ -1518,6 +1513,8 @@ void priest_t::create_procs()
   procs.void_lasher                     = get_proc( "Void Lasher proc from Eternal Call to the Void" );
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
+  procs.dark_thoughts_searing_nightmare = get_proc( "Dark Thoughts proc from T28 2-set Searing Nightmare" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
   procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
 }

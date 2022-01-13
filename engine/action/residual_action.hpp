@@ -6,8 +6,8 @@
 #pragma once
 
 #include "config.hpp"
-#include "action/sc_action_state.hpp"
-#include "action/sc_action.hpp"
+#include "action/action_state.hpp"
+#include "action/action.hpp"
 #include "action/dot.hpp"
 #include "util/timespan.hpp"
 #include <iosfwd>

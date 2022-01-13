@@ -5,10 +5,10 @@
 
 #include "action_variable.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "action/variable.hpp"
-#include "player/sc_player.hpp"
-#include "sim/sc_sim.hpp"
+#include "player/player.hpp"
+#include "sim/sim.hpp"
 #include "util/util.hpp"
 
 #include <limits>

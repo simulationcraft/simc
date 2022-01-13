@@ -654,7 +654,7 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
   }
 
   return priest_pet_t::create_action( name, options_str );
-};
+}
 // ==========================================================================
 // Living Shadow T28 4-set (Your Shadow)
 // ==========================================================================
@@ -672,20 +672,48 @@ struct your_shadow_t final : public priest_pet_t
     def->add_action( "torment_mind" );
   }
 
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.living_shadow->trigger();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.living_shadow->expire();
+  }
+
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 
-// TODO: if it has duration is hasted, does it recast when the channel finishes?
-// TODO: verify hasted ticks/duration
+struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
+{
+  your_shadow_torment_mind_tick_t( your_shadow_t& p, const spell_data_t* s )
+    : priest_pet_spell_t( "torment_mind_tick", p, s )
+  {
+    background                 = true;
+    dual                       = true;
+    affected_by_shadow_weaving = true;
+    tick_zero                  = true;
+    aoe                        = -1;
+    radius                     = data().effectN( 2 ).radius();
+    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
+  }
+};
+
 struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
   your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
     : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
   {
     parse_options( options );
-    channeled                  = true;
-    affected_by_shadow_weaving = false;
-    tick_zero                  = true;
+    channeled   = true;
+    tick_zero   = true;
+    tick_action = new your_shadow_torment_mind_tick_t( p, data().effectN( 1 ).trigger() );
   }
 
   void init() override
@@ -909,7 +937,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 {
   if ( splits.size() < 2 )
   {
-    return nullptr;
+    return {};
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "pet" ) )
@@ -976,7 +1004,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     }
   }
 
-  return nullptr;
+  return {};
 }
 
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )

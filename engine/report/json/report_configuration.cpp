@@ -20,7 +20,7 @@
 #endif
 
 #include "lib/cpp-semver/cpp-semver.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 namespace
 {

@@ -5,10 +5,10 @@
 
 #include "util.hpp"
 #include "util/git_info.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/player_talent_points.hpp"
 #include "sim/scale_factor_control.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "dbc/dbc.hpp"
 
 #include "lib/utf8-cpp/utf8.h"

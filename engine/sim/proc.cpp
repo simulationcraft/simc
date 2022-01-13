@@ -4,7 +4,7 @@
 
 #include "proc.hpp"
 
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 
 proc_t::proc_t( sim_t& s, util::string_view n )
   : sim( s ),

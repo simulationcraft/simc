@@ -5,8 +5,8 @@
 
 #include "wowhead.hpp"
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
-#include "sim/sc_sim.hpp"
+#include "player/player.hpp"
+#include "sim/sim.hpp"
 #include "util/xml.hpp"
 
 #include "rapidjson/document.h"

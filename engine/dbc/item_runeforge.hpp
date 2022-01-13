@@ -16,6 +16,7 @@ struct runeforge_legendary_entry_t
   unsigned specialization_id;
   unsigned spell_id;
   unsigned mask_inv_type;
+  unsigned covenant_id;
   const char* name;
 
   static util::span<const runeforge_legendary_entry_t> find( unsigned bonus_id, bool ptr )

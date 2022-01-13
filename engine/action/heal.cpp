@@ -5,13 +5,13 @@
 
 #include "heal.hpp"
 #include "dot.hpp"
-#include "sc_action_state.hpp"
+#include "action_state.hpp"
 #include "action_callback.hpp"
 #include "dbc/spell_data.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/stats.hpp"
-#include "sim/sc_expressions.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/expressions.hpp"
+#include "sim/sim.hpp"
 #include "util/rng.hpp"
 
 heal_t::heal_t( util::string_view name, player_t* p ) : heal_t( name, p, spell_data_t::nil() )

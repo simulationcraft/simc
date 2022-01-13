@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_action.hpp"
+#include "action.hpp"
 
 constexpr double WEAPON_POWER_COEFFICIENT = 6; // WDPS -> Attack Power Coefficient used for BfA Attack Power calculations
 
@@ -31,6 +31,7 @@ struct attack_t : public action_t
   double block_chance( action_state_t* s ) const override;
   double crit_block_chance( action_state_t* s ) const override;
 
+  double bonus_da( const action_state_t* ) const override;
   double action_multiplier() const override;
 
   double composite_target_multiplier( player_t* target ) const override;
