@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41827
-static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15941> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -12908,7 +12908,7 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 316871, "Reduce the duration of incoming crowd control effects by $316342s% while in a Vision of N'Zoth.", "Reduce the duration of incoming crowd control effects by $316342s% while in a Vision of N'Zoth.", 0 },
   { 316916, "$??s207311[Clawing Shadows][Scourge Strike] $?s223829[and Necrotic Strike hit][hits] up to ${$55090s4-1} enemies near the target while you remain in Death and Decay.", 0, "Rank 2" },
   { 316941, "Damage dealt reduces the cooldown of Dark Transformation by ${$47541s2/1000} sec.", 0, "Rank 2" },
-  { 316958, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t2} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t2}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", 0, "Venthyr" },
+  { 316958, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", 0, "Venthyr" },
   { 316961, "Reduces the cooldown by ${$s1/-1000} sec and increases the damage done by $s2%.", 0, "Rank 2" },
   { 316991, "Place an obelisk that harnesses the sun's wrath to strike at your enemies, dealing Fire damage.\r\n\r\nOnly usable in Uldum, Vale of Eternal Blossoms, Kul Tiras, Zandalar, and Nazjatar. Lasts for $d.", 0, 0 },
   { 317009, "Brand an enemy with the mark of the Venthyr, reducing their melee attack speed by $s3%, their casting speed by $s2%, and inflicting $o1 Shadow damage over $d.\r\n\r\nActivating Metamorphosis applies Sinful Brand to all nearby enemies.", "Suffering $w1 Shadow damage every $t1 sec. Casting speed slowed by $w2%. Melee attack speed slowed by $w3%.", "Venthyr" },
@@ -15896,6 +15896,8 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 367663, "$@spelldesc355447", 0, 0 },
   { 367664, "$@spelldesc355099", 0, 0 },
   { 367665, "$@spelldesc355100", 0, 0 },
+  { 367679, "Summons a Blasphemy from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.\r\n\r\nThe Blasphemy will serve you for $367680d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.", 0, "Guardian" },
+  { 367680, "$@spelldesc367679", "$@spelldesc367679", "Guardian" },
   { 367682, "Your melee attacks have a chance to call a vombata to charge the enemy, causing $s1 Physical damage.", 0, 0 },
   { 367687, "$@spelldesc367682", 0, 0 },
   { 367722, "Your attacks have a chance to call a lupine to lacerate the enemy, dealing ${$s1*($367726d/1.5)} Physical damage over $367726d.", 0, 0 },
@@ -15906,6 +15908,8 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 367804, "Periodically rummage through the cache, finding a new stolen weapon.", 0, 0 },
   { 367805, "Grab the weapon from the cache, gaining its benefit.", 0, 0 },
   { 367808, "Cause the ground to quake beneath your feet, dealing $s1 Nature damage split between all nearby enemies over $s2 sec. Damage increased per target hit.\r\n\r\nWhile quaking, you can sense nearby tectonic weak points. Moving over a weak point will deal an additional $s3 Nature damage to all nearby enemies.", 0, 0 },
+  { 367819, "The Blasphemy ignites, dealing $s1 Shadowflame damage to all targets.", "Stunned.", 0 },
+  { 367831, "$@spelldesc172", 0, 0 },
   { 367835, "Whenever a nearby Automa dies, you exude Ephemera, healing up to $s2 nearby allies for $s1 over $s3 sec.", 0, 0 },
   { 367836, "Call forth an Automa Medic which restores $s1 Mana to you over $s2 sec before expiring.", 0, 0 },
   { 367885, "Establish a link deep within your target's mind, draining $s1 health per second and increasing your chance to dodge by $s2% for $d.\r\n\r\nIf the link is still intact when this effect ends, their mind shatters, dealing $s3 Shadow damage to enemies within $s4 yds of them and Horrifying them for $d.", 0, 0 },
@@ -15936,10 +15940,12 @@ static const std::array<spelltext_data_t, 15936> __ptr_spelltext_data { {
   { 367951, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", 0, 0 },
   { 367952, "Your offensive spells build stacks of Singularity, gaining $s1 Versatility and Speed per stack, up to $s4.\r\n\r\nUpon reaching $s4, these bonuses are doubled and persist for $s2 seconds. After it expires, you lose all stacks and must wait $s3 seconds before approaching the Singularity again.", 0, 0 },
   { 367953, "Your first attack on an enemy deals an additional $s1 shadow damage and dislodges their soul, manifesting nearby for $s2 seconds.\r\n\r\nSlaying this soul will send it to the afterlife it truly deserves, granting you a Twisted Boon for $s3 seconds based on its destination.", 0, 0 },
+  { 367954, "@spelldesc363560", "Minion damage increased by $w1%.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.41827
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  316958,  0, "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t2} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t2}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.", "Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.\r\n\r\nWithin the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%." },
 } };
 
 // Spell description variables, wow build 9.2.0.41827
