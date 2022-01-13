@@ -9781,10 +9781,12 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
     return item_runeforge_t::nil();
   }
 
+  covenant_e cov_type = covenant->type();
   unsigned unity_bonus_id = 0;
   unsigned unity_spell_id = 0;
 
-  if ( entries.front().covenant_id == static_cast<unsigned>( covenant->type() ) )
+  if ( cov_type != covenant_e::DISABLED && cov_type != covenant_e::INVALID &&
+       entries.front().covenant_id == static_cast<unsigned>( cov_type ) )
   {
     auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
     if ( !unity_entries.empty() )
