@@ -4080,7 +4080,7 @@ class RuneforgeLegendaryGenerator(DataGenerator):
         for entry, spec in sorted(data, key=lambda v: (v[0].id_bonus, v[1].id_spec)):
             fields = entry.field('id_bonus')
             fields += spec.field('id_spec')
-            fields += entry.field('id_spell', 'mask_inv_type', 'name')
+            fields += entry.field('id_spell', 'mask_inv_type', 'id_covenant', 'name')
             self.output_record(fields)
 
         self.output_footer()

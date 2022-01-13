@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41827
-static const std::array<spelltext_data_t, 15941> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15944> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15613,8 +15613,11 @@ static const std::array<spelltext_data_t, 15941> __ptr_spelltext_data { {
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
   { 362629, "Your attacks have a chance to steal $362628s1 life from the enemy.", 0, 0 },
+  { 362699, "Protects from spell interruption and crowd control effects.", "Immune to interrupt and crowd control effects.", 0 },
   { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
+  { 363117, "Activate the Broker defenses, protecting yourself from spell interruption and crowd control effects. The defenses withstand up to $s1 $Leffect:effects; and persist for $362699d.", 0, 0 },
+  { 363121, "Duration of incoming crowd control effects increased by $s1%. Does not stack with similar effects. When affected, protects from the next spell interruption and crowd control effect, persisting for $362699d.", 0, "PvP Talent" },
   { 363327, "Activate the dimensional translators to cross a great distance in outdoor Shadowlands zones.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363328, "Greatly reduces fall damage taken in outdoor Shadowlands zones.", 0, 0 },
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${s4+s3*5}]?pc94651[${s4+s3*4}]?pc94650[${s4+s3*3}]?pc64649[${s4+s3*2}]?pc94746[${s4+s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },

@@ -378,7 +378,6 @@ struct player_t : public actor_t
   timespan_t default_item_group_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
 
-
   // Warlord's Unseeing Eye (6.2 Trinket)
   double warlords_unseeing_eye;
   stats_t* warlords_unseeing_eye_stats;

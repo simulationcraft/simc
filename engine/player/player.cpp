@@ -9885,6 +9885,25 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
     return item_runeforge_t::nil();
   }
 
+  covenant_e cov_type = covenant->type();
+  unsigned unity_bonus_id = 0;
+  unsigned unity_spell_id = 0;
+
+  if ( cov_type != covenant_e::DISABLED && cov_type != covenant_e::INVALID &&
+       entries.front().covenant_id == static_cast<unsigned>( cov_type ) )
+  {
+    auto unity_entries = runeforge_legendary_entry_t::find( "Unity", dbc->ptr );
+    if ( !unity_entries.empty() )
+    {
+      auto it = range::find( unity_entries, specialization(), &runeforge_legendary_entry_t::specialization_id );
+      if ( it != unity_entries.end() )
+      {
+        unity_bonus_id = it->bonus_id;
+        unity_spell_id = it->spell_id;
+      }
+    }
+  }
+
   // 8/22/2020 - Removed spec filtering for now since these currently have no spec limitations in-game
   //             May need to restore some logic at some point if Blizzard points to different spells per-spec
 
@@ -9895,8 +9914,9 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   const item_t* item = nullptr;
   for ( const auto& i : items )
   {
-    auto it = range::find( i.parsed.bonus_id, entries.front().bonus_id );
-    if ( it != i.parsed.bonus_id.end() )
+    if ( range::contains( i.parsed.bonus_id, entries.front().bonus_id ) ||
+         ( unity_bonus_id && range::contains( i.parsed.bonus_id, unity_bonus_id ) ) ||
+         ( unity_spell_id && range::contains( i.parsed.data.effects, unity_spell_id, &item_effect_t::spell_id ) ) )
     {
       item = &i;
       break;

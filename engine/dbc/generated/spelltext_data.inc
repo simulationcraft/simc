@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.5.41359
-static const std::array<spelltext_data_t, 15596> __spelltext_data { {
+// Spell text, wow build 9.1.5.41793
+static const std::array<spelltext_data_t, 15598> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7970,6 +7970,7 @@ static const std::array<spelltext_data_t, 15596> __spelltext_data { {
   { 228599, "$@spelldesc214634", 0, "Artifact" },
   { 228600, "$@spelldesc199786", "Frozen in place.", 0 },
   { 228601, "$@spelldesc153595", 0, 0 },
+  { 228645, "Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.\r\n\r\n|cFFFFFFFFGenerates $s3 bonus Runic Power$?s221536[, plus $s4 Runic Power per additional enemy struck][].|r", "Movement speed reduced by $s5%.", 0 },
   { 228649, "Kick with a blast of Chi energy, dealing $s1 Physical damage.", 0, 0 },
   { 228784, "$@spelldesc214168", 0, 0 },
   { 228920, "Throws a whirling weapon at the target location that chases nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.\r\n\r\n|cFFFFFFFFGenerates ${$334934s1/10} Rage each time it deals damage.|r", "Ravager is currently active.", 0 },
@@ -15596,13 +15597,14 @@ static const std::array<spelltext_data_t, 15596> __spelltext_data { {
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
   { 364944, 0, "Movement speed increased by $s1%.", 0 },
   { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
+  { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.41359
+// spelltext hotfix entries, wow build 9.1.5.41793
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.41359
+// Spell description variables, wow build 9.1.5.41793
 static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15911,7 +15913,7 @@ static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.41359
+// spelldesc_vars hotfix entries, wow build 9.1.5.41793
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
