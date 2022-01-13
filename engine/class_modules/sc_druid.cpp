@@ -1759,7 +1759,7 @@ public:
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
 
   // list of action_ids that triggers the same dot as this action
-  std::vector<unsigned> dot_ids;
+  std::vector<int> dot_ids;
 
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
   free_cast_e free_cast;
