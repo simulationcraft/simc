@@ -2912,6 +2912,7 @@ struct fury_execute_parent_t : public warrior_attack_t
     : warrior_attack_t( "execute", p, p->spec.execute ),
       execute_rank_3( false ),
       execute_pct( 20 ),
+      max_rage( 40 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
@@ -5282,7 +5283,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
   double rage_from_execute_rank_3;
   fury_condemn_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "condemn", p, p->covenant.condemn ),
-      execute_rank_3( false ), execute_pct_above( 80 ), execute_pct_below( 20 ),
+      execute_rank_3( false ), execute_pct_above( 80 ), execute_pct_below( 20 ), max_rage( 40 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
