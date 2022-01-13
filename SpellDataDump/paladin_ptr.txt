@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 7ee24a0f, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -8379,6 +8379,7 @@ Effects          :
 Description      : Word of Glory's healing is increased by the target's missing health, on any target.
 
 Name             : Ashen Hallow (desc=Venthyr) (id=316958) [Spell Family (10)] 
+Hotfixed         : Description
 Class            : Paladin
 Covenant         : Venthyr
 School           : Shadow
@@ -8407,7 +8408,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=802227)   : Unknown(179)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 19042 | Radius: 20 yards | Target: AOE Custom (8)
-Description      : Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t2} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t2}, reduced if there are more than $s2 targets.
+Description      : Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.
 
 Within the Hallow, you may use Hammer of Wrath on any target, and its damage is increased by $330382s2%.
 

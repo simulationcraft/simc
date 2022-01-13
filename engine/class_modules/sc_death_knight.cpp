@@ -3476,7 +3476,7 @@ struct abomination_limb_damage_t : public death_knight_spell_t
     // Every 4 seconds if we have abominations_frenzy legendary equipped
     if ( p() ->cooldown.abomination_limb -> is_ready() )
     {
-      switch ( p() ->specialization() )
+      switch ( p() -> specialization() )
       {
         case DEATH_KNIGHT_BLOOD:
           p() -> buffs.bone_shield -> trigger( bone_shield_stack_gain );
@@ -3529,7 +3529,7 @@ struct abomination_limb_buff_t : public buff_t
     set_partial_tick( true );
     if ( p -> legendary.abominations_frenzy.ok() )
     {
-      apply_affecting_aura( p -> legendary.abominations_frenzy );
+      modify_duration( p -> legendary.abominations_frenzy -> effectN( 1 ).time_value() );
     }
   }
 };
@@ -5279,6 +5279,14 @@ struct festering_wound_t : public death_knight_spell_t
     // 2020-12-25 - Melekus: gonna consider this a bug for now.
     if ( p -> bugs )
       base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
+
+    if ( p -> dbc -> ptr )
+    {
+      if ( p -> conduits.convocation_of_the_dead.ok() )
+      {
+        base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
+      }
+    }
   }
 
   void execute() override
@@ -6571,6 +6579,19 @@ struct shackle_the_unworthy_t : public death_knight_spell_t
     death_knight_spell_t::init();
     may_proc_bron = true;
   }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if ( p() -> dbc -> ptr )
+    {
+      if ( p() -> legendary.final_sentence.ok() )
+      {
+        p() -> buffs.final_sentence -> trigger();
+        p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
+      }
+    }
+  }
 };
 
 // Soul Reaper ==============================================================
@@ -7653,8 +7674,16 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
   if ( conduits.convocation_of_the_dead.ok() )
   {
-    cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-      conduits.convocation_of_the_dead.value() / 10 ) );
+    if ( dbc -> ptr )
+    {
+      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+        conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
+    }
+    else
+    {
+      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+        conduits.convocation_of_the_dead.value() / 10 ) );
+    }
   }
 }
 
@@ -7866,8 +7895,16 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
         }
         if ( dk -> conduits.convocation_of_the_dead.ok() )
         {
-          dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-            dk -> conduits.convocation_of_the_dead.value() / 10 ) );
+          if ( dk -> dbc -> ptr )
+          {
+            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+              dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
+          }
+          else
+          {
+            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+              dk -> conduits.convocation_of_the_dead.value() / 10 ) );
+          }
         }
       }
 
@@ -8977,8 +9014,10 @@ void death_knight_t::create_buffs()
   // Covenants
   buffs.deaths_due = make_buff( this, "deaths_due", find_spell( 324165 ) )
       -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+      -> modify_default_value( legendary.rampant_transference -> effectN( 1 ).percent() )
       -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-      -> apply_affecting_aura( legendary.rampant_transference );
+      -> modify_duration( legendary.rampant_transference -> effectN( 2 ).time_value() )
+      -> add_invalidate( CACHE_STRENGTH );
 
   buffs.death_turf = make_buff( this, "death_turf", find_spell ( 335180) )
     -> set_default_value_from_effect( 1 )
@@ -9459,7 +9498,17 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
   const death_knight_td_t* td = find_target_data( target );
 
   if ( td )
+  {
     m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
+
+    if ( dbc -> ptr )
+    {
+      if( td -> debuff.abominations_frenzy -> up() )
+      {
+        m *= 1.0 + td -> debuff.abominations_frenzy -> value();
+      }
+    }
+  }
 
   return m;
 }

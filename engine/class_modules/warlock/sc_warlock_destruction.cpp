@@ -589,7 +589,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.herald_of_chaos->check() )
+    if ( p()->buffs.ritual_of_ruin->check() )
       return 0.0;
 
     return destruction_spell_t::cost();      
@@ -604,7 +604,7 @@ struct chaos_bolt_t : public destruction_spell_t
   {
     timespan_t h = warlock_spell_t::execute_time();
     
-    if ( p()->buffs.herald_of_chaos->check() )
+    if ( p()->buffs.ritual_of_ruin->check() )
       return 0_s;
 
     if ( p()->buffs.backdraft->check() )
@@ -688,6 +688,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   void execute() override
   {
+    int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
     p()->buffs.backdraft->decrement();
@@ -698,20 +699,39 @@ struct chaos_bolt_t : public destruction_spell_t
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
-      if ( p()->buffs.herald_of_chaos->check() )
+      if ( p()->buffs.ritual_of_ruin->check() )
       {
         if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
         {
-          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
+          if ( p()->warlock_pet_list.blasphemy.active_pet() )
+          {
+            p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
+          }
+          else
+          {
+            p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
+          }
+
+          if ( p()->talents.rain_of_chaos->ok() )
+          {
+            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+          }
+
+          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
-        p()->buffs.herald_of_chaos->expire();
+
+        p()->buffs.ritual_of_ruin->expire();
       }
-      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
-      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+
+      // Any changes to Impending Ruin must also be made in rain_of_fire_t!
+      if ( shards_used > 0 )
       {
-        p()->procs.ritual_of_ruin->occur();
-        p()->buffs.herald_of_fire->trigger();
+        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+        if ( overflow > 0 )
+          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
       }
     }
   }
@@ -784,7 +804,7 @@ struct summon_infernal_t : public destruction_spell_t
 
     if ( p()->talents.rain_of_chaos->ok() )
     {
-      p()->buffs.rain_of_chaos->trigger();
+      p()->buffs.rain_of_chaos->extend_duration_or_trigger();
     }
   }
 
@@ -847,7 +867,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.herald_of_fire->check() )
+    if ( p()->buffs.ritual_of_ruin->check() )
       return 0.0;
 
     return destruction_spell_t::cost();      
@@ -855,25 +875,43 @@ struct rain_of_fire_t : public destruction_spell_t
 
   void execute() override
   {
+    int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
     if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
     {
-      if ( p()->buffs.herald_of_fire->check() )
+      if ( p()->buffs.ritual_of_ruin->check() )
       {
-        if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
+        if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
         {
-          p()->warlock_pet_list.aod_infernals.spawn( p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000, 1U );
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
+          if ( p()->warlock_pet_list.blasphemy.active_pet() )
+          {
+            p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
+          }
+          else
+          {
+            p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
+          }
+
+          if ( p()->talents.rain_of_chaos->ok() )
+          {
+            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
+          }
+
+          p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
-
-        p()->buffs.herald_of_fire->expire();
+        p()->buffs.ritual_of_ruin->expire();
       }
-      // As far as current testing shows, it is not possible to get a proc from a free cast RoF/CB via Ritual of Ruin
-      else if ( rng().roll( p()->sets->set( WARLOCK_DESTRUCTION, T28, B2 )->proc_chance() ) )
+
+      // Any changes to Impending Ruin must also be made in chaos_bolt_t!
+      if ( shards_used > 0 )
       {
-        p()->procs.ritual_of_ruin->occur();
-        p()->buffs.herald_of_chaos->trigger();
+        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+        if ( overflow > 0 )
+          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
       }
     }
 
@@ -1112,9 +1150,19 @@ void warlock_t::create_buffs_destruction()
           ->set_trigger_spell( legendary.madness_of_the_azjaqir );
 
   // Tier Sets
-  buffs.herald_of_fire = make_buff ( this, "herald_of_fire", find_spell ( 364348 ) );
+  buffs.impending_ruin = make_buff ( this, "impending_ruin", find_spell ( 364348 ) )
+                             ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) 
+                               {
+                                 if ( cur == b->max_stack() )
+                                 {
+                                   make_event( sim, 0_ms, [ this, b ] { 
+                                     buffs.ritual_of_ruin->trigger();
+                                     b->expire();
+                                     });
+                                 };
+                               });
 
-  buffs.herald_of_chaos = make_buff ( this, "herald_of_chaos", find_spell ( 364349 ) );
+  buffs.ritual_of_ruin = make_buff ( this, "ritual_of_ruin", find_spell ( 364349 ) );
 }
 void warlock_t::init_spells_destruction()
 {

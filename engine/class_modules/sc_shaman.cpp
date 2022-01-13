@@ -4559,7 +4559,45 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     return m;
   }
-};
+
+  void execute() override
+  {
+    shaman_spell_t::execute();
+
+    // TODO: check if this needs a guard against background effects (echoing shock, ascendance)
+    // For now background effects trigger the bonus
+    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
+    {
+      // duration extension
+      pet_t* pet = p()->get_active_elemental_pet();
+      if ( pet )
+      {
+        // yes, this is not a proper time value and has a different schema than effectN 3. Here 1 second has a value of
+        // 10
+        timespan_t extension = timespan_t::from_millis( p()->spell.t28_4pc_ele->effectN( 1 ).base_value() * 100.0 );
+
+        p()->buff.fireheart->extend_duration( p(), extension );
+        pet->adjust_duration( extension );
+        p()->buff.fire_elemental->extend_duration( p(), extension );
+
+        p()->proc.t28_4pc_ele_cd_extension->occur();
+      }
+
+      // CD reduction
+      if ( !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
+      {
+        // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value
+        // of 1
+        timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
+
+        p()->cooldown.storm_elemental->adjust( -1.0 * extension );
+        p()->cooldown.fire_elemental->adjust( -1.0 * extension );
+
+        p()->proc.t28_4pc_ele_cd_reduction->occur();
+      }
+    }
+  }
+ };
 
 struct flame_shock_spreader_t : public shaman_spell_t
 {
@@ -4961,8 +4999,10 @@ struct lava_burst_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     // TODO: check if this needs a guard against background effects (echoing shock, ascendance)
+    // For now background effects trigger the bonus
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
     {
+      // duration extension
       pet_t* pet = p()->get_active_elemental_pet();
       if ( pet )
       {
@@ -4974,6 +5014,19 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.fire_elemental->extend_duration( p(), extension );
 
         p()->proc.t28_4pc_ele_cd_extension->occur();
+      }
+
+      // CD reduction
+      if ( !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
+      {
+        // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value
+        // of 1
+        timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
+
+        p()->cooldown.storm_elemental->adjust( -1.0 * extension );
+        p()->cooldown.fire_elemental->adjust( -1.0 * extension );
+
+        p()->proc.t28_4pc_ele_cd_reduction->occur();
       }
     }
 
@@ -5526,17 +5579,6 @@ struct earthquake_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) && !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
-    {
-      // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value of 1
-      timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
-
-      p()->cooldown.storm_elemental->adjust( -1.0 * extension );
-      p()->cooldown.fire_elemental->adjust( -1.0 * extension );
-
-      p()->proc.t28_4pc_ele_cd_reduction->occur();
-    }
-
     make_event<ground_aoe_event_t>(
         *sim, p(),
         ground_aoe_params_t()
@@ -5697,17 +5739,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) && !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
-    {
-      // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value of 1
-      timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
-
-      p()->cooldown.storm_elemental->adjust( -1.0 * extension );
-      p()->cooldown.fire_elemental->adjust( -1.0 * extension );
-
-      p()->proc.t28_4pc_ele_cd_reduction->occur();
-    }
 
     // Echoed Earth Shock does not generate Surge of Power stacks
     if ( !is_echoed_spell() && p()->talent.surge_of_power->ok() )

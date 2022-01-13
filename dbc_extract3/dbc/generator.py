@@ -1724,11 +1724,15 @@ class SpellDataGenerator(DataGenerator):
           ( 339986, 3 ),    # Hidden Combusting Engine Debuff
           ( 324540, 0 ),    # Malefic Rapture damage
           ( 364322, 0 ),    # T28 - Calamitous Crescendo Buff
-          ( 364348, 0 ),    # T28 - Herald of Fire Buff
-          ( 364349, 0 ),    # T28 - Herald of Chaos Buff
+          ( 364348, 0 ),    # T28 - Impending Ruin Buff
+          ( 364349, 0 ),    # T28 - Ritual of Ruin Buff
           ( 364198, 0 ),    # T28 - Malicious Imp-Pact Summon
           ( 364261, 0 ),    # T28 - Malicious Imp Doombolt
           ( 364263, 0 ),    # T28 - Return Soul
+          ( 367679, 0 ),    # T28 - Summon Blasphemy
+          ( 367680, 0 ),    # T28 - Blasphemy
+          ( 367819, 0 ),    # T28 - Blasphemous Existence
+          ( 367831, 0 )    # T28 - Deliberate Corruption
         ),
 
         # Monk:
