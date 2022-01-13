@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, git build shadowlands 7ee24a0f, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13239,5 +13239,27 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : @spelldesc364399
 Tooltip          : Strength increased by $w1%.
+
+Name             : Harvest Time (id=367954) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : 8 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=912020)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : @spelldesc363560
+Tooltip          : Minion damage increased by $w1%.
 
 
