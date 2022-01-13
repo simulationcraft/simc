@@ -131,6 +131,17 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
 {
   std::string legendary_str;
 
+  auto add_to_str = [ & ]( const item_t& item, unsigned spell_id ) {
+    auto s_data = player.find_spell( spell_id );
+    if ( s_data->ok() )
+    {
+      legendary_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
+                                    report_decorators::decorated_spell_data( *player.sim, s_data ) );
+      return true;
+    }
+    return false;
+  };
+
   for ( slot_e i = SLOT_MIN; i < SLOT_MAX; i++ )
   {
     const item_t& item = player.items[ i ];
@@ -144,14 +155,8 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
       auto entry = runeforge_legendary_entry_t::find( id, player.dbc->ptr );
       if ( !entry.empty() )
       {
-        auto s_data = player.find_spell( entry.front().spell_id );
-        if ( s_data->ok() )
-        {
+        if ( add_to_str( item, entry.front().spell_id ) )
           found = true;
-          legendary_str +=
-              fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
-                           report_decorators::decorated_spell_data( *player.sim, s_data ) );
-        }
       }
     }
 
@@ -163,13 +168,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         auto entry = runeforge_legendary_entry_t::find_by_spellid( eff.spell_id, player.dbc->ptr );
         if ( !entry.empty() )
         {
-          auto s_data = player.find_spell( entry.front().spell_id );
-          if ( s_data->ok() )
-          {
-            legendary_str +=
-                fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
-                             report_decorators::decorated_spell_data( *player.sim, s_data ) );
-          }
+          add_to_str( item, entry.front().spell_id );
         }
       }
     }
