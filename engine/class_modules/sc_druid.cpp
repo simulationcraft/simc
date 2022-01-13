@@ -943,7 +943,7 @@ public:
   }
 
   template <typename T>
-  bool match_dot_id( action_t* a, std::vector<unsigned>& ids, std::vector<T*>& actions )
+  bool match_dot_id( action_t* a, std::vector<int>& ids, std::vector<T*>& actions )
   {
     auto matched = dynamic_cast<T*>( a );
     if ( matched )
@@ -959,7 +959,7 @@ public:
   template <typename T, typename U = T>
   void setup_dot_ids()
   {
-    std::vector<unsigned> ids;
+    std::vector<int> ids;
     std::tuple<std::vector<T*>, std::vector<U*>> actions;
     for ( const auto& a : action_list )
     {
@@ -3201,7 +3201,7 @@ struct feral_frenzy_t : public cat_attack_t
     }
 
     // dot damage is entirely overwritten by feral_frenzy_tick_t::base_ta()
-    double attack_tick_power_coefficient( const action_state_t* s ) const override
+    double attack_tick_power_coefficient( const action_state_t* ) const override
     {
       return 0.0;
     }
@@ -6991,7 +6991,8 @@ struct adaptive_swarm_t : public druid_spell_t
       parse_effect_period( data().effectN( 1 ) );
     }
 
-    swarm_target_t new_swarm_target( swarm_target_t exclude ) override
+    // TODO: add exclude functionality
+    swarm_target_t new_swarm_target( swarm_target_t /* exclude */) override
     {
       if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
         return player;

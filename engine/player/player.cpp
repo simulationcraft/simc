@@ -9914,8 +9914,8 @@ item_runeforge_t player_t::find_runeforge_legendary( util::string_view name, boo
   const item_t* item = nullptr;
   for ( const auto& i : items )
   {
-    if ( range::contains( i.parsed.bonus_id, entries.front().bonus_id ) ||
-         ( unity_bonus_id && range::contains( i.parsed.bonus_id, unity_bonus_id ) ) ||
+    if ( range::contains( i.parsed.bonus_id, as<int>( entries.front().bonus_id ) ) ||
+         ( unity_bonus_id && range::contains( i.parsed.bonus_id, as<int>( unity_bonus_id ) ) ) ||
          ( unity_spell_id && range::contains( i.parsed.data.effects, unity_spell_id, &item_effect_t::spell_id ) ) )
     {
       item = &i;
