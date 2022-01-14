@@ -571,8 +571,8 @@ public:
   struct actives_t
   {
     // General
-    heal_t* consume_soul_greater;
-    heal_t* consume_soul_lesser;
+    heal_t* consume_soul_greater = nullptr;
+    heal_t* consume_soul_lesser = nullptr;
     spell_t* immolation_aura = nullptr;
     spell_t* immolation_aura_initial = nullptr;
     spell_t* collective_anguish = nullptr;
@@ -1886,9 +1886,6 @@ struct chaos_nova_t : public demon_hunter_spell_t
 
 struct consume_magic_t : public demon_hunter_spell_t
 {
-  resource_e resource;
-  double resource_amount;
-
   consume_magic_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "consume_magic", p, p->spec.consume_magic, options_str )
   {
@@ -1997,7 +1994,6 @@ struct eye_beam_t : public demon_hunter_spell_t
     }
   };
 
-  eye_beam_tick_t* tick_damage;
   timespan_t trigger_delay;
 
   eye_beam_t( demon_hunter_t* p, util::string_view options_str )
@@ -2642,8 +2638,6 @@ struct immolation_aura_t : public demon_hunter_spell_t
     }
   };
 
-  immolation_aura_damage_t* initial_damage;
-
   immolation_aura_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "immolation_aura", p, p->spec.immolation_aura, options_str )
   {
@@ -2794,6 +2788,13 @@ struct metamorphosis_t : public demon_hunter_spell_t
 
 struct pick_up_fragment_t : public demon_hunter_spell_t
 {
+  enum class soul_fragment_select_mode
+  {
+    NEAREST,
+    NEWEST,
+    OLDEST,
+  };
+
   struct pick_up_event_t : public event_t
   {
     demon_hunter_t* dh;
@@ -2826,18 +2827,12 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   };
 
   std::vector<soul_fragment_t*>::iterator it;
-  enum soul_fragment_select_e
-  {
-    SOUL_FRAGMENT_SELECT_NEAREST,
-    SOUL_FRAGMENT_SELECT_NEWEST,
-    SOUL_FRAGMENT_SELECT_OLDEST,
-  };
-  soul_fragment_select_e select_mode;
+  soul_fragment_select_mode select_mode;
   soul_fragment type;
 
   pick_up_fragment_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_spell_t( "pick_up_fragment", p, spell_data_t::nil() ),
-      select_mode( SOUL_FRAGMENT_SELECT_OLDEST ),
+      select_mode( soul_fragment_select_mode::OLDEST ),
       type( soul_fragment::ANY )
   {
     std::string mode_str, type_str;
@@ -2858,15 +2853,15 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
   {
     if ( value == "close" || value == "near" || value == "closest" || value == "nearest" )
     {
-      select_mode = SOUL_FRAGMENT_SELECT_NEAREST;
+      select_mode = soul_fragment_select_mode::NEAREST;
     }
     else if ( value == "new" || value == "newest" )
     {
-      select_mode = SOUL_FRAGMENT_SELECT_NEWEST;
+      select_mode = soul_fragment_select_mode::NEWEST;
     }
     else if ( value == "old" || value == "oldest" )
     {
-      select_mode = SOUL_FRAGMENT_SELECT_OLDEST;
+      select_mode = soul_fragment_select_mode::OLDEST;
     }
     else if ( !value.empty() )
     {
@@ -2919,7 +2914,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
 
     switch ( select_mode )
     {
-      case SOUL_FRAGMENT_SELECT_NEAREST:
+      case soul_fragment_select_mode::NEAREST:
         candidate_value = timespan_t::max();
         for ( auto frag : p()->soul_fragments )
         {
@@ -2935,7 +2930,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         }
 
         break;
-      case SOUL_FRAGMENT_SELECT_NEWEST:
+      case soul_fragment_select_mode::NEWEST:
         candidate_value = timespan_t::min();
         for ( auto frag : p()->soul_fragments )
         {
@@ -2951,7 +2946,7 @@ struct pick_up_fragment_t : public demon_hunter_spell_t
         }
 
         break;
-      case SOUL_FRAGMENT_SELECT_OLDEST:
+      case soul_fragment_select_mode::OLDEST:
       default:
         candidate_value = timespan_t::max();
         for ( auto frag : p()->soul_fragments )
@@ -3324,16 +3319,16 @@ namespace attacks
 
   struct auto_attack_damage_t : public demon_hunter_attack_t
   {
-    enum status_e
+    enum class aa_contact
     {
-      MELEE_CONTACT,
-      LOST_CONTACT_CHANNEL,
-      LOST_CONTACT_RANGE,
+      MELEE,
+      LOST_CHANNEL,
+      LOST_RANGE,
     };
 
     struct status_t
     {
-      status_e main_hand, off_hand;
+      aa_contact main_hand, off_hand;
     } status;
 
     auto_attack_damage_t( util::string_view name, demon_hunter_t* p, weapon_t* w, const spell_data_t* s = spell_data_t::nil() )
@@ -3349,7 +3344,7 @@ namespace attacks
 
       affected_by.momentum.direct = true;
 
-      status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
+      status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
 
       if ( p->dual_wield() )
       {
@@ -3371,19 +3366,18 @@ namespace attacks
     {
       demon_hunter_attack_t::reset();
 
-      status.main_hand = status.off_hand = LOST_CONTACT_RANGE;
+      status.main_hand = status.off_hand = aa_contact::LOST_RANGE;
     }
 
     timespan_t execute_time() const override
     {
-      status_e s =
-        weapon->slot == SLOT_MAIN_HAND ? status.main_hand : status.off_hand;
+      aa_contact c = weapon->slot == SLOT_MAIN_HAND ? status.main_hand : status.off_hand;
 
-      switch ( s )
+      switch ( c )
       {
         // Start 500ms polling for being "back in range".
-        case LOST_CONTACT_CHANNEL:
-        case LOST_CONTACT_RANGE:
+        case aa_contact::LOST_CHANNEL:
+        case aa_contact::LOST_RANGE:
           return timespan_t::from_millis( 500 );
         default:
           return demon_hunter_attack_t::execute_time();
@@ -3417,26 +3411,26 @@ namespace attacks
       demon_hunter_attack_t::schedule_execute( s );
 
       if ( weapon->slot == SLOT_MAIN_HAND )
-        status.main_hand = MELEE_CONTACT;
+        status.main_hand = aa_contact::MELEE;
       else if ( weapon->slot == SLOT_OFF_HAND )
-        status.off_hand = MELEE_CONTACT;
+        status.off_hand = aa_contact::MELEE;
     }
 
     void execute() override
     {
       if ( p()->current.distance_to_move > 5 || p()->buff.out_of_range->check() )
       {
-        status_e s = LOST_CONTACT_RANGE;
+        aa_contact c = aa_contact::LOST_RANGE;
         p()->proc.delayed_aa_range->occur();
 
         if ( weapon->slot == SLOT_MAIN_HAND )
         {
-          status.main_hand = s;
+          status.main_hand = c;
           player->main_hand_attack->cancel();
         }
         else
         {
-          status.off_hand = s;
+          status.off_hand = c;
           player->off_hand_attack->cancel();
         }
         return;
@@ -3449,8 +3443,7 @@ namespace attacks
 struct auto_attack_t : public demon_hunter_attack_t
 {
   auto_attack_t( demon_hunter_t* p, util::string_view options_str )
-    : demon_hunter_attack_t( "auto_attack", p, spell_data_t::nil(),
-                             options_str )
+    : demon_hunter_attack_t( "auto_attack", p, spell_data_t::nil(), options_str )
   {
     range                   = 5;
     trigger_gcd             = timespan_t::zero();
@@ -4038,8 +4031,6 @@ struct felblade_t : public demon_hunter_attack_t
       gain = p->get_gain( "felblade" );
     }
   };
-
-  felblade_damage_t* damage;
 
   felblade_t( demon_hunter_t* p, util::string_view options_str )
     : demon_hunter_attack_t( "felblade", p, p->talent.felblade, options_str )
