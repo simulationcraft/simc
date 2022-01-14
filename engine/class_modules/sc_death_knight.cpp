@@ -906,14 +906,12 @@ public:
     proc_t* km_from_obliteration_fs; // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb; // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga; // Glacial Advance during Obliteration
-    proc_t* km_from_t28_2pc;         // T28 2pc on rune gain
 
     // Killing machine refreshed by
     proc_t* km_from_crit_aa_wasted;
     proc_t* km_from_obliteration_fs_wasted; // Frost Strike during Obliteration
     proc_t* km_from_obliteration_hb_wasted; // Howling Blast during Obliteration
     proc_t* km_from_obliteration_ga_wasted; // Glacial Advance during Obliteration
-    proc_t* km_from_t28_2pc_wasted;         // T28 2pc on rune gain
 
     // Runic corruption triggered by
     proc_t* pp_runic_corruption; // from pestilent pustules
@@ -1537,12 +1535,6 @@ inline void rune_t::fill_rune( gain_t* gain )
   // Update actor rune resources, so we can re-use a lot of the normal resource mechanisms that the
   // sim core offers
   runes -> dk -> resource_gain( RESOURCE_RUNE, 1, gain ? gain : runes -> dk -> gains.rune );
-
-  if ( runes -> dk -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
-  {
-    // TODO T28 Use spelldata for this, when it is available in january
-      runes -> dk -> trigger_killing_machine( 0.15, runes -> dk -> procs.km_from_t28_2pc, runes -> dk -> procs.km_from_t28_2pc_wasted );
-  }
 
   // Immediately update the state of the next regenerating rune, since rune_t::regen_rune presumes
   // that the internal state of each invidual rune is always consistent with the rune regeneration
@@ -5568,7 +5560,7 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
   glacial_advance_damage_tier28_4pc_t( util::string_view name, death_knight_t* p ) :
     glacial_advance_damage_t( name, p )
   {
-    //  Lookup GA rp cost from spelldata
+    //  Lookup GA rp cost from spelldata, we don't use the talent here, as we may not have ga talented
     ga_rp_cost = p -> find_spell( 194913 ) -> cost(POWER_RUNIC_POWER);
   }
 
@@ -5583,6 +5575,7 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
       p() -> replenish_rune( 1, p() -> gains.obliteration );
     }
 
+    // These two are normally called through the standard action, but since we call damage event directly, they need to be manually called
     p() -> buffs.icy_talons -> trigger();
     p() -> trigger_runic_empowerment( ga_rp_cost );
   }
@@ -6420,6 +6413,7 @@ struct remorseless_winter_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
+    debug_cast<death_knight_t*>( player ) -> buffs.arctic_assault -> expire();
   }
 };
 
@@ -6452,6 +6446,12 @@ struct remorseless_winter_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.remorseless_winter -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
+    {
+      printf("DEBUGME\n");
+      p() -> buffs.arctic_assault -> trigger();
+    }
   }
 };
 
@@ -7199,20 +7199,6 @@ struct vampiric_blood_t : public death_knight_spell_t
 
 // Buffs ====================================================================
 
-// TODO T28 No spell data for this buff yet, so implement custom
-struct arctic_assault_buff_t : public buff_t
-{
-  arctic_assault_buff_t( death_knight_t* p ) :
-    buff_t( p, "arctic_assault" )
-    {
-      refresh_behavior = buff_refresh_behavior::DURATION;
-      set_duration( timespan_t::from_seconds( 6 ) );
-      set_max_stack( 20 ); // This was randomly chosen
-      set_default_value( 0.02 );
-      add_invalidate( CACHE_STRENGTH );
-    }
-};
-
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
@@ -7836,12 +7822,6 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
   proc -> occur();
 
   buffs.killing_machine -> decrement();
-
-  // TODO T28
-  if ( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
-  {
-    buffs.arctic_assault -> trigger();
-  }
 
   if ( rng().roll( talent.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
@@ -9062,7 +9042,10 @@ void death_knight_t::create_buffs()
   buffs.swarming_mist = new swarming_mist_buff_t( this );
 
   // Tier 28
-  buffs.arctic_assault = new arctic_assault_buff_t( this );
+  buffs.arctic_assault = make_buff( this, "arctic_assault", find_spell( 364384 ) )
+    -> set_default_value_from_effect_type( A_MOD_CRIT_PERCENT )
+    -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+    -> add_invalidate( CACHE_CRIT_CHANCE );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9122,13 +9105,11 @@ void death_knight_t::init_procs()
   procs.km_from_obliteration_fs = get_proc( "Killing Machine: Frost Strike" );
   procs.km_from_obliteration_hb = get_proc( "Killing Machine: Howling Blast" );
   procs.km_from_obliteration_ga = get_proc( "Killing Machine: Glacial Advance" );
-  procs.km_from_t28_2pc         = get_proc( "Killing Machine: Tier28 2PC");
 
   procs.km_from_crit_aa_wasted         = get_proc( "Killing Machine wasted: Critical auto attacks" );
   procs.km_from_obliteration_fs_wasted = get_proc( "Killing Machine wasted: Frost Strike" );
   procs.km_from_obliteration_hb_wasted = get_proc( "Killing Machine wasted: Howling Blast" );
   procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
-  procs.km_from_t28_2pc_wasted         = get_proc( "Killing Machine wasted: Tier28 2PC" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
@@ -9352,8 +9333,6 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
 
     m *= 1.0 + buffs.unholy_pact -> value();
-
-    m *= 1.0 + buffs.arctic_assault -> stack_value();
   }
 
   else if ( attr == ATTR_STAMINA )
