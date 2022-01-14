@@ -2938,7 +2938,7 @@ struct single_target_event_t final : public event_t
 
 struct explosive_shot_munitions_t : explosive_shot_t
 {
-  explosive_shot_munitions_t( util::string_view n, hunter_t* p ) : explosive_shot_t( p, "" )
+  explosive_shot_munitions_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_t( p, "" )
   {
     background = dual = true;
   }

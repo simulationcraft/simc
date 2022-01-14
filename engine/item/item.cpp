@@ -515,22 +515,6 @@ unsigned item_t::item_level() const
          : parsed.item_level;
 }
 
-unsigned item_t::base_item_level() const
-{
-  if ( sim -> scale_to_itemlevel > 0 )
-    return sim -> scale_to_itemlevel;
-  else if ( parsed.item_level > 0 )
-  {
-    return parsed.item_level;
-  }
-  else if ( parsed.azerite_level > 0 )
-  {
-    return player -> dbc->azerite_item_level( parsed.azerite_level );
-  }
-  else
-    return parsed.data.level;
-}
-
 stat_e item_t::stat( size_t idx ) const
 {
   if ( idx >= std::size( parsed.data.stat_type_e ) )

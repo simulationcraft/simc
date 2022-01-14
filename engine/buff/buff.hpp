@@ -60,6 +60,7 @@ public:
   player_t* const player;
   const item_t* const item;
   const std::string name_str;
+  std::string name_str_reporting;
   const spell_data_t* s_data;
   const spell_data_t* s_data_reporting;
   player_t* const source;
@@ -108,6 +109,7 @@ public:
   buff_refresh_duration_callback_t refresh_duration_callback;
   buff_stack_behavior stack_behavior;
   buff_stack_change_callback_t stack_change_callback;
+  bool allow_precombat;
 
   // Ticking buff values
   unsigned current_tick;
@@ -304,6 +306,7 @@ public:
   static buff_t* find_expressable( util::span<buff_t* const>, util::string_view name, player_t* source = nullptr );
 
   const char* name() const { return name_str.c_str(); }
+  const char* name_reporting() const;
   util::string_view source_name() const;
   int max_stack() const { return _max_stack; }
   int initial_stack() const { return _initial_stack; }
@@ -359,6 +362,7 @@ public:
   buff_t* set_stack_change_callback( const buff_stack_change_callback_t& cb );
   buff_t* set_reverse_stack_count( int count );
   buff_t* set_stack_behavior( buff_stack_behavior b );
+  buff_t* set_allow_precombat( bool b );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
   virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );

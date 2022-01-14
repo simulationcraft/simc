@@ -1131,7 +1131,7 @@ void mistcaller_ocarina( special_effect_t& effect )
  */
 void unbound_changeling( special_effect_t& effect )
 {
-  auto stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
+  std::string_view stat_type = effect.player->sim->shadowlands_opts.unbound_changeling_stat_type;
   if ( stat_type == "all" )
     effect.spell_id = 330765;
   else if ( stat_type == "crit" )
@@ -2474,7 +2474,7 @@ void shadowed_orb_of_torment( special_effect_t& effect )
       if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time     = 2_s;  // base 2s channel for full effect
-        auto apl = player->precombat_action_list;
+        const auto& apl = player->precombat_action_list;
 
         auto it = range::find( apl, use_action );
         if ( it == apl.end() )
@@ -2781,7 +2781,7 @@ void soleahs_secret_technique( special_effect_t& effect )
   // Assuming you don't actually use this trinket during combat but rather beforehand
   effect.type = SPECIAL_EFFECT_EQUIP;
 
-  auto opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -2919,7 +2919,9 @@ void init_jaithys_the_prison_blade( special_effect_t& effect, int proc_id, int s
       buff =
           make_buff<stat_buff_t>( effect.player, "harsh_tutelage" + std::to_string( rank ),
                                   effect.player->find_spell( proc_id ) )
-              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) );
+              ->add_stat( STAT_STRENGTH, effect.player->find_spell( spell_id )->effectN( 2 ).average( effect.item ) )
+              ->set_refresh_duration_callback(
+                     []( const buff_t* b, timespan_t d ) { return std::min( b->remains() + d, 9_s ); } );
     }
     effect.custom_buff = buff;
   }
@@ -3409,7 +3411,8 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
                 }
               }
 
-              report_str += fmt::format( "<li>{} ({})</li>\n", report_decorators::decorated_spell_data( *player.sim, spell ), rank );
+              report_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n",
+                                         report_decorators::decorated_spell_data( *player.sim, spell ), rank );
             }
             break;
           }

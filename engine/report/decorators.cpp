@@ -155,12 +155,13 @@ public:
 
   std::string url_name() const override
   {
-    return util::encode_html( m_obj->data_reporting().id() ? m_obj->data_reporting().name_cstr() : m_obj->name() );
+    return util::encode_html( m_obj->data_reporting().id() ? m_obj->data_reporting().name_cstr()
+                                                           : m_obj->name_reporting() );
   }
 
   std::string token() const override
   {
-    return util::encode_html( m_obj->name() );
+    return util::encode_html( m_obj->name_reporting() );
   }
 };
 
@@ -293,21 +294,8 @@ public:
 
 class action_decorator_t : public spell_decorator_t<action_t>
 {
-  const stats_t* stat;
-
 public:
-  action_decorator_t( const action_t* obj, const stats_t* s = nullptr ) : spell_decorator_t<action_t>( obj ), stat( s )
-  {}
-
-  std::string token() const override
-  {
-    std::string token = spell_decorator_t<action_t>::token();
-
-    if ( stat && stat->prefer_name )
-      return util::encode_html( stat->name() );
-
-    return spell_decorator_t<action_t>::token();
-  }
+  action_decorator_t( const action_t* obj ) : spell_decorator_t<action_t>( obj ) {}
 };
 
 // Generic spell data decorator, supports player and item driven spell data
@@ -474,9 +462,9 @@ std::string decorated_buff( const buff_t& buff )
   return decorate( buff_decorator_t( &buff ) );
 }
 
-std::string decorated_action( const action_t& a, const stats_t* stat )
+std::string decorated_action( const action_t& a )
 {
-  return decorate( action_decorator_t( &a, stat ) );
+  return decorate( action_decorator_t( &a ) );
 }
 
 std::string decorated_spell_data( const sim_t& sim, const spell_data_t* spell )

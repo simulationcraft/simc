@@ -124,7 +124,7 @@ soul_fragment operator&( soul_fragment l, soul_fragment r )
   return static_cast<soul_fragment> ( static_cast<unsigned>( l ) & static_cast<unsigned>( r ) );
 }
 
-soul_fragment operator|( soul_fragment l, soul_fragment r )
+[[maybe_unused]] soul_fragment operator|( soul_fragment l, soul_fragment r )
 {
   return static_cast<soul_fragment> ( static_cast<unsigned>( l ) | static_cast<unsigned>( r ) );
 }
@@ -5053,7 +5053,7 @@ void demon_hunter_t::create_buffs()
     ->set_default_value( 0 )
     ->set_max_stack( 5 ) // Hard-coded, not in spell data
     ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int /*new_*/ ) {
       if ( b->at_max_stacks() )
       {
         // Gain is stored in spell 364134 but a server-side conditional aura (based on First Blood)

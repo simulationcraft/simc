@@ -342,7 +342,7 @@
       { "data_type": "H", "field": "unk_1" },
       { "data_type": "i", "field": "garr_talent_tree_type" },
       { "data_type": "i", "field": "unk_2" },
-      { "data_type": "b", "field": "feature_type" },
+      { "data_type": "B", "field": "feature_type" },
       { "data_type": "b", "field": "feature_rank" },
       { "data_type": "i", "field": "unk_4" }
     ]
@@ -350,6 +350,7 @@
   "GarrTalentRank": {
     "parent": "GarrTalent",
     "fields": [
+      { "data_type": "i", "field": "id" },
       { "data_type": "i", "field": "rank"    },
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "i", "field": "unk_0" },
@@ -415,6 +416,8 @@
       { "data_type": "I", "field": "duration" },
       { "data_type": "f", "field": "item_damage_modifier" },
       { "data_type": "I", "field": "bag_family" },
+      { "data_type": "i", "field": "start_quest" },
+      { "data_type": "i", "field": "id_lang" },
       { "data_type": "f", "field": "ranged_mod_range" },
       { "data_type": "f", "field": "stat_socket_mul", "elements": 10 },
       { "data_type": "i", "field": "stat_alloc", "elements": 10 },
@@ -442,7 +445,6 @@
       { "data_type": "H", "field": "area", "elements": 2 },
       { "data_type": "H", "field": "item_set" },
       { "data_type": "H", "field": "id_lock" },
-      { "data_type": "H", "field": "start_quest" },
       { "data_type": "H", "field": "page_text" },
       { "data_type": "H", "field": "delay" },
       { "data_type": "H", "field": "req_rep_faction" },
@@ -458,7 +460,6 @@
       { "data_type": "B", "field": "sheath" },
       { "data_type": "B", "field": "material" },
       { "data_type": "B", "field": "page_mat" },
-      { "data_type": "B", "field": "id_lang" },
       { "data_type": "B", "field": "bonding" },
       { "data_type": "B", "field": "damage_type" },
       { "data_type": "b", "field": "stat_type", "elements": 10 },
@@ -1240,7 +1241,7 @@
       { "data_type": "i", "field": "id_spell", "ref": "SpellName" },
       { "data_type": "B", "field": "item_class" },
       { "data_type": "I", "field": "mask_inv_type" },
-      { "data_type": "i", "field": "mask_sub_class" }
+      { "data_type": "I", "field": "mask_sub_class" }
     ]
   },
   "SpellFocusObject": {

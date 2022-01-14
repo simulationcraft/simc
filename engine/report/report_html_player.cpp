@@ -249,7 +249,7 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
   std::string name;
   if ( a )
   {
-    name = report_decorators::decorated_action( *a, &s );
+    name = report_decorators::decorated_action( *a );
   }
   else
   {
@@ -262,6 +262,12 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span" + class_attr + ">" + name + "</span>";
+}
+
+// returns the character level required for each talent row. first row == 0.
+unsigned talent_character_level( int row )
+{
+  return row == 0 ? 15 : 20 + row * 5;
 }
 
 // print_html_action_info =================================================
@@ -1904,10 +1910,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
     for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
     {
-      os.printf(
-          "<tr>\n"
-          "<th class=\"left\">%d</th>\n",
-          row == 6 ? 100 : ( row + 1 ) * 15 );
+      os.format( "<tr><th class=\"left\">{}</th>\n", talent_character_level( row ) );
 
       for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
       {
@@ -1928,14 +1931,8 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
             name += ")";
           }*/
         }
-        if ( p.talent_points->has_row_col( row, col ) )
-        {
-          os.printf( "<td class=\"filler\">%s</td>\n", name.c_str() );
-        }
-        else
-        {
-          os.printf( "<td>%s</td>\n", name.c_str() );
-        }
+
+        os.format( "<td class=\"nowrap{}\">{}</td>\n", p.talent_points->has_row_col( row, col ) ? " filler" : "", name );
       }
       os << "</tr>\n";
     }
@@ -3261,13 +3258,28 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
     }
     os << "</ul>\n";
 
+    if ( break_first )  // if first + second rows will overflow past stack rows
+    {
+      os << "</div>\n"  // Close first column and open second column
+          << "<div>\n";
+    }
+
+    if ( stat_buff )
+    {
+      os << "<h4>Stat Details</h4>\n"
+          << "<ul>\n";
+      for ( const auto& stat : stat_buff->stats )
+      {
+        os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
+                    "<li><span class=\"label\">amount:</span>%.2f</li>\n",
+                    util::stat_type_string( stat.stat ),
+                    stat.amount );
+      }
+      os << "</ul>\n";
+    }
+
     if ( !constant_buffs )
     {
-      if ( break_first )  // if first + second rows will overflow past stack rows
-      {
-        os << "</div>\n"  // Close first column and open second column
-           << "<div>\n";
-      }
 
       if ( b.rppm )
       {
@@ -3280,20 +3292,6 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
                    util::rppm_scaling_string( b.rppm->get_scaling() ).c_str(),
                    b.rppm->get_frequency(),
                    b.rppm->get_modifier() );
-      }
-
-      if ( stat_buff )
-      {
-        os << "<h4>Stat Details</h4>\n"
-           << "<ul>\n";
-        for ( const auto& stat : stat_buff->stats )
-        {
-          os.printf( "<li><span class=\"label\">stat:</span>%s</li>\n"
-                     "<li><span class=\"label\">amount:</span>%.2f</li>\n",
-                     util::stat_type_string( stat.stat ),
-                     stat.amount );
-        }
-        os << "</ul>\n";
       }
 
       if ( absorb_buff )
@@ -3854,32 +3852,30 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
   // Spec and gear
   if ( !p.is_pet() )
   {
-    os << "<table class=\"sc\">\n";
+    os << "<table class=\"sc spec\">\n";
+
     if ( !p.origin_str.empty() )
     {
-      std::string origin_url = util::encode_html( p.origin_str );
-      os.printf( "<tr class=\"left\">\n"
-                 "<th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
-                 "<td><a href=\"%s\" class=\"ext\">%s</a></td>\n"
-                 "</tr>\n",
-                 p.origin_str.c_str(),
-                 origin_url.c_str() );
+      os.format( "<tr class=\"left\"><th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
+                 "<td><a href=\"{}\" class=\"ext\">{}</a></td></tr>\n",
+                 p.origin_str, util::encode_html( p.origin_str ) );
     }
 
     if ( !p.talents_str.empty() )
     {
-      os << "<tr class=\"left\">\n"
-         << "<th>Talents</th>\n"
-         << "<td><ul class=\"float\">\n";
-      static constexpr std::array<unsigned, MAX_TALENT_ROWS> row_level {{
-        15, 25, 30, 35, 40, 45, 50
-      }};
+      std::string url_string = p.talents_str;
+      if ( !util::str_in_str_ci( url_string, "http" ) )
+        url_string = util::create_blizzard_talent_url( p );
+
+      os.format( "<tr class=\"left\"><th><a href=\"{}\" class=\"ext\">Talents</a></th><td><ul class=\"float\">\n",
+                 util::encode_html( url_string ) );
+
       for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
       {
         const int col = p.talent_points->choice( row );
         if ( col < 0 )
         {
-          os.format( "<li><strong>{}</strong>:&#160;None</li>\n", row_level[ row ] );
+          os.format( "<li class=\"nowrap\"><strong>{}</strong>: None</li>\n", talent_character_level( row ) );
           continue;
         }
 
@@ -3891,17 +3887,10 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
           else if ( t->name_cstr() )
             name = util::encode_html( t->name_cstr() );
         }
-        os.format( "<li><strong>{}</strong>:&#160;{}</li>\n", row_level[ row ], name );
+        os.format( "<li class=\"nowrap\"><strong>{}</strong>: {}</li>\n", talent_character_level( row ), name );
       }
-      std::string url_string = p.talents_str;
-      if ( !util::str_in_str_ci( url_string, "http" ) )
-        url_string = util::create_blizzard_talent_url( p );
 
-      std::string enc_url = util::encode_html( url_string );
-      os.printf( "<li><a href=\"%s\" class=\"ext\">Talent Calculator</a></li>\n", enc_url.c_str() );
-
-      os << "</ul></td>\n";
-      os << "</tr>\n";
+      os << "</ul></td></tr>\n";
     }
 
     // Set Bonuses
@@ -3917,18 +3906,19 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
 
         for ( auto bonus : bonuses )
         {
-          if ( curr_tier != bonus->enum_id )
+          auto enum_id = as<int>( bonus->enum_id );
+          if ( curr_tier != enum_id )
           {
             if ( curr_tier != set_bonus_type_e::SET_BONUS_NONE )
               os << "</ul></td></tr>\n<tr class=\"left\"><th></th><td><ul class=\"float\">\n";
 
-            fmt::print( os, "<li>{}</li>\n", report_decorators::decorated_set( sim, *bonus ) );
+            os.format( "<li class=\"nowrap\">{}</li>\n", report_decorators::decorated_set( sim, *bonus ) );
 
-            curr_tier = bonus->enum_id;
+            curr_tier = enum_id;
           }
 
-          fmt::print( os, "<li>{} ({}pc)</li>\n",
-                      report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus );
+          os.format( "<li class=\"nowrap\">{} ({}pc)</li>\n",
+                     report_decorators::decorated_spell_data( sim, p.find_spell( bonus->spell_id ) ), bonus->bonus );
         }
 
         os << "</ul></td></tr>\n";
@@ -3971,7 +3961,7 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
         if ( p.profession[ i ] <= 0 )
           continue;
 
-        os << "<li>" << util::profession_type_string( i ) << ": " << p.profession[ i ] << "</li>\n";
+        os.format( "<li class=\"nowrap\">{}: {}</li>\n", util::profession_type_string( i ), p.profession[ i ] );
       }
       os << "</ul>\n"
          << "</td>\n"

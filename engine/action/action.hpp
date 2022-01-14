@@ -52,6 +52,7 @@ public:
   sim_t* sim;
   const action_e type;
   std::string name_str;
+  std::string name_str_reporting;
   player_t* const player;
   player_t* target;
 
@@ -593,6 +594,8 @@ public:
 
   const char* name() const
   { return name_str.c_str(); }
+
+  const char* name_reporting() const;
 
   size_t num_travel_events() const
   { return travel_events.size(); }

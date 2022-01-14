@@ -12937,6 +12937,7 @@ Class            : Shaman
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Triggered by     : Splintered Elements (364736)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13015,7 +13016,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
 #3 (id=903219)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
-Description      : Casting Lava Burst extends the duration of your $?s192249[Storm Elemental][Fire Elemental] by ${$s1/10}.1 sec. If your $?s192249[Storm Elemental][Fire Elemental] is not active, spending Maelstrom has a $s2% chance to reduce its remaining cooldown by $s3 sec instead.
+Description      : Casting Lava Burst extends the duration of your $?s192249[Storm Elemental][Fire Elemental] by ${$s1/10}.1 sec. If your $?s192249[Storm Elemental][Fire Elemental] is not active, Lava Burst has a $s2% chance to reduce its remaining cooldown by $s3 sec instead.
 
 Name             : Heal the Soul (id=363672) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -13124,6 +13125,27 @@ Effects          :
                    Family Flags: 44, 86
 Description      : $@spelldesc364472
 Tooltip          : Gaining Lava Surge every $t1 sec. Lava Burst deals $w2% additional damage.
+
+Name             : Elemental Conduit (id=364734) [Spell Family (11), Passive] 
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
+Triggered by     : Unity (364738)
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Can Proc From Procs (122)
+Effects          :
+#1 (id=904997)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 356250 | Target: Self (1)
+Description      : $@spelldesc356250
 
 Name             : Heal the Soul (id=366779) [Spell Family (11)] 
 Class            : Shaman

@@ -315,10 +315,11 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p )
 
 action_t::action_t( action_e ty, util::string_view token, player_t* p, const spell_data_t* s )
   : s_data( s ? s : spell_data_t::nil() ),
-    s_data_reporting(spell_data_t::nil()),
+    s_data_reporting( spell_data_t::nil() ),
     sim( p->sim ),
     type( ty ),
     name_str( util::tokenize_fn( token ) ),
+    name_str_reporting(),
     player( p ),
     target( p->target ),
     item(),
@@ -379,7 +380,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     ability_lag(),
     ability_lag_stddev(),
     min_gcd(),
-    gcd_type(gcd_haste_type::NONE ),
+    gcd_type( gcd_haste_type::NONE ),
     trigger_gcd( p->base_gcd ),
     range( -1.0 ),
     radius( -1.0 ),
@@ -455,7 +456,7 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     starved_proc(),
     queue_failed_proc(),
     total_executions(),
-    line_cooldown( new cooldown_t("line_cd", *p) ),
+    line_cooldown( new cooldown_t( "line_cd", *p ) ),
     signature(),
     execute_state(),
     pre_execute_state(),
@@ -4286,19 +4287,22 @@ dot_t* action_t::get_dot( player_t* t )
   return dot;
 }
 
-
 // return s_data_reporting if available, otherwise fallback to s_data
-
 const spell_data_t& action_t::data_reporting() const
 {
-  if (s_data_reporting == spell_data_t::nil())
-  {
-    return (*s_data);
-  }
+  if ( s_data_reporting == spell_data_t::nil() )
+    return ( *s_data );
   else
-  {
-    return (*s_data_reporting);
-  }
+    return ( *s_data_reporting );
+}
+
+// returns name_str_reporting if available, otherwise fallback to name_str
+const char* action_t::name_reporting() const
+{
+  if ( name_str_reporting.empty() )
+    return name_str.c_str();
+  else
+    return name_str_reporting.c_str();
 }
 
 dot_t* action_t::find_dot( player_t* t ) const

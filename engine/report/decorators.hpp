@@ -7,7 +7,6 @@
 
 #include "config.hpp"
 #include "util/string_view.hpp"
-#include "player/stats.hpp"
 
 #include <string>
 
@@ -32,7 +31,7 @@ std::string decorated_spell_name( const sim_t& sim, const spell_data_t& spell,
 std::string decorated_item_name( const item_t* item );
 std::string decorate_html_string( util::string_view value, const color::rgb& color );
 std::string decorated_buff( const buff_t& buff );
-std::string decorated_action( const action_t& a, const stats_t* stat = nullptr );
+std::string decorated_action( const action_t& a );
 std::string decorated_spell_data( const sim_t& sim, const spell_data_t* spell );
 std::string decorated_spell_data_item( const sim_t& sim, const spell_data_t* spell, const item_t& item );
 std::string decorated_item( const item_t& item );

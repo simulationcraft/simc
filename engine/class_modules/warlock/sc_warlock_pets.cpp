@@ -369,9 +369,9 @@ namespace demonology
 felguard_pet_t::felguard_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_FELGUARD, name != "felguard" ),
     soul_strike( nullptr ),
+    demonic_strength_executes( 0 ),
     min_energy_threshold( find_spell( 89751 )->cost( POWER_ENERGY ) ),
-    max_energy_threshold( 100 ),
-    demonic_strength_executes( 0 )
+    max_energy_threshold( 100 )
 {
   action_list_str = "travel";
   action_list_str += "/demonic_strength_felstorm";
@@ -836,7 +836,7 @@ void wild_imp_pet_t::demise()
 
 malicious_imp_pet_t::malicious_imp_pet_t( warlock_t* owner )
   : warlock_pet_t( owner , "malicious_imp", PET_MALICIOUS_IMP ),
-  firebolt( nullptr ), doombolt( nullptr ), spite( nullptr ), return_soul( nullptr ),
+  firebolt( nullptr ), doombolt( nullptr ), spite( nullptr ),
   imploded( false )
 {
   resource_regeneration = regen_type::DISABLED;
@@ -853,22 +853,6 @@ struct spite_t : warlock_pet_spell_t
   spite_t( warlock_pet_t* p ) : warlock_pet_spell_t( "spite", p, p->find_spell( 364262 ) )
   {
     aoe=-1;
-  }
-};
-
-struct return_soul_t : warlock_pet_spell_t
-{
-  return_soul_t( warlock_pet_t* p ) : warlock_pet_spell_t( "return_soul", p, p->find_spell( 364263 ) )
-  {
-    harmful = false;
-    background = true;
-  }
-
-  void execute() override
-  {
-    warlock_pet_spell_t::execute();
-
-    p()->o()->resource_gain( RESOURCE_SOUL_SHARD, data().effectN( 1 ).base_value() / 10, p()->o()->gains.return_soul );
   }
 };
 
@@ -907,7 +891,6 @@ void malicious_imp_pet_t::create_actions()
   firebolt = new fel_firebolt_t( this );
   doombolt = new warlock_pet_spell_t( "doombolt", this, find_spell( 364261 ) );
   spite = new spite_t( this );
-  return_soul = new return_soul_t( this );
 }
 
 void malicious_imp_pet_t::schedule_ready( timespan_t, bool )
@@ -945,8 +928,6 @@ void malicious_imp_pet_t::demise()
     if ( expiration )
       event_t::cancel( expiration );
 
-    // Soul Shard is returned on expiration, regardless of method
-    return_soul->execute();
   }
 
   warlock_pet_t::demise();
@@ -1782,6 +1763,30 @@ void infernal_t::demise()
 }
 
 /// Infernal End
+
+/// Blasphemy Begin
+blasphemy_t::blasphemy_t( warlock_t* owner, util::string_view name )
+  : infernal_t( owner, name )
+{
+}
+
+struct blasphemous_existence_t : public warlock_pet_spell_t
+{
+  blasphemous_existence_t( warlock_pet_t* p ) : warlock_pet_spell_t( "blasphemous_existence", p, p->find_spell( 367819 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+};
+
+void blasphemy_t::init_base_stats()
+{
+  infernal_t::init_base_stats();
+
+  blasphemous_existence = new blasphemous_existence_t( this );
+}
+
+/// Blasphemy End
 
 }  // namespace destruction
 

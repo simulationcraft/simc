@@ -16,6 +16,7 @@
 #include "player/player.hpp"
 #include "sim/sim.hpp"
 #include <cctype>
+#include <cmath>
 
 namespace {
   template <item_subclass_consumable CLASS>
@@ -427,7 +428,7 @@ stat_pair_t item_database::item_enchantment_effect_stats( player_t* player,
     {
       unsigned level = player -> level();
 
-      if ( static_cast< unsigned >( level ) > enchantment.max_scaling_level )
+      if ( enchantment.max_scaling_level != 0 && static_cast< unsigned >( level ) > enchantment.max_scaling_level )
         level = enchantment.max_scaling_level;
 
       double budget = player -> dbc->spell_scaling( static_cast< player_e >( enchantment.id_scaling ), level );
@@ -521,14 +522,14 @@ int item_database::scaled_stat( const item_t& item, const dbc_t& dbc, size_t idx
   if ( item.parsed.data.stat_alloc[ idx ] > 0 /* && orig_budget > 0 */ && item_budget > 0 )
   {
     // Socket penalty is supposedly gone in Warlords of Draenor, but it really does not seem so in
-    // the latest alpha.  NOTENOTENOTENOTE: Item socket cost penalty multiplier _seems_ to be based
-    // on _BASE_ itemlevel, not the upgraded one
+    // the latest alpha.
     auto socket_mul = []( const dbc_item_data_t& item, size_t idx ) {
       if ( idx < item._dbc_stats_count )
         return item._dbc_stats[ idx ].socket_mul;
       return 0.0f;
     };
-    double v_socket_penalty = socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( item.base_item_level() );
+    // Socket penalty is rounded using banker's rounding (X.5 is rounded to the nearest even integer).
+    double v_socket_penalty = std::nearbyint( socket_mul( item.parsed.data, idx ) * dbc.item_socket_cost( new_ilevel ) );
     double v_raw = item.parsed.data.stat_alloc[ idx ] * item_budget * 0.0001 - v_socket_penalty;
     auto stat_type = static_cast<item_mod_type>( item.parsed.data.stat_type_e[ idx ] );
 
@@ -1394,7 +1395,7 @@ std::string dbc::bonus_ids_str( const dbc_t& dbc )
 
     if ( !item_effects.empty() )
     {
-      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
+      fields.emplace_back( fmt::format( "effects={{ {} }}", item_effects ) );
     }
 
     if ( !item_mod_stat.empty() )

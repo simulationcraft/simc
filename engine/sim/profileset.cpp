@@ -7,10 +7,7 @@
 #include "dbc/dbc.hpp"
 #include "sim_control.hpp"
 #include "sim.hpp"
-// maybe move profileset reporting to a separate file in report/
 #include "report/reports.hpp"
-#include "report/color.hpp"
-#include "report/highchart.hpp"
 #include "player/player.hpp"
 #include "player/player_talent_points.hpp"
 #include "item/item.hpp"
@@ -174,92 +171,6 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
   parent -> event_mgr.total_events_processed += profile_sim -> event_mgr.total_events_processed;
 
   set.cleanup_options();
-}
-
-void insert_data( highchart::bar_chart_t& chart,
-                  const std::string& name,
-                  const color::rgb c,
-                  const profileset::statistical_data_t& data,
-                  bool baseline,
-                  double baseline_value,
-                  bool mean = false )
-{
-  std::string data_idx_str = mean ? "__data.1." : "__data.0.";
-  js::sc_js_t entry;
-
-  if ( baseline )
-  {
-    entry.set( "color", "#AA0000" );
-    entry.set( "dataLabels.color", "#AA0000" );
-    entry.set( "dataLabels.style.fontWeight", "bold" );
-  }
-
-  double data_value = mean ? data.mean : data.median;
-
-  entry.set( "name", name );
-  entry.set( "reldiff", baseline_value > 0 ? (data_value / baseline_value - 1.0) * 100 : 0);
-  entry.set( "y", util::round( data_value ) );
-
-  chart.add( data_idx_str + "series.0.data", entry );
-
-  if ( !mean )
-  {
-    js::sc_js_t boxplot_entry;
-    boxplot_entry.set( "name", name );
-    boxplot_entry.set( "low", data.min );
-    boxplot_entry.set( "q1", data.first_quartile );
-    boxplot_entry.set( "median", data.median );
-    boxplot_entry.set( "mean", data.mean );
-    boxplot_entry.set( "q3", data.third_quartile );
-    boxplot_entry.set( "high", data.max );
-
-    if ( baseline )
-    {
-      color::rgb c( "AA0000" );
-      boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
-      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-    }
-    else
-    {
-      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
-    }
-
-    chart.add( data_idx_str + "series.1.data", boxplot_entry );
-  }
-}
-
-void populate_chart_data( highchart::bar_chart_t& profileset,
-                          size_t base_offset,
-                          size_t max_chart_entries,
-                          std::vector<const profileset::profile_set_t*> results,
-                          player_t* const baseline,
-                          scale_metric_e metric,
-                          const color::rgb c,
-                          bool mean = false )
-{
-    // Baseline data, insert into the correct position in the for loop below
-    auto baseline_data = profileset::metric_data( baseline, metric );
-    auto baseline_value = mean ? baseline_data.mean : baseline_data.median;
-    bool inserted = false;
-    for ( size_t i = base_offset, end = std::min( base_offset + max_chart_entries, results.size() ); i < end; ++i )
-    {
-      const auto set = results[ i ];
-      const auto& data = set->result( metric );
-
-      if ( !inserted && ( mean ? data.mean() : data.median() ) <= baseline_value )
-      {
-        insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
-        inserted = true;
-      }
-
-      insert_data( profileset, util::encode_html( set->name() ), c, set->result().statistical_data(), false,
-                   baseline_value, mean );
-    }
-
-    if ( !inserted )
-    {
-      insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
-    }
 }
 
 // Figure out if the option is the beginning of a player-scope option
@@ -974,44 +885,9 @@ void profilesets_t::output_progressbar( const sim_t* parent ) const
   std::fflush( stdout );
 }
 
-void profilesets_t::output_text( const sim_t& sim, std::ostream& out ) const
+std::vector<const profile_set_t*> profilesets_t::generate_sorted_profilesets( bool mean ) const
 {
-  if ( m_profilesets.empty() )
-  {
-    return;
-  }
-
-  fmt::print( out, "\n\nProfilesets (median {:s}):\n",
-    util::scale_metric_type_string( sim.profileset_metric.front() ) );
-
-  std::vector<const profile_set_t*> results;
-  generate_sorted_profilesets( results );
-
-  range::for_each( results, [ &out ]( const profile_set_t* profileset ) {
-      fmt::print( out, "    {:-10.3f} : {:s}\n",
-      profileset -> result().median(), profileset -> name() );
-  } );
-}
-
-void profilesets_t::output_html( const sim_t& sim, std::ostream& out ) const
-{
-  if ( m_profilesets.empty() )
-  {
-    return;
-  }
-
-  out << "<div class=\"section\">\n";
-  out << "<h2 class=\"toggle open\">Profile sets</h2>\n";
-  out << "<div class=\"toggle-content\">\n";
-
-  generate_chart( sim, out );
-
-  out << "</div>";
-  out << "</div>";
-}
-
-void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t*>& out, bool mean ) const
-{
+  std::vector<const profile_set_t*> out;
   range::transform( m_profilesets, std::back_inserter( out ), []( const profileset_entry_t& p ) {
     return p.get();
   } );
@@ -1027,125 +903,7 @@ void profilesets_t::generate_sorted_profilesets( std::vector<const profile_set_t
 
     return lv > rv;
   } );
-}
-
-bool profilesets_t::generate_chart( const sim_t& sim, std::ostream& out ) const
-{
-  size_t chart_id = 0;
-  const auto baseline = sim.player_no_pet_list.data().front();
-
-  // Bar color
-  const auto& c = color::class_color( sim.player_no_pet_list.data().front() -> type );
-  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
-
-  std::vector<const profile_set_t*> results;
-  std::vector<const profile_set_t*> results_mean;
-  generate_sorted_profilesets( results );
-  generate_sorted_profilesets( results_mean, true );
-  if ( results.size() != results_mean.size() )
-  {
-    const_cast<sim_t&>( sim ).errorf( "Entry count mismatch between Median chart (%d) and Mean chart (%d)",
-                                      results.size(), results_mean.size() );
-  }
-
-  while ( chart_id * MAX_CHART_ENTRIES < m_profilesets.size() )
-  {
-    highchart::bar_chart_t profileset( "profileset-" + util::to_string( chart_id ), sim );
-
-    auto base_offset = chart_id * MAX_CHART_ENTRIES;
-
-    int data_label_width = sim.chart_show_relative_difference ? 140 : 80;
-    int y_title_x = sim.chart_show_relative_difference ? -110 : -90;
-    std::string baseline_str = "<br/><span style=\"color:#A00;\">Baseline in red</span>";
-
-    profileset.set( "__current", 0 );  // the current chart's __data index
-    profileset.set( "__data.0.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
-    profileset.set( "__data.0.series.1.type", "boxplot" );
-    profileset.set( "__data.0.series.1.name", chart_name );
-    profileset.set( "__data.0.title.text", "Median " + chart_name );
-    profileset.set( "__data.0.subtitle.text", "(Click title for Average)" + baseline_str );
-    profileset.set( "__data.1.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
-    profileset.set( "__data.1.title.text", "Average " + chart_name );
-    profileset.set( "__data.1.subtitle.text", "(Click title for Median)" + baseline_str );
-    profileset.set( "yAxis.gridLineWidth", 0 );
-    profileset.set( "xAxis.offset", data_label_width );
-    profileset.set_yaxis_title( chart_name );
-    profileset.set( "yAxis.title.x", y_title_x );
-    profileset.width_ = 1150;
-    profileset.height_ = 24 * std::min( as<size_t>( MAX_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
-
-    profileset.add( "colors", c.str() );
-    profileset.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
-
-    profileset.set( "plotOptions.series.animation", false );
-
-    profileset.set( "plotOptions.boxplot.whiskerLength", "85%" );
-    profileset.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
-    profileset.set( "plotOptions.boxplot.medianWidth", 1 );
-    profileset.set( "plotOptions.boxplot.pointWidth", 18 );
-    profileset.set( "plotOptions.boxplot.tooltip.pointFormat",
-      "Maximum: {point.high}<br/>"
-      "Upper quartile: {point.q3}<br/>"
-      "Mean: {point.mean:,.1f}<br/>"
-      "Median: {point.median}<br/>"
-      "Lower quartile: {point.q1}<br/>"
-      "Minimum: {point.low}<br/>"
-    );
-
-    profileset.set( "plotOptions.bar.dataLabels.crop", false );
-    profileset.set( "plotOptions.bar.dataLabels.overflow", "none" );
-    profileset.set( "plotOptions.bar.dataLabels.inside", true );
-    profileset.set( "plotOptions.bar.dataLabels.enabled", true );
-    profileset.set( "plotOptions.bar.dataLabels.align", "left" );
-    profileset.set( "plotOptions.bar.dataLabels.shadow", false );
-    profileset.set( "plotOptions.bar.dataLabels.x", -data_label_width );
-    profileset.set( "plotOptions.bar.dataLabels.color", c.str() );
-    profileset.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
-    profileset.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
-    profileset.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
-    profileset.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
-
-    profileset.set( "xAxis.labels.style.color", c.str() );
-    profileset.set( "xAxis.labels.style.whiteSpace", "nowrap" );
-    profileset.set( "xAxis.labels.style.fontSize", "10pt" );
-    profileset.set( "xAxis.labels.padding", 2 );
-    profileset.set( "xAxis.lineColor", c.str() );
-
-    // Custom formatter for X axis so we can get baseline colored different
-
-    // All attempts to escape the apostrophe failed, the JSON library gets
-    // in our way. Just remove them.
-    std::string name = util::encode_html( baseline->name_str );
-    util::replace_all( name, "'", "" );
-
-    std::string functor = "function () {";
-    functor += "  if (this.value === '" + name + "') {";
-    functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
-    functor += "  }";
-    functor += "  else {";
-    functor += "    return this.value;";
-    functor += "  }";
-    functor += "}";
-
-    profileset.set( "xAxis.labels.formatter", functor );
-    profileset.value( "xAxis.labels.formatter" ).SetRawOutput( true );
-
-    profileset.set( "chart.events.load", "setup_cycle_chart" );
-    profileset.value( "chart.events.load" ).SetRawOutput( true );
-
-    if ( sim.chart_show_relative_difference ) {
-        profileset.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)");
-    }
-
-    populate_chart_data( profileset, base_offset, MAX_CHART_ENTRIES, results, baseline, sim.profileset_metric.front(), c );
-    populate_chart_data(profileset, base_offset, MAX_CHART_ENTRIES, results_mean, baseline, sim.profileset_metric.front(), c, true);
-
-    out << profileset.to_string();
-    ++chart_id;
-//    inserted = false;
-  }
-
-  return true;
+  return out;
 }
 
 size_t profilesets_t::n_profilesets() const
@@ -1373,62 +1131,6 @@ void save_output_data( profile_set_t& profileset, const player_t* parent_player,
 
     profileset.output_data().corruption( buffed_stats.corruption );
     profileset.output_data().corruption_resistance( buffed_stats.corruption_resistance );
-  }
-}
-
-void fetch_output_data( const profile_output_data_t& output_data, js::JsonOutput& ovr )
-{
-  if ( output_data.race() != RACE_NONE )
-  {
-    ovr[ "race" ] = util::race_type_string( output_data.race() );
-  }
-  if ( ! output_data.talents().empty() )
-  {
-    const auto& talents = output_data.talents();
-    auto ovr_talents = ovr[ "talents" ].make_array();
-    for (auto talent : talents)
-    {
-       auto ovr_talent = ovr_talents.add();
-      ovr_talent[ "tier"     ] = talent -> row();
-      ovr_talent[ "id"       ] = talent -> id();
-      ovr_talent[ "spell_id" ] = talent -> spell_id();
-      ovr_talent[ "name"     ] = talent -> name_cstr();
-    }
-  }
-  if ( !output_data.gear().empty() ) {
-    const auto& gear = output_data.gear();
-    auto ovr_gear = ovr[ "gear" ];
-    for ( const auto& item : gear )
-    {
-       auto ovr_slot = ovr_gear[ item.slot_name() ];
-      ovr_slot[ "item_id"    ] = item.item_id();
-      ovr_slot[ "item_level" ] = item.item_level();
-    }
-  }
-  if ( output_data.agility() ) {
-    ovr[ "stats" ][ "stamina" ] = output_data.stamina();
-    ovr[ "stats" ][ "agility" ] = output_data.agility();
-    ovr[ "stats" ][ "intellect" ] = output_data.strength();
-    ovr[ "stats" ][ "strength" ] = output_data.intellect();
-
-    ovr[ "stats" ][ "crit_rating" ] = output_data.crit_rating();
-    ovr[ "stats" ][ "crit_pct" ] = output_data.crit_pct();
-    ovr[ "stats" ][ "haste_rating" ] = output_data.haste_rating();
-    ovr[ "stats" ][ "haste_pct" ] = output_data.haste_pct();
-    ovr[ "stats" ][ "mastery_rating" ] = output_data.mastery_rating();
-    ovr[ "stats" ][ "mastery_pct" ] = output_data.mastery_pct();
-    ovr[ "stats" ][ "versatility_rating" ] = output_data.versatility_rating();
-    ovr[ "stats" ][ "versatility_pct" ] = output_data.versatility_pct();
-
-    ovr[ "stats" ][ "avoidance_rating" ] = output_data.avoidance_rating();
-    ovr[ "stats" ][ "avoidance_pct" ] = output_data.avoidance_pct();
-    ovr[ "stats" ][ "leech_rating" ] = output_data.leech_rating();
-    ovr[ "stats" ][ "leech_pct" ] = output_data.leech_pct();
-    ovr[ "stats" ][ "speed_rating" ] = output_data.speed_rating();
-    ovr[ "stats" ][ "speed_pct" ] = output_data.speed_pct();
-
-    ovr[ "stats" ][ "corruption" ] = output_data.corruption();
-    ovr[ "stats" ][ "corruption_resistance" ] = output_data.corruption_resistance();
   }
 }
 

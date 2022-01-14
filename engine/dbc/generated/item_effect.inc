@@ -1,4 +1,4 @@
-// Item effects, wow build 9.1.5.41359
+// Item effects, wow build 9.1.5.41793
 static const std::array<item_effect_t, 7699> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7673,7 +7673,7 @@ static const std::array<item_effect_t, 7699> __item_effect_data { {
   { 139278, 352081, 187552,   0,   1,    0,      -1,      -1 }, // Passable Credentials
   { 139279, 352115, 187552,   1,   0,    0,      -1,      -1 }, // Flimsy Disguise
   { 139280, 358675, 187552,   2,   1,    0,      -1,      -1 }, // [DNT] Update Interactions (Self) (Aura Applied/Removed)
-  { 139282, 358761, 187560,   1,   0,    0,      -1,      -1 }, // Shine and Pine
+  { 139282, 358761, 187560,   1,   0,    0,      -1,      -1 }, // Opening
   { 139474, 360518, 187869,   0,   0,    0,      -1,      -1 }, // Shadowlands Scouting Map
   { 139476, 360532, 187875,   0,   0,    0,      -1,      -1 }, // Broken Isles Scouting Map
   { 139484, 360578, 187895,   0,   0,    0,      -1,      -1 }, // Draenor Scouting Map

@@ -782,7 +782,7 @@ void wasteland_propriety( special_effect_t& effect )
 // 354018 - Versatility
 void party_favors( special_effect_t& effect )
 {
-  auto opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.party_favor_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -1310,7 +1310,7 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_smash_damage_t : public spell_t
     {
-      bron_smash_damage_t( pet_t* p ) : spell_t( "smash", p, p->find_spell( 341165 ) )
+      bron_smash_damage_t( pet_t* p ) : spell_t( "smash_damage", p, p->find_spell( 341165 ) )
       {
         background              = true;
         attack_power_mod.direct = 1.1;   // Not in spell data
@@ -1351,11 +1351,12 @@ void brons_call_to_action( special_effect_t& effect )
 
     struct bron_smash_t : public spell_t
     {
-      bron_smash_t( pet_t* p, util::string_view options_str ) : spell_t( "smash_cast", p, p->find_spell( 341163 ) )
+      bron_smash_t( pet_t* p, util::string_view options_str ) : spell_t( "smash", p, p->find_spell( 341163 ) )
       {
         parse_options( options_str );
 
         impact_action = new bron_smash_damage_t( p );
+        impact_action->stats = stats;
       }
     };
 
@@ -1682,7 +1683,7 @@ void volatile_solvent( special_effect_t& effect )
                      "volatile_solvent_elemental", "volatile_solvent_giant" } ) )
     return;
 
-  auto opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
+  std::string_view opt_str = effect.player->sim->shadowlands_opts.volatile_solvent_type;
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
@@ -1974,7 +1975,7 @@ void forgeborne_reveries( special_effect_t& effect )
     {
       // All armor enchants currently have a stat associated with them, unlike temporaries & weapon enchants which
       // can be purely procs. So for now we should be safe filtering for enchants with ITEM_ENCHANTMENT_STAT.
-      auto ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
+      const auto& ench = effect.player->dbc->item_enchantment( item.parsed.enchant_id );
       if ( range::contains( ench.ench_type, ITEM_ENCHANTMENT_STAT ) )
         count++;
 

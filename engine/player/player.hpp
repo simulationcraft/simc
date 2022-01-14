@@ -311,6 +311,9 @@ struct player_t : public actor_t
   bool no_action_list_provided;
   std::unordered_map<std::string, std::string> apl_variable_map;
 
+  // Precombat State
+  std::unordered_map<std::string, std::string> precombat_state_map;
+
   bool quiet;
   // Reporting
   std::unique_ptr<player_report_extension_t> report_extension;
@@ -374,7 +377,6 @@ struct player_t : public actor_t
   std::unique_ptr<cooldown_t> item_cooldown;
   timespan_t default_item_group_cooldown;
   cooldown_t* legendary_tank_cloak_cd; // non-Null if item available
-
 
   // Warlord's Unseeing Eye (6.2 Trinket)
   double warlords_unseeing_eye;
@@ -885,6 +887,8 @@ public:
   virtual void create_actions();
   virtual void init_actions();
   virtual void init_finished();
+  virtual void add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration );
+  virtual void add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration );
   virtual void apply_affecting_auras(action_t&);
   virtual void action_init_finished(action_t&);
   virtual bool verify_use_items() const;

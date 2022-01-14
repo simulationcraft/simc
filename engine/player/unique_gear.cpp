@@ -940,7 +940,7 @@ struct lfr_harmful_spell_t : public spell_t
 };
 
 // TODO: Ratings
-void set_bonus::passive_stat_aura( special_effect_t& effect )
+[[maybe_unused]] void set_bonus::passive_stat_aura( special_effect_t& effect )
 {
   const spell_data_t* spell = effect.player -> find_spell( effect.spell_id );
   stat_e stat = STAT_NONE;

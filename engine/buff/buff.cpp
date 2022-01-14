@@ -556,6 +556,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     player( target ),
     item( item ),
     name_str( name ),
+    name_str_reporting(),
     s_data( spell_data ),
     s_data_reporting( spell_data_t::nil() ),
     source( source ),
@@ -623,7 +624,8 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false )
+    change_regen_rate( false ),
+    allow_precombat( true )
 {
   if ( source )  // Player Buffs
   {
@@ -1237,6 +1239,12 @@ buff_t* buff_t::set_reverse_stack_count( int count )
 buff_t* buff_t::set_stack_behavior( buff_stack_behavior b )
 {
   stack_behavior = b;
+  return this;
+}
+
+buff_t* buff_t::set_allow_precombat( bool b )
+{
+  allow_precombat = b;
   return this;
 }
 
@@ -2680,6 +2688,14 @@ buff_t* buff_t::find( player_t* p, util::string_view name, player_t* source )
   return find( p->buff_list, name, source );
 }
 
+const char* buff_t::name_reporting() const
+{
+  if ( name_str_reporting.empty() )
+    return name_str.c_str();
+  else
+    return name_str_reporting.c_str();
+}
+
 util::string_view buff_t::source_name() const
 {
   if ( source )
@@ -2811,10 +2827,14 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     double amount                    = 0;
     const spelleffect_data_t& effect = data().effectN( i );
 
+    // Blizzard likes to use effect coefficients that give (almost) exact values at the
+    // intended level. Small floating point conversion errors can add up to give the wrong
+    // value. We compensate by increasing the value by a tiny bit before truncating.
+    constexpr double epsilon = 1e-3;
     if ( item )
-      amount = util::round( effect.average( item ) );
+      amount = std::trunc( epsilon + effect.average( item ) );
     else
-      amount = util::round( effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
+      amount = std::trunc( epsilon + effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
 
     if ( effect.subtype() == A_MOD_STAT )
     {

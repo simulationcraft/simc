@@ -162,7 +162,6 @@ struct item_t
   bool socket_color_match() const;
 
   unsigned item_level() const;
-  unsigned base_item_level() const;
   stat_e stat( size_t idx ) const;
   int stat_value( size_t idx ) const;
   gear_stats_t total_stats() const;

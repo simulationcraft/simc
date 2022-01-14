@@ -600,24 +600,24 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
   if ( !enabled() )
     return root;
 
-  const sim_t& sim = *(m_player->sim);
+  const sim_t& sim = *( m_player->sim );
 
-  root.format( "<tr class=\"left\"><th>{} ({})</th><td><ul class=\"float\">\n", util::covenant_type_string( type(), true ), renown() );
+  root.format( "<tr class=\"left\"><th class=\"nowrap\">{} ({})</th><td><ul class=\"float\">\n",
+               util::covenant_type_string( type(), true ), renown() );
 
   auto cv_spell = m_player->find_spell( get_covenant_ability_spell_id() );
   root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *cv_spell ) );
 
   for ( const auto& e : conduit_entry_t::data( m_player->dbc->ptr ) )
   {
-    for ( const auto& [conduit_id, rank] : m_conduits )
+    for ( const auto& [ conduit_id, rank ] : m_conduits )
     {
       if ( conduit_id == e.id )
       {
-        auto conduitRankData = conduit_rank_entry_t::find(conduit_id, rank, m_player->is_ptr());
-        auto conduitData = conduit_data_t(m_player, conduitRankData);
-        root.format( "<li>{} ({})</li>\n",
-                     report_decorators::decorated_conduit_name( sim, conduitData ),
-                     rank + 1 );
+        auto conduitRankData = conduit_rank_entry_t::find( conduit_id, rank, m_player->is_ptr() );
+        auto conduitData = conduit_data_t( m_player, conduitRankData );
+        root.format( "<li class=\"nowrap\">{} ({})</li>\n",
+                     report_decorators::decorated_conduit_name( sim, conduitData ), rank + 1 );
       }
     }
   }
@@ -631,7 +631,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     for ( const auto& sb : m_soulbinds )
     {
       auto sb_spell = m_player->find_spell( sb );
-      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *sb_spell ) );
+      root.format( "<li class=\"nowrap\">{}</li>\n", report_decorators::decorated_spell_name( sim, *sb_spell ) );
     }
 
     root << "</ul></td></tr>\n";
@@ -644,7 +644,7 @@ report::sc_html_stream& covenant_state_t::generate_report( report::sc_html_strea
     for ( const auto& r : m_renown )
     {
       auto r_spell = m_player->find_spell( r );
-      root.format( "<li>{}</li>\n", report_decorators::decorated_spell_name( sim, *r_spell ) );
+      root.format( "<li class=\"nowrap\">{}</li>\n", report_decorators::decorated_spell_name( sim, *r_spell ) );
     }
 
     root << "</ul></td></tr>\n";

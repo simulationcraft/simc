@@ -359,7 +359,8 @@ class PeStructParser:
         return True
 
     def validate_file(self, file_):
-        dbfile = DBCFile(self.options, file_)
+        path = os.path.abspath(os.path.join(self.options.path, file_))
+        dbfile = DBCFile(self.options, path)
         try:
             if not dbfile.open():
                 return True

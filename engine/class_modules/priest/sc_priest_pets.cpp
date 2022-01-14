@@ -654,7 +654,7 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
   }
 
   return priest_pet_t::create_action( name, options_str );
-};
+}
 // ==========================================================================
 // Living Shadow T28 4-set (Your Shadow)
 // ==========================================================================
@@ -670,6 +670,21 @@ struct your_shadow_t final : public priest_pet_t
 
     action_priority_list_t* def = get_action_priority_list( "default" );
     def->add_action( "torment_mind" );
+  }
+
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.living_shadow->trigger();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.living_shadow->expire();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -922,7 +937,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
 {
   if ( splits.size() < 2 )
   {
-    return nullptr;
+    return {};
   }
 
   if ( util::str_compare_ci( splits[ 0 ], "pet" ) )
@@ -989,7 +1004,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
     }
   }
 
-  return nullptr;
+  return {};
 }
 
 priest_t::priest_pets_t::priest_pets_t( priest_t& p )

@@ -55,11 +55,45 @@ bool override_field( T* data, const Fields& fields, util::string_view name, doub
 }
 
 template <typename T, typename Fields>
+bool override_bit_array_field( T* data, const Fields& fields, util::string_view name, double value )
+{
+  return detail::handle_field( data, fields, name, [ value ] ( auto& field ) {
+    bool add = true;
+    auto v = static_cast<int>( value );
+    if ( v < 0 )
+    {
+      add = false;
+      v = std::abs( v );
+    }
+
+    if ( static_cast<unsigned>( v ) >= std::size( field ) * 32 )
+      throw std::invalid_argument( "Invalid value (too large)." );
+
+    int idx = v / 32;
+    unsigned bit = 1u << ( v % 32 );
+
+    if ( add )
+      field[idx] |= bit;
+    else
+      field[idx] &= ~bit;
+
+    return true;
+  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
+template <typename T, typename Fields>
 double get_field( const T* data, const Fields& fields, util::string_view name ) {
   return detail::handle_field( data, fields, name,
     [] ( const auto& field ) {
       return static_cast<double>( field );
     }, -std::numeric_limits<double>::max(), detail::size_c<std::tuple_size<Fields>::value>{} );
+}
+
+template <typename T, typename Fields>
+bool is_bit_array_field( const T* data, const Fields& fields, util::string_view name ) {
+  return detail::handle_field( data, fields, name, [] ( const auto& ) {
+    return true;
+  }, false, detail::size_c<std::tuple_size<Fields>::value>{} );
 }
 
 } // anon namespace
@@ -94,16 +128,28 @@ static constexpr auto spell_data_fields = std::make_tuple(
   data_field( "rppm",              &spell_data_t::_rppm ),
   data_field( "dmg_class",         &spell_data_t::_dmg_class ),
   data_field( "max_targets",       &spell_data_t::_max_targets ),
-  data_field( "category",          &spell_data_t::_category )
+  data_field( "category",          &spell_data_t::_category ),
+  data_field( "class_flags_family",&spell_data_t::_class_flags_family )
+);
+
+static constexpr auto spell_data_bit_array_fields = std::make_tuple(
+  data_field( "attributes",  &spell_data_t::_attributes ),
+  data_field( "class_flags", &spell_data_t::_class_flags )
 );
 
 bool spell_data_t::override_field( util::string_view field, double value )
 {
+  if ( ::override_bit_array_field( this, spell_data_bit_array_fields, field, value ) )
+    return true;
+
   return ::override_field( this, spell_data_fields, field, value );
 }
 
 double spell_data_t::get_field( util::string_view field ) const
 {
+  if ( ::is_bit_array_field( this, spell_data_bit_array_fields, field ) )
+    return 0.0;
+
   return ::get_field( this, spell_data_fields, field );
 }
 
@@ -131,13 +177,23 @@ static constexpr auto spelleffect_data_fields = std::make_tuple(
   data_field( "chain_target",            &spelleffect_data_t::_chain_target )
 );
 
+static constexpr auto spelleffect_data_bit_array_fields = std::make_tuple(
+  data_field( "class_flags", &spelleffect_data_t::_class_flags )
+);
+
 bool spelleffect_data_t::override_field( util::string_view field, double value )
 {
+  if ( ::override_bit_array_field( this, spelleffect_data_bit_array_fields, field, value ) )
+    return true;
+
   return ::override_field( this, spelleffect_data_fields, field, value );
 }
 
 double spelleffect_data_t::get_field( util::string_view field ) const
 {
+  if ( ::is_bit_array_field( this, spelleffect_data_bit_array_fields, field ) )
+    return 0.0;
+
   return ::get_field( this, spelleffect_data_fields, field );
 }
 
