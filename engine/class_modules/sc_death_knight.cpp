@@ -6457,7 +6457,6 @@ struct remorseless_winter_t : public death_knight_spell_t
 
     if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
     {
-      printf("DEBUGME\n");
       p() -> buffs.arctic_assault -> trigger();
     }
   }
