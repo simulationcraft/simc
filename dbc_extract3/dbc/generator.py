@@ -1899,6 +1899,7 @@ class SpellDataGenerator(DataGenerator):
           ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
 
           ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
+          ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
         ),
         # Demon Hunter:
         (

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.41827
-static const std::array<spelltext_data_t, 15944> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15945> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15924,6 +15924,7 @@ static const std::array<spelltext_data_t, 15944> __ptr_spelltext_data { {
   { 367898, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367901, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
+  { 367907, "$@spelldesc364423", 0, 0 },
   { 367924, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nUpon expiration, the Quasar collapses, creating an Event Horizon for $d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 367929, "Affix a Domination Rune to yourself, gaining power at a price.", 0, 0 },
   { 367930, "Add another.", 0, 0 },
