@@ -523,6 +523,9 @@ public:
     buff_t* abomination_limb; // Necrolord
     buff_t* deaths_due; // Night Fae
     buff_t* swarming_mist; // Venthyr
+
+    // Tier 28
+    buff_t* arctic_assault; // T28 2PC
   } buffs;
 
   struct runeforge_t {
@@ -575,6 +578,9 @@ public:
     action_t* bursting_sores;
     action_t* festering_wound;
     action_t* virulent_eruption;
+
+    // Tier28
+    action_t* glacial_advance_t28_4pc;
   } active_spells;
 
   // Gains
@@ -5554,6 +5560,35 @@ struct glacial_advance_damage_t : public death_knight_spell_t
   }
 };
 
+// Tier 28 glacial advance, implement everything by hand here, to avoid having to disable all the gcd, procs, etc
+struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
+{
+  double ga_rp_cost;
+
+  glacial_advance_damage_tier28_4pc_t( util::string_view name, death_knight_t* p ) :
+    glacial_advance_damage_t( name, p )
+  {
+    //  Lookup GA rp cost from spelldata, we don't use the talent here, as we may not have ga talented
+    ga_rp_cost = p -> find_spell( 194913 ) -> cost(POWER_RUNIC_POWER);
+  }
+
+  void execute() override
+  {
+    glacial_advance_damage_t::execute();
+
+    // Obliteration's rune generation
+    if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
+    {
+      // WTB spelldata for the rune gain
+      p() -> replenish_rune( 1, p() -> gains.obliteration );
+    }
+
+    // These two are normally called through the standard action, but since we call damage event directly, they need to be manually called
+    p() -> buffs.icy_talons -> trigger();
+    p() -> trigger_runic_empowerment( ga_rp_cost );
+  }
+};
+
 struct glacial_advance_t : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, util::string_view options_str ) :
@@ -6100,23 +6135,25 @@ struct obliterate_t : public death_knight_melee_attack_t
     {
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
+        // Tier28, KM is up, so fire GA, in game fires before oblits
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+        {
+          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
+          p() -> active_spells.glacial_advance_t28_4pc -> execute();
+        }
         km_mh -> set_target( target );
         km_mh -> execute();
+        if ( oh && km_oh )
+        {
+          km_oh -> set_target( target );
+          km_oh -> execute();
+        }
       }
       else
       {
         mh -> set_target( target );
         mh -> execute();
-      }
-
-      if ( oh )
-      {
-        if ( km_oh && p() -> buffs.killing_machine -> up() )
-        {
-          km_oh -> set_target( target );
-          km_oh -> execute();
-        }
-        else
+        if ( oh )
         {
           oh -> set_target( target );
           oh -> execute();
@@ -6384,6 +6421,7 @@ struct remorseless_winter_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
+    debug_cast<death_knight_t*>( player ) -> buffs.arctic_assault -> expire();
   }
 };
 
@@ -6416,6 +6454,11 @@ struct remorseless_winter_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.remorseless_winter -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
+    {
+      p() -> buffs.arctic_assault -> trigger();
+    }
   }
 };
 
@@ -8011,6 +8054,10 @@ void death_knight_t::create_actions()
   if ( spec.outbreak -> ok() || talent.unholy_blight -> ok() || legendary.superstrain -> ok() )
     active_spells.virulent_eruption = new virulent_eruption_t( this );
 
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+  {
+    active_spells.glacial_advance_t28_4pc = new glacial_advance_damage_tier28_4pc_t( "glacial_advance_t28_4pc", this );
+  }
 
   player_t::create_actions();
 }
@@ -9031,6 +9078,12 @@ void death_knight_t::create_buffs()
   // Covenants
   buffs.abomination_limb = new abomination_limb_buff_t( this );
   buffs.swarming_mist = new swarming_mist_buff_t( this );
+
+  // Tier 28
+  buffs.arctic_assault = make_buff( this, "arctic_assault", find_spell( 364384 ) )
+    -> set_default_value_from_effect_type( A_MOD_CRIT_PERCENT )
+    -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+    -> add_invalidate( CACHE_CRIT_CHANCE );
 }
 
 // death_knight_t::init_gains ===============================================
