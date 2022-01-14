@@ -230,9 +230,6 @@ public:
     buff_t* blind_faith;
     buff_t* chaos_theory;
     buff_t* fel_bombardment;
-
-    // Set Bonus
-    buff_t* deadly_dance;
   } buff;
 
   // Talents
@@ -445,6 +442,8 @@ public:
     const spell_data_t* t28_havoc_4pc;
     const spell_data_t* t28_vengeance_2pc;
     const spell_data_t* t28_vengeance_4pc;
+
+    double deadly_dance_counter = 0.0;
   } set_bonuses;
 
   // Mastery Spells
@@ -510,9 +509,6 @@ public:
     // Legendary
     gain_t* blind_faith;
     gain_t* darkglare_boon_refund;
-
-    // Set Bonus
-    gain_t* deadly_dance;
   } gain;
 
   // Benefits
@@ -551,6 +547,9 @@ public:
 
     // Legendary
     proc_t* darkglare_boon_resets;
+
+    // Set Bonuses
+    proc_t* deadly_dance;
   } proc;
 
   // RPPM objects
@@ -1173,6 +1172,9 @@ public:
     affect_flags momentum;
     bool essence_break = false;
     bool burning_wound = false;
+
+    // Legendary
+    bool agony_gaze = false;
   } affected_by;
 
   void parse_affect_flags( const spell_data_t* spell, affect_flags& flags )
@@ -1441,21 +1443,12 @@ public:
     {
       accumulate_spirit_bomb( s );
       trigger_chaos_brand( s );
+      trigger_agony_gaze( s );
 
       if ( s->result_amount > 0 )
       {
         track_benefits( s );
       }
-    }
-  }
-
-  void execute() override
-  {
-    ab::execute();
-
-    if ( !ab::hit_any_target && ab::last_resource_cost > 0 )
-    {
-      trigger_refund();
     }
   }
 
@@ -1505,13 +1498,42 @@ public:
     ab::update_ready( cd );
   }
 
-  void trigger_refund()
+  void trigger_fury_refund()
   {
     if ( ab::resource_current == RESOURCE_FURY )
     {
       p()->resource_gain( ab::resource_current, ab::last_resource_cost * 0.80, p()->gain.miss_refund );
     }
   }
+
+  void consume_resource() override
+  {
+    ab::consume_resource();
+
+    if ( ab::current_resource() == RESOURCE_FURY && ab::last_resource_cost > 0 )
+    {
+      if ( !ab::hit_any_target )
+      {
+        trigger_fury_refund();
+      }
+      else
+      {
+        // T28 Havoc 4pc Bonus
+        if ( p()->set_bonuses.t28_havoc_4pc->ok() )
+        {
+          p()->set_bonuses.deadly_dance_counter += ab::last_resource_cost;
+          while ( p()->set_bonuses.deadly_dance_counter >= p()->set_bonuses.t28_havoc_4pc->effectN( 2 ).base_value() )
+          {
+            p()->cooldown.metamorphosis->adjust( -timespan_t::from_seconds( p()->set_bonuses.t28_havoc_4pc->effectN( 1 ).base_value() ) );
+            p()->set_bonuses.deadly_dance_counter -= p()->set_bonuses.t28_havoc_4pc->effectN( 2 ).base_value();
+            p()->proc.deadly_dance->occur();
+          }
+        }
+      }
+    }
+  }
+
+
 
   void accumulate_spirit_bomb( action_state_t* s )
   {
@@ -1568,6 +1590,19 @@ public:
     if ( s->target->debuffs.chaos_brand && p()->spec.chaos_brand->ok() )
     {
       s->target->debuffs.chaos_brand->trigger();
+    }
+  }
+
+  // Agony Gaze Legendary
+  void trigger_agony_gaze( action_state_t* s )
+  {
+    if ( !affected_by.agony_gaze || !p()->legendary.agony_gaze->ok() )
+      return;
+
+    const demon_hunter_td_t* td = p()->get_target_data( s->target );
+    if ( td->dots.sinful_brand && td->dots.sinful_brand->is_ticking() )
+    {
+      td->dots.sinful_brand->adjust_duration( p()->legendary.agony_gaze->effectN( 2 ).time_value() );
     }
   }
 
@@ -1957,6 +1992,7 @@ struct eye_beam_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->find_spell( 198030 ) )
     {
       background = dual = true;
+      affected_by.agony_gaze = true;
       aoe = -1;
       reduced_aoe_targets = 1.0;
       full_amount_targets = 1;
@@ -1969,21 +2005,6 @@ struct eye_beam_t : public demon_hunter_spell_t
       m *= 1.0 + td( target )->debuffs.serrated_glaive->value();
 
       return m;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_spell_t::impact( s );
-
-      // Agony Gaze Legendary
-      if ( p()->legendary.agony_gaze->ok() )
-      {
-        const demon_hunter_td_t* td = p()->get_target_data( s->target );
-        if ( td->dots.sinful_brand && td->dots.sinful_brand->is_ticking() )
-        {
-          td->dots.sinful_brand->adjust_duration( p()->legendary.agony_gaze->effectN( 2 ).time_value() );
-        }
-      }
     }
 
     timespan_t execute_time() const override
@@ -2112,21 +2133,8 @@ struct fel_devastation_t : public demon_hunter_spell_t
       : demon_hunter_spell_t( name, p, p->spec.fel_devastation->effectN( 1 ).trigger() )
     {
       background = dual = true;
+      affected_by.agony_gaze = true;
       aoe = -1;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      demon_hunter_spell_t::impact( s );
-
-      if ( p()->legendary.agony_gaze->ok() )
-      {
-        const demon_hunter_td_t* td = p()->get_target_data( s->target );
-        if ( td->dots.sinful_brand && td->dots.sinful_brand->is_ticking() )
-        {
-          td->dots.sinful_brand->adjust_duration( p()->legendary.agony_gaze->effectN( 2 ).time_value() );
-        }
-      }
     }
   };
 
@@ -2469,6 +2477,7 @@ struct collective_anguish_t : public demon_hunter_spell_t
     {
       // TOCHECK: Currently does not use split damage on beta but probably will at some point
       dual = true;
+      affected_by.agony_gaze = true; // TOCHECK: Confirmed to work for Havoc, need to test for Vengeance
       aoe = -1;
     }
 
@@ -3598,9 +3607,6 @@ struct blade_dance_base_t : public demon_hunter_attack_t
     // This has a 0.5s ICD in the spell data, so just trigger once in the execute and not on impacts
     p()->buff.chaos_theory->trigger();
 
-    // Deadly Dance Set Bonus
-    p()->buff.deadly_dance->trigger();
-
     // Metamorphosis benefit and Essence Break stats tracking
     if ( p()->buff.metamorphosis->up() )
     {
@@ -4611,6 +4617,7 @@ struct metamorphosis_buff_t : public demon_hunter_buff_t<buff_t>
     {
       set_default_value_from_effect_type( A_HASTE_ALL );
       apply_affecting_aura( p->spec.metamorphosis_rank_2 );
+      apply_affecting_aura( p->set_bonuses.t28_havoc_4pc );
       add_invalidate( CACHE_HASTE );
       add_invalidate( CACHE_LEECH );
     }
@@ -5035,37 +5042,6 @@ void demon_hunter_t::create_buffs()
   buff.blazing_slaughter = make_buff<buff_t>( this, "blazing_slaughter", blazing_slaughter_buff )
     ->set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
-
-  // Set Bonuses ============================================================ 
-
-  // Deadly Dance is not currently represented as a player-trackable buff yet, so hard-coding this for now
-  // Currently refunds can be chained if they are successful, use default_value for tracking the success state
-  buff.deadly_dance = make_buff<buff_t>( this, "deadly_dance", set_bonuses.t28_havoc_4pc )
-    ->set_default_value( 0 )
-    ->set_max_stack( 5 ) // Hard-coded, not in spell data
-    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int /*new_*/ ) {
-      if ( b->at_max_stacks() )
-      {
-        // Gain is stored in spell 364134 but a server-side conditional aura (based on First Blood)
-        resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
-        cooldown.blade_dance->reset( false );
-        b->expire();
-        b->set_default_value( 1 );
-      }
-      else if ( b->default_value == 1 )
-      {
-        if ( rng().roll( set_bonuses.t28_havoc_4pc->effectN( 1 ).percent() ) )
-        {
-          resource_gain( RESOURCE_FURY, talent.first_blood->ok() ? 15 : 35, gain.deadly_dance );
-          cooldown.blade_dance->reset( true );
-        }
-        else
-        {
-          b->set_default_value( 0 );
-        }
-      }
-    } );
 }
 
 struct metamorphosis_adjusted_cooldown_expr_t : public expr_t
@@ -5357,6 +5333,9 @@ void demon_hunter_t::init_procs()
 
   // Legendary
   proc.darkglare_boon_resets          = get_proc( "darkglare_boon_resets" );
+
+  // Set Bonuses
+  proc.deadly_dance                   = get_proc( "deadly_dance_reduction" );
 }
 
 // demon_hunter_t::init_resources ===========================================
@@ -6008,9 +5987,6 @@ void demon_hunter_t::create_gains()
   // Legendary
   gain.blind_faith              = get_gain( "blind_faith" );
   gain.darkglare_boon_refund    = get_gain( "darkglare_boon_refund" );
-
-  // Set Bonus
-  gain.deadly_dance             = get_gain( "deadly_dance" );
 }
 
 // demon_hunter_t::create_benefits ==========================================
@@ -6494,23 +6470,17 @@ void demon_hunter_t::reset()
 {
   base_t::reset();
 
-  soul_fragment_pick_up   = nullptr;
-  spirit_bomb_driver      = nullptr;
-  exit_melee_event        = nullptr;
-  next_fragment_spawn     = 0;
-  metamorphosis_health    = 0;
-  spirit_bomb_accumulator = 0.0;
+  soul_fragment_pick_up             = nullptr;
+  spirit_bomb_driver                = nullptr;
+  exit_melee_event                  = nullptr;
+  next_fragment_spawn               = 0;
+  metamorphosis_health              = 0;
+  spirit_bomb_accumulator           = 0.0;
+  set_bonuses.deadly_dance_counter  = 0.0;
 
   for ( size_t i = 0; i < soul_fragments.size(); i++ )
   {
     delete soul_fragments[ i ];
-  }
-
-  // Deadly Dance counter does not appear to reset between encounters
-  if ( set_bonuses.t28_havoc_4pc->ok() )
-  {
-    int initial_stacks = rng().range( 0, buff.deadly_dance->max_stack() );
-    buff.deadly_dance->trigger( initial_stacks );
   }
 
   soul_fragments.clear();
