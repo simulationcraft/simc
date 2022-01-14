@@ -7441,7 +7441,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     auto target_data = td( conv_tar );
 
-    if ( type_ == CAST_MOONFIRE && target_data->dots.moonfire->is_ticking() )
+    if ( type_ == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
       type_ = CAST_WRATH;
     else if ( type_ == CAST_RAKE && target_data->dots.rake->is_ticking() )
       type_ = CAST_SHRED;
