@@ -523,6 +523,11 @@ public:
     buff_t* abomination_limb; // Necrolord
     buff_t* deaths_due; // Night Fae
     buff_t* swarming_mist; // Venthyr
+
+    // Tier 28
+    buff_t* arctic_assault; // T28 Frost 2PC
+    buff_t* harvest_time; // T28 Unholy 4PC
+    buff_t* harvest_time_stack; // T28 Unholy 2PC
   } buffs;
 
   struct runeforge_t {
@@ -575,6 +580,10 @@ public:
     action_t* bursting_sores;
     action_t* festering_wound;
     action_t* virulent_eruption;
+
+    // Tier28
+    action_t* glacial_advance_t28_4pc;
+    action_t* soul_reaper_t28;
   } active_spells;
 
   // Gains
@@ -864,6 +873,7 @@ public:
 
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> army_ghouls;
     spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> apoc_ghouls;
+    spawner::pet_spawner_t<pets::army_ghoul_pet_t, death_knight_t> harvest_ghouls;
     spawner::pet_spawner_t<pets::bloodworm_pet_t, death_knight_t> bloodworms;
     spawner::pet_spawner_t<pets::magus_pet_t, death_knight_t> magus_of_the_dead;
     spawner::pet_spawner_t<pets::reanimated_shambler_pet_t, death_knight_t> reanimated_shambler;
@@ -873,6 +883,7 @@ public:
     pets_t( death_knight_t* p ) :
       army_ghouls( "army_ghoul", p ),
       apoc_ghouls( "apoc_ghoul", p ),
+      harvest_ghouls( "harvest_ghoul", p ),
       bloodworms( "bloodworm", p ),
       magus_of_the_dead( "magus_of_the_dead", p ),
       reanimated_shambler( "reanimated_shambler", p ),
@@ -5554,6 +5565,35 @@ struct glacial_advance_damage_t : public death_knight_spell_t
   }
 };
 
+// Tier 28 glacial advance, implement everything by hand here, to avoid having to disable all the gcd, procs, etc
+struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
+{
+  double ga_rp_cost;
+
+  glacial_advance_damage_tier28_4pc_t( util::string_view name, death_knight_t* p ) :
+    glacial_advance_damage_t( name, p )
+  {
+    //  Lookup GA rp cost from spelldata, we don't use the talent here, as we may not have ga talented
+    ga_rp_cost = p -> find_spell( 194913 ) -> cost(POWER_RUNIC_POWER);
+  }
+
+  void execute() override
+  {
+    glacial_advance_damage_t::execute();
+
+    // Obliteration's rune generation
+    if ( rng().roll( p() -> talent.obliteration -> effectN( 2 ).percent() ) )
+    {
+      // WTB spelldata for the rune gain
+      p() -> replenish_rune( 1, p() -> gains.obliteration );
+    }
+
+    // These two are normally called through the standard action, but since we call damage event directly, they need to be manually called
+    p() -> buffs.icy_talons -> trigger();
+    p() -> trigger_runic_empowerment( ga_rp_cost );
+  }
+};
+
 struct glacial_advance_t : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, util::string_view options_str ) :
@@ -6100,23 +6140,25 @@ struct obliterate_t : public death_knight_melee_attack_t
     {
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
+        // Tier28, KM is up, so fire GA, in game fires before oblits
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+        {
+          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
+          p() -> active_spells.glacial_advance_t28_4pc -> execute();
+        }
         km_mh -> set_target( target );
         km_mh -> execute();
+        if ( oh && km_oh )
+        {
+          km_oh -> set_target( target );
+          km_oh -> execute();
+        }
       }
       else
       {
         mh -> set_target( target );
         mh -> execute();
-      }
-
-      if ( oh )
-      {
-        if ( km_oh && p() -> buffs.killing_machine -> up() )
-        {
-          km_oh -> set_target( target );
-          km_oh -> execute();
-        }
-        else
+        if ( oh )
         {
           oh -> set_target( target );
           oh -> execute();
@@ -6384,6 +6426,7 @@ struct remorseless_winter_buff_t : public buff_t
     buff_t::expire_override( expiration_stacks, remaining_duration );
 
     debug_cast<death_knight_t*>( player ) -> buffs.gathering_storm -> expire();
+    debug_cast<death_knight_t*>( player ) -> buffs.arctic_assault -> expire();
   }
 };
 
@@ -6416,6 +6459,11 @@ struct remorseless_winter_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.remorseless_winter -> trigger();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B2 ) )
+    {
+      p() -> buffs.arctic_assault -> trigger();
+    }
   }
 };
 
@@ -6517,6 +6565,23 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       p() -> buffs.deaths_due->trigger();
     }
   }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+    {
+      p() -> buffs.harvest_time_stack -> trigger();
+
+      if ( p() -> buffs.harvest_time_stack -> at_max_stacks() )
+      {
+        p() -> active_spells.soul_reaper_t28 -> set_target( target );
+        p() -> active_spells.soul_reaper_t28 -> execute();
+        p() -> buffs.harvest_time_stack -> expire();
+      }
+    }
+  }
 };
 
 struct clawing_shadows_t : public scourge_strike_base_t
@@ -6603,6 +6668,13 @@ struct soul_reaper_execute_t : public death_knight_spell_t
   {
     background = true;
   }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+      p() -> buffs.harvest_time -> trigger();
+  }
 };
 
 struct soul_reaper_t : public death_knight_melee_attack_t
@@ -6610,7 +6682,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   action_t* soul_reaper_execute;
 
   soul_reaper_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p ->  talent.soul_reaper ),
+    death_knight_melee_attack_t( "soul_reaper", p, p -> talent.soul_reaper ),
     soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
   {
     parse_options( options_str );
@@ -6624,6 +6696,57 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
+  }
+
+  void last_tick( dot_t* dot ) override
+  {
+    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
+    {
+      soul_reaper_execute -> set_target ( dot -> target );
+      soul_reaper_execute -> execute();
+    }
+  }
+};
+
+struct soul_reaper_t28_t : public death_knight_melee_attack_t
+{
+  action_t* soul_reaper_execute;
+  timespan_t summon_duration;
+  soul_reaper_t28_t( death_knight_t* p ) :
+    death_knight_melee_attack_t( "soul_reaper_t28", p, p -> find_spell( 343294 ) ),
+    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_t28_execute", p ) ),
+    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) )
+  {
+    background = false;
+    hasted_ticks = false;
+    add_child ( soul_reaper_execute );
+  }
+
+  void init() override
+  {
+    death_knight_melee_attack_t::init();
+    may_proc_bron = true;
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+
+  double runic_power_generation_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
+
+    m *= 1.0 + ( -1.0 );
+
+    return m;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+      p() -> pets.harvest_ghouls.spawn( summon_duration, 1 );
   }
 
   void last_tick( dot_t* dot ) override
@@ -8011,6 +8134,15 @@ void death_knight_t::create_actions()
   if ( spec.outbreak -> ok() || talent.unholy_blight -> ok() || legendary.superstrain -> ok() )
     active_spells.virulent_eruption = new virulent_eruption_t( this );
 
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+  {
+    active_spells.glacial_advance_t28_4pc = new glacial_advance_damage_tier28_4pc_t( "glacial_advance_t28_4pc", this );
+  }
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+  {
+    active_spells.soul_reaper_t28 = new soul_reaper_t28_t( this );
+  }
 
   player_t::create_actions();
 }
@@ -8280,7 +8412,12 @@ void death_knight_t::create_pets()
     {
       pets.apoc_ghouls.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "apoc_ghoul" ); } );
+    }
 
+    if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+    {
+      pets.harvest_ghouls.set_creation_callback(
+        [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "harvest_ghoul" ); } );
     }
 
     if ( talent.army_of_the_damned -> ok() )
@@ -9031,6 +9168,18 @@ void death_knight_t::create_buffs()
   // Covenants
   buffs.abomination_limb = new abomination_limb_buff_t( this );
   buffs.swarming_mist = new swarming_mist_buff_t( this );
+
+  // Tier 28
+  buffs.arctic_assault = make_buff( this, "arctic_assault", find_spell( 364384 ) )
+    -> set_default_value_from_effect_type( A_MOD_CRIT_PERCENT )
+    -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+    -> add_invalidate( CACHE_CRIT_CHANCE );
+
+  buffs.harvest_time = make_buff( this, "harvest_time", find_spell( 367954 ))
+    -> set_default_value_from_effect_type( A_MOD_PET_DAMAGE_DONE );
+
+  buffs.harvest_time_stack = make_buff( this, "harvest_time_stack", find_spell( 363885 ) )
+    -> set_cooldown( sets -> set( DEATH_KNIGHT_UNHOLY, T28, B2 ) -> internal_cooldown() );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9487,6 +9636,18 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
+
+  // T28 Unholy 4PC
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+  {
+    // first is the 5% that is always active
+    m *= 1.0 + sets -> set( DEATH_KNIGHT_UNHOLY, T28, B4 )->effectN( 5 ).percent();
+    // Then we check if the extra 15% is active
+    if ( buffs.harvest_time -> up() )
+    {
+      m *= 1.0 + buffs.harvest_time -> value();
+    }
+  }
 
   return m;
 }

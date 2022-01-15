@@ -68,26 +68,27 @@ struct druid_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-    dot_t* lifebloom;
+    dot_t* adaptive_swarm_damage;
+    dot_t* feral_frenzy;
+    dot_t* frenzied_assault;
+    dot_t* lunar_inspiration;
     dot_t* moonfire;
     dot_t* rake;
-    dot_t* regrowth;
-    dot_t* rejuvenation;
     dot_t* rip;
-    dot_t* feral_frenzy;
+    dot_t* sickle_of_the_lion;
     dot_t* stellar_flare;
     dot_t* sunfire;
-    dot_t* starfall;
-    dot_t* thrash_cat;
     dot_t* thrash_bear;
-    dot_t* wild_growth;
-
-    dot_t* adaptive_swarm_damage;
-
-    dot_t* frenzied_assault;
-
-    dot_t* sickle_of_the_lion;
+    dot_t* thrash_cat;
   } dots;
+
+  struct hots_t
+  {
+    dot_t* lifebloom;
+    dot_t* regrowth;
+    dot_t* rejuvenation;
+    dot_t* wild_growth;
+  } hots;
 
   struct buffs_t
   {
@@ -103,15 +104,15 @@ struct druid_td_t : public actor_target_data_t
 
   bool hot_ticking()
   {
-    return dots.regrowth->is_ticking() || dots.rejuvenation->is_ticking() || dots.lifebloom->is_ticking() ||
-           dots.wild_growth->is_ticking();
+    return hots.regrowth->is_ticking() || hots.rejuvenation->is_ticking() || hots.lifebloom->is_ticking() ||
+           hots.wild_growth->is_ticking();
   }
 
   bool dot_ticking()
   {
-    return dots.moonfire->is_ticking() || dots.rake->is_ticking() || dots.rip->is_ticking() ||
-           dots.stellar_flare->is_ticking() || dots.sunfire->is_ticking() || dots.thrash_bear->is_ticking() ||
-           dots.thrash_cat->is_ticking();
+    return dots.lunar_inspiration->is_ticking() || dots.moonfire->is_ticking() || dots.rake->is_ticking() ||
+           dots.rip->is_ticking() || dots.stellar_flare->is_ticking() || dots.sunfire->is_ticking() ||
+           dots.thrash_bear->is_ticking() || dots.thrash_cat->is_ticking();
   }
 };
 
@@ -465,6 +466,7 @@ public:
     cooldown_t* incarnation;
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
+    cooldown_t* thrash_bear;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
     cooldown_t* rage_from_melees;
@@ -585,7 +587,6 @@ public:
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* half_moon;
     const spell_data_t* full_moon;
-    const spell_data_t* fury_of_elune;
     const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_3;
 
@@ -818,6 +819,7 @@ public:
     cooldown.incarnation      = get_cooldown( "incarnation" );
     cooldown.mangle           = get_cooldown( "mangle" );
     cooldown.moon_cd          = get_cooldown( "moon_cd" );
+    cooldown.thrash_bear      = get_cooldown( "thrash_bear" );
     cooldown.tigers_fury      = get_cooldown( "tigers_fury" );
     cooldown.warrior_of_elune = get_cooldown( "warrior_of_elune" );
     cooldown.rage_from_melees = get_cooldown( "rage_from_melees" );
@@ -3371,6 +3373,7 @@ struct ferocious_bite_t : public cat_attack_t
       auto t_td  = td( t );
       int bleeds = t_td->dots.rake->is_ticking() +
                    t_td->dots.rip->is_ticking() +
+                   t_td->dots.thrash_bear->is_ticking() +
                    t_td->dots.thrash_cat->is_ticking() +
                    t_td->dots.frenzied_assault->is_ticking() +
                    t_td->dots.feral_frenzy->is_ticking() +
@@ -3430,7 +3433,7 @@ struct lunar_inspiration_t : public cat_attack_t
     if ( !t ) t = target;
     if ( !t ) return nullptr;
 
-    return td( t )->dots.moonfire;
+    return td( t )->dots.lunar_inspiration;
   }
 
   double action_multiplier() const override
@@ -3452,6 +3455,15 @@ struct lunar_inspiration_t : public cat_attack_t
 
     if ( hit_any_target )
       p()->buff.bt_moonfire->trigger();
+  }
+
+  void trigger_dot( action_state_t* s ) override
+  {
+    // If existing moonfire duration is longer, lunar inspiration dot is not applied
+    if ( td( s->target )->dots.moonfire->remains() > composite_dot_duration( s ) )
+      return;
+
+    cat_attack_t::trigger_dot( s );
   }
 
   bool ready() override
@@ -3983,6 +3995,19 @@ struct thrash_cat_t : public cat_attack_t
       p()->buff.scent_of_blood->trigger();
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    auto bear_thrash = td( s->target )->dots.thrash_bear;
+
+    // Cat thrash will not overwrite bear thrash if bear thrash is on cooldown and has more than one stack
+    if ( p()->cooldown.thrash_bear->down() && bear_thrash->current_stack() > 1 )
+      return;
+
+    bear_thrash->cancel();
+
+    cat_attack_t::trigger_dot( s );
+  }
+
   void execute() override
   {
     // Remove potential existing scent of blood buff here
@@ -4141,6 +4166,8 @@ struct mangle_t : public bear_attack_t
   mangle_t( druid_t* p, std::string_view n, std::string_view opt )
     : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ), inc_targets( 0 )
   {
+    cooldown = p->cooldown.mangle;
+
     if ( p->find_rank_spell( "Mangle", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
@@ -4289,6 +4316,13 @@ struct thrash_bear_t : public bear_attack_t
       return td( t )->dots.thrash_bear;
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      td( s->target )->dots.thrash_cat->cancel();
+
+      bear_attack_t::trigger_dot( s );
+    }
+
     void tick( dot_t* d ) override
     {
       bear_attack_t::tick( d );
@@ -4310,6 +4344,8 @@ struct thrash_bear_t : public bear_attack_t
     dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     dot->stats = stats;
     dot->radius = radius;
+
+    cooldown = p->cooldown.thrash_bear;
 
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
@@ -5158,7 +5194,7 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->spec.fury_of_elune )
+    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -5175,27 +5211,27 @@ struct fury_of_elune_t : public druid_spell_t
   };
 
   action_t* damage;
-  action_t* set_damage;
   timespan_t ap_period;
-  int ap_ticks;
   double ap_amount;
+  int ap_ticks;
 
   fury_of_elune_t( druid_t* p, std::string_view opt )
-    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, opt )
+    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), opt )
   {}
 
-  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt ), damage( nullptr ), set_damage( nullptr )
+  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage,
+                   std::string_view opt )
+    : druid_spell_t( n, p, s, opt )
   {
-    auto eff = p->query_aura_effect( s_data, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+    auto eff = p->query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
 
     ap_period = eff->period();
-    ap_ticks = static_cast<int>( data().duration() / ap_period );
     ap_amount = eff->resource( RESOURCE_ASTRAL_POWER );
+    ap_ticks  = static_cast<int>( s->duration() / ap_period );
 
-    dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
+    dot_duration = 0_ms;  // AP gain handled via events
 
-    damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick" );
+    damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick", s_damage );
     damage->stats = stats;
   }
 
@@ -5212,7 +5248,7 @@ struct fury_of_elune_t : public druid_spell_t
     make_event<ground_aoe_event_t>( *sim, p(),
       ground_aoe_params_t().target( target )
                            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-                           .pulse_time( data().effectN( 3 ).period() )
+                           .pulse_time( ap_period )
                            .duration( data().duration() )
                            .action( damage ) );
   }
@@ -5625,6 +5661,13 @@ struct moonfire_t : public druid_spell_t
 
     void tick( dot_t* d ) override
     {
+      // Moonfire damage is supressed while lunar inspiration is also on the target. Note that it is not cancelled and
+      // continues to tick down it's duration. If there is any duration remaining after lunar inspiration expires,
+      // moonfire will resume ticking for damage.
+      // TODO: check if moonfire can still proc effects while in its supressed state
+      if ( td( d->target )->dots.lunar_inspiration->is_ticking() )
+        return;
+
       druid_spell_t::tick( d );
 
       trigger_shooting_stars( d->target );
@@ -5705,6 +5748,17 @@ struct moonfire_t : public druid_spell_t
 
         trigger_gore();
       }
+    }
+
+    void trigger_dot( action_state_t* s ) override
+    {
+      druid_spell_t::trigger_dot( s );
+
+      // moonfire will completely replace lunar inspiration if the new moonfire duration is greater
+      auto li_dot = td( s->target )->dots.lunar_inspiration;
+
+      if ( get_dot( s->target )->remains() > li_dot->remains() )
+        li_dot->cancel();
     }
   };
 
@@ -7385,16 +7439,11 @@ struct convoke_the_spirits_t : public druid_spell_t
     conv_tar = tl.at( rng().range( tl.size() ) );
 
     auto target_data = td( conv_tar );
-    // cat convoke will cast LI on a target with normal MF ticking
-    if ( type_ == CAST_MOONFIRE && target_data->dots.moonfire->is_ticking() &&
-         target_data->dots.moonfire->current_action->id == 155625 )
-    {
+
+    if ( type_ == CAST_MOONFIRE && target_data->dots.lunar_inspiration->is_ticking() )
       type_ = CAST_WRATH;
-    }
     else if ( type_ == CAST_RAKE && target_data->dots.rake->is_ticking() )
-    {
       type_ = CAST_SHRED;
-    }
 
     return type_;
   }
@@ -8223,7 +8272,6 @@ void druid_t::init_spells()
   spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.shooting_stars_dmg      = check_id( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
-  spec.fury_of_elune           = find_spell( 211545 );  // fury of elune tick damage
   spec.half_moon               = check_id( talent.new_moon->ok(), 274282 );
   spec.full_moon               = check_id( talent.new_moon->ok(), 274283 );
   spec.moonfire_2              = find_rank_spell( "Moonfire", "Rank 2" );
@@ -8799,7 +8847,8 @@ void druid_t::create_actions()
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
   {
-    auto pillar = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 202770 ), "" );
+    auto pillar =
+        get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 367907 ), find_spell( 365640 ), "" );
     pillar->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     pillar->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
     pillar->set_free_cast( free_cast_e::PILLAR );
@@ -10280,22 +10329,18 @@ void druid_t::shapeshift( form_e f )
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
   : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() )
 {
-  dots.lifebloom             = target.get_dot( "lifebloom", &source );
-  dots.moonfire              = target.get_dot( "moonfire", &source );
-  dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
-  dots.rake                  = target.get_dot( "rake", &source );
-  dots.regrowth              = target.get_dot( "regrowth", &source );
-  dots.rejuvenation          = target.get_dot( "rejuvenation", &source );
+  dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
   dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
+  dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
+  dots.lunar_inspiration     = target.get_dot( "lunar_inspiration", &source );
+  dots.moonfire              = target.get_dot( "moonfire", &source );
+  dots.rake                  = target.get_dot( "rake", &source );
   dots.rip                   = target.get_dot( "rip", &source );
+  dots.sickle_of_the_lion    = target.get_dot( "sickle_of_the_lion", &source );
+  dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
   dots.sunfire               = target.get_dot( "sunfire", &source );
-  dots.starfall              = target.get_dot( "starfall", &source );
   dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
   dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
-  dots.wild_growth           = target.get_dot( "wild_growth", &source );
-  dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
-  dots.frenzied_assault      = target.get_dot( "frenzied_assault", &source );
-  dots.sickle_of_the_lion    = target.get_dot( "sickle_of_the_lion", &source );
 
   buff.lifebloom             = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
   debuff.tooth_and_claw      = make_buff( *this, "tooth_and_claw_debuff",

@@ -461,7 +461,8 @@ struct dbc_consumable_base_t : public action_t
     // And then, grab the action and buff from the special effect, if they are enabled
     consumable_action = effect -> create_action();
     consumable_buff = effect -> create_buff();
-    consumable_buff->s_data_reporting = s_data_reporting;
+    if ( consumable_buff )
+      consumable_buff->s_data_reporting = s_data_reporting;
   }
 
   bool ready() override

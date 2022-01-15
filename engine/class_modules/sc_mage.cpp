@@ -434,8 +434,6 @@ public:
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
-    bool prepull_dc = false;
-    int prepull_harmony_stacks = 0;
   } options;
 
   // Pets
@@ -5845,6 +5843,8 @@ void mage_t::create_options()
     add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
     add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
     add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+    add_option( opt_deprecated( "mage.prepull_dc", "override.precombat_state=buff.disciplinary_command.stack" ) );
+    add_option( opt_deprecated( "mage.prepull_harmony_stacks", "override.precombat_state=buff.arcane_harmony.stack" ) );
   }
 
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
@@ -5858,8 +5858,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
-  add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
 
   player_t::create_options();
 }
@@ -6785,16 +6783,6 @@ void mage_t::arise()
   {
     timespan_t first_tick = rng().real() * talents.time_anomaly->effectN( 1 ).period();
     events.time_anomaly = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
-  }
-
-  if ( runeforge.disciplinary_command->ok() && options.prepull_dc )
-  {
-    buffs.disciplinary_command->trigger();
-  }
-
-  if ( runeforge.arcane_harmony->ok() && options.prepull_harmony_stacks > 0 )
-  {
-    buffs.arcane_harmony->trigger( options.prepull_harmony_stacks );
   }
 }
 
