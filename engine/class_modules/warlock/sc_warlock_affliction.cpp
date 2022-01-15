@@ -434,17 +434,6 @@ struct summon_darkglare_t : public affliction_spell_t
   }
 };
 
-// 9.2 Tier Set
-struct deliberate_corruption_t : public affliction_spell_t
-{
-  deliberate_corruption_t( warlock_t* p)
-    : affliction_spell_t( "deliberate_corruption", p, p->find_spell(367831) )
-  {
-    background      = true;
-    affected_by_woc = false;
-  }
-};
-
 // AOE
 struct seed_of_corruption_t : public affliction_spell_t
 {
@@ -561,6 +550,17 @@ struct seed_of_corruption_t : public affliction_spell_t
     explosion->schedule_execute();
 
     affliction_spell_t::last_tick( d );
+  }
+};
+
+// 9.2 Tier Set
+struct deliberate_corruption_t : public affliction_spell_t
+{
+  deliberate_corruption_t( warlock_t* p)
+    : affliction_spell_t( "deliberate_corruption", p, p->find_spell(367831) )
+  {
+    background      = true;
+    affected_by_woc = false;
   }
 };
 
