@@ -566,147 +566,147 @@ struct deliberate_corruption_t : public affliction_spell_t
 
 struct malefic_rapture_t : public affliction_spell_t
 {
-  struct malefic_rapture_damage_instance_t : public affliction_spell_t
-  {
-    deliberate_corruption_t* deliberate_corruption;
-
-    malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-        affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), 
-        deliberate_corruption( new deliberate_corruption_t( p ) )
+    struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
-      aoe = 1;
-      background = true;
-      spell_power_mod.direct = spc;
-      callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
-    }
+      deliberate_corruption_t* deliberate_corruption;
 
-    double composite_da_multiplier( const action_state_t* s ) const override
-    {
-      double m = affliction_spell_t::composite_da_multiplier( s );
-
-      m *= p()->get_target_data( s->target )->count_affliction_dots();
-
-      if ( td( s->target )->dots_unstable_affliction->is_ticking() )
+      malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), 
+          deliberate_corruption( new deliberate_corruption_t( p ) )
       {
-        m *= 1.0 + p()->conduit.focused_malignancy.percent();
+        aoe = 1;
+        background = true;
+        spell_power_mod.direct = spc;
+        callbacks = false; //TOCHECK: Malefic Rapture did not proc Psyche Shredder, it may not cause any procs at all
       }
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+      double composite_da_multiplier( const action_state_t* s ) const override
       {
-        m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+        double m = affliction_spell_t::composite_da_multiplier( s );
+
+        m *= p()->get_target_data( s->target )->count_affliction_dots();
+
+        if ( td( s->target )->dots_unstable_affliction->is_ticking() )
+        {
+          m *= 1.0 + p()->conduit.focused_malignancy.percent();
+        }
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        {
+          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+        }
+
+        return m;
       }
 
-      return m;
+      void impact ( action_state_t* s ) override
+      {
+        trigger_deliberate_corruption( s );
+
+        affliction_spell_t::impact( s );
+      }
+
+      void trigger_deliberate_corruption( action_state_t* s )
+      {
+        if ( !p()->talents.absolute_corruption->ok() )
+          return;
+
+        if ( !result_is_hit( s->result ) )
+          return;
+
+        if ( !p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+          return;
+
+        auto td = this->td( s->target );
+        if ( !td->dots_corruption->is_ticking() )
+          return;
+
+        deliberate_corruption->set_target( s->target );
+        deliberate_corruption->execute();
+      }
+
+      void execute() override
+      {
+        int d = p()->get_target_data( target )->count_affliction_dots() - 1;
+        assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+
+        if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+        {
+          p()->procs.malefic_rapture[ d ]->occur();
+        }
+
+        affliction_spell_t::execute();
+      }
+    };
+
+    malefic_rapture_t( warlock_t* p, util::string_view options_str )
+      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
+    {
+      parse_options( options_str );
+      aoe = -1;
+
+      impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
+      add_child( impact_action );
     }
 
-    void impact ( action_state_t* s ) override
+    double cost() const override
     {
-      trigger_deliberate_corruption( s );
-
-      affliction_spell_t::impact( s );
+      if (p()->buffs.calamitous_crescendo->check())
+        return 0.0;
+        
+      return warlock_spell_t::cost();      
     }
 
-    void trigger_deliberate_corruption( action_state_t* s )
+    timespan_t execute_time() const override
     {
-      if ( !p()->talents.absolute_corruption->ok() )
-        return;
+      if ( p()->buffs.calamitous_crescendo->check() )
+      {
+        return 0_ms;
+      }
 
-      if ( !result_is_hit( s->result ) )
-        return;
+      return affliction_spell_t::execute_time();
+    }
 
-      if ( !p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        return;
+    bool ready() override
+    {
+      if ( !affliction_spell_t::ready() )
+       return false;
 
-      auto td = this->td( s->target );
-      if ( !td->dots_corruption->is_ticking() )
-        return;
-
-      deliberate_corruption->set_target( s->target );
-      deliberate_corruption->execute();
+      target_cache.is_valid = false;
+      return target_list().size() > 0;
     }
 
     void execute() override
     {
-      int d = p()->get_target_data( target )->count_affliction_dots() - 1;
-      assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
+      affliction_spell_t::execute();
 
-      if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+      if (p()->legendary.malefic_wrath->ok())
       {
-        p()->procs.malefic_rapture[ d ]->occur();
+        p()->buffs.malefic_wrath->trigger();
+        p()->procs.malefic_wrath->occur();
       }
 
-      affliction_spell_t::execute();
+      p()->buffs.calamitous_crescendo->expire();
+
+      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+      {
+        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
+        warlock_td_t* td = p()->get_target_data( target );
+
+        td->dots_agony->adjust_duration( dot_extension );
+        td->dots_corruption->adjust_duration( dot_extension );
+        td->dots_unstable_affliction->adjust_duration( dot_extension );
+      }
     }
-  };
 
-  malefic_rapture_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
-  {
-    parse_options( options_str );
-    aoe = -1;
-
-    impact_action = new malefic_rapture_damage_instance_t( p, data().effectN( 1 ).sp_coeff() );
-    add_child( impact_action );
-  }
-
-  double cost() const override
-  {
-    if (p()->buffs.calamitous_crescendo->check())
-      return 0.0;
-        
-    return warlock_spell_t::cost();      
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.calamitous_crescendo->check() )
+    size_t available_targets( std::vector<player_t*>& tl ) const override
     {
-      return 0_ms;
+      affliction_spell_t::available_targets( tl );
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
+
+      return tl.size();
     }
-
-    return affliction_spell_t::execute_time();
-  }
-
-  bool ready() override
-  {
-    if ( !affliction_spell_t::ready() )
-      return false;
-
-    target_cache.is_valid = false;
-    return target_list().size() > 0;
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-
-    if (p()->legendary.malefic_wrath->ok())
-    {
-      p()->buffs.malefic_wrath->trigger();
-      p()->procs.malefic_wrath->occur();
-    }
-
-    p()->buffs.calamitous_crescendo->expire();
-
-    if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-    {
-      timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-      warlock_td_t* td = p()->get_target_data( target );
-
-      td->dots_agony->adjust_duration( dot_extension );
-      td->dots_corruption->adjust_duration( dot_extension );
-      td->dots_unstable_affliction->adjust_duration( dot_extension );
-    }
-  }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    affliction_spell_t::available_targets( tl );
-
-    tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return p()->get_target_data( target )->count_affliction_dots() == 0; } ), tl.end() );
-
-    return tl.size();
-  }
 };
 
 // Talents
