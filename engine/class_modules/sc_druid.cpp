@@ -587,7 +587,6 @@ public:
     const spell_data_t* shooting_stars_dmg;
     const spell_data_t* half_moon;
     const spell_data_t* full_moon;
-    const spell_data_t* fury_of_elune;
     const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_3;
 
@@ -5195,7 +5194,7 @@ struct fury_of_elune_t : public druid_spell_t
 {
   struct fury_of_elune_tick_t : public druid_spell_t
   {
-    fury_of_elune_tick_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->spec.fury_of_elune )
+    fury_of_elune_tick_t( druid_t* p, std::string_view n, const spell_data_t* s ) : druid_spell_t( n, p, s )
     {
       background = dual = ground_aoe = true;
       aoe = -1;
@@ -5212,27 +5211,27 @@ struct fury_of_elune_t : public druid_spell_t
   };
 
   action_t* damage;
-  action_t* set_damage;
   timespan_t ap_period;
-  int ap_ticks;
   double ap_amount;
+  int ap_ticks;
 
   fury_of_elune_t( druid_t* p, std::string_view opt )
-    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, opt )
+    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), opt )
   {}
 
-  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt ), damage( nullptr ), set_damage( nullptr )
+  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage,
+                   std::string_view opt )
+    : druid_spell_t( n, p, s, opt )
   {
-    auto eff = p->query_aura_effect( s_data, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+    auto eff = p->query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
 
     ap_period = eff->period();
-    ap_ticks = static_cast<int>( data().duration() / ap_period );
     ap_amount = eff->resource( RESOURCE_ASTRAL_POWER );
+    ap_ticks  = static_cast<int>( s->duration() / ap_period );
 
-    dot_duration = 0_ms;  // AP gain handled via fury_of_elune_ground_event_t
+    dot_duration = 0_ms;  // AP gain handled via events
 
-    damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick" );
+    damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick", s_damage );
     damage->stats = stats;
   }
 
@@ -5249,7 +5248,7 @@ struct fury_of_elune_t : public druid_spell_t
     make_event<ground_aoe_event_t>( *sim, p(),
       ground_aoe_params_t().target( target )
                            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-                           .pulse_time( data().effectN( 3 ).period() )
+                           .pulse_time( ap_period )
                            .duration( data().duration() )
                            .action( damage ) );
   }
@@ -8273,7 +8272,6 @@ void druid_t::init_spells()
   spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
   spec.shooting_stars_dmg      = check_id( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
-  spec.fury_of_elune           = find_spell( 211545 );  // fury of elune tick damage
   spec.half_moon               = check_id( talent.new_moon->ok(), 274282 );
   spec.full_moon               = check_id( talent.new_moon->ok(), 274283 );
   spec.moonfire_2              = find_rank_spell( "Moonfire", "Rank 2" );
@@ -8849,7 +8847,8 @@ void druid_t::create_actions()
 
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
   {
-    auto pillar = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 202770 ), "" );
+    auto pillar =
+        get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 367907 ), find_spell( 365640 ), "" );
     pillar->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     pillar->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
     pillar->set_free_cast( free_cast_e::PILLAR );
