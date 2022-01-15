@@ -527,8 +527,6 @@ public:
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* blood_mist;
-    proc_t* gushing_lacerations;
 
     // Guardian
     proc_t* gore;
@@ -9142,36 +9140,36 @@ void druid_t::init_gains()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    gain.natures_balance = get_gain( "natures_balance" );
+    gain.natures_balance = get_gain( "Natures Balance" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    gain.energy_refund           = get_gain( "energy_refund" );
-    gain.primal_fury             = get_gain( "primal_fury" );
-    gain.berserk                 = get_gain( "berserk" );
-    gain.cateye_curio            = get_gain( "cateye_curio" );
-    gain.eye_of_fearful_symmetry = get_gain( "eye_of_fearful_symmetry" );
-    gain.incessant_hunter        = get_gain( "incessant_hunter" );
+    gain.energy_refund           = get_gain( "Energy Refund" );
+    gain.primal_fury             = get_gain( "Primal Fury" );
+    gain.berserk                 = get_gain( "Berserk" );
+    gain.cateye_curio            = get_gain( "Cat-eye Curio" );
+    gain.eye_of_fearful_symmetry = get_gain( "Eye of Fearful Symmetry" );
+    gain.incessant_hunter        = get_gain( "Incessant Hunter" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
-    gain.bear_form         = get_gain( "bear_form" );
-    gain.blood_frenzy      = get_gain( "blood_frenzy" );
-    gain.brambles          = get_gain( "brambles" );
-    gain.bristling_fur     = get_gain( "bristling_fur" );
-    gain.gore              = get_gain( "gore" );
-    gain.rage_refund       = get_gain( "rage_refund" );
-    gain.rage_from_melees  = get_gain( "rage_from_melees" );
+    gain.bear_form         = get_gain( "Bear Form" );
+    gain.blood_frenzy      = get_gain( "Blood Frenzy" );
+    gain.brambles          = get_gain( "Brambles" );
+    gain.bristling_fur     = get_gain( "Bristling Fur" );
+    gain.gore              = get_gain( "Gore" );
+    gain.rage_refund       = get_gain( "Rage Refund" );
+    gain.rage_from_melees  = get_gain( "Rage from Melees" );
   }
 
   // Multi-spec
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
   {
-    gain.clearcasting = get_gain( "clearcasting" );  // Feral & Restoration
+    gain.clearcasting = get_gain( "Clearcasting" );  // Feral & Restoration
   }
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
   {
-    gain.soul_of_the_forest = get_gain( "soul_of_the_forest" );  // Feral & Guardian
+    gain.soul_of_the_forest = get_gain( "Soul of the Forest" );  // Feral & Guardian
   }
 }
 
@@ -9181,19 +9179,17 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // Balance
-  proc.pulsar = get_proc( "Pulsar" )->collect_interval();
+  proc.pulsar = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
-  proc.predator              = get_proc( "predator" );
-  proc.predator_wasted       = get_proc( "predator_wasted" );
-  proc.primal_fury           = get_proc( "primal_fury" );
-  proc.blood_mist            = get_proc( "blood_mist" );
-  proc.gushing_lacerations   = get_proc( "gushing_lacerations" );
-  proc.clearcasting          = get_proc( "clearcasting" );
-  proc.clearcasting_wasted   = get_proc( "clearcasting_wasted" );
+  proc.predator              = get_proc( "Predator" );
+  proc.predator_wasted       = get_proc( "Predator (Wasted)" );
+  proc.primal_fury           = get_proc( "Primal Fury" );
+  proc.clearcasting          = get_proc( "Clearcasting" );
+  proc.clearcasting_wasted   = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.gore                  = get_proc( "gore" );
+  proc.gore                  = get_proc( "Gore" );
 }
 
 // druid_t::init_uptimes ====================================================
