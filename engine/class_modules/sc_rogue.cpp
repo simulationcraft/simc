@@ -674,7 +674,7 @@ public:
     proc_t* count_the_odds;
 
     // Legendary
-    proc_t* dustwalker_patch;
+    proc_t* duskwalker_patch;
 
     // Set Bonus
     proc_t* t28_subtlety_4pc;
@@ -1754,7 +1754,7 @@ public:
       }
       else
       {
-        // Dustwalker's Patch Legendary
+        // Duskwalker's Patch Legendary
         if ( p()->legendary.duskwalkers_patch.ok() )
         {
           p()->legendary.duskwalkers_patch_counter += ab::last_resource_cost;
@@ -1762,7 +1762,7 @@ public:
           {
             p()->cooldowns.vendetta->adjust( -timespan_t::from_seconds( p()->legendary.duskwalkers_patch->effectN( 1 ).base_value() ) );
             p()->legendary.duskwalkers_patch_counter -= p()->legendary.duskwalkers_patch->effectN( 2 ).base_value();
-            p()->procs.dustwalker_patch->occur();
+            p()->procs.duskwalker_patch->occur();
           }
         }
       }
@@ -3781,6 +3781,13 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
+
+    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
+    if ( p()->is_ptr() )
+    {
+      p()->buffs.perforated_veins->trigger();
+    }
+
     trigger_weaponmaster( state, p()->active.weaponmaster.akaaris_shadowstrike );
   }
 
@@ -3836,14 +3843,13 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // Only primary casts trigger Perforated Veins, not Weaponmaster or Akaari procs
-    // TOCHECK: T28 bonus after next PTR build
-    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
+    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
+    if ( !is_secondary_action() || p()->is_ptr() )
     {
       p()->buffs.perforated_veins->trigger();
     }
 
-    // 2021-08-30-- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
+    // 2021-08-30 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
@@ -5781,7 +5787,7 @@ struct roll_the_bones_t : public buff_t
     expire_secondary_buffs();
 
     const timespan_t roll_duration = remains();
-    const int buffs_rolled = roll_the_bones( roll_duration );
+    const unsigned buffs_rolled = roll_the_bones( roll_duration );
 
     procs[ buffs_rolled - 1 ]->occur();
     rogue->buffs.loaded_dice->expire();
@@ -8216,7 +8222,7 @@ void rogue_t::init_procs()
 
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 
-  procs.dustwalker_patch    = get_proc( "Dustwalker Patch"             );
+  procs.duskwalker_patch    = get_proc( "Duskwalker Patch"             );
 
   procs.t28_subtlety_4pc    = get_proc( "Immortal Technique (T28 4pc)" );
 }
