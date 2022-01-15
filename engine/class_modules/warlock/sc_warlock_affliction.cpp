@@ -571,7 +571,8 @@ struct malefic_rapture_t : public affliction_spell_t
     deliberate_corruption_t* deliberate_corruption;
 
     malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-        affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), deliberate_corruption( new deliberate_corruption_t( p ) )
+        affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), 
+        deliberate_corruption( new deliberate_corruption_t( p ) )
     {
       aoe = 1;
       background = true;
