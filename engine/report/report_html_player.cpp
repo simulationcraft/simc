@@ -2598,6 +2598,35 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
         "</div>\n";
 }
 
+std::string find_matching_decorator( const player_t& p, std::string_view n )
+{
+  std::string n_token = util::tokenize_fn( n );
+
+  const auto* action    = p.find_action( n );
+  if ( !action ) action = p.find_action( n_token );
+  if ( action )
+    return report_decorators::decorated_action( *action );
+
+  const auto* buff  = buff_t::find( const_cast<player_t*>( &p ), n );
+  if ( !buff ) buff = buff_t::find( const_cast<player_t*>( &p ), n_token );
+  if ( buff )
+    return report_decorators::decorated_buff( *buff );
+
+  auto spell                = p.find_talent_spell( n );
+  if ( !spell->ok() ) spell = p.find_talent_spell( n_token );
+  if ( !spell->ok() ) spell = p.find_specialization_spell( n );
+  if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
+  if ( !spell->ok() ) spell = p.find_class_spell( n );
+  if ( !spell->ok() ) spell = p.find_class_spell( n_token );
+  if ( !spell->ok() ) spell = p.find_runeforge_legendary( n );
+  if ( !spell->ok() ) spell = p.find_conduit_spell( n );
+  if ( !spell->ok() ) spell = p.find_conduit_spell( n_token );
+  if ( spell->ok() )
+    return report_decorators::decorated_spell_data( *p.sim, spell );
+
+  return util::encode_html( n );
+}
+
 void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_t& g,
                       std::array<double, RESOURCE_MAX>& total_gains, bool report_overflow = true )
 {
@@ -2605,23 +2634,12 @@ void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_
   {
     if ( g.actual[ i ] != 0 || g.overflow[ i ] != 0 )
     {
-      std::string decorated_name = util::encode_html( g.name() );
-
-      if ( auto action = p.find_action( g.name() ) )
-        decorated_name = report_decorators::decorated_action( *action );
-      else if ( auto action = p.find_action( util::tokenize_fn( g.name() ) ) )
-        decorated_name = report_decorators::decorated_action( *action );
-      else if ( auto buff = buff_t::find( const_cast<player_t*>( &p ), g.name() ) )
-        decorated_name = report_decorators::decorated_buff( *buff );
-      else if ( auto buff = buff_t::find( const_cast<player_t*>( &p ), util::tokenize_fn( g.name() ) ) )
-        decorated_name = report_decorators::decorated_buff( *buff );
-
       os.format( "<tr><td class=\"left nowrap\">{}</td><td class=\"left nowrap\">{}</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}%</td>"
                  "<td class=\"right\">{:.2f}</td>",
-                 decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
+                 find_matching_decorator( p, g.name() ), util::inverse_tokenize( util::resource_type_string( i ) ),
                  g.count[ i ],
                  g.actual[ i ],
                  ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ),
