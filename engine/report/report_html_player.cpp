@@ -1181,32 +1181,24 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
 void print_html_action_resource( report::sc_html_stream& os, const stats_t& s )
 {
-  for ( const auto& a : s.action_list )
-  {
-    if ( a->stats != &s )
-      continue;
-    if ( !a->background )
-      break;
-  }
+  std::string decorated_name = report_decorators::decorated_action( *s.action_list.front() );
 
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( s.resource_gain.actual[ i ] > 0 )
     {
-      os << "<tr>\n";
-      os.printf(
-          "<td class=\"left\">%s</td>\n"
-          "<td class=\"left\">%s</td>\n"
-          "<td class=\"right\">%.1f</td>\n"
-          "<td class=\"right\">%.1f</td>\n"
-          "<td class=\"right\">%.1f</td>\n"
-          "<td class=\"right\">%.1f</td>\n"
-          "<td class=\"right\">%.1f</td>\n",
-          util::encode_html( s.resource_gain.name() ).c_str(),
-          util::inverse_tokenize( util::resource_type_string( i ) ).c_str(), s.resource_gain.count[ i ],
-          s.resource_gain.actual[ i ], s.resource_gain.actual[ i ] / s.resource_gain.count[ i ], s.rpe[ i ],
-          s.apr[ i ] );
-      os << "</tr>\n";
+      os.format( "<tr><td class=\"left\">{}</td><td class=\"left\">{}</td>\n"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}</td></tr>\n",
+                 decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
+                 s.resource_gain.count[ i ],
+                 s.resource_gain.actual[ i ],
+                 s.resource_gain.actual[ i ] / s.resource_gain.count[ i ],
+                 s.rpe[ i ],
+                 s.apr[ i ] );
     }
   }
 }
@@ -2606,27 +2598,41 @@ void print_html_player_statistics( report::sc_html_stream& os, const player_t& p
         "</div>\n";
 }
 
-void print_html_gain( report::sc_html_stream& os, const gain_t& g, std::array<double, RESOURCE_MAX>& total_gains,
-                      bool report_overflow = true )
+void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_t& g,
+                      std::array<double, RESOURCE_MAX>& total_gains, bool report_overflow = true )
 {
   for ( resource_e i = RESOURCE_NONE; i < RESOURCE_MAX; i++ )
   {
     if ( g.actual[ i ] != 0 || g.overflow[ i ] != 0 )
     {
-      os << "<tr>\n"
-         << "<td class=\"left nowrap\">" << util::encode_html( g.name() ) << "</td>\n"
-         << "<td class=\"left nowrap\">" << util::inverse_tokenize( util::resource_type_string( i ) ) << "</td>\n"
-         << "<td class=\"right\">" << g.count[ i ] << "</td>\n"
-         << "<td class=\"right\">" << g.actual[ i ] << "</td>\n"
-         << "<td class=\"right\">" << ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ) << "%</td>\n"
-         << "<td class=\"right\">" << g.actual[ i ] / g.count[ i ] << "</td>\n";
+      std::string decorated_name = util::encode_html( g.name() );
 
-      if (report_overflow)
+      if ( auto action = p.find_action( g.name() ) )
+        decorated_name = report_decorators::decorated_action( *action );
+      else if ( auto action = p.find_action( util::tokenize_fn( g.name() ) ) )
+        decorated_name = report_decorators::decorated_action( *action );
+      else if ( auto buff = buff_t::find( const_cast<player_t*>( &p ), g.name() ) )
+        decorated_name = report_decorators::decorated_buff( *buff );
+      else if ( auto buff = buff_t::find( const_cast<player_t*>( &p ), util::tokenize_fn( g.name() ) ) )
+        decorated_name = report_decorators::decorated_buff( *buff );
+
+      os.format( "<tr><td class=\"left nowrap\">{}</td><td class=\"left nowrap\">{}</td>"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}</td>"
+                 "<td class=\"right\">{:.2f}%</td>"
+                 "<td class=\"right\">{:.2f}</td>",
+                 decorated_name, util::inverse_tokenize( util::resource_type_string( i ) ),
+                 g.count[ i ],
+                 g.actual[ i ],
+                 ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ),
+                 g.actual[ i ] / g.count[ i ] );
+
+      if ( report_overflow )
       {
-        double overflow_pct = 100.0 * g.overflow[ i ] / ( g.actual[ i ] + g.overflow[ i ] );
-
-        os << "<td class=\"right\">" << g.overflow[ i ] << "</td>\n";
-        os << "<td class=\"right\">" << overflow_pct << "%</td>\n";
+        os.format( "<td class=\"right\">{:.2f}</td>"
+                   "<td class=\"right\">{:.2f}%</td>",
+                   g.overflow[ i ],
+                   100.0 * g.overflow[ i ] / ( g.actual[ i ] + g.overflow[ i ] ) );
       }
       os << "</tr>\n";
     }
@@ -2670,7 +2676,7 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
   os << "<tbody>\n";
   for ( const auto& gain : p.gain_list )
   {
-    print_html_gain( os, *gain, total_player_gains );
+    print_html_gain( os, p, *gain, total_player_gains );
   }
 
   for ( const auto& pet : p.pet_list )
@@ -2701,7 +2707,7 @@ void print_html_resource_gains_table( report::sc_html_stream& os, const player_t
               << "</tr>\n";
         }
       }
-      print_html_gain( os, *gain, total_pet_gains );
+      print_html_gain( os, p, *gain, total_pet_gains );
     }
   }
   os << "</tbody>\n"
