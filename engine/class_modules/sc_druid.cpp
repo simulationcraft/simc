@@ -9131,6 +9131,12 @@ void druid_t::init()
       break;
     default: break;
   }
+
+  if ( util::str_compare_ci( sim->fight_style, "DungeonSlice" ) ||
+       util::str_compare_ci( sim->fight_style, "DungeonRoute" ) )
+  {
+    options.adaptive_swarm_friendly_targets = 5;
+  }
 }
 
 // druid_t::init_gains ======================================================
