@@ -7619,8 +7619,10 @@ struct kindred_empowerment_t : public druid_spell_t
 
 struct kindred_spirits_t : public druid_spell_t
 {
+  buff_t* lone;
+
   kindred_spirits_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str )
+    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str ), lone( nullptr )
   {
     if ( !p->cov.kyrian->ok() )
       return;
@@ -7640,29 +7642,30 @@ struct kindred_spirits_t : public druid_spell_t
 
     if ( p->conduit.deep_allegiance->ok() )
       cooldown->duration *= 1.0 + p->conduit.deep_allegiance.percent();
-  }
 
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( p()->options.lone_empowerment )
+    if ( p->options.lone_empowerment )
     {
-      switch ( p()->specialization() )
+      switch ( p->specialization() )
       {
         case DRUID_BALANCE:
         case DRUID_FERAL:
-          p()->buff.lone_empowerment->trigger();
+          lone = p->buff.lone_empowerment;
           break;
         default:
           sim->error( "Lone empowerment is only supported for DPS specializations." );
           break;
       }
     }
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( lone )
+      lone->trigger();
     else
-    {
       p()->buff.kindred_empowerment_energize->trigger();
-    }
   }
 };
 
