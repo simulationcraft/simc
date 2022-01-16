@@ -7614,8 +7614,6 @@ struct kindred_empowerment_t : public druid_spell_t
   {
     background = dual = true;
     may_miss = may_crit = callbacks = false;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-    update_flags |= STATE_TGT_MUL_DA;
   }
 };
 
