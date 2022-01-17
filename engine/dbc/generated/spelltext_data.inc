@@ -1,5 +1,5 @@
-// Spell text, wow build 9.1.5.41031
-static const std::array<spelltext_data_t, 15592> __spelltext_data { {
+// Spell text, wow build 9.1.5.41793
+static const std::array<spelltext_data_t, 15598> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7970,6 +7970,7 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 228599, "$@spelldesc214634", 0, "Artifact" },
   { 228600, "$@spelldesc199786", "Frozen in place.", 0 },
   { 228601, "$@spelldesc153595", 0, 0 },
+  { 228645, "Instantly strike the target and 1 other nearby enemy, causing $s2 Physical damage, and reducing enemies' movement speed by $s5% for $d.\r\n\r\n|cFFFFFFFFGenerates $s3 bonus Runic Power$?s221536[, plus $s4 Runic Power per additional enemy struck][].|r", "Movement speed reduced by $s5%.", 0 },
   { 228649, "Kick with a blast of Chi energy, dealing $s1 Physical damage.", 0, 0 },
   { 228784, "$@spelldesc214168", 0, 0 },
   { 228920, "Throws a whirling weapon at the target location that chases nearby enemies, inflicting $<damage> Physical damage to all enemies over $d. Deals reduced damage beyond $156287s2 targets.\r\n\r\n|cFFFFFFFFGenerates ${$334934s1/10} Rage each time it deals damage.|r", "Ravager is currently active.", 0 },
@@ -8615,7 +8616,7 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 243988, "Adds ${$mws*$243991s1} Fire damage to your autoattacks.", 0, 0 },
   { 243991, "$@spelldesc243988", 0, 0 },
   { 243994, "Your melee attacks have a chance to increase your Haste by $243996s1 for $243996d.", 0, 0 },
-  { 243996, "$@spelldesc243994", "Haste increased by $s1.", 0 },
+  { 243996, "$@spelldesc243994", "Haste increased by $w1.", 0 },
   { 244034, "Your melee attacks have a chance to blast the enemy with acid for $244035s1 Nature damage.\r\n", 0, 0 },
   { 244035, "$@spelldesc244034", 0, 0 },
   { 244040, "$@spelldesc244041", "Slowed by $s2% and bleeding for $w1 Physical damage every $t1 sec.", 0 },
@@ -13482,6 +13483,9 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 326977, "Engrave your weapon with a rune that increases your movement speed by $326982s2%. Additionally, when you kill an enemy that yields experience or honor you heal for $326984s2% of your maximum health and gain $326984s1% Haste and movement speed.\r\n\r\nModifying your rune requires a Runeforge in Ebon Hold.", 0, 0 },
   { 326982, "Your Movement speed while dead is increased by $s2%. When you kill an enemy that yields experience or honor, gain $326984s1% Haste and Movement Speed and heal for $326984s2% of your maximum health.", 0, 0 },
   { 326984, "$@spelldesc326982", "Haste and Movement Speed increased by $s1%.", 0 },
+  { 327004, "$@spelldesc326860", 0, 0 },
+  { 327005, "$@spelldesc326860", 0, 0 },
+  { 327006, "$@spelldesc326860", 0, 0 },
   { 327022, "Energize your bonded partner, granting them $327139s1% of your damage as additional Arcane damage, healing, or absorption.", "Energized by $@auracaster, increasing damage, healing, and mitigation by $s2% until Kindred Empowerment runs out.\r\n\r\nEmpowerment remaining: ${$w1-1}", "Kyrian" },
   { 327037, "Protect your bonded partner, redirecting $s1% of damage they take to you, unless you fall below $s3% health.", "$?$w1>0[$w1% of damage taken is redirected to $@auracaster.][Taking ${$s1*$e1}% of damage taken by bonded partner.]", "Kyrian" },
   { 327059, "$@spelldesc325289", 0, "Necrolord" },
@@ -14389,6 +14393,7 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 339058, "Killing an enemy grants you the Third Eye, increasing your $pri by $339970s1% for $339970d, stacking up to $339970u and increasing the duration by $s2 sec for each additional stack. The duration of the Third Eye is increased by $s3% while in the Maw.", 0, 0 },
   { 339059, "Flayed Shot has an additional $s1% chance to proc Flayer's Mark and it increases the damage of your next Kill Shot by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
   { 339060, "Thrash has $s1% increased damage, $s3% increased radius, and can stack $s4 additional $ltime:times;.", 0, 0 },
+  { 339061, "$@spelldesc339059", "Increases the damage of your next Killshot by ${$W1}.1%.", 0 },
   { 339062, "$?s102558[Incarnation: Guardian of Ursoc][Berserk in Bear Form] grants $50334s5% increased damage, $50334s8% Leech, and immunity to effects that cause loss of control of your character.\r\n\r\nIts cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 339063, "Barkskin reduces damage by an additional $s1%. When it begins or ends in Bear Form, you gain Ironfur and Frenzied Regeneration.", 0, 0 },
   { 339064, "Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional allies within $189877s1 yards of the target.", 0, 0 },
@@ -15592,13 +15597,14 @@ static const std::array<spelltext_data_t, 15592> __spelltext_data { {
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
   { 364944, 0, "Movement speed increased by $s1%.", 0 },
   { 365664, "Add the Infernal affix to a Mythic Keystone.", 0, 0 },
+  { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.1.5.41031
+// spelltext hotfix entries, wow build 9.1.5.41793
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.1.5.41031
+// Spell description variables, wow build 9.1.5.41793
 static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -15907,7 +15913,7 @@ static const std::array<spelldesc_vars_data_t, 305> __spelldesc_vars_data { {
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.1.5.41031
+// spelldesc_vars hotfix entries, wow build 9.1.5.41793
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

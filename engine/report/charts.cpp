@@ -5,19 +5,20 @@
 
 #include "charts.hpp"
 
-#include "action/sc_action.hpp"
+#include "action/action.hpp"
 #include "dbc/dbc.hpp"
 #include "player/gear_stats.hpp"
 #include "player/pet.hpp"
 #include "player/player_scaling.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/stats.hpp"
 #include "report/color.hpp"
 #include "report/decorators.hpp"
-#include "sc_highchart.hpp"
+#include "report/highchart.hpp"
+#include "sim/profileset.hpp"
 #include "sim/reforge_plot.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "util/plot_data.hpp"
 #include "util/sample_data.hpp"
 #include "util/util.hpp"
@@ -31,6 +32,8 @@ using namespace js;
 
 namespace
 {  // anonymous namespace ==========================================
+
+
 
 struct filter_non_performing_players
 {
@@ -464,6 +467,93 @@ std::string get_metric_value_name( metric_value_e val )
     default:
       return "Unknown " + util::to_string( val );
   }
+}
+
+
+void profilesets_insert_data( highchart::bar_chart_t& chart,
+                  const std::string& name,
+                  const color::rgb c,
+                  const profileset::statistical_data_t& data,
+                  bool baseline,
+                  double baseline_value,
+                  bool mean = false )
+{
+  std::string data_idx_str = mean ? "__data.1." : "__data.0.";
+  js::sc_js_t entry;
+
+  if ( baseline )
+  {
+    entry.set( "color", "#AA0000" );
+    entry.set( "dataLabels.color", "#AA0000" );
+    entry.set( "dataLabels.style.fontWeight", "bold" );
+  }
+
+  double data_value = mean ? data.mean : data.median;
+
+  entry.set( "name", name );
+  entry.set( "reldiff", baseline_value > 0 ? (data_value / baseline_value - 1.0) * 100 : 0);
+  entry.set( "y", util::round( data_value ) );
+
+  chart.add( data_idx_str + "series.0.data", entry );
+
+  if ( !mean )
+  {
+    js::sc_js_t boxplot_entry;
+    boxplot_entry.set( "name", name );
+    boxplot_entry.set( "low", data.min );
+    boxplot_entry.set( "q1", data.first_quartile );
+    boxplot_entry.set( "median", data.median );
+    boxplot_entry.set( "mean", data.mean );
+    boxplot_entry.set( "q3", data.third_quartile );
+    boxplot_entry.set( "high", data.max );
+
+    if ( baseline )
+    {
+      color::rgb c( "AA0000" );
+      boxplot_entry.set( "color", c.dark( .5 ).opacity( .5 ).str() );
+      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+    }
+    else
+    {
+      boxplot_entry.set( "fillColor", c.dark( .75 ).opacity( .5 ).rgb_str() );
+    }
+
+    chart.add( data_idx_str + "series.1.data", boxplot_entry );
+  }
+}
+
+void profilesets_populate_chart_data( highchart::bar_chart_t& profileset,
+                          size_t base_offset,
+                          size_t max_chart_entries,
+                          util::span<const profileset::profile_set_t*> results,
+                          const player_t* baseline,
+                          scale_metric_e metric,
+                          const color::rgb c,
+                          bool mean = false )
+{
+    // Baseline data, insert into the correct position in the for loop below
+    auto baseline_data = profileset::metric_data( baseline, metric );
+    auto baseline_value = mean ? baseline_data.mean : baseline_data.median;
+    bool inserted = false;
+    for ( size_t i = base_offset, end = std::min( base_offset + max_chart_entries, results.size() ); i < end; ++i )
+    {
+      const auto set = results[ i ];
+      const auto& data = set->result( metric );
+
+      if ( !inserted && ( mean ? data.mean() : data.median() ) <= baseline_value )
+      {
+        profilesets_insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+        inserted = true;
+      }
+
+      profilesets_insert_data( profileset, util::encode_html( set->name() ), c, set->result().statistical_data(), false,
+                   baseline_value, mean );
+    }
+
+    if ( !inserted )
+    {
+      profilesets_insert_data( profileset, util::encode_html( baseline->name() ), c, baseline_data, true, baseline_value, mean );
+    }
 }
 
 }  // anonymous namespace ====================================================
@@ -1641,4 +1731,105 @@ highchart::time_series_t& chart::generate_actor_timeline(
   }
 
   return ts;
+}
+
+void chart::generate_profilesets_chart( highchart::bar_chart_t& chart, const sim_t& sim, size_t chart_id,
+                                        util::span<const profileset::profile_set_t*> results,
+                                        util::span<const profileset::profile_set_t*> results_mean )
+{
+  // Bar color
+  const auto& c          = color::class_color( sim.player_no_pet_list.data().front()->type );
+  std::string chart_name = util::scale_metric_type_string( sim.profileset_metric.front() );
+
+  const auto* baseline = sim.player_no_pet_list.data().front();
+  auto base_offset     = chart_id * MAX_PROFILESET_CHART_ENTRIES;
+
+  int data_label_width     = sim.chart_show_relative_difference ? 140 : 80;
+  int y_title_x            = sim.chart_show_relative_difference ? -110 : -90;
+  std::string baseline_str = "<br/><span style=\"color:#A00;\">Baseline in red</span>";
+
+  chart.set( "__current", 0 );                        // the current chart's __data index
+  chart.set( "__data.0.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
+  chart.set( "__data.0.series.1.type", "boxplot" );
+  chart.set( "__data.0.series.1.name", chart_name );
+  chart.set( "__data.0.title.text", "Median " + chart_name );
+  chart.set( "__data.0.subtitle.text", "(Click title for Average)" + baseline_str );
+  chart.set( "__data.1.series.0.name", chart_name );  // __data.0 is median chart, __data.1 is mean
+  chart.set( "__data.1.title.text", "Average " + chart_name );
+  chart.set( "__data.1.subtitle.text", "(Click title for Median)" + baseline_str );
+  chart.set( "yAxis.gridLineWidth", 0 );
+  chart.set( "xAxis.offset", data_label_width );
+  chart.set_yaxis_title( chart_name );
+  chart.set( "yAxis.title.x", y_title_x );
+  chart.width_ = 1150;
+  chart.height_ =
+      24 * std::min( as<size_t>( MAX_PROFILESET_CHART_ENTRIES + 1 ), results.size() - base_offset + 1 ) + 166;
+
+  chart.add( "colors", c.str() );
+  chart.add( "colors", c.dark( .5 ).opacity( .5 ).str() );
+
+  chart.set( "plotOptions.series.animation", false );
+
+  chart.set( "plotOptions.boxplot.whiskerLength", "85%" );
+  chart.set( "plotOptions.boxplot.whiskerWidth", 1.5 );
+  chart.set( "plotOptions.boxplot.medianWidth", 1 );
+  chart.set( "plotOptions.boxplot.pointWidth", 18 );
+  chart.set( "plotOptions.boxplot.tooltip.pointFormat",
+             "Maximum: {point.high}<br/>"
+             "Upper quartile: {point.q3}<br/>"
+             "Mean: {point.mean:,.1f}<br/>"
+             "Median: {point.median}<br/>"
+             "Lower quartile: {point.q1}<br/>"
+             "Minimum: {point.low}<br/>" );
+
+  chart.set( "plotOptions.bar.dataLabels.crop", false );
+  chart.set( "plotOptions.bar.dataLabels.overflow", "none" );
+  chart.set( "plotOptions.bar.dataLabels.inside", true );
+  chart.set( "plotOptions.bar.dataLabels.enabled", true );
+  chart.set( "plotOptions.bar.dataLabels.align", "left" );
+  chart.set( "plotOptions.bar.dataLabels.shadow", false );
+  chart.set( "plotOptions.bar.dataLabels.x", -data_label_width );
+  chart.set( "plotOptions.bar.dataLabels.color", c.str() );
+  chart.set( "plotOptions.bar.dataLabels.verticalAlign", "middle" );
+  chart.set( "plotOptions.bar.dataLabels.style.fontSize", "10pt" );
+  chart.set( "plotOptions.bar.dataLabels.style.fontWeight", "none" );
+  chart.set( "plotOptions.bar.dataLabels.style.textShadow", "none" );
+
+  chart.set( "xAxis.labels.style.color", c.str() );
+  chart.set( "xAxis.labels.style.whiteSpace", "nowrap" );
+  chart.set( "xAxis.labels.style.fontSize", "10pt" );
+  chart.set( "xAxis.labels.padding", 2 );
+  chart.set( "xAxis.lineColor", c.str() );
+
+  // Custom formatter for X axis so we can get baseline colored different
+
+  // All attempts to escape the apostrophe failed, the JSON library gets
+  // in our way. Just remove them.
+  std::string name = util::encode_html( baseline->name_str );
+  util::replace_all( name, "'", "" );
+
+  std::string functor = "function () {";
+  functor += "  if (this.value === '" + name + "') {";
+  functor += "    return '<span style=\"color:#AA0000;font-weight:bold;\">' + this.value + '</span>';";
+  functor += "  }";
+  functor += "  else {";
+  functor += "    return this.value;";
+  functor += "  }";
+  functor += "}";
+
+  chart.set( "xAxis.labels.formatter", functor );
+  chart.value( "xAxis.labels.formatter" ).SetRawOutput( true );
+
+  chart.set( "chart.events.load", "setup_cycle_chart" );
+  chart.value( "chart.events.load" ).SetRawOutput( true );
+
+  if ( sim.chart_show_relative_difference )
+  {
+    chart.set( "plotOptions.bar.dataLabels.format", "{y} ({point.reldiff}%)" );
+  }
+
+  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results, baseline,
+                                   sim.profileset_metric.front(), c );
+  profilesets_populate_chart_data( chart, base_offset, MAX_PROFILESET_CHART_ENTRIES, results_mean, baseline,
+                                   sim.profileset_metric.front(), c, true );
 }

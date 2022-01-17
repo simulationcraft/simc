@@ -910,7 +910,7 @@ struct word_of_glory_t : public holy_power_consumer_t<paladin_heal_t>
         timespan_t trigger_duration = timespan_t::from_seconds( p()->talents.awakening->effectN( 2 ).base_value() );
         if ( main_buff->check() )
         {
-          p()->buffs.avengers_might->extend_duration( p(), trigger_duration );
+          p()->buffs.avenging_wrath->extend_duration( p(), trigger_duration );
         }
         else
         {

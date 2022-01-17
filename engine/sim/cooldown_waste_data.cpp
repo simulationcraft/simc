@@ -5,8 +5,8 @@
 
 #include "cooldown_waste_data.hpp"
 
-#include "sim/sc_cooldown.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/cooldown.hpp"
+#include "sim/sim.hpp"
 
 cooldown_waste_data_t::cooldown_waste_data_t( const cooldown_t* cooldown, bool simple )
   : cd( cooldown ),

@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_actor_pair.hpp"
+#include "actor_pair.hpp"
 #include "util/generic.hpp"
 
 struct buff_t;

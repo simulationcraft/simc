@@ -490,10 +490,13 @@ table.sc tr.head {
     color: #fff;
 }
 table.sc th {
-    padding: 2px 4px 4px 4px;
+    padding: 2px 4px 2px 4px;
     text-align: center;
     background-color: #333;
     color: #fff;
+}
+table.spec th {
+    padding-bottom: 0px;
 }
 table.sc th.name {
     font-weight: lighter;

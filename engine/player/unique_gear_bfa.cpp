@@ -24,14 +24,14 @@ struct bfa_aoe_proc_t : public generic_aoe_proc_t
                   bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, s, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 
   bfa_aoe_proc_t( const special_effect_t& effect, ::util::string_view name, unsigned spell_id,
                        bool aoe_damage_increase_ = false ) :
     generic_aoe_proc_t( effect, name, spell_id, aoe_damage_increase_ )
   {
-    max_scaling_targets = 6;
+    max_scaling_targets = 5;
   }
 };
 
@@ -3785,7 +3785,7 @@ void items::azsharas_font_of_power( special_effect_t& effect )
       if ( time == 0_ms )  // No hardcoded override, so dynamically calculate timing via the precombat APL
       {
         time     = 4_s;  // base 4s channel for full effect
-        auto apl = player->precombat_action_list;
+        const auto& apl = player->precombat_action_list;
 
         auto it = range::find( apl, use_action );
         if ( it == apl.end() )

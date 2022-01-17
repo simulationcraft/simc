@@ -6,7 +6,7 @@
 #include "item_targetdata_initializer.hpp"
 
 #include "item/item.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 item_targetdata_initializer_t::item_targetdata_initializer_t(unsigned iid, util::span<const slot_e> s) :
   item_id(iid), slots_( s.begin(), s.end() )

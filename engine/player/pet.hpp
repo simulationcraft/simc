@@ -6,7 +6,7 @@
 #pragma once
 
 #include "config.hpp"
-#include "sc_player.hpp"
+#include "player.hpp"
 
 
 // Pet ======================================================================

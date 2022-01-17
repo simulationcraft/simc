@@ -8,7 +8,7 @@
 #include "util/util.hpp"
 #include "class_modules/apl/mage.hpp"
 #include "report/charts.hpp"
-#include "report/sc_highchart.hpp"
+#include "report/highchart.hpp"
 
 namespace {
 
@@ -434,8 +434,6 @@ public:
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
-    bool prepull_dc = false;
-    int prepull_harmony_stacks = 0;
   } options;
 
   // Pets
@@ -723,6 +721,7 @@ public:
   void init_uptimes() override;
   void init_rng() override;
   void init_finished() override;
+  void add_precombat_buff_state( buff_t*, int, double, timespan_t );
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   void do_dynamic_regen( bool = false ) override;
@@ -796,7 +795,7 @@ public:
   bool      trigger_brain_freeze( double chance, proc_t* source, timespan_t delay = 0.15_s );
   bool      trigger_fof( double chance, proc_t* source, int stacks = 1 );
   void      trigger_icicle( player_t* icicle_target, bool chain = false );
-  void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action );
+  void      trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration = timespan_t::min() );
   void      trigger_evocation( timespan_t duration_override = timespan_t::min(), bool hasted = true );
   void      trigger_arcane_charge( int stacks = 1 );
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
@@ -1991,13 +1990,13 @@ struct fire_mage_spell_t : public mage_spell_t
     trigger_legendary_buff( p()->buffs.molten_skyfall, p()->buffs.molten_skyfall_ready, 2 );
   }
 
-  void consume_molten_skyfall( player_t* target )
+  bool consume_molten_skyfall( player_t* target )
   {
-    if ( p()->buffs.molten_skyfall_ready->check() )
-    {
-      p()->buffs.molten_skyfall_ready->expire();
-      p()->action.legendary_meteor->execute_on_target( target );
-    }
+    if ( !p()->buffs.molten_skyfall_ready->check() )
+      return false;
+    p()->buffs.molten_skyfall_ready->expire();
+    p()->action.legendary_meteor->execute_on_target( target );
+    return true;
   }
 };
 
@@ -2300,13 +2299,13 @@ struct frost_mage_spell_t : public mage_spell_t
     trigger_legendary_buff( p()->buffs.cold_front, p()->buffs.cold_front_ready, 2 );
   }
 
-  void consume_cold_front( player_t* target )
+  bool consume_cold_front( player_t* target )
   {
-    if ( p()->buffs.cold_front_ready->check() )
-    {
-      p()->buffs.cold_front_ready->expire();
-      p()->action.legendary_frozen_orb->execute_on_target( target );
-    }
+    if ( !p()->buffs.cold_front_ready->check() )
+      return false;
+    p()->buffs.cold_front_ready->expire();
+    p()->action.legendary_frozen_orb->execute_on_target( target );
+    return true;
   }
 };
 
@@ -3398,9 +3397,9 @@ struct fireball_t final : public fire_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_molten_skyfall( s->target );
-      trigger_molten_skyfall();
       trigger_deaths_fathom();
+      if ( !consume_molten_skyfall( s->target ) )
+        trigger_molten_skyfall();
     }
   }
 
@@ -3685,9 +3684,19 @@ struct frostbolt_t final : public frost_mage_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_cold_front( s->target );
-      trigger_cold_front();
       trigger_deaths_fathom();
+      consume_cold_front( s->target );
+      // Cold Front and Deathborne cleave have some unusual interactions.
+      // After casting a Frostbolt that hits 3 targets, the following occurs:
+      // * 26-28 cold_front: FO is triggered, 0 stacks after
+      // * cold_front_ready: FO is triggered, 3 stacks after
+      // Other outcomes are also possible, although rare. This is most
+      // likely due to batching.
+      if ( s->chain_target == 0 )
+      {
+        for ( int i = 0; i < s->n_targets; i++ )
+          trigger_cold_front();
+      }
     }
   }
 
@@ -4718,8 +4727,8 @@ struct pyroblast_t final : public hot_streak_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      consume_molten_skyfall( s->target );
-      trigger_molten_skyfall();
+      if ( !consume_molten_skyfall( s->target ) )
+        trigger_molten_skyfall();
     }
   }
 
@@ -5827,12 +5836,16 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  // TODO: Remove these in 9.2
-  add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
-  add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
-  add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
-  add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
-  add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+  if ( !is_ptr() ) // TODO: PTR
+  {
+    add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
+    add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
+    add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
+    add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
+    add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
+    add_option( opt_deprecated( "mage.prepull_dc", "override.precombat_state=buff.disciplinary_command.stack" ) );
+    add_option( opt_deprecated( "mage.prepull_harmony_stacks", "override.precombat_state=buff.arcane_harmony.stack" ) );
+  }
 
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
@@ -5845,8 +5858,6 @@ void mage_t::create_options()
   add_option( opt_timespan( "mage.mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_bool( "mage.prepull_dc", options.prepull_dc ) );
-  add_option( opt_int( "mage.prepull_harmony_stacks", options.prepull_harmony_stacks ) );
 
   player_t::create_options();
 }
@@ -6339,6 +6350,7 @@ void mage_t::create_buffs()
   buffs.deathborne = make_buff( this, "deathborne", find_spell( 324220 ) )
                        ->set_cooldown( 0_ms )
                        ->set_default_value_from_effect( 2 )
+                       ->set_chance( find_covenant_spell( "Deathborne" )->ok() )
                        ->modify_duration( conduits.gift_of_the_lich.time_value() );
 
 
@@ -6493,6 +6505,27 @@ void mage_t::init_finished()
   // Sort the procs to put the proc sources next to each other.
   if ( specialization() == MAGE_FROST )
     range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
+}
+
+void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
+{
+  if ( buff == buffs.icicles )
+  {
+    if ( stacks < 0 )
+      stacks = 1;
+
+    int max_icicles = as<int>( spec.icicles->effectN( 2 ).base_value() );
+    register_combat_begin( [ this, stacks, duration, max_icicles ] ( player_t* )
+    {
+      int new_icicles = std::min( stacks, max_icicles ) - buffs.icicles->check();
+      for ( int i = 0; i < new_icicles; i++ )
+        trigger_icicle_gain( target, action.icicle.frostbolt, duration );
+    });
+
+    return;
+  }
+
+  player_t::add_precombat_buff_state( buff, stacks, value, duration );
 }
 
 void mage_t::init_action_list()
@@ -6750,16 +6783,6 @@ void mage_t::arise()
   {
     timespan_t first_tick = rng().real() * talents.time_anomaly->effectN( 1 ).period();
     events.time_anomaly = make_event<events::time_anomaly_tick_event_t>( *sim, *this, first_tick );
-  }
-
-  if ( runeforge.disciplinary_command->ok() && options.prepull_dc )
-  {
-    buffs.disciplinary_command->trigger();
-  }
-
-  if ( runeforge.arcane_harmony->ok() && options.prepull_harmony_stacks > 0 )
-  {
-    buffs.arcane_harmony->trigger( options.prepull_harmony_stacks );
   }
 }
 
@@ -7215,7 +7238,7 @@ void mage_t::trigger_icicle( player_t* icicle_target, bool chain )
   }
 }
 
-void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action )
+void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_action, timespan_t duration )
 {
   if ( !spec.icicles->ok() )
     return;
@@ -7226,8 +7249,8 @@ void mage_t::trigger_icicle_gain( player_t* icicle_target, action_t* icicle_acti
   if ( icicles.size() == max_icicles )
     trigger_icicle( icicle_target );
 
-  buffs.icicles->trigger();
-  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->buff_duration(), [ this ]
+  buffs.icicles->trigger( duration );
+  icicles.push_back( { icicle_action, make_event( sim, buffs.icicles->remains(), [ this ]
   {
     buffs.icicles->decrement();
     icicles.erase( icicles.begin() );

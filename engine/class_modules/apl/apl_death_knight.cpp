@@ -1,7 +1,7 @@
 #include "class_modules/apl/apl_death_knight.hpp"
 
 #include "player/action_priority_list.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace death_knight_apl {
 

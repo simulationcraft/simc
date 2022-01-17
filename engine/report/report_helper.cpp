@@ -5,18 +5,18 @@
 
 #include "report_helper.hpp"
 
-#include "buff/sc_buff.hpp"
+#include "buff/buff.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/sc_spell_info.hpp"
 #include "dbc/spell_query/spell_data_expr.hpp"
 #include "item/item.hpp"
 #include "player/pet.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/covenant.hpp"
 #include "report/gear_weights.hpp"
 #include "report/charts.hpp"
-#include "report/sc_highchart.hpp"
-#include "sim/sc_sim.hpp"
+#include "report/highchart.hpp"
+#include "sim/sim.hpp"
 #include "sim/scale_factor_control.hpp"
 #include "util/xml.hpp"
 

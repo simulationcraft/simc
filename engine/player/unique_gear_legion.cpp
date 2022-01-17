@@ -65,6 +65,7 @@ namespace item
   void gnawed_thumb_ring( special_effect_t& );
   void naraxas_spiked_tongue( special_effect_t& );
   void choker_of_barbed_reins( special_effect_t& );
+  void mark_of_dargrul( special_effect_t& );
 
   // 7.1 Dungeon
   void arans_relaxing_ruby( special_effect_t& );
@@ -485,12 +486,9 @@ struct gaseous_bubble_t : public absorb_buff_t
 
 void item::giant_ornamental_pearl( special_effect_t& effect )
 {
-  effect.trigger_spell_id = 214972;
-
-  effect.custom_buff = new gaseous_bubble_t( effect, effect.create_action() );
-
-  // Reset trigger_spell_id so it does not create an execute action.
-  effect.trigger_spell_id = 0;
+  auto explosion =
+      create_proc_action<generic_aoe_proc_t>( "gaseous_explosion", effect, "gaseous_explosion", 214972, true );
+  effect.custom_buff = new gaseous_bubble_t( effect, explosion );
 }
 
 // Gnawed Thumb Ring =======================================================
@@ -570,6 +568,16 @@ void item::choker_of_barbed_reins( special_effect_t& effect )
   }
 
   new dbc_proc_callback_t( effect.item, effect );
+}
+
+// Mark of Dargrul =========================================================
+
+void item::mark_of_dargrul( special_effect_t& effect )
+{
+  effect.execute_action =
+    create_proc_action<generic_aoe_proc_t>( "landslide", effect, "landslide", effect.trigger(), true );
+
+  new dbc_proc_callback_t( effect.player, effect );
 }
 
 // Deteriorated Construct Core ==============================================
@@ -2982,8 +2990,9 @@ void item::vial_of_ceaseless_toxins( special_effect_t& effect )
 
 void item::windscar_whetstone( special_effect_t& effect )
 {
-  action_t* maelstrom = effect.create_action();
-  maelstrom -> cooldown -> duration = timespan_t::zero(); // damage spell has erroneous cooldown
+  auto maelstrom =
+      create_proc_action<generic_aoe_proc_t>( "slicing_maelstrom", effect, "slicing_maelstrom", effect.trigger(), true );
+  maelstrom->cooldown->duration = 0_ms;  // damage spell has erroneous cooldown
 
   effect.custom_buff = make_buff( effect.player, "slicing_maelstrom", effect.driver(), effect.item )
     ->set_tick_zero( true )
@@ -4261,16 +4270,14 @@ void item::chaos_talisman( special_effect_t& effect )
 
 struct nightfall_t : public proc_spell_t
 {
-  proc_spell_t* damage_spell;
+  action_t* damage_spell;
 
   nightfall_t( special_effect_t& effect ) :
     proc_spell_t( "nightfall", effect.player, effect.player -> find_spell( 213785 ), effect.item )
   {
-    const spell_data_t* tick_spell = effect.player -> find_spell( 213786 );
-    proc_spell_t* t = new proc_spell_t( "nightfall_tick", effect.player, tick_spell, effect.item );
-    t -> dual = t -> ground_aoe = true;
-    t -> stats = stats;
-    damage_spell = t;
+    damage_spell = create_proc_action<generic_aoe_proc_t>( "nightfall_tick", effect, "nightfall_tick", 213786, true );
+    damage_spell->dual = damage_spell->ground_aoe = true;
+    damage_spell->stats = stats;
   }
 
   void execute() override
@@ -5639,8 +5646,8 @@ void set_bonus::journey_through_time( special_effect_t& effect )
 
 void item::jeweled_signet_of_melandrus( special_effect_t& effect )
 {
-  double value = 1.0 + effect.driver() -> effectN( 1 ).percent();
-  effect.player -> auto_attack_multiplier *= value;
+  double value = effect.driver()->effectN( 1 ).average( effect.item );
+  effect.player->auto_attack_modifier += value;
 }
 
 // Caged Horror =============================================================
@@ -5648,12 +5655,11 @@ void item::jeweled_signet_of_melandrus( special_effect_t& effect )
 void item::caged_horror( special_effect_t& effect )
 {
   double amount = effect.driver() -> effectN( 1 ).average( effect.item );
-  auto nuke = new unique_gear::proc_spell_t( "dark_blast", effect.player,
-    effect.player -> find_spell( 215407 ), effect.item );
+  auto nuke = create_proc_action<generic_aoe_proc_t>( "dark_blast", effect, "dark_blast", 215407, true );
   // Need to manually adjust the damage and properties, since it's not available in the nuke
-  nuke -> aoe = -1; // TODO: Fancier targeting, this should probably not hit all targets
-  nuke -> radius = 5; // TODO: How wide is the "line" ?
-  nuke -> base_dd_min = nuke -> base_dd_max = amount;
+  nuke->aoe = -1;    // TODO: Fancier targeting, this should probably not hit all targets
+  nuke->radius = 5;  // TODO: How wide is the "line" ?
+  nuke->base_dd_min = nuke->base_dd_max = amount;
 
   effect.execute_action = nuke;
 
@@ -6001,6 +6007,7 @@ void unique_gear::register_special_effects_legion()
   register_special_effect( 228461, item::gnawed_thumb_ring              );
   register_special_effect( 215404, item::naraxas_spiked_tongue          );
   register_special_effect( 234106, item::choker_of_barbed_reins         );
+  register_special_effect( 214396, item::mark_of_dargrul                );
 
   /* Legion 7.1 Dungeon */
   register_special_effect( 230257, item::arans_relaxing_ruby            );

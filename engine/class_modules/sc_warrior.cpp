@@ -111,6 +111,7 @@ public:
     buff_t* overpower;
     buff_t* ravager;
     buff_t* recklessness;
+    buff_t* reckless_abandon; // fake buff to control duration of ability override
     buff_t* revenge;
     buff_t* shield_block;
     buff_t* shield_wall;
@@ -248,6 +249,7 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
+    gain_t* frenzied_destruction;
   } gain;
 
   // Spells
@@ -776,7 +778,7 @@ struct warrior_action_t : public Base
   {
     // mastery/buff damage increase.
     bool fury_mastery_direct, fury_mastery_dot, arms_mastery,
-    colossus_smash, rend, siegebreaker, ashen_juggernaut;
+    colossus_smash, rend, siegebreaker, ashen_juggernaut, recklessness;
     // talents
     bool avatar, sweeping_strikes, deadly_calm, booming_voice;
     // azerite
@@ -794,7 +796,8 @@ struct warrior_action_t : public Base
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        crushing_assault( false )
+        crushing_assault( false ),
+        recklessness( false )
     {
     }
   } affected_by;
@@ -902,6 +905,7 @@ public:
     affected_by.rend                = ab::data().affected_by( p()->talents.rend->effectN( 3 ) );
     affected_by.siegebreaker        = ab::data().affected_by( p()->spell.siegebreaker_debuff->effectN( 1 ) );
     affected_by.avatar              = ab::data().affected_by( p()->spec.avatar_buff->effectN( 1 ) );
+    affected_by.recklessness        = ab::data().affected_by( p()->spec.recklessness->effectN( 1 ) );
 
     initialized = true;
   }
@@ -1006,6 +1010,11 @@ public:
     if( affected_by.ashen_juggernaut )
     {
       c += p()->buff.ashen_juggernaut ->stack_value();
+    }
+
+    if ( affected_by.recklessness && p()->buff.recklessness->up() )
+    {
+      c += p()->buff.recklessness->check_value();
     }
 
     return c;
@@ -2903,6 +2912,7 @@ struct fury_execute_parent_t : public warrior_attack_t
     : warrior_attack_t( "execute", p, p->spec.execute ),
       execute_rank_3( false ),
       execute_pct( 20 ),
+      max_rage( 40 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
@@ -3403,10 +3413,20 @@ struct raging_blow_t : public warrior_attack_t
       if ( p()->buff.recklessness->check() )
       {
         p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+        }
       }
       else
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+        }
       }
     }
   }
@@ -3418,7 +3438,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( p()->talents.reckless_abandon->ok() && p()->buff.recklessness->check() )
+    if ( p()->talents.reckless_abandon->ok() && p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -3530,10 +3550,20 @@ struct crushing_blow_t : public warrior_attack_t
       if ( p()->buff.recklessness->check() )
       {
         p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+        }
       }
       else
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+
+        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
+        {
+          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+        }
       }
     }
   }
@@ -3545,7 +3575,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       return false;
     }
-    if ( !p()->talents.reckless_abandon->ok() || !p()->buff.recklessness->check() )
+    if ( !p()->talents.reckless_abandon->ok() || !p()->buff.reckless_abandon->check() )
     {
       return false;
     }
@@ -3731,7 +3761,7 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
     {
       p()->buff.pile_on_ready->expire();
       p()->buff.pile_on_str->trigger();
@@ -5253,7 +5283,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
   double rage_from_execute_rank_3;
   fury_condemn_parent_t( warrior_t* p, util::string_view options_str )
     : warrior_attack_t( "condemn", p, p->covenant.condemn ),
-      execute_rank_3( false ), execute_pct_above( 80 ), execute_pct_below( 20 ),
+      execute_rank_3( false ), execute_pct_above( 80 ), execute_pct_below( 20 ), max_rage( 40 ),
       rage_from_execute_rank_3(
       ( p->spec.execute_rank_3->effectN( 1 ).base_value() ) / 10.0 )
   {
@@ -5313,6 +5343,7 @@ struct fury_condemn_parent_t : public warrior_attack_t
     if ( p()->legendary.sinful_surge->ok() && p()->buff.recklessness->check() )
     {
       p()->buff.recklessness->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 2 ).base_value() ) );
+      p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_millis( p()->legendary.sinful_surge->effectN( 2 ).base_value() ) );
     }
   }
 
@@ -5793,6 +5824,10 @@ struct recklessness_t : public warrior_spell_t
         action_t* tormet_ability = p()->rng().roll( torment_chance ) ? p()->active.signet_avatar : p()->active.signet_bladestorm_f;
         tormet_ability->schedule_execute();
       }
+    }
+    if ( p()->talents.reckless_abandon->ok() )
+    {
+      p()->buff.reckless_abandon->trigger();
     }
   }
 
@@ -7374,10 +7409,13 @@ void warrior_t::create_buffs()
     ->set_chance(1)
     ->set_duration( spec.recklessness->duration() + spec.recklessness_rank_2->effectN(1).time_value() )
     ->apply_affecting_conduit( conduit.depths_of_insanity )
-    ->add_invalidate( CACHE_CRIT_CHANCE )
+    //->add_invalidate( CACHE_CRIT_CHANCE ) removed in favor of composite_crit_chance (line 1015)
     ->set_cooldown( timespan_t::zero() )
     ->set_default_value( spec.recklessness->effectN( 1 ).percent() )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int after ) { if ( after == 0  && this->legendary.will_of_the_berserker->ok() ) buff.will_of_the_berserker->trigger(); });
+
+  buff.reckless_abandon = make_buff( this, "reckless_abandon", find_spell( 335101 ) )
+    ->apply_affecting_conduit( conduit.depths_of_insanity );
 
   buff.sudden_death = make_buff( this, "sudden_death", talents.sudden_death );
 
@@ -7534,7 +7572,7 @@ void warrior_t::create_buffs()
   // Pile On ===============================================================================================================
 
   buff.pile_on_ready = make_buff( this, "pile_on_ready" )
-                      ->set_duration(find_spell( 366769 )->duration() );
+                      ->set_duration(find_spell( 363917 )->duration() );
 
   buff.pile_on_str = make_buff( this, "pile_on_str", find_spell( 366769 ) )
                      ->add_invalidate( CACHE_STRENGTH )
@@ -7593,6 +7631,7 @@ void warrior_t::init_gains()
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
   gain.endless_rage           = get_gain( "endless_rage" );
+  gain.frenzied_destruction   = get_gain( "frenzied_destruction" );
   gain.lord_of_war            = get_gain( "lord_of_war" );
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
@@ -8171,7 +8210,7 @@ double warrior_t::composite_melee_crit_chance() const
 {
   double c = player_t::composite_melee_crit_chance();
 
-  c += buff.recklessness->check_value();
+  //c += buff.recklessness->check_value(); removed in favor of composite_crit_chance (line 1015)
   c += buff.will_of_the_berserker->check_value();
   c += buff.conquerors_frenzy->check_value();
 
@@ -8223,7 +8262,8 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   if ( buff.recklessness->check() && r == RESOURCE_RAGE )
   {
     bool do_not_double_rage = false;
-    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker );
+    do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
+                                g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker || g == gain.frenzied_destruction );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();

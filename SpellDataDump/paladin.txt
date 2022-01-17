@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -70,7 +69,6 @@ Effects          :
 Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Devotion Aura (id=465) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -1511,7 +1509,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -2938,7 +2935,6 @@ Description      : The Light magnifies your power for $d, granting $s1% Haste, C
 Tooltip          : Haste, Critical Strike, and Versatility increased by $s1%, and Mastery increased by $?c1[${$s4*$183997bc1}]?c2[${$s4*$76671bc1}][${$s4*$267316bc1}]%.
 
 Name             : Arcane Torrent (desc=Racial) (id=155145) 
-Hotfixed         : Attributes
 Class            : Paladin
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -3290,7 +3286,6 @@ Description      : Burdens an enemy target with the weight of their misdeeds, re
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Retribution Aura (id=183435) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -8628,7 +8623,6 @@ Effects          :
 Description      : Art of War has an additional $s1% chance to trigger.
 
 Name             : Concentration Aura (id=317920) [Spell Family (10)] 
-Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -10552,7 +10546,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Vanquisher's Hammer (328204)
                    Family Flags: 123
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=839927)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Vanquisher's Hammer deals |cFFFFFFFF$s1%|r increased damage, and heals you for $s2% of the damage done.

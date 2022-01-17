@@ -1479,6 +1479,8 @@ class SpellDataGenerator(DataGenerator):
             ( 345316, 0 ), ( 345390, 0 ), # Flagellation damage spells
             ( 185422, 0 ),          # Shadow Dance buff spell
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
+            ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
+            ( 364668, 0 ),          # T28 Assassination debuff
         ),
 
         # Priest:
@@ -1555,8 +1557,12 @@ class SpellDataGenerator(DataGenerator):
           ( 317791, 5 ), ( 317792, 5), # Magus of the Dead's (army of the damned talent) Frostbolt and Shadow Bolt spells
           ( 324165, 0 ), # Night Fae's Death's Due Strength Buff
           ( 220890, 5 ), # Dancing Rune Weapon's RP generation spell from Heart Strike
+          ( 228645, 5 ), # Dancing Rune Weapon's Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
           ( 193486, 0 ), # Runic Empowerment energize spell
+          ( 364197, 0 ), ( 366008, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
+          ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
+          ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
         ),
 
         # Shaman:
@@ -1718,11 +1724,15 @@ class SpellDataGenerator(DataGenerator):
           ( 339986, 3 ),    # Hidden Combusting Engine Debuff
           ( 324540, 0 ),    # Malefic Rapture damage
           ( 364322, 0 ),    # T28 - Calamitous Crescendo Buff
-          ( 364348, 0 ),    # T28 - Herald of Fire Buff
-          ( 364349, 0 ),    # T28 - Herald of Chaos Buff
+          ( 364348, 0 ),    # T28 - Impending Ruin Buff
+          ( 364349, 0 ),    # T28 - Ritual of Ruin Buff
           ( 364198, 0 ),    # T28 - Malicious Imp-Pact Summon
           ( 364261, 0 ),    # T28 - Malicious Imp Doombolt
           ( 364263, 0 ),    # T28 - Return Soul
+          ( 367679, 0 ),    # T28 - Summon Blasphemy
+          ( 367680, 0 ),    # T28 - Blasphemy
+          ( 367819, 0 ),    # T28 - Blasphemous Existence
+          ( 367831, 0 )    # T28 - Deliberate Corruption
         ),
 
         # Monk:
@@ -1817,7 +1827,7 @@ class SpellDataGenerator(DataGenerator):
           ( 360829, 3 ), # Call to Arms Empowered Tiger Lightning
 
           # Tier 28
-          ( 364101, 1 ), # BrM 4-piece Flames of Primordium
+          ( 366793, 1 ), # BrM 4-piece Keg of the Heavens Heal
           ( 363911, 3 ), # WW 4-piece Primordial Potential
           ( 363924, 3 ), # WW 4-piece Primordial Power
         ),
@@ -1889,6 +1899,7 @@ class SpellDataGenerator(DataGenerator):
           ( 341378, 0 ), ( 341447, 0 ), ( 341446, 0 ), ( 341383, 0 ), # convenant potency conduits
 
           ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
+          ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
         ),
         # Demon Hunter:
         (
@@ -4070,7 +4081,7 @@ class RuneforgeLegendaryGenerator(DataGenerator):
         for entry, spec in sorted(data, key=lambda v: (v[0].id_bonus, v[1].id_spec)):
             fields = entry.field('id_bonus')
             fields += spec.field('id_spec')
-            fields += entry.field('id_spell', 'mask_inv_type', 'name')
+            fields += entry.field('id_spell', 'mask_inv_type', 'id_covenant', 'name')
             self.output_record(fields)
 
         self.output_footer()

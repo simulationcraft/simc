@@ -2938,7 +2938,7 @@ struct single_target_event_t final : public event_t
 
 struct explosive_shot_munitions_t : explosive_shot_t
 {
-  explosive_shot_munitions_t( util::string_view n, hunter_t* p ) : explosive_shot_t( p, "" )
+  explosive_shot_munitions_t( util::string_view /*name*/, hunter_t* p ) : explosive_shot_t( p, "" )
   {
     background = dual = true;
   }
@@ -5853,11 +5853,11 @@ double hunter_t::resource_loss( resource_e resource_type, double amount, gain_t*
 
   state.focus_used_FT += actual_loss;
 
-  // TODO: The cost is a double, can this cause rounding errors?
-  while ( state.focus_used_FT >= 80.0 )
+  const double focused_trickery_value = tier_set.focused_trickery_4pc -> effectN( 1 ).base_value();
+  while ( state.focus_used_FT >= focused_trickery_value )
   {
-    state.focus_used_FT -= 80.0;
-    buffs.trick_shots -> trigger( 2 );
+    state.focus_used_FT -= focused_trickery_value;
+    buffs.trick_shots -> trigger();
   }
 
   return actual_loss;

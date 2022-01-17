@@ -4,7 +4,7 @@
 // Wiki: https://github.com/simulationcraft/simc/wiki/Priests
 // ==========================================================================
 
-#include "action/sc_action_state.hpp"
+#include "action/action_state.hpp"
 #include "sc_enums.hpp"
 #include "sc_priest.hpp"
 #include "util/generic.hpp"
@@ -1059,6 +1059,18 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
+         rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() ) )
+    {
+      priest().buffs.dark_thought->trigger();
+      priest().procs.dark_thoughts_devouring_plague->occur();
+    }
+  }
+
   timespan_t calculate_dot_refresh_duration( const dot_t* d, timespan_t duration ) const override
   {
     // if you only have the partial tick, roll that damage over
@@ -1585,6 +1597,18 @@ struct searing_nightmare_t final : public priest_spell_t
     child_swp->target = s->target;
     child_swp->execute();
   }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
+         rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 2 ).percent() ) )
+    {
+      priest().buffs.dark_thought->trigger();
+      priest().procs.dark_thoughts_searing_nightmare->occur();
+    }
+  }
 };
 
 // ==========================================================================
@@ -1884,6 +1908,9 @@ void priest_t::create_buffs_shadow()
   buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )
                                   ->set_duration( timespan_t::zero() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+  // Tier Sets
+  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) );
 }
 
 void priest_t::init_rng_shadow()

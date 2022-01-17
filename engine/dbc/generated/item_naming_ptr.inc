@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.2.0.41360
-static const std::array<item_name_description_t, 654> __ptr_item_name_description_data { {
+// Item name descriptions, wow build 9.2.0.41827
+static const std::array<item_name_description_t, 655> __ptr_item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -654,5 +654,6 @@ static const std::array<item_name_description_t, 654> __ptr_item_name_descriptio
   { 13908, "Fated"                                       },
   { 13911, "Shadowlands Season 2"                        },
   { 13914, "Protoform Synthesis"                         },
+  { 13915, "Unity"                                       },
 } };
 

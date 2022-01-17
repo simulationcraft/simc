@@ -86,7 +86,7 @@ void beast_mastery( player_t* p )
   cleave->add_action( "bestial_wrath,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=5|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
-  cleave->add_action( "wailing_arrow" );
+  cleave->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time" );
   cleave->add_action( "flayed_shot" );
   cleave->add_action( "kill_shot" );
   cleave->add_action( "chimaera_shot" );
@@ -110,7 +110,7 @@ void beast_mastery( player_t* p )
   st->add_action( "wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>19" );
   st->add_action( "flayed_shot" );
   st->add_action( "kill_shot" );
-  st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|target.time_to_die<5" );
+  st->add_action( "wailing_arrow,if=pet.main.buff.frenzy.remains>execute_time&(cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian)|target.time_to_die<5" );
   st->add_action( "barbed_shot,if=cooldown.bestial_wrath.remains<12*charges_fractional+gcd&talent.scent_of_blood|full_recharge_time<gcd&cooldown.bestial_wrath.remains|target.time_to_die<9" );
   st->add_action( "death_chakram,if=focus+cast_regen<focus.max" );
   st->add_action( "stampede,if=buff.aspect_of_the_wild.up|target.time_to_die<15" );
@@ -262,7 +262,7 @@ void survival( player_t* p )
   precombat -> add_action( "steel_trap,precast_time=20" );
 
   default_ -> add_action( "auto_attack" );
-  default_ -> add_action( "use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|time_to_die<30" );
+  default_ -> add_action( "use_item,name=jotungeirr_destinys_call,if=buff.coordinated_assault.up|!cooldown.coordinated_assault.remains|time_to_die<30" );
   default_ -> add_action( "use_items" );
   default_ -> add_action( "newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|target.time_to_die<16)", "Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically." ); 
   default_ -> add_action( "call_action_list,name=cds" );

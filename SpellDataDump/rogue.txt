@@ -1,5 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41031 Live (hotfix 2021-11-16/41031, no-networking)
-
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1351,7 +1350,6 @@ Effects          :
 Description      : Increases your maximum Energy by $s1 and your Energy regeneration by $s2%.
 
 Name             : Blood Fury (desc=Racial) (id=20572) 
-Hotfixed         : Attributes
 Class            : Warrior, Hunter, Rogue, Death Knight
 Race             : Orc (0x2)
 School           : Physical
@@ -1436,7 +1434,6 @@ Effects          :
 Description      : $@spelldesc319606
 
 Name             : Arcane Torrent (desc=Racial) (id=25046) 
-Hotfixed         : Attributes
 Class            : Rogue
 Race             : Blood Elf (0x200)
 School           : Arcane
@@ -2172,7 +2169,6 @@ Description      : Reduces Shadow and Nature damage taken by $s1%.
 Tooltip          : Reduces Shadow and Nature damage taken by $s1%.
 
 Name             : Darkflight (desc=Racial) (id=68992) 
-Hotfixed         : Attributes
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Druid
 Race             : Worgen (0x200000)
 School           : Physical
@@ -10960,8 +10956,8 @@ Cooldown         : 90 seconds
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x..... ........ ........ 
                  : Yellow Melee, Generic Heal
-Affecting spells : Improved Recuperate (61249 effect#1), Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Toxic Blade (245389 effect#1)
-Family Flags     : 59, 119
+Affecting spells : Mastery: Potent Assassin (76803 effects: #1, #2), Nightstalker (130493 effect#1), Acrobatic Strikes (196924 effect#1), Toxic Blade (245389 effect#1)
+Family Flags     : 119
 Attributes       : ........ ........ x....... ..x..x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

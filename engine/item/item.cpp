@@ -7,9 +7,9 @@
 #include "special_effect.hpp"
 #include "enchants.hpp"
 #include "dbc/dbc.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 #include "player/weapon.hpp"
-#include "sim/sc_sim.hpp"
+#include "sim/sim.hpp"
 #include "dbc/item_database.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "sc_enums.hpp"
@@ -513,22 +513,6 @@ unsigned item_t::item_level() const
          //? static_cast<unsigned>(dbc::item_level_squish( ilvl, player -> dbc.ptr ))
          ? ilvl
          : parsed.item_level;
-}
-
-unsigned item_t::base_item_level() const
-{
-  if ( sim -> scale_to_itemlevel > 0 )
-    return sim -> scale_to_itemlevel;
-  else if ( parsed.item_level > 0 )
-  {
-    return parsed.item_level;
-  }
-  else if ( parsed.azerite_level > 0 )
-  {
-    return player -> dbc->azerite_item_level( parsed.azerite_level );
-  }
-  else
-    return parsed.data.level;
 }
 
 stat_e item_t::stat( size_t idx ) const

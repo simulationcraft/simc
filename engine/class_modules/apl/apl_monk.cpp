@@ -2,7 +2,7 @@
 
 #include "class_modules/monk/sc_monk.hpp"
 #include "player/action_priority_list.hpp"
-#include "player/sc_player.hpp"
+#include "player/player.hpp"
 
 namespace monk_apl
 {
