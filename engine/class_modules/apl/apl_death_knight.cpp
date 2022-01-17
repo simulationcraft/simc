@@ -346,7 +346,7 @@ void unholy( player_t* p )
   precombat->add_action( "variable,name=trinket_1_sync,op=setif,value=1,value_else=0.5,condition=trinket.1.has_use_buff&(trinket.1.cooldown.duration%%45=0)", "Evaluates a trinkets cooldown, divided by 45. This was chosen as unholy works on 45 second burst cycles, but has too many cdr effects to give a cooldown.x.duration divisor instead. If it's value has no remainder return 1, else return 0.5." );
   precombat->add_action( "variable,name=trinket_2_sync,op=setif,value=1,value_else=0.5,condition=trinket.2.has_use_buff&(trinket.2.cooldown.duration%%45=0)" );
   precombat->add_action( "variable,name=trinket_priority,op=setif,value=2,value_else=1,condition=!trinket.1.has_use_buff&trinket.2.has_use_buff|trinket.2.has_use_buff&((trinket.2.cooldown.duration%trinket.2.proc.any_dps.duration)*(1.5+trinket.2.has_buff.strength)*(variable.trinket_2_sync))>((trinket.1.cooldown.duration%trinket.1.proc.any_dps.duration)*(1.5+trinket.1.has_buff.strength)*(variable.trinket_1_sync))", "Estimates a trinkets value by comparing the cooldown of the trinket, divided by the duration of the buff it provides. Has a strength modifier to give a higher priority to strength trinkets, as well as a modifier for if a trinket will or will not sync with cooldowns." );
-  precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead.rank>=9", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
+  precombat->add_action( "variable,name=full_cdr,value=talent.army_of_the_damned&conduit.convocation_of_the_dead", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
   precombat->add_action( "variable,name=dc_rt,value=runeforge.deaths_certainty&runeforge.rampant_transference" );
 
   default_->add_action( "auto_attack" );
@@ -394,7 +394,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile|covenant.night_fae&cooldown.deaths_due.remains)" );
 
   cooldowns->add_action( "potion,if=variable.major_cooldowns_active|pet.gargoyle.active&pet.gargoyle.remains<=26|fight_remains<26", "Potion" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<7&cooldown.dark_transformation.remains_expected<7&talent.unholy_blight&(cooldown.apocalypse.remains_expected<7&variable.full_cdr|!variable.full_cdr|variable.dc_rt)|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
+  cooldowns->add_action( "army_of_the_dead,if=cooldown.unholy_blight.remains<7&cooldown.dark_transformation.remains_expected<7&talent.unholy_blight&(cooldown.abomination_limb.remains<18&runeforge.abominations_frenzy|!runeforge.abominations_frenzy)&(cooldown.apocalypse.remains_expected<7&variable.full_cdr|!variable.full_cdr|variable.dc_rt)|!talent.unholy_blight|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,target_if=target.time_to_pct_35<5&target.time_to_die>5&active_enemies<=3" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.apocalypse.remains_expected<5|cooldown.apocalypse.remains_expected>10)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Holds Blight for up to 5 seconds to sync with Apocalypse, Otherwise, use with Dark Transformation." );
   cooldowns->add_action( "unholy_blight,if=variable.adds_remain|fight_remains<21" );
