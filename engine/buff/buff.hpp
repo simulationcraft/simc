@@ -398,8 +398,9 @@ struct stat_buff_t : public buff_t
     {
       // Blizzard likes to use effect coefficients that give (almost) exact values at the
       // intended level. Small floating point conversion errors can add up to give the wrong
-      // value. We compensate by increasing the value by a tiny bit before truncating.
-      return std::trunc( stacks * amount + 1e-3 );
+      // value. We compensate by increasing the absolute value by a tiny bit before truncating.
+      double epsilon = amount >= 0.0 ? 1e-3 : -1e-3;
+      return std::trunc( stacks * amount + epsilon );
     }
   };
   std::vector<buff_stat_t> stats;
