@@ -1290,6 +1290,10 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
+
+    if ( p.is_ptr() )
+      set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
     if ( !inc && p.specialization() == DRUID_GUARDIAN )
       name_str_reporting = "berserk";
 
