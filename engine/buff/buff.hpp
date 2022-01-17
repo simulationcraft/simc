@@ -393,6 +393,14 @@ struct stat_buff_t : public buff_t
       : stat( s ), amount( a ), current_value( 0 ), check_func( std::move( c ) )
     {
     }
+
+    double stack_amount( int stacks ) const
+    {
+      // Blizzard likes to use effect coefficients that give (almost) exact values at the
+      // intended level. Small floating point conversion errors can add up to give the wrong
+      // value. We compensate by increasing the value by a tiny bit before truncating.
+      return std::trunc( stacks * amount + 1e-3 );
+    }
   };
   std::vector<buff_stat_t> stats;
   gain_t* stat_gain;

@@ -2827,14 +2827,10 @@ stat_buff_t::stat_buff_t( actor_pair_t q, util::string_view name, const spell_da
     double amount                    = 0;
     const spelleffect_data_t& effect = data().effectN( i );
 
-    // Blizzard likes to use effect coefficients that give (almost) exact values at the
-    // intended level. Small floating point conversion errors can add up to give the wrong
-    // value. We compensate by increasing the value by a tiny bit before truncating.
-    constexpr double epsilon = 1e-3;
     if ( item )
-      amount = std::trunc( epsilon + effect.average( item ) );
+      amount = effect.average( item );
     else
-      amount = std::trunc( epsilon + effect.average( player, std::min( MAX_LEVEL, player->level() ) ) );
+      amount = effect.average( player, std::min( MAX_LEVEL, player->level() ) );
 
     if ( effect.subtype() == A_MOD_STAT )
     {
@@ -2912,7 +2908,7 @@ void stat_buff_t::bump( int stacks, double /* value */ )
     if ( buff_stat.check_func && !buff_stat.check_func( *this ) )
       continue;
 
-    double delta = buff_stat.amount * current_stack - buff_stat.current_value;
+    double delta = buff_stat.stack_amount( current_stack ) - buff_stat.current_value;
     if ( delta > 0 )
     {
       player->stat_gain( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
@@ -2935,22 +2931,21 @@ void stat_buff_t::decrement( int stacks, double /* value */ )
   else
   {
     int old_stack = current_stack;
+    int new_stack = old_stack - stacks;
 
     if ( as<std::size_t>( current_stack ) < stack_uptime.size() )
       stack_uptime[ current_stack ].update( false, sim->current_time() );
 
     for ( auto& buff_stat : stats )
     {
-      double delta = buff_stat.amount * stacks;
+      double delta = buff_stat.current_value - buff_stat.stack_amount( new_stack );
       if ( delta > 0 )
       {
-        player->stat_loss( buff_stat.stat, ( delta <= buff_stat.current_value ) ? delta : 0.0, stat_gain, nullptr,
-                           buff_duration() > timespan_t::zero() );
+        player->stat_loss( buff_stat.stat, delta, stat_gain, nullptr, buff_duration() > timespan_t::zero() );
       }
       else if ( delta < 0 )
       {
-        player->stat_gain( buff_stat.stat, ( delta >= buff_stat.current_value ) ? std::fabs( delta ) : 0.0, stat_gain,
-                           nullptr, buff_duration() > timespan_t::zero() );
+        player->stat_gain( buff_stat.stat, std::fabs( delta ), stat_gain, nullptr, buff_duration() > timespan_t::zero() );
       }
       buff_stat.current_value -= delta;
     }
