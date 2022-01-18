@@ -120,6 +120,8 @@ struct enemy_t : public player_t
   void add_tank_heal_raid_event( tank_dummy_e );
 };
 
+namespace actions
+{
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
 
@@ -981,9 +983,12 @@ struct pause_action_t : public action_t
   }
 
 };
+}  // end namespace actions
 
 action_t* enemy_create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
+  using namespace actions;
+
   if ( name == "auto_attack" )
     return new auto_attack_t( p, options_str );
   if ( name == "auto_attack_off_hand" )
