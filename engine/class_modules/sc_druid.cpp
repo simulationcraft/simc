@@ -7723,7 +7723,6 @@ double brambles_handler( const action_state_t* s )
 {
   auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.brambles->ok() );
-  assert( s );
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
@@ -7772,6 +7771,25 @@ double earthwarden_handler( const action_state_t* s )
 
   double absorb = s->result_amount * p->buff.earthwarden->check_value();
   p->buff.earthwarden->decrement();
+
+  return absorb;
+}
+
+// Kindred Empowerment Pool Absorb Handler ==================================
+double kindred_empowerment_handler( const action_state_t* s )
+{
+  auto p = static_cast<druid_t*>( s->target );
+  auto b = debug_cast<buffs::kindred_empowerment_buff_t*>( p->buff.kindred_empowerment );
+
+  if ( !b->check() )
+    return 0.0;
+
+  auto absorb = s->result_amount * b->use_pct;
+
+  p->sim->print_debug( "KINDRED_EMPOWERMENT: Absorbing {} from pool of {}", absorb, b->pool );
+
+  absorb = std::min( absorb, b->pool - 1 );
+  b->pool -= absorb;
 
   return absorb;
 }
@@ -8193,6 +8211,13 @@ void druid_t::init_spells()
   cov.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
   cov.adaptive_swarm_damage        = check_id( cov.necrolord->ok(), 325733 );
   cov.adaptive_swarm_heal          = check_id( cov.necrolord->ok(), 325748 );
+
+  if ( specialization() == DRUID_GUARDIAN && cov.kindred_empowerment->ok() )
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        cov.kindred_empowerment->id(), instant_absorb_t(
+            this, cov.kindred_empowerment, "kindred_empowerment_absorb", &kindred_empowerment_handler ) ) );
+  }
 
   // Conduits
 
@@ -10318,8 +10343,9 @@ void druid_t::init_absorb_priority()
 {
   player_t::init_absorb_priority();
 
-  absorb_priority.push_back( talent.brambles->id() );     // Brambles
-  absorb_priority.push_back( talent.earthwarden->id() );  // Earthwarden - Legion TOCHECK
+  absorb_priority.push_back( talent.brambles->id() );
+  absorb_priority.push_back( talent.earthwarden->id() );
+  absorb_priority.push_back( cov.kindred_empowerment->id() );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
