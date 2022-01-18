@@ -248,8 +248,9 @@ void heal_t::assess_damage(result_amount_type heal_type, action_state_t* s)
 
   if (record_healing)
   {
-    stats->add_result(s->result_amount, s->result_total, (direct_tick ? result_amount_type::HEAL_OVER_TIME : heal_type),
-      s->result, s->block_result, s->target);
+    stats->add_result( ( sim->count_overheal_as_heal ? s->result_total : s->result_amount ), s->result_total,
+                       ( direct_tick ? result_amount_type::HEAL_OVER_TIME : heal_type ), s->result, s->block_result,
+                       s->target );
 
     // Record external healing too
     if (player != s->target)
