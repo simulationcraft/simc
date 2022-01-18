@@ -115,6 +115,8 @@ struct enemy_t : public player_t
   }
 
   bool taunt( player_t* source ) override;
+  void reset_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
+  void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
 
   std::string generate_tank_action_list( tank_dummy_e );
   void add_tank_heal_raid_event( tank_dummy_e );
@@ -406,9 +408,11 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
 struct melee_t : public enemy_action_t<melee_attack_t>
 {
+  action_t* driver;
   bool first;
-  melee_t( util::string_view name, player_t* player, util::string_view options_str )
-    : base_t( name, player ), first( false )
+
+  melee_t( util::string_view name, player_t* player, action_t* a, util::string_view options_str )
+    : base_t( name, player ), driver( a ), first( false )
   {
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
@@ -485,7 +489,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
     for ( auto* t : target_list )
     {
-      melee_t* mh = new melee_t( "melee_main_hand", p, options_str );
+      melee_t* mh = new melee_t( "melee_main_hand", p, this, options_str );
       mh->weapon  = &( p->main_hand_weapon );
       mh->target  = t;
       mh_list.push_back( mh );
@@ -578,7 +582,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
     for ( auto* t : target_list )
     {
-      melee_t* oh = new melee_t( "melee_off_hand", player, options_str );
+      melee_t* oh = new melee_t( "melee_off_hand", player, this, options_str );
       oh->weapon  = &( player->off_hand_weapon );
       oh->target  = t;
       oh_list.push_back( oh );
@@ -1759,6 +1763,94 @@ bool enemy_t::taunt( player_t* source )
     event_t::cancel( off_hand_attack->execute_event );
 
   return true;
+}
+
+void enemy_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  player_t::reset_auto_attacks( delay, proc );
+
+  using namespace actions;
+
+  auto mh = dynamic_cast<melee_t*>( main_hand_attack );
+  auto oh = dynamic_cast<melee_t*>( off_hand_attack );
+
+  if ( mh )
+  {
+    auto driver = debug_cast<auto_attack_t*>( mh->driver );
+
+    // the first element is main_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->mh_list.size(); i++ )
+    {
+      auto melee = driver->mh_list[ i ];
+      if ( melee->execute_event )
+      {
+        event_t::cancel( melee->execute_event );
+        melee->schedule_execute();
+
+        if ( delay > 0_ms )
+          melee->execute_event->reschedule( melee->execute_event->remains() + delay );
+      }
+    }
+  }
+
+  if ( oh )
+  {
+    auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
+
+    // the first element is off_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->oh_list.size(); i++ )
+    {
+      auto melee = driver->oh_list[ i ];
+      if ( melee->execute_event )
+      {
+        event_t::cancel( melee->execute_event );
+        melee->schedule_execute();
+
+        if ( delay > 0_ms )
+          melee->execute_event->reschedule( melee->execute_event->remains() + delay );
+      }
+    }
+  }
+
+}
+
+void enemy_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  player_t::delay_auto_attacks( delay, proc );
+
+  if ( delay == 0_ms )
+    return;
+
+  using namespace actions;
+
+  auto mh = dynamic_cast<melee_t*>( main_hand_attack );
+  auto oh = dynamic_cast<melee_t*>( off_hand_attack );
+
+  if ( mh )
+  {
+    auto driver = debug_cast<auto_attack_t*>( mh->driver );
+
+    // the first element is main_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->mh_list.size(); i++ )
+    {
+      auto event = driver->mh_list[ i ]->execute_event;
+      if ( event )
+        event->reschedule( event->remains() + delay );
+    }
+  }
+
+  if ( oh )
+  {
+    auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
+
+    // the first element is off_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->oh_list.size(); i++ )
+    {
+      auto event = driver->oh_list[ i ]->execute_event;
+      if ( event )
+        event->reschedule( event->remains() + delay );
+    }
+  }
 }
 
 // enemy_t::create_expression ===============================================
