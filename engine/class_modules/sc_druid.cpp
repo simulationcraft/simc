@@ -306,7 +306,7 @@ public:
     std::string kindred_affinity_covenant = "night_fae";
     double kindred_spirits_absorbed = 0.15;
     double kindred_spirits_dps_pool_multiplier = 0.85;
-    double kindred_spirits_non_dps_pool_multiplier = 1.5;
+    double kindred_spirits_non_dps_pool_multiplier = 1.2;
     std::string kindred_spirits_target_str;
     player_t* kindred_spirits_target;
     bool lone_empowerment = false;
