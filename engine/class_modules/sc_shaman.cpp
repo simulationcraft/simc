@@ -740,6 +740,7 @@ public:
     const spell_data_t* t28_2pc_enh;
     const spell_data_t* t28_4pc_enh;
     const spell_data_t* t28_2pc_ele;
+    const spell_data_t* t28_2pc_ele_5percent;
     const spell_data_t* t28_4pc_ele;
   } spell;
 
@@ -4541,7 +4542,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
+      if ( p()->bugs )
+      {
+        m *= 1.0 + p()->spell.t28_2pc_ele_5percent->effectN( 1 ).percent();
+      } 
+      else
+      {
+          m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
+      }
     }
 
     return m;
@@ -8253,7 +8261,7 @@ void shaman_t::init_spells()
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
 
-  // spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
+  spell.t28_2pc_ele_5percent        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
   // this is the actually useful spell
   spell.t28_2pc_ele        = find_spell( 364523 );
   spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
