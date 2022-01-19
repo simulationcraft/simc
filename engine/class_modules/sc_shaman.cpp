@@ -4542,7 +4542,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      if ( p()->bugs )
+      if ( p()->bugs && p()->is_ptr() )
       {
         m *= 1.0 + p()->spell.t28_2pc_ele_5percent->effectN( 1 ).percent();
       } 
