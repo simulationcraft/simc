@@ -3530,7 +3530,7 @@ void blood_link( special_effect_t& effect )
     blood_link_cb_t( const special_effect_t& e ) :
       dbc_proc_callback_t( e.player, e ),
       applied( timespan_t::zero() ), target( nullptr ),
-      debuff( e.player->find_spell( 355767 ) )
+      debuff( e.player->find_spell( 355804 ) )
     { }
 
     void execute( action_t* a, action_state_t* s ) override
