@@ -218,7 +218,7 @@ void heal_t::assess_damage( result_amount_type heal_type, action_state_t* s )
   {
     if ( sim->log )
     {
-      dot_t* dot = find_dot( s->target );
+      dot_t* dot = get_dot( s->target );
       assert( dot );
       sim->print_log( "{} {} ticks ({} of {}) {} for {} ({}) heal ({})", *player, *this, dot->current_tick,
                       dot->num_ticks(), *s->target, s->result_total, s->result_amount, s->result );
