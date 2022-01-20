@@ -1196,20 +1196,21 @@ struct tank_dummy_enemy_t : public enemy_t
     if ( custom_armor_coeff <= 0 )
     {
       // Armor coefficient
-      // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought
-      // in The default value stored in spelldata only works for outdoor and generally "easy" content New values are
-      // added when new seasonal content (new raid, new M+ season) is released ArmorConstantMod is pulled from the
-      // ExpectedStatMod table Values are a combination of the base K values for the intended level, multiplied by the
-      // ArmorConstantMod field
+      // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
+      // in. The default value stored in spelldata only works for outdoor and generally "easy" content. New values are
+      // added when new seasonal content (new raid, new M+ season) is released. ArmorConstantMod is pulled from the
+      // ExpectedStatMod table. Values are a combination of the base "K-values" for the intended level, multiplied by the
+      // ArmorConstantMod field.
 
-      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for
+      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for.
       // You then take the Map ID and search the ID within the MapDifficulty table. For raids, you will come back with
       // four records, one for each difficulty. Each of these will have a ContentTuningID. You then take the
       // ContentTuningID and search the ID in the ContentTuningXExpected table. Often you will come back with multiple
       // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
-      // than 1.000 9.0 values here
+      // than 1.000.
 
       /*
+        9.0 values here
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
         Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
         Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
