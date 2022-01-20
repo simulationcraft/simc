@@ -601,28 +601,16 @@ struct malefic_rapture_t : public affliction_spell_t
 
       void impact ( action_state_t* s ) override
       {
-        trigger_deliberate_corruption( s );
+        if ( result_is_hit( s->result ) && p()->talents.absolute_corruption->ok() && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        { 
+          auto td = this->td( s->target );
+          if (td->dots_corruption->is_ticking())
+          {
+            deliberate_corruption->execute_on_target( s->target );
+          }
+        }
 
         affliction_spell_t::impact( s );
-      }
-
-      void trigger_deliberate_corruption( action_state_t* s )
-      {
-        if ( !p()->talents.absolute_corruption->ok() )
-          return;
-
-        if ( !result_is_hit( s->result ) )
-          return;
-
-        if ( !p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-          return;
-
-        auto td = this->td( s->target );
-        if ( !td->dots_corruption->is_ticking() )
-          return;
-
-        deliberate_corruption->set_target( s->target );
-        deliberate_corruption->execute();
       }
 
       void execute() override
