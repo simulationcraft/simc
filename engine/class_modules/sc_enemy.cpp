@@ -1215,37 +1215,37 @@ struct tank_dummy_enemy_t : public enemy_t
         Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
         Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
         Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-        Sepulcher of the First Ones LFR: N/A (ExpectedStatModID: 203; ArmorConstMod: N/A)
-        Sepulcher of the First Ones Nomral: 2500.0 (ExpectedStatModID: 200; ArmorConstMod: 1.000)
-        Sepulcher of the First Ones Heroic: 2967.5 (ExpectedStatModID: 201; ArmorConstMod: 1.187)
-        Sepulcher of the First Ones Mythic: 2780.0 (ExpectedStatModID: 202; ArmorConstMod: 1.112)
+        Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+        Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+        Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
+        Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
       */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * 1.114;  // M0/M+
+          base.armor_coeff = k_value * ( is_ptr() ? 1.313 : 1.114 );  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * 1.220;  // Normal Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.418 : 1.220 );  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * 1.313;  // Heroic Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.537 : 1.313 );  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * 1.418;  // Mythic Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.670 : 1.418 );  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
