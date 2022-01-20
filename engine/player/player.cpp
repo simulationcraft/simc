@@ -3291,12 +3291,12 @@ void player_t::create_buffs()
     buffs.amplification = make_buff( this, "amplification", find_spell( 146051 ) )
                               ->add_invalidate( CACHE_MASTERY )
                               ->add_invalidate( CACHE_HASTE )
-                              ->add_invalidate( CACHE_SPIRIT )
+                              ->add_invalidate( CACHE_VERSATILITY )
                               ->set_chance( 0 );
     buffs.amplification_2 = make_buff( this, "amplification_2", find_spell( 146051 ) )
                                 ->add_invalidate( CACHE_MASTERY )
                                 ->add_invalidate( CACHE_HASTE )
-                                ->add_invalidate( CACHE_SPIRIT )
+                                ->add_invalidate( CACHE_VERSATILITY )
                                 ->set_chance( 0 );
 
     buffs.temptation = make_buff( this, "temptation", find_spell( 234143 ) )
@@ -4247,6 +4247,8 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
 
   m *= 1.0 + racials.brawn->effectN( 1 ).percent();
   m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
+  m *= 1.0 + passive_values.amplification_1;
+  m *= 1.0 + passive_values.amplification_2;
   if ( buffs.incensed )
   {
     m *= 1.0 + buffs.incensed->check_value();
@@ -4270,6 +4272,8 @@ double player_t::composite_player_critical_healing_multiplier() const
 
   m += racials.brawn->effectN( 1 ).percent();
   m += racials.might_of_the_mountain->effectN( 1 ).percent();
+  m += 0.5 * passive_values.amplification_1;
+  m += 0.5 * passive_values.amplification_2;
 
   return m;
 }
@@ -4400,10 +4404,6 @@ double player_t::composite_attribute_multiplier( attribute_e attr ) const
       break;
     case ATTR_SPIRIT:
       pct_type = STAT_PCT_BUFF_SPIRIT;
-      if ( buffs.amplification )
-        m *= 1.0 + passive_values.amplification_1;
-      if ( buffs.amplification_2 )
-        m *= 1.0 + passive_values.amplification_2;
       break;
     case ATTR_STAMINA:
       pct_type = STAT_PCT_BUFF_STAMINA;
@@ -4435,17 +4435,13 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_SPELL_HASTE:
     case RATING_MELEE_HASTE:
     case RATING_RANGED_HASTE:
-      if ( buffs.amplification )
-        v *= 1.0 + passive_values.amplification_1;
-      if ( buffs.amplification_2 )
-        v *= 1.0 + passive_values.amplification_2;
+      v *= 1.0 + passive_values.amplification_1;
+      v *= 1.0 + passive_values.amplification_2;
       v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     case RATING_MASTERY:
-      if ( buffs.amplification )
-        v *= 1.0 + passive_values.amplification_1;
-      if ( buffs.amplification_2 )
-        v *= 1.0 + passive_values.amplification_2;
+      v *= 1.0 + passive_values.amplification_1;
+      v *= 1.0 + passive_values.amplification_2;
       v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     case RATING_SPELL_CRIT:
@@ -4456,6 +4452,8 @@ double player_t::composite_rating_multiplier( rating_e rating ) const
     case RATING_DAMAGE_VERSATILITY:
     case RATING_HEAL_VERSATILITY:
     case RATING_MITIGATION_VERSATILITY:
+      v *= 1.0 + passive_values.amplification_1;
+      v *= 1.0 + passive_values.amplification_2;
       v *= 1.0 + racials.the_human_spirit->effectN( 1 ).percent();
       break;
     default:
