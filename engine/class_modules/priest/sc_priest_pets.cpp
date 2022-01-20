@@ -712,7 +712,6 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   {
     parse_options( options );
     channeled   = true;
-    tick_zero   = true;
     tick_action = new your_shadow_torment_mind_tick_t( p, data().effectN( 1 ).trigger() );
   }
 

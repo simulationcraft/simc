@@ -2086,8 +2086,6 @@ void item::amplification( special_effect_t& effect )
   maintenance_check( 528 );
 
   player_t* p = effect.item -> player;
-  const spell_data_t* amplify_spell = p -> find_spell( effect.spell_id );
-
   buff_t* first_amp = buff_t::find( p, "amplification" );
   buff_t* second_amp = buff_t::find( p, "amplification_2" );
   buff_t* amp_buff = nullptr;
@@ -2103,14 +2101,8 @@ void item::amplification( special_effect_t& effect )
     amp_value = &( p -> passive_values.amplification_2 );
   }
 
-  const random_prop_data_t& budget = p -> dbc->random_property( effect.item -> item_level() );
-  *amp_value = budget.p_epic[ 0 ] * amplify_spell -> effectN( 2 ).m_coefficient() / 100.0;
-  if ( p -> level() > 90 )
-  { // We have no clue how the trinket actually scales down with level. This will linearly decrease amplification until it hits 0 at level 100.
-    double level_nerf = ( static_cast<double>( p -> level() ) - 90 ) / 10.0;
-    *amp_value *= 1 - level_nerf;
-    *amp_value = std::max( 0.01, *amp_value ); // Cap it at 1%
-  }
+  // Seems to be 0.1 regardless of level/item level now.
+  *amp_value = 0.1;
   amp_buff -> default_value = *amp_value;
   amp_buff -> default_chance = 1.0;
 }

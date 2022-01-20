@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.41793 Live (hotfix 2022-01-12/41793, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -546,7 +546,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 388 | Target: Self (1)
 Description      : Soar forward through the air at high speed for $d.
  
-If used again while active, you will land, dealing $123586m1 damage to all enemies within $123586A1 yards and reducing movement speed by $123586m2% for $123586d.
+If used again while active, you will land, dealing $123586s1 damage to all enemies within $123586A1 yards and reducing movement speed by $123586s2% for $123586d.
 
 Name             : Spinning Crane Kick (id=101546) [Spell Family (53)] 
 Class            : Monk
@@ -8332,58 +8332,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 109.9538 (coefficient=4.549075) | PvP Coefficient: 0.50000 | Target: Self (1)
 Description      : Spending Chi has a chance to make your next Spinning Crane Kick free and deal $s1 additional damage.
 
-Name             : Dance of Chi-Ji (id=286586) [Spell Family (53), Hidden] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Proc Chance      : 101%
-Real PPM         : 2 (Haste multiplier)
-Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
-Triggered by     : Dance of Chi-Ji (286585)
-Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ .......x   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Scales with Casting Item's Level (354), Only Proc From Class Abilities (415), Recompute Aura On Level Scale (446)
-Effects          :
-#1 (id=749050)   : Apply Aura (6) | Proc Trigger Spell (42): Dance of Chi-Ji
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 286587 | Target: Self (1)
-Description      : $@spelldesc286585
-
-Name             : Dance of Chi-Ji (id=286587) [Spell Family (53)] 
-Class            : Monk
-School           : Nature
-Spell Type       : None
-Range            : 100 yards
-Duration         : 15 seconds
-Triggered by     : Dance of Chi-Ji (286586)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display Range (126), Aura Points On Client (268), Scales with Casting Item's Level (354)
-Effects          :
-#1 (id=749051)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=749052)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 286585
-#3 (id=749053)   : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (107270), Spinning Crane Kick (322729)
-                   Family Flags: 8, 63
-Description      : $@spelldesc286585
-Tooltip          : Your next Spinning Crane Kick is free and deals $w1 additional damage.
-
 Name             : Fury of Xuen (id=287055) [Spell Family (53), Passive] 
 Class            : Monk
 School           : Physical
@@ -9635,8 +9583,8 @@ Effects          :
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Spinning Crane Kick (101546), Spinning Crane Kick (322729)
                    Family Flags: 63
-Description      : $@spelldesc286585
-Tooltip          : Your next Spinning Crane Kick is free and deals $w1 additional damage.
+Description      : $@spelldesc325201
+Tooltip          : Your next Spinning Crane Kick is free and deals an additional $325201s1% damage.
 
 Name             : Fortifying Brew (desc=Rank 2) (id=325208) [Spell Family (53), Passive] 
 Class            : Mistweaver Windwalker Monk
@@ -9774,12 +9722,12 @@ Family Flags     : 82
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
                  : ........ ....xx.. ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can Proc From Procs (122), Aura Points On Client (268), Not In Spellbook Until Learned (269), No Movement Radius Bonus (318), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Can Proc From Procs (122), No Attack Parry (248), Aura Points On Client (268), Not In Spellbook Until Learned (269), No Movement Radius Bonus (318), Enable Procs from Suppressed Caster Procs (384), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=815368)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE Custom (8)

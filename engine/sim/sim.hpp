@@ -520,6 +520,7 @@ struct sim_t : private sc_thread_t
   bool distance_targeting_enabled;
   bool ignore_invulnerable_targets;
   bool enable_dps_healing;
+  bool count_overheal_as_heal;
   double scaling_normalized;
 
   // Multi-Threading

@@ -304,9 +304,11 @@ public:
     double celestial_spirits_exceptional_chance = 0.85;
     int convoke_the_spirits_deck = 5;
     std::string kindred_affinity_covenant = "night_fae";
-    double kindred_spirits_absorbed = 0.2;
-    bool kindred_spirits_hide_partner = false;
-    double kindred_spirits_partner_dps = 1.0;
+    double kindred_spirits_absorbed = 0.15;
+    double kindred_spirits_dps_pool_multiplier = 0.85;
+    double kindred_spirits_non_dps_pool_multiplier = 1.2;
+    std::string kindred_spirits_target_str;
+    player_t* kindred_spirits_target;
     bool lone_empowerment = false;
   } options;
 
@@ -378,6 +380,7 @@ public:
 
     // Covenants
     buff_t* kindred_empowerment;
+    buff_t* kindred_empowerment_partner;
     buff_t* kindred_empowerment_energize;
     buff_t* lone_empowerment;
     buff_t* kindred_affinity;
@@ -527,8 +530,6 @@ public:
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
-    proc_t* blood_mist;
-    proc_t* gushing_lacerations;
 
     // Guardian
     proc_t* gore;
@@ -1289,6 +1290,10 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
+
+    if ( p.is_ptr() )
+      set_refresh_behavior( buff_refresh_behavior::EXTEND );
+
     if ( !inc && p.specialization() == DRUID_GUARDIAN )
       name_str_reporting = "berserk";
 
@@ -1507,41 +1512,55 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 // Kindred Empowerment ======================================================
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
+  spell_t** damage;  // actions are created after buffs, so use double pointer
   double pool;
-  double partner_pool;
+  double pool_mul;
+  double add_pct;
+  double use_pct;
+  bool partner;
 
-  kindred_empowerment_buff_t( druid_t& p )
-    : base_t( p, "kindred_empowerment", p.cov.kindred_empowerment ), pool( 1.0 ), partner_pool( 1.0 )
+  kindred_empowerment_buff_t( druid_t& p, std::string_view n, bool b = false )
+    : base_t( p, n, p.cov.kindred_empowerment ),
+      pool( 1.0 ), pool_mul( 1.0 ),
+      add_pct( p.cov.kindred_empowerment_energize->effectN( 1 ).percent() ),
+      use_pct( p.cov.kindred_empowerment->effectN( 2 ).percent() ),
+      partner( b )
   {
     set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+    if ( partner )
+      damage = &p.active.kindred_empowerment_partner;
+    else
+      damage = &p.active.kindred_empowerment;
+
+    if ( !p.options.kindred_spirits_target )
+    {
+      if ( p.specialization() == DRUID_BALANCE || p.specialization() == DRUID_FERAL )
+        pool_mul = p.options.kindred_spirits_dps_pool_multiplier;
+      else
+        pool_mul = p.options.kindred_spirits_non_dps_pool_multiplier;
+    }
   }
 
   void expire_override( int s, timespan_t d ) override
   {
     base_t::expire_override( s, d );
 
-    pool         = 1.0;
-    partner_pool = 1.0;
+    pool = 1.0;
   }
 
   void add_pool( const action_state_t* s )
   {
     trigger();
 
-    double initial = s->result_amount * ( 1.0 - p().options.kindred_spirits_absorbed );
-    // since kindred_spirits_partner_dps is meant to apply to the pool you RECEIVE and not to the pool you send, don't
-    // apply it to partner_pool, which is meant to represent the damage the other person does.
-    double partner_amount = initial * p().cov.kindred_empowerment_energize->effectN( 1 ).percent();
-    double amount         = partner_amount * p().options.kindred_spirits_partner_dps;
+    double raw    = s->result_amount * add_pct * pool_mul;
+    double lost   = raw * p().options.kindred_spirits_absorbed;
+    double amount = raw - lost;
 
-    sim->print_debug( "Kindred Empowerment: Adding {} from {} to pool of {}", amount, s->action->name(), pool );
+    sim->print_debug( "KINDRED EMPOWERMENT: Adding {} ({} lost) from {}-{} to {} pool of {}", amount, lost,
+                    s->action->player->name_str, s->action->name_str, partner ? "partner" : "self", pool );
 
     pool += amount;
-
-    // only dps specs give a pool to the partner
-    if ( !p().options.kindred_spirits_hide_partner &&
-         ( p().specialization() == DRUID_BALANCE || p().specialization() == DRUID_FERAL ) )
-      partner_pool += partner_amount;
   }
 
   void use_pool( const action_state_t* s )
@@ -1549,22 +1568,17 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     if ( pool <= 1.0 )  // minimum pool value of 1
       return;
 
-    double amount = s->result_amount * p().cov.kindred_empowerment->effectN( 2 ).percent();
-
+    double amount = s->result_amount * use_pct;
     if ( amount == 0 )
       return;
 
-    sim->print_debug( "Kindred Empowerment: Using {} from pool of {} ({}) on {}", amount, pool, partner_pool,
-                      s->action->name() );
+    sim->print_debug( "KINDRED EMPOWERMENT: Using {} from {} pool of {} on {}-{}", amount, partner ? "partner" : "self",
+                    pool, s->action->player->name_str, s->action->name_str );
 
-    p().active.kindred_empowerment->execute_on_target( s->target, std::min( amount, pool - 1.0 ) );
+    amount = std::min( amount, pool - 1.0 );
     pool -= amount;
 
-    if ( partner_pool <= 1.0 )
-      return;
-
-    p().active.kindred_empowerment_partner->execute_on_target( s->target, std::min( amount, partner_pool - 1.0 ) );
-    partner_pool -= amount;
+    ( *damage )->execute_on_target( s->target, amount );
   }
 };
 
@@ -1630,8 +1644,8 @@ struct kindred_affinity_base_t : public stat_buff_t
   {
     if ( cov == covenant_e::KYRIAN )
     {
-      // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor,
-      // so we don't need to process further.
+      // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor
+      name_str_reporting += "_mastery";
       return;
     }
 
@@ -1641,16 +1655,19 @@ struct kindred_affinity_base_t : public stat_buff_t
     {
       set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
       set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
+      name_str_reporting += "_vers";
     }
     else if ( cov == covenant_e::NIGHT_FAE )
     {
       set_default_value_from_effect_type( A_HASTE_ALL );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+      name_str_reporting += "_haste";
     }
     else if ( cov == covenant_e::VENTHYR )
     {
       set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
       set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+      name_str_reporting += "_crit";
     }
     else
     {
@@ -1668,8 +1685,12 @@ struct kindred_affinity_buff_t : public kindred_affinity_base_t
 
     covenant_e cov;
 
-    if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "kyrian" ) ||
-         util::str_compare_ci( p.options.kindred_affinity_covenant, "mastery" ) )
+    if ( p.options.kindred_spirits_target )
+    {
+      cov = p.options.kindred_spirits_target->covenant->type();
+    }
+    else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "kyrian" ) ||
+              util::str_compare_ci( p.options.kindred_affinity_covenant, "mastery" ) )
     {
       cov = covenant_e::KYRIAN;
     }
@@ -7616,15 +7637,15 @@ struct kindred_empowerment_t : public druid_spell_t
   {
     background = dual = true;
     may_miss = may_crit = callbacks = false;
-    snapshot_flags |= STATE_TGT_MUL_DA;
-    update_flags |= STATE_TGT_MUL_DA;
   }
 };
 
 struct kindred_spirits_t : public druid_spell_t
 {
+  buff_t* lone;
+
   kindred_spirits_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str )
+    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str ), lone( nullptr )
   {
     if ( !p->cov.kyrian->ok() )
       return;
@@ -7633,40 +7654,41 @@ struct kindred_spirits_t : public druid_spell_t
 
     if ( !p->active.kindred_empowerment )
     {
-      p->active.kindred_empowerment = p->get_secondary_action<kindred_empowerment_t>(
-          "kindred_empowerment", "kindred_empowerment" );
+      p->active.kindred_empowerment =
+          p->get_secondary_action_n<kindred_empowerment_t>( "kindred_empowerment" );
       add_child( p->active.kindred_empowerment );
 
-      p->active.kindred_empowerment_partner = p->get_secondary_action<kindred_empowerment_t>(
-          "kindred_empowerment_partner", "kindred_empowerment_partner" );
+      p->active.kindred_empowerment_partner =
+          p->get_secondary_action_n<kindred_empowerment_t>( "kindred_empowerment_partner" );
       add_child( p->active.kindred_empowerment_partner );
     }
 
     if ( p->conduit.deep_allegiance->ok() )
       cooldown->duration *= 1.0 + p->conduit.deep_allegiance.percent();
-  }
 
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( p()->options.lone_empowerment )
+    if ( p->options.lone_empowerment )
     {
-      switch ( p()->specialization() )
+      switch ( p->specialization() )
       {
         case DRUID_BALANCE:
         case DRUID_FERAL:
-          p()->buff.lone_empowerment->trigger();
+          lone = p->buff.lone_empowerment;
           break;
         default:
           sim->error( "Lone empowerment is only supported for DPS specializations." );
           break;
       }
     }
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( lone )
+      lone->trigger();
     else
-    {
       p()->buff.kindred_empowerment_energize->trigger();
-    }
   }
 };
 
@@ -7701,7 +7723,6 @@ double brambles_handler( const action_state_t* s )
 {
   auto p = static_cast<druid_t*>( s->target );
   assert( p->talent.brambles->ok() );
-  assert( s );
 
   /* Calculate the maximum amount absorbed. This is not affected by
      versatility (and likely other player modifiers). */
@@ -7750,6 +7771,25 @@ double earthwarden_handler( const action_state_t* s )
 
   double absorb = s->result_amount * p->buff.earthwarden->check_value();
   p->buff.earthwarden->decrement();
+
+  return absorb;
+}
+
+// Kindred Empowerment Pool Absorb Handler ==================================
+double kindred_empowerment_handler( const action_state_t* s )
+{
+  auto p = static_cast<druid_t*>( s->target );
+  auto b = debug_cast<buffs::kindred_empowerment_buff_t*>( p->buff.kindred_empowerment );
+
+  if ( !b->check() )
+    return 0.0;
+
+  auto absorb = s->result_amount * b->use_pct;
+
+  p->sim->print_debug( "KINDRED_EMPOWERMENT: Absorbing {} from pool of {}", absorb, b->pool );
+
+  absorb = std::min( absorb, b->pool - 1 );
+  b->pool -= absorb;
 
   return absorb;
 }
@@ -8172,6 +8212,13 @@ void druid_t::init_spells()
   cov.adaptive_swarm_damage        = check_id( cov.necrolord->ok(), 325733 );
   cov.adaptive_swarm_heal          = check_id( cov.necrolord->ok(), 325748 );
 
+  if ( specialization() == DRUID_GUARDIAN && cov.kindred_empowerment->ok() )
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        cov.kindred_empowerment->id(), instant_absorb_t(
+            this, cov.kindred_empowerment, "kindred_empowerment_absorb", &kindred_empowerment_handler ) ) );
+  }
+
   // Conduits
 
   // Balance
@@ -8394,31 +8441,62 @@ void druid_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( active.kindred_empowerment )
+  if ( cov.kyrian->ok() )
   {
-    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1, [this]( result_amount_type, action_state_t* s ) {
-      auto pool = debug_cast<buffs::kindred_empowerment_buff_t*>( buff.kindred_empowerment );
-      const auto s_action = s->action;
+    if ( options.kindred_spirits_target )
+    {
+      auto partner = options.kindred_spirits_target;
 
-      // TODO: Confirm damage must come from an active action
-      if ( !s_action->harmful || ( s_action->type != ACTION_SPELL && s_action->type != ACTION_ATTACK ) )
-        return assessor::CONTINUE;
+      buff.kindred_affinity->set_stack_change_callback( [ partner ]( buff_t*, int old_, int new_ ) {
+        if ( new_ > old_ )
+          partner->buffs.kindred_affinity->increment();
+        else
+          partner->buffs.kindred_affinity->decrement();
+      } );
+    }
+
+    using emp_buff_t = buffs::kindred_empowerment_buff_t;
+
+    auto handler = []( druid_t* p, emp_buff_t* add, emp_buff_t* use, action_state_t* s ) {
+      if ( !s->action->harmful || ( s->action->type != ACTION_SPELL && s->action->type != ACTION_ATTACK ) )
+        return;
 
       if ( s->result_amount == 0 )
+        return;
+
+      if ( s->action->id == p->active.kindred_empowerment->id ||
+           s->action->id == p->active.kindred_empowerment_partner->id )
+        return;
+
+      if ( add && p->buff.kindred_empowerment_energize->up() )
+        add->add_pool( s );
+
+      if ( use && use->up() )
+        use->use_pool( s );
+    };
+
+    // if we don't have an explicit target, emulate bonding with an identical damage profile 
+    auto partner = options.kindred_spirits_target ? options.kindred_spirits_target : this;
+    auto self_buff = debug_cast<emp_buff_t*>( buff.kindred_empowerment );
+    auto bond_buff = debug_cast<emp_buff_t*>( buff.kindred_empowerment_partner );
+
+    // only dps specs give a pool to the partner
+    if ( specialization() != DRUID_BALANCE && specialization() != DRUID_FERAL )
+      bond_buff = nullptr;
+
+    // druid's assessor: add to bond buff, use from self buff
+    assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
+      [ &handler, self_buff, bond_buff, this ]( result_amount_type, action_state_t* s ) {
+        handler( this, bond_buff, self_buff, s );
         return assessor::CONTINUE;
+      } );
 
-      // TODO: Confirm added damage doesn't add to the pool
-      if ( s_action->id == active.kindred_empowerment->id || s_action->id == active.kindred_empowerment_partner->id )
+    // partner's assessor: add to self buff, use from bond buff
+    partner->assessor_out_damage.add( assessor::TARGET_DAMAGE + 1,
+      [ &handler, self_buff, bond_buff, this ]( result_amount_type, action_state_t* s ) {
+        handler( this, self_buff, bond_buff, s );
         return assessor::CONTINUE;
-
-      if ( buff.kindred_empowerment_energize->up() )
-        pool->add_pool( s );
-
-      if ( buff.kindred_empowerment->up() )
-        pool->use_pool( s );
-
-      return assessor::CONTINUE;
-    } );
+      } );
   }
 }
 
@@ -8749,7 +8827,9 @@ void druid_t::create_buffs()
   }
 
   // Covenant
-  buff.kindred_empowerment = make_buff<kindred_empowerment_buff_t>( *this );
+  buff.kindred_empowerment = make_buff<kindred_empowerment_buff_t>( *this, "kindred_empowerment" );
+  buff.kindred_empowerment_partner =
+      make_buff<kindred_empowerment_buff_t>( *this, "kindred_empowerment_partner", true );
 
   buff.kindred_empowerment_energize =
       make_buff( this, "kindred_empowerment_energize", cov.kindred_empowerment_energize );
@@ -9133,6 +9213,24 @@ void druid_t::init()
       break;
     default: break;
   }
+
+  if ( util::str_compare_ci( sim->fight_style, "DungeonSlice" ) ||
+       util::str_compare_ci( sim->fight_style, "DungeonRoute" ) )
+  {
+    options.adaptive_swarm_friendly_targets = 5;
+  }
+
+  if ( covenant->type() == covenant_e::KYRIAN && !options.kindred_spirits_target_str.empty() )
+  {
+    auto it = range::find( sim->player_no_pet_list, options.kindred_spirits_target_str, &player_t::name_str );
+    if ( it == sim->player_no_pet_list.end() )
+      throw std::invalid_argument( "Kindred Spirits target player not found." );
+
+    if ( *it == this )
+      throw std::invalid_argument( "Cannot bond with yourself. Use 'druid.lone_empowerment=1'" );
+    else
+      options.kindred_spirits_target = *it;
+  }
 }
 
 // druid_t::init_gains ======================================================
@@ -9142,36 +9240,36 @@ void druid_t::init_gains()
 
   if ( specialization() == DRUID_BALANCE )
   {
-    gain.natures_balance = get_gain( "natures_balance" );
+    gain.natures_balance = get_gain( "Natures Balance" );
   }
   else if ( specialization() == DRUID_FERAL )
   {
-    gain.energy_refund           = get_gain( "energy_refund" );
-    gain.primal_fury             = get_gain( "primal_fury" );
-    gain.berserk                 = get_gain( "berserk" );
-    gain.cateye_curio            = get_gain( "cateye_curio" );
-    gain.eye_of_fearful_symmetry = get_gain( "eye_of_fearful_symmetry" );
-    gain.incessant_hunter        = get_gain( "incessant_hunter" );
+    gain.energy_refund           = get_gain( "Energy Refund" );
+    gain.primal_fury             = get_gain( "Primal Fury" );
+    gain.berserk                 = get_gain( "Berserk" );
+    gain.cateye_curio            = get_gain( "Cat-eye Curio" );
+    gain.eye_of_fearful_symmetry = get_gain( "Eye of Fearful Symmetry" );
+    gain.incessant_hunter        = get_gain( "Incessant Hunter" );
   }
   else if ( specialization() == DRUID_GUARDIAN )
   {
-    gain.bear_form         = get_gain( "bear_form" );
-    gain.blood_frenzy      = get_gain( "blood_frenzy" );
-    gain.brambles          = get_gain( "brambles" );
-    gain.bristling_fur     = get_gain( "bristling_fur" );
-    gain.gore              = get_gain( "gore" );
-    gain.rage_refund       = get_gain( "rage_refund" );
-    gain.rage_from_melees  = get_gain( "rage_from_melees" );
+    gain.bear_form         = get_gain( "Bear Form" );
+    gain.blood_frenzy      = get_gain( "Blood Frenzy" );
+    gain.brambles          = get_gain( "Brambles" );
+    gain.bristling_fur     = get_gain( "Bristling Fur" );
+    gain.gore              = get_gain( "Gore" );
+    gain.rage_refund       = get_gain( "Rage Refund" );
+    gain.rage_from_melees  = get_gain( "Rage from Melees" );
   }
 
   // Multi-spec
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION )
   {
-    gain.clearcasting = get_gain( "clearcasting" );  // Feral & Restoration
+    gain.clearcasting = get_gain( "Clearcasting" );  // Feral & Restoration
   }
   if ( specialization() == DRUID_FERAL || specialization() == DRUID_GUARDIAN )
   {
-    gain.soul_of_the_forest = get_gain( "soul_of_the_forest" );  // Feral & Guardian
+    gain.soul_of_the_forest = get_gain( "Soul of the Forest" );  // Feral & Guardian
   }
 }
 
@@ -9181,19 +9279,17 @@ void druid_t::init_procs()
   player_t::init_procs();
 
   // Balance
-  proc.pulsar = get_proc( "Pulsar" )->collect_interval();
+  proc.pulsar = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
 
   // Feral
-  proc.predator              = get_proc( "predator" );
-  proc.predator_wasted       = get_proc( "predator_wasted" );
-  proc.primal_fury           = get_proc( "primal_fury" );
-  proc.blood_mist            = get_proc( "blood_mist" );
-  proc.gushing_lacerations   = get_proc( "gushing_lacerations" );
-  proc.clearcasting          = get_proc( "clearcasting" );
-  proc.clearcasting_wasted   = get_proc( "clearcasting_wasted" );
+  proc.predator              = get_proc( "Predator" );
+  proc.predator_wasted       = get_proc( "Predator (Wasted)" );
+  proc.primal_fury           = get_proc( "Primal Fury" );
+  proc.clearcasting          = get_proc( "Clearcasting" );
+  proc.clearcasting_wasted   = get_proc( "Clearcasting (Wasted)" );
 
   // Guardian
-  proc.gore                  = get_proc( "gore" );
+  proc.gore                  = get_proc( "Gore" );
 }
 
 // druid_t::init_uptimes ====================================================
@@ -10140,7 +10236,11 @@ void druid_t::create_options()
 
   // Covenant
   add_option( opt_deprecated( "druid.adaptive_swarm_jump_distance",
-                              "druid.adaptive_swarm_jump_distance_min / druid.adaptive_swarm_jump_distance_max" ) );
+    "druid.adaptive_swarm_jump_distance_min / druid.adaptive_swarm_jump_distance_max" ) );
+  add_option( opt_deprecated( "druid.kindred_spirits_partner_dps",
+    "druid.kindred_spirits_dps_pool_multiplier or druid.kindred_spirits_non_dps_pool_multiplier" ) );
+  add_option( opt_deprecated( "druid.kindred_spirits_hide_partner", "this option has been removed" ) );
+
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
   add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
@@ -10148,8 +10248,9 @@ void druid_t::create_options()
   add_option( opt_int( "druid.convoke_the_spirits_deck", options.convoke_the_spirits_deck ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", options.kindred_affinity_covenant ) );
   add_option( opt_float( "druid.kindred_spirits_absorbed", options.kindred_spirits_absorbed ) );
-  add_option( opt_bool( "druid.kindred_spirits_hide_partner", options.kindred_spirits_hide_partner ) );
-  add_option( opt_float( "druid.kindred_spirits_partner_dps", options.kindred_spirits_partner_dps ) );
+  add_option( opt_float( "druid.kindred_spirits_dps_pool_multiplier", options.kindred_spirits_dps_pool_multiplier ) );
+  add_option( opt_float( "druid.kindred_spirits_non_dps_pool_multiplier", options.kindred_spirits_non_dps_pool_multiplier ) );
+  add_option( opt_string( "druid.kindred_spirits_target", options.kindred_spirits_target_str ) );
   add_option( opt_bool( "druid.lone_empowerment", options.lone_empowerment ) );
 }
 
@@ -10242,8 +10343,9 @@ void druid_t::init_absorb_priority()
 {
   player_t::init_absorb_priority();
 
-  absorb_priority.push_back( talent.brambles->id() );     // Brambles
-  absorb_priority.push_back( talent.earthwarden->id() );  // Earthwarden - Legion TOCHECK
+  absorb_priority.push_back( talent.brambles->id() );
+  absorb_priority.push_back( talent.earthwarden->id() );
+  absorb_priority.push_back( cov.kindred_empowerment->id() );
 }
 
 void druid_t::target_mitigation( school_e school, result_amount_type type, action_state_t* s )
