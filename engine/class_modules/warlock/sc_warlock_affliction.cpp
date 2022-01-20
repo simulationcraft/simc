@@ -619,7 +619,9 @@ struct malefic_rapture_t : public affliction_spell_t
         assert( d < as<int>( p()->procs.malefic_rapture.size() ) && "The procs.malefic_rapture array needs to be expanded." );
 
         if ( d >= 0 && d < as<int>( p()->procs.malefic_rapture.size() ) )
+        {
           p()->procs.malefic_rapture[ d ]->occur();
+        }
 
         affliction_spell_t::execute();
       }
