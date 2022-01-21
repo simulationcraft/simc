@@ -1687,6 +1687,9 @@ struct kindred_affinity_buff_t : public kindred_affinity_base_t
 
     if ( p.options.kindred_spirits_target )
     {
+      if ( p.options.kindred_spirits_target->covenant->type() == covenant_e::INVALID )
+        throw std::invalid_argument( fmt::format( "Kindred Spirits target {} does not have a valid covenant.",
+                                                  p.options.kindred_spirits_target->name_str ) );
       cov = p.options.kindred_spirits_target->covenant->type();
     }
     else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "kyrian" ) ||
