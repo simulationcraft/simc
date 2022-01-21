@@ -140,7 +140,7 @@ public:
     damage_buff_t* vendetta;
     buff_t* wound_poison;
     buff_t* banshees_blight; // Slyvanas Dagger
-    buff_t* grudge_match; // T28 Assassination 2pc
+    damage_buff_t* grudge_match; // T28 Assassination 2pc
   } debuffs;
 
   bool is_deathspiked;
@@ -701,7 +701,6 @@ public:
     bool rogue_ready_trigger = true;
     bool prepull_shadowdust = false;
     bool priority_rotation = false;
-    double t28_assassination_2pc_value = 1.0; // Temp for PTR build
   } options;
 
   rogue_t( sim_t* sim, util::string_view name, race_e r = RACE_NIGHT_ELF ) :
@@ -1224,9 +1223,7 @@ public:
     }
     if ( p->set_bonuses.t28_assassination_2pc->ok() )
     {
-      // Not in spell data. Using the mastery whitelist as a baseline, most apply other than Envenom
-      affected_by.t28_assassination_2pc = ab::data().affected_by( p->mastery.potent_assassin->effectN( 1 ) ) ||
-                                          ab::data().affected_by( p->mastery.potent_assassin->effectN( 2 ) );
+      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 2 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -1644,7 +1641,7 @@ public:
 
     if ( affected_by.t28_assassination_2pc )
     {
-      m *= 1.0 + td( target )->debuffs.grudge_match->check_value();
+      m *= td( target )->debuffs.grudge_match->value_direct();
     }
 
     return m;
@@ -2776,7 +2773,7 @@ struct envenom_t : public rogue_attack_t
     rogue_attack_t( name, p, p->spec.envenom, options_str )
   {
     dot_duration = timespan_t::zero();
-    affected_by.zoldyck_insignia = affected_by.t28_assassination_2pc = false;
+    affected_by.zoldyck_insignia = false;
   }
 
   double composite_target_multiplier( player_t* target ) const override
@@ -4310,14 +4307,14 @@ struct shiv_t : public rogue_attack_t
 {
   struct grudge_match_t : public rogue_attack_t
   {
-    // TODO: Not yet on PTR, hard-coded for now
+    // Applied via scripted effect, use a placeholder AoE spell trigger with the correct radius
     grudge_match_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p->find_spell( 363591 ) )
+      rogue_attack_t( name, p, p->find_spell( 364667 ) )
     {
       dual = true;
       callbacks = false;
       aoe = -1;
-      radius = 15;
+      radius = data().effectN(4).base_value();
     }
 
     void impact( action_state_t* s ) override
@@ -4688,7 +4685,6 @@ struct sepsis_t : public rogue_attack_t
       rogue_attack_t( name, p, p->find_spell( 328306 ) )
     {
       dual = true;
-      affected_by.t28_assassination_2pc = true; // TOCHECK on next PTR update
     }
 
     void impact( action_state_t* state ) override
@@ -4710,7 +4706,6 @@ struct sepsis_t : public rogue_attack_t
   {
     // 2021-04-22- Not in the whitelist but confirmed as working in-game
     affected_by.broadside_cp = true;
-    affected_by.t28_assassination_2pc = true; // TOCHECK on next PTR update
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -6596,15 +6591,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     debuffs.banshees_blight = make_buff( *this, "banshees_blight" )->set_quiet( true );
 
   // T28 Assassination 2pc 
-  // TODO: No spell data on PTR yet, hard-coded for now
   if ( source->set_bonuses.t28_assassination_2pc->ok() )
-    debuffs.grudge_match = make_buff( *this, "grudge_match", source->spec.shiv_2_debuff )
-      ->set_chance( 1.0 )
-      ->set_default_value( source->options.t28_assassination_2pc_value );
+    debuffs.grudge_match = make_buff<damage_buff_t>( *this, "grudge_match", source->find_spell( 364668 ) );
   else
-    debuffs.grudge_match = make_buff( *this, "grudge_match" )
-      ->set_chance( 0.0 )
-      ->set_quiet( true );
+  {
+    debuffs.grudge_match = make_buff<damage_buff_t>( *this, "grudge_match" );
+    debuffs.grudge_match->set_chance( 0.0 );
+    debuffs.grudge_match->set_quiet( true );
+  }
 
   // Marked for Death Reset
   if ( source->talent.marked_for_death->ok() )
@@ -8146,6 +8140,7 @@ void rogue_t::init_spells()
     active.tornado_trigger_pistol_shot = get_secondary_trigger_action<actions::pistol_shot_t>(
         secondary_trigger::TORNADO_TRIGGER, "pistol_shot_tornado_trigger" );
   }
+
   if ( set_bonuses.t28_outlaw_4pc->ok() )
   {
     active.tornado_trigger_between_the_eyes = get_secondary_trigger_action<actions::between_the_eyes_t>(
@@ -8714,7 +8709,6 @@ void rogue_t::create_options()
   add_option( opt_func( "fixed_rtb_odds", parse_fixed_rtb_odds ) );
   add_option( opt_bool( "prepull_shadowdust", options.prepull_shadowdust ) );
   add_option( opt_bool( "priority_rotation", options.priority_rotation ) );
-  add_option( opt_float( "t28_assassination_2pc_value", options.t28_assassination_2pc_value, 0.0, 2.0 ) );
 }
 
 // rogue_t::copy_from =======================================================
@@ -8744,7 +8738,6 @@ void rogue_t::copy_from( player_t* source )
   options.rogue_ready_trigger = rogue->options.rogue_ready_trigger;
   options.prepull_shadowdust = rogue->options.prepull_shadowdust;
   options.priority_rotation = rogue->options.priority_rotation;
-  options.t28_assassination_2pc_value = rogue->options.t28_assassination_2pc_value;
 }
 
 // rogue_t::create_profile  =================================================
