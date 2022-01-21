@@ -1784,6 +1784,9 @@ public:
   // list of action_ids that triggers the same dot as this action
   std::vector<int> dot_ids;
 
+  // Name to be used by get_dot() instead of action name
+  std::string dot_name;
+
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
   free_cast_e free_cast;
   // Restricts use of a spell based on form.
@@ -1798,6 +1801,7 @@ public:
 
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
+      dot_name( n ),
       free_cast( free_cast_e::NONE ),
       form_mask( ab::data().stance_mask() ),
       autoshift( 0U ),
@@ -1830,6 +1834,19 @@ public:
     free_cast = f;
     ab::cooldown->duration = 0_ms;
     return this;
+  }
+
+  dot_t* get_dot( player_t* t ) override
+  {
+    if ( !t )
+      t = ab::target;
+    if ( !t )
+      return nullptr;
+
+    dot_t*& dot = ab::target_specific_dot[ t ];
+    if ( !dot )
+      dot = t->get_dot( dot_name, ab::player );
+    return dot;
   }
 
   unsigned get_dot_count() const
@@ -3182,6 +3199,8 @@ struct feral_frenzy_t : public cat_attack_t
       background = dual = true;
       direct_bleed = false;
       dot_behavior = dot_behavior_e::DOT_REFRESH_DURATION;
+
+      dot_name = "feral_frenzy_tick";
     }
 
     action_state_t* new_state() override { return new feral_frenzy_state_t( this, target ); }
@@ -3193,14 +3212,6 @@ struct feral_frenzy_t : public cat_attack_t
         return result_amount_type::DMG_DIRECT;
 
       return state->result_type;
-    }
-
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t ) t = target;
-      if ( !t ) return nullptr;
-
-      return td( t )->dots.feral_frenzy;
     }
 
     void execute() override
@@ -3447,14 +3458,7 @@ struct lunar_inspiration_t : public cat_attack_t
     gcd_type      = gcd_haste_type::ATTACK_HASTE;
 
     s_data_reporting = p->find_spell( 155580 );  // find by id since you can cast LI without talent
-  }
-
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t ) t = target;
-    if ( !t ) return nullptr;
-
-    return td( t )->dots.lunar_inspiration;
+    dot_name = "lunar_inspiration";
   }
 
   double action_multiplier() const override
@@ -3523,6 +3527,8 @@ struct rake_t : public cat_attack_t
       may_miss = may_parry = may_dodge = may_crit = false;
       // override for convoke. since this is only ever executed from rake_t, form checking is unnecessary.
       form_mask = 0;
+
+      dot_name = "rake";
     }
 
     double action_multiplier() const override
@@ -3533,14 +3539,6 @@ struct rake_t : public cat_attack_t
         am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
 
       return am;
-    }
-
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t ) t = target;
-      if ( !t ) return nullptr;
-
-      return td( t )->dots.rake;
     }
   };
 
@@ -3560,19 +3558,13 @@ struct rake_t : public cat_attack_t
 
     bleed = p->get_secondary_action_n<rake_bleed_t>( name_str + "_bleed" );
     bleed->stats = stats;
+
+    dot_name = "rake";
   }
 
   bool stealthed() const override
   {
     return p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() || cat_attack_t::stealthed();
-  }
-
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t ) t = target;
-    if ( !t ) return nullptr;
-
-    return td( t )->dots.rake;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -3715,6 +3707,8 @@ struct primal_wrath_t : public cat_attack_t
     special = true;
     aoe     = -1;
 
+    dot_name = "rip";
+
     rip = p->get_secondary_action_n<rip_t>( "rip_primal", p->find_spell( 1079 ), "" );
     rip->stats = stats;
 
@@ -3723,14 +3717,6 @@ struct primal_wrath_t : public cat_attack_t
 
     if ( p->legendary.circle_of_life_and_death->ok() )
       base_dur *= 1.0 + p->query_aura_effect( p->legendary.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, s )->percent();
-  }
-
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t ) t = target;
-    if ( !t ) return nullptr;
-
-    return td( t )->dots.rip;
   }
 
   double attack_direct_power_coefficient( const action_state_t* s ) const override
@@ -3996,16 +3982,10 @@ struct thrash_cat_t : public cat_attack_t
     energize_resource = RESOURCE_COMBO_POINT;
     energize_type     = action_energize::ON_HIT;
 
+    dot_name = "thrash_cat";
+
     if ( p->specialization() == DRUID_FERAL )
       name_str_reporting = "thrash";
-  }
-
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t ) t = target;
-    if ( !t ) return nullptr;
-
-    return td( t )->dots.thrash_cat;
   }
 
   void impact( action_state_t* s ) override
@@ -4324,17 +4304,11 @@ struct thrash_bear_t : public bear_attack_t
       dual = background = true;
       aoe = -1;
 
+      dot_name = "thrash_bear";
+
       // energize amount is not stored in talent spell
       if ( p->talent.blood_frenzy->ok() )
         bf_energize = p->find_spell( 203961 )->effectN( 1 ).resource( RESOURCE_RAGE );
-    }
-
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t ) t = target;
-      if ( !t ) return nullptr;
-
-      return td( t )->dots.thrash_bear;
     }
 
     void trigger_dot( action_state_t* s ) override
@@ -4368,16 +4342,10 @@ struct thrash_bear_t : public bear_attack_t
 
     cooldown = p->cooldown.thrash_bear;
 
+    dot_name = "thrash_bear";
+
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
-  }
-
-  dot_t* get_dot( player_t* t ) override
-  {
-    if ( !t ) t = target;
-    if ( !t ) return nullptr;
-
-    return td( t )->dots.thrash_bear;
   }
 
   void execute() override
@@ -5615,6 +5583,7 @@ struct moonfire_t : public druid_spell_t
       dual = background = true;
 
       triggers_galactic_guardian = false;
+      dot_name = "moonfire";
 
       if ( p->talent.twin_moons->ok() )
       {
@@ -5647,14 +5616,6 @@ struct moonfire_t : public druid_spell_t
         am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
 
       return am;
-    }
-
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t ) t = target;
-      if ( !t ) return nullptr;
-
-      return td( t )->dots.moonfire;
     }
 
     double composite_da_multiplier( const action_state_t* s  ) const override
@@ -5713,7 +5674,7 @@ struct moonfire_t : public druid_spell_t
         std::vector<player_t*> afflicted;
         std::vector<player_t*> unafflicted;
 
-        for (auto* i : full_list)
+        for ( auto* i : full_list )
         {
           if ( i == target || i->debuffs.invulnerable->up() )
             continue;
@@ -6403,14 +6364,8 @@ struct sunfire_t : public druid_spell_t
       aoe                 = p->find_rank_spell( "Sunfire", "Rank 2" )->ok() || p->talent.balance_affinity->ok() ? -1 : 0;
       base_aoe_multiplier = 0;
       radius              = data().effectN( 2 ).radius();
-    }
 
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t ) t = target;
-      if ( !t ) return nullptr;
-
-      return td( t )->dots.sunfire;
+      dot_name = "sunfire";
     }
 
     void tick( dot_t* d ) override
@@ -6926,16 +6881,6 @@ struct adaptive_swarm_t : public druid_spell_t
       heal = false;
     }
 
-    dot_t* get_dot( player_t* t ) override
-    {
-      if ( !t )
-        t = target;
-      if ( !t )
-        return nullptr;
-
-      return td( t )->dots.adaptive_swarm_damage;
-    }
-
     swarm_target_t new_swarm_target( swarm_target_t exclude ) override
     {
       auto tl = target_list();
@@ -7024,7 +6969,7 @@ struct adaptive_swarm_t : public druid_spell_t
 
     double calculate_tick_amount( action_state_t* s, double m ) const override
     {
-      auto stack = td( s->target )->dots.adaptive_swarm_damage->current_stack();
+      auto stack = find_dot( s->target )->current_stack();
       assert( stack );
 
       return adaptive_swarm_base_t::calculate_tick_amount( s, m / stack );
@@ -10360,8 +10305,10 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
     s->result_amount *= 1.0 + spec.thick_hide->effectN( 1 ).percent();
 
   if ( talent.rend_and_tear->ok() )
+  {
     s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() *
                                   get_target_data( s->action->player )->dots.thrash_bear->current_stack();
+  }
 
   player_t::target_mitigation( school, type, s );
 }
