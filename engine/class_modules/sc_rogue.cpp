@@ -8144,14 +8144,13 @@ void rogue_t::init_spells()
   if ( set_bonuses.t28_outlaw_2pc->ok() )
   {
     active.tornado_trigger_pistol_shot = get_secondary_trigger_action<actions::pistol_shot_t>(
-      secondary_trigger::TORNADO_TRIGGER, "pistol_shot_tornado_trigger" );
-
-    if ( set_bonuses.t28_outlaw_4pc->ok() )
-    {
-      active.tornado_trigger_between_the_eyes = get_secondary_trigger_action<actions::between_the_eyes_t>(
+        secondary_trigger::TORNADO_TRIGGER, "pistol_shot_tornado_trigger" );
+  }
+  if ( set_bonuses.t28_outlaw_4pc->ok() )
+  {
+    active.tornado_trigger_between_the_eyes = get_secondary_trigger_action<actions::between_the_eyes_t>(
         secondary_trigger::TORNADO_TRIGGER, "between_the_eyes_tornado_trigger" );
-      active.tornado_trigger_between_the_eyes->cooldown->duration = 0_s;
-    }
+    active.tornado_trigger_between_the_eyes->cooldown->duration = 0_s;
   }
 }
 
