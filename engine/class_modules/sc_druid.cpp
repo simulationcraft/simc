@@ -9996,6 +9996,14 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
   }
 
+  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+       ( util::str_compare_ci( splits[ 1 ], "kindred_spirits" ) ||
+         util::str_compare_ci( splits[ 1 ], "kindred_empowerment" ) ||
+         util::str_compare_ci( splits[ 1 ], "lone_empowerment" ) ) )
+  {
+    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], "empower_bond", splits[ 2 ] ) );
+  }
+
   if ( util::str_compare_ci( name_str, "combo_points" ) )
     return make_ref_expr( "combo_points", resources.current[ RESOURCE_COMBO_POINT ] );
 
