@@ -8386,7 +8386,7 @@ void druid_t::init_assessors()
 {
   player_t::init_assessors();
 
-  if ( cov.kyrian->ok() )
+  if ( cov.kyrian->ok() && active.kindred_empowerment )
   {
     if ( options.kindred_spirits_target )
     {
