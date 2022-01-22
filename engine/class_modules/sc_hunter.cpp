@@ -464,6 +464,7 @@ public:
   {
     proc_t* lethal_shots;
     proc_t* wild_call;
+    proc_t* focused_trickery_trick_shots;
     proc_t* secrets_of_the_vigil_ais_reset;
   } procs;
 
@@ -897,7 +898,7 @@ public:
   {
     ab::execute();
 
-    if ( triggers_focused_trickery )
+    if ( p() -> bugs && triggers_focused_trickery )
       p() -> trigger_focused_trickery( this, ab::base_cost() );
   }
 
@@ -2471,7 +2472,7 @@ void hunter_t::consume_trick_shots()
 
 bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
 {
-  if ( !tier_set.focused_trickery_4pc.ok() || !bugs )
+  if ( !tier_set.focused_trickery_4pc.ok() )
     return false;
 
   bool triggered = false;
@@ -2484,6 +2485,7 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
     triggered = true;
     state.focus_used_FT -= focused_trickery_value;
     buffs.trick_shots->trigger();
+    procs.focused_trickery_trick_shots->occur();
   }
   return triggered;
 }
@@ -3677,12 +3679,15 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    const bool trick_shots_up = p()->buffs.trick_shots->check();
-    if ( p()->trigger_focused_trickery( this, base_cost() ) && !trick_shots_up )
+    if ( p() -> bugs )
     {
-      // If this cast triggered its own buff, munch the trickshots buff
-      p()->buffs.trick_shots->decrement();
-      focused_trickery.munched_4pc -> occur();
+      const bool trick_shots_up = p()->buffs.trick_shots->check();
+      if ( p()->trigger_focused_trickery( this, base_cost() ) && !trick_shots_up )
+      {
+        // If this cast triggered its own buff, munch the trickshots buff
+        p()->buffs.trick_shots->decrement();
+        focused_trickery.munched_4pc -> occur();
+      }
     }
 
     aimed_shot_base_t::execute();
@@ -4697,7 +4702,8 @@ struct a_murder_of_crows_t : public hunter_spell_t
     hunter_spell_t::execute();
 
     // XXX: 2022-01-22 Focused Trickery uses the "base base" cost before passive aura reductions
-    p()->trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
+    if ( p() -> bugs )
+      p()->trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
   }
 };
 
@@ -5944,23 +5950,8 @@ double hunter_t::resource_loss( resource_e resource_type, double amount, gain_t*
 {
   auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
 
-  if ( resource_type != RESOURCE_FOCUS )
-    return actual_loss;
-
-  if ( !tier_set.focused_trickery_4pc.ok() )
-    return actual_loss;
-
-  if ( !bugs )
-  {
-    state.focus_used_FT += actual_loss;
-
-    const double focused_trickery_value = tier_set.focused_trickery_4pc->effectN( 1 ).base_value();
-    while ( state.focus_used_FT >= focused_trickery_value )
-    {
-      state.focus_used_FT -= focused_trickery_value;
-      buffs.trick_shots->trigger();
-    }
-  }
+  if ( resource_type == RESOURCE_FOCUS && !bugs )
+    trigger_focused_trickery( a, actual_loss );
 
   return actual_loss;
 }
@@ -6516,6 +6507,8 @@ void hunter_t::init_procs()
 
   procs.wild_call    = get_proc( "Wild Call" );
   procs.lethal_shots = get_proc( "Lethal Shots" );
+  if ( tier_set.focused_trickery_4pc.ok() )
+    procs.focused_trickery_trick_shots = get_proc( "Focused Trickery Trick Shots" );
   if ( legendary.secrets_of_the_vigil.ok() )
     procs.secrets_of_the_vigil_ais_reset = get_proc( "Secrets of the Unblinking Vigil AiS reset" );
 }
