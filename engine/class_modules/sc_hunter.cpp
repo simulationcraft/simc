@@ -2292,18 +2292,22 @@ struct trick_shots_t : public buff_t
 {
   using buff_t::buff_t;
 
-  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  void execute( int stacks, double value, timespan_t duration ) override
   {
-    bool ret = buff_t::trigger( stacks, value, chance, duration );
+    hunter_t* p = debug_cast<hunter_t*>( player );
+    const int old_stacks = check();
 
-    if ( ret )
-    {
-      hunter_t* p = debug_cast<hunter_t*>( player );
-      if ( p -> buffs.secrets_of_the_vigil -> trigger() )
-        p -> cooldowns.aimed_shot -> reset( true );
-    }
+    buff_t::execute( stacks, value, duration );
 
-    return ret;
+    if ( !p -> buffs.secrets_of_the_vigil -> trigger() )
+      return;
+
+    // XXX: 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
+    if ( p -> bugs && old_stacks > 0 )
+      return;
+
+    // TODO: munging from AiS T28_4pc TrS also don't trigger this
+    p -> cooldowns.aimed_shot -> reset( true );
   }
 };
 
