@@ -6199,7 +6199,6 @@ void hunter_t::create_buffs()
   buffs.aspect_of_the_wild =
     make_buff( this, "aspect_of_the_wild", specs.aspect_of_the_wild )
       -> set_cooldown( 0_ms )
-      -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> set_tick_callback( [ this ]( buff_t *b, int, timespan_t ){
           resource_gain( RESOURCE_FOCUS, b -> data().effectN( 2 ).resource( RESOURCE_FOCUS ), gains.aspect_of_the_wild, actions.aspect_of_the_wild );
@@ -6210,7 +6209,6 @@ void hunter_t::create_buffs()
   buffs.bestial_wrath =
     make_buff( this, "bestial_wrath", specs.bestial_wrath )
       -> set_cooldown( 0_ms )
-      -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_conduit( conduits.one_with_the_beast );
   if ( talents.spitting_cobra.ok() )
@@ -6256,8 +6254,7 @@ void hunter_t::create_buffs()
   buffs.double_tap =
     make_buff( this, "double_tap", talents.double_tap )
       -> set_default_value_from_effect( 1 )
-      -> set_cooldown( 0_ms )
-      -> set_activated( true );
+      -> set_cooldown( 0_ms );
 
   buffs.lock_and_load =
     make_buff( this, "lock_and_load", talents.lock_and_load -> effectN( 1 ).trigger() )
@@ -6292,7 +6289,6 @@ void hunter_t::create_buffs()
   buffs.trueshot =
     make_buff( this, "trueshot", specs.trueshot )
       -> set_cooldown( 0_ms )
-      -> set_activated( true )
       -> set_default_value_from_effect( 4 )
       -> set_affects_regen( true )
       -> set_stack_change_callback( [this]( buff_t*, int old, int cur ) {
@@ -6308,15 +6304,13 @@ void hunter_t::create_buffs()
 
   buffs.volley =
     make_buff( this, "volley", talents.volley )
-      -> set_period( 0_ms ) // disable ticks as an optimization
-      -> set_activated( true );
+      -> set_period( 0_ms ); // disable ticks as an optimization
 
   // Survival
 
   buffs.coordinated_assault =
     make_buff( this, "coordinated_assault", specs.coordinated_assault )
       -> set_cooldown( 0_ms )
-      -> set_activated( true )
       -> set_default_value_from_effect( 1 )
       -> apply_affecting_conduit( conduits.deadly_tandem );
 
@@ -6403,13 +6397,11 @@ void hunter_t::create_buffs()
 
   buffs.resonating_arrow =
     make_buff( this, "resonating_arrow", covenants.resonating_arrow -> effectN( 1 ).trigger() )
-      -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() )
-      -> set_activated( true );
+      -> set_default_value( find_spell( 308498 ) -> effectN( 1 ).percent() );
 
   buffs.wild_spirits =
     make_buff( this, "wild_spirits", covenants.wild_spirits -> effectN( 1 ).trigger() )
       -> set_default_value( find_spell( 328275 ) -> effectN( 2 ).percent() )
-      -> set_activated( true )
       -> apply_affecting_conduit( conduits.spirit_attunement );
 
   // Legendaries
