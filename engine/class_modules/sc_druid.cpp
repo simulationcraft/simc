@@ -2842,7 +2842,7 @@ public:
         }
 
         if ( p()->spec.predatory_swiftness->ok() )
-          p()->buff.predatory_swiftness->trigger( 1, 1.0, consumed * p()->buff.predatory_swiftness->check_value() );
+          p()->buff.predatory_swiftness->trigger( 1, 1.0, consumed * p()->buff.predatory_swiftness->default_value );
 
         if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
           p()->buff.sudden_ambush->trigger();
@@ -8658,7 +8658,7 @@ void druid_t::create_buffs()
 
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_chance( spec.predatory_swiftness->ok() )
-    ->set_default_value_from_effect( 3 );  // effect#3 hold percent chance per CP
+    ->set_default_value( spec.predatory_swiftness->effectN( 3 ).percent() );  // % chance per CP
 
   buff.savage_roar = make_buff( this, "savage_roar", spec.savage_roar )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // Pandemic refresh is done by the action
