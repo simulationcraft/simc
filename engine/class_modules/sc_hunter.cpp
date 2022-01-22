@@ -3568,6 +3568,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
       // XXX: Wild Spirits from Double Tap AiS at "close" range
       triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
+
+      // 2022-01-22 Double Tap AiS always consumes the Vigil buff
+      p() -> buffs.secrets_of_the_vigil -> decrement();
     }
   };
 
