@@ -752,6 +752,7 @@ public:
 
   bool track_cd_waste;
   maybe_bool triggers_wild_spirits;
+  maybe_bool triggers_focused_trickery; // 4pc
 
   struct {
     // bm
@@ -853,8 +854,20 @@ public:
       triggers_wild_spirits = false;
     }
 
+    if ( p() -> tier_set.focused_trickery_4pc.ok() )
+    {
+      if ( triggers_focused_trickery.is_none() )
+        triggers_focused_trickery = !ab::background && !ab::proc && ab::base_cost() > 0;
+    }
+    else
+    {
+      triggers_focused_trickery = false;
+    }
+
     if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
+    if ( triggers_focused_trickery )
+      ab::sim -> print_debug( "{} action {} set to proc Focused Trickery 4pc", ab::player -> name(), ab::name() );
   }
 
   timespan_t gcd() const override
@@ -877,6 +890,14 @@ public:
       g = ab::min_gcd;
 
     return g;
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    if ( triggers_focused_trickery )
+      p() -> trigger_focused_trickery( this, ab::base_cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -2422,7 +2443,7 @@ void hunter_t::consume_trick_shots()
 
 bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
 {
-  if ( !is_ptr() || !bugs || !tier_set.focused_trickery_4pc.ok() )
+  if ( !tier_set.focused_trickery_4pc.ok() || !bugs )
     return false;
 
   bool triggered = false;
@@ -2575,6 +2596,7 @@ struct barrage_t: public hunter_spell_t
     may_miss = may_crit = false;
     channeled = true;
     triggers_wild_spirits = false;
+    triggers_focused_trickery = false; // XXX 2022-01-22 does not trigger it at all
 
     tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
@@ -2605,8 +2627,6 @@ struct multi_shot_t: public hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -2662,8 +2682,6 @@ struct kill_shot_t : hunter_ranged_attack_t
   void execute() override
   {
     hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
     if ( p()->legendary.pouch_of_razor_fragments.ok() && p()->buffs.flayers_mark->up() )
@@ -2742,8 +2760,6 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p()->trigger_focused_trickery( this, base_cost() );
-
     p() -> trigger_lethal_shots();
     p() -> trigger_calling_the_shots();
 
@@ -2778,13 +2794,6 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
     impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage" );
     impact_action -> stats = stats;
     stats -> action_list.push_back( impact_action );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
   }
 
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
@@ -2824,13 +2833,6 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   {
     return dot->time_to_next_tick() + triggered_duration;
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
   }
 };
 
@@ -3403,8 +3405,6 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p()->trigger_focused_trickery( this, base_cost() );
-
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
 
@@ -3451,13 +3451,6 @@ struct bursting_shot_t : public hunter_ranged_attack_t
   {
     parse_options( options_str );
   }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
-  }
 };
 
 // Aimed Shot base class ==============================================================
@@ -3494,6 +3487,8 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
                           p -> conduits.deadly_chain.percent();
 
     trick_shots.target_count = 1 + static_cast<int>( p -> specs.trick_shots -> effectN( 1 ).base_value() );
+
+    triggers_focused_trickery = false; // manually triggered where required
 
     if ( p -> talents.careful_aim.ok() )
     {
@@ -4006,13 +4001,6 @@ struct serpent_sting_mm_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( "serpent_sting", p, p -> talents.serpent_sting )
   {
     parse_options( options_str );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    p()->trigger_focused_trickery( this, base_cost() );
   }
 };
 
@@ -4662,6 +4650,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
     parse_options( options_str );
 
     triggers_wild_spirits = false;
+    triggers_focused_trickery = false; // XXX: 2022-01-22 manually triggered
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
@@ -4674,6 +4663,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
 
     hunter_spell_t::execute();
 
+    // XXX: 2022-01-22 Focused Trickery uses the "base base" cost before passive aura reductions
     p()->trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
   }
 };
