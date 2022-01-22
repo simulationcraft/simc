@@ -3477,7 +3477,10 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
-  bool focused_trickery_triggered = false;
+  struct {
+    bool affected_by_2pc = true;
+    proc_t* munched_4pc = nullptr;
+  } focused_trickery;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot )
@@ -3496,6 +3499,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
+
+    if ( p -> tier_set.focused_trickery_4pc.ok() && p -> bugs )
+      focused_trickery.munched_4pc = p -> get_proc( "Munched AiS Focused Trickery TrS" );
   }
 
   bool trick_shots_up() const
@@ -3514,7 +3520,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    if ( p()->tier_set.focused_trickery_2pc.ok() && ( trick_shots_up() || focused_trickery_triggered ) )
+    if ( focused_trickery.affected_by_2pc && p() -> tier_set.focused_trickery_2pc.ok() && trick_shots_up() )
       m *= 1 + p() -> tier_set.focused_trickery_2pc -> effectN( 1 ).percent();
 
     return m;
@@ -3547,6 +3553,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
+      // XXX: 2022-01-22 Double Tapped Aimed Shots are not affected by Focused Trickery 2pc
+      focused_trickery.affected_by_2pc = !p -> bugs;
     }
 
     timespan_t execute_time() const override
@@ -3641,15 +3649,12 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    if ( p()->is_ptr() && p()->bugs )
+    const bool trick_shots_up = p()->buffs.trick_shots->check();
+    if ( p()->trigger_focused_trickery( this, base_cost() ) && !trick_shots_up )
     {
-      trick_shots.up = p()->buffs.trick_shots->check();
-      focused_trickery_triggered = p()->trigger_focused_trickery( this, base_cost() );
-      if ( focused_trickery_triggered && !trick_shots.up )
-      {
-        // if this cast triggered its own buff, munch the trickshots buff
-        p()->buffs.trick_shots->decrement();
-      }
+      // If this cast triggered its own buff, munch the trickshots buff
+      p()->buffs.trick_shots->decrement();
+      focused_trickery.munched_4pc -> occur();
     }
 
     aimed_shot_base_t::execute();
