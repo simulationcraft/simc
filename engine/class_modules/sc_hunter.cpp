@@ -2418,7 +2418,7 @@ void hunter_t::consume_trick_shots()
 
 bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
 {
-  if ( !is_ptr() || !bugs )
+  if ( !is_ptr() || !bugs || !tier_set.focused_trickery_4pc.ok() )
     return false;
 
   bool triggered = false;
