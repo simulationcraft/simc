@@ -6365,7 +6365,7 @@ void hunter_t::create_buffs()
 
   buffs.killing_frenzy =
     make_buff( this, "killing_frenzy", find_spell( 363760 ) )
-      -> set_default_value( tier_set.killing_frenzy_4pc -> effectN( 2 ).percent() )
+      -> set_default_value_from_effect( 1 )
       -> set_chance( tier_set.killing_frenzy_4pc.ok() );
 
   buffs.mad_bombardier =
