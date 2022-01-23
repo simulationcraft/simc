@@ -6866,10 +6866,12 @@ struct adaptive_swarm_t : public druid_spell_t
         {
           second_target = new_swarm_target();
           assert( !second_target == false );
+          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
           send_swarm( second_target, stacks );
         }
         else
         {
+          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
           other->send_swarm( second_target, stacks );
         }
       }
@@ -7010,6 +7012,7 @@ struct adaptive_swarm_t : public druid_spell_t
       quiet = heal = true;
       may_miss = may_crit = false;
       base_td = base_td_multiplier = 0.0;
+      dot_duration = 0_ms;
 
       parse_effect_period( data().effectN( 1 ) );
     }
