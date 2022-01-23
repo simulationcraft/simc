@@ -721,6 +721,21 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 
     merge_pet_stats( p().o(), p(), *this );
   }
+
+  timespan_t execute_time() const override
+  {
+    // Right now there is a bug/delay between channels and on spawn time
+    // There is a delay between the last tick of channel 1 and the first tick of channel 2
+    // https://github.com/WarcraftPriests/sl-shadow-priest/issues/229
+    if ( p().o().bugs )
+    {
+      return timespan_t::from_millis( 500 );
+    }
+    else
+    {
+      return priest_pet_spell_t::execute_time();
+    }
+  }
 };
 
 action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
