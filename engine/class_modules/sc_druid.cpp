@@ -1517,7 +1517,7 @@ struct fury_of_elune_buff_t : public druid_buff_t<buff_t>
   fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
   {
     set_cooldown( 0_ms );
-    //set_refresh_behavior( buff_refresh_behavior::DURATION );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     auto eff = p.query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
     auto ap = eff->resource( RESOURCE_ASTRAL_POWER );
