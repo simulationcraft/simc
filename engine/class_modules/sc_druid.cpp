@@ -288,6 +288,7 @@ public:
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
+    unsigned maximum_celestial_infusion = 3u;  // maximum stacks of 2t28 foe AP ticking buff
 
     // Feral
     double predator_rppm_rate = 0.0;
@@ -391,6 +392,7 @@ public:
     // Balance
     buff_t* natures_balance;
     buff_t* celestial_alignment;
+    std::vector<buff_t*> celestial_infusion;  // AP ticks for 2T28
     buff_t* incarnation_moonkin;
     buff_t* moonkin_form;
     buff_t* warrior_of_elune;
@@ -402,7 +404,7 @@ public:
     buff_t* starsurge_solar;  // stacking eclipse empowerment for each eclipse
     buff_t* starsurge_lunar;
     buff_t* solstice;
-    buff_t* fury_of_elune;  // tracking buff
+    buff_t* fury_of_elune;  // AP ticks
     // Balance Legendaries
     buff_t* primordial_arcanic_pulsar;
     buff_t* oneths_free_starsurge;
@@ -1509,6 +1511,25 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
   }
 };
 
+// Fury of Elune AP =========================================================
+struct fury_of_elune_buff_t : public druid_buff_t<buff_t>
+{
+  fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  {
+    set_cooldown( 0_ms );
+    //set_refresh_behavior( buff_refresh_behavior::DURATION );
+
+    auto eff = p.query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+    auto ap = eff->resource( RESOURCE_ASTRAL_POWER );
+    set_default_value( eff->resource( RESOURCE_ASTRAL_POWER ) / eff->period().total_seconds() );
+
+    auto gain = p.get_gain( n );
+    set_tick_callback( [ ap, gain, this ]( buff_t*, int, timespan_t ) {
+      player->resource_gain( RESOURCE_ASTRAL_POWER, ap, gain );
+    } );
+  }
+};
+
 // Kindred Empowerment ======================================================
 struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
 {
@@ -1854,7 +1875,7 @@ public:
 
   unsigned get_dot_count() const
   {
-    return range::accumulate( dot_ids, 0U, [ this ]( unsigned sum, unsigned add ){
+    return range::accumulate( dot_ids, 0U, [ this ]( unsigned sum, unsigned add ) {
       return sum + ab::player->get_active_dots( add );
     } );
   }
@@ -5203,9 +5224,7 @@ struct fury_of_elune_t : public druid_spell_t
   };
 
   action_t* damage;
-  timespan_t ap_period;
-  double ap_amount;
-  int ap_ticks;
+  timespan_t tick_period;
 
   fury_of_elune_t( druid_t* p, std::string_view opt )
     : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), opt )
@@ -5215,32 +5234,37 @@ struct fury_of_elune_t : public druid_spell_t
                    std::string_view opt )
     : druid_spell_t( n, p, s, opt )
   {
-    auto eff = p->query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-
-    ap_period = eff->period();
-    ap_amount = eff->resource( RESOURCE_ASTRAL_POWER );
-    ap_ticks  = static_cast<int>( s->duration() / ap_period );
-
-    dot_duration = 0_ms;  // AP gain handled via events
+    dot_duration = 0_ms;  // AP gain handled via buffs
 
     damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick", s_damage );
     damage->stats = stats;
+
+    tick_period = p->query_aura_effect( s, A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period();
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p()->buff.fury_of_elune->trigger();
+    if ( free_cast == free_cast_e::PILLAR )
+    {
+      assert( !p()->buff.celestial_infusion.empty() );
+      auto min = std::min_element( p()->buff.celestial_infusion.begin(), p()->buff.celestial_infusion.end(),
+                                   []( const buff_t* l, const buff_t* r ) {
+                                     return l->remains() < r->remains();
+                                   } );
 
-    make_repeating_event( *sim, ap_period, [ this ]() {
-      p()->resource_gain( RESOURCE_ASTRAL_POWER, ap_amount, energize_gain( execute_state ), this );
-    }, ap_ticks );
+      ( *min )->trigger();
+    }
+    else
+    {
+      p()->buff.fury_of_elune->trigger();
+    }
 
     make_event<ground_aoe_event_t>( *sim, p(),
       ground_aoe_params_t().target( target )
                            .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
-                           .pulse_time( ap_period )
+                           .pulse_time( tick_period )
                            .duration( data().duration() )
                            .action( damage ) );
   }
@@ -8566,11 +8590,13 @@ void druid_t::create_buffs()
 
   buff.eclipse_lunar = make_buff<eclipse_buff_t>( *this, "eclipse_lunar", spec.eclipse_lunar );
 
-  buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance )
-    ->set_quiet( true )
-    ->set_default_value_from_effect_type( A_PERIODIC_ENERGIZE )
-    ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
-      resource_gain( RESOURCE_ASTRAL_POWER, b->check_value(), gain.natures_balance );
+  buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance );
+  auto nb_eff = query_aura_effect( &buff.natures_balance->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
+  auto nb_ap = nb_eff->resource( RESOURCE_ASTRAL_POWER );
+  buff.natures_balance->set_quiet( true )
+    ->set_default_value( nb_ap / nb_eff->period().total_seconds() )
+    ->set_tick_callback( [ nb_ap, this ]( buff_t*, int, timespan_t ) {
+      resource_gain( RESOURCE_ASTRAL_POWER, nb_ap, gain.natures_balance );
     } );
 
   buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
@@ -8587,14 +8613,15 @@ void druid_t::create_buffs()
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() );
 
-  // FOE needs to be available to all due to 2T28
-  buff.fury_of_elune = make_buff( this, "fury_of_elune", find_spell( 202770 ) )
-    ->set_cooldown( 0_ms )
-    ->set_period( 0_ms )
-    ->set_max_stack( 10 )
-    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  auto foe_ap = query_aura_effect( &buff.fury_of_elune->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-  buff.fury_of_elune->set_default_value( foe_ap->resource( RESOURCE_ASTRAL_POWER ) / foe_ap->period().total_seconds() );
+  buff.fury_of_elune = make_buff<fury_of_elune_buff_t>( *this, "fury_of_elune", talent.fury_of_elune );
+
+  if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2) )
+  {
+    auto ci_spell = find_spell( 367907 );
+    for ( unsigned i = 0; i < options.maximum_celestial_infusion; i++ )
+      buff.celestial_infusion.push_back(
+          make_buff<fury_of_elune_buff_t>( *this, "celestial_infusion" + util::to_string( i + 1 ), ci_spell ) );
+  }
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
     ->set_period( 1_s )
@@ -10053,6 +10080,28 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
       throw std::invalid_argument( "invalid action" );
     }
+
+    if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "buff" ) && util::str_compare_ci( splits[ 1 ], "fury_of_elune" ) )
+    {
+      if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
+      {
+        return make_fn_expr( name_str, [ this ]() {
+          return range::accumulate_proj( buff.celestial_infusion, buff.fury_of_elune->check(), &buff_t::check );
+        } );
+      }
+      else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
+      {
+        return make_fn_expr( name_str, [ this ]() {
+          auto max = buff.fury_of_elune->remains();
+
+          for ( const auto& ci : buff.celestial_infusion )
+            if ( ci->remains() > max )
+              max = ci->remains();
+
+          return max;
+        } );
+      }
+    }
   }
 
   if ( splits.size() == 2 && util::str_compare_ci( splits[ 0 ], "eclipse" ) )
@@ -10184,6 +10233,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
+  add_option( opt_uint( "druid.maximum_celestial_infusion", options.maximum_celestial_infusion ) );
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
@@ -10967,11 +11017,13 @@ bool druid_t::check_astral_power( action_t* a, int over )
 {
   double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
 
+  auto aps = buff.natures_balance->check_value() + buff.fury_of_elune->check_value();
+  for ( auto b : buff.celestial_infusion )
+    aps += b->check_value();
+
   ap += a->composite_energize_amount( nullptr );
+  ap += a->time_to_execute.total_seconds() * aps;
   ap += spec.shooting_stars_dmg->effectN( 2 ).resource( RESOURCE_ASTRAL_POWER );
-  ap += a->time_to_execute.total_seconds() *
-        ( std::ceil( talent.natures_balance->effectN( 1 ).resource( RESOURCE_ASTRAL_POWER ) ) +
-          std::ceil( buff.fury_of_elune->check_stack_value() ) );
 
   return ap <= resources.max[ RESOURCE_ASTRAL_POWER ] + over;
 }
