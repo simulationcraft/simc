@@ -4055,6 +4055,7 @@ struct sickle_of_the_lion_t : public cat_attack_t
     : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
       as_mul( 1.0 )
   {
+    background = true;
     aoe = -1;
 
     as_mul += p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
@@ -4394,6 +4395,7 @@ struct architects_aligner_t : public bear_attack_t
 {
   architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
   {
+    background = true;
     aoe = -1;
   }
 };
