@@ -2558,7 +2558,7 @@ void buff_t::analyze()
     }
     else
     {
-      uptime_array.adjust( source->collected_data.fight_length );
+      uptime_array.adjust( source->get_owner_or_self()->collected_data.fight_length );
     }
   }
 }
