@@ -719,6 +719,7 @@ public:
     conduit( conduit_t() ),
     legendary( legendary_t() ),
     procs( procs_t() ),
+    set_bonuses( set_bonuses_t() ),
     options( rogue_options_t() )
   {
     // Cooldowns
@@ -7036,7 +7037,7 @@ void rogue_t::init_action_list()
     cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))" );
     cds->add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition" );
     cds->add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    cds->add_action( this, "Shiv", "if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking&(!cooldown.sepsis.ready|cooldown.vendetta.remains>12)|dot.sepsis.ticking)", "Shiv if we are about to Envenom, and attempt to sync with Sepsis final hit if we won't waste more than half the cooldown." );
+    cds->add_action( this, "Shiv", "if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking)&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|cooldown.vendetta.remains*variable.vendetta_cdr>12)=2))", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Vendetta if we won't waste more than half Shiv's cooldown" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
@@ -7553,11 +7554,11 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
   // rtb_list.<buffs>
   else if ( split.size() == 3 && util::str_compare_ci( split[ 0 ], "rtb_list" ) && ! split[ 1 ].empty() )
   {
-    enum rtb_list_type
+    enum class rtb_list_type
     {
-      RTB_NONE = 0,
-      RTB_ANY,
-      RTB_ALL
+      NONE = 0U,
+      ANY,
+      ALL
     };
 
     const std::array<const buff_t*, 6> rtb_buffs = { {
@@ -7570,14 +7571,14 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     } };
 
     // Figure out the type
-    rtb_list_type type = RTB_NONE;
+    rtb_list_type type = rtb_list_type::NONE;
     if ( util::str_compare_ci( split[ 1 ], "any" ) )
     {
-      type = RTB_ANY;
+      type = rtb_list_type::ANY;
     }
     else if ( util::str_compare_ci( split[ 1 ], "all" ) )
     {
-      type = RTB_ALL;
+      type = rtb_list_type::ALL;
     }
 
     // Parse the buff numeric list to values that index rtb_buffs above
@@ -7592,22 +7593,22 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     } );
 
     // If we have buffs and an operating mode, make an expression
-    if ( type != RTB_NONE && !list_values.empty() )
+    if ( type != rtb_list_type::NONE && !list_values.empty() )
     {
       return make_fn_expr( split[ 0 ], [ type, rtb_buffs, list_values ]() {
         for ( unsigned int list_value : list_values )
         {
-          if ( type == RTB_ANY && rtb_buffs[ list_value ]->check() )
+          if ( type == rtb_list_type::ANY && rtb_buffs[ list_value ]->check() )
           {
             return 1;
           }
-          else if ( type == RTB_ALL && !rtb_buffs[ list_value ]->check() )
+          else if ( type == rtb_list_type::ALL && !rtb_buffs[ list_value ]->check() )
           {
             return 0;
           }
         }
 
-        return type == RTB_ANY ? 0 : 1;
+        return type == rtb_list_type::ANY ? 0 : 1;
       } );
     }
   }
