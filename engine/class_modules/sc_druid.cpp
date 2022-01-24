@@ -4077,22 +4077,17 @@ struct sickle_of_the_lion_t : public cat_attack_t
     return pm;
   }
 
+  void assess_damage( result_amount_type type, action_state_t* s )
+  {
+    cat_attack_t::assess_damage( p()->options.ptr_bugs ? result_amount_type::DMG_DIRECT : type, s );
+  }
+
   double composite_target_ta_multiplier( player_t* t ) const override
   {
     double ttm = cat_attack_t::composite_target_ta_multiplier( t );
 
-    if ( p()->options.ptr_bugs )
-    {
-      double armor = composite_target_armor( t );
-      double resist = armor / ( armor + t->base.armor_coeff );
-      resist = clamp( resist, 0.0, 0.85 );
-      ttm *= 1.0 - resist;
-    }
-    else
-    {
-      if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )
+    if ( !p()->options.ptr_bugs && td( t )->dots.adaptive_swarm_damage->is_ticking() )
         ttm *= 1.0 + as_mul;
-    }
 
     return ttm;
   }
