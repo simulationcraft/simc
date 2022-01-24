@@ -6835,6 +6835,9 @@ struct adaptive_swarm_t : public druid_spell_t
         return timespan_t::from_seconds( dist / travel_speed );
       }
 
+      if ( target == player )
+        return 0_ms;
+
       return druid_spell_t::travel_time();
     }
 
@@ -6851,12 +6854,7 @@ struct adaptive_swarm_t : public druid_spell_t
       new_state->jump = true;
       new_state->swarm_target = swarm_target;
 
-      // just use current target as placeholder for execute/impact for heal
-      if ( heal )
-        set_target( target );
-      else
-        set_target( swarm_target );
-
+      set_target( swarm_target );
       schedule_execute( new_state );
     }
 
@@ -7034,9 +7032,8 @@ struct adaptive_swarm_t : public druid_spell_t
     adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->cov.adaptive_swarm_heal )
     {
       quiet = heal = true;
-      may_miss = may_crit = false;
+      harmful = may_miss = may_crit = false;
       base_td = base_td_multiplier = 0.0;
-      dot_duration = 0_ms;
 
       parse_effect_period( data().effectN( 1 ) );
     }
@@ -7045,7 +7042,7 @@ struct adaptive_swarm_t : public druid_spell_t
     swarm_target_t new_swarm_target( swarm_target_t /* exclude */) override
     {
       if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
-        return player;
+        return target;
 
       return p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ];
     }
@@ -7087,11 +7084,13 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
+  bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord, opt ), precombat_seconds( 11_s )
+    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ), precombat_seconds( 11_s ), target_self( false )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
     // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
@@ -7124,9 +7123,16 @@ struct adaptive_swarm_t : public druid_spell_t
       heal->get_dot( player )->adjust_duration( -precombat_seconds );
       return;
     }
-
-    damage->set_target( target );
-    damage->schedule_execute();
+    else if ( target_self )
+    {
+      heal->set_target( player );
+      heal->schedule_execute();
+    }
+    else
+    {
+      damage->set_target( target );
+      damage->schedule_execute();
+    }
   }
 };
 
@@ -9813,7 +9819,7 @@ std::unique_ptr<expr_t> druid_action_t<Base>::create_expression( util::string_vi
       }
     };
 
-    if ( util::str_compare_ci( splits[ 2 ], "up" ) )
+    if ( util::str_compare_ci( splits[ 2 ], "count" ) )
     {
       return make_fn_expr( name_str, [ this ]() {
         return p()->swarm_tracker.size();
