@@ -283,6 +283,8 @@ public:
     timespan_t thorns_attack_period = 0_ms;
     double thorns_hit_chance = 0.75;
 
+    bool ptr_bugs = false;
+
     // Balance
     timespan_t eclipse_snapshot_period = 3_s;  // how often to re-snapshot mastery onto eclipse
     double initial_astral_power = 0.0;
@@ -4052,23 +4054,63 @@ struct sickle_of_the_lion_t : public cat_attack_t
   double as_mul;
 
   sickle_of_the_lion_t( druid_t* p )
-    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
-      as_mul( 1.0 )
+    : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() )
   {
     background = true;
     aoe = -1;
 
-    as_mul += p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
+    as_mul = p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
-      pm *= as_mul;
+    if ( p()->options.ptr_bugs )
+    {
+      if ( td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
+        pm *= 1.0 + as_mul;
+
+      pm *= 1.0 + p()->cache.mastery_value();
+    }
 
     return pm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = cat_attack_t::composite_target_ta_multiplier( t );
+
+    if ( p()->options.ptr_bugs )
+    {
+      double armor = composite_target_armor( t );
+      double resist = armor / ( armor + t->base.armor_coeff );
+      resist = clamp( resist, 0.0, 0.85 );
+      ttm *= 1.0 - resist;
+    }
+    else
+    {
+      if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )
+        ttm *= 1.0 + as_mul;
+    }
+
+    return ttm;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double tam = cat_attack_t::composite_ta_multiplier( s );
+
+    if ( p()->options.ptr_bugs )
+    {
+      if ( p()->buff.tigers_fury->check( ))
+      {
+        tam *= 1.0 + p()->spec.tigers_fury->effectN( 3 ).percent() + p()->conduit.carnivorous_instinct.percent();
+        tam *= 1.0 + p()->spec.tigers_fury->effectN( 5 ).percent();
+      }
+    }
+
+    return tam;
   }
 };
 }  // end namespace cat_attacks
@@ -8627,8 +8669,13 @@ void druid_t::create_buffs()
   {
     auto ci_spell = find_spell( 367907 );
     for ( unsigned i = 0; i < options.maximum_celestial_infusion; i++ )
+    {
       buff.celestial_infusion.push_back(
           make_buff<fury_of_elune_buff_t>( *this, "celestial_infusion" + util::to_string( i + 1 ), ci_spell ) );
+
+      if ( options.ptr_bugs )
+        break;
+    }
   }
 
   buff.starfall = make_buff( this, "starfall", spec.starfall )
@@ -10235,6 +10282,8 @@ void druid_t::create_options()
   add_option( opt_bool( "druid.raid_combat", options.raid_combat ) );
   add_option( opt_timespan( "druid.thorns_attack_period", options.thorns_attack_period ) );
   add_option( opt_float( "druid.thorns_hit_chance", options.thorns_hit_chance ) );
+
+  add_option( opt_bool( "druid.ptr_bugs", options.ptr_bugs ) );
 
   // Balance
   add_option( opt_timespan( "druid.eclipse_snapshot_period", options.eclipse_snapshot_period ) );
