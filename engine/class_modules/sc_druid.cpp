@@ -4082,16 +4082,6 @@ struct sickle_of_the_lion_t : public cat_attack_t
     cat_attack_t::assess_damage( p()->options.ptr_bugs ? result_amount_type::DMG_DIRECT : type, s );
   }
 
-  double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double ttm = cat_attack_t::composite_target_ta_multiplier( t );
-
-    if ( !p()->options.ptr_bugs && td( t )->dots.adaptive_swarm_damage->is_ticking() )
-        ttm *= 1.0 + as_mul;
-
-    return ttm;
-  }
-
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
     double tam = cat_attack_t::composite_ta_multiplier( s );
