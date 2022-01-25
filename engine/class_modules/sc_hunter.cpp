@@ -2627,7 +2627,6 @@ struct barrage_t: public hunter_spell_t
     may_miss = may_crit = false;
     channeled = true;
     triggers_wild_spirits = false;
-    triggers_focused_trickery = false; // XXX 2022-01-22 does not trigger it at all
 
     tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
