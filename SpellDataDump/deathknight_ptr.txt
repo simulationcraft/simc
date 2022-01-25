@@ -12772,6 +12772,8 @@ Effects          :
                    Affected School(s): All
 #2 (id=911934)   : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+#3 (id=912919)   : Apply Aura (6) | Modify Damage Taken% from Caster Guardian (380)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc353447
 Tooltip          : Damage taken from $@auracaster increased by $s1%
 

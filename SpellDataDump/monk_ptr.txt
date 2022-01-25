@@ -710,7 +710,7 @@ Duration         : 4 seconds
 Requires weapon  : One-handed Axe, One-handed Mace, Polearm, One-handed Sword, Staff, Fist Weapon
 Cooldown         : 24 seconds
 Labels           : 359: Serenity (152173 effect#4)
-Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effect#1), <DNT> 9.2.0 Class Set - Monk - Windwalker - 2PC (364418 effect#1)
+Affecting spells : Monk (137022 effect#1), Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Katsuo's Eclipse (208045 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (311054 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effect#1), Fists of Primordium (364418 effect#1)
 Triggered by     : Katsuo's Eclipse (208045)
 Family Flags     : 55, 67, 103
 Attributes       : ........ ........ x....... ........   ..x...x. .xx..... ........ .....x.. 
@@ -1187,7 +1187,7 @@ Spell Level      : 46
 GCD              : 1.5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (180 seconds cooldown)
-Category         : 1933
+Category         : 1933: Benevolent Faerie (327710 effect#6)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3), Enveloping Mist (344008 effect#2)
 Family Flags     : 48, 60
@@ -1835,7 +1835,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 1
 Range            : 8 yards
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effect#1), <DNT> 9.2.0 Class Set - Monk - Windwalker - 2PC (364418 effect#1)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Windwalker Monk (137025 effects: #1, #2), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Open Palm Strikes (279918 effect#4), The Wind Blows (281452 effects: #1, #2), Inner Fury (336452 effect#1), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effect#1), Fists of Primordium (364418 effect#1)
 Triggered by     : Fists of Fury (113656), Fists of Fury (330898)
 Family Flags     : 20, 103
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2141,7 +2141,7 @@ Spell Level      : 1
 Range            : 5 yards
 Duration         : 4 seconds
 Mechanic         : Stun
-Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), <DNT> 9.2.0 Class Set - Monk - Windwalker - 2PC (364418 effect#1)
+Affecting spells : Monk (137022 effect#1), Serenity (152173 effect#1), Katsuo's Eclipse (208045 effect#1), Weapons of Order (311054 effect#1), Fists of Primordium (364418 effect#1)
 Triggered by     : Fists of Fury (113656)
 Family Flags     : 55
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4753,11 +4753,11 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290815)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 #2 (id=290816)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : Increases Enveloping Mist's duration by ${$m2/1000} sec and its healing bonus by $s1%.
 
@@ -4858,7 +4858,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=290846)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : $@spelldesc197915
 Tooltip          : Cost of your next Enveloping Mist reduced by $s1%.
@@ -5075,7 +5075,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | SP Coefficient: 0.22500 | PvP Coefficient: 1.00000 | Chain Multiplier: 100 | Chain Targets: 1 | Target: Friend (21)
 #2 (id=352117)   : Apply Aura (6) | Cast while Moving (Whitelist) (330)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Surging Mist (227344), Enveloping Breath (325209)
                    Family Flags: 25, 79
 Description      : Heals the target for $o1 over $d.
 
@@ -5542,7 +5542,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=349343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : Enveloping Mist increases healing received from your other spells by $s1%.
 
@@ -11155,11 +11155,11 @@ Effects          :
                    Family Flags: 26
 #2 (id=835526)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Vivify (116670), Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 26, 79
 #3 (id=871622)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : $@spelldesc337343
 Tooltip          : Healing done by your Enveloping Mists and Vivify increased by $w1%, and mana cost reduced by $w2%.
@@ -11714,11 +11714,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=867659)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 #2 (id=867660)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -33 | Scaled Value: -33 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209), Enveloping Mist (344008)
+                   Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : $@spelldesc325216
 Tooltip          : Cast time and cost of Enveloping Mist reduced by $w2%.
@@ -11730,8 +11730,8 @@ Spell Type       : Magic
 Spell Level      : 12
 Range            : 40 yards
 Duration         : 6 seconds
-Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Mist Wrap (197900 effects: #1, #2), Lifecycles (Enveloping Mist) (197919 effect#1), Soothing Mist (209525 effect#2), Enveloping Mist (231605 effect#1), Enveloping Breath (325209 effect#3), Clouded Focus (337476 effects: #2, #3), Invoke Chi-Ji, the Red Crane (343820 effects: #1, #2)
-Family Flags     : 48, 67, 79
+Affecting spells : Enveloping Mist (124682 effect#2), Mistweaver Monk (137024 effects: #1, #2), Enveloping Breath (325209 effect#3)
+Family Flags     : 48
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ...x.... x....... ........ ........   ........ ........ ........ ........ 
                  : .......x ........ ........ ........   ........ .....x.. ........ ........ 
@@ -11745,7 +11745,7 @@ Effects          :
 #1 (id=868039)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=868040)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008)
                    Family Flags: 48, 102
 #3 (id=893156)   : Apply Aura (6) | Dummy (4)
@@ -12457,7 +12457,7 @@ Effects          :
                    Base Value: 123 | Scaled Value: 123 | PvP Coefficient: 1.00000 | Trigger Spell: 364277 | Target: Self (1)
 Description      : Drinking Thunder Focus Tea summons a Progenitor Rune of Healing, increasing all healing dealt while inside its bounds by $s1.
 
-Name             : <DNT> 9.2.0 Class Set - Monk - Windwalker - 4PC (id=363734) [Passive, Hidden] 
+Name             : Primordial Potential (id=363734) [Passive, Hidden] 
 Class            : Monk
 School           : Nature
 Spell Type       : None
@@ -12588,7 +12588,7 @@ Effects          :
                    Family Flags: 108
 Description      : Essence Font's residual healing effect is increased by $s2% and lasts an additional ${$s1/1000} sec.
 
-Name             : <DNT> 9.2.0 Class Set - Monk - Windwalker - 2PC (id=364418) [Spell Family (53), Passive, Hidden] 
+Name             : Fists of Primordium (id=364418) [Spell Family (53), Passive, Hidden] 
 Class            : Monk
 School           : Nature
 Spell Type       : None

@@ -13547,8 +13547,8 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ....x... x...x... ........ ........ 
-                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell
+Proc Flags       : ....x... x.x.x... .....x.. ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Trap Triggered
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -13607,7 +13607,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Floating Combat Text On Cast (198), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=903358)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
 Description      : $@spelldesc363665

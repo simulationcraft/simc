@@ -11818,9 +11818,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=902903)   : Apply Aura (6) | Proc Trigger Spell (42): Fiery Rush
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 363508 | Target: Self (1)
-#2 (id=905909)   : Apply Aura (6) | Proc Trigger Spell (42): Fiery Rush
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 365199 | Target: Self (1)
-Description      : While Combustion is active you burn for $365199s1% of your maximum health every $365199t sec causing your Fire Blast and Phoenix Flames to recharge $363508s2% faster.
+Description      : While Combustion is active your Fire Blast and Phoenix Flames recharge $363508s2% faster.
 
 Name             : Fiery Rush (id=363508) [Spell Family (3), Hidden] 
 Class            : Mage
@@ -12056,7 +12054,6 @@ Class            : Mage
 School           : Fire
 Spell Type       : Magic
 Duration         : Aura (infinite)
-Triggered by     : Fiery Rush (363500)
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
