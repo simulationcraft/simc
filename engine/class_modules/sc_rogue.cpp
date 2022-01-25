@@ -4315,7 +4315,7 @@ struct shiv_t : public rogue_attack_t
       dual = true;
       callbacks = false;
       aoe = -1;
-      radius = data().effectN(4).base_value();
+      radius = data().effectN( 3 ).base_value();
     }
 
     void impact( action_state_t* s ) override
