@@ -2,6 +2,7 @@
 
 #include "player/action_priority_list.hpp"
 #include "player/player.hpp"
+#include "dbc/dbc.hpp"
 
 namespace death_knight_apl {
 
