@@ -2327,8 +2327,9 @@ struct trick_shots_t : public buff_t
     if ( !p -> buffs.secrets_of_the_vigil -> trigger() )
       return;
 
-    // XXX: 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
-    if ( p -> bugs && old_stacks > 0 )
+    // 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
+    // XXX 2022-01-25 fixed in 9.2
+    if ( !p -> dbc -> ptr && p -> bugs && old_stacks > 0 )
       return;
 
     // XXX: 2022-01-22
