@@ -7099,7 +7099,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 24, 32
@@ -7157,7 +7157,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ x....... ..x.....   ........ ........ ........ ........ 
@@ -8074,7 +8074,7 @@ Range            : 50 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 82
 Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
@@ -8210,7 +8210,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 24, 32
@@ -8243,7 +8243,7 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 120 seconds
 Category         : 1888
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 120 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Triggered by     : Fodder to the Flame (350570)
@@ -9997,7 +9997,7 @@ Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 48
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Internal Cooldown: 25 seconds
 Proc Chance      : 100%
 Real PPM         : 1.58
@@ -10022,7 +10022,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

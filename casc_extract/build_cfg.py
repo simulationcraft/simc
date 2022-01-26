@@ -8,7 +8,7 @@ import jenkins
 
 class DBFileList(collections.Mapping):
 	def __init__(self, options):
-		collections.abc.Mapping.__init__(self)
+		collections.Mapping.__init__(self)
 
 		self.options = options
 

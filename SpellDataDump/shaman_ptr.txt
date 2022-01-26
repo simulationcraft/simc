@@ -10463,7 +10463,7 @@ Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Maelstrom Weapon (187881 effect#1), Flash Flood (280615 effect#1)
 Family Flags     : 65
 Attributes       : ........ ........ x....... ........   ........ ..x..... ........ ........ 
@@ -10611,7 +10611,7 @@ Range            : 40 yards
 GCD              : 1 seconds
 Duration         : 30 seconds
 Cooldown         : 60 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Proc Chance      : 101%
 Proc Flags       : ....x... ..x.x.x. x....... ........ 
                  : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
@@ -10722,7 +10722,7 @@ GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Charges          : 1 (45 seconds cooldown)
 Category         : 1893
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Maelstrom Weapon (187881 effects: #1, #2)
 Family Flags     : 25
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -10871,7 +10871,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 120 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Essential Extraction (339183 effect#1)
 Family Flags     : 125
 Attributes       : ........ ........ x....... ........   ..x...x. ........ ........ .....x.. 

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42069
-static const std::array<spelltext_data_t, 15974> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15978> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15965,10 +15965,14 @@ static const std::array<spelltext_data_t, 15974> __ptr_spelltext_data { {
   { 368207, "$@spelldesc366656", 0, 0 },
   { 368208, "$@spelldesc366656", 0, 0 },
   { 368229, "$@spelldesc367236", 0, 0 },
+  { 368239, "The decrypted Urh cypher grants players $w1% increased spell and ability cool down rate and restores $368494s1% health and mana every $t2 sec for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\n$368494s1% health and mana restored every $t2 sec.", 0 },
+  { 368240, "The decrypted Vy cypher grants players $s1% increased Haste and summons an orb of energy that damages or heals your targets for $d.", "$s1% increased Haste.\r\n\r\nYour damage and healing has a high chance to fire a bolt of Cosmic energy at the target.", 0 },
+  { 368241, "The decrypted Wo cypher grants players $s1% increased movement speed, $s2% reduced damage taken, and conceals players from enemy detection while out of combat for $d.", "$s1% increased movement speed.\r\n$s2% reduced damage taken.\r\n\r\nConcealed from enemy detection while out of combat.", 0 },
   { 368275, "$s1% of Heal or Flash Heal healing on other targets also heals you.", 0, 0 },
   { 368328, "Add the Encrypted affix to a Mythic Keystone.", 0, 0 },
   { 368342, 0, "Heals for $368343M~2% upon taking damage.", 0 },
   { 368491, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
+  { 368494, "Restoring $s1% health and mana every $368239t2 sec", 0, 0 },
   { 368509, "Select a player in your party or raid, granting them $351927s2 of their highest secondary stat, and granting you $351927s1 of that same stat, for $351952d.", 0, 0 },
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },

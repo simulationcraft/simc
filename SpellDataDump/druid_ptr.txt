@@ -11710,7 +11710,7 @@ Spell Type       : None
 Spell Level      : 48
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Stacks           : 99 maximum
 Proc Chance      : 100%
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Endless Thirst (341383 effect#1)
@@ -11791,7 +11791,7 @@ Spell Level      : 48
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Cooldown         : 120 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Stacks           : 99 maximum
 Proc Chance      : 101%
 Stance Mask      : 0x40000011
@@ -11838,7 +11838,7 @@ Spell Level      : 48
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 25 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
                  : 1162: Astral Influence (197524 effect#5)
 Attributes       : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -11978,7 +11978,7 @@ Max Targets      : 1
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
 Duration         : 3600 seconds
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -12022,7 +12022,7 @@ Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
@@ -12053,7 +12053,7 @@ Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
@@ -12105,7 +12105,7 @@ Spell Level      : 48
 Range            : 100 yards
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Deep Allegiance (341378 effect#1)
 Family Flags     : 103
@@ -12472,7 +12472,7 @@ Spell Level      : 48
 Duration         : 10 seconds
 Cooldown         : 60 seconds
 Category         : 1885
-Labels           : 976
+Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
 Category Cooldown: 60 seconds
 Affecting spells : Starfall (191034 effect#2), Astral Influence (197524 effect#1), Stellar Drift (202461 effect#1), Ashamane's Frenzy (210723 effect#4), Deep Allegiance (341378 effect#1)
 Family Flags     : 103, 107

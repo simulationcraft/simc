@@ -1329,6 +1329,8 @@ class SpellDataGenerator(DataGenerator):
          357706, # volcanic plume
          # Codex of the First Technique's damage spell
          351450,
+         # 9.2 Encrypted M+ Affix
+         368239, 368240, 368241,
         ),
 
         # Warrior:
