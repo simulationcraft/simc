@@ -3754,13 +3754,11 @@ struct primal_wrath_t : public cat_attack_t
 
   void impact( action_state_t* s ) override
   {
-    cat_attack_t::impact( s );
-
     auto b_state    = rip->get_state();
     b_state->target = s->target;
     rip->snapshot_state( b_state, result_amount_type::DMG_OVER_TIME );
 
-    auto target_rip = td( s->target )->dots.rip;
+    auto target_rip = get_dot( s->target );
 
     if ( !target_rip->state )
       target_rip->state = rip->get_state();
@@ -3787,6 +3785,8 @@ struct primal_wrath_t : public cat_attack_t
     target_rip->trigger( base_dur * ( combo_points + 1 ) );  // this seems to be hardcoded
 
     action_state_t::release( b_state );
+
+    cat_attack_t::impact( s );
   }
 
   void execute() override
