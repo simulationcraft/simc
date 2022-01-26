@@ -1714,7 +1714,8 @@ struct kindred_affinity_buff_t : public kindred_affinity_base_t
       cov = p.options.kindred_spirits_target->covenant->type();
     }
     else if ( util::str_compare_ci( p.options.kindred_affinity_covenant, "kyrian" ) ||
-              util::str_compare_ci( p.options.kindred_affinity_covenant, "mastery" ) )
+              util::str_compare_ci( p.options.kindred_affinity_covenant, "mastery" ) ||
+              p.options.lone_empowerment )
     {
       cov = covenant_e::KYRIAN;
     }
@@ -1742,7 +1743,15 @@ struct kindred_affinity_buff_t : public kindred_affinity_base_t
 
     init_cov( cov );
 
-    p.buff.kindred_empowerment_energize->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+    assert( p.buff.kindred_empowerment_energize );
+    assert( p.buff.lone_empowerment );
+
+    buff_t* buff_on_cast = p.buff.kindred_empowerment_energize;
+
+    if ( p.options.lone_empowerment )
+      buff_on_cast = p.buff.lone_empowerment;
+
+    buff_on_cast->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ )
         increment();
       else
@@ -7625,10 +7634,11 @@ struct kindred_empowerment_t : public druid_spell_t
 
 struct kindred_spirits_t : public druid_spell_t
 {
-  buff_t* lone;
+  buff_t* buff_on_cast;
 
   kindred_spirits_t( druid_t* p, std::string_view options_str )
-    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str ), lone( nullptr )
+    : druid_spell_t( "empower_bond", p, p->cov.empower_bond, options_str ),
+      buff_on_cast( p->buff.kindred_empowerment_energize )
   {
     if ( !p->cov.kyrian->ok() )
       return;
@@ -7655,7 +7665,7 @@ struct kindred_spirits_t : public druid_spell_t
       {
         case DRUID_BALANCE:
         case DRUID_FERAL:
-          lone = p->buff.lone_empowerment;
+          buff_on_cast = p->buff.lone_empowerment;
           break;
         default:
           sim->error( "Lone empowerment is only supported for DPS specializations." );
@@ -7668,10 +7678,7 @@ struct kindred_spirits_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( lone )
-      lone->trigger();
-    else
-      p()->buff.kindred_empowerment_energize->trigger();
+    buff_on_cast->trigger();
   }
 };
 
@@ -8823,6 +8830,7 @@ void druid_t::create_buffs()
   buff.lone_empowerment = make_buff( this, "lone_empowerment", find_spell( 338142 ) )
     ->set_cooldown( 0_ms );
 
+  // NOTE: this must come AFTER buff.kindred_empowerment_energize & buff.lone_empowerment
   buff.kindred_affinity = make_buff<kindred_affinity_buff_t>( *this );
 
   buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", cov.night_fae )
