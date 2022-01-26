@@ -1850,8 +1850,12 @@ public:
     if ( util::str_in_str_ci( n, "_melee" ) )
       is_auto_attack = true;
 
-    apply_buff_effects();
-    apply_dot_debuffs();
+    // WARNING: auto attacks will NOT get processed here since they have no spell data
+    if ( s->ok() )
+    {
+      apply_buff_effects();
+      apply_dot_debuffs();
+    }
   }
 
   std::unique_ptr<expr_t> create_expression( util::string_view ) override;
@@ -2426,24 +2430,15 @@ public:
   using base_t = druid_attack_t<Base>;
 
   bool direct_bleed;
-  double ooc_chance;
   double bleed_mul;
 
   druid_attack_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), direct_bleed( false ), ooc_chance( 0.0 ), bleed_mul( 0.0 )
+    : ab( n, player, s ), direct_bleed( false ), bleed_mul( 0.0 )
   {
     ab::may_glance = false;
     ab::special    = true;
 
     parse_special_effect_data();
-
-    // 7.00 PPM via community testing (~368k auto attacks)
-    // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
-    if ( player->spec.omen_of_clarity->ok() )
-      ooc_chance = 7.00;
-
-    if ( player->talent.moment_of_clarity->ok() )
-      ooc_chance *= 1.0 + player->talent.moment_of_clarity->effectN( 2 ).percent();
   }
 
   void parse_special_effect_data()
@@ -2478,30 +2473,6 @@ public:
       tm *= 1.0 + bleed_mul;
 
     return tm;
-  }
-
-  void trigger_clearcasting( action_state_t* )
-  {
-    int active    = ab::p()->buff.clearcasting->check();
-    double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
-
-    // Internal cooldown is handled by buff.
-    if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance,
-                                              ab::p()->buff.clearcasting->buff_duration() ) )
-    {
-      ab::p()->proc.clearcasting->occur();
-
-      for ( int i = 0; i < active; i++ )
-        ab::p()->proc.clearcasting_wasted->occur();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    ab::impact( s );
-
-    if ( ab::is_auto_attack && ooc_chance && ab::result_is_hit( s->result ) )
-      trigger_clearcasting( s );
   }
 };
 
@@ -2673,41 +2644,6 @@ struct shooting_stars_t : public druid_spell_t
   }
 };
 }  // namespace spells
-
-namespace caster_attacks
-{
-// Caster Form Melee Attack =================================================
-struct caster_attack_t : public druid_attack_t<melee_attack_t>
-{
-  caster_attack_t( std::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                   std::string_view options = {} )
-    : base_t( token, p, s )
-  {
-    parse_options( options );
-  }
-};  // end druid_caster_attack_t
-
-struct druid_melee_t : public caster_attack_t
-{
-  druid_melee_t( druid_t* p ) : caster_attack_t( "caster_melee", p )
-  {
-    may_glance = background = repeating = is_auto_attack = true;
-
-    school            = SCHOOL_PHYSICAL;
-    trigger_gcd       = timespan_t::zero();
-    special           = false;
-    weapon_multiplier = 1.0;
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( !player->in_combat )
-      return timespan_t::from_seconds( 0.01 );
-
-    return caster_attack_t::execute_time();
-  }
-};
-}  // namespace caster_attacks
 
 namespace cat_attacks
 {
@@ -3093,29 +3029,6 @@ public:
     residual_action::trigger( p()->active.frenzied_assault, t, p()->legendary.frenzyband->effectN( 2 ).percent() * d );
   }
 };  // end druid_cat_attack_t
-
-// Cat Melee Attack =========================================================
-struct cat_melee_t : public cat_attack_t
-{
-  cat_melee_t( druid_t* player ) : cat_attack_t( "cat_melee", player )
-  {
-    form_mask  = CAT_FORM;
-    may_glance = background = repeating = is_auto_attack = true;
-
-    school            = SCHOOL_PHYSICAL;
-    trigger_gcd       = timespan_t::zero();
-    special           = false;
-    weapon_multiplier = 1.0;
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( !player->in_combat )
-      return timespan_t::from_seconds( 0.01 );
-
-    return cat_attack_t::execute_time();
-  }
-};
 
 // Berserk ==================================================================
 struct berserk_cat_t : public cat_attack_t
@@ -4109,41 +4022,6 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
       trigger_gore();
   }
 };  // end bear_attack_t
-
-// Bear Melee Attack ========================================================
-struct bear_melee_t : public bear_attack_t
-{
-  bear_melee_t( druid_t* player ) : bear_attack_t( "bear_melee", player )
-  {
-    form_mask  = BEAR_FORM;
-    may_glance = background = repeating = is_auto_attack = true;
-
-    school            = SCHOOL_PHYSICAL;
-    trigger_gcd       = timespan_t::zero();
-    special           = false;
-    weapon_multiplier = 1.0;
-
-    energize_type     = action_energize::ON_HIT;
-    energize_resource = RESOURCE_RAGE;
-    energize_amount   = 4;
-  }
-
-  void execute() override
-  {
-    bear_attack_t::execute();
-
-    if ( hit_any_target && p()->talent.tooth_and_claw->ok() )
-      p()->buff.tooth_and_claw->trigger();
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( !player->in_combat )
-      return timespan_t::from_seconds( 0.01 );
-
-    return bear_attack_t::execute_time();
-  }
-};
 
 // Berserk (Bear) ===========================================================
 struct berserk_bear_t : public bear_attack_t
@@ -7704,6 +7582,103 @@ struct ravenous_frenzy_t : public druid_spell_t
 };
 }  // end namespace spells
 
+namespace auto_attacks
+{
+template <typename Base>
+struct druid_melee_t : public Base
+{
+  using ab = Base;
+  using base_t = druid_melee_t<Base>;
+
+  double ooc_chance;
+
+  druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p ), ooc_chance( 0.0 )
+  {
+    ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
+
+    ab::school = SCHOOL_PHYSICAL;
+    ab::trigger_gcd = 0_ms;
+    ab::special = false;
+    ab::weapon_multiplier = 1.0;
+
+    ab::apply_buff_effects();
+    ab::apply_dot_debuffs();
+
+    // 7.00 PPM via community testing (~368k auto attacks)
+    // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
+    if ( p->spec.omen_of_clarity->ok() )
+      ooc_chance = 7.00;
+
+    if ( p->talent.moment_of_clarity->ok() )
+      ooc_chance *= 1.0 + p->talent.moment_of_clarity->effectN( 2 ).percent();
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( !ab::player->in_combat )
+      return 10_ms;
+
+    return ab::execute_time();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    if ( ooc_chance && ab::result_is_hit( s->result ) )
+    {
+      int active = ab::p()->buff.clearcasting->check();
+      double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
+
+      // Internal cooldown is handled by buff.
+      if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
+      {
+        ab::p()->proc.clearcasting->occur();
+
+        for ( int i = 0; i < active; i++ )
+          ab::p()->proc.clearcasting_wasted->occur();
+      }
+    }
+  }
+};
+
+// Caster Melee Attack ======================================================
+struct caster_melee_t : public druid_melee_t<druid_attack_t<melee_attack_t>>
+{
+  caster_melee_t( druid_t* p ) : base_t( "caster_melee", p ) {}
+};
+
+// Bear Melee Attack ========================================================
+struct bear_melee_t : public druid_melee_t<bear_attacks::bear_attack_t>
+{
+  bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
+  {
+    ab::form_mask = form_e::BEAR_FORM;
+
+    ab::energize_type = action_energize::ON_HIT;
+    ab::energize_resource = resource_e::RESOURCE_RAGE;
+    ab::energize_amount = 4.0;
+  }
+
+  void execute() override
+  {
+    ab::execute();
+
+    if ( ab::hit_any_target && ab::p()->talent.tooth_and_claw->ok() )
+      ab::p()->buff.tooth_and_claw->trigger();
+  }
+};
+
+// Cat Melee Attack =========================================================
+struct cat_melee_t : public druid_melee_t<cat_attacks::cat_attack_t>
+{
+  cat_melee_t( druid_t* p ) :base_t( "cat_melee", p )
+  {
+    ab::form_mask = form_e::CAT_FORM;
+  }
+};
+}  // namespace auto_attacks
+
 // ==========================================================================
 // Druid Helper Functions & Structures
 // ==========================================================================
@@ -8889,9 +8864,10 @@ void druid_t::create_actions()
   using namespace cat_attacks;
   using namespace bear_attacks;
   using namespace spells;
+  using namespace auto_attacks;
 
   // Melee Attacks
-  caster_melee_attack = new caster_attacks::druid_melee_t( this );
+  caster_melee_attack = new caster_melee_t( this );
 
   if ( !cat_melee_attack )
   {
