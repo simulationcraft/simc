@@ -271,9 +271,11 @@ struct impending_catastrophe_t : public warlock_spell_t
 
       //PTR 2022-01-26 Legendary is still multiplying these bonuses together, though the tooltip implies they should add
       if ( p()->bugs )
-        return m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * clamped_impact_count );
+        m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * clamped_impact_count );
       else
-        return m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * clamped_impact_count;
+        m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * clamped_impact_count;
+	
+      return m;
     }
   };
 
