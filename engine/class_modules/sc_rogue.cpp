@@ -4855,11 +4855,16 @@ struct serrated_bone_spike_t : public rogue_attack_t
       if ( count_after )
         active_dots += 1;
 
-      // 2021-07-17-- Testing currently shows that initially-cleaved DoTs do not behave normally
-      if ( p()->bugs )
+      if ( p()->bugs && state->chain_target == 0 )
       {
-        tdata->set_is_deathspiked( state->chain_target > 0 );
+        tdata->set_is_deathspiked( false );
       }
+    }
+
+    // 2021-07-17-- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
+    if ( p()->bugs && state->chain_target > 0 )
+    {
+      tdata->set_is_deathspiked( true );
     }
 
     trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
