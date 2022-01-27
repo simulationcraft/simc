@@ -269,7 +269,7 @@ struct impending_catastrophe_t : public warlock_spell_t
       // TODO: As the change is confirmed, remove PTR check
       int clamped_impact_count = p()->min_version_check( VERSION_PTR ) ? std::min(impact_count, 10) : impact_count;
 
-      //PTR 2021-06-19 Legendary is currently multiplying these bonuses together, though the tooltip implies they should add
+      //PTR 2022-01-26 Legendary is still multiplying these bonuses together, though the tooltip implies they should add
       if ( p()->bugs )
         return m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * clamped_impact_count );
       else
