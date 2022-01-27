@@ -267,7 +267,7 @@ struct impending_catastrophe_t : public warlock_spell_t
 
       // PTR 2022-01-25 Legendary now capped to a maximum of 10 targets 
       // TODO: As the change is confirmed, remove PTR check
-      int clamped_impact_count = p()->min_version_check( VERSION_PTR ) ? clamp(impact_count, 0, 10) : impact_count;
+      int clamped_impact_count = p()->min_version_check( VERSION_PTR ) ? std::min(impact_count, 10) : impact_count;
 
       //PTR 2021-06-19 Legendary is currently multiplying these bonuses together, though the tooltip implies they should add
       if ( p()->bugs )
