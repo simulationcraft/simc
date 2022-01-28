@@ -619,6 +619,7 @@ public:
     const spell_data_t* lightning_reflexes;
     const spell_data_t* galactic_guardian;  // GG buff
     const spell_data_t* frenzied_regeneration_2;  // +1 charge
+    const spell_data_t* frenzied_regeneration_3;  // +20% heal received
     const spell_data_t* survival_instincts_2;     // +1 charge
 
     // Resto
@@ -4326,6 +4327,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     bool soul_of_the_forest;
   } affected_by;
 
+  double fr_mul;     // % healing from frenzied regeneration rank 3, implemented for self heal only
   double iron_mul;   // % healing from hots with ironbark
   double photo_mul;  // tick rate multiplier when lb is on self
   double photo_pct;  // % chance to bloom when lb is on other
@@ -4334,6 +4336,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       affected_by(),
+      fr_mul( 0.0 ),
       iron_mul( 0.0 ),
       photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
       photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
@@ -4347,6 +4350,9 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     may_miss = harmful = false;
     ignore_false_positive = true;
+
+    if ( p->spec.frenzied_regeneration_3->ok() )
+      fr_mul = p->spec.frenzied_regeneration_3->effectN( 1 ).percent();
 
     if ( p->spec.ironbark->ok() )
     {
@@ -4382,6 +4388,9 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   double composite_target_ta_multiplier( player_t* t ) const override
   {
     double cttm = base_t::composite_target_ta_multiplier( t );
+
+    if ( fr_mul && t == player && td( t )->hots.frenzied_regeneration->is_ticking() )
+      cttm *= 1.0 + fr_mul;
 
     if ( iron_mul && td( t )->buff.ironbark->up() )
       cttm *= 1.0 + iron_mul;
@@ -8799,6 +8808,7 @@ void druid_t::init_spells()
   spec.berserk_bear_2          = check( spec.berserk_bear->ok(), 343240 );
   spec.galactic_guardian       = check( talent.galactic_guardian->ok(), 213708 );
   spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
+  spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
   spec.survival_instincts_2    = find_rank_spell( "Survival Instincts", "Rank 2" );
 
   // Restoration
