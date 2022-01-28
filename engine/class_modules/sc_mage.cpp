@@ -3694,7 +3694,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       // likely due to batching.
       if ( s->chain_target == 0 )
       {
-        for ( unsigned int i = 0; i < s->n_targets; i++ )
+        for ( unsigned i = 0; i < s->n_targets; i++ )
           trigger_cold_front();
       }
     }
