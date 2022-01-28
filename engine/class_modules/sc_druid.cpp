@@ -467,10 +467,11 @@ public:
     buff_t* yseras_gift;
 
     // Helper pointers
-    buff_t* ca_inc;       // celestial_alignment or incarnation_moonkin
-    buff_t* b_inc_cat;    // berserk_cat or incarnation_cat
-    buff_t* b_inc_bear;   // berserk_bear or incarnation_bear
-    buff_t* incarnation;  // incarnation_moonkin or incarnation_bear or incarnation_cat
+    buff_t* ca_inc;        // celestial_alignment or incarnation_moonkin
+    buff_t* b_inc_cat;     // berserk_cat or incarnation_cat
+    buff_t* b_inc_bear;    // berserk_bear or incarnation_bear
+    buff_t* incarnation;   // incarnation_moonkin or incarnation_bear or incarnation_cat or incarnation_tree
+    buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
   } buff;
 
   // Cooldowns
@@ -5690,8 +5691,13 @@ struct incarnation_t : public druid_spell_t
         autoshift = form_mask = BEAR_FORM;
         name_str_reporting = "incarnation_guardian_of_ursoc";
         break;
-      case DRUID_RESTORATION: break;
-      default: assert( false && "Actor attempted to create incarnation action with no specialization." );
+      case DRUID_RESTORATION:
+        autoshift = form_mask = NO_FORM;
+        name_str_reporting = "incarnation_tree_of_life";
+        break;
+      default:
+        assert( false && "Actor attempted to create incarnation action with no specialization." );
+        break;
     }
 
     harmful = false;
@@ -9334,12 +9340,25 @@ void druid_t::create_buffs()
   }
 
   // Helpers
-  switch( specialization() )
+  switch ( specialization() )
   {
-    case DRUID_BALANCE:  buff.incarnation = buff.incarnation_moonkin; break;
-    case DRUID_FERAL:    buff.incarnation = buff.incarnation_cat;     break;
-    case DRUID_GUARDIAN: buff.incarnation = buff.incarnation_bear;    break;
-    default:             buff.incarnation = buff.incarnation_tree;    break;  // tree inc does nothing
+    case DRUID_BALANCE:
+      buff.incarnation = buff.incarnation_moonkin;
+      break;
+    case DRUID_FERAL:
+      buff.incarnation = buff.incarnation_cat;
+      buff.clearcasting = buff.clearcasting_cat;
+      break;
+    case DRUID_GUARDIAN:
+      buff.incarnation = buff.incarnation_bear;
+      break;
+    case DRUID_RESTORATION:
+      buff.incarnation = buff.incarnation_tree;
+      buff.clearcasting = buff.clearcasting_tree;
+      break;
+    default:  // empty buff
+      buff.incarnation = make_buff( this, "incarnation" );
+      break;
   }
 
   // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
@@ -10475,45 +10494,55 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     } );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
   {
-    std::string_view replacement;
-
     // special case since incarnation is handled via the proxy action and the cooldown obj is not explicitly named for
     // the spec variant
     if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
          ( talent.incarnation_cat->ok() || talent.incarnation_bear->ok() ) )
     {
-      replacement = "incarnation";
+      splits[ 1 ] = "incarnation";
     }
     else if ( specialization() == DRUID_FERAL )
     {
       if ( talent.incarnation_cat->ok() )
-        replacement = "incarnation_king_of_the_jungle";
+        splits[ 1 ] = "incarnation_king_of_the_jungle";
       else
-        replacement = "berserk_cat";
+        splits[ 1 ] = "berserk_cat";
     }
     else if ( specialization() == DRUID_GUARDIAN )
     {
       if ( talent.incarnation_bear->ok() )
-        replacement = "incarnation_guardian_of_ursoc";
+        splits[ 1 ] = "incarnation_guardian_of_ursoc";
       else
-        replacement = "berserk_bear";
+        splits[ 1 ] = "berserk_bear";
     }
     else
     {
-      replacement = "berserk";
+      splits[ 1 ] = "berserk";
     }
 
-    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
+  {
+    if ( spec.omen_of_clarity_cat->ok() )
+      splits[ 1 ] = "clearcasting_cat";
+    else if ( spec.omen_of_clarity_tree->ok() )
+      splits[ 1 ] = "clearcasting_tree";
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
+  }
+
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
        ( util::str_compare_ci( splits[ 1 ], "kindred_spirits" ) ||
          util::str_compare_ci( splits[ 1 ], "kindred_empowerment" ) ||
          util::str_compare_ci( splits[ 1 ], "lone_empowerment" ) ) )
   {
-    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], "empower_bond", splits[ 2 ] ) );
+    splits[ 1 ] = "empower_bond";
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
   if ( util::str_compare_ci( name_str, "combo_points" ) )
@@ -10533,16 +10562,14 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return make_fn_expr( name_str, [ this ]() { return moon_stage == FULL_MOON; } );
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
-    if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
-      std::string_view replacement;
-
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        replacement = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
       else
-        replacement = talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
-      return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+      return druid_t::create_expression( util::string_join( splits, "." ) );
     }
 
     // check for AP overcap on action other than current action. check for current action handled in
@@ -10663,34 +10690,31 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
   // name conversion.
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
        ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
-    std::string_view replacement;
-
     switch ( specialization() )
     {
-      case DRUID_BALANCE: replacement = "incarnation_chosen_of_elune"; break;
-      case DRUID_FERAL: replacement = "incarnation_king_of_the_jungle"; break;
-      case DRUID_GUARDIAN: replacement = "incarnation_guardian_of_ursoc"; break;
-      case DRUID_RESTORATION: replacement = "incarnation_tree_of_life"; break;
+      case DRUID_BALANCE:     splits[ 1 ] = "incarnation_chosen_of_elune";    break;
+      case DRUID_FERAL:       splits[ 1 ] = "incarnation_king_of_the_jungle"; break;
+      case DRUID_GUARDIAN:    splits[ 1 ] = "incarnation_guardian_of_ursoc";  break;
+      case DRUID_RESTORATION: splits[ 1 ] = "incarnation_tree_of_life";       break;
       default: break;
     }
-    return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
   {
-    std::string_view replacement;
-
     if ( specialization() == DRUID_FERAL )
-      replacement = "berserk_cat";
+      splits[ 1 ] = "berserk_cat";
     else if ( specialization() == DRUID_GUARDIAN )
-      replacement = "berserk_bear";
+      splits[ 1 ] = "berserk_bear";
     else
-      replacement = "berserk";
+      splits[ 1 ] = "berserk";
 
-    return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
   return player_t::create_expression( name_str );
