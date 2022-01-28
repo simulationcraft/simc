@@ -448,13 +448,12 @@ public:
     if ( trigger_chiji && p()->buff.invoke_chiji->up() )
       p()->buff.invoke_chiji_evm->trigger();
 
-    // The bug is that this is triggering before the execute
-    // Meaning Primordial Potential transforms into Primordial Power before
+    // Primordial Potential transforms into Primordial Power before
     // the ability executes and thus benefits from the Primordial Power
     // buff when Primordial Potential hits 10 stacks.
     // At the same time, the 3rd stack of Primorodial Power does not provide
     // any benefits.
-    if ( p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
       // Check if Primordial Power is active
       // If it is then if the ability can trigger, then decrement
@@ -2354,7 +2353,7 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true; // Do not want to trigger this until after the second hit.
-    trigger_ww_t28_4p_power = true; // Do not want to remove this until after the second hit.
+    trigger_ww_t28_4p_power     = true; // Do not want to remove this until after the second hit.
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
