@@ -107,7 +107,7 @@ struct druid_td_t : public actor_target_data_t
 
   druid_td_t( player_t& target, druid_t& source );
 
-  int hots_ticking()
+  int hots_ticking() const
   {
     return hots.cenarion_ward->is_ticking() + hots.cultivation->is_ticking() +
            hots.frenzied_regeneration->is_ticking() + hots.germination->is_ticking() + hots.lifebloom->is_ticking() +
@@ -115,7 +115,7 @@ struct druid_td_t : public actor_target_data_t
            hots.wild_growth->is_ticking();
   }
 
-  int dots_ticking()
+  int dots_ticking() const
   {
     return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
            dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
@@ -4323,6 +4323,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     bool flourish;
     bool ironbark;
+    bool soul_of_the_forest;
   } affected_by;
 
   double iron_mul;   // % healing from hots with ironbark
@@ -4392,7 +4393,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     auto tt = base_t::tick_time( s );
 
-    if ( affected_by.flourish && p()->buff.flourish->up() )
+    if ( affected_by.flourish && p()->buff.flourish->check() )
       tt *= 1.0 + p()->buff.flourish->default_value;
 
     if ( p()->talent.photosynthesis->ok() && td( player )->hots.lifebloom->is_ticking() )
@@ -4409,6 +4410,14 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     if ( p()->talent.photosynthesis->ok() && lb->is_ticking() && rng().roll( photo_pct ) )
       lb->current_action->last_tick( lb );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
+      p()->buff.soul_of_the_forest_tree->expire();
   }
 };  // end druid_heal_t
 
@@ -4569,7 +4578,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     double pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.guardian_of_elune->up() )
+    if ( p()->buff.guardian_of_elune->check() )
       pm *= 1.0 + p()->buff.guardian_of_elune->data().effectN( 2 ).percent();
 
     return pm;
@@ -4636,9 +4645,9 @@ struct lifebloom_t : public druid_heal_t
   lifebloom_bloom_t* bloom;
 
   lifebloom_t( druid_t* p, std::string_view opt )
-    : druid_heal_t( "lifebloom", p, p->find_class_spell( "Lifebloom" ), opt ),
-      bloom( p->get_secondary_action<lifebloom_bloom_t>( "lifebloom_bloom" ) )
+    : druid_heal_t( "lifebloom", p, p->find_class_spell( "Lifebloom" ), opt )
   {
+    bloom = p->get_secondary_action<lifebloom_bloom_t>( "lifebloom_bloom" );
     bloom->stats = stats;
   }
 
@@ -4740,7 +4749,7 @@ struct nourish_t : public druid_heal_t
 
   double harmony_multiplier( player_t* t ) const override
   {
-    return druid_heal_t::harmony_multiplier( t ) * 3.0;
+    return druid_heal_t::harmony_multiplier( t ) * 3.0;  // multiplier not in any spell data
   }
 };
 
@@ -4779,13 +4788,14 @@ struct regrowth_t : public druid_heal_t
 
   regrowth_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), opt ),
+      gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value() ),
+      bonus_crit( p->find_rank_spell( "Regrowth", "Rank 2" )->effectN( 1 ).percent() ),
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
   {
     form_mask = NO_FORM | MOONKIN_FORM;
     may_autounshift = true;
 
-    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value();
-    bonus_crit = p->find_rank_spell( "Regrowth", "Rank 2" )->effectN( 1 ).percent();
+    affected_by.soul_of_the_forest = true;
   }
 
   action_state_t* new_state() override
@@ -4815,7 +4825,7 @@ struct regrowth_t : public druid_heal_t
   {
     auto pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.soul_of_the_forest_tree->up() )
+    if ( p()->buff.soul_of_the_forest_tree->check() )
       pm *= 1.0 + sotf_mul;
 
     return pm;
@@ -4840,12 +4850,13 @@ struct regrowth_t : public druid_heal_t
 
     druid_heal_t::execute();
 
-    p()->buff.soul_of_the_forest_tree->expire();
-
     if ( !free_cast )
     {
-      p()->buff.predatory_swiftness->expire();
-      p()->buff.natures_swiftness->expire();
+      if ( p()->buff.predatory_swiftness->up() )
+        p()->buff.predatory_swiftness->expire();
+
+      if ( p()->buff.natures_swiftness->up() )
+        p()->buff.natures_swiftness->expire();
     }
   }
 };
@@ -4870,6 +4881,8 @@ struct rejuvenation_base_t : public druid_heal_t
   {
     apply_affecting_aura( p->find_rank_spell( "Rejuvenation", "Rank 2" ) );
 
+    affected_by.soul_of_the_forest = true;
+
     if ( p->talent.cultivation->ok() )
       cult_hot = p->get_secondary_action<cultivation_t>( "cultivation" );
   }
@@ -4878,7 +4891,7 @@ struct rejuvenation_base_t : public druid_heal_t
   {
     auto pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.soul_of_the_forest_tree->up() )
+    if ( p()->buff.soul_of_the_forest_tree->check() )
       pm *= 1.0 + sotf_mul;
 
     return pm;
@@ -4890,13 +4903,6 @@ struct rejuvenation_base_t : public druid_heal_t
       p()->buff.abundance->increment();
 
     druid_heal_t::impact( s );
-  }
-
-  void execute() override
-  {
-    druid_heal_t::execute();
-
-    p()->buff.soul_of_the_forest_tree->expire();
   }
 
   void tick( dot_t* d ) override
@@ -5053,12 +5059,13 @@ struct tranquility_t : public druid_heal_t
 //   D = full duration of WG
 struct wild_growth_t : public druid_heal_t
 {
-  double sotf_mul;
   double decay_coeff;
+  double sotf_mul;
   int inc_mod;
 
   wild_growth_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "wild_growth", p, p->find_specialization_spell( "Wild Growth" ), opt ),
+      decay_coeff( 0.07 ),  // unknown if this is hard set to 0.07, or is base duration * 0.01, or some other formula
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 2 ).percent() ),
       inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
@@ -5066,10 +5073,10 @@ struct wild_growth_t : public druid_heal_t
     if ( auto rank2 = p->find_rank_spell( "Wild Growth", "Rank 2" ) )
       aoe += as<int>( rank2->effectN( 1 ).base_value() );
 
-    // unknown if this is hard set to 0.07, or is base duration * 0.01, or some other formula
-    decay_coeff = 0.07;
     // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
     spell_power_mod.tick += decay_coeff / 2.0;
+
+    affected_by.soul_of_the_forest = true;
   }
 
   double spell_tick_power_coefficient( const action_state_t* s ) const override
@@ -5086,7 +5093,7 @@ struct wild_growth_t : public druid_heal_t
   {
     auto pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.soul_of_the_forest_tree->up() )
+    if ( p()->buff.soul_of_the_forest_tree->check() )
       pm *= 1.0 + sotf_mul;
 
     return pm;
@@ -5100,13 +5107,6 @@ struct wild_growth_t : public druid_heal_t
       n += inc_mod;
 
     return n;
-  }
-
-  void execute() override
-  {
-    druid_heal_t::execute();
-
-    p()->buff.soul_of_the_forest_tree->expire();
   }
 };
 
@@ -5145,22 +5145,22 @@ struct overgrowth_t : public druid_heal_t
 
   overgrowth_t( druid_t* p, std::string_view opt ) : druid_heal_t( "overgrowth", p, p->talent.overgrowth )
   {
-    create_overgrowth_action<lifebloom_t>( "lifebloom" );
-    create_overgrowth_action<rejuvenation_t>( "rejuvenation" );
-    create_overgrowth_action<regrowth_t>( "regrowth" );
-    spell_list.back()->base_dd_multiplier = 0.0;
-    create_overgrowth_action<wild_growth_t>( "wild_growth" );
-    spell_list.back()->aoe = 0;
+    get_overgrowth_action<lifebloom_t>( "lifebloom" );
+    get_overgrowth_action<rejuvenation_t>( "rejuvenation" );
+    get_overgrowth_action<regrowth_t>( "regrowth" )
+      ->base_dd_multiplier = 0.0;
+    get_overgrowth_action<wild_growth_t>( "wild_growth" )
+      ->aoe = 0;
   }
 
   template <typename T>
-  void create_overgrowth_action( std::string n )
+  T* get_overgrowth_action( std::string n )
   {
     auto a = p()->get_secondary_action_n<T>( n + "_overgrowth" );
     a->name_str_reporting = n;
     a->dot_name = n;
     add_child( a );
-    spell_list.push_back( a );
+    return spell_list.emplace_back( a );
   }
 
   void execute() override
