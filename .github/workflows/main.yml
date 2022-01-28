@@ -17,7 +17,7 @@ env:
 
 jobs:
   ubuntu-gcc:
-    name: ubuntu-${{ matrix.cc }}
+    name: ubuntu-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
     runs-on: ubuntu-18.04
     strategy:
       matrix:
