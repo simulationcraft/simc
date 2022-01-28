@@ -32,7 +32,7 @@ jobs:
             packages: gcc-10 g++-10
         exclude:
           - cc: gcc-7
-            cppVersion: 17   
+            cppVersion: 20   
 
     steps:
       - uses: actions/checkout@v2
