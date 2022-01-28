@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42069
-static const std::array<spelltext_data_t, 15978> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15982> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -4723,6 +4723,7 @@ static const std::array<spelltext_data_t, 15978> __ptr_spelltext_data { {
   { 155627, "$@spelldesc155580", 0, 0 },
   { 155675, "You can apply Rejuvenation twice to the same target. Rejuvenation's duration is increased by ${$s1/1000} sec.", 0, 0 },
   { 155722, "$@spelldesc1822", "Bleeding for $w1 damage every $t1 seconds.", 0 },
+  { 155777, "$@spelldesc774", "Healing $w1 every $t1 sec.", 0 },
   { 155783, "Increases your maximum health and healing received by ${$s1}.1%.\r\n\r\nAlso increases your attack power by ${$159195s1}.1%.", 0, 0 },
   { 155835, "Bristle your fur, causing you to generate Rage based on damage taken for $d.", "Generating Rage from taking damage.", 0 },
   { 155918, "Place a fire trap that explodes when an enemy approaches, causing $155919s1 Fire damage. Trap will exist for $155919d.", 0, "Fire" },
@@ -15613,8 +15614,11 @@ static const std::array<spelltext_data_t, 15978> __ptr_spelltext_data { {
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
   { 362629, "Your attacks have a chance to steal $362628s1 life from the enemy.", 0, 0 },
+  { 362699, "Protects from spell interruption and crowd control effects.", "Immune to interrupt and crowd control effects.", 0 },
   { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
+  { 363117, "Activate the Broker defenses, protecting yourself from spell interruption and crowd control effects. The defenses withstand up to $s1 $Leffect:effects; and persist for $362699d.", 0, 0 },
+  { 363121, "Duration of incoming crowd control effects increased by $s1%. Does not stack with similar effects. When affected, protects from the next spell interruption and crowd control effect, persisting for $362699d.", 0, "PvP Talent" },
   { 363327, "Activate the dimensional translators to cross a great distance in outdoor Shadowlands zones.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363328, "Greatly reduces fall damage taken in outdoor Shadowlands zones.", 0, 0 },
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${$s4+$s3*5}]?pc94651[${$s4+$s3*4}]?pc94650[${$s4+$s3*3}]?pc64649[${$s4+$s3*2}]?pc94746[${$s4+$s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
@@ -15985,7 +15989,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_ho
 } };
 
 // Spell description variables, wow build 9.2.0.42069
-static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -16071,6 +16075,7 @@ static const std::array<spelldesc_vars_data_t, 305> __ptr_spelldesc_vars_data { 
   {  152277, "$damage=${6*$156287s1}" },
   {  152279, "$CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW" },
   {  155148, "$cdr=${$s1/1000}.1" },
+  {  155777, "$mult=${1}\r\n$mstrshape=$?s48411[${1+0.01*$48411m1}][${1}]\r\n$gotem1=$?s51179[${1+0.01*$51179m1}][${1}]\r\n$gotem2=$?s51180[${1+0.01*$51180m1}][${$<gotem1>}]\r\n$gotem3=$?s51181[${1+0.01*$51181m1}][${$<gotem2>}]\r\n$tol=$?a5420[${1+0.01+$5420m1}][${1}]\r\n$gift=$?s87305[${1.25}][${1}]\r\n$bloom=${$<gift>*$<genesis3>*$<mstrshape>*$<gotem3>*$<tol>}" },
   {  157047, "$shield=${$SP*4*(1+$@versadmg)}" },
   {  157375, "$damage=${0.1*($SP*1.8)*(1+$@versadmg)*(1+0.01*$137040m3)}" },
   {  157736, "$mastery=$?s77220[${((100+$77220m3)/100)}][${1.00}]" },
