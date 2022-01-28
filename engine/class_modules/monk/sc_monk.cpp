@@ -8378,10 +8378,9 @@ double monk_t::stagger_base_value()
     if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
 
-    if ( bugs )
-      // Hard coding the 125% multiplier until Blizzard fixes this
-      if ( buff.faeline_stomp_brm->up() )
-        stagger_base *= 1.0 + 0.25;
+    // Hard coding the 125% multiplier until Blizzard fixes this
+    if ( buff.faeline_stomp_brm->up() )
+      stagger_base *= 1.0 + 0.25;
 
     if ( buff.shuffle->check() )
       stagger_base *= 1.0 + passives.shuffle->effectN( 1 ).percent();
@@ -8401,11 +8400,6 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
 
   double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
-
-  // Bug: This is right now hard-coding the 5% instead of the estimated 125% multiplier to stagger_base
-  if ( !bugs )
-    if ( buff.faeline_stomp_brm->up() )
-      stagger += buff.faeline_stomp_brm->value();
 
   return std::min( stagger, 0.99 );
 }

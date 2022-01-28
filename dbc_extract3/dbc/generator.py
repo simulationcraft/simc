@@ -1329,6 +1329,8 @@ class SpellDataGenerator(DataGenerator):
          357706, # volcanic plume
          # Codex of the First Technique's damage spell
          351450,
+         # 9.2 Encrypted M+ Affix
+         368239, 368240, 368241,
         ),
 
         # Warrior:
@@ -1848,6 +1850,7 @@ class SpellDataGenerator(DataGenerator):
           ( 135597, 3 ),       # Tooth and Claw absorb buff
           ( 155784, 3 ),       # Primal Tenacity buff
           ( 137542, 0 ),       # Displacer Beast buff
+          ( 155777, 4 ),       # Germination Rejuvenation
           ( 157228, 1 ),       # Owlkin Frenzy
           ( 202461, 1 ),       # Stellar Drift mobility buff
           ( 202771, 1 ),       # Half Moon artifact power

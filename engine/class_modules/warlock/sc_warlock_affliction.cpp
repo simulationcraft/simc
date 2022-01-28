@@ -289,7 +289,6 @@ struct corruption_t : public affliction_spell_t
   {
     auto otherSP = p->find_spell( 146739 );
     parse_options( options_str );
-    may_crit                   = false;
     tick_zero                  = false;
 
     if ( !p->spec.corruption_3->ok() || seed_action )
@@ -554,12 +553,26 @@ struct seed_of_corruption_t : public affliction_spell_t
   }
 };
 
+// 9.2 Tier Set
+struct deliberate_corruption_t : public affliction_spell_t
+{
+  deliberate_corruption_t( warlock_t* p)
+    : affliction_spell_t( "deliberate_corruption", p, p->find_spell(367831) )
+  {
+    background      = true;
+    affected_by_woc = false;
+  }
+};
+
 struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
+      deliberate_corruption_t* deliberate_corruption;
+
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), 
+          deliberate_corruption( new deliberate_corruption_t( p ) )
       {
         aoe = 1;
         background = true;
@@ -584,6 +597,20 @@ struct malefic_rapture_t : public affliction_spell_t
         }
 
         return m;
+      }
+
+      void impact ( action_state_t* s ) override
+      {
+        if ( result_is_hit( s->result ) && p()->talents.absolute_corruption->ok() && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        { 
+          auto td = this->td( s->target );
+          if (td->dots_corruption->is_ticking())
+          {
+            deliberate_corruption->execute_on_target( s->target );
+          }
+        }
+
+        affliction_spell_t::impact( s );
       }
 
       void execute() override

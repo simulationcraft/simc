@@ -493,15 +493,17 @@ public:
   struct
   {
     cooldown_t* ascendance;
-    cooldown_t* fire_elemental;
+    cooldown_t* chain_harvest;
+    cooldown_t* crash_lightning;
     cooldown_t* feral_spirits;
+    cooldown_t* fire_elemental;
+    cooldown_t* flame_shock;
+    cooldown_t* frost_shock;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
-    cooldown_t* crash_lightning;
+    cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
-    cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
-    cooldown_t* chain_harvest;
   } cooldown;
 
   // Covenant Class Abilities
@@ -790,15 +792,17 @@ public:
 
     // Cooldowns
     cooldown.ascendance      = get_cooldown( "ascendance" );
-    cooldown.fire_elemental  = get_cooldown( "fire_elemental" );
-    cooldown.storm_elemental = get_cooldown( "storm_elemental" );
+    cooldown.chain_harvest   = get_cooldown( "chain_harvest" );
+    cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.feral_spirits   = get_cooldown( "feral_spirit" );
+    cooldown.fire_elemental  = get_cooldown( "fire_elemental" );
+    cooldown.flame_shock     = get_cooldown( "flame_shock" );
+    cooldown.frost_shock     = get_cooldown( "frost_shock" );
     cooldown.lava_burst      = get_cooldown( "lava_burst" );
     cooldown.lava_lash       = get_cooldown( "lava_lash" );
-    cooldown.crash_lightning = get_cooldown( "crash_lightning" );
-    cooldown.strike          = get_cooldown( "strike" );
+    cooldown.storm_elemental = get_cooldown( "storm_elemental" );
     cooldown.shock           = get_cooldown( "shock" );
-    cooldown.chain_harvest   = get_cooldown( "chain_harvest" );
+    cooldown.strike          = get_cooldown( "strike" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -3692,7 +3696,15 @@ struct ice_strike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      p()->cooldown.shock->reset( false );
+      if ( player->dbc->ptr )
+      {
+        p()->cooldown.flame_shock->reset( false );
+        p()->cooldown.frost_shock->reset( false );
+      }
+      else
+      {
+        p()->cooldown.shock->reset( false );
+      }
     }
   }
 };
@@ -4541,7 +4553,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
+          m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
     }
 
     return m;
@@ -4955,7 +4967,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      m *= 1.0 + p()->spell.t28_2pc_ele->effectN(2).percent();
+        m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
     }
 
     return m;
@@ -5892,7 +5904,10 @@ public:
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.shock;
+      if ( !player->dbc->ptr )
+      {
+        cooldown         = p()->cooldown.shock;
+      }
       cooldown->duration = data().cooldown();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
@@ -6029,7 +6044,10 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.shock;
+      if ( !player->dbc->ptr )
+      {
+        cooldown         = p()->cooldown.shock;
+      }
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
       track_cd_waste = true;
@@ -8253,7 +8271,7 @@ void shaman_t::init_spells()
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
 
-  // spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
+  //spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
   // this is the actually useful spell
   spell.t28_2pc_ele        = find_spell( 364523 );
   spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
