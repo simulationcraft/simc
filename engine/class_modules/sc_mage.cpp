@@ -721,7 +721,7 @@ public:
   void init_uptimes() override;
   void init_rng() override;
   void init_finished() override;
-  void add_precombat_buff_state( buff_t*, int, double, timespan_t );
+  void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   void do_dynamic_regen( bool = false ) override;
@@ -3694,7 +3694,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       // likely due to batching.
       if ( s->chain_target == 0 )
       {
-        for ( int i = 0; i < s->n_targets; i++ )
+        for ( unsigned int i = 0; i < s->n_targets; i++ )
           trigger_cold_front();
       }
     }

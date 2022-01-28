@@ -588,6 +588,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     default_chance( 1.0 ),
     manual_chance( -1.0 ),
     constant_behavior( buff_constant_behavior::DEFAULT ),
+    allow_precombat( true ),
     current_tick( 0 ),
     buff_period( timespan_t::min() ),
     tick_time_behavior( buff_tick_time_behavior::UNHASTED ),
@@ -624,8 +625,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     start_intervals(),
     trigger_intervals(),
     duration_lengths(),
-    change_regen_rate( false ),
-    allow_precombat( true )
+    change_regen_rate( false )
 {
   if ( source )  // Player Buffs
   {
