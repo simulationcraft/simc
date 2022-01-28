@@ -4558,14 +4558,20 @@ struct efflorescence_t : public druid_heal_t
 // Frenzied Regeneration ====================================================
 struct frenzied_regeneration_t : public druid_heal_t
 {
+  double goe_mul;
+
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
     : frenzied_regeneration_t( p, "frenzied_regeneration", opt )
   {}
 
   frenzied_regeneration_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_heal_t( n, p, p->find_affinity_spell( "Frenzied Regeneration" ), opt )
+    : druid_heal_t( n, p, p->find_affinity_spell( "Frenzied Regeneration" ), opt ),
+    goe_mul( 0.0 )
   {
     target = p;
+
+    if ( p->talent.guardian_of_elune->ok() )
+      goe_mul = p->buff.guardian_of_elune->data().effectN( 2 ).percent();
   }
 
   void init() override
@@ -4587,8 +4593,8 @@ struct frenzied_regeneration_t : public druid_heal_t
   {
     double pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.guardian_of_elune->check() )
-      pm *= 1.0 + p()->buff.guardian_of_elune->data().effectN( 2 ).percent();
+    if ( goe_mul && p()->buff.guardian_of_elune->check() )
+      pm *= 1.0 + goe_mul;
 
     return pm;
   }
