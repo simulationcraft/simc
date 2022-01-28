@@ -1224,7 +1224,7 @@ public:
     }
     if ( p->set_bonuses.t28_assassination_2pc->ok() )
     {
-      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 2 ) );
+      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 1 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
