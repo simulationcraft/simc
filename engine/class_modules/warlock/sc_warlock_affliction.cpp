@@ -1192,7 +1192,7 @@ void warlock_t::create_apl_affliction()
   delay->add_action( "use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
-  delay->add_action( "use_item,name=name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
+  delay->add_action( "use_item,name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
 
   stat->add_action( "use_item,name=inscrutable_quantum_device" );
   stat->add_action( "use_item,name=instructors_divine_bell" );
