@@ -84,35 +84,42 @@ struct druid_td_t : public actor_target_data_t
 
   struct hots_t
   {
+    dot_t* cenarion_ward;
+    dot_t* cultivation;
+    dot_t* frenzied_regeneration;
+    dot_t* germination;
     dot_t* lifebloom;
     dot_t* regrowth;
     dot_t* rejuvenation;
+    dot_t* spring_blossoms;
     dot_t* wild_growth;
   } hots;
-
-  struct buffs_t
-  {
-    buff_t* lifebloom;
-  } buff;
 
   struct debuffs_t
   {
     buff_t* tooth_and_claw;
   } debuff;
 
+  struct buffs_t
+  {
+    buff_t* ironbark;
+  } buff;
+
   druid_td_t( player_t& target, druid_t& source );
 
-  bool hot_ticking()
+  int hots_ticking() const
   {
-    return hots.regrowth->is_ticking() || hots.rejuvenation->is_ticking() || hots.lifebloom->is_ticking() ||
+    return hots.cenarion_ward->is_ticking() + hots.cultivation->is_ticking() +
+           hots.frenzied_regeneration->is_ticking() + hots.germination->is_ticking() + hots.lifebloom->is_ticking() +
+           hots.regrowth->is_ticking() + hots.rejuvenation->is_ticking() + hots.spring_blossoms->is_ticking() +
            hots.wild_growth->is_ticking();
   }
 
-  bool dot_ticking()
+  int dots_ticking() const
   {
-    return dots.lunar_inspiration->is_ticking() || dots.moonfire->is_ticking() || dots.rake->is_ticking() ||
-           dots.rip->is_ticking() || dots.stellar_flare->is_ticking() || dots.sunfire->is_ticking() ||
-           dots.thrash_bear->is_ticking() || dots.thrash_cat->is_ticking();
+    return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
+           dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
+           dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
   }
 };
 
@@ -315,7 +322,6 @@ public:
 
   struct active_actions_t
   {
-    heal_t* cenarion_ward_hot;
     action_t* brambles;
     action_t* galactic_guardian;
     action_t* natures_guardian;
@@ -366,7 +372,6 @@ public:
     buff_t* dash;
     buff_t* tiger_dash;
     buff_t* cenarion_ward;
-    buff_t* clearcasting;
     buff_t* prowl;
     buff_t* stampeding_roar;
     buff_t* wild_charge_movement;
@@ -422,6 +427,7 @@ public:
     buff_t* bt_thrash;        // dummy buff
     buff_t* bt_moonfire;      // dummy buff
     buff_t* bt_brutal_slash;  // dummy buff
+    buff_t* clearcasting_cat;
     buff_t* incarnation_cat;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
@@ -452,16 +458,20 @@ public:
     buff_t* architects_aligner;
 
     // Restoration
+    buff_t* abundance;
+    buff_t* clearcasting_tree;
+    buff_t* flourish;
     buff_t* incarnation_tree;
-    buff_t* soul_of_the_forest;  // needs checking
+    buff_t* natures_swiftness;
+    buff_t* soul_of_the_forest_tree;
     buff_t* yseras_gift;
-    buff_t* harmony;  // NYI
 
     // Helper pointers
-    buff_t* ca_inc;       // celestial_alignment or incarnation_moonkin
-    buff_t* b_inc_cat;    // berserk_cat or incarnation_cat
-    buff_t* b_inc_bear;   // berserk_bear or incarnation_bear
-    buff_t* incarnation;  // incarnation_moonkin or incarnation_bear or incarnation_cat
+    buff_t* ca_inc;        // celestial_alignment or incarnation_moonkin
+    buff_t* b_inc_cat;     // berserk_cat or incarnation_cat
+    buff_t* b_inc_bear;    // berserk_bear or incarnation_bear
+    buff_t* incarnation;   // incarnation_moonkin or incarnation_bear or incarnation_cat or incarnation_tree
+    buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
   } buff;
 
   // Cooldowns
@@ -471,6 +481,7 @@ public:
     cooldown_t* incarnation;
     cooldown_t* mangle;
     cooldown_t* moon_cd;  // New / Half / Full Moon
+    cooldown_t* natures_swiftness;
     cooldown_t* thrash_bear;
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
@@ -513,8 +524,6 @@ public:
     const spell_data_t* natures_guardian_AP;
     const spell_data_t* razor_claws;
     const spell_data_t* total_eclipse;
-
-    // NYI / TODO!
     const spell_data_t* harmony;
   } mastery;
 
@@ -544,7 +553,6 @@ public:
     const spell_data_t* druid;
     const spell_data_t* critical_strikes;        // Feral & Guardian
     const spell_data_t* leather_specialization;  // All Specializations
-    const spell_data_t* omen_of_clarity;         // Feral & Restoration
     const spell_data_t* innervate;               // Balance & Restoration
     const spell_data_t* entangling_roots;
     const spell_data_t* barkskin;
@@ -556,6 +564,7 @@ public:
     const spell_data_t* cat_form;  // Cat form hidden effects
     const spell_data_t* cat_form_speed;
     const spell_data_t* feline_swiftness;  // Feral Affinity
+    const spell_data_t* omen_of_clarity_cat;
     const spell_data_t* predatory_swiftness;
     const spell_data_t* primal_fury;
     const spell_data_t* rip;
@@ -610,10 +619,15 @@ public:
     const spell_data_t* lightning_reflexes;
     const spell_data_t* galactic_guardian;  // GG buff
     const spell_data_t* frenzied_regeneration_2;  // +1 charge
+    const spell_data_t* frenzied_regeneration_3;  // +20% heal received
     const spell_data_t* survival_instincts_2;     // +1 charge
 
     // Resto
     const spell_data_t* restoration;
+    const spell_data_t* ironbark;
+    const spell_data_t* natures_swiftness;
+    const spell_data_t* omen_of_clarity_tree;
+    const spell_data_t* tranquility;
     const spell_data_t* yseras_gift;  // Restoration Affinity
   } spec;
 
@@ -688,6 +702,8 @@ public:
     const spell_data_t* pulverize;
 
     // Restoration
+    const spell_data_t* abundance;
+    const spell_data_t* nourish;
     const spell_data_t* cenarion_ward;
 
     const spell_data_t* soul_of_the_forest_tree;
@@ -695,10 +711,22 @@ public:
     const spell_data_t* incarnation_tree;
 
     const spell_data_t* inner_peace;
+    const spell_data_t* spring_blossoms;
+    const spell_data_t* overgrowth;
 
+    const spell_data_t* photosynthesis;
     const spell_data_t* germination;
     const spell_data_t* flourish;
   } talent;
+
+  struct uptimes_t
+  {
+    uptime_t* primordial_arcanic_pulsar;
+    uptime_t* combined_ca_inc;
+    uptime_t* eclipse_solar;
+    uptime_t* eclipse_lunar;
+    uptime_t* eclipse_none;
+  } uptime;
 
   // Covenant
   struct covenant_t
@@ -752,15 +780,6 @@ public:
     conduit_data_t born_of_the_wilds;
   } conduit;
 
-  struct uptimes_t
-  {
-    uptime_t* primordial_arcanic_pulsar;
-    uptime_t* combined_ca_inc;
-    uptime_t* eclipse_solar;
-    uptime_t* eclipse_lunar;
-    uptime_t* eclipse_none;
-  } uptime;
-
   struct legendary_t
   {
     // General
@@ -813,19 +832,20 @@ public:
       proc( procs_t() ),
       spec( specializations_t() ),
       talent( talents_t() ),
+      uptime( uptimes_t() ),
       cov( covenant_t() ),
       conduit( conduit_t() ),
-      uptime( uptimes_t() ),
       legendary( legendary_t() )
   {
-    cooldown.berserk_cat      = get_cooldown( "berserk_cat" );
-    cooldown.incarnation      = get_cooldown( "incarnation" );
-    cooldown.mangle           = get_cooldown( "mangle" );
-    cooldown.moon_cd          = get_cooldown( "moon_cd" );
-    cooldown.thrash_bear      = get_cooldown( "thrash_bear" );
-    cooldown.tigers_fury      = get_cooldown( "tigers_fury" );
-    cooldown.warrior_of_elune = get_cooldown( "warrior_of_elune" );
-    cooldown.rage_from_melees = get_cooldown( "rage_from_melees" );
+    cooldown.berserk_cat       = get_cooldown( "berserk_cat" );
+    cooldown.incarnation       = get_cooldown( "incarnation" );
+    cooldown.mangle            = get_cooldown( "mangle" );
+    cooldown.moon_cd           = get_cooldown( "moon_cd" );
+    cooldown.natures_swiftness = get_cooldown( "natures_swiftness" );
+    cooldown.thrash_bear       = get_cooldown( "thrash_bear" );
+    cooldown.tigers_fury       = get_cooldown( "tigers_fury" );
+    cooldown.warrior_of_elune  = get_cooldown( "warrior_of_elune" );
+    cooldown.rage_from_melees  = get_cooldown( "rage_from_melees" );
     cooldown.rage_from_melees->duration = 1_s;
 
     resource_regeneration = regen_type::DYNAMIC;
@@ -975,10 +995,10 @@ public:
     }
     if ( !ids.empty() )
     {
-      for ( auto a : std::get<0>( actions ) )
+      for ( const auto& a : std::get<0>( actions ) )
         a->dot_ids = ids;
       if ( !std::is_same_v<T, U> )
-        for ( auto a : std::get<1>( actions ) )
+        for ( const auto& a : std::get<1>( actions ) )
           a->dot_ids = ids;
     }
   }
@@ -2249,6 +2269,13 @@ public:
       return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
     } );
 
+    // Feral
+    parse_buff_effects( p()->buff.cat_form );
+    parse_buff_effects( p()->buff.incarnation_cat );
+    parse_buff_effects( p()->buff.predatory_swiftness );
+    parse_buff_effects( p()->buff.savage_roar );
+    parse_buff_effects( p()->buff.apex_predators_craving );
+
     // Guardian
     parse_buff_effects( p()->buff.bear_form );
     // legacy of the sleeper does not use standard effect redirect methods
@@ -2265,12 +2292,10 @@ public:
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
 
-    // Feral
-    parse_buff_effects( p()->buff.cat_form );
-    parse_buff_effects( p()->buff.incarnation_cat );
-    parse_buff_effects( p()->buff.predatory_swiftness );
-    parse_buff_effects( p()->buff.savage_roar );
-    parse_buff_effects( p()->buff.apex_predators_craving );
+    // Restoration
+    parse_buff_effects( p()->buff.abundance );
+    parse_buff_effects( p()->buff.incarnation_tree );
+    parse_buff_effects( p()->buff.natures_swiftness );
   }
 
   template <typename... Ts>
@@ -2702,7 +2727,7 @@ public:
     snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons, 0u, false );
     snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury, 5u, true,
                                                                p->conduit.carnivorous_instinct );
-    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting, 0u, true,
+    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true,
                                                                p->talent.moment_of_clarity );
 
     if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
@@ -2737,9 +2762,9 @@ public:
     base_t::consume_resource();
 
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting->up() )
+    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting_cat->up() )
     {
-      p()->buff.clearcasting->decrement();
+      p()->buff.clearcasting_cat->decrement();
 
       // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
@@ -4056,7 +4081,7 @@ struct growl_t : public bear_attack_t
   growl_t( druid_t* player, std::string_view options_str )
     : bear_attack_t( "growl", player, player->find_class_spell( "Growl" ), options_str )
   {
-    ignore_false_positive = use_off_gcd =true;
+    ignore_false_positive = use_off_gcd = true;
     may_miss = may_parry = may_dodge = may_block = may_crit = false;
   }
 
@@ -4295,79 +4320,137 @@ namespace heals
 // ==========================================================================
 struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
+  struct
+  {
+    bool flourish;  // true if tick_rate is affected by flourish, NOTE: extension is handled in flourish_t
+    bool ironbark;
+    bool soul_of_the_forest;
+  } affected_by;
+
+  double fr_mul;     // % healing from frenzied regeneration rank 3, implemented for self heal only
+  double iron_mul;   // % healing from hots with ironbark
+  double photo_mul;  // tick rate multiplier when lb is on self
+  double photo_pct;  // % chance to bloom when lb is on other
   bool target_self;
 
-  druid_heal_t( std::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                std::string_view options_str = {} )
-    : base_t( token, p, s ), target_self( false )
+  druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
+    : base_t( n, p, s ),
+      affected_by(),
+      fr_mul( p->spec.frenzied_regeneration_3->effectN( 1 ).percent() ),
+      iron_mul( 0.0 ),
+      photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
+      photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
+      target_self( false )
   {
     add_option( opt_bool( "target_self", target_self ) );
-    parse_options( options_str );
+    parse_options( opt );
 
     if ( target_self )
       target = p;
 
-    may_miss          = false;
-    weapon_multiplier = 0;
-    harmful           = false;
+    may_miss = harmful = false;
+    ignore_false_positive = true;
+
+    if ( p->spec.ironbark->ok() )
+    {
+      if ( p->query_aura_effect( p->spec.ironbark, A_MOD_HEALING_RECEIVED, 0, s )->ok() )
+      {
+        affected_by.ironbark = true;
+
+        auto rank = p->find_rank_spell( "Ironbark", "Rank 2" );
+        if ( rank->ok() )
+          iron_mul = rank->effectN( 1 ).percent();
+      }
+    }
+
+    if ( p->talent.flourish->ok() )
+      affected_by.flourish = p->query_aura_effect( p->talent.flourish, A_ADD_PCT_MODIFIER, P_TICK_TIME, s )->ok();
   }
 
-public:
+  virtual double harmony_multiplier( player_t* t ) const
+  {
+    return p()->cache.mastery_value() * td( t )->hots_ticking();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = base_t::composite_target_multiplier( t );
+
+    if ( p()->mastery.harmony->ok() )
+      ctm *= 1.0 + harmony_multiplier( t );
+
+    return ctm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double cttm = base_t::composite_target_ta_multiplier( t );
+
+    if ( fr_mul && t == player && td( t )->hots.frenzied_regeneration->is_ticking() )
+      cttm *= 1.0 + fr_mul;
+
+    if ( iron_mul && td( t )->buff.ironbark->up() )
+      cttm *= 1.0 + iron_mul;
+
+    return cttm;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    auto tt = base_t::tick_time( s );
+
+    if ( affected_by.flourish && p()->buff.flourish->check() )
+      tt *= 1.0 + p()->buff.flourish->default_value;
+
+    if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
+      tt *= 1.0 + photo_mul;
+
+    return tt;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    base_t::tick( d );
+
+    auto lb = td( d->target )->hots.lifebloom;
+
+    if ( photo_pct && lb->is_ticking() && rng().roll( photo_pct ) )
+      lb->current_action->last_tick( lb );
+  }
+
   void execute() override
   {
     base_t::execute();
 
-    if ( p()->mastery.harmony->ok() && spell_power_mod.direct > 0 && !background )
-      p()->buff.harmony->trigger( 1, p()->mastery.harmony->ok() ? p()->cache.mastery_value() : 0.0 );
-  }
-
-  double action_da_multiplier() const override
-  {
-    double adm = base_t::action_da_multiplier();
-
-    adm *= 1.0 + p()->buff.incarnation_tree->check_value();
-
-    if ( p()->mastery.harmony->ok() )
-      adm *= 1.0 + p()->cache.mastery_value();
-
-    return adm;
-  }
-
-  double action_ta_multiplier() const override
-  {
-    double atm = base_t::action_da_multiplier();
-
-    atm *= 1.0 + p()->buff.incarnation_tree->check_value();
-
-    if ( p()->mastery.harmony->ok() )
-      atm *= 1.0 + p()->cache.mastery_value();
-
-    return atm;
+    if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
+      p()->buff.soul_of_the_forest_tree->expire();
   }
 };  // end druid_heal_t
 
 // Cenarion Ward ============================================================
-struct cenarion_ward_hot_t : public druid_heal_t
-{
-  cenarion_ward_hot_t( druid_t* p ) : druid_heal_t( "cenarion_ward_hot", p, p->find_spell( 102352 ) )
-  {
-    target     = p;
-    background = proc = true;
-    harmful = hasted_ticks = false;
-  }
-
-  void execute() override
-  {
-    druid_heal_t::execute();
-
-    p()->buff.cenarion_ward->expire();
-  }
-};
-
 struct cenarion_ward_t : public druid_heal_t
 {
-  cenarion_ward_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "cenarion_ward", p, p->talent.cenarion_ward, options_str ) {}
+  struct cenarion_ward_hot_t : public druid_heal_t
+  {
+    cenarion_ward_hot_t( druid_t* p )
+      : druid_heal_t( "cenarion_ward_hot", p, p->talent.cenarion_ward->effectN( 1 ).trigger() )
+    {
+      background = true;
+
+      dot_name = "cenarion_ward";
+    }
+  };
+
+  cenarion_ward_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "cenarion_ward", p, p->talent.cenarion_ward, opt )
+  {
+    auto hot = p->get_secondary_action<cenarion_ward_hot_t>( "cenarion_ward_hot" );
+
+    p->buff.cenarion_ward->set_stack_change_callback( [ hot ]( buff_t* b, int, int new_ ) {
+      if ( !new_ )
+        hot->execute_on_target( b->player );
+    } );
+  }
 
   void execute() override
   {
@@ -4375,30 +4458,117 @@ struct cenarion_ward_t : public druid_heal_t
 
     p()->buff.cenarion_ward->trigger();
   }
+};
 
-  bool target_ready( player_t* candidate_target ) override
+// Efflorescence ============================================================
+struct efflorescence_t : public druid_heal_t
+{
+  struct spring_blossoms_t : public druid_heal_t
   {
-    if ( candidate_target != p() )
-      return false;
+    spring_blossoms_t( druid_t* p ) : druid_heal_t( "spring_blossoms", p, p->find_spell( 207386 ) ) {}
+  };
 
-    return druid_heal_t::target_ready( candidate_target );
+  struct efflorescence_tick_t : public druid_heal_t
+  {
+    action_t* spring;
+
+    efflorescence_tick_t( druid_t* p )
+      : druid_heal_t( "efflorescence_tick", p, p->find_spell( 81269 ) ), spring( nullptr )
+    {
+      background = dual = ground_aoe = true;
+      aoe = 3;  // hardcoded
+      name_str_reporting = "efflorescence";
+
+      if ( p->talent.spring_blossoms->ok() )
+        spring = p->get_secondary_action<spring_blossoms_t>( "spring_blossoms" );
+    }
+
+    size_t available_targets( std::vector<player_t*>& tl ) const override
+    {
+      // get the full list
+      druid_heal_t::available_targets( tl );
+
+      // sort by targets without spring blossoms
+      if ( spring )
+      {
+        range::sort( tl, [ this ]( player_t* l, player_t* r ) {
+          return td( l )->hots.spring_blossoms->is_ticking() < td( r )->hots.spring_blossoms->is_ticking();
+        } );
+      }
+      else
+      {
+        range::sort( tl, []( const player_t* l, const player_t* r ) {
+          return l->health_percentage() < r->health_percentage();
+        } );
+      }
+
+      return tl.size();
+    }
+
+    void execute() override
+    {
+      // force re-evaluation of targets every tick
+      target_cache.is_valid = false;
+
+      druid_heal_t::execute();
+    }
+
+
+    void impact( action_state_t* s ) override
+    {
+      druid_heal_t::impact( s );
+
+      if ( spring )
+        spring->execute_on_target( s->target );
+    }
+  };
+
+  action_t* heal;
+  timespan_t duration;
+  timespan_t period;
+
+  efflorescence_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "efflorescence", p, p->find_specialization_spell( "Efflorescence" ), opt )
+  {
+    auto efflo_data = p->find_spell( 81262 );
+    duration = efflo_data->duration();
+    period = p->query_aura_effect( efflo_data, A_PERIODIC_DUMMY )->period();
+
+    heal = p->get_secondary_action<efflorescence_tick_t>( "efflorescence_tick" );
+    heal->stats = stats;
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    make_event<ground_aoe_event_t>( *sim, p(),
+                                    ground_aoe_params_t()
+                                        .target( target )
+                                        .hasted( ground_aoe_params_t::hasted_with::SPELL_HASTE )
+                                        .pulse_time( period )
+                                        .duration( duration )
+                                        .action( heal ) );
   }
 };
 
 // Frenzied Regeneration ====================================================
 struct frenzied_regeneration_t : public druid_heal_t
 {
+  double goe_mul;
+
   frenzied_regeneration_t( druid_t* p, std::string_view opt )
     : frenzied_regeneration_t( p, "frenzied_regeneration", opt )
   {}
 
   frenzied_regeneration_t( druid_t* p, std::string_view n, std::string_view opt )
-    : druid_heal_t( n, p, p->find_affinity_spell( "Frenzied Regeneration" ), opt )
+    : druid_heal_t( n, p, p->find_affinity_spell( "Frenzied Regeneration" ), opt ),
+    goe_mul( 0.0 )
   {
-    /* use_off_gcd = quiet = true; */
-    target    = p;
-    tick_zero = true;
-    may_crit = tick_may_crit = hasted_ticks = false;
+    target = p;
+
+    if ( p->talent.guardian_of_elune->ok() )
+      goe_mul = p->buff.guardian_of_elune->data().effectN( 2 ).percent();
   }
 
   void init() override
@@ -4416,14 +4586,60 @@ struct frenzied_regeneration_t : public druid_heal_t
       p()->buff.guardian_of_elune->expire();
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = druid_heal_t::action_multiplier();
+    double pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    if ( p()->buff.guardian_of_elune->up() )
-      am *= 1.0 + p()->buff.guardian_of_elune->data().effectN( 2 ).percent();
+    if ( goe_mul && p()->buff.guardian_of_elune->check() )
+      pm *= 1.0 + goe_mul;
 
-    return am;
+    return pm;
+  }
+};
+
+// Flourish =================================================================
+struct flourish_t : public druid_heal_t
+{
+  timespan_t ext;
+
+  flourish_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "flourish", p, p->talent.flourish, opt ),
+      ext( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
+  {
+    dot_duration = 0_ms;
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    p()->buff.flourish->trigger();
+
+    for ( const auto& t : sim->player_non_sleeping_list )
+    {
+      auto hots = td( t )->hots;
+      hots.cenarion_ward->adjust_duration( ext, 0_ms, -1, false );
+      hots.cultivation->adjust_duration( ext, 0_ms, -1, false );
+      hots.germination->adjust_duration( ext, 0_ms, -1, false );
+      hots.lifebloom->adjust_duration( ext, 0_ms, -1, false );
+      hots.regrowth->adjust_duration( ext, 0_ms, -1, false );
+      hots.rejuvenation->adjust_duration( ext, 0_ms, -1, false );
+      hots.spring_blossoms->adjust_duration( ext, 0_ms, -1, false );
+      hots.wild_growth->adjust_duration( ext, 0_ms, -1, false );
+    }
+  }
+};
+
+// Ironbark =================================================================
+struct ironbark_t : public druid_heal_t
+{
+  ironbark_t( druid_t* p, std::string_view opt ) : druid_heal_t( "ironbark", p, p->spec.ironbark, opt ) {}
+
+  void impact( action_state_t* s ) override
+  {
+    druid_heal_t::impact( s );
+
+    td( s->target )->buff.ironbark->trigger();
   }
 };
 
@@ -4432,62 +4648,63 @@ struct lifebloom_t : public druid_heal_t
 {
   struct lifebloom_bloom_t : public druid_heal_t
   {
-    lifebloom_bloom_t( druid_t* p ) : druid_heal_t( "lifebloom_bloom", p, p->find_class_spell( "Lifebloom" ) )
+    lifebloom_bloom_t( druid_t* p ) : druid_heal_t( "lifebloom_bloom", p, p->find_spell( 33778 ) )
     {
       background = dual = true;
-      dot_duration = timespan_t::zero();
-      base_td = attack_power_mod.tick = 0;
-    }
-
-    double composite_target_multiplier( player_t* target ) const override
-    {
-      double ctm = druid_heal_t::composite_target_multiplier( target );
-
-      ctm *= td( target )->buff.lifebloom->check();
-
-      return ctm;
     }
   };
 
   lifebloom_bloom_t* bloom;
 
-  lifebloom_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "lifebloom", p, p->find_class_spell( "Lifebloom" ), options_str ),
-      bloom( new lifebloom_bloom_t( p ) )
+  lifebloom_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "lifebloom", p, p->find_class_spell( "Lifebloom" ), opt )
   {
-    may_crit              = false;
-    ignore_false_positive = true;
+    bloom = p->get_secondary_action<lifebloom_bloom_t>( "lifebloom_bloom" );
+    bloom->stats = stats;
   }
 
-  void impact( action_state_t* state ) override
+  void impact( action_state_t* s ) override
   {
-    // Cancel Dot/td-buff on all targets other than the one we impact on
-    for ( size_t i = 0; i < sim->actor_list.size(); ++i )
+    // Cancel dot on all targets other than the one we impact on
+    for ( const auto& t : sim->player_non_sleeping_list )
     {
-      player_t* t = sim->actor_list[ i ];
-
-      if ( state->target == t )
+      if ( t == target )
         continue;
 
-      get_dot( t )->cancel();
-      td( t )->buff.lifebloom->expire();
+      auto d = get_dot( t );
+      sim->print_debug( "{} fades from {}", *d, *t );
+      d->reset();  // we don't want last_tick() because there is no bloom on target swap
     }
 
-    druid_heal_t::impact( state );
+    auto lb = get_dot( target );
+    if ( lb->is_ticking() && lb->remains() <= dot_duration * 0.3 )
+      bloom->execute_on_target( target );
 
-    if ( result_is_hit( state->result ) )
-      td( state->target )->buff.lifebloom->trigger();
+    druid_heal_t::impact( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    druid_heal_t::tick( d );
+
+    p()->buff.clearcasting_tree->trigger();
   }
 
   void last_tick( dot_t* d ) override
   {
     if ( !d->state->target->is_sleeping() )  // Prevent crash at end of simulation
-      bloom->execute();
-
-    td( d->state->target )->buff.lifebloom->expire();
+      bloom->execute_on_target( d->target );
 
     druid_heal_t::last_tick( d );
   }
+};
+
+// Nature's Cure ============================================================
+struct natures_cure_t : public druid_heal_t
+{
+  natures_cure_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "natures_cure", p, p->find_specialization_spell( "Nature's Cure" ), opt )
+  {}
 };
 
 // Nature's Guardian ========================================================
@@ -4496,8 +4713,8 @@ struct natures_guardian_t : public druid_heal_t
   natures_guardian_t( druid_t* p ) : druid_heal_t( "natures_guardian", p, p->find_spell( 227034 ) )
   {
     background = true;
-    may_crit   = false;
-    target     = p;
+    may_crit = false;
+    target = p;
   }
 
   void init() override
@@ -4509,27 +4726,93 @@ struct natures_guardian_t : public druid_heal_t
   }
 };
 
+// Nature's Swiftness =======================================================
+struct natures_swiftness_t : public druid_heal_t
+{
+  natures_swiftness_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "natures_swiftness", p, p->spec.natures_swiftness, opt )
+  {}
+
+  timespan_t cooldown_duration() const override
+  {
+    return 0_ms;  // cooldown handled by buff.natures_swiftness
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    p()->buff.natures_swiftness->trigger();
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.natures_swiftness->check() )
+      return false;
+
+    return druid_heal_t::ready();
+  }
+};
+
+// Nourish ==================================================================
+struct nourish_t : public druid_heal_t
+{
+  nourish_t( druid_t* p, std::string_view opt ) : druid_heal_t( "nourish", p, p->talent.nourish, opt ) {}
+
+  double harmony_multiplier( player_t* t ) const override
+  {
+    return druid_heal_t::harmony_multiplier( t ) * 3.0;  // multiplier not in any spell data
+  }
+};
+
 // Regrowth =================================================================
 struct regrowth_t : public druid_heal_t
 {
-  timespan_t gcd_add;
-
-  regrowth_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), options_str )
+  struct regrowth_state_t : public action_state_t
   {
-    form_mask             = NO_FORM | MOONKIN_FORM;
-    may_autounshift       = true;
-    ignore_false_positive = true;  // Prevents cat/bear from failing a skill check and going into caster form.
+    double bonus_crit;
 
-    // Hack for feral to be able to use target-related expressions on this action
-    // Disables healing entirely
-    if ( p->specialization() == DRUID_FERAL )
+    regrowth_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), bonus_crit( 0.0 ) {}
+
+    void initialize() override
     {
-      target          = sim->target;
-      base_multiplier = 0;
+      action_state_t::initialize();
+
+      bonus_crit = 0.0;
     }
 
-    gcd_add = p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, s_data )->time_value();
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+
+      bonus_crit = debug_cast<const regrowth_state_t*>( s )->bonus_crit;
+    }
+
+    double composite_crit_chance() const override
+    {
+      return action_state_t::composite_crit_chance() + bonus_crit;
+    }
+  };
+
+  timespan_t gcd_add;
+  double bonus_crit;
+  double sotf_mul;
+
+  regrowth_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "regrowth", p, p->find_class_spell( "Regrowth" ), opt ),
+      gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_MODIFIER, P_GCD, &data() )->time_value() ),
+      bonus_crit( p->find_rank_spell( "Regrowth", "Rank 2" )->effectN( 1 ).percent() ),
+      sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
+  {
+    form_mask = NO_FORM | MOONKIN_FORM;
+    may_autounshift = true;
+
+    affected_by.soul_of_the_forest = true;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new regrowth_state_t( this, target );
   }
 
   timespan_t gcd() const override
@@ -4542,22 +4825,22 @@ struct regrowth_t : public druid_heal_t
     return g;
   }
 
-  void consume_resource() override
+  timespan_t execute_time() const override
   {
-    // Prevent from consuming Omen of Clarity unnecessarily
-    if ( p()->buff.predatory_swiftness->check() )
-      return;
+    if ( p()->buff.incarnation_tree->check() )
+      return 0_ms;
 
-    druid_heal_t::consume_resource();
+    return druid_heal_t::execute_time();
   }
 
-  double action_multiplier() const override
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
-    double am = druid_heal_t::action_multiplier();
+    auto pm = druid_heal_t::composite_persistent_multiplier( s );
 
-    // TODO: implement innate resolve conduit for regrowth
+    if ( p()->buff.soul_of_the_forest_tree->check() )
+      pm *= 1.0 + sotf_mul;
 
-    return am;
+    return pm;
   }
 
   bool check_form_restriction() override
@@ -4570,38 +4853,135 @@ struct regrowth_t : public druid_heal_t
 
   void execute() override
   {
+    if ( td( target )->hots.regrowth->is_ticking() )
+    {
+      pre_execute_state = get_state();
+      snapshot_state( pre_execute_state, amount_type( pre_execute_state ) );
+      debug_cast<regrowth_state_t*>( pre_execute_state )->bonus_crit = bonus_crit;
+    }
+
     druid_heal_t::execute();
 
-    p()->buff.predatory_swiftness->decrement( 1 );
+    if ( !free_cast )
+    {
+      if ( p()->buff.predatory_swiftness->up() )
+        p()->buff.predatory_swiftness->expire();
+
+      if ( p()->buff.natures_swiftness->up() )
+        p()->buff.natures_swiftness->expire();
+    }
   }
 };
 
 // Rejuvenation =============================================================
-struct rejuvenation_t : public druid_heal_t
+struct rejuvenation_base_t : public druid_heal_t
 {
-  rejuvenation_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "rejuvenation", p, p->find_class_spell( "Rejuvenation" ), options_str )
+  struct cultivation_t : public druid_heal_t
   {
-    tick_zero = true;
+    cultivation_t( druid_t* p ) : druid_heal_t( "cultivation", p, p->find_spell( 200389 ) ) {}
+  };
+
+  action_t* cult_hot;
+  double cult_pct;  // NOTE: this is base_value, NOT percent()
+  double sotf_mul;
+
+  rejuvenation_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
+    : druid_heal_t( n, p, s, opt ),
+      cult_hot( nullptr ),
+      cult_pct( p->talent.cultivation->effectN( 1 ).base_value() ),
+      sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 1 ).percent() )
+  {
+    apply_affecting_aura( p->find_rank_spell( "Rejuvenation", "Rank 2" ) );
+
+    affected_by.soul_of_the_forest = true;
+
+    if ( p->talent.cultivation->ok() )
+      cult_hot = p->get_secondary_action<cultivation_t>( "cultivation" );
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    auto pm = druid_heal_t::composite_persistent_multiplier( s );
+
+    if ( p()->buff.soul_of_the_forest_tree->check() )
+      pm *= 1.0 + sotf_mul;
+
+    return pm;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( !td( target )->hots.rejuvenation->is_ticking() )
+      p()->buff.abundance->increment();
+
+    druid_heal_t::impact( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    druid_heal_t::tick( d );
+
+    if ( cult_hot && d->target->health_percentage() <= cult_pct )
+      cult_hot->execute_on_target( d->target );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    druid_heal_t::last_tick( d );
+
+    p()->buff.abundance->decrement();
+  }
+};
+
+struct rejuvenation_t : public rejuvenation_base_t
+{
+  struct germination_t : public rejuvenation_base_t
+  {
+    germination_t( druid_t* p, std::string_view opt )
+      : rejuvenation_base_t( "germination", p, p->find_spell( 155777 ), opt )
+    {}
+  };
+
+  action_t* germination;
+
+  rejuvenation_t( druid_t* p, std::string_view opt )
+    : rejuvenation_base_t( "rejuvenation", p, p->find_class_spell( "Rejuvenation" ), opt ), germination( nullptr )
+  {
+    if ( p->talent.germination->ok() )
+      germination = p->get_secondary_action<germination_t>( "germination", opt );
+  }
+
+  void execute() override
+  {
+    if ( p()->talent.germination->ok() )
+    {
+      auto hots = td( target )->hots;
+
+      if ( ( hots.rejuvenation->is_ticking() && !hots.germination->is_ticking() ) ||
+           ( hots.germination->remains() < hots.rejuvenation->remains() ) )
+      {
+        germination->execute_on_target( target );
+        return;
+      }
+    }
+
+    druid_heal_t::execute();
   }
 };
 
 // Remove Corruption ========================================================
 struct remove_corruption_t : public druid_heal_t
 {
-  remove_corruption_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "remove_corruption", p, p->find_class_spell( "Remove Corruption" ), options_str )
+  remove_corruption_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "remove_corruption", p, p->find_class_spell( "Remove Corruption" ), opt )
   {}
 };
 
 // Renewal ==================================================================
 struct renewal_t : public druid_heal_t
 {
-  renewal_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "renewal", p, p->find_talent_spell( "Renewal" ), options_str )
-  {
-    may_crit = false;
-  }
+  renewal_t( druid_t* p, std::string_view opt ) : druid_heal_t( "renewal", p, p->find_talent_spell( "Renewal" ), opt )
+  {}
 
   void execute() override
   {
@@ -4614,51 +4994,129 @@ struct renewal_t : public druid_heal_t
 // Swiftmend ================================================================
 struct swiftmend_t : public druid_heal_t
 {
-  swiftmend_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "swiftmend", p, p->find_class_spell( "Swiftmend" ), options_str ) {}
+  swiftmend_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "swiftmend", p, p->find_specialization_spell( "Swiftmend" ), opt )
+  {}
 
-  void impact( action_state_t* state ) override
+  bool target_ready( player_t* t ) override
   {
-    druid_heal_t::impact( state );
+    auto hots = td( t )->hots;
 
-    if ( result_is_hit( state->result ) )
-    {
-      if ( p()->talent.soul_of_the_forest_tree->ok() )
-        p()->buff.soul_of_the_forest->trigger();
-    }
+    if ( hots.regrowth->is_ticking() || hots.wild_growth->is_ticking() || hots.rejuvenation->is_ticking() )
+      return druid_heal_t::target_ready( t );
+
+    return false;
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    if ( p()->talent.soul_of_the_forest_tree->ok() )
+      p()->buff.soul_of_the_forest_tree->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto t_td = td( s->target );
+
+    if ( t_td->hots.regrowth->is_ticking() )
+      t_td->hots.regrowth->cancel();
+    else if ( t_td->hots.wild_growth->is_ticking() )
+      t_td->hots.wild_growth->cancel();
+    else if ( t_td->hots.rejuvenation->is_ticking() )
+      t_td->hots.rejuvenation->cancel();
+    else
+      sim->error( "Swiftmend impact with no HoT ticking" );
+
+    druid_heal_t::impact( s );
   }
 };
 
 // Tranquility ==============================================================
 struct tranquility_t : public druid_heal_t
 {
-  tranquility_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "tranquility", p, p->find_specialization_spell( "Tranquility" ), options_str )
+  struct tranquility_tick_t : public druid_heal_t
   {
-    aoe               = -1;
-    base_execute_time = data().duration();
-    channeled         = true;
+    tranquility_tick_t( druid_t* p )
+      : druid_heal_t( "tranquility_tick", p, p->spec.tranquility->effectN( 1 ).trigger() )
+    {
+      background = dual = true;
+      aoe = -1;
+    }
+  };
 
-    // Healing is in spell effect 1
-    parse_spell_data( ( *player->dbc->spell( data().effectN( 1 ).trigger_spell_id() ) ) );
+  tranquility_t( druid_t* p, std::string_view opt ) : druid_heal_t( "tranquility", p, p->spec.tranquility, opt )
+  {
+    channeled = true;
+
+    tick_action = p->get_secondary_action<tranquility_tick_t>( "tranquility_tick" );
+    tick_action->stats = stats;
+  }
+
+  void init() override
+  {
+    druid_heal_t::init();
+
+    // necessary because action_t::init() sets all tick_action::direct_tick to true
+    tick_action->direct_tick = false;
   }
 };
 
 // Wild Growth ==============================================================
+// The spellpower coefficient c of a tick of WG is given by:
+//   c(t) = 0.175 - 0.07 * t / D
+// where:
+//   t = time of tick = current_time - start_time
+//   D = full duration of WG
 struct wild_growth_t : public druid_heal_t
 {
-  wild_growth_t( druid_t* p, std::string_view options_str )
-    : druid_heal_t( "wild_growth", p, p->find_class_spell( "Wild Growth" ), options_str )
+  double decay_coeff;
+  double sotf_mul;
+  int inc_mod;
+
+  wild_growth_t( druid_t* p, std::string_view opt )
+    : druid_heal_t( "wild_growth", p, p->find_specialization_spell( "Wild Growth" ), opt ),
+      decay_coeff( 0.07 ),  // unknown if this is hard set to 0.07, or is base duration * 0.01, or some other formula
+      sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 2 ).percent() ),
+      inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
-    ignore_false_positive = true;
+    aoe = as<int>( data().effectN( 2 ).base_value() );
+    if ( auto rank2 = p->find_rank_spell( "Wild Growth", "Rank 2" ) )
+      aoe += as<int>( rank2->effectN( 1 ).base_value() );
+
+    // '0-tick' coeff, also unknown if this is hard set to 0.175 or based on a formula as below
+    spell_power_mod.tick += decay_coeff / 2.0;
+
+    affected_by.soul_of_the_forest = true;
+  }
+
+  double spell_tick_power_coefficient( const action_state_t* s ) const override
+  {
+    auto c = druid_heal_t::spell_tick_power_coefficient( s );
+    auto dot = find_dot( s->target );
+
+    c -= decay_coeff * ( 1.0 - dot->remains() / dot->duration() );
+
+    return c;
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    auto pm = druid_heal_t::composite_persistent_multiplier( s );
+
+    if ( p()->buff.soul_of_the_forest_tree->check() )
+      pm *= 1.0 + sotf_mul;
+
+    return pm;
   }
 
   int n_targets() const override
   {
     int n = druid_heal_t::n_targets();
 
-    if ( p()->buff.incarnation_tree->check() )
-      n += 2;
+    if ( n && p()->buff.incarnation_tree->check() )
+      n += inc_mod;
 
     return n;
   }
@@ -4667,11 +5125,10 @@ struct wild_growth_t : public druid_heal_t
 // Ysera's Gift =============================================================
 struct yseras_gift_t : public druid_heal_t
 {
-  yseras_gift_t( druid_t* p ) : druid_heal_t( "yseras_gift", p, p->find_spell( 145110 ) )
+  yseras_gift_t( druid_t* p ) : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) )
   {
-    may_crit   = false;
     background = dual = true;
-    base_pct_heal     = p->spec.yseras_gift->effectN( 1 ).percent();
+    base_pct_heal = p->spec.yseras_gift->effectN( 1 ).percent();
   }
 
   void init() override
@@ -4679,16 +5136,6 @@ struct yseras_gift_t : public druid_heal_t
     druid_heal_t::init();
 
     snapshot_flags &= ~STATE_VERSATILITY;  // Is not affected by versatility.
-  }
-
-  double action_multiplier() const override
-  {
-    double am = druid_heal_t::action_multiplier();
-
-    if ( p()->buff.bear_form->check() )
-      am *= 1.0 + p()->buff.bear_form->data().effectN( 8 ).percent();
-
-    return am;
   }
 
   void execute() override
@@ -4699,6 +5146,42 @@ struct yseras_gift_t : public druid_heal_t
       target = smart_target();
 
     druid_heal_t::execute();
+  }
+};
+
+// Overgrowth ===============================================================
+// NOTE: this must come last since it requires other spell definitions
+struct overgrowth_t : public druid_heal_t
+{
+  std::vector<action_t*> spell_list;
+
+  overgrowth_t( druid_t* p, std::string_view opt ) : druid_heal_t( "overgrowth", p, p->talent.overgrowth, opt )
+  {
+    get_overgrowth_action<lifebloom_t>( "lifebloom" );
+    get_overgrowth_action<rejuvenation_t>( "rejuvenation" );
+    get_overgrowth_action<regrowth_t>( "regrowth" )
+      ->base_dd_multiplier = 0.0;
+    get_overgrowth_action<wild_growth_t>( "wild_growth" )
+      ->aoe = 0;
+  }
+
+  template <typename T>
+  T* get_overgrowth_action( std::string n )
+  {
+    auto a = p()->get_secondary_action_n<T>( n + "_overgrowth" );
+    a->name_str_reporting = n;
+    a->dot_name = n;
+    add_child( a );
+    spell_list.push_back( a );
+    return a;
+  }
+
+  void execute() override
+  {
+    druid_heal_t::execute();
+
+    for ( const auto& a : spell_list )
+      a->execute_on_target( target );
   }
 };
 }  // end namespace heals
@@ -4717,14 +5200,13 @@ struct auto_attack_t : public melee_attack_t
   {
     parse_options( options_str );
 
-    trigger_gcd           = timespan_t::zero();
-    ignore_false_positive = true;
-    use_off_gcd           = true;
+    trigger_gcd = 0_ms;
+    ignore_false_positive = use_off_gcd = true;
   }
 
   void execute() override
   {
-    player->main_hand_attack->weapon            = &( player->main_hand_weapon );
+    player->main_hand_attack->weapon = &( player->main_hand_weapon );
     player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
     player->main_hand_attack->schedule_execute();
   }
@@ -4873,7 +5355,7 @@ struct dash_t : public druid_spell_t
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
-    ignore_false_positive         = true;
+    ignore_false_positive = true;
 
     gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
@@ -4910,7 +5392,7 @@ struct tiger_dash_t : public druid_spell_t
     autoshift = form_mask = CAT_FORM;
 
     harmful = may_crit = may_miss = false;
-    ignore_false_positive         = true;
+    ignore_false_positive = true;
 
     gcd_mul = p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, s_data )->percent();
   }
@@ -4982,16 +5464,10 @@ struct force_of_nature_t : public druid_spell_t
 
   void init_finished() override
   {
-    for ( auto treant : p()->force_of_nature )
-    {
+    for ( const auto& treant : p()->force_of_nature )
       if ( treant )
-      {
-        for ( auto a : treant->action_list )
-        {
+        for ( const auto& a : treant->action_list )
           add_child( a );
-        }
-      }
-    }
 
     druid_spell_t::init_finished();
   }
@@ -5000,11 +5476,9 @@ struct force_of_nature_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    for ( auto treant : p()->force_of_nature )
-    {
+    for ( const auto& treant : p()->force_of_nature )
       if ( treant->is_sleeping() )
         treant->summon( summon_duration );
-    }
   }
 };
 
@@ -5017,12 +5491,10 @@ struct druid_form_t : public druid_spell_t
   druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt, form_e f )
     : druid_spell_t( n, p, s, opt ), form( f ), affinity( spell_data_t::nil() )
   {
-    harmful               = false;
+    harmful = may_autounshift = reset_melee_swing = false;
     ignore_false_positive = true;
 
-    form_mask         = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
-    may_autounshift   = false;
-    reset_melee_swing = false;
+    form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
 
     switch ( form )
     {
@@ -5232,8 +5704,13 @@ struct incarnation_t : public druid_spell_t
         autoshift = form_mask = BEAR_FORM;
         name_str_reporting = "incarnation_guardian_of_ursoc";
         break;
-      case DRUID_RESTORATION: break;
-      default: assert( false && "Actor attempted to create incarnation action with no specialization." );
+      case DRUID_RESTORATION:
+        autoshift = form_mask = NO_FORM;
+        name_str_reporting = "incarnation_tree_of_life";
+        break;
+      default:
+        assert( false && "Actor attempted to create incarnation action with no specialization." );
+        break;
     }
 
     harmful = false;
@@ -5590,7 +6067,7 @@ struct moonfire_t : public druid_spell_t
         std::vector<player_t*> afflicted;
         std::vector<player_t*> unafflicted;
 
-        for ( auto* i : full_list )
+        for ( const auto& i : full_list )
         {
           if ( i == target || i->debuffs.invulnerable->up() )
             continue;
@@ -5936,7 +6413,7 @@ struct stampeding_roar_t : public druid_spell_t
     if ( !p()->conduit.front_of_the_pack->ok() )
       return;
 
-    for ( auto actor : sim->actor_list )
+    for ( const auto &actor : sim->actor_list )
     {
       if ( actor->type == PLAYER_GUARDIAN )
         continue;
@@ -5951,7 +6428,7 @@ struct stampeding_roar_t : public druid_spell_t
     druid_spell_t::execute();
 
     // TODO: add target eligibility via radius
-    for ( auto actor : sim->player_non_sleeping_list )
+    for ( const auto& actor : sim->player_non_sleeping_list )
     {
       if ( actor->type == PLAYER_GUARDIAN )
         continue;
@@ -5968,7 +6445,7 @@ struct starfall_t : public druid_spell_t
   {
     starfall_damage_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->spec.starfall_dmg )
     {
-      background = dual = true; //direct_tick = true;
+      background = dual = true;
       aoe        = -1;
       // TODO: pull hardcoded id out of here and into spec.X
       radius     = p->find_spell( 50286 )->effectN( 1 ).radius();
@@ -6038,7 +6515,7 @@ struct starfall_t : public druid_spell_t
 
       std::vector<player_t*>& tl = target_list();
 
-      for ( auto* t : tl )
+      for ( const auto& t : tl )
       {
         td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
         td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
@@ -6445,16 +6922,15 @@ struct thorns_t : public druid_spell_t
 // Warrior of Elune =========================================================
 struct warrior_of_elune_t : public druid_spell_t
 {
-  warrior_of_elune_t( druid_t* player, std::string_view options_str )
-    : druid_spell_t( "warrior_of_elune", player, player->talent.warrior_of_elune, options_str )
+  warrior_of_elune_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "warrior_of_elune", p, p->talent.warrior_of_elune, opt )
   {
     harmful = may_crit = may_miss = false;
   }
 
   timespan_t cooldown_duration() const override
   {
-    // Cooldown handled by warrior_of_elune_buff_t::expire_override()
-    return 0_ms;
+    return 0_ms;  // cooldown handled by buff.warrior_of_elune
   }
 
   void execute() override
@@ -6819,14 +7295,14 @@ struct adaptive_swarm_t : public druid_spell_t
 
         if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
         {
-          if ( t_td->dot_ticking() )
+          if ( t_td->dots_ticking() )
             tl_1.push_back( t );
           else
             tl_2.push_back( t );
         }
         else
         {
-          if ( t_td->dot_ticking() )
+          if ( t_td->dots_ticking() )
             tl_3.push_back( t );
           else
             tl_4.push_back( t );
@@ -7256,7 +7732,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       auto dist = chances;  // local copy of distribution
 
       std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto t : tl )
+      for ( const auto& t : tl )
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
@@ -7370,7 +7846,7 @@ struct convoke_the_spirits_t : public druid_spell_t
       }
 
       std::vector<player_t*> mf_tl;  // separate list for mf targets without a dot;
-      for ( auto t : tl )
+      for ( const auto& t : tl )
         if ( !td( t )->dots.moonfire->is_ticking() )
           mf_tl.push_back( t );
 
@@ -7606,7 +8082,7 @@ struct druid_melee_t : public Base
 
     // 7.00 PPM via community testing (~368k auto attacks)
     // https://docs.google.com/spreadsheets/d/1vMvlq1k3aAuwC1iHyDjqAneojPZusdwkZGmatuWWZWs/edit#gid=1097586165
-    if ( p->spec.omen_of_clarity->ok() )
+    if ( p->spec.omen_of_clarity_cat->ok() )
       ooc_chance = 7.00;
 
     if ( p->talent.moment_of_clarity->ok() )
@@ -7627,11 +8103,11 @@ struct druid_melee_t : public Base
 
     if ( ooc_chance && ab::result_is_hit( s->result ) )
     {
-      int active = ab::p()->buff.clearcasting->check();
+      int active = ab::p()->buff.clearcasting_cat->check();
       double chance = ab::weapon->proc_chance_on_swing( ooc_chance );
 
       // Internal cooldown is handled by buff.
-      if ( ab::p()->buff.clearcasting->trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
+      if ( ab::p()->buff.clearcasting_cat->trigger( 1, buff_t::DEFAULT_VALUE(), chance ) )
       {
         ab::p()->proc.clearcasting->occur();
 
@@ -7943,99 +8419,104 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   using namespace spells;
 
   // Generic
-  if ( name == "auto_attack"            ) return new            auto_attack_t( this, options_str );
-  if ( name == "bear_form"              ) return new      spells::bear_form_t( this, options_str );
-  if ( name == "cat_form"               ) return new       spells::cat_form_t( this, options_str );
-  if ( name == "moonkin_form"           ) return new   spells::moonkin_form_t( this, options_str );
-  if ( name == "cancelform"             ) return new    spells::cancel_form_t( this, options_str );
-  if ( name == "dash"                   ) return new                   dash_t( this, options_str );
-  if ( name == "entangling_roots"       ) return new       entangling_roots_t( this, options_str );
-  if ( name == "heart_of_the_wild"      ) return new      heart_of_the_wild_t( this, options_str );
-  if ( name == "moonfire"               ) return new               moonfire_t( this, options_str );
-  if ( name == "prowl"                  ) return new                  prowl_t( this, options_str );
-  if ( name == "renewal"                ) return new                renewal_t( this, options_str );
-  if ( name == "stampeding_roar"        ) return new        stampeding_roar_t( this, options_str );
-  if ( name == "tiger_dash"             ) return new             tiger_dash_t( this, options_str );
-  if ( name == "wild_charge"            ) return new            wild_charge_t( this, options_str );
-  if ( name == "remove_corruption"      ) return new      remove_corruption_t( this, options_str );
+  if ( name == "auto_attack"           ) return new           auto_attack_t( this, options_str );
+  if ( name == "bear_form"             ) return new     spells::bear_form_t( this, options_str );
+  if ( name == "cat_form"              ) return new      spells::cat_form_t( this, options_str );
+  if ( name == "moonkin_form"          ) return new  spells::moonkin_form_t( this, options_str );
+  if ( name == "cancelform"            ) return new   spells::cancel_form_t( this, options_str );
+  if ( name == "dash"                  ) return new                  dash_t( this, options_str );
+  if ( name == "entangling_roots"      ) return new      entangling_roots_t( this, options_str );
+  if ( name == "heart_of_the_wild"     ) return new     heart_of_the_wild_t( this, options_str );
+  if ( name == "moonfire"              ) return new              moonfire_t( this, options_str );
+  if ( name == "prowl"                 ) return new                 prowl_t( this, options_str );
+  if ( name == "renewal"               ) return new               renewal_t( this, options_str );
+  if ( name == "stampeding_roar"       ) return new       stampeding_roar_t( this, options_str );
+  if ( name == "tiger_dash"            ) return new            tiger_dash_t( this, options_str );
+  if ( name == "wild_charge"           ) return new           wild_charge_t( this, options_str );
+  if ( name == "remove_corruption"     ) return new     remove_corruption_t( this, options_str );
 
   // Multispec
   if ( name == "berserk" )
   {
-    if ( specialization() == DRUID_GUARDIAN )   return new     berserk_bear_t( this, options_str );
-    else if ( specialization() == DRUID_FERAL ) return new      berserk_cat_t( this, options_str );
+    if ( specialization() == DRUID_GUARDIAN )   return new   berserk_bear_t( this, options_str );
+    else if ( specialization() == DRUID_FERAL ) return new    berserk_cat_t( this, options_str );
   }
-  if ( name == "incarnation"            ) return new            incarnation_t( this, options_str );
-  if ( name == "swipe"                  ) return new            swipe_proxy_t( this, options_str );
-  if ( name == "thrash"                 ) return new           thrash_proxy_t( this, options_str );
+  if ( name == "incarnation"           ) return new           incarnation_t( this, options_str );
+  if ( name == "swipe"                 ) return new           swipe_proxy_t( this, options_str );
+  if ( name == "thrash"                ) return new          thrash_proxy_t( this, options_str );
 
   // Balance
-  if ( name == "celestial_alignment"    ) return new    celestial_alignment_t( this, options_str );
-  if ( name == "force_of_nature"        ) return new        force_of_nature_t( this, options_str );
-  if ( name == "fury_of_elune"          ) return new          fury_of_elune_t( this, options_str );
-  if ( name == "innervate"              ) return new              innervate_t( this, options_str );
-  if ( name == "new_moon"               ) return new               new_moon_t( this, options_str );
-  if ( name == "half_moon"              ) return new              half_moon_t( this, options_str );
-  if ( name == "full_moon"              ) return new              full_moon_t( this, options_str );
-  if ( name == "moons"                  ) return new             moon_proxy_t( this, options_str );
-  if ( name == "solar_beam"             ) return new             solar_beam_t( this, options_str );
-  if ( name == "starfall"               ) return new               starfall_t( this, options_str );
-  if ( name == "starfire"               ) return new               starfire_t( this, options_str );
-  if ( name == "starsurge"              ) return new              starsurge_t( this, options_str );
-  if ( name == "stellar_flare"          ) return new          stellar_flare_t( this, options_str );
-  if ( name == "sunfire"                ) return new                sunfire_t( this, options_str );
-  if ( name == "warrior_of_elune"       ) return new       warrior_of_elune_t( this, options_str );
-  if ( name == "wrath"                  ) return new                  wrath_t( this, options_str );
+  if ( name == "celestial_alignment"   ) return new   celestial_alignment_t( this, options_str );
+  if ( name == "force_of_nature"       ) return new       force_of_nature_t( this, options_str );
+  if ( name == "fury_of_elune"         ) return new         fury_of_elune_t( this, options_str );
+  if ( name == "innervate"             ) return new             innervate_t( this, options_str );
+  if ( name == "new_moon"              ) return new              new_moon_t( this, options_str );
+  if ( name == "half_moon"             ) return new             half_moon_t( this, options_str );
+  if ( name == "full_moon"             ) return new             full_moon_t( this, options_str );
+  if ( name == "moons"                 ) return new            moon_proxy_t( this, options_str );
+  if ( name == "solar_beam"            ) return new            solar_beam_t( this, options_str );
+  if ( name == "starfall"              ) return new              starfall_t( this, options_str );
+  if ( name == "starfire"              ) return new              starfire_t( this, options_str );
+  if ( name == "starsurge"             ) return new             starsurge_t( this, options_str );
+  if ( name == "stellar_flare"         ) return new         stellar_flare_t( this, options_str );
+  if ( name == "sunfire"               ) return new               sunfire_t( this, options_str );
+  if ( name == "warrior_of_elune"      ) return new      warrior_of_elune_t( this, options_str );
+  if ( name == "wrath"                 ) return new                 wrath_t( this, options_str );
 
   // Feral
-  if ( name == "berserk_cat"            ) return new            berserk_cat_t( this, options_str );
-  if ( name == "brutal_slash"           ) return new           brutal_slash_t( this, options_str );
-  if ( name == "feral_frenzy"           ) return new           feral_frenzy_t( this, options_str );
-  if ( name == "ferocious_bite"         ) return new         ferocious_bite_t( this, options_str );
-  if ( name == "maim"                   ) return new                   maim_t( this, options_str );
+  if ( name == "berserk_cat"           ) return new           berserk_cat_t( this, options_str );
+  if ( name == "brutal_slash"          ) return new          brutal_slash_t( this, options_str );
+  if ( name == "feral_frenzy"          ) return new          feral_frenzy_t( this, options_str );
+  if ( name == "ferocious_bite"        ) return new        ferocious_bite_t( this, options_str );
+  if ( name == "maim"                  ) return new                  maim_t( this, options_str );
   if ( name == "moonfire_cat" ||
-       name == "lunar_inspiration"      ) return new      lunar_inspiration_t( this, options_str );
-  if ( name == "primal_wrath"           ) return new           primal_wrath_t( this, options_str );
-  if ( name == "rake"                   ) return new                   rake_t( this, options_str );
-  if ( name == "rip"                    ) return new                    rip_t( this, options_str );
-  if ( name == "savage_roar"            ) return new            savage_roar_t( this, options_str );
-  if ( name == "shred"                  ) return new                  shred_t( this, options_str );
-  if ( name == "skull_bash"             ) return new             skull_bash_t( this, options_str );
-  if ( name == "swipe_cat"              ) return new              swipe_cat_t( this, options_str );
-  if ( name == "thrash_cat"             ) return new             thrash_cat_t( this, options_str );
-  if ( name == "tigers_fury"            ) return new            tigers_fury_t( this, options_str );
+       name == "lunar_inspiration"     ) return new     lunar_inspiration_t( this, options_str );
+  if ( name == "primal_wrath"          ) return new          primal_wrath_t( this, options_str );
+  if ( name == "rake"                  ) return new                  rake_t( this, options_str );
+  if ( name == "rip"                   ) return new                   rip_t( this, options_str );
+  if ( name == "savage_roar"           ) return new           savage_roar_t( this, options_str );
+  if ( name == "shred"                 ) return new                 shred_t( this, options_str );
+  if ( name == "skull_bash"            ) return new            skull_bash_t( this, options_str );
+  if ( name == "swipe_cat"             ) return new             swipe_cat_t( this, options_str );
+  if ( name == "thrash_cat"            ) return new            thrash_cat_t( this, options_str );
+  if ( name == "tigers_fury"           ) return new           tigers_fury_t( this, options_str );
 
   // Guardian
-  if ( name == "barkskin"               ) return new               barkskin_t( this, options_str );
-  if ( name == "berserk_bear"           ) return new           berserk_bear_t( this, options_str );
-  if ( name == "bristling_fur"          ) return new          bristling_fur_t( this, options_str );
-  if ( name == "frenzied_regeneration"  ) return new  frenzied_regeneration_t( this, options_str );
-  if ( name == "growl"                  ) return new                  growl_t( this, options_str );
-  if ( name == "incapacitating_roar"    ) return new    incapacitating_roar_t( this, options_str );
-  if ( name == "ironfur"                ) return new                ironfur_t( this, options_str );
-  if ( name == "mangle"                 ) return new                 mangle_t( this, options_str );
-  if ( name == "maul"                   ) return new                   maul_t( this, options_str );
-  if ( name == "pulverize"              ) return new              pulverize_t( this, options_str );
-  if ( name == "survival_instincts"     ) return new     survival_instincts_t( this, options_str );
-  if ( name == "swipe_bear"             ) return new             swipe_bear_t( this, options_str );
-  if ( name == "thrash_bear"            ) return new            thrash_bear_t( this, options_str );
+  if ( name == "barkskin"              ) return new              barkskin_t( this, options_str );
+  if ( name == "berserk_bear"          ) return new          berserk_bear_t( this, options_str );
+  if ( name == "bristling_fur"         ) return new         bristling_fur_t( this, options_str );
+  if ( name == "frenzied_regeneration" ) return new frenzied_regeneration_t( this, options_str );
+  if ( name == "growl"                 ) return new                 growl_t( this, options_str );
+  if ( name == "incapacitating_roar"   ) return new   incapacitating_roar_t( this, options_str );
+  if ( name == "ironfur"               ) return new               ironfur_t( this, options_str );
+  if ( name == "mangle"                ) return new                mangle_t( this, options_str );
+  if ( name == "maul"                  ) return new                  maul_t( this, options_str );
+  if ( name == "pulverize"             ) return new             pulverize_t( this, options_str );
+  if ( name == "survival_instincts"    ) return new    survival_instincts_t( this, options_str );
+  if ( name == "swipe_bear"            ) return new            swipe_bear_t( this, options_str );
+  if ( name == "thrash_bear"           ) return new           thrash_bear_t( this, options_str );
 
   // Restoration
-  if ( name == "cenarion_ward"          ) return new          cenarion_ward_t( this, options_str );
-  if ( name == "lifebloom"              ) return new              lifebloom_t( this, options_str );
-  if ( name == "regrowth"               ) return new               regrowth_t( this, options_str );
-  if ( name == "rejuvenation"           ) return new           rejuvenation_t( this, options_str );
-  if ( name == "swiftmend"              ) return new              swiftmend_t( this, options_str );
-  if ( name == "thorns"                 ) return new                 thorns_t( this, options_str );
-  if ( name == "tranquility"            ) return new            tranquility_t( this, options_str );
-  if ( name == "wild_growth"            ) return new            wild_growth_t( this, options_str );
+  if ( name == "cenarion_ward"         ) return new         cenarion_ward_t( this, options_str );
+  if ( name == "efflorescence"         ) return new         efflorescence_t( this, options_str );
+  if ( name == "flourish"              ) return new              flourish_t( this, options_str );
+  if ( name == "lifebloom"             ) return new             lifebloom_t( this, options_str );
+  if ( name == "natures_cure"          ) return new          natures_cure_t( this, options_str );
+  if ( name == "nourish"               ) return new               nourish_t( this, options_str );
+  if ( name == "overgrowth"            ) return new            overgrowth_t( this, options_str );
+  if ( name == "regrowth"              ) return new              regrowth_t( this, options_str );
+  if ( name == "rejuvenation"          ) return new          rejuvenation_t( this, options_str );
+  if ( name == "swiftmend"             ) return new             swiftmend_t( this, options_str );
+  if ( name == "thorns"                ) return new                thorns_t( this, options_str );
+  if ( name == "tranquility"           ) return new           tranquility_t( this, options_str );
+  if ( name == "wild_growth"           ) return new           wild_growth_t( this, options_str );
 
   // Covenant
-  if ( name == "adaptive_swarm"         ) return new         adaptive_swarm_t( this, options_str );
-  if ( name == "convoke_the_spirits"    ) return new    convoke_the_spirits_t( this, options_str );
+  if ( name == "adaptive_swarm"        ) return new        adaptive_swarm_t( this, options_str );
+  if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
   if ( name == "kindred_spirits" ||
-       name == "empower_bond"           ) return new        kindred_spirits_t( this, options_str );
-  if ( name == "ravenous_frenzy"        ) return new        ravenous_frenzy_t( this, options_str );
+       name == "empower_bond"          ) return new       kindred_spirits_t( this, options_str );
+  if ( name == "ravenous_frenzy"       ) return new       ravenous_frenzy_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -8068,12 +8549,15 @@ void druid_t::create_pets()
 // druid_t::init_spells =====================================================
 void druid_t::init_spells()
 {
-  auto check_id = [this]( bool b, unsigned id ) -> const spell_data_t* {
-    return b ? find_spell( id ) : spell_data_t::not_found();
-  };
-
-  auto check_data = []( bool b, const spell_data_t* s_data ) -> const spell_data_t* {
-    return b ? s_data : spell_data_t::not_found();
+  auto check = [ this ]( bool b, auto arg ) {
+    if ( b )
+    {
+      if constexpr ( std::is_same_v<decltype( arg ), int> )
+        return find_spell( arg );
+      else if constexpr ( std::is_same_v<decltype( arg ), const spell_data_t*> )
+        return arg;
+    }
+    return spell_data_t::not_found();
   };
 
   player_t::init_spells();
@@ -8095,10 +8579,10 @@ void druid_t::init_spells()
   talent.heart_of_the_wild          = find_talent_spell( "Heart of the Wild" );
 
   talent.soul_of_the_forest         = find_talent_spell( "Soul of the Forest" );
-  talent.soul_of_the_forest_moonkin = check_data( specialization() == DRUID_BALANCE, talent.soul_of_the_forest );
-  talent.soul_of_the_forest_cat     = check_data( specialization() == DRUID_FERAL, talent.soul_of_the_forest );
-  talent.soul_of_the_forest_bear    = check_data( specialization() == DRUID_GUARDIAN, talent.soul_of_the_forest );
-  talent.soul_of_the_forest_tree    = check_data( specialization() == DRUID_RESTORATION, talent.soul_of_the_forest);
+  talent.soul_of_the_forest_moonkin = check( specialization() == DRUID_BALANCE, talent.soul_of_the_forest );
+  talent.soul_of_the_forest_cat     = check( specialization() == DRUID_FERAL, talent.soul_of_the_forest );
+  talent.soul_of_the_forest_bear    = check( specialization() == DRUID_GUARDIAN, talent.soul_of_the_forest );
+  talent.soul_of_the_forest_tree    = check( specialization() == DRUID_RESTORATION, talent.soul_of_the_forest);
 
   // Feral
   talent.predator                   = find_talent_spell( "Predator" );
@@ -8149,12 +8633,18 @@ void druid_t::init_spells()
   talent.pulverize                  = find_talent_spell( "Pulverize" );
 
   // Restoration
+  talent.abundance                  = find_talent_spell( "Abundance" );
+  talent.nourish                    = find_talent_spell( "Nourish" );
   talent.cenarion_ward              = find_talent_spell( "Cenarion Ward" );
+
   talent.cultivation                = find_talent_spell( "Cultivation" );
   talent.incarnation_tree           = find_talent_spell( "Incarnation: Tree of Life" );
 
   talent.inner_peace                = find_talent_spell( "Inner Peace" );
+  talent.spring_blossoms            = find_talent_spell( "Sprint Blossoms" );
+  talent.overgrowth                 = find_talent_spell( "Overgrowth" );
 
+  talent.photosynthesis             = find_talent_spell( "Photosynthesis" );
   talent.germination                = find_talent_spell( "Germination" );
   talent.flourish                   = find_talent_spell( "Flourish" );
 
@@ -8167,15 +8657,15 @@ void druid_t::init_spells()
 
   // Covenants
   cov.kyrian                       = find_covenant_spell( "Kindred Spirits" );
-  cov.empower_bond                 = check_id( cov.kyrian->ok(), 326446 );
-  cov.kindred_empowerment          = check_id( cov.kyrian->ok(), 327022 );
-  cov.kindred_empowerment_energize = check_id( cov.kyrian->ok(), 327139 );
-  cov.kindred_empowerment_damage   = check_id( cov.kyrian->ok(), 338411 );
+  cov.empower_bond                 = check( cov.kyrian->ok(), 326446 );
+  cov.kindred_empowerment          = check( cov.kyrian->ok(), 327022 );
+  cov.kindred_empowerment_energize = check( cov.kyrian->ok(), 327139 );
+  cov.kindred_empowerment_damage   = check( cov.kyrian->ok(), 338411 );
   cov.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
   cov.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
   cov.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
-  cov.adaptive_swarm_damage        = check_id( cov.necrolord->ok(), 325733 );
-  cov.adaptive_swarm_heal          = check_id( cov.necrolord->ok(), 325748 );
+  cov.adaptive_swarm_damage        = check( cov.necrolord->ok(), 325733 );
+  cov.adaptive_swarm_heal          = check( cov.necrolord->ok(), 325748 );
 
   if ( specialization() == DRUID_GUARDIAN && cov.kindred_empowerment->ok() )
   {
@@ -8258,7 +8748,6 @@ void druid_t::init_spells()
   spec.druid                   = find_spell( 137009 );
   spec.critical_strikes        = find_specialization_spell( "Critical Strikes" );
   spec.leather_specialization  = find_specialization_spell( "Leather Specialization" );
-  spec.omen_of_clarity         = find_specialization_spell( "Omen of Clarity" );
   spec.entangling_roots        = find_class_spell( "Entangling Roots" );
   spec.barkskin                = find_class_spell( "Barkskin" );
   spec.stampeding_roar_2       = find_rank_spell( "Stampeding Roar", "Rank 2" );
@@ -8267,7 +8756,7 @@ void druid_t::init_spells()
   spec.balance                 = find_specialization_spell( "Balance Druid" );
   spec.astral_power            = find_specialization_spell( "Astral Power" );
   spec.moonkin_form            = find_affinity_spell( "Moonkin Form" );
-  spec.owlkin_frenzy           = check_id( spec.moonkin_form->ok(), 157228 );  // Owlkin Frenzy RAWR
+  spec.owlkin_frenzy           = check( spec.moonkin_form->ok(), 157228 );  // Owlkin Frenzy RAWR
   spec.celestial_alignment     = find_specialization_spell( "Celestial Alignment" );
   spec.innervate               = find_specialization_spell( "Innervate" );
   spec.eclipse                 = find_specialization_spell( "Eclipse" );
@@ -8281,68 +8770,74 @@ void druid_t::init_spells()
   spec.starfall                = find_affinity_spell( "Starfall" );
   spec.starfall_2              = find_rank_spell( "Starfall", "Rank 2" );
   spec.starfall_dmg            = find_spell( 191037 );
-  spec.stellar_drift           = check_id( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
+  spec.stellar_drift           = check( talent.stellar_drift->ok(), 202461 );  // stellar drift mobility buff
   spec.shooting_stars          = find_specialization_spell( "Shooting Stars" );
-  spec.shooting_stars_dmg      = check_id( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
-  spec.half_moon               = check_id( talent.new_moon->ok(), 274282 );
-  spec.full_moon               = check_id( talent.new_moon->ok(), 274283 );
+  spec.shooting_stars_dmg      = check( spec.shooting_stars->ok(), 202497 );   // shooting stars damage
+  spec.half_moon               = check( talent.new_moon->ok(), 274282 );
+  spec.full_moon               = check( talent.new_moon->ok(), 274283 );
   spec.moonfire_2              = find_rank_spell( "Moonfire", "Rank 2" );
   spec.moonfire_3              = find_rank_spell( "Moonfire", "Rank 3" );
 
   // Feral
   spec.feral                   = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides         = find_specialization_spell( "Feral Overrides Passive" );
-  spec.cat_form                = check_id( find_class_spell( "Cat Form" )->ok(), 3025 );
-  spec.cat_form_speed          = check_id( find_class_spell( "Cat Form" )->ok(), 113636 );
+  spec.cat_form                = check( find_class_spell( "Cat Form" )->ok(), 3025 );
+  spec.cat_form_speed          = check( find_class_spell( "Cat Form" )->ok(), 113636 );
+  spec.omen_of_clarity_cat     = check( spec.feral->ok(), find_specialization_spell( "Omen of Clarity" ) );
   spec.predatory_swiftness     = find_specialization_spell( "Predatory Swiftness" );
   spec.primal_fury             = find_affinity_spell( "Primal Fury" )->effectN( 1 ).trigger();
   spec.rip                     = find_affinity_spell( "Rip" );
-  spec.swipe_cat               = check_id( find_affinity_spell( "Swipe" )->ok(), 106785 );
-  spec.thrash_cat              = check_id( find_specialization_spell( "Thrash" )->ok(), 106830 );
+  spec.swipe_cat               = check( find_affinity_spell( "Swipe" )->ok(), 106785 );
+  spec.thrash_cat              = check( find_specialization_spell( "Thrash" )->ok(), 106830 );
   spec.berserk_cat             = find_specialization_spell( "Berserk" );
   spec.rake_dmg                = find_spell( 1822 )->effectN( 3 ).trigger();
   // hardcode spell ID to allow tiger's fury buff for non-feral cat convoke
-  spec.tigers_fury             = check_id( specialization() == DRUID_FERAL || cov.night_fae->ok(), 5217 );
-  spec.savage_roar             = check_id( talent.savage_roar->ok(), 62071 );
-  spec.bloodtalons             = check_id( talent.bloodtalons->ok(), 145152 );
+  spec.tigers_fury             = check( specialization() == DRUID_FERAL || cov.night_fae->ok(), 5217 );
+  spec.savage_roar             = check( talent.savage_roar->ok(), 62071 );
+  spec.bloodtalons             = check( talent.bloodtalons->ok(), 145152 );
 
   // Guardian
   spec.guardian                = find_specialization_spell( "Guardian Druid" );
   spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
-  spec.bear_form               = check_id( find_class_spell( "Bear Form" )->ok(), 1178 );
+  spec.bear_form               = check( find_class_spell( "Bear Form" )->ok(), 1178 );
   spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
   spec.gore                    = find_specialization_spell( "Gore" );
-  spec.gore_buff               = check_id( spec.gore, 93622 );
+  spec.gore_buff               = check( spec.gore, 93622 );
   spec.ironfur                 = find_class_spell( "Ironfur" );
-  spec.swipe_bear              = check_id( find_specialization_spell( "Swipe" )->ok(), 213771 );
-  spec.thrash_bear             = check_id( find_specialization_spell( "Thrash" )->ok(), 77758 );
+  spec.swipe_bear              = check( find_specialization_spell( "Swipe" )->ok(), 213771 );
+  spec.thrash_bear             = check( find_specialization_spell( "Thrash" )->ok(), 77758 );
   spec.thrash_bear_dot         = find_spell( 192090 );  // dot for thrash_bear
-  spec.berserk_bear            = check_id( find_specialization_spell( "Berserk" )->ok(), 50334 );
-  spec.berserk_bear_2          = check_id( spec.berserk_bear->ok(), 343240 );
-  spec.galactic_guardian       = check_id( talent.galactic_guardian->ok(), 213708 );
+  spec.berserk_bear            = check( find_specialization_spell( "Berserk" )->ok(), 50334 );
+  spec.berserk_bear_2          = check( spec.berserk_bear->ok(), 343240 );
+  spec.galactic_guardian       = check( talent.galactic_guardian->ok(), 213708 );
   spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
+  spec.frenzied_regeneration_3 = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
   spec.survival_instincts_2    = find_rank_spell( "Survival Instincts", "Rank 2" );
 
   // Restoration
   spec.restoration             = find_specialization_spell( "Restoration Druid" );
+  spec.ironbark                = find_specialization_spell( "Ironbark" );
+  spec.natures_swiftness       = find_specialization_spell( "Nature's Swiftness" );
+  spec.omen_of_clarity_tree    = check( spec.restoration->ok(), find_specialization_spell( "Omen of Clarity" ) );
+  spec.tranquility             = find_specialization_spell( "Tranquility" );
 
   // Affinities =============================================================
 
-  spec.feline_swiftness = check_data( specialization() == DRUID_FERAL || talent.feral_affinity->ok(),
-                                      find_affinity_spell( "Feline Swiftness" ) );
-  spec.astral_influence = check_data( specialization() == DRUID_BALANCE || talent.balance_affinity->ok(),
-                                      find_affinity_spell( "Astral Influence" ) );
-  spec.thick_hide       = check_data( specialization() == DRUID_GUARDIAN || talent.guardian_affinity->ok(),
-                                      find_affinity_spell( "Thick Hide" ) );
-  spec.yseras_gift      = check_data( specialization() == DRUID_RESTORATION || talent.restoration_affinity->ok(),
-                                      find_affinity_spell( "Ysera's Gift" ) );
+  spec.feline_swiftness = check( specialization() == DRUID_FERAL || talent.feral_affinity->ok(),
+                                 find_affinity_spell( "Feline Swiftness" ) );
+  spec.astral_influence = check( specialization() == DRUID_BALANCE || talent.balance_affinity->ok(),
+                                 find_affinity_spell( "Astral Influence" ) );
+  spec.thick_hide       = check( specialization() == DRUID_GUARDIAN || talent.guardian_affinity->ok(),
+                                 find_affinity_spell( "Thick Hide" ) );
+  spec.yseras_gift      = check( specialization() == DRUID_RESTORATION || talent.restoration_affinity->ok(),
+                                 find_affinity_spell( "Ysera's Gift" ) );
 
   // Masteries ==============================================================
 
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
   mastery.harmony             = find_mastery_spell( DRUID_RESTORATION );
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
-  mastery.natures_guardian_AP = check_id( mastery.natures_guardian->ok(), 159195 );
+  mastery.natures_guardian_AP = check( mastery.natures_guardian->ok(), 159195 );
   mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
 
   eclipse_handler.init();  // initialize this here since we need talent info to properly init
@@ -8386,7 +8881,8 @@ void druid_t::init_base_stats()
   resources.active_resource[ RESOURCE_COMBO_POINT ]  = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
                                                     || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
                                                     || ( talent.feral_affinity->ok() && options.affinity_resources );
-  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL || specialization() == DRUID_RESTORATION
+  resources.active_resource[ RESOURCE_ENERGY ]       = specialization() == DRUID_FERAL
+                                                    || ( specialization() == DRUID_RESTORATION && role == ROLE_ATTACK )
                                                     || ( specialization() == DRUID_GUARDIAN && options.catweave_bear )
                                                     || ( talent.feral_affinity->ok() && options.affinity_resources );
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
@@ -8666,10 +9162,11 @@ void druid_t::create_buffs()
   buff.bt_brutal_slash = make_buff<bt_dummy_buff_t>( *this, "bt_brutal_slash" );
 
   // 1.05s ICD per https://github.com/simulationcraft/simc/commit/b06d0685895adecc94e294f4e3fcdd57ac909a10
-  buff.clearcasting = make_buff( this, "clearcasting", spec.omen_of_clarity->effectN( 1 ).trigger() )
-    ->set_chance( spec.omen_of_clarity->proc_chance() )
+  buff.clearcasting_cat = make_buff( this, "clearcasting_cat", spec.omen_of_clarity_cat->effectN( 1 ).trigger() )
+    ->set_chance( spec.omen_of_clarity_cat->proc_chance() )
     ->set_cooldown( 1.05_s )
     ->modify_max_stack( as<int>( talent.moment_of_clarity->effectN( 1 ).base_value() ) );
+  buff.clearcasting_cat->name_str_reporting = "clearcasting";
 
   buff.eye_of_fearful_symmetry =
       make_buff( this, "eye_of_fearful_symmetry", legendary.eye_of_fearful_symmetry->effectN( 1 ).trigger() );
@@ -8771,18 +9268,31 @@ void druid_t::create_buffs()
           } );
 
   // Restoration buffs
+  buff.abundance = make_buff( this, "abundance", find_spell( 207640 ) )
+    ->set_duration( 0_ms );
+
   buff.cenarion_ward = make_buff( this, "cenarion_ward", talent.cenarion_ward );
 
-  buff.incarnation_tree = make_buff( this, "incarnation_tree_of_life", talent.incarnation_tree )
-    ->set_cooldown( 0_ms )
-    ->set_duration( 30_s )
-    ->set_default_value_from_effect( 1 )
+  buff.clearcasting_tree = make_buff( this, "clearcasting_tree", spec.omen_of_clarity_tree->effectN( 1 ).trigger() )
+    ->set_chance( spec.omen_of_clarity_tree->effectN( 1 ).percent() );
+  buff.clearcasting_tree->name_str_reporting = "clearcasting";
+
+  buff.flourish = make_buff( this, "flourish", talent.flourish )
+    ->set_default_value_from_effect( 2 );
+
+  buff.incarnation_tree = make_buff( this, "incarnation_tree_of_life", find_spell( 5420 ) )
+    ->set_duration( find_spell( 117679 )->duration() )  // 117679 is the generic incarnation shift proxy spell
     ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
 
-  buff.harmony = make_buff( this, "harmony", find_spell( 100977 ) );
+  buff.natures_swiftness = make_buff( this, "natures_swiftness", spec.natures_swiftness )
+    ->set_cooldown( 0_ms )
+    ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        cooldown.natures_swiftness->start();
+    } );
 
-  buff.soul_of_the_forest = make_buff( this, "soul_of_the_forest", find_spell( 114108 ) )
-    ->set_default_value_from_effect( 1 );
+  buff.soul_of_the_forest_tree = make_buff( this, "soul_of_the_forest_tree", find_spell( 114108 ) );
+  buff.soul_of_the_forest_tree->name_str_reporting = "soul_of_the_forest";
 
   if ( spec.yseras_gift->ok() )
   {
@@ -8844,12 +9354,25 @@ void druid_t::create_buffs()
   }
 
   // Helpers
-  switch( specialization() )
+  switch ( specialization() )
   {
-    case DRUID_BALANCE:  buff.incarnation = buff.incarnation_moonkin; break;
-    case DRUID_FERAL:    buff.incarnation = buff.incarnation_cat;     break;
-    case DRUID_GUARDIAN: buff.incarnation = buff.incarnation_bear;    break;
-    default:             buff.incarnation = buff.incarnation_tree;    break;  // tree inc does nothing
+    case DRUID_BALANCE:
+      buff.incarnation = buff.incarnation_moonkin;
+      break;
+    case DRUID_FERAL:
+      buff.incarnation = buff.incarnation_cat;
+      buff.clearcasting = buff.clearcasting_cat;
+      break;
+    case DRUID_GUARDIAN:
+      buff.incarnation = buff.incarnation_bear;
+      break;
+    case DRUID_RESTORATION:
+      buff.incarnation = buff.incarnation_tree;
+      buff.clearcasting = buff.clearcasting_tree;
+      break;
+    default:  // empty buff
+      buff.incarnation = make_buff( this, "incarnation" );
+      break;
   }
 
   // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
@@ -8947,9 +9470,6 @@ void druid_t::create_actions()
     active.architects_aligner = get_secondary_action<architects_aligner_t>( "architects_aligner" );
 
   // Restoration
-  if ( talent.cenarion_ward->ok() )
-    active.cenarion_ward_hot = new heals::cenarion_ward_hot_t( this );
-
   if ( spec.yseras_gift->ok() )
     active.yseras_gift = new heals::yseras_gift_t( this );
 
@@ -9988,45 +10508,55 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     } );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "bs_inc" ) )
   {
-    std::string_view replacement;
-
     // special case since incarnation is handled via the proxy action and the cooldown obj is not explicitly named for
     // the spec variant
     if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
          ( talent.incarnation_cat->ok() || talent.incarnation_bear->ok() ) )
     {
-      replacement = "incarnation";
+      splits[ 1 ] = "incarnation";
     }
     else if ( specialization() == DRUID_FERAL )
     {
       if ( talent.incarnation_cat->ok() )
-        replacement = "incarnation_king_of_the_jungle";
+        splits[ 1 ] = "incarnation_king_of_the_jungle";
       else
-        replacement = "berserk_cat";
+        splits[ 1 ] = "berserk_cat";
     }
     else if ( specialization() == DRUID_GUARDIAN )
     {
       if ( talent.incarnation_bear->ok() )
-        replacement = "incarnation_guardian_of_ursoc";
+        splits[ 1 ] = "incarnation_guardian_of_ursoc";
       else
-        replacement = "berserk_bear";
+        splits[ 1 ] = "berserk_bear";
     }
     else
     {
-      replacement = "berserk";
+      splits[ 1 ] = "berserk";
     }
 
-    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
+  {
+    if ( spec.omen_of_clarity_cat->ok() )
+      splits[ 1 ] = "clearcasting_cat";
+    else if ( spec.omen_of_clarity_tree->ok() )
+      splits[ 1 ] = "clearcasting_tree";
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
+  }
+
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 0 ], "cooldown" ) &&
        ( util::str_compare_ci( splits[ 1 ], "kindred_spirits" ) ||
          util::str_compare_ci( splits[ 1 ], "kindred_empowerment" ) ||
          util::str_compare_ci( splits[ 1 ], "lone_empowerment" ) ) )
   {
-    return druid_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], "empower_bond", splits[ 2 ] ) );
+    splits[ 1 ] = "empower_bond";
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
   if ( util::str_compare_ci( name_str, "combo_points" ) )
@@ -10046,16 +10576,14 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return make_fn_expr( name_str, [ this ]() { return moon_stage == FULL_MOON; } );
 
     // automatic resolution of Celestial Alignment vs talented Incarnation
-    if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
+    if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "ca_inc" ) )
     {
-      std::string_view replacement;
-
       if ( util::str_compare_ci( splits[ 0 ], "cooldown" ) )
-        replacement = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? "incarnation" : "celestial_alignment";
       else
-        replacement = talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
+        splits[ 1 ] = talent.incarnation_moonkin->ok() ? "incarnation_chosen_of_elune" : "celestial_alignment";
 
-      return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+      return druid_t::create_expression( util::string_join( splits, "." ) );
     }
 
     // check for AP overcap on action other than current action. check for current action handled in
@@ -10176,34 +10704,31 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   // Convert talent.incarnation.* & buff.incarnation.* to spec-based incarnations. cooldown.incarnation.* doesn't need
   // name conversion.
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "incarnation" ) &&
        ( util::str_compare_ci( splits[ 0 ], "buff" ) || util::str_compare_ci( splits[ 0 ], "talent" ) ) )
   {
-    std::string_view replacement;
-
     switch ( specialization() )
     {
-      case DRUID_BALANCE: replacement = "incarnation_chosen_of_elune"; break;
-      case DRUID_FERAL: replacement = "incarnation_king_of_the_jungle"; break;
-      case DRUID_GUARDIAN: replacement = "incarnation_guardian_of_ursoc"; break;
-      case DRUID_RESTORATION: replacement = "incarnation_tree_of_life"; break;
+      case DRUID_BALANCE:     splits[ 1 ] = "incarnation_chosen_of_elune";    break;
+      case DRUID_FERAL:       splits[ 1 ] = "incarnation_king_of_the_jungle"; break;
+      case DRUID_GUARDIAN:    splits[ 1 ] = "incarnation_guardian_of_ursoc";  break;
+      case DRUID_RESTORATION: splits[ 1 ] = "incarnation_tree_of_life";       break;
       default: break;
     }
-    return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
-  if ( splits.size() == 3 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
+  if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "berserk" ) )
   {
-    std::string_view replacement;
-
     if ( specialization() == DRUID_FERAL )
-      replacement = "berserk_cat";
+      splits[ 1 ] = "berserk_cat";
     else if ( specialization() == DRUID_GUARDIAN )
-      replacement = "berserk_bear";
+      splits[ 1 ] = "berserk_bear";
     else
-      replacement = "berserk";
+      splits[ 1 ] = "berserk";
 
-    return player_t::create_expression( fmt::format( "{}.{}.{}", splits[ 0 ], replacement, splits[ 2 ] ) );
+    return druid_t::create_expression( util::string_join( splits, "." ) );
   }
 
   return player_t::create_expression( name_str );
@@ -10395,7 +10920,7 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
       buff.owlkin_frenzy->trigger();
 
     if ( buff.cenarion_ward->up() )
-      active.cenarion_ward_hot->execute();
+      buff.cenarion_ward->expire();
 
     if ( buff.bristling_fur->up() )  // 1 rage per 1% of maximum health taken
       resource_gain( RESOURCE_RAGE, s->result_amount / expected_max_health * 100, gain.bristling_fur );
@@ -10432,7 +10957,7 @@ void druid_t::shapeshift( form_e f )
 
 // Target Data ==============================================================
 druid_td_t::druid_td_t( player_t& target, druid_t& source )
-  : actor_target_data_t( &target, &source ), dots( dots_t() ), buff( buffs_t() )
+  : actor_target_data_t( &target, &source ), dots(), hots(), debuff(), buff()
 {
   dots.adaptive_swarm_damage = target.get_dot( "adaptive_swarm_damage", &source );
   dots.feral_frenzy          = target.get_dot( "feral_frenzy_tick", &source );  // damage dot is triggered by feral_frenzy_tick_t
@@ -10447,9 +10972,21 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
   dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
 
-  buff.lifebloom             = make_buff( *this, "lifebloom", source.find_class_spell( "Lifebloom" ) );
-  debuff.tooth_and_claw      = make_buff( *this, "tooth_and_claw_debuff",
-                                     source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+  hots.cenarion_ward         = target.get_dot( "cenarion_ward", &source );
+  hots.cultivation           = target.get_dot( "cultivation", &source );
+  hots.frenzied_regeneration = target.get_dot( "frenzied_regeneration", &source );
+  hots.germination           = target.get_dot( "germination", &source );
+  hots.lifebloom             = target.get_dot( "lifebloom", &source );
+  hots.regrowth              = target.get_dot( "regrowth", &source );
+  hots.rejuvenation          = target.get_dot( "rejuvenation", &source );
+  hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
+  hots.wild_growth           = target.get_dot( "wild_growth", &source );
+
+  debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
+    source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+
+  buff.ironbark = make_buff( *this, "ironbark", source.spec.ironbark )
+    ->set_cooldown( 0_ms );
 }
 
 const druid_td_t* druid_t::find_target_data( const player_t* target ) const
@@ -10972,36 +11509,38 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Spec-wide auras
   action.apply_affecting_aura( spec.druid );
-  action.apply_affecting_aura( spec.feral );
-  action.apply_affecting_aura( spec.restoration );
   action.apply_affecting_aura( spec.balance );
+  action.apply_affecting_aura( spec.feral );
   action.apply_affecting_aura( spec.guardian );
+  action.apply_affecting_aura( spec.restoration );
 
   // Rank spells
+  action.apply_affecting_aura( spec.frenzied_regeneration_2 );
   action.apply_affecting_aura( spec.moonfire_2 );
   action.apply_affecting_aura( spec.moonfire_3 );
-  action.apply_affecting_aura( spec.frenzied_regeneration_2 );
   action.apply_affecting_aura( spec.stampeding_roar_2 );
   action.apply_affecting_aura( spec.survival_instincts_2 );
 
   // Talents
   action.apply_affecting_aura( talent.feral_affinity );
-  action.apply_affecting_aura( talent.stellar_drift );
-  action.apply_affecting_aura( talent.twin_moons );
+  action.apply_affecting_aura( talent.germination );
+  action.apply_affecting_aura( talent.inner_peace );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
   action.apply_affecting_aura( talent.soul_of_the_forest_bear );
+  action.apply_affecting_aura( talent.stellar_drift );
   action.apply_affecting_aura( talent.survival_of_the_fittest );
+  action.apply_affecting_aura( talent.twin_moons );
 
   // Legendaries
-  action.apply_affecting_aura( legendary.luffainfused_embrace );
-  action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
-  action.apply_affecting_aura( legendary.circle_of_life_and_death );
   action.apply_affecting_aura( legendary.celestial_spirits );
+  action.apply_affecting_aura( legendary.circle_of_life_and_death );
+  action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
+  action.apply_affecting_aura( legendary.luffainfused_embrace );
 
   // Conduits
-  action.apply_affecting_conduit( conduit.tough_as_bark );
   action.apply_affecting_conduit( conduit.innate_resolve );
+  action.apply_affecting_conduit( conduit.tough_as_bark );
 }
 
 // check for AP overcap on current action. syntax: ap_check.<allowed overcap = 0>
