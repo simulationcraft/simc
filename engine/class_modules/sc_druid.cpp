@@ -22,7 +22,7 @@ namespace
 // Forward declarations
 struct druid_t;
 
-enum form_e
+enum form_e : unsigned int
 {
   CAT_FORM       = 0x1,
   NO_FORM        = 0x2,
@@ -1900,7 +1900,7 @@ public:
       if ( ab::sim->debug )
       {
         ab::sim->print_debug( "{} ready() failed due to wrong form. form={:#010x} form_mask={:#010x}", ab::name(),
-                              p()->get_form(), form_mask );
+                              static_cast<unsigned int>( p()->get_form() ), form_mask );
       }
 
       return false;

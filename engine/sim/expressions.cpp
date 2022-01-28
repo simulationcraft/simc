@@ -1147,7 +1147,7 @@ void print_tokens( util::span<const expr_token_t> tokens, sim_t* sim )
 
   std::vector<std::string> strings;
   for ( const expr_token_t& token : tokens )
-    strings.push_back( fmt::format("{:2d} '{}'", token.type, token.label ) );
+    strings.push_back( fmt::format("{:2d} '{}'", static_cast<int>( token.type), token.label ) );
 
   sim->out_debug.print( "{}", fmt::join( strings, " | " ) );
 }
