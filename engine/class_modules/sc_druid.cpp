@@ -4843,6 +4843,16 @@ struct regrowth_t : public druid_heal_t
     return pm;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    auto ctm = druid_heal_t::composite_target_multiplier( t );
+
+    if ( t == player )
+      ctm *= 1.0 + p()->conduit.innate_resolve.percent();
+
+    return ctm;
+  }
+
   bool check_form_restriction() override
   {
     if ( p()->buff.predatory_swiftness->check() )
