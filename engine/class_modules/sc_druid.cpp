@@ -8808,7 +8808,7 @@ void druid_t::init_spells()
   spec.berserk_bear_2          = check( spec.berserk_bear->ok(), 343240 );
   spec.galactic_guardian       = check( talent.galactic_guardian->ok(), 213708 );
   spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 2" );
-  spec.frenzied_regeneration_2 = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
+  spec.frenzied_regeneration_3 = find_rank_spell( "Frenzied Regeneration", "Rank 3" );
   spec.survival_instincts_2    = find_rank_spell( "Survival Instincts", "Rank 2" );
 
   // Restoration
