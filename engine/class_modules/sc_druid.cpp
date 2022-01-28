@@ -4745,7 +4745,7 @@ struct natures_swiftness_t : public druid_heal_t
 // Nourish ==================================================================
 struct nourish_t : public druid_heal_t
 {
-  nourish_t( druid_t* p, std::string_view opt ) : druid_heal_t( "nourish", p, p->talent.nourish ) {}
+  nourish_t( druid_t* p, std::string_view opt ) : druid_heal_t( "nourish", p, p->talent.nourish, opt ) {}
 
   double harmony_multiplier( player_t* t ) const override
   {
@@ -5143,7 +5143,7 @@ struct overgrowth_t : public druid_heal_t
 {
   std::vector<action_t*> spell_list;
 
-  overgrowth_t( druid_t* p, std::string_view opt ) : druid_heal_t( "overgrowth", p, p->talent.overgrowth )
+  overgrowth_t( druid_t* p, std::string_view opt ) : druid_heal_t( "overgrowth", p, p->talent.overgrowth, opt )
   {
     get_overgrowth_action<lifebloom_t>( "lifebloom" );
     get_overgrowth_action<rejuvenation_t>( "rejuvenation" );
@@ -5160,7 +5160,8 @@ struct overgrowth_t : public druid_heal_t
     a->name_str_reporting = n;
     a->dot_name = n;
     add_child( a );
-    return spell_list.emplace_back( a );
+    spell_list.push_back( a );
+    return a;
   }
 
   void execute() override
