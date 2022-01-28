@@ -4322,7 +4322,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 {
   struct
   {
-    bool flourish;
+    bool flourish;  // true if tick_rate is affected by flourish, NOTE: extension is handled in flourish_t
     bool ironbark;
     bool soul_of_the_forest;
   } affected_by;
@@ -4336,7 +4336,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       affected_by(),
-      fr_mul( 0.0 ),
+      fr_mul( p->spec.frenzied_regeneration_3->effectN( 1 ).percent() ),
       iron_mul( 0.0 ),
       photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
       photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
@@ -4350,9 +4350,6 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     may_miss = harmful = false;
     ignore_false_positive = true;
-
-    if ( p->spec.frenzied_regeneration_3->ok() )
-      fr_mul = p->spec.frenzied_regeneration_3->effectN( 1 ).percent();
 
     if ( p->spec.ironbark->ok() )
     {
@@ -4405,7 +4402,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
     if ( affected_by.flourish && p()->buff.flourish->check() )
       tt *= 1.0 + p()->buff.flourish->default_value;
 
-    if ( p()->talent.photosynthesis->ok() && td( player )->hots.lifebloom->is_ticking() )
+    if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
       tt *= 1.0 + photo_mul;
 
     return tt;
@@ -4417,7 +4414,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     auto lb = td( d->target )->hots.lifebloom;
 
-    if ( p()->talent.photosynthesis->ok() && lb->is_ticking() && rng().roll( photo_pct ) )
+    if ( photo_pct && lb->is_ticking() && rng().roll( photo_pct ) )
       lb->current_action->last_tick( lb );
   }
 
