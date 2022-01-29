@@ -606,6 +606,7 @@ public:
     const spell_data_t* guardian_overrides;
     const spell_data_t* bear_form;
     const spell_data_t* bear_form_2;  // Rank 2
+    const spell_data_t* earthwarden_buff;
     const spell_data_t* ironfur;
     const spell_data_t* gore;
     const spell_data_t* gore_buff;
@@ -8678,13 +8679,6 @@ void druid_t::init_spells()
   talent.germination                = find_talent_spell( "Germination" );
   talent.flourish                   = find_talent_spell( "Flourish" );
 
-  if ( talent.earthwarden->ok() )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        talent.earthwarden->id(),
-        instant_absorb_t( this, find_spell( 203975 ), "earthwarden", &earthwarden_handler ) ) );
-  }
-
   // Covenants
   cov.kyrian                       = find_covenant_spell( "Kindred Spirits" );
   cov.empower_bond                 = check( cov.kyrian->ok(), 326446 );
@@ -8696,13 +8690,6 @@ void druid_t::init_spells()
   cov.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
   cov.adaptive_swarm_damage        = check( cov.necrolord->ok(), 325733 );
   cov.adaptive_swarm_heal          = check( cov.necrolord->ok(), 325748 );
-
-  if ( specialization() == DRUID_GUARDIAN && cov.kindred_empowerment->ok() )
-  {
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        cov.kindred_empowerment->id(), instant_absorb_t(
-            this, cov.kindred_empowerment, "kindred_empowerment_absorb", &kindred_empowerment_handler ) ) );
-  }
 
   // Conduits
 
@@ -8831,6 +8818,7 @@ void druid_t::init_spells()
   spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
   spec.bear_form               = check( find_class_spell( "Bear Form" )->ok(), 1178 );
   spec.bear_form_2             = find_rank_spell( "Bear Form", "Rank 2" );
+  spec.earthwarden_buff        = check( talent.earthwarden, 203975 );
   spec.gore                    = find_specialization_spell( "Gore" );
   spec.gore_buff               = check( spec.gore, 93622 );
   spec.ironfur                 = find_class_spell( "Ironfur" );
@@ -9246,7 +9234,7 @@ void druid_t::create_buffs()
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
 
-  buff.earthwarden = make_buff( this, "earthwarden", find_spell( 203975 ) )
+  buff.earthwarden = make_buff( this, "earthwarden", spec.earthwarden_buff )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
   buff.galactic_guardian = make_buff( this, "galactic_guardian", spec.galactic_guardian )
@@ -9468,11 +9456,7 @@ void druid_t::create_actions()
 
   // Guardian
   if ( talent.brambles->ok() )
-  {
     active.brambles = get_secondary_action<brambles_t>( "brambles" );
-    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
-        talent.brambles->id(), instant_absorb_t( this, talent.brambles, "brambles_absorb", &brambles_handler ) ) );
-  }
 
   if ( legendary.the_natural_orders_will->ok() )
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
@@ -10884,6 +10868,27 @@ resource_e druid_t::primary_resource() const
 
 void druid_t::init_absorb_priority()
 {
+  if ( talent.brambles->ok() )
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        talent.brambles->id(),
+        instant_absorb_t( this, talent.brambles, "brambles_absorb", &brambles_handler ) ) );
+  }
+
+  if ( talent.earthwarden->ok() )
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        talent.earthwarden->id(),
+        instant_absorb_t( this, spec.earthwarden_buff, "earthwarden_absorb", &earthwarden_handler ) ) );
+  }
+
+  if ( cov.kindred_empowerment->ok() )
+  {
+    instant_absorb_list.insert( std::make_pair<unsigned, instant_absorb_t>(
+        cov.kindred_empowerment->id(),
+        instant_absorb_t( this, cov.kindred_empowerment, "kindred_empowerment_absorb", &kindred_empowerment_handler ) ) );
+  }
+
   player_t::init_absorb_priority();
 
   absorb_priority.push_back( talent.brambles->id() );
