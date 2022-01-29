@@ -46,15 +46,69 @@ namespace color
     std::string hex_str() const;
     operator std::string() const; // meh...
 
-    rgb& adjust(double v);
-    rgb adjust(double v) const;
-    rgb dark(double pct = 0.25) const;
-    rgb light(double pct = 0.25) const;
-    rgb opacity(double pct = 1.0) const;
 
-    rgb& operator=( util::string_view color_str );
-    rgb& operator+=( rgb other );
-    rgb operator+( rgb other ) const;
+    constexpr rgb& adjust( double v )
+    {
+      if ( v < 0 || v > 1 )
+      {
+        return *this;
+      }
+
+      r_ = static_cast<uint8_t>(r_ * v);
+      g_ = static_cast<uint8_t>(g_ * v);
+      b_ = static_cast<uint8_t>(b_ * v);
+      return *this;
+    }
+
+    constexpr rgb adjust( double v ) const
+    {
+      return rgb( *this ).adjust( v );
+    }
+
+    constexpr rgb dark( double pct = 0.25) const
+    {
+      return rgb( *this ).adjust( 1.0 - pct );
+    }
+
+    constexpr rgb light( double pct = 0.25 ) const
+    {
+      return rgb( *this ).adjust( 1.0 + pct );
+    }
+
+    constexpr rgb opacity( double pct = 1.0 ) const
+    {
+      rgb r( *this );
+      r.a_ = pct;
+
+      return r;
+    }
+
+
+    constexpr rgb& operator=( util::string_view color_str )
+    {
+      parse_color( color_str );
+      return *this;
+    }
+
+    constexpr rgb& operator+=( rgb other )
+    {
+      unsigned mix_r = ( r_ + other.r_ ) / 2;
+      unsigned mix_g = ( g_ + other.g_ ) / 2;
+      unsigned mix_b = ( b_ + other.b_ ) / 2;
+
+      r_ = static_cast<uint8_t>( mix_r );
+      g_ = static_cast<uint8_t>( mix_g );
+      b_ = static_cast<uint8_t>( mix_b );
+
+      return *this;
+    }
+    
+    rgb operator+( rgb other ) const
+    {
+      rgb new_color( *this );
+      new_color += other;
+      return new_color;
+    }
 
   private:
     constexpr void parse_color( util::string_view color_str ) noexcept

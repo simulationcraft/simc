@@ -892,7 +892,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
 
     if ( s.has_direct_amount_results() || s.has_tick_amount_results() )
     {
-      highchart::time_series_t ts( highchart::build_id( s ), *s.player->sim );
+      highchart::time_series_t ts( highchart::build_id( s, {} ), *s.player->sim );
       chart::generate_stats_timeline( ts, s );
       os << ts.to_target_div();
       s.player->sim->add_chart_data( ts );
@@ -3061,7 +3061,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
     p.collected_data.timeline_dmg_taken.build_derivative_timeline( timeline_dps_taken );
     dps_taken.set_yaxis_title( "Damage taken per second" );
     dps_taken.set_title( util::encode_html( p.name_str ) + " Damage taken per second" );
-    dps_taken.add_simple_series( "area", "#FDD017", "DPS taken", timeline_dps_taken.data() );
+    dps_taken.add_simple_series( "area", color::rgb{"FDD017"}, "DPS taken", timeline_dps_taken.data() );
     dps_taken.set_mean( timeline_dps_taken.mean() );
 
     if ( p.sim->player_no_pet_list.size() > 1 )
@@ -3387,7 +3387,7 @@ void print_html_player_buff( report::sc_html_stream& os, const buff_t& b, int re
       highchart::time_series_t buff_uptime( chart_id, *b.sim );
       buff_uptime.set_yaxis_title( "Average uptime" );
       buff_uptime.set_title( util::encode_html( b.name_str ) + " " + title );
-      buff_uptime.add_simple_series( "area", "#FF0000", title, b.uptime_array.data() );
+      buff_uptime.add_simple_series( "area", color::rgb{"FF0000"}, title, b.uptime_array.data() );
       buff_uptime.set_mean( b.uptime_array.mean() );
 
       if ( !b.player || !b.sim->single_actor_batch )

@@ -1487,7 +1487,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   for ( const auto& entry : sim.chart_data )
   {
     os << "\"" + entry.first + "\": [\n";
-    const std::vector<std::string> data = entry.second;
+    const std::vector<std::string>& data = entry.second;
     for ( size_t j = 0; j < data.size(); ++j )
     {
       os << data[ j ];

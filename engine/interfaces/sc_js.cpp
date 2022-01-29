@@ -205,7 +205,7 @@ namespace js {
 
     js_.Accept(writer);
 
-    return b.GetString();
+    return std::string{ b.GetStringView() };
   }
 
   JsonOutput& js::JsonOutput::operator=(const cooldown_t& v)

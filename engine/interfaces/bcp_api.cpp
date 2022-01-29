@@ -320,7 +320,7 @@ void download( sim_t*               sim,
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     d.Accept( writer );
-    sim->out_debug.raw().print( "{}", b.GetString() );
+    sim->out_debug.raw().print( "{}", b.GetStringView() );
   }
 }
 
@@ -376,7 +376,7 @@ void parse_file( sim_t* sim, const std::string& path, rapidjson::Document& d )
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     d.Accept( writer );
-    sim->out_debug.raw() << b.GetString();
+    sim->out_debug.raw() << b.GetStringView();
   }
 }
 
@@ -889,7 +889,7 @@ void download_item_data( item_t& item, cache::behavior_e caching )
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     js.Accept( writer );
-    item.sim -> out_debug.raw() << b.GetString();
+    item.sim -> out_debug.raw() << b.GetStringView();
   }
 
   try
@@ -1098,7 +1098,7 @@ void download_roster( rapidjson::Document& d,
     rapidjson::PrettyWriter< rapidjson::StringBuffer > writer( b );
 
     d.Accept( writer );
-    sim -> out_debug.raw() << b.GetString();
+    sim -> out_debug.raw() << b.GetStringView();
   }
 }
 
