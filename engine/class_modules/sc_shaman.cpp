@@ -7229,6 +7229,12 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
+      resource_current = resource_e::RESOURCE_MAELSTROM;
+    }
+
     base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
@@ -7279,6 +7285,21 @@ struct chain_harvest_t : public shaman_spell_t
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
+  }
+
+  virtual void trigger_maelstrom_gain( const action_state_t* state )
+  {
+    shaman_spell_t::trigger_maelstrom_gain( state );
+    if ( maelstrom_gain == 0 )
+    {
+      return;
+    }
+
+    // Generate Maelstrom for friendly targets hit.
+    double g = maelstrom_gain;
+    g *= composite_maelstrom_gain_coefficient( state );
+    g *= p()->opt_sl.chain_harvest_allies;
+    p()->resource_gain( RESOURCE_MAELSTROM, g, gain, this );
   }
 };
 
@@ -9778,12 +9799,12 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
-    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled", "Summon Earth Elemental precombat if you haven't selected Primal Elementalist." );
     precombat->add_talent( this, "Stormkeeper",
                            "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                            "Use Stormkeeper precombat unless some adds will spawn soon." );
-    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled", "Use Elemental Blast precombat." );
+    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled", "Use Lava Burst precombat is Elemental Blast is not available." );
 
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
@@ -9818,8 +9839,8 @@ void shaman_t::init_action_list_elemental()
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
     aoe->add_action( this, "Earth Shock", "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
+    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_action( this, "Earthquake" );
     aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
@@ -9829,16 +9850,16 @@ void shaman_t::init_action_list_elemental()
 
     // Single target APL
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     single_target->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     single_target->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
-    single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
+    single_target->add_action( this, "Lightning Bolt", "if=talent.stormkeeper.enabled&buff.stormkeeper.up&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up|!talent.master_of_the_elements)" );
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Earthquake", "if=(spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)" );
     single_target->add_action( this, "Earth Shock" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     single_target->add_talent( this, "Icefury", "if=talent.icefury.enabled" );
     single_target->add_action( this, "Lightning Bolt" );
