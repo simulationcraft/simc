@@ -2670,6 +2670,121 @@ struct shooting_stars_t : public druid_spell_t
 };
 }  // namespace spells
 
+namespace heals
+{
+// ==========================================================================
+// Druid Heal
+// ==========================================================================
+struct druid_heal_t : public druid_spell_base_t<heal_t>
+{
+  struct
+  {
+    bool flourish;  // true if tick_rate is affected by flourish, NOTE: extension is handled in flourish_t
+    bool ironbark;
+    bool soul_of_the_forest;
+  } affected_by;
+
+  double fr_mul;     // % healing from frenzied regeneration rank 3, implemented for self heal only
+  double iron_mul;   // % healing from hots with ironbark
+  double photo_mul;  // tick rate multiplier when lb is on self
+  double photo_pct;  // % chance to bloom when lb is on other
+  bool target_self;
+
+  druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
+    : base_t( n, p, s ),
+      affected_by(),
+      fr_mul( p->spec.frenzied_regeneration_3->effectN( 1 ).percent() ),
+      iron_mul( 0.0 ),
+      photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
+      photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
+      target_self( false )
+  {
+    add_option( opt_bool( "target_self", target_self ) );
+    parse_options( opt );
+
+    if ( target_self )
+      target = p;
+
+    may_miss = harmful = false;
+    ignore_false_positive = true;
+
+    if ( p->spec.ironbark->ok() )
+    {
+      if ( p->query_aura_effect( p->spec.ironbark, A_MOD_HEALING_RECEIVED, 0, s )->ok() )
+      {
+        affected_by.ironbark = true;
+
+        auto rank = p->find_rank_spell( "Ironbark", "Rank 2" );
+        if ( rank->ok() )
+          iron_mul = rank->effectN( 1 ).percent();
+      }
+    }
+
+    if ( p->talent.flourish->ok() )
+      affected_by.flourish = p->query_aura_effect( p->talent.flourish, A_ADD_PCT_MODIFIER, P_TICK_TIME, s )->ok();
+  }
+
+  virtual double harmony_multiplier( player_t* t ) const
+  {
+    return p()->cache.mastery_value() * td( t )->hots_ticking();
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double ctm = base_t::composite_target_multiplier( t );
+
+    if ( p()->mastery.harmony->ok() )
+      ctm *= 1.0 + harmony_multiplier( t );
+
+    return ctm;
+  }
+
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double cttm = base_t::composite_target_ta_multiplier( t );
+
+    if ( fr_mul && t == player && td( t )->hots.frenzied_regeneration->is_ticking() )
+      cttm *= 1.0 + fr_mul;
+
+    if ( iron_mul && td( t )->buff.ironbark->up() )
+      cttm *= 1.0 + iron_mul;
+
+    return cttm;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    auto tt = base_t::tick_time( s );
+
+    if ( affected_by.flourish && p()->buff.flourish->check() )
+      tt *= 1.0 + p()->buff.flourish->default_value;
+
+    if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
+      tt *= 1.0 + photo_mul;
+
+    return tt;
+  }
+
+  void tick( dot_t* d ) override
+  {
+    base_t::tick( d );
+
+    auto lb = td( d->target )->hots.lifebloom;
+
+    if ( photo_pct && lb->is_ticking() && rng().roll( photo_pct ) )
+      lb->current_action->last_tick( lb );
+  }
+
+  void execute() override
+  {
+    base_t::execute();
+
+    if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
+      p()->buff.soul_of_the_forest_tree->expire();
+  }
+};
+}  // namespace heals
+
 namespace cat_attacks
 {
 // ==========================================================================
@@ -4313,128 +4428,38 @@ struct thrash_bear_t : public bear_attack_t
 // Architect's Aligner (Guardian T28 4set bonus )============================
 struct architects_aligner_t : public bear_attack_t
 {
+  struct architects_aligner_heal_t : public heals::druid_heal_t
+  {
+    architects_aligner_heal_t( druid_t* p )
+      : heals::druid_heal_t( "architects_aligner_heal", p, p->find_spell( 363789 ) )
+    {
+      background = true;
+    }
+  };
+
+  // the heal is always self-targetted, so we don't want to use execute_target
+  action_t* heal;
+
   architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
   {
     background = true;
     aoe = -1;
+
+    heal = p->get_secondary_action<architects_aligner_heal_t>( "architects_aligner_heal" );
+    heal->name_str_reporting = "architects_aligner";
+  }
+
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    heal->execute();
   }
 };
 } // end namespace bear_attacks
 
 namespace heals
 {
-// ==========================================================================
-// Druid Heal
-// ==========================================================================
-struct druid_heal_t : public druid_spell_base_t<heal_t>
-{
-  struct
-  {
-    bool flourish;  // true if tick_rate is affected by flourish, NOTE: extension is handled in flourish_t
-    bool ironbark;
-    bool soul_of_the_forest;
-  } affected_by;
-
-  double fr_mul;     // % healing from frenzied regeneration rank 3, implemented for self heal only
-  double iron_mul;   // % healing from hots with ironbark
-  double photo_mul;  // tick rate multiplier when lb is on self
-  double photo_pct;  // % chance to bloom when lb is on other
-  bool target_self;
-
-  druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
-    : base_t( n, p, s ),
-      affected_by(),
-      fr_mul( p->spec.frenzied_regeneration_3->effectN( 1 ).percent() ),
-      iron_mul( 0.0 ),
-      photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
-      photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
-      target_self( false )
-  {
-    add_option( opt_bool( "target_self", target_self ) );
-    parse_options( opt );
-
-    if ( target_self )
-      target = p;
-
-    may_miss = harmful = false;
-    ignore_false_positive = true;
-
-    if ( p->spec.ironbark->ok() )
-    {
-      if ( p->query_aura_effect( p->spec.ironbark, A_MOD_HEALING_RECEIVED, 0, s )->ok() )
-      {
-        affected_by.ironbark = true;
-
-        auto rank = p->find_rank_spell( "Ironbark", "Rank 2" );
-        if ( rank->ok() )
-          iron_mul = rank->effectN( 1 ).percent();
-      }
-    }
-
-    if ( p->talent.flourish->ok() )
-      affected_by.flourish = p->query_aura_effect( p->talent.flourish, A_ADD_PCT_MODIFIER, P_TICK_TIME, s )->ok();
-  }
-
-  virtual double harmony_multiplier( player_t* t ) const
-  {
-    return p()->cache.mastery_value() * td( t )->hots_ticking();
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double ctm = base_t::composite_target_multiplier( t );
-
-    if ( p()->mastery.harmony->ok() )
-      ctm *= 1.0 + harmony_multiplier( t );
-
-    return ctm;
-  }
-
-  double composite_target_ta_multiplier( player_t* t ) const override
-  {
-    double cttm = base_t::composite_target_ta_multiplier( t );
-
-    if ( fr_mul && t == player && td( t )->hots.frenzied_regeneration->is_ticking() )
-      cttm *= 1.0 + fr_mul;
-
-    if ( iron_mul && td( t )->buff.ironbark->up() )
-      cttm *= 1.0 + iron_mul;
-
-    return cttm;
-  }
-
-  timespan_t tick_time( const action_state_t* s ) const override
-  {
-    auto tt = base_t::tick_time( s );
-
-    if ( affected_by.flourish && p()->buff.flourish->check() )
-      tt *= 1.0 + p()->buff.flourish->default_value;
-
-    if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
-      tt *= 1.0 + photo_mul;
-
-    return tt;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    base_t::tick( d );
-
-    auto lb = td( d->target )->hots.lifebloom;
-
-    if ( photo_pct && lb->is_ticking() && rng().roll( photo_pct ) )
-      lb->current_action->last_tick( lb );
-  }
-
-  void execute() override
-  {
-    base_t::execute();
-
-    if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
-      p()->buff.soul_of_the_forest_tree->expire();
-  }
-};  // end druid_heal_t
-
 // Cenarion Ward ============================================================
 struct cenarion_ward_t : public druid_heal_t
 {
