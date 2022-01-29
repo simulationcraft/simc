@@ -6389,16 +6389,16 @@ struct thrash_proxy_t : public druid_spell_t
 // Skull Bash ===============================================================
 struct skull_bash_t : public druid_interrupt_t
 {
-  skull_bash_t( druid_t* p, std::string_view options_str )
-    : druid_interrupt_t( "skull_bash", p, p->find_specialization_spell( "Skull Bash" ), options_str )
+  skull_bash_t( druid_t* p, std::string_view opt )
+    : druid_interrupt_t( "skull_bash", p, p->find_specialization_spell( "Skull Bash" ), opt )
   {}
 };
 
 // Solar Beam ===============================================================
 struct solar_beam_t : public druid_interrupt_t
 {
-  solar_beam_t( druid_t* p, std::string_view options_str )
-    : druid_interrupt_t( "solar_beam", p, p->find_specialization_spell( "Solar Beam" ), options_str )
+  solar_beam_t( druid_t* p, std::string_view opt )
+    : druid_interrupt_t( "solar_beam", p, p->find_specialization_spell( "Solar Beam" ), opt )
   {
     base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
   }
@@ -6431,6 +6431,19 @@ struct stampeding_roar_t : public druid_spell_t
       if ( actor->buffs.stampeding_roar )
         actor->buffs.stampeding_roar->apply_affecting_conduit( p()->conduit.front_of_the_pack );
     }
+  }
+
+  // form->form stampeding roar (id=77764) is properly given hasted gcd via the druid aura (id=137009 eff#4), but the
+  // caster->form stampeding roar (id=106898) is missing from the whitelist and does not have a hasted gcd.
+  // find_class_spell() returns 106898, so we need to adjust the gcd_type before schedule_execute()
+  void schedule_execute( action_state_t* s ) override
+  {
+    if ( p()->get_form() == form_e::BEAR_FORM || p()->get_form() == form_e::CAT_FORM )
+      gcd_type = gcd_haste_type::ATTACK_HASTE;
+    else
+      gcd_type = gcd_haste_type::NONE;
+
+    druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
