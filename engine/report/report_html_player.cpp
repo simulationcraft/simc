@@ -163,9 +163,9 @@ enum sort_flag_e : unsigned
 };
 
 void sorttable_header( report::sc_html_stream& os,                    // output stream to html report
-                       const std::string& header,                     // column header name
+                       std::string_view header,                     // column header name
                        unsigned flag = SORT_FLAG_NONE,                // bitflags to set header class
-                       const std::string& helptext = std::string() )  // optional hover help id
+                       std::string_view helptext = {} )  // optional hover help id
 {
   std::string class_str = "toggle-sort";
   std::string data_str;
@@ -185,13 +185,13 @@ void sorttable_header( report::sc_html_stream& os,                    // output 
   if ( !helptext.empty() )
   {
     class_str += " help";
-    data_str += " data-help=\"#" + helptext + "\"";
+    data_str += fmt::format(" data-help=\"#{}\"",  helptext );
   }
 
   os << "<th class=\"" << class_str << "\"" << data_str << ">" << header << "</th>\n";
 }
 
-void sorttable_help_header( report::sc_html_stream& os, const std::string& header, const std::string& helptext,
+void sorttable_help_header( report::sc_html_stream& os, std::string_view header, std::string_view helptext,
                             unsigned flag = SORT_FLAG_NONE )
 {
   sorttable_header( os, header, flag, helptext );
@@ -200,18 +200,18 @@ void sorttable_help_header( report::sc_html_stream& os, const std::string& heade
 void print_distribution_chart( report::sc_html_stream& os,    // output stream to html report
                                const player_t& p,             // player
                                extended_sample_data_t* data,  // pointer to specific data object
-                               const std::string& name,       // name of the bucket (util::encode_html() first!).
-                               const std::string& token,      // tokenized name used for chart & toggle ID
-                               const std::string& suffix,     // tokenized data name, i.e. "_count"
+                               std::string_view name,       // name of the bucket (util::encode_html() first!).
+                               std::string_view token,      // tokenized name used for chart & toggle ID
+                               std::string_view suffix,     // tokenized data name, i.e. "_count"
                                bool time_element = false )    // true for time based elements like interval
 {
   bool percent = data->mean() < 1.0 && data->min() < 1.0 && data->max() < 1.0;
 
-  highchart::histogram_chart_t chart( token + suffix, *p.sim );
-  if ( chart::generate_distribution( chart, nullptr, data->distribution, name + " " + data->name_str,
+  highchart::histogram_chart_t chart( fmt::format("{}{}", token, suffix ), *p.sim );
+  if ( chart::generate_distribution( chart, nullptr, data->distribution, fmt::format("{} {}", name, data->name_str ),
                                      data->mean(), data->min(), data->max(), percent ) )
   {
-    chart.set_toggle_id( token + "_toggle" );
+    chart.set_toggle_id( fmt::format("{}_toggle", token ) );
     if ( time_element )
     {
       chart.set( "xAxis.labels.format", "{value}s" );
@@ -3132,7 +3132,7 @@ void print_html_player_charts( report::sc_html_stream& os, const player_t& p,
 }
 
 void print_html_player_buff_spelldata( report::sc_html_stream& os, const buff_t& b, const spell_data_t& data,
-                                       const std::string& data_name )
+                                       std::string_view data_name )
 {
   // Spelldata
   if ( data.ok() )
