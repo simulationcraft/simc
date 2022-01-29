@@ -11143,22 +11143,29 @@ void druid_t::moving()
     player_t::interrupt();
 }
 
-void druid_t::trigger_natures_guardian( const action_state_t* trigger_state )
+void druid_t::trigger_natures_guardian( const action_state_t* s )
 {
   if ( !mastery.natures_guardian->ok() )
     return;
-  if ( trigger_state->result_total <= 0 )
-    return;
-  if ( trigger_state->action == active.natures_guardian || trigger_state->action == active.yseras_gift ||
-       trigger_state->action->id == 22842 )  // Frenzied Regeneration
+
+  // don't display amount from tank_heal & other raid events, as we're mainly interested in benefit from actions
+  if ( s->action->id <= 0 )
     return;
 
-  active.natures_guardian->base_dd_min = active.natures_guardian->base_dd_max =
-      trigger_state->result_total * cache.mastery_value();
-  action_state_t* s = active.natures_guardian->get_state();
-  s->target         = this;
-  active.natures_guardian->snapshot_state( s, result_amount_type::HEAL_DIRECT );
-  active.natures_guardian->schedule_execute( s );
+  if ( s->result_total <= 0 )
+    return;
+
+  if ( s->action == active.natures_guardian || s->action == active.yseras_gift ||
+       s->action->id == 22842 )  // Frenzied Regeneration
+    return;
+
+  active.natures_guardian->base_dd_min = active.natures_guardian->base_dd_max = s->result_total * cache.mastery_value();
+
+  action_state_t* new_state = active.natures_guardian->get_state();
+  new_state->target = this;
+
+  active.natures_guardian->snapshot_state( new_state, result_amount_type::HEAL_DIRECT );
+  active.natures_guardian->schedule_execute( new_state );
 }
 
 double druid_t::calculate_expected_max_health() const
