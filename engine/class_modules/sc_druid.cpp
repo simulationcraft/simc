@@ -444,7 +444,6 @@ public:
     buff_t* bristling_fur;
     buff_t* berserk_bear;
     buff_t* earthwarden;
-    buff_t* earthwarden_driver;
     buff_t* galactic_guardian;
     buff_t* gore;
     buff_t* guardian_of_elune;
@@ -4297,6 +4296,14 @@ struct thrash_bear_t : public bear_attack_t
     {
       execute();
     }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    bear_attack_t::impact( s );
+
+    if ( p()->talent.earthwarden->ok() && result_is_hit( s->result ) )
+      p()->buff.earthwarden->trigger();
   }
 };
 
@@ -9242,13 +9249,6 @@ void druid_t::create_buffs()
   buff.earthwarden = make_buff( this, "earthwarden", find_spell( 203975 ) )
     ->set_default_value( talent.earthwarden->effectN( 1 ).percent() );
 
-  buff.earthwarden_driver = make_buff( this, "earthwarden_driver", talent.earthwarden )
-    ->set_quiet( true )
-    ->set_tick_zero( true )
-    ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
-        buff.earthwarden->trigger();
-      } );
-
   buff.galactic_guardian = make_buff( this, "galactic_guardian", spec.galactic_guardian )
     ->set_chance( talent.galactic_guardian->proc_chance() )
     ->set_cooldown( talent.galactic_guardian->internal_cooldown() )
@@ -9982,9 +9982,6 @@ void druid_t::arise()
 {
   player_t::arise();
 
-  if ( talent.earthwarden->ok() )
-    buff.earthwarden->trigger( buff.earthwarden->max_stack() );
-
   if ( talent.natures_balance->ok() )
     buff.natures_balance->trigger();
 
@@ -10001,9 +9998,6 @@ void druid_t::arise()
 
   if ( buff.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
-
-  if ( talent.earthwarden->ok() )
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.earthwarden_driver ) );
 }
 
 void druid_t::combat_begin()
