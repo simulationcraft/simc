@@ -10170,9 +10170,8 @@ double druid_t::composite_dodge_rating() const
 {
   double dr = player_t::composite_dodge_rating();
 
-  // FIXME: Spell dataify me.
-  if ( specialization() == DRUID_GUARDIAN )
-    dr += composite_rating( RATING_MELEE_CRIT );
+  if ( spec.lightning_reflexes->ok() )
+    dr += composite_rating( RATING_MELEE_CRIT ) * spec.lightning_reflexes->effectN( 1 ).percent();
 
   return dr;
 }
