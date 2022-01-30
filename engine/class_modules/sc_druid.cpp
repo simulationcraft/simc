@@ -1133,8 +1133,8 @@ struct force_of_nature_t : public pet_t
 
 namespace buffs
 {
-template <typename BuffBase>
-struct druid_buff_t : public BuffBase
+template <typename Base>
+struct druid_buff_t : public Base
 {
 protected:
   using base_t = druid_buff_t<buff_t>;
@@ -1158,14 +1158,17 @@ protected:
 public:
   druid_buff_t( druid_t& p, std::string_view name, const spell_data_t* s = spell_data_t::nil(),
                 const item_t* item = nullptr )
-    : BuffBase( &p, name, s, item ) {}
+    : Base( &p, name, s, item )
+  {}
 
   druid_buff_t( druid_td_t& td, std::string_view name, const spell_data_t* s = spell_data_t::nil(),
                 const item_t* item = nullptr )
-    : BuffBase( td, name, s, item ) {}
+    : Base( td, name, s, item )
+  {}
 
-  druid_t& p() { return *debug_cast<druid_t*>( BuffBase::source ); }
-  const druid_t& p() const { return *debug_cast<druid_t*>( BuffBase::source ); }
+  druid_t& p() { return *debug_cast<druid_t*>( Base::source ); }
+
+  const druid_t& p() const { return *debug_cast<druid_t*>( Base::source ); }
 };
 
 // Shapeshift Form Buffs ====================================================
@@ -1865,10 +1868,6 @@ public:
   {
     ab::may_crit      = true;
     ab::tick_may_crit = true;
-
-    // Ugly Ugly Ugly hack for now.
-    if ( util::str_in_str_ci( n, "_melee" ) )
-      is_auto_attack = true;
 
     // WARNING: auto attacks will NOT get processed here since they have no spell data
     if ( s->ok() )
@@ -2803,7 +2802,7 @@ protected:
 public:
   std::vector<buff_effect_t> persistent_multiplier_buffeffects;
 
-  struct has_snapshot_t
+  struct
   {
     bool tigers_fury;
     bool bloodtalons;
@@ -2816,19 +2815,17 @@ public:
   double berserk_cp;
   bool requires_stealth;
   bool consumes_combo_points;
-  bool trigger_untamed_ferocity;
 
-  cat_attack_t( std::string_view token, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
-                std::string_view options = {} )
-    : base_t( token, p, s ),
-      snapshots( has_snapshot_t() ),
+  cat_attack_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
+    : base_t( n, p, s ),
+      snapshots(),
       bt_counter( nullptr ),
       tf_counter( nullptr ),
       berserk_cp( 0.0 ),
       requires_stealth( false ),
       consumes_combo_points( false )
   {
-    parse_options( options );
+    parse_options( opt );
 
     if ( data().cost( POWER_COMBO_POINT ) )
     {
@@ -2841,27 +2838,33 @@ public:
     if ( p->specialization() == DRUID_BALANCE || p->specialization() == DRUID_RESTORATION )
       ap_type = attack_power_type::NO_WEAPON;
 
-    using S = const spell_data_t*;
-    using C = const conduit_data_t&;
-
-    snapshots.bloodtalons  = parse_persistent_buff_effects( p->buff.bloodtalons, 0u, false );
-    snapshots.tigers_fury  = parse_persistent_buff_effects<C>( p->buff.tigers_fury, 5u, true,
-                                                               p->conduit.carnivorous_instinct );
-    snapshots.clearcasting = parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true,
-                                                               p->talent.moment_of_clarity );
-
-    if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
+    if ( s->ok() )
     {
-      auto val = p->mastery.razor_claws->effectN( 1 ).percent();
-      da_multiplier_buffeffects.emplace_back( nullptr, val, false, true  );
-      p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
-    }
+      using S = const spell_data_t*;
+      using C = const conduit_data_t&;
 
-    if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
-    {
-      auto val = p->mastery.razor_claws->effectN( 2 ).percent();
-      ta_multiplier_buffeffects.emplace_back( nullptr, val , false, true  );
-      p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
+      snapshots.bloodtalons =
+          parse_persistent_buff_effects( p->buff.bloodtalons, 0u, false );
+
+      snapshots.tigers_fury =
+          parse_persistent_buff_effects<C>( p->buff.tigers_fury, 5u, true, p->conduit.carnivorous_instinct );
+
+      snapshots.clearcasting =
+          parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true, p->talent.moment_of_clarity );
+
+      if ( s->affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
+      {
+        auto val = p->mastery.razor_claws->effectN( 1 ).percent();
+        da_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
+        p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
+      }
+
+      if ( s->affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
+      {
+        auto val = p->mastery.razor_claws->effectN( 2 ).percent();
+        ta_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
+        p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
+      }
     }
   }
 
@@ -8190,28 +8193,32 @@ struct bear_melee_t : public druid_melee_t<bear_attacks::bear_attack_t>
 {
   bear_melee_t( druid_t* p ) : base_t( "bear_melee", p )
   {
-    ab::form_mask = form_e::BEAR_FORM;
+    base_t::form_mask = form_e::BEAR_FORM;
 
-    ab::energize_type = action_energize::ON_HIT;
-    ab::energize_resource = resource_e::RESOURCE_RAGE;
-    ab::energize_amount = 4.0;
+    base_t::energize_type = action_energize::ON_HIT;
+    base_t::energize_resource = resource_e::RESOURCE_RAGE;
+    base_t::energize_amount = 4.0;
   }
 
   void execute() override
   {
-    ab::execute();
+    base_t::execute();
 
-    if ( ab::hit_any_target && ab::p()->talent.tooth_and_claw->ok() )
-      ab::p()->buff.tooth_and_claw->trigger();
+    if ( base_t::hit_any_target && base_t::p()->talent.tooth_and_claw->ok() )
+      base_t::p()->buff.tooth_and_claw->trigger();
   }
 };
 
 // Cat Melee Attack =========================================================
 struct cat_melee_t : public druid_melee_t<cat_attacks::cat_attack_t>
 {
-  cat_melee_t( druid_t* p ) :base_t( "cat_melee", p )
+  cat_melee_t( druid_t* p ) : base_t( "cat_melee", p )
   {
-    ab::form_mask = form_e::CAT_FORM;
+    base_t::form_mask = form_e::CAT_FORM;
+
+    // parse this here so AA modifier gets applied after is_auto_attack is set true
+    base_t::snapshots.tigers_fury = base_t::parse_persistent_buff_effects<const conduit_data_t&>(
+        p->buff.tigers_fury, 5u, true, p->conduit.carnivorous_instinct );
   }
 };
 }  // namespace auto_attacks
