@@ -1177,13 +1177,13 @@ public:
 // Shapeshift Form Buffs ====================================================
 
 // Bear Form ================================================================
-struct bear_form_t : public druid_buff_t<buff_t>
+struct bear_form_buff_t : public druid_buff_t<buff_t>
 {
 private:
   const spell_data_t* rage_spell;
 
 public:
-  bear_form_t( druid_t& p )
+  bear_form_buff_t( druid_t& p )
     : base_t( p, "bear_form", p.find_class_spell( "Bear Form" ) ), rage_spell( p.find_spell( 17057 ) )
   {
     add_invalidate( CACHE_ARMOR );
@@ -1221,9 +1221,9 @@ public:
 };
 
 // Cat Form =================================================================
-struct cat_form_t : public druid_buff_t<buff_t>
+struct cat_form_buff_t : public druid_buff_t<buff_t>
 {
-  cat_form_t( druid_t& p ) : base_t( p, "cat_form", p.find_class_spell( "Cat Form" ) )
+  cat_form_buff_t( druid_t& p ) : base_t( p, "cat_form", p.find_class_spell( "Cat Form" ) )
   {
     add_invalidate( CACHE_ATTACK_POWER );
     add_invalidate( CACHE_EXP );
@@ -1250,9 +1250,9 @@ struct cat_form_t : public druid_buff_t<buff_t>
 };
 
 // Moonkin Form =============================================================
-struct moonkin_form_t : public druid_buff_t<buff_t>
+struct moonkin_form_buff_t : public druid_buff_t<buff_t>
 {
-  moonkin_form_t( druid_t& p ) : base_t( p, "moonkin_form", p.spec.moonkin_form )
+  moonkin_form_buff_t( druid_t& p ) : base_t( p, "moonkin_form", p.spec.moonkin_form )
   {
     add_invalidate( CACHE_ARMOR );
     add_invalidate( CACHE_EXP );
@@ -9006,9 +9006,9 @@ void druid_t::create_buffs()
   using namespace buffs;
 
   // Generic druid buffs
-  buff.bear_form    = make_buff<buffs::bear_form_t>( *this );
-  buff.cat_form     = make_buff<buffs::cat_form_t>( *this );
-  buff.moonkin_form = make_buff<buffs::moonkin_form_t>( *this );
+  buff.bear_form    = make_buff<bear_form_buff_t>( *this );
+  buff.cat_form     = make_buff<cat_form_buff_t>( *this );
+  buff.moonkin_form = make_buff<moonkin_form_buff_t>( *this );
 
   buff.dash = make_buff( this, "dash", find_class_spell( "Dash" ) )
     ->set_cooldown( 0_ms )
