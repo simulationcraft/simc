@@ -7531,7 +7531,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   convoke_the_spirits_t( druid_t* p, std::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->cov.night_fae, options_str ),
-    max_ticks( as<int>( util::floor( dot_duration / base_tick_time ) ) ),
+    max_ticks( 0 ),
     actions(),
     deck( nullptr ),
     main_count( 0 ),
@@ -7545,6 +7545,8 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     channeled = true;
     harmful = may_miss = may_crit = false;
+
+    max_ticks = as<int>( util::floor( dot_duration / base_tick_time ) );
 
     // create deck for exceptional spell cast
     deck = p->get_shuffled_rng( "convoke_the_spirits", 1,
