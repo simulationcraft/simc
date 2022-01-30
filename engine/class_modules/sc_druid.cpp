@@ -2756,11 +2756,13 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     auto tt = base_t::tick_time( s );
 
+    // flourish effect is a negative percent modifier, so multiply here
     if ( affected_by.flourish && p()->buff.flourish->check() )
       tt *= 1.0 + p()->buff.flourish->default_value;
 
+    // photo effect is a positive dummy value, so divide here
     if ( photo_mul && td( player )->hots.lifebloom->is_ticking() )
-      tt *= 1.0 + photo_mul;
+      tt /= 1.0 + photo_mul;
 
     return tt;
   }
@@ -2769,10 +2771,13 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   {
     base_t::tick( d );
 
-    auto lb = td( d->target )->hots.lifebloom;
+    if ( photo_pct && d->target != player && rng().roll( photo_pct ) )
+    {
+      auto lb = td( d->target )->hots.lifebloom;
 
-    if ( photo_pct && lb->is_ticking() && rng().roll( photo_pct ) )
-      lb->current_action->last_tick( lb );
+      if ( lb->is_ticking() )
+        lb->current_action->last_tick( lb );
+    }
   }
 
   void execute() override
