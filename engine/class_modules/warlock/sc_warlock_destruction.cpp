@@ -1151,7 +1151,7 @@ void warlock_t::create_buffs_destruction()
 
   // Tier Sets
   buffs.impending_ruin = make_buff ( this, "impending_ruin", find_spell ( 364348 ) )
-                             ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) 
+                             ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                {
                                  if ( cur == b->max_stack() )
                                  {

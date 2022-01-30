@@ -248,6 +248,36 @@ struct maybe_bool {
   value_e value_ = value_e::None;
 };
 
+template <typename Data, typename Base = action_state_t>
+struct hunter_action_state_t : public Base, public Data
+{
+  static_assert( std::is_base_of_v<action_state_t, Base> );
+  static_assert( std::is_default_constructible_v<Data> ); // required for initialize
+  static_assert( std::is_copy_assignable_v<Data> ); // required for copy_state
+
+  using Base::Base;
+
+  void initialize() override
+  {
+    Base::initialize();
+    *static_cast<Data*>( this ) = Data{};
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    Base::debug_str( s );
+    if constexpr ( fmt::is_formattable<Data>::value )
+      fmt::print( s, " {}", *static_cast<const Data*>( this ) );
+    return s;
+  }
+
+  void copy_state( const action_state_t* o ) override
+  {
+    Base::copy_state( o );
+    *static_cast<Data*>( this ) = *static_cast<const Data*>( debug_cast<const hunter_action_state_t*>( o ) );
+  }
+};
+
 struct hunter_t;
 
 namespace pets
@@ -2327,8 +2357,9 @@ struct trick_shots_t : public buff_t
     if ( !p -> buffs.secrets_of_the_vigil -> trigger() )
       return;
 
-    // XXX: 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
-    if ( p -> bugs && old_stacks > 0 )
+    // 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
+    // XXX 2022-01-25 fixed in 9.2
+    if ( !p -> dbc -> ptr && p -> bugs && old_stacks > 0 )
       return;
 
     // XXX: 2022-01-22
@@ -2626,7 +2657,6 @@ struct barrage_t: public hunter_spell_t
     may_miss = may_crit = false;
     channeled = true;
     triggers_wild_spirits = false;
-    triggers_focused_trickery = false; // XXX 2022-01-22 does not trigger it at all
 
     tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
@@ -3575,6 +3605,16 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
 
 struct aimed_shot_t : public aimed_shot_base_t
 {
+  struct state_data_t
+  {
+    bool secrets_of_the_vigil_up = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "secrets_of_the_vigil_up={:d}", data.secrets_of_the_vigil_up );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   struct double_tap_t final : public aimed_shot_base_t
   {
     double_tap_t( util::string_view n, hunter_t* p ):
@@ -3748,9 +3788,18 @@ struct aimed_shot_t : public aimed_shot_base_t
     return et;
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
+  void impact( action_state_t* s ) override
   {
-    double m = aimed_shot_base_t::recharge_multiplier( cd );
+    aimed_shot_base_t::impact( s );
+
+    // XXX 2022-01-26 AiS consumes Vigil buff on impact if it was up on cast
+    if ( p() -> bugs && debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
+  }
+
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = aimed_shot_base_t::recharge_rate_multiplier( cd );
 
     // XXX [8.1]: Spell Data indicates that it's reducing Aimed Shot recharge rate by 225% (12s/3.25 = 3.69s)
     // m /= 1 + .6;  // The information from the bluepost
@@ -3768,6 +3817,17 @@ struct aimed_shot_t : public aimed_shot_base_t
   bool usable_moving() const override
   {
     return false;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    aimed_shot_base_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = p() -> buffs.secrets_of_the_vigil -> check();
   }
 };
 
@@ -3809,31 +3869,15 @@ struct steady_shot_t: public hunter_ranged_attack_t
 struct rapid_fire_t: public hunter_spell_t
 {
   // this is required because Double Tap 'snapshots' on channel start
-  struct state_t : public action_state_t
+  struct state_data_t
   {
     bool double_tapped = false;
 
-    using action_state_t::action_state_t;
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-      double_tapped = false;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-      fmt::print( s, " double_tapped={:d}", double_tapped );
-      return s;
-    }
-
-    void copy_state( const action_state_t* o ) override
-    {
-      action_state_t::copy_state( o );
-      double_tapped = debug_cast<const state_t*>( o ) -> double_tapped;
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "double_tapped={:d}", data.double_tapped );
     }
   };
+  using state_t = hunter_action_state_t<state_data_t>;
 
   struct damage_t final : public hunter_ranged_attack_t
   {
@@ -4006,9 +4050,9 @@ struct rapid_fire_t: public hunter_spell_t
     return num_ticks_;
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
-    double m = hunter_spell_t::recharge_multiplier( cd );
+    double m = hunter_spell_t::recharge_rate_multiplier( cd );
 
     // XXX [8.1]: Spell Data indicates that it's reducing Rapid Fire by 240% (20s/3.4 = 5.88s)
     // m /= 1 + .6;  // The information from the bluepost

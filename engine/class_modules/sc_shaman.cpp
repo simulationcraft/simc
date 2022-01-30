@@ -493,15 +493,17 @@ public:
   struct
   {
     cooldown_t* ascendance;
-    cooldown_t* fire_elemental;
+    cooldown_t* chain_harvest;
+    cooldown_t* crash_lightning;
     cooldown_t* feral_spirits;
+    cooldown_t* fire_elemental;
+    cooldown_t* flame_shock;
+    cooldown_t* frost_shock;
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
-    cooldown_t* crash_lightning;
+    cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
     cooldown_t* storm_elemental;
     cooldown_t* strike;  // shared CD of Storm Strike and Windstrike
-    cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
-    cooldown_t* chain_harvest;
   } cooldown;
 
   // Covenant Class Abilities
@@ -740,7 +742,6 @@ public:
     const spell_data_t* t28_2pc_enh;
     const spell_data_t* t28_4pc_enh;
     const spell_data_t* t28_2pc_ele;
-    const spell_data_t* t28_2pc_ele_5percent;
     const spell_data_t* t28_4pc_ele;
   } spell;
 
@@ -791,15 +792,17 @@ public:
 
     // Cooldowns
     cooldown.ascendance      = get_cooldown( "ascendance" );
-    cooldown.fire_elemental  = get_cooldown( "fire_elemental" );
-    cooldown.storm_elemental = get_cooldown( "storm_elemental" );
+    cooldown.chain_harvest   = get_cooldown( "chain_harvest" );
+    cooldown.crash_lightning = get_cooldown( "crash_lightning" );
     cooldown.feral_spirits   = get_cooldown( "feral_spirit" );
+    cooldown.fire_elemental  = get_cooldown( "fire_elemental" );
+    cooldown.flame_shock     = get_cooldown( "flame_shock" );
+    cooldown.frost_shock     = get_cooldown( "frost_shock" );
     cooldown.lava_burst      = get_cooldown( "lava_burst" );
     cooldown.lava_lash       = get_cooldown( "lava_lash" );
-    cooldown.crash_lightning = get_cooldown( "crash_lightning" );
-    cooldown.strike          = get_cooldown( "strike" );
+    cooldown.storm_elemental = get_cooldown( "storm_elemental" );
     cooldown.shock           = get_cooldown( "shock" );
-    cooldown.chain_harvest   = get_cooldown( "chain_harvest" );
+    cooldown.strike          = get_cooldown( "strike" );
 
     melee_mh      = nullptr;
     melee_oh      = nullptr;
@@ -3693,7 +3696,15 @@ struct ice_strike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      p()->cooldown.shock->reset( false );
+      if ( player->dbc->ptr )
+      {
+        p()->cooldown.flame_shock->reset( false );
+        p()->cooldown.frost_shock->reset( false );
+      }
+      else
+      {
+        p()->cooldown.shock->reset( false );
+      }
     }
   }
 };
@@ -4542,14 +4553,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      if ( p()->bugs && p()->is_ptr() )
-      {
-        m *= 1.0 + p()->spell.t28_2pc_ele_5percent->effectN( 1 ).percent();
-      } 
-      else
-      {
           m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
-      }
     }
 
     return m;
@@ -4963,14 +4967,7 @@ struct lava_burst_t : public shaman_spell_t
 
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
     {
-      if ( p()->bugs && p()->is_ptr() )
-      {
-        m *= 1.0 + p()->spell.t28_2pc_ele_5percent->effectN( 1 ).percent();
-      }
-      else
-      {
         m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
-      }
     }
 
     return m;
@@ -5907,7 +5904,10 @@ public:
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.shock;
+      if ( !player->dbc->ptr )
+      {
+        cooldown         = p()->cooldown.shock;
+      }
       cooldown->duration = data().cooldown();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
@@ -6044,7 +6044,10 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      cooldown           = p()->cooldown.shock;
+      if ( !player->dbc->ptr )
+      {
+        cooldown         = p()->cooldown.shock;
+      }
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
       track_cd_waste = true;
@@ -7226,6 +7229,12 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
+      resource_current = resource_e::RESOURCE_MAELSTROM;
+    }
+
     base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
 
     base_crit += p()->conduit.lavish_harvest.percent();
@@ -7276,6 +7285,21 @@ struct chain_harvest_t : public shaman_spell_t
   std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
   {
     return __check_distance_targeting( this, tl );
+  }
+
+  virtual void trigger_maelstrom_gain( const action_state_t* state )
+  {
+    shaman_spell_t::trigger_maelstrom_gain( state );
+    if ( maelstrom_gain == 0 )
+    {
+      return;
+    }
+
+    // Generate Maelstrom for friendly targets hit.
+    double g = maelstrom_gain;
+    g *= composite_maelstrom_gain_coefficient( state );
+    g *= p()->opt_sl.chain_harvest_allies;
+    p()->resource_gain( RESOURCE_MAELSTROM, g, gain, this );
   }
 };
 
@@ -8268,7 +8292,7 @@ void shaman_t::init_spells()
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
 
-  spell.t28_2pc_ele_5percent        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
+  //spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
   // this is the actually useful spell
   spell.t28_2pc_ele        = find_spell( 364523 );
   spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
@@ -9775,12 +9799,12 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
-    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
+    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled", "Summon Earth Elemental precombat if you haven't selected Primal Elementalist." );
     precombat->add_talent( this, "Stormkeeper",
                            "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                            "Use Stormkeeper precombat unless some adds will spawn soon." );
-    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled" );
+    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled", "Use Elemental Blast precombat." );
+    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled", "Use Lava Burst precombat is Elemental Blast is not available." );
 
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
@@ -9815,8 +9839,8 @@ void shaman_t::init_action_list_elemental()
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
     aoe->add_action( this, "Earth Shock", "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
+    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_action( this, "Earthquake" );
     aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
@@ -9826,16 +9850,16 @@ void shaman_t::init_action_list_elemental()
 
     // Single target APL
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     single_target->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     single_target->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
-    single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
+    single_target->add_action( this, "Lightning Bolt", "if=talent.stormkeeper.enabled&buff.stormkeeper.up&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up|!talent.master_of_the_elements)" );
     single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     single_target->add_action( this, "Earthquake", "if=(spell_targets.chain_lightning>1&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)" );
     single_target->add_action( this, "Earth Shock" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
     single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     single_target->add_talent( this, "Icefury", "if=talent.icefury.enabled" );
     single_target->add_action( this, "Lightning Bolt" );
