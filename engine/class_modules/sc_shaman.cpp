@@ -7229,7 +7229,7 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
-    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    if ( player->dbc->ptr && player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
       resource_current = resource_e::RESOURCE_MAELSTROM;
@@ -7287,7 +7287,7 @@ struct chain_harvest_t : public shaman_spell_t
     return __check_distance_targeting( this, tl );
   }
 
-  virtual void trigger_maelstrom_gain( const action_state_t* state )
+  virtual void trigger_maelstrom_gain( const action_state_t* state ) override
   {
     shaman_spell_t::trigger_maelstrom_gain( state );
     if ( maelstrom_gain == 0 )
