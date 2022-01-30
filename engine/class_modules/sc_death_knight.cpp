@@ -7877,13 +7877,17 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   if ( chance == 0 )
   {
     // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
-    double km_proc_chance = 0.3;
+    double km_proc_chance = 0.12;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
     {
-      km_proc_chance = 0.7;
+      km_proc_chance = ++km_proc_attempts * 0.7;
+    }
+    else
+    {
+      km_proc_chance = .04 + (.12 * ++km_proc_attempts);
     }
 
-    if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
+    if ( rng().roll( km_proc_chance ) )
     {
       triggered = true;
       km_proc_attempts = 0;
