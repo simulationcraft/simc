@@ -140,7 +140,7 @@ double pet_t::composite_player_target_multiplier( player_t* target, school_e sch
     // Shadow Priest specific buff that applies to any pet you summon
     if ( owner->specialization() == PRIEST_SHADOW )
     {
-      const priestspace::priest_td_t* shadow_td = debug_cast<const priestspace::priest_td_t*>( td );
+      const priestspace::priest_td_t* shadow_td = static_cast<const priestspace::priest_td_t*>( td );
       
       if ( shadow_td->buffs.hungering_void->check() )
       {
