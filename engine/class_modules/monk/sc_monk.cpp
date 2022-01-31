@@ -448,13 +448,12 @@ public:
     if ( trigger_chiji && p()->buff.invoke_chiji->up() )
       p()->buff.invoke_chiji_evm->trigger();
 
-    // The bug is that this is triggering before the execute
-    // Meaning Primordial Potential transforms into Primordial Power before
+    // Primordial Potential transforms into Primordial Power before
     // the ability executes and thus benefits from the Primordial Power
     // buff when Primordial Potential hits 10 stacks.
     // At the same time, the 3rd stack of Primorodial Power does not provide
     // any benefits.
-    if ( p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
       // Check if Primordial Power is active
       // If it is then if the ability can trigger, then decrement
@@ -1067,6 +1066,18 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       s->target->debuffs.mystic_touch->trigger();
     }
   }
+
+  void apply_dual_wield_two_handed_scaling()
+  {
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( player->main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // 0.98 multiplier found only in tooltip
+      base_multiplier *= 0.98;
+    }
+  }
 };
 
 // ==========================================================================
@@ -1349,10 +1360,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     background = dual = true;
     may_crit          = true;
-    trigger_chiji         = true;
+    trigger_chiji     = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
-      ap_type         = attack_power_type::WEAPON_BOTH;
+      apply_dual_wield_two_handed_scaling();
   }
 
   double action_multiplier() const override
@@ -1629,7 +1640,7 @@ struct blackout_kick_t : public monk_melee_attack_t
         // Saved as -1
         base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
 
-      ap_type = attack_power_type::WEAPON_BOTH;
+      apply_dual_wield_two_handed_scaling();
     }
   }
 
@@ -1884,7 +1895,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     radius            = data->effectN( 1 ).radius();
 
     if ( p->specialization() == MONK_WINDWALKER )
-        ap_type       = attack_power_type::WEAPON_BOTH;
+        apply_dual_wield_two_handed_scaling();
 
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
@@ -2115,10 +2126,10 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
-    ap_type                    = attack_power_type::WEAPON_BOTH;
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
+    apply_dual_wield_two_handed_scaling();
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -2248,7 +2259,7 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
     background = true;
     aoe        = -1;
     radius     = s->effectN( 1 ).radius();
-    ap_type    = attack_power_type::WEAPON_BOTH;
+    apply_dual_wield_two_handed_scaling();
   }
 };
 
@@ -2354,12 +2365,10 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true; // Do not want to trigger this until after the second hit.
-    trigger_ww_t28_4p_power = true; // Do not want to remove this until after the second hit.
+    trigger_ww_t28_4p_power     = true; // Do not want to remove this until after the second hit.
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
-    // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
-    weapon = &( player->main_hand_weapon );
   }
 };
 
@@ -2371,18 +2380,16 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
       mh_attack( nullptr )
   {
     sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH;
-    ww_mastery           = true;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    ww_mastery             = true;
+    may_combo_strike       = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    affected_by.serenity = false;
-    cooldown->hasted     = false;
-    ap_type              = attack_power_type::WEAPON_BOTH;
+    affected_by.serenity   = false;
+    cooldown->hasted       = false;
+    ap_type                = attack_power_type::WEAPON_OFFHAND;
 
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
-    // This is the off-hand damage
-    weapon      = &( player->off_hand_weapon );
     trigger_gcd = data().gcd();
 
     mh_attack = new fist_of_the_white_tiger_main_hand_t( p, "fist_of_the_white_tiger_mainhand",

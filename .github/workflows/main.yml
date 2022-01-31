@@ -17,11 +17,12 @@ env:
 
 jobs:
   ubuntu-gcc:
-    name: ubuntu-${{ matrix.cc }}
+    name: ubuntu-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
     runs-on: ubuntu-18.04
     strategy:
       matrix:
         cc: [gcc-10, gcc-7]
+        cppVersion: [17, 20]
         include:
           - cc: gcc-7
             cxx: g++-7
@@ -29,6 +30,9 @@ jobs:
           - cc: gcc-10
             cxx: g++-10
             packages: gcc-10 g++-10
+        exclude:
+          - cc: gcc-7
+            cppVersion: 20   
 
     steps:
       - uses: actions/checkout@v2
@@ -51,6 +55,7 @@ jobs:
               -DCMAKE_CXX_COMPILER=${{ matrix.cxx }} -DCMAKE_C_COMPILER=${{ matrix.cc }}
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld"
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }} 
 
       - name: Build
         env:
@@ -73,12 +78,15 @@ jobs:
   ubuntu-clang-build:
     name: ubuntu-clang-build
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        cppVersion: [17, 20]
 
     steps:
       - uses: actions/checkout@v2
 
       - uses: actions/cache@v2
-        env: { ccache-prefix: 'ubuntu-clang-12-ccache-${{ env.ccache-generation }}' }
+        env: { ccache-prefix: 'ubuntu-clang-12-cpp-${{ matrix.cppVersion }}-ccache-${{ env.ccache-generation }}' }
         with:
           path: ${{ runner.workspace }}/.ccache
           key: ${{ env.ccache-prefix }}-${{ github.sha }}
@@ -99,6 +107,7 @@ jobs:
                 -fno-omit-frame-pointer -fsanitize=address,undefined
                 -fsanitize-undefined-strip-path-components=$UBSAN_STRIP_COUNT"
               -DCMAKE_EXE_LINKER_FLAGS="-fuse-ld=lld -fsanitize=address,undefined"
+              -DCMAKE_CXX_STANDARD=${{ matrix.cppVersion }}
               -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
 
       - name: Build
@@ -117,7 +126,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
 
   ubuntu-clang-run:
@@ -128,6 +137,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        cppVersion: [17, 20]
         include:
           - type: spell_query
             simc_flags: spell_query=spell > /dev/null
@@ -145,7 +155,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Run
         env:
@@ -160,6 +170,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        cppVersion: [17]
         tier: [ Tier27 ]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
@@ -183,7 +194,7 @@ jobs:
             ${{ runner.workspace }}/b/ninja/simc
             profiles
             tests
-          key: ubuntu-clang-for_run-${{ github.sha }}
+          key: ubuntu-clang-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
       - name: Install Python dependencies
         run: pip3 install -r tests/requirements.txt

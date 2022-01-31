@@ -792,12 +792,12 @@ struct warrior_action_t : public Base
         rend( false ),
         siegebreaker( false ),
         ashen_juggernaut( false ),
+        recklessness( false ),
         avatar( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        crushing_assault( false ),
-        recklessness( false )
+        crushing_assault( false )
     {
     }
   } affected_by;

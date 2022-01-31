@@ -1224,7 +1224,7 @@ public:
     }
     if ( p->set_bonuses.t28_assassination_2pc->ok() )
     {
-      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 2 ) );
+      affected_by.t28_assassination_2pc = ab::data().affected_by( p->find_spell( 364668 )->effectN( 1 ) );
     }
 
     // Auto-parsing for damage affecting dynamic flags, this reads IF direct/periodic dmg is affected and stores by how much.
@@ -4315,7 +4315,7 @@ struct shiv_t : public rogue_attack_t
       dual = true;
       callbacks = false;
       aoe = -1;
-      radius = data().effectN(4).base_value();
+      radius = data().effectN( 3 ).base_value();
     }
 
     void impact( action_state_t* s ) override
@@ -4705,8 +4705,8 @@ struct sepsis_t : public rogue_attack_t
   sepsis_t( util::string_view name, rogue_t* p, util::string_view options_str = {} ) :
     rogue_attack_t( name, p, p->covenant.sepsis, options_str )
   {
-    // 2021-04-22- Not in the whitelist but confirmed as working in-game
-    affected_by.broadside_cp = true;
+    affected_by.broadside_cp = true; // 2021-04-22 -- Not in the whitelist but confirmed as working in-game
+    affected_by.t28_assassination_4pc = true; // 2022-01-26 -- TOCHECK: confirmed on PTR, needs live testing
     sepsis_expire_damage = p->get_background_action<sepsis_expire_damage_t>( "sepsis_expire_damage" );
     sepsis_expire_damage->stats = stats;
   }
@@ -4855,14 +4855,24 @@ struct serrated_bone_spike_t : public rogue_attack_t
       if ( count_after )
         active_dots += 1;
 
-      // 2021-07-17-- Testing currently shows that initially-cleaved DoTs do not behave normally
-      if ( p()->bugs )
+      if ( p()->bugs && state->chain_target == 0 )
       {
-        tdata->set_is_deathspiked( state->chain_target > 0 );
+        tdata->set_is_deathspiked( false );
       }
     }
 
-    trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
+    // 2021-07-17 -- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
+    if ( p()->bugs && state->chain_target > 0 )
+    {
+      tdata->set_is_deathspiked( true );
+    }
+ 
+    // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
+    //               Deathspiked targets do not generate CP directly, and are randomly bugged as well
+    if ( state->chain_target == 0 )
+    {
+      trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
+    }
   }
 
   timespan_t travel_time() const override
@@ -7091,7 +7101,9 @@ void rogue_t::init_action_list()
     direct->add_action( "variable,name=use_filler,value=combo_points.deficit>1|energy.deficit<=25+energy.regen_combined|!variable.single_target" );
     direct->add_action( "serrated_bone_spike,if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     direct->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=variable.use_filler&!dot.serrated_bone_spike_dot.ticking" );
-    direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.vendetta.up|buff.marrowed_gemstone_enhancement.up)", "When MA is not at high duration, use SBS to apply Lead by Example during Vendetta, otherwise keep from capping charges" );
+    direct->add_action( "serrated_bone_spike,if=variable.use_filler&master_assassin_remains<0.8&(fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25)", "Keep from capping charges or burn at the end of fights" );
+    direct->add_action( "serrated_bone_spike,if=!set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&(soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.vendetta.up|buff.marrowed_gemstone_enhancement.up|!variable.single_target&debuff.shiv.up)", "When MA is not at high duration, sync with damage buffs without overwriting Lead by Example" );
+    direct->add_action( "serrated_bone_spike,if=set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&debuff.grudge_match.up&!buff.lead_by_example.up&raid_event.adds.in>5" );
     direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
     direct->add_action( "echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10" );
@@ -7213,14 +7225,14 @@ void rogue_t::init_action_list()
     cds->add_action( "flagellation,if=variable.snd_condition&!stealthed.mantle&(spell_targets.shuriken_storm<=1&cooldown.symbols_of_death.up&!talent.shadow_focus.enabled|buff.symbols_of_death.up)&combo_points>=5" );
     cds->add_action( this, "Vanish", "if=(runeforge.mark_of_the_master_assassin&combo_points.deficit<=1-talent.deeper_strategem.enabled|runeforge.deathly_shadows&combo_points<1)&buff.symbols_of_death.up&buff.shadow_dance.up&master_assassin_remains=0&buff.deathly_shadows.down" );
     cds->add_action( "pool_resource,for_next=1,if=talent.shuriken_tornado.enabled&!talent.shadow_focus.enabled", "Pool for Tornado pre-SoD with ShD ready when not running SF." );
-    cds->add_talent( this, "Shuriken Tornado", "if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)&(!covenant.venthyr|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
+    cds->add_talent( this, "Shuriken Tornado", "if=spell_targets.shuriken_storm<=1&energy>=60&variable.snd_condition&cooldown.symbols_of_death.up&cooldown.shadow_dance.charges>=1&(!runeforge.obedience|debuff.flagellation.up|spell_targets.shuriken_storm>=(1+4*(!talent.nightstalker.enabled&!talent.dark_shadow.enabled)))&combo_points<=2&!buff.premeditation.up&(!covenant.venthyr|!cooldown.flagellation.up)", "Use Tornado pre SoD when we have the energy whether from pooling without SF or just generally." );
     cds->add_action( "serrated_bone_spike,cycle_targets=1,if=variable.snd_condition&!dot.serrated_bone_spike_dot.ticking&target.time_to_die>=21&(combo_points.deficit>=(cp_gain>?4))&!buff.shuriken_tornado.up&(!buff.premeditation.up|spell_targets.shuriken_storm>4)|fight_remains<=5&spell_targets.shuriken_storm<3" );
-    cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1" );
+    cds->add_action( "sepsis,if=variable.snd_condition&combo_points.deficit>=1&target.time_to_die>=16" );
     cds->add_action( this, "Symbols of Death", "if=variable.snd_condition&(!talent.shuriken_tornado.enabled|talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2|cooldown.shuriken_tornado.remains>2)&(!covenant.venthyr|cooldown.flagellation.remains>10|cooldown.flagellation.up&combo_points>=5)", "Use Symbols on cooldown (after first SnD) unless we are going to pop Tornado and do not have Shadow Focus." );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.all&combo_points.deficit>=cp_max_spend)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or not stealthed without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend", "If no adds will die within the next 30s, use MfD on boss without any CP." );
-    cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20)" );
-    cds->add_action( "echoing_reprimand,if=variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity)" );
+    cds->add_action( this, "Shadow Blades", "if=variable.snd_condition&combo_points.deficit>=2&(buff.symbols_of_death.up|fight_remains<=20|!buff.shadow_blades.up&set_bonus.tier28_2pc)" );
+    cds->add_action( "echoing_reprimand,if=!stealthed.all&variable.snd_condition&combo_points.deficit>=2&(variable.use_priority_rotation|spell_targets.shuriken_storm<=4|runeforge.resounding_clarity)" );
     cds->add_talent( this, "Shuriken Tornado", "if=(talent.shadow_focus.enabled|spell_targets.shuriken_storm>=2)&variable.snd_condition&buff.symbols_of_death.up&combo_points<=2&(!buff.premeditation.up|spell_targets.shuriken_storm>4)", "With SF, if not already done, use Tornado with SoD up." );
     cds->add_action( this, "Shadow Dance", "if=!buff.shadow_dance.up&fight_remains<=8+talent.subterfuge.enabled" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&energy.deficit>=30&!stealthed.all&buff.symbols_of_death.down" );
@@ -7239,13 +7251,13 @@ void rogue_t::init_action_list()
     stealth_cds->add_action( "variable,name=shd_threshold,value=cooldown.shadow_dance.charges_fractional>=1.75", "Helper Variable" );
     stealth_cds->add_action( this, "Vanish", "if=(!variable.shd_threshold|!talent.nightstalker.enabled&talent.dark_shadow.enabled)&combo_points.deficit>1&!runeforge.mark_of_the_master_assassin", "Vanish if we are capping on Dance charges. Early before first dance if we have no Nightstalker but Dark Shadow in order to get Rupture up (no Master Assassin)." );
     stealth_cds->add_action( "pool_resource,for_next=1,extra_amount=40,if=race.night_elf", "Pool for Shadowmeld + Shadowstrike unless we are about to cap on Dance charges. Only when Find Weakness is about to run out." );
-    stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1&debuff.find_weakness.remains<1" );
+    stealth_cds->add_action( "shadowmeld,if=energy>=40&energy.deficit>=10&!variable.shd_threshold&combo_points.deficit>1" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=2+buff.shadow_blades.up", "CP thresholds for entering Shadow Dance" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit>=3,if=covenant.kyrian" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=variable.use_priority_rotation&spell_targets.shuriken_storm>=4" );
     stealth_cds->add_action( "variable,name=shd_combo_points,value=combo_points.deficit<=1,if=spell_targets.shuriken_storm=4" );
-    stealth_cds->add_action( this, "Shadow Dance", "if=variable.shd_combo_points&(variable.shd_threshold|!talent.enveloping_shadows.enabled|buff.symbols_of_death.remains>=1.2|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>2)", "Dance during Symbols or above threshold." );
-    stealth_cds->add_action( this, "Shadow Dance", "if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains", "Burn remaining Dances before the fight ends if SoD won't be ready in time." );
+    stealth_cds->add_action( this, "Shadow Dance", "if=((variable.shd_combo_points|variable.shd_threshold)&set_bonus.tier28_2pc&covenant.kyrian|variable.shd_combo_points&(buff.symbols_of_death.remains>=1.2|variable.shd_threshold)|buff.chaos_bane.up|spell_targets.shuriken_storm>=4&cooldown.symbols_of_death.remains>10)&(buff.perforated_veins.stack<4|spell_targets.shuriken_storm>3)", "Dance during Symbols or above threshold." );
+    stealth_cds->add_action( this, "Shadow Dance", "if=variable.shd_combo_points&fight_remains<cooldown.symbols_of_death.remains|!talent.enveloping_shadows.enabled", "Burn Dances charges if you play Dark Shadows/Alacrity or before the fight ends if SoD won't be ready in time." );
 
     // Stealthed Rotation
     action_priority_list_t* stealthed = get_action_priority_list( "stealthed", "Stealthed Rotation" );
@@ -7255,6 +7267,7 @@ void rogue_t::init_action_list()
     stealthed->add_action( "call_action_list,name=finish,if=spell_targets.shuriken_storm>=4&variable.effective_combo_points>=4", "Also safe to finish at 4+ CP with exactly 4 targets. (Same as outside stealth.)" );
     stealthed->add_action( "call_action_list,name=finish,if=combo_points.deficit<=1-(talent.deeper_stratagem.enabled&buff.vanish.up)", "Finish at 4+ CP without DS, 5+ with DS, and 6 with DS after Vanish" );
     stealthed->add_action( this, "Shadowstrike", "if=stealthed.sepsis&spell_targets.shuriken_storm<4" );
+    stealthed->add_action( this, "Backstab", "if=buff.perforated_veins.stack>=5&buff.shadow_dance.remains>=3&buff.shadow_blades.up&spell_targets.shuriken_storm<=3", "Backstab during Shadow Dance when on high PV stacks and Shadow Blades is up." );
     stealthed->add_action( this, "Shiv", "if=talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
     stealthed->add_action( this, "Shadowstrike", "cycle_targets=1,if=!variable.use_priority_rotation&debuff.find_weakness.remains<1&spell_targets.shuriken_storm<=3&target.time_to_die-remains>6", "Up to 3 targets (no prio) keep up Find Weakness by cycling Shadowstrike." );
     stealthed->add_action( this, "Shadowstrike", "if=variable.use_priority_rotation&(debuff.find_weakness.remains<1|talent.weaponmaster.enabled&spell_targets.shuriken_storm<=4)", "For priority rotation, use Shadowstrike over Storm with WM against up to 4 targets or if FW is running off (on any amount of targets)" );
@@ -7269,8 +7282,8 @@ void rogue_t::init_action_list()
     finish->add_action( "variable,name=premed_snd_condition,value=talent.premeditation.enabled&spell_targets.shuriken_storm<(5-covenant.necrolord)&!covenant.kyrian", "While using Premeditation, avoid casting Slice and Dice when Shadow Dance is soon to be used, except for Kyrian" );
     finish->add_action( this, "Slice and Dice", "if=!variable.premed_snd_condition&spell_targets.shuriken_storm<6&!buff.shadow_dance.up&buff.slice_and_dice.remains<fight_remains&refreshable" );
     finish->add_action( this, "Slice and Dice", "if=variable.premed_snd_condition&cooldown.shadow_dance.charges_fractional<1.75&buff.slice_and_dice.remains<cooldown.symbols_of_death.remains&(cooldown.shadow_dance.ready&buff.symbols_of_death.remains-buff.shadow_dance.remains<1.2)" );
-    finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=4", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
-    finish->add_action( this, "Rupture", "if=(!variable.skip_rupture|variable.use_priority_rotation)&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
+    finish->add_action( "variable,name=skip_rupture,value=master_assassin_remains>0|!talent.nightstalker.enabled&talent.dark_shadow.enabled&buff.shadow_dance.up|spell_targets.shuriken_storm>=(4-stealthed.all*talent.shadow_focus.enabled)", "Helper Variable for Rupture. Skip during Master Assassin or during Dance with Dark and no Nightstalker." );
+    finish->add_action( this, "Rupture", "if=!stealthed.all&(!variable.skip_rupture|variable.use_priority_rotation)&target.time_to_die-remains>6&refreshable", "Keep up Rupture if it is about to run out." );
     finish->add_talent( this, "Secret Technique" );
     finish->add_action( this, "Rupture", "cycle_targets=1,if=!variable.skip_rupture&!variable.use_priority_rotation&spell_targets.shuriken_storm>=2&target.time_to_die>=(5+(2*combo_points))&refreshable", "Multidotting targets that will live for the duration of Rupture, refresh during pandemic." );
     finish->add_action( this, "Rupture", "if=!variable.skip_rupture&remains<cooldown.symbols_of_death.remains+10&cooldown.symbols_of_death.remains<=5&target.time_to_die-remains>cooldown.symbols_of_death.remains+5", "Refresh Rupture early if it will expire during Symbols. Do that refresh if SoD gets ready in the next 5s." );
@@ -7280,8 +7293,8 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build->add_action( this, "Shiv", "if=!talent.nightstalker.enabled&runeforge.tiny_toxic_blade&spell_targets.shuriken_storm<5" );
-    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)&buff.perforated_veins.stack<=4" );
-    build->add_action( "serrated_bone_spike,if=cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up|soulbind.kevins_oozeling.enabled&!debuff.kevins_wrath.up" );
+    build->add_action( this, "Shuriken Storm", "if=spell_targets>=2&(!covenant.necrolord|cooldown.serrated_bone_spike.max_charges-charges_fractional>=0.25|spell_targets.shuriken_storm>4)&(buff.perforated_veins.stack<=4|spell_targets.shuriken_storm>4)" );
+    build->add_action( "serrated_bone_spike,if=buff.perforated_veins.stack<=2&(cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|soulbind.lead_by_example.enabled&!buff.lead_by_example.up|soulbind.kevins_oozeling.enabled&!debuff.kevins_wrath.up)" );
     build->add_talent( this, "Gloomblade" );
     build->add_action( this, "Backstab", "if=!covenant.kyrian|!(variable.is_next_cp_animacharged&(time_to_sht.3.plus<0.5|time_to_sht.4.plus<1)&energy<60)", "Backstab immediately unless the next CP is Animacharged and we won't cap energy waiting for it.");
   }
