@@ -7878,15 +7878,20 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   // for 1h weapons was incorrect.  This new version seems to match testing done by Bicepspump, via wcl log pull.
   if ( chance == 0 )
   {
-    // If we are using a 1H, we use 0.4 + (km_proc_attempts*0.12) per attempt, with 2H it looks to be km_proc_attempts*0.7 through testing
-    double km_proc_chance = 0.12;
+    // If we are using a 1H, km_proc_attempts*0.13 per attempt, with it going to 100% at 6 attempts,  Also seems to have a bonus 2% chance on the first swing
+    // with 2H it looks to be km_proc_attempts*0.7 through testing
+    double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
     {
       km_proc_chance = ++km_proc_attempts * 0.7;
     }
     else
     {
-      km_proc_chance = 0.04 + ( ++km_proc_attempts * 0.12 );
+      km_proc_chance = ++km_proc_attempts * 0.13;
+      if ( km_proc_attempts == 1 )  // Bonus 2% chance on the first swing
+        km_proc_chance += 0.02;
+      if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
+        km_proc_chance = 1.0;
     }
 
     if ( rng().roll( km_proc_chance ) )
