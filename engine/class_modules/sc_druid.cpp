@@ -97,6 +97,7 @@ struct druid_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* pulverize;
     buff_t* tooth_and_claw;
   } debuff;
 
@@ -441,7 +442,6 @@ public:
     buff_t* gore;
     buff_t* guardian_of_elune;
     buff_t* ironfur;
-    buff_t* pulverize;
     buff_t* survival_instincts;
     buff_t* tooth_and_claw;
     // Guardian Conduits
@@ -4307,14 +4307,13 @@ struct pulverize_t : public bear_attack_t
   {
     bear_attack_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
-    {
-      if ( !free_cast )
-        td( s->target )->dots.thrash_bear->decrement( consume );
+    if ( !result_is_hit( s->result ) )
+      return;
 
-      // and reduce damage taken by x% for y sec.
-      p()->buff.pulverize->trigger();
-    }
+    if ( !free_cast )
+      td( s->target )->dots.thrash_bear->decrement( consume );
+
+    td( s->target )->debuff.pulverize->trigger();
   }
 
   bool target_ready( player_t* t ) override
@@ -7694,9 +7693,13 @@ struct convoke_the_spirits_t : public druid_spell_t
   {
     convoke_cast_e type_ = base_type;
 
-    if ( base_type == CAST_OFFSPEC && !offspec_list.empty() )
+    // convoke will not cast pulverize if it's already up on the target
+    if ( type_ == CAST_PULVERIZE && td( target )->debuff.pulverize->check() )
+      type_ == CAST_SPEC;
+
+    if ( type_ == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
-    else if ( base_type == CAST_SPEC )
+    else if ( type_ == CAST_SPEC )
     {
       auto dist = chances;  // local copy of distribution
 
@@ -9234,11 +9237,6 @@ void druid_t::create_buffs()
     ->apply_affecting_aura( find_rank_spell( "Ironfur", "Rank 2" ) )
     ->add_invalidate( CACHE_AGILITY )
     ->add_invalidate( CACHE_ARMOR );
-
-  buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
-    ->set_cooldown( 0_ms )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
   buff.survival_instincts = make_buff( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
@@ -10869,8 +10867,6 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + buff.survival_instincts->value();
 
-  s->result_amount *= 1.0 + buff.pulverize->value();
-
   if ( spec.thick_hide->ok() )
     s->result_amount *= 1.0 + spec.thick_hide->effectN( 1 ).percent();
 
@@ -10879,6 +10875,12 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
     s->result_amount *= 1.0 + talent.rend_and_tear->effectN( 3 ).percent() *
                                   get_target_data( s->action->player )->dots.thrash_bear->current_stack();
   }
+
+  if ( talent.pulverize->ok() )
+    s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.pulverize->check_value();
+
+  if ( talent.tooth_and_claw->ok() )
+    s->result_amount *= 1.0 + get_target_data( s->action->player )->debuff.tooth_and_claw->check_value();
 
   player_t::target_mitigation( school, type, s );
 }
@@ -10971,8 +10973,14 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   hots.spring_blossoms       = target.get_dot( "spring_blossoms", &source );
   hots.wild_growth           = target.get_dot( "wild_growth", &source );
 
+  debuff.pulverize = make_buff( *this, "pulverize_debuff", source.talent.pulverize )
+    ->set_cooldown( 0_ms )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
+
   debuff.tooth_and_claw = make_buff( *this, "tooth_and_claw_debuff",
-    source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+    source.talent.tooth_and_claw->effectN( 1 ).trigger()->effectN( 2 ).trigger() )
+    ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER );
 
   buff.ironbark = make_buff( *this, "ironbark", source.spec.ironbark )
     ->set_cooldown( 0_ms );
