@@ -582,6 +582,7 @@ public:
     gain_t* feral_spirit;
     gain_t* fire_elemental;
     gain_t* spirit_of_the_maelstrom;
+    gain_t* chain_harvest_heal;
   } gain;
 
   // Tracked Procs
@@ -7301,7 +7302,7 @@ struct chain_harvest_t : public shaman_spell_t
     double g = maelstrom_gain;
     g *= composite_maelstrom_gain_coefficient( state );
     g *= p()->opt_sl.chain_harvest_allies;
-    p()->resource_gain( RESOURCE_MAELSTROM, g, gain, this );
+    p()->resource_gain( RESOURCE_MAELSTROM, g, p()->gain.chain_harvest_heal, this );
   }
 };
 
@@ -9252,6 +9253,7 @@ void shaman_t::init_gains()
   gain.feral_spirit            = get_gain( "Feral Spirit" );
   gain.fire_elemental          = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
+  gain.chain_harvest_heal      = get_gain( "Chain Harvest Heal" );
 }
 
 // shaman_t::init_procs =====================================================
