@@ -3037,7 +3037,9 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    get_td( s->target )->debuffs.frost_storm->trigger();
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.frost_storm->trigger();
   }
 };
 
@@ -4400,6 +4402,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
+    // Ground AoE is created even if the spell misses.
     if ( s->chain_target == 0 )
     {
       p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
@@ -5175,14 +5178,17 @@ struct radiant_spark_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    // Create the vulnerability debuff for this target if it doesn't exist yet.
-    // This is necessary because mage_spell_t::assess_damage does not create the
-    // target data by itself.
-    auto td = get_td( s->target );
-    // If Radiant Spark is refreshed, the vulnerability debuff can be
-    // triggered once again. Any previous stacks of the debuff are removed.
-    td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
-    td->debuffs.radiant_spark_vulnerability->expire();
+    if ( result_is_hit( s->result ) )
+    {
+      // Create the vulnerability debuff for this target if it doesn't exist yet.
+      // This is necessary because mage_spell_t::assess_damage does not create the
+      // target data by itself.
+      auto td = get_td( s->target );
+      // If Radiant Spark is refreshed, the vulnerability debuff can be
+      // triggered once again. Any previous stacks of the debuff are removed.
+      td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
+      td->debuffs.radiant_spark_vulnerability->expire();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -5208,6 +5214,8 @@ struct shifting_power_pulse_t final : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
+
+    // TODO: Check what happens if the spell misses.
     p()->buffs.heart_of_the_fae->trigger();
   }
 };
