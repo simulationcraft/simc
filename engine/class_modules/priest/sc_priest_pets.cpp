@@ -104,6 +104,18 @@ struct priest_pet_t : public pet_t
     return m;
   }
 
+  double composite_player_target_multiplier( player_t* t, school_e school ) const
+  {
+    double m = pet_t::composite_player_target_multiplier( t, school );
+
+    if ( o().hungering_void_active( t ) )
+    {
+      m *= ( 1 + o().talents.hungering_void_buff->effectN( 2 ).percent() );
+    }
+
+    return m;
+  }
+
   resource_e primary_resource() const override
   {
     return RESOURCE_ENERGY;
