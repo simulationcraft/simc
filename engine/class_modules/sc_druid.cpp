@@ -287,7 +287,7 @@ public:
     bool affinity_resources = false;  // activate resources tied to affinities
     bool no_cds = false;
     bool raid_combat = true;
-    timespan_t thorns_attack_period = 0_ms;
+    timespan_t thorns_attack_period = 2_s;
     double thorns_hit_chance = 0.75;
 
     // Balance
@@ -2887,17 +2887,17 @@ public:
     {
       p()->buff.clearcasting_cat->decrement();
 
+      // cat-eye curio refunds energy based on base_cost
+      if ( p()->legendary.cateye_curio->ok() )
+      {
+        p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->legendary.cateye_curio->effectN( 1 ).percent(),
+                            p()->gain.cateye_curio );
+      }
+
       // Base cost doesn't factor in but Omen of Clarity does net us less energy during it, so account for that here.
       eff_cost *= 1.0 + p()->buff.incarnation_cat->check_value();
 
       p()->gain.clearcasting->add( RESOURCE_ENERGY, eff_cost );
-
-      if ( p()->legendary.cateye_curio->ok() )
-      {
-        // TODO: confirm refund is based on actual energy expenditure, including reduction from incarn
-        p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->legendary.cateye_curio->effectN( 1 ).percent(),
-                            p()->gain.cateye_curio );
-      }
     }
 
     if ( consumes_combo_points && hit_any_target )
@@ -2912,9 +2912,6 @@ public:
                             p()->gain.soul_of_the_forest );
       }
 
-      // TODO:
-      // * confirm FBs from convoke reduces cooldown by max CP
-      // * confirm free FB from apex reduces cooldown by max CP
       if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
       {
         // -2.0 divisor from tooltip, not present in data
@@ -6425,10 +6422,9 @@ struct starfall_t : public druid_spell_t
     starfall_damage_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->spec.starfall_dmg )
     {
       background = dual = update_eclipse = true;
-      aoe        = -1;
-      // TODO: pull hardcoded id out of here and into spec.X
-      radius     = p->find_spell( 50286 )->effectN( 1 ).radius();
-
+      aoe = -1;
+      // starfall radius encoded in separate spell
+      radius = p->find_spell( 50286 )->effectN( 1 ).radius();
     }
 
     timespan_t travel_time() const override
@@ -6613,12 +6609,14 @@ struct starfire_t : public druid_spell_t
 // Starsurge Spell ==========================================================
 struct starsurge_t : public druid_spell_t
 {
+  bool moonkin_form_in_precombat;
+
   starsurge_t( druid_t* p, std::string_view opt ) : starsurge_t( p, "starsurge", opt ) {}
 
   starsurge_t( druid_t* p, std::string_view n, std::string_view opt ) : starsurge_t( p, n, p->spec.starsurge, opt ) {}
 
   starsurge_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt )
+    : druid_spell_t( n, p, s, opt ), moonkin_form_in_precombat( false )
   {
     update_eclipse = true;
 
@@ -6649,6 +6647,13 @@ struct starsurge_t : public druid_spell_t
       is_precombat = true;
 
     druid_spell_t::init();
+
+    if ( is_precombat )
+    {
+      moonkin_form_in_precombat = range::any_of( p()->precombat_action_list, []( action_t* a ) {
+        return util::str_compare_ci( a->name(), "moonkin_form" );
+      } );
+    }
   }
 
   timespan_t travel_time() const override
@@ -6662,11 +6667,8 @@ struct starsurge_t : public druid_spell_t
       return druid_spell_t::ready();
 
     // in precombat, so hijack standard ready() procedure
-    const auto& apl = player->precombat_action_list;
-
     // emulate performing check_form_restriction()
-    // TODO: Try to avoid string comparison during combat
-    if ( !range::any_of( apl, []( action_t* a ) { return util::str_compare_ci( a->name(), "moonkin_form" ); } ) )
+    if ( !moonkin_form_in_precombat )
       return false;
 
     // emulate performing resource_available( current_resource(), cost() )
@@ -6807,11 +6809,6 @@ struct thorns_t : public druid_spell_t
     thorns_proc_t( druid_t* player ) : druid_spell_t( "thorns_hit", player, player->find_spell( 305496 ) )
     {
       background = true;
-      if ( p()->specialization() == DRUID_FERAL )
-      {  // a little gnarly, TODO(xan): clean this up
-        attack_power_mod.direct = 1.2 * p()->query_aura_effect( p()->spec.feral, A_366 )->percent();
-        spell_power_mod.direct  = 0;
-      }
     }
   };
 
@@ -9241,7 +9238,7 @@ void druid_t::create_buffs()
   buff.pulverize = make_buff( this, "pulverize", talent.pulverize )
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect_type( A_MOD_DAMAGE_TO_CASTER )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );  // TODO: confirm this
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
   buff.survival_instincts = make_buff( this, "survival_instincts", find_specialization_spell( "Survival Instincts" ) )
