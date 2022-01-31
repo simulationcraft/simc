@@ -4060,7 +4060,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
     {
       proc_spell_t::init();
 
-      snapshot_flags = update_flags = STATE_TARGET;
+      snapshot_flags = update_flags = STATE_TARGET_NO_PET;
     }
 
     void set_damage( double value )
