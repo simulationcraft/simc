@@ -14,6 +14,7 @@
 #include "player/spawner_base.hpp"
 #include "sim/event.hpp"
 #include "sim/sim.hpp"
+#include "class_modules/priest/sc_priest.hpp"
 
 namespace {
 struct expiration_t : public event_t
@@ -135,6 +136,17 @@ double pet_t::composite_player_target_multiplier( player_t* target, school_e sch
     m *= 1.0 + td->debuff.kevins_wrath->check_value();
     m *= 1.0 + td->debuff.wild_hunt_strategem->check_value();
     m *= 1.0 + td->debuff.dream_delver->check_stack_value();
+
+    // Shadow Priest specific buff that applies to any pet you summon
+    if ( owner->specialization() == PRIEST_SHADOW )
+    {
+      const priestspace::priest_td_t* shadow_td = debug_cast<const priestspace::priest_td_t*>( td );
+      
+      if ( shadow_td->buffs.hungering_void->check() )
+      {
+        m *= 1 + shadow_td->buffs.hungering_void->data().effectN( 2 ).percent();
+      }
+    }
   }
 
   return m;
