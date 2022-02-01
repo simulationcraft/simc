@@ -7060,9 +7060,7 @@ struct adaptive_swarm_t : public druid_spell_t
     player_t* player;
     event_t* event;
 
-    swarm_target_t( player_t* p ) : swarm_target_t( p, nullptr ) {}
-    swarm_target_t( event_t* e ) : swarm_target_t( nullptr, e ) {}
-    swarm_target_t( player_t* p, event_t* e ) : player( p ), event( e ) {}
+    swarm_target_t( player_t* p, event_t* e = nullptr ) : player( p ), event( e ) {}
     swarm_target_t() : player(), event() {}
 
     operator player_t*() { return player; }
@@ -7345,10 +7343,10 @@ struct adaptive_swarm_t : public druid_spell_t
 
       void execute() override
       {
-        swarm->jump_swarm( stacks );
-
         auto& tracker = druid->swarm_tracker;
         tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
+
+        swarm->jump_swarm( stacks );
       }
     };
 
@@ -7367,7 +7365,7 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
         return target;
 
-      return p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ];
+      return { target, p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ] };
     }
 
     void impact( action_state_t* s ) override
