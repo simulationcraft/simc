@@ -4471,7 +4471,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
   static std::string action_name( util::string_view suffix )
   {
-    return !suffix.empty() ? util::string_join("lava_burst_overload_", suffix) : "lava_burst_overload";
+    std::string str_ = "lava_burst_overload";
+    if ( !suffix.empty() )
+    {
+      str_ += '_';
+      str_ += suffix;
+    }
+
+    return str_;
   }
 
   lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, util::string_view suffix )
@@ -4789,7 +4796,14 @@ struct lava_burst_t : public shaman_spell_t
 
   static std::string action_name( util::string_view suffix )
   {
-    return !suffix.empty() ? util::string_join( "lava_burst_", suffix ) : "lava_burst";
+    std::string str_ = "lava_burst";
+    if ( !suffix.empty() )
+    {
+      str_ += '_';
+      str_ += suffix;
+    }
+
+    return str_;
   }
 
   lava_burst_t( shaman_t* player, lava_burst_type type_, util::string_view suffix,
