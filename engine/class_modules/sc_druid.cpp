@@ -1938,9 +1938,6 @@ public:
       }
       else if ( autoshift )
       {
-        if ( p()->buff.ravenous_frenzy->check() )
-          p()->buff.ravenous_frenzy->trigger();
-
         p()->shapeshift( static_cast<form_e>( autoshift ) );
       }
       else
@@ -10933,6 +10930,12 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form->expire();
   buff.bear_form->expire();
   buff.moonkin_form->expire();
+  if ( f != NO_FORM )
+  {
+    if ( buff.ravenous_frenzy->check() )
+      buff.ravenous_frenzy->trigger();
+  }
+
 
   switch ( f )
   {
