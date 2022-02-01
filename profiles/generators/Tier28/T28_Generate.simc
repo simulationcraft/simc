@@ -5,8 +5,8 @@
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (278). ["bonus_id=?/?/?"]
 # * Honor PvP gear is permitted up to the item level cap (?). ["bonus_id=?"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, ?). ["bonus_id=?/?"]
-# * Zereh Mortis gear is permitted up to the item level cap of (?). ["bonus_id=?"]
-# * Korthia gear is permitted up to the item level cap of (233). ["bonus_id=7697/6652/1505/6646"]
+# * 9.2 zone(s) gear is permitted up to the item level cap of (?). ["bonus_id=?"]
+# * 9.1 zone(s) gear is permitted up to the item level cap of (233). ["bonus_id=7697/6652/1505/6646"]
 # * Crafted gear is permitted, must be BoE and without profession requirements.
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
