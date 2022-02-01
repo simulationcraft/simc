@@ -7920,7 +7920,7 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     }
     else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
     {
-      return make_fn_expr( name, [ p ]() { return p->expiration->remains().total_seconds(); } );
+      return make_fn_expr( name, [ p ]() { return p->expiration ? p->expiration->remains().total_seconds() : 0.0; } );
     }
     else
     {
