@@ -7690,7 +7690,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // convoke will not cast pulverize if it's already up on the target
     if ( type_ == CAST_PULVERIZE && td( target )->debuff.pulverize->check() )
-      type_ == CAST_SPEC;
+      type_ = CAST_SPEC;
 
     if ( type_ == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
