@@ -1692,6 +1692,18 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
   return m;
 }
 
+double priest_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( hungering_void_active( target ) )
+  {
+    m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
+  }
+
+  return m;
+}
+
 double priest_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
