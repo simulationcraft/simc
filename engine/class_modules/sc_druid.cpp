@@ -4508,6 +4508,7 @@ struct architects_aligner_t : public bear_attack_t
     architects_aligner_heal_t( druid_t* p )
       : heals::druid_heal_t( "architects_aligner_heal", p, p->find_spell( 363789 ) )
     {
+      may_miss = may_glance = may_dodge = may_block = may_parry = false;
       background = true;
     }
   };
