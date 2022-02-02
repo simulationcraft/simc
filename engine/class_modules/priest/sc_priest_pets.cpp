@@ -662,7 +662,6 @@ struct your_shadow_t final : public priest_pet_t
 {
   your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
   {
-    duration = o().t28_4pc_summon_duration;
   }
 
   void init_action_list() override
@@ -679,6 +678,8 @@ struct your_shadow_t final : public priest_pet_t
     pet_t::arise();
 
     o().buffs.living_shadow->trigger();
+    o().t28_4pc_summon_event    = nullptr;
+    o().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
   }
 
   virtual void demise() override

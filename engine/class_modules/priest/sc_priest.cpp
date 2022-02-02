@@ -1454,7 +1454,8 @@ priest_t::priest_t( sim_t* sim, util::string_view name, race_e r )
     options(),
     legendary(),
     conduits(),
-    covenant()
+    covenant(),
+    t28_4pc_summon_event( nullptr )
 {
   create_cooldowns();
   create_gains();
@@ -2183,6 +2184,10 @@ void priest_t::reset()
       td->reset();
     }
   }
+
+  // Reset T28 pet delay variables
+  t28_4pc_summon_event    = nullptr;
+  t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
@@ -2386,9 +2391,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
   }
   void static_init() const override
