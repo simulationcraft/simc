@@ -7874,16 +7874,25 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   // Every critical auto attack has a 30% * number of missed proc attempts to trigger Killing Machine
   // Originally found by Bicepspump, made public on 2020-05-17
   // This may have been added to the game on patch 8.2, when rppm data from Killing Machine was removed from the game
+  // 2022-01-29 During 9.2 beta cycle, it was noticed that during most, if not all of shadowlands, the KM forumula
+  // for 1h weapons was incorrect.  This new version seems to match testing done by Bicepspump, via wcl log pull.
   if ( chance == 0 )
   {
-    // If we are using a 1H, we use 0.3 per attempt, with 2H it looks to be 0.7 through testing
-    double km_proc_chance = 0.3;
+    // If we are using a 1H, km_proc_attempts*0.13 per attempt, with it going to 100% at 6 attempts
+    // with 2H it looks to be km_proc_attempts*0.7 through testing
+    double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
     {
-      km_proc_chance = 0.7;
+      km_proc_chance = ++km_proc_attempts * 0.7;
+    }
+    else
+    {
+      km_proc_chance = ++km_proc_attempts * 0.13;
+      if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
+        km_proc_chance = 1.0;
     }
 
-    if ( rng().roll( ++km_proc_attempts * km_proc_chance ) )
+    if ( rng().roll( km_proc_chance ) )
     {
       triggered = true;
       km_proc_attempts = 0;

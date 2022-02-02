@@ -1676,7 +1676,7 @@ void action_t::execute()
       // for aoe spells.
       else
       {
-        snapshot_internal( s, snapshot_flags & STATE_TARGET_MASK, pre_execute_state->result_type );
+        snapshot_internal( s, snapshot_flags & STATE_TARGET, pre_execute_state->result_type );
       }
       s->result       = calculate_result( s );
       s->block_result = calculate_block_result( s );
