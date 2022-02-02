@@ -561,7 +561,7 @@ public:
       if ( trigger_sinister_teaching_cdr && s->result_total >= 0 && s->result == RESULT_CRIT && 
            p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
       {
-        if ( p()->is_ptr() )
+        if ( p()->is_ptr() && p()->specialization() == MONK_MISTWEAVER )
           p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 4 ).time_value() );
         else
           p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
