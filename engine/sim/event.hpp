@@ -41,7 +41,7 @@ constexpr unsigned next_power_of_two( unsigned v )
 // (1) The pure virtual execute() method MUST be implemented in the sub-class
 // (2) There is 1 * sizeof( event_t ) space available to extend the sub-class
 // (3) event_manager_t is responsible for deleting the memory associated with allocated events
-// (4) create events throug make_event method
+// (4) create events through make_event method
 struct event_t : private noncopyable
 {
   sim_t& _sim;
