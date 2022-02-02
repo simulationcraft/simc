@@ -3101,10 +3101,13 @@ struct elemental_overload_spell_t : public shaman_spell_t
     // stats object name. This will more or less always let us build correct stats
     // hierarchies for the overload-capable spells, so that the various different
     // (reporting) hierarchies function correctly.
+    /*
     auto stats_ = player->get_stats( parent->stats->name_str + "_overload", this );
     stats_->school = get_school();
     stats = stats_;
     parent->stats->add_child( stats );
+    */
+    parent->add_child( this );
   }
 
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
