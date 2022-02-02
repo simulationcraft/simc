@@ -703,24 +703,26 @@ struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
     radius                     = data().effectN( 2 ).radius();
     spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
   }
-  
+
   void init() override
   {
     priest_pet_spell_t::init();
 
     merge_pet_stats( p().o(), p(), *this );
   }
-
 };
 
 struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
+  const spell_data_t* torment_mind_tick_spell;
+
   your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
-    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
+    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
+      torment_mind_tick_spell( p.o().find_spell( 366971 ) )
   {
     parse_options( options );
     channeled   = true;
-    tick_action = new your_shadow_torment_mind_tick_t( p, data().effectN( 1 ).trigger() );
+    tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
   }
 
   void init() override
