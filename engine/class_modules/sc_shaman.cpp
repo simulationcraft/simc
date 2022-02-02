@@ -147,6 +147,19 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   tl.swap( best_so_far );
   return tl;
 }
+
+static std::string action_name( util::string_view prefix, util::string_view suffix )
+{
+  std::string str_ { prefix };
+  if ( !suffix.empty() )
+  {
+    str_ += '_';
+    str_ += suffix;
+  }
+
+  return str_;
+}
+
 using data_t = std::pair<std::string, simple_sample_data_with_min_max_t>;
 using simple_data_t = std::pair<std::string, simple_sample_data_t>;
 
@@ -4183,9 +4196,10 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
 struct chain_lightning_overload_t : public chained_overload_base_t
 {
-  chain_lightning_overload_t( shaman_t* p, shaman_spell_t* parent_ ) :
-    chained_overload_base_t( p, "chain_lightning_overload", p->find_spell( 45297 ),
-                             p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
+  chain_lightning_overload_t( shaman_t* p, util::string_view suffix, shaman_spell_t* parent_ ) :
+    chained_overload_base_t( p, action_name( "chain_lightning_overload", suffix ),
+        p->find_spell( 45297 ),
+        p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -4193,9 +4207,10 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 
 struct lava_beam_overload_t : public chained_overload_base_t
 {
-  lava_beam_overload_t( shaman_t* p, shaman_spell_t* parent_ )
-    : chained_overload_base_t( p, "lava_beam_overload", p->find_spell( 114738 ),
-                               p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
+  lava_beam_overload_t( shaman_t* p, util::string_view suffix, shaman_spell_t* parent_ )
+    : chained_overload_base_t( p, action_name( "lava_beam_overload", suffix ),
+        p->find_spell( 114738 ),
+        p->spell.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   { }
 };
 
@@ -4256,13 +4271,14 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
-  chain_lightning_t( shaman_t* player, util::string_view options_str )
-    : chained_base_t( player, "chain_lightning", player->find_class_spell( "Chain Lightning" ),
-                      player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
+  chain_lightning_t( shaman_t* player, util::string_view options_str, util::string_view suffix = "" )
+    : chained_base_t( player, action_name( "chain_lightning", suffix ),
+        player->find_class_spell( "Chain Lightning" ),
+        player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new chain_lightning_overload_t( player, this );
+      overload = new chain_lightning_overload_t( player, suffix, this );
       //add_child( overload );
     }
     affected_by_master_of_the_elements = true;
@@ -4404,13 +4420,13 @@ struct lava_beam_t : public chained_base_t
 {
   // This is actually a tooltip bug in-game: real testing shows that Lava Beam and
   // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
-  lava_beam_t( shaman_t* player, util::string_view options_str )
-    : chained_base_t( player, "lava_beam", player->find_spell( 114074 ),
+  lava_beam_t( shaman_t* player, util::string_view options_str, util::string_view suffix = "" )
+    : chained_base_t( player, action_name( "lava_beam", suffix ), player->find_spell( 114074 ),
                       player->spell.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_beam_overload_t( player, this );
+      overload = new lava_beam_overload_t( player, suffix, this );
       //add_child( overload );
     }
   }
@@ -4472,20 +4488,9 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   lava_burst_type type;
   bool wlr_buffed_impact;
 
-  static std::string action_name( util::string_view suffix )
-  {
-    std::string str_ = "lava_burst_overload";
-    if ( !suffix.empty() )
-    {
-      str_ += '_';
-      str_ += suffix;
-    }
-
-    return str_;
-  }
-
   lava_burst_overload_t( shaman_t* player, lava_burst_type type, shaman_spell_t* parent_, util::string_view suffix )
-    : elemental_overload_spell_t( player, action_name( suffix ), player->find_spell( 285466 ), parent_ ),
+    : elemental_overload_spell_t( player, action_name( "lava_burst_overload", suffix ),
+        player->find_spell( 285466 ), parent_ ),
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spell.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
@@ -4797,21 +4802,9 @@ struct lava_burst_t : public shaman_spell_t
   unsigned impact_flags;
   bool wlr_buffed_impact;
 
-  static std::string action_name( util::string_view suffix )
-  {
-    std::string str_ = "lava_burst";
-    if ( !suffix.empty() )
-    {
-      str_ += '_';
-      str_ += suffix;
-    }
-
-    return str_;
-  }
-
   lava_burst_t( shaman_t* player, lava_burst_type type_, util::string_view suffix,
                 util::string_view options_str = {} )
-    : shaman_spell_t( action_name( suffix ), player,
+    : shaman_spell_t( action_name( "lava_burst", suffix ), player,
                       player->find_specialization_spell( "Lava Burst" ) ),
       type( type_ ), impact_flags(), wlr_buffed_impact( false )
   {
@@ -5581,21 +5574,15 @@ struct earthquake_t : public shaman_spell_t
 
     if ( p()->conduit.shake_the_foundations.ok() )
     {
-      auto cl = new chain_lightning_t( player, "" );
-
-      cl->background = true;
-      cl->base_costs[ RESOURCE_MANA ] = 0;
-      cl->stats = player->get_stats( "chain_lightning_stf", cl );
-
-      shake_the_foundations_cl = cl;
+      shake_the_foundations_cl = new chain_lightning_t( player, "", "stf" );
+      shake_the_foundations_cl->background = true;
+      shake_the_foundations_cl->base_costs[ RESOURCE_MANA ] = 0;
 
       add_child( shake_the_foundations_cl );
 
-      shake_the_foundations_lb = new lava_beam_t( player, "" );
+      shake_the_foundations_lb = new lava_beam_t( player, "", "stf" );
       shake_the_foundations_lb->background = true;
       shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
-      shake_the_foundations_lb->stats = player->get_stats( "lava_beam_stf",
-        shake_the_foundations_lb );
 
       add_child( shake_the_foundations_lb );
     }
