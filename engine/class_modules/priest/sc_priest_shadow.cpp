@@ -177,8 +177,7 @@ public:
         {
           pet->adjust_duration( your_shadow_duration );
         }
-        else if ( priest().t28_4pc_summon_event &&
-                  priest().t28_4pc_summon_event->remains() > timespan_t::from_seconds( 0 ) )
+        else if ( priest().t28_4pc_summon_event )
         {
           timespan_t new_duration = priest().t28_4pc_summon_duration + your_shadow_duration;
           sim->print_debug( "{} extends future your_shadow by {} seconds for a new total of {}. Spawns in {} seconds.",
