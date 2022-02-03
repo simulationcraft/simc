@@ -2044,10 +2044,7 @@ static void trigger_beast_cleave( const action_state_t* s )
   const double target_da_multiplier = ( 1.0 / s -> target_da_multiplier );
 
   const double amount = s -> result_total * multiplier * target_da_multiplier;
-  p -> active.beast_cleave -> set_target( s -> target );
-  p -> active.beast_cleave -> base_dd_min = amount;
-  p -> active.beast_cleave -> base_dd_max = amount;
-  p -> active.beast_cleave -> execute();
+  p -> active.beast_cleave -> execute_on_target( s -> target, amount );
 }
 
 // Pet Melee ================================================================
@@ -2411,8 +2408,7 @@ void hunter_t::trigger_wild_spirits( const action_state_t* s )
                         name(), s -> action -> name(), s -> target -> name() );
   }
 
-  actions.wild_spirits -> set_target( s -> target );
-  actions.wild_spirits -> execute();
+  actions.wild_spirits -> execute_on_target( s -> target );
 
   if ( !legendary.elder_antlers.ok() )
     return;
@@ -2997,8 +2993,7 @@ struct single_target_t final : base_t
   void trigger( player_t* target_, int hit_number_ )
   {
     hit_number = hit_number_;
-    set_target( target_ );
-    execute();
+    execute_on_target( target_ );
   }
 
   void impact( action_state_t* s ) override
@@ -3104,10 +3099,7 @@ struct death_chakram_t : death_chakram::base_t
     }
 
     if ( p()->legendary.bag_of_munitions.ok() && s->chain_target < p()->legendary.bag_of_munitions->effectN( 1 ).base_value() )
-    {
-      explosive->set_target( s->target );
-      explosive->execute();
-    }
+      explosive->execute_on_target( s->target );
 
     td( s->target )->debuffs.death_chakram->trigger();
   }
@@ -3339,8 +3331,7 @@ struct chimaera_shot_bm_t: public hunter_ranged_attack_t
 
   void schedule_travel( action_state_t* s ) override
   {
-    damage[ current_damage_action ] -> set_target( s -> target );
-    damage[ current_damage_action ] -> execute();
+    damage[ current_damage_action ] -> execute_on_target( s -> target );
     current_damage_action = ( current_damage_action + 1 ) % damage.size();
     action_state_t::release( s );
   }
@@ -3472,8 +3463,7 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   void schedule_travel( action_state_t* s ) override
   {
     impact_t* damage = ( s -> chain_target == 0 ) ? nature : frost;
-    damage -> set_target( s -> target );
-    damage -> execute();
+    damage -> execute_on_target( s -> target );
     action_state_t::release( s );
   }
 
@@ -3740,10 +3730,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
 
     if ( serpentstalkers_trickery.action )
-    {
-      serpentstalkers_trickery.action -> set_target( target );
-      serpentstalkers_trickery.action -> execute();
-    }
+      serpentstalkers_trickery.action -> execute_on_target( target );
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
@@ -4000,8 +3987,7 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::tick( d );
 
     damage -> parent_dot = d; // BfA Surging Shots shenanigans
-    damage -> set_target( d -> target );
-    damage -> execute();
+    damage -> execute_on_target( d -> target );
   }
 
   void last_tick( dot_t* d ) override
@@ -4127,10 +4113,7 @@ struct internal_bleeding_t
   void trigger( const action_state_t* s )
   {
     if ( action && action -> td( s -> target ) -> dots.shrapnel_bomb -> is_ticking() )
-    {
-      action -> set_target( s -> target );
-      action -> execute();
-    }
+      action -> execute_on_target( s -> target );
   }
 };
 
@@ -4153,8 +4136,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       if ( ! debuff -> check() )
         return;
 
-      set_target( target );
-      execute();
+      execute_on_target( target );
 
       debuff -> expire();
     }
@@ -4334,16 +4316,10 @@ struct flanking_strike_t: hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     if ( p() -> main_hand_weapon.group() == WEAPON_2H )
-    {
-      damage -> set_target( target );
-      damage -> execute();
-    }
+      damage -> execute_on_target( target );
 
     if ( auto pet = p() -> pets.main )
-    {
-      pet -> active.flanking_strike -> set_target( target );
-      pet -> active.flanking_strike -> execute();
-    }
+      pet -> active.flanking_strike -> execute_on_target( target );
   }
 };
 
@@ -4506,10 +4482,7 @@ struct harpoon_t: public hunter_melee_attack_t
     hunter_melee_attack_t::execute();
 
     if ( terms_of_engagement )
-    {
-      terms_of_engagement -> set_target( target );
-      terms_of_engagement -> execute();
-    }
+      terms_of_engagement -> execute_on_target( target );
   }
 
   bool ready() override
@@ -4657,8 +4630,7 @@ struct chakrams_t : public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    damage -> set_target( target );
-    damage -> execute();
+    damage -> execute_on_target( target );
     damage -> execute(); // to simulate the 'return' & hitting the main target twice
   }
 };
@@ -4997,10 +4969,7 @@ struct kill_command_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-    {
-      pet -> active.kill_command -> set_target( target );
-      pet -> active.kill_command -> execute();
-    }
+      pet -> active.kill_command -> execute_on_target( target );
 
     p() -> buffs.tip_of_the_spear -> trigger();
 
@@ -5147,10 +5116,7 @@ struct bestial_wrath_t: public hunter_spell_t
     {
       // Assume the pet is out of range / not engaged when precasting.
       if ( !is_precombat )
-      {
-        pet -> active.bestial_wrath -> set_target( target );
-        pet -> active.bestial_wrath -> execute();
-      }
+        pet -> active.bestial_wrath -> execute_on_target( target );
       trigger_buff( pet -> buffs.bestial_wrath, precast_time );
     }
 
@@ -5271,10 +5237,7 @@ struct bloodshed_t : hunter_spell_t
     hunter_spell_t::execute();
 
     if ( auto pet = p() -> pets.main )
-    {
-      pet -> active.bloodshed -> set_target( target );
-      pet -> active.bloodshed -> execute();
-    }
+      pet -> active.bloodshed -> execute_on_target( target );
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -5578,10 +5541,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t::execute();
 
       if ( td( target ) -> dots.serpent_sting -> is_ticking() )
-      {
-        violent_reaction -> set_target( target );
-        violent_reaction -> execute();
-      }
+        violent_reaction -> execute_on_target( target );
     }
 
     void impact( action_state_t* s ) override
@@ -5646,8 +5606,7 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     hunter_spell_t::impact( s );
 
-    current_bomb -> set_target( s -> target );
-    current_bomb -> execute();
+    current_bomb -> execute_on_target( s -> target );
 
     if ( wildfire_cluster )
     {
