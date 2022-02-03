@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42174
-static const std::array<spelltext_data_t, 15985> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15988> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15978,6 +15978,9 @@ static const std::array<spelltext_data_t, 15985> __ptr_spelltext_data { {
   { 368686, "Fists of Fury empowers your next three Combo-eligible moves, causing them to deal $368685s1% additional damage.", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
+  { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
+  { 368863, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
+  { 368865, "$@spelldesc367952", "You cannot approach the Singularity.", 0 },
   { 368894, "Call forth an Automa Medic which restores ${$367835s1*$d} mana to you over $d before expiring.", "Restoring ${$367835s1*$d} mana over $d.", 0 },
   { 368920, "Create a broker's trinket appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368921, "Create a broker's necklace appropriate for your loot specialization ($@lootspec).", 0, 0 },
