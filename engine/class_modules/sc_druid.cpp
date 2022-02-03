@@ -1695,17 +1695,19 @@ struct kindred_affinity_base_t : public stat_buff_t
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
   }
 
-  void init_cov( covenant_e cov, double multiplier = 1.0 )
+  void init_cov( covenant_e cov, double m = 1.0 )
   {
     if ( cov == covenant_e::KYRIAN )
     {
       // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor
       for ( auto& s : stats )
-        s.amount *= 0.5;
+        s.amount *= m;
 
       name_str_reporting += "_mastery";
       return;
     }
+
+    double multiplier = m * 0.01;
 
     stats.clear();
 
@@ -9333,7 +9335,7 @@ void druid_t::create_buffs()
       make_buff<kindred_empowerment_buff_t>( *this, "kindred_empowerment_partner", true );
 
   buff.kindred_empowerment_energize =
-      make_buff( this, "kindred_empowerment_energize", cov.kindred_empowerment_energize );
+      make_buff( this, "kindred_empowerment_energize", cov.kindred_empowerment_energize )->set_period( 0_ms );
 
   buff.lone_empowerment = make_buff( this, "lone_empowerment", find_spell( 338142 ) )
     ->set_cooldown( 0_ms );
