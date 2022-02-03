@@ -1298,7 +1298,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
         if ( new_ )
         {
           p.active.sickle_of_the_lion->execute_on_target( p.target );
-          if ( p.options.ptr_bugs )
+          if ( p.options.ptr_bugs && p.talent.incarnation_cat->ok() )
             p.active.sickle_of_the_lion->execute_on_target( p.target );
         }
       } );
