@@ -1690,11 +1690,14 @@ struct kindred_affinity_base_t : public stat_buff_t
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
   }
 
-  void init_cov( covenant_e cov )
+  void init_cov( covenant_e cov, double multiplier = 1.0 )
   {
     if ( cov == covenant_e::KYRIAN )
     {
       // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor
+      for ( auto& s : stats )
+        s.amount *= 0.5;
+
       name_str_reporting += "_mastery";
       return;
     }
@@ -1703,19 +1706,19 @@ struct kindred_affinity_base_t : public stat_buff_t
 
     if ( cov == covenant_e::NECROLORD )
     {
-      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
       name_str_reporting += "_vers";
     }
     else if ( cov == covenant_e::NIGHT_FAE )
     {
-      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
       name_str_reporting += "_haste";
     }
     else if ( cov == covenant_e::VENTHYR )
     {
-      set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+      set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_CRIT );
       name_str_reporting += "_crit";
     }
@@ -1793,7 +1796,7 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 {
   kindred_affinity_external_buff_t( player_t* p ) : kindred_affinity_base_t( p, "kindred_affinity_external" )
   {
-    init_cov( p->covenant->type() );
+    init_cov( p->covenant->type(), 0.5 );
   }
 };
 }  // end namespace buffs
