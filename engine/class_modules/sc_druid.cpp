@@ -4192,22 +4192,27 @@ struct sickle_of_the_lion_t : public cat_attack_t
 
   sickle_of_the_lion_t( druid_t* p )
     : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
-      as_mul( 1.0 )
+      as_mul( p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent() )
   {
     background = true;
+    may_miss = may_glance = may_dodge = may_block = may_parry = false;
     aoe = -1;
-
-    as_mul += p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent();
+    reduced_aoe_targets = p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).base_value();
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const override
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double pm = cat_attack_t::composite_persistent_multiplier( s );
+    return cat_attack_t::composite_ta_multiplier( s ) * 1.0 + p()->cache.mastery_value();
+  }
 
-    if ( td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
-      pm *= as_mul;
+  double composite_target_ta_multiplier( player_t* t ) const override
+  {
+    double ttm = cat_attack_t::composite_target_ta_multiplier( t );
 
-    return pm;
+    if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )
+      ttm *= 1.0 + as_mul;
+
+    return ttm;
   }
 };
 }  // end namespace cat_attacks
