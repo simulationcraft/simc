@@ -445,7 +445,6 @@ public:
     // Tier Set Bonuses
     buff_t* killing_frenzy;
     buff_t* mad_bombardier;
-    buff_t* mad_bombardier_4pc;
 
     // Conduits
     buff_t* brutal_projectiles;
@@ -963,7 +962,7 @@ public:
       am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
     if ( affected_by.mad_bombardier )
-      am *= 1 + p() -> buffs.mad_bombardier_4pc -> check_value();
+      am *= 1 + p() -> buffs.mad_bombardier -> check_value();
 
     return am;
   }
@@ -4985,8 +4984,7 @@ struct kill_command_t: public hunter_spell_t
         flankers_advantage.proc -> occur();
         cooldown -> reset( true );
         p() -> buffs.strength_of_the_pack -> trigger();
-        if ( p() -> buffs.mad_bombardier -> trigger() )
-          p() -> buffs.mad_bombardier_4pc -> trigger();
+        p() -> buffs.mad_bombardier -> trigger();
       }
     }
 
@@ -5599,9 +5597,6 @@ struct wildfire_bomb_t: public hunter_spell_t
         slot += 2 - p() -> state.next_wi_bomb;
       p() -> state.next_wi_bomb = static_cast<wildfire_infusion_e>( slot );
     }
-
-    p() -> buffs.mad_bombardier -> up(); // benefit tracking
-    p() -> buffs.mad_bombardier -> expire();
   }
 
   void impact( action_state_t* s ) override
@@ -5618,18 +5613,11 @@ struct wildfire_bomb_t: public hunter_spell_t
         wildfire_cluster -> execute();
     }
 
-    p() -> buffs.mad_bombardier_4pc -> expire();
-  }
-
-  void update_ready( timespan_t cd_duration ) override
-  {
-    if ( p() -> buffs.mad_bombardier -> check() )
+    if ( p() -> buffs.mad_bombardier -> up() )
     {
-      p() -> sim -> print_debug( "{} wildfire bomb cooldown reset due to mad bombardier.", p() -> name() );
-      return;
+      cooldown -> adjust( -data().cooldown() );
+      p() -> buffs.mad_bombardier -> expire();
     }
-
-    hunter_spell_t::update_ready( cd_duration );
   }
 
   action_state_t* new_state() override
@@ -6383,18 +6371,15 @@ void hunter_t::create_buffs()
 
   buffs.mad_bombardier =
     make_buff( this, "mad_bombardier", find_spell( 363805 ) )
-      -> set_default_value_from_effect( 1 )
       -> set_chance( tier_set.mad_bombardier_2pc -> effectN( 1 ).percent() );
-
-  // XXX: Mad Bombardier 2pc buff adjusts the passive part of the 4pc, so we have
-  //      to do some maths here to come up with a proper multiplier
-  const double mad_bombardier_4pc = tier_set.mad_bombardier_4pc -> effectN( 1 ).percent();
-  const double mad_bombardier_2pc = find_spell( 363805 ) -> effectN( 1 ).percent();
-  buffs.mad_bombardier_4pc =
-    make_buff( this, "mad_bombardier_4pc", find_spell( 363805 ) )
-      -> set_default_value( 1 / ( 1 + mad_bombardier_4pc ) * ( 1 + mad_bombardier_4pc + mad_bombardier_2pc ) - 1 )
-      -> set_quiet( true )
-      -> set_chance( tier_set.mad_bombardier_4pc.ok() );
+  if ( tier_set.mad_bombardier_4pc.ok() )
+  {
+    // Mad Bombardier 2pc buff adjusts the passive part of the 4pc, so we have
+    // to do some maths here to come up with a proper multiplier
+    const double mad_bombardier_4pc = tier_set.mad_bombardier_4pc -> effectN( 1 ).percent();
+    const double mad_bombardier_2pc = buffs.mad_bombardier -> data().effectN( 1 ).percent();
+    buffs.mad_bombardier -> set_default_value( mad_bombardier_2pc / ( mad_bombardier_4pc + 1 ) );
+  }
 
   // Conduits
 
