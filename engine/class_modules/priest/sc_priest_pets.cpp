@@ -678,8 +678,6 @@ struct your_shadow_t final : public priest_pet_t
     pet_t::arise();
 
     o().buffs.living_shadow->trigger();
-    o().t28_4pc_summon_event    = nullptr;
-    o().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
   }
 
   virtual void demise() override

@@ -193,6 +193,8 @@ public:
           priest().t28_4pc_summon_duration = your_shadow_duration + timespan_t::from_millis( 1 );
           priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( 1 ), [ this ] {
             priest().pets.your_shadow.spawn( priest().t28_4pc_summon_duration );
+            priest().t28_4pc_summon_event    = nullptr;
+            priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
           } );
         }
       }
