@@ -300,6 +300,7 @@ public:
     // Feral
     double predator_rppm_rate = 0.0;
     bool owlweave_cat = true;
+    bool ptr_bugs = false;
 
     // Guardian
     bool catweave_bear = false;
@@ -1295,7 +1296,11 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
         if ( new_ )
+        {
           p.active.sickle_of_the_lion->execute_on_target( p.target );
+          if ( p.options.ptr_bugs )
+            p.active.sickle_of_the_lion->execute_on_target( p.target );
+        }
       } );
     }
   }
@@ -4202,11 +4207,30 @@ struct sickle_of_the_lion_t : public cat_attack_t
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
+    if ( p()->options.ptr_bugs && p()->buff.tigers_fury->check() )
+    {
+      auto tam = cat_attack_t::composite_ta_multiplier( s );
+      tam *= 1.0 + p()->spec.tigers_fury->effectN( 3 ).percent() + p()->conduit.carnivorous_instinct.percent();
+      tam *= 1.0 + p()->spec.tigers_fury->effectN( 5 ).percent();
+      return tam;
+    }
+
     return cat_attack_t::composite_ta_multiplier( s ) * 1.0 + p()->cache.mastery_value();
+  }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    if ( p()->options.ptr_bugs && td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
+        return cat_attack_t::composite_persistent_multiplier( s ) * ( 1.0 + as_mul );
+
+    return cat_attack_t::composite_persistent_multiplier( s );
   }
 
   double composite_target_ta_multiplier( player_t* t ) const override
   {
+    if ( p()->options.ptr_bugs )
+      return cat_attack_t::composite_target_ta_multiplier( t );
+
     double ttm = cat_attack_t::composite_target_ta_multiplier( t );
 
     if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )
@@ -10730,6 +10754,7 @@ void druid_t::create_options()
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
   add_option( opt_bool( "druid.owlweave_cat", options.owlweave_cat ) );
+  add_option( opt_bool( "druid.ptr_bugs", options.ptr_bugs ) );
 
   // Guardian
   add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );
