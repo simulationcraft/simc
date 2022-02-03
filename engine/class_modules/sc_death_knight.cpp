@@ -7879,6 +7879,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   if ( chance == 0 )
   {
     // If we are using a 1H, km_proc_attempts*0.13 per attempt, with it going to 100% at 6 attempts
+    // On PTR for DW, it was reverted to km_proc_attempts*0.3
     // with 2H it looks to be km_proc_attempts*0.7 through testing
     double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
@@ -7887,9 +7888,16 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     }
     else
     {
-      km_proc_chance = ++km_proc_attempts * 0.13;
-      if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
-        km_proc_chance = 1.0;
+      if ( dbc -> ptr )
+      {
+        km_proc_chance = ++km_proc_attempts * 0.3;
+      }
+      else
+      {
+        km_proc_chance = ++km_proc_attempts * 0.13;
+        if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
+          km_proc_chance = 1.0;
+      }
     }
 
     if ( rng().roll( km_proc_chance ) )
