@@ -5425,6 +5425,11 @@ struct steel_trap_t: public trap_base_t
 
 struct wildfire_bomb_t: public hunter_spell_t
 {
+  struct state_data_t {
+    wildfire_infusion_e current_bomb = WILDFIRE_INFUSION_SHRAPNEL;
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   struct wildfire_cluster_t final : hunter_spell_t
   {
     wildfire_cluster_t( util::string_view n, hunter_t* p ):
@@ -5553,7 +5558,6 @@ struct wildfire_bomb_t: public hunter_spell_t
   };
 
   std::array<bomb_base_t*, 3> bombs;
-  bomb_base_t* current_bomb = nullptr;
   hunter_spell_t* wildfire_cluster = nullptr;
 
   wildfire_bomb_t( hunter_t* p, util::string_view options_str ):
@@ -5585,8 +5589,6 @@ struct wildfire_bomb_t: public hunter_spell_t
 
   void execute() override
   {
-    current_bomb = bombs[ p() -> state.next_wi_bomb ];
-
     hunter_spell_t::execute();
 
     if ( p() -> talents.wildfire_infusion.ok() )
@@ -5606,7 +5608,7 @@ struct wildfire_bomb_t: public hunter_spell_t
   {
     hunter_spell_t::impact( s );
 
-    current_bomb -> execute_on_target( s -> target );
+    bombs[ debug_cast<state_t*>( s ) -> current_bomb ] -> execute_on_target( s -> target );
 
     if ( wildfire_cluster )
     {
@@ -5628,6 +5630,17 @@ struct wildfire_bomb_t: public hunter_spell_t
     }
 
     hunter_spell_t::update_ready( cd_duration );
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    hunter_spell_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> current_bomb = p() -> state.next_wi_bomb;
   }
 };
 
