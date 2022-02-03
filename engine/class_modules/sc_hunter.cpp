@@ -6416,7 +6416,7 @@ void hunter_t::create_buffs()
 
   // XXX: Mad Bombardier 2pc buff adjusts the passive part of the 4pc, so we have
   //      to do some maths here to come up with a proper multiplier
-  const double mad_bombardier_4pc = tier_set.mad_bombardier_2pc -> effectN( 1 ).percent();
+  const double mad_bombardier_4pc = tier_set.mad_bombardier_4pc -> effectN( 1 ).percent();
   const double mad_bombardier_2pc = find_spell( 363805 ) -> effectN( 1 ).percent();
   buffs.mad_bombardier_4pc =
     make_buff( this, "mad_bombardier_4pc", find_spell( 363805 ) )
