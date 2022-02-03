@@ -560,6 +560,8 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
+  event_t* t28_4pc_summon_event;
+  timespan_t t28_4pc_summon_duration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
