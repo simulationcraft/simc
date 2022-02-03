@@ -1331,6 +1331,8 @@ class SpellDataGenerator(DataGenerator):
          351450,
          # 9.2 Encrypted M+ Affix
          368239, 368240, 368241,
+         # 9.2 Trinkets & Weapons
+         368845, 368863, 368865, # Antumbra, Shadow of the Cosmos
         ),
 
         # Warrior:

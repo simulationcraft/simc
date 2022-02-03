@@ -740,6 +740,7 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -6658,6 +6659,19 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   m *= 1.0 + buffs.bone_chilling->check_stack_value();
   m *= 1.0 + buffs.incanters_flow->check_stack_value();
   m *= 1.0 + buffs.rune_of_power->check_value();
+
+  return m;
+}
+
+double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( auto td = find_target_data( target ) )
+  {
+    if ( !guardian )
+      m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
+  }
 
   return m;
 }

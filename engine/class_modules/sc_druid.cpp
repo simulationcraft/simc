@@ -296,7 +296,6 @@ public:
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
-    unsigned maximum_celestial_infusion = 3u;  // maximum stacks of 2t28 foe AP ticking buff
 
     // Feral
     double predator_rppm_rate = 0.0;
@@ -324,6 +323,10 @@ public:
   struct active_actions_t
   {
     // General
+    action_t* shift_to_caster;
+    action_t* shift_to_bear;
+    action_t* shift_to_cat;
+    action_t* shift_to_moonkin;
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
 
     // Balance
@@ -390,7 +393,7 @@ public:
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* fury_of_elune;  // AP ticks
-    std::vector<buff_t*> celestial_infusion;  // AP ticks for 2T28
+    buff_t* celestial_infusion;  // AP ticks for 2T28
     buff_t* natures_balance;
     buff_t* owlkin_frenzy;
     buff_t* solstice;
@@ -1687,11 +1690,14 @@ struct kindred_affinity_base_t : public stat_buff_t
     set_max_stack( 2 );  // artificially allow second stack to simulate doubling during kindred empowerment
   }
 
-  void init_cov( covenant_e cov )
+  void init_cov( covenant_e cov, double multiplier = 1.0 )
   {
     if ( cov == covenant_e::KYRIAN )
     {
       // Kyrian uses modify_rating(189) subtype for mastery rating, which is automatically parsed in stat_buff_t ctor
+      for ( auto& s : stats )
+        s.amount *= 0.5;
+
       name_str_reporting += "_mastery";
       return;
     }
@@ -1700,19 +1706,19 @@ struct kindred_affinity_base_t : public stat_buff_t
 
     if ( cov == covenant_e::NECROLORD )
     {
-      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT );
+      set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
       name_str_reporting += "_vers";
     }
     else if ( cov == covenant_e::NIGHT_FAE )
     {
-      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_default_value_from_effect_type( A_HASTE_ALL, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_HASTE );
       name_str_reporting += "_haste";
     }
     else if ( cov == covenant_e::VENTHYR )
     {
-      set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE );
+      set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE, P_MAX, multiplier );
       set_pct_buff_type( STAT_PCT_BUFF_CRIT );
       name_str_reporting += "_crit";
     }
@@ -1790,7 +1796,7 @@ struct kindred_affinity_external_buff_t : public kindred_affinity_base_t
 {
   kindred_affinity_external_buff_t( player_t* p ) : kindred_affinity_base_t( p, "kindred_affinity_external" )
   {
-    init_cov( p->covenant->type() );
+    init_cov( p->covenant->type(), 0.5 );
   }
 };
 }  // end namespace buffs
@@ -1839,19 +1845,16 @@ public:
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
   std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
-
   // list of action_ids that triggers the same dot as this action
   std::vector<int> dot_ids;
-
   // Name to be used by get_dot() instead of action name
   std::string dot_name;
-
+  // form spell to automatically cast
+  action_t* autoshift;
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
   free_cast_e free_cast;
   // Restricts use of a spell based on form.
   unsigned form_mask;
-  // Allows a spell that may not be cast in the current form to be cast by automatically changing to the specified form.
-  unsigned autoshift;
   // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
   bool may_autounshift;
   bool triggers_galactic_guardian;
@@ -1861,9 +1864,9 @@ public:
   druid_action_t( std::string_view n, druid_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       dot_name( n ),
+      autoshift( nullptr ),
       free_cast( free_cast_e::NONE ),
       form_mask( ab::data().stance_mask() ),
-      autoshift( 0U ),
       may_autounshift( true ),
       triggers_galactic_guardian( true ),
       is_auto_attack( false ),
@@ -1933,17 +1936,11 @@ public:
     if ( !check_form_restriction() )
     {
       if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
-      {
-        p()->shapeshift( NO_FORM );
-      }
+        p()->active.shift_to_caster->execute();
       else if ( autoshift )
-      {
-        p()->shapeshift( static_cast<form_e>( autoshift ) );
-      }
+        autoshift->execute();
       else
-      {
         assert( false && "Action executed in wrong form with no valid form to shift to!" );
-      }
     }
 
     ab::schedule_execute( s );
@@ -2576,7 +2573,7 @@ public:
           if ( p()->talent.incarnation_moonkin->ok() && p()->get_form() != form_e::MOONKIN_FORM &&
                !p()->buff.incarnation_moonkin->check() )
           {
-            p()->shapeshift( form_e::MOONKIN_FORM );
+            p()->active.shift_to_moonkin->execute();
           }
 
           p()->buff.ca_inc->extend_duration_or_trigger( p_time, p() );
@@ -2653,6 +2650,87 @@ struct druid_interrupt_t : public druid_spell_t
       return false;
 
     return druid_spell_t::target_ready( t );
+  }
+};
+
+// Form Spells ==============================================================
+struct druid_form_t : public druid_spell_t
+{
+  const spell_data_t* affinity;
+  form_e form;
+
+  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt, form_e f )
+    : druid_spell_t( n, p, s, opt ), affinity( spell_data_t::nil() ), form( f )
+  {
+    harmful = may_autounshift = reset_melee_swing = false;
+    ignore_false_positive = true;
+
+    form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
+
+    switch ( form )
+    {
+      case BEAR_FORM:    affinity = p->talent.guardian_affinity;    break;
+      case CAT_FORM:     affinity = p->talent.feral_affinity;       break;
+      case MOONKIN_FORM: affinity = p->talent.balance_affinity;     break;
+      case NO_FORM:      affinity = p->talent.restoration_affinity; break;
+      default: break;
+    }
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    p()->shapeshift( form );
+
+    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
+         !p()->buff.heart_of_the_wild->check() && affinity->ok() )
+    {
+      p()->buff.oath_of_the_elder_druid->trigger();
+      p()->buff.heart_of_the_wild->trigger(
+          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
+    }
+  }
+};
+
+// Bear Form Spell ==========================================================
+struct bear_form_t : public druid_form_t
+{
+  bear_form_t( druid_t* p, std::string_view opt )
+    : druid_form_t( "bear_form", p, p->find_class_spell( "Bear Form" ), opt, BEAR_FORM )
+  {}
+
+  void execute() override
+  {
+    druid_form_t::execute();
+
+    if ( p()->conduit.ursine_vigor->ok() )
+      p()->buff.ursine_vigor->trigger();
+  }
+};
+
+// Cat Form Spell ===========================================================
+struct cat_form_t : public druid_form_t
+{
+  cat_form_t( druid_t* p, std::string_view opt )
+    : druid_form_t( "cat_form", p, p->find_class_spell( "Cat Form" ), opt, CAT_FORM )
+  {}
+};
+
+// Moonkin Form Spell =======================================================
+struct moonkin_form_t : public druid_form_t
+{
+  moonkin_form_t( druid_t* p, std::string_view opt )
+    : druid_form_t( "moonkin_form", p, p->spec.moonkin_form, opt, MOONKIN_FORM )
+  {}
+};
+
+// Cancelform (revert to caster form)========================================
+struct cancel_form_t : public druid_form_t
+{
+  cancel_form_t( druid_t* p, std::string_view opt ) : druid_form_t( "cancelform", p, spell_data_t::nil(), opt, NO_FORM )
+  {
+    trigger_gcd = 0_ms;
   }
 };
 
@@ -3167,12 +3245,14 @@ public:
 // Berserk ==================================================================
 struct berserk_cat_t : public cat_attack_t
 {
-  berserk_cat_t( druid_t* player, std::string_view options_str )
-    : cat_attack_t( "berserk_cat", player, player->spec.berserk_cat, options_str )
+  berserk_cat_t( druid_t* p, std::string_view options_str )
+    : cat_attack_t( "berserk_cat", p, p->spec.berserk_cat, options_str )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    form_mask = autoshift = CAT_FORM;
     name_str_reporting = "berserk";
+
+    form_mask = CAT_FORM;
+    autoshift = p->active.shift_to_cat;
   }
 
   void execute() override
@@ -4031,9 +4111,11 @@ struct tigers_fury_t : public cat_attack_t
     : cat_attack_t( n, p, s, opt ), duration( p->buff.tigers_fury->buff_duration() )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    autoshift = form_mask = CAT_FORM;
     energize_type = action_energize::ON_CAST;
     energize_amount += p->find_rank_spell( "Tiger's Fury", "Rank 2" )->effectN( 1 ).resource( RESOURCE_ENERGY );
+
+    form_mask = CAT_FORM;
+    autoshift = p->active.shift_to_cat;
   }
 
   void execute() override
@@ -4165,8 +4247,10 @@ struct berserk_bear_t : public bear_attack_t
     : bear_attack_t( "berserk_bear", p, p->find_specialization_spell( "berserk" ), opt )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    form_mask = autoshift = BEAR_FORM;
     name_str_reporting = "berserk";
+
+    form_mask = BEAR_FORM;
+    autoshift = p->active.shift_to_bear;
   }
 
   void execute() override
@@ -4436,6 +4520,7 @@ struct architects_aligner_t : public bear_attack_t
   architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
   {
     background = true;
+    may_miss = may_glance = may_dodge = may_block = may_parry = false;
     aoe = -1;
 
     heal = p->get_secondary_action<architects_aligner_heal_t>( "architects_aligner_heal" );
@@ -5270,7 +5355,8 @@ struct barkskin_t : public druid_spell_t
     }
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
-      form_mask = autoshift = BEAR_FORM;
+      form_mask = BEAR_FORM;
+      autoshift = p->active.shift_to_bear;
   }
 
   void init() override
@@ -5359,10 +5445,11 @@ struct dash_t : public druid_spell_t
       buff_on_cast( p->talent.tiger_dash->ok() ? p->buff.tiger_dash : p->buff.dash ),
       gcd_mul( p->query_aura_effect( &p->buff.cat_form->data(), A_ADD_PCT_MODIFIER, P_GCD, &data() )->percent() )
   {
-    autoshift = form_mask = CAT_FORM;
-
     harmful = may_crit = may_miss = false;
     ignore_false_positive = true;
+
+    form_mask = CAT_FORM;
+    autoshift = p->active.shift_to_cat;
   }
 
   timespan_t gcd() const override
@@ -5449,87 +5536,6 @@ struct force_of_nature_t : public druid_spell_t
   }
 };
 
-// Form Spells ==============================================================
-struct druid_form_t : public druid_spell_t
-{
-  const spell_data_t* affinity;
-  form_e form;
-
-  druid_form_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt, form_e f )
-    : druid_spell_t( n, p, s, opt ), affinity( spell_data_t::nil() ), form( f )
-  {
-    harmful = may_autounshift = reset_melee_swing = false;
-    ignore_false_positive = true;
-
-    form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
-
-    switch ( form )
-    {
-      case BEAR_FORM:    affinity = p->talent.guardian_affinity;    break;
-      case CAT_FORM:     affinity = p->talent.feral_affinity;       break;
-      case MOONKIN_FORM: affinity = p->talent.balance_affinity;     break;
-      case NO_FORM:      affinity = p->talent.restoration_affinity; break;
-      default: break;
-    }
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->shapeshift( form );
-
-    if ( p()->legendary.oath_of_the_elder_druid->ok() && !p()->buff.oath_of_the_elder_druid->check() &&
-         !p()->buff.heart_of_the_wild->check() && affinity->ok() )
-    {
-      p()->buff.oath_of_the_elder_druid->trigger();
-      p()->buff.heart_of_the_wild->trigger(
-          timespan_t::from_seconds( p()->legendary.oath_of_the_elder_druid->effectN( 2 ).base_value() ) );
-    }
-  }
-};
-
-// Bear Form Spell ==========================================================
-struct bear_form_t : public druid_form_t
-{
-  bear_form_t( druid_t* p, std::string_view opt )
-    : druid_form_t( "bear_form", p, p->find_class_spell( "Bear Form" ), opt, BEAR_FORM )
-  {}
-
-  void execute() override
-  {
-    druid_form_t::execute();
-
-    if ( p()->conduit.ursine_vigor->ok() )
-      p()->buff.ursine_vigor->trigger();
-  }
-};
-
-// Cat Form Spell ===========================================================
-struct cat_form_t : public druid_form_t
-{
-  cat_form_t( druid_t* p, std::string_view opt )
-    : druid_form_t( "cat_form", p, p->find_class_spell( "Cat Form" ), opt, CAT_FORM )
-  {}
-};
-
-// Moonkin Form Spell =======================================================
-struct moonkin_form_t : public druid_form_t
-{
-  moonkin_form_t( druid_t* p, std::string_view opt )
-    : druid_form_t( "moonkin_form", p, p->spec.moonkin_form, opt, MOONKIN_FORM )
-  {}
-};
-
-// Cancelform (revert to caster form)========================================
-struct cancel_form_t : public druid_form_t
-{
-  cancel_form_t( druid_t* p, std::string_view opt ) : druid_form_t( "cancelform", p, spell_data_t::nil(), opt, NO_FORM )
-  {
-    trigger_gcd = 0_ms;
-  }
-};
-
 // Fury of Elune =========================================================
 struct fury_of_elune_t : public druid_spell_t
 {
@@ -5574,19 +5580,9 @@ struct fury_of_elune_t : public druid_spell_t
     druid_spell_t::execute();
 
     if ( free_cast == free_cast_e::PILLAR )
-    {
-      assert( !p()->buff.celestial_infusion.empty() );
-      auto min = std::min_element( p()->buff.celestial_infusion.begin(), p()->buff.celestial_infusion.end(),
-                                   []( const buff_t* l, const buff_t* r ) {
-                                     return l->remains() < r->remains();
-                                   } );
-
-      ( *min )->trigger();
-    }
+      p()->buff.celestial_infusion->trigger();
     else
-    {
       p()->buff.fury_of_elune->trigger();
-    }
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -5601,10 +5597,8 @@ struct fury_of_elune_t : public druid_spell_t
 // Heart of the Wild ========================================================
 struct heart_of_the_wild_t : public druid_spell_t
 {
-  form_e form;
-
   heart_of_the_wild_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, opt ), form( NO_FORM )
+    : druid_spell_t( "heart_of_the_wild", p, p->talent.heart_of_the_wild, opt )
   {
     harmful = may_crit = may_miss = reset_melee_swing = false;
 
@@ -5614,11 +5608,25 @@ struct heart_of_the_wild_t : public druid_spell_t
 
     // casting hotw will auto shift into the corresponding affinity form
     if ( p->talent.balance_affinity->ok() )
-      form = MOONKIN_FORM;
+    {
+      form_mask = MOONKIN_FORM;
+      autoshift = p->active.shift_to_moonkin;
+    }
     else if ( p->talent.feral_affinity->ok() )
-      form = CAT_FORM;
+    {
+      form_mask = CAT_FORM;
+      autoshift = p->active.shift_to_cat;
+    }
     else if ( p->talent.guardian_affinity->ok() )
-      form = BEAR_FORM;
+    {
+      form_mask = BEAR_FORM;
+      autoshift = p->active.shift_to_bear;
+    }
+  }
+
+  void schedule_execute( action_state_t* s ) override
+  {
+    druid_spell_t::schedule_execute( s );
   }
 
   void execute() override
@@ -5626,9 +5634,6 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.heart_of_the_wild->trigger();
-
-    if ( form != NO_FORM )  // resto affinity hotw does not auto shift
-      p()->shapeshift( form );
   }
 };
 
@@ -5638,8 +5643,10 @@ struct incapacitating_roar_t : public druid_spell_t
   incapacitating_roar_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "incapacitating_roar", p, p->find_affinity_spell( "Incapacitating Roar" ), opt )
   {
-    form_mask = autoshift = BEAR_FORM;
     harmful = false;
+
+    form_mask = BEAR_FORM;
+    autoshift = p->active.shift_to_bear;
   }
 };
 
@@ -5657,20 +5664,24 @@ struct incarnation_t : public druid_spell_t
     switch ( p->specialization() )
     {
       case DRUID_BALANCE:
-        autoshift = form_mask = MOONKIN_FORM;
+        form_mask = MOONKIN_FORM;
         name_str_reporting = "incarnation_chosen_of_elune";
+        autoshift = p->active.shift_to_moonkin;
         break;
       case DRUID_FERAL:
-        autoshift = form_mask = CAT_FORM;
+        form_mask = CAT_FORM;
         name_str_reporting = "incarnation_king_of_the_jungle";
+        autoshift = p->active.shift_to_cat;
         break;
       case DRUID_GUARDIAN:
-        autoshift = form_mask = BEAR_FORM;
+        form_mask = BEAR_FORM;
         name_str_reporting = "incarnation_guardian_of_ursoc";
+        autoshift = p->active.shift_to_bear;
         break;
       case DRUID_RESTORATION:
-        autoshift = form_mask = NO_FORM;
+        form_mask = NO_FORM;
         name_str_reporting = "incarnation_tree_of_life";
+        autoshift = p->active.shift_to_caster;
         break;
       default:
         assert( false && "Actor attempted to create incarnation action with no specialization." );
@@ -6138,14 +6149,14 @@ struct moonfire_t : public druid_spell_t
 // Prowl ====================================================================
 struct prowl_t : public druid_spell_t
 {
-  prowl_t( druid_t* player, std::string_view opt )
-    : druid_spell_t( "prowl", player, player->find_class_spell( "Prowl" ), opt )
+  prowl_t( druid_t* p, std::string_view opt ) : druid_spell_t( "prowl", p, p->find_class_spell( "Prowl" ), opt )
   {
-    autoshift = form_mask = CAT_FORM;
-
     trigger_gcd = 0_ms;
     use_off_gcd = ignore_false_positive = true;
     harmful = break_stealth = false;
+
+    form_mask = CAT_FORM;
+    autoshift = p->active.shift_to_cat;
   }
 
   void execute() override
@@ -6369,10 +6380,10 @@ struct stampeding_roar_t : public druid_spell_t
   stampeding_roar_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "stampeding_roar", p, p->find_class_spell( "Stampeding Roar" ), opt )
   {
-    form_mask = BEAR_FORM | CAT_FORM;
-    autoshift = BEAR_FORM;
-
     harmful = false;
+
+    form_mask = BEAR_FORM | CAT_FORM;
+    autoshift = p->active.shift_to_bear;
   }
 
   void init_finished() override
@@ -7060,9 +7071,7 @@ struct adaptive_swarm_t : public druid_spell_t
     player_t* player;
     event_t* event;
 
-    swarm_target_t( player_t* p ) : swarm_target_t( p, nullptr ) {}
-    swarm_target_t( event_t* e ) : swarm_target_t( nullptr, e ) {}
-    swarm_target_t( player_t* p, event_t* e ) : player( p ), event( e ) {}
+    swarm_target_t( player_t* p, event_t* e = nullptr ) : player( p ), event( e ) {}
     swarm_target_t() : player(), event() {}
 
     operator player_t*() { return player; }
@@ -7345,10 +7354,10 @@ struct adaptive_swarm_t : public druid_spell_t
 
       void execute() override
       {
-        swarm->jump_swarm( stacks );
-
         auto& tracker = druid->swarm_tracker;
         tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
+
+        swarm->jump_swarm( stacks );
       }
     };
 
@@ -7367,7 +7376,7 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
         return target;
 
-      return p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ];
+      return { target, p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ] };
     }
 
     void impact( action_state_t* s ) override
@@ -7692,7 +7701,7 @@ struct convoke_the_spirits_t : public druid_spell_t
 
     // convoke will not cast pulverize if it's already up on the target
     if ( type_ == CAST_PULVERIZE && td( target )->debuff.pulverize->check() )
-      type_ == CAST_SPEC;
+      type_ = CAST_SPEC;
 
     if ( type_ == CAST_OFFSPEC && !offspec_list.empty() )
       type_ = offspec_list.at( rng().range( offspec_list.size() ) );
@@ -9044,13 +9053,8 @@ void druid_t::create_buffs()
 
   buff.fury_of_elune = make_buff<fury_of_elune_buff_t>( *this, "fury_of_elune", talent.fury_of_elune );
 
-  if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2) )
-  {
-    auto ci_spell = find_spell( 367907 );
-    for ( unsigned i = 0; i < options.maximum_celestial_infusion; i++ )
-      buff.celestial_infusion.push_back(
-          make_buff<fury_of_elune_buff_t>( *this, "celestial_infusion" + util::to_string( i + 1 ), ci_spell ) );
-  }
+  buff.celestial_infusion = make_buff<fury_of_elune_buff_t>( *this, "celestial_infusion", find_spell( 367907 ) )
+    ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance );
   auto nb_eff = query_aura_effect( &buff.natures_balance->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
@@ -9390,6 +9394,16 @@ void druid_t::create_actions()
   }
 
   // General
+  active.shift_to_caster = get_secondary_action<cancel_form_t>( "cancel_form_shift", "" );
+  active.shift_to_caster->dual = true;
+  active.shift_to_caster->background = true;
+  active.shift_to_bear = get_secondary_action<bear_form_t>( "bear_form_shift", "" );
+  active.shift_to_bear->dual = true;
+  active.shift_to_cat = get_secondary_action<cat_form_t>( "cat_form_shift", "" );
+  active.shift_to_cat->dual = true;
+  active.shift_to_moonkin = get_secondary_action<moonkin_form_t>( "moonkin_form_shift", "" );
+  active.shift_to_moonkin->dual = true;
+
   if ( legendary.lycaras_fleeting_glimpse->ok() )
     active.lycaras_fleeting_glimpse = new lycaras_fleeting_glimpse_t( this );
 
@@ -10569,19 +10583,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       if ( util::str_compare_ci( splits[ 2 ], "stack" ) )
       {
         return make_fn_expr( name_str, [ this ]() {
-          return range::accumulate_proj( buff.celestial_infusion, buff.fury_of_elune->check(), &buff_t::check );
+          return buff.fury_of_elune->check() + buff.celestial_infusion->check();
         } );
       }
       else if ( util::str_compare_ci( splits[ 2 ], "remains" ) )
       {
         return make_fn_expr( name_str, [ this ]() {
-          auto max = buff.fury_of_elune->remains();
-
-          for ( const auto& ci : buff.celestial_infusion )
-            if ( ci->remains() > max )
-              max = ci->remains();
-
-          return max;
+          return std::max( buff.fury_of_elune->remains(), buff.celestial_infusion->remains() );
         } );
       }
     }
@@ -10713,7 +10721,6 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
-  add_option( opt_uint( "druid.maximum_celestial_infusion", options.maximum_celestial_infusion ) );
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
@@ -10930,12 +10937,6 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form->expire();
   buff.bear_form->expire();
   buff.moonkin_form->expire();
-  if ( f != NO_FORM )
-  {
-    if ( buff.ravenous_frenzy->check() )
-      buff.ravenous_frenzy->trigger();
-  }
-
 
   switch ( f )
   {
@@ -11555,9 +11556,9 @@ bool druid_t::check_astral_power( action_t* a, int over )
 {
   double ap = resources.current[ RESOURCE_ASTRAL_POWER ];
 
-  auto aps = buff.natures_balance->check_value() + buff.fury_of_elune->check_value();
-  for ( auto b : buff.celestial_infusion )
-    aps += b->check_value();
+  auto aps = buff.natures_balance->check_value() +
+             buff.fury_of_elune->check_value() +
+             buff.celestial_infusion->check_value();
 
   ap += a->composite_energize_amount( nullptr );
   ap += a->time_to_execute.total_seconds() * aps;
