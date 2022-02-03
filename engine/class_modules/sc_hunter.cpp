@@ -799,7 +799,7 @@ public:
     damage_affected_by sniper_training;
     // surv
     damage_affected_by coordinated_assault;
-    damage_affected_by mad_bombardier;
+    bool mad_bombardier = false;
     damage_affected_by spirit_bond;
   } affected_by;
 
@@ -821,7 +821,7 @@ public:
     affected_by.sniper_training     = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
 
     affected_by.coordinated_assault = parse_damage_affecting_aura( this, p -> specs.coordinated_assault );
-    affected_by.mad_bombardier      = parse_damage_affecting_aura( this, p -> tier_set.mad_bombardier_4pc );
+    affected_by.mad_bombardier      = check_affected_by( this, p -> tier_set.mad_bombardier_4pc -> effectN( 1 ) );
     affected_by.spirit_bond         = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
 
     // passive talents
@@ -962,7 +962,7 @@ public:
     if ( affected_by.lone_wolf.direct )
       am *= 1 + p() -> buffs.lone_wolf -> check_value();
 
-    if ( affected_by.mad_bombardier.direct )
+    if ( affected_by.mad_bombardier )
       am *= 1 + p() -> buffs.mad_bombardier_4pc -> check_value();
 
     return am;
@@ -986,9 +986,6 @@ public:
 
     if ( affected_by.lone_wolf.tick )
       am *= 1 + p() -> buffs.lone_wolf -> check_value();
-
-    if ( affected_by.mad_bombardier.tick )
-      am *= 1 + p() -> buffs.mad_bombardier_4pc -> check_value();
 
     return am;
   }
@@ -6417,9 +6414,13 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_chance( tier_set.mad_bombardier_2pc -> effectN( 1 ).percent() );
 
+  // XXX: Mad Bombardier 2pc buff adjusts the passive part of the 4pc, so we have
+  //      to do some maths here to come up with a proper multiplier
+  const double mad_bombardier_4pc = tier_set.mad_bombardier_2pc -> effectN( 1 ).percent();
+  const double mad_bombardier_2pc = find_spell( 363805 ) -> effectN( 1 ).percent();
   buffs.mad_bombardier_4pc =
     make_buff( this, "mad_bombardier_4pc", find_spell( 363805 ) )
-      -> set_default_value_from_effect( 1 )
+      -> set_default_value( 1 / ( 1 + mad_bombardier_4pc ) * ( 1 + mad_bombardier_4pc + mad_bombardier_2pc ) - 1 )
       -> set_quiet( true )
       -> set_chance( tier_set.mad_bombardier_4pc.ok() );
 
