@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42174
-static const std::array<spelltext_data_t, 15988> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15973,12 +15973,20 @@ static const std::array<spelltext_data_t, 15988> __ptr_spelltext_data { {
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },
   { 368634, "$@spelldesc367808", 0, 0 },
+  { 368635, "$@spelldesc367930", "Your Haste is increased by $w1. $w2% of damage you take will echo again $s3 sec later.", 0 },
+  { 368636, "$@spelldesc367930", "Your Versatility is increased by $w1. All Healing you take is reduced by $s2%.", 0 },
+  { 368637, "$@spelldesc367930", "Your Critical Strike is increased by $w1. You are bleeding for $w2 damage every $t2 sec.", 0 },
+  { 368638, "$@spelldesc367930", "Your Mastery is increased by $w1. Your spells and abilities reduce your movement speed by $w2% for $368639d, stacking up to $368639u times.", 0 },
+  { 368639, "$@spelldesc367930", "Movement speed decreased by $w1%.", 0 },
+  { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
+  { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 368685, "$@spelldesc363734", "Increases offensive ability damage by $w1%.", 0 },
   { 368686, "Fists of Fury empowers your next three Combo-eligible moves, causing them to deal $368685s1% additional damage.", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
+  { 368850, "$@spelldesc367930", 0, 0 },
   { 368863, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
   { 368865, "$@spelldesc367952", "You cannot approach the Singularity.", 0 },
   { 368894, "Call forth an Automa Medic which restores ${$367835s1*$d} mana to you over $d before expiring.", "Restoring ${$367835s1*$d} mana over $d.", 0 },

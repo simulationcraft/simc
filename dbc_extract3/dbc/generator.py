@@ -1333,6 +1333,7 @@ class SpellDataGenerator(DataGenerator):
          368239, 368240, 368241,
          # 9.2 Trinkets & Weapons
          368845, 368863, 368865, # Antumbra, Shadow of the Cosmos
+         368635, 368636, 368637, 368638, 363839, 368641, 368642, 368850, # Scars of Fraternal Strife
         ),
 
         # Warrior:
