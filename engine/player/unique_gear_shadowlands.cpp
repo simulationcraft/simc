@@ -2875,6 +2875,127 @@ void reactive_defense_matrix( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 9.2 Trinkets
+
+void scars_of_fraternal_strife( special_effect_t& effect )
+{
+  struct apply_rune_t : public proc_spell_t
+  {
+    struct first_rune_t : public stat_buff_t
+    {
+      first_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_1", e.player->find_spell( 368635 ), e.item )
+      {
+        name_str_reporting = "the_first_rune";
+
+        // timespan_t echo_delay = timespan_t::from_seconds( data().effectN( 3 ).base_value() ); NYI
+        // double echo_pct = data().effectN( 2 ).percent();
+        // auto echo = new proc_spell_t( "the_first_rune", e.player, e.player->find_spell( 368850 ) );
+      }
+    };
+
+    struct second_rune_t : public stat_buff_t
+    {
+      second_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_2", e.player->find_spell( 368636 ), e.item )
+      {
+        name_str_reporting = "the_second_rune";
+
+        // auto heal_reduction = data().effectN( 2 ).percent(); NYI
+      }
+    };
+
+    struct third_rune_t : public stat_buff_t
+    {
+      third_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_3", e.player->find_spell( 368637 ), e.item )
+      {
+        name_str_reporting = "the_third_rune";
+
+        /* Disabled for now
+        auto bleed = new proc_spell_t( "the_third_rune_bleed", e.player, &data(), item );
+        bleed->dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2.0 );
+        bleed->snapshot_flags &= STATE_NO_MULTIPLIER;
+        bleed->update_flags &= STATE_NO_MULTIPLIER;
+
+        set_stack_change_callback( [ bleed ]( buff_t* b, int, int new_ ) {
+          if ( new_ )
+            bleed->execute_on_target( b->player );
+          else
+            bleed->get_dot( b->player )->cancel();
+        } ); */
+      }
+    };
+
+    struct fourth_rune_t : public stat_buff_t
+    {
+      fourth_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_4", e.player->find_spell( 368638 ), e.item )
+      {
+        name_str_reporting = "the_fourth_rune";
+
+        // auto snare = make_buff( e.player, "the_fourth_rune", e.player->find_spell( 368639 ) ); NYI
+      }
+    };
+
+    struct final_rune_t : public stat_buff_t
+    {
+      final_rune_t( const special_effect_t& e, apply_rune_t* a )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_5", e.player->find_spell( 368641 ), e.item )
+      {
+        name_str_reporting = "the_final_rune";
+
+        auto burst = new proc_spell_t( "the_final_rune", e.player, e.player->find_spell( 368642 ), e.item );
+        burst->aoe = -1;
+
+        set_stack_change_callback( [ a, burst ]( buff_t* buff, int, int new_ ) {
+          if ( !new_ )
+          {
+            burst->execute_on_target( buff->player->target );
+
+            range::for_each( a->buffs, [ buff ]( buff_t* b ) {
+              if ( b != buff )
+                b->expire();
+            } );
+          }
+        } );
+      }
+    };
+
+    std::vector<buff_t*> buffs;
+    buff_t* first;
+
+    apply_rune_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      harmful = false;
+
+      first = buffs.emplace_back( make_buff<first_rune_t>( e ) );
+      buffs.push_back( make_buff<second_rune_t>( e ) );
+      buffs.push_back( make_buff<third_rune_t>( e ) );
+      buffs.push_back( make_buff<fourth_rune_t>( e ) );
+      buffs.push_back( make_buff<final_rune_t>( e, this ) );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      buffs.front()->trigger();
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+
+      std::rotate( buffs.begin(), range::find( buffs, first ), buffs.end() );
+    }
+  };
+
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
+};
+
 // Weapons
 
 // id=331011 driver
@@ -4167,6 +4288,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
+
+    // 9.2 Trinkets
+    unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
