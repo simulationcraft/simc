@@ -1652,7 +1652,7 @@ public:
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
-      p()->action.frost_storm_comet_storm->execute_on_target( p()->target );
+      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
     }
   }
 
