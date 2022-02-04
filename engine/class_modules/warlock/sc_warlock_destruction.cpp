@@ -589,10 +589,12 @@ struct chaos_bolt_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin->check() )
-      return 0.0;
+    double c = destruction_spell_t::cost();
 
-    return destruction_spell_t::cost();      
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+
+    return c;      
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -605,7 +607,7 @@ struct chaos_bolt_t : public destruction_spell_t
     timespan_t h = warlock_spell_t::execute_time();
     
     if ( p()->buffs.ritual_of_ruin->check() )
-      return 0_s;
+      h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
@@ -703,6 +705,8 @@ struct chaos_bolt_t : public destruction_spell_t
       {
         if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
         {
+          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+          // Unsure which is being used at this time
           timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
@@ -867,10 +871,12 @@ struct rain_of_fire_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin->check() )
-      return 0.0;
+    double c = destruction_spell_t::cost();
 
-    return destruction_spell_t::cost();      
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+
+    return c;        
   }
 
   void execute() override
@@ -884,6 +890,8 @@ struct rain_of_fire_t : public destruction_spell_t
       {
         if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
         {
+          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+          // Unsure which is being used at this time
           timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
