@@ -117,6 +117,7 @@ struct shadow_bolt_t : public affliction_spell_t
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {        
         auto tdata = this->td( s->target );
+        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
         bool tierDotsActive = tdata->dots_agony->is_ticking()
                            && tdata->dots_corruption->is_ticking()
                            && tdata->dots_unstable_affliction->is_ticking();
@@ -556,11 +557,15 @@ struct seed_of_corruption_t : public affliction_spell_t
 // 9.2 Tier Set
 struct deliberate_corruption_t : public affliction_spell_t
 {
-  deliberate_corruption_t( warlock_t* p)
-    : affliction_spell_t( "deliberate_corruption", p, p->find_spell(367831) )
+  deliberate_corruption_t( warlock_t* p )
+    : affliction_spell_t( "deliberate_corruption", p, p->find_spell( 367831 ) )
   {
     background      = true;
     affected_by_woc = false;
+    
+    // 2022-02-03 PTR - Deliberate Corruption was changed to a single tick DoT, presumably to automatically pick up this modifier in-game
+    if ( p->talents.absolute_corruption->ok() )
+      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
   }
 };
 
@@ -593,7 +598,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
         {
-          m *= 1.00 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+          m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
         }
 
         return m;
@@ -601,16 +606,29 @@ struct malefic_rapture_t : public affliction_spell_t
 
       void impact ( action_state_t* s ) override
       {
-        if ( result_is_hit( s->result ) && p()->talents.absolute_corruption->ok() && p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        { 
-          auto td = this->td( s->target );
-          if (td->dots_corruption->is_ticking())
+        affliction_spell_t::impact( s );
+
+        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        {
+          timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
+          warlock_td_t* td = p()->get_target_data( s->target );
+
+          td->dots_agony->adjust_duration( dot_extension );
+          td->dots_unstable_affliction->adjust_duration(dot_extension);
+
+          if ( !p()->talents.absolute_corruption->ok() )
           {
-            deliberate_corruption->execute_on_target( s->target );
+            td->dots_corruption->adjust_duration( dot_extension );
+          }
+          else
+          {
+            auto td = this->td( s->target );
+            if ( td->dots_corruption->is_ticking() )
+            {
+              deliberate_corruption->execute_on_target( s->target );
+            }
           }
         }
-
-        affliction_spell_t::impact( s );
       }
 
       void execute() override
@@ -639,20 +657,22 @@ struct malefic_rapture_t : public affliction_spell_t
 
     double cost() const override
     {
-      if (p()->buffs.calamitous_crescendo->check())
-        return 0.0;
+      double c = affliction_spell_t::cost();
+
+      if ( p()->buffs.calamitous_crescendo->check() )
+        c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
         
-      return warlock_spell_t::cost();      
+      return c;      
     }
 
     timespan_t execute_time() const override
     {
-      if ( p()->buffs.calamitous_crescendo->check() )
-      {
-        return 0_ms;
-      }
+      timespan_t t = affliction_spell_t::execute_time();
 
-      return affliction_spell_t::execute_time();
+      if ( p()->buffs.calamitous_crescendo->check() )
+        t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
+
+      return t;
     }
 
     bool ready() override
@@ -675,16 +695,6 @@ struct malefic_rapture_t : public affliction_spell_t
       }
 
       p()->buffs.calamitous_crescendo->expire();
-
-      if (p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-      {
-        timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-        warlock_td_t* td = p()->get_target_data( target );
-
-        td->dots_agony->adjust_duration( dot_extension );
-        td->dots_corruption->adjust_duration( dot_extension );
-        td->dots_unstable_affliction->adjust_duration( dot_extension );
-      }
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -736,6 +746,7 @@ struct drain_soul_t : public affliction_spell_t
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {
+        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
         bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
                            && td( d->target )->dots_corruption->is_ticking()
                            && td( d->target )->dots_unstable_affliction->is_ticking();
