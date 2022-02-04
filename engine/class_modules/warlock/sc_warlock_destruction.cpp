@@ -622,7 +622,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   timespan_t execute_time() const override
   {
-    timespan_t h = warlock_spell_t::execute_time();
+    timespan_t h = destruction_spell_t::execute_time();
     
     if ( p()->buffs.ritual_of_ruin->check() )
       h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
@@ -666,7 +666,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   timespan_t gcd() const override
   {
-    timespan_t t = warlock_spell_t::gcd();
+    timespan_t t = destruction_spell_t::gcd();
 
     if ( t == 0_ms )
       return t;
