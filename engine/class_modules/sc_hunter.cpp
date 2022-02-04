@@ -5615,7 +5615,9 @@ struct wildfire_bomb_t: public hunter_spell_t
 
     if ( p() -> buffs.mad_bombardier -> up() )
     {
-      cooldown -> adjust( -data().cooldown() );
+      sim -> print_debug( "{} {} cooldown reset due to {}",
+                          p() -> name(), name(), p() -> buffs.mad_bombardier -> name() );
+      cooldown -> adjust( -data().charge_cooldown() );
       p() -> buffs.mad_bombardier -> expire();
     }
   }
