@@ -9563,6 +9563,7 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
+    precombat->add_action( "snapshot_stats" );
     precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled" );
     precombat->add_talent( this, "Stormkeeper",
                            "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)" );
@@ -9574,7 +9575,6 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( this, "Chain Lightning",
                            "if=!talent.elemental_blast.enabled&spell_targets.chain_lightning>=3&!buff.stormkeeper.up" );
     precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-    precombat->add_action( "snapshot_stats" );
     precombat->add_action( "potion" );
 
     def->add_action( this, "Spiritwalker's Grace", "moving=1,if=movement.distance>6" );
@@ -9805,14 +9805,13 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "flask" );
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
+    precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled", "Summon Earth Elemental precombat if you haven't selected Primal Elementalist." );
     precombat->add_talent( this, "Stormkeeper",
                            "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
                            "Use Stormkeeper precombat unless some adds will spawn soon." );
     precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled", "Use Elemental Blast precombat." );
     precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled", "Use Lava Burst precombat is Elemental Blast is not available." );
-
-    precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
     precombat->add_action( "potion" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
