@@ -166,6 +166,24 @@ struct shadowburn_t : public destruction_spell_t
     }
   }
 
+  void execute() override
+  {
+    int shards_used = as<int>( cost() );
+    destruction_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
+      if ( shards_used > 0 )
+      {
+        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+        if ( overflow > 0 )
+          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+      }
+    }
+  }
+
   double composite_target_crit_chance( player_t* target ) const override
   {
     double m = destruction_spell_t::composite_target_crit_chance( target );
