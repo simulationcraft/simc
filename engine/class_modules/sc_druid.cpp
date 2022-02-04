@@ -5386,8 +5386,10 @@ struct barkskin_t : public druid_spell_t
     }
 
     if ( p->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
+    {
       form_mask = BEAR_FORM;
       autoshift = p->active.shift_to_bear;
+    }
   }
 
   void init() override
@@ -7564,9 +7566,9 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   convoke_the_spirits_t( druid_t* p, std::string_view options_str ) :
     druid_spell_t( "convoke_the_spirits", p, p->cov.night_fae, options_str ),
-    max_ticks( 0 ),
     actions(),
     deck( nullptr ),
+    max_ticks( 0 ),
     main_count( 0 ),
     filler_count( 0 ),
     dot_count( 0 ),
