@@ -5448,6 +5448,20 @@ struct wildfire_bomb_t: public hunter_spell_t
         dual = true;
         triggers_wild_spirits = false;
       }
+
+      double composite_persistent_multiplier( const action_state_t* s ) const override
+      {
+        double m = hunter_spell_t::composite_persistent_multiplier( s );
+
+        // XXX 2022-02-05 All bomb dots apart from Shrapnel snapshot a 1.8 mul with 4pc and 2pc buff up
+        if ( p() -> bugs && p() -> tier_set.mad_bombardier_4pc.ok() &&
+             data().id() != 270339 && p() -> buffs.mad_bombardier -> check() )
+        {
+          m *= 1.8;
+        }
+
+        return m;
+      }
     };
     dot_action_t* dot_action;
 
