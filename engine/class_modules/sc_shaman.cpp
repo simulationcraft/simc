@@ -1586,9 +1586,6 @@ public:
   {
     base_t::impact( state );
 
-    // Turns out misses can proc hot hand. Trigger before the hit check.
-    p()->trigger_hot_hand( state );
-
     // Bail out early if the result is a miss/dodge/parry/ms
     if ( !result_is_hit( state->result ) )
       return;
@@ -1597,6 +1594,7 @@ public:
     p()->trigger_windfury_weapon( state );
     p()->trigger_flametongue_weapon( state );
     p()->trigger_lightning_shield( state );
+    p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
   }
 
