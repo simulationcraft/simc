@@ -3156,6 +3156,35 @@ void cruciform_veinripper(special_effect_t& effect)
   new dbc_proc_callback_t(effect.player, effect);
 }
 
+void singularity_supreme( special_effect_t& effect )
+{
+  auto lockout = make_buff( effect.player, "singularity_supreme_lockout", effect.player->find_spell( 368865 ) )
+    ->set_quiet( true );
+
+  auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
+    ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        lockout->trigger();
+    } );
+
+  effect.custom_buff =
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ) )
+          ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
+            if ( b->at_max_stacks() )
+            {
+              buff->trigger();
+              b->expire();
+            }
+          } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ lockout, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !lockout->check() && !buff->check();
+      } );
+}
 
 // Armor
 
@@ -4300,7 +4329,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
     unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
-    unique_gear::register_special_effect( 359168, items::cruciform_veinripper);
+    unique_gear::register_special_effect( 359168, items::cruciform_veinripper );
+
+    // 9.2 Weapons
+    unique_gear::register_special_effect( 367952, items::singularity_supreme );
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
