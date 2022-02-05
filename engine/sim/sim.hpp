@@ -439,6 +439,7 @@ struct sim_t : private sc_thread_t
     // Defaults active
     bool better_together_ally = true;
     bool enable_rune_words = true;
+    bool enable_domination_gems = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs
