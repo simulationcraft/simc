@@ -1326,6 +1326,7 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "use_items" );
 
   trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_demonic_tyrant.remains_expected<22" );
+  trinks->add_action( "use_item,name=scars_of_fraternal_strife" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&cooldown.summon_demonic_tyrant.remains_expected<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
@@ -1340,6 +1341,10 @@ void warlock_t::create_apl_demonology()
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
 
+  dmg->add_action( "use_item,name=grim_eclipse" );
+  dmg->add_action( "use_item,name=resonant_reservoir" );
+  dmg->add_action( "use_item,name=architects_ingenuity_core" );
+  dmg->add_action( "use_item,name=cosmic_gladiators_resonator" );
   dmg->add_action( "use_item,name=dreadfire_vessel" );
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );
