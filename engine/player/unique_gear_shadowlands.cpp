@@ -3431,7 +3431,7 @@ namespace shards_of_domination
 // Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
 int rune_word_active( const player_t* player, const spell_data_t* driver, spell_label label )
 {
-  if ( !player->sim->shadowlands_opts.enable_rune_words )
+  if ( !player->sim->shadowlands_opts.enable_rune_words || !player->sim->shadowlands_opts.enable_domination_gems )
   {
     player->sim->print_debug( "{}: rune word {} is inactive by global override", player->name(), driver->name_cstr() );
     return 0;
@@ -3503,6 +3503,9 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
 
 report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root )
 {
+  if ( !player.sim->shadowlands_opts.enable_domination_gems )
+    return root;
+
   std::string report_str;
   struct shard_data
   {
@@ -3967,6 +3970,12 @@ void chaos_bane( special_effect_t& effect )
  */
 void shard_of_dyz( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_dyz_cb_t : public dbc_proc_callback_t
   {
     double debuff_value;
@@ -4000,6 +4009,12 @@ void shard_of_dyz( special_effect_t& effect )
  */
 void shard_of_cor( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_cor_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -4049,6 +4064,12 @@ void shard_of_cor( special_effect_t& effect )
  */
 void shard_of_bek( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_bek_cb_t : public dbc_proc_callback_t
   {
     double debuff_value;
@@ -4090,6 +4111,12 @@ void shard_of_bek( special_effect_t& effect )
  */
 void shard_of_zed( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct siphon_essence_t : proc_spell_t
   {
     siphon_essence_t( const special_effect_t& e ) :
@@ -4176,6 +4203,12 @@ void shard_of_zed( special_effect_t& effect )
  */
 void shard_of_kyr( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   auto buff = buff_t::find( effect.player, "accretion" );
   if ( !buff )
   {
