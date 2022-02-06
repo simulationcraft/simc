@@ -664,6 +664,12 @@ public:
     const spell_data_t* deep_healing;
   } mastery;
 
+  // Uptimes
+  struct
+  {
+    uptime_t* hot_hand;
+  } uptime;
+
   // Talents
   struct
   {
@@ -797,6 +803,7 @@ public:
       spec(),
       mastery(),
       talent(),
+      uptime(),
       spell()
   {
     /*
@@ -880,6 +887,7 @@ public:
   void create_options() override;
   void init_gains() override;
   void init_procs() override;
+  void init_uptimes() override;
   void init_assessors() override;
   std::string create_profile( save_e ) override;
 
@@ -1081,6 +1089,37 @@ struct ascendance_buff_t : public buff_t
   void ascendance( attack_t* mh, attack_t* oh );
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override;
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override;
+};
+
+
+struct hot_hand_buff_t : public buff_t
+{
+  shaman_t* shaman;
+  hot_hand_buff_t( shaman_t* p ) 
+      : buff_t( p, "hot_hand", p->talent.hot_hand->effectN( 1 ).trigger() ), shaman(p) 
+  {
+    set_cooldown( timespan_t::zero() );
+    set_trigger_spell( shaman->talent.hot_hand );
+    set_default_value_from_effect( 2 );
+    set_stack_change_callback(
+        [ this ]( buff_t*, int, int ) { shaman->cooldown.lava_lash->adjust_recharge_multiplier(); } );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    bool trigger = buff_t::trigger( s, v, c, d );
+    if ( trigger )
+    {
+      shaman->uptime.hot_hand->update( trigger, sim->current_time() );
+    }
+    return trigger;
+  }
+
+  void expire_override( int s, timespan_t d ) override
+  {
+    shaman->uptime.hot_hand->update( false, sim->current_time() );
+    buff_t::expire_override( s, d );
+  }
 };
 
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
@@ -9184,12 +9223,13 @@ void shaman_t::create_buffs()
   // Buffs crash lightning with extra damage, after using chain lightning
   buff.cl_crash_lightning = make_buff( this, "cl_crash_lightning", find_spell( 333964 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_LABEL_MODIFIER, P_GENERIC );
-  buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
-    ->set_trigger_spell( talent.hot_hand )
+  buff.hot_hand = new hot_hand_buff_t( this );
+  /*buff.hot_hand = make_buff( this, "hot_hand", talent.hot_hand->effectN( 1 ).trigger() )
+    ->set_trigger_spell( talent.hot_hand ) 
     ->set_default_value_from_effect( 2 )
     -> set_stack_change_callback( [this]( buff_t*, int, int ) {
       cooldown.lava_lash->adjust_recharge_multiplier();
-    } );
+    } );*/
   buff.spirit_walk  = make_buff( this, "spirit_walk", find_specialization_spell( "Spirit Walk" ) );
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
                           ->set_max_stack( find_spell( 201846 )->initial_stacks() );
@@ -9279,6 +9319,14 @@ void shaman_t::init_procs()
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
   proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
   proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
+}
+
+// shaman_t::init_uptimes ====================================================
+void shaman_t::init_uptimes()
+{
+  player_t::init_uptimes();
+
+  uptime.hot_hand = get_uptime( "Hot Hand" )->collect_uptime( *sim )->collect_duration( *sim );
 }
 
 // shaman_t::init_assessors =================================================
