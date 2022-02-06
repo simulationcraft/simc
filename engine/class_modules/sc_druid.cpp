@@ -2965,7 +2965,8 @@ public:
     base_t::consume_resource();
 
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( snapshots.clearcasting && current_resource() == RESOURCE_ENERGY && p()->buff.clearcasting_cat->up() )
+    if ( !free_cast && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
+         p()->buff.clearcasting_cat->up() )
     {
       p()->buff.clearcasting_cat->decrement();
 
