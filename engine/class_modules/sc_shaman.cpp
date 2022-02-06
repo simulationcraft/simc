@@ -1122,6 +1122,31 @@ struct hot_hand_buff_t : public buff_t
   }
 };
 
+// Changed behavior from in-game single buff to a stacking buff per extra LB so that the haste "stack"
+// uptimes can be analyzed in the report and interacted with in APLs
+struct splintered_elements_buff_t : public buff_t
+{
+  shaman_t* shaman;
+  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered elements", p->find_spell( 354648 ) ), shaman( p )
+  {
+    unsigned max_targets = player->dbc->ptr ? as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() )
+                                            : std::numeric_limits<unsigned>::max();
+    set_default_value( shaman->spell.splintered_elements->effectN( 1 ).percent() );
+    set_default_value_from_effect_type( A_HASTE_ALL );
+    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    set_stack_behavior( buff_stack_behavior::DEFAULT );
+    set_max_stack( max_targets );
+    set_refresh_behavior( buff_refresh_behavior::DURATION );
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    //Triggering splintered elements wipes away the old stack count entirely instead of adding to it or refreshing existing.
+    this->expire();
+    return buff_t::trigger( s, v, c, d );
+  };
+};
+
 shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t( target, p )
 {
   heal.riptide = nullptr;
@@ -5118,7 +5143,7 @@ struct lava_burst_t : public shaman_spell_t
         if ( p() ->legendary.splintered_elements->ok())
         {
           auto count_duplicates = p()->action.lava_burst_pw->target_list().size();
-          p()->buff.splintered_elements->trigger( 1, count_duplicates * p()->spell.splintered_elements->effectN(1).percent() );
+          p()->buff.splintered_elements->trigger( count_duplicates, p()->spell.splintered_elements->effectN( 1 ).percent() );
         }
         p()->action.lava_burst_pw->schedule_execute();
       }
@@ -5328,8 +5353,7 @@ struct lightning_bolt_t : public shaman_spell_t
         if ( p()->legendary.splintered_elements->ok() )
         {
           auto count_duplicates = p()->action.lightning_bolt_pw->target_list().size();
-          p()->buff.splintered_elements->trigger(
-              1, count_duplicates * p()->spell.splintered_elements->effectN( 1 ).percent() );
+          p()->buff.splintered_elements->trigger( count_duplicates, p()->spell.splintered_elements->effectN( 1 ).percent() );
         }
         p()->action.lightning_bolt_pw->execute();
       }
@@ -9107,10 +9131,9 @@ void shaman_t::create_buffs()
   // Covenant Legendaries
   if ( legendary.splintered_elements->ok() )
   {
-    buff.splintered_elements = make_buff( this, "splintered_elements", find_spell( 354648 ) )
-                                   ->set_default_value_from_effect_type( A_HASTE_ALL )
-                                   ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    buff.splintered_elements = new splintered_elements_buff_t( this );    
   }
+
   if ( legendary.seeds_of_rampant_growth->ok() )
   {
     buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
