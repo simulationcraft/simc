@@ -4,20 +4,20 @@ race=orc
 spec=arms
 role=attack
 position=back
-talents=3133122
+talents=2133122
 covenant=night_fae
-soulbind="niya,grove_invigoration/mortal_combo:9:1/niyas_tools_burrs/crash_the_ramparts:9:1/bonded_hearts"
+soulbind=dreamweaver,podtender/mortal_combo:9:1/adaptive_armor_fragment:9:1/field_of_blossoms/crash_the_ramparts:9:1/dream_delver
 renown=80
 
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
 neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498"
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
 wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
-legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
+legs=fateforged_legplates,id=186348,bonus_id=7187/1498"
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
