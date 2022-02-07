@@ -4330,8 +4330,6 @@ struct mangle_t : public bear_attack_t
   mangle_t( druid_t* p, std::string_view n, std::string_view opt )
     : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ), inc_targets( 0 )
   {
-    cooldown = p->cooldown.mangle;
-
     if ( p->find_rank_spell( "Mangle", "Rank 2" )->ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
@@ -4500,8 +4498,6 @@ struct thrash_bear_t : public bear_attack_t
     dot = p->get_secondary_action_n<thrash_bear_dot_t>( name_str + "_dot" );
     dot->stats = stats;
     dot->radius = radius;
-
-    cooldown = p->cooldown.thrash_bear;
 
     dot_name = "thrash_bear";
 
