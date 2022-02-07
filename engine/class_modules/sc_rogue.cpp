@@ -1124,12 +1124,16 @@ public:
   };
   struct
   {
-    bool shadow_blades_cp = false;
-    bool ruthlessness = false;
-    bool relentless_strikes = false;
-    bool deepening_shadows = false;
-    bool vendetta = false;
     bool alacrity = false;
+    bool deepening_shadows = false;
+    bool elaborate_planning = false;
+    bool flagellation = false;
+    bool relentless_strikes = false;
+    bool ruthlessness = false;
+
+    bool shadow_blades_cp = false;
+
+    bool vendetta = false;
     bool adrenaline_rush_gcd = false;
     bool broadside_cp = false;
     bool master_assassin = false;
@@ -1282,6 +1286,8 @@ public:
     {
       affected_by.alacrity = true;
       affected_by.deepening_shadows = true;
+      affected_by.elaborate_planning = true;
+      affected_by.flagellation = true;
       affected_by.relentless_strikes = true;
       affected_by.ruthlessness = true;
     }
@@ -1539,6 +1545,7 @@ public:
   void trigger_guile_charm( const action_state_t* state );
   void trigger_dashing_scoundrel( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
+  void trigger_flagellation( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -1806,6 +1813,7 @@ public:
       trigger_elaborate_planning( ab::execute_state );
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
+      trigger_flagellation( ab::execute_state );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -1814,10 +1822,14 @@ public:
       p()->break_stealth();
     }
 
-    // 2020-11-28- Flagellation does not remove the buff in-game, despite being in the whitelist
-    if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() && ab::data().id() != 323654 )
+    if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() )
     {
-      p()->buffs.symbols_of_death_autocrit->expire();
+      // 2022-02-05 -- PTR testing shows that 4pc procs benefit on all AoE impacts
+      //               Manually expired in spend_combo_points() trigger loop for 4pc
+      if ( secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE )
+      {
+        p()->buffs.symbols_of_death_autocrit->expire();
+      }
       symbols_of_death_autocrit_proc->occur();
     }
 
@@ -2542,13 +2554,16 @@ struct between_the_eyes_t : public rogue_attack_t
     trigger_restless_blades( execute_state );
     trigger_grand_melee( execute_state );
 
-    const auto rs = cast_state( execute_state );
     if ( result_is_hit( execute_state->result ) )
     {
-      // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
-      td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * rs->get_combo_points() );
+      const auto rs = cast_state( execute_state );
+      const int cp_spend = rs->get_combo_points();
 
-      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( rs->get_combo_points() * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
+      // There is nothing about the debuff duration in spell data, so we have to hardcode the 3s base.
+      td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * cp_spend );
+
+      // 2022-02-06 -- 4pc procs are triggering this in the current PTR build
+      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( cp_spend * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
         p()->buffs.greenskins_wickers->trigger();
     }
   }
@@ -3257,7 +3272,8 @@ struct pistol_shot_t : public rogue_attack_t
       p()->buffs.concealed_blunderbuss->expire();
     }
 
-    // T28 Outlaw 4pc Procs, hard-coded at 6CP until we get spell data in next PTR build
+    // T28 Outlaw 4pc Procs
+    // 2022-02-04 -- As of the current PTR build, both parts of the 4pc trigger from 2pc procs
     if ( p()->set_bonuses.t28_outlaw_4pc->ok() )
     {
       if ( p()->buffs.tornado_trigger->check() )
@@ -3265,9 +3281,11 @@ struct pistol_shot_t : public rogue_attack_t
         p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
         p()->buffs.tornado_trigger->expire();
       }
-      // TOCHECK: Ordering here on when we cast and reach 6 bullets with a hard-cast
-      //          Assuming for now it requires waiting for the next cast to trigger BtE
-      p()->buffs.tornado_trigger_loading->trigger();
+      else
+      {
+        // 2022-02-04 -- As of the current PTR build, this doesn't stack if the BtE buff is up
+        p()->buffs.tornado_trigger_loading->trigger();
+      }
     }
   }
 
@@ -3374,11 +3392,26 @@ struct mutilate_t : public rogue_attack_t
     // Note: Uses spell_t instead of rogue_spell_t to avoid action_state casting issues
     struct doomblade_t : public residual_action::residual_periodic_action_t<spell_t>
     {
+      rogue_t* rogue;
+
       doomblade_t( util::string_view name, rogue_t* p ) :
-        base_t( name, p, p->find_spell( 340431 ) )
+        base_t( name, p, p->find_spell( 340431 ) ), rogue( p )
       {
         dual = true;
       }
+
+      // Residual periodic actions don't use normal snapshot modifiers. The appears to match game functionality.
+      // 2pc is intended to affect this based on the whitelist but it does not appear to work
+      /*
+      double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
+      {
+        double amount = spell_t::calculate_tick_amount( state, dot_multiplier );
+
+        amount *= rogue->get_target_data( state->target )->debuffs.grudge_match->value_direct();
+
+        return amount;
+      }
+      */
     };
 
     doomblade_t* doomblade_dot;
@@ -6042,13 +6075,10 @@ void actions::rogue_action_t<Base>::trigger_combo_point_gain( int cp, gain_t* ga
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_ruthlessness_cp( const action_state_t* state )
 {
-  if ( !p()->spec.ruthlessness->ok() )
+  if ( !p()->spec.ruthlessness->ok() || !affected_by.ruthlessness )
     return;
 
   if ( !ab::result_is_hit( state->result ) )
-    return;
-
-  if ( !affected_by.ruthlessness )
     return;
 
   int cp = cast_state( state )->get_combo_points();
@@ -6142,8 +6172,9 @@ void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* 
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_elaborate_planning( const action_state_t* /* state */ )
 {
-  if ( !p()->talent.elaborate_planning->ok() || ab::base_costs[ RESOURCE_COMBO_POINT ] == 0 || ab::background )
+  if ( !p()->talent.elaborate_planning->ok() || !affected_by.elaborate_planning || ab::background )
     return;
+
   p()->buffs.elaborate_planning->trigger();
 }
 
@@ -6151,6 +6182,10 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* state )
 {
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
+    return;
+
+  // 2022-02-06 -- Current PTR testing shows this does not trigger from 4pc procs
+  if ( secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
     return;
 
   double chance = p()->talent.alacrity->effectN( 2 ).percent() * cast_state( state )->get_combo_points();
@@ -6187,11 +6222,13 @@ void actions::rogue_action_t<Base>::trigger_restless_blades( const action_state_
   p()->cooldowns.roll_the_bones->adjust( v, false );
   p()->cooldowns.sprint->adjust( v, false );
   p()->cooldowns.vanish->adjust( v, false );
+
   // Talents
   p()->cooldowns.blade_rush->adjust( v, false );
   p()->cooldowns.ghostly_strike->adjust( v, false );
   p()->cooldowns.killing_spree->adjust( v, false );
   p()->cooldowns.marked_for_death->adjust( v, false );
+  // Note: Dreadblades is currently not affected
 }
 
 template <typename Base>
@@ -6201,7 +6238,12 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
     return;
 
   // TOCHECK: Double check everything triggers this correctly
+  // 2022-02-04 -- Confirmed as of latest PTR build to work on Outlaw 2pc procs as well
   if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
+    return;
+
+  // 2022-02-04 -- Due to not being cast triggers, this appears to not work (although not relevant)
+  if ( secondary_trigger_type == secondary_trigger::CONCEALED_BLUNDERBUSS )
     return;
 
   if ( !p()->buffs.dreadblades->up() )
@@ -6305,26 +6347,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     p()->cooldowns.secret_technique->adjust( sectec_cdr, false );
   }
 
-  // Proc Flagellation Damage Triggers
-  if ( p()->covenant.flagellation->ok() )
-  {
-    buff_t* debuff = p()->active.flagellation->debuff;
-    if ( debuff && debuff->up() )
-    {
-      p()->buffs.flagellation->trigger( as<int>( max_spend ) );
-      p()->active.flagellation->trigger_secondary_action( debuff->player, as<int>( max_spend ), 0.75_s );
-      if ( p()->legendary.obedience->ok() )
-      {
-        const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * max_spend;
-        p()->cooldowns.flagellation->adjust( -obedience_cdr );
-      }
-      for ( int i = 0; i < max_spend; i++ )
-      {
-        p()->procs.flagellation_cp_spend->occur();
-      }
-    }
-  }
-
   // Remove Echoing Reprimand Buffs
   if ( p()->covenant.echoing_reprimand->ok() && consumes_echoing_reprimand() )
   {
@@ -6366,18 +6388,28 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     if ( p()->rng().roll( rs->get_combo_points() * p()->set_bonuses.t28_subtlety_4pc->effectN( 2 ).percent() ) )
     {
       p()->procs.t28_subtlety_4pc->occur();
+      bool expire_autocrit = false;
       int num_shadowstrike_targets = as<int>( p()->set_bonuses.t28_subtlety_4pc->effectN( 3 ).base_value() );
       for ( auto candidate_target : p()->sim->target_non_sleeping_list )
       {
         if ( num_shadowstrike_targets <= 0 )
           break;
 
-        if ( p()->get_player_distance( *candidate_target ) <= 8.0 )
+        // 2022-02-05 -- Tooltip updated to include 15y range, not in spell data
+        if ( p()->get_player_distance( *candidate_target ) <= 15.0 )
         {
           p()->active.immortal_technique_shadowstrike->set_target( candidate_target );
           p()->active.immortal_technique_shadowstrike->execute();
+          expire_autocrit = true;
           --num_shadowstrike_targets;
         }
+      }
+
+      // 2022-02-05 -- PTR testing shows that 4pc procs benefit on all AoE impacts
+      //               Manually expired here instead of the normal execute() location
+      if ( expire_autocrit )
+      {
+        p()->buffs.symbols_of_death_autocrit->expire();
       }
     }
   }
@@ -6538,6 +6570,38 @@ void actions::rogue_action_t<Base>::trigger_count_the_odds( const action_state_t
   const timespan_t trigger_duration = timespan_t::from_seconds( p()->conduit.count_the_odds->effectN( 2 ).base_value() ) * stealth_bonus;
   debug_cast<buffs::roll_the_bones_t*>( p()->buffs.roll_the_bones )->count_the_odds_trigger( trigger_duration );
   p()->procs.count_the_odds->occur();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* state )
+{
+  if ( !p()->covenant.flagellation->ok() || !affected_by.flagellation )
+    return;
+
+  buff_t* debuff = p()->active.flagellation->debuff;
+  if ( !debuff || !debuff->up() )
+    return;
+
+  int cp_spend = cast_state( state )->get_combo_points();
+  if ( cp_spend <= 0 )
+    return;
+
+  p()->buffs.flagellation->trigger( cp_spend );
+  
+  // 2022-02-06 -- PTR testing shows that Outlaw 4pc procs trigger buff stacks but not damage/CDR
+  if ( is_secondary_action() )
+    return;
+
+  p()->active.flagellation->trigger_secondary_action( debuff->player, cp_spend, 0.75_s );
+  if ( p()->legendary.obedience->ok() )
+  {
+    const timespan_t obedience_cdr = p()->legendary.obedience->effectN( 1 ).time_value() * cp_spend;
+    p()->cooldowns.flagellation->adjust( -obedience_cdr );
+  }
+  for ( int i = 0; i < cp_spend; i++ )
+  {
+    p()->procs.flagellation_cp_spend->occur();
+  }
 }
 
 // ==========================================================================
@@ -7766,7 +7830,7 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
         {
           if ( specialization() == ROGUE_ASSASSINATION )
           {
-            int poisoned_bleeds = 0;
+            double poisoned_bleeds = 0;
             int lethal_poisons = 0;
             for ( auto p : sim->target_non_sleeping_list )
             {
@@ -7774,13 +7838,19 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
               if ( tdata->is_lethal_poisoned() )
               {
                 lethal_poisons++;
-                poisoned_bleeds += tdata->dots.garrote->is_ticking() +
-                  tdata->dots.internal_bleeding->is_ticking() +
-                  tdata->dots.rupture->is_ticking();
+                auto bleeds = { tdata->dots.garrote, tdata->dots.internal_bleeding, tdata->dots.rupture };
+                for ( auto bleed : bleeds )
+                {
+                  if ( bleed && bleed->is_ticking() )
+                  {
+                    // Multiply Venomous Wounds contribution by the Exsanguinated rate multiplier
+                    poisoned_bleeds += ( 1.0 * cast_attack( bleed->current_action )->cast_state( bleed->state )->get_exsanguinated_rate() );
+                  }
+                }
               }
             }
 
-            // Venomous Wounds -- TODO: Investigate if we should consider Exsanguinated tick rates
+            // Venomous Wounds
             const double dot_tick_rate = 2.0 * composite_spell_haste();
             energy_regen_per_second += ( poisoned_bleeds * spec.venomous_wounds->effectN( 2 ).base_value() ) / dot_tick_rate;
 
