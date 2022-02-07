@@ -1,10 +1,5 @@
 # SimulationCraft GUI
 
-# qt5 detection
-# brew does not link qt5 into PATH. Therefore we need to import it
-if(APPLE)
-  list(APPEND CMAKE_PREFIX_PATH /usr/local/opt/qt5)
-endif()
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Gui REQUIRED)
@@ -17,14 +12,14 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-# Resource files
-FILE(COPY ../qt/Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-FILE(COPY ../qt/Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-FILE(COPY ../qt/Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
-FILE(COPY ../locale/sc_de.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
-FILE(COPY ../locale/sc_cn.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
-FILE(COPY ../locale/sc_it.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
-FILE(COPY ../locale/sc_ko.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+# Copy runtime dependencies to build directory
+FILE(COPY Welcome.png DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY Welcome.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY Error.html DESTINATION "${CMAKE_CURRENT_BINARY_DIR}")
+FILE(COPY locale/sc_de.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY locale/sc_cn.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY locale/sc_it.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
+FILE(COPY locale/sc_ko.qm DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/locale")
 
 
 # gui executeable
@@ -34,29 +29,38 @@ if (WIN32)
 endif()
 add_executable(SimulationCraft WIN32 ${source_files})
 
+sc_common_compiler_options(SimulationCraft)
+
 target_include_directories(SimulationCraft PUBLIC ../engine/)
-target_link_libraries(SimulationCraft engine Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::WebEngineCore Qt${QT_VERSION_MAJOR}::WebEngineWidgets)
+target_link_libraries(SimulationCraft 
+  engine
+  Qt${QT_VERSION_MAJOR}::Core
+  Qt${QT_VERSION_MAJOR}::Gui
+  Qt${QT_VERSION_MAJOR}::Widgets
+  Qt${QT_VERSION_MAJOR}::WebEngineCore
+  Qt${QT_VERSION_MAJOR}::WebEngineWidgets
+)
 
 #translations
 if (Qt${QT_VERSION_MAJOR}LinguistTools_FOUND AND ${QT_VERSION_MAJOR} EQUAL 6)
   qt_add_lupdate(SimulationCraft TS_FILES 
-    ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts)
-  set_source_files_properties(../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
-    PROPERTIES OUTPUT_LOCATION "${CMAKE_CURRENT_SOURCE_DIR}/../locale")
+    locale/sc_de.ts locale/sc_cn.ts locale/sc_it.ts locale/sc_ko.ts)
+  set_source_files_properties(locale/sc_de.ts locale/sc_cn.ts locale/sc_it.ts locale/sc_ko.ts
+    PROPERTIES OUTPUT_LOCATION "locale")
   qt_add_lrelease(SimulationCraft TS_FILES 
-    ../locale/sc_de.ts ../locale/sc_cn.ts ../locale/sc_it.ts ../locale/sc_ko.ts
+    locale/sc_de.ts locale/sc_cn.ts locale/sc_it.ts locale/sc_ko.ts
     )
 endif()
 
 install(TARGETS SimulationCraft DESTINATION ${SIMC_INSTALL_BIN})
 install(FILES 
-${CMAKE_CURRENT_SOURCE_DIR}/Error.html
-${CMAKE_CURRENT_SOURCE_DIR}/Welcome.html
-${CMAKE_CURRENT_SOURCE_DIR}/Welcome.png
+  Error.html
+  Welcome.html
+  Welcome.png
 DESTINATION ${SIMC_INSTALL_SHARED})
 install(FILES 
-${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_de.qm
-${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_cn.qm
-${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_it.qm
-${CMAKE_CURRENT_SOURCE_DIR}/../locale/sc_ko.qm
+  locale/sc_de.qm
+  locale/sc_cn.qm
+  locale/sc_it.qm
+  locale/sc_ko.qm
 DESTINATION ${SIMC_INSTALL_SHARED}/locale)

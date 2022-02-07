@@ -8,6 +8,7 @@ include(../source_files/cmake_engine.txt)
 # Define engine library
 add_library(engine ${source_files})
 target_include_directories(engine PUBLIC . ./include ./lib)
+sc_common_compiler_options(engine)
 
 # Make cmake selections visible to C++ code
 if(SC_NO_THREADING)
@@ -62,3 +63,15 @@ add_custom_target(file_toucher
         COMMAND ${CMAKE_COMMAND} -E touch_nocreate ${CMAKE_CURRENT_SOURCE_DIR}/util/git_info.cpp)
 
 add_dependencies(engine file_toucher)
+
+# Default Blizzard Community Platform API key
+if (DEFINED SC_DEFAULT_APIKEY)
+  target_compile_definitions(engine PRIVATE "SC_DEFAULT_APIKEY=\"${SC_DEFAULT_APIKEY}\"")
+endif()
+
+# 'simc' command line interface target
+add_executable(simc sc_main.cpp)
+target_link_libraries(simc engine)
+sc_common_compiler_options(simc)
+
+install(TARGETS simc DESTINATION ${SIMC_INSTALL_BIN})
