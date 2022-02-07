@@ -4519,7 +4519,7 @@ struct thrash_bear_t : public bear_attack_t
     if ( p()->legendary.ursocs_fury_remembered->ok() &&
          rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
     {
-      execute();
+      make_event( *sim, 500_ms, [ this ]() { execute(); } );
     }
   }
 
