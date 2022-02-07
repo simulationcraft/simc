@@ -3488,12 +3488,13 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->buff.primal_lava_actuators->expire();
-    trigger_flame_shock();
   }
 
   void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
+
+    trigger_flame_shock( state );
 
     if ( result_is_hit( state->result ) && p()->buff.crash_lightning->up() )
     {
@@ -3510,6 +3511,7 @@ struct lava_lash_t : public shaman_attack_t
     {
       td( target )->debuff.lashing_flames->trigger();
     }
+
   }
 
   void trigger_molten_weapon_dot( player_t* t, double dmg ) const
@@ -3524,7 +3526,7 @@ struct lava_lash_t : public shaman_attack_t
 
   // 2021-12-20: Randomly triggers on any 3 targets, including the target of the Lava
   // Lash.
-  void trigger_flame_shock() const
+  void trigger_flame_shock( const action_state_t* state ) const
   {
     if ( !player->dbc->ptr )
     {
@@ -3536,7 +3538,7 @@ struct lava_lash_t : public shaman_attack_t
       return;
     }
 
-    if ( !td( execute_state->target )->dot.flame_shock->is_ticking() )
+    if ( !td( state->target )->dot.flame_shock->is_ticking() )
     {
       return;
     }
