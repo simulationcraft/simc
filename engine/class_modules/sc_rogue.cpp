@@ -3735,7 +3735,11 @@ struct shadow_blades_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    p()->buffs.shadow_blades->trigger();
+    // 2022-02-07 -- Updated to extend existing buffs on hard-casts in latest PTR build
+    if ( p()->is_ptr() )
+      p()->buffs.shadow_blades->extend_duration_or_trigger();
+    else
+      p()->buffs.shadow_blades->trigger();
 
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
@@ -3881,15 +3885,17 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     // 2021-08-30 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
+    // 2022-02-07 -- Logs also confirm this delay applies to all AoE 4pc procs in the same cast
     if ( p()->buffs.the_rotten->up() )
     {
       trigger_combo_point_gain( as<int>( p()->buffs.the_rotten->check_value() ), p()->gains.the_rotten );
       p()->buffs.the_rotten->expire( 1_ms );
     }
 
-    // TOCHECK: Not 100% sure if this will trigger from secondary sources yet
-    if ( p()->set_bonuses.t28_subtlety_2pc->ok() &&
-         p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
+    // 2022-02-07 -- 2pc procs can trigger this as they are fake direct casts, does not work on WM
+    if ( ( !is_secondary_action() || secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE ) &&
+      p()->set_bonuses.t28_subtlety_2pc->ok() &&
+      p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
     {
       p()->buffs.shadow_blades->extend_duration_or_trigger( p()->set_bonuses.t28_subtlety_2pc->effectN( 3 ).time_value() );
     }
@@ -6382,7 +6388,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   }
 
   // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
-  // TOCHECK: Does this work with SnD after the stealth fix? Check targeting logic. Check range.
+  // 2022-02-07 -- Confirmed as still working with SnD after the Stealth fix
   if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
   {
     if ( p()->rng().roll( rs->get_combo_points() * p()->set_bonuses.t28_subtlety_4pc->effectN( 2 ).percent() ) )
@@ -6480,7 +6486,7 @@ void actions::rogue_action_t<Base>::trigger_akaaris_soul_fragment( const action_
   if ( !ab::result_is_hit( state->result ) || !p()->legendary.akaaris_soul_fragment->ok() )
     return;
 
-  // TOCHECK: Future PTR notes indicate the T28 4pc should trigger this
+  // 2022-02-07 -- 4pc procs can trigger this as they are fake direct casts, does not work on WM
   if ( is_secondary_action() && secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE )
     return;
 
