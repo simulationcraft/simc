@@ -549,7 +549,13 @@ public:
 
       // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
       // This means that RPPM will have triggered but cannot be applied.
-      if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
+      // This is no longer the case on PTR
+      if ( p()->is_ptr() )
+      {
+        p()->active_actions.bountiful_brew->execute();
+        p()->proc.bountiful_brew_proc->occur();
+      }
+      else if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
       {
         p()->active_actions.bountiful_brew->execute();
         p()->proc.bountiful_brew_proc->occur();
@@ -4107,7 +4113,10 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    get_td( s->target )->debuff.bonedust_brew->trigger();
+    if ( p()->is_ptr() )
+      get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    else
+      get_td( s->target )->debuff.bonedust_brew->trigger();
   }
 };
 
@@ -6053,7 +6062,8 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
                              ->set_cooldown( timespan_t::zero() )
-                             ->set_chance( (p->covenant.necrolord -> ok() || p->legendary.bountiful_brew -> ok() ) ? 1 : 0 )
+                             // TODO: Remove set_chance once 9.2 is released
+                             ->set_chance( p->is_ptr() ? 1 : ( ( p->covenant.necrolord -> ok() || p->legendary.bountiful_brew -> ok() ) ? 1 : 0  ) )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
