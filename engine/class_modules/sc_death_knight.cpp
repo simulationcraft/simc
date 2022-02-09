@@ -5601,6 +5601,12 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
     // These two are normally called through the standard action, but since we call damage event directly, they need to be manually called
     p() -> buffs.icy_talons -> trigger();
     p() -> trigger_runic_empowerment( ga_rp_cost );
+    // We also have to add the ga_rp_cost to insatiable hunger legendary accumulator
+    if ( p() -> legendary.insatiable_hunger.ok() && p() -> buffs.swarming_mist -> check() )
+    {
+      sim -> print_debug ( "Insatiable hunger RP stored increased from {} to {} by {} from {}", p() -> insatiable_hunger_spent_rp_accumulator, ( p() -> insatiable_hunger_spent_rp_accumulator + ga_rp_cost), ga_rp_cost, name_str );
+      p() -> insatiable_hunger_spent_rp_accumulator += ga_rp_cost;
+    }
   }
 };
 
