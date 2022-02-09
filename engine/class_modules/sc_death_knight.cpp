@@ -9198,7 +9198,7 @@ void death_knight_t::create_buffs()
 
   // Tier 28
   buffs.arctic_assault = make_buff( this, "arctic_assault", find_spell( 364384 ) )
-    -> set_default_value_from_effect_type( A_MOD_CRIT_PERCENT )
+    -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
     -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
     -> add_invalidate( CACHE_CRIT_CHANCE );
 
