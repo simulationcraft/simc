@@ -11831,7 +11831,7 @@ Name             : Doombolt (id=364261)
 Class            : Warlock
 School           : Shadowflame
 Spell Type       : Magic
-Range            : 100 yards
+Range            : 40 yards
 Velocity         : 20 yards/sec
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
