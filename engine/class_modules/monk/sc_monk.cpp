@@ -6063,7 +6063,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
                              ->set_cooldown( timespan_t::zero() )
                              // TODO: Remove set_chance once 9.2 is released
-                             ->set_chance( p->is_ptr() ? 1 : ( ( p->covenant.necrolord -> ok() || p->legendary.bountiful_brew -> ok() ) ? 1 : 0  ) )
+                             ->set_chance( ( p->is_ptr() || p->covenant.necrolord->ok() || p->legendary.bountiful_brew->ok() ) ? 1 : 0 )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
