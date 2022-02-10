@@ -464,6 +464,7 @@ public:
         if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
         {
           p()->buff.primordial_power->trigger();
+          storm_earth_and_fire_trigger_primordial_power();
           //primordial_power_proc->occur();
         }
       }
@@ -5904,6 +5905,7 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
     if ( b->at_max_stacks() )
     {
       p->buff.primordial_power->trigger();
+      p->storm_earth_and_fire_trigger_primordial_power();
       make_event( b->sim, [ b ] { b->expire(); } );
     }
   }
@@ -5925,6 +5927,7 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_reverse( true );
     set_reverse_stack_count( s->max_stacks() );
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 };
 
@@ -6062,8 +6065,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
                              ->set_cooldown( timespan_t::zero() )
-                             // TODO: Remove set_chance once 9.2 is released
-                             ->set_chance( ( p->is_ptr() || p->covenant.necrolord->ok() || p->legendary.bountiful_brew->ok() ) ? 1 : 0 )
+                             ->set_chance( p->covenant.necrolord->ok() ? 1 : 0 )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
@@ -7103,7 +7105,7 @@ void monk_t::create_buffs()
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
                            ->set_cooldown( timespan_t::zero() )
-                           ->set_chance( ( covenant.necrolord->ok() || legendary.bountiful_brew->ok() ) ? 1 : 0 )
+                           ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
                            ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
