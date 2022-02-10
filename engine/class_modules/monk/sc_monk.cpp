@@ -464,7 +464,7 @@ public:
         if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
         {
           p()->buff.primordial_power->trigger();
-          storm_earth_and_fire_trigger_primordial_power();
+          p()->storm_earth_and_fire_trigger_primordial_power();
           //primordial_power_proc->occur();
         }
       }
