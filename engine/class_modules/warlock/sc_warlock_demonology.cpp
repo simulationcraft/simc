@@ -1161,7 +1161,7 @@ void warlock_t::create_buffs_demonology()
 
   buffs.malicious_imps = make_buff( this, "malicious_imps" )->set_max_stack( 40 );
 
-  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 4 )
+  buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
                         ->set_duration( find_spell( 193332 )->duration() );
 
   buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )

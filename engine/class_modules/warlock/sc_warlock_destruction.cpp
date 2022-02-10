@@ -166,6 +166,24 @@ struct shadowburn_t : public destruction_spell_t
     }
   }
 
+  void execute() override
+  {
+    int shards_used = as<int>( cost() );
+    destruction_spell_t::execute();
+
+    if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B2 ) )
+    {
+      // Shadowburn is an offensive spell that consumes Soul Shards, so it can trigger Impending Ruin
+      if ( shards_used > 0 )
+      {
+        int overflow = p()->buffs.impending_ruin->check() + shards_used - p()->buffs.impending_ruin->max_stack();
+        p()->buffs.impending_ruin->trigger( shards_used ); //Stack change callback should switch Impending Ruin to Ritual of Ruin if max stacks reached
+        if ( overflow > 0 )
+          make_event( sim, 1_ms, [ this, overflow ] { p()->buffs.impending_ruin->trigger( overflow ); } );
+      }
+    }
+  }
+
   double composite_target_crit_chance( player_t* target ) const override
   {
     double m = destruction_spell_t::composite_target_crit_chance( target );
@@ -589,10 +607,12 @@ struct chaos_bolt_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin->check() )
-      return 0.0;
+    double c = destruction_spell_t::cost();
 
-    return destruction_spell_t::cost();      
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+
+    return c;      
   }
 
   void schedule_execute( action_state_t* state = nullptr ) override
@@ -602,10 +622,10 @@ struct chaos_bolt_t : public destruction_spell_t
 
   timespan_t execute_time() const override
   {
-    timespan_t h = warlock_spell_t::execute_time();
+    timespan_t h = destruction_spell_t::execute_time();
     
     if ( p()->buffs.ritual_of_ruin->check() )
-      return 0_s;
+      h *= 1.0 + p()->buffs.ritual_of_ruin->data().effectN( 3 ).percent();
 
     if ( p()->buffs.backdraft->check() )
       h *= backdraft_cast_time;
@@ -646,7 +666,7 @@ struct chaos_bolt_t : public destruction_spell_t
 
   timespan_t gcd() const override
   {
-    timespan_t t = warlock_spell_t::gcd();
+    timespan_t t = destruction_spell_t::gcd();
 
     if ( t == 0_ms )
       return t;
@@ -703,6 +723,8 @@ struct chaos_bolt_t : public destruction_spell_t
       {
         if (p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ))
         {
+          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+          // Unsure which is being used at this time
           timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
@@ -718,6 +740,8 @@ struct chaos_bolt_t : public destruction_spell_t
             p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
           }
 
+          // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
+          // This will require first fixing Infernal Awakening to properly be on Infernal pet
           p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
@@ -867,10 +891,12 @@ struct rain_of_fire_t : public destruction_spell_t
 
   double cost() const override
   {
-    if ( p()->buffs.ritual_of_ruin->check() )
-      return 0.0;
+    double c = destruction_spell_t::cost();
 
-    return destruction_spell_t::cost();      
+    if ( p()->buffs.ritual_of_ruin->check() )
+      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+
+    return c;        
   }
 
   void execute() override
@@ -884,6 +910,8 @@ struct rain_of_fire_t : public destruction_spell_t
       {
         if ( p()->sets->has_set_bonus( WARLOCK_DESTRUCTION, T28, B4 ) )
         {
+          // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
+          // Unsure which is being used at this time
           timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
@@ -899,6 +927,8 @@ struct rain_of_fire_t : public destruction_spell_t
             p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
           }
 
+          // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
+          // This will require first fixing Infernal Awakening to properly be on Infernal pet
           p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
           p()->procs.avatar_of_destruction->occur();
         }
@@ -1151,7 +1181,7 @@ void warlock_t::create_buffs_destruction()
 
   // Tier Sets
   buffs.impending_ruin = make_buff ( this, "impending_ruin", find_spell ( 364348 ) )
-                             ->set_stack_change_callback( [ this ]( buff_t* b, int old, int cur ) 
+                             ->set_stack_change_callback( [ this ]( buff_t* b, int, int cur )
                                {
                                  if ( cur == b->max_stack() )
                                  {
@@ -1296,7 +1326,7 @@ void warlock_t::create_apl_destruction()
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );

@@ -792,12 +792,12 @@ struct warrior_action_t : public Base
         rend( false ),
         siegebreaker( false ),
         ashen_juggernaut( false ),
+        recklessness( false ),
         avatar( false ),
         sweeping_strikes( false ),
         deadly_calm( false ),
         booming_voice( false ),
-        crushing_assault( false ),
-        recklessness( false )
+        crushing_assault( false )
     {
     }
   } affected_by;
@@ -6965,6 +6965,7 @@ void warrior_t::apl_arms()
   hac->add_action( this, "Overpower", "if=talent.dreadnaught.enabled" );
   hac->add_action( this, covenant.condemn, "condemn" );
   hac->add_action( this, "Execute", "if=buff.sweeping_strikes.up" );
+  hac->add_action( this, "Execute", "if=buff.sudden_death.react" );
   hac->add_action( this, "Overpower" );
   hac->add_action( this, "Whirlwind" );
 

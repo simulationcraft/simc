@@ -703,16 +703,26 @@ struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
     radius                     = data().effectN( 2 ).radius();
     spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
   }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
 };
 
 struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
+  const spell_data_t* torment_mind_tick_spell;
+
   your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
-    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) )
+    : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
+      torment_mind_tick_spell( p.o().find_spell( 366971 ) )
   {
     parse_options( options );
     channeled   = true;
-    tick_action = new your_shadow_torment_mind_tick_t( p, data().effectN( 1 ).trigger() );
+    tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
   }
 
   void init() override
@@ -1043,6 +1053,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   cackling_chemist.set_default_duration( rigor_mortis_duration );
 
   // Add 1ms to ensure pet is dismissed after last dot tick.
+  // Note: this is overriden in mind_blast_t when spawning the pet
   auto your_shadow_spell = p.find_spell( 363469 );
   your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
                                     timespan_t::from_millis( 1 ) );

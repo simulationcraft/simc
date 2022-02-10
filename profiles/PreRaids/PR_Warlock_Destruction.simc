@@ -82,7 +82,7 @@ actions.aoe+=/incinerate
 
 actions.cds=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42
 actions.cds+=/summon_infernal
-actions.cds+=/dark_soul_instability
+actions.cds+=/dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die
 actions.cds+=/potion,if=pet.infernal.active
 actions.cds+=/berserking,if=pet.infernal.active
 actions.cds+=/blood_fury,if=pet.infernal.active

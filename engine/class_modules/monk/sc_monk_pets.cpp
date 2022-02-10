@@ -281,6 +281,55 @@ struct pet_absorb_t : public pet_action_base_t<absorb_t>
   }
 };
 
+namespace buffs
+{
+// ==========================================================================
+// Monk Buffs
+// ==========================================================================
+
+template <typename buff_t>
+struct monk_pet_buff_t : public buff_t
+{
+public:
+  using base_t = monk_pet_buff_t;
+
+  monk_pet_buff_t( monk_pet_t& p, util::string_view name, const spell_data_t* s = spell_data_t::nil(),
+                   const item_t* item = nullptr )
+    : buff_t( &p, name, s, item )
+  {
+  }
+
+  monk_pet_t& p()
+  {
+    return *debug_cast<monk_pet_t*>( buff_t::source );
+  }
+
+  const monk_pet_t& p() const
+  {
+    return *debug_cast<monk_pet_t*>( buff_t::source );
+  }
+
+  const monk_t& o()
+  {
+    return p().o();
+  };
+};
+
+// ===============================================================================
+// Tier 28 Primordial Power Buff
+// ===============================================================================
+
+struct primordial_power_buff_t : public monk_pet_buff_t<buff_t>
+{
+  primordial_power_buff_t( monk_pet_t& p, util::string_view n, const spell_data_t* s ) : monk_pet_buff_t( p, n, s )
+  {
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+    set_reverse( true );
+    set_reverse_stack_count( s->max_stacks() );
+  }
+};
+}  // namespace buffs
+
 // ==========================================================================
 // Storm Earth and Fire (SEF)
 // ==========================================================================
@@ -296,6 +345,12 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t* source_action;
+
+    // Windwalker Tier 28 4-piece info
+    // Currently Primordial Power is only a visual buff and not tied to any direct damage buff
+    // the buff is pulled from the player
+    // Currently the buff appears if SEF is summoned before Primordial Potential becomes Primordial Power
+    // buff does not appear if SEF is summoned after Primordial Power is active.
 
     sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() )
@@ -424,9 +479,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       // Target always follows the SEF clone's target, which is assigned during
       // summon time
-      this->target = this->player->target;
+      //this->target = this->player->target;
 
-      super_t::execute();
+        super_t::execute();
     }
 
     void impact( action_state_t* s ) override
@@ -909,7 +964,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_fist_of_the_white_tiger_t : public sef_melee_attack_t
   {
     sef_fist_of_the_white_tiger_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fist_of_the_white_tiger", player,
+      : sef_melee_attack_t( "fist_of_the_white_tiger_mainhand", player,
                             player->o()->talent.fist_of_the_white_tiger->effectN( 2 ).trigger() )
     {
       may_dodge = may_parry = may_block = may_miss = true;
@@ -997,9 +1052,11 @@ public:
 
   struct
   {
-    propagate_const<buff_t*>  bok_proc_sef          = nullptr;
+    propagate_const<buff_t*> bok_proc_sef          = nullptr;
     propagate_const<buff_t*> pressure_point_sef    = nullptr;
-    propagate_const<buff_t*>  rushing_jade_wind_sef = nullptr;
+    propagate_const<buff_t*> rushing_jade_wind_sef = nullptr;
+    // Tier 28 Buff
+    propagate_const<buff_t*> primordial_power      = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
@@ -1122,6 +1179,9 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
+
+    buff.primordial_power =
+        new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
   }
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
@@ -1697,8 +1757,14 @@ private:
   };
 
 public:
+
+  struct
+  {
+    propagate_const<buff_t*> primordial_potential = nullptr;
+  } buff;
+
   tiger_adept_pet_t( monk_t* owner )
-    : monk_pet_t( owner, "tiger_adept", PET_FALLEN_MONK, false, true )
+    : monk_pet_t( owner, "tiger_adept", PET_FALLEN_MONK, false, true ), buff()
   {
     npc_id                      = 168033;
     main_hand_weapon.type       = WEAPON_1H;
@@ -1729,6 +1795,14 @@ public:
       default:
         break;
     }
+  }
+
+  void create_buffs() override
+  {
+    monk_pet_t::create_buffs();
+
+    buff.primordial_potential =
+        make_buff( this, "fallen_order_primordial_potential", o()->passives.primordial_potential );
   }
 
   double composite_player_multiplier( school_e school ) const override
@@ -3011,6 +3085,16 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
       return true;
   }
   return false;
+}
+
+// monk_t::storm_earth_and_fire_trigger_primordial_power ==============================
+void monk_t::storm_earth_and_fire_trigger_primordial_power()
+{
+  if ( buff.storm_earth_and_fire->check() )
+  {
+    pets.sef[ (int)sef_pet_e::SEF_EARTH ]->buff.primordial_power->trigger();
+    pets.sef[ (int)sef_pet_e::SEF_FIRE ]->buff.primordial_power->trigger();
+  }
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================

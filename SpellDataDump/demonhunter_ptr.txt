@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41793 Live (hotfix 2022-01-12/41793, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4246,15 +4246,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
-Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), No Threat (42), Do Not Display Cast Time (441)
+                 : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), No Cast Log (128), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=470901)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7099,7 +7099,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 24, 32
@@ -7157,7 +7157,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 45 seconds
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Affecting spells : Demon Soul (163073 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2, #3), Vengeance Demon Hunter (212613 effects: #1, #2, #3), Chaos Blades (247938 effects: #2, #3), Increased Scrutiny (340028 effect#1), Demon Soul (347765 effects: #1, #2), Agony Gaze (355886 effect#1)
 Family Flags     : 16, 32, 70, 83
 Attributes       : ....x... ........ x....... ..x.....   ........ ........ ........ ........ 
@@ -8074,7 +8074,7 @@ Range            : 50 yards
 Cast Time        : 1 seconds
 GCD              : 1.5 seconds
 Cooldown         : 90 seconds
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 32, 82
 Attributes       : ....x... ........ x.x...x. .....x..   ........ ..x..... ........ ........ 
@@ -8210,7 +8210,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Cooldown         : 60 seconds
 Category         : 1887
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Category Cooldown: 60 seconds
 Affecting spells : Quickened Sigils (209281 effects: #1, #2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Family Flags     : 24, 32
@@ -8243,7 +8243,7 @@ GCD              : 1.5 seconds
 Duration         : 25 seconds
 Cooldown         : 120 seconds
 Category         : 1888
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Category Cooldown: 120 seconds
 Affecting spells : Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3)
 Triggered by     : Fodder to the Flame (350570)
@@ -9997,7 +9997,7 @@ Covenant         : Necrolord
 School           : Shadow
 Spell Type       : None
 Spell Level      : 48
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Internal Cooldown: 25 seconds
 Proc Chance      : 100%
 Real PPM         : 1.58
@@ -10022,7 +10022,7 @@ Class            : Demon Hunter
 School           : Shadow
 Spell Type       : Magic
 Range            : 40 yards
-Labels           : 976: Decrypted Urh Cypher (368239 effect#5)
+Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10149,7 +10149,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=889354)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Versatility and $356070s1 Fury.
+#3 (id=913501)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $356070s1 Fury and $s2% Versatility, up to $s3%.
 
 Name             : Blind Faith (id=355894) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10239,7 +10241,7 @@ Effects          :
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 Name             : Deadly Dance (id=363736) [Spell Family (107), Passive, Hidden] 
-Class            : Demon Hunter
+Class            : Rogue, Demon Hunter
 School           : Chaos
 Spell Type       : None
 Proc Chance      : 101%
