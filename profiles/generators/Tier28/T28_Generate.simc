@@ -1,6 +1,7 @@
 # T28
 # Tier 28 Sepulcher of the First Ones
 # RULES IN PROGRESS
+# * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
 # * Raid gear is permitted up to the Mythic item level cap (278/285). ["bonus_id=?/?"]
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (278). ["bonus_id=?/?/?"]
 # * Honor PvP gear is permitted up to the item level cap (242?). ["bonus_id=?"]
@@ -16,12 +17,12 @@
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
 # * Renown is considered to be >= 80, so every row from each soulbind tree is unlocked.
-# * Conduits rank is limited to 11 (item level 278). All class conduits can be empowered. [conduit:rank:1]
-# * One Rank 7 (item level 291) non-Covenant Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
-# * One Rank 7 (item level 291) Covenant Legendary or "Unity". [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
+# * Conduits rank is limited to 11 (item level 278). All class conduits can be empowered. [conduit:11:1]
+# * One Rank 7 (item level 291, bonus_id=1498) non-Covenant Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
+# * One Rank 7 (item level 291, bonus_id=1498) Covenant Legendary or "Unity". [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
-# * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:9:1/..."") instead of ids.
+# * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:11:1/..."") instead of ids.
 
 
 # Death Knight
