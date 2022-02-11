@@ -547,9 +547,6 @@ struct player_t : public actor_t
 
     // 9.1 Trinkets
     buff_t* reactive_defense_matrix;
-
-    // 9.2 Trinkets
-    buff_t* architects_ingenuity;
   } buffs;
 
   struct debuffs_t
