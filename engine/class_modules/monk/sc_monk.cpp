@@ -201,10 +201,11 @@ public:
                     ( this->spell_power_mod.direct || this->spell_power_mod.tick || this->attack_power_mod.direct ||
                       this->attack_power_mod.tick || this->base_dd_min || this->base_dd_max || this->base_td );
 
-    if ( trigger_ww_t28_4p_potential )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    {
       primordial_potential_proc = p()->get_proc( std::string( "Primordial Potential: " ) + full_name() );
-    if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
-      primordial_potential_proc = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
+      primordial_power_proc     = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
+    }
   }
 
   void init_finished() override
@@ -213,10 +214,6 @@ public:
 
     if ( may_proc_bron )
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
-    //if ( trigger_ww_t28_4p_potential )
-    //  primordial_potential_proc = p()->get_proc( std::string( "Primordial Potential: " ) + full_name() );
-    //if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
-    //  primordial_potential_proc = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
   }
 
   void reset_swing()
@@ -466,22 +463,21 @@ public:
           p()->buff.primordial_power->trigger();
           p()->buff.primordial_power_hidden_gcd->trigger();
           p()->storm_earth_and_fire_trigger_primordial_power();
-          // primordial_power_proc->occur();
+          primordial_power_proc->occur();
         }
         else if ( trigger_ww_t28_4p_power_channel )
         {
           p()->buff.primordial_power->trigger();
-          // Use the longest channeled ability
           p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
           p()->storm_earth_and_fire_trigger_primordial_power();
-          // primordial_power_proc->occur();
+          primordial_power_proc->occur();
         }
       }
       // else check if the ability can trigger Primordial Potential and trigger that.
       else if ( trigger_ww_t28_4p_potential )
       {
         p()->buff.primordial_potential->trigger();
-        //primordial_potential_proc->occur();
+        primordial_potential_proc->occur();
       }
     }
 
