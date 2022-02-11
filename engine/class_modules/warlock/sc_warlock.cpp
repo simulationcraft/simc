@@ -1210,7 +1210,7 @@ void warlock_t::init_spells()
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
 
-  version_9_1_0_data = find_spell( 356342 ); //For 9.1 PTR version checking, Shard of Annihilation data
+  version_9_2_0_data = find_spell( 363953 ); // For 9.2 PTR version checking, Calamitous Crescendo data
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
@@ -1632,8 +1632,9 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
+    case VERSION_9_2_0:
+      return !( version_9_2_0_data == spell_data_t::not_found() );
     case VERSION_9_1_0:
-      return !( version_9_1_0_data == spell_data_t::not_found() );
     case VERSION_9_0_5:
     case VERSION_9_0_0:
     case VERSION_ANY:
