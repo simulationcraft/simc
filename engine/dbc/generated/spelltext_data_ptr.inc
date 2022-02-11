@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42174
-static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.42277
+static const std::array<spelltext_data_t, 15998> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -5894,7 +5894,7 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 190030, "When you deal damage or heal a target you have a chance to gain $190027s1 Intellect for $190027d.", 0, 0 },
   { 190319, "Engulfs you in flames for $d, increasing your spells' critical strike chance by $s1% and granting you Mastery equal to $s3% your Critical Strike stat. Castable while casting other spells.", "Critical Strike chance of your spells increased by $w1%.$?a231630[\r\nMastery increased by $w2.][]", 0 },
   { 190336, "Conjures mana food for you and your allies. Conjured items disappear if logged out for more than 15 minutes.", 0, 0 },
-  { 190356, "Ice shards pelt the target area, dealing ${$190357m1*8} Frost damage over $d and reducing movement speed by $12486s1% for $12486d.$?a236662[\r\n\r\nEach time Blizzard deals damage, the cooldown of Frozen Orb is reduced by ${$236662s1/100}.1 sec.][]", 0, 0 },
+  { 190356, "Ice shards pelt the target area, dealing ${$190357m1*8} Frost damage over $d and reducing movement speed by $12486s1% for $12486d.$?a236662[\r\n\r\nEach time Blizzard deals damage, the cooldown of Frozen Orb is reduced by ${$236662s1/100}.2 sec.][]", 0, 0 },
   { 190357, "$@spelldesc190356", 0, 0 },
   { 190411, "Unleashes a whirlwind of steel, striking all nearby enemies for $<damage> Physical damage. Deals reduced damage beyond $s3 targets.$?s12950[\r\n\r\nCauses your next $85739u single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]$?s316435[\r\n\r\n|cFFFFFFFFGenerates $s1 Rage, plus an additional $s2 per target hit.|r][]", 0, 0 },
   { 190446, "$@spelldesc190447", "Your next Flurry is instant cast$?a231584[,][ and] deals $s2% increased damage$?a231584[, and will apply Winter's Chill on the target][].", 0 },
@@ -15671,10 +15671,9 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 363830, "$@spelldesc363498", "Dealing $s1 every $t1 sec.", 0 },
   { 363885, "$@spelldesc363560", "At $u stacks your next Scourge Strike will cast Soul Reaper.", 0 },
   { 363887, "$@spelldesc363560", "Your next Scourge Strike will cast Soul Reaper.", 0 },
-  { 363911, "$@spelldesc363734", 0, 0 },
+  { 363911, "$@spelldesc363734", "$s1 offensive $Lability:abilities; used.", 0 },
   { 363913, "Tactician has a $s1% increased chance to proc against enemies with Colossus Smash and causes your next Overpower to grant $366769s1% Strength, up to ${$366769s1*$366769u}% for $366769d.", 0, 0 },
   { 363924, "$@spelldesc363734", "Increases offensive ability damage by $w1%.", 0 },
-  { 363943, "$@spelldesc364428", "Your next cast of Shadow Mend has no cost or cast time.", 0 },
   { 363949, "Your finishing moves have a $s2% chance per combo point to cast Shadowstrike at up to $s3 enemies within 15 yards.", 0, 0 },
   { 363950, "When Chaos Bolt or Rain of Fire consumes a charge of Ritual of Ruin, you summon a Blasphemy for $s1 sec.", 0, 0 },
   { 363951, "Your Hand of Gul'dan has a $s1% chance per Soul Shard to summon a Malicious Imp. When slain, Malicious Imp will either deal $364262s1 Fire damage to all nearby enemies of your Implosion or deal it to your current target.", 0, 0 },
@@ -15706,7 +15705,7 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 364370, "Art of War has a $s1% chance to reset the cooldown of Wake of Ashes instead of Blade of Justice.", 0, 0 },
   { 364383, "Remorseless Winter grants $s1% Critical Strike while active.\r\n\r\n", 0, 0 },
   { 364384, "$@spelldesc364383\r\n\r\n\r\n", "Critical Strike chance increased by $w1%.", 0 },
-  { 364392, "Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] casts Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.", 0, 0 },
+  { 364392, "Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] that burst Festering Wounds applies Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.", 0, 0 },
   { 364399, "While your Dancing Rune Weapon is active Heart Strike extends the duration of Dancing Rune Weapon by ${$s1/1000}.1 seconds and increases your Strength by $s3%, persisting for $s4 seconds after Dancing Rune Weapon ends.", 0, 0 },
   { 364415, "Targets ignited by Breath of Fire deal an additional ${$s1/-1}% less damage to you.", 0, 0 },
   { 364416, "Each combo point spent reduces the cooldown of $?s102543[Incarnation: King of the Jungle][Berserk] by ${$s1/2}.1 sec.", 0, 0 },
@@ -15826,7 +15825,7 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 365540, "$@spelldesc367254\r\n$@spellaura366333", "$@spellaura367254", 0 },
   { 365541, "$@spelldesc367263\r\n$@spellaura366333", "$@spellaura367263", 0 },
   { 365542, "$@spelldesc367266\r\n$@spellaura366333", "$@spellaura367266", 0 },
-  { 365543, "$@spelldesc361356\r\n$@spellaura366333\r\n", "$@spellaura361356", 0 },
+  { 365543, "$@spelldesc367271\r\n$@spellaura366333\r\n", "$@spellaura367271", 0 },
   { 365544, "$@spelldesc367265\r\n$@spellaura366333", "$@spellaura367265", 0 },
   { 365545, "$@spelldesc367264\r\n$@spellaura366333", "$@spellaura367264", 0 },
   { 365546, "$@spelldesc367268\r\n$@spellaura366333", "$@spellaura367268", 0 },
@@ -15981,8 +15980,6 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
-  { 368685, "$@spelldesc363734", "Increases offensive ability damage by $w1%.", 0 },
-  { 368686, "Fists of Fury empowers your next three Combo-eligible moves, causing them to deal $368685s1% additional damage.", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -15994,15 +15991,20 @@ static const std::array<spelltext_data_t, 15996> __ptr_spelltext_data { {
   { 368921, "Create a broker's necklace appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368932, "$@spelldesc367835", "Restoring $w1 every second.", 0 },
   { 368937, "$@spelldesc367307", "Cooldowns recover $w1% faster.", 0 },
+  { 368938, "$@206930", 0, 0 },
   { 368976, "$@spelldesc368203", 0, 0 },
-  { 368995, "$@spelldesc367953", 0, 0 },
+  { 369046, "#@spelldesc367953", 0, 0 },
+  { 369068, "$@spelldesc367808", 0, 0 },
+  { 369069, "$@spelldesc367808", 0, 0 },
+  { 369070, "$@spelldesc367808", 0, 0 },
+  { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42174
+// spelltext hotfix entries, wow build 9.2.0.42277
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.42174
+// Spell description variables, wow build 9.2.0.42277
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16312,7 +16314,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42174
+// spelldesc_vars hotfix entries, wow build 9.2.0.42277
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

@@ -345,22 +345,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     using base_t  = sef_action_base_t<BASE>;
 
     const action_t* source_action;
-    // Windwalker Tier 28 4-piece info
 
-    // Whether the ability can trigger the Windwalker Tier 28 4-piece Primordial Potential
-    bool trigger_ww_t28_4p_potential;
-    // Whether the ability can trigger the Windwalker Tier 28 4-piece Primordial Power
-    bool trigger_ww_t28_4p_power;
-    // Whether the channeled ability can trigger the Windwalker Tier 28 4-piece Primordial Power
-    bool trigger_ww_t28_4p_power_channel;
-    // Whether the ability is affected by Primordial Power (Used to override)
+    // Windwalker Tier 28 4-piece info
+    // Currently Primordial Power is only a visual buff and not tied to any direct damage buff
+    // the buff is pulled from the player
+    // Currently the buff appears if SEF is summoned before Primordial Potential becomes Primordial Power
+    // buff does not appear if SEF is summoned after Primordial Power is active.
 
     sef_action_base_t( util::string_view n, storm_earth_and_fire_pet_t* p,
                        const spell_data_t* data = spell_data_t::nil() )
-      : super_t( n, p, data ), source_action( nullptr ),
-        trigger_ww_t28_4p_potential( false ),
-        trigger_ww_t28_4p_power( false ),
-        trigger_ww_t28_4p_power_channel( false )
+      : super_t( n, p, data ), source_action( nullptr )
     {
       // Make SEF attacks always background, so they do not consume resources
       // or do anything associated with "foreground actions".
@@ -487,27 +481,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       // summon time
       //this->target = this->player->target;
 
-      if ( this->o()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-      {
-        // Check if Primordial Power is active
-        // If it is then if the ability can trigger, then decrement
-        // Only do this for non-channeled abilities.
-        // Channeled abilities will be decremented on last tick
-        if ( this->p()->buff.primordial_power->check() )
-        {
-          if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
-          {
-            this->p()->buff.primordial_power->trigger();
-          }
-        }
-        // else check if the ability can trigger Primordial Potential and trigger that.
-        else if ( trigger_ww_t28_4p_potential )
-        {
-          this->p()->buff.primordial_potential->trigger();
-        }
-      }
-
-      super_t::execute();
+        super_t::execute();
     }
 
     void impact( action_state_t* s ) override
@@ -683,8 +657,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_tiger_palm_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "tiger_palm", player, player->o()->spec.tiger_palm )
     {
-      trigger_ww_t28_4p_potential = true;
-      trigger_ww_t28_4p_power     = true;
     }
 
     void impact( action_state_t* state ) override
@@ -703,8 +675,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_blackout_kick_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "blackout_kick", player, player->o()->spec.blackout_kick )
     {
-      trigger_ww_t28_4p_potential = true;
-      trigger_ww_t28_4p_power     = true;
       // Hard Code the divider
       base_dd_min = base_dd_max = 1;
     }
@@ -762,8 +732,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
       : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick )
     {
-      trigger_ww_t28_4p_potential = true;
-      trigger_ww_t28_4p_power     = true;
       execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
   };
@@ -799,8 +767,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      trigger_ww_t28_4p_potential                                         = true;
-      trigger_ww_t28_4p_power_channel                                     = true;
       // Hard code a 25% reduced cast time to not cause any clipping issues
       // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
       dot_duration = data().duration() / 1.25;
@@ -862,9 +828,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       tick_zero = hasted_ticks = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
-      trigger_ww_t28_4p_potential     = true;
-      trigger_ww_t28_4p_power_channel = true;
-
       weapon_power_mod = 0;
 
       tick_action = new sef_spinning_crane_kick_tick_t( player );
@@ -897,8 +860,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_melee_attack_t( "rushing_jade_wind", player, player->o()->talent.rushing_jade_wind )
     {
       dual = true;
-      trigger_ww_t28_4p_potential     = true;
-      trigger_ww_t28_4p_power_channel = true;
 
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
@@ -954,9 +915,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       channeled = false;
 
-      trigger_ww_t28_4p_potential = true;
-      trigger_ww_t28_4p_power     = true;
-
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
@@ -1011,8 +969,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       may_dodge = may_parry = may_block = may_miss = true;
       dual                                         = true;
-      trigger_ww_t28_4p_potential                  = true;
-      trigger_ww_t28_4p_power                      = true;
     }
   };
 
@@ -1036,9 +992,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       may_crit = may_miss = hasted_ticks = false;
       tick_zero = tick_may_crit = true;
-
-      trigger_ww_t28_4p_potential     = true;
-      trigger_ww_t28_4p_power_channel = true;
     }
 
     void tick( dot_t* d ) override
@@ -1062,9 +1015,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       hasted_ticks          = false;
       interrupt_auto_attack = true;
       dot_duration          = data().duration();
-
-      trigger_ww_t28_4p_potential     = true;
-      trigger_ww_t28_4p_power_channel = true;
     }
 
     // Base tick_time(action_t) is somehow pulling the Owner's base_tick_time instead of the pet's
@@ -1102,12 +1052,11 @@ public:
 
   struct
   {
-    propagate_const<buff_t*>  bok_proc_sef          = nullptr;
+    propagate_const<buff_t*> bok_proc_sef          = nullptr;
     propagate_const<buff_t*> pressure_point_sef    = nullptr;
-    propagate_const<buff_t*>  rushing_jade_wind_sef = nullptr;
+    propagate_const<buff_t*> rushing_jade_wind_sef = nullptr;
     // Tier 28 Buff
-    propagate_const<buff_t*> primordial_potential = nullptr;
-    propagate_const<buff_t*> primordial_power     = nullptr;
+    propagate_const<buff_t*> primordial_power      = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
@@ -1230,17 +1179,6 @@ public:
                                        else
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
-
-    buff.primordial_potential = make_buff( this, "sef_primordial_potential", o()->passives.primordial_potential );
-    // Currently Primordial Power is bugged and is not converting over to Primordial Power at 10 stacks.
-    /*                                ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-                                      if ( b->at_max_stacks() )
-                                      {
-                                        buff.primordial_power->trigger();
-                                        make_event( b->sim, [ b ] { b->expire(); } );
-                                      }
-                                    } );
-     */
 
     buff.primordial_power =
         new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
@@ -3147,6 +3085,16 @@ bool monk_t::storm_earth_and_fire_fixate_ready( player_t* target )
       return true;
   }
   return false;
+}
+
+// monk_t::storm_earth_and_fire_trigger_primordial_power ==============================
+void monk_t::storm_earth_and_fire_trigger_primordial_power()
+{
+  if ( buff.storm_earth_and_fire->check() )
+  {
+    pets.sef[ (int)sef_pet_e::SEF_EARTH ]->buff.primordial_power->trigger();
+    pets.sef[ (int)sef_pet_e::SEF_FIRE ]->buff.primordial_power->trigger();
+  }
 }
 
 // monk_t::summon_storm_earth_and_fire ================================================
