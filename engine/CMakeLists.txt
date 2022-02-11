@@ -68,10 +68,3 @@ add_dependencies(engine file_toucher)
 if (DEFINED SC_DEFAULT_APIKEY)
   target_compile_definitions(engine PRIVATE "SC_DEFAULT_APIKEY=\"${SC_DEFAULT_APIKEY}\"")
 endif()
-
-# 'simc' command line interface target
-add_executable(simc sc_main.cpp)
-target_link_libraries(simc engine)
-sc_common_compiler_options(simc)
-
-install(TARGETS simc DESTINATION ${SIMC_INSTALL_BIN})

@@ -39,29 +39,26 @@ else()
   set(SIMC_INSTALL_SHARED "share/SimulationCraft/SimulationCraft")
 endif()
 
-# helper function to enable warnings on targets
-function(sc_enable_warnings target)
+function(sc_common_compiler_options target)
   target_compile_options(${target} PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>:/permissive->
     $<$<CXX_COMPILER_ID:MSVC>:/W4>
     $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -Wpedantic>
   )
 endfunction()
-
-function(sc_common_compiler_options target)
-  sc_enable_warnings(${target})
-  
-  # Require /permissive- when building with Visual Studio
-  target_compile_options(${target} PRIVATE
-    $<$<CXX_COMPILER_ID:MSVC>:/permissive->
-  )
-endfunction()
-
 
 # link in all activated targets
 add_subdirectory(engine)
 if (BUILD_GUI)
   add_subdirectory(qt)
 endif()
+
+# 'simc' command line interface target
+add_executable(simc engine/sc_main.cpp)
+target_link_libraries(simc engine)
+sc_common_compiler_options(simc)
+
+install(TARGETS simc DESTINATION ${SIMC_INSTALL_BIN})
 
 install(DIRECTORY profiles/ DESTINATION ${SIMC_INSTALL_SHARED}/profiles
     FILES_MATCHING PATTERN "*.simc" )
