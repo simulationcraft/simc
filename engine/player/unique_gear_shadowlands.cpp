@@ -2996,6 +2996,101 @@ void scars_of_fraternal_strife( special_effect_t& effect )
   effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
 };
 
+// pet cast: 368203
+// pet spell damage coeff: 367307
+// CDR buff: 368937
+// TODO: what happens if another Automa dies near you?
+void architects_ingenuity_core( special_effect_t& effect )
+{
+  struct architects_ingenuity_spell_t : public spell_t
+  {
+    architects_ingenuity_spell_t( pet_t* p, const special_effect_t& e )
+      : spell_t( "architects_ingenuity", p, p->find_spell( 368203 ) )
+    {
+      channeled       = true;
+      base_td         = data().effectN( 2 ).trigger()->effectN( 1 ).average( e.item );
+      base_multiplier = 1.0;
+      hasted_ticks    = false;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* ) const override
+    {
+      // Not hasted
+      return dot_duration;
+    }
+
+    timespan_t tick_time( const action_state_t* ) const override
+    {
+      // Not hasted
+      return base_tick_time;
+    }
+  };
+
+  struct attendant_automa_pet_t : public pet_t
+  {
+    const special_effect_t& effect;
+
+    attendant_automa_pet_t( const special_effect_t& e )
+      : pet_t( e.player->sim, e.player, "attendant_automa", true, true ), effect( e )
+    {
+    }
+
+    action_t* create_action( util::string_view name, util::string_view options ) override
+    {
+      if ( name == "architects_ingenuity" )
+      {
+        return new architects_ingenuity_spell_t( this, effect );
+      }
+
+      return pet_t::create_action( name, options );
+    }
+
+    void init_action_list() override
+    {
+      pet_t::init_action_list();
+
+      if ( action_list_str.empty() )
+        get_action_priority_list( "default" )->add_action( "architects_ingenuity" );
+    }
+
+    virtual void demise() override
+    {
+      pet_t::demise();
+
+      owner->buffs.architects_ingenuity->trigger();
+    }
+  };
+
+  struct architects_ingenuity_t : public proc_spell_t
+  {
+    spawner::pet_spawner_t<attendant_automa_pet_t> spawner;
+
+    architects_ingenuity_t( const special_effect_t& e )
+      : proc_spell_t( "architects_ingenuity", e.player, e.player->find_spell( 368203 ) ),
+        spawner( "architects_ingenuity", e.player, [ &e ]( player_t* ) { return new attendant_automa_pet_t( e ); } )
+    {
+      spawner.set_default_duration( data().duration() );
+    }
+
+    void execute() override
+    {
+      // proc_spell_t::execute();
+      spawner.spawn();
+    }
+  };
+
+  // CDR buff you get when an Automa dies
+  auto buff = buff_t::find( effect.player, "architects_ingenuity" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "architects_ingenuity", effect.player->find_spell( 368937 ) );
+  }
+
+  effect.player->buffs.architects_ingenuity = buff;
+  // effect.disable_action();
+  effect.execute_action = create_proc_action<architects_ingenuity_t>( "architects_ingenuity", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4353,6 +4448,7 @@ void register_special_effects()
 
     // 9.2 Trinkets
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
+    unique_gear::register_special_effect( 368203 , items::architects_ingenuity_core );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
