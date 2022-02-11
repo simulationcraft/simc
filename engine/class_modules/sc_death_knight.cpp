@@ -5708,7 +5708,8 @@ struct heart_strike_t : public death_knight_melee_attack_t
     triggers_shackle_the_unworthy = true;
     aoe = 2;
     weapon = &( p -> main_hand_weapon );
-    energize_amount += p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    // T28 reads the amount of RP gain directly from t28 spell data, it does not use the resources section in heart strike
+    energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
   }
 
