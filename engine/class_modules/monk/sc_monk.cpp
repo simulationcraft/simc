@@ -4082,7 +4082,10 @@ struct bountiful_brew_t : public monk_spell_t
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
     {
       auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
-      buff->trigger();
+      if ( p()->is_ptr() )
+        buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      else
+        buff->trigger();
     }
   }
 
