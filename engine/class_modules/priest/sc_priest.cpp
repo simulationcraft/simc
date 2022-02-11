@@ -1685,11 +1685,6 @@ double priest_t::composite_player_target_multiplier( player_t* t, school_e schoo
 {
   double m = player_t::composite_player_target_multiplier( t, school );
 
-  if ( hungering_void_active( t ) )
-  {
-    m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
-  }
-
   return m;
 }
 
