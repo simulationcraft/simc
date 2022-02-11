@@ -1119,20 +1119,6 @@ struct windwalking_aura_t : public monk_spell_t
 };
 
 // ==========================================================================
-// Sunrise Technique
-// ==========================================================================
-struct sunrise_technique_t : public monk_melee_attack_t
-{
-  sunrise_technique_t( monk_t* p ) : monk_melee_attack_t( "sunrise_technique", p, p->find_spell( 275673 ) )
-  {
-    background  = true;
-    may_crit    = true;
-    trigger_gcd = timespan_t::zero();
-    min_gcd     = timespan_t::zero();
-  }
-};
-
-// ==========================================================================
 // Tiger Palm
 // ==========================================================================
 
@@ -6823,7 +6809,6 @@ void monk_t::init_spells()
   active_actions.stagger_self_damage    = new actions::stagger_self_damage_t( this );
 
   // Windwalker
-  active_actions.sunrise_technique         = new actions::sunrise_technique_t( this );
   active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
   windwalking_aura                         = new actions::windwalking_aura_t( this );
 
