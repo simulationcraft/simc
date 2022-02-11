@@ -4073,7 +4073,10 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->trigger();
+    if ( p()->is_ptr() )
+      p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    else
+      p()->buff.bonedust_brew->trigger();
 
     // Force trigger Lead by Example Buff
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
