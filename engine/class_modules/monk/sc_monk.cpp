@@ -122,7 +122,6 @@ public:
       bron_proc( nullptr ),
       affected_by()
   {
-    ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
   }
 
