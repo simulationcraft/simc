@@ -1240,7 +1240,7 @@ void warlock_t::create_apl_affliction()
   necro->add_action( "use_item,name=sunblood_amethyst,if=variable.trinket_delay<6" ); 
   necro->add_action( "use_item,name=soulletting_ruby,if=variable.trinket_delay<8" );
   necro->add_action( "use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
-  necro->add_action( "phantom_singularity,if=!talent.shadow_embrace&variable.dots_ticking", "If the player is using Haunt, fire PS on cooldown then follow with DB" );
+  necro->add_action( "phantom_singularity,if=!talent.shadow_embrace&variable.dots_ticking", "If the player is using Haunt or Gosac, fire PS on cooldown then follow with DB" );
   necro->add_action( "decimating_bolt,if=!talent.shadow_embrace&cooldown.phantom_singularity.remains>0" );
   necro->add_action( "decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking", "If the player is using SE, fire DB on cooldown then following with PS" );
   necro->add_action( "phantom_singularity,if=talent.shadow_embrace&cooldown.decimating_bolt.remains>0" );
