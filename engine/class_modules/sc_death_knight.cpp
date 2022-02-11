@@ -531,6 +531,7 @@ public:
     buff_t* harvest_time_stack; // T28 Unholy 2PC
     buff_t* endless_rune_waltz; // T28 Blood 2PC
     buff_t* endless_rune_waltz_duration; // T28 Blood 2PC expiration buff
+    buff_t* endless_rune_waltz_icd; // T28 4PC ICD
   } buffs;
 
   struct runeforge_t {
@@ -567,6 +568,9 @@ public:
     cooldown_t* apocalypse;
     cooldown_t* army_of_the_dead;
     cooldown_t* dark_transformation;
+
+    // T28
+    cooldown_t* endless_rune_waltz_icd;  // internal cooldown for Blood T28 4PC counterattack
   } cooldown;
 
   // Active Spells
@@ -587,6 +591,7 @@ public:
     // Tier28
     action_t* glacial_advance_t28_4pc;
     action_t* soul_reaper_t28;
+    action_t* heart_strike_t28;
   } active_spells;
 
   // Gains
@@ -837,6 +842,10 @@ public:
     // Unholy
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* runic_corruption; // buff
+
+    // T28 Blood 4pc
+    const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
+    const spell_data_t* endless_rune_waltz_energize; // RP gain on heart strike
   } spell;
 
   // Unholy Pet Abilities
@@ -1062,6 +1071,7 @@ public:
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
+    cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -5682,10 +5692,35 @@ struct heart_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
   }
 
+  // Background constructor for procs from T28 4PC.  Remove constructor after Slands
+  heart_strike_t( util::string_view name, death_knight_t* p ) :
+    death_knight_melee_attack_t( name, p, p -> spec.heart_strike ),
+    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+  {
+    background = proc = may_crit = true;
+    may_miss = false;
+    triggers_shackle_the_unworthy = true;
+    aoe = 2;
+    weapon = &( p -> main_hand_weapon );
+    energize_amount += p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
+  }
+
   void init() override
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
+  }
+
+  // This section added for T28 4PC.  Remove after Slands.
+  double cost() const override
+  {
+    if ( background )
+    {
+      return 0;
+    }
+
+    return death_knight_melee_attack_t::cost();
   }
 
   int n_targets() const override
@@ -8243,6 +8278,11 @@ void death_knight_t::create_actions()
     active_spells.soul_reaper_t28 = new soul_reaper_t28_t( this );
   }
 
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    active_spells.heart_strike_t28 = new heart_strike_t( "heart_strike_t28_4pc", this );
+  }
+
   player_t::create_actions();
 }
 
@@ -8875,7 +8915,7 @@ void death_knight_t::init_spells()
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
 
-  // DIseases
+  // Diseases
   spell.blood_plague    = find_spell( 55078 );
   spell.frost_fever     = find_spell( 55095 );
   spell.virulent_plague = find_spell( 191587 );
@@ -8883,6 +8923,9 @@ void death_knight_t::init_spells()
   // Blood
   spell.blood_shield        = find_spell( 77535 );
   spell.bone_shield         = find_spell( 195181 );
+  // T28 Blood
+  spell.endless_rune_waltz_energize = find_spell( 368938 );
+  spell.endless_rune_waltz_4pc      = find_spell( 363590 );
 
   // Frost
   spell.murderous_efficiency_gain = find_spell( 207062 );
@@ -9013,6 +9056,11 @@ void death_knight_t::init_spells()
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    cooldown.endless_rune_waltz_icd -> duration = spell.endless_rune_waltz_4pc -> internal_cooldown();
+  }
 
 }
 
@@ -9487,6 +9535,20 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    if ( cooldown.endless_rune_waltz_icd-> is_ready() && rng().roll( spell.endless_rune_waltz_4pc -> effectN ( 1 ).percent() * composite_parry() ) )
+    {
+      player_t* td = s -> action -> player;
+      if ( td )
+      {
+        sim -> print_debug( "{} caused Blood counterattack T28 4pc to proc from {}", td->name_str, s->action->name_str );
+        active_spells.heart_strike_t28 -> execute_on_target( td );
+      }
+      cooldown.endless_rune_waltz_icd -> start();
+    }
+  }
 
   if ( school != SCHOOL_PHYSICAL )
   {
