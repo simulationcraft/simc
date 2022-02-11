@@ -3074,6 +3074,7 @@ void architects_ingenuity_core( special_effect_t& effect )
 
     void execute() override
     {
+      // Disabling this parent execute since it creates its own spell
       // proc_spell_t::execute();
       spawner.spawn();
     }
@@ -3087,7 +3088,6 @@ void architects_ingenuity_core( special_effect_t& effect )
   }
 
   effect.player->buffs.architects_ingenuity = buff;
-  // effect.disable_action();
   effect.execute_action = create_proc_action<architects_ingenuity_t>( "architects_ingenuity", effect );
 }
 
