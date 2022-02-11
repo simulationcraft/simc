@@ -461,11 +461,20 @@ public:
       // Channeled abilities will be decremented on last tick
       if ( p()->buff.primordial_power->check() )
       {
-        if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
+        if ( trigger_ww_t28_4p_power )
         {
           p()->buff.primordial_power->trigger();
+          p()->buff.primordial_power_hidden_gcd->trigger();
           p()->storm_earth_and_fire_trigger_primordial_power();
-          //primordial_power_proc->occur();
+          // primordial_power_proc->occur();
+        }
+        else if ( trigger_ww_t28_4p_power_channel )
+        {
+          p()->buff.primordial_power->trigger();
+          // Use the longest channeled ability
+          p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
+          p()->storm_earth_and_fire_trigger_primordial_power();
+          // primordial_power_proc->occur();
         }
       }
       // else check if the ability can trigger Primordial Potential and trigger that.
@@ -564,23 +573,28 @@ public:
   void last_tick( dot_t* dot ) override
   {
     ab::last_tick( dot );
-
-    if ( !p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-      if ( trigger_ww_t28_4p_power_channel && p()->buff.primordial_power->check() )
-      {
-        p()->buff.primordial_power->trigger();
-        //primordial_power_proc->occur();
-      }
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = ab::composite_persistent_multiplier( action_state );
-
-    if ( p()->buff.primordial_power->check() )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
-      if ( affect_primordial_power && ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
-        pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+      if ( ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
+      {
+        // Make sure channels are buffed after Primordial Power has expired.
+        if ( affect_primordial_power && ( ( p()->buff.primordial_power_hidden_channel->check() && 
+            ( ab::id == 113656 || // Fists of Fury
+              ab::id == 107270 || // Spinning Crane Kick
+              ab::id == 148187 || // Rushing Jade Wind
+              ab::id == 158221 || // Whirling Dragon Punch
+              ab::id == 117952 || // Crackling Jade Lightning
+              ab::id == 132467 // Chi Wave
+                ) ) || p()->buff.primordial_power_hidden_gcd->check() ) )
+        {
+          pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+        }
+      }
     }
 
     return pm;
@@ -2352,8 +2366,6 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false; // Only the first hit from FotWT triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew      = true;
-    trigger_ww_t28_4p_potential = true; // Do not want to trigger this until after the second hit.
-    trigger_ww_t28_4p_power     = true; // Do not want to remove this until after the second hit.
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
@@ -2372,7 +2384,9 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
     may_combo_strike       = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    affected_by.serenity   = false;
+    trigger_ww_t28_4p_potential = true;
+    trigger_ww_t28_4p_power     = true;
+    affected_by.serenity        = false;
     cooldown->hasted       = false;
     ap_type                = attack_power_type::WEAPON_OFFHAND;
 
@@ -3141,6 +3155,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     trigger_bountiful_brew          = true;
     trigger_ww_t28_4p_potential     = true;
     trigger_ww_t28_4p_power_channel = true;
+    affect_primordial_power         = false;
 
     parse_options( options_str );
 
@@ -7163,6 +7178,17 @@ void monk_t::create_buffs()
   buff.primordial_potential =
       new buffs::primordial_potential_buff_t( *this, "primordial_potential", passives.primordial_potential );
   buff.primordial_power = new buffs::primordial_power_buff_t( *this, "primordial_power", passives.primordial_power );
+  // This is to allow for channeled abilities to continue doing damage after Primordial Power has expired
+  // I'm trying to set this up so that abilities like Rushing Jade Wind can overlap with Fists of Fury
+  buff.primordial_power_hidden_gcd = make_buff( this, "primordial_power_hidden_gcd" )
+                                   ->set_quiet( true )
+                                   ->set_duration( base_gcd )
+                                   ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.primordial_power_hidden_channel = make_buff( this, "primordial_power_hidden_channel" )
+                                       ->set_quiet( true )
+                                       ->set_max_stack( passives.primordial_power->max_stacks() )
+                                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // monk_t::init_gains =======================================================

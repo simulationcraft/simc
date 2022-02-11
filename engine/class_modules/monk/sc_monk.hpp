@@ -265,6 +265,8 @@ public:
     propagate_const<buff_t*> keg_of_the_heavens;
     propagate_const<buff_t*> primordial_potential;
     propagate_const<buff_t*> primordial_power;
+    propagate_const<buff_t*> primordial_power_hidden_gcd;
+    propagate_const<buff_t*> primordial_power_hidden_channel;
   } buff;
 
 public:
