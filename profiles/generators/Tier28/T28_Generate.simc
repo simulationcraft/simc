@@ -2,10 +2,11 @@
 # Tier 28 Sepulcher of the First Ones
 # RULES IN PROGRESS
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
-# * Raid gear is permitted up to the Mythic item level cap (278/285). ["bonus_id=1498/7187"]
+# * Set pieces are permitted up to the item level cap (278/285). ["bonus_id=1498/7187" or "bonus_id=1505/7187"]
+# * Raid gear is permitted up to the Mythic item level cap (278/285). ["bonus_id=1524/7187"]
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (278). ["bonus_id=1592/6536/6646"]
-# * Honor PvP gear is permitted up to the item level cap (242?). ["bonus_id=?"]
-# * Conquest PvP gear is permitted up to the item level cap (Duelist, 265?). ["bonus_id=?/?"]
+# * Honor PvP gear is permitted up to the item level cap (242). ["bonus_id=1556"]
+# * Conquest PvP gear is permitted up to the item level cap (Duelist, 272). ["bonus_id=1544/6646"]
 # * 9.2 zone(s) gear is permitted up to the item level cap of (246). ["bonus_id=?"]
 # * 9.1 zone(s) gear is permitted up to the item level cap of (233). ["bonus_id=7697/6652/1505/6646"]
 # * Crafted gear is permitted, must be BoE and without profession requirements.
