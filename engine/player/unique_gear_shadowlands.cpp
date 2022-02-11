@@ -3002,14 +3002,13 @@ void scars_of_fraternal_strife( special_effect_t& effect )
 // TODO: what happens if another Automa dies near you?
 void architects_ingenuity_core( special_effect_t& effect )
 {
-  struct architects_ingenuity_spell_t : public spell_t
+  struct architects_ingenuity_t : public proc_spell_t
   {
-    architects_ingenuity_spell_t( pet_t* p, const special_effect_t& e )
-      : spell_t( "architects_ingenuity", p, p->find_spell( 368203 ) )
+    architects_ingenuity_t( const special_effect_t& e )
+      : proc_spell_t( "architects_ingenuity", e.player, e.player->find_spell( 368203 ) )
     {
       channeled       = true;
       base_td         = data().effectN( 2 ).trigger()->effectN( 1 ).average( e.item );
-      base_multiplier = 1.0;
       hasted_ticks    = false;
     }
 
@@ -3024,59 +3023,12 @@ void architects_ingenuity_core( special_effect_t& effect )
       // Not hasted
       return base_tick_time;
     }
-  };
 
-  struct attendant_automa_pet_t : public pet_t
-  {
-    const special_effect_t& effect;
-
-    attendant_automa_pet_t( const special_effect_t& e )
-      : pet_t( e.player->sim, e.player, "attendant_automa", true, true ), effect( e )
+    void last_tick( dot_t* d ) override
     {
-    }
+      proc_spell_t::last_tick( d );
 
-    action_t* create_action( util::string_view name, util::string_view options ) override
-    {
-      if ( name == "architects_ingenuity" )
-      {
-        return new architects_ingenuity_spell_t( this, effect );
-      }
-
-      return pet_t::create_action( name, options );
-    }
-
-    void init_action_list() override
-    {
-      pet_t::init_action_list();
-
-      if ( action_list_str.empty() )
-        get_action_priority_list( "default" )->add_action( "architects_ingenuity" );
-    }
-
-    virtual void demise() override
-    {
-      pet_t::demise();
-
-      owner->buffs.architects_ingenuity->trigger();
-    }
-  };
-
-  struct architects_ingenuity_t : public proc_spell_t
-  {
-    spawner::pet_spawner_t<attendant_automa_pet_t> spawner;
-
-    architects_ingenuity_t( const special_effect_t& e )
-      : proc_spell_t( "architects_ingenuity", e.player, e.player->find_spell( 368203 ) ),
-        spawner( "architects_ingenuity", e.player, [ &e ]( player_t* ) { return new attendant_automa_pet_t( e ); } )
-    {
-      spawner.set_default_duration( data().duration() );
-    }
-
-    void execute() override
-    {
-      // Disabling this parent execute since it creates its own spell
-      // proc_spell_t::execute();
-      spawner.spawn();
+      player->buffs.architects_ingenuity->trigger();
     }
   };
 
