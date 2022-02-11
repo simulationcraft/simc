@@ -2430,6 +2430,7 @@ struct melee_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true )
   {
     background = repeating = may_glance = true;
+    may_crit                            = true;
     trigger_sinister_teaching_cdr       = false;
     trigger_gcd                         = timespan_t::zero();
     special                             = false;
@@ -2912,9 +2913,6 @@ struct paralysis_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 
@@ -2932,6 +2930,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
       movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
+    may_crit                        = true;
     ww_mastery                      = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
