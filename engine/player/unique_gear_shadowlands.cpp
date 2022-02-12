@@ -3067,6 +3067,113 @@ void architects_ingenuity_core( special_effect_t& effect )
   effect.execute_action = create_proc_action<architects_ingenuity_t>( "architects_ingenuity", effect );
 }
 
+// TODO: extremely annoying to do as none of these things show up on the combat log
+//   1) confirm delay between repeated launches
+//   2) confirm delay between missile hitting the ground, expanding the ring, and the ring hitting the target
+void resonant_reservoir( special_effect_t& effect )
+{
+  struct disintegration_halo_t : public proc_spell_t
+  {
+    struct disintegration_halo_counter_t : public buff_t
+    {
+      disintegration_halo_counter_t( const special_effect_t& e, std::string_view n, unsigned i )
+        : buff_t( e.player, n, e.player->find_spell( i ), e.item )
+      {
+        set_default_value_from_effect( 1, 1.0 );
+      }
+    };
+
+    struct disintegration_halo_dot_t : public proc_spell_t
+    {
+      disintegration_halo_dot_t( const special_effect_t& e )
+        : proc_spell_t( "disintegration_halo_dot", e.player, e.player->find_spell( 368231 ), e.item )
+      {}
+
+      timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
+      {
+        // duration is reset on refresh but the current tick does not clip
+        return t;
+      }
+    };
+
+    struct disintegration_halo_missile_t : public proc_spell_t
+    {
+      disintegration_halo_missile_t( const special_effect_t& e, std::string_view n, unsigned i, action_t* a )
+        : proc_spell_t( n, e.player, e.player->find_spell( i ), e.item )
+      {
+        impact_action = a;
+      }
+
+      timespan_t travel_time() const override
+      {
+        return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
+      }
+    };
+
+    std::vector<buff_t*> buffs;
+    std::vector<action_t*> missiles;
+    timespan_t repeat_time;
+
+    disintegration_halo_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      buffs.push_back( nullptr );
+      buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_2", 368223 ) );
+      buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_3", 368224 ) );
+      buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_4", 368225 ) );
+
+      impact_action = create_proc_action<disintegration_halo_dot_t>( "disintegration_halo_dot", e );
+
+      missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_2", 368232, impact_action ) );
+      missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_3", 368233, impact_action ) );
+      missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_4", 368234, impact_action ) );
+
+      // NOTE: Preliminary estimation of time between repeated missile launches, as well as random time range for
+      // the ring to expand on impact to hit the target. Note that logs DO NOT show missile firings so we will have to
+      // confirm these estimations with further log reviews.
+      repeat_time = 0.333_s;
+    }
+
+    timespan_t travel_time() const override
+    {
+      return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      if ( buffs.front() )
+      {
+        for ( int i = 0; i < as<int>( buffs.front()->check_value() ) - 1; i++ )
+        {
+          make_event( *sim, repeat_time * ( i + 1 ), [ this, i ]() {
+            missiles[ i ]->execute_on_target( target );
+          } );
+        }
+      }
+
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+
+      if ( buffs.back() )
+        buffs.back()->expire();
+
+      if ( buffs.front() )
+        buffs.front()->trigger();
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+
+      std::rotate( buffs.begin(), range::find( buffs, nullptr ), buffs.end() );
+    }
+  };
+
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.trigger_spell_id = 367236;
+  effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4424,7 +4531,8 @@ void register_special_effects()
 
     // 9.2 Trinkets
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
-    unique_gear::register_special_effect( 368203 , items::architects_ingenuity_core, true );
+    unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
+    unique_gear::register_special_effect( 367236, items::resonant_reservoir );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
