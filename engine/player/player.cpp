@@ -11651,6 +11651,9 @@ void player_t::create_options()
         } ) );
   }
 
+  // Shadowlands options
+  add_option( opt_string( "shadowlands.soleahs_secret_technique_type", shadowlands_opts.soleahs_secret_technique_type ) );
+
   // Obsolete options
 
   // Dummy artifact options

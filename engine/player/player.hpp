@@ -675,6 +675,15 @@ struct player_t : public actor_t
 
   using resource_callback_function_t = std::function<void()>;
 
+  struct shadowlands_opt_t
+  {
+    /// Type stat gained from So'leah's Secret Technique
+    /// Buff type: "mastery", "haste", "crit", "versatility"
+    /// Overrides sim-wide option with a player-specific one
+    /// Empty value indicates use sim-wide option.
+    std::string soleahs_secret_technique_type = "";
+  } shadowlands_opts;
+
 private:
   /// Flag to activate/deactive resource callback checks. Motivation: performance.
   bool has_active_resource_callbacks;

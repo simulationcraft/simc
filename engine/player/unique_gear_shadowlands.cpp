@@ -2782,6 +2782,12 @@ void soleahs_secret_technique( special_effect_t& effect )
   effect.type = SPECIAL_EFFECT_EQUIP;
 
   std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
+  // Override with player option if defined
+  if ( !effect.player->shadowlands_opts.soleahs_secret_technique_type.empty() )
+  {
+    opt_str = effect.player->shadowlands_opts.soleahs_secret_technique_type;
+  }
+
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
