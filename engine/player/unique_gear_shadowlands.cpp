@@ -4415,7 +4415,7 @@ void register_special_effects()
 
     // 9.2 Trinkets
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
-    unique_gear::register_special_effect( 368203 , items::architects_ingenuity_core );
+    unique_gear::register_special_effect( 368203 , items::architects_ingenuity_core, true );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
