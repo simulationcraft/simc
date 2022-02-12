@@ -1,3 +1,9 @@
+# 8128 unity
+# 6647 crit missive
+# 6649 haste missive
+# 6648 mastery missive
+# 6650 vers missive
+
 shaman="T28_Shaman_Elemental"
 level=60
 race=tauren
@@ -17,12 +23,8 @@ chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insigh
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
 hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
 waist=clasp_of_waning_shadow,id=178700,ilevel=278
-# 7709 Elemental Conduit
-# 7722 Raging Vesper Vortex
-# 7708 Seeds of Rampant Growth
-# 7570 Splintered Elements
-legs=unity,id=172326,ilevel=291,bonus_id=7709/7722/7708/7570
-feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992
+legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
@@ -52,12 +54,8 @@ chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insigh
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
 hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
 waist=clasp_of_waning_shadow,id=178700,ilevel=278
-# 7709 Elemental Conduit
-# 7722 Raging Vesper Vortex
-# 7708 Seeds of Rampant Growth
-# 7570 Splintered Elements
-legs=unity,id=172326,ilevel=291,bonus_id=7709/7722/7708/7570
-feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992
+legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
@@ -86,12 +84,8 @@ chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insigh
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
 hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
 waist=clasp_of_waning_shadow,id=178700,ilevel=278
-# 7709 Elemental Conduit
-# 7722 Raging Vesper Vortex
-# 7708 Seeds of Rampant Growth
-# 7570 Splintered Elements
-legs=unity,id=172326,ilevel=291,bonus_id=7709/7722/7708/7570
-feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992
+legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
@@ -120,12 +114,8 @@ chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insigh
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
 hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
 waist=clasp_of_waning_shadow,id=178700,ilevel=278
-# 7709 Elemental Conduit
-# 7722 Raging Vesper Vortex
-# 7708 Seeds of Rampant Growth
-# 7570 Splintered Elements
-legs=unity,id=172326,ilevel=291,bonus_id=7709/7722/7708/7570
-feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992
+legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
