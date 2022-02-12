@@ -1127,7 +1127,7 @@ struct hot_hand_buff_t : public buff_t
 struct splintered_elements_buff_t : public buff_t
 {
   shaman_t* shaman;
-  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered elements", p->find_spell( 354648 ) ), shaman( p )
+  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
     unsigned max_targets = player->dbc->ptr ? as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() )
                                             : std::numeric_limits<unsigned>::max();
