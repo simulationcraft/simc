@@ -2849,6 +2849,11 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::dismiss( expired );
     o()->buff.wind_gust->expire();
   }
+
+  void demise() override {
+    primal_elemental_t::demise();
+    o()->buff.wind_gust->expire();
+  }
 };
 
 }  // end namespace pet
@@ -4027,6 +4032,14 @@ struct earth_elemental_t : public shaman_spell_t
 
     if ( p()->talent.primal_elementalist->ok() )
     {
+      if ( p()->talent.storm_elemental->ok() ) 
+      {
+        p()->pet.pet_storm_elemental->demise();
+      } 
+      else 
+      {
+        p()->pet.pet_fire_elemental->demise();
+      }
       p()->pet.pet_earth_elemental->summon( s_data->duration() );
     }
     else
@@ -4034,7 +4047,7 @@ struct earth_elemental_t : public shaman_spell_t
       p()->pet.guardian_earth_elemental->summon( s_data->duration() );
     }
 
-    // Earth Elemental in game exhibits the same bug as maelstrom-ewapon empowered spells
+    // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
     if ( p()->bugs && p()->main_hand_attack && p()->main_hand_attack->execute_event )
     {
       event_t::cancel( p()->main_hand_attack->execute_event );
@@ -8509,6 +8522,7 @@ void shaman_t::summon_fire_elemental( timespan_t duration )
   {
     if ( pet.pet_fire_elemental->is_sleeping() )
     {
+      pet.pet_earth_elemental->demise();
       pet.pet_fire_elemental->summon( duration );
       pet.pet_fire_elemental->get_cooldown( "meteor" )->reset( false );
     }
@@ -8545,6 +8559,7 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
   {
     if ( pet.pet_storm_elemental->is_sleeping() )
     {
+      pet.pet_earth_elemental->demise();
       pet.pet_storm_elemental->summon( duration );
       pet.pet_storm_elemental->get_cooldown( "eye_of_the_storm" )->reset( false );
     }
