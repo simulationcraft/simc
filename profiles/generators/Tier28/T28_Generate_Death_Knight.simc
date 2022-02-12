@@ -12,7 +12,7 @@ renown=80
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/6953/6649/6648/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
@@ -42,7 +42,7 @@ renown=80
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/6944/6649/6648/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
@@ -73,7 +73,7 @@ renown=80
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/6944/6649/6648/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
@@ -104,7 +104,7 @@ renown=80
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/6944/6649/6648/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
@@ -133,7 +133,7 @@ soulbind=forgelite_prime_mikanikos,brons_call_to_action/everfrost:11:1/unleashed
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+back=grimveiled_cape,id=173242,bonus_id=6716/6944/6649/6648/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
