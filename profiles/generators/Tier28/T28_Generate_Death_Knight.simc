@@ -150,7 +150,7 @@ off_hand=the_devouring_cold,id=187056,bonus_id=1498/6807,enchant=rune_of_the_fal
 save=T27_Death_Knight_Frost_Icecap.simc
 
 
-deathknight="T27_Death_Knight_Unholy"
+deathknight="T28_Death_Knight_Unholy"
 spec=unholy
 level=60
 race=troll
@@ -158,23 +158,24 @@ role=attack
 position=back
 talents=2303021
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:9:1/convocation_of_the_dead:9:1/adaptive_armor_fragment:9:1/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:11:1/convocation_of_the_dead:11:1/brutal_grasp:11:1/kevins_oozeling
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1559,enchant=soul_vitality
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319
-hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173127
-legs=gormshell_greaves,id=178701,bonus_id=6536/1566/6646
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=fleshfused_circle,id=178869,bonus_id=6536/1566/6646/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/6652/7745/7746/7747,enchant=rune_of_the_fallen_crusader
 
-save=T27_Death_Knight_Unholy.simc
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
+back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6648/1588,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats,enchant_id=6230
+wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
+hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
+waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6648/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+
+save=T28_Death_Knight_Unholy.simc
