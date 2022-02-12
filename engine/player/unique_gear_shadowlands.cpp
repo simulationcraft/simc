@@ -3002,6 +3002,71 @@ void scars_of_fraternal_strife( special_effect_t& effect )
   effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
 };
 
+// pet cast: 368203
+// pet spell damage coeff: 367307
+// CDR buff: 368937
+// TODO: what happens if another Automa dies near you?
+void architects_ingenuity_core( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "architects_ingenuity" } ) )
+    return;
+
+  struct architects_ingenuity_t : public proc_spell_t
+  {
+    buff_t* buff;
+    double recharge_multiplier;
+    std::vector<action_t*> cd_actions;
+
+    architects_ingenuity_t( const special_effect_t& e )
+      : proc_spell_t( "architects_ingenuity", e.player, e.player->find_spell( 368203 ) ),
+        buff( buff_t::find( e.player, "architects_ingenuity" ) ),
+        recharge_multiplier( 1.0 / ( 1 + e.driver()->effectN( 2 ).trigger()->effectN( 2 ).percent() ) )
+    {
+      base_td = data().effectN( 2 ).trigger()->effectN( 1 ).average( e.item );
+
+      if ( !buff )
+      {
+        buff = make_buff( e.player, "architects_ingenuity", e.player->find_spell( 368937 ) );
+      }
+    }
+
+    void init() override
+    {
+      proc_spell_t::init();
+
+      for ( auto a : player->action_list )
+      {
+        // TODO: On the PTR this only affected class spells and did not affect the cooldown of charged
+        // spells. Is this still the case?
+        if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
+        {
+          cd_actions.push_back( a );
+        }
+      }
+
+      buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        for ( auto a : cd_actions )
+        {
+          if ( new_ == 1 )
+            a->base_recharge_multiplier *= recharge_multiplier;
+          else
+            a->base_recharge_multiplier /= recharge_multiplier;
+          a->cooldown->adjust_recharge_multiplier();
+        }
+      } );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<architects_ingenuity_t>( "architects_ingenuity", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4359,6 +4424,7 @@ void register_special_effects()
 
     // 9.2 Trinkets
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
+    unique_gear::register_special_effect( 368203 , items::architects_ingenuity_core, true );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
