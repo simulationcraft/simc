@@ -3509,7 +3509,7 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
      * affected by stuff happening after the main AiS cast.
      * This is typically not a problem, but it has a tricky interaction with Trick Shots:
      *  - if you do DT -> AiS -> MS the second AiS from DT will be affected by Trick Shots
-     *    from MS and will cleave
+     *    from MS and will cleave without actually consuming the Trick Shots buff
      *  - if you do MS -> DT -> AiS the second AiS from DT will *also* cleave even though Trick
      *    Shots is consumed by the main AiS
      * This flag is the way to handle that for Double Tap Aimed Shots: we save Tricks Shots
@@ -3524,7 +3524,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double high, low;
   } careful_aim;
   struct {
-    bool affected_by_2pc = true;
     proc_t* munched_4pc = nullptr;
   } focused_trickery;
 
@@ -3566,8 +3565,15 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    if ( focused_trickery.affected_by_2pc && p() -> tier_set.focused_trickery_2pc.ok() && trick_shots_up() )
-      m *= 1 + p() -> tier_set.focused_trickery_2pc -> effectN( 1 ).percent();
+    /*
+     * While the cleave capability for the DT AiS can come from either a snapshot of Trick Shots taken at the
+     * point of the original AiS cast OR the existence of the buff at the point of its own cast, the Focused Trickery
+     * modifier depends on the Trick Shots buff being up explicitly at the point of the DT AiS cast, which still
+     * allows the Focused Trickery 2pc modifier to affect the damage if Trick Shots is applied immediately following
+     * the AiS cast, or an ongoing Volley is present.
+     */
+    if ( p()->tier_set.focused_trickery_2pc.ok() && p()->buffs.trick_shots->check() )
+      m *= 1 + p()->tier_set.focused_trickery_2pc->effectN( 1 ).percent();
 
     return m;
   }
@@ -3609,8 +3615,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
-      // XXX: 2022-01-22 Double Tapped Aimed Shots are not affected by Focused Trickery 2pc
-      focused_trickery.affected_by_2pc = !p -> bugs;
     }
 
     timespan_t execute_time() const override
@@ -5799,7 +5803,11 @@ std::unique_ptr<expr_t> hunter_t::create_expression( util::string_view expressio
 {
   auto splits = util::string_split<util::string_view>( expression_str, "." );
 
-  if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
+  if ( splits.size() == 1 && splits[ 0 ] == "focused_trickery_count" )
+  {
+    return make_fn_expr( expression_str, [ this ] { return state.focus_used_FT; } );
+  }
+  else if ( splits.size() == 2 && splits[ 0 ] == "next_wi_bomb" )
   {
     if ( splits[ 1 ] == "shrapnel" )
       return make_fn_expr( expression_str, [ this ] { return talents.wildfire_infusion.ok() && state.next_wi_bomb == WILDFIRE_INFUSION_SHRAPNEL; } );

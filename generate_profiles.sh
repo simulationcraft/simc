@@ -24,7 +24,7 @@ fi
 #   echo 'Skipped DungeonSlice, directory not found.'
 # fi
 # TierXX profiles generation
-for tier in 26 27
+for tier in 26 27 28
 do
   PROFDIR="Tier$tier"
   echo "---$PROFDIR---"

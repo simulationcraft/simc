@@ -811,10 +811,12 @@ public:
 
   void break_stealth();
   void cancel_auto_attack();
+  void do_exsanguinate( dot_t* dot, double coeff );
 
-  // On-death trigger for Venomous Wounds energy replenish
-  void trigger_venomous_wounds_death( player_t* );
+  void trigger_venomous_wounds_death( player_t* ); // On-death trigger for Venomous Wounds energy replenish
   void trigger_toxic_onslaught( player_t* );
+  void trigger_exsanguinate( player_t* );
+  void trigger_t28_assassination_4pc( player_t* );
 
   double consume_cp_max() const
   { return COMBO_POINT_MAX + as<double>( talent.deeper_stratagem -> effectN( 1 ).base_value() ); }
@@ -1509,9 +1511,6 @@ public:
   virtual bool consumes_echoing_reprimand() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
-private:
-  void do_exsanguinate( dot_t* dot, double coeff );
-
 public:
   // Ability triggers
   void spend_combo_points( const action_state_t* );
@@ -1532,8 +1531,6 @@ public:
   void trigger_weaponmaster( const action_state_t*, rogue_attack_t* action );
   void trigger_restless_blades( const action_state_t* );
   void trigger_dreadblades( const action_state_t* );
-  void trigger_exsanguinate( const action_state_t* );
-  void trigger_t28_assassination_4pc( const action_state_t* );
   void trigger_relentless_strikes( const action_state_t* );
   void trigger_shadow_blades_attack( action_state_t* );
   void trigger_prey_on_the_weak( const action_state_t* state );
@@ -2029,7 +2026,7 @@ struct deadly_poison_t : public rogue_poison_t
     deadly_poison_dot_t( util::string_view name, rogue_t* p ) :
       rogue_poison_t( name, p, p->spec.deadly_poison->effectN( 1 ).trigger(), true )
     {
-      affected_by.t28_assassination_4pc = true; // TOCHECK: Pending post-holiday PTR build
+      affected_by.t28_assassination_4pc = true;
     }
   };
 
@@ -2906,7 +2903,7 @@ struct exsanguinate_t : public rogue_attack_t
   void impact( action_state_t* state ) override
   {
     rogue_attack_t::impact( state );
-    trigger_exsanguinate( state );
+    p()->trigger_exsanguinate( state->target );
   }
 };
 
@@ -4448,8 +4445,6 @@ struct vendetta_t : public rogue_spell_t
     td->debuffs.vendetta->expire();
     td->debuffs.vendetta->trigger();
 
-    trigger_t28_assassination_4pc( execute_state );
-
     // As of 2021-10-07 9.1.5 PTR, using it seems to trigger the energy buff but Toxic Onslaught does not.
     // If this is fixed, remove this and uncomment the corresponding block in the debuff again.
     p()->buffs.vendetta->trigger();
@@ -4765,13 +4760,23 @@ struct sepsis_t : public rogue_attack_t
     return m;
   }
 
+  void tick( dot_t* d ) override
+  {
+    // 2022-02-10 -- Logs appear to show the buff portion triggers prior to the final tick and damage
+    //               However, Vendetta happens after the damage event and must be delayed
+    if ( d->remains() == timespan_t::zero() )
+    {
+      p()->trigger_toxic_onslaught( d->target );
+    }
+    rogue_attack_t::tick( d );
+  }
+
   void last_tick( dot_t* d ) override
   {
     rogue_attack_t::last_tick( d );
     sepsis_expire_damage->set_target( d->target );
     sepsis_expire_damage->execute();
     p()->buffs.sepsis->trigger();
-    p()->trigger_toxic_onslaught( d->target );
   }
 
   bool snapshots_nightstalker() const override
@@ -4804,7 +4809,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
       affected_by.zoldyck_insignia = true; // 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
-      dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2 );
+      affected_by.t28_assassination_4pc = true; // 2022-02-22 -- Now works as of most recent PTR build 
+      dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
 
       if ( p->conduit.sudden_fractures.ok() )
       {
@@ -5886,6 +5892,8 @@ void rogue_t::trigger_toxic_onslaught( player_t* target )
     return;
 
   // As of 9.1.5 we proc the two major cooldowns that are not part of our own spec.
+  // 2022-02-01 -- Vendetta appears to be slightly delayed and applied after the final impact
+  //               Shadow Blades and Adrenaline Rush are applied immediately
   const timespan_t trigger_duration = legendary.toxic_onslaught->effectN( 1 ).time_value();
 
   if ( specialization() == ROGUE_ASSASSINATION )
@@ -5895,13 +5903,70 @@ void rogue_t::trigger_toxic_onslaught( player_t* target )
   }
   else if ( specialization() == ROGUE_OUTLAW )
   {
-    get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+    make_event( *sim, [this, target, trigger_duration] {
+      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration ); } );
     buffs.shadow_blades->extend_duration_or_trigger( trigger_duration );
   }
   else if ( specialization() == ROGUE_SUBTLETY )
   {
-    get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration );
+    make_event( *sim, [this, target, trigger_duration] {
+      get_target_data( target )->debuffs.vendetta->extend_duration_or_trigger( trigger_duration ); } );
     buffs.adrenaline_rush->extend_duration_or_trigger( trigger_duration );
+  }
+}
+
+void rogue_t::do_exsanguinate( dot_t* dot, double rate )
+{
+  if ( !dot->is_ticking() )
+    return;
+
+  auto rs = actions::rogue_attack_t::cast_state( dot->state );
+  const double new_rate = rs->get_exsanguinated_rate() * rate;
+  const double coeff = rs->get_exsanguinated_rate() / rate;
+
+  sim->print_log( "{} exsanguinates {} tick rate by {:.1f} from {:.1f} to {:.1f}",
+                  *this, *dot, rate, rs->get_exsanguinated_rate(), new_rate );
+
+  // Since the advent of hasted bleed exsanguinate works differently though.
+  // Note: PTR testing shows Exsanguinated compound multiplicatively (2x -> 4x -> 8x -> etc.)
+  dot->adjust_full_ticks( coeff );
+  rs->set_exsanguinated_rate( new_rate );
+}
+
+void rogue_t::trigger_exsanguinate( player_t* target )
+{
+  if ( !talent.exsanguinate->ok() )
+    return;
+
+  rogue_td_t* td = get_target_data( target );
+
+  double rate = 1.0 + talent.exsanguinate->effectN( 1 ).percent();
+  do_exsanguinate( td->dots.garrote, rate );
+  do_exsanguinate( td->dots.internal_bleeding, rate );
+  do_exsanguinate( td->dots.rupture, rate );
+  do_exsanguinate( td->dots.crimson_tempest, rate );
+}
+
+void rogue_t::trigger_t28_assassination_4pc( player_t* target )
+{
+  if ( !set_bonuses.t28_assassination_4pc->ok() )
+    return;
+
+  rogue_td_t* td = get_target_data( target );
+
+  // 2022-02-11 -- As of the most recent PTR build, Vendetta exactly reverses the modifier when fading
+  //               Haste snapshot is maintained however, so don't need to update the snapshot flags
+  double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
+  if ( !td->debuffs.vendetta->check() )
+    rate = 1.0 / rate;
+
+  auto candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
+    td->dots.internal_bleeding, td->dots.rupture, td->dots.sepsis, td->dots.serrated_bone_spike };
+
+  for ( auto dot : candidate_dots )
+  {
+    if ( dot->current_action && cast_attack( dot->current_action )->affected_by.t28_assassination_4pc )
+      do_exsanguinate( dot, rate );
   }
 }
 
@@ -6256,59 +6321,6 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
     return;
 
   trigger_combo_point_gain( as<int>( p()->buffs.dreadblades->check_value() ), p()->gains.dreadblades );
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::do_exsanguinate( dot_t* dot, double rate )
-{
-  if ( !dot->is_ticking() )
-    return;
-
-  auto rs = actions::rogue_attack_t::cast_state( dot->state );
-  double new_rate = rs->get_exsanguinated_rate() * rate;
-
-  p()->sim->print_log( "{} exsanguinates {} tick rate by {:.1f} from {:.1f} to {:.1f}",
-                       *p(), *dot, rate, rs->get_exsanguinated_rate(), new_rate );
-
-  // Original and "logical" implementation.
-  // dot -> adjust( coeff );
-  // Since the advent of hasted bleed exsanguinate works differently though.
-  // Note: PTR testing shows Exsanguinated compound multiplicatively (2x -> 4x -> 8x -> etc.)
-  double coeff = 1.0 / new_rate;
-  dot->adjust_full_ticks( coeff );
-  rs->set_exsanguinated_rate( new_rate );
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_exsanguinate( const action_state_t* state )
-{
-  if ( !p()->talent.exsanguinate->ok() )
-    return;
-
-  rogue_td_t* td = p()->get_target_data( state->target );
-
-  double rate = 1.0 + p()->talent.exsanguinate->effectN( 1 ).percent();
-  do_exsanguinate( td->dots.garrote, rate );
-  do_exsanguinate( td->dots.internal_bleeding, rate );
-  do_exsanguinate( td->dots.rupture, rate );
-  do_exsanguinate( td->dots.crimson_tempest, rate );
-}
-
-template <typename Base>
-void actions::rogue_action_t<Base>::trigger_t28_assassination_4pc( const action_state_t* state )
-{
-  if ( !p()->set_bonuses.t28_assassination_4pc->ok() )
-    return;
-
-  rogue_td_t* td = p()->get_target_data( state->target );
-  if ( !td->debuffs.vendetta->check() )
-    return;
-
-  double rate = 1.0 + p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
-  do_exsanguinate( td->dots.garrote, rate );
-  do_exsanguinate( td->dots.internal_bleeding, rate );
-  do_exsanguinate( td->dots.rupture, rate );
-  do_exsanguinate( td->dots.crimson_tempest, rate );
 }
 
 template <typename Base>
@@ -6679,6 +6691,14 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     debuffs.grudge_match = make_buff<damage_buff_t>( *this, "grudge_match" );
     debuffs.grudge_match->set_chance( 0.0 );
     debuffs.grudge_match->set_quiet( true );
+  }
+
+  // T28 Assassination 4pc
+  if ( source->set_bonuses.t28_assassination_4pc->ok() )
+  {
+    debuffs.vendetta->set_stack_change_callback( [this, source]( buff_t* b, int, int ) {
+      source->trigger_t28_assassination_4pc( b->player );
+    } );
   }
 
   // Marked for Death Reset
