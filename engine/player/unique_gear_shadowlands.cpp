@@ -3008,12 +3008,13 @@ void architects_ingenuity_core( special_effect_t& effect )
   struct architects_ingenuity_t : public proc_spell_t
   {
     buff_t* buff;
-    double mult;
+    double recharge_multiplier;
+    std::vector<action_t*> cd_actions;
 
     architects_ingenuity_t( const special_effect_t& e )
       : proc_spell_t( "architects_ingenuity", e.player, e.player->find_spell( 368203 ) ),
         buff( buff_t::find( e.player, "architects_ingenuity" ) ),
-        mult( 1.0 / ( 1 + e.driver()->effectN( 2 ).trigger()->effectN( 2 ).percent() ) )
+        recharge_multiplier( 1.0 / ( 1 + e.driver()->effectN( 2 ).trigger()->effectN( 2 ).percent() ) )
     {
       base_td = data().effectN( 2 ).trigger()->effectN( 1 ).average( e.item );
 
@@ -3027,22 +3028,24 @@ void architects_ingenuity_core( special_effect_t& effect )
     {
       proc_spell_t::init();
 
-      auto p                     = player;
-      double recharge_multiplier = mult;
-
-      buff->set_stack_change_callback( [ p, recharge_multiplier ]( buff_t*, int, int new_ ) {
-        for ( auto a : p->action_list )
+      for ( auto a : player->action_list )
+      {
+        // TODO: On the PTR this only affected class spells and did not affect the cooldown of charged
+        // spells. Is this still the case?
+        if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
         {
-          // TODO: On the PTR this only affected class spells and did not affect the cooldown of charged
-          // spells. Is this still the case?
-          if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
-          {
-            if ( new_ == 1 )
-              a->base_recharge_multiplier *= recharge_multiplier;
-            else
-              a->base_recharge_multiplier /= recharge_multiplier;
-            a->cooldown->adjust_recharge_multiplier();
-          }
+          cd_actions.push_back( a );
+        }
+      }
+
+      buff->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
+        for ( auto a : cd_actions )
+        {
+          if ( new_ == 1 )
+            a->base_recharge_multiplier *= recharge_multiplier;
+          else
+            a->base_recharge_multiplier /= recharge_multiplier;
+          a->cooldown->adjust_recharge_multiplier();
         }
       } );
     }
