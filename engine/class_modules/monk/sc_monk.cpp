@@ -122,7 +122,6 @@ public:
       bron_proc( nullptr ),
       affected_by()
   {
-    ab::may_crit = true;
     range::fill( _resource_by_stance, RESOURCE_MAX );
   }
 
@@ -201,10 +200,11 @@ public:
                     ( this->spell_power_mod.direct || this->spell_power_mod.tick || this->attack_power_mod.direct ||
                       this->attack_power_mod.tick || this->base_dd_min || this->base_dd_max || this->base_td );
 
-    if ( trigger_ww_t28_4p_potential )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    {
       primordial_potential_proc = p()->get_proc( std::string( "Primordial Potential: " ) + full_name() );
-    if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
-      primordial_potential_proc = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
+      primordial_power_proc     = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
+    }
   }
 
   void init_finished() override
@@ -213,10 +213,6 @@ public:
 
     if ( may_proc_bron )
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
-    //if ( trigger_ww_t28_4p_potential )
-    //  primordial_potential_proc = p()->get_proc( std::string( "Primordial Potential: " ) + full_name() );
-    //if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
-    //  primordial_potential_proc = p()->get_proc( std::string( "Primordial Power: " ) + full_name() );
   }
 
   void reset_swing()
@@ -448,13 +444,12 @@ public:
     if ( trigger_chiji && p()->buff.invoke_chiji->up() )
       p()->buff.invoke_chiji_evm->trigger();
 
-    // The bug is that this is triggering before the execute
-    // Meaning Primordial Potential transforms into Primordial Power before
+    // Primordial Potential transforms into Primordial Power before
     // the ability executes and thus benefits from the Primordial Power
     // buff when Primordial Potential hits 10 stacks.
     // At the same time, the 3rd stack of Primorodial Power does not provide
     // any benefits.
-    if ( p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
       // Check if Primordial Power is active
       // If it is then if the ability can trigger, then decrement
@@ -462,17 +457,26 @@ public:
       // Channeled abilities will be decremented on last tick
       if ( p()->buff.primordial_power->check() )
       {
-        if ( trigger_ww_t28_4p_power || trigger_ww_t28_4p_power_channel )
+        if ( trigger_ww_t28_4p_power )
         {
           p()->buff.primordial_power->trigger();
-          //primordial_power_proc->occur();
+          p()->buff.primordial_power_hidden_gcd->trigger();
+          p()->storm_earth_and_fire_trigger_primordial_power();
+          primordial_power_proc->occur();
+        }
+        else if ( trigger_ww_t28_4p_power_channel )
+        {
+          p()->buff.primordial_power->trigger();
+          p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
+          p()->storm_earth_and_fire_trigger_primordial_power();
+          primordial_power_proc->occur();
         }
       }
       // else check if the ability can trigger Primordial Potential and trigger that.
       else if ( trigger_ww_t28_4p_potential )
       {
         p()->buff.primordial_potential->trigger();
-        //primordial_potential_proc->occur();
+        primordial_potential_proc->occur();
       }
     }
 
@@ -521,28 +525,6 @@ public:
 
     ab::impact( s );
 
-    if ( !p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-    {
-      // Check if Primordial Power is active
-      // If it is then if the ability can trigger, then decrement
-      // Only do this for non-channeled abilities.
-      // Channeled abilities will be decremented on last tick
-      if ( p()->buff.primordial_power->check() )
-      {
-        if ( trigger_ww_t28_4p_power )
-        {
-          p()->buff.primordial_power->trigger();
-          //primordial_power_proc->occur();
-        }
-      }
-      // else check if the ability can trigger Primordial Potential and trigger that.
-      else if ( trigger_ww_t28_4p_potential )
-      {
-        p()->buff.primordial_potential->trigger();
-        //primordial_potential_proc->occur();
-      }
-    }
-
     if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
     {
@@ -550,7 +532,13 @@ public:
 
       // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
       // This means that RPPM will have triggered but cannot be applied.
-      if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
+      // This is no longer the case on PTR
+      if ( p()->is_ptr() )
+      {
+        p()->active_actions.bountiful_brew->execute();
+        p()->proc.bountiful_brew_proc->occur();
+      }
+      else if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
       {
         p()->active_actions.bountiful_brew->execute();
         p()->proc.bountiful_brew_proc->occur();
@@ -562,7 +550,10 @@ public:
       if ( trigger_sinister_teaching_cdr && s->result_total >= 0 && s->result == RESULT_CRIT && 
            p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
       {
-        p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
+        if ( p()->is_ptr() && p()->specialization() == MONK_MISTWEAVER )
+          p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 4 ).time_value() );
+        else
+          p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
         p()->cooldown.sinister_teachings->start( p()->legendary.sinister_teachings->internal_cooldown() );
         p()->proc.sinister_teaching_reduction->occur();
       }
@@ -577,23 +568,28 @@ public:
   void last_tick( dot_t* dot ) override
   {
     ab::last_tick( dot );
-
-    if ( !p()->bugs && p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
-      if ( trigger_ww_t28_4p_power_channel && p()->buff.primordial_power->check() )
-      {
-        p()->buff.primordial_power->trigger();
-        //primordial_power_proc->occur();
-      }
   }
 
   double composite_persistent_multiplier( const action_state_t* action_state ) const override
   {
     double pm = ab::composite_persistent_multiplier( action_state );
-
-    if ( p()->buff.primordial_power->check() )
+    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
-      if ( affect_primordial_power && ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
-        pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+      if ( ab::data().affected_by( p()->passives.primordial_power->effectN( 1 ) ) )
+      {
+        // Make sure channels are buffed after Primordial Power has expired.
+        if ( affect_primordial_power && ( ( p()->buff.primordial_power_hidden_channel->check() && 
+            ( ab::id == 113656 || // Fists of Fury
+              ab::id == 107270 || // Spinning Crane Kick
+              ab::id == 148187 || // Rushing Jade Wind
+              ab::id == 158221 || // Whirling Dragon Punch
+              ab::id == 117952 || // Crackling Jade Lightning
+              ab::id == 132467 // Chi Wave
+                ) ) || p()->buff.primordial_power_hidden_gcd->check() ) )
+        {
+          pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+        }
+      }
     }
 
     return pm;
@@ -1067,6 +1063,18 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       s->target->debuffs.mystic_touch->trigger();
     }
   }
+
+  void apply_dual_wield_two_handed_scaling()
+  {
+    ap_type = attack_power_type::WEAPON_BOTH;
+
+    if ( player->main_hand_weapon.group() == WEAPON_2H )
+    {
+      ap_type = attack_power_type::WEAPON_MAINHAND;
+      // 0.98 multiplier found only in tooltip
+      base_multiplier *= 0.98;
+    }
+  }
 };
 
 // ==========================================================================
@@ -1107,20 +1115,6 @@ struct windwalking_aura_t : public monk_spell_t
     }
 
     return tl;
-  }
-};
-
-// ==========================================================================
-// Sunrise Technique
-// ==========================================================================
-struct sunrise_technique_t : public monk_melee_attack_t
-{
-  sunrise_technique_t( monk_t* p ) : monk_melee_attack_t( "sunrise_technique", p, p->find_spell( 275673 ) )
-  {
-    background  = true;
-    may_crit    = true;
-    trigger_gcd = timespan_t::zero();
-    min_gcd     = timespan_t::zero();
   }
 };
 
@@ -1349,10 +1343,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     background = dual = true;
     may_crit          = true;
-    trigger_chiji         = true;
+    trigger_chiji     = true;
 
     if ( p->specialization() == MONK_WINDWALKER )
-      ap_type         = attack_power_type::WEAPON_BOTH;
+      apply_dual_wield_two_handed_scaling();
   }
 
   double action_multiplier() const override
@@ -1629,7 +1623,7 @@ struct blackout_kick_t : public monk_melee_attack_t
         // Saved as -1
         base_costs[ RESOURCE_CHI ] += p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
 
-      ap_type = attack_power_type::WEAPON_BOTH;
+      apply_dual_wield_two_handed_scaling();
     }
   }
 
@@ -1884,7 +1878,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
     radius            = data->effectN( 1 ).radius();
 
     if ( p->specialization() == MONK_WINDWALKER )
-        ap_type       = attack_power_type::WEAPON_BOTH;
+        apply_dual_wield_two_handed_scaling();
 
     // Reset some variables to ensure proper execution
     dot_duration                  = timespan_t::zero();
@@ -2115,10 +2109,10 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     ww_mastery = true;
 
     attack_power_mod.direct    = p->spec.fists_of_fury->effectN( 5 ).ap_coeff();
-    ap_type                    = attack_power_type::WEAPON_BOTH;
     base_costs[ RESOURCE_CHI ] = 0;
     dot_duration               = timespan_t::zero();
     trigger_gcd                = timespan_t::zero();
+    apply_dual_wield_two_handed_scaling();
   }
 
   double composite_aoe_multiplier( const action_state_t* state ) const override
@@ -2248,7 +2242,7 @@ struct whirling_dragon_punch_tick_t : public monk_melee_attack_t
     background = true;
     aoe        = -1;
     radius     = s->effectN( 1 ).radius();
-    ap_type    = attack_power_type::WEAPON_BOTH;
+    apply_dual_wield_two_handed_scaling();
   }
 };
 
@@ -2353,13 +2347,9 @@ struct fist_of_the_white_tiger_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false; // Only the first hit from FotWT triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew      = true;
-    trigger_ww_t28_4p_potential = true; // Do not want to trigger this until after the second hit.
-    trigger_ww_t28_4p_power = true; // Do not want to remove this until after the second hit.
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
-    // attack_power_mod.direct = p -> talent.fist_of_the_white_tiger -> effectN( 1 ).ap_coeff();
-    weapon = &( player->main_hand_weapon );
   }
 };
 
@@ -2371,18 +2361,18 @@ struct fist_of_the_white_tiger_t : public monk_melee_attack_t
       mh_attack( nullptr )
   {
     sef_ability            = sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH;
-    ww_mastery           = true;
-    may_combo_strike      = true;
-    trigger_faeline_stomp = true;
+    ww_mastery             = true;
+    may_combo_strike       = true;
+    trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    affected_by.serenity = false;
-    cooldown->hasted     = false;
-    ap_type              = attack_power_type::WEAPON_BOTH;
+    trigger_ww_t28_4p_potential = true;
+    trigger_ww_t28_4p_power     = true;
+    affected_by.serenity        = false;
+    cooldown->hasted       = false;
+    ap_type                = attack_power_type::WEAPON_OFFHAND;
 
     parse_options( options_str );
     may_dodge = may_parry = may_block = true;
-    // This is the off-hand damage
-    weapon      = &( player->off_hand_weapon );
     trigger_gcd = data().gcd();
 
     mh_attack = new fist_of_the_white_tiger_main_hand_t( p, "fist_of_the_white_tiger_mainhand",
@@ -2426,6 +2416,7 @@ struct melee_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, player, spell_data_t::nil() ), sync_weapons( sw ), first( true )
   {
     background = repeating = may_glance = true;
+    may_crit                            = true;
     trigger_sinister_teaching_cdr       = false;
     trigger_gcd                         = timespan_t::zero();
     special                             = false;
@@ -2628,13 +2619,12 @@ struct keg_smash_t : public monk_melee_attack_t
     // Tier 28 4-piece
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
     {
-      // Set bonus uses the raw values. Meaning if Keg Smash Crits, it uses the pre-crit values.
-      auto heal_amount   = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 2 ).percent() * s->result_raw;
+      auto heal_amount   = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 2 ).percent() * s->result_total;
       heal->base_dd_min  = heal_amount;
       heal->base_dd_max  = heal_amount;
       heal->execute();
 
-      auto hp_gain = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 3 ).percent() * s->result_raw;
+      auto hp_gain = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 3 ).percent() * s->result_total;
       p()->buff.keg_of_the_heavens->trigger( 1, hp_gain, 1.0, p()->passives.keg_of_the_heavens_buff->duration() );
     }
   }
@@ -2909,9 +2899,6 @@ struct paralysis_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
-
-    //    if ( p()->level() <= 50 )
-    //      p()->trigger_sephuzs_secret( execute_state, MECHANIC_INCAPACITATE );
   }
 };
 
@@ -2929,6 +2916,7 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
       movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
+    may_crit                        = true;
     ww_mastery                      = true;
     may_combo_strike                = true;
     ignore_false_positive           = true;
@@ -3147,6 +3135,7 @@ struct crackling_jade_lightning_t : public monk_spell_t
     trigger_bountiful_brew          = true;
     trigger_ww_t28_4p_potential     = true;
     trigger_ww_t28_4p_power_channel = true;
+    affect_primordial_power         = false;
 
     parse_options( options_str );
 
@@ -4084,13 +4073,19 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->trigger();
+    if ( p()->is_ptr() )
+      p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    else
+      p()->buff.bonedust_brew->trigger();
 
     // Force trigger Lead by Example Buff
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
     {
       auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
-      buff->trigger();
+      if ( p()->is_ptr() )
+        buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      else
+        buff->trigger();
     }
   }
 
@@ -4098,7 +4093,10 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    get_td( s->target )->debuff.bonedust_brew->trigger();
+    if ( p()->is_ptr() )
+      get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    else
+      get_td( s->target )->debuff.bonedust_brew->trigger();
   }
 };
 
@@ -5886,6 +5884,7 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
     if ( b->at_max_stacks() )
     {
       p->buff.primordial_power->trigger();
+      p->storm_earth_and_fire_trigger_primordial_power();
       make_event( b->sim, [ b ] { b->expire(); } );
     }
   }
@@ -5907,6 +5906,7 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     set_reverse( true );
     set_reverse_stack_count( s->max_stacks() );
+    set_refresh_behavior( buff_refresh_behavior::DISABLED );
   }
 };
 
@@ -6044,7 +6044,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
   // Covenant Abilities
   debuff.bonedust_brew = make_buff( *this, "bonedust_brew_debuff", p->find_spell( 325216 ) )
                              ->set_cooldown( timespan_t::zero() )
-                             ->set_chance( (p->covenant.necrolord -> ok() || p->legendary.bountiful_brew -> ok() ) ? 1 : 0 )
+                             ->set_chance( p->covenant.necrolord->ok() ? 1 : 0 )
                              ->set_default_value_from_effect( 3 );
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
@@ -6140,15 +6140,15 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.serenity                = get_cooldown( "serenity" );
 
   // Covenants
-  cooldown.weapons_of_order = get_cooldown( "weapnos_of_order" );
-  cooldown.bonedust_brew    = get_cooldown( "bonedust_brew" );
-  cooldown.faeline_stomp    = get_cooldown( "faeline_stomp" );
-  cooldown.fallen_order     = get_cooldown( "fallen_order" );
+  cooldown.weapons_of_order        = get_cooldown( "weapnos_of_order" );
+  cooldown.bonedust_brew           = get_cooldown( "bonedust_brew" );
+  cooldown.faeline_stomp           = get_cooldown( "faeline_stomp" );
+  cooldown.fallen_order            = get_cooldown( "fallen_order" );
 
   // Legendary
-  cooldown.charred_passions = get_cooldown( "charred_passions" );
-  cooldown.bountiful_brew     = get_cooldown( "bountiful_brew" );
-  cooldown.sinister_teachings = get_cooldown( "sinister_teachings" );
+  cooldown.charred_passions        = get_cooldown( "charred_passions" );
+  cooldown.bountiful_brew          = get_cooldown( "bountiful_brew" );
+  cooldown.sinister_teachings      = get_cooldown( "sinister_teachings" );
 
   resource_regeneration = regen_type::DYNAMIC;
   if ( specialization() != MONK_MISTWEAVER )
@@ -6815,7 +6815,6 @@ void monk_t::init_spells()
   active_actions.stagger_self_damage    = new actions::stagger_self_damage_t( this );
 
   // Windwalker
-  active_actions.sunrise_technique         = new actions::sunrise_technique_t( this );
   active_actions.empowered_tiger_lightning = new actions::empowered_tiger_lightning_t( *this );
   windwalking_aura                         = new actions::windwalking_aura_t( this );
 
@@ -7084,7 +7083,7 @@ void monk_t::create_buffs()
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
                            ->set_cooldown( timespan_t::zero() )
-                           ->set_chance( ( covenant.necrolord->ok() || legendary.bountiful_brew->ok() ) ? 1 : 0 )
+                           ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
                            ->set_default_value_from_effect( 3 );
   buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
                                   ->set_quiet( true )
@@ -7164,6 +7163,17 @@ void monk_t::create_buffs()
   buff.primordial_potential =
       new buffs::primordial_potential_buff_t( *this, "primordial_potential", passives.primordial_potential );
   buff.primordial_power = new buffs::primordial_power_buff_t( *this, "primordial_power", passives.primordial_power );
+  // This is to allow for channeled abilities to continue doing damage after Primordial Power has expired
+  // I'm trying to set this up so that abilities like Rushing Jade Wind can overlap with Fists of Fury
+  buff.primordial_power_hidden_gcd = make_buff( this, "primordial_power_hidden_gcd" )
+                                   ->set_quiet( true )
+                                   ->set_duration( base_gcd )
+                                   ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+  buff.primordial_power_hidden_channel = make_buff( this, "primordial_power_hidden_channel" )
+                                       ->set_quiet( true )
+                                       ->set_max_stack( passives.primordial_power->max_stacks() )
+                                       ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                                       ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // monk_t::init_gains =======================================================
@@ -8378,10 +8388,9 @@ double monk_t::stagger_base_value()
     if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
 
-    if ( bugs )
-      // Hard coding the 125% multiplier until Blizzard fixes this
-      if ( buff.faeline_stomp_brm->up() )
-        stagger_base *= 1.0 + 0.25;
+    // Hard coding the 125% multiplier until Blizzard fixes this
+    if ( buff.faeline_stomp_brm->up() )
+      stagger_base *= 1.0 + 0.25;
 
     if ( buff.shuffle->check() )
       stagger_base *= 1.0 + passives.shuffle->effectN( 1 ).percent();
@@ -8401,11 +8410,6 @@ double monk_t::stagger_pct( int target_level )
   double stagger_base = stagger_base_value();
 
   double stagger = stagger_base / ( stagger_base + dbc->armor_mitigation_constant( target_level ) );
-
-  // Bug: This is right now hard-coding the 5% instead of the estimated 125% multiplier to stagger_base
-  if ( !bugs )
-    if ( buff.faeline_stomp_brm->up() )
-      stagger += buff.faeline_stomp_brm->value();
 
   return std::min( stagger, 0.99 );
 }

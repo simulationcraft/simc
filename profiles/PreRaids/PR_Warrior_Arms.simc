@@ -79,6 +79,7 @@ actions.hac+=/mortal_strike,if=buff.sweeping_strikes.up|dot.deep_wounds.remains<
 actions.hac+=/overpower,if=talent.dreadnaught.enabled
 actions.hac+=/condemn
 actions.hac+=/execute,if=buff.sweeping_strikes.up
+actions.hac+=/execute,if=buff.sudden_death.react
 actions.hac+=/overpower
 actions.hac+=/whirlwind
 

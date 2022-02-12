@@ -739,8 +739,8 @@ void dot_t::tick()
     }
   }
 
-  sim.print_debug( "{} ticks ({} of {}). duration={} time_to_tick={}", *this, current_tick, num_ticks(),
-                   current_duration, time_to_tick() );
+  sim.print_debug( "{} ticks ({} of {}). duration={} time_to_tick={} remains={}", *this, current_tick, num_ticks(),
+                   current_duration, time_to_tick(), remains() );
 
   current_action->tick( this );
 }

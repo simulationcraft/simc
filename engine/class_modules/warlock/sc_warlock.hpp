@@ -12,6 +12,7 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
+  VERSION_9_2_0,
   VERSION_9_1_0,
   VERSION_9_0_5,
   VERSION_9_0_0,
@@ -354,6 +355,7 @@ public:
     const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
     const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
     const spell_data_t* summon_darkglare_2; //9.1 PTR - Now a passive learned at level 58
+    const spell_data_t* deliberate_corruption; //9.2 PTR - Tier set causes instant corruption damage with Absolute Corruption talented
 
     // Demonology only
     const spell_data_t* demonology; //Spec aura
@@ -501,7 +503,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_9_1_0_data;
+  const spell_data_t* version_9_2_0_data;
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 

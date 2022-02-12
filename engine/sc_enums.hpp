@@ -1349,16 +1349,13 @@ enum snapshot_state_e
   STATE_NO_MULTIPLIER = ~( STATE_MUL_DA | STATE_MUL_TA | STATE_VERSATILITY | STATE_MUL_PERSISTENT | STATE_TGT_MUL_DA |
                            STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_MUL_PET | STATE_TGT_MUL_PET ),
 
-  /// Target-specific state variables
-  STATE_TARGET =
+  /// Target-specific state variables, excluding the pet damage multiplier
+  STATE_TARGET_NO_PET =
       ( STATE_TGT_CRIT | STATE_TGT_MUL_DA | STATE_TGT_MUL_TA | STATE_TGT_ARMOR | STATE_TGT_MITG_DA | STATE_TGT_MITG_TA |
         STATE_TGT_USER_1 | STATE_TGT_USER_2 | STATE_TGT_USER_3 | STATE_TGT_USER_4 ),
 
-  /* STATE_TARGET is used with | or |=. STATE_TGT_MUL_PET cannot be added to non-pet spells without causing issues,
-   * but it is still needed when snapshotting AoE spells. STATE_TARGET_MASK includes these extra variables and should
-   * only be used with & or &=.
-   */
-  STATE_TARGET_MASK = STATE_TARGET | STATE_TGT_MUL_PET
+  /// Target-specific state variables
+  STATE_TARGET = STATE_TARGET_NO_PET | STATE_TGT_MUL_PET
 };
 
 enum ready_e

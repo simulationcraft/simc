@@ -147,7 +147,6 @@ public:
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
     // Windwalker
-    propagate_const<action_t*> sunrise_technique;
     propagate_const<action_t*> empowered_tiger_lightning;
 
     // Conduit
@@ -265,6 +264,8 @@ public:
     propagate_const<buff_t*> keg_of_the_heavens;
     propagate_const<buff_t*> primordial_potential;
     propagate_const<buff_t*> primordial_power;
+    propagate_const<buff_t*> primordial_power_hidden_gcd;
+    propagate_const<buff_t*> primordial_power_hidden_channel;
   } buff;
 
 public:
@@ -912,6 +913,8 @@ public:
   void trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability );
   void storm_earth_and_fire_fixate( player_t* target );
   bool storm_earth_and_fire_fixate_ready( player_t* target );
+  // Trigger Windwalker Tier 28 4-piece Primordial Power Buff
+  void storm_earth_and_fire_trigger_primordial_power(); 
   player_t* storm_earth_and_fire_fixate_target( sef_pet_e sef_pet );
   void trigger_storm_earth_and_fire_bok_proc( sef_pet_e sef_pet );
 };

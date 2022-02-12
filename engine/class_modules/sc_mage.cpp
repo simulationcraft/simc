@@ -721,7 +721,7 @@ public:
   void init_uptimes() override;
   void init_rng() override;
   void init_finished() override;
-  void add_precombat_buff_state( buff_t*, int, double, timespan_t );
+  void add_precombat_buff_state( buff_t*, int, double, timespan_t ) override;
   void invalidate_cache( cache_e ) override;
   void init_resources( bool ) override;
   void do_dynamic_regen( bool = false ) override;
@@ -740,6 +740,7 @@ public:
   double composite_player_critical_damage_multiplier( const action_state_t* ) const override;
   double composite_player_multiplier( school_e ) const override;
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
+  double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
   double composite_spell_crit_chance() const override;
   double composite_rating_multiplier( rating_e ) const override;
@@ -1651,7 +1652,7 @@ public:
       && rng().roll( p()->sets->set( MAGE_FROST, T28, B2 )->proc_chance() ) )
     {
       p()->cooldowns.frost_storm->start( p()->sets->set( MAGE_FROST, T28, B2 )->internal_cooldown() );
-      p()->action.frost_storm_comet_storm->execute_on_target( p()->target );
+      p()->action.frost_storm_comet_storm->execute_on_target( s->target );
     }
   }
 
@@ -3037,7 +3038,9 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
-    get_td( s->target )->debuffs.frost_storm->trigger();
+
+    if ( result_is_hit( s->result ) )
+      get_td( s->target )->debuffs.frost_storm->trigger();
   }
 };
 
@@ -3694,7 +3697,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       // likely due to batching.
       if ( s->chain_target == 0 )
       {
-        for ( int i = 0; i < s->n_targets; i++ )
+        for ( unsigned i = 0; i < s->n_targets; i++ )
           trigger_cold_front();
       }
     }
@@ -4241,9 +4244,9 @@ struct fire_blast_t final : public fire_mage_spell_t
       p()->buffs.infernal_cascade->trigger();
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
-    double m = fire_mage_spell_t::recharge_multiplier( cd );
+    double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
@@ -4400,6 +4403,7 @@ struct meteor_impact_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
+    // Ground AoE is created even if the spell misses.
     if ( s->chain_target == 0 )
     {
       p()->ground_aoe_expiration[ AOE_METEOR_BURN ] = sim->current_time() + meteor_burn_duration;
@@ -4656,9 +4660,9 @@ struct phoenix_flames_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
-  double recharge_multiplier( const cooldown_t& cd ) const override
+  double recharge_rate_multiplier( const cooldown_t& cd ) const override
   {
-    double m = fire_mage_spell_t::recharge_multiplier( cd );
+    double m = fire_mage_spell_t::recharge_rate_multiplier( cd );
 
     if ( &cd == cooldown )
       m /= 1.0 + p()->buffs.fiery_rush->check_value();
@@ -5175,14 +5179,17 @@ struct radiant_spark_t final : public mage_spell_t
   {
     mage_spell_t::impact( s );
 
-    // Create the vulnerability debuff for this target if it doesn't exist yet.
-    // This is necessary because mage_spell_t::assess_damage does not create the
-    // target data by itself.
-    auto td = get_td( s->target );
-    // If Radiant Spark is refreshed, the vulnerability debuff can be
-    // triggered once again. Any previous stacks of the debuff are removed.
-    td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
-    td->debuffs.radiant_spark_vulnerability->expire();
+    if ( result_is_hit( s->result ) )
+    {
+      // Create the vulnerability debuff for this target if it doesn't exist yet.
+      // This is necessary because mage_spell_t::assess_damage does not create the
+      // target data by itself.
+      auto td = get_td( s->target );
+      // If Radiant Spark is refreshed, the vulnerability debuff can be
+      // triggered once again. Any previous stacks of the debuff are removed.
+      td->debuffs.radiant_spark_vulnerability->cooldown->reset( false );
+      td->debuffs.radiant_spark_vulnerability->expire();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -5208,6 +5215,8 @@ struct shifting_power_pulse_t final : public mage_spell_t
   void impact( action_state_t* s ) override
   {
     mage_spell_t::impact( s );
+
+    // TODO: Check what happens if the spell misses.
     p()->buffs.heart_of_the_fae->trigger();
   }
 };
@@ -6650,6 +6659,19 @@ double mage_t::composite_player_pet_damage_multiplier( const action_state_t* s, 
   m *= 1.0 + buffs.bone_chilling->check_stack_value();
   m *= 1.0 + buffs.incanters_flow->check_stack_value();
   m *= 1.0 + buffs.rune_of_power->check_value();
+
+  return m;
+}
+
+double mage_t::composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const
+{
+  double m = player_t::composite_player_target_pet_damage_multiplier( target, guardian );
+
+  if ( auto td = find_target_data( target ) )
+  {
+    if ( !guardian )
+      m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
+  }
 
   return m;
 }

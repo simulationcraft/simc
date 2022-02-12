@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -4246,15 +4246,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
-Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), No Threat (42), Do Not Display Cast Time (441)
+                 : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), No Cast Log (128), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=470901)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10149,7 +10149,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=889354)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Versatility and $356070s1 Fury.
+#3 (id=913501)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $356070s1 Fury and $s2% Versatility, up to $s3%.
 
 Name             : Blind Faith (id=355894) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10239,7 +10241,7 @@ Effects          :
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 Name             : Deadly Dance (id=363736) [Spell Family (107), Passive, Hidden] 
-Class            : Demon Hunter
+Class            : Rogue, Demon Hunter
 School           : Chaos
 Spell Type       : None
 Proc Chance      : 101%

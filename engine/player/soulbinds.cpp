@@ -353,7 +353,7 @@ void grove_invigoration( special_effect_t& effect )
           {
             s.amount /= mul;
 
-            double delta = s.amount * ra->current_stack - s.current_value;
+            double delta = s.stack_amount( ra->current_stack ) - s.current_value;
 
             if ( delta > 0 )
               b->player->stat_gain( s.stat, delta, ra->stat_gain, nullptr, ra->buff_duration() > 0_ms );

@@ -1190,10 +1190,6 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   double base_crit_bonus = crit_bonus;
   if ( sim->pvp_crit )
     base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
-  if ( player->buffs.amplification )
-    base_crit_bonus += player->passive_values.amplification_1;
-  if ( player->buffs.amplification_2 )
-    base_crit_bonus += player->passive_values.amplification_2;
 
   double damage_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
 
@@ -1680,7 +1676,7 @@ void action_t::execute()
       // for aoe spells.
       else
       {
-        snapshot_internal( s, snapshot_flags & STATE_TARGET_MASK, pre_execute_state->result_type );
+        snapshot_internal( s, snapshot_flags & STATE_TARGET, pre_execute_state->result_type );
       }
       s->result       = calculate_result( s );
       s->block_result = calculate_block_result( s );

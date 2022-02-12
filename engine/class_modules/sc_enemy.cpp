@@ -115,11 +115,15 @@ struct enemy_t : public player_t
   }
 
   bool taunt( player_t* source ) override;
+  void reset_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
+  void delay_auto_attacks( timespan_t delay, proc_t* proc = nullptr ) override;
 
   std::string generate_tank_action_list( tank_dummy_e );
   void add_tank_heal_raid_event( tank_dummy_e );
 };
 
+namespace actions
+{
 // Enemy actions are generic to serve both enemy_t and enemy_add_t,
 // so they can only rely on player_t and should have no knowledge of class definitions
 
@@ -404,9 +408,11 @@ struct enemy_action_driver_t : public CHILD_ACTION_TYPE
 
 struct melee_t : public enemy_action_t<melee_attack_t>
 {
+  action_t* driver;
   bool first;
-  melee_t( util::string_view name, player_t* player, util::string_view options_str )
-    : base_t( name, player ), first( false )
+
+  melee_t( util::string_view name, player_t* player, action_t* a, util::string_view options_str )
+    : base_t( name, player ), driver( a ), first( false )
   {
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
@@ -483,7 +489,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
 
     for ( auto* t : target_list )
     {
-      melee_t* mh = new melee_t( "melee_main_hand", p, options_str );
+      melee_t* mh = new melee_t( "melee_main_hand", p, this, options_str );
       mh->weapon  = &( p->main_hand_weapon );
       mh->target  = t;
       mh_list.push_back( mh );
@@ -576,7 +582,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
 
     for ( auto* t : target_list )
     {
-      melee_t* oh = new melee_t( "melee_off_hand", player, options_str );
+      melee_t* oh = new melee_t( "melee_off_hand", player, this, options_str );
       oh->weapon  = &( player->off_hand_weapon );
       oh->target  = t;
       oh_list.push_back( oh );
@@ -981,9 +987,12 @@ struct pause_action_t : public action_t
   }
 
 };
+}  // end namespace actions
 
 action_t* enemy_create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
+  using namespace actions;
+
   if ( name == "auto_attack" )
     return new auto_attack_t( p, options_str );
   if ( name == "auto_attack_off_hand" )
@@ -1187,56 +1196,57 @@ struct tank_dummy_enemy_t : public enemy_t
     if ( custom_armor_coeff <= 0 )
     {
       // Armor coefficient
-      // Max level enemies have different armor coefficient based on the difficulty setting and the area they're fought
-      // in The default value stored in spelldata only works for outdoor and generally "easy" content New values are
-      // added when new seasonal content (new raid, new M+ season) is released ArmorConstantMod is pulled from the
-      // ExpectedStatMod table Values are a combination of the base K values for the intended level, multiplied by the
-      // ArmorConstantMod field
+      // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
+      // in. The default value stored in spelldata only works for outdoor and generally "easy" content. New values are
+      // added when new seasonal content (new raid, new M+ season) is released. ArmorConstantMod is pulled from the
+      // ExpectedStatMod table. Values are a combination of the base "K-values" for the intended level, multiplied by the
+      // ArmorConstantMod field.
 
-      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for
+      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for.
       // You then take the Map ID and search the ID within the MapDifficulty table. For raids, you will come back with
       // four records, one for each difficulty. Each of these will have a ContentTuningID. You then take the
       // ContentTuningID and search the ID in the ContentTuningXExpected table. Often you will come back with multiple
       // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
-      // than 1.000 9.0 values here
+      // than 1.000.
 
       /*
+        9.0 values here
         Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
         Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
         Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
         Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
         Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Castle Nathria Mythic: 3050.0‬ (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
         Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Sanctum of Domination Nomral: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+        Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
         Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
         Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-        Sepulcher of the First Ones LFR: N/A (ExpectedStatModID: 203; ArmorConstMod: N/A)
-        Sepulcher of the First Ones Nomral: 2500.0 (ExpectedStatModID: 200; ArmorConstMod: 1.000)
-        Sepulcher of the First Ones Heroic: 2967.5 (ExpectedStatModID: 201; ArmorConstMod: 1.187)
-        Sepulcher of the First Ones Mythic: 2780.0 (ExpectedStatModID: 202; ArmorConstMod: 1.112)
+        Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+        Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+        Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
+        Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
       */
       double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
 
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * 1.114;  // M0/M+
+          base.armor_coeff = k_value * ( is_ptr() ? 1.313 : 1.114 );  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * 1.220;  // Normal Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.418 : 1.220 );  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * 1.313;  // Heroic Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.537 : 1.313 );  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * 1.418;  // Mythic Raid
+          base.armor_coeff = k_value * ( is_ptr() ? 1.670 : 1.418 );  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
@@ -1754,6 +1764,94 @@ bool enemy_t::taunt( player_t* source )
     event_t::cancel( off_hand_attack->execute_event );
 
   return true;
+}
+
+void enemy_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  player_t::reset_auto_attacks( delay, proc );
+
+  using namespace actions;
+
+  auto mh = dynamic_cast<melee_t*>( main_hand_attack );
+  auto oh = dynamic_cast<melee_t*>( off_hand_attack );
+
+  if ( mh )
+  {
+    auto driver = debug_cast<auto_attack_t*>( mh->driver );
+
+    // the first element is main_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->mh_list.size(); i++ )
+    {
+      auto melee = driver->mh_list[ i ];
+      if ( melee->execute_event )
+      {
+        event_t::cancel( melee->execute_event );
+        melee->schedule_execute();
+
+        if ( delay > 0_ms )
+          melee->execute_event->reschedule( melee->execute_event->remains() + delay );
+      }
+    }
+  }
+
+  if ( oh )
+  {
+    auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
+
+    // the first element is off_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->oh_list.size(); i++ )
+    {
+      auto melee = driver->oh_list[ i ];
+      if ( melee->execute_event )
+      {
+        event_t::cancel( melee->execute_event );
+        melee->schedule_execute();
+
+        if ( delay > 0_ms )
+          melee->execute_event->reschedule( melee->execute_event->remains() + delay );
+      }
+    }
+  }
+
+}
+
+void enemy_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
+{
+  player_t::delay_auto_attacks( delay, proc );
+
+  if ( delay == 0_ms )
+    return;
+
+  using namespace actions;
+
+  auto mh = dynamic_cast<melee_t*>( main_hand_attack );
+  auto oh = dynamic_cast<melee_t*>( off_hand_attack );
+
+  if ( mh )
+  {
+    auto driver = debug_cast<auto_attack_t*>( mh->driver );
+
+    // the first element is main_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->mh_list.size(); i++ )
+    {
+      auto event = driver->mh_list[ i ]->execute_event;
+      if ( event )
+        event->reschedule( event->remains() + delay );
+    }
+  }
+
+  if ( oh )
+  {
+    auto driver = debug_cast<auto_attack_off_hand_t*>( mh->driver );
+
+    // the first element is off_hand_attack and it's already been rescheduled
+    for ( size_t i = 1; i < driver->oh_list.size(); i++ )
+    {
+      auto event = driver->oh_list[ i ]->execute_event;
+      if ( event )
+        event->reschedule( event->remains() + delay );
+    }
+  }
 }
 
 // enemy_t::create_expression ===============================================

@@ -5,9 +5,9 @@ level=60
 race=orc
 role=attack
 position=back
-talents=3133122
+talents=2133122
 covenant=night_fae
-soulbind=niya,grove_invigoration/mortal_combo:9:1/niyas_tools_burrs/crash_the_ramparts:9:1/bonded_hearts
+soulbind=dreamweaver,podtender/mortal_combo:9:1/adaptive_armor_fragment:9:1/field_of_blossoms/crash_the_ramparts:9:1/dream_delver
 renown=80
 
 # Default consumables
@@ -77,6 +77,7 @@ actions.hac+=/cleave
 actions.hac+=/mortal_strike,if=buff.sweeping_strikes.up|dot.deep_wounds.remains<gcd&!talent.cleave.enabled
 actions.hac+=/overpower,if=talent.dreadnaught.enabled
 actions.hac+=/execute,if=buff.sweeping_strikes.up
+actions.hac+=/execute,if=buff.sudden_death.react
 actions.hac+=/overpower
 actions.hac+=/whirlwind
 
@@ -102,12 +103,12 @@ actions.single_target+=/slam,if=!talent.fervor_of_battle.enabled&(rage>50|debuff
 head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
 neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173127
 shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
+back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
 chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
 wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,enchant=60runspeed
 hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
-legs=agathas_gothic_greaves,id=186313,bonus_id=7187/1498
+legs=fateforged_legplates,id=186348,bonus_id=7187/1498
 feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
 finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
@@ -120,9 +121,9 @@ main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,enchant=sin
 # gear_strength=1117
 # gear_stamina=2109
 # gear_attack_power=20
-# gear_crit_rating=838
-# gear_haste_rating=465
-# gear_mastery_rating=505
-# gear_versatility_rating=234
+# gear_crit_rating=828
+# gear_haste_rating=602
+# gear_mastery_rating=368
+# gear_versatility_rating=245
 # gear_speed_rating=60
 # gear_armor=1534

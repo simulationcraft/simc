@@ -2875,6 +2875,127 @@ void reactive_defense_matrix( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 9.2 Trinkets
+
+void scars_of_fraternal_strife( special_effect_t& effect )
+{
+  struct apply_rune_t : public proc_spell_t
+  {
+    struct first_rune_t : public stat_buff_t
+    {
+      first_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_1", e.player->find_spell( 368635 ), e.item )
+      {
+        name_str_reporting = "the_first_rune";
+
+        // timespan_t echo_delay = timespan_t::from_seconds( data().effectN( 3 ).base_value() ); NYI
+        // double echo_pct = data().effectN( 2 ).percent();
+        // auto echo = new proc_spell_t( "the_first_rune", e.player, e.player->find_spell( 368850 ) );
+      }
+    };
+
+    struct second_rune_t : public stat_buff_t
+    {
+      second_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_2", e.player->find_spell( 368636 ), e.item )
+      {
+        name_str_reporting = "the_second_rune";
+
+        // auto heal_reduction = data().effectN( 2 ).percent(); NYI
+      }
+    };
+
+    struct third_rune_t : public stat_buff_t
+    {
+      third_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_3", e.player->find_spell( 368637 ), e.item )
+      {
+        name_str_reporting = "the_third_rune";
+
+        /* Disabled for now
+        auto bleed = new proc_spell_t( "the_third_rune_bleed", e.player, &data(), item );
+        bleed->dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 2.0 );
+        bleed->snapshot_flags &= STATE_NO_MULTIPLIER;
+        bleed->update_flags &= STATE_NO_MULTIPLIER;
+
+        set_stack_change_callback( [ bleed ]( buff_t* b, int, int new_ ) {
+          if ( new_ )
+            bleed->execute_on_target( b->player );
+          else
+            bleed->get_dot( b->player )->cancel();
+        } ); */
+      }
+    };
+
+    struct fourth_rune_t : public stat_buff_t
+    {
+      fourth_rune_t( const special_effect_t& e )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_4", e.player->find_spell( 368638 ), e.item )
+      {
+        name_str_reporting = "the_fourth_rune";
+
+        // auto snare = make_buff( e.player, "the_fourth_rune", e.player->find_spell( 368639 ) ); NYI
+      }
+    };
+
+    struct final_rune_t : public stat_buff_t
+    {
+      final_rune_t( const special_effect_t& e, apply_rune_t* a )
+        : stat_buff_t( e.player, "scars_of_fraternal_strife_5", e.player->find_spell( 368641 ), e.item )
+      {
+        name_str_reporting = "the_final_rune";
+
+        auto burst = new proc_spell_t( "the_final_rune", e.player, e.player->find_spell( 368642 ), e.item );
+        burst->aoe = -1;
+
+        set_stack_change_callback( [ a, burst ]( buff_t* buff, int, int new_ ) {
+          if ( !new_ )
+          {
+            burst->execute_on_target( buff->player->target );
+
+            range::for_each( a->buffs, [ buff ]( buff_t* b ) {
+              if ( b != buff )
+                b->expire();
+            } );
+          }
+        } );
+      }
+    };
+
+    std::vector<buff_t*> buffs;
+    buff_t* first;
+
+    apply_rune_t( const special_effect_t& e ) : proc_spell_t( e )
+    {
+      harmful = false;
+
+      first = buffs.emplace_back( make_buff<first_rune_t>( e ) );
+      buffs.push_back( make_buff<second_rune_t>( e ) );
+      buffs.push_back( make_buff<third_rune_t>( e ) );
+      buffs.push_back( make_buff<fourth_rune_t>( e ) );
+      buffs.push_back( make_buff<final_rune_t>( e, this ) );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      buffs.front()->trigger();
+      std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
+    }
+
+    void reset() override
+    {
+      proc_spell_t::reset();
+
+      std::rotate( buffs.begin(), range::find( buffs, first ), buffs.end() );
+    }
+  };
+
+  effect.type = SPECIAL_EFFECT_USE;
+  effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
+};
+
 // Weapons
 
 // id=331011 driver
@@ -3035,6 +3156,35 @@ void cruciform_veinripper(special_effect_t& effect)
   new dbc_proc_callback_t(effect.player, effect);
 }
 
+void singularity_supreme( special_effect_t& effect )
+{
+  auto lockout = make_buff( effect.player, "singularity_supreme_lockout", effect.player->find_spell( 368865 ) )
+    ->set_quiet( true );
+
+  auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
+    ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
+      if ( !new_ )
+        lockout->trigger();
+    } );
+
+  effect.custom_buff =
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ) )
+          ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
+            if ( b->at_max_stacks() )
+            {
+              buff->trigger();
+              b->expire();
+            }
+          } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ lockout, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !lockout->check() && !buff->check();
+      } );
+}
 
 // Armor
 
@@ -3281,7 +3431,7 @@ namespace shards_of_domination
 // Helper function to determine whether a Rune Word is active. Returns rank of the lowest shard if found.
 int rune_word_active( const player_t* player, const spell_data_t* driver, spell_label label )
 {
-  if ( !player->sim->shadowlands_opts.enable_rune_words )
+  if ( !player->sim->shadowlands_opts.enable_rune_words || !player->sim->shadowlands_opts.enable_domination_gems )
   {
     player->sim->print_debug( "{}: rune word {} is inactive by global override", player->name(), driver->name_cstr() );
     return 0;
@@ -3353,6 +3503,9 @@ int rune_word_active( const player_t* player, const spell_data_t* driver, spell_
 
 report::sc_html_stream& generate_report( const player_t& player, report::sc_html_stream& root )
 {
+  if ( !player.sim->shadowlands_opts.enable_domination_gems )
+    return root;
+
   std::string report_str;
   struct shard_data
   {
@@ -3520,31 +3673,40 @@ void blood_link( special_effect_t& effect )
     }
   };
 
-  // Note, this DoT does not actually do any damage. This is effectively just a debuff,
-  // except that it refreshses based on remaining time to tick like a DoT does.
-  struct blood_link_dot_t : proc_spell_t
+  struct blood_link_cb_t : public dbc_proc_callback_t
   {
-    player_t* last_target;
+    timespan_t applied;
+    player_t*  target;
 
-    blood_link_dot_t( const special_effect_t& e )
-      : proc_spell_t( "blood_link_dot", e.player, e.player->find_spell( 355804 ) ), last_target()
+    const spell_data_t* debuff;
+
+    blood_link_cb_t( const special_effect_t& e ) :
+      dbc_proc_callback_t( e.player, e ),
+      applied( timespan_t::zero() ), target( nullptr ),
+      debuff( e.player->find_spell( 355804 ) )
+    { }
+
+    void execute( action_t* a, action_state_t* s ) override
     {
-      // spell data has physical school, which causes this dummy holder dot to be counted as a bleed.
-      // overwrite as shadow to match the damage spell.
-      school = school_e::SCHOOL_SHADOW;
+      if ( a->hit_any_target )
+      {
+        applied = listener->sim->current_time();
+        target = s->target;
+      }
     }
 
-    void execute() override
+    void reset() override
     {
-      proc_spell_t::execute();
+      dbc_proc_callback_t::reset();
 
-      if ( hit_any_target )
-      {
-        if ( last_target && last_target != target )
-          get_dot( last_target )->cancel();
+      applied = timespan_t::zero();
+      target = nullptr;
+    }
 
-        last_target = target;
-      }
+    bool is_applied() const
+    {
+      return target && !target->is_sleeping() &&
+             listener->sim->current_time() - applied <= debuff->duration();
     }
   };
 
@@ -3557,23 +3719,21 @@ void blood_link( special_effect_t& effect )
     case 5:  effect.spell_id = 359422; break;
   }
 
-  blood_link_dot_t* dot_action = debug_cast<blood_link_dot_t*>( create_proc_action<blood_link_dot_t>( "blood_link_dot", effect ) );
-
+  auto cb = new blood_link_cb_t( effect );
   auto tick_action = create_proc_action<blood_link_damage_t>( "blood_link", effect );
   buff = make_buff( effect.player, "blood_link", effect.driver() )
            ->set_quiet( true )
            ->set_can_cancel( false )
-           ->set_tick_callback( [ tick_action, dot_action ] ( buff_t*, int, timespan_t )
+           ->set_tick_callback( [ cb, tick_action ] ( buff_t*, int, timespan_t )
              {
-                if ( dot_action->get_dot( dot_action->last_target )->is_ticking() )
+                if ( cb->is_applied() )
                 {
-                  tick_action->set_target( dot_action->last_target );
+                  tick_action->set_target( cb->target );
                   tick_action->execute();
                 }
              } );
 
-  effect.execute_action = dot_action;
-  new dbc_proc_callback_t( effect.player, effect );
+  //effect.execute_action = dot_action;
   effect.player->register_combat_begin( [ buff ]( player_t* /* p */ )
   {
     buff->trigger();
@@ -3810,6 +3970,12 @@ void chaos_bane( special_effect_t& effect )
  */
 void shard_of_dyz( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_dyz_cb_t : public dbc_proc_callback_t
   {
     double debuff_value;
@@ -3843,6 +4009,12 @@ void shard_of_dyz( special_effect_t& effect )
  */
 void shard_of_cor( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_cor_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
@@ -3892,6 +4064,12 @@ void shard_of_cor( special_effect_t& effect )
  */
 void shard_of_bek( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct shard_of_bek_cb_t : public dbc_proc_callback_t
   {
     double debuff_value;
@@ -3933,6 +4111,12 @@ void shard_of_bek( special_effect_t& effect )
  */
 void shard_of_zed( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   struct siphon_essence_t : proc_spell_t
   {
     siphon_essence_t( const special_effect_t& e ) :
@@ -4019,6 +4203,12 @@ void shard_of_zed( special_effect_t& effect )
  */
 void shard_of_kyr( special_effect_t& effect )
 {
+  if ( !effect.player->sim->shadowlands_opts.enable_domination_gems )
+  {
+    effect.type = SPECIAL_EFFECT_NONE;
+    return;
+  }
+
   auto buff = buff_t::find( effect.player, "accretion" );
   if ( !buff )
   {
@@ -4161,6 +4351,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
+    // 9.2 Trinkets
+    unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
+
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
     unique_gear::register_special_effect( 358562, items::jaithys_the_prison_blade_1 );
@@ -4169,7 +4362,10 @@ void register_special_effects()
     unique_gear::register_special_effect( 358569, items::jaithys_the_prison_blade_4 );
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
     unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
-    unique_gear::register_special_effect( 359168, items::cruciform_veinripper);
+    unique_gear::register_special_effect( 359168, items::cruciform_veinripper );
+
+    // 9.2 Weapons
+    unique_gear::register_special_effect( 367952, items::singularity_supreme );
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );

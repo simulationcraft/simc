@@ -27,6 +27,7 @@ temporary_enchant=main_hand:shadowcore_oil
 actions.precombat=flask
 actions.precombat+=/food
 actions.precombat+=/augmentation
+actions.precombat+=/snapshot_stats
 actions.precombat+=/earth_elemental,if=!talent.primal_elementalist.enabled
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)
 actions.precombat+=/fire_elemental
@@ -34,7 +35,6 @@ actions.precombat+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targ
 actions.precombat+=/lava_burst,if=!talent.elemental_blast.enabled&spell_targets.chain_lightning<3|buff.stormkeeper.up
 actions.precombat+=/chain_lightning,if=!talent.elemental_blast.enabled&spell_targets.chain_lightning>=3&!buff.stormkeeper.up
 actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
-actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 
 # Executed every time the actor is available.

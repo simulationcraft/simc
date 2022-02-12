@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -435,7 +435,7 @@ Name             : Windfury Totem (id=8512) [Spell Family (11)]
 Class            : Enhancement Shaman
 School           : Physical
 Spell Type       : Magic
-Resource         : 12% Base Mana (0) (id=354)
+Resource         : 1.5% Base Mana (0) (id=354)
 Spell Level      : 49
 GCD              : 1 seconds
 Duration         : 120 seconds
@@ -1540,7 +1540,7 @@ Name             : Lava Lash (id=60103) [Spell Family (11)]
 Class            : Enhancement Shaman
 School           : Fire
 Spell Type       : Melee
-Resource         : 4% Base Mana (0) (id=215301)
+Resource         : 0.8% Base Mana (0) (id=215301)
 Spell Level      : 11
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -3859,7 +3859,7 @@ Name             : Crash Lightning (id=187874) [Spell Family (11)]
 Class            : Enhancement Shaman
 School           : Nature
 Spell Type       : Melee
-Resource         : 5.5% Base Mana (0) (id=215302)
+Resource         : 1% Base Mana (0) (id=215302)
 Spell Level      : 38
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -6543,15 +6543,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
-Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), No Threat (42), Do Not Display Cast Time (441)
+                 : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), No Cast Log (128), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=470901)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7097,7 +7097,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 1
 Range            : 100 yards
-Duration         : 30 seconds
+Duration         : Aura (infinite)
 Stacks           : 20 maximum
 Proc Chance      : 101%
 Triggered by     : Storm Elemental (157299)
@@ -10477,12 +10477,14 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), No Threat (42), Suppress Target Procs (113), Doesn't Reset Swing Timer if Instant (217), Not In Spellbook Until Learned (269), Enable Procs from Suppressed Caster Procs (384)
 Effects          :
 #1 (id=807875)   : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=807997)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Unknown(63) -> AOE Custom (8)
 Description      : Send a wave of anima at the target, which then jumps to additional nearby targets. Deals $320752s1 Shadow damage to up to 5 enemies, and restores $320751s1 health to up to 5 allies.
 
-For each target critically struck, the cooldown of Chain Harvest is reduced by 5 sec.
+For each target critically struck, the cooldown of Chain Harvest is reduced by 5 sec.$?s168534[
+
+Generates $368583s1 Maelstrom per target damaged or healed.][]
 
 Name             : Surge of Earth (id=320746) [Spell Family (11)] 
 Class            : Shaman
@@ -11010,48 +11012,6 @@ Effects          :
 Description      : $?a137041[The effects of Maelstrom Weapon are increased by $s1%]?a137039[Deal ${$350122s1*$s3} Nature damage every $350121t1 sec to all enemies inside of your Healing Rain][Increase the damage of Earthquake by $s5% and the damage of Earth Shock by $s4%].
 Tooltip          : $?a137041[The effects of Maelstrom Weapon are increased by $s1%]?a137039[Deal ${$350122s1*$s3} Nature damage every $350121t1 sec to all enemies inside of your Healing Rain][Increase the damage of Earthquake by $s5% and the damage of Earth Shock by $s4%].
 
-Name             : Splintered Elemental Rod (id=333339) 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Stacks           : 3 maximum
-Proc Chance      : 101%
-Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
-                 : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ....x... ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=828451)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.
-Tooltip          : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.
-
-Name             : Splintered Elemental Rod (id=333340) 
-Class            : Shaman
-School           : Physical
-Spell Type       : None
-Duration         : 10 seconds
-Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
-                 : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
-                 : ........ ........ .......x ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
-                 : ........ ........ ....x... ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=828452)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $@spelldesc333339
-Tooltip          : Haste increased by $w1%.
-
 Name             : Echo of the Elements (id=333919) [Spell Family (11), Passive] 
 Class            : Shaman
 School           : Physical
@@ -11129,7 +11089,7 @@ Name             : Fire Nova (id=333974) [Spell Family (11)]
 Class            : Shaman
 School           : Fire
 Spell Type       : Melee
-Resource         : 5.5% Base Mana (0) (id=215305)
+Resource         : 1% Base Mana (0) (id=215305)
 Spell Level      : 1
 Range            : 5 yards
 GCD              : 1.5 seconds
@@ -12949,14 +12909,14 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=887239)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $333340d.
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Each additional $?a137039[Healing Wave]?a137040[Lava Burst][Lightning Bolt] generated by Primordial Wave increases your Haste by $s1% for $354648d.
 
 Name             : Splintered Elements (id=354648) [Spell Family (8)] 
 Class            : Shaman
 School           : Physical
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 12 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13039,7 +12999,9 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 366780 | Target: Self (1)
 #2 (id=903221)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal when you drop them.
+#3 (id=913147)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal with $s3% effectiveness when you drop them.
 
 Name             : Heal the Soul (id=364470) [Spell Family (11), Passive, Hidden] 
 Class            : Shaman
@@ -13079,7 +13041,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=904500)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : While your $?s192249[Storm Elemental][Fire Elemental] is active, your Lava Burst deals $364523s2% additional damage and you gain Lava Surge every $364523t1 sec.
 
 Name             : Stormspirit (id=364473) [Passive, Hidden] 
@@ -13126,14 +13088,14 @@ Effects          :
 Description      : $@spelldesc364472
 Tooltip          : Gaining Lava Surge every $t1 sec. Lava Burst deals $w2% additional damage.
 
-Name             : Elemental Conduit (id=364734) [Spell Family (11), Passive] 
+Name             : Elemental Conduit (id=364734) [Spell Family (11), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic
 Triggered by     : Unity (364738)
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13141,7 +13103,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Can Proc From Procs (122)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=904997)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 356250 | Target: Self (1)
@@ -13194,5 +13156,24 @@ Effects          :
 #1 (id=910035)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc363672
+
+Name             : Chain Harvest (id=368583) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : None
+Spell Level      : 1
+Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... x....... ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : No Threat (42), Not a Proc (105), Suppress Caster Procs (112), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=913075)   : Energize Power (30)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: maelstrom | Target: Self (1)
+Description      : $@spelldesc320674
 
 

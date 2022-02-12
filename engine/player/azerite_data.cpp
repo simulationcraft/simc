@@ -4060,7 +4060,7 @@ struct concentrated_flame_t : public azerite_essence_major_t
     {
       proc_spell_t::init();
 
-      snapshot_flags = update_flags = STATE_TARGET;
+      snapshot_flags = update_flags = STATE_TARGET_NO_PET;
     }
 
     void set_damage( double value )
@@ -5201,7 +5201,7 @@ struct worldvein_resonance_buff_t : public buff_t
 
     if ( lifeblood->check() )
     {
-      double delta = stat_entry.amount * lifeblood->current_stack - stat_entry.current_value;
+      double delta = stat_entry.stack_amount( lifeblood->current_stack ) - stat_entry.current_value;
       sim->print_debug( "{} worldvein_resonance {}creases lifeblood stats by {}%,"
                         " stacks={}, old={}, new={} ({}{})",
         player->name(),

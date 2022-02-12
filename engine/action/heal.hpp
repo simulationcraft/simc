@@ -34,7 +34,7 @@ public:
                                    // hierarchy if there are smart absorbs
   void init() override;
   void parse_heal_effect_data( const spelleffect_data_t& );
-  
+
   virtual double composite_pct_heal( const action_state_t* ) const;
 
   // overrides

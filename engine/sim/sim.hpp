@@ -439,6 +439,7 @@ struct sim_t : private sc_thread_t
     // Defaults active
     bool better_together_ally = true;
     bool enable_rune_words = true;
+    bool enable_domination_gems = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs
@@ -520,6 +521,7 @@ struct sim_t : private sc_thread_t
   bool distance_targeting_enabled;
   bool ignore_invulnerable_targets;
   bool enable_dps_healing;
+  bool count_overheal_as_heal;
   double scaling_normalized;
 
   // Multi-Threading
