@@ -584,8 +584,9 @@ public:
               ab::id == 148187 || // Rushing Jade Wind
               ab::id == 158221 || // Whirling Dragon Punch
               ab::id == 117952 || // Crackling Jade Lightning
-              ab::id == 132467 // Chi Wave
-                ) ) || p()->buff.primordial_power_hidden_gcd->check() ) )
+              ab::id == 337342 // Chi Explosion / Jade Ignition
+                ) ) 
+            || p()->buff.primordial_power_hidden_gcd->check() ) )
         {
           pm *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
         }
@@ -1133,6 +1134,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     background   = true;
     hasted_ticks = false;
     may_crit = tick_may_crit = true;
+    affect_primordial_power  = false;
     target                   = player;
   }
 
@@ -1158,7 +1160,7 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   {
     trigger_bountiful_brew = true;
     trigger_sinister_teaching_cdr = false;
-    affect_primordial_power = false;
+    affect_primordial_power = false; // Do not want to double dip.
     background   = true;
     hasted_ticks           = false;
     may_crit = tick_may_crit = true;
@@ -1177,6 +1179,11 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
       // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
       am *= ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
     }
+
+    // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
+    // becomes Primordial Power. Does not require Tiger Palm during Primoridal Power.
+    if ( p()->buff.primordial_power->check() )
+      am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
 
     return am;
   }
@@ -2645,7 +2652,6 @@ struct touch_of_death_t : public monk_melee_attack_t
     trigger_faeline_stomp   = true;
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
-    trigger_ww_t28_4p_power = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
@@ -3135,7 +3141,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     trigger_bountiful_brew          = true;
     trigger_ww_t28_4p_potential     = true;
     trigger_ww_t28_4p_power_channel = true;
-    affect_primordial_power         = false;
 
     parse_options( options_str );
 
@@ -4003,7 +4008,6 @@ struct weapons_of_order_t : public monk_spell_t
     base_dd_min      = 0;
     base_dd_max      = 0;
     trigger_ww_t28_4p_potential = true;
-    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4112,7 +4116,6 @@ struct bonedust_brew_t : public monk_spell_t
     base_dd_min      = 0;
     base_dd_max      = 0;
     trigger_ww_t28_4p_potential = true;
-    trigger_ww_t28_4p_power = true;
   }
 
   void execute() override
@@ -4856,7 +4859,6 @@ struct expel_harm_t : public monk_heal_t
     may_combo_strike        = true;
 
     trigger_ww_t28_4p_potential = true;
-    trigger_ww_t28_4p_power = true;
 
     if ( p.spec.expel_harm_2_brm->ok() )
       cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
@@ -5011,8 +5013,21 @@ struct chi_wave_dmg_tick_t : public monk_spell_t
   {
     background              = true;
     ww_mastery              = true;
+    affect_primordial_power = false; // Do not want to double dip
     attack_power_mod.direct = player->passives.chi_wave_damage->effectN( 1 ).ap_coeff();
     attack_power_mod.tick   = 0;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
+    // becomes Primordial Power.
+    if ( p()->buff.primordial_power->check() )
+      am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+
+    return am;
   }
 };
 
@@ -5032,8 +5047,8 @@ struct chi_wave_t : public monk_spell_t
     may_proc_bron          = true;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    trigger_ww_t28_4p_potential     = true;
-    trigger_ww_t28_4p_power_channel = true;
+    trigger_ww_t28_4p_potential = true;
+    trigger_ww_t28_4p_power     = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -5103,9 +5118,10 @@ struct chi_burst_damage_t : public monk_spell_t
     : monk_spell_t( "chi_burst_damage", &player, player.passives.chi_burst_damage ), num_hit( 0 )
   {
     background = true;
-    ww_mastery            = true;
-    trigger_faeline_stomp = true;
-    trigger_bountiful_brew = true;
+    ww_mastery              = true;
+    trigger_faeline_stomp   = true;
+    trigger_bountiful_brew  = true;
+    affect_primordial_power = false; // Do not want to double dip
     aoe        = -1;
   }
 
@@ -5114,6 +5130,18 @@ struct chi_burst_damage_t : public monk_spell_t
     num_hit = 0;
 
     monk_spell_t::execute();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
+    // becomes Primordial Power.
+    if ( p()->buff.primordial_power->check() )
+      am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+
+    return am;
   }
 
   void impact( action_state_t* s ) override
