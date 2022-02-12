@@ -205,13 +205,18 @@ void brewmaster( player_t* p )
 
   def->add_action(
       p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
-      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)",
+      "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&(!runeforge.call_to_arms.equipped|cooldown.weapons_of_order.remains>25)&!buff.invoke_niuzao_the_black_ox.up",
       "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
       "need adjustments for other enemies." );
+  def->add_action(
+      p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
+      "if=buff.weapons_of_order.up&runeforge.call_to_arms.equipped&!buff.invoke_niuzao_the_black_ox.up",
+      "Cast Niuzao if we just lost the Niuzao from CtA"
+      );
   def->add_action( p, "Touch of Death", "if=target.health.pct<=15" );
 
   // Covenant Abilities
-  def->add_action( "weapons_of_order" );
+  def->add_action( "weapons_of_order,if=!runeforge.call_to_arms.equipped|(buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&!buff.invoke_niuzao_the_black_ox.up)", "Use WoO on CD unless we have CtA equipped, in which case we treat it as mini-Niuzao not WoO." );
   def->add_action( "fallen_order" );
   def->add_action( "bonedust_brew" );
 
