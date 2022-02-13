@@ -355,6 +355,13 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->buff_duration();
       } );
   }
+  if ( type == "elapsed" )
+  {
+    return make_buff_expr( "buff_elapsed",
+      []( buff_t* buff ) {
+        return buff->elapsed( buff->sim->current_time() );
+      } );
+  }
   else if ( type == "remains" )
   {
     return make_const_buff_expr( "buff_remains",
