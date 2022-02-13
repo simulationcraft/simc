@@ -22,6 +22,7 @@
 #include "unique_gear_helper.hpp"
 
 #include "report/decorators.hpp"
+#include <dbc/covenant_data.hpp>
 
 namespace unique_gear::shadowlands
 {
@@ -3174,7 +3175,6 @@ void resonant_reservoir( special_effect_t& effect )
   effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
 }
 
-// TODO: is there a flag we can use to detect covenant signature abilities instead of hardcoding ids?
 void the_first_sigil( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "the_first_sigil" );
@@ -3190,9 +3190,7 @@ void the_first_sigil( special_effect_t& effect )
     std::vector<unsigned> covenant_actions;
     action_t* covenant_action;
 
-    the_first_sigil_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ),
-        covenant_actions( { 324631, 310143, 300728, 324739 } )
+    the_first_sigil_t( const special_effect_t& effect ) : generic_proc_t( effect, "the_first_sigil", effect.trigger() )
     {
     }
 
@@ -3201,6 +3199,14 @@ void the_first_sigil( special_effect_t& effect )
       proc_spell_t::init();
 
       // Find any covenant signature abilities in the action list
+      for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
+      {
+        if ( e.class_id == 0 && e.ability_type == 1 )
+        {
+          covenant_actions.push_back( e.spell_id );
+        }
+      }
+
       for ( auto a : player->action_list )
       {
         if ( range::contains( covenant_actions, a->data().id() ) )
