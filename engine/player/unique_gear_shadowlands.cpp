@@ -22,6 +22,7 @@
 #include "unique_gear_helper.hpp"
 
 #include "report/decorators.hpp"
+#include <dbc/covenant_data.hpp>
 
 namespace unique_gear::shadowlands
 {
@@ -3174,6 +3175,65 @@ void resonant_reservoir( special_effect_t& effect )
   effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
 }
 
+void the_first_sigil( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "the_first_sigil" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "the_first_sigil", effect.player->find_spell( 367241 ) )
+               ->add_stat( STAT_VERSATILITY_RATING,
+                           effect.player->find_spell( 367241 )->effectN( 1 ).average( effect.item ) );
+  }
+
+  struct the_first_sigil_t : generic_proc_t
+  {
+    action_t* covenant_action;
+
+    the_first_sigil_t( const special_effect_t& effect ) : generic_proc_t( effect, "the_first_sigil", effect.trigger() )
+    {
+    }
+
+    void init() override
+    {
+      proc_spell_t::init();
+      unsigned covenant_signature_id;
+
+      // Find any covenant signature abilities in the action list
+      for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
+      {
+        if ( e.class_id == 0 && e.ability_type == 1 &&
+             e.covenant_id == static_cast<unsigned>( player->covenant->type() ) )
+        {
+          covenant_signature_id = e.spell_id;
+          break;
+        }
+      }
+
+      for ( auto a : player->action_list )
+      {
+        if ( covenant_signature_id == a->data().id() )
+        {
+          covenant_action = a;
+          break;
+        }
+      }
+    }
+
+    void execute() override
+    {
+      if ( covenant_action )
+      {
+        player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
+                                  covenant_action->name() );
+        covenant_action->cooldown->reset( false );
+      }
+    }
+  };
+
+  effect.custom_buff    = buff;
+  effect.execute_action = create_proc_action<the_first_sigil_t>( "the_first_sigil", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4533,6 +4593,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
+    unique_gear::register_special_effect( 367241, items::the_first_sigil );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
