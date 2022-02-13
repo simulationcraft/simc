@@ -3187,7 +3187,6 @@ void the_first_sigil( special_effect_t& effect )
 
   struct the_first_sigil_t : generic_proc_t
   {
-    std::vector<unsigned> covenant_actions;
     action_t* covenant_action;
 
     the_first_sigil_t( const special_effect_t& effect ) : generic_proc_t( effect, "the_first_sigil", effect.trigger() )
@@ -3197,19 +3196,21 @@ void the_first_sigil( special_effect_t& effect )
     void init() override
     {
       proc_spell_t::init();
+      unsigned covenant_signature_id;
 
       // Find any covenant signature abilities in the action list
       for ( const auto& e : covenant_ability_entry_t::data( player->dbc->ptr ) )
       {
-        if ( e.class_id == 0 && e.ability_type == 1 )
+        if ( e.class_id == 0 && e.ability_type == 1 &&
+             e.covenant_id == static_cast<unsigned>( player->covenant->type() ) )
         {
-          covenant_actions.push_back( e.spell_id );
+          covenant_signature_id = e.spell_id;
         }
       }
 
       for ( auto a : player->action_list )
       {
-        if ( range::contains( covenant_actions, a->data().id() ) )
+        if ( covenant_signature_id == a->data().id() )
         {
           covenant_action = a;
         }
