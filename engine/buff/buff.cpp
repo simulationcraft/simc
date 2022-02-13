@@ -355,7 +355,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->buff_duration();
       } );
   }
-  if ( type == "elapsed" )
+  else if ( type == "elapsed" )
   {
     return make_buff_expr( "buff_elapsed",
       []( buff_t* buff ) {
@@ -372,7 +372,7 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->default_chance == 0;
       } );
   }
-  if ( type == "tick_time" )
+  else if ( type == "tick_time" )
   {
     return make_buff_expr( "buff_tick_time",
       []( buff_t* buff ) {
