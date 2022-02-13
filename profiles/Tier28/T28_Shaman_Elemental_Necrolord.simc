@@ -160,8 +160,8 @@ chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insigh
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
 hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
 waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,bonus_id=7709/7722/7708/7570,ilevel=291
-feet=boneshatter_treads,id=172323,bonus_id=6992,ilevel=291
+legs=unity,id=172326,bonus_id=8128/6650/6649,ilevel=291
+feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649,ilevel=291
 finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
 finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6917,ilevel=278
@@ -173,9 +173,9 @@ main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 # gear_stamina=2899
 # gear_intellect=1743
 # gear_crit_rating=682
-# gear_haste_rating=670
+# gear_haste_rating=835
 # gear_mastery_rating=311
-# gear_versatility_rating=564
+# gear_versatility_rating=729
 # gear_armor=1191
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

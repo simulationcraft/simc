@@ -197,9 +197,9 @@ actions.necro_mw+=/use_item,name=empyreal_ordnance,if=variable.trinket_delay<20
 actions.necro_mw+=/use_item,name=sunblood_amethyst,if=variable.trinket_delay<6
 actions.necro_mw+=/use_item,name=soulletting_ruby,if=variable.trinket_delay<8
 actions.necro_mw+=/use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4
-# If the player is using Haunt, fire PS on cooldown then follow with DB
-actions.necro_mw+=/phantom_singularity,if=talent.haunt&variable.dots_ticking
-actions.necro_mw+=/decimating_bolt,if=talent.haunt&cooldown.phantom_singularity.remains>0
+# If the player is using Haunt or Gosac, fire PS on cooldown then follow with DB
+actions.necro_mw+=/phantom_singularity,if=!talent.shadow_embrace&variable.dots_ticking
+actions.necro_mw+=/decimating_bolt,if=!talent.shadow_embrace&cooldown.phantom_singularity.remains>0
 # If the player is using SE, fire DB on cooldown then following with PS
 actions.necro_mw+=/decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking
 actions.necro_mw+=/phantom_singularity,if=talent.shadow_embrace&cooldown.decimating_bolt.remains>0

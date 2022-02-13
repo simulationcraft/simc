@@ -603,7 +603,9 @@ public:
   {
     // Elemental, Restoration
     proc_t* lava_surge;
+    proc_t* lava_surge_fireheart;
     proc_t* wasted_lava_surge;
+    proc_t* wasted_lava_surge_fireheart;
     proc_t* surge_during_lvb;
     proc_t* t28_4pc_ele_cd_extension;
     proc_t* t28_4pc_ele_cd_reduction;
@@ -864,7 +866,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
-  void trigger_lava_surge();
+  void trigger_lava_surge( bool fireheart = false );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -1127,7 +1129,7 @@ struct hot_hand_buff_t : public buff_t
 struct splintered_elements_buff_t : public buff_t
 {
   shaman_t* shaman;
-  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered elements", p->find_spell( 354648 ) ), shaman( p )
+  splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
     unsigned max_targets = player->dbc->ptr ? as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() )
                                             : std::numeric_limits<unsigned>::max();
@@ -2849,6 +2851,11 @@ struct storm_elemental_t : public primal_elemental_t
     primal_elemental_t::dismiss( expired );
     o()->buff.wind_gust->expire();
   }
+
+  void demise() override {
+    primal_elemental_t::demise();
+    o()->buff.wind_gust->expire();
+  }
 };
 
 }  // end namespace pet
@@ -4027,6 +4034,14 @@ struct earth_elemental_t : public shaman_spell_t
 
     if ( p()->talent.primal_elementalist->ok() )
     {
+      if ( p()->talent.storm_elemental->ok() ) 
+      {
+        p()->pet.pet_storm_elemental->demise();
+      } 
+      else 
+      {
+        p()->pet.pet_fire_elemental->demise();
+      }
       p()->pet.pet_earth_elemental->summon( s_data->duration() );
     }
     else
@@ -4034,7 +4049,7 @@ struct earth_elemental_t : public shaman_spell_t
       p()->pet.guardian_earth_elemental->summon( s_data->duration() );
     }
 
-    // Earth Elemental in game exhibits the same bug as maelstrom-ewapon empowered spells
+    // Earth Elemental in game exhibits the same bug as maelstrom-weapon empowered spells
     if ( p()->bugs && p()->main_hand_attack && p()->main_hand_attack->execute_event )
     {
       event_t::cancel( p()->main_hand_attack->execute_event );
@@ -8509,6 +8524,7 @@ void shaman_t::summon_fire_elemental( timespan_t duration )
   {
     if ( pet.pet_fire_elemental->is_sleeping() )
     {
+      pet.pet_earth_elemental->demise();
       pet.pet_fire_elemental->summon( duration );
       pet.pet_fire_elemental->get_cooldown( "meteor" )->reset( false );
     }
@@ -8545,6 +8561,7 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
   {
     if ( pet.pet_storm_elemental->is_sleeping() )
     {
+      pet.pet_earth_elemental->demise();
       pet.pet_storm_elemental->summon( duration );
       pet.pet_storm_elemental->get_cooldown( "eye_of_the_storm" )->reset( false );
     }
@@ -9061,17 +9078,32 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_lava_surge() {
+void shaman_t::trigger_lava_surge( bool fireheart ) {
   if ( buff.lava_surge->check() )
   {
-    proc.wasted_lava_surge->occur();
+    if ( fireheart )
+    {
+      proc.wasted_lava_surge_fireheart->occur();
+    }
+    else
+    {
+      proc.wasted_lava_surge->occur();
+    }
   }
 
-  proc.lava_surge->occur();
+  if ( fireheart ) 
+  {
+    proc.lava_surge_fireheart->occur();
+  }
+  else
+  {
+    proc.lava_surge->occur();
+  }
   if ( !executing || executing->id != 51505 )
   {
     cooldown.lava_burst->reset( true );
-  } else
+  } 
+  else
   {
     proc.surge_during_lvb->occur();
     lava_surge_during_lvb = true;
@@ -9215,12 +9247,10 @@ void shaman_t::create_buffs()
                             ->apply_affecting_conduit( conduit.call_of_flame );
 
   buff.fireheart = make_buff( this, "fireheart", spell.t28_2pc_ele )
-                       // TODO: confirm if duration is affected by conduit and tier set 4pc bonus
                        ->set_duration( buff.fire_elemental->buff_duration() )
                        ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
-                         trigger_lava_surge();
+                         trigger_lava_surge( true );
                        } )
-                       // TODO: confirm recasting elemental during uptime behaviour
                        ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   //
@@ -9329,17 +9359,19 @@ void shaman_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.lava_surge        = get_proc( "Lava Surge" );
-  proc.wasted_lava_surge = get_proc( "Lava Surge: Wasted" );
-  proc.surge_during_lvb  = get_proc( "Lava Surge: During Lava Burst" );
+  proc.lava_surge                   = get_proc( "Lava Surge" );
+  proc.lava_surge_fireheart         = get_proc( "Lava Surge: Fireheart" );
+  proc.wasted_lava_surge            = get_proc( "Lava Surge: Wasted" );
+  proc.wasted_lava_surge_fireheart  = get_proc( "Lava Surge: Wasted Fireheart" );
+  proc.surge_during_lvb             = get_proc( "Lava Surge: During Lava Burst" );
 
-  proc.windfury_uw       = get_proc( "Windfury: Unruly Winds" );
-  proc.maelstrom_weapon  = get_proc( "Maelstrom Weapon" );
-  proc.maelstrom_weapon_fs= get_proc( "Maelstrom Weapon: Feral Spirit" );
-  proc.maelstrom_weapon_ea= get_proc( "Maelstrom Weapon: Elemental Assault" );
-  proc.maelstrom_weapon_cttc = get_proc( "Maelstrom Weapon: Chilled to the Core" );
-  proc.maelstrom_weapon_ft = get_proc( "Maelstrom Weapon: Fae Transfusion" );
-  proc.stormflurry       = get_proc( "Stormflurry" );
+  proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
+  proc.maelstrom_weapon       = get_proc( "Maelstrom Weapon" );
+  proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
+  proc.maelstrom_weapon_ea    = get_proc( "Maelstrom Weapon: Elemental Assault" );
+  proc.maelstrom_weapon_cttc  = get_proc( "Maelstrom Weapon: Chilled to the Core" );
+  proc.maelstrom_weapon_ft    = get_proc( "Maelstrom Weapon: Fae Transfusion" );
+  proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
   proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );

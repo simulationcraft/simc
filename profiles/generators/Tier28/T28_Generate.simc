@@ -50,7 +50,7 @@ ptr=1
 # T28_Generate_Paladin.simc
 
 # Priest
-# T28_Generate_Priest.simc
+T28_Generate_Priest.simc
 
 # Rogue
 # T28_Generate_Rogue.simc

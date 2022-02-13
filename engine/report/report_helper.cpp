@@ -387,6 +387,14 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     legendary_ilevel    = 262;
     max_conduit_rank    = 11;
   }
+  else if ( p.report_information.save_str.find( "T28" ) != std::string::npos )
+  {
+    tier_name           = "T28";
+    max_ilevel_allowed  = 285;
+    legendary_ilevel    = 291;
+    max_conduit_rank    = 13;
+    max_legendary_items = 2;
+  }
   else
   {
     return true;

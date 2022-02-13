@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42277
-static const std::array<spelltext_data_t, 15998> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15958,8 +15958,14 @@ static const std::array<spelltext_data_t, 15998> __ptr_spelltext_data { {
   { 368205, "If you are killed by no more than $s1 damage, the Weave of Warped Fates will unwind your fate, returning yourself to life and healing for ${$s2*(1+$@versadmg)}.\r\n\r\nThis effect can only occur once every $357581d.", 0, 0 },
   { 368207, "$@spelldesc366656", 0, 0 },
   { 368208, "$@spelldesc366656", 0, 0 },
+  { 368223, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
+  { 368224, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
+  { 368225, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
   { 368229, "$@spelldesc367236", 0, 0 },
   { 368231, "$@spelldesc367236", "Suffering $o Shadow damage over $d.", 0 },
+  { 368232, "$@spelldesc367236", 0, 0 },
+  { 368233, "$@spelldesc367236", 0, 0 },
+  { 368234, "$@spelldesc367236", 0, 0 },
   { 368239, "The decrypted Urh cypher grants players $w1% increased spell and ability cool down rate and restores $368494s1% health and mana every $t2 sec for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\n$368494s1% health and mana restored every $t2 sec.", 0 },
   { 368240, "The decrypted Vy cypher grants players $s1% increased Haste and summons an orb of energy that damages or heals your targets for $d.", "$s1% increased Haste.\r\n\r\nYour damage and healing has a high chance to fire a bolt of Cosmic energy at the target.", 0 },
   { 368241, "The decrypted Wo cypher grants players $s1% increased movement speed, $s2% reduced damage taken, and conceals players from enemy detection while out of combat for $d.", "$s1% increased movement speed.\r\n$s2% reduced damage taken.\r\n\r\nConcealed from enemy detection while out of combat.", 0 },
