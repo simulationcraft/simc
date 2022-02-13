@@ -3205,6 +3205,7 @@ void the_first_sigil( special_effect_t& effect )
              e.covenant_id == static_cast<unsigned>( player->covenant->type() ) )
         {
           covenant_signature_id = e.spell_id;
+          break;
         }
       }
 
@@ -3213,6 +3214,7 @@ void the_first_sigil( special_effect_t& effect )
         if ( covenant_signature_id == a->data().id() )
         {
           covenant_action = a;
+          break;
         }
       }
     }
