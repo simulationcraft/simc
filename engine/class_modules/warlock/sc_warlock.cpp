@@ -488,18 +488,6 @@ struct decimating_bolt_t : public warlock_spell_t
 
   void impact( action_state_t* s ) override
   {
-    //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
-    //checked regularly to ensure accuracy
-    double value = p()->buffs.decimating_bolt->default_value - 0.01 * s->target->health_percentage();
-    if ( p()->talents.fire_and_brimstone->ok() )
-      value *= 0.4;
-    p()->buffs.decimating_bolt->trigger( 3, value );
-    
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //Note: For Drain Soul, 3 stacks appear to be triggered but all are removed when the Decimating Bolt buff is
-      p()->buffs.shard_of_annihilation->trigger( 3 );
-    }
 
     warlock_spell_t::impact( s );
     
@@ -513,6 +501,25 @@ struct decimating_bolt_t : public warlock_spell_t
       e->pulse_state->persistent_multiplier *= base_aoe_multiplier;
 
   };
+
+  void execute() override
+  {
+    //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
+    //checked regularly to ensure accuracy
+    // TODO: Need to check the behavior of havoc decimating bolt, and which strength of buff is given.
+    double value = p()->buffs.decimating_bolt->default_value - 0.01 * p()->target->health_percentage();
+    if ( p()->talents.fire_and_brimstone->ok() )
+      value *= 0.4;
+    p()->buffs.decimating_bolt->trigger( 3, value );
+    
+    if ( p()->legendary.shard_of_annihilation.ok() )
+    {
+      //Note: For Drain Soul, 3 stacks appear to be triggered but all are removed when the Decimating Bolt buff is
+      p()->buffs.shard_of_annihilation->trigger( 3 );
+    }
+
+    warlock_spell_t::execute();
+  }
 
 };
 
