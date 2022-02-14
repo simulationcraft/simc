@@ -302,6 +302,11 @@ struct demonbolt_t : public demonology_spell_t
       p()->buffs.demonic_calling->trigger();
 
     p()->buffs.decimating_bolt->decrement();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    demonology_spell_t::impact( s );
 
     if ( p()->legendary.shard_of_annihilation.ok() )
       p()->buffs.shard_of_annihilation->decrement();

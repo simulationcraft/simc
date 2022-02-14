@@ -533,14 +533,14 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->execute();
     }
     p()->buffs.decimating_bolt->decrement();
-
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
 
     //As of 9.0.5, critical strike gains should also be increased by Embers of the Diabolic Raiment. Checked on PTR 2021-03-07
     if ( s->result == RESULT_CRIT )
