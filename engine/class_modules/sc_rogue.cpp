@@ -5922,7 +5922,7 @@ void rogue_t::do_exsanguinate( dot_t* dot, double rate )
 
   auto rs = actions::rogue_attack_t::cast_state( dot->state );
   const double new_rate = rs->get_exsanguinated_rate() * rate;
-  const double coeff = rs->get_exsanguinated_rate() / rate;
+  const double coeff = 1.0 / rate;
 
   sim->print_log( "{} exsanguinates {} tick rate by {:.1f} from {:.1f} to {:.1f}",
                   *this, *dot, rate, rs->get_exsanguinated_rate(), new_rate );
@@ -5954,14 +5954,22 @@ void rogue_t::trigger_t28_assassination_4pc( player_t* target )
 
   rogue_td_t* td = get_target_data( target );
 
-  // 2022-02-11 -- As of the most recent PTR build, Vendetta exactly reverses the modifier when fading
+  // 2022-02-14 -- As of the most recent PTR build, Vendetta reverses the modifier of SBS when fading
   //               Haste snapshot is maintained however, so don't need to update the snapshot flags
   double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
-  if ( !td->debuffs.vendetta->check() )
-    rate = 1.0 / rate;
+  bool is_reversed = !td->debuffs.vendetta->check();
 
-  auto candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
+  std::vector<dot_t*> candidate_dots;
+  if ( is_reversed )
+  {
+    candidate_dots = { td->dots.serrated_bone_spike };
+    rate = 1.0 / rate;
+  }
+  else
+  {
+    candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
     td->dots.internal_bleeding, td->dots.rupture, td->dots.sepsis, td->dots.serrated_bone_spike };
+  }
 
   for ( auto dot : candidate_dots )
   {
