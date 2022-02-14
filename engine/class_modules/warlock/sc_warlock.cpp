@@ -506,7 +506,8 @@ struct decimating_bolt_t : public warlock_spell_t
   {
     //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
     //checked regularly to ensure accuracy
-    double value = p()->buffs.decimating_bolt->default_value - 0.01 * s->target->health_percentage();
+    // TODO: Need to check the behavior of havoc decimating bolt, and which strength of buff is given.
+    double value = p()->buffs.decimating_bolt->default_value - 0.01 * p()->target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
