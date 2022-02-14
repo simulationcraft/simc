@@ -3189,7 +3189,8 @@ void the_first_sigil( special_effect_t& effect )
   {
     action_t* covenant_action;
 
-    the_first_sigil_t( const special_effect_t& effect ) : generic_proc_t( effect, "the_first_sigil", effect.trigger() )
+    the_first_sigil_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ), covenant_action( nullptr )
     {
     }
 
@@ -3232,6 +3233,34 @@ void the_first_sigil( special_effect_t& effect )
 
   effect.custom_buff    = buff;
   effect.execute_action = create_proc_action<the_first_sigil_t>( "the_first_sigil", effect );
+}
+
+void cosmic_gladiators_resonator( special_effect_t& effect )
+{
+  struct gladiators_resonator_damage_t : shadowlands_aoe_proc_t
+  {
+    gladiators_resonator_damage_t( const special_effect_t& effect )
+      : shadowlands_aoe_proc_t( effect, "gladiators_resonator", effect.driver()->effectN( 2 ).trigger(), true )
+    {
+      split_aoe_damage    = true;
+      max_scaling_targets = as<unsigned>( effect.driver()->effectN( 3 ).base_value() );
+    }
+  };
+
+  struct gladiators_resonator_t : generic_proc_t
+  {
+    gladiators_resonator_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "gladiators_resonator", effect.trigger() )
+    {
+      harmful       = false;
+      quiet         = true;
+      callbacks     = false;
+      impact_action = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
+      travel_delay  = effect.driver()->effectN( 2 ).misc_value1() / 1000;
+    }
+  };
+
+  effect.execute_action = create_proc_action<gladiators_resonator_t>( "gladiators_resonator", effect );
 }
 
 // Weapons
@@ -4594,6 +4623,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
+    unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
