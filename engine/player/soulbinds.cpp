@@ -1841,7 +1841,17 @@ void kevins_oozeling( special_effect_t& effect )
         auto td = debug_cast<pet_t*>( player )->owner->get_target_data( target );
         td->debuff.kevins_wrath->trigger();
       }
+
+      bool ready() override
+      {
+        // Logs appear to show Kevin doesn't start recasting until after the projectile hits
+        if ( has_travel_events() )
+          return false;
+
+        return spell_t::ready();
+      }
     };
+
     kevins_oozeling_pet_t( player_t* owner ) : pet_t( owner->sim, owner, "kevins_oozeling" )
     {
       npc_id = 178601;
@@ -2708,17 +2718,8 @@ void register_target_data_initializers( sim_t* sim )
     if ( kevins_wrath->ok() )
     {
       assert( !td->debuff.kevins_wrath );
-      timespan_t duration = td->source->find_spell( 352528 )->duration();
-
-      // BUG: this is lasting forever on PTR
-      if ( td->source->bugs )
-      {
-        duration = timespan_t::zero();
-      }
-
       td->debuff.kevins_wrath = make_buff( *td, "kevins_wrath", td->source->find_spell( 352528 ) )
-                                    ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
-                                    ->set_duration( duration );
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER );
       td->debuff.kevins_wrath->reset();
     }
     else
