@@ -3238,34 +3238,24 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
 {
   struct gladiators_resonator_damage_t : shadowlands_aoe_proc_t
   {
-    unsigned target_increase_cap;
-
     gladiators_resonator_damage_t( const special_effect_t& effect )
-      : shadowlands_aoe_proc_t( effect, "gladiators_resonator", effect.driver()->effectN( 2 ).trigger(), true ),
-        target_increase_cap( as<unsigned>( effect.driver()->effectN( 3 ).base_value() ) )
+      : shadowlands_aoe_proc_t( effect, "gladiators_resonator", effect.driver()->effectN( 2 ).trigger(), true )
     {
       split_aoe_damage    = true;
-      max_scaling_targets = target_increase_cap;
+      max_scaling_targets = as<unsigned>( effect.driver()->effectN( 3 ).base_value() );
     }
   };
 
   struct gladiators_resonator_t : generic_proc_t
   {
-    timespan_t detonate_delay;
-
     gladiators_resonator_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "gladiators_resonator", effect.trigger() ),
-        detonate_delay( timespan_t::from_millis( effect.driver()->effectN( 2 ).misc_value1() ) )
+      : generic_proc_t( effect, "gladiators_resonator", effect.trigger() )
     {
       harmful       = false;
       quiet         = true;
       callbacks     = false;
       impact_action = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
-    }
-
-    timespan_t travel_time() const override
-    {
-      return generic_proc_t::travel_time() + detonate_delay;
+      travel_delay  = effect.driver()->effectN( 2 ).misc_value1() / 1000;
     }
   };
 
