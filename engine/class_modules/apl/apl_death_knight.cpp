@@ -122,7 +122,7 @@ void blood( player_t* p )
   covenants->add_action( "marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0", "Pre-AL marrow on pull in order to guarantee ossuary during the first DRW" );
   covenants->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up", "And we cast AL" );
   covenants->add_action( "shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up", "We just don't cast this during DRW" );
-  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up" );
+  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
   standard->add_action( "blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8", "Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it" );
   standard->add_action( "dancing_rune_weapon,if=!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready" );
@@ -269,7 +269,7 @@ void frost( player_t* p )
   covenants->add_action( "abomination_limb,if=variable.adds_remain" );
   covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
-  covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up" );
+  covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&variable.rw_buffs", "Obliteration rotation" );
   obliteration->add_action( "howling_blast,target_if=!buff.killing_machine.up&rune>=3&(buff.rime.remains<3&buff.rime.up|!dot.frost_fever.ticking)" );
@@ -424,7 +424,7 @@ void unholy( player_t* p )
   covenants->add_action( "abomination_limb,if=variable.adds_remain&rune.time_to_4>buff.runic_corruption.remains" );
   covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.apocalypse.remains>10|!talent.army_of_the_damned&cooldown.dark_transformation.remains)|fight_remains<15" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
-  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up" );
+  covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
   generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=13+(runeforge.rampant_transference*3+death_knight.runeforge.hysteria*3))|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up", "Single Target" );
   generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&((!variable.pooling_runes|covenant.night_fae&talent.defile&conduit.withering_ground)|fight_remains<5)" );
@@ -451,7 +451,7 @@ void unholy( player_t* p )
   racials->add_action( "fireblood,if=variable.major_cooldowns_active|pet.gargoyle.active&pet.gargoyle.remains<=buff.fireblood.duration|fight_remains<=buff.fireblood.duration" );
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
-  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|target.time_to_pct_20<5", "Trinkets" );
+  trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|target.time_to_pct_20<5&!buff.bloodlust.up", "Trinkets" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.specified_trinket&((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2))|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
