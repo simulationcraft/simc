@@ -3814,8 +3814,8 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
-    if ( p()->is_ptr() )
+    // 2022-01-15 -- PTR spell data now allows this to proc from Akaari primary hits
+    if ( p()->is_ptr() && secondary_trigger_type != secondary_trigger::WEAPONMASTER )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3875,8 +3875,8 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
-    if ( !is_secondary_action() || p()->is_ptr() )
+    // 2022-02-14 -- Latest PTR build triggers from 4pc and Akaari procs but not from WM
+    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3890,7 +3890,7 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     // 2022-02-07 -- 2pc procs can trigger this as they are fake direct casts, does not work on WM
-    if ( ( !is_secondary_action() || secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE ) &&
+    if ( ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE ) &&
       p()->set_bonuses.t28_subtlety_2pc->ok() &&
       p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
     {
@@ -4907,7 +4907,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
     }
 
     // 2021-07-17 -- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
-    if ( p()->bugs && state->chain_target > 0 )
+    // 2022-02-14 -- Most recent PTR build has fixed the Deathspike bugs, leaving in for live sims
+    if ( p()->bugs && state->chain_target > 0 && !p()->is_ptr() )
     {
       tdata->set_is_deathspiked( true );
     }
@@ -5922,7 +5923,7 @@ void rogue_t::do_exsanguinate( dot_t* dot, double rate )
 
   auto rs = actions::rogue_attack_t::cast_state( dot->state );
   const double new_rate = rs->get_exsanguinated_rate() * rate;
-  const double coeff = rs->get_exsanguinated_rate() / rate;
+  const double coeff = 1.0 / rate;
 
   sim->print_log( "{} exsanguinates {} tick rate by {:.1f} from {:.1f} to {:.1f}",
                   *this, *dot, rate, rs->get_exsanguinated_rate(), new_rate );
@@ -5954,14 +5955,22 @@ void rogue_t::trigger_t28_assassination_4pc( player_t* target )
 
   rogue_td_t* td = get_target_data( target );
 
-  // 2022-02-11 -- As of the most recent PTR build, Vendetta exactly reverses the modifier when fading
+  // 2022-02-14 -- As of the most recent PTR build, Vendetta reverses the modifier of SBS when fading
   //               Haste snapshot is maintained however, so don't need to update the snapshot flags
   double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
-  if ( !td->debuffs.vendetta->check() )
-    rate = 1.0 / rate;
+  bool is_reversed = !td->debuffs.vendetta->check();
 
-  auto candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
+  std::vector<dot_t*> candidate_dots;
+  if ( is_reversed )
+  {
+    candidate_dots = { td->dots.serrated_bone_spike };
+    rate = 1.0 / rate;
+  }
+  else
+  {
+    candidate_dots = { td->dots.crimson_tempest, td->dots.deadly_poison, td->dots.garrote,
     td->dots.internal_bleeding, td->dots.rupture, td->dots.sepsis, td->dots.serrated_bone_spike };
+  }
 
   for ( auto dot : candidate_dots )
   {

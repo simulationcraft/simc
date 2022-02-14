@@ -3189,7 +3189,8 @@ void the_first_sigil( special_effect_t& effect )
   {
     action_t* covenant_action;
 
-    the_first_sigil_t( const special_effect_t& effect ) : generic_proc_t( effect, "the_first_sigil", effect.trigger() )
+    the_first_sigil_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ), covenant_action( nullptr )
     {
     }
 
