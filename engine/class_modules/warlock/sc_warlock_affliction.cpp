@@ -108,11 +108,8 @@ struct shadow_bolt_t : public affliction_spell_t
     affliction_spell_t::impact( s );
     if ( result_is_hit( s->result ) )
     {
-      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
-      {
-        // Add passive check
+      if ( p()->talents.shadow_embrace->ok() )
         td( s->target )->debuffs_shadow_embrace->trigger();
-      }
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {        
@@ -412,9 +409,7 @@ struct summon_darkglare_t : public affliction_spell_t
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
 
-    if ( !p->min_version_check( VERSION_9_1_0 ) )
-      cooldown->duration += timespan_t::from_millis( p->talents.dark_caller->effectN( 1 ).base_value() );
-    else if ( p->spec.summon_darkglare_2->ok() )
+  if ( p->spec.summon_darkglare_2->ok() )
       cooldown->duration += timespan_t::from_millis( p->spec.summon_darkglare_2->effectN( 1 ).base_value() );
   }
 
@@ -738,11 +733,8 @@ struct drain_soul_t : public affliction_spell_t
     affliction_spell_t::tick( d );
     if ( result_is_hit( d->state->result ) )
     {
-      if ( !p()->min_version_check( VERSION_9_1_0 ) || p()->talents.shadow_embrace->ok() )
-      {
-          // TODO - Add passive check
-          td( d->target )->debuffs_shadow_embrace->trigger();
-      }
+      if ( p()->talents.shadow_embrace->ok() )
+        td( d->target )->debuffs_shadow_embrace->trigger();
 
       if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
       {
@@ -827,9 +819,6 @@ struct haunt_t : public affliction_spell_t
     {
       td( s->target )->debuffs_haunt->trigger();
     }
-
-    if ( !p()->min_version_check( VERSION_9_1_0 ) )
-      td( s->target )->debuffs_shadow_embrace->trigger();
   }
 };
 
@@ -1240,8 +1229,8 @@ void warlock_t::create_apl_affliction()
   necro->add_action( "use_item,name=sunblood_amethyst,if=variable.trinket_delay<6" ); 
   necro->add_action( "use_item,name=soulletting_ruby,if=variable.trinket_delay<8" );
   necro->add_action( "use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
-  necro->add_action( "phantom_singularity,if=talent.haunt&variable.dots_ticking", "If the player is using Haunt, fire PS on cooldown then follow with DB" );
-  necro->add_action( "decimating_bolt,if=talent.haunt&cooldown.phantom_singularity.remains>0" );
+  necro->add_action( "phantom_singularity,if=!talent.shadow_embrace&variable.dots_ticking", "If the player is using Haunt or Gosac, fire PS on cooldown then follow with DB" );
+  necro->add_action( "decimating_bolt,if=!talent.shadow_embrace&cooldown.phantom_singularity.remains>0" );
   necro->add_action( "decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking", "If the player is using SE, fire DB on cooldown then following with PS" );
   necro->add_action( "phantom_singularity,if=talent.shadow_embrace&cooldown.decimating_bolt.remains>0" );
   necro->add_action( "unstable_affliction,if=dot.unstable_affliction.remains<6" );

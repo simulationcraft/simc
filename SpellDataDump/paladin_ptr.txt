@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -8299,7 +8299,7 @@ Spell Level      : 48
 Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Affecting spells : Paladin (137026 effect#9), Fires of Justice (209785 effect#3), Rule of Law (214202 effects: #1, #2), Divine Purpose (223819 effect#4)
 Family Flags     : 92
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8390,7 +8390,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 240 seconds
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Affecting spells : Radiant Embers (355447 effect#1)
 Family Flags     : 85
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
@@ -9048,7 +9048,7 @@ Velocity         : 35 yards/sec
 Duration         : 20 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1938: Duty-Bound Gavel (355099 effect#1)
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Internal Cooldown: 0.001 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
@@ -9109,7 +9109,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Category Cooldown: 45 seconds
 Internal Cooldown: 0.5 seconds
 Proc Chance      : 100%
@@ -9154,7 +9154,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Category Cooldown: 45 seconds
 Affecting spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114
@@ -9227,7 +9227,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
                  : 1079: The Long Summer (340185 effect#1), Equinox (355567 effect#4)
 Category Cooldown: 45 seconds
 Proc Chance      : 40%
@@ -9267,7 +9267,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Cooldown         : 45 seconds
 Category         : 1890
-Labels           : 976: Decrypted Urh Cypher (368239 effect#4)
+Labels           : 976
 Category Cooldown: 45 seconds
 Affecting spells : Equinox (355567 effects: #1, #2)
 Family Flags     : 114, 122

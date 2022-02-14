@@ -46,6 +46,7 @@ namespace pets {
   struct army_ghoul_pet_t;
   struct bloodworm_pet_t;
   struct dancing_rune_weapon_pet_t;
+  struct endless_rune_waltz_pet_t;
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
@@ -528,6 +529,9 @@ public:
     buff_t* arctic_assault; // T28 Frost 2PC
     buff_t* harvest_time; // T28 Unholy 4PC
     buff_t* harvest_time_stack; // T28 Unholy 2PC
+    buff_t* endless_rune_waltz; // T28 Blood 2PC
+    buff_t* endless_rune_waltz_duration; // T28 Blood 2PC expiration buff
+    buff_t* endless_rune_waltz_icd; // T28 4PC ICD
   } buffs;
 
   struct runeforge_t {
@@ -564,6 +568,9 @@ public:
     cooldown_t* apocalypse;
     cooldown_t* army_of_the_dead;
     cooldown_t* dark_transformation;
+
+    // T28
+    cooldown_t* endless_rune_waltz_icd;  // internal cooldown for Blood T28 4PC counterattack
   } cooldown;
 
   // Active Spells
@@ -584,6 +591,7 @@ public:
     // Tier28
     action_t* glacial_advance_t28_4pc;
     action_t* soul_reaper_t28;
+    action_t* heart_strike_t28;
   } active_spells;
 
   // Gains
@@ -834,6 +842,10 @@ public:
     // Unholy
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* runic_corruption; // buff
+
+    // T28 Blood 4pc
+    const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
+    const spell_data_t* endless_rune_waltz_energize; // RP gain on heart strike
   } spell;
 
   // Unholy Pet Abilities
@@ -867,6 +879,7 @@ public:
   struct pets_t
   {
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
+    pets::dancing_rune_weapon_pet_t* endless_rune_waltz_pet;
     pets::gargoyle_pet_t* gargoyle;
     pets::ghoul_pet_t* ghoul_pet;
     pet_t* risen_skulker;
@@ -1058,6 +1071,7 @@ public:
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
+    cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -2418,7 +2432,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     double blood_strike_rp_generation;
 
     heart_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<melee_attack_t>( p, "heart_strike", p -> dk() -> spec.heart_strike ),
+      drw_action_t<melee_attack_t>( p, "heart_strike", p -> dk() -> find_spell( 228645 ) ),
       // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
       blood_strike_rp_generation( p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
@@ -2479,8 +2493,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_action_t<melee_attack_t>* marrowrend;
   } ability;
 
-  dancing_rune_weapon_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "dancing_rune_weapon", true, true ),
+  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name ) :
+    death_knight_pet_t( owner, drw_name, true, true ),
     blood_plague_dot( false ),
     ability()
   {
@@ -2491,6 +2505,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration = regen_type::DISABLED;
   }
+
 
   void init_spells() override
   {
@@ -3792,6 +3807,10 @@ struct blood_boil_t : public death_knight_spell_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute();
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.blood_boil -> execute_on_target( target );
+      }
     }
   }
 
@@ -4201,6 +4220,12 @@ struct dancing_rune_weapon_buff_t : public buff_t
 
     if ( p -> legendary.crimson_rune_weapon -> ok() )
       p -> buffs.crimson_rune_weapon -> trigger();
+
+    // Expiry of this buff forces the str buff to expire at the same time
+    if ( p -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
+    {
+      p -> buffs.endless_rune_waltz_duration -> trigger();
+    }
   }
 };
 
@@ -4227,6 +4252,11 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 
     p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+    {
+      p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                               p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
+    }
   }
 };
 
@@ -4753,6 +4783,10 @@ struct deaths_caress_t : public death_knight_spell_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute();
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.deaths_caress -> execute_on_target( target );
+      }
     }
   }
 };
@@ -5070,6 +5104,10 @@ struct death_strike_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute();
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.death_strike -> execute_on_target( target );
+      }
     }
 
     if ( hit_any_target )
@@ -5660,10 +5698,36 @@ struct heart_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
   }
 
+  // Background constructor for procs from T28 4PC.  Remove constructor after Slands
+  heart_strike_t( util::string_view name, death_knight_t* p ) :
+    death_knight_melee_attack_t( name, p, p -> spec.heart_strike ),
+    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+  {
+    background = proc = may_crit = true;
+    may_miss = false;
+    triggers_shackle_the_unworthy = true;
+    aoe = 2;
+    weapon = &( p -> main_hand_weapon );
+    // T28 reads the amount of RP gain directly from t28 spell data, it does not use the resources section in heart strike
+    energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
+  }
+
   void init() override
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
+  }
+
+  // This section added for T28 4PC.  Remove after Slands.
+  double cost() const override
+  {
+    if ( background )
+    {
+      return 0;
+    }
+
+    return death_knight_melee_attack_t::cost();
   }
 
   int n_targets() const override
@@ -5689,6 +5753,24 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
+
+      // Feb 11 2022.  !background is because the counterattack does not currently proc the 1% str buff or extension
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) && !background )
+      {
+        p() -> buffs.endless_rune_waltz -> trigger();
+        if ( p() -> buffs.dancing_rune_weapon -> up() )
+        {
+          // We do not need to expire DRW buff, as the pet demise will expire it for us.
+          p() -> pets.dancing_rune_weapon_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+          if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+            p() -> pets.endless_rune_waltz_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+        }
+      }
+
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.heart_strike -> execute_on_target( target );
+      }
     }
 
     if ( p() -> legendary.gorefiends_domination.ok() )
@@ -5943,6 +6025,10 @@ struct marrowrend_t : public death_knight_melee_attack_t
     {
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> set_target(  target );
       p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute();
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.marrowrend -> execute_on_target( target );
+      }
     }
   }
 
@@ -7315,6 +7401,29 @@ struct vampiric_blood_t : public death_knight_spell_t
 
 // Buffs ====================================================================
 
+struct endless_rune_waltz_duration_buff_t : public buff_t
+{
+  endless_rune_waltz_duration_buff_t( death_knight_t* p ) :
+  buff_t( p, "endless_rune_waltz_duration", p -> sets -> set( DEATH_KNIGHT_BLOOD, T28, B2 ) )
+  {
+    set_duration ( timespan_t::from_seconds( p -> sets -> set( DEATH_KNIGHT_BLOOD, T28, B2) -> effectN( 4 ).base_value() ) );
+    set_quiet( true );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+
+    death_knight_t* p = debug_cast< death_knight_t* >( player );
+
+    // Expiry of this buff forces the str buff to expire at the same time
+    if ( p -> buffs.endless_rune_waltz -> up() )
+    {
+      p -> buffs.endless_rune_waltz -> expire();
+    }
+  }
+};
+
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
@@ -8177,6 +8286,11 @@ void death_knight_t::create_actions()
     active_spells.soul_reaper_t28 = new soul_reaper_t28_t( this );
   }
 
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    active_spells.heart_strike_t28 = new heart_strike_t( "heart_strike_t28_4pc", this );
+  }
+
   player_t::create_actions();
 }
 
@@ -8470,7 +8584,11 @@ void death_knight_t::create_pets()
   {
     if ( find_action( "dancing_rune_weapon" ) )
     {
-      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this );
+      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
+      if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc" );
+      }
     }
 
     if ( talent.bloodworms -> ok() )
@@ -8805,7 +8923,7 @@ void death_knight_t::init_spells()
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
 
-  // DIseases
+  // Diseases
   spell.blood_plague    = find_spell( 55078 );
   spell.frost_fever     = find_spell( 55095 );
   spell.virulent_plague = find_spell( 191587 );
@@ -8813,6 +8931,9 @@ void death_knight_t::init_spells()
   // Blood
   spell.blood_shield        = find_spell( 77535 );
   spell.bone_shield         = find_spell( 195181 );
+  // T28 Blood
+  spell.endless_rune_waltz_energize = find_spell( 368938 );
+  spell.endless_rune_waltz_4pc      = find_spell( 363590 );
 
   // Frost
   spell.murderous_efficiency_gain = find_spell( 207062 );
@@ -8943,6 +9064,11 @@ void death_knight_t::init_spells()
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    cooldown.endless_rune_waltz_icd -> duration = spell.endless_rune_waltz_4pc -> internal_cooldown();
+  }
 
 }
 
@@ -9213,6 +9339,14 @@ void death_knight_t::create_buffs()
 
   buffs.harvest_time_stack = make_buff( this, "harvest_time_stack", find_spell( 363885 ) )
     -> set_cooldown( sets -> set( DEATH_KNIGHT_UNHOLY, T28, B2 ) -> internal_cooldown() );
+
+  buffs.endless_rune_waltz = make_buff( this, "endless_rune_waltz", find_spell( 366008 ) )
+    -> set_cooldown( sets -> set( DEATH_KNIGHT_BLOOD, T28, B2 ) -> internal_cooldown() )
+    -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+    -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+    -> add_invalidate( CACHE_STRENGTH );
+
+  buffs.endless_rune_waltz_duration = new endless_rune_waltz_duration_buff_t( this );
 }
 
 // death_knight_t::init_gains ===============================================
@@ -9409,6 +9543,20 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
 {
   bone_shield_handler( s );
+
+  if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+  {
+    if ( cooldown.endless_rune_waltz_icd-> is_ready() && rng().roll( spell.endless_rune_waltz_4pc -> effectN ( 1 ).percent() * composite_parry() ) )
+    {
+      player_t* td = s -> action -> player;
+      if ( td )
+      {
+        sim -> print_debug( "{} caused Blood counterattack T28 4pc to proc from {}", td->name_str, s->action->name_str );
+        active_spells.heart_strike_t28 -> execute_on_target( td );
+      }
+      cooldown.endless_rune_waltz_icd -> start();
+    }
+  }
 
   if ( school != SCHOOL_PHYSICAL )
   {
@@ -9675,7 +9823,7 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   {
     // first is the 5% that is always active
     m *= 1.0 + sets -> set( DEATH_KNIGHT_UNHOLY, T28, B4 )->effectN( 5 ).percent();
-    // Then we check if the extra 15% is active
+    // Then we check if the extra 20% is active
     if ( buffs.harvest_time -> up() )
     {
       m *= 1.0 + buffs.harvest_time -> value();

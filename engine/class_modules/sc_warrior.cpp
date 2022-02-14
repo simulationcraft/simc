@@ -249,7 +249,6 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
-    gain_t* frenzied_destruction;
   } gain;
 
   // Spells
@@ -3414,18 +3413,18 @@ struct raging_blow_t : public warrior_attack_t
       {
         p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
         }
       }
       else
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely a bug
+        if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
         }
       }
     }
@@ -3551,18 +3550,18 @@ struct crushing_blow_t : public warrior_attack_t
       {
         p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
+        if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
         }
       }
       else
       {
       p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
 
-        if ( p()->talents.reckless_abandon->ok() ) // tier currently generates 50 rage every time Reck is triggered - likely unintended
+        if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->resource_gain( RESOURCE_RAGE, p()->talents.reckless_abandon->effectN( 1 ).base_value() / 10.0, p()->gain.frenzied_destruction );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
         }
       }
     }
@@ -7632,7 +7631,6 @@ void warrior_t::init_gains()
   gain.ceannar_rage           = get_gain( "ceannar_rage" );
   gain.cold_steel_hot_blood   = get_gain( "cold_steel_hot_blood" );
   gain.endless_rage           = get_gain( "endless_rage" );
-  gain.frenzied_destruction   = get_gain( "frenzied_destruction" );
   gain.lord_of_war            = get_gain( "lord_of_war" );
   gain.meat_cleaver           = get_gain( "meat_cleaver" );
   gain.valarjar_berserking    = get_gain( "valarjar_berserking" );
@@ -8264,7 +8262,7 @@ double warrior_t::resource_gain( resource_e r, double a, gain_t* g, action_t* ac
   {
     bool do_not_double_rage = false;
     do_not_double_rage      = ( g == gain.ceannar_rage || g == gain.valarjar_berserking || g == gain.simmering_rage || 
-                                g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker || g == gain.frenzied_destruction );
+                                g == gain.memory_of_lucid_dreams || g == gain.frothing_berserker );
 
     if ( !do_not_double_rage )  // FIXME: remove this horror after BFA launches, keep Simmering Rage
       a *= 1.0 + spec.recklessness->effectN( 4 ).percent();

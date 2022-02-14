@@ -147,7 +147,6 @@ public:
     propagate_const<actions::spells::stagger_self_damage_t*> stagger_self_damage;
 
     // Windwalker
-    propagate_const<action_t*> sunrise_technique;
     propagate_const<action_t*> empowered_tiger_lightning;
 
     // Conduit
@@ -265,6 +264,8 @@ public:
     propagate_const<buff_t*> keg_of_the_heavens;
     propagate_const<buff_t*> primordial_potential;
     propagate_const<buff_t*> primordial_power;
+    propagate_const<buff_t*> primordial_power_hidden_gcd;
+    propagate_const<buff_t*> primordial_power_hidden_channel;
   } buff;
 
 public:

@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42257
-static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.42277
+static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15705,7 +15705,7 @@ static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
   { 364370, "Art of War has a $s1% chance to reset the cooldown of Wake of Ashes instead of Blade of Justice.", 0, 0 },
   { 364383, "Remorseless Winter grants $s1% Critical Strike while active.\r\n\r\n", 0, 0 },
   { 364384, "$@spelldesc364383\r\n\r\n\r\n", "Critical Strike chance increased by $w1%.", 0 },
-  { 364392, "Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] casts Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.", 0, 0 },
+  { 364392, "Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] that burst Festering Wounds applies Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.", 0, 0 },
   { 364399, "While your Dancing Rune Weapon is active Heart Strike extends the duration of Dancing Rune Weapon by ${$s1/1000}.1 seconds and increases your Strength by $s3%, persisting for $s4 seconds after Dancing Rune Weapon ends.", 0, 0 },
   { 364415, "Targets ignited by Breath of Fire deal an additional ${$s1/-1}% less damage to you.", 0, 0 },
   { 364416, "Each combo point spent reduces the cooldown of $?s102543[Incarnation: King of the Jungle][Berserk] by ${$s1/2}.1 sec.", 0, 0 },
@@ -15825,7 +15825,7 @@ static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
   { 365540, "$@spelldesc367254\r\n$@spellaura366333", "$@spellaura367254", 0 },
   { 365541, "$@spelldesc367263\r\n$@spellaura366333", "$@spellaura367263", 0 },
   { 365542, "$@spelldesc367266\r\n$@spellaura366333", "$@spellaura367266", 0 },
-  { 365543, "$@spelldesc361356\r\n$@spellaura366333\r\n", "$@spellaura361356", 0 },
+  { 365543, "$@spelldesc367271\r\n$@spellaura366333\r\n", "$@spellaura367271", 0 },
   { 365544, "$@spelldesc367265\r\n$@spellaura366333", "$@spellaura367265", 0 },
   { 365545, "$@spelldesc367264\r\n$@spellaura366333", "$@spellaura367264", 0 },
   { 365546, "$@spelldesc367268\r\n$@spellaura366333", "$@spellaura367268", 0 },
@@ -15958,8 +15958,14 @@ static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
   { 368205, "If you are killed by no more than $s1 damage, the Weave of Warped Fates will unwind your fate, returning yourself to life and healing for ${$s2*(1+$@versadmg)}.\r\n\r\nThis effect can only occur once every $357581d.", 0, 0 },
   { 368207, "$@spelldesc366656", 0, 0 },
   { 368208, "$@spelldesc366656", 0, 0 },
+  { 368223, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
+  { 368224, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
+  { 368225, "$@spelldesc367236", "Your next $@spellname367236 will fire $w1 times.", 0 },
   { 368229, "$@spelldesc367236", 0, 0 },
   { 368231, "$@spelldesc367236", "Suffering $o Shadow damage over $d.", 0 },
+  { 368232, "$@spelldesc367236", 0, 0 },
+  { 368233, "$@spelldesc367236", 0, 0 },
+  { 368234, "$@spelldesc367236", 0, 0 },
   { 368239, "The decrypted Urh cypher grants players $w1% increased spell and ability cool down rate and restores $368494s1% health and mana every $t2 sec for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\n$368494s1% health and mana restored every $t2 sec.", 0 },
   { 368240, "The decrypted Vy cypher grants players $s1% increased Haste and summons an orb of energy that damages or heals your targets for $d.", "$s1% increased Haste.\r\n\r\nYour damage and healing has a high chance to fire a bolt of Cosmic energy at the target.", 0 },
   { 368241, "The decrypted Wo cypher grants players $s1% increased movement speed, $s2% reduced damage taken, and conceals players from enemy detection while out of combat for $d.", "$s1% increased movement speed.\r\n$s2% reduced damage taken.\r\n\r\nConcealed from enemy detection while out of combat.", 0 },
@@ -15980,8 +15986,6 @@ static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
-  { 368685, "$@spelldesc363734", "Increases offensive ability damage by $w1%.", 0 },
-  { 368686, "Fists of Fury empowers your next three Combo-eligible moves, causing them to deal $368685s1% additional damage.", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -15999,13 +16003,14 @@ static const std::array<spelltext_data_t, 15999> __ptr_spelltext_data { {
   { 369068, "$@spelldesc367808", 0, 0 },
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
+  { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42257
+// spelltext hotfix entries, wow build 9.2.0.42277
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.42257
+// Spell description variables, wow build 9.2.0.42277
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16315,7 +16320,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42257
+// spelldesc_vars hotfix entries, wow build 9.2.0.42277
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

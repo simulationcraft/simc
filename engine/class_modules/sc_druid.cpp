@@ -1296,11 +1296,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
     {
       set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
         if ( new_ )
-        {
           p.active.sickle_of_the_lion->execute_on_target( p.target );
-          if ( p.options.ptr_bugs && p.talent.incarnation_cat->ok() )
-            p.active.sickle_of_the_lion->execute_on_target( p.target );
-        }
       } );
     }
   }
@@ -2927,19 +2923,19 @@ public:
           parse_persistent_buff_effects( p->buff.bloodtalons, 0u, false );
 
       snapshots.tigers_fury =
-          parse_persistent_buff_effects<C>( p->buff.tigers_fury, 5u, true, p->conduit.carnivorous_instinct );
+          parse_persistent_buff_effects<C>( p->buff.tigers_fury, 0u, true, p->conduit.carnivorous_instinct );
 
       snapshots.clearcasting =
           parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true, p->talent.moment_of_clarity );
 
-      if ( data().affected_by( p->mastery.razor_claws->effectN( 1 ) ) )
+      if ( data().affected_by_all( p->mastery.razor_claws->effectN( 1 ) ) )
       {
         auto val = p->mastery.razor_claws->effectN( 1 ).percent();
         da_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
         p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
       }
 
-      if ( data().affected_by( p->mastery.razor_claws->effectN( 2 ) ) )
+      if ( data().affected_by_all( p->mastery.razor_claws->effectN( 2 ) ) )
       {
         auto val = p->mastery.razor_claws->effectN( 2 ).percent();
         ta_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
@@ -3047,6 +3043,10 @@ public:
     size_t cost_old = cost_buffeffects.size();
 
     parse_buff_effects( buff, ignore, ignore, use_stacks, mods... );
+
+    // Feral 4T28 is affected by Tiger's Fury but does not snapshot
+    if ( data().id() == 363830 && buff == p()->buff.tigers_fury )
+      return false;
 
     // If there is a new entry in the ta_mul table, move it to the pers_mul table.
     if ( ta_multiplier_buffeffects.size() > ta_old )
@@ -4208,32 +4208,8 @@ struct sickle_of_the_lion_t : public cat_attack_t
     reduced_aoe_targets = p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).base_value();
   }
 
-  double composite_ta_multiplier( const action_state_t* s ) const override
-  {
-    if ( p()->options.ptr_bugs && p()->buff.tigers_fury->check() )
-    {
-      auto tam = cat_attack_t::composite_ta_multiplier( s );
-      tam *= 1.0 + p()->spec.tigers_fury->effectN( 3 ).percent() + p()->conduit.carnivorous_instinct.percent();
-      tam *= 1.0 + p()->spec.tigers_fury->effectN( 5 ).percent();
-      return tam;
-    }
-
-    return cat_attack_t::composite_ta_multiplier( s ) * 1.0 + p()->cache.mastery_value();
-  }
-
-  double composite_persistent_multiplier( const action_state_t* s ) const override
-  {
-    if ( p()->options.ptr_bugs && td( s->target )->dots.adaptive_swarm_damage->is_ticking() )
-        return cat_attack_t::composite_persistent_multiplier( s ) * ( 1.0 + as_mul );
-
-    return cat_attack_t::composite_persistent_multiplier( s );
-  }
-
   double composite_target_ta_multiplier( player_t* t ) const override
   {
-    if ( p()->options.ptr_bugs )
-      return cat_attack_t::composite_target_ta_multiplier( t );
-
     double ttm = cat_attack_t::composite_target_ta_multiplier( t );
 
     if ( td( t )->dots.adaptive_swarm_damage->is_ticking() )

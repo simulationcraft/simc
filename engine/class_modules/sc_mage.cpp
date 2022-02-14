@@ -406,7 +406,6 @@ public:
     cooldown_t* frost_nova;
     cooldown_t* frost_storm;
     cooldown_t* frozen_orb;
-    cooldown_t* icy_propulsion;
     cooldown_t* icy_veins;
     cooldown_t* mirrors_of_torment;
     cooldown_t* phoenix_flames;
@@ -1637,15 +1636,8 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    if ( triggers.icy_propulsion
-      && s->result == RESULT_CRIT
-      && p()->buffs.icy_veins->check()
-      && p()->cooldowns.icy_propulsion->up() )
-    {
-      if ( p()->is_ptr() ) // TODO: PTR
-        p()->cooldowns.icy_propulsion->start( p()->conduits.icy_propulsion->internal_cooldown() );
+    if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
-    }
 
     if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
@@ -5659,7 +5651,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
   cooldowns.frost_storm        = get_cooldown( "frost_storm"        );
   cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
-  cooldowns.icy_propulsion     = get_cooldown( "icy_propulsion"     );
   cooldowns.icy_veins          = get_cooldown( "icy_veins"          );
   cooldowns.mirrors_of_torment = get_cooldown( "mirrors_of_torment" );
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );

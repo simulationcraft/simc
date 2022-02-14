@@ -355,11 +355,35 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->buff_duration();
       } );
   }
+  else if ( type == "elapsed" )
+  {
+    return make_buff_expr( "buff_elapsed",
+      []( buff_t* buff ) {
+        return buff->elapsed( buff->sim->current_time() );
+      } );
+  }
   else if ( type == "remains" )
   {
     return make_const_buff_expr( "buff_remains",
       []( buff_t* buff ) {
         return buff->remains();
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
+      } );
+  }
+  else if ( type == "tick_time" )
+  {
+    return make_buff_expr( "buff_tick_time",
+      []( buff_t* buff ) {
+        return buff->tick_time();
+      } );
+  }
+  else if ( type == "tick_time_remains" )
+  {
+    return make_const_buff_expr( "buff_tick_time_remains",
+      []( buff_t* buff ) {
+        return buff->tick_time_remains();
       },
       []( buff_t* buff ) {
         return buff->default_chance == 0;
@@ -1688,6 +1712,22 @@ timespan_t buff_t::remains() const
     return expiration.back()->occurs() - sim->current_time();
   }
   return timespan_t::min();
+}
+
+timespan_t buff_t::tick_time_remains() const
+{
+  if ( tick_event )
+  {
+    timespan_t buff_remains = remains();
+    timespan_t tick_remains = tick_event->remains();
+
+    if ( tick_remains <= buff_remains || buff_remains == timespan_t::min() )
+    {
+      return tick_remains;
+    }
+  }
+
+  return timespan_t::max();
 }
 
 bool buff_t::remains_gt( timespan_t time ) const
