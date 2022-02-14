@@ -3234,6 +3234,33 @@ void the_first_sigil( special_effect_t& effect )
   effect.execute_action = create_proc_action<the_first_sigil_t>( "the_first_sigil", effect );
 }
 
+// TODO: fix damage scaling with targets
+void cosmic_gladiators_resonator( special_effect_t& effect )
+{
+  struct gladiators_resonator_t : generic_proc_t
+  {
+    timespan_t detonate_delay;
+    unsigned target_increase_cap;
+
+    gladiators_resonator_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "gladiators_resonator", effect.driver()->effectN( 2 ).trigger() ),
+        detonate_delay( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) ),
+        target_increase_cap( effect.driver()->effectN( 3 ).base_value() )
+    {
+      split_aoe_damage    = true;
+      reduced_aoe_targets = target_increase_cap;
+      base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+    }
+
+    timespan_t travel_time() const override
+    {
+      return detonate_delay;
+    }
+  };
+
+  effect.execute_action = create_proc_action<gladiators_resonator_t>( "gladiators_resonator", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4594,6 +4621,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
+    unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
