@@ -7200,7 +7200,7 @@ void monk_t::create_buffs()
                                    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.primordial_power_hidden_channel = make_buff( this, "primordial_power_hidden_channel" )
                                        ->set_quiet( true )
-                                       ->set_max_stack( passives.primordial_power->max_stacks() )
+                                       ->set_max_stack( is_ptr() ? passives.primordial_power->max_stacks() : 3 )
                                        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }

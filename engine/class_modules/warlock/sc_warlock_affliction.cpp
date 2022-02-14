@@ -106,6 +106,7 @@ struct shadow_bolt_t : public affliction_spell_t
   void impact( action_state_t* s ) override
   {
     affliction_spell_t::impact( s );
+
     if ( result_is_hit( s->result ) )
     {
       if ( p()->talents.shadow_embrace->ok() )
@@ -126,6 +127,9 @@ struct shadow_bolt_t : public affliction_spell_t
         }
       }
     }
+
+    if ( p()->legendary.shard_of_annihilation.ok() )
+      p()->buffs.shard_of_annihilation->decrement();
   }
 
   double action_multiplier() const override
@@ -187,9 +191,6 @@ struct shadow_bolt_t : public affliction_spell_t
       p()->buffs.nightfall->decrement();
 
     p()->buffs.decimating_bolt->decrement();
-
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
   }
 };
 
