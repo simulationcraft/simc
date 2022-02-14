@@ -4907,7 +4907,8 @@ struct serrated_bone_spike_t : public rogue_attack_t
     }
 
     // 2021-07-17 -- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
-    if ( p()->bugs && state->chain_target > 0 )
+    // 2022-02-14 -- Most recent PTR build has fixed the Deathspike bugs, leaving in for live sims
+    if ( p()->bugs && state->chain_target > 0 && !p()->is_ptr() )
     {
       tdata->set_is_deathspiked( true );
     }
