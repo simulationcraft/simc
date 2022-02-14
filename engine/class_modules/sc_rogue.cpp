@@ -3814,8 +3814,8 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
-    if ( p()->is_ptr() )
+    // 2022-01-15 -- PTR spell data now allows this to proc from Akaari primary hits
+    if ( p()->is_ptr() && secondary_trigger_type != secondary_trigger::WEAPONMASTER )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3875,8 +3875,8 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from secondary procs
-    if ( !is_secondary_action() || p()->is_ptr() )
+    // 2022-02-14 -- Latest PTR build triggers from 4pc and Akaari procs but not from WM
+    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3890,7 +3890,7 @@ struct shadowstrike_t : public rogue_attack_t
     }
 
     // 2022-02-07 -- 2pc procs can trigger this as they are fake direct casts, does not work on WM
-    if ( ( !is_secondary_action() || secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE ) &&
+    if ( ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE ) &&
       p()->set_bonuses.t28_subtlety_2pc->ok() &&
       p()->rng().roll( p()->set_bonuses.t28_subtlety_2pc->effectN( 1 ).percent() ) )
     {
