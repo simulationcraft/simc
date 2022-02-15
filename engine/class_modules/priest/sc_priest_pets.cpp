@@ -698,7 +698,6 @@ struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
     background                 = true;
     dual                       = true;
     affected_by_shadow_weaving = true;
-    tick_zero                  = true;
     aoe                        = -1;
     radius                     = data().effectN( 2 ).radius();
     spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
@@ -722,6 +721,7 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   {
     parse_options( options );
     channeled   = true;
+    tick_zero = true;
     tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
   }
 
@@ -734,7 +734,7 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 
   timespan_t execute_time() const override
   {
-    // Right now there is a bug/delay between channels and on spawn time
+    // Right now there is a delay between channels and on spawn time
     // There is a delay between the last tick of channel 1 and the first tick of channel 2
     // https://github.com/WarcraftPriests/sl-shadow-priest/issues/229
     if ( p().o().bugs )
