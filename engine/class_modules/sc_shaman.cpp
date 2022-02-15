@@ -9852,12 +9852,13 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
     se_single_target->add_talent( this, "Storm Elemental" );
+    // se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&(runeforge.splintered_elements.equipped&!buff.splintered_elements.up|!runeforge.splintered_elements.equipped)" );
     se_single_target->add_action( this, "Frost Shock",
                                   "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury."
                                   "stack&buff.wind_gust.stack<18" );
     se_single_target->add_action( this,
-                                  "Flame Shock,target_if=(remains<=gcd)&(buff.lava_surge.up|!buff.bloodlust.up)" );
-    single_target->add_action(
+                                  "Flame Shock", "target_if=refreshable" );
+    se_single_target->add_action(
         this, "Frost Shock",
         "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
     se_single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
@@ -9881,7 +9882,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action(
         this, "Earth Shock",
         "if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)|(runeforge.echoes_of_"
-        "great_sundering.equipped&!buff.echoes_of_great_sundering.up)" );
+        "great_sundering.equipped&!buff.echoes_of_great_sundering.up)|runeforge.windspeakers_lava_resurgence.equipped" );
     se_single_target->add_action( this, "Earthquake",
                                   "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)" );
     se_single_target->add_action( this, "Chain Lightning",
@@ -9977,7 +9978,6 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
   }
-
 
 }
 
