@@ -2626,12 +2626,12 @@ struct keg_smash_t : public monk_melee_attack_t
     // Tier 28 4-piece
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
     {
-      auto heal_amount   = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 2 ).percent() * s->result_total;
+      auto heal_amount   = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 2 ).percent() * s->result_amount;
       heal->base_dd_min  = heal_amount;
       heal->base_dd_max  = heal_amount;
       heal->execute();
 
-      auto hp_gain = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 3 ).percent() * s->result_total;
+      auto hp_gain = p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 3 ).percent() * s->result_amount;
       p()->buff.keg_of_the_heavens->trigger( 1, hp_gain, 1.0, p()->passives.keg_of_the_heavens_buff->duration() );
     }
   }
