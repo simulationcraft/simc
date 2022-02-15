@@ -1,14 +1,14 @@
-deathknight="T26_Death_Knight_Blood"
+deathknight="T28_Death_Knight_Blood"
 source=default
 spec=blood
 level=60
 race=undead
 role=tank
 position=front
-talents=2221033
+talents=2231133
 covenant=kyrian
-soulbind=kleia,pointed_courage/proliferation:7
-renown=40
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:11:1/spirit_drain:11:1/meat_shield:11:1/adaptive_armor_fragment:11:1/proliferation:11:1/soulglow_spectrometer/condensed_anima_sphere:11:1/effusive_anima_accelerator
+renown=80
 
 # Default consumables
 potion=potion_of_phantom_fire
@@ -95,28 +95,30 @@ actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=epaulettes_of_overwhelming_force,id=182994,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=shadowghast_breastplate,id=171412,bonus_id=6647/6649/6758/6953/1532,enchant=eternal_skirmish
-wrists=hellhound_cuffs,id=183018,bonus_id=7187/1498/6935,gem_id=173127
-hands=colossal_plate_gauntlets,id=182984,bonus_id=7187/1498,enchant=eternal_strength
-waist=binding_of_warped_desires,id=183015,bonus_id=7187/1498/6935,gem_id=173127
-legs=ceremonial_parade_legguards,id=183002,bonus_id=7187/1498
-feet=stoneguard_attendants_boots,id=182983,bonus_id=7187/1498
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=polemarchs_scepter_of_faith,id=180315,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
+back=grimveiled_cape,id=173242,bonus_id=6716/6953/6649/6648/1588,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
+wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
+hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
+waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6648/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_strength=882
-# gear_stamina=1534
-# gear_crit_rating=464
-# gear_haste_rating=873
-# gear_mastery_rating=467
-# gear_versatility_rating=158
-# gear_armor=1306
+# gear_ilvl=280.67
+# gear_strength=1399
+# gear_stamina=2865
+# gear_crit_rating=415
+# gear_haste_rating=673
+# gear_mastery_rating=739
+# gear_versatility_rating=290
+# gear_armor=1793
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

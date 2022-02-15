@@ -1,14 +1,13 @@
-deathknight="T27_Death_Knight_Frost_2H"
+deathknight="T28_Death_Knight_Frost_Icecap"
 source=default
 spec=frost
 level=60
-race=orc
+race=tauren
 role=attack
 position=back
-talents=3201012
+talents=2201011
 covenant=kyrian
-soulbind=pelagos,combat_meditation/accelerated_cold:9:1/everfrost:9:1/unleashed_frenzy:9:1/better_together/newfound_resolve
-renown=80
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/everfrost:11:1/unleashed_frenzy:11:1/accelerated_cold:11:1/soulglow_spectrometer/effusive_anima_accelerator
 
 # Default consumables
 potion=potion_of_spectral_strength
@@ -207,30 +206,32 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pi
 actions.trinkets+=/use_item,slot=trinket1,if=!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20
 actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187312
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=blighted_margraves_cloak,id=178755,bonus_id=6536/1566/6646,enchant=soul_vitality
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319,enchant=60runspeed
-hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=fused_bone_greatbelt,id=178734,bonus_id=6536/1566/6646/6935,gem_id=173130
-legs=legplates_of_unholy_frenzy,id=178739,bonus_id=6536/1566/6646
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_versatility
-finger2=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/6944/1559/6935,gem_id=173127,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=1498/7745/7746/7747,enchant=rune_of_razorice
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
+back=grimveiled_cape,id=173242,bonus_id=6716/6944/6649/6648/1588,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
+wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
+hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
+waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6648/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=256.40
-# gear_strength=1120
-# gear_stamina=2144
-# gear_attack_power=20
-# gear_crit_rating=685
-# gear_haste_rating=460
-# gear_mastery_rating=686
-# gear_versatility_rating=268
-# gear_speed_rating=60
-# gear_armor=1524
+# gear_ilvl=280.94
+# gear_strength=1398
+# gear_stamina=2864
+# gear_attack_power=40
+# gear_crit_rating=545
+# gear_haste_rating=727
+# gear_mastery_rating=739
+# gear_versatility_rating=290
+# gear_armor=1793
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

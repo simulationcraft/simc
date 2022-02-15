@@ -98,12 +98,6 @@ void shadow( player_t* p )
   default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
 
-  // DMG Trinkets, specifically tied together with Hungering Void
-  dmg_trinkets->add_action( "use_item,name=darkmoon_deck__putrescence" );
-  dmg_trinkets->add_action( "use_item,name=sunblood_amethyst" );
-  dmg_trinkets->add_action( "use_item,name=glyph_of_assimilation" );
-  dmg_trinkets->add_action( "use_item,name=dreadfire_vessel" );
-
   // Trinkets
   trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
@@ -132,11 +126,6 @@ void shadow( player_t* p )
       "bolt)|fight_remains<=40",
       "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or "
       "Necrolord line it up with stacked cooldowns." );
-  trinkets->add_call_action_list(
-      dmg_trinkets,
-      "if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>"
-      "10)",
-      "Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it." );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 

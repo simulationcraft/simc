@@ -123,7 +123,7 @@ actions.covenants+=/abomination_limb,if=variable.st_planning&soulbind.kevins_ooz
 actions.covenants+=/abomination_limb,if=variable.adds_remain&rune.time_to_4>buff.runic_corruption.remains
 actions.covenants+=/shackle_the_unworthy,if=variable.st_planning&(cooldown.apocalypse.remains>10|!talent.army_of_the_damned&cooldown.dark_transformation.remains)|fight_remains<15
 actions.covenants+=/shackle_the_unworthy,if=variable.adds_remain&(death_and_decay.ticking|raid_event.adds.remains<=14)
-actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
+actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 
 # Single Target
 actions.generic=death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=13+(runeforge.rampant_transference*3+death_knight.runeforge.hysteria*3))|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up
@@ -155,7 +155,7 @@ actions.racials+=/fireblood,if=variable.major_cooldowns_active|pet.gargoyle.acti
 actions.racials+=/bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)
 
 # Trinkets
-actions.trinkets=use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|target.time_to_pct_20<5
+actions.trinkets=use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|target.time_to_pct_20<5&!buff.bloodlust.up
 # The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1))|trinket.1.proc.any_dps.duration>=fight_remains
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2))|trinket.2.proc.any_dps.duration>=fight_remains

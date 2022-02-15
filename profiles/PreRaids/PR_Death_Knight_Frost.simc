@@ -147,7 +147,7 @@ actions.covenants+=/abomination_limb,if=cooldown.pillar_of_frost.remains<3&varia
 actions.covenants+=/abomination_limb,if=variable.adds_remain
 actions.covenants+=/shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)
 actions.covenants+=/shackle_the_unworthy,if=variable.adds_remain
-actions.covenants+=/fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
+actions.covenants+=/fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 
 # Obliteration rotation
 actions.obliteration=remorseless_winter,if=active_enemies>=3&variable.rw_buffs
