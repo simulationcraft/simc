@@ -716,13 +716,17 @@ struct melee_t : public paladin_melee_attack_t
             );
           }
 
-          if ( p()->talents.blade_of_wrath->ok() )
-            p()->buffs.blade_of_wrath->trigger();
-
           if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
+          {
             p()->cooldowns.wake_of_ashes->reset( true );
+          }
           else
+          {
+            if ( p()->talents.blade_of_wrath->ok() )
+              p()->buffs.blade_of_wrath->trigger();
+
             p()->cooldowns.blade_of_justice->reset( true );
+          }
         }
 
         if ( p()->buffs.zeal->up() && p()->active.zeal )
