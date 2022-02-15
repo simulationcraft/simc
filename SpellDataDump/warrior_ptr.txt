@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -5049,7 +5049,7 @@ Attributes       : .......x ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=325916)   : Unknown(179)
+#1 (id=325916)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7790 | Radius: 6 yards | Target: Unknown(44)
 Description      : $@spelldesc218826
 
@@ -8812,9 +8812,9 @@ Attributes       : ........ ........ ........ ........   ...x...x ..x..... .....
                  : ........ ........ ........ ........   
                  : No Redirection (35), No Reflection (39), No Threat (42), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=786852)   : Unknown(179)
+#1 (id=786852)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17984 | Target: Unknown(87)
-#2 (id=892988)   : Unknown(179)
+#2 (id=892988)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 18314 | Target: Unknown(87)
 Description      : $@spelldesc307865
 
@@ -11540,7 +11540,7 @@ Attributes       : ....x... x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Do Not Log (8), Not In Spellbook Until Learned (269)
 Effects          :
-#1 (id=845570)   : Unknown(179)
+#1 (id=845570)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21902 | Target: Custom (18)
 Description      : $@spelldesc325886
 

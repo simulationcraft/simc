@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -695,7 +695,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
 Effects          :
 #1 (id=301465)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=16533)    : Unknown(179)
+#2 (id=16533)    : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4488 | Target: Unknown(87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: Custom (18)
@@ -3997,7 +3997,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), No Aura Log (202), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301056)   : Unknown(179)
+#1 (id=301056)   : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 6006 | Target: Custom (18)
 #2 (id=818577)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
@@ -8405,7 +8405,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=801819)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=802227)   : Unknown(179)
+#2 (id=802227)   : Create Area Trigger (179)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 19042 | Radius: 20 yards | Target: AOE Custom (8)
 Description      : Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.
 

@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1721,7 +1721,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Bypass Visibility Check (320), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=56703)    : Unknown(179)
+#1 (id=56703)    : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1489 | Radius: 8 yards | Target: AOE friendly (31)
 Description      : Summons a holy barrier to protect all allies at the target location for $d, reducing all damage taken by $81782s2% and preventing damage from delaying spellcasting.
 
@@ -2513,7 +2513,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=122871)   : Unknown(179)
+#1 (id=122871)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
 Description      : Throw a Divine Star forward 24 yds, healing allies in its path for $110745s1 and dealing $122128s1 Holy damage to enemies. After reaching its destination, the Divine Star returns to you, healing allies and damaging enemies in its path again. Healing reduced beyond $s1 targets.
 
@@ -2667,7 +2667,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=140102)   : Unknown(179)
+#1 (id=140102)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
 Description      : Creates a ring of Holy energy around you that quickly expands to a 30 yd radius, healing allies for $120692s1 and dealing $120696s1 Holy damage to enemies. Healing reduced beyond $s1 targets.
 
