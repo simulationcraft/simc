@@ -148,18 +148,18 @@ actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infus
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
-head=grimveiled_hood,id=173245,bonus_id=6648/6649/7728/7451/1588
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/7728/7451/1588,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect
 hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7162/7451/1588
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7162/7451/1588,gem_id=173130
 legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_mastery
-finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_mastery
+finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=guardstaff_of_the_great_cycle,id=189834,bonus_id=1524/7187,enchant=sinful_revelation
@@ -170,7 +170,7 @@ main_hand=guardstaff_of_the_great_cycle,id=189834,bonus_id=1524/7187,enchant=sin
 # gear_intellect=1878
 # gear_crit_rating=380
 # gear_haste_rating=1111
-# gear_mastery_rating=743
+# gear_mastery_rating=759
 # gear_versatility_rating=211
 # gear_armor=469
 # set_bonus=tier28_2pc=1
