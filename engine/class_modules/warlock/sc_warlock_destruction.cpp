@@ -610,7 +610,7 @@ struct chaos_bolt_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;      
   }
@@ -894,7 +894,7 @@ struct rain_of_fire_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;        
   }
