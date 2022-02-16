@@ -11098,6 +11098,11 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
       }
     }
+
+    if ( !shadowlands_opts.soleahs_secret_technique_type.empty() )
+    {
+      profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
