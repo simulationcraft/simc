@@ -1326,7 +1326,7 @@ void warlock_t::create_apl_destruction()
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
