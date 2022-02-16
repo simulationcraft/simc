@@ -5,10 +5,11 @@ level=60
 race=tauren
 role=spell
 position=ranged_back
-talents=2301022
+talents=1102021
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/call_of_flame:11:1/hammer_of_genesis/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/call_of_flame:11:1/pyroclastic_shock:11:1/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
 renown=80
+shadowlands.soleahs_secret_technique_type_override=versatility
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -153,30 +154,30 @@ actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935,ilevel=291,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,bonus_id=8128/6650/6649,ilevel=291
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649,ilevel=291
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6917,ilevel=278
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=185818,ilevel=278
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=282.07
-# gear_stamina=2899
-# gear_intellect=1743
-# gear_crit_rating=481
-# gear_haste_rating=881
-# gear_mastery_rating=393
-# gear_versatility_rating=803
-# gear_armor=1191
+# gear_ilvl=283.00
+# gear_stamina=2941
+# gear_intellect=1879
+# gear_crit_rating=281
+# gear_haste_rating=875
+# gear_mastery_rating=879
+# gear_versatility_rating=427
+# gear_armor=1203
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
