@@ -10877,7 +10877,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330)
 Effects          :
 #1 (id=842041)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 341572 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.40000 | Trigger Spell: 341572 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #2 (id=842042)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shadowstrike increases the damage of your next $?s200758[Gloomblade][Backstab] by |cFFFFFFFF$s1%|r, stacking up to $341572u times.

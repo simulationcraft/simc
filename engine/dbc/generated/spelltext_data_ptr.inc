@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42354
-static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 16005> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16004,6 +16004,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
+  { 369438, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42354
