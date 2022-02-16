@@ -5754,8 +5754,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
 
-      // Feb 11 2022.  !background is because the counterattack does not currently proc the 1% str buff or extension
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) && !background )
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
       {
         p() -> buffs.endless_rune_waltz -> trigger();
         if ( p() -> buffs.dancing_rune_weapon -> up() )
