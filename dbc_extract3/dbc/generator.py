@@ -1322,6 +1322,8 @@ class SpellDataGenerator(DataGenerator):
          353515,
          # Preternatural Charge (Yasahm the Riftbreaker)
          351561,
+         # So'leah's Secret Technique (Stat buff)
+         368512,
          # Mythic Plus Season 2 Anima Powers
          357575, 357582, 357584, # champion's brand
          357609, # dagger of necrotic wounding
