@@ -2720,16 +2720,23 @@ void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
 }
 
 /**Ticking Sack of Terror
+* 9.1 version
   (351679) driver, damage on effect 1
   (351682) debuff
   (351694) fire damage at 3 stacks
+  9.2 version
+  (367901) driver, damage on effect 1
+  (367902) debuff
+  (367903) fire damage at 3 stacks
  */
 void ticking_sack_of_terror( special_effect_t& effect )
 {
   struct volatile_detonation_t : generic_proc_t
   {
     volatile_detonation_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "volatile_detonation", effect.player->find_spell( 351694 ) )
+      : generic_proc_t(
+            effect, "volatile_detonation",
+            ( effect.spell_id == 351679 ? effect.player->find_spell( 351694 ) : effect.player->find_spell( 367903 ) ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     }
@@ -4615,6 +4622,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
+    unique_gear::register_special_effect( 367901, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
@@ -4757,6 +4765,13 @@ void register_target_data_initializers( sim_t& sim )
       assert( !td->debuff.volatile_satchel );
 
       td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
+      td->debuff.volatile_satchel->reset();
+    }
+    else if ( unique_gear::find_special_effect( td->source, 367901 ) )
+    {
+      assert( !td->debuff.volatile_satchel );
+
+      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 367902 ) );
       td->debuff.volatile_satchel->reset();
     }
     else
