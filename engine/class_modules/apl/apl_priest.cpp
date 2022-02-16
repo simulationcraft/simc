@@ -305,17 +305,17 @@ void shadow( player_t* p )
       "enabled&spell_targets.mind_sear<=2))&(!talent.damnation.enabled|cooldown.damnation.remains>=dot.shadow_word_"
       "pain.remains)",
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
+  main->add_action(
+      "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up&buff.volatile_solvent_"
+      "humanoid.remains<10,interrupt_immediate=1,interrupt_if=ticks>=1",
+      "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
   main->add_action( p, "Mind Sear",
                     "target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,"
-                    "interrupt_if=ticks>=2,if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up" );
+                    "interrupt_if=ticks>=2" );
   main->add_action(
       p, "Mind Flay",
       "chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(!buff.dark_thought.up|cooldown.void_bolt.up&(buff.voidform."
-      "up|!buff.dark_thought.up&buff.dissonant_echoes.up)),if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up" );
-  main->add_action(
-      "fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up,interrupt_immediate=1,"
-      "interrupt_if=ticks>=1",
-      "Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff." );
+      "up|!buff.dark_thought.up&buff.dissonant_echoes.up))" );
   main->add_action( p, "Shadow Word: Death", "", "Use SW:D as last resort if on the move" );
   main->add_action( p, "Shadow Word: Pain", "", "Use SW:P as last resort if on the move and SW:D is on CD" );
 }
