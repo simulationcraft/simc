@@ -25,7 +25,7 @@ feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=soleahs_secret_technique,id=185818,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
 shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
@@ -60,7 +60,7 @@ feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=soleahs_secret_technique,id=185818,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
 shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
@@ -94,7 +94,7 @@ feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=soleahs_secret_technique,id=185818,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
 shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
@@ -129,7 +129,7 @@ feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
 finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=soleahs_secret_technique,id=185818,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
 shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
