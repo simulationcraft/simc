@@ -10524,9 +10524,9 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
   {
-    if ( spec.omen_of_clarity_cat->ok() )
+    if ( specialization() == DRUID_FERAL )
       splits[ 1 ] = "clearcasting_cat";
-    else if ( spec.omen_of_clarity_tree->ok() )
+    else
       splits[ 1 ] = "clearcasting_tree";
 
     return druid_t::create_expression( util::string_join( splits, "." ) );
