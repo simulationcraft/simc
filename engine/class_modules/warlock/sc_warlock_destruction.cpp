@@ -610,7 +610,7 @@ struct chaos_bolt_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;      
   }
@@ -894,7 +894,7 @@ struct rain_of_fire_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;        
   }
@@ -1326,7 +1326,7 @@ void warlock_t::create_apl_destruction()
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
