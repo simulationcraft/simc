@@ -213,6 +213,8 @@ public:
 
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
+
+    cooldown_t* t28_4p_icd;
   } cooldowns;
 
   // Passives

@@ -39,7 +39,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
-  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
+  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );  
 
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
@@ -59,6 +59,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
 
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
+
+  cooldowns.t28_4p_icd = get_cooldown( "t28_4p_icd" );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -1875,6 +1877,9 @@ void paladin_t::create_actions()
   if ( legendary.the_magistrates_judgment->ok() )
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ))
+    cooldowns.t28_4p_icd -> duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
+
   player_t::create_actions();
 }
 
@@ -3018,14 +3023,6 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   if ( s->block_result == BLOCK_RESULT_BLOCKED )
   {
     trigger_holy_shield( s );
-  }
-
-  // On a block event, trigger T28 4p if equipped
-  // todo: Woli -  Set bonus check
-  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 )
-        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
-  {
-    trigger_t28_4p_pp( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )

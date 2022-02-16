@@ -608,6 +608,15 @@ void paladin_t::target_mitigation( school_e school,
 {
   player_t::target_mitigation( school, dt, s );
 
+  // Trigger T28 4p if equipped
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_icd->up()
+  // Haven't checked: This might be subject to block chance suppressio when the
+  // attacker is above the paladin's level. I'll assume it's not for now.
+        && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  {
+    trigger_t28_4p_pp( s );
+  }
+
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
 
   // Passive sources (Sanctuary)
@@ -776,16 +785,14 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
 
 void paladin_t::trigger_t28_4p_pp( action_state_t* s )
 {
-  // escape if we don't have t28 4p
-  // if ( !talents.holy_shield->ok() )
-  //  return;
-
-  // sanity check - no friendly-fire
-  if ( !s->action->player->is_enemy() )
-    return;
-
+  
   active.t28_4p_pp->set_target( s->action->player );
+  // no friendly-fire
+  if ( !s->action->player->is_enemy() )
+    active.t28_4p_pp->set_target( this -> target );    
+
   active.t28_4p_pp->schedule_execute();
+  cooldowns.t28_4p_icd->start();
 }
 
 bool paladin_t::standing_in_consecration() const
