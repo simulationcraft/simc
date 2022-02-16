@@ -2781,8 +2781,14 @@ void ticking_sack_of_terror( special_effect_t& effect )
   new volatile_satchel_cb_t( effect );
 }
 
+// 9.1 version
+// id=351926 driver
 // id=351927 hold stat amount
 // id=351952 buff
+// 9.2 version
+// id=368509 driver
+// id=368513 hold stat amount
+// id=368512 buff
 // TODO: implement external buff to simulate being an ally
 void soleahs_secret_technique( special_effect_t& effect )
 {
@@ -2799,7 +2805,12 @@ void soleahs_secret_technique( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  auto val = effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item );
+  auto val = effect.spell_id == 351926 
+      ? effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item ) 
+      : effect.player->find_spell( 368513 )->effectN( 1 ).average( effect.item );
+  auto buff_spell = effect.spell_id == 351926
+                        ? effect.player->find_spell( 351952 ) 
+                        : effect.player->find_spell( 368512 );
 
   buff_t* buff;
 
@@ -2809,7 +2820,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", effect.player->find_spell( 351952 ) )
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", buff_spell )
               ->add_stat( STAT_HASTE_RATING, val );
     }
   }
@@ -2818,8 +2829,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_crit" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", buff_spell )
               ->add_stat( STAT_CRIT_RATING, val );
     }
   }
@@ -2828,8 +2838,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_versatility" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", buff_spell )
               ->add_stat( STAT_VERSATILITY_RATING, val );
     }
   }
@@ -2838,8 +2847,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_mastery" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", buff_spell )
               ->add_stat( STAT_MASTERY_RATING, val );
     }
   }
@@ -4624,6 +4632,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 367901, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
+    unique_gear::register_special_effect( 368509, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
