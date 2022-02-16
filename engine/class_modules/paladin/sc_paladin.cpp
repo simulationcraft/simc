@@ -1309,7 +1309,7 @@ struct ashen_hallow_t : public paladin_spell_t
     }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
                                             .duration( duration )
-                                            .pulse_time( data().effectN( 2 ).period() )
+                                            .pulse_time( p() -> dbc -> ptr ? data().effectN( 1 ).period() : data().effectN( 2 ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );
