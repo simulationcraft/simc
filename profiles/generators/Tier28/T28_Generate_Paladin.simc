@@ -4,9 +4,9 @@ race=draenei
 spec=protection
 role=tank
 position=front
-talents=2200302
+talents=1200302
 covenant=venthyr
-soulbind=Nadja_the_mistblade,thrill_seeker/punish_the_guilty:11:1/hallowed_discernment:11:1/dauntless_duelist/fatal_flaw
+soulbind=Theotar_The_Mad_Duke:9,soothing_shade/hallowed_discernment:11:1/wasteland_propriety/punish_the_guilty:11:1/party_favors
 renown=80
 
 head=Luminous_Chevaliers_Casque,id=188933,bonus_id=7187/1498
@@ -21,7 +21,7 @@ legs=Legguards_of_the_Ultimate_Threat,id=189858,bonus_id=7187/1524
 feet=Shadowghast_Sabatons,id=171413,bonus_id=6648/6649/7054/6716/1588
 finger1=Rygelons_Heraldric_Ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste,gem_id=173128
 finger2=Loquacious_Keepers_Peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste,gem_id=173128
-trinket1=Old_Warriors_Soul,id=186438,bonus_id=7187/1498
+trinket1=Inscrutable_Quantum_Device,id=179350,bonus_id=6536/1592/6646
 trinket2=Phial_of_Putrefaction,id=178771,bonus_id=6536/1592/6646
 main_hand=Devastated_Worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 off_hand=Ruined_Crest_of_Lordaeron,id=189845,bonus_id=7187/1524
