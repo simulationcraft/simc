@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -11361,12 +11361,13 @@ Tooltip          : Rogue's fifth combo point is Animacharged.
 
 Damaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.
 
-Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8)] 
+Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Seeds of Rampant Growth (364735)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11374,6 +11375,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=889931)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)

@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -9039,6 +9039,7 @@ Effects          :
 Description      : $@spelldesc328620
 
 Name             : Vanquisher's Hammer (desc=Necrolord) (id=328204) [Spell Family (10)] 
+Hotfixed         : Internal Cooldown (1 -> 100)
 Class            : Paladin
 Covenant         : Necrolord
 School           : Shadow
@@ -9051,7 +9052,7 @@ Duration         : 20 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1938: Duty-Bound Gavel (355099 effect#1)
 Labels           : 976
-Internal Cooldown: 0.001 seconds
+Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....x.. ........ 
