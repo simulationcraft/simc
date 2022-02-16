@@ -22,7 +22,7 @@ ptr=1
 # * Renown is considered to be >= 80, so every row from each soulbind tree is unlocked.
 # * Conduits rank is limited to 11 (item level 278). All class conduits can be empowered. [conduit:11:1]
 # * One Rank 7 (item level 291, bonus_id=1588) non-Covenant Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
-# * One Rank 7 (item level 291, bonus_id=1588) Covenant Legendary or "Unity". [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
+# * One Rank 7 (item level 291, bonus_id=1588) Covenant Legendary or "Unity" (bonus_id=8128). [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
 #   * missive crit: 6647
 #   * missive haste: 6649
 #   * missive mastery: 6648
