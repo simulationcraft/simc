@@ -1269,6 +1269,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected" );
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
   def->add_action( "call_action_list,name=trinkets" );
+  def->add_action( "call_action_list,name=ogcd,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
@@ -1276,7 +1277,6 @@ void warlock_t::create_apl_demonology()
   def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up" );
   def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd=0&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
-  def->add_action( "call_action_list,name=ogcd,if=pet.demonic_tyrant.active" );
   def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&variable.next_tyrant_cd>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)" );
   def->add_action( "call_dreadstalkers,if=variable.next_tyrant_cd>20-5*!runeforge.wilfreds_sigil_of_superior_summoning" );
   def->add_action( "power_siphon,if=!variable.use_bolt_timings&buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
@@ -1311,6 +1311,7 @@ void warlock_t::create_apl_demonology()
   open->add_action( "grimoire_felguard" );
   open->add_action( "summon_vilefiend" );
   open->add_action( "shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up" );
+  open->add_action( "shadow_bolt,if=variable.use_bolt_timings&soul_shard<5&buff.balespiders_burning_core.stack<4" );
   open->add_action( "call_dreadstalkers" );
 
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)" );
