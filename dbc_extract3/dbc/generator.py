@@ -1315,7 +1315,7 @@ class SpellDataGenerator(DataGenerator):
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
-         351694,
+         351694, 367903,
          # Reactive Defense Matrix (Trinket damage)
          356857,
          # Withering Fire (Dark Ranger's Quiver)
