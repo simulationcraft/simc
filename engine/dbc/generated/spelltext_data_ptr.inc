@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42277
-static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.42354
+static const std::array<spelltext_data_t, 16009> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15906,7 +15906,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 367726, "$@spelldesc367722", "Bleeding for $w1 every $t sec.", 0 },
   { 367733, "Your damaging and healing spells have a chance to call a raptora that graces you with her wisdom, increasing your intellect by $s1 for $367734d.", 0, 0 },
   { 367734, "$@spelldesc367733", "Intellect increased by $w1.", 0 },
-  { 367802, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", 0, 0 },
+  { 367802, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies.", 0, 0 },
   { 367804, "Periodically rummage through the cache, finding a new stolen weapon.", 0, 0 },
   { 367805, "Grab the weapon from the cache, gaining its benefit.", 0, 0 },
   { 367808, "Cause the ground to quake beneath your feet, dealing $s1 Nature damage split between all nearby enemies over $d. Damage increased per target hit.\r\n\r\nWhile quaking, you can sense nearby tectonic weak points. Moving over a weak point will deal an additional $s2 Nature damage to all nearby enemies.", 0, 0 },
@@ -15922,6 +15922,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 367898, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367901, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
+  { 367903, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367907, "$@spelldesc364423", "Generating ${$o1/10} Astral Power over $d.", 0 },
   { 367911, "When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.", 0, 0 },
   { 367912, "When Pocopoc possesses a Coreless Scarabid, it reduces your damage taken by $368141M1%.", 0, 0 },
@@ -15975,6 +15976,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 368491, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 368494, "Restoring $s1% health and mana every $368239t2 sec", 0, 0 },
   { 368509, "Select a player in your party or raid, granting them $351927s2 of their highest secondary stat, and granting you $351927s1 of that same stat, for $351952d.", 0, 0 },
+  { 368512, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },
   { 368634, "$@spelldesc367808", 0, 0 },
@@ -16004,13 +16006,17 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
+  { 369438, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
+  { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
+  { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42277
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42354
+static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+  {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
 } };
 
-// Spell description variables, wow build 9.2.0.42277
+// Spell description variables, wow build 9.2.0.42354
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16320,7 +16326,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42277
+// spelldesc_vars hotfix entries, wow build 9.2.0.42354
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

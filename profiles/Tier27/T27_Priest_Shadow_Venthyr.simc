@@ -79,10 +79,6 @@ actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nig
 # Only_cwc makes the action only usable during channeling and not as a regular action.
 actions.cwc+=/mind_blast,only_cwc=1
 
-actions.dmg_trinkets=use_item,name=darkmoon_deck__putrescence
-actions.dmg_trinkets+=/use_item,name=sunblood_amethyst
-actions.dmg_trinkets+=/use_item,name=glyph_of_assimilation
-actions.dmg_trinkets+=/use_item,name=dreadfire_vessel
 
 actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
 # Use Void Eruption on cooldown pooling at least 25 insanity but not if you will overcap insanity in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before VE if Shadowflame is equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out.
@@ -128,10 +124,10 @@ actions.main+=/vampiric_touch,target_if=(refreshable&target.time_to_die>6|(talen
 actions.main+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2
 # Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.
 actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff)&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))&(!talent.damnation.enabled|cooldown.damnation.remains>=dot.shadow_word_pain.remains)
-actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2,if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up
-actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(!buff.dark_thought.up|cooldown.void_bolt.up&(buff.voidform.up|!buff.dark_thought.up&buff.dissonant_echoes.up)),if=!soulbind.volatile_solvent|!cooldown.fleshcraft.up
 # Use Fleshcraft outside of main cooldowns to maintain Volatile Solvent buff.
-actions.main+=/fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up,interrupt_immediate=1,interrupt_if=ticks>=1
+actions.main+=/fleshcraft,if=soulbind.volatile_solvent&!buff.voidform.up&!buff.power_infusion.up&buff.volatile_solvent_humanoid.remains<10,interrupt_immediate=1,interrupt_if=ticks>=1
+actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
+actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(!buff.dark_thought.up|cooldown.void_bolt.up&(buff.voidform.up|!buff.dark_thought.up&buff.dissonant_echoes.up))
 # Use SW:D as last resort if on the move
 actions.main+=/shadow_word_death
 # Use SW:P as last resort if on the move and SW:D is on CD
@@ -149,8 +145,6 @@ actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!pri
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
 # Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or Necrolord line it up with stacked cooldowns.
 actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10&(covenant.necrolord|covenant.kyrian)|(covenant.venthyr|covenant.night_fae)&(!buff.voidform.up|prev_gcd.1.void_bolt)|fight_remains<=40
-# Use list of on-use damage trinkets only if Hungering Void Debuff is active, or you are not talented into it.
-actions.trinkets+=/call_action_list,name=dmg_trinkets,if=(!talent.hungering_void.enabled|debuff.hungering_void.up)&(buff.voidform.up|cooldown.void_eruption.remains>10)
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 

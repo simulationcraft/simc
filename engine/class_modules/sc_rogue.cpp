@@ -3213,7 +3213,7 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest PTR build 2pc proc damage does not benefit from or consume procs
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       m *= 1.0 + p()->buffs.opportunity->value();
@@ -3229,7 +3229,7 @@ struct pistol_shot_t : public rogue_attack_t
     if ( g == 0.0 )
       return 0.0;
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest PTR build 2pc procs still benefit from CP gains
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
@@ -3245,15 +3245,16 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest PTR build 2pc proc damage does not benefit from or consume procs
+    //               However, they still appear to benefit from the CP gain modifier
+    if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+    {
+      const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
+      trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
+    }
+
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
-      if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
-      {
-        const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
-        trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
-      }
-
       p()->buffs.opportunity->expire();
       p()->buffs.greenskins_wickers->expire();
     }
@@ -3270,13 +3271,16 @@ struct pistol_shot_t : public rogue_attack_t
     }
 
     // T28 Outlaw 4pc Procs
-    // 2022-02-04 -- As of the current PTR build, both parts of the 4pc trigger from 2pc procs
     if ( p()->set_bonuses.t28_outlaw_4pc->ok() )
     {
       if ( p()->buffs.tornado_trigger->check() )
       {
-        p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
-        p()->buffs.tornado_trigger->expire();
+        // 2022-02-16 -- As of current PTR build, this can no longer auto-trigger from 2pc procs
+        if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
+        {
+          p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
+          p()->buffs.tornado_trigger->expire();
+        }
       }
       else
       {
@@ -4143,6 +4147,9 @@ struct sinister_strike_t : public rogue_attack_t
       trigger_guile_charm( execute_state );
       p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
 
     bool procs_blade_flurry() const override
     { return true; }
@@ -6317,13 +6324,12 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
   if ( !p()->talent.dreadblades->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  // TOCHECK: Double check everything triggers this correctly
-  // 2022-02-04 -- Confirmed as of latest PTR build to work on Outlaw 2pc procs as well
   if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
     return;
 
-  // 2022-02-04 -- Due to not being cast triggers, this appears to not work (although not relevant)
-  if ( secondary_trigger_type == secondary_trigger::CONCEALED_BLUNDERBUSS )
+  // 2022-02-04 -- Due to not being cast triggers, this appears to not work
+  if ( secondary_trigger_type == secondary_trigger::CONCEALED_BLUNDERBUSS ||
+       secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
     return;
 
   if ( !p()->buffs.dreadblades->up() )

@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -614,7 +614,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
 Effects          :
 #1 (id=2039)     : Persistent Area Aura (27) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
-#2 (id=2040)     : Unknown(179)
+#2 (id=2040)     : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5420 | Target: Unknown(87)
 #3 (id=291291)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -6740,7 +6740,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Haste Affects Duration (273), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=713713)   : Unknown(179)
+#1 (id=713713)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 13045 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 Description      : Tear open a portal to the nether above the target location, from which several Bilescourge will pour out of and crash into the ground over $d, dealing $267213s1 Shadow damage to all enemies within $267213A1 yards.
 
@@ -6850,7 +6850,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=713719)   : Unknown(179)
+#1 (id=713719)   : Create Area Trigger (179)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 13046 | Radius: 5 yards | Target: Unknown(49)
 Description      : Tear open a portal to the Twisting Nether for $d. Every time you spend Soul Shards, you will also command demons from the Nether to come out and fight for you.
 
@@ -9930,7 +9930,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .....
 Effects          :
 #1 (id=809723)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-#2 (id=811747)   : Unknown(179)
+#2 (id=811747)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 19619 | Target: Unknown(62) -> Enemy (6)
 Description      : Call forth a cloud of chaotic anima that travels to the target enemy, dealing $322167s1 Shadow damage to enemies in its path. When the anima reaches the target it explodes, inflicting either Curse of Weakness or Curse of Tongues, and dealing $322170o1 Shadow damage over $322170d to all nearby enemies.
 

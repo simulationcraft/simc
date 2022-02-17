@@ -1315,13 +1315,15 @@ class SpellDataGenerator(DataGenerator):
          # Nerubian Ambush, Frost-Tinged Carapace Spikes (Relic of the Frozen Wastes)
          355912, 357409,
          # Volatile Detonation (Ticking Sack of Terror)
-         351694,
+         351694, 367903,
          # Reactive Defense Matrix (Trinket damage)
          356857,
          # Withering Fire (Dark Ranger's Quiver)
          353515,
          # Preternatural Charge (Yasahm the Riftbreaker)
          351561,
+         # So'leah's Secret Technique (Stat buff)
+         368512,
          # Mythic Plus Season 2 Anima Powers
          357575, 357582, 357584, # champion's brand
          357609, # dagger of necrotic wounding
@@ -1335,6 +1337,7 @@ class SpellDataGenerator(DataGenerator):
          368845, 368863, 368865, # Antumbra, Shadow of the Cosmos
          368635, 368636, 368637, 368638, 363839, 368641, 368642, 368850, # Scars of Fraternal Strife
          368223, 368224, 368225, 368229, 368231, 368232, 368233, 368234, # Resonant Reservoir
+         369439, 369544, # Elegy of the Eternals
         ),
 
         # Warrior:

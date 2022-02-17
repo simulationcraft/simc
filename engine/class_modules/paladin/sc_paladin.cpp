@@ -716,13 +716,17 @@ struct melee_t : public paladin_melee_attack_t
             );
           }
 
-          if ( p()->talents.blade_of_wrath->ok() )
-            p()->buffs.blade_of_wrath->trigger();
-
           if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
+          {
             p()->cooldowns.wake_of_ashes->reset( true );
+          }
           else
+          {
+            if ( p()->talents.blade_of_wrath->ok() )
+              p()->buffs.blade_of_wrath->trigger();
+
             p()->cooldowns.blade_of_justice->reset( true );
+          }
         }
 
         if ( p()->buffs.zeal->up() && p()->active.zeal )
@@ -1209,7 +1213,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
   {
     aoe         = -1;
-    reduced_aoe_targets = p->covenant.venthyr->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->covenant.venthyr->effectN( 1 + p->dbc->ptr ).base_value();
     dual        = true;
     direct_tick = true;
     background  = true;
@@ -1305,7 +1309,7 @@ struct ashen_hallow_t : public paladin_spell_t
     }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
                                             .duration( duration )
-                                            .pulse_time( data().effectN( 2 ).period() )
+                                            .pulse_time( data().effectN( 2 - p()->dbc->ptr ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );

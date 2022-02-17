@@ -610,7 +610,7 @@ struct chaos_bolt_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;      
   }
@@ -671,6 +671,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
+    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
     if ( p()->buffs.backdraft->check() )
       t *= backdraft_gcd;
 
@@ -711,7 +712,9 @@ struct chaos_bolt_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->decrement();
+    // PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
+    if ( p()->buffs.ritual_of_ruin->check() )
+      p()->buffs.backdraft->decrement();
 
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -894,7 +897,7 @@ struct rain_of_fire_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;        
   }
@@ -1326,7 +1329,7 @@ void warlock_t::create_apl_destruction()
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );

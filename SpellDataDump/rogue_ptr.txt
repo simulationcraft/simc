@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -5465,7 +5465,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=477504)   : Unknown(179)
+#1 (id=477504)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11866 | Target: At Enemy (53)
 Description      : $@spelldesc255544
 
@@ -10877,7 +10877,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Not In Spellbook Until Learned (269), Proc cooldown on a per target basis (330)
 Effects          :
 #1 (id=842041)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Trigger Spell: 341572 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.40000 | Trigger Spell: 341572 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.4)
 #2 (id=842042)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Shadowstrike increases the damage of your next $?s200758[Gloomblade][Backstab] by |cFFFFFFFF$s1%|r, stacking up to $341572u times.
@@ -11360,12 +11361,13 @@ Tooltip          : Rogue's fifth combo point is Animacharged.
 
 Damaging finishing moves using exactly 5 combo points deal damage as if 7 combo points are consumed.
 
-Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8)] 
+Name             : Seeds of Rampant Growth (id=356218) [Spell Family (8), Hidden] 
+Hotfixed         : Attributes
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
 Triggered by     : Seeds of Rampant Growth (364735)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11373,6 +11375,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=889931)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)

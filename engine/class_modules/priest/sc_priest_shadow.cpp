@@ -186,12 +186,15 @@ public:
         }
         else
         {
-          // There is a ~1s delay between consuming the Dark Thought, and the Shadow Spawning
-          // This is intentional due to the way the pet spawns attached to the player
-          sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by 1 second.", priest() );
+          // There is a ~1.5s delay between consuming the Dark Thought, and the Shadow Spawning
+          // There is an additional .5s delay between the spawn and the first tick, that is also matched between
+          // channels This is intentional due to the way the pet spawns attached to the player
+          double spawn_delay = 1.5;
+          sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by {} seconds.", priest(),
+                            spawn_delay );
           // Add 1ms to ensure pet is dismissed after last dot tick.
           priest().t28_4pc_summon_duration = your_shadow_duration + timespan_t::from_millis( 1 );
-          priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( 1 ), [ this ] {
+          priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( spawn_delay ), [ this ] {
             priest().pets.your_shadow.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );

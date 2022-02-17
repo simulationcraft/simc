@@ -61,6 +61,7 @@ void murmurs_in_the_dark( special_effect_t& );
 void scars_of_fraternal_strife( special_effect_t& );
 void singularity_supreme( special_effect_t& );
 void resonant_reservoir( special_effect_t& );
+void elegy_of_the_eternals( special_effect_t& );
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );

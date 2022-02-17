@@ -2720,16 +2720,23 @@ void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
 }
 
 /**Ticking Sack of Terror
+* 9.1 version
   (351679) driver, damage on effect 1
   (351682) debuff
   (351694) fire damage at 3 stacks
+  9.2 version
+  (367901) driver, damage on effect 1
+  (367902) debuff
+  (367903) fire damage at 3 stacks
  */
 void ticking_sack_of_terror( special_effect_t& effect )
 {
   struct volatile_detonation_t : generic_proc_t
   {
     volatile_detonation_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "volatile_detonation", effect.player->find_spell( 351694 ) )
+      : generic_proc_t(
+            effect, "volatile_detonation",
+            ( effect.spell_id == 351679 ? effect.player->find_spell( 351694 ) : effect.player->find_spell( 367903 ) ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     }
@@ -2774,8 +2781,14 @@ void ticking_sack_of_terror( special_effect_t& effect )
   new volatile_satchel_cb_t( effect );
 }
 
+// 9.1 version
+// id=351926 driver
 // id=351927 hold stat amount
 // id=351952 buff
+// 9.2 version
+// id=368509 driver
+// id=368513 hold stat amount
+// id=368512 buff
 // TODO: implement external buff to simulate being an ally
 void soleahs_secret_technique( special_effect_t& effect )
 {
@@ -2792,7 +2805,12 @@ void soleahs_secret_technique( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  auto val = effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item );
+  auto val = effect.spell_id == 351926 
+      ? effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item ) 
+      : effect.player->find_spell( 368513 )->effectN( 1 ).average( effect.item );
+  auto buff_spell = effect.spell_id == 351926
+                        ? effect.player->find_spell( 351952 ) 
+                        : effect.player->find_spell( 368512 );
 
   buff_t* buff;
 
@@ -2802,7 +2820,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", effect.player->find_spell( 351952 ) )
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", buff_spell )
               ->add_stat( STAT_HASTE_RATING, val );
     }
   }
@@ -2811,8 +2829,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_crit" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", buff_spell )
               ->add_stat( STAT_CRIT_RATING, val );
     }
   }
@@ -2821,8 +2838,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_versatility" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", buff_spell )
               ->add_stat( STAT_VERSATILITY_RATING, val );
     }
   }
@@ -2831,8 +2847,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_mastery" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", buff_spell )
               ->add_stat( STAT_MASTERY_RATING, val );
     }
   }
@@ -3261,6 +3276,74 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<gladiators_resonator_t>( "gladiators_resonator", effect );
+}
+
+void elegy_of_the_eternals( special_effect_t& effect )
+{
+  // TODO: confirm stat priority when stats are equal. for now assuming same as titanic ocular gland
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buff_list = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  // TODO: 369544 has same data as the driver, but with the presumably correct -7 scaling effect. Confirm that the
+  // driver really is 367246 and that 369544 is an unreferenced placeholder spell for the correct scaling effect.
+  double amount = effect.player->find_spell( 369544 )->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name = fmt::format( "elegy_of_the_eternals_{}", util::stat_type_abbrev( stat ) );
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 369439 ), effect.item )
+                 ->add_stat( stat, amount )
+                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                 ->set_can_cancel( false );
+    }
+    ( *buff_list )[ stat ] = buff;
+  }
+
+  auto update_buffs = [ p = effect.player, buff_list ]() mutable {
+    auto max_stat = util::highest_stat( p, ratings );
+
+    for ( auto stat : ratings )
+    {
+      if ( ( *buff_list )[ stat ]->check() )
+      {
+        if ( max_stat != stat )
+        {
+          ( *buff_list )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+
+        break;
+      }
+    }
+
+    // TODO: confirm that the buff spell only lasts 10s as spell data suggests. Because it is not a permanent aura, we
+    // have to execute the new buff every time update_buffs() is called.
+    ( *buff_list )[ max_stat ]->execute();
+    // TODO: implement bonus buff to party members
+  };
+
+  // TODO: confirm that the 10s period of effect #1 in the driver is the periodicity on which your highest stat is
+  // checks & the respective buff applied
+  effect.player->register_combat_begin( [ effect, update_buffs ]( player_t* p ) mutable {
+    auto period = effect.driver()->effectN( 1 ).period();
+    auto first_update = p->rng().real() * period;
+
+    update_buffs();
+    make_event( p->sim, first_update, [ period, update_buffs, p ]() mutable {
+      update_buffs();
+      make_repeating_event( p->sim, period, update_buffs );
+    } );
+  } );
+
+  // right-rotate to place update_buff at the front of all combat_begin callbacks, to replicate in-game behavior where
+  // the buff is already present on the player before entering combat.
+  auto vec = &effect.player->combat_begin_functions;
+  std::rotate( vec->rbegin(), vec->rbegin() + 1, vec->rend() );
 }
 
 // Weapons
@@ -4615,7 +4698,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
+    unique_gear::register_special_effect( 367901, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
+    unique_gear::register_special_effect( 368509, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
@@ -4624,6 +4709,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
+    unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -4757,6 +4843,13 @@ void register_target_data_initializers( sim_t& sim )
       assert( !td->debuff.volatile_satchel );
 
       td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
+      td->debuff.volatile_satchel->reset();
+    }
+    else if ( unique_gear::find_special_effect( td->source, 367901 ) )
+    {
+      assert( !td->debuff.volatile_satchel );
+
+      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 367902 ) );
       td->debuff.volatile_satchel->reset();
     }
     else
