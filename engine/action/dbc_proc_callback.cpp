@@ -62,10 +62,10 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
   bool first = target_specific_cooldown.empty();
   auto target_index = target->actor_index;
   auto spawn_index = target->actor_spawn_index;
-  if ( target_specific_cooldown.size() <= target_index)
-    target_specific_cooldown.resize(target_index + 1 );
+  if ( target_specific_cooldown.size() <= target_index )
+    target_specific_cooldown.resize( target_index + 1 );
 
-  target_cooldown_t& tcd = target_specific_cooldown[target_index];
+  target_cooldown_t& tcd = target_specific_cooldown[ target_index ];
 
   if ( !tcd.cooldown )
   {
@@ -162,7 +162,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     has_target_specific_cooldown( false ),
-    target_specific_cooldown( false ),
+    target_specific_cooldown(),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -183,7 +183,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     effect( e ),
     cooldown( nullptr ),
     has_target_specific_cooldown( false ),
-    target_specific_cooldown( false ),
+    target_specific_cooldown(),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -204,7 +204,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     effect( e ),
     cooldown( nullptr ),
     has_target_specific_cooldown( false ),
-    target_specific_cooldown( false ),
+    target_specific_cooldown(),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
