@@ -455,8 +455,6 @@ struct implosion_t : public demonology_spell_t
       dual               = true;
       background         = true;
       callbacks          = false;
-      reduced_aoe_targets = 1.0;
-      full_amount_targets = 1;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -503,9 +501,9 @@ struct implosion_t : public demonology_spell_t
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();
 
-    auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
+    auto imps_consumed = as<int>( p()->warlock_pet_list.wild_imps.n_active_pets() );
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-      imps_consumed += p()->warlock_pet_list.malicious_imps.n_active_pets(); // T28 Malicious Imps count for Implosive Potential
+      imps_consumed += as<int>( p()->warlock_pet_list.malicious_imps.n_active_pets() ); // T28 Malicious Imps count for Implosive Potential
 
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
     timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
