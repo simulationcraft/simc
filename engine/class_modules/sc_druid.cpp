@@ -7422,10 +7422,14 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
+  timespan_t gcd_add;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ), precombat_seconds( 11_s ), target_self( false )
+    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
+      precombat_seconds( 11_s ),
+      gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
+      target_self( false )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     add_option( opt_bool( "target_self", target_self ) );
@@ -7445,6 +7449,16 @@ struct adaptive_swarm_t : public druid_spell_t
     damage->stats = stats;
     heal->other = damage;
     add_child( damage );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g += gcd_add;
+
+    return;
   }
 
   void execute() override
