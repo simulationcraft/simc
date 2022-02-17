@@ -291,7 +291,7 @@ timespan_t imp_pet_t::available() const
 /// Succubus Begin
 
 sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_SAYAAD, name != "succubus" )
+  : warlock_pet_t( owner, name, PET_SAYAAD, false )
 {
   main_hand_weapon.swing_time = 3_s;
   action_list_str             = "lash_of_pain";

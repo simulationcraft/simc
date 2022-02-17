@@ -1711,7 +1711,7 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
     return new pets::base::felhunter_pet_t( this, pet_name );
   if ( pet_name == "imp" )
     return new pets::base::imp_pet_t( this, pet_name );
-  if ( pet_name == "succubus" )
+  if ( pet_name == "sayaad" || pet_name == "incubus" || pet_name == "succubus" )
     return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
