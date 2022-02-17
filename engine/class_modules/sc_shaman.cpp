@@ -6407,6 +6407,25 @@ struct stormkeeper_t : public shaman_spell_t
   }
 };
 
+// Ancestral Guidance Spell ===================================================
+
+struct ancestral_guidance_t : public shaman_spell_t
+{
+  ancestral_guidance_t( shaman_t* player, util::string_view options_str ) :
+    shaman_spell_t( "ancestral_guidance", player, player->talent.ancestral_guidance )
+  {
+    parse_options( options_str );
+  }
+
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    may_proc_bron = true;
+  }
+};
+
+
 // Static Discharge Spell ===================================================
 
 struct static_discharge_t : public shaman_spell_t
@@ -7805,6 +7824,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new shaman_totem_t<spell_t, shaman_heal_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
     return new static_discharge_t( this, options_str );
+  if ( name == "ancestral_guidance" )
+    return new ancestral_guidance_t( this, options_str );
   if ( name == "storm_elemental" )
     return new storm_elemental_t( this, options_str );
   if ( name == "thunderstorm" )
@@ -8283,6 +8304,7 @@ void shaman_t::init_spells()
   talent.liquid_magma_totem     = find_talent_spell( "Liquid Magma Totem" );
 
   // ancestral guidance
+  talent.ancestral_guidance = find_talent_spell("Ancestral Guidance");
 
   talent.surge_of_power      = find_talent_spell( "Surge of Power" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
