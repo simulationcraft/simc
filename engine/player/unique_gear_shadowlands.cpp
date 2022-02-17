@@ -4432,6 +4432,15 @@ void shard_of_bek( special_effect_t& effect )
     {
     }
 
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      auto td = a->player->get_target_data( s->target );
+      if ( td->debuff.exsanguinated->check() )
+        return ;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
