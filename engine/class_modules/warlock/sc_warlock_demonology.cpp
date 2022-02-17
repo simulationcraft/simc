@@ -855,6 +855,13 @@ struct doom_t : public demonology_spell_t
   {
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    demonology_spell_t::last_tick( d );
+
+    gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-02-17: Doom appears to always give a full shard on its partial tick
+  }
 };
 
 struct soul_strike_t : public demonology_spell_t
@@ -1237,6 +1244,7 @@ void warlock_t::init_spells_demonology()
 void warlock_t::init_gains_demonology()
 {
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
+  gains.doom = get_gain( "doom" );
 }
 
 void warlock_t::init_rng_demonology()
