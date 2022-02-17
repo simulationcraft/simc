@@ -440,6 +440,8 @@ struct sim_t : private sc_thread_t
     bool better_together_ally = true;
     bool enable_rune_words = true;
     bool enable_domination_gems = true;
+    // fleshcraft cancel dely from the_first_sigil
+    timespan_t the_first_sigil_fleshcraft_cancel_time = 50_ms;
   } shadowlands_opts;
 
   // Auras and De-Buffs
