@@ -7458,7 +7458,7 @@ struct adaptive_swarm_t : public druid_spell_t
     if ( p()->buff.cat_form->check() )
       g += gcd_add;
 
-    return;
+    return g;
   }
 
   void execute() override
