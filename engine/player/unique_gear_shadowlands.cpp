@@ -3427,6 +3427,56 @@ void elegy_of_the_eternals( special_effect_t& effect )
   std::rotate( vec->rbegin(), vec->rbegin() + 1, vec->rend() );
 }
 
+// id=367336 - Brood of the Endless Feast	(driver - damage on effect 1)
+// id=368585 - Scent of Souls (target debuff)
+// id=368587 - Rabid Devourer Chomp (physical damage at max stacks)
+void bells_of_the_endless_feast( special_effect_t& effect )
+{
+  struct rabid_devourer_chomp_t : generic_proc_t
+  {
+    rabid_devourer_chomp_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "rabid_devourer_chomp", effect.player->find_spell( 368587 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct brood_of_the_endless_feast_cb_t : dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    brood_of_the_endless_feast_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<rabid_devourer_chomp_t>( "rabid_devourer_chomp", effect ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+
+      // NOTE: Damage triggers on the next tick of the debuff after it reaches max stacks, but I'm not sure if it's
+      // worth modeling that properly, so we instead trigger it as soon as it reaches max stacks.
+      if ( td->debuff.scent_of_souls->at_max_stacks() )
+      {
+        td->debuff.scent_of_souls->expire();
+        damage->execute_on_target( s->target );
+      }
+      else
+      {
+        // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
+        // 5 and 7 stacks of the debuff on each proc.
+        double stacks = rng().range( 5, 7 );
+        td->debuff.scent_of_souls->trigger( stacks );
+      }
+    }
+  };
+
+  new brood_of_the_endless_feast_cb_t( effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4898,6 +4948,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
+    unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -5044,6 +5095,20 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
+  } );
+
+  // Bells of the Endless Feast
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 367336 ) )
+    {
+      assert( !td->debuff.scent_of_souls );
+
+      td->debuff.scent_of_souls = make_buff<buff_t>( *td, "scent_of_souls", td->source->find_spell( 368585 ) );
+      td->debuff.scent_of_souls->set_period( 0_ms );
+      td->debuff.scent_of_souls->reset();
+    }
+    else
+      td->debuff.scent_of_souls = make_buff( *td, "scent_of_souls" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)

@@ -60,6 +60,7 @@ struct actor_target_data_t : public actor_pair_t, private noncopyable
     buff_t* volatile_satchel;            // Ticking Sack of Terror debuff
     buff_t* wild_hunt_strategem;         // night_fae/korayn/ wild hunt strategem debuff
     buff_t* remnants_despair;            // Soulwarped Seal of Menethil DK ring
+    buff_t* scent_of_souls;              // Bells of the Endless Feast debuff
   } debuff;
 
   struct atd_dot_t
