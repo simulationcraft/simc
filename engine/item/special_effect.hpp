@@ -56,6 +56,7 @@ struct special_effect_t
   double rppm_modifier_;
   int rppm_blp_;
   timespan_t duration_, cooldown_, tick;
+  bool target_specific_cooldown;
   bool cost_reduction;
   int refresh;
   bool chance_to_discharge;
@@ -151,6 +152,7 @@ struct special_effect_t
   double rppm_modifier() const;
   double proc_chance() const;
   timespan_t cooldown() const;
+  bool has_target_specific_cooldown() const;
 
   /* Accessors for buff specific features of the proc. */
   timespan_t duration() const;
