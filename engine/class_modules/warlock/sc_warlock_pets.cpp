@@ -292,7 +292,7 @@ timespan_t imp_pet_t::available() const
 
 /// Imp End
 
-/// Succubus Begin
+/// Sayaad Begin
 
 sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_SAYAAD, false )
@@ -346,7 +346,7 @@ action_t* sayaad_pet_t::create_action( util::string_view name, util::string_view
   return warlock_pet_t::create_action( name, options_str );
 }
 
-/// Succubus End
+/// Sayaad End
 
 /// Voidwalker Begin
 
