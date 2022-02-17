@@ -156,17 +156,14 @@ struct shadow_bolt_t : public affliction_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = affliction_spell_t::composite_crit_chance_multiplier();
+    double c = affliction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
@@ -770,17 +767,14 @@ struct drain_soul_t : public affliction_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = affliction_spell_t::composite_crit_chance_multiplier();
+    double c = affliction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
