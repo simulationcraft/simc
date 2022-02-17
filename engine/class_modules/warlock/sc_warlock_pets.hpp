@@ -333,9 +333,9 @@ struct imp_pet_t : public warlock_pet_t
   timespan_t available() const override;
 };
 
-struct succubus_pet_t : public warlock_pet_t
+struct sayaad_pet_t : public warlock_pet_t
 {
-  succubus_pet_t( warlock_t*, util::string_view );
+  sayaad_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };

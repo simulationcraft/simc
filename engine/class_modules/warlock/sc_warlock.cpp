@@ -1712,7 +1712,7 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
   if ( pet_name == "imp" )
     return new pets::base::imp_pet_t( this, pet_name );
   if ( pet_name == "succubus" )
-    return new pets::base::succubus_pet_t( this, pet_name );
+    return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
   if ( specialization() == WARLOCK_DEMONOLOGY )

@@ -290,8 +290,8 @@ timespan_t imp_pet_t::available() const
 
 /// Succubus Begin
 
-succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_SUCCUBUS, name != "succubus" )
+sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_SAYAAD, name != "succubus" )
 {
   main_hand_weapon.swing_time = 3_s;
   action_list_str             = "lash_of_pain";
@@ -299,7 +299,7 @@ succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
   is_main_pet = true;
 }
 
-void succubus_pet_t::init_base_stats()
+void sayaad_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
@@ -309,7 +309,7 @@ void succubus_pet_t::init_base_stats()
   melee_attack                = new warlock_pet_melee_t( this );
 }
 
-action_t* succubus_pet_t::create_action( util::string_view name, util::string_view options_str )
+action_t* sayaad_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "lash_of_pain" )
     return new warlock_pet_spell_t( this, "Lash of Pain" );
