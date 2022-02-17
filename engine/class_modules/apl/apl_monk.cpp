@@ -382,7 +382,7 @@ void windwalker( player_t* p )
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem" );
+  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil" );
   pre->add_action( "fleshcraft" );
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
@@ -526,6 +526,8 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
       else if ( item.name_str == "gladiators_badge" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "the_first_sigil" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
@@ -593,6 +595,9 @@ void windwalker( player_t* p )
       else if ( item.name_str == "gladiators_badge" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
+      else if ( item.name_str == "the_first_sigil" )
+        cd_sef->add_action( "use_item,name=" + item.name_str + 
+                            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
