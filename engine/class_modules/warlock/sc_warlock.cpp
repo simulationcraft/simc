@@ -1060,8 +1060,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new summon_main_pet_t( "felhunter", this );
   if ( action_name == "summon_felguard" )
     return new summon_main_pet_t( "felguard", this );
-  if ( action_name == "summon_succubus" )
-    return new summon_main_pet_t( "succubus", this );
+  if ( action_name == "summon_sayaad" )
+    return new summon_main_pet_t( "sayaad", this );
   if ( action_name == "summon_voidwalker" )
     return new summon_main_pet_t( "voidwalker", this );
   if ( action_name == "summon_imp" )
@@ -1711,8 +1711,8 @@ pet_t* warlock_t::create_main_pet( util::string_view pet_name, util::string_view
     return new pets::base::felhunter_pet_t( this, pet_name );
   if ( pet_name == "imp" )
     return new pets::base::imp_pet_t( this, pet_name );
-  if ( pet_name == "succubus" )
-    return new pets::base::succubus_pet_t( this, pet_name );
+  if ( pet_name == "sayaad" || pet_name == "incubus" || pet_name == "succubus" )
+    return new pets::base::sayaad_pet_t( this, pet_name );
   if ( pet_name == "voidwalker" )
     return new pets::base::voidwalker_pet_t( this, pet_name );
   if ( specialization() == WARLOCK_DEMONOLOGY )
