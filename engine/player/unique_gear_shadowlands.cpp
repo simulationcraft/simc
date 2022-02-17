@@ -3278,6 +3278,74 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
   effect.execute_action = create_proc_action<gladiators_resonator_t>( "gladiators_resonator", effect );
 }
 
+void elegy_of_the_eternals( special_effect_t& effect )
+{
+  // TODO: confirm stat priority when stats are equal. for now assuming same as titanic ocular gland
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buff_list = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  // TODO: 369544 has same data as the driver, but with the presumably correct -7 scaling effect. Confirm that the
+  // driver really is 367246 and that 369544 is an unreferenced placeholder spell for the correct scaling effect.
+  double amount = effect.player->find_spell( 369544 )->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name = fmt::format( "elegy_of_the_eternals_{}", util::stat_type_abbrev( stat ) );
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 369439 ), effect.item )
+                 ->add_stat( stat, amount )
+                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                 ->set_can_cancel( false );
+    }
+    ( *buff_list )[ stat ] = buff;
+  }
+
+  auto update_buffs = [ p = effect.player, buff_list ]() mutable {
+    auto max_stat = util::highest_stat( p, ratings );
+
+    for ( auto stat : ratings )
+    {
+      if ( ( *buff_list )[ stat ]->check() )
+      {
+        if ( max_stat != stat )
+        {
+          ( *buff_list )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+
+        break;
+      }
+    }
+
+    // TODO: confirm that the buff spell only lasts 10s as spell data suggests. Because it is not a permanent aura, we
+    // have to execute the new buff every time update_buffs() is called.
+    ( *buff_list )[ max_stat ]->execute();
+    // TODO: implement bonus buff to party members
+  };
+
+  // TODO: confirm that the 10s period of effect #1 in the driver is the periodicity on which your highest stat is
+  // checks & the respective buff applied
+  effect.player->register_combat_begin( [ effect, update_buffs ]( player_t* p ) mutable {
+    auto period = effect.driver()->effectN( 1 ).period();
+    auto first_update = p->rng().real() * period;
+
+    update_buffs();
+    make_event( p->sim, first_update, [ period, update_buffs, p ]() mutable {
+      update_buffs();
+      make_repeating_event( p->sim, period, update_buffs );
+    } );
+  } );
+
+  // right-rotate to place update_buff at the front of all combat_begin callbacks, to replicate in-game behavior where
+  // the buff is already present on the player before entering combat.
+  auto vec = &effect.player->combat_begin_functions;
+  std::rotate( vec->rbegin(), vec->rbegin() + 1, vec->rend() );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -4641,6 +4709,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
+    unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

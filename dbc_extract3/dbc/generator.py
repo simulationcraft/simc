@@ -1337,6 +1337,7 @@ class SpellDataGenerator(DataGenerator):
          368845, 368863, 368865, # Antumbra, Shadow of the Cosmos
          368635, 368636, 368637, 368638, 363839, 368641, 368642, 368850, # Scars of Fraternal Strife
          368223, 368224, 368225, 368229, 368231, 368232, 368233, 368234, # Resonant Reservoir
+         369439, 369544, # Elegy of the Eternals
         ),
 
         # Warrior:
