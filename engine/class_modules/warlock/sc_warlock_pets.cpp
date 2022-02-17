@@ -701,12 +701,9 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
-  bool demonic_power_on_cast_start;
-
   fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
   {
     repeating = true;
-    demonic_power_on_cast_start = false;
   }
 
   void schedule_execute( action_state_t* execute_state ) override
@@ -719,8 +716,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
       return;
 
     warlock_pet_spell_t::schedule_execute( execute_state );
-
-    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
   }
 
   void consume_resource() override
@@ -741,8 +736,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->spec.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
 
-    if ( demonic_power_on_cast_start )
+    if ( p()->o()->buffs.demonic_power->check() )
     {
+      // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
       c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
     }
 
