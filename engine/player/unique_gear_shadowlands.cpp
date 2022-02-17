@@ -3190,6 +3190,11 @@ void resonant_reservoir( special_effect_t& effect )
   effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
 }
 
+// This has a unique on-use depending on your covenant signature ability
+// Necrolord: Starts channeling a free Fleshcraft
+// Kyrian: Consumes a free charge of Phial of Serenity
+// Night Fae: Resets the cooldown of Soulshape
+// Venthyr: Resets the cooldown of Door of Shadows
 void the_first_sigil( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "the_first_sigil" );
@@ -3239,9 +3244,20 @@ void the_first_sigil( special_effect_t& effect )
     {
       if ( covenant_action )
       {
-        player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
-                                  covenant_action->name() );
-        covenant_action->cooldown->reset( false );
+        // Night Fae's Soulshape (NYI) and Venthyr's Door of Shadows (NYI) CDs are Reset
+        if ( player->covenant->type() == covenant_e::NIGHT_FAE || player->covenant->type() == covenant_e::VENTHYR )
+        {
+          player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
+                                    covenant_action->name() );
+          covenant_action->cooldown->reset( false );
+        }
+        // Necrolord's Fleshcraft and Kyrian's Phial of Serenity (NYI) cast a free use of the CD
+        if ( player->covenant->type() == covenant_e::NECROLORD || player->covenant->type() == covenant_e::KYRIAN )
+        {
+          player->sim->print_debug( "{} casts a free {} from the_first_sigil.", player->name(),
+                                    covenant_action->name() );
+          covenant_action->execute();
+        }
       }
     }
   };
