@@ -4436,7 +4436,7 @@ void shard_of_bek( special_effect_t& effect )
     {
       auto td = a->player->get_target_data( s->target );
       if ( td->debuff.exsanguinated->check() )
-        return ;
+        return;
 
       dbc_proc_callback_t::trigger( a, s );
     }
