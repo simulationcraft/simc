@@ -59,9 +59,9 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
   if ( !has_target_specific_cooldown || !target )
     return cooldown;
 
-  bool first = target_specific_cooldown.empty();
   auto target_index = target->actor_index;
   auto spawn_index = target->actor_spawn_index;
+
   if ( target_specific_cooldown.size() <= target_index )
     target_specific_cooldown.resize( target_index + 1 );
 
@@ -69,22 +69,15 @@ cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
 
   if ( !tcd.cooldown )
   {
-    if ( first )
-    {
-      tcd.cooldown = cooldown;
-    }
-    else
-    {
-      tcd.cooldown = listener->get_cooldown( cooldown->name() + "_" + util::to_string( target_index ) );
-      tcd.cooldown->duration = cooldown->duration;
-    }
+    tcd.cooldown = listener->get_cooldown( cooldown->name() + "_" + util::to_string( target_index ) );
+    tcd.cooldown->duration = cooldown->duration;
     tcd.spawn_index = spawn_index;
   }
 
-  if ( tcd.spawn_index != target->actor_spawn_index )
+  if ( tcd.spawn_index != spawn_index )
   {
     cooldown->reset( false );
-    tcd.spawn_index = target->actor_spawn_index;
+    tcd.spawn_index = spawn_index;
   }
 
   return tcd.cooldown;
