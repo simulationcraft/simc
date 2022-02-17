@@ -671,6 +671,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
+    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
     if ( p()->buffs.backdraft->check() )
       t *= backdraft_gcd;
 
@@ -711,7 +712,9 @@ struct chaos_bolt_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->decrement();
+    // PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
+    if ( p()->buffs.ritual_of_ruin->check() )
+      p()->buffs.backdraft->decrement();
 
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )

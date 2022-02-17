@@ -413,6 +413,8 @@ public:
     propagate_const<buff_t*> dark_soul_instability;
     propagate_const<buff_t*> impending_ruin;
     propagate_const<buff_t*> ritual_of_ruin;
+    // Possible TODO: There is a new buff for Blasphemy when the pet is out, may be useful for simplifying mechanics/APL
+    // Requires manually adding spell ID to generator
 
     // Covenants
     propagate_const<buff_t*> decimating_bolt;
