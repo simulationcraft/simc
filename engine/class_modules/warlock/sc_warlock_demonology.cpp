@@ -347,7 +347,7 @@ struct demonbolt_t : public demonology_spell_t
   {
     double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
 
     return m;

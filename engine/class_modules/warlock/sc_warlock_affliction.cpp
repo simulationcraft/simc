@@ -170,7 +170,7 @@ struct shadow_bolt_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
@@ -781,7 +781,7 @@ struct drain_soul_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 4 ).percent();
 
     return m;

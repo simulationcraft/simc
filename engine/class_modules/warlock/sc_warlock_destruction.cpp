@@ -435,7 +435,7 @@ struct incinerate_fnb_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
@@ -552,6 +552,16 @@ struct incinerate_t : public destruction_spell_t
       c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
     
     return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->buffs.shard_of_annihilation->check() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
+
+    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
