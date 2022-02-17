@@ -3195,6 +3195,7 @@ void resonant_reservoir( special_effect_t& effect )
 // Kyrian: Consumes a free charge of Phial of Serenity
 // Night Fae: Resets the cooldown of Soulshape
 // Venthyr: Resets the cooldown of Door of Shadows
+// TODO: use a separate fleshcraft_t action to trigger the effect so that the channel is cancelled correctly
 void the_first_sigil( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "the_first_sigil" );
