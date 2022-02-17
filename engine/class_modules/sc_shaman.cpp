@@ -9163,17 +9163,11 @@ void shaman_t::create_buffs()
                             }
                           } );
   // Covenant Legendaries
-  if ( legendary.splintered_elements->ok() )
-  {
-    buff.splintered_elements = new splintered_elements_buff_t( this );    
-  }
+  buff.splintered_elements = new splintered_elements_buff_t( this );    
 
-  if ( legendary.seeds_of_rampant_growth->ok() )
-  {
-    buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
-                                    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
-                                    ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
-  }
+  buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
+                                  ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+                                  ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
 
   //
   // Elemental
@@ -9852,7 +9846,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
     se_single_target->add_talent( this, "Storm Elemental" );
-    // se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&(runeforge.splintered_elements.equipped&!buff.splintered_elements.up|!runeforge.splintered_elements.equipped)" );
+    se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up" );
     se_single_target->add_action( this, "Frost Shock",
                                   "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury."
                                   "stack&buff.wind_gust.stack<18" );
