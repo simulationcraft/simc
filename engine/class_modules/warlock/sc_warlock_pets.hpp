@@ -17,6 +17,7 @@ struct warlock_pet_t;
 struct warlock_pet_td_t : public actor_target_data_t
 {
   propagate_const<buff_t*> debuff_infernal_brand;
+  propagate_const<buff_t*> debuff_whiplash;
 
   warlock_pet_t& pet;
   warlock_pet_td_t( player_t*, warlock_pet_t& );
@@ -338,6 +339,7 @@ struct sayaad_pet_t : public warlock_pet_t
   sayaad_pet_t( warlock_t*, util::string_view );
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
+  double composite_player_target_multiplier( player_t*, school_e ) const override;
 };
 
 struct voidwalker_pet_t : public warlock_pet_t
