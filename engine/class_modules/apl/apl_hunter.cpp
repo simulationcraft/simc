@@ -356,7 +356,7 @@ void survival( player_t* p )
   cleave -> add_action( "call_action_list,name=nta,if=runeforge.nessingwarys_trapping_apparatus.equipped&focus<variable.mb_rs_cost" ); 
   cleave -> add_action( "chakrams" );
   cleave -> add_action( "butchery,if=dot.shrapnel_bomb.ticking&(dot.internal_bleeding.stack<2|dot.shrapnel_bomb.remains<gcd)" );
-  cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking" );
+  cleave -> add_action( "carve,if=dot.shrapnel_bomb.ticking&!set_bonus.tier28_2pc" );
   cleave -> add_action( "butchery,if=charges_fractional>2.5&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2&talent.alpha_predator.enabled" );
@@ -365,7 +365,7 @@ void survival( player_t* p )
   cleave -> add_action( "kill_shot,if=buff.flayers_mark.up" );
   cleave -> add_action( "flayed_shot,target_if=max:target.health.pct" );
   cleave -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
-  cleave -> add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking" );
+  cleave -> add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking&!set_bonus.tier28_2pc|charges_fractional>1.3" );
   cleave -> add_action( "butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion.enabled)&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "a_murder_of_crows" );
