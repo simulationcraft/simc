@@ -28,9 +28,9 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem
+actions.precombat+=/variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil
 actions.precombat+=/fleshcraft
-actions.precombat+=/chi_burst
+actions.precombat+=/chi_burst,if=!covenant.night_fae
 actions.precombat+=/chi_wave,if=!talent.energizing_elixir.enabled
 
 # Executed every time the actor is available.
