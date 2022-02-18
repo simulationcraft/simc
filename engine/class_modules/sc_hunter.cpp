@@ -3523,9 +3523,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     double multiplier = 0;
     double high, low;
   } careful_aim;
-  struct {
-    proc_t* munched_4pc = nullptr;
-  } focused_trickery;
 
   aimed_shot_base_t( util::string_view name, hunter_t* p ):
     hunter_ranged_attack_t( name, p, p -> specs.aimed_shot )
@@ -3544,9 +3541,6 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
     }
-
-    if ( p -> tier_set.focused_trickery_4pc.ok() && p -> bugs )
-      focused_trickery.munched_4pc = p -> get_proc( "Munched AiS Focused Trickery TrS" );
   }
 
   bool trick_shots_up() const
@@ -3709,16 +3703,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    if ( p() -> bugs )
-    {
-      const bool trick_shots_up = p()->buffs.trick_shots->check();
-      if ( p()->trigger_focused_trickery( this, base_cost() ) && !trick_shots_up )
-      {
-        // If this cast triggered its own buff, munch the trickshots buff
-        p()->buffs.trick_shots->decrement();
-        focused_trickery.munched_4pc -> occur();
-      }
-    }
+    if ( p()->bugs )
+      p()->trigger_focused_trickery( this, base_cost() );
 
     aimed_shot_base_t::execute();
 
@@ -5635,7 +5621,12 @@ struct wildfire_bomb_t: public hunter_spell_t
     {
       sim -> print_debug( "{} {} cooldown reset due to {}",
                           p() -> name(), name(), p() -> buffs.mad_bombardier -> name() );
-      cooldown -> adjust( -data().charge_cooldown() );
+
+      if ( p() -> bugs )
+        cooldown->adjust( -data().charge_cooldown() );
+      else
+        cooldown->reset( true );
+
       p() -> buffs.mad_bombardier -> expire();
     }
   }
