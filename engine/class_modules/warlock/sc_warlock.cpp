@@ -507,7 +507,7 @@ struct decimating_bolt_t : public warlock_spell_t
     //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
     //checked regularly to ensure accuracy
     // TODO: Need to check the behavior of havoc decimating bolt, and which strength of buff is given.
-    double value = p()->buffs.decimating_bolt->default_value - 0.01 * p()->target->health_percentage();
+    double value = p()->buffs.decimating_bolt->default_value - 0.01 * target->health_percentage();
     if ( p()->talents.fire_and_brimstone->ok() )
       value *= 0.4;
     p()->buffs.decimating_bolt->trigger( 3, value );
@@ -1061,13 +1061,22 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   if ( action_name == "summon_felguard" )
     return new summon_main_pet_t( "felguard", this );
   if ( action_name == "summon_sayaad" )
-    return new summon_main_pet_t( "sayaad", this );
+    return new summon_main_pet_t( "sayaad", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+  if ( action_name == "summon_succubus" )
+    return new summon_main_pet_t( "succubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+  if ( action_name  == "summon_incubus" )
+    return new summon_main_pet_t( "incubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
   if ( action_name == "summon_voidwalker" )
     return new summon_main_pet_t( "voidwalker", this );
   if ( action_name == "summon_imp" )
     return new summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet" )
+  {
+    if ( default_pet == "sayaad" || default_pet == "succubus" || default_pet == "incubus" )
+      return new summon_main_pet_t( default_pet, this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+
     return new summon_main_pet_t( default_pet, this );
+  }
 
   // Base Spells
   if ( action_name == "drain_life" )

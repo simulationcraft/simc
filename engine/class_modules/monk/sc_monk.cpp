@@ -7485,6 +7485,11 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
   if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
     return;
 
+  // Don't trigger from Empowered Tiger Lightning
+  // Don't trigger from Call to Arms Empowered Tiger Lightning
+  if ( is_ptr() && ( s->action->id == 335913 || s->action->id == 360829 ) )
+    return;
+
   if ( rng().roll( covenant.necrolord->proc_chance() ) )
   {
     double damage = s->result_amount * covenant.necrolord->effectN( 1 ).percent();

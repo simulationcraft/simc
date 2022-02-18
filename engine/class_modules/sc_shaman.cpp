@@ -6407,6 +6407,32 @@ struct stormkeeper_t : public shaman_spell_t
   }
 };
 
+// Ancestral Guidance Spell ===================================================
+
+struct ancestral_guidance_t : public shaman_heal_t
+{
+  ancestral_guidance_t( shaman_t* player, util::string_view options_str ) :
+    shaman_heal_t( "ancestral_guidance", player, player->talent.ancestral_guidance )
+  {
+    parse_options( options_str );
+  }
+
+  void init() override
+  {
+    shaman_heal_t::init();
+
+    may_proc_bron = true;
+  }
+
+  void execute() override
+  {
+    shaman_heal_t::execute();
+
+    p()->trigger_vesper_totem( execute_state );
+  }
+};
+
+
 // Static Discharge Spell ===================================================
 
 struct static_discharge_t : public shaman_spell_t
@@ -7805,6 +7831,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new shaman_totem_t<spell_t, shaman_heal_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
     return new static_discharge_t( this, options_str );
+  if ( name == "ancestral_guidance" )
+    return new ancestral_guidance_t( this, options_str );
   if ( name == "storm_elemental" )
     return new storm_elemental_t( this, options_str );
   if ( name == "thunderstorm" )
@@ -8283,6 +8311,7 @@ void shaman_t::init_spells()
   talent.liquid_magma_totem     = find_talent_spell( "Liquid Magma Totem" );
 
   // ancestral guidance
+  talent.ancestral_guidance = find_talent_spell("Ancestral Guidance");
 
   talent.surge_of_power      = find_talent_spell( "Surge of Power" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
@@ -9163,17 +9192,11 @@ void shaman_t::create_buffs()
                             }
                           } );
   // Covenant Legendaries
-  if ( legendary.splintered_elements->ok() )
-  {
-    buff.splintered_elements = new splintered_elements_buff_t( this );    
-  }
+  buff.splintered_elements = new splintered_elements_buff_t( this );    
 
-  if ( legendary.seeds_of_rampant_growth->ok() )
-  {
-    buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
-                                    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
-                                    ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
-  }
+  buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
+                                  ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+                                  ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
 
   //
   // Elemental
@@ -9689,7 +9712,10 @@ void shaman_t::init_action_list_elemental()
     def->add_action( this, "Flame Shock",
                      "if=(!talent.elemental_blast.enabled)&!ticking&!pet.storm_elemental.active&(spell_targets.chain_"
                      "lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)" );
-    def->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled)&(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|soulbind.lead_by_example.enabled)" );
+    def->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&"
+                     "(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&"
+                     "(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|"
+                     "soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&!buff.splintered_elements.up" );
     def->add_action( this, "Flame Shock",
                      "if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)"
                      "&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_"
@@ -9721,10 +9747,12 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Flame Shock",
                      "if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_"
                      "shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|("
-                     "runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active),target_if=refreshable" );
+                     "runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active)|"
+                     "(runeforge.splintered_elements.equipped&(active_dot.flame_shock<3&!runeforge.echoes_of_great_sundering.equipped|active_dot.flame_shock<4)&"
+                     "(cooldown.primordial_wave.remains<16|buff.primordial_wave.up)),target_if=refreshable" );
     aoe->add_action( this, "Flame Shock",
                      "if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent."
-                     "master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)" );
+                     "master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)|(runeforge.splintered_elements.equipped&!ticking&buff.primordial_wave.up)" );
     aoe->add_talent( this, "Echoing Shock",
                      "if=talent.echoing_shock.enabled&maelstrom>=60&(runeforge.echoes_of_great_sundering.equipped&buff."
                      "echoes_of_great_sundering.up|!runeforge.echoes_of_great_sundering.equipped)" );
@@ -9742,7 +9770,12 @@ void shaman_t::init_action_list_elemental()
                      "if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_"
                      "of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)" );
     aoe->add_action( this, "Lava Burst",
-                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up" );
+                     "target_if=dot.flame_shock.remains,if=covenant.necrolord&runeforge.echoes_of_great_sundering.equipped&"
+                     "set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action( this, "Lava Burst",
+                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up&(buff.primordial_wave.remains<3*gcd|"
+                     "active_dot.flame_shock=spell_targets.chain_lightning|active_dot.flame_shock=3&!runeforge.echoes_of_great_sundering.equipped|"
+                     "active_dot.flame_shock=4)" );
     aoe->add_action( this, "Lava Burst",
                      "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_"
                      "demise.equipped&buff.lava_surge."
@@ -9759,6 +9792,12 @@ void shaman_t::init_action_list_elemental()
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
     aoe->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>=2" );
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack" );
+    aoe->add_action(
+        this, "Lava Burst",
+        "target_if=dot.flame_shock.remains,if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action(
+        this, "Lava Burst",
+        "if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
     aoe->add_action(
         this, "Lava Burst",
         "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking" );
@@ -9852,7 +9891,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
     se_single_target->add_talent( this, "Storm Elemental" );
-    // se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&(runeforge.splintered_elements.equipped&!buff.splintered_elements.up|!runeforge.splintered_elements.equipped)" );
+    se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up" );
     se_single_target->add_action( this, "Frost Shock",
                                   "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury."
                                   "stack&buff.wind_gust.stack<18" );

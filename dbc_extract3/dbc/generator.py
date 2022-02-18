@@ -1338,6 +1338,8 @@ class SpellDataGenerator(DataGenerator):
          368635, 368636, 368637, 368638, 363839, 368641, 368642, 368850, # Scars of Fraternal Strife
          368223, 368224, 368225, 368229, 368231, 368232, 368233, 368234, # Resonant Reservoir
          369439, 369544, # Elegy of the Eternals
+         369294, 369318, # Grim Eclipse
+         368654, 368655, 368656, 368657, 367804, 368649, 368650, 368651, 368652, 368653, # Cache of Acquired Treasures
         ),
 
         # Warrior:
@@ -1572,6 +1574,7 @@ class SpellDataGenerator(DataGenerator):
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
+	  ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
         ),
 
         # Shaman:

@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42354
-static const std::array<spelltext_data_t, 16009> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.42399
+static const std::array<spelltext_data_t, 16024> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15915,8 +15915,6 @@ static const std::array<spelltext_data_t, 16009> __ptr_spelltext_data { {
   { 367835, "Whenever a nearby Automa dies, you exude Ephemera, healing up to $s3 nearby allies for ${$s2*$368932d} over $368932d.", 0, 0 },
   { 367885, "Establish a link deep within your target's mind, increasing your dodge rating by $s2, and draining ${$s1*($d/$t1)} health over $d.\r\n\r\nIf the link is still intact when this effect ends, their mind shatters, dealing $s3 Shadow damage to enemies within $s4 yds of them and Horrifying them for $368785d.", "Dodge rating increased by $w2.", 0 },
   { 367891, "Teleport to the location of one of Cartel Xy's associates.", 0, 0 },
-  { 367892, "You eat food faster. Much faster.\r\n", "You eat food faster. Much faster.", 0 },
-  { 367893, "Vendors inside Tazavesh sell you their wares at a discount.\r\n\r\n", 0, 0 },
   { 367894, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367896, "Grants you $s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
   { 367898, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
@@ -15988,6 +15986,21 @@ static const std::array<spelltext_data_t, 16009> __ptr_spelltext_data { {
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 368649, "$@spelldesc367805", "Haste increased by $w1. Your damaging spells and abilities increase your Haste, stacking up to $u times.", 0 },
+  { 368650, "$@spelldesc367805", "Your critical strikes cause the target to bleed for $w1 additional damage over $d.", 0 },
+  { 368651, "$@spelldesc367805", "Bleeding for $o1 over $d.", 0 },
+  { 368652, "$@spelldesc367805", "You ignore up to $s1 of your foe's armor.", 0 },
+  { 368653, "$@spelldesc367805", 0, 0 },
+  { 368654, "$@spelldesc367805", "Grab a wand from the cache and blast your enemies for $s1 Fire damage.", 0 },
+  { 368655, "$@spelldesc367805", "Grab a Mace from the cache, allowing you to ignore up to $s1 armor on your foes.", 0 },
+  { 368656, "$@spelldesc367805", "Grab an axe from the cache, causing all of your critical hits to cause the target to bleed for $s1 damage over $s2 sec.", 0 },
+  { 368657, "$@spelldesc367805", "Grab a sword from the cache, causing your damaging spells and abilities to increase your Haste by $w1 for $s2 sec, stacking up to $u times.", 0 },
+  { 368663, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368664, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368665, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368666, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368667, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368690, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", "Diseases from the Death Knight have increased effect.", 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -15999,24 +16012,28 @@ static const std::array<spelltext_data_t, 16009> __ptr_spelltext_data { {
   { 368921, "Create a broker's necklace appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368932, "$@spelldesc367835", "Restoring $w1 every second.", 0 },
   { 368937, "$@spelldesc367307", "Cooldowns recover $w1% faster.", 0 },
-  { 368938, "$@206930", 0, 0 },
+  { 368938, "$@spelldesc206930", 0, 0 },
   { 368976, "$@spelldesc368203", 0, 0 },
-  { 369046, "#@spelldesc367953", 0, 0 },
+  { 369046, "$@spelldesc367953", 0, 0 },
   { 369068, "$@spelldesc367808", 0, 0 },
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
+  { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369438, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
   { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42354
-static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42399
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
+  {  368938,  0, "$@206930", "$@spelldesc206930" },
+  {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42354
+// Spell description variables, wow build 9.2.0.42399
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16326,7 +16343,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42354
+// spelldesc_vars hotfix entries, wow build 9.2.0.42399
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

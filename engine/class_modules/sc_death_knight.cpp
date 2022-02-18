@@ -417,6 +417,7 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* frost_fever;
     // Unholy
     dot_t* soul_reaper;
+    dot_t* soul_reaper_t28;
     dot_t* virulent_plague;
   } dot;
 
@@ -1194,6 +1195,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Other dots
   dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
+  dot.soul_reaper_t28      = target -> get_dot( "soul_reaper_t28", p );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
@@ -7868,7 +7870,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     return;
   }
 
-  if ( ! talent.soul_reaper -> ok() )
+  if ( ! talent.soul_reaper -> ok() && ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
   {
     return;
   }
@@ -7879,6 +7881,28 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
                       target -> name(), name() );
 
     trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
+    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+    {
+      buffs.harvest_time -> trigger();
+      sim -> print_log( "Target {} died while affected by Soul Reaper T28, player {} gains Harvest Time buff.",
+                      target -> name(), name() );
+    }
+    return;
+  }
+
+  // T28 Set.  This is only run if a normal soul_reaper dot didn't exist, since in game a single buff is used.
+  if ( get_target_data( target ) -> dot.soul_reaper_t28 -> is_ticking() )
+  {
+    sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Runic Corruption buff.",
+                      target -> name(), name() );
+
+    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
+    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+    {
+      buffs.harvest_time -> trigger();
+      sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Harvest Time buff.",
+                      target -> name(), name() );
+    }
   }
 }
 
@@ -9465,7 +9489,7 @@ void death_knight_t::activate()
     // On target death triggers
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( talent.soul_reaper->ok() )
+      if ( talent.soul_reaper->ok() || sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
       {
         target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
       }
