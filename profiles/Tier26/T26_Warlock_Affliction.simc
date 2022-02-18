@@ -39,6 +39,7 @@ actions.precombat+=/unstable_affliction
 
 # Executed every time the actor is available.
 actions=call_action_list,name=aoe,if=active_enemies>3
+actions+=/malefic_rapture,if=ptr=1&buff.calamitous_crescendo.up
 # Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS.
 actions+=/run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity
 # Action lists for trinket behavior. Stats are saved for before Soul Rot/Impending Catastrophe/Phantom Singularity, otherwise on cooldown
