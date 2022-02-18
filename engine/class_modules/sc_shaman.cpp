@@ -6409,19 +6409,26 @@ struct stormkeeper_t : public shaman_spell_t
 
 // Ancestral Guidance Spell ===================================================
 
-struct ancestral_guidance_t : public shaman_spell_t
+struct ancestral_guidance_t : public shaman_heal_t
 {
   ancestral_guidance_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "ancestral_guidance", player, player->talent.ancestral_guidance )
+    shaman_heal_t( "ancestral_guidance", player, player->talent.ancestral_guidance )
   {
     parse_options( options_str );
   }
 
   void init() override
   {
-    shaman_spell_t::init();
+    shaman_heal_t::init();
 
     may_proc_bron = true;
+  }
+
+  void execute() override
+  {
+    shaman_heal_t::execute();
+
+    p()->trigger_vesper_totem( execute_state );
   }
 };
 
