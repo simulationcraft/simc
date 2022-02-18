@@ -16002,7 +16002,7 @@ static const std::array<spelltext_data_t, 16012> __ptr_spelltext_data { {
   { 368921, "Create a broker's necklace appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368932, "$@spelldesc367835", "Restoring $w1 every second.", 0 },
   { 368937, "$@spelldesc367307", "Cooldowns recover $w1% faster.", 0 },
-  { 368938, "$@206930", 0, 0 },
+  { 368938, "$@spelldesc206930", 0, 0 },
   { 368976, "$@spelldesc368203", 0, 0 },
   { 369046, "$@spelldesc367953", 0, 0 },
   { 369068, "$@spelldesc367808", 0, 0 },
@@ -16015,8 +16015,9 @@ static const std::array<spelltext_data_t, 16012> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42399
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __ptr_spelltext_hotfix_data { {
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
+  {  368938,  0, "$@206930", "$@spelldesc206930" },
   {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
