@@ -1339,6 +1339,7 @@ class SpellDataGenerator(DataGenerator):
          368223, 368224, 368225, 368229, 368231, 368232, 368233, 368234, # Resonant Reservoir
          369439, 369544, # Elegy of the Eternals
          369294, 369318, # Grim Eclipse
+         368654, 368655, 368656, 368657, 367804, 368649, 368650, 368651, 368652, 368653, # Cache of Acquired Treasures
         ),
 
         # Warrior:

@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42399
-static const std::array<spelltext_data_t, 16015> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 16024> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15986,6 +15986,15 @@ static const std::array<spelltext_data_t, 16015> __ptr_spelltext_data { {
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 368649, "$@spelldesc367805", "Haste increased by $w1. Your damaging spells and abilities increase your Haste, stacking up to $u times.", 0 },
+  { 368650, "$@spelldesc367805", "Your critical strikes cause the target to bleed for $w1 additional damage over $d.", 0 },
+  { 368651, "$@spelldesc367805", "Bleeding for $o1 over $d.", 0 },
+  { 368652, "$@spelldesc367805", "You ignore up to $s1 of your foe's armor.", 0 },
+  { 368653, "$@spelldesc367805", 0, 0 },
+  { 368654, "$@spelldesc367805", "Grab a wand from the cache and blast your enemies for $s1 Fire damage.", 0 },
+  { 368655, "$@spelldesc367805", "Grab a Mace from the cache, allowing you to ignore up to $s1 armor on your foes.", 0 },
+  { 368656, "$@spelldesc367805", "Grab an axe from the cache, causing all of your critical hits to cause the target to bleed for $s1 damage over $s2 sec.", 0 },
+  { 368657, "$@spelldesc367805", "Grab a sword from the cache, causing your damaging spells and abilities to increase your Haste by $w1 for $s2 sec, stacking up to $u times.", 0 },
   { 368663, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368664, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368665, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
