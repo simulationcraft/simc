@@ -3216,7 +3216,7 @@ void the_first_sigil( special_effect_t& effect )
       : generic_proc_t( effect, "the_first_sigil", effect.trigger() ),
         covenant_action( nullptr ),
         orig_cd( cooldown ),
-        dummy_cd( player->get_cooldown( "the_first_sigil" ) )
+        dummy_cd( player->get_cooldown( "the_first_sigil_covenant" ) )
     {
     }
 
@@ -3262,11 +3262,10 @@ void the_first_sigil( special_effect_t& effect )
         {
           player->sim->print_debug( "{} casts a free {} from the_first_sigil.", player->name(),
                                     covenant_action->name() );
-          // The cooldown of the spell stays intact when we cast the free one
-          covenant_action->cooldown = dummy_cd;
+          // TODO: don't alter the cooldown of Fleshcraft if it is off cooldown when we execute it
           covenant_action->execute();
-          make_event( *sim, player->sim->shadowlands_opts.the_first_sigil_fleshcraft_cancel_time, [ this ] { covenant_action->cancel(); } );
-          covenant_action->cooldown = orig_cd;
+          make_event( *sim, player->sim->shadowlands_opts.the_first_sigil_fleshcraft_cancel_time,
+                      [ this ] { covenant_action->cancel(); } );
         }
       }
     }
