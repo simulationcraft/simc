@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42399
-static const std::array<spelltext_data_t, 16014> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 16015> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15991,6 +15991,7 @@ static const std::array<spelltext_data_t, 16014> __ptr_spelltext_data { {
   { 368665, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368666, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368667, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368690, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", "Diseases from the Death Knight have increased effect.", 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },

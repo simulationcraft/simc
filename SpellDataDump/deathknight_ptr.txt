@@ -13254,6 +13254,34 @@ Effects          :
 Description      : $@spelldesc363560
 Tooltip          : Minion damage increased by $w1%.
 
+Name             : Remnant's Despair (id=368690) [Spell Family (15)] 
+Hotfixed         : Attributes, Affecting Spells
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Req. Max Level   : 60
+Range            : 40 yards
+Duration         : 12 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Aura Points On Client (268)
+Effects          :
+#1 (id=913284)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Sub Type (271 -> 4), Affects Spells
+Description      : Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.
+
+
+Tooltip          : Diseases from the Death Knight have increased effect.
+
 Name             : Endless Rune Waltz Energize (id=368938) [Spell Family (15)] 
 Hotfixed         : Description
 Class            : Death Knight
