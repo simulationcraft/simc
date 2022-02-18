@@ -9748,7 +9748,8 @@ void shaman_t::init_action_list_elemental()
                      "if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_"
                      "shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|("
                      "runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active)|"
-                     "(runeforge.splintered_elements.equipped&active_dot.flame_shock<3&cooldown.primordial_wave.remains<16),target_if=refreshable" );
+                     "(runeforge.splintered_elements.equipped&(active_dot.flame_shock<3&!runeforge.echoes_of_great_sundering.equipped|active_dot.flame_shock<4)&"
+                     "(cooldown.primordial_wave.remains<16|buff.primordial_wave.up)),target_if=refreshable" );
     aoe->add_action( this, "Flame Shock",
                      "if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent."
                      "master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)|(runeforge.splintered_elements.equipped&!ticking&buff.primordial_wave.up)" );
@@ -9769,7 +9770,12 @@ void shaman_t::init_action_list_elemental()
                      "if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_"
                      "of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)" );
     aoe->add_action( this, "Lava Burst",
-                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up" );
+                     "target_if=dot.flame_shock.remains,if=covenant.necrolord&runeforge.echoes_of_great_sundering.equipped&"
+                     "set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action( this, "Lava Burst",
+                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up&(buff.primordial_wave.remains<3*gcd|"
+                     "active_dot.flame_shock=spell_targets.chain_lightning|active_dot.flame_shock=3&!runeforge.echoes_of_great_sundering.equipped|"
+                     "active_dot.flame_shock=4)" );
     aoe->add_action( this, "Lava Burst",
                      "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_"
                      "demise.equipped&buff.lava_surge."
