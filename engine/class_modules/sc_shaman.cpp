@@ -9781,6 +9781,12 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack" );
     aoe->add_action(
         this, "Lava Burst",
+        "target_if=dot.flame_shock.remains,if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action(
+        this, "Lava Burst",
+        "if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action(
+        this, "Lava Burst",
         "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking" );
     aoe->add_talent(
         this, "Elemental Blast",
