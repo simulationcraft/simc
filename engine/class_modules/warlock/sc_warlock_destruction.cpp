@@ -1291,11 +1291,12 @@ void warlock_t::create_apl_destruction()
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
   def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
-  def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
+  def->add_action( "cataclysm" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
   def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
+  def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
+  def->add_action( "chaos_bolt,if=(pet.infernal.active|pet.blasphemy.active)&soul_shard>=4" );
   def->add_action( "call_action_list,name=cds" );
   def->add_action( "channel_demonfire" );
   def->add_action( "scouring_tithe" );
@@ -1304,13 +1305,13 @@ void warlock_t::create_apl_destruction()
   def->add_action( "impending_catastrophe" );
   def->add_action( "soul_rot" );
   def->add_action( "havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped" );
-  def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=15&talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)" );
+  def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|buff.ritual_of_ruin.up&talent.rain_of_chaos" );
   def->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards" );
-  def->add_action( "chaos_bolt,if=buff.dark_soul_instability.up" );
-  def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards&!talent.eradication.enabled" );
-  def->add_action( "chaos_bolt,if=!variable.pool_soul_shards&talent.eradication.enabled&(debuff.eradication.remains<cast_time|buff.backdraft.up)" );
+  def->add_action( "chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.up" );
+  def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards" );
+  def->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time" );
   def->add_action( "shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5" );
-  def->add_action( "chaos_bolt,if=(soul_shard>=4.5-0.2*active_enemies)" );
+  def->add_action( "chaos_bolt,if=soul_shard>3.5" );
   def->add_action( "conflagrate,if=charges>1" );
   def->add_action( "incinerate" );
 
