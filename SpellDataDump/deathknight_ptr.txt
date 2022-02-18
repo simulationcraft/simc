@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 96c6f822ad)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13255,6 +13255,7 @@ Description      : $@spelldesc363560
 Tooltip          : Minion damage increased by $w1%.
 
 Name             : Endless Rune Waltz Energize (id=368938) [Spell Family (15)] 
+Hotfixed         : Description
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13270,6 +13271,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=913784)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
-Description      : $@206930
+Description      : $@spelldesc206930
 
 
