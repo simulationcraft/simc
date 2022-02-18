@@ -984,10 +984,17 @@ struct summon_main_pet_t : public summon_pet_t
 {
   cooldown_t* instant_cooldown;
 
+  summon_main_pet_t( util::string_view n, warlock_t* p, int id )
+    : summon_pet_t( n, p, id ), instant_cooldown( p->get_cooldown( "instant_summon_pet" ) )
+  {
+    instant_cooldown->duration = 60_s;
+    ignore_false_positive      = true;
+  }
+
   summon_main_pet_t( util::string_view n, warlock_t* p )
     : summon_pet_t( n, p ), instant_cooldown( p->get_cooldown( "instant_summon_pet" ) )
   {
-    instant_cooldown->duration = timespan_t::from_seconds( 60 );
+    instant_cooldown->duration = 60_s;
     ignore_false_positive      = true;
   }
 

@@ -1061,13 +1061,22 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   if ( action_name == "summon_felguard" )
     return new summon_main_pet_t( "felguard", this );
   if ( action_name == "summon_sayaad" )
-    return new summon_main_pet_t( "sayaad", this );
+    return new summon_main_pet_t( "sayaad", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+  if ( action_name == "summon_succubus" )
+    return new summon_main_pet_t( "succubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+  if ( action_name  == "summon_incubus" )
+    return new summon_main_pet_t( "incubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
   if ( action_name == "summon_voidwalker" )
     return new summon_main_pet_t( "voidwalker", this );
   if ( action_name == "summon_imp" )
     return new summon_main_pet_t( "imp", this );
   if ( action_name == "summon_pet" )
+  {
+    if ( default_pet == "sayaad" || default_pet == "succubus" || default_pet == "incubus" )
+      return new summon_main_pet_t( default_pet, this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+
     return new summon_main_pet_t( default_pet, this );
+  }
 
   // Base Spells
   if ( action_name == "drain_life" )
