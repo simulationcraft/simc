@@ -22,6 +22,7 @@
 // - Fae Transfusion should be affected by Master of the Elements
 // - Fae Transfusion should consume Master of the Elements
 // - Fae Transfusion shouldn't grant Maelstrom Weapons buffs for Elemental
+// - Add Surge of Power rotation with storm keeper
 //
 // Enhancement
 // - Review target caps
@@ -9908,6 +9909,7 @@ void shaman_t::init_action_list_elemental()
         "60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_"
         "sundering.up)|spell_targets.chain_lightning<2&buff.wind_gust.stack>=18&(!runeforge.echoes_of_great_sundering."
         "equipped|buff.echoes_of_great_sundering.up)&maelstrom>=60" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up");
     se_single_target->add_action( this, "Lava Burst",
                                   "if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up" );
     se_single_target->add_action( this, "Lava Burst,target_if=dot.flame_shock.remains",
