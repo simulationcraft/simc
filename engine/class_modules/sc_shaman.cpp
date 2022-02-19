@@ -10134,7 +10134,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_talent(this, "Earth Shield", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0");
   aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)");
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
-  aoe->add_action(this, "Windstrike", "if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up");
+  aoe->add_action("windstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up");
   aoe->add_action(this, "Stormstrike", "if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
   aoe->add_action(this, "Flame Shock", "if=!ticking");
