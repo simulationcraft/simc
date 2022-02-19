@@ -2077,7 +2077,15 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    p()->buff.spinning_crane_kick->trigger();
+    if ( p()->specialization() == MONK_BREWMASTER && p()->bugs &&
+         p()->buff.spinning_crane_kick->up() )
+    {
+      p()->buff.spinning_crane_kick_2->trigger();
+    }
+    else
+    {
+      p()->buff.spinning_crane_kick->trigger();
+    }
 
     if ( p()->buff.chi_energy->up() )
     {
@@ -2222,6 +2230,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
     if ( p()->buff.spinning_crane_kick->up() )
     {
       p()->buff.spinning_crane_kick->expire();
+    }
+
+    if ( p()->buff.spinning_crane_kick_2->up() )
+    {
+      p()->buff.spinning_crane_kick_2->expire();
     }
 
     monk_melee_attack_t::execute();
@@ -2487,7 +2500,7 @@ struct melee_t : public monk_melee_attack_t
     if ( first )
       first = false;
 
-    if ( p()->buff.spinning_crane_kick->up() )
+    if ( p()->buff.spinning_crane_kick->up() || p()->buff.spinning_crane_kick_2->up() )
     {
       p()->procs.delayed_aa_channel->occur();
       schedule_execute();
@@ -3249,6 +3262,12 @@ struct crackling_jade_lightning_t : public monk_spell_t
     {
       p()->buff.spinning_crane_kick->expire();
     }
+
+    if ( p()->buff.spinning_crane_kick_2->up() )
+    {
+      p()->buff.spinning_crane_kick_2->expire();
+    }
+
 
     monk_spell_t::execute();
   }
@@ -4720,6 +4739,11 @@ struct vivify_t : public monk_heal_t
       p()->buff.spinning_crane_kick->expire();
     }
 
+    if ( p()->buff.spinning_crane_kick_2->up() )
+    {
+      p()->buff.spinning_crane_kick_2->expire();
+    }
+
     monk_heal_t::execute();
 
     if ( p()->buff.thunder_focus_tea->up() )
@@ -4975,7 +4999,7 @@ struct expel_harm_t : public monk_heal_t
 
   bool ready() override
   {
-    if ( p()->buff.spinning_crane_kick->up() )
+    if ( p()->buff.spinning_crane_kick->up() || p()->buff.spinning_crane_kick_2->up() )
       return false;
     return monk_heal_t::ready();
   }
@@ -5257,6 +5281,11 @@ struct chi_burst_t : public monk_spell_t
     if ( p()->buff.spinning_crane_kick->up() )
     {
       p()->buff.spinning_crane_kick->expire();
+    }
+ 
+    if ( p()->buff.spinning_crane_kick_2->up() )
+    {
+      p()->buff.spinning_crane_kick_2->expire();
     }
 
     monk_spell_t::execute();
@@ -5639,7 +5668,7 @@ struct spinning_crane_kick_buff_t : public monk_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
 
     set_period( s->effectN( 1 ).period() );
-    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_refresh_behavior( buff_refresh_behavior::NONE );
     set_partial_tick( true );
 
     set_tick_callback( sck_callback );
@@ -7072,7 +7101,9 @@ void monk_t::create_buffs()
   buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )->set_default_value_from_effect( 1 );
 
   buff.spinning_crane_kick = new buffs::spinning_crane_kick_buff_t( *this, "spinning_crane_kick", spec.spinning_crane_kick );
-
+  // can't use ASYNCHRONOUS events for buffs that tick, so use 2 separate buffs
+  buff.spinning_crane_kick_2 = new buffs::spinning_crane_kick_buff_t( *this, "spinning_crane_kick_2", spec.spinning_crane_kick_brm );
+  
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )
                           ->set_default_value_from_effect( 1 )

@@ -205,6 +205,8 @@ public:
     propagate_const<buff_t*> moderate_stagger;
     propagate_const<buff_t*> heavy_stagger;
 
+    propagate_const<buff_t*> spinning_crane_kick_2;
+
     // Mistweaver
     propagate_const<absorb_buff_t*> life_cocoon;
     propagate_const<buff_t*> channeling_soothing_mist;
