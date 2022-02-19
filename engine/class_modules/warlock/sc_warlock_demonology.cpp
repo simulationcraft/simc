@@ -1271,7 +1271,7 @@ void warlock_t::create_apl_demonology()
 
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected" );
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
-  def->add_action( "actions+=/variable,name=next_tyrant_cd,op=set,value=variable.first_tyrant_time-time,if=time<variable.first_tyrant_time" );
+  def->add_action( "variable,name=next_tyrant_cd,op=set,value=variable.first_tyrant_time-time,if=time<variable.first_tyrant_time" );
   def->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings" );
   def->add_action( "variable,name=buff_sync_cd,op=set,value=cooldown.decimating_bolt.remains_expected,if=variable.use_bolt_timings" );
   def->add_action( "call_action_list,name=trinkets" );
