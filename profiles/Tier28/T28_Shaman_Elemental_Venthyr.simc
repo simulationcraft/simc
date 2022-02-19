@@ -90,6 +90,7 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
 
 actions.se_single_target=storm_elemental
+actions.se_single_target+=/lightning_bolt,if=buff.surge_of_power.up
 actions.se_single_target+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack&buff.wind_gust.stack<18
 actions.se_single_target+=/flame_shock,target_if=refreshable

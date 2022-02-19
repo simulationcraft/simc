@@ -22,6 +22,7 @@
 // - Fae Transfusion should be affected by Master of the Elements
 // - Fae Transfusion should consume Master of the Elements
 // - Fae Transfusion shouldn't grant Maelstrom Weapons buffs for Elemental
+// - Add Surge of Power rotation with storm keeper
 //
 // Enhancement
 // - Review target caps
@@ -9891,6 +9892,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
     se_single_target->add_talent( this, "Storm Elemental" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up");
     se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up" );
     se_single_target->add_action( this, "Frost Shock",
                                   "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury."
