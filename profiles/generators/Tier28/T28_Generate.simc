@@ -23,10 +23,22 @@ ptr=1
 # * Conduits rank is limited to 11 (item level 278). All class conduits can be empowered. [conduit:11:1]
 # * One Rank 7 (item level 291, bonus_id=1588) non-Covenant Legendary should be used. [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
 # * One Rank 7 (item level 291, bonus_id=1588) Covenant Legendary or "Unity" (bonus_id=8128). [Bonus ids can be taken from https://www.wowhead.com/legendary-calc]
-#   * missive crit: 6647
-#   * missive haste: 6649
-#   * missive mastery: 6648
-#   * missive versatility: 6650
+#   * 6647: crit missive
+#   * 6649: haste missive
+#   * 6648: mastery missive
+#   * 6650: versatility missive
+#   * 8119: ['Blood', 'Frost', 'Unholy']
+#   * 8120: ['Havoc', 'Vengeance']
+#   * 8121: ['Balance', 'Feral', 'Guardian', 'Restoration']
+#   * 8122: ['Beast_Mastery', 'Marksmanship', 'Survival']
+#   * 8123: ['Arcane', 'Fire', 'Frost']
+#   * 8124: ['Brewmaster', 'Mistweaver', 'Windwalker']
+#   * 8125: ['Holy', 'Protection', 'Retribution']
+#   * 8126: ['Shadow', 'Discipline', 'Holy']
+#   * 8127: ['Assassination', 'Outlaw', 'Subtlety']
+#   * 8128: ['Elemental', 'Restoration', 'Enhancement']
+#   * 8129: ['Affliction', 'Demonology', 'Destruction']
+#   * 8130: ['Fury', 'Arms', 'Protection']
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
 # * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
 #   * gem crit: 173127
