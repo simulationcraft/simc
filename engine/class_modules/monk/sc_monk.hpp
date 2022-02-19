@@ -138,6 +138,7 @@ public:
   struct active_actions_t
   {
     action_t* rushing_jade_wind;
+    action_t* spinning_crane_kick;
 
     // Brewmaster
     propagate_const<action_t*> breath_of_fire;

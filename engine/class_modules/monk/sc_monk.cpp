@@ -469,6 +469,8 @@ public:
           p()->buff.primordial_power->trigger();
           if ( ab::id == p()->talent.rushing_jade_wind->id() )
             p()->buff.primordial_power_hidden_channel->trigger( p()->talent.rushing_jade_wind->duration() );
+          else if (ab::id == p()->spec.spinning_crane_kick->id() )
+            p()->buff.primordial_power_hidden_channel->trigger( p()->spec.spinning_crane_kick->duration() );
           else
             p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
           p()->storm_earth_and_fire_trigger_primordial_power();
@@ -1999,13 +2001,20 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential     = true;
     trigger_ww_t28_4p_power_channel = true;
 
-    may_crit = may_miss = may_block = may_dodge = may_parry = false;
-    tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+    may_crit = may_miss = may_block = may_dodge = may_parry = channeled = false;
 
     spell_power_mod.direct = 0.0;
 
-    tick_action =
+    // set dot data to 0, everything is handled through buff
+    base_tick_time = timespan_t::zero();
+    dot_duration   = timespan_t::zero();
+
+    if ( !p->active_actions.spinning_crane_kick )
+    {
+      p->active_actions.spinning_crane_kick =
         new sck_tick_action_t( "spinning_crane_kick_tick", p, p->spec.spinning_crane_kick->effectN( 1 ).trigger() );
+      p->active_actions.spinning_crane_kick->stats = stats;
+    }
 
     chi_x = new chi_explosion_t( p );
   }
@@ -2013,12 +2022,6 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   action_state_t* new_state() override
   {
     return new spinning_crane_kick_state_t( this, p()->target );
-  }
-
-  // N full ticks, but never additional ones.
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    return dot_duration * ( tick_time( s ) / base_tick_time );
   }
 
   double cost() const override
@@ -2061,6 +2064,11 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.dance_of_chiji_hidden->up() )
+    {
+      p()->buff.dance_of_chiji_hidden->expire();
+    }
+
     if ( p()->buff.dance_of_chiji->up() )
     {
       p()->buff.dance_of_chiji->expire();
@@ -2069,12 +2077,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     monk_melee_attack_t::execute();
 
-    timespan_t buff_duration = composite_dot_duration( execute_state );
-
-    p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
+    p()->buff.spinning_crane_kick->trigger();
 
     if ( p()->buff.chi_energy->up() )
+    {
       chi_x->execute();
+      p()->buff.chi_energy->expire();
+    }
 
     if ( p()->buff.celestial_flames->up() )
     {
@@ -2085,21 +2094,16 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     // Bonedust Brew
     // Chi refund is triggering once on the trigger spell and not from tick spells.
     if ( p()->covenant.necrolord->ok() )
-      if ( p()->specialization() == MONK_WINDWALKER && get_td( execute_state->target )->debuff.bonedust_brew->up() &&
-           !p()->buff.dance_of_chiji->up() )
+      if ( p()->specialization() == MONK_WINDWALKER && get_td( execute_state->target )->debuff.bonedust_brew->up() )
         p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(),
                             p()->gain.bonedust_brew );
   }
 
-  void last_tick( dot_t* dot ) override
+  bool ready() override
   {
-    monk_melee_attack_t::last_tick( dot );
-
-    if ( p()->buff.dance_of_chiji_hidden->up() )
-      p()->buff.dance_of_chiji_hidden->expire();
-
-    if ( p()->buff.chi_energy->up() )
-      p()->buff.chi_energy->expire();
+    if ( p()->specialization() != MONK_BREWMASTER && p()->buff.spinning_crane_kick->up() )
+      return false;
+    return monk_melee_attack_t::ready();
   }
 };
 
@@ -2215,6 +2219,11 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
   void execute() override
   {
+    if ( p()->buff.spinning_crane_kick->up() )
+    {
+      p()->buff.spinning_crane_kick->expire();
+    }
+
     monk_melee_attack_t::execute();
 
     if ( p()->talent.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
@@ -2478,7 +2487,15 @@ struct melee_t : public monk_melee_attack_t
     if ( first )
       first = false;
 
-    monk_melee_attack_t::execute();
+    if ( p()->buff.spinning_crane_kick->up() )
+    {
+      p()->procs.delayed_aa_channel->occur();
+      schedule_execute();
+    }
+    else 
+    {
+      monk_melee_attack_t::execute();
+    }
   }
 };
 
@@ -3224,6 +3241,16 @@ struct crackling_jade_lightning_t : public monk_spell_t
         player->off_hand_attack->schedule_execute();
       }
     }
+  }
+
+  void execute() override
+  {
+    if ( p()->buff.spinning_crane_kick->up() )
+    {
+      p()->buff.spinning_crane_kick->expire();
+    }
+
+    monk_spell_t::execute();
   }
 };
 
@@ -4688,6 +4715,11 @@ struct vivify_t : public monk_heal_t
 
   void execute() override
   {
+    if ( p()->buff.spinning_crane_kick->up() )
+    {
+      p()->buff.spinning_crane_kick->expire();
+    }
+
     monk_heal_t::execute();
 
     if ( p()->buff.thunder_focus_tea->up() )
@@ -4939,6 +4971,13 @@ struct expel_harm_t : public monk_heal_t
     {
       p()->buff.gift_of_the_ox->decrement();
     }
+  }
+
+  bool ready() override
+  {
+    if ( p()->buff.spinning_crane_kick->up() )
+      return false;
+    return monk_heal_t::ready();
   }
 };
 
@@ -5215,6 +5254,11 @@ struct chi_burst_t : public monk_spell_t
       heal->execute();
     damage->execute();
  
+    if ( p()->buff.spinning_crane_kick->up() )
+    {
+      p()->buff.spinning_crane_kick->expire();
+    }
+
     monk_spell_t::execute();
   }
 };
@@ -5569,6 +5613,52 @@ struct touch_of_karma_buff_t : public monk_buff_t<buff_t>
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
+
+// ===============================================================================
+// Spinning Crane Kick Buff
+// ===============================================================================
+struct spinning_crane_kick_buff_t : public monk_buff_t<buff_t>
+{
+  timespan_t snapshot_period;
+
+  static void sck_callback( buff_t *b, int, timespan_t tick_time )
+  {
+    // ignore partial tick at the end
+    if ( b->remains() == 0_ms && tick_time < 5_ms )
+      return;
+
+    auto* p = debug_cast<monk_t*>( b->player );
+
+    p->active_actions.spinning_crane_kick->execute();
+  }
+
+  spinning_crane_kick_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_can_cancel( true );
+    set_tick_zero( true );
+    set_cooldown( timespan_t::zero() );
+
+    set_period( s->effectN( 1 ).period() );
+    set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+    set_partial_tick( true );
+
+    set_tick_callback( sck_callback );
+    set_tick_behavior( buff_tick_behavior::CLIP );
+    set_tick_time_behavior ( buff_tick_time_behavior::CUSTOM );
+    set_tick_time_callback( [&]( const buff_t*, unsigned int ) { return snapshot_period; } );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_speed();
+
+    // SCK snapshots tick period on cast
+    snapshot_period = this->buff_period * p().cache.spell_speed();
+
+    return buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
 
 // ===============================================================================
 // Rushing Jade Wind Buff
@@ -6981,9 +7071,7 @@ void monk_t::create_buffs()
 
   buff.diffuse_magic = make_buff( this, "diffuse_magic", talent.diffuse_magic )->set_default_value_from_effect( 1 );
 
-  buff.spinning_crane_kick = make_buff( this, "spinning_crane_kick", spec.spinning_crane_kick )
-                                 ->set_default_value_from_effect( 2 )
-                                 ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+  buff.spinning_crane_kick = new buffs::spinning_crane_kick_buff_t( *this, "spinning_crane_kick", spec.spinning_crane_kick );
 
   // Brewmaster
   buff.bladed_armor = make_buff( this, "bladed_armor", spec.bladed_armor )

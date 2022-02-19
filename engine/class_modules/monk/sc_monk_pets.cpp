@@ -612,7 +612,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
     void execute() override
     {
-      if ( time_to_execute > timespan_t::zero() && ( player->channeling || player->executing ) )
+      if ( p()->buff.spinning_crane_kick_sef->up() )
+      {
+        sim->print_debug( "{} Executing spinning_crane_kick during melee ({}).", *player,
+                          weapon->slot );
+        schedule_execute();
+      }
+      else if ( time_to_execute > timespan_t::zero() && ( player->channeling || player->executing ) )
       {
         sim->print_debug( "{} Executing {} during melee ({}).", *player,
                           player->executing ? *player->executing : *player->channeling, weapon->slot );
@@ -797,6 +803,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       return dot_duration;
     }
+
+    void execute() override
+    {
+      if ( p()->buff.spinning_crane_kick_sef->up() )
+      {
+        p()->buff.spinning_crane_kick_sef->expire();
+      }
+
+      sef_melee_attack_t::execute();
+    }
   };
 
   struct sef_chi_explosion_t : public sef_spell_t
@@ -814,7 +830,51 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     sef_spinning_crane_kick_tick_t( storm_earth_and_fire_pet_t* p )
       : sef_tick_action_t( "spinning_crane_kick_tick", p, p->o()->spec.spinning_crane_kick->effectN( 1 ).trigger() )
     {
+      dual = background = true;
+
       aoe = as<int>( p->o()->spec.spinning_crane_kick->effectN( 1 ).base_value() );
+    }
+  };
+
+  struct sef_spinning_crane_kick_buff_t : public buffs::monk_pet_buff_t<buff_t>
+  {
+    timespan_t snapshot_period;
+
+    static void sck_callback( buff_t *b, int, timespan_t tick_time )
+    {
+      // ignore partial tick at the end
+      if ( b->remains() == 0_ms && tick_time < 5_ms )
+        return;
+
+      auto* p = debug_cast<storm_earth_and_fire_pet_t*>( b->player );
+
+      p->active_actions.spinning_crane_kick_sef->execute();
+    }
+
+    sef_spinning_crane_kick_buff_t( storm_earth_and_fire_pet_t& p, util::string_view n, const spell_data_t* s ) : monk_pet_buff_t( p, n, s )
+    {
+      set_can_cancel( true );
+      set_tick_zero( true );
+      set_cooldown( timespan_t::zero() );
+
+      set_period( s->effectN( 1 ).period() );
+      set_refresh_behavior( buff_refresh_behavior::PANDEMIC );
+      set_partial_tick( true );
+
+      set_tick_callback( sck_callback );
+      set_tick_behavior( buff_tick_behavior::CLIP );
+      set_tick_time_behavior ( buff_tick_time_behavior::CUSTOM );
+      set_tick_time_callback( [&]( const buff_t*, unsigned int ) { return snapshot_period; } );
+    }
+
+    bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+    {
+      duration = ( duration >= timespan_t::zero() ? duration : this->buff_duration() ) * p().cache.spell_speed();
+
+      // SCK snapshots tick period on cast
+      snapshot_period = this->buff_period * p().cache.spell_speed();
+
+      return buff_t::trigger( stacks, value, chance, duration );
     }
   };
 
@@ -825,12 +885,18 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_melee_attack_t( "spinning_crane_kick", player, player->o()->spec.spinning_crane_kick ),
         chi_explosion( nullptr )
     {
-      tick_zero = hasted_ticks = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
 
       weapon_power_mod = 0;
 
-      tick_action = new sef_spinning_crane_kick_tick_t( player );
+      base_tick_time = timespan_t::zero();
+      dot_duration   = timespan_t::zero();
+
+      if ( !player->active_actions.spinning_crane_kick_sef )
+      {
+        player->active_actions.spinning_crane_kick_sef = new sef_spinning_crane_kick_tick_t( player );
+        player->active_actions.spinning_crane_kick_sef->stats = stats;
+      }
 
       chi_explosion = new sef_chi_explosion_t( player );
     }
@@ -838,6 +904,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     void execute() override
     {
       sef_melee_attack_t::execute();
+
+      p()->buff.spinning_crane_kick_sef->trigger();
 
       if ( o()->buff.chi_energy->up() )
         chi_explosion->execute();
@@ -1033,6 +1101,16 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       return 0;
     }
+
+    void execute() override
+    {
+      if ( p()->buff.spinning_crane_kick_sef->up() )
+      {
+        p()->buff.spinning_crane_kick_sef->expire();
+      }
+
+      sef_spell_t::execute();
+    }
   };
 
   // Storm, Earth, and Fire abilities end ===================================
@@ -1047,16 +1125,18 @@ public:
 
   struct
   {
-    action_t* rushing_jade_wind_sef = nullptr;
+    action_t* rushing_jade_wind_sef   = nullptr;
+    action_t* spinning_crane_kick_sef = nullptr;
   } active_actions;
 
   struct
   {
-    propagate_const<buff_t*> bok_proc_sef          = nullptr;
-    propagate_const<buff_t*> pressure_point_sef    = nullptr;
-    propagate_const<buff_t*> rushing_jade_wind_sef = nullptr;
+    propagate_const<buff_t*> bok_proc_sef            = nullptr;
+    propagate_const<buff_t*> pressure_point_sef      = nullptr;
+    propagate_const<buff_t*> rushing_jade_wind_sef   = nullptr;
+    propagate_const<buff_t*> spinning_crane_kick_sef = nullptr;
     // Tier 28 Buff
-    propagate_const<buff_t*> primordial_power      = nullptr;
+    propagate_const<buff_t*> primordial_power        = nullptr;
   } buff;
 
   storm_earth_and_fire_pet_t( util::string_view name, monk_t* owner, bool dual_wield, weapon_e weapon_type )
@@ -1180,6 +1260,9 @@ public:
                                          d->expire( timespan_t::from_millis( 1 ) );
                                      } );
 
+    buff.spinning_crane_kick_sef =
+        new sef_spinning_crane_kick_buff_t( *this, "spinning_crane_kick_sef", o()->spec.spinning_crane_kick );
+  
     buff.primordial_power =
         new buffs::primordial_power_buff_t( *this, "sef_primordial_power", o()->passives.primordial_power );
   }
