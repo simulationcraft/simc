@@ -927,8 +927,8 @@ public:
   {
     ab::execute();
 
-    if ( p() -> bugs && triggers_focused_trickery )
-      p() -> trigger_focused_trickery( this, ab::base_cost() );
+    if ( triggers_focused_trickery )
+      p() -> trigger_focused_trickery( this, p() -> bugs ? ab::base_cost() : ab::last_resource_cost );
   }
 
   void impact( action_state_t* s ) override
@@ -3631,7 +3631,8 @@ struct aimed_shot_t : public aimed_shot_base_t
       triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
 
       // 2022-01-22 Double Tap AiS always consumes the Vigil buff
-      p() -> buffs.secrets_of_the_vigil -> decrement();
+      if ( p() -> bugs )
+        p() -> buffs.secrets_of_the_vigil -> decrement();
     }
   };
 
@@ -3647,6 +3648,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   };
 
   bool lock_and_loaded = false;
+  bool secrets_of_the_vigil_up = false;
   struct {
     double_tap_t* action = nullptr;
     proc_t* proc;
@@ -3689,7 +3691,8 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     double c = aimed_shot_base_t::cost();
 
-    c *= 1 + p() -> buffs.secrets_of_the_vigil -> check_value();
+    if ( casting ? secrets_of_the_vigil_up : p() -> buffs.secrets_of_the_vigil -> check() )
+      c *= 1 + p() -> buffs.secrets_of_the_vigil -> default_value;
 
     return c;
   }
@@ -3703,12 +3706,20 @@ struct aimed_shot_t : public aimed_shot_base_t
 
   void execute() override
   {
-    if ( p()->bugs )
-      p()->trigger_focused_trickery( this, base_cost() );
+    // XXX: 2022-02-19 Vigil seems to always be snapshot and consumed *before* the cast
+    secrets_of_the_vigil_up = p() -> buffs.secrets_of_the_vigil -> up();
+    // XXX: 2020-12-02 Be on the safe side and assume the buff doesn't get consumed
+    // only if the AiS *benefits* from LnL. It may work as Streamline though.
+    if ( ! lock_and_loaded )
+      p() -> buffs.secrets_of_the_vigil -> decrement();
+
+    // XXX: 2022-02-19 Vigil buff determines the order of the T28 4pc proc relative to
+    // the Aimed Shot cast. If Vigil is up the set procs after the AiS cast, if it's
+    // down the set procs before.
+    if ( !secrets_of_the_vigil_up )
+      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : cost() );
 
     aimed_shot_base_t::execute();
-
-    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
 
     if ( double_tap.action && p() -> buffs.double_tap -> check() )
     {
@@ -3721,14 +3732,14 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( serpentstalkers_trickery.action )
       serpentstalkers_trickery.action -> execute_on_target( target );
 
+    if ( secrets_of_the_vigil_up )
+      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : last_resource_cost );
+    secrets_of_the_vigil_up = false;
+
+    p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
+
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
-
-    p() -> buffs.secrets_of_the_vigil -> up(); // benefit tracking
-    // XXX: 2020-12-02 Be on the safe side and assume the buff doesn't get consumed
-    // only if the AiS *benefits* from LnL. It may work as Streamline though.
-    if ( ! lock_and_loaded )
-      p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // XXX: 2020-10-22 Lock and Load completely supresses consumption of Streamline
     if ( ! p() -> buffs.lock_and_load -> check() )
@@ -3800,7 +3811,7 @@ struct aimed_shot_t : public aimed_shot_base_t
   void snapshot_state( action_state_t* s, result_amount_type type ) override
   {
     aimed_shot_base_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = p() -> buffs.secrets_of_the_vigil -> check();
+    debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = secrets_of_the_vigil_up;
   }
 };
 
@@ -5443,12 +5454,8 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         double m = hunter_spell_t::composite_persistent_multiplier( s );
 
-        // XXX 2022-02-05 All bomb dots apart from Shrapnel snapshot a 1.8 mul with 4pc and 2pc buff up
-        if ( p() -> bugs && p() -> tier_set.mad_bombardier_4pc.ok() &&
-             data().id() != 270339 && p() -> buffs.mad_bombardier -> check() )
-        {
-          m *= 1.8;
-        }
+        // XXX 2022-02-19 All bombs dots snapshot the empowered state from 4pc
+        m *= 1 + p() -> buffs.mad_bombardier -> check_value();
 
         return m;
       }
@@ -5964,12 +5971,7 @@ void hunter_t::init()
 
 double hunter_t::resource_loss( resource_e resource_type, double amount, gain_t* g, action_t* a )
 {
-  auto actual_loss = player_t::resource_loss( resource_type, amount, g, a );
-
-  if ( resource_type == RESOURCE_FOCUS && !bugs )
-    trigger_focused_trickery( a, actual_loss );
-
-  return actual_loss;
+  return player_t::resource_loss( resource_type, amount, g, a );
 }
 
 // hunter_t::init_spells ====================================================

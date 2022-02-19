@@ -127,6 +127,7 @@ void special_effect_t::reset()
   // cooldown is only used for on-use effects. Must match buff creator default
   // for now.
   cooldown_ = timespan_t::min();
+  target_specific_cooldown = false;
 
   tick = timespan_t::zero();
 
@@ -753,6 +754,14 @@ timespan_t special_effect_t::cooldown() const
     return driver() -> internal_cooldown();
 
   return timespan_t::zero();
+}
+
+bool special_effect_t::has_target_specific_cooldown() const
+{
+  if ( cooldown_ >= timespan_t::zero() )
+    return target_specific_cooldown;
+
+  return driver() -> flags( spell_attribute::SX_TARGET_SPECIFIC_COOLDOWN );
 }
 
 timespan_t special_effect_t::duration() const
