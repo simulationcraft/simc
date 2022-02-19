@@ -252,7 +252,7 @@ void frost( player_t* p )
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap" );
   cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&runic_power>=25&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&runic_power>=35&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
   cooldowns->add_action( "breath_of_sindragosa,if=buff.pillar_of_frost.up" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies=1&buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration&(!raid_event.adds.exists|raid_event.adds.in>30)|fight_remains<3" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies>=2&(buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.in>cooldown.pillar_of_frost.remains+7)&(buff.pillar_of_frost.remains<gcd|raid_event.adds.exists&raid_event.adds.remains<gcd)" );
