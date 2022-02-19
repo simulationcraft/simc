@@ -5454,12 +5454,8 @@ struct wildfire_bomb_t: public hunter_spell_t
       {
         double m = hunter_spell_t::composite_persistent_multiplier( s );
 
-        // XXX 2022-02-05 All bomb dots apart from Shrapnel snapshot a 1.8 mul with 4pc and 2pc buff up
-        if ( p() -> bugs && p() -> tier_set.mad_bombardier_4pc.ok() &&
-             data().id() != 270339 && p() -> buffs.mad_bombardier -> check() )
-        {
-          m *= 1.8;
-        }
+        // XXX 2022-02-19 All bombs dots snapshot the empowered state from 4pc
+        m *= 1 + p() -> buffs.mad_bombardier -> check_value();
 
         return m;
       }
