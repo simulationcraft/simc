@@ -467,7 +467,10 @@ public:
         else if ( trigger_ww_t28_4p_power_channel )
         {
           p()->buff.primordial_power->trigger();
-          p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
+          if ( ab::id == p()->talent.rushing_jade_wind->id() )
+            p()->buff.primordial_power_hidden_channel->trigger( p()->talent.rushing_jade_wind->duration() );
+          else
+            p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
           p()->storm_earth_and_fire_trigger_primordial_power();
           primordial_power_proc->occur();
         }
