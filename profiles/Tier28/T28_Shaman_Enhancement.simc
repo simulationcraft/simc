@@ -68,6 +68,7 @@ actions.aoe+=/healing_stream_totem,if=runeforge.raging_vesper_vortex.equipped&ta
 actions.aoe+=/earth_shield,if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0
 actions.aoe+=/fire_nova,if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
+actions.aoe+=/windstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up
 actions.aoe+=/stormstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up
 actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)
 actions.aoe+=/flame_shock,if=!ticking
