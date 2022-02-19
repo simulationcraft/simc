@@ -66,6 +66,15 @@ struct dbc_proc_callback_t : public action_callback_t
   const item_t& item;
   const special_effect_t& effect;
   cooldown_t* cooldown;
+  bool has_target_specific_cooldown;
+
+  struct target_cooldown_t
+  {
+    cooldown_t* cooldown;
+    int spawn_index;
+  };
+
+  std::vector<target_cooldown_t> target_specific_cooldown;
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases
@@ -94,6 +103,8 @@ struct dbc_proc_callback_t : public action_callback_t
   dbc_proc_callback_t(player_t* p, const special_effect_t& e);
 
   void initialize() override;
+
+  cooldown_t* get_cooldown( player_t* target );
 
   void trigger(action_t* a, action_state_t* state) override;
 

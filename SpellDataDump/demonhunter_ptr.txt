@@ -10241,7 +10241,7 @@ Effects          :
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 Name             : Deadly Dance (id=363736) [Spell Family (107), Passive, Hidden] 
-Class            : Rogue, Demon Hunter
+Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
 Proc Chance      : 101%

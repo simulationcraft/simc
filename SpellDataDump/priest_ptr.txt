@@ -11718,6 +11718,7 @@ Name             : Pallid Command (id=356390) [Spell Family (6), Passive, Hidden
 Class            : Priest
 School           : Shadow
 Spell Type       : None
+Proc Chance      : 101%
 Triggered by     : Pallid Command (364916)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

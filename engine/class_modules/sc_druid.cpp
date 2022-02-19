@@ -4523,7 +4523,7 @@ struct architects_aligner_t : public bear_attack_t
 
   architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
   {
-    background = true;
+    background = proc = true;
     may_miss = may_glance = may_dodge = may_block = may_parry = false;
     aoe = -1;
 

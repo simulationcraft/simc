@@ -1049,6 +1049,8 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* necro = get_action_priority_list( "necro_mw" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
+
+  def->add_action( "malefic_rapture,if=ptr=1&buff.calamitous_crescendo.up");
   
   def->add_action( "run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity", "Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS." );
 
