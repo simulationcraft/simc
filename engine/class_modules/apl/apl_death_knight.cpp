@@ -185,7 +185,7 @@ void frost( player_t* p )
   default_->add_action( "howling_blast,target_if=!dot.frost_fever.remains&(talent.icecap|!buff.breath_of_sindragosa.up&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
   default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&talent.icy_talons&spell_targets.glacial_advance>=2&(talent.icecap|talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains>15|talent.obliteration&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains)" );
   default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&talent.icy_talons&(talent.icecap|talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>10|talent.obliteration&!buff.pillar_of_frost.up&cooldown.pillar_of_frost.remains)" );
-  default_->add_action( "obliterate,if=covenant.night_fae&death_and_decay.ticking&death_and_decay.active_remains<(gcd*1.5)" );
+  default_->add_action( "obliterate,if=covenant.night_fae&death_and_decay.ticking&death_and_decay.active_remains<(gcd*1.5)&(!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "call_action_list,name=covenants", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=racials" );
