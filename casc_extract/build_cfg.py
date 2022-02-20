@@ -6,9 +6,9 @@ import configparser, os, glob, sys, io, collections
 
 import jenkins
 
-class DBFileList(collections.Mapping):
+class DBFileList(collections.abc.Mapping):
 	def __init__(self, options):
-		collections.Mapping.__init__(self)
+		collections.abc.Mapping.__init__(self)
 
 		self.options = options
 
