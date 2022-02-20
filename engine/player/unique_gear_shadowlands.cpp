@@ -3657,7 +3657,7 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
   auto buff = buff_t::find( effect.player, "lions_hope" );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 367950 ) )
+    buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 368689 ) )
                ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) )
                ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
   }

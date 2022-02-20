@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 96c6f822ad)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue

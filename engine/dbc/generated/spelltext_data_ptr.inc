@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42423
-static const std::array<spelltext_data_t, 16024> __ptr_spelltext_data { {
+static const std::array<spelltext_data_t, 16025> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16000,6 +16000,7 @@ static const std::array<spelltext_data_t, 16024> __ptr_spelltext_data { {
   { 368665, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368666, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368667, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368689, "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.", "Your Intellect is increased by $w1.", 0 },
   { 368690, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", "Diseases from the Death Knight have increased effect.", 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
@@ -16027,11 +16028,13 @@ static const std::array<spelltext_data_t, 16024> __ptr_spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42423
-static constexpr std::array<hotfix::client_hotfix_entry_t, 6> __ptr_spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __ptr_spelltext_hotfix_data { {
   {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
   {  364556,  0, "$@spelldesc363736", "$@spelldesc363592" },
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
   {  367950,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
+  {  368689,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
+  {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
   {  368938,  0, "$@206930", "$@spelldesc206930" },
   {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
