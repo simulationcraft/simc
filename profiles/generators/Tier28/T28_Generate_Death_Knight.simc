@@ -97,8 +97,8 @@ spec=frost
 role=attack
 position=back
 talents=1201012
-covenant=necrolord
-soulbind=emeni,lead_by_example/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/pustule_eruption
+covenant=night_fae
+soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/field_of_blossoms/dream_delver
 renown=80
 
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
