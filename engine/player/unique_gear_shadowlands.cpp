@@ -3620,6 +3620,54 @@ void dark_rangers_quiver( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void soulwarped_seal_of_wrynn( special_effect_t& effect )
+{
+  if ( effect.player->type != PRIEST )
+  {
+    return;
+  }
+
+  struct lions_hope_cb_t : public dbc_proc_callback_t
+  {
+    lions_hope_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      assert( rppm );
+      assert( s->target );
+
+      // TODO: figure out how to mod the rppm based on how it works in game
+      // see: bloodthirsty_instinct_cb_t in unique_gear_legion.cpp
+      double mod = 1;
+
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
+      }
+
+      rppm->set_modifier( mod );
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "lions_hope" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 367950 ) )
+               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) )
+               ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
+  }
+
+  effect.custom_buff = buff;
+  // TODO: verify flags
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new lions_hope_cb_t( effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -4761,6 +4809,7 @@ void register_special_effects()
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
     unique_gear::register_special_effect( 353513, items::dark_rangers_quiver );
+    unique_gear::register_special_effect( 367950, items::soulwarped_seal_of_wrynn );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
