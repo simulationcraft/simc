@@ -379,6 +379,7 @@ public:
 
     // Covenant Abilities
     buff_t* deathborne;
+    buff_t* lead_by_example;
 
 
     // Soulbind Conduits
@@ -1731,9 +1732,14 @@ public:
     if ( p()->buffs.deathborne->check() )
       p()->buffs.deathborne->current_value += p()->runeforge.deaths_fathom->effectN( 2 ).percent();
 
-    // TODO: On the PTR, this currently triggers some covenant cast callbacks, such as Lead by Example.
     if ( p()->rppm.deaths_fathom->trigger() )
-      p()->buffs.deathborne->extend_duration_or_trigger( p()->runeforge.deaths_fathom->effectN( 1 ).time_value() );
+    {
+      timespan_t d = p()->runeforge.deaths_fathom->effectN( 1 ).time_value();
+      if ( p()->buffs.lead_by_example && !p()->buffs.deathborne->check() )
+        p()->buffs.lead_by_example->trigger( d );
+
+      p()->buffs.deathborne->extend_duration_or_trigger( d );
+    }
   }
 };
 
@@ -6514,6 +6520,8 @@ void mage_t::init_finished()
   // Sort the procs to put the proc sources next to each other.
   if ( specialization() == MAGE_FROST )
     range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
+
+  buffs.lead_by_example = buff_t::find( this, "lead_by_example" );
 }
 
 void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )

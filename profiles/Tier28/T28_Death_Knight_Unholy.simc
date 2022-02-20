@@ -165,14 +165,14 @@ actions.trinkets+=/use_item,slot=trinket2,if=!trinket.2.has_use_buff&(trinket.1.
 
 head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
-shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173128
-back=lurking_predators_camouflage,id=189815,bonus_id=7187/1524,enchant=soul_vitality
-chest=shadowghast_breastplate,id=171412,bonus_id=6716/6952/6649/6648/1588,enchant=eternal_stats
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
+back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6647/1588,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173128
-hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1498,enchant=eternal_strength
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
-legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6648/1588
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
+feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6647/1588
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
@@ -180,14 +180,14 @@ trinket2=the_first_sigil,id=188271,bonus_id=7187/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=281.13
-# gear_strength=1406
-# gear_stamina=2898
+# gear_ilvl=283.00
+# gear_strength=1431
+# gear_stamina=2962
 # gear_attack_power=20
-# gear_crit_rating=197
-# gear_haste_rating=801
-# gear_mastery_rating=878
-# gear_versatility_rating=258
-# gear_armor=1817
+# gear_crit_rating=378
+# gear_haste_rating=681
+# gear_mastery_rating=812
+# gear_versatility_rating=261
+# gear_armor=1840
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

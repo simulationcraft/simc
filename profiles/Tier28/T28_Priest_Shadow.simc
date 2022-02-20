@@ -6,8 +6,8 @@ race=mechagnome
 role=spell
 position=ranged_back
 talents=1010122
-covenant=night_fae
-soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/dream_delver
+covenant=necrolord
+soulbind=plague_deviser_marileth,volatile_solvent/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -168,7 +168,7 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect
 hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7703/7451/1588,gem_id=173130
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7729/1588,gem_id=173130
 legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_mastery
