@@ -965,7 +965,7 @@ struct touch_of_the_magi_t final : public buff_t
   {
     set_default_value( 0.0 );
     modify_duration( td->source->sets->set( MAGE_ARCANE, T28, B4 )->effectN( 1 ).time_value() );
-    if ( source->is_ptr() ) set_schools_from_effect( 2 ); // TODO: PTR
+    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -3032,7 +3032,6 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = triggers.radiant_spark = true;
-    if ( !p->is_ptr() ) consumes_winters_chill = true; // TODO: PTR
   }
 
   void impact( action_state_t* s ) override
@@ -3063,12 +3062,6 @@ struct comet_storm_t final : public frost_mage_spell_t
       cooldown->duration = 0_ms;
       base_costs[ RESOURCE_MANA ] = 0.0;
     }
-  }
-
-  void execute() override
-  {
-    frost_mage_spell_t::execute();
-    if ( !p()->is_ptr() ) p()->expression_support.remaining_winters_chill = 0; // TODO: PTR
   }
 
   void impact( action_state_t* s ) override
@@ -3858,7 +3851,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
     if ( background )
       return;
 
-    // TODO: Check how Cold Front and Freezing Winds interact
     p()->buffs.freezing_rain->trigger();
     p()->buffs.freezing_winds->trigger();
   }
@@ -5154,15 +5146,6 @@ struct harmonic_echo_t final : public mage_spell_t
     // Ignore Positive Damage Taken Modifiers (321)
     return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
   }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    mage_spell_t::available_targets( tl );
-
-    if ( !p()->is_ptr() ) tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() ); // TODO: PTR
-
-    return tl.size();
-  }
 };
 
 struct radiant_spark_t final : public mage_spell_t
@@ -5845,17 +5828,6 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  if ( !is_ptr() ) // TODO: PTR
-  {
-    add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
-    add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
-    add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
-    add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
-    add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
-    add_option( opt_deprecated( "mage.prepull_dc", "override.precombat_state=buff.disciplinary_command.stack" ) );
-    add_option( opt_deprecated( "mage.prepull_harmony_stacks", "override.precombat_state=buff.arcane_harmony.stack" ) );
-  }
-
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
   add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
