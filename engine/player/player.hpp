@@ -544,9 +544,6 @@ struct player_t : public actor_t
 
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
-
-    // 9.1 Trinkets
-    buff_t* reactive_defense_matrix;
   } buffs;
 
   struct debuffs_t

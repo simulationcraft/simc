@@ -2863,38 +2863,89 @@ void soleahs_secret_technique( special_effect_t& effect )
 }
 
 
-// id=356813 buff
-// id=355329 proc/reflect amount
-// TODO: store damage value in buff and expunge from that rather than dealing the full amount on a proc
-// TODO: implement the 20% health proc
+/**Reactive Defense Matrix
+ * id=356813 buff
+ * id=355329 proc/reflect amount
+ * id=356857 damage effect
+ */
 void reactive_defense_matrix( special_effect_t& effect )
 {
   struct reactive_defense_matrix_t : generic_proc_t
   {
-    reactive_defense_matrix_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "reactive_defense_matrix", effect.trigger() )
+    reactive_defense_matrix_t( const special_effect_t& e ) :
+      generic_proc_t( e, "reactive_defense_matrix", e.player->find_spell( 356857 ) )
     {
-      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      may_crit                  = false;
-    }
-
-    void execute() override
-    {
-      generic_proc_t::execute();
-
-      player->buffs.reactive_defense_matrix->expire();
+      base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
     }
   };
 
+  struct reactive_defense_matrix_absorb_buff_t : absorb_buff_t
+  {
+    action_t* damage_action;
+
+    reactive_defense_matrix_absorb_buff_t( const special_effect_t& e, action_t* a ) :
+      absorb_buff_t( e.player, "reactive_defense_matrix", e.player->find_spell( 356813 ) ),
+      damage_action( a )
+    {
+      // This cooldown is only for the proc that occurs when falling below 20% HP.
+      // If the cooldown is present, it will prevent the buff from proccing normally.
+      set_cooldown( 0_ms );
+      set_absorb_source( e.player->get_stats( "reactive_defense_matrix_absorb" ) );
+    }
+
+    void absorb_used( double amount ) override
+    {
+      // TODO: This should be the target that dealt the damage instead of the players target.
+      // This would also need to be tested to see in which cases the damage is not done at all.
+      if ( player->target )
+        damage_action->execute_on_target( player->target, amount );
+    }
+  };
+
+  struct reactive_defense_matrix_absorb_t : absorb_t
+  {
+    buff_t* buff;
+
+    reactive_defense_matrix_absorb_t( const special_effect_t& e, buff_t* b ) :
+      absorb_t( "reactive_defense_matrix_absorb", e.player, e.player->find_spell( 356813 ) ),
+      buff( b )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    absorb_buff_t* create_buff( const action_state_t* ) override
+    {
+      return debug_cast<absorb_buff_t*>( buff );
+    }
+  };
+
+  action_t* damage_action = create_proc_action<reactive_defense_matrix_t>( "reactive_defense_matrix", effect );
   buff_t* buff = buff_t::find( effect.player, "reactive_defense_matrix" );
   if ( !buff )
-  {
-    buff = make_buff( effect.player, "reactive_defense_matrix", effect.player->find_spell( 356813 ) );
-  }
+    buff = make_buff<reactive_defense_matrix_absorb_buff_t>( effect, damage_action );
 
-  effect.custom_buff = effect.player->buffs.reactive_defense_matrix = buff;
-  effect.execute_action = create_proc_action<reactive_defense_matrix_t>( "reactive_defense_matrix", effect );
+  action_t* proc_action = new reactive_defense_matrix_absorb_t( effect, buff );
+  effect.execute_action = proc_action;
   new dbc_proc_callback_t( effect.player, effect );
+
+  auto period = effect.player->sim->shadowlands_opts.reactive_defense_matrix_interval;
+  if ( period > 0_ms )
+  {
+    cooldown_t* cooldown = effect.player->get_cooldown( "reactive_defense_matrix" );
+    cooldown->duration = timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() );
+    effect.player->register_combat_begin( [ cooldown, proc_action, period ]( player_t* p ) mutable
+    {
+      make_repeating_event( p->sim, period, [ p, cooldown, proc_action ]()
+      {
+        if ( cooldown->down() )
+          return;
+
+        cooldown->start();
+        proc_action->execute();
+      } );
+    } );
+  }
 }
 
 // 9.2 Trinkets
