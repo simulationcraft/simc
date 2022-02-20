@@ -183,8 +183,8 @@ void frost( player_t* p )
   default_->add_action( "variable,name=deaths_due_active,value=death_and_decay.ticking&covenant.night_fae" );
   default_->add_action( "remorseless_winter,if=conduit.everfrost&talent.gathering_storm&(!talent.obliteration&cooldown.pillar_of_frost.remains|talent.obliteration&!buff.pillar_of_frost.up)", "Apply Frost Fever, maintain Icy Talons and keep Remorseless Winter rolling" );
   default_->add_action( "howling_blast,target_if=!dot.frost_fever.remains&(talent.icecap|!buff.breath_of_sindragosa.up&talent.breath_of_sindragosa|talent.obliteration&cooldown.pillar_of_frost.remains&!buff.killing_machine.up)" );
-  default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd&talent.icy_talons&spell_targets.glacial_advance>=2&(talent.icecap|talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains>15|talent.obliteration&!buff.pillar_of_frost.up)" );
-  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd&talent.icy_talons&(talent.icecap|talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>10|talent.obliteration&!buff.pillar_of_frost.up)" );
+  default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&spell_targets.glacial_advance>=2&(talent.icecap|talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains>15|talent.obliteration&!buff.pillar_of_frost.up)" );
+  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&(talent.icecap|talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>10|talent.obliteration&!buff.pillar_of_frost.up)" );
   default_->add_action( "obliterate,if=covenant.night_fae&death_and_decay.ticking&death_and_decay.active_remains<(gcd*1.5)&(!talent.obliteration|talent.obliteration&!buff.pillar_of_frost.up)" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "call_action_list,name=covenants", "Choose Action list to run" );
@@ -252,7 +252,7 @@ void frost( player_t* p )
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap" );
   cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power.deficit<50)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&runic_power>=35&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(runic_power>=35&!buff.abomination_limb.up|buff.abomination_limb.up)&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
   cooldowns->add_action( "breath_of_sindragosa,if=buff.pillar_of_frost.up" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies=1&buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration&(!raid_event.adds.exists|raid_event.adds.in>30)|fight_remains<3" );
   cooldowns->add_action( "frostwyrms_fury,if=active_enemies>=2&(buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.in>cooldown.pillar_of_frost.remains+7)&(buff.pillar_of_frost.remains<gcd|raid_event.adds.exists&raid_event.adds.remains<gcd)" );
@@ -273,6 +273,7 @@ void frost( player_t* p )
   covenants->add_action( "fleshcraft,if=!buff.pillar_of_frost.up&(soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up),interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
   obliteration->add_action( "remorseless_winter,if=active_enemies>=3&variable.rw_buffs", "Obliteration rotation" );
+  obliteration->add_action( "frost_strike,if=!buff.killing_machine.up&(rune<2|talent.icy_talons&buff.icy_talons.remains<gcd*2|conduit.unleashed_frenzy&(buff.unleashed_frenzy.remains<gcd*2|buff.unleashed_frenzy.stack<3))" );
   obliteration->add_action( "howling_blast,target_if=!buff.killing_machine.up&rune>=3&(buff.rime.remains<3&buff.rime.up|!dot.frost_fever.ticking)" );
   obliteration->add_action( "glacial_advance,if=!buff.killing_machine.up&spell_targets.glacial_advance>=2|!buff.killing_machine.up&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*4)" );
   obliteration->add_action( "frostscythe,if=buff.killing_machine.react&spell_targets.frostscythe>2&!variable.deaths_due_active" );
@@ -292,7 +293,7 @@ void frost( player_t* p )
   obliteration_pooling->add_action( "howling_blast,if=variable.rotfc_rime" );
   obliteration_pooling->add_action( "glacial_advance,if=spell_targets.glacial_advance>=2&runic_power.deficit<60" );
   obliteration_pooling->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<70" );
-  obliteration_pooling->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune>=3" );
+  obliteration_pooling->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=rune>=3&!main_hand.2h|rune>=4&main_hand.2h" );
   obliteration_pooling->add_action( "frostscythe,if=active_enemies>=4&!variable.deaths_due_active" );
 
   standard->add_action( "remorseless_winter,if=variable.rw_buffs", "Standard single-target rotation" );
