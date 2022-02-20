@@ -195,7 +195,7 @@ void frost( player_t* p )
   default_->add_action( "run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up" );
   default_->add_action( "run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains<10)&(raid_event.adds.in>25|!raid_event.adds.exists|cooldown.pillar_of_frost.remains<10&raid_event.adds.exists&raid_event.adds.in<10)" );
   default_->add_action( "run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration" );
-  default_->add_action( "run_action_list,name=obliteration_pooling,if=talent.obliteration&cooldown.pillar_of_frost.remains<10&(variable.st_planning|raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)" );
+  default_->add_action( "run_action_list,name=obliteration_pooling,if=!set_bonus.tier28_4pc&talent.obliteration&cooldown.pillar_of_frost.remains<7&(variable.st_planning|raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)" );
   default_->add_action( "run_action_list,name=aoe,if=active_enemies>=2" );
   default_->add_action( "call_action_list,name=standard" );
 
@@ -285,7 +285,7 @@ void frost( player_t* p )
   obliteration->add_action( "howling_blast,if=variable.rotfc_rime" );
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
-  obliteration_pooling->add_action( "remorseless_winter,if=variable.rw_buffs|active_enemies>=2", "Pooling For Obliteration: Starts 10 seconds before Pillar of Frost comes off CD" );
+  obliteration_pooling->add_action( "remorseless_winter,if=variable.rw_buffs|active_enemies>=2", "Pooling For Obliteration: Starts 7 seconds before Pillar of Frost comes off CD" );
   obliteration_pooling->add_action( "glacial_advance,if=spell_targets.glacial_advance>=2&talent.frostscythe" );
   obliteration_pooling->add_action( "frostscythe,if=buff.killing_machine.react&active_enemies>2&!variable.deaths_due_active" );
   obliteration_pooling->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react" );
