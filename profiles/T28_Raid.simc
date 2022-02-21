@@ -1,7 +1,10 @@
 optimal_raid=1
 default_actions=1
 
-# T28_Death_Knight_Blood.simc
+# TODO: Remove me when 9.2 launched
+ptr=1
+
+T28_Death_Knight_Blood.simc
 T28_Death_Knight_Frost.simc
 T28_Death_Knight_Frost_Breath.simc
 T28_Death_Knight_Frost_Icecap.simc
@@ -13,8 +16,9 @@ T28_Death_Knight_Unholy.simc
 # T28_Demon_Hunter_Vengeance.simc
 
 # T28_Druid_Balance.simc
-# T28_Druid_Feral.simc
-# T28_Druid_Feral_Owlweave.simc
+T28_Druid_Feral.simc
+T28_Druid_Feral_AOE.simc
+T28_Druid_Feral_Owlweave.simc
 # T28_Druid_Guardian.simc
 # T28_Druid_Guardian_Venthyr.simc
 
@@ -52,9 +56,9 @@ T28_Shaman_Elemental_Kyrian.simc
 T28_Shaman_Elemental_Necrolord.simc
 T28_Shaman_Elemental_Venthyr.simc
 T28_Shaman_Enhancement.simc
-# T28_Shaman_Enhancement_Kyrian.simc
-# T28_Shaman_Enhancement_Venthyr.simc
-# T28_Shaman_Enhancement_Necrolord.simc
+T28_Shaman_Enhancement_Kyrian.simc
+T28_Shaman_Enhancement_Necrolord.simc
+T28_Shaman_Enhancement_Venthyr.simc
 
 T28_Warlock_Affliction.simc
 T28_Warlock_Affliction_Necrolord.simc
