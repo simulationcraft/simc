@@ -102,7 +102,7 @@ actions.cds+=/killing_spree,if=variable.blade_flurry_sync&variable.killing_spree
 actions.cds+=/blade_rush,if=variable.blade_flurry_sync&(energy.time_to_max>2&buff.dreadblades.down|energy<=30|spell_targets>2)
 # If using Invigorating Shadowdust, use normal logic in addition to checking major CDs.
 actions.cds+=/vanish,if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!debuff.flagellation.up))
-actions.cds+=/vanish,if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&variable.ambush_condition&(cooldown.echoing_reprimand.remains>12|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)
+actions.cds+=/vanish,if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)
 actions.cds+=/shadowmeld,if=!stealthed.all&variable.ambush_condition
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|buff.adrenaline_rush.up
 actions.cds+=/blood_fury
