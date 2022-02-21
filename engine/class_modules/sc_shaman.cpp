@@ -5237,10 +5237,8 @@ struct lightning_bolt_t : public shaman_spell_t
       maelstrom_gain                     = player->spell.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
     }
 
-    if (player->specialization() == SHAMAN_ELEMENTAL || player->specialization() == SHAMAN_RESTORATION) {
-      // value is a negative time
-      base_execute_time += p()->spec.lightning_bolt_2->effectN(1).time_value();
-    }
+    // value is a negative time
+    base_execute_time += p()->spec.lightning_bolt_2->effectN(1).time_value();
 
     if ( player->mastery.elemental_overload->ok() )
     {
