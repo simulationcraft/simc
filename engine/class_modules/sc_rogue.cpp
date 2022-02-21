@@ -2241,9 +2241,12 @@ struct melee_t : public rogue_attack_t
 {
   int sync_weapons;
   bool first;
+  bool canceled;
+  timespan_t prev_scheduled_time;
 
   melee_t( const char* name, rogue_t* p, int sw ) :
-    rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
+    rogue_attack_t( name, p ), sync_weapons( sw ), first( true ),
+    canceled( false ), prev_scheduled_time( timespan_t::zero() )
   {
     background = repeating = may_glance = may_crit = true;
     special = false;
@@ -2260,17 +2263,26 @@ struct melee_t : public rogue_attack_t
   void reset() override
   {
     rogue_attack_t::reset();
-
     first = true;
+    canceled = false;
+    prev_scheduled_time = timespan_t::zero();
   }
 
   timespan_t execute_time() const override
   {
     timespan_t t = rogue_attack_t::execute_time();
+    
     if ( first )
     {
-      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? timespan_t::zero() : t / 2 ) : timespan_t::zero();
     }
+
+    // If we cancel the swing timer mid-fight, use the previous swing timer
+    if ( canceled )
+    {
+      return std::min( t, std::max( prev_scheduled_time - p()->sim->current_time(), timespan_t::zero() ) );
+    }
+
     return t;
   }
 
@@ -2279,6 +2291,14 @@ struct melee_t : public rogue_attack_t
     if ( first )
     {
       first = false;
+      p()->sim->print_log( "{} starts AA {} with {} swing timer", *p(), *this, time_to_execute );
+    }
+
+    if ( canceled )
+    {
+      canceled = false;
+      prev_scheduled_time = timespan_t::zero();
+      p()->sim->print_log( "{} restarts AA {} with {} swing timer remaining", *p(), *this, time_to_execute );
     }
 
     rogue_attack_t::execute();
@@ -2363,33 +2383,33 @@ struct auto_melee_attack_t : public action_t
       return;
     }
 
-    p -> melee_main_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_mh" ) );
-    if ( ! p -> melee_main_hand )
-      p -> melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
+    p->melee_main_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_mh" ) );
+    if ( !p->melee_main_hand )
+      p->melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
 
-    p -> main_hand_attack = p -> melee_main_hand;
-    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p->main_hand_attack = p->melee_main_hand;
+    p->main_hand_attack->weapon = &( p->main_hand_weapon );
+    p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p->off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> melee_off_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_oh" ) );
-      if ( ! p -> melee_off_hand )
-        p -> melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+      p->melee_off_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_oh" ) );
+      if ( !p->melee_off_hand )
+        p->melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
 
-      p -> off_hand_attack = p -> melee_off_hand;
-      p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-      p -> off_hand_attack -> id = 1;
+      p->off_hand_attack = p->melee_off_hand;
+      p->off_hand_attack->weapon = &( p->off_hand_weapon );
+      p->off_hand_attack->base_execute_time = p->off_hand_weapon.swing_time;
+      p->off_hand_attack->id = 1;
     }
   }
 
   void execute() override
   {
-    player -> main_hand_attack -> schedule_execute();
+    player->main_hand_attack->schedule_execute();
 
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> schedule_execute();
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
   }
 
   bool ready() override
@@ -4984,8 +5004,8 @@ struct cancel_autoattack_t : public action_t
 
   bool ready() override
   {
-    if ( ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ) ||
-         ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event ) )
+    if ( ( rogue->main_hand_attack && rogue->main_hand_attack->execute_event ) ||
+         ( rogue->off_hand_attack && rogue->off_hand_attack->execute_event ) )
     {
       return action_t::ready();
     }
@@ -5999,10 +6019,6 @@ void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /
 
   if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
     return;
-
-  p()->melee_main_hand->first = true;
-  if ( p()->melee_off_hand )
-    p()->melee_off_hand->first = true;
 
   p()->auto_attack->execute();
 }
@@ -9150,12 +9166,20 @@ void rogue_t::break_stealth()
 
 void rogue_t::cancel_auto_attack()
 {
-  // Stop autoattacks
-  if ( main_hand_attack && main_hand_attack->execute_event )
-    event_t::cancel( main_hand_attack->execute_event );
+  // Cancel scheduled AA events and record the swing timer to reference on restart
+  if ( melee_main_hand && melee_main_hand->execute_event )
+  {
+    melee_main_hand->canceled = true;
+    melee_main_hand->prev_scheduled_time = melee_main_hand->execute_event->occurs();
+    event_t::cancel( melee_main_hand->execute_event );
+  }
 
-  if ( off_hand_attack && off_hand_attack->execute_event )
-    event_t::cancel( off_hand_attack->execute_event );
+  if ( melee_off_hand && melee_off_hand->execute_event )
+  {
+    melee_off_hand->canceled = true;
+    melee_off_hand->prev_scheduled_time = melee_off_hand->execute_event->occurs();
+    event_t::cancel( melee_off_hand->execute_event );
+  }
 }
 
 // rogue_t::swap_weapon =====================================================
