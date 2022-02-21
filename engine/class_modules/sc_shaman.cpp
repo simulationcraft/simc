@@ -632,6 +632,7 @@ public:
 
     // Elemental
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
+    const spell_data_t* lightning_bolt_2;   // Lightning Bolt cast time reduction
     const spell_data_t* elemental_fury;     // general crit multiplier
     const spell_data_t* elemental_shaman;   // general spec multiplier
     const spell_data_t* fire_elemental_2;   // Fire Elemental Totem Rank 2
@@ -5342,7 +5343,12 @@ struct lightning_bolt_t : public shaman_spell_t
       return timespan_t::zero();
     }
 
-    return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+    timespan_t t = shaman_spell_t::execute_time();
+
+    // value is a negative time
+    t += p()->spec.lightning_bolt_2->effectN(1).time_value();
+    t *= 1.0 + p()->buff.wind_gust->stack_value();
+    return t;
   }
 
   timespan_t gcd() const override
@@ -6123,7 +6129,6 @@ struct frost_shock_t : public shaman_spell_t
 {
   frost_shock_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "frost_shock", player, player->find_class_spell( "Frost Shock" ) )
-
   {
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
@@ -8257,6 +8262,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2 = find_rank_spell( "Chain Lightning", "Rank 2" );
   spec.fire_elemental_2  = find_rank_spell( "Fire Elemental Totem", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
+  spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
 
   // Enhancement
   spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
@@ -9992,7 +9998,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     aoe->add_action( this, "Earth Shock", "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
-    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
+    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up|set_bonus.tier28_4pc" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_action( this, "Earthquake" );
     aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
