@@ -1341,6 +1341,7 @@ class SpellDataGenerator(DataGenerator):
          369294, 369318, # Grim Eclipse
          368654, 368655, 368656, 368657, 367804, 368649, 368650, 368651, 368652, 368653, # Cache of Acquired Treasures
          368689, # Soulwarped Seal of Wrynn buff Lion's Hope
+         360075, # Magically Regulated Automa Core damage
         ),
 
         # Warrior:
