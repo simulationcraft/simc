@@ -6329,7 +6329,7 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
   if ( !p()->talent.dreadblades->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0)
+  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0 )
     return;
 
   // 2022-02-04 -- Due to not being cast triggers, this appears to not work
@@ -7261,7 +7261,7 @@ void rogue_t::init_action_list()
     cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&variable.killing_spree_vanish_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.deficit>(energy.regen*2+15)|spell_targets.blade_flurry>(2-buff.deathly_shadows.up)|master_assassin_remains>0)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+ (2T+ with Deathly Shadows) or when Master Assassin is up." );
     cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&(energy.time_to_max>2&buff.dreadblades.down|energy<=30|spell_targets>2)" );
     cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!debuff.flagellation.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
-    cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.echoing_reprimand.ready|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
+    cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&variable.ambush_condition&(cooldown.echoing_reprimand.remains>12|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
 
     cds->add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
 
