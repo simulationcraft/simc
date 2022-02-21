@@ -48,12 +48,12 @@ druid.owlweave_cat=1
 head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6716/6952/6649/6647/1588,enchant_id=6202
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=1587/7187,enchant_id=6202
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
-wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
+wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=291,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=291
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
@@ -81,12 +81,12 @@ druid.owlweave_cat=0
 head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6716/6952/6649/6647/1588,enchant_id=6202
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=1587/7187,enchant_id=6202
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
-wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
+wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=291,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=291
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
@@ -96,7 +96,7 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1522/6807,ilevel=283,enchant
 
 save=T28_Druid_Feral.simc
 
-save=T28_Druid_Feral_Owlweave.simc
+save=T28_Druid_Feral.simc
 
 druid="T28_Feral_AOE"
 source=default
@@ -116,12 +116,12 @@ druid.owlweave_cat=0
 head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
-back=cloak_of_enveloping_manifestations,id=178851,bonus_id=6716/6952/6649/6647/1588,enchant_id=6202
+back=cloak_of_enveloping_manifestations,id=178851,bonus_id=1587/7187,enchant_id=6202
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
-wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
+wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=291,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=291
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
