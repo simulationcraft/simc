@@ -53,8 +53,8 @@ chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
 wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=7571/6647/6648/7451/1559,ilevel=288
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=6716/8119/6649/6647/1588,ilevel=283,enchant_id=6211
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
@@ -86,8 +86,8 @@ chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
 wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=7571/6647/6648/7451/1559,ilevel=288
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=6716/8119/6649/6647/1588,ilevel=283,enchant_id=6211
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
@@ -121,8 +121,8 @@ chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
 wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=288,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=7571/6647/6648/7451/1559,ilevel=288
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=6716/8119/6649/6647/1588,ilevel=283,enchant_id=6211
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=288
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
