@@ -1,13 +1,13 @@
-warrior="T28_Warrior_Fury"
+warrior="T28_Warrior_Fury_Necrolord"
 source=default
 spec=fury
 level=60
 race=mechagnome
 role=attack
 position=back
-talents=2110322
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:11:1/hack_and_slash:11:1/depths_of_insanity:11:1/fatal_flaw
+talents=2120322
+covenant=necrolord
+soulbind=plague_deviser_marileth,volatile_solvent/veterans_repute:11:1/hack_and_slash:11:1/depths_of_insanity:11:1/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -43,7 +43,6 @@ actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in
 actions+=/sequence,if=active_enemies=1&covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Reck:bloodthirst:recklessness
 actions+=/sequence,if=active_enemies=1&!covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Charge:bloodthirst:heroic_charge
 actions+=/potion
-actions+=/use_items
 actions+=/pummel,if=target.debuff.casting.react
 actions+=/conquerors_banner,if=rage>74
 actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
@@ -52,6 +51,7 @@ actions+=/recklessness,if=runeforge.elysian_might&gcd.remains=0&(cooldown.spear_
 actions+=/recklessness,if=!variable.unique_legendaries&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
 actions+=/recklessness,use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up
+actions+=/use_items
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down
@@ -77,14 +77,22 @@ actions.single_target+=/cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1
 actions.single_target+=/condemn,if=(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase
 actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.adds.in>15
 actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5
+actions.single_target+=/raging_blow,if=charges=3
+actions.single_target+=/crushing_blow,if=charges=3
 actions.single_target+=/condemn
 actions.single_target+=/execute
+actions.single_target+=/spear_of_bastion,if=runeforge.elysian_might&buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
+actions.single_target+=/raging_blow,if=set_bonus.tier28_4pc
+actions.single_target+=/crushing_blow,if=set_bonus.tier28_4pc
+actions.single_target+=/bladestorm,if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)
+actions.single_target+=/spear_of_bastion,if=buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
+actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35	
+actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled	
+actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
 actions.single_target+=/onslaught
 actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3
-actions.single_target+=/raging_blow,if=set_bonus.tier28_2pc|charges>=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled
-actions.single_target+=/crushing_blow,if=set_bonus.tier28_2pc|charges>=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled
-actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
-actions.single_target+=/bladestorm,if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)
+actions.single_target+=/raging_blow,if=charges>=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled
+actions.single_target+=/crushing_blow,if=charges>=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled
 actions.single_target+=/bloodthirst
 actions.single_target+=/bloodbath
 actions.single_target+=/raging_blow
