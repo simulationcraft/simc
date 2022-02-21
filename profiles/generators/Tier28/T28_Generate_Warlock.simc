@@ -8,6 +8,7 @@ talents=3302023
 covenant=night_fae
 soulbind=dreamweaver,field_of_blossoms/dream_delver/focused_malignancy:11:1/withering_bolt:11:1/soul_eater:11:1
 renown=80
+default_pet=sayaad
 
 head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
@@ -38,6 +39,7 @@ talents=3302023
 covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/carvers_eye/mnemonic_equipment/focused_malignancy:11:1/withering_bolt:11:1/heirmirs_arsenal_marrowed_gemstone
 renown=80
+default_pet=sayaad
 
 head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
