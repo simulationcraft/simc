@@ -29,7 +29,7 @@ main_hand=maledict_opus,id=186406,bonus_id=7187/1498,enchant=sinful_revelation
 save=T27_Druid_Balance.simc
 
 
-druid="T28_Feral_Owlweave"
+druid="T28_Druid_Feral_Owlweave"
 source=default
 spec=feral
 level=60
@@ -63,7 +63,7 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1522/6807,ilevel=283,enchant
 
 save=T28_Druid_Feral_Owlweave.simc
 
-druid="T28_Feral"
+druid="T28_Druid_Feral"
 source=default
 spec=feral
 level=60
@@ -96,7 +96,7 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1522/6807,ilevel=283,enchant
 
 save=T28_Druid_Feral.simc
 
-druid="T28_Feral_AOE"
+druid="T28_Druid_Feral_AOE"
 source=default
 spec=feral
 level=60
