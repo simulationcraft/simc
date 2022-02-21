@@ -1,13 +1,13 @@
-warrior="T28_Warrior_Fury_Necrolord"
+warrior="T28_Warrior_Fury"
 source=default
 spec=fury
 level=60
 race=mechagnome
 role=attack
 position=back
-talents=2120322
-covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/veterans_repute:11:1/hack_and_slash:11:1/depths_of_insanity:11:1/kevins_oozeling
+talents=2110322
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:11:1/hack_and_slash:11:1/depths_of_insanity:11:1/fatal_flaw
 renown=80
 
 # Default consumables
