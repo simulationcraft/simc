@@ -159,7 +159,7 @@ chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
 wrists=umbrahide_armguards,id=172321,bonus_id=7109/6758/7193/6647/6648/1532,ilevel=291,gem_id=173130
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,ilevel=283,gem_id=173130
-legs=umbrahide_leggings,id=172318,bonus_id=6716/8119/6649/6647/1588,ilevel=291
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6647/1588,ilevel=291
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,ilevel=283,enchant_id=6211
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,ilevel=278,gem_id=173130,enchant_id=6168
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,ilevel=283,gem_id=173127,enchant_id=6164
@@ -173,8 +173,8 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1522/6807,ilevel=283,enchant
 # gear_stamina=2945
 # gear_attack_power=20
 # gear_crit_rating=797
-# gear_haste_rating=501
-# gear_mastery_rating=913
+# gear_haste_rating=407
+# gear_mastery_rating=1007
 # gear_versatility_rating=326
 # gear_speed_rating=30
 # gear_armor=866
