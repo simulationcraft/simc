@@ -96,8 +96,6 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1522/6807,ilevel=283,enchant
 
 save=T28_Druid_Feral.simc
 
-save=T28_Druid_Feral.simc
-
 druid="T28_Feral_AOE"
 source=default
 spec=feral
