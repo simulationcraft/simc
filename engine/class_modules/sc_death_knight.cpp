@@ -8476,6 +8476,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
     }
   }
 
+  // Check if IQD execute is disabled
+  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "disable_iqd_execute" ) && splits.size() == 2 )
+      return expr_t::create_constant( " disable_iqd_execute_expression ", sim->shadowlands_opts.disable_iqd_execute);
+  }
+
   // Death Knight special expressions
   if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
   {
