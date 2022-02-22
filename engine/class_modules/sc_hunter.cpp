@@ -2469,7 +2469,7 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
   sim->print_debug( "{} action {} spent {} focus, focused trickery now at {}", name(), action->name(), cost, state.focus_used_FT );
 
   const double focused_trickery_value = tier_set.focused_trickery_4pc->effectN( 1 ).base_value();
-  while ( state.focus_used_FT > focused_trickery_value )
+  while ( state.focus_used_FT >= focused_trickery_value )
   {
     triggered = true;
     state.focus_used_FT -= focused_trickery_value;
