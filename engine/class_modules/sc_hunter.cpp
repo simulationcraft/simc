@@ -2350,11 +2350,6 @@ struct trick_shots_t : public buff_t
     if ( !p -> buffs.secrets_of_the_vigil -> trigger() )
       return;
 
-    // 2022-01-22 refreshes do not trigger AiS charge reset part of the Vigil proc
-    // XXX 2022-01-25 fixed in 9.2
-    if ( !p -> dbc -> ptr && p -> bugs && old_stacks > 0 )
-      return;
-
     // XXX: 2022-01-22
     // Unblinking Vigil procs from AiS triggered TrS with T28 4pc do not give the AiS charge
     // Handle it here by scheduling the AiS reset part as a separate event - AiS will do a
