@@ -85,7 +85,7 @@ finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
 trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/6807
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
-off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusade
+off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save="T28_Death_Knight_Frost_Breath.simc"
 
