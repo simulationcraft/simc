@@ -5331,12 +5331,9 @@ struct festering_wound_t : public death_knight_spell_t
     if ( p -> bugs )
       base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
 
-    if ( p -> dbc -> ptr )
+    if ( p -> conduits.convocation_of_the_dead.ok() )
     {
-      if ( p -> conduits.convocation_of_the_dead.ok() )
-      {
-        base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
-      }
+      base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
     }
   }
 
@@ -6750,13 +6747,10 @@ struct shackle_the_unworthy_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p() -> dbc -> ptr )
+    if ( p() -> legendary.final_sentence.ok() )
     {
-      if ( p() -> legendary.final_sentence.ok() )
-      {
-        p() -> buffs.final_sentence -> trigger();
-        p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
-      }
+      p() -> buffs.final_sentence -> trigger();
+      p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
     }
   }
 };
@@ -7941,19 +7935,11 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     }
   }
 
-  // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
+  // 2021-Jun-21 Currently on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
   if ( conduits.convocation_of_the_dead.ok() )
   {
-    if ( dbc -> ptr )
-    {
-      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-        conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
-    }
-    else
-    {
-      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-        conduits.convocation_of_the_dead.value() / 10 ) );
-    }
+    cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+    conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
   }
 }
 
@@ -8025,8 +8011,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   // for 1h weapons was incorrect.  This new version seems to match testing done by Bicepspump, via wcl log pull.
   if ( chance == 0 )
   {
-    // If we are using a 1H, km_proc_attempts*0.13 per attempt, with it going to 100% at 6 attempts
-    // On PTR for DW, it was reverted to km_proc_attempts*0.3
+    // If we are using a 1H, km_proc_attempts*0.3
     // with 2H it looks to be km_proc_attempts*0.7 through testing
     double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
@@ -8035,16 +8020,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     }
     else
     {
-      if ( dbc -> ptr )
-      {
-        km_proc_chance = ++km_proc_attempts * 0.3;
-      }
-      else
-      {
-        km_proc_chance = ++km_proc_attempts * 0.13;
-        if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
-          km_proc_chance = 1.0;
-      }
+      km_proc_chance = ++km_proc_attempts * 0.3;
     }
 
     if ( rng().roll( km_proc_chance ) )
@@ -8182,16 +8158,8 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
         }
         if ( dk -> conduits.convocation_of_the_dead.ok() )
         {
-          if ( dk -> dbc -> ptr )
-          {
-            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-              dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
-          }
-          else
-          {
-            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-              dk -> conduits.convocation_of_the_dead.value() / 10 ) );
-          }
+          dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+          dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
         }
       }
 
@@ -9872,12 +9840,9 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
   {
     m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
 
-    if ( dbc -> ptr )
+    if( td -> debuff.abominations_frenzy -> up() )
     {
-      if( td -> debuff.abominations_frenzy -> up() )
-      {
-        m *= 1.0 + td -> debuff.abominations_frenzy -> value();
-      }
+      m *= 1.0 + td -> debuff.abominations_frenzy -> value();
     }
   }
 
