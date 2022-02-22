@@ -6173,17 +6173,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> conduits.eradicating_blow->ok() )
     {
       p() -> buffs.eradicating_blow -> trigger();
-    }
-
-    if ( p() -> legendary.koltiras_favor.ok() && p() -> cooldown.koltiras_favor_icd->is_ready() )
-    {
-      if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
-      {
-        // # of runes to restore was stored in a secondary affect
-        p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
-        p() -> cooldown.koltiras_favor_icd -> start();
-      }
-    }
+    }   
 
     // KM Rank 2 - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
@@ -6241,20 +6231,29 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( hit_any_target )
     {
+      if ( p() -> legendary.koltiras_favor.ok() && p() -> cooldown.koltiras_favor_icd->is_ready() )
+      {
+        if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
+        {
+          // # of runes to restore was stored in a secondary affect
+          p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
+          p() -> cooldown.koltiras_favor_icd -> start();
+        }
+      }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
-        // Tier28, KM is up, so fire GA, in game fires before oblits
-        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-        {
-          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
-          p() -> active_spells.glacial_advance_t28_4pc -> execute();
-        }
         km_mh -> set_target( target );
         km_mh -> execute();
         if ( oh && km_oh )
         {
           km_oh -> set_target( target );
           km_oh -> execute();
+        }
+        // Tier28, KM is up, so fire GA, in game fires before oblits
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+        {
+          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
+          p() -> active_spells.glacial_advance_t28_4pc -> execute();
         }
       }
       else
