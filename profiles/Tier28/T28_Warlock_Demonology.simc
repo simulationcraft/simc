@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1101032
 covenant=night_fae
-soulbind=dreamweaver,borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/field_of_blossoms/dream_delver
+soulbind=dreamweaver,field_of_blossoms/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/dream_delver
 renown=80
 
 # Default consumables
@@ -158,7 +158,7 @@ feet=grimveiled_sandals,id=173243,bonus_id=6716/8129/6649/6648/1588
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
