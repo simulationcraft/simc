@@ -1213,7 +1213,7 @@ public:
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
     double tactician_chance = tactician_per_rage;
     warrior_td_t* td        = this->td( ab::target );
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
     {
       tactician_chance *= ( ( p()->spec.tactician->effectN( 1 ).base_value() / 100 ) *
                             ( p()->tier_set.pile_on_4p->effectN( 1 ).percent() / 100 + 1 ) );
@@ -1226,7 +1226,7 @@ public:
       {
         p()->buff.striking_the_anvil->trigger();
       }
-      if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+      if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
       {
         p()->buff.pile_on_ready->trigger();
       }
@@ -3407,7 +3407,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
     {
       if ( p()->buff.recklessness->check() )
       {
@@ -3544,7 +3544,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
     {
       if ( p()->buff.recklessness->check() )
       {
@@ -3760,7 +3760,7 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
     {
       p()->buff.pile_on_ready->expire();
       p()->buff.pile_on_str->trigger();
