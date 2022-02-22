@@ -3063,6 +3063,18 @@ struct death_knight_disease_t : public death_knight_spell_t
       disease -> execute();
     }
   }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = death_knight_spell_t::bonus_ta( s );
+    // Currently Remnants Despair affects all diseases
+    if ( const actor_target_data_t* td = debug_cast<const actor_target_data_t*>( p() -> find_target_data( s -> target ) ) )
+    {
+      ta += td -> debuff.remnants_despair -> value();
+    }
+
+    return ta;
+  }
 };
 
 // Blood Plague ============================================
