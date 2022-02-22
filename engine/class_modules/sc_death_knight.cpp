@@ -5415,7 +5415,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.killing_machine -> up() )
     {
-      // Tier28, KM is up, so fire GA, in game fires before oblits
+      // Tier28, KM is up, so fire GA, in game fires after oblits
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
       {
         p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
