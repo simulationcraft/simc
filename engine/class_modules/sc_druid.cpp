@@ -1322,9 +1322,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
-
-    if ( p.is_ptr() )
-      set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
     if ( !inc && p.specialization() == DRUID_GUARDIAN )
       name_str_reporting = "berserk";
@@ -9355,7 +9353,7 @@ void druid_t::create_buffs()
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
-        b->extend_duration( this, is_ptr() ? 100_ms : timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+        b->extend_duration( this, 100_ms );
       else if ( old_ )
         buff.sinful_hysteria->trigger( old_ );
     } );
