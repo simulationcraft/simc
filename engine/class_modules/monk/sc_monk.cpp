@@ -533,19 +533,8 @@ public:
     {
       p()->cooldown.bountiful_brew->start( p()->legendary.bountiful_brew->internal_cooldown() );
 
-      // Currently Bountiful Brew cannot be applied if Bonedust Brew is currently active
-      // This means that RPPM will have triggered but cannot be applied.
-      // This is no longer the case on PTR
-      if ( p()->is_ptr() )
-      {
-        p()->active_actions.bountiful_brew->execute();
-        p()->proc.bountiful_brew_proc->occur();
-      }
-      else if ( !get_td( p()->target )->debuff.bonedust_brew->up() )
-      {
-        p()->active_actions.bountiful_brew->execute();
-        p()->proc.bountiful_brew_proc->occur();
-      }
+      p()->active_actions.bountiful_brew->execute();
+      p()->proc.bountiful_brew_proc->occur();
     }
 
     if ( p()->legendary.sinister_teachings->ok() )
@@ -553,10 +542,11 @@ public:
       if ( trigger_sinister_teaching_cdr && s->result_total >= 0 && s->result == RESULT_CRIT && 
            p()->buff.fallen_order->up() && p()->cooldown.sinister_teachings->up() )
       {
-        if ( p()->is_ptr() && p()->specialization() == MONK_MISTWEAVER )
+        if ( p()->specialization() == MONK_MISTWEAVER )
           p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 4 ).time_value() );
         else
           p()->cooldown.fallen_order->adjust( -1 * p()->legendary.sinister_teachings->effectN( 3 ).time_value() );
+
         p()->cooldown.sinister_teachings->start( p()->legendary.sinister_teachings->internal_cooldown() );
         p()->proc.sinister_teaching_reduction->occur();
       }
@@ -4081,19 +4071,13 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    if ( p()->is_ptr() )
-      p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
-    else
-      p()->buff.bonedust_brew->trigger();
+    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
     {
       auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
-      if ( p()->is_ptr() )
-        buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
-      else
-        buff->trigger();
+      buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -4101,10 +4085,7 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    if ( p()->is_ptr() )
-      get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
-    else
-      get_td( s->target )->debuff.bonedust_brew->trigger();
+    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
   }
 };
 
@@ -7203,7 +7184,7 @@ void monk_t::create_buffs()
                                    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.primordial_power_hidden_channel = make_buff( this, "primordial_power_hidden_channel" )
                                        ->set_quiet( true )
-                                       ->set_max_stack( is_ptr() ? passives.primordial_power->max_stacks() : 3 )
+                                       ->set_max_stack( passives.primordial_power->max_stacks() )
                                        ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
@@ -7490,7 +7471,7 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
 
   // Don't trigger from Empowered Tiger Lightning
   // Don't trigger from Call to Arms Empowered Tiger Lightning
-  if ( is_ptr() && ( s->action->id == 335913 || s->action->id == 360829 ) )
+  if ( s->action->id == 335913 || s->action->id == 360829 )
     return;
 
   if ( rng().roll( covenant.necrolord->proc_chance() ) )
