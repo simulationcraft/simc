@@ -2336,47 +2336,18 @@ namespace buffs {
 
 struct trick_shots_t : public buff_t
 {
-  event_t* secrets_of_the_vigil_ais_reset = nullptr;
-
   using buff_t::buff_t;
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    hunter_t* p = debug_cast<hunter_t*>( player );
-    const int old_stacks = check();
-
     buff_t::execute( stacks, value, duration );
 
-    if ( !p -> buffs.secrets_of_the_vigil -> trigger() )
-      return;
-
-    // XXX: 2022-01-22
-    // Unblinking Vigil procs from AiS triggered TrS with T28 4pc do not give the AiS charge
-    // Handle it here by scheduling the AiS reset part as a separate event - AiS will do a
-    // trigger & expire pair one after another in its execute so the event should be cancelled
-    // from expire_override
-    if ( p -> bugs )
-    {
-      if ( secrets_of_the_vigil_ais_reset == nullptr )
-        secrets_of_the_vigil_ais_reset =
-          make_event( sim, [ this, p ] {
-            this -> secrets_of_the_vigil_ais_reset = nullptr;
-            p -> cooldowns.aimed_shot -> reset( true );
-            p -> procs.secrets_of_the_vigil_ais_reset -> occur();
-          } );
-    }
-    else
+    hunter_t* p = debug_cast<hunter_t*>( player );
+    if ( p -> buffs.secrets_of_the_vigil -> trigger() )
     {
       p -> cooldowns.aimed_shot -> reset( true );
       p -> procs.secrets_of_the_vigil_ais_reset -> occur();
     }
-  }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-
-    event_t::cancel( secrets_of_the_vigil_ais_reset );
   }
 };
 
