@@ -62,29 +62,29 @@ save=T28_Warlock_Affliction_Necrolord.simc
 
 warlock="T28_Warlock_Demonology_Necrolord"
 level=60
-race=dwarf
+race=orc
 spec=demonology
 role=spell
 position=ranged_back
 talents=1201011
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/kevins_oozeling
+soulbind=emeni,lead_by_example/borne_of_blood:11:1/emenis_magnificent_skin/pustule_eruption/carnivorous_stalkers:11:1/323918/tyrants_soul:11:1
 renown=80
 
-head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173127
-neck=cartel_xys_proof_of_initiation,id=189827,bonus_id=1524/7187/6935,gem_id=173127
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173128
+neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173128
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=contaminated_gauze_wristwraps,id=178806,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=6647/6650/6716/7036/1588
-waist=grimveiled_belt,id=173248,bonus_id=6647/6650/8129/1588,gem_id=173127
+wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588,gem_id=173128,enchant=eternal_intellect
+hands=grasps_of_the_demon_star,id=188890,bonus_id=1498/7187
+waist=fallen_empresss_cord,id=178804,bonus_id=1592/6536/6646/6935,gem_id=173129
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=slippers_of_leavened_station,id=178831,bonus_id=1592/6536/6646
-finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
+feet=codebreakers_cunning_sandals,id=185788,bonus_id=1595/6536/6646
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=empyreal_ordnance,id=180117,bonus_id=1592/6536/6646
-trinket2=soleahs_secret_technique,id=185818,bonus_id=1595/6536/6646
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
@@ -98,7 +98,7 @@ role=spell
 position=ranged_back
 talents=1101032
 covenant=night_fae
-soulbind=dreamweaver,borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/field_of_blossoms/dream_delver
+soulbind=dreamweaver,field_of_blossoms/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/dream_delver
 renown=80
 
 head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
@@ -114,12 +114,11 @@ feet=grimveiled_sandals,id=173243,bonus_id=6716/8129/6649/6648/1588
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 save=T28_Warlock_Demonology.simc
-
 
 warlock="T28_Warlock_Destruction"
 level=60
@@ -127,7 +126,7 @@ race=mechagnome
 spec=destruction
 role=spell
 position=ranged_back
-talents=2103023
+talents=2103021
 soulbind=dreamweaver,ashen_remains:11:1/infernal_brand:11:1/soul_eater:11:1/field_of_blossoms/dream_delver
 covenant=night_fae
 renown=80
@@ -149,6 +148,5 @@ trinket1=unbound_changeling,id=178708,bonus_id=1592/6536/6646
 trinket2=soulletting_ruby,id=178809,bonus_id=7359/6652/7606/1592/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
-
 
 save=T28_Warlock_Destruction.simc
