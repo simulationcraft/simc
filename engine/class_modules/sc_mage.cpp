@@ -3051,6 +3051,9 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
+  static constexpr int pulse_count = 7;
+  static constexpr timespan_t pulse_time = 0.2_s;
+
   action_t* projectile;
 
   comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str, bool set_bonus = false ) :
@@ -3074,8 +3077,6 @@ struct comet_storm_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::impact( s );
 
-    int pulse_count = 7;
-    timespan_t pulse_time = 0.2_s;
     p()->ground_aoe_expiration[ AOE_COMET_STORM ] = sim->current_time() + pulse_count * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -6929,6 +6930,30 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return expression_support.remaining_winters_chill; } );
+  }
+
+  if ( util::str_compare_ci( name, "comet_storm_remains" ) )
+  {
+    std::vector<action_t*> in_flight_list;
+    for ( auto a : action_list )
+    {
+      if ( a->id == 153595 )
+        in_flight_list.push_back( a );
+    }
+
+    return make_fn_expr( name, [ this, in_flight_list ]
+    {
+      timespan_t remains = 0_ms;
+
+      if ( ground_aoe_expiration[ AOE_COMET_STORM ] > sim->current_time() )
+        remains = ground_aoe_expiration[ AOE_COMET_STORM ] - sim->current_time();
+
+      for ( auto a : in_flight_list )
+        if ( a->has_travel_events() )
+          remains = std::max( remains, a->shortest_travel_event() + actions::comet_storm_t::pulse_count * actions::comet_storm_t::pulse_time );
+
+      return remains.total_seconds();
+    } );
   }
 
   if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )
