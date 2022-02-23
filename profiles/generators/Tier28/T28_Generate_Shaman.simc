@@ -108,7 +108,7 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=2301022
+talents=1102021
 
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/call_of_flame:11:1/dauntless_duelist/pyroclastic_shock:11:1/fatal_flaw

@@ -143,8 +143,6 @@ public:
     damage_buff_t* grudge_match; // T28 Assassination 2pc
   } debuffs;
 
-  bool is_deathspiked;
-
   rogue_td_t( player_t* target, rogue_t* source );
 
   timespan_t lethal_poison_remains() const
@@ -188,11 +186,6 @@ public:
   {
     return dots.garrote->is_ticking() || dots.rupture->is_ticking() ||
       dots.crimson_tempest->is_ticking() || dots.internal_bleeding->is_ticking();
-  }
-
-  void set_is_deathspiked( bool is_deathspiked = true )
-  {
-    this->is_deathspiked = is_deathspiked;
   }
 };
 
@@ -670,7 +663,6 @@ public:
     proc_t* serrated_bone_spike_refund;
     proc_t* serrated_bone_spike_waste;
     proc_t* serrated_bone_spike_waste_partial;
-    proc_t* serrated_bone_spike_waste_deathspike;
 
     // Conduits
     proc_t* count_the_odds;
@@ -2286,22 +2278,22 @@ struct melee_t : public rogue_attack_t
     return t;
   }
 
-  void execute() override
+  void schedule_execute( action_state_t* state ) override
   {
+    rogue_attack_t::schedule_execute();
+
     if ( first )
     {
       first = false;
-      p()->sim->print_log( "{} starts AA {} with {} swing timer", *p(), *this, time_to_execute );
+      p()->sim->print_log( "{} schedules AA start {} with {} swing timer", *p(), *this, time_to_execute );
     }
 
     if ( canceled )
     {
       canceled = false;
       prev_scheduled_time = timespan_t::zero();
-      p()->sim->print_log( "{} restarts AA {} with {} swing timer remaining", *p(), *this, time_to_execute );
+      p()->sim->print_log( "{} schedules AA restart {} with {} swing timer remaining", *p(), *this, time_to_execute );
     }
-
-    rogue_attack_t::execute();
   }
 
   void impact( action_state_t* state ) override
@@ -3237,7 +3229,7 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // 2022-02-16 -- As of latest PTR build 2pc proc damage does not benefit from or consume procs
+    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       m *= 1.0 + p()->buffs.opportunity->value();
@@ -3253,7 +3245,7 @@ struct pistol_shot_t : public rogue_attack_t
     if ( g == 0.0 )
       return 0.0;
 
-    // 2022-02-16 -- As of latest PTR build 2pc procs still benefit from CP gains
+    // 2022-02-16 -- As of latest 9.2 build 2pc procs still benefit from CP gains
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
@@ -3269,7 +3261,7 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // 2022-02-16 -- As of latest PTR build 2pc proc damage does not benefit from or consume procs
+    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
     //               However, they still appear to benefit from the CP gain modifier
     if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
     {
@@ -3299,7 +3291,6 @@ struct pistol_shot_t : public rogue_attack_t
     {
       if ( p()->buffs.tornado_trigger->check() )
       {
-        // 2022-02-16 -- As of current PTR build, this can no longer auto-trigger from 2pc procs
         if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
         {
           p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
@@ -3308,7 +3299,6 @@ struct pistol_shot_t : public rogue_attack_t
       }
       else
       {
-        // 2022-02-04 -- As of the current PTR build, this doesn't stack if the BtE buff is up
         p()->buffs.tornado_trigger_loading->trigger();
       }
     }
@@ -3760,11 +3750,8 @@ struct shadow_blades_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    // 2022-02-07 -- Updated to extend existing buffs on hard-casts in latest PTR build
-    if ( p()->is_ptr() )
-      p()->buffs.shadow_blades->extend_duration_or_trigger();
-    else
-      p()->buffs.shadow_blades->trigger();
+    // 2022-02-07 -- Updated to extend existing buffs on hard-casts in 9.2
+    p()->buffs.shadow_blades->extend_duration_or_trigger();
 
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
@@ -3842,8 +3829,8 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from Akaari primary hits
-    if ( p()->is_ptr() && secondary_trigger_type != secondary_trigger::WEAPONMASTER )
+    // 2022-01-15 -- 9.2 spell data now allows this to proc from Akaari primary hits
+    if ( secondary_trigger_type != secondary_trigger::WEAPONMASTER )
     {
       p()->buffs.perforated_veins->trigger();
     }
@@ -3903,7 +3890,7 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // 2022-02-14 -- Latest PTR build triggers from 4pc and Akaari procs but not from WM
+    // 2022-02-14 -- Latest 9.2 build triggers from 4pc and Akaari procs but not from WM
     if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
     {
       p()->buffs.perforated_veins->trigger();
@@ -4840,7 +4827,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
       affected_by.zoldyck_insignia = true; // 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
-      affected_by.t28_assassination_4pc = true; // 2022-02-22 -- Now works as of most recent PTR build 
+      affected_by.t28_assassination_4pc = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
 
       if ( p->conduit.sudden_fractures.ok() )
@@ -4930,22 +4917,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
       serrated_bone_spike_dot->execute();
       if ( count_after )
         active_dots += 1;
-
-      if ( p()->bugs && state->chain_target == 0 )
-      {
-        tdata->set_is_deathspiked( false );
-      }
-    }
-
-    // 2021-07-17 -- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
-    // 2022-02-14 -- Most recent PTR build has fixed the Deathspike bugs, leaving in for live sims
-    if ( p()->bugs && state->chain_target > 0 && !p()->is_ptr() )
-    {
-      tdata->set_is_deathspiked( true );
     }
  
     // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
-    //               Deathspiked targets do not generate CP directly, and are randomly bugged as well
+    //               Deathspiked targets do not generate CP directly
     if ( state->chain_target == 0 )
     {
       trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
@@ -5987,7 +5962,7 @@ void rogue_t::trigger_t28_assassination_4pc( player_t* target )
 
   rogue_td_t* td = get_target_data( target );
 
-  // 2022-02-14 -- As of the most recent PTR build, Vendetta reverses the modifier of SBS when fading
+  // 2022-02-14 -- As of 9.2 Vendetta reverses the modifier of SBS when fading
   //               Haste snapshot is maintained however, so don't need to update the snapshot flags
   double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
   bool is_reversed = !td->debuffs.vendetta->check();
@@ -6292,7 +6267,7 @@ void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* stat
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  // 2022-02-06 -- Current PTR testing shows this does not trigger from 4pc procs
+  // 2022-02-06 -- Current testing shows this does not trigger from 4pc procs
   if ( secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
     return;
 
@@ -6459,7 +6434,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
         }
       }
 
-      // 2022-02-05 -- PTR testing shows that 4pc procs benefit on all AoE impacts
+      // 2022-02-05 -- Testing shows that 4pc procs benefit on all AoE impacts
       //               Manually expired here instead of the normal execute() location
       if ( expire_autocrit )
       {
@@ -6642,7 +6617,7 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
 
   p()->buffs.flagellation->trigger( cp_spend );
   
-  // 2022-02-06 -- PTR testing shows that Outlaw 4pc procs trigger buff stacks but not damage/CDR
+  // 2022-02-06 -- Testing shows that Outlaw 4pc procs trigger buff stacks but not damage/CDR
   if ( is_secondary_action() )
     return;
 
@@ -6665,8 +6640,7 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
 rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   actor_target_data_t( target, source ),
   dots( dots_t() ),
-  debuffs( debuffs_t() ),
-  is_deathspiked( false )
+  debuffs( debuffs_t() )
 {
   dots.deadly_poison        = target->get_dot( "deadly_poison_dot", source );
   dots.garrote              = target->get_dot( "garrote", source );
@@ -6770,23 +6744,15 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
       {
-        // 2021-07-17-- Deathspike-cleaved DoTs currently do not appear to correctly refund charges
-        if ( source->bugs && this->is_deathspiked )
-        {
-          source->procs.serrated_bone_spike_waste_deathspike->occur();
-        }
+        double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
+        if ( refund_max > 1 )
+          source->procs.serrated_bone_spike_refund->occur();
+        else if ( refund_max <= 0 )
+          source->procs.serrated_bone_spike_waste->occur();
         else
-        {
-          double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
-          if ( refund_max > 1 )
-            source->procs.serrated_bone_spike_refund->occur();
-          else if ( refund_max <= 0 )
-            source->procs.serrated_bone_spike_waste->occur();
-          else
-            source->procs.serrated_bone_spike_waste_partial->occur();
+          source->procs.serrated_bone_spike_waste_partial->occur();
 
-          source->cooldowns.serrated_bone_spike->reset( false, 1 );
-        }
+        source->cooldowns.serrated_bone_spike->reset( false, 1 );
       }
     } );
   }
@@ -8361,7 +8327,6 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_refund            = get_proc( "Serrated Bone Spike Refund" );
   procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
-  procs.serrated_bone_spike_waste_deathspike  = get_proc( "Serrated Bone Spike Refund Wasted (Deathspike Bug)" );
 
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 

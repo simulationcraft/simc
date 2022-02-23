@@ -55,7 +55,7 @@ trinket1=shadowed_orb_of_torment,id=186428,bonus_id=1498/7187
 trinket2=titanic_ocular_gland,id=186423,bonus_id=6652/1498/6646
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 
-save=T27_Mage_Fire.simc
+# save=T27_Mage_Fire.simc
 
 
 mage="T27_Mage_Frost"
@@ -85,4 +85,4 @@ trinket1=unbound_changeling,id=178708,bonus_id=1566/6536/6646/6915
 trinket2=titanic_ocular_gland,id=186423,bonus_id=1498/7187
 main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
 
-save=T27_Mage_Frost.simc
+# save=T27_Mage_Frost.simc
