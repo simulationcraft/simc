@@ -36,37 +36,37 @@ off_hand=Guard_of_the_Sundered_Defender,id=186417,bonus_id=7187/1498
 #covenant=night_fae
 #soulbind=dreamweaver:2,319217/196:9:1/319210/319191/195:9:1/352786
 
-save=T27_Paladin_Protection.simc
+#save=T27_Paladin_Protection.simc
 
 
-paladin="T27_Paladin_Retribution"
+paladin="T28_Paladin_Retribution"
 spec=retribution
 level=60
 race=dark_iron_dwarf
 role=attack
 position=back
-talents=3200303
+talents=1200303
 covenant=kyrian
-soulbind=pelagos,combat_meditation/better_together/newfound_resolve/ringing_clarity:9:1/virtuous_command:9:1/templars_vindication:9:1
+soulbind=mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/ringing_clarity:11:1/virtuous_command:11:1/templars_vindication:11:1
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=187312
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173130
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187318,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=187320
-hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187319,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/7679/1559/6935,gem_id=173130
-legs=fateforged_legplates,id=186348,bonus_id=7187/1498
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=unchained_gladiators_badge_of_ferocity,id=185197,bonus_id=7322/1521
-trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/7748/1498,enchant=sinful_revelation
+head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
+wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
+hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
+legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
+feet=songmad_sabatons,id=189786,bonus_id=1524/7187
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=overwhelming_power_crystal,id=179342,bonus_id=1592/6536/6646
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
 
-save=T27_Paladin_Retribution.simc
+save=T28_Paladin_Retribution.simc
 
 
 paladin="T27_Paladin_Holy"
@@ -97,4 +97,4 @@ trinket2=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
 main_hand=amarths_spellblade,id=178737,bonus_id=6536/1566/6646,enchant=celestial_guidance
 off_hand=moriazs_spare_targe,id=186415,bonus_id=7187/1498
 
-save=T27_Paladin_Holy.simc
+#save=T27_Paladin_Holy.simc
