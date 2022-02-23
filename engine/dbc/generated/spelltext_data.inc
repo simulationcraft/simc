@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42423
-static const std::array<spelltext_data_t, 16026> __spelltext_data { {
+static const std::array<spelltext_data_t, 16027> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15978,6 +15978,7 @@ static const std::array<spelltext_data_t, 16026> __spelltext_data { {
   { 368512, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },
+  { 368587, "$@spelldesc367336", 0, 0 },
   { 368634, "$@spelldesc367808", 0, 0 },
   { 368635, "$@spelldesc367930", "Your Haste is increased by $w1. $w2% of damage you take will echo again $s3 sec later.", 0 },
   { 368636, "$@spelldesc367930", "Your Versatility is increased by $w1. All Healing you take is reduced by $s2%.", 0 },
