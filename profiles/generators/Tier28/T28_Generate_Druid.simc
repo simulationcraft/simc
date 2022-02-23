@@ -128,62 +128,61 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant_id=6228
 
 save=T28_Druid_Feral_AOE.simc
 
-druid="T27_Druid_Guardian"
+druid=T28_Druid_Guardian
 level=60
-race=night_elf
-timeofday=day
-spec=guardian
+race=tauren
 role=tank
 position=front
-talents=1013221
-covenant=night_fae
-soulbind=niya,grove_invigoration/conflux_of_elements:9:1/born_of_the_wilds:9:1/wellhoned_instincts:9:1/tough_as_bark:9:1/niyas_tools_burrs/unchecked_aggression:9:1/front_of_the_pack:9:1/bonded_hearts
+spec=guardian
 renown=80
+talents=1013321
+covenant=night_fae
+soulbind=niya:1,322721/269:11:1/342270/260:11:1/320668/254:11:1/271:11:1/320659/279:11:1/352501/283:11:1/352503
 
-head=cowl_of_haunting_precognition,id=186330,bonus_id=7187/1498,gem_id=187312
-neck=shadowghast_necklace,id=178927,bonus_id=7086/6647/6650/6758/1559,gem_id=173129
-shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187313
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
-chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498,gem_id=187314,enchant=eternal_skirmish
-wrists=clasps_of_the_unfortunate_troubadour,id=186297,bonus_id=7187/1498/6935,gem_id=173129
-hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=7187/1498,gem_id=187315
-waist=windrunners_baldric,id=186332,bonus_id=7187/1498/6935,gem_id=173129
-legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
-finger2=oscillating_ouroboros,id=186376,bonus_id=7187/1498,gem_id=173129,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498
-main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
+head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
+chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
+wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
+feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant_id=6211
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant_id=6228
 
-# save=T27_Druid_Guardian.simc
+# save=T28_Druid_Guardian.simc
 
 
-druid="T27_Druid_Guardian_Venthyr"
+druid="T28_Druid_Guardian_Venthyr"
 level=60
-race=night_elf
-timeofday=day
-spec=guardian
+race=tauren
 role=tank
 position=front
-talents=1013322
+spec=guardian
+renown=80
+talents=1013321
 covenant=venthyr
-soulbind=soothing_shade/party_favors/savage_combatant:11/unchecked_aggression:11/endless_thirst:11/born_of_the_wilds:11/tough_as_bark:11
+soulbind=theotar_the_mad_duke:9,336239/254:11:1/336140/269:11:1/336184/271:11:1/270:11:1/336245/280:11:1/351748/283:11:1/351750
 
-head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
-shoulders=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498,gem_id=187317
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498,enchant=soul_vitality
-chest=witherheart_studded_breastplate,id=186334,bonus_id=4800/4786/1498,gem_id=187316,enchant=eternal_skirmish
-wrists=fatethreaded_bindings,id=186335,bonus_id=4800/4786/1498,gem_id=173129
-hands=hangmans_knotbinders,id=186333,bonus_id=4800/4786/1498,gem_id=187315
-waist=umbrahide_waistguard,id=172320,bonus_id=7474/6647/6650/6758/1559,gem_id=173129
-legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498
-feet=unstable_energizer_boots,id=186363,bonus_id=7187/1498,gem_id=187318,enchant=eternal_agility
-finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173129,enchant=tenet_of_critical_strike
-finger2=miniature_breaking_wheel,id=186375,bonus_id=4800/4786/1498,gem_id=173129,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-trinket2=salvaged_fusion_amplifier,id=186432,bonus_id=4800/4786/1498
-main_hand=jotungeirr_destinys_call,id=186404,bonus_id=7187/1498,enchant=sinful_revelation
+head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
+chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
+wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
+feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant_id=6211
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=3536/4786/1592
+trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,sinful_revelation
 
-# save=T27_Druid_Guardian_Venthyr.simc
+# save=T28_Druid_Guardian_Venthyr.simc
