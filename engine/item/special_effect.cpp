@@ -127,6 +127,7 @@ void special_effect_t::reset()
   // cooldown is only used for on-use effects. Must match buff creator default
   // for now.
   cooldown_ = timespan_t::min();
+  cooldown_category_ = 0;
   target_specific_cooldown = false;
 
   tick = timespan_t::zero();
@@ -1229,6 +1230,12 @@ int special_effect_t::cooldown_group() const
     return 0;
   }
 
+  // This will override any DBC generated category for purposes of shared CD.
+  if ( cooldown_category_ > 0 )
+  {
+    return cooldown_category_;
+  }
+
   // New-style On-Use item spells may use a special cooldown category to signal the shared cooldown
   if (driver()->category() == ITEM_TRINKET_BURST_CATEGORY)
   {
@@ -1252,6 +1259,11 @@ timespan_t special_effect_t::cooldown_group_duration() const
   if (!item)
   {
     return timespan_t::zero();
+  }
+
+  if ( cooldown_category_ > 0 )
+  {
+    return driver()->category_cooldown();
   }
 
   // New-style On-Use items when using a special cooldown category signal the shared cooldown
