@@ -3739,8 +3739,8 @@ void soulwarped_seal_of_menethil( special_effect_t& effect )
       assert( rppm );
       assert( s->target );
 
-      // 0.5 rppm at 0%,  to 3 rppm at 100%
-      double mod = 0.167 + 0.833 * ( s -> target -> health_percentage() ) / 100.0;
+      // TODO: Investigate Proc Rate changes based on enemy HP
+      double mod = 1;
 
       if ( effect.player->sim->debug )
       {
