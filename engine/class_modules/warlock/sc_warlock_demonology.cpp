@@ -1281,7 +1281,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
   def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up" );
-  def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd=0&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
+  def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
   def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&variable.next_tyrant_cd>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)" );
   def->add_action( "call_dreadstalkers,if=variable.use_bolt_timings&cooldown.summon_demonic_tyrant.remains_expected>22" );
