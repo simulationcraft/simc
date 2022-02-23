@@ -67,7 +67,7 @@ T28_Generate_Mage.simc
 # T28_Generate_Monk.simc
 
 # Paladin
-# T28_Generate_Paladin.simc
+T28_Generate_Paladin.simc
 
 # Priest
 T28_Generate_Priest.simc
