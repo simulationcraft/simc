@@ -6,8 +6,8 @@
 #include "special_effect.hpp"
 
 #include "action/attack.hpp"
-#include "action/spell.hpp"
 #include "action/heal.hpp"
+#include "action/spell.hpp"
 #include "buff/buff.hpp"
 #include "dbc/item_database.hpp"
 #include "item.hpp"
@@ -15,8 +15,8 @@
 #include "player/unique_gear_helper.hpp"
 #include "sim/real_ppm.hpp"
 
-namespace {
-
+namespace
+{
 struct proc_parse_opt_t
 {
   util::string_view opt;
@@ -58,7 +58,7 @@ constexpr proc_parse_opt_t __proc2_opts[] =
 
 bool has_proc( util::span<const util::string_view> opts, util::string_view proc )
 {
-  for ( auto & opt : opts )
+  for ( auto& opt : opts )
   {
     if ( util::str_compare_ci( opt, proc ) )
       return true;
@@ -66,24 +66,19 @@ bool has_proc( util::span<const util::string_view> opts, util::string_view proc 
   return false;
 }
 
-void parse_proc_flags( util::string_view flags,
-                       util::span<const proc_parse_opt_t> opts,
-                       unsigned& proc_flags )
+void parse_proc_flags( util::string_view flags, util::span<const proc_parse_opt_t> opts, unsigned& proc_flags )
 {
   auto splits = util::string_split<util::string_view>( flags, "/" );
 
-  for( auto& proc_opt : opts )
+  for ( auto& proc_opt : opts )
   {
     if ( has_proc( splits, proc_opt.opt ) )
       proc_flags |= proc_opt.flags;
   }
 }
+}  // unnamed namespace
 
-} // unnamed namespace
-
-special_effect_t::special_effect_t( const item_t* item ) :
-    item( item ),
-    player( item -> player )
+special_effect_t::special_effect_t( const item_t* item ) : item( item ), player( item->player )
 {
   reset();
 }
@@ -162,12 +157,12 @@ const spell_data_t* special_effect_t::driver() const
   if ( !player || spell_id == 0 )
     return spell_data_t::nil();
 
-  return player -> find_spell( spell_id );
+  return player->find_spell( spell_id );
 }
 
 const spell_data_t* special_effect_t::trigger() const
 {
-  if ( ! player )
+  if ( !player )
     return spell_data_t::nil();
 
   // Note, bypasses level checks and such
@@ -176,10 +171,10 @@ const spell_data_t* special_effect_t::trigger() const
     return dbc::find_spell( player, trigger_spell_id );
   }
 
-  for ( size_t i = 1, end = driver() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = driver()->effect_count(); i <= end; i++ )
   {
-    if ( driver() -> effectN( i ).trigger() -> ok() )
-      return driver() -> effectN( i ).trigger();
+    if ( driver()->effectN( i ).trigger()->ok() )
+      return driver()->effectN( i ).trigger();
   }
 
   // As a fallback, return the driver spell as the "trigger" as well. This
@@ -187,7 +182,6 @@ const spell_data_t* special_effect_t::trigger() const
   // shouldnt break procs.
   return driver();
 }
-
 
 /**
  * Detect stat buff type from spelleffect data.
@@ -250,9 +244,9 @@ bool special_effect_t::is_stat_buff() const
   // the trigger and driver spells contain "stat buffs" (as per simc
   // definition), the system will not support it. In this case, custom buffs
   // and/or callbacks should be used.
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -268,9 +262,9 @@ stat_e special_effect_t::stat_type() const
   if ( stat != STAT_NONE )
     return stat;
 
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -287,11 +281,11 @@ int special_effect_t::max_stack() const
   if ( max_stacks != -1 )
     return max_stacks;
 
-  if ( trigger() -> max_stacks() > 0 )
-    return trigger() -> max_stacks();
+  if ( trigger()->max_stacks() > 0 )
+    return trigger()->max_stacks();
 
-  if ( driver() -> max_stacks() > 0 )
-    return driver() -> max_stacks();
+  if ( driver()->max_stacks() > 0 )
+    return driver()->max_stacks();
 
   return -1;
 }
@@ -305,13 +299,13 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
 
   const spell_data_t* spell_data = spell_data_t::nil();
   // Setup the spell for the stat buff
-  if ( trigger() -> id() > 0 )
+  if ( trigger()->id() > 0 )
     spell_data = trigger();
-  else if ( driver() -> id() > 0 )
+  else if ( driver()->id() > 0 )
     spell_data = driver();
 
-  stat_buff_t* buff = make_buff<stat_buff_t>( player, name(), spell_data,
-                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  stat_buff_t* buff =
+      make_buff<stat_buff_t>( player, name(), spell_data, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
   // Setup user option overrides. Note that if there are no user set overrides,
   // the buff will automagically deduce correct options from the spell data,
@@ -352,9 +346,9 @@ stat_buff_t* special_effect_t::initialize_stat_buff() const
 
 bool special_effect_t::is_absorb_buff() const
 {
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -374,17 +368,17 @@ absorb_buff_t* special_effect_t::initialize_absorb_buff() const
 
   // Setup the spell for the buff
   const spell_data_t* buff_spell = spell_data_t::nil();
-  if ( trigger() -> id() > 0 )
+  if ( trigger()->id() > 0 )
   {
     buff_spell = trigger();
   }
-  else if ( driver() -> id() > 0 )
+  else if ( driver()->id() > 0 )
   {
     buff_spell = driver();
   }
 
-  auto buff = make_buff<absorb_buff_t>( player, name(), buff_spell,
-                               source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  auto buff =
+      make_buff<absorb_buff_t>( player, name(), buff_spell, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
 
   // Setup user option overrides. Note that if there are no user set overrides,
   // the buff will automagically deduce correct options from the spell data,
@@ -435,9 +429,7 @@ special_effect_buff_e special_effect_t::buff_type() const
 
 buff_t* special_effect_t::create_buff() const
 {
-
-  if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM &&
-       buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
+  if ( buff_type() != SPECIAL_EFFECT_BUFF_CUSTOM && buff_type() != SPECIAL_EFFECT_BUFF_NONE &&
        buff_type() != SPECIAL_EFFECT_BUFF_DISABLED )
   {
     buff_t* b = buff_t::find( player, name() );
@@ -464,17 +456,16 @@ action_t* special_effect_t::create_action() const
 {
   // Custom actions have done their create_proc_action() call in the second phase init of the
   // special effect
-  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM &&
-       action_type() != SPECIAL_EFFECT_ACTION_NONE &&
+  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM && action_type() != SPECIAL_EFFECT_ACTION_NONE &&
        action_type() != SPECIAL_EFFECT_ACTION_DISABLED )
   {
-    action_t* a = player -> find_action( name() );
+    action_t* a = player->find_action( name() );
     if ( a )
     {
       return a;
     }
 
-    a = player -> create_proc_action( name(), *this );
+    a = player->create_proc_action( name(), *this );
     if ( a )
     {
       return a;
@@ -483,18 +474,18 @@ action_t* special_effect_t::create_action() const
 
   switch ( action_type() )
   {
-  case SPECIAL_EFFECT_ACTION_CUSTOM:
-    return execute_action;
-  case SPECIAL_EFFECT_ACTION_SPELL:
-    return initialize_offensive_spell_action();
-  case SPECIAL_EFFECT_ACTION_HEAL:
-    return initialize_heal_action();
-  case SPECIAL_EFFECT_ACTION_ATTACK:
-    return initialize_attack_action();
-  case SPECIAL_EFFECT_ACTION_RESOURCE:
-    return initialize_resource_action();
-  default:
-    return nullptr;
+    case SPECIAL_EFFECT_ACTION_CUSTOM:
+      return execute_action;
+    case SPECIAL_EFFECT_ACTION_SPELL:
+      return initialize_offensive_spell_action();
+    case SPECIAL_EFFECT_ACTION_HEAL:
+      return initialize_heal_action();
+    case SPECIAL_EFFECT_ACTION_ATTACK:
+      return initialize_attack_action();
+    case SPECIAL_EFFECT_ACTION_RESOURCE:
+      return initialize_resource_action();
+    default:
+      return nullptr;
   }
 }
 
@@ -518,9 +509,9 @@ special_effect_action_e special_effect_t::action_type() const
 
 bool special_effect_t::is_resource_action() const
 {
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -542,13 +533,14 @@ spell_t* special_effect_t::initialize_resource_action() const
   const spell_data_t* s = spell_data_t::nil();
 
   // Setup the spell data
-  if ( trigger() -> id() > 0 )
+  if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver() -> id() > 0 )
+  else if ( driver()->id() > 0 )
     s = driver();
 
-  auto spell = new unique_gear::proc_resource_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
-  spell -> init();
+  auto spell =
+      new unique_gear::proc_resource_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  spell->init();
   return spell;
 }
 
@@ -559,9 +551,9 @@ bool special_effect_t::is_offensive_spell_action() const
     return true;
   }
 
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -581,15 +573,15 @@ bool special_effect_t::is_offensive_spell_action() const
 spell_t* special_effect_t::initialize_offensive_spell_action() const
 {
   auto spell = new unique_gear::proc_spell_t( *this );
-  spell -> init();
+  spell->init();
   return spell;
 }
 
 bool special_effect_t::is_heal_action() const
 {
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -611,13 +603,13 @@ heal_t* special_effect_t::initialize_heal_action() const
   const spell_data_t* s = spell_data_t::nil();
 
   // Setup the spell data
-  if ( trigger() -> id() > 0 )
+  if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver() -> id() > 0 )
+  else if ( driver()->id() > 0 )
     s = driver();
 
   auto heal = new unique_gear::proc_heal_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
-  heal -> init();
+  heal->init();
   return heal;
 }
 
@@ -628,9 +620,9 @@ bool special_effect_t::is_attack_action() const
     return true;
   }
 
-  for ( size_t i = 1, end = trigger() -> effect_count(); i <= end; i++ )
+  for ( size_t i = 1, end = trigger()->effect_count(); i <= end; i++ )
   {
-    const spelleffect_data_t& effect = trigger() -> effectN( i );
+    const spelleffect_data_t& effect = trigger()->effectN( i );
     if ( effect.id() == 0 )
       continue;
 
@@ -646,13 +638,14 @@ attack_t* special_effect_t::initialize_attack_action() const
   const spell_data_t* s = spell_data_t::nil();
 
   // Setup the spell data
-  if ( trigger() -> id() > 0 )
+  if ( trigger()->id() > 0 )
     s = trigger();
-  else if ( driver() -> id() > 0 )
+  else if ( driver()->id() > 0 )
     s = driver();
 
-  auto attack = new unique_gear::proc_attack_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
-  attack -> init();
+  auto attack =
+      new unique_gear::proc_attack_t( name(), player, s, source == SPECIAL_EFFECT_SOURCE_ITEM ? item : nullptr );
+  attack->init();
   return attack;
 }
 
@@ -661,8 +654,8 @@ unsigned special_effect_t::proc_flags() const
   if ( proc_flags_ != 0 )
     return proc_flags_;
 
-  if ( driver() -> proc_flags() != 0 )
-    return driver() -> proc_flags();
+  if ( driver()->proc_flags() != 0 )
+    return driver()->proc_flags();
 
   return 0;
 }
@@ -694,7 +687,7 @@ double special_effect_t::rppm() const
   if ( ppm_ <= 0 && ppm_ != std::numeric_limits<double>::min() )
     return std::fabs( ppm_ );
 
-  return driver() -> real_ppm();
+  return driver()->real_ppm();
 }
 
 unsigned special_effect_t::rppm_scale() const
@@ -709,7 +702,7 @@ unsigned special_effect_t::rppm_scale() const
     return 0;
   }
 
-  return player -> dbc->real_ppm_scale( driver() -> id() );
+  return player->dbc->real_ppm_scale( driver()->id() );
 }
 
 double special_effect_t::rppm_modifier() const
@@ -724,7 +717,7 @@ double special_effect_t::rppm_modifier() const
     return 0.0;
   }
 
-  return player -> dbc->real_ppm_modifier( driver() -> id(), player, item ? item -> item_level() : 0 );
+  return player->dbc->real_ppm_modifier( driver()->id(), player, item ? item->item_level() : 0 );
 }
 
 /**
@@ -742,17 +735,17 @@ timespan_t special_effect_t::cooldown() const
   // spell cooldown may be
   if ( source == SPECIAL_EFFECT_SOURCE_ITEM && item )
   {
-    for ( const item_effect_t& effect : item -> parsed.data.effects )
+    for ( const item_effect_t& effect : item->parsed.data.effects )
     {
       if ( effect.spell_id == spell_id && effect.cooldown_duration > 0 )
         return timespan_t::from_millis( effect.cooldown_duration );
     }
   }
 
-  if ( driver() -> cooldown() > timespan_t::zero() )
-    return driver() -> cooldown();
-  else if ( driver() -> internal_cooldown() > timespan_t::zero() )
-    return driver() -> internal_cooldown();
+  if ( driver()->cooldown() > timespan_t::zero() )
+    return driver()->cooldown();
+  else if ( driver()->internal_cooldown() > timespan_t::zero() )
+    return driver()->internal_cooldown();
 
   return timespan_t::zero();
 }
@@ -762,21 +755,20 @@ bool special_effect_t::has_target_specific_cooldown() const
   if ( cooldown_ >= timespan_t::zero() )
     return target_specific_cooldown;
 
-  return driver() -> flags( spell_attribute::SX_TARGET_SPECIFIC_COOLDOWN );
+  return driver()->flags( spell_attribute::SX_TARGET_SPECIFIC_COOLDOWN );
 }
 
 timespan_t special_effect_t::duration() const
 {
   if ( duration_ > timespan_t::zero() )
     return duration_;
-  else if ( trigger() -> duration() > timespan_t::zero() )
-    return trigger() -> duration();
-  else if ( driver() -> duration() > timespan_t::zero() )
-    return driver() -> duration();
+  else if ( trigger()->duration() > timespan_t::zero() )
+    return trigger()->duration();
+  else if ( driver()->duration() > timespan_t::zero() )
+    return driver()->duration();
 
   return timespan_t::zero();
 }
-
 
 /**
  * Get tick time.
@@ -791,10 +783,10 @@ timespan_t special_effect_t::tick_time() const
     return tick;
 
   // Search trigger for now, it's not likely that the driver is ticking
-  for ( size_t i = 1; i <= trigger() -> effect_count(); i++ )
+  for ( size_t i = 1; i <= trigger()->effect_count(); i++ )
   {
-    if ( trigger() -> effectN( i ).period() > timespan_t::zero() )
-      return trigger() -> effectN( i ).period();
+    if ( trigger()->effectN( i ).period() > timespan_t::zero() )
+      return trigger()->effectN( i ).period();
   }
 
   return timespan_t::zero();
@@ -805,24 +797,24 @@ double special_effect_t::proc_chance() const
   if ( proc_chance_ > 0 )
     return proc_chance_;
 
-  return driver() -> proc_chance();
+  return driver()->proc_chance();
 }
 
 std::string special_effect_t::name() const
 {
-  if ( ! name_str.empty() )
+  if ( !name_str.empty() )
     return name_str;
 
   // Guess proc name based on spells.
   std::string n;
   std::string base_name;
   // Use driver name, if it's not hidden or passive, or there's no trigger spell to use
-  if ( ( ! driver() -> flags( spell_attribute::SX_HIDDEN ) && ! driver() -> flags( spell_attribute::SX_PASSIVE ) ) ||
-       ! trigger() -> ok() )
-    n = driver() -> name_cstr();
+  if ( ( !driver()->flags( spell_attribute::SX_HIDDEN ) && !driver()->flags( spell_attribute::SX_PASSIVE ) ) ||
+       !trigger()->ok() )
+    n = driver()->name_cstr();
   // Driver is hidden, try to use the spell that the driver procs
-  else if ( trigger() -> ok() )
-    n = trigger() -> name_cstr();
+  else if ( trigger()->ok() )
+    n = trigger()->name_cstr();
 
   util::tokenize( n );
 
@@ -835,18 +827,17 @@ std::string special_effect_t::name() const
   }
 
   // Assert on empty names; we do need a reasonable name for the proc.
-  assert( ! n.empty() );
+  assert( !n.empty() );
 
   // Append weapon suffix automatically to the name.
   // TODO: We need a "shared" mechanism here
-  if ( item && item -> slot == SLOT_OFF_HAND )
+  if ( item && item->slot == SLOT_OFF_HAND )
     n += "_oh";
 
-  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM &&
-       action_type() != SPECIAL_EFFECT_ACTION_NONE &&
+  if ( action_type() != SPECIAL_EFFECT_ACTION_CUSTOM && action_type() != SPECIAL_EFFECT_ACTION_NONE &&
        action_type() != SPECIAL_EFFECT_ACTION_DISABLED )
   {
-    action_t* a = player -> find_action( base_name );
+    action_t* a = player->find_action( base_name );
     // If for some reason the trigger spell would be named identical to another spell that the actor
     // already has, rename this new one with the slot of the item, if there is an item
     if ( a && a->id != trigger()->id() )
@@ -873,14 +864,14 @@ void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out
   fmt::format_to( out, " type={}", se.type );
   fmt::format_to( out, " source={}", se.source );
 
-  if ( ! se.trigger_str.empty() )
+  if ( !se.trigger_str.empty() )
     fmt::format_to( out, " proc={}", se.trigger_str );
 
   if ( se.spell_id > 0 )
     fmt::format_to( out, " driver={}", se.spell_id );
 
-  if ( se.trigger() -> ok() )
-    fmt::format_to( out, " trigger={}", se.trigger() -> id() );
+  if ( se.trigger()->ok() )
+    fmt::format_to( out, " trigger={}", se.trigger()->id() );
 
   if ( se.is_stat_buff() )
   {
@@ -938,8 +929,7 @@ void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out
 
     if ( se.cooldown_group() > 0 )
     {
-      fmt::format_to( out, " cdgrp={} cdgrp_duration={}",
-                      se.cooldown_group(), se.cooldown_group_duration() );
+      fmt::format_to( out, " cdgrp={} cdgrp_duration={}", se.cooldown_group(), se.cooldown_group_duration() );
     }
   }
 
@@ -952,13 +942,12 @@ void sc_format_to( const special_effect_t& se, fmt::format_context::iterator out
   }
 }
 
-void special_effect::parse_special_effect_encoding( special_effect_t& effect,
-                                          const std::string& encoding )
+void special_effect::parse_special_effect_encoding( special_effect_t& effect, const std::string& encoding )
 {
   if ( encoding.empty() || encoding == "custom" || encoding == "none" )
     return;
 
-   auto tokens = item_database::parse_tokens( encoding );
+  auto tokens = item_database::parse_tokens( encoding );
 
   effect.encoding_str = encoding;
 
@@ -980,13 +969,13 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
       auto splits = util::string_split<util::string_view>( t.value_str, "+" );
       if ( splits.size() == 2 )
       {
-        effect.discharge_amount  = util::to_double( splits[ 0 ] );
+        effect.discharge_amount = util::to_double( splits[ 0 ] );
         effect.discharge_scaling = util::to_double( splits[ 1 ] ) / 100.0;
       }
     }
     else if ( t.name == "stacks" || t.name == "stack" )
     {
-      effect.max_stacks = ( int ) t.value;
+      effect.max_stacks = (int)t.value;
     }
     else if ( t.name == "%" )
     {
@@ -1097,7 +1086,7 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
     }
     else if ( t.name == "aoe" )
     {
-      effect.aoe = ( int ) t.value;
+      effect.aoe = (int)t.value;
       if ( effect.aoe < -1 )
         effect.aoe = -1;
     }
@@ -1115,10 +1104,7 @@ void special_effect::parse_special_effect_encoding( special_effect_t& effect,
       parse_proc_flags( t.full, __proc2_opts, effect.proc_flags2_ );
     else
     {
-
-      throw std::invalid_argument(
-                fmt::format("Unknown 'use/equip=' token '{}'.",
-                    t.full));
+      throw std::invalid_argument( fmt::format( "Unknown 'use/equip=' token '{}'.", t.full ) );
     }
   }
 }
@@ -1136,9 +1122,9 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   // Valid proc flags (either old- or new style), we can proc this effect.
   if ( effect.proc_flags() == 0 )
   {
-    if (effect.item)
+    if ( effect.item )
     {
-      effect.item->sim->print_debug("Effect '{}' no proc flags / trigger type", effect.name() );
+      effect.item->sim->print_debug( "Effect '{}' no proc flags / trigger type", effect.name() );
     }
     return false;
   }
@@ -1146,9 +1132,9 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   // A non-zero chance to proc it through one of the proc chance triggers
   if ( effect.ppm() == 0 && effect.rppm() == 0 && effect.proc_chance() == 0 )
   {
-    if (effect.item)
+    if ( effect.item )
     {
-      effect.item->sim->print_debug("Effect '{}' No RPPM / PPM / Proc chance", effect.name() );
+      effect.item->sim->print_debug( "Effect '{}' No RPPM / PPM / Proc chance", effect.name() );
     }
     return false;
   }
@@ -1156,9 +1142,9 @@ bool special_effect::usable_proc( const special_effect_t& effect )
   // Require a valid buff or an action
   if ( effect.buff_type() == SPECIAL_EFFECT_BUFF_NONE && effect.action_type() == SPECIAL_EFFECT_ACTION_NONE )
   {
-    if (effect.item)
+    if ( effect.item )
     {
-      effect.item->sim->print_debug("Effect '{}' No constructible buff or action", effect.name() );
+      effect.item->sim->print_debug( "Effect '{}' No constructible buff or action", effect.name() );
     }
     return false;
   }
@@ -1174,31 +1160,31 @@ bool special_effect::usable_proc( const special_effect_t& effect )
  */
 std::string special_effect_t::cooldown_name() const
 {
-  if (!name_str.empty())
+  if ( !name_str.empty() )
   {
-    assert(!name_str.empty());
+    assert( !name_str.empty() );
     return name_str;
   }
 
   std::string n;
-  if (driver()->id() > 0)
+  if ( driver()->id() > 0 )
   {
     n = driver()->name_cstr();
     // Append the spell ID of the driver to the cooldown name. In some cases, the
     // drivers of different trinket procs are actually named identically, causing
     // issues when the trinkets are worn.
-    n += "_" + util::to_string(driver()->id());
+    n += "_" + util::to_string( driver()->id() );
   }
-  else if (item)
+  else if ( item )
   {
     n = item->name();
     n += "_";
     n += item->slot_name();
   }
 
-  util::tokenize(n);
+  util::tokenize( n );
 
-  assert(!n.empty());
+  assert( !n.empty() );
 
   return n;
 }
@@ -1209,15 +1195,15 @@ std::string special_effect_t::cooldown_name() const
  */
 std::string special_effect_t::cooldown_group_name() const
 {
-  if (!item)
+  if ( !item )
   {
     return {};
   }
 
   unsigned cdgroup = cooldown_group();
-  if (cdgroup > 0)
+  if ( cdgroup > 0 )
   {
-    return "item_cd_" + util::to_string(cdgroup);
+    return "item_cd_" + util::to_string( cdgroup );
   }
 
   return {};
@@ -1225,7 +1211,7 @@ std::string special_effect_t::cooldown_group_name() const
 
 int special_effect_t::cooldown_group() const
 {
-  if (!item)
+  if ( !item )
   {
     return 0;
   }
@@ -1237,13 +1223,13 @@ int special_effect_t::cooldown_group() const
   }
 
   // New-style On-Use item spells may use a special cooldown category to signal the shared cooldown
-  if (driver()->category() == ITEM_TRINKET_BURST_CATEGORY)
+  if ( driver()->category() == ITEM_TRINKET_BURST_CATEGORY )
   {
-    return driver()->category();
+    return ITEM_TRINKET_BURST_CATEGORY;
   }
 
   // For everything else, look at the item effects for a cooldown group
-  for ( const item_effect_t& effect : item -> parsed.data.effects )
+  for ( const item_effect_t& effect : item->parsed.data.effects )
   {
     if ( effect.cooldown_group > 0 )
     {
@@ -1256,7 +1242,7 @@ int special_effect_t::cooldown_group() const
 
 timespan_t special_effect_t::cooldown_group_duration() const
 {
-  if (!item)
+  if ( !item )
   {
     return timespan_t::zero();
   }
@@ -1268,13 +1254,13 @@ timespan_t special_effect_t::cooldown_group_duration() const
 
   // New-style On-Use items when using a special cooldown category signal the shared cooldown
   // duration in the spell itself
-  if (driver()->category() == ITEM_TRINKET_BURST_CATEGORY)
+  if ( driver()->category() == ITEM_TRINKET_BURST_CATEGORY )
   {
     return driver()->category_cooldown();
   }
 
   // For everything else, look at the item effects with a cooldown group
-  for ( const item_effect_t& effect : item -> parsed.data.effects )
+  for ( const item_effect_t& effect : item->parsed.data.effects )
   {
     if ( effect.cooldown_group > 0 )
     {
