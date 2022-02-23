@@ -39,9 +39,9 @@ covenant=night_fae
 soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/field_of_blossoms/dream_delver
 renown=80
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
+head=shadowghast_helm,id=171415,bonus_id=6647/6648/6954/7451/1588,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6647/6648/6944/7451/1588
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173128
