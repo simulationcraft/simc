@@ -2278,22 +2278,22 @@ struct melee_t : public rogue_attack_t
     return t;
   }
 
-  void execute() override
+  void schedule_execute( action_state_t* state ) override
   {
+    rogue_attack_t::schedule_execute();
+
     if ( first )
     {
       first = false;
-      p()->sim->print_log( "{} starts AA {} with {} swing timer", *p(), *this, time_to_execute );
+      p()->sim->print_log( "{} schedules AA start {} with {} swing timer", *p(), *this, time_to_execute );
     }
 
     if ( canceled )
     {
       canceled = false;
       prev_scheduled_time = timespan_t::zero();
-      p()->sim->print_log( "{} restarts AA {} with {} swing timer remaining", *p(), *this, time_to_execute );
+      p()->sim->print_log( "{} schedules AA restart {} with {} swing timer remaining", *p(), *this, time_to_execute );
     }
-
-    rogue_attack_t::execute();
   }
 
   void impact( action_state_t* state ) override
