@@ -1133,8 +1133,7 @@ struct splintered_elements_buff_t : public buff_t
   shaman_t* shaman;
   splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
-    unsigned max_targets = player->dbc->ptr ? as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() )
-                                            : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() );
     set_default_value( shaman->spell.splintered_elements->effectN( 1 ).percent() );
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
@@ -1777,8 +1776,7 @@ public:
 
       this->p()->trigger_legacy_of_the_frost_witch( stacks );
 
-      if ( this-> p()->dbc->ptr &&
-           this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+      if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
            this->p()->rng().roll(
              this->p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
       {
@@ -2437,8 +2435,7 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
   {
     pet_melee_attack_t<T>::execute();
 
-    if ( this->p()->o()->dbc->ptr &&
-         this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
+    if ( this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
          this->rng().roll( this->p()->o()->spell.t28_4pc_enh->effectN( 1 ).percent() ) )
     {
       this->p()->o()->buff.stormbringer->trigger();
@@ -3420,10 +3417,7 @@ struct lava_lash_t : public shaman_attack_t
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
     // Add a 8 yard radius to support Flame Shock spreading in 9.2
-    if ( player->dbc->ptr )
-    {
-      radius = 8.0;
-    }
+    radius = 8.0;
 
     parse_options( options_str );
     weapon = &( player->off_hand_weapon );
@@ -3537,11 +3531,6 @@ struct lava_lash_t : public shaman_attack_t
   // Lash.
   void trigger_flame_shock( const action_state_t* state ) const
   {
-    if ( !player->dbc->ptr )
-    {
-      return;
-    }
-
     if ( !p()->spec.lava_lash_2->ok() )
     {
       return;
@@ -3779,7 +3768,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = player->dbc->ptr;
+    may_proc_flametongue = true;
   }
 
   void execute() override
@@ -3788,15 +3777,8 @@ struct ice_strike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( player->dbc->ptr )
-      {
-        p()->cooldown.flame_shock->reset( false );
-        p()->cooldown.frost_shock->reset( false );
-      }
-      else
-      {
-        p()->cooldown.shock->reset( false );
-      }
+      p()->cooldown.flame_shock->reset( false );
+      p()->cooldown.frost_shock->reset( false );
     }
   }
 };
@@ -3819,7 +3801,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_flametongue = player->dbc->ptr;
+    may_proc_stormbringer = may_proc_flametongue = true;
   }
 };
 
@@ -4197,10 +4179,7 @@ struct earth_shield_t : public shaman_heal_t
     shaman_heal_t::execute();
 
     // Earth Shield application consumes a Vesper Totem healing charge
-    if ( player->dbc->ptr )
-    {
-      p()->trigger_vesper_totem( execute_state );
-    }
+    p()->trigger_vesper_totem( execute_state );
 
     p()->buff.lightning_shield->expire();
   }
@@ -5902,9 +5881,7 @@ private:
 
   void track_flame_shock( const action_state_t* state )
   {
-    unsigned max_targets = player->dbc->ptr
-                           ? as<unsigned>( data().max_targets() )
-                           : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( data().max_targets() );
 
     // No need to track anything if there are not enough enemies
     if ( sim->target_list.size() <= max_targets )
@@ -5955,9 +5932,7 @@ private:
 
   void untrack_flame_shock( const dot_t* d )
   {
-    unsigned max_targets = player->dbc->ptr
-                           ? as<unsigned>( data().max_targets() )
-                           : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( data().max_targets() );
 
     // No need to track anything if there are not enough enemies
     if ( sim->target_list.size() <= max_targets )
@@ -5998,10 +5973,6 @@ public:
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( !player->dbc->ptr )
-      {
-        cooldown         = p()->cooldown.shock;
-      }
       cooldown->duration = data().cooldown();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
@@ -6137,10 +6108,6 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( !player->dbc->ptr )
-      {
-        cooldown         = p()->cooldown.shock;
-      }
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
       track_cd_waste = true;
@@ -7348,7 +7315,7 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
-    if ( player->dbc->ptr && player->specialization() == SHAMAN_ELEMENTAL )
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
       resource_current = resource_e::RESOURCE_MAELSTROM;

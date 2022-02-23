@@ -9707,15 +9707,15 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-          "\n# Annotated Balance APL can be found at "
-          "https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
-      break;
-    case DRUID_FERAL:
-      action_list_information +=
-          "\n# Feral APL can also be found at https://gist.github.com/Xanzara/6896c8996f5afce5ce115daa3a08daff\n";
+        "\n# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
       break;
     case DRUID_GUARDIAN:
-      action_list_information += "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+      action_list_information +=
+        "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+      break;
+    case DRUID_RESTORATION:
+      action_list_information +=
+        "\n# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt\n";
       break;
     default:
       break;
