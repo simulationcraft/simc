@@ -3724,6 +3724,54 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
   new lions_hope_cb_t( effect );
 }
 
+void soulwarped_seal_of_menethil( special_effect_t& effect )
+{
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    return;
+  }
+
+  struct remnants_despair_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+    remnants_despair_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect ),
+    debuff_value(effect.driver()->effectN(1).average(effect.item))
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      assert( rppm );
+      assert( s->target );
+
+      // TODO: Investigate Proc Rate changes based on enemy HP
+      double mod = 1;
+
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
+      }
+
+      rppm->set_modifier( mod );
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.remnants_despair->set_default_value( debuff_value );
+      td->debuff.remnants_despair->trigger();
+    }
+  };
+
+  // TODO: verify flags
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new remnants_despair_cb_t( effect );
+}
+
 // Runecarves
 
 void echo_of_eonar( special_effect_t& effect )
@@ -4868,6 +4916,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
     unique_gear::register_special_effect( 353513, items::dark_rangers_quiver );
     unique_gear::register_special_effect( 367950, items::soulwarped_seal_of_wrynn );
+    unique_gear::register_special_effect( 367951, items::soulwarped_seal_of_menethil );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
@@ -5029,6 +5078,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.exsanguinated = make_buff( *td, "exsanguinated" )->set_quiet( true );
+  } );
+
+  // Soulwarped Seal of Menethil
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 367951 ) )
+    {
+      assert( !td->debuff.remnants_despair );
+
+      td->debuff.remnants_despair = make_buff<buff_t>( *td, "remnants_despair", td->source->find_spell( 368690 ) );
+      td->debuff.remnants_despair->reset();
+    }
+    else
+      td->debuff.remnants_despair = make_buff( *td, "remnants_despair" )->set_quiet( true );
   } );
 }
 
