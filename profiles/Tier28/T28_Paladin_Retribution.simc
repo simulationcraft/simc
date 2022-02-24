@@ -1,13 +1,14 @@
-paladin="PR_Paladin_Retribution"
+paladin="T28_Paladin_Retribution"
 source=default
 spec=retribution
 level=60
 race=dark_iron_dwarf
 role=attack
 position=back
-talents=2201102
-covenant=venthyr
-soulbind=theotar,soothing_shade/templars_vindication:4
+talents=1200303
+covenant=kyrian
+soulbind=mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/ringing_clarity:11:1/virtuous_command:11:1/templars_vindication:11:1
+renown=80
 
 # Default consumables
 potion=spectral_strength
@@ -136,29 +137,31 @@ actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 
-head=plague_handlers_greathelm,id=178773,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=pauldrons_of_unleashed_pride,id=178820,bonus_id=6807/1498/6646
-back=drape_of_twisted_loyalties,id=180123,bonus_id=6807/1498/6646
-chest=abdominal_securing_chestguard,id=178793,bonus_id=6807/1498/6646,enchant=eternal_skirmish
-wrists=vambraces_of_the_depraved_warden,id=178845,bonus_id=6807/1498/6646
-hands=fleshfused_crushers,id=178775,bonus_id=6807/1498/6646,enchant=eternal_strength
-waist=scarred_bloodbound_girdle,id=178931,bonus_id=6807/1498/6646
-legs=galvanized_oxxein_legguards,id=178800,bonus_id=6807/1498/6646
-feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/7054/1487
-finger1=death_gods_signet,id=179355,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-finger2=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_critical_strike
-trinket1=phial_of_putrefaction,id=178771,bonus_id=6807/1498/6646
-trinket2=overwhelming_power_crystal,id=179342,bonus_id=6807/1498/6646
-main_hand=rimebinders_runeblade,id=178780,bonus_id=6807/1498/6646,enchant=sinful_revelation
+head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
+wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
+hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
+legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
+feet=songmad_sabatons,id=189786,bonus_id=1524/7187
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=overwhelming_power_crystal,id=179342,bonus_id=1592/6536/6646
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=184.40
-# gear_strength=588
-# gear_stamina=859
+# gear_ilvl=283.00
+# gear_strength=1434
+# gear_stamina=2941
 # gear_attack_power=20
-# gear_crit_rating=276
-# gear_haste_rating=590
-# gear_mastery_rating=233
-# gear_versatility_rating=282
-# gear_armor=1023
+# gear_crit_rating=455
+# gear_haste_rating=790
+# gear_mastery_rating=853
+# gear_versatility_rating=261
+# gear_armor=1850
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1
