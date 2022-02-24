@@ -356,7 +356,9 @@ public:
     cooldown_t* symbols_of_death;
     cooldown_t* vanish;
     cooldown_t* vendetta;
-    cooldown_t* weaponmaster;
+
+    target_specific_cooldown_t* perforated_veins;
+    target_specific_cooldown_t* weaponmaster;
   } cooldowns;
 
   // Gains
@@ -735,7 +737,6 @@ public:
     cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
     cooldowns.riposte                  = get_cooldown( "riposte"                  );
     cooldowns.roll_the_bones           = get_cooldown( "roll_the_bones"           );
-    cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
     cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
     cooldowns.shiv                     = get_cooldown( "shiv"                     );
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
@@ -746,6 +747,9 @@ public:
     cooldowns.flagellation             = get_cooldown( "flagellation"             );
     cooldowns.echoing_reprimand        = get_cooldown( "echoing_reprimand"        );
     cooldowns.fleshcraft               = get_cooldown( "fleshcraft"               );
+
+    cooldowns.perforated_veins         = get_target_specific_cooldown( "perforated_veins" );
+    cooldowns.weaponmaster             = get_target_specific_cooldown( "weaponmaster" );
 
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -1539,6 +1543,7 @@ public:
   void trigger_dashing_scoundrel( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
   void trigger_flagellation( const action_state_t* state );
+  void trigger_perforated_veins( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -3829,12 +3834,7 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2022-01-15 -- 9.2 spell data now allows this to proc from Akaari primary hits
-    if ( secondary_trigger_type != secondary_trigger::WEAPONMASTER )
-    {
-      p()->buffs.perforated_veins->trigger();
-    }
-
+    trigger_perforated_veins( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.akaaris_shadowstrike );
   }
 
@@ -3890,12 +3890,6 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // 2022-02-14 -- Latest 9.2 build triggers from 4pc and Akaari procs but not from WM
-    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
-    {
-      p()->buffs.perforated_veins->trigger();
-    }
-
     // 2021-08-30 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     // 2022-02-07 -- Logs also confirm this delay applies to all AoE 4pc procs in the same cast
     if ( p()->buffs.the_rotten->up() )
@@ -3917,6 +3911,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
+    trigger_perforated_veins( state );
     if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
       trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
     else
@@ -4847,12 +4842,12 @@ struct serrated_bone_spike_t : public rogue_attack_t
       }
     }
 
-    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
 
-    // 2021-07-05-- Confirmed as working in-game, although not on Sudden Fractures damage
+    // 2021-07-05 -- Confirmed as working in-game, although not on Sudden Fractures damage
     bool procs_shadow_blades_damage() const override
     { return true; }
   };
@@ -4864,7 +4859,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
-    // 2021-07-09- Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
+    // 2021-07-09 -- Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
     affected_by.shadow_blades_cp = true;
     affected_by.broadside_cp = true;
     energize_type = action_energize::ON_HIT;
@@ -4903,7 +4898,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2021-03-04-- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
+    // 2021-03-04 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
     unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
 
     // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
@@ -4929,7 +4924,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
   timespan_t travel_time() const override
   {
-    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
     if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       return timespan_t::zero();
@@ -4940,11 +4935,11 @@ struct serrated_bone_spike_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
+  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
 
-  // 2021-07-05-- Confirmed as working in-game
+  // 2021-07-05 -- Confirmed as working in-game
   bool procs_shadow_blades_damage() const override
   { return true; }
 };
@@ -6237,14 +6232,19 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state, actions::rogue_attack_t* action )
 {
-  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() || !action )
+  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || !action )
+    return;
+
+  // 2022-02-24 -- 9.2 now allows this to trigger with a per-target ICD
+  cooldown_t* tcd = p()->cooldowns.weaponmaster->get_cooldown( state->target );
+  if ( !tcd || tcd->down() )
     return;
 
   if ( !p()->rng().roll( p()->talent.weaponmaster->proc_chance() ) )
     return;
 
   p()->procs.weaponmaster->occur();
-  p()->cooldowns.weaponmaster->start( p()->talent.weaponmaster->internal_cooldown() );
+  tcd->start();
 
   p()->sim->print_log( "{} procs weaponmaster for {}", *p(), *this );
 
@@ -6631,6 +6631,21 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   {
     p()->procs.flagellation_cp_spend->occur();
   }
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state_t* state )
+{
+  if ( !p()->conduit.perforated_veins->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // 2022-02-24 -- 9.2 now allows this to trigger from procs with a per-target ICD
+  cooldown_t* tcd = p()->cooldowns.perforated_veins->get_cooldown( state->target );
+  if ( !tcd || tcd->down() )
+    return;
+
+  tcd->start();
+  p()->buffs.perforated_veins->trigger();
 }
 
 // ==========================================================================
@@ -8189,7 +8204,7 @@ void rogue_t::init_spells()
       secondary_trigger::CONCEALED_BLUNDERBUSS, "pistol_shot_concealed_blunderbuss" );
   }
 
-  // Active Spells = ========================================================
+  // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -8210,6 +8225,7 @@ void rogue_t::init_spells()
 
   if ( talent.weaponmaster->ok() && specialization() == ROGUE_SUBTLETY )
   {
+    cooldowns.weaponmaster->base_duration = talent.weaponmaster->internal_cooldown();
     active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>(
       secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
     active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
@@ -8624,6 +8640,9 @@ void rogue_t::create_buffs()
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
                                                      conduit.perforated_veins->effectN( 1 ).trigger(),
                                                      conduit.perforated_veins );
+  buffs.perforated_veins->set_cooldown( timespan_t::zero() );
+  cooldowns.perforated_veins->base_duration = conduit.perforated_veins->internal_cooldown();
+  
 
   if ( conduit.planned_execution.ok() )
   {
@@ -9003,6 +9022,10 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
     unique_gear::scoped_actor_callback_t<rogue_t>::initialize( e );
 
     // Create callback action to proc debuff stacks on the target
+    // Only create one instance of this, as dual-wielding does not change the application of the debuff
+    if ( e.player->find_action( "banshees_blight_debuff" ) )
+      return;
+
     e.execute_action = unique_gear::create_proc_action<banshees_blight_debuff_t>( "banshees_blight_debuff", e );
     new dbc_proc_callback_t( e.player, e );
   }
