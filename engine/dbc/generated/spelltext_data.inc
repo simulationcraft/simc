@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42423
-static const std::array<spelltext_data_t, 16031> __spelltext_data { {
+static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16004,6 +16004,16 @@ static const std::array<spelltext_data_t, 16031> __spelltext_data { {
   { 368667, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
   { 368689, "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.", "Your Intellect is increased by $w1.", 0 },
   { 368690, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", "Diseases from the Death Knight have increased effect.", 0 },
+  { 368693, "$@spelldesc367953\r\n\r\n\r\n", "Your attacks have a chance to deal $369238w3 Frost damage and absorb the next $369238w4 damage dealt to you.", 0 },
+  { 368694, "$@spelldesc367953\r\n\r\n\r\n", "Your attacks have a chance to deal $369238w1 Arcane damage to nearby enemies and increase your armor by $369238w8.", 0 },
+  { 368695, "$@spelldesc367953\r\n\r\n\r\n", "Your attacks have a chance to cause the target to bleed for ${$369238w5*$368701d} Physical damage over $368701d, healing you for that amount.", 0 },
+  { 368696, "$@spelldesc367953\r\n\r\n\r\n", "Your attacks have a high chance to apply a plague to your enemies, dealing ${$369238w2*$368700d} Nature damage over $368700d, stacking up to $368700s3 times.", 0 },
+  { 368697, "$@spelldesc367953\r\n\r\n\r\n", "Swell with forbidden magic, gaining size, $w3 Strength, and causing your melee attacks to have a high chance of dealing $369238w6 Shadow damage to all enemies in front of you.", 0 },
+  { 368698, "$@spelldesc367953\r\n\r\n\r\n", "Absorbing the next $w3 damage dealt to you.", 0 },
+  { 368699, "$@spelldesc367953\r\n\r\n\r\n", "Armor increased by $w3.", 0 },
+  { 368700, "$@spelldesc367953\r\n\r\n\r\n", "Suffering $w1 Nature damage every sec.", 0 },
+  { 368701, "$@spelldesc367953\r\n\r\n\r\n", "Being leeched $w1 health per second.", 0 },
+  { 368702, "$@spelldesc367953\r\n\r\n\r\n", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -16034,7 +16044,7 @@ static const std::array<spelltext_data_t, 16031> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42423
-static constexpr std::array<hotfix::client_hotfix_entry_t, 57> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 60> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16086,6 +16096,9 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 57> __spelltext_hotfi
   {  367950,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
   {  368689,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
   {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
+  {  368694,  1, "Your attacks have a chance to deal $369238w1 Arcane damage to nearby enemies and reduce the damage you take by $368699s3%.", "Your attacks have a chance to deal $369238w1 Arcane damage to nearby enemies and increase your armor by $369238w8." },
+  {  368697,  1, "Swell with forbidden magic, gaining size, $w3 Strength, and causing your melee attacks to deal $369238w6 Shadow damage to all enemies in front of you.", "Swell with forbidden magic, gaining size, $w3 Strength, and causing your melee attacks to have a high chance of dealing $369238w6 Shadow damage to all enemies in front of you." },
+  {  368699,  1, "Reducing $w3% damage taken.", "Armor increased by $w3." },
   {  368938,  0, "$@206930", "$@spelldesc206930" },
   {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
   {  369067,  0, "#@spelldesc367953", "$@spelldesc367953" },
