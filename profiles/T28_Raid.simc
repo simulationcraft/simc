@@ -1,9 +1,6 @@
 optimal_raid=1
 default_actions=1
 
-# TODO: Remove me when 9.2 launched
-ptr=1
-
 T28_Death_Knight_Blood.simc
 T28_Death_Knight_Frost.simc
 T28_Death_Knight_Frost_Breath.simc
@@ -22,9 +19,9 @@ T28_Druid_Feral_Owlweave.simc
 # T28_Druid_Guardian.simc
 # T28_Druid_Guardian_Venthyr.simc
 
-# T28_Hunter_Beast_Mastery.simc
-# T28_Hunter_Marksmanship.simc
-# T28_Hunter_Survival.simc
+T28_Hunter_Beast_Mastery.simc
+T28_Hunter_Marksmanship.simc
+T28_Hunter_Survival.simc
 
 # T28_Mage_Fire.simc
 # T28_Mage_Frost.simc

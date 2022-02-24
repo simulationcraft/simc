@@ -2004,6 +2004,11 @@ void dueling_form( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void instructors_divine_bell( special_effect_t& effect )
+{
+  effect.cooldown_category_ = 1141;
+}
+
 // 9.1 Trinkets
 
 // id=356029 buff
@@ -4815,6 +4820,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
     unique_gear::register_special_effect( 336219, items::dueling_form );
+    unique_gear::register_special_effect( 348139, items::instructors_divine_bell );
+    unique_gear::register_special_effect( 367896, items::instructors_divine_bell );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );

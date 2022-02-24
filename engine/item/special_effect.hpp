@@ -56,6 +56,7 @@ struct special_effect_t
   double rppm_modifier_;
   int rppm_blp_;
   timespan_t duration_, cooldown_, tick;
+  unsigned cooldown_category_;
   bool target_specific_cooldown;
   bool cost_reduction;
   int refresh;

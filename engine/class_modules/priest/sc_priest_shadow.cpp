@@ -433,20 +433,12 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( t->health_percentage() < execute_percent )
     {
-      double actual_modifier = execute_modifier;
-
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/881
-      if ( priest().bugs )
-      {
-        actual_modifier /= 3;
-      }
-
       if ( sim->debug )
       {
         sim->print_debug( "{} below {}% HP. Increasing {} damage by {}", t->name_str, execute_percent, *this,
-                          actual_modifier );
+                          execute_modifier );
       }
-      tdm *= 1 + actual_modifier;
+      tdm *= 1 + execute_modifier;
     }
 
     return tdm;
@@ -1937,7 +1929,7 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) );
+  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
 }
 
 void priest_t::init_rng_shadow()

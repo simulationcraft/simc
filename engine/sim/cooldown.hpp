@@ -12,6 +12,7 @@
 #include "util/format.hpp"
 
 #include <string>
+#include <vector>
 #include <memory>
 
 struct action_t;
@@ -120,4 +121,31 @@ struct cooldown_t
 
 private:
   void adjust_remaining_duration( double delta ); // Modify the remaining duration of an ongoing cooldown.
+};
+
+struct target_specific_cooldown_t
+{
+  player_t* const player;
+  const std::string name_str;
+  timespan_t base_duration;
+
+private:
+  struct target_cooldown_t
+  {
+    cooldown_t* cooldown = nullptr;
+    int spawn_index = -1;
+  };
+
+  std::vector<target_cooldown_t> target_cooldowns;
+
+public:
+  target_specific_cooldown_t( player_t& p, cooldown_t& base_cooldown );
+  target_specific_cooldown_t( util::string_view name, player_t& p, timespan_t duration );
+
+  cooldown_t* get_cooldown( player_t* target );
+
+  void reset();
+
+  const std::string& name() const
+  { return name_str; }
 };

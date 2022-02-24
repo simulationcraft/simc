@@ -57,6 +57,7 @@ void overwhelming_power_crystal( special_effect_t& );
 void tablet_of_despair( special_effect_t& );
 void rotbriar_sprout( special_effect_t& );
 void murmurs_in_the_dark( special_effect_t& );
+void instructors_divine_bell( special_effect_t& );
 // 9.2 Trinkets & Weapons
 void scars_of_fraternal_strife( special_effect_t& );
 void singularity_supreme( special_effect_t& );
