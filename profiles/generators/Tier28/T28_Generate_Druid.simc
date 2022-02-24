@@ -47,18 +47,18 @@ druid.owlweave_cat=1
 head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
 neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
-back=shroud_of_the_sires_chosen,id=189847,enchant_id=6202,bonus_id=1524
-chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant_id=6230
+back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
+chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588 ,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
 waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
-feet=treads_of_titanic_curiosity,id=189848,enchant_id=6211,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6168
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6164
+feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant_id=6228
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
 save=T28_Druid_Feral_Owlweave.simc
 
@@ -80,18 +80,18 @@ druid.owlweave_cat=0
 head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
 neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
-back=shroud_of_the_sires_chosen,id=189847,enchant_id=6202,bonus_id=1524
-chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant_id=6230
+back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
+chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588 ,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
 waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
-feet=treads_of_titanic_curiosity,id=189848,enchant_id=6211,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6168
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6164
+feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant_id=6228
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
 save=T28_Druid_Feral.simc
 
@@ -113,18 +113,18 @@ druid.owlweave_cat=0
 head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
 neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
-back=shroud_of_the_sires_chosen,id=189847,enchant_id=6202,bonus_id=1524
-chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant_id=6230
+back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
+chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588 ,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
 waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
-feet=treads_of_titanic_curiosity,id=189848,enchant_id=6211,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6168
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6164
+feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant_id=6228
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
 save=T28_Druid_Feral_AOE.simc
 
