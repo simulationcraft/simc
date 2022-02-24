@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42423
-static const std::array<spelltext_data_t, 16027> __spelltext_data { {
+static const std::array<spelltext_data_t, 16031> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16018,9 +16018,13 @@ static const std::array<spelltext_data_t, 16027> __spelltext_data { {
   { 368938, "$@spelldesc206930", 0, 0 },
   { 368976, "$@spelldesc368203", 0, 0 },
   { 369046, "$@spelldesc367953", 0, 0 },
+  { 369067, "$@spelldesc367953", 0, 0 },
   { 369068, "$@spelldesc367808", 0, 0 },
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
+  { 369071, "$@spelldesc367953", 0, 0 },
+  { 369097, "$@spelldesc367953", 0, 0 },
+  { 369183, "$@spelldesc367953", 0, 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
@@ -16030,7 +16034,7 @@ static const std::array<spelltext_data_t, 16027> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42423
-static constexpr std::array<hotfix::client_hotfix_entry_t, 53> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 57> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16084,6 +16088,10 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 53> __spelltext_hotfi
   {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
   {  368938,  0, "$@206930", "$@spelldesc206930" },
   {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
+  {  369067,  0, "#@spelldesc367953", "$@spelldesc367953" },
+  {  369071,  0, "#@spelldesc367953", "$@spelldesc367953" },
+  {  369097,  0, "#@spelldesc367953", "$@spelldesc367953" },
+  {  369183,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
 // Spell description variables, wow build 9.2.0.42423
