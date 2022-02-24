@@ -777,9 +777,16 @@ void sc_format_to( const cooldown_t& cooldown, fmt::format_context::iterator out
 }
 
 target_specific_cooldown_t::target_specific_cooldown_t( player_t& p, cooldown_t& base_cd ) :
+  name_str( base_cd.name() ),
   player( &p ),
-  base_cooldown( &base_cd ),
-  name_str( base_cooldown->name() )
+  base_duration( base_cd.duration )
+{
+}
+
+target_specific_cooldown_t::target_specific_cooldown_t( util::string_view name, player_t& p, timespan_t duration ) :
+  name_str( name ),
+  player( &p ),
+  base_duration( duration )
 {
 }
 
@@ -797,14 +804,17 @@ cooldown_t* target_specific_cooldown_t::get_cooldown( player_t* target )
 
   if ( !tcd.cooldown )
   {
-    tcd.cooldown = player->get_cooldown( base_cooldown->name() + "_target_" + util::to_string( target_index ) );
-    tcd.cooldown->duration = base_cooldown->duration;
+    tcd.cooldown = player->get_cooldown( name_str + "_target_" + util::to_string( target_index ) );
+    tcd.cooldown->duration = base_duration;
     tcd.spawn_index = spawn_index;
   }
 
   if ( tcd.spawn_index != spawn_index )
   {
-    tcd.cooldown->reset( false );
+    if ( tcd.spawn_index >= 0 )
+    {
+      tcd.cooldown->reset( false );
+    }
     tcd.spawn_index = spawn_index;
   }
 
@@ -813,5 +823,9 @@ cooldown_t* target_specific_cooldown_t::get_cooldown( player_t* target )
 
 void target_specific_cooldown_t::reset()
 {
-  target_cooldowns.clear();
+  // Cached spawn index values are likely to be wrong across iterations
+  for ( auto& tcd : target_cooldowns )
+  {
+    tcd.spawn_index = -1;
+  }
 }

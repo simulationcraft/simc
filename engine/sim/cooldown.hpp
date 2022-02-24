@@ -126,20 +126,21 @@ private:
 struct target_specific_cooldown_t
 {
   player_t* const player;
-  cooldown_t* const base_cooldown;
   const std::string name_str;
+  timespan_t base_duration;
 
 private:
   struct target_cooldown_t
   {
-    cooldown_t* cooldown;
-    int spawn_index;
+    cooldown_t* cooldown = nullptr;
+    int spawn_index = -1;
   };
 
   std::vector<target_cooldown_t> target_cooldowns;
 
 public:
-  target_specific_cooldown_t( player_t&, cooldown_t& base_cd );
+  target_specific_cooldown_t( player_t& p, cooldown_t& base_cooldown );
+  target_specific_cooldown_t( util::string_view name, player_t& p, timespan_t duration );
 
   cooldown_t* get_cooldown( player_t* target );
 

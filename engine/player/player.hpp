@@ -820,7 +820,7 @@ public:
   item_t*     find_item_by_use_effect_name( util::string_view name );
   action_t*   find_action( util::string_view ) const;
   cooldown_t* find_cooldown( util::string_view name ) const;
-  target_specific_cooldown_t* find_target_specific_cooldown( cooldown_t& base_cd ) const;
+  target_specific_cooldown_t* find_target_specific_cooldown( util::string_view name ) const;
   dot_t*      find_dot     ( util::string_view name, player_t* source ) const;
   stats_t*    find_stats   ( util::string_view name ) const;
   gain_t*     find_gain    ( util::string_view name ) const;
@@ -832,7 +832,8 @@ public:
   int find_action_id( util::string_view name ) const;
 
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
-  target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cd );
+  target_specific_cooldown_t* get_target_specific_cooldown( util::string_view name, timespan_t duration = timespan_t::zero() );
+  target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cooldown );
   real_ppm_t* get_rppm    ( util::string_view );
   real_ppm_t* get_rppm    ( util::string_view, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( util::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );

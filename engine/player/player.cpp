@@ -7266,9 +7266,9 @@ cooldown_t* player_t::find_cooldown( util::string_view name ) const
   return find_vector_member( cooldown_list, name );
 }
 
-target_specific_cooldown_t* player_t::find_target_specific_cooldown( cooldown_t& base_cd ) const
+target_specific_cooldown_t* player_t::find_target_specific_cooldown( util::string_view name ) const
 {
-  return find_vector_member( target_specific_cooldown_list, base_cd.name() );
+  return find_vector_member( target_specific_cooldown_list, name );
 }
 
 action_t* player_t::find_action( util::string_view name ) const
@@ -7293,13 +7293,26 @@ cooldown_t* player_t::get_cooldown( util::string_view name, action_t* a )
   return c;
 }
 
-target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& base_cd )
+target_specific_cooldown_t* player_t::get_target_specific_cooldown( util::string_view name, timespan_t duration )
 {
-  target_specific_cooldown_t* tcd = find_target_specific_cooldown( base_cd );
+  target_specific_cooldown_t* tcd = find_target_specific_cooldown( name );
 
   if ( !tcd )
   {
-    tcd = new target_specific_cooldown_t( *this, base_cd );
+    tcd = new target_specific_cooldown_t( name, *this, duration );
+    target_specific_cooldown_list.push_back( tcd );
+  }
+
+  return tcd;
+}
+
+target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& base_cooldown )
+{
+  target_specific_cooldown_t* tcd = find_target_specific_cooldown( base_cooldown.name() );
+
+  if ( !tcd )
+  {
+    tcd = new target_specific_cooldown_t( *this, base_cooldown );
     target_specific_cooldown_list.push_back( tcd );
   }
 
