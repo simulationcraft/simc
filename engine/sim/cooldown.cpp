@@ -775,3 +775,43 @@ void sc_format_to( const cooldown_t& cooldown, fmt::format_context::iterator out
 {
   fmt::format_to( out, "Cooldown {}", cooldown.name_str );
 }
+
+target_specific_cooldown_t::target_specific_cooldown_t( player_t& p, cooldown_t& base_cd ) :
+  player( &p ),
+  base_cooldown( &base_cd ),
+  name_str( base_cooldown->name() )
+{
+}
+
+cooldown_t* target_specific_cooldown_t::get_cooldown( player_t* target )
+{
+  assert( target && "Must specify a valid target to get a target_specific_cooldown" );
+
+  auto target_index = target->actor_index;
+  auto spawn_index = target->actor_spawn_index;
+
+  if ( target_cooldowns.size() <= target_index )
+    target_cooldowns.resize( target_index + 1 );
+
+  target_cooldown_t& tcd = target_cooldowns[ target_index ];
+
+  if ( !tcd.cooldown )
+  {
+    tcd.cooldown = player->get_cooldown( base_cooldown->name() + "_target_" + util::to_string( target_index ) );
+    tcd.cooldown->duration = base_cooldown->duration;
+    tcd.spawn_index = spawn_index;
+  }
+
+  if ( tcd.spawn_index != spawn_index )
+  {
+    tcd.cooldown->reset( false );
+    tcd.spawn_index = spawn_index;
+  }
+
+  return tcd.cooldown;
+}
+
+void target_specific_cooldown_t::reset()
+{
+  target_cooldowns.clear();
+}

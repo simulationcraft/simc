@@ -5344,6 +5344,8 @@ void player_t::reset()
 
   range::for_each( cooldown_list, []( cooldown_t* cooldown ) { cooldown->reset_init(); } );
 
+  range::for_each( target_specific_cooldown_list, []( target_specific_cooldown_t* tcd ) { tcd->reset(); } );
+
   range::for_each( dot_list, []( dot_t* dot ) { dot->reset(); } );
 
   range::for_each( stats_list, []( stats_t* stat ) { stat->reset(); } );
@@ -7264,6 +7266,11 @@ cooldown_t* player_t::find_cooldown( util::string_view name ) const
   return find_vector_member( cooldown_list, name );
 }
 
+target_specific_cooldown_t* player_t::find_target_specific_cooldown( cooldown_t& base_cd ) const
+{
+  return find_vector_member( target_specific_cooldown_list, base_cd.name() );
+}
+
 action_t* player_t::find_action( util::string_view name ) const
 {
   return find_vector_member( action_list, name );
@@ -7284,6 +7291,19 @@ cooldown_t* player_t::get_cooldown( util::string_view name, action_t* a )
     c->action = a;
 
   return c;
+}
+
+target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& base_cd )
+{
+  target_specific_cooldown_t* tcd = find_target_specific_cooldown( base_cd );
+
+  if ( !tcd )
+  {
+    tcd = new target_specific_cooldown_t( *this, base_cd );
+    target_specific_cooldown_list.push_back( tcd );
+  }
+
+  return tcd;
 }
 
 real_ppm_t* player_t::get_rppm( util::string_view name )

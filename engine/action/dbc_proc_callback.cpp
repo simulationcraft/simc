@@ -56,31 +56,10 @@ const item_t dbc_proc_callback_t::default_item_ = item_t();
 
 cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
 {
-  if ( !has_target_specific_cooldown || !target )
+  if ( !target_specific_cooldown || !target )
     return cooldown;
 
-  auto target_index = target->actor_index;
-  auto spawn_index = target->actor_spawn_index;
-
-  if ( target_specific_cooldown.size() <= target_index )
-    target_specific_cooldown.resize( target_index + 1 );
-
-  target_cooldown_t& tcd = target_specific_cooldown[ target_index ];
-
-  if ( !tcd.cooldown )
-  {
-    tcd.cooldown = listener->get_cooldown( cooldown->name() + "_" + util::to_string( target_index ) );
-    tcd.cooldown->duration = cooldown->duration;
-    tcd.spawn_index = spawn_index;
-  }
-
-  if ( tcd.spawn_index != spawn_index )
-  {
-    cooldown->reset( false );
-    tcd.spawn_index = spawn_index;
-  }
-
-  return tcd.cooldown;
+  return target_specific_cooldown->get_cooldown( target );
 }
 
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
@@ -154,8 +133,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     item( i ),
     effect( e ),
     cooldown( nullptr ),
-    has_target_specific_cooldown( false ),
-    target_specific_cooldown(),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -175,8 +153,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     item( *i ),
     effect( e ),
     cooldown( nullptr ),
-    has_target_specific_cooldown( false ),
-    target_specific_cooldown(),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -196,8 +173,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     item( default_item_ ),
     effect( e ),
     cooldown( nullptr ),
-    has_target_specific_cooldown( false ),
-    target_specific_cooldown(),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -236,9 +212,12 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
-    has_target_specific_cooldown = effect.has_target_specific_cooldown();
     cooldown                     = listener->get_cooldown( effect.cooldown_name() );
     cooldown->duration           = effect.cooldown();
+    if ( effect.has_target_specific_cooldown() )
+    {
+      target_specific_cooldown = listener->get_target_specific_cooldown( *cooldown );
+    }
   }
 
   // Initialize proc action

@@ -13,6 +13,7 @@
 struct action_state_t;
 struct buff_t;
 struct cooldown_t;
+struct target_specific_cooldown_t;
 struct item_t;
 struct real_ppm_t;
 namespace rng {
@@ -66,15 +67,7 @@ struct dbc_proc_callback_t : public action_callback_t
   const item_t& item;
   const special_effect_t& effect;
   cooldown_t* cooldown;
-  bool has_target_specific_cooldown;
-
-  struct target_cooldown_t
-  {
-    cooldown_t* cooldown;
-    int spawn_index;
-  };
-
-  std::vector<target_cooldown_t> target_specific_cooldown;
+  target_specific_cooldown_t* target_specific_cooldown;
 
   // Proc trigger types, cached/initialized here from special_effect_t to avoid
   // needless spell data lookups in vast majority of cases

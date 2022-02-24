@@ -40,6 +40,7 @@ struct benefit_t;
 struct item_t;
 struct buff_t;
 struct cooldown_t;
+struct target_specific_cooldown_t;
 struct cooldown_waste_data_t;
 struct dot_t;
 struct event_t;
@@ -333,6 +334,7 @@ struct player_t : public actor_t
   auto_dispose< std::vector<benefit_t*> > benefit_list;
   auto_dispose< std::vector<uptime_t*> > uptime_list;
   auto_dispose< std::vector<cooldown_t*> > cooldown_list;
+  auto_dispose< std::vector<target_specific_cooldown_t*> > target_specific_cooldown_list;
   auto_dispose< std::vector<real_ppm_t*> > rppm_list;
   auto_dispose< std::vector<shuffled_rng_t*> > shuffled_rng_list;
   std::vector<cooldown_t*> dynamic_cooldown_list;
@@ -818,6 +820,7 @@ public:
   item_t*     find_item_by_use_effect_name( util::string_view name );
   action_t*   find_action( util::string_view ) const;
   cooldown_t* find_cooldown( util::string_view name ) const;
+  target_specific_cooldown_t* find_target_specific_cooldown( cooldown_t& base_cd ) const;
   dot_t*      find_dot     ( util::string_view name, player_t* source ) const;
   stats_t*    find_stats   ( util::string_view name ) const;
   gain_t*     find_gain    ( util::string_view name ) const;
@@ -829,6 +832,7 @@ public:
   int find_action_id( util::string_view name ) const;
 
   cooldown_t* get_cooldown( util::string_view name, action_t* action = nullptr );
+  target_specific_cooldown_t* get_target_specific_cooldown( cooldown_t& base_cd );
   real_ppm_t* get_rppm    ( util::string_view );
   real_ppm_t* get_rppm    ( util::string_view, const spell_data_t* data, const item_t* item = nullptr );
   real_ppm_t* get_rppm    ( util::string_view, double freq, double mod = 1.0, unsigned s = RPPM_NONE );
