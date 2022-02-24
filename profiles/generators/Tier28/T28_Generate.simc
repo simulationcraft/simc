@@ -58,7 +58,7 @@ T28_Generate_Death_Knight.simc
 T28_Generate_Druid.simc
 
 # Hunter
-# T28_Generate_Hunter.simc
+T28_Generate_Hunter.simc
 
 # Mage
 T28_Generate_Mage.simc
