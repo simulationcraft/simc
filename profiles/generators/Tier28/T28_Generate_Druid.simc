@@ -183,6 +183,6 @@ finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,gem_id=1731
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=3536/4786/1592
 trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,sinful_revelation
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant_id=6228
 
 # save=T28_Druid_Guardian_Venthyr.simc
