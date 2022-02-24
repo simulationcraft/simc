@@ -1,15 +1,14 @@
-druid="T26_Druid_Guardian"
+druid="T28_Druid_Guardian"
 source=default
 spec=guardian
 level=60
-race=night_elf
-timeofday=day
+race=tauren
 role=tank
 position=front
-talents=1013221
+talents=1013321
 covenant=night_fae
-soulbind=niya,grove_invigoration/savage_combatant:7/niyas_tools_burrs
-renown=40
+soulbind=niya:1,322721/269:11:1/342270/260:11:1/320668/254:11:1/271:11:1/320659/279:11:1/352501/283:11:1/352503
+renown=80
 
 # Default consumables
 potion=phantom_fire
@@ -133,28 +132,30 @@ actions.owlweave+=/convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_so
 actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
 actions.owlweave+=/wrath
 
-head=sadists_sinister_mask,id=182980,bonus_id=7187/1498/6935,gem_id=173128
-neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=wicked_flankers_gorget,id=183029,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=umbrahide_vest,id=172314,bonus_id=6649/6650/6758/7092/1532,enchant=eternal_skirmish
-wrists=precisely_calibrated_chronometer,id=183019,bonus_id=7187/1498/6935,gem_id=173128
-hands=bleakwing_assassins_grips,id=183007,bonus_id=7187/1498
-waist=spellwoven_tourniquet,id=182995,bonus_id=7187/1498/6935,gem_id=173128
-legs=chiropteran_leggings,id=182993,bonus_id=7187/1498
-feet=enchanted_toetappers,id=183030,bonus_id=7187/1498,enchant=eternal_agility
-finger1=ritualists_treasured_ring,id=183037,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=dreadfire_vessel,id=184030,bonus_id=7187/1498
-trinket2=stone_legion_heraldry,id=184027,bonus_id=4800/4786/1498
-main_hand=nathrian_torchbearers_stave,id=182419,bonus_id=7187/1524,enchant=sinful_revelation
+head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
+chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
+feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
+trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=229.40
-# gear_agility=879
-# gear_stamina=1518
-# gear_crit_rating=377
-# gear_haste_rating=738
-# gear_mastery_rating=473
-# gear_versatility_rating=368
-# gear_armor=611
+# gear_ilvl=283.00
+# gear_agility=1424
+# gear_stamina=2971
+# gear_crit_rating=704
+# gear_haste_rating=538
+# gear_mastery_rating=766
+# gear_versatility_rating=534
+# gear_armor=865
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

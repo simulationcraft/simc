@@ -107,7 +107,7 @@ actions.catweave+=/swipe
 
 actions.cconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
 actions.cconvoke+=/cat_form,if=!buff.cat_form.up
-actions.cconvoke+=/convoke_the_spirits,if=!talent.heart_of_the_wild.enabled
+actions.cconvoke+=/convoke_the_spirits
 
 actions.oconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.moonkin_form.up
 actions.oconvoke+=/moonkin_form,if=!buff.moonkin_form.up

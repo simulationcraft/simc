@@ -152,29 +152,28 @@ actions.stealth+=/shred,if=combo_points<4&spell_targets.thrash_cat<5
 head=headpiece_of_the_fixed_stars,id=188847,bonus_id=1498,gem_id=173127
 neck=beacon_of_stormwind,id=189838,bonus_id=1524,gem_id=173129
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524,enchant_id=6202
-chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant_id=6230
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524,enchant=soul_vitality
+chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524,gem_id=173130
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524,enchant_id=6211
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6168
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant_id=6164
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524,enchant=eternal_agility
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant_id=6228
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
 
 # Gear Summary
 # gear_ilvl=282.33
 # gear_agility=1304
-# gear_stamina=2933
+# gear_stamina=2943
 # gear_attack_power=20
-# gear_crit_rating=1185
+# gear_crit_rating=1201
 # gear_haste_rating=243
-# gear_mastery_rating=775
+# gear_mastery_rating=759
 # gear_versatility_rating=435
-# gear_speed_rating=30
 # gear_armor=863
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
