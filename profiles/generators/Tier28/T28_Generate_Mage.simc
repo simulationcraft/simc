@@ -56,7 +56,7 @@ trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=T28_Mage_Fire.simc
+save=T28_Mage_Fire.simc
 
 
 mage="T27_Mage_Frost"
