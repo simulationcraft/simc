@@ -15668,7 +15668,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 363760, "$@spelldesc363665", "Cobra Shot damage and cooldown reduction increased by $w1%.", 0 },
   { 363789, "$@spelldesc363496", 0, 0 },
   { 363793, "$@spelldesc363496", "The Architect's Aligner is activated, dealing $363789s1 Cosmic damage every $t sec.", 0 },
-  { 363805, "$@spelldesc363667", "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", 0 },
+  { 363805, "$@spelldesc364490", "Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown.", 0 },
   { 363830, "$@spelldesc363498", "Dealing $s1 every $t1 sec.", 0 },
   { 363885, "$@spelldesc363560", "At $u stacks your next Scourge Strike will cast Soul Reaper.", 0 },
   { 363887, "$@spelldesc363560", "Your next Scourge Strike will cast Soul Reaper.", 0 },
@@ -16044,7 +16044,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42423
-static constexpr std::array<hotfix::client_hotfix_entry_t, 60> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 62> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16090,6 +16090,8 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 60> __spelltext_hotfi
   {  357075,  0, "|CFF20ff20Your critical hits cause a nearby ally to absorb the next ${$s1*(1+$@versadmg)} damage dealt to them within $356257d.|R\r\n", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your critical hits cause a nearby ally to absorb the next ${$s1*(1+$@versadmg)} damage dealt to them within $356257d.|R\r\n" },
   {  357076,  0, "|CFF20ff20Damaging a target increases your damage done to that target by ${$s1/100}.2% for $356329d, stacking up to $356329U times.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, damaging a target increases your damage done to that target by ${$s1/100}.2% for $356329d, stacking up to $356329U times.|R" },
   {  357077,  0, "|CFF20ff20Your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R" },
+  {  363805,  0, "$@spelldesc363667", "$@spelldesc364490" },
+  {  363805,  1, "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", "Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown." },
   {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
   {  364556,  0, "$@spelldesc363736", "$@spelldesc363592" },
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },

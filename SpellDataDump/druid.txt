@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.2.0.42423 Live (hotfix 2022-02-24/42423, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42423 Live (hotfix 2022-02-25/42423, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -11743,6 +11743,7 @@ Description      : Abilities associated with your chosen Affinity are substantia
 Tooltip          : Abilities associated with your chosen Affinity are substantially empowered.
 
 Name             : Ravenous Frenzy (desc=Venthyr) (id=323546) [Spell Family (7)] 
+Hotfixed         : Internal Cooldown (0 -> 500)
 Class            : Druid
 Covenant         : Venthyr
 School           : Shadow
@@ -11751,6 +11752,7 @@ Spell Level      : 48
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Labels           : 976
+Internal Cooldown: 0.5 seconds
 Stacks           : 99 maximum
 Proc Chance      : 100%
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effect#1), Endless Thirst (341383 effect#1)
