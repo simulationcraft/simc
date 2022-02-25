@@ -149,6 +149,7 @@ actions.combustion_cooldowns+=/use_item,name=flame_of_battle
 actions.combustion_cooldowns+=/use_item,name=wakeners_frond
 actions.combustion_cooldowns+=/use_item,name=instructors_divine_bell
 actions.combustion_cooldowns+=/use_item,name=sunblood_amethyst
+actions.combustion_cooldowns+=/use_item,name=the_first_sigil
 
 actions.combustion_phase=lights_judgment,if=buff.combustion.down
 actions.combustion_phase+=/bag_of_tricks,if=buff.combustion.down

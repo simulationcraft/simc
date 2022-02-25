@@ -5,9 +5,9 @@ level=60
 race=troll
 role=attack
 position=back
-talents=2303021
+talents=2203021
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:11:1/convocation_of_the_dead:11:1/brutal_grasp:11:1/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:11:1/convocation_of_the_dead:11:1/lingering_plague:11:1/kevins_oozeling
 renown=80
 
 # Default consumables

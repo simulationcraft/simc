@@ -72,7 +72,6 @@ actions+=/use_item,name=soulletting_ruby,if=(cooldown.ca_inc.remains<6&!covenant
 # Always use IQD with CA/Inc or at the end of Frenzy
 actions+=/variable,name=iqd_condition,value=buff.ca_inc.remains>15&(!runeforge.sinful_hysteria|buff.ravenous_frenzy.remains<=15.5+(3.5*buff.bloodlust.up)+(4.5-3.5*buff.bloodlust.up)*equipped.instructors_divine_bell&buff.ravenous_frenzy.up)|fight_remains<25|equipped.empyreal_ordnance&cooldown.empyreal_ordnance.remains
 actions+=/use_item,name=inscrutable_quantum_device,if=variable.iqd_condition&variable.in_gcd
-actions+=/use_item,name=instructors_divine_bell,if=trinket.1.cooldown.remains<=trinket.1.cooldown.duration-20&trinket.1.cooldown.remains|trinket.2.cooldown.remains<=trinket.2.cooldown.duration-20&trinket.2.cooldown.remains|variable.on_use_trinket=0
 # Use Shadowed Orb before CA/Inc
 actions+=/use_item,name=shadowed_orb_of_torment,if=(cooldown.ca_inc.ready&!covenant.night_fae&variable.thrill_seeker_wait&(cooldown.berserking.ready|!race.troll)|covenant.night_fae&cooldown.convoke_the_spirits.ready&(variable.convoke_desync|cooldown.ca_inc.ready))&dot.sunfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled|spell_targets.starfire>3)&dot.moonfire.ticking&(variable.is_aoe|runeforge.balance_of_all_things|astral_power>=90|variable.convoke_desync|buff.bloodlust.up)&!equipped.inscrutable_quantum_device|equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.remains>30&!buff.ca_inc.up|fight_remains<40
 # This is a rather elaborate way to make all on use stat trinkets to be lined up with CA/Inc and Convoke and use the 2nd slot on cd if both trinkets are on use stat trinkets
@@ -169,7 +168,7 @@ actions.st+=/moonfire,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse
 actions.st+=/sunfire,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse_lunar.remains>remains|variable.dot_outside_eclipse)&refreshable&target.time_to_die>12,if=ap_check&variable.dot_requirements
 actions.st+=/stellar_flare,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse_lunar.remains>remains|variable.dot_outside_eclipse)&refreshable&target.time_to_die>16,if=ap_check&variable.dot_requirements
 # Dot right before Frenzy if it would allow you to refresh less during Frenzy (this only happens without Sinful Hysteria)
-actions.st+=/variable,name=no_hysteria_early_dot,value=covenant.venthyr&!runeforge.sinful_hysteria&cooldown.berserking.ready&cooldown.ravenous_frenzy.ready&!buff.ca_inc.up&(astral_power>87|buff.bloodlust.up)
+actions.st+=/variable,name=no_hysteria_early_dot,value=covenant.venthyr&!runeforge.sinful_hysteria&!runeforge.circle_of_life_and_death&cooldown.berserking.ready&cooldown.ravenous_frenzy.ready&!buff.ca_inc.up&(astral_power>87|buff.bloodlust.up)
 actions.st+=/moonfire,if=variable.no_hysteria_early_dot&remains<20
 actions.st+=/sunfire,if=variable.no_hysteria_early_dot&remains<19
 # Use FoN on cd without capping
