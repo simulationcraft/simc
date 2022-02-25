@@ -1343,6 +1343,7 @@ class SpellDataGenerator(DataGenerator):
          368689, # Soulwarped Seal of Wrynn buff Lion's Hope
          360075, # Magically Regulated Automa Core damage
          368587, # Bells of the Endless Feast
+         368693, 368694, 368695, 368696, 368697, 368698, 368699, 368700, 368701, 368702, 369067, 369071, 369097, 369163, 369165, 369183, # Gavel of the First Arbiter
         ),
 
         # Warrior:

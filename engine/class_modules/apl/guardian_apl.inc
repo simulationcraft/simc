@@ -76,7 +76,7 @@ catweave->add_action( "swipe" );
 
 cconvoke->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up" );
 cconvoke->add_action( "cat_form,if=!buff.cat_form.up" );
-cconvoke->add_action( "convoke_the_spirits,if=!talent.heart_of_the_wild.enabled" );
+cconvoke->add_action( "convoke_the_spirits" );
 
 owlweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.moonkin_form.up" );
 owlweave->add_action( "moonkin_form,if=!buff.moonkin_form.up" );

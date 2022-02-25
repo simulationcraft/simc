@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.2.0.42423 Live (hotfix 2022-02-22/42423, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42423 Live (hotfix 2022-02-25/42423, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -11888,9 +11888,6 @@ Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Duration         : 10 seconds
-Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

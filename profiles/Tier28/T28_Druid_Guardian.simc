@@ -1,0 +1,161 @@
+druid="T28_Druid_Guardian"
+source=default
+spec=guardian
+level=60
+race=tauren
+role=tank
+position=front
+talents=1013321
+covenant=night_fae
+soulbind=niya:1,322721/269:11:1/342270/260:11:1/320668/254:11:1/271:11:1/320659/279:11:1/352501/283:11:1/352503
+renown=80
+
+# Default consumables
+potion=phantom_fire
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/cat_form,if=(druid.catweave_bear)|(covenant.night_fae&talent.feral_affinity.enabled)
+actions.precombat+=/moonkin_form,if=(druid.owlweave_bear)|(covenant.night_fae&talent.balance_affinity.enabled)
+actions.precombat+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(druid.catweave_bear|druid.owlweave_bear|talent.balance_affinity.enabled)
+actions.precombat+=/prowl,if=druid.catweave_bear
+actions.precombat+=/bear_form,if=((!druid.owlweave_bear&!druid.catweave_bear)&(!covenant.night_fae))|((!druid.owlweave_bear&!druid.catweave_bear)&(covenant.night_fae&talent.restoration_affinity.enabled))
+actions.precombat+=/wrath,if=druid.owlweave_bear&!covenant.night_fae
+actions.precombat+=/starfire,if=druid.owlweave_bear&covenant.night_fae
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption.enabled|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
+
+# Executed every time the actor is available.
+actions=auto_attack,if=!buff.prowl.up
+actions+=/use_item,name=jotungeirr_destinys_call,if=!buff.prowl.up&!covenant.venthyr
+actions+=/use_item,slot=trinket1,if=!buff.prowl.up&!covenant.venthyr
+actions+=/use_item,slot=trinket2,if=!buff.prowl.up&!covenant.venthyr
+actions+=/potion,if=!covenant.venthyr&(((talent.heart_of_the_wild.enabled&buff.heart_of_the_wild.up)&(druid.catweave_bear|druid.owlweave_bear)&!buff.prowl.up)|((buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)&(!druid.catweave_bear&!druid.owlweave_bear)))
+# Catweaving action list will be ran if, mangle/thrash are on cd, rage is below 40, zerk and incarnation are down and Gualactic guardian buff is not active, or if, we're in catform and energy is above 25, Or if we have the Oath legendary equipped, the debuff linked to it is not up and energy is above 20,Or if we're kyrian and Empower bond cooldown is up and enemies are inferior to 2.
+actions+=/run_action_list,name=catweave,if=druid.catweave_bear&!covenant.venthyr&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>25)|(dot.rake.refreshable&dot.rip.refreshable)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up&(buff.cat_form.up&energy>20)&buff.heart_of_the_wild.remains<=10)|(covenant.kyrian&cooldown.empower_bond.remains<=1&active_enemies<2)|(buff.heart_of_the_wild.up&energy>90))
+actions+=/run_action_list,name=catweave,if=druid.catweave_bear&covenant.venthyr&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&dot.moonfire.remains>=gcd+0.5&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down)|(buff.cat_form.up&energy>25)|(dot.rake.refreshable&dot.rip.refreshable&rage<40&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down))
+# Owlweaving action list will be ran if, mangle/thrash are on cd, rage is below 15, zerk and incarnation are down and Gualactic guardian buff is not active. Or if, we're in moonkin form and sunfire is refreshable, Or if we have the Oath legendary equipped, the debuff linked to it is not up.Or if we're kyrian and Empower bond cooldown is up and enemies are below 2, or if we're Night fae and Convoke cd is up.
+actions+=/run_action_list,name=owlweave,if=druid.owlweave_bear&buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0&buff.galactic_guardian.down)|(buff.moonkin_form.up&dot.sunfire.refreshable)|(runeforge.oath_of_the_elder_druid.equipped&!buff.oath_of_the_elder_druid.up)|(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))
+# If we're a nightfae and we don't want to catweave/owlweave, and we have balance/feral affinity talented, Whenever convoke cd is up we switch into affinity form to cast it, here moonkin form.
+actions+=/run_action_list,name=oconvoke,if=((talent.balance_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))
+# If we're a nightfae and we don't want to catweave/owlweave, and we have balance/feral affinity talented, Whenever convoke cd is up we switch into affinity form to cast it, here catform form.
+actions+=/run_action_list,name=cconvoke,if=((talent.feral_affinity.enabled)&(!druid.catweave_bear)&(!druid.owlweave_bear)&(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1))
+actions+=/run_action_list,name=bear
+
+actions.bear=barkskin,if=!buff.bear_form.up&cooldown.barkskin.remains<=0&!druid.catweave_bear
+actions.bear+=/bear_form,if=!buff.bear_form.up
+actions.bear+=/heart_of_the_Wild,if=talent.heart_of_the_wild.enabled&(talent.balance_affinity.enabled)
+actions.bear+=/moonfire,cycle_targets=1,if=((!ticking&time_to_die>12&buff.galactic_guardian.up)|(refreshable&time_to_die>12&buff.galactic_guardian.up))&active_enemies<6
+actions.bear+=/moonfire,cycle_targets=1,if=((!ticking&time_to_die>12)|(refreshable&time_to_die>12))&active_enemies<6
+actions.bear+=/ravenous_frenzy
+actions.bear+=/use_item,name=jotungeirr_destinys_call,if=covenant.venthyr
+actions.bear+=/use_item,slot=trinket1,if=!buff.prowl.up&covenant.venthyr
+actions.bear+=/use_item,slot=trinket2,if=!buff.prowl.up&covenant.venthyr
+actions.bear+=/potion,if=covenant.venthyr&buff.incarnation.remains>=24&buff.incarnation.remains<=25
+actions.bear+=/barkskin,if=buff.bear_form.up
+actions.bear+=/convoke_the_spirits,if=!druid.catweave_bear&!druid.owlweave_bear
+actions.bear+=/berserk_bear,if=(buff.ravenous_frenzy.up|!covenant.venthyr)
+actions.bear+=/incarnation,if=(buff.ravenous_frenzy.up|!covenant.venthyr)
+actions.bear+=/berserking,if=(buff.berserk_bear.up|buff.incarnation_guardian_of_ursoc.up)
+actions.bear+=/empower_bond
+actions.bear+=/adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
+actions.bear+=/moonfire,if=buff.galactic_guardian.up&active_enemies<3
+actions.bear+=/thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped)|active_enemies>=4|buff.berserk_bear.up&buff.berserk_bear.remains<=gcd+0.5
+actions.bear+=/fleshcraft,if=soulbind.pustule_eruption.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0)&(dot.moonfire.remains>=3)&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down))|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0)
+actions.bear+=/swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4
+actions.bear+=/maul,if=(buff.incarnation.up)&active_enemies<3|(buff.incarnation.up)&active_enemies<3&(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3)|buff.berserk_bear.up&active_enemies<3
+actions.bear+=/maul,if=(buff.savage_combatant.stack>=1)&(buff.tooth_and_claw.up)&buff.incarnation.up&active_enemies=2
+actions.bear+=/mangle,if=buff.incarnation.up&active_enemies<=3
+actions.bear+=/maul,if=(((buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.savage_combatant.stack>=3))&active_enemies<3)
+actions.bear+=/thrash_bear,if=active_enemies>1
+actions.bear+=/mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)
+actions.bear+=/pulverize,target_if=dot.thrash_bear.stack>2
+actions.bear+=/thrash_bear
+actions.bear+=/maul,if=active_enemies<3
+actions.bear+=/swipe_bear
+actions.bear+=/ironfur,if=rage.deficit<40&buff.ironfur.remains<0.5
+
+actions.catweave=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
+actions.catweave+=/cat_form,if=!buff.cat_form.up
+actions.catweave+=/rake,if=buff.prowl.up
+actions.catweave+=/heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up
+actions.catweave+=/empower_bond,if=druid.catweave_bear
+actions.catweave+=/rake,if=dot.rake.refreshable|energy<45
+actions.catweave+=/rip,if=dot.rip.refreshable&combo_points>=1
+actions.catweave+=/barkskin,if=!covenant.night_fae
+actions.catweave+=/convoke_the_spirits,if=druid.catweave_bear
+actions.catweave+=/ferocious_bite,if=combo_points>=4&energy>50
+actions.catweave+=/adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
+actions.catweave+=/fleshcraft,if=soulbind.pustule_eruption.enabled&energy<35|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&energy<35
+actions.catweave+=/swipe
+
+actions.cconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up
+actions.cconvoke+=/cat_form,if=!buff.cat_form.up
+actions.cconvoke+=/convoke_the_spirits
+
+actions.oconvoke=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.moonkin_form.up
+actions.oconvoke+=/moonkin_form,if=!buff.moonkin_form.up
+actions.oconvoke+=/convoke_the_spirits,if=soulbind.first_strike.enabled&buff.first_strike.up
+actions.oconvoke+=/convoke_the_spirits,if=runeforge.legacy_of_the_sleeper.equipped
+actions.oconvoke+=/starfire,if=eclipse.any_next|eclipse.solar_next
+actions.oconvoke+=/wrath,if=eclipse.any_next|eclipse.lunar_next
+actions.oconvoke+=/convoke_the_spirits
+
+actions.owlweave=heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.moonkin_form.up
+actions.owlweave+=/moonkin_form,if=!buff.moonkin_form.up
+actions.owlweave+=/starsurge
+actions.owlweave+=/barkskin,if=(covenant.night_fae&cooldown.convoke_the_spirits.remains<=1&runeforge.legacy_of_the_sleeper.equipped)
+actions.owlweave+=/convoke_the_spirits,if=runeforge.legacy_of_the_sleeper.equipped
+actions.owlweave+=/convoke_the_spirits,if=soulbind.first_strike.enabled
+actions.owlweave+=/empower_bond,if=druid.owlweave_bear
+actions.owlweave+=/adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)
+actions.owlweave+=/sunfire,target_if=refreshable
+actions.owlweave+=/moonfire,target_if=refreshable|buff.galactic_guardian.up
+actions.owlweave+=/starfire,if=covenant.night_fae&eclipse.any_next
+actions.owlweave+=/wrath,if=!covenant.night_fae&eclipse.any_next
+actions.owlweave+=/convoke_the_spirits,if=(buff.eclipse_lunar.up|buff.eclipse_solar.up)
+actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in_lunar&buff.starsurge_empowerment_lunar.up)
+actions.owlweave+=/wrath
+
+head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
+chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
+feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
+trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
+
+# Gear Summary
+# gear_ilvl=283.00
+# gear_agility=1424
+# gear_stamina=2971
+# gear_crit_rating=704
+# gear_haste_rating=538
+# gear_mastery_rating=766
+# gear_versatility_rating=534
+# gear_armor=865
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

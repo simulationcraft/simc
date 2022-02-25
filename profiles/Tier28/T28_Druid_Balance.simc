@@ -72,6 +72,7 @@ actions+=/use_item,name=soulletting_ruby,if=(cooldown.ca_inc.remains<6&!covenant
 # Always use IQD with CA/Inc or at the end of Frenzy
 actions+=/variable,name=iqd_condition,value=buff.ca_inc.remains>15&(!runeforge.sinful_hysteria|buff.ravenous_frenzy.remains<=15.5+(3.5*buff.bloodlust.up)+(4.5-3.5*buff.bloodlust.up)*equipped.instructors_divine_bell&buff.ravenous_frenzy.up)|fight_remains<25|equipped.empyreal_ordnance&cooldown.empyreal_ordnance.remains
 actions+=/use_item,name=inscrutable_quantum_device,if=variable.iqd_condition&variable.in_gcd
+actions+=/use_item,name=instructors_divine_bell,if=trinket.1.cooldown.remains<=trinket.1.cooldown.duration-20&trinket.1.cooldown.remains|trinket.2.cooldown.remains<=trinket.2.cooldown.duration-20&trinket.2.cooldown.remains|variable.on_use_trinket=0
 # Use Shadowed Orb before CA/Inc
 actions+=/use_item,name=shadowed_orb_of_torment,if=(cooldown.ca_inc.ready&!covenant.night_fae&variable.thrill_seeker_wait&(cooldown.berserking.ready|!race.troll)|covenant.night_fae&cooldown.convoke_the_spirits.ready&(variable.convoke_desync|cooldown.ca_inc.ready))&dot.sunfire.ticking&(dot.stellar_flare.ticking|!talent.stellar_flare.enabled|spell_targets.starfire>3)&dot.moonfire.ticking&(variable.is_aoe|runeforge.balance_of_all_things|astral_power>=90|variable.convoke_desync|buff.bloodlust.up)&!equipped.inscrutable_quantum_device|equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.remains>30&!buff.ca_inc.up|fight_remains<40
 # This is a rather elaborate way to make all on use stat trinkets to be lined up with CA/Inc and Convoke and use the 2nd slot on cd if both trinkets are on use stat trinkets
@@ -227,30 +228,28 @@ actions.st+=/run_action_list,name=fallthru
 head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
-back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187,enchant_id=6202
-chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant_id=6230
-wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant_id=6220
+back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187
+chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant=eternal_insight
+wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant=eternal_intellect
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
 waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,gem_id=173130
 legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6649/1588
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807,enchant_id=6211
-finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant_id=6166
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant_id=6168
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807
+finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant=tenet_of_mastery
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
 trinket2=soleahs_secret_technique,id=185818,bonus_id=1595/6536/6646
-main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant_id=6228
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 # Gear Summary
 # gear_ilvl=283.00
-# gear_agility=15
-# gear_stamina=2956
-# gear_intellect=1913
+# gear_stamina=2936
+# gear_intellect=1903
 # gear_crit_rating=245
 # gear_haste_rating=944
 # gear_mastery_rating=1070
 # gear_versatility_rating=198
-# gear_speed_rating=30
 # gear_armor=863
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
