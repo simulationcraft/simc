@@ -36,7 +36,7 @@ role=spell
 position=ranged_back
 talents=3031021
 covenant=venthyr
-soulbind=theotar_the_mad_duke:9,336239/controlled_destruction:11:1/infernal_cascade:11:1/siphoned_malice:11:1/351750
+soulbind=theotar_the_mad_duke:9,soothing_shade/party_favors/controlled_destruction:11:1/infernal_cascade:11:1/siphoned_malice:11:1
 renown=80
 
 head=erudite_occultists_hood,id=188844,bonus_id=1498/7187/6935,gem_id=173128
