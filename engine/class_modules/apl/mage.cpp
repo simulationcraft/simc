@@ -447,6 +447,7 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "use_item,name=wakeners_frond" );
   combustion_cooldowns->add_action( "use_item,name=instructors_divine_bell" );
   combustion_cooldowns->add_action( "use_item,name=sunblood_amethyst" );
+  combustion_cooldowns->add_action( "use_item,name=the_first_sigil" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
