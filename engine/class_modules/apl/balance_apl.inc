@@ -44,7 +44,7 @@ st->add_action( "variable,name=dot_outside_eclipse,value=(!buff.eclipse_solar.up
 st->add_action( "moonfire,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse_lunar.remains>remains|variable.dot_outside_eclipse)&refreshable&target.time_to_die>12,if=ap_check&variable.dot_requirements","Dot all targets within Pandemic without overcapping+the above conditions" );
 st->add_action( "sunfire,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse_lunar.remains>remains|variable.dot_outside_eclipse)&refreshable&target.time_to_die>12,if=ap_check&variable.dot_requirements" );
 st->add_action( "stellar_flare,target_if=(buff.eclipse_solar.remains>remains|buff.eclipse_lunar.remains>remains|variable.dot_outside_eclipse)&refreshable&target.time_to_die>16,if=ap_check&variable.dot_requirements" );
-st->add_action( "variable,name=no_hysteria_early_dot,value=covenant.venthyr&!runeforge.sinful_hysteria&cooldown.berserking.ready&cooldown.ravenous_frenzy.ready&!buff.ca_inc.up&(astral_power>87|buff.bloodlust.up)","Dot right before Frenzy if it would allow you to refresh less during Frenzy (this only happens without Sinful Hysteria)" );
+st->add_action( "variable,name=no_hysteria_early_dot,value=covenant.venthyr&!runeforge.sinful_hysteria&!runeforge.circle_of_life_and_death&cooldown.berserking.ready&cooldown.ravenous_frenzy.ready&!buff.ca_inc.up&(astral_power>87|buff.bloodlust.up)","Dot right before Frenzy if it would allow you to refresh less during Frenzy (this only happens without Sinful Hysteria)" );
 st->add_action( "moonfire,if=variable.no_hysteria_early_dot&remains<20" );
 st->add_action( "sunfire,if=variable.no_hysteria_early_dot&remains<19" );
 st->add_action( "force_of_nature,if=ap_check","Use FoN on cd without capping" );
