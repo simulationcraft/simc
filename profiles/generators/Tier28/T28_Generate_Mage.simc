@@ -28,34 +28,35 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 save=T28_Mage_Arcane.simc
 
-mage="T27_Mage_Fire"
+mage="T28_Mage_Fire"
 spec=fire
 level=60
 race=dwarf
 role=spell
 position=ranged_back
-talents=3031022
-covenant=night_fae
-soulbind=dreamweaver,infernal_cascade:9:1/controlled_destruction:9:1/field_of_blossoms/discipline_of_the_grove:9:1/dream_delver
+talents=3031021
+covenant=venthyr
+soulbind=theotar_the_mad_duke:9,336239/controlled_destruction:11:1/infernal_cascade:11:1/siphoned_malice:11:1/351750
 renown=80
 
-head=veil_of_the_banshee_queen,id=186325,bonus_id=1498/7187,gem_id=187319
-neck=interplanar_keystone,id=186379,bonus_id=1498/7187/6935,gem_id=173128
-shoulders=frame_of_the_false_margrave,id=186324,bonus_id=1498/7187,gem_id=187320
-back=selfreplicating_tissue,id=186374,bonus_id=1498/7187
-chest=sacrificers_sacramental_cassock,id=186282,bonus_id=1498/7187,gem_id=187318,enchant=eternal_insight
-wrists=desecrators_keening_wristwraps,id=186321,bonus_id=1498/7187,gem_id=187315,enchant=eternal_intellect
-hands=grimveiled_mittens,id=173244,bonus_id=1559/6934/6649/6650
-waist=sash_of_duplicitous_magics,id=186322,bonus_id=1498/7187,gem_id=187312
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=1566/6536/6646
-feet=tormented_shadowcleft_boots,id=186319,bonus_id=1498/7187
-finger1=death_gods_signet,id=179355,bonus_id=6652/1566/6646/7576,gem_id=173128,enchant=tenet_of_haste
-finger2=sworn_oath_of_the_nine,id=186290,bonus_id=1498/7187/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=shadowed_orb_of_torment,id=186428,bonus_id=1498/7187
-trinket2=titanic_ocular_gland,id=186423,bonus_id=6652/1498/6646
-main_hand=maledict_opus,id=186406,bonus_id=1498/7187,enchant=sinful_revelation
+head=erudite_occultists_hood,id=188844,bonus_id=1498/7187/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+shoulder=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_insight
+wrist=grimveiled_bracers,id=173249,bonus_id=1588/6934/6649/6650/6935,gem_id=173128,enchant=eternal_intellect
+hands=erudite_occultists_handwraps,id=188845,bonus_id=1498/7187
+waist=grimveiled_belt,id=173248,bonus_id=1588/8123/6649/6650/6935,gem_id=173128
+legs=leggings_of_the_erudite_scholar,id=178761,bonus_id=1592/6536/6646
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
+finger1=rygelons_heraldric_ring,id=189854,ilevel=285,gem_id=173128,enchant=tenet_of_haste
+finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
-# save=T27_Mage_Fire.simc
+# save=T28_Mage_Fire.simc
 
 
 mage="T27_Mage_Frost"
