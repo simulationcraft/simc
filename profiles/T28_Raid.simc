@@ -28,12 +28,14 @@ T28_Hunter_Survival.simc
 T28_Mage_Arcane.simc
 # T28_Mage_Arcane_Kyrian.simc
 
-# T28_Monk_Brewmaster.simc
+T28_Monk_Brewmaster.simc
+# T28_Monk_Brewmaster_Necrolord.simc
+# T28_Monk_Brewmaster_Night_Fae.simc
+# T28_Monk_Brewmaster_Venthyr.simc
 T28_Monk_Windwalker.simc
 # T28_Monk_Windwalker_Necrolord.simc
 # T28_Monk_Windwalker_Night_Fae.simc
 # T28_Monk_Windwalker_Venthyr.simc
-# T28_Monk_Windwalker_Serenity.simc
 
 # T28_Paladin_Protection.simc
 # T28_Paladin_Retribution.simc
