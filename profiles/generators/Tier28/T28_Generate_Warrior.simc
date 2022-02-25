@@ -60,7 +60,7 @@ off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_g
 save=T28_Warrior_Fury.simc
 
 
-warrior="T27_Warrior_Protection"
+warrior="T28_Warrior_Protection"
 level=60
 race=draenei
 spec=protection
@@ -68,24 +68,24 @@ role=tank
 position=front
 talents=3120011
 covenant=night_fae
-soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:9:1/unnerving_focus:9:1/destructive_reverberations:9:1
+soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:11:1/unnerving_focus:11:1/destructive_reverberations:11:1
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498,gem_id=187318
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498,gem_id=173128
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498,enchant=soul_vitality
-chest=cuirass_of_the_lonely_citadel,id=186312,bonus_id=7187/1498,gem_id=187312,enchant=eternal_stats
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498,gem_id=187313
-hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187314,enchant=eternal_strength
-waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498
-legs=shadowghast_greaves,id=171416,bonus_id=6716/6969/6647/6649/1559
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_versatility
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498,gem_id=173128,enchant=tenet_of_versatility
-trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
-trinket2=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-main_hand=the_devouring_cold,id=187056,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6648/6649/7451/6969/1588,gem_id=173128
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=devastated_worldshard,id=189851,bonus_id=4800/4786/1524,enchant=sinful_revelation
+off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=4800/4786/1524
 
 # save=T27_Warrior_Protection.simc
