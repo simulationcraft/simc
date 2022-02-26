@@ -1226,9 +1226,29 @@ public:
     }
 
     // Protection Warrior T28 Tracking
-    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) && rage > 1 )
+    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) &&
+         rage > 0 )
     {
-      p()->buff.seeing_red_tracking->trigger( rage );
+      // Trigger the buff if this is the first rage consumption of the iteration
+      if ( !p()->buff.seeing_red_tracking->check() )
+      {
+        p()->buff.seeing_red_tracking->trigger();
+      }
+
+      double original_value = p()->buff.seeing_red_tracking->current_value;
+      double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
+      p()->buff.seeing_red_tracking->current_value += rage;
+      p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
+                             original_value, p()->buff.seeing_red_tracking->current_value );
+
+      if ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
+      {
+        p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
+        p()->sim->print_debug(
+            "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
+            p()->name(), p()->buff.seeing_red_tracking->current_value );
+        p()->buff.seeing_red->trigger();
+      }
     }
   }
 
@@ -7649,14 +7669,7 @@ void warrior_t::create_buffs()
           ->set_quiet( true )
           ->set_duration( timespan_t::zero() )
           ->set_max_stack( 100 )
-          ->set_stack_change_callback( [ this ]( buff_t* _buff, int /* old_stack */, int current_stack ) {
-            double rage_per_stack = _buff->data().effectN( 1 ).base_value();
-            if ( current_stack >= as<int>( rage_per_stack ) )
-            {
-              buff.seeing_red_tracking->decrement( rage_per_stack );
-              buff.seeing_red->trigger();
-            };
-          } );
+          ->set_default_value( 0 );
   buff.outburst = make_buff( this, "outburst", find_spell( 364010 ) );
 }
 // warrior_t::init_rng ==================================================
