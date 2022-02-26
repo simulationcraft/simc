@@ -1,4 +1,4 @@
-// Spell text, wow build 9.2.0.42423
+// Spell text, wow build 9.2.0.42488
 static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15090,7 +15090,6 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 348065, "$@spelldesc347232", 0, 0 },
   { 348135, "Your damaging abilities have a chance to deal $s1 Holy damage to your target while above $s3% health, or heal you for $s2 health while below $s3% health.", 0, 0 },
   { 348136, "Grant an ally $348137s2 Speed and heal them for ${$348137s1*($d/$t1)} health over $d.", "Healing for $w1 every $T1 sec.\r\nSpeed increased by $348137s2.", 0 },
-  { 348139, "Grants you $348138s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
   { 348140, "$@spelldesc348135", 0, 0 },
   { 348141, "$@spelldesc348135", 0, 0 },
   { 348168, "$@spelldesc346875", 0, 0 },
@@ -15566,6 +15565,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 360065, "$@spelldesc360046", 0, 0 },
   { 360072, "Your abilities have a chance to spawn an unstable Automa Core which detonates after $s1 sec, dealing $s2 Cosmic damage to enemies and healing nearby allies for $s3.", 0, 0 },
   { 360073, "$@spelldesc360072", 0, 0 },
+  { 360074, "$@spelldesc360072", 0, 0 },
   { 360075, "$@spelldesc360072", 0, 0 },
   { 360123, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 360184, "Show off your inner faerie with a pair of sparkly wings!\r\n\r\nCan only be used by members of the Night Fae covenant or those who have reached Renown 80 with the Night Fae.", "They're so pretty!", 0 },
@@ -15862,7 +15862,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 367202, "Summon a circle of Jiro to serenade you.", "You have summoned a circle of Jiro.", 0 },
   { 367203, 0, "Personal Anchor", 0 },
   { 367236, "Fire a resonant bolt at your target which causes a Disintegration Halo from its location, dealing $s1 damage every $368231t1 sec for $368231d. Crescendos $s2 times before taking it again from the top.", 0, 0 },
-  { 367241, "$?pc91397[Gain the benefit of your $@spellname333372]?pc91400[Reset the cooldown of your $@spellname300728]?pc91398[Channel your $@spellname324631, gaining its benefits]?pc91399[Reset the cooldown of your $@spellname310143][Gain the power of your Covenant Signature ability] and gain $s1 Versatility for $d.", 0, 0 },
+  { 367241, "$?pc91397[Gain the benefit of your $@spellname333372]?pc91400[Reset the cooldown of your $@spellname300728]?pc91398[Channel your $@spellname324631, gaining its benefits]?pc91399[Reset the cooldown of your $@spellname310143][Gain the power of your Covenant Signature ability] and gain $s1 Versatility for $d.", "Versatility increased by $w1.", 0 },
   { 367246, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
   { 367254, "Increase $pri by $s1%.", "$pri increased by $s1%.", 0 },
   { 367255, "Increase Avoidance by $s2%.", "Avoidance increased by $s2%.", 0 },
@@ -15927,7 +15927,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 367912, "When Pocopoc possesses a Coreless Scarabid, it reduces your damage taken by $368141M1%.", 0, 0 },
   { 367913, "When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy attack and cast speed.\r\n", 0, 0 },
   { 367914, "When Pocopoc possesses a Coreless Geomental, it periodically builds a restorative shield around you. This shield will break upon taking damage, restoring $368343M2% of your max health. Stacks up to $368342u times.", 0, 0 },
-  { 367924, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
+  { 367924, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $369287d.\r\n\r\nAfter $369287d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 367929, "Affix a Domination Rune to yourself, gaining power at a price.", 0, 0 },
   { 367930, "Add another.", 0, 0 },
   { 367931, "Drive a spike into your target, dealing $s1 Physical damage and creating a chain link between you for $d. While the chain persists, $s2% of all damage dealt to the target is stored within it, up to a maximum of $s3.\r\n\r\nMoving away from your target will rip the chain out, dealing the stored amount as Shadow damage to all enemies within $s4 yds of them.", "Moving away from the target will deal $w5 Shadow damage around it.", 0 },
@@ -16043,8 +16043,8 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42423
-static constexpr std::array<hotfix::client_hotfix_entry_t, 62> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42488
+static constexpr std::array<hotfix::client_hotfix_entry_t, 64> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16094,7 +16094,9 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 62> __spelltext_hotfi
   {  363805,  1, "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", "Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown." },
   {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
   {  364556,  0, "$@spelldesc363736", "$@spelldesc363592" },
+  {  367241,  1, nullptr, "Versatility increased by $w1." },
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
+  {  367924,  0, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $369287d.\r\n\r\nAfter $369287d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter." },
   {  367950,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
   {  368689,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
   {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
@@ -16109,7 +16111,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 62> __spelltext_hotfi
   {  369183,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42423
+// Spell description variables, wow build 9.2.0.42488
 static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16419,7 +16421,7 @@ static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42423
+// spelldesc_vars hotfix entries, wow build 9.2.0.42488
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
