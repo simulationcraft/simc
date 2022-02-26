@@ -6919,10 +6919,9 @@ void warrior_t::apl_arms()
 
   default_list->add_action( this, "Sweeping Strikes", "if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15|talent.ravager.enabled)" );
 
-  default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.exists" );
-//  default_list->add_action( "run_action_list,name=five_target,if=spell_targets.whirlwind>4" );
-  default_list->add_action( "run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|"
-                            "(target.health.pct>80&covenant.venthyr)" );
+  default_list->add_action( "call_action_list,name=execute,target_if=max:target.health.pct,if=target.health.pct>80&covenant.venthyr" );
+  default_list->add_action( "call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20" );
+  default_list->add_action( "run_action_list,name=hac,if=raid_event.adds.up|spell_targets.whirlwind>1" );
   default_list->add_action( "run_action_list,name=single_target" );
 
 
@@ -6966,7 +6965,7 @@ void warrior_t::apl_arms()
   hac->add_talent( this, "Cleave" );
   hac->add_action( this, "Mortal Strike", "if=buff.sweeping_strikes.up|dot.deep_wounds.remains<gcd&!talent.cleave.enabled" );
   hac->add_action( this, "Overpower", "if=talent.dreadnaught.enabled" );
-  hac->add_action( this, covenant.condemn, "condemn" );
+  hac->add_action( this, covenant.condemn, "condemn", "if=buff.sweeping_strikes.up|buff.sudden_death.react" );
   hac->add_action( this, "Execute", "if=buff.sweeping_strikes.up" );
   hac->add_action( this, "Execute", "if=buff.sudden_death.react" );
   hac->add_action( this, "Overpower" );
