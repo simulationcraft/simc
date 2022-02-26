@@ -928,7 +928,7 @@ public:
     ab::execute();
 
     if ( triggers_focused_trickery )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? ab::base_cost() : ab::last_resource_cost );
+      p() -> trigger_focused_trickery( this, ab::base_cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -3530,9 +3530,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
      * point of the original AiS cast OR the existence of the buff at the point of its own cast, the Focused Trickery
      * modifier depends on the Trick Shots buff being up explicitly at the point of the DT AiS cast, which still
      * allows the Focused Trickery 2pc modifier to affect the damage if Trick Shots is applied immediately following
-     * the AiS cast, or an ongoing Volley is present.
+     * the AiS cast, or an ongoing Volley is present. Allegedly being fixed as of 2022-01-25.
      */
-    if ( p()->tier_set.focused_trickery_2pc.ok() && p()->buffs.trick_shots->check() )
+    if ( p()->tier_set.focused_trickery_2pc.ok() && ( p()->buffs.trick_shots->check() || !p() -> bugs && trick_shots.up ) )
       m *= 1 + p()->tier_set.focused_trickery_2pc->effectN( 1 ).percent();
 
     return m;
@@ -3681,9 +3681,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     // XXX: 2022-02-19 Vigil buff determines the order of the T28 4pc proc relative to
     // the Aimed Shot cast. If Vigil is up the set procs after the AiS cast, if it's
-    // down the set procs before.
-    if ( !secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : cost() );
+    // down the set procs before. Allegedly being fixed as of 2022-01-25.
+    if ( !p() -> bugs || !secrets_of_the_vigil_up )
+      p() -> trigger_focused_trickery( this, base_cost() );
 
     aimed_shot_base_t::execute();
 
@@ -3698,8 +3698,10 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( serpentstalkers_trickery.action )
       serpentstalkers_trickery.action -> execute_on_target( target );
 
-    if ( secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : last_resource_cost );
+    // XXX: Allegedly being fixed as of 2022-01-25.
+    if ( p() -> bugs && secrets_of_the_vigil_up )
+      p() -> trigger_focused_trickery( this, base_cost() );
+
     secrets_of_the_vigil_up = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
@@ -3742,7 +3744,8 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( s );
 
-    // XXX 2022-01-26 AiS consumes Vigil buff on impact if it was up on cast
+    // XXX 2022-01-26 AiS consumes Vigil buff on impact if it was up on cast.
+    // Allegedly being fixed as of 2022-01-25.
     if ( p() -> bugs && debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up )
       p() -> buffs.secrets_of_the_vigil -> decrement();
   }
@@ -4667,7 +4670,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
     parse_options( options_str );
 
     triggers_wild_spirits = false;
-    triggers_focused_trickery = false; // XXX: 2022-01-22 manually triggered
+    triggers_focused_trickery = !p -> bugs;  // XXX: 2022-01-22 manually triggered
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
