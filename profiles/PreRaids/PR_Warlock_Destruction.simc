@@ -56,12 +56,13 @@ actions+=/soul_rot
 actions+=/havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped
 actions+=/variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|buff.ritual_of_ruin.up&talent.rain_of_chaos
 actions+=/conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards
-actions+=/chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.up
+actions+=/chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.remains>cast_time
 actions+=/chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards
 actions+=/chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time
 actions+=/shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5
 actions+=/chaos_bolt,if=soul_shard>3.5
-actions+=/conflagrate,if=charges>1
+actions+=/chaos_bolt,if=target.time_to_die<5&target.time_to_die>cast_time+travel_time
+actions+=/conflagrate,if=charges>1|target.time_to_die<gcd
 actions+=/incinerate
 
 actions.aoe=rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)
@@ -88,7 +89,7 @@ actions.cds+=/potion,if=pet.infernal.active
 actions.cds+=/berserking,if=pet.infernal.active
 actions.cds+=/blood_fury,if=pet.infernal.active
 actions.cds+=/fireblood,if=pet.infernal.active
-actions.cds+=/use_items,if=pet.infernal.active|target.time_to_die<20
+actions.cds+=/use_items,if=pet.infernal.active|target.time_to_die<21
 
 actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
 actions.havoc+=/soul_fire,if=cast_time<havoc_remains
