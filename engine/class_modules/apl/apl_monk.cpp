@@ -168,7 +168,7 @@ void brewmaster( player_t* p )
 
   pre->add_action( "fleshcraft" );
 
-  pre->add_talent( p, "Chi Burst" );
+  pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave" );
 
   std::vector<std::string> racial_actions = p->get_racial_actions();
