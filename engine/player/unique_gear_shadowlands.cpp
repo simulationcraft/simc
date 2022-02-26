@@ -3644,7 +3644,7 @@ void singularity_supreme( special_effect_t& effect )
 
   auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
     ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
+      if ( new_ )
         lockout->trigger();
     } );
 
