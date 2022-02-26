@@ -1974,7 +1974,7 @@ public:
     trigger_galactic_guardian( d->state );
   }
 
-  void trigger_ravenous_frenzy( free_cast_e f )
+  virtual void trigger_ravenous_frenzy( free_cast_e f )
   {
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
@@ -2676,6 +2676,11 @@ struct druid_form_t : public druid_spell_t
       case NO_FORM:      affinity = p->talent.restoration_affinity; break;
       default: break;
     }
+  }
+
+  void trigger_ravenous_frenzy( free_cast_e ) override
+  {
+    return;
   }
 
   void execute() override
