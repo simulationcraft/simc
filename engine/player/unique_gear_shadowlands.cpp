@@ -3468,13 +3468,43 @@ void bells_of_the_endless_feast( special_effect_t& effect )
       {
         // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
         // 5 and 7 stacks of the debuff on each proc.
-        double stacks = rng().range( 5, 7 );
+        int stacks = static_cast<int>( rng().range( 5, 7 ) );
         td->debuff.scent_of_souls->trigger( stacks );
       }
     }
   };
 
   new brood_of_the_endless_feast_cb_t( effect );
+}
+
+// id=367924 driver
+// id=368645 haste buff
+// id=369287 dot? no periodic effect yet
+// id=369294 ground effect to stand in for haste buff?
+// id=369318 unknown, possibly damage driven by undiscovered/unimplemented periodic effect
+void grim_eclipse( special_effect_t& effect )
+{
+  struct grim_eclipse_t : public proc_spell_t
+  {
+    stat_buff_t* buff;
+
+    grim_eclipse_t( const special_effect_t& e )
+      : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
+        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
+    {
+      // TODO: manually implement dot if non-standard method is used when it's implemented in-game
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // TODO: implement modeling of leaving/entering the buff zone
+      buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<grim_eclipse_t>( "grim_eclipse", effect );
 }
 
 // Weapons
@@ -4949,6 +4979,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
+    unique_gear::register_special_effect( 367924, items::grim_eclipse );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
