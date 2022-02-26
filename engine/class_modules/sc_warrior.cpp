@@ -1226,7 +1226,7 @@ public:
     }
 
     // Protection Warrior T28 Tracking
-    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) && rage > 0 )
+    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) && rage > 1 )
     {
       p()->buff.seeing_red_tracking->trigger( rage );
     }
@@ -7647,7 +7647,7 @@ void warrior_t::create_buffs()
   buff.seeing_red_tracking =
       make_buff( this, "seeing_red_tracking", find_spell( 364002 ) )
           ->set_quiet( true )
-          ->set_duration( timespan_t::from_seconds( 0 ) )
+          ->set_duration( timespan_t::zero() )
           ->set_max_stack( 100 )
           ->set_stack_change_callback( [ this ]( buff_t* _buff, int /* old_stack */, int current_stack ) {
             double rage_per_stack = _buff->data().effectN( 1 ).base_value();
