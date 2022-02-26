@@ -115,7 +115,7 @@ finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,en
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
 trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
-main_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save=T28_Death_Knight_Frost_2H.simc
 
@@ -175,6 +175,6 @@ finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
 trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
-main_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1531,enchant=rune_of_the_fallen_crusader
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save=T28_Death_Knight_Unholy.simc
