@@ -12,12 +12,12 @@ T28_Death_Knight_Unholy.simc
 # T28_Demon_Hunter_Havoc_Momentum.simc
 # T28_Demon_Hunter_Vengeance.simc
 
-# T28_Druid_Balance.simc
+T28_Druid_Balance.simc
 T28_Druid_Feral.simc
 # T28_Druid_Feral_AOE.simc
 T28_Druid_Feral_Owlweave.simc
-# T28_Druid_Guardian.simc
-# T28_Druid_Guardian_Venthyr.simc
+T28_Druid_Guardian.simc
+T28_Druid_Guardian_Venthyr.simc
 
 T28_Hunter_Beast_Mastery.simc
 T28_Hunter_Marksmanship.simc

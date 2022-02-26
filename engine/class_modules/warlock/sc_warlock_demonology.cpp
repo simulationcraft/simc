@@ -1279,6 +1279,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "variable,name=buff_sync_cd,op=set,value=cooldown.decimating_bolt.remains_expected,if=variable.use_bolt_timings" );
   def->add_action( "call_action_list,name=trinkets" );
   def->add_action( "call_action_list,name=ogcd,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up&(!talent.power_siphon.enabled|buff.power_siphon.up))" );
+  def->add_action( "implosion,if=target.time_to_die<2*gcd" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
@@ -1362,7 +1363,6 @@ void warlock_t::create_apl_demonology()
 
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
-
 
   dmg->add_action( "use_item,name=grim_eclipse" );
   dmg->add_action( "use_item,name=resonant_reservoir" );

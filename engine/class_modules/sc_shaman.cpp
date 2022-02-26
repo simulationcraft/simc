@@ -4408,10 +4408,10 @@ struct chain_lightning_t : public chained_base_t
     timespan_t t = chained_base_t::gcd();
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    // testing shows the min GCD is 0.5 sec
-    if ( t < timespan_t::from_millis( 500 ) )
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
     {
-      t = timespan_t::from_millis( 500 );
+      t = timespan_t::from_millis( 600 );
     }
     return t;
   }
@@ -5337,10 +5337,10 @@ struct lightning_bolt_t : public shaman_spell_t
     timespan_t t = shaman_spell_t::gcd();
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    // testing shows the min GCD is 0.5 sec
-    if ( t < timespan_t::from_millis( 500 ) )
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
     {
-      t = timespan_t::from_millis( 500 );
+      t = timespan_t::from_millis( 600 );
     }
     return t;
   }
