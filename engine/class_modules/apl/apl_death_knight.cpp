@@ -175,7 +175,7 @@ void frost( player_t* p )
   precombat->add_action( "variable,name=rw_buffs,value=talent.gathering_storm|conduit.everfrost|runeforge.biting_cold" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
+  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device|equipped.the_first_sigil)&(cooldown.inscrutable_quantum_device.ready|cooldown.the_first_sigil.remains)|equipped.the_first_sigil&equipped.inscrutable_quantum_device", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(raid_event.adds.in>15|!raid_event.adds.exists)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>10))" );
   default_->add_action( "variable,name=rotfc_rime,value=buff.rime.up&(!runeforge.rage_of_the_frozen_champion|runeforge.rage_of_the_frozen_champion&runic_power.deficit>8)" );
@@ -318,6 +318,7 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=!talent.breath_of_sindragosa&buff.pillar_of_frost.up&buff.empower_rune_weapon.up|talent.breath_of_sindragosa&((buff.pillar_of_frost.up&cooldown.breath_of_sindragosa.ready)|(buff.pillar_of_frost.up&((fight_remains-cooldown.breath_of_sindragosa.remains)<21)))|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5", "Trinkets" );
+  trinkets->add_action( "use_item,name=the_first_sigil,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&(!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
@@ -354,7 +355,7 @@ void unholy( player_t* p )
 
   default_->add_action( "auto_attack" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
-  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device&cooldown.inscrutable_quantum_device.ready)", "Prevent specified trinkets being used with automatic lines" );
+  default_->add_action( "variable,name=specified_trinket,value=(equipped.inscrutable_quantum_device|equipped.the_first_sigil|equipped.overwhelming_power_crystal)&(cooldown.inscrutable_quantum_device.ready|cooldown.the_first_sigil.remains|cooldown.overwhelming_power_crystal.remains)|(equipped.the_first_sigil|equipped.overwhelming_power_crystal)&equipped.inscrutable_quantum_device", "Prevent specified trinkets being used with automatic lines" );
   default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<5&talent.summon_gargoyle&(talent.unholy_blight&cooldown.unholy_blight.remains<13&cooldown.dark_transformation.remains_expected<13|!talent.unholy_blight)", "Variables" );
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>5|covenant.night_fae&talent.defile&cooldown.defile.remains<rune.time_to_2" );
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
@@ -447,6 +448,8 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5", "Trinkets" );
+  trinkets->add_action( "use_item,name=the_first_sigil,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device)" );
+  trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device&!equipped.the_first_sigil)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.specified_trinket&((trinket.2.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.2.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2))|trinket.2.proc.any_dps.duration>=fight_remains" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)", "If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown." );
