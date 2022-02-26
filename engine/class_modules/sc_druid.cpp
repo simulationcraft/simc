@@ -2678,10 +2678,7 @@ struct druid_form_t : public druid_spell_t
     }
   }
 
-  void trigger_ravenous_frenzy( free_cast_e ) override
-  {
-    return;
-  }
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
 
   void execute() override
   {
@@ -5637,6 +5634,8 @@ struct heart_of_the_wild_t : public druid_spell_t
   {
     druid_spell_t::schedule_execute( s );
   }
+
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
 
   void execute() override
   {
