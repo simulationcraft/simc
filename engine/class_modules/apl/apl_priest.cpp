@@ -131,6 +131,10 @@ void shadow( player_t* p )
       "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of "
       "Torment, just use on CD as much as possible." );
   trinkets->add_action(
+      "use_item,name=the_first_sigil,if=buff.voidform.up|buff.power_infusion.up|!priest.self_power_infusion|cooldown."
+      "void_eruption.remains>10|(equipped.soulletting_ruby&!trinket.soulletting_ruby.cooldown.up)|fight_remains<20",
+      "First Sigil small optimization with Soulletting Ruby" );
+  trinkets->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
@@ -140,6 +144,7 @@ void shadow( player_t* p )
       "bolt)|fight_remains<=40",
       "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or "
       "Necrolord line it up with stacked cooldowns." );
+  trinkets->add_action( "use_item,name=architects_ingenuity_core", "Use this on CD for max CDR" );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
