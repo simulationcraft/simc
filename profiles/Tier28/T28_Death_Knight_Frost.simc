@@ -223,7 +223,7 @@ feet=shadowghast_sabatons,id=171413,bonus_id=6649/6648/8119/7451/1588
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-trinket2=the_first_sigil,id=188271,bonus_id=7187/1524
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 

@@ -210,31 +210,31 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pi
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&(!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-shoulders=shadowghast_pauldrons,id=171417,bonus_id=6649/6648/6944/7451/1588
+head=shadowghast_helm,id=171415,bonus_id=6647/6648/6954/7451/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173127
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173127
 legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
-feet=shadowghast_sabatons,id=171413,bonus_id=6649/6648/8119/7451/1588
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_haste
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_haste
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-trinket2=the_first_sigil,id=188271,bonus_id=7187/1524
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=282.53
-# gear_strength=1432
-# gear_stamina=2953
+# gear_ilvl=283.00
+# gear_strength=1443
+# gear_stamina=2982
 # gear_attack_power=20
-# gear_crit_rating=536
-# gear_haste_rating=625
-# gear_mastery_rating=791
-# gear_versatility_rating=170
-# gear_armor=1847
+# gear_crit_rating=701
+# gear_haste_rating=411
+# gear_mastery_rating=830
+# gear_versatility_rating=184
+# gear_armor=1859
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
