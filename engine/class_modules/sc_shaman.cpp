@@ -9883,8 +9883,7 @@ void shaman_t::init_action_list_elemental()
         this, "Echoing Shock",
         "if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>="
         "60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_"
-        "sundering.up)|spell_targets.chain_lightning<2&buff.wind_gust.stack>=18&(!runeforge.echoes_of_great_sundering."
-        "equipped|buff.echoes_of_great_sundering.up)&maelstrom>=60" );
+        "sundering.up)" );
     se_single_target->add_action( this, "Lava Burst",
                                   "if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up" );
     se_single_target->add_action( this, "Lava Burst,target_if=dot.flame_shock.remains",
