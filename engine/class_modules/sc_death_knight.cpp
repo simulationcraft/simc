@@ -7792,9 +7792,10 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
-    // If an action is linked, fetch its base cost
-    if ( action )
+    // If an action is linked, fetch its base cost. Exclude Bonestorm from this otherwise it uses the base cost for Insatiable Hunger instead of the actual rp spent.
+    if ( action && action->id != 194844 )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
+
 
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
