@@ -3031,6 +3031,7 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
   // have a bit unrealistically high instances of damage, so just making this proc
   // on blockable damage instead.
         && s->action->may_block && school == SCHOOL_PHYSICAL
+        && !( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
   // Haven't checked: This might be subject to block chance suppressio when the
   // attacker is above the paladin's level. I'll assume it's not for now.
         && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
