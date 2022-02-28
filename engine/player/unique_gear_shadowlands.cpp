@@ -2955,6 +2955,55 @@ void reactive_defense_matrix( special_effect_t& effect )
 
 // 9.2 Trinkets
 
+void extract_of_prodigious_sands( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "prodigious_sands_damage", effect, "prodigious_sands_damage", 367971 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->background = damage->dual = true;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "prodigious_sands", effect );
+  effect.execute_action->impact_action = damage;
+  damage->stats = effect.execute_action->stats;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
+void brokers_lucky_coin( special_effect_t& effect )
+{
+  struct lucky_flip_callback_t : public dbc_proc_callback_t
+  {
+    stat_buff_t* heads;
+    stat_buff_t* tails;
+
+    lucky_flip_callback_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        heads( make_buff<stat_buff_t>( effect.player, "heads", effect.player->find_spell( 367466 ) ) ),
+        tails( make_buff<stat_buff_t>( effect.player, "tails", effect.player->find_spell( 367467 ) ) )
+    {}
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( rng().roll( 0.5 ) )
+        heads->trigger();
+      else
+        tails->trigger();
+    }
+  };
+
+  new lucky_flip_callback_t( effect );
+}
+
+void symbol_of_the_lupine( special_effect_t& effect )
+{
+  effect.execute_action =
+      create_proc_action<generic_proc_t>( "lupines_slash", effect, "lupines_slash", effect.trigger() );
+  effect.execute_action->base_td = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void scars_of_fraternal_strife( special_effect_t& effect )
 {
   struct apply_rune_t : public proc_spell_t
@@ -3468,13 +3517,43 @@ void bells_of_the_endless_feast( special_effect_t& effect )
       {
         // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
         // 5 and 7 stacks of the debuff on each proc.
-        double stacks = rng().range( 5, 7 );
+        int stacks = static_cast<int>( rng().range( 5, 7 ) );
         td->debuff.scent_of_souls->trigger( stacks );
       }
     }
   };
 
   new brood_of_the_endless_feast_cb_t( effect );
+}
+
+// id=367924 driver
+// id=368645 haste buff
+// id=369287 dot? no periodic effect yet
+// id=369294 ground effect to stand in for haste buff?
+// id=369318 unknown, possibly damage driven by undiscovered/unimplemented periodic effect
+void grim_eclipse( special_effect_t& effect )
+{
+  struct grim_eclipse_t : public proc_spell_t
+  {
+    stat_buff_t* buff;
+
+    grim_eclipse_t( const special_effect_t& e )
+      : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
+        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
+    {
+      // TODO: manually implement dot if non-standard method is used when it's implemented in-game
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // TODO: implement modeling of leaving/entering the buff zone
+      buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<grim_eclipse_t>( "grim_eclipse", effect );
 }
 
 // Weapons
@@ -4942,6 +5021,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
+    unique_gear::register_special_effect( 367973, items::extract_of_prodigious_sands );
+    unique_gear::register_special_effect( 367464, items::brokers_lucky_coin );
+    unique_gear::register_special_effect( 367722, items::symbol_of_the_lupine );
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
@@ -4949,6 +5031,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
+    unique_gear::register_special_effect( 367924, items::grim_eclipse );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

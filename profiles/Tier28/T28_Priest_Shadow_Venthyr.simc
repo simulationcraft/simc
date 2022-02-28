@@ -2,7 +2,7 @@ priest="T28_Priest_Shadow_Venthyr"
 source=default
 spec=shadow
 level=60
-race=mechagnome
+race=human
 role=spell
 position=ranged_back
 talents=1010122
@@ -154,10 +154,14 @@ actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&
 actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
 # Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of Torment, just use on CD as much as possible.
 actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|equipped.shadowed_orb_of_torment,target_if=min:target.health.pct
+# First Sigil small optimization with Soulletting Ruby
+actions.trinkets+=/use_item,name=the_first_sigil,if=buff.voidform.up|buff.power_infusion.up|!priest.self_power_infusion|cooldown.void_eruption.remains>10|(equipped.soulletting_ruby&!trinket.soulletting_ruby.cooldown.up)|fight_remains<20
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
 # Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or Necrolord line it up with stacked cooldowns.
 actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10&(covenant.necrolord|covenant.kyrian)|(covenant.venthyr|covenant.night_fae)&(!buff.voidform.up|prev_gcd.1.void_bolt)|fight_remains<=40
+# Use this on CD for max CDR
+actions.trinkets+=/use_item,name=architects_ingenuity_core
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
@@ -174,16 +178,17 @@ feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-main_hand=guardstaff_of_the_great_cycle,id=189834,bonus_id=1524/7187,enchant=sinful_revelation
+trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 # Gear Summary
-# gear_ilvl=282.07
-# gear_stamina=2899
-# gear_intellect=1878
+# gear_ilvl=282.69
+# gear_stamina=2922
+# gear_intellect=1917
 # gear_crit_rating=380
-# gear_haste_rating=1111
-# gear_mastery_rating=759
+# gear_haste_rating=1058
+# gear_mastery_rating=725
 # gear_versatility_rating=211
 # gear_armor=527
 # set_bonus=tier28_2pc=1
