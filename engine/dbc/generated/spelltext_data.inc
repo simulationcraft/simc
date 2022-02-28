@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42488
-static const std::array<spelltext_data_t, 16041> __spelltext_data { {
+static const std::array<spelltext_data_t, 16042> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15940,6 +15940,7 @@ static const std::array<spelltext_data_t, 16041> __spelltext_data { {
   { 367952, "Your offensive spells build stacks of Singularity, gaining $s1 Versatility and Speed per stack, up to $s4.\r\n\r\nUpon reaching $s4, these bonuses are doubled and persist for $s2 seconds. After it expires, you lose all stacks and must wait $s3 seconds before approaching the Singularity again.", 0, 0 },
   { 367953, "Remove your target's soul to receive its final judgment.\r\n\r\nSlaying this soul will send it to the afterlife it truly deserves, granting you a Twisted Boon for $s3 seconds based on its destination.", 0, 0 },
   { 367954, "$@spelldesc363560", "Minion damage increased by $w1%.", 0 },
+  { 367971, "$@spelldesc367973", 0, 0 },
   { 367973, "Your damaging and healing spells have a chance to pelt your target with magical sands, dealing $s1 Nature damage to an enemy or restoring $s2 health to an ally.", 0, 0 },
   { 367977, "$@spelldesc367973", 0, 0 },
   { 368069, "Create a soulbound weapon or offhand item appropriate for your loot specialization ($@lootspec).", 0, 0 },

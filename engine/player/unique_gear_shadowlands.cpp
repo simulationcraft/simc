@@ -2955,6 +2955,20 @@ void reactive_defense_matrix( special_effect_t& effect )
 
 // 9.2 Trinkets
 
+void extract_of_prodigious_sands( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "prodigious_sands_damage", effect, "prodigious_sands_damage", 367971 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->background = damage->dual = true;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "prodigious_sands", effect );
+  effect.execute_action->impact_action = damage;
+  damage->stats = effect.execute_action->stats;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void scars_of_fraternal_strife( special_effect_t& effect )
 {
   struct apply_rune_t : public proc_spell_t
@@ -4972,6 +4986,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
+    unique_gear::register_special_effect( 367973, items::extract_of_prodigious_sands );
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
