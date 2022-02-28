@@ -206,8 +206,8 @@ void frost( player_t* p )
   aoe->add_action( "glacial_advance,if=!buff.rime.up&active_enemies<=3|active_enemies>3" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm", "Formulaic approach to create a pseudo priority target list for applying razorice in aoe"  );
   aoe->add_action( "howling_blast,if=variable.rotfc_rime" );
-  aoe->add_action( "frostscythe,if=buff.gathering_storm.up&active_enemies>2&!variable.deaths_due_active" );
-  aoe->add_action( "obliterate,if=variable.deaths_due_active&buff.deaths_due.stack<4|buff.gathering_storm.up" );
+  aoe->add_action( "frostscythe,if=talent.gathering_storm&buff.remorseless_winter.up&active_enemies>2&!variable.deaths_due_active" );
+  aoe->add_action( "obliterate,if=variable.deaths_due_active&buff.deaths_due.stack<4|talent.gathering_storm&buff.remorseless_winter.up" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
   aoe->add_action( "frostscythe,if=!variable.deaths_due_active" );
   aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>(25+talent.runic_attenuation*5)" );
@@ -250,7 +250,7 @@ void frost( player_t* p )
   cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.remains<5&(cooldown.fleshcraft.remains>5&soulbind.pustule_eruption|!soulbind.pustule_eruption)|buff.pillar_of_frost.up)|fight_remains<20", "Cooldowns" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&rune<5&runic_power<(60-death_knight.runeforge.hysteria*5-runeforge.rampant_transference*5)&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap" );
-  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power>50)" );
+  cooldowns->add_action( "pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power>65)" );
   cooldowns->add_action( "pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up" );
   cooldowns->add_action( "pillar_of_frost,if=talent.obliteration&(runic_power>=35&!buff.abomination_limb.up|buff.abomination_limb.up)&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)" );
   cooldowns->add_action( "breath_of_sindragosa,if=buff.pillar_of_frost.up" );
@@ -266,7 +266,7 @@ void frost( player_t* p )
   covenants->add_action( "swarming_mist,if=runic_power.deficit>13&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning" );
   covenants->add_action( "swarming_mist,if=!talent.breath_of_sindragosa&variable.adds_remain" );
   covenants->add_action( "swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(variable.st_planning&runic_power.deficit>40|variable.adds_remain&runic_power.deficit>60|variable.adds_remain&raid_event.adds.remains<9&raid_event.adds.exists)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)" );
-  covenants->add_action( "abomination_limb,if=cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power>50&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
+  covenants->add_action( "abomination_limb,if=cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power>65&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)" );
   covenants->add_action( "abomination_limb,if=variable.adds_remain" );
   covenants->add_action( "shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)" );
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain" );
@@ -318,6 +318,7 @@ void frost( player_t* p )
   racials->add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=!talent.breath_of_sindragosa&buff.pillar_of_frost.up&buff.empower_rune_weapon.up|talent.breath_of_sindragosa&((buff.pillar_of_frost.up&cooldown.breath_of_sindragosa.ready)|(buff.pillar_of_frost.up&((fight_remains-cooldown.breath_of_sindragosa.remains)<21)))|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5", "Trinkets" );
+  trinkets->add_action( "use_item,name=scars_of_fraternal_strife" );
   trinkets->add_action( "use_item,name=the_first_sigil,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Pillar of Frost." );
   trinkets->add_action( "use_item,slot=trinket2,if=!variable.specified_trinket&buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&buff.pillar_of_frost.remains>=10)&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains" );
@@ -448,6 +449,7 @@ void unholy( player_t* p )
   racials->add_action( "bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fight_remains<5)" );
 
   trinkets->add_action( "use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5", "Trinkets" );
+  trinkets->add_action( "use_item,name=scars_of_fraternal_strife" );
   trinkets->add_action( "use_item,name=the_first_sigil,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device)" );
   trinkets->add_action( "use_item,name=overwhelming_power_crystal,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device&!equipped.the_first_sigil)" );
   trinkets->add_action( "use_item,slot=trinket1,if=!variable.specified_trinket&((trinket.1.proc.any_dps.duration<=15&cooldown.apocalypse.remains>20|trinket.1.proc.any_dps.duration>15&(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)|active_enemies>=2&buff.dark_transformation.up)&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1))|trinket.1.proc.any_dps.duration>=fight_remains", "The trinket with the highest estimated value, will be used first and paired with Apocalypse (if buff is 15 seconds or less) or Blight/DT (if greater than 15 seconds)" );
