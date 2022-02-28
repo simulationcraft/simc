@@ -30,7 +30,7 @@
 
 priest="T28_Priest_Shadow"
 level=60
-race=mechagnome
+race=human
 spec=shadow
 role=spell
 position=ranged_back
@@ -61,7 +61,7 @@ save=T28_Priest_Shadow.simc
 
 priest="T28_Priest_Shadow_Night_Fae"
 level=60
-race=mechagnome
+race=human
 role="spell"
 position=ranged_back
 spec="shadow"
@@ -92,7 +92,7 @@ save=T28_Priest_Shadow_Night_Fae.simc
 
 priest="T28_Priest_Shadow_Kyrian"
 level=60
-race=mechagnome
+race=human
 role="spell"
 position=ranged_back
 spec="shadow"
@@ -123,7 +123,7 @@ save=T28_Priest_Shadow_Kyrian.simc
 
 priest="T28_Priest_Shadow_Venthyr"
 level=60
-race=mechagnome
+race=human
 spec=shadow
 role=spell
 position=ranged_back

@@ -1345,6 +1345,8 @@ class SpellDataGenerator(DataGenerator):
          368587, # Bells of the Endless Feast
          368693, 368694, 368695, 368696, 368697, 368698, 368699, 368700, 368701, 368702, 369067, 369071, 369097, 369163, 369165, 369183, # Gavel of the First Arbiter
          360074, # Magically Regulated Automa Core
+         367971, # Extract of Prodigious Sands
+         367466, 367467, # Broker's Lucky Coin
         ),
 
         # Warrior:

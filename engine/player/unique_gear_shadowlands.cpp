@@ -2955,6 +2955,55 @@ void reactive_defense_matrix( special_effect_t& effect )
 
 // 9.2 Trinkets
 
+void extract_of_prodigious_sands( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "prodigious_sands_damage", effect, "prodigious_sands_damage", 367971 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->background = damage->dual = true;
+
+  effect.execute_action = create_proc_action<proc_spell_t>( "prodigious_sands", effect );
+  effect.execute_action->impact_action = damage;
+  damage->stats = effect.execute_action->stats;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
+
+void brokers_lucky_coin( special_effect_t& effect )
+{
+  struct lucky_flip_callback_t : public dbc_proc_callback_t
+  {
+    stat_buff_t* heads;
+    stat_buff_t* tails;
+
+    lucky_flip_callback_t( const special_effect_t& e )
+      : dbc_proc_callback_t( e.player, e ),
+        heads( make_buff<stat_buff_t>( effect.player, "heads", effect.player->find_spell( 367466 ) ) ),
+        tails( make_buff<stat_buff_t>( effect.player, "tails", effect.player->find_spell( 367467 ) ) )
+    {}
+
+    void execute( action_t*, action_state_t* ) override
+    {
+      if ( rng().roll( 0.5 ) )
+        heads->trigger();
+      else
+        tails->trigger();
+    }
+  };
+
+  new lucky_flip_callback_t( effect );
+}
+
+void symbol_of_the_lupine( special_effect_t& effect )
+{
+  effect.execute_action =
+      create_proc_action<generic_proc_t>( "lupines_slash", effect, "lupines_slash", effect.trigger() );
+  effect.execute_action->base_td = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void scars_of_fraternal_strife( special_effect_t& effect )
 {
   struct apply_rune_t : public proc_spell_t
@@ -4972,6 +5021,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
+    unique_gear::register_special_effect( 367973, items::extract_of_prodigious_sands );
+    unique_gear::register_special_effect( 367464, items::brokers_lucky_coin );
+    unique_gear::register_special_effect( 367722, items::symbol_of_the_lupine );
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
