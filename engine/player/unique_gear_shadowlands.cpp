@@ -2995,6 +2995,15 @@ void brokers_lucky_coin( special_effect_t& effect )
   new lucky_flip_callback_t( effect );
 }
 
+void symbol_of_the_lupine( special_effect_t& effect )
+{
+  effect.execute_action =
+      create_proc_action<generic_proc_t>( "lupines_slash", effect, "lupines_slash", effect.trigger() );
+  effect.execute_action->base_td = effect.driver()->effectN( 1 ).average( effect.item );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 void scars_of_fraternal_strife( special_effect_t& effect )
 {
   struct apply_rune_t : public proc_spell_t
@@ -5014,6 +5023,7 @@ void register_special_effects()
     // 9.2 Trinkets
     unique_gear::register_special_effect( 367973, items::extract_of_prodigious_sands );
     unique_gear::register_special_effect( 367464, items::brokers_lucky_coin );
+    unique_gear::register_special_effect( 367722, items::symbol_of_the_lupine );
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
