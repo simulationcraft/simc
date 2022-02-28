@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-02-26/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-02-28/42488, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
