@@ -7793,7 +7793,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     double base_rp_cost = actual_amount;
 
     // If an action is linked, fetch its base cost. Exclude Bonestorm from this otherwise it uses the base cost for Insatiable Hunger instead of the actual rp spent.
-    if ( action && specialization() != DEATH_KNIGHT_BLOOD )
+    if ( action && action->id != 194844 )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
 
