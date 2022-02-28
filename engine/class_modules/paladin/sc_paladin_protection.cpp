@@ -608,15 +608,6 @@ void paladin_t::target_mitigation( school_e school,
 {
   player_t::target_mitigation( school, dt, s );
 
-  // Trigger T28 4p if equipped
-  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_icd->up()
-  // Haven't checked: This might be subject to block chance suppressio when the
-  // attacker is above the paladin's level. I'll assume it's not for now.
-        && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
-  {
-    trigger_t28_4p_pp( s );
-  }
-
   // various mitigation effects, Ardent Defender goes last due to absorb/heal mechanics
 
   // Passive sources (Sanctuary)

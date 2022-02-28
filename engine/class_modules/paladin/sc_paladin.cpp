@@ -3025,6 +3025,19 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     trigger_holy_shield( s );
   }
 
+  // Trigger T28 4p if equipped
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_icd->up()
+  // The set doesn't proc on *all* damage despite saying so, and the default sims
+  // have a bit unrealistically high instances of damage, so just making this proc
+  // on blockable damage instead.
+        && s->action->may_block && school == SCHOOL_PHYSICAL
+  // Haven't checked: This might be subject to block chance suppressio when the
+  // attacker is above the paladin's level. I'll assume it's not for now.
+        && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  {
+    trigger_t28_4p_pp( s );
+  }
+
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
   {
     active.inner_light_damage->set_target( s->action->player );
