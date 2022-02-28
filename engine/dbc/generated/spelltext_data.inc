@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42488
-static const std::array<spelltext_data_t, 16042> __spelltext_data { {
+static const std::array<spelltext_data_t, 16044> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15892,6 +15892,8 @@ static const std::array<spelltext_data_t, 16042> __spelltext_data { {
   { 367405, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 367421, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367464, "Your damaging attacks and spells have a chance to flip a coin granting $s1 of a secondary stat for 15 sec. Heads is Critical Strike, and Tails is Haste.", 0, 0 },
+  { 367466, "$@spelldesc367464", "Critical Strike increased by $w1.", 0 },
+  { 367467, "$@spelldesc367464", "Haste increased by $w1.", 0 },
   { 367470, "Your attacks have a chance to activate the diffusion implement for 20 sec, causing your attacks to have a very high chance of dealing an explosion of $s1 Arcane damage centered on your target.", 0, 0 },
   { 367471, "$@spelldesc367470", "Your attacks have a very high chance of dealing an explosion of $367470s1 Arcane damage centered on your target.", 0 },
   { 367472, "$@spelldesc367470", "Your attacks have a very high chance of dealing an explosion of $367470s1 Arcane damage centered on your target.", 0 },
