@@ -2004,6 +2004,11 @@ void dueling_form( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void instructors_divine_bell( special_effect_t& effect )
+{
+  effect.cooldown_category_ = 1141;
+}
+
 // 9.1 Trinkets
 
 // id=356029 buff
@@ -2720,16 +2725,23 @@ void relic_of_the_frozen_wastes_equip( special_effect_t& effect )
 }
 
 /**Ticking Sack of Terror
+* 9.1 version
   (351679) driver, damage on effect 1
   (351682) debuff
   (351694) fire damage at 3 stacks
+  9.2 version
+  (367901) driver, damage on effect 1
+  (367902) debuff
+  (367903) fire damage at 3 stacks
  */
 void ticking_sack_of_terror( special_effect_t& effect )
 {
   struct volatile_detonation_t : generic_proc_t
   {
     volatile_detonation_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "volatile_detonation", effect.player->find_spell( 351694 ) )
+      : generic_proc_t(
+            effect, "volatile_detonation",
+            ( effect.spell_id == 351679 ? effect.player->find_spell( 351694 ) : effect.player->find_spell( 367903 ) ) )
     {
       base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
     }
@@ -2774,8 +2786,14 @@ void ticking_sack_of_terror( special_effect_t& effect )
   new volatile_satchel_cb_t( effect );
 }
 
+// 9.1 version
+// id=351926 driver
 // id=351927 hold stat amount
 // id=351952 buff
+// 9.2 version
+// id=368509 driver
+// id=368513 hold stat amount
+// id=368512 buff
 // TODO: implement external buff to simulate being an ally
 void soleahs_secret_technique( special_effect_t& effect )
 {
@@ -2792,7 +2810,12 @@ void soleahs_secret_technique( special_effect_t& effect )
   if ( util::str_compare_ci( opt_str, "none" ) )
     return;
 
-  auto val = effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item );
+  auto val = effect.spell_id == 351926 
+      ? effect.player->find_spell( 351927 )->effectN( 1 ).average( effect.item ) 
+      : effect.player->find_spell( 368513 )->effectN( 1 ).average( effect.item );
+  auto buff_spell = effect.spell_id == 351926
+                        ? effect.player->find_spell( 351952 ) 
+                        : effect.player->find_spell( 368512 );
 
   buff_t* buff;
 
@@ -2802,7 +2825,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     if ( !buff )
     {
       buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", effect.player->find_spell( 351952 ) )
+          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_haste", buff_spell )
               ->add_stat( STAT_HASTE_RATING, val );
     }
   }
@@ -2811,8 +2834,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_crit" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_crit", buff_spell )
               ->add_stat( STAT_CRIT_RATING, val );
     }
   }
@@ -2821,8 +2843,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_versatility" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_versatility", buff_spell )
               ->add_stat( STAT_VERSATILITY_RATING, val );
     }
   }
@@ -2831,8 +2852,7 @@ void soleahs_secret_technique( special_effect_t& effect )
     buff = buff_t::find( effect.player, "soleahs_secret_technique_mastery" );
     if ( !buff )
     {
-      buff =
-          make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", effect.player->find_spell( 351952 ) )
+      buff = make_buff<stat_buff_t>( effect.player, "soleahs_secret_technique_mastery", buff_spell )
               ->add_stat( STAT_MASTERY_RATING, val );
     }
   }
@@ -2848,38 +2868,89 @@ void soleahs_secret_technique( special_effect_t& effect )
 }
 
 
-// id=356813 buff
-// id=355329 proc/reflect amount
-// TODO: store damage value in buff and expunge from that rather than dealing the full amount on a proc
-// TODO: implement the 20% health proc
+/**Reactive Defense Matrix
+ * id=356813 buff
+ * id=355329 proc/reflect amount
+ * id=356857 damage effect
+ */
 void reactive_defense_matrix( special_effect_t& effect )
 {
   struct reactive_defense_matrix_t : generic_proc_t
   {
-    reactive_defense_matrix_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "reactive_defense_matrix", effect.trigger() )
+    reactive_defense_matrix_t( const special_effect_t& e ) :
+      generic_proc_t( e, "reactive_defense_matrix", e.player->find_spell( 356857 ) )
     {
-      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
-      may_crit                  = false;
-    }
-
-    void execute() override
-    {
-      generic_proc_t::execute();
-
-      player->buffs.reactive_defense_matrix->expire();
+      base_dd_min = base_dd_max = 1.0; // Ensure that the correct snapshot flags are set.
     }
   };
 
+  struct reactive_defense_matrix_absorb_buff_t : absorb_buff_t
+  {
+    action_t* damage_action;
+
+    reactive_defense_matrix_absorb_buff_t( const special_effect_t& e, action_t* a ) :
+      absorb_buff_t( e.player, "reactive_defense_matrix", e.player->find_spell( 356813 ) ),
+      damage_action( a )
+    {
+      // This cooldown is only for the proc that occurs when falling below 20% HP.
+      // If the cooldown is present, it will prevent the buff from proccing normally.
+      set_cooldown( 0_ms );
+      set_absorb_source( e.player->get_stats( "reactive_defense_matrix_absorb" ) );
+    }
+
+    void absorb_used( double amount ) override
+    {
+      // TODO: This should be the target that dealt the damage instead of the players target.
+      // This would also need to be tested to see in which cases the damage is not done at all.
+      if ( player->target )
+        damage_action->execute_on_target( player->target, amount );
+    }
+  };
+
+  struct reactive_defense_matrix_absorb_t : absorb_t
+  {
+    buff_t* buff;
+
+    reactive_defense_matrix_absorb_t( const special_effect_t& e, buff_t* b ) :
+      absorb_t( "reactive_defense_matrix_absorb", e.player, e.player->find_spell( 356813 ) ),
+      buff( b )
+    {
+      background = true;
+      base_dd_min = base_dd_max = e.driver()->effectN( 1 ).average( e.item );
+    }
+
+    absorb_buff_t* create_buff( const action_state_t* ) override
+    {
+      return debug_cast<absorb_buff_t*>( buff );
+    }
+  };
+
+  action_t* damage_action = create_proc_action<reactive_defense_matrix_t>( "reactive_defense_matrix", effect );
   buff_t* buff = buff_t::find( effect.player, "reactive_defense_matrix" );
   if ( !buff )
-  {
-    buff = make_buff( effect.player, "reactive_defense_matrix", effect.player->find_spell( 356813 ) );
-  }
+    buff = make_buff<reactive_defense_matrix_absorb_buff_t>( effect, damage_action );
 
-  effect.custom_buff = effect.player->buffs.reactive_defense_matrix = buff;
-  effect.execute_action = create_proc_action<reactive_defense_matrix_t>( "reactive_defense_matrix", effect );
+  action_t* proc_action = new reactive_defense_matrix_absorb_t( effect, buff );
+  effect.execute_action = proc_action;
   new dbc_proc_callback_t( effect.player, effect );
+
+  auto period = effect.player->sim->shadowlands_opts.reactive_defense_matrix_interval;
+  if ( period > 0_ms )
+  {
+    cooldown_t* cooldown = effect.player->get_cooldown( "reactive_defense_matrix" );
+    cooldown->duration = timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() );
+    effect.player->register_combat_begin( [ cooldown, proc_action, period ]( player_t* p ) mutable
+    {
+      make_repeating_event( p->sim, period, [ p, cooldown, proc_action ]()
+      {
+        if ( cooldown->down() )
+          return;
+
+        cooldown->start();
+        proc_action->execute();
+      } );
+    } );
+  }
 }
 
 // 9.2 Trinkets
@@ -3175,6 +3246,12 @@ void resonant_reservoir( special_effect_t& effect )
   effect.execute_action = create_proc_action<disintegration_halo_t>( "disintegration_halo", effect );
 }
 
+// This has a unique on-use depending on your covenant signature ability
+// Necrolord: Starts channeling a free Fleshcraft
+// Kyrian: Consumes a free charge of Phial of Serenity
+// Night Fae: Resets the cooldown of Soulshape
+// Venthyr: Resets the cooldown of Door of Shadows
+// TODO: use a separate fleshcraft_t action to trigger the effect so that the channel is cancelled correctly
 void the_first_sigil( special_effect_t& effect )
 {
   auto buff = buff_t::find( effect.player, "the_first_sigil" );
@@ -3188,9 +3265,14 @@ void the_first_sigil( special_effect_t& effect )
   struct the_first_sigil_t : generic_proc_t
   {
     action_t* covenant_action;
+    cooldown_t* orig_cd;
+    cooldown_t* dummy_cd;
 
     the_first_sigil_t( const special_effect_t& effect )
-      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ), covenant_action( nullptr )
+      : generic_proc_t( effect, "the_first_sigil", effect.trigger() ),
+        covenant_action( nullptr ),
+        orig_cd( cooldown ),
+        dummy_cd( player->get_cooldown( "the_first_sigil_covenant" ) )
     {
     }
 
@@ -3224,9 +3306,23 @@ void the_first_sigil( special_effect_t& effect )
     {
       if ( covenant_action )
       {
-        player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
-                                  covenant_action->name() );
-        covenant_action->cooldown->reset( false );
+        // Night Fae's Soulshape (NYI) and Venthyr's Door of Shadows (NYI) CDs are Reset
+        if ( player->covenant->type() == covenant_e::NIGHT_FAE || player->covenant->type() == covenant_e::VENTHYR )
+        {
+          player->sim->print_debug( "{} resets cooldown of {} from the_first_sigil.", player->name(),
+                                    covenant_action->name() );
+          covenant_action->cooldown->reset( false );
+        }
+        // Necrolord's Fleshcraft and Kyrian's Phial of Serenity (NYI) cast a free use of the CD
+        if ( player->covenant->type() == covenant_e::NECROLORD || player->covenant->type() == covenant_e::KYRIAN )
+        {
+          player->sim->print_debug( "{} casts a free {} from the_first_sigil.", player->name(),
+                                    covenant_action->name() );
+          // TODO: don't alter the cooldown of Fleshcraft if it is off cooldown when we execute it
+          covenant_action->execute();
+          make_event( *sim, player->sim->shadowlands_opts.the_first_sigil_fleshcraft_cancel_time,
+                      [ this ] { covenant_action->cancel(); } );
+        }
       }
     }
   };
@@ -3261,6 +3357,154 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<gladiators_resonator_t>( "gladiators_resonator", effect );
+}
+
+void elegy_of_the_eternals( special_effect_t& effect )
+{
+  // TODO: confirm stat priority when stats are equal. for now assuming same as titanic ocular gland
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  auto buff_list = std::make_shared<std::map<stat_e, buff_t*>>();
+
+  // TODO: 369544 has same data as the driver, but with the presumably correct -7 scaling effect. Confirm that the
+  // driver really is 367246 and that 369544 is an unreferenced placeholder spell for the correct scaling effect.
+  double amount = effect.player->find_spell( 369544 )->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name = fmt::format( "elegy_of_the_eternals_{}", util::stat_type_abbrev( stat ) );
+    auto buff = buff_t::find( effect.player, name );
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 369439 ), effect.item )
+                 ->add_stat( stat, amount )
+                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
+                 ->set_can_cancel( false );
+    }
+    ( *buff_list )[ stat ] = buff;
+  }
+
+  auto update_buffs = [ p = effect.player, buff_list ]() mutable {
+    auto max_stat = util::highest_stat( p, ratings );
+
+    for ( auto stat : ratings )
+    {
+      if ( ( *buff_list )[ stat ]->check() )
+      {
+        if ( max_stat != stat )
+        {
+          ( *buff_list )[ stat ]->expire();
+          max_stat = util::highest_stat( p, ratings );
+        }
+
+        break;
+      }
+    }
+
+    // TODO: confirm that the buff spell only lasts 10s as spell data suggests. Because it is not a permanent aura, we
+    // have to execute the new buff every time update_buffs() is called.
+    ( *buff_list )[ max_stat ]->execute();
+    // TODO: implement bonus buff to party members
+  };
+
+  // TODO: confirm that the 10s period of effect #1 in the driver is the periodicity on which your highest stat is
+  // checks & the respective buff applied
+  effect.player->register_combat_begin( [ effect, update_buffs ]( player_t* p ) mutable {
+    auto period = effect.driver()->effectN( 1 ).period();
+    auto first_update = p->rng().real() * period;
+
+    update_buffs();
+    make_event( p->sim, first_update, [ period, update_buffs, p ]() mutable {
+      update_buffs();
+      make_repeating_event( p->sim, period, update_buffs );
+    } );
+  } );
+
+  // right-rotate to place update_buff at the front of all combat_begin callbacks, to replicate in-game behavior where
+  // the buff is already present on the player before entering combat.
+  auto vec = &effect.player->combat_begin_functions;
+  std::rotate( vec->rbegin(), vec->rbegin() + 1, vec->rend() );
+}
+
+// id=367336 - Brood of the Endless Feast	(driver - damage on effect 1)
+// id=368585 - Scent of Souls (target debuff)
+// id=368587 - Rabid Devourer Chomp (physical damage at max stacks)
+void bells_of_the_endless_feast( special_effect_t& effect )
+{
+  struct rabid_devourer_chomp_t : generic_proc_t
+  {
+    rabid_devourer_chomp_t( const special_effect_t& effect )
+      : generic_proc_t( effect, "rabid_devourer_chomp", effect.player->find_spell( 368587 ) )
+    {
+      base_dd_min = base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+    }
+  };
+
+  struct brood_of_the_endless_feast_cb_t : dbc_proc_callback_t
+  {
+    action_t* damage;
+
+    brood_of_the_endless_feast_cb_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<rabid_devourer_chomp_t>( "rabid_devourer_chomp", effect ) )
+    {
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+
+      actor_target_data_t* td = a->player->get_target_data( s->target );
+
+      // NOTE: Damage triggers on the next tick of the debuff after it reaches max stacks, but I'm not sure if it's
+      // worth modeling that properly, so we instead trigger it as soon as it reaches max stacks.
+      if ( td->debuff.scent_of_souls->at_max_stacks() )
+      {
+        td->debuff.scent_of_souls->expire();
+        damage->execute_on_target( s->target );
+      }
+      else
+      {
+        // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
+        // 5 and 7 stacks of the debuff on each proc.
+        int stacks = static_cast<int>( rng().range( 5, 7 ) );
+        td->debuff.scent_of_souls->trigger( stacks );
+      }
+    }
+  };
+
+  new brood_of_the_endless_feast_cb_t( effect );
+}
+
+// id=367924 driver
+// id=368645 haste buff
+// id=369287 dot? no periodic effect yet
+// id=369294 ground effect to stand in for haste buff?
+// id=369318 unknown, possibly damage driven by undiscovered/unimplemented periodic effect
+void grim_eclipse( special_effect_t& effect )
+{
+  struct grim_eclipse_t : public proc_spell_t
+  {
+    stat_buff_t* buff;
+
+    grim_eclipse_t( const special_effect_t& e )
+      : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
+        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
+    {
+      // TODO: manually implement dot if non-standard method is used when it's implemented in-game
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      proc_spell_t::last_tick( d );
+
+      // TODO: implement modeling of leaving/entering the buff zone
+      buff->trigger();
+    }
+  };
+
+  effect.execute_action = create_proc_action<grim_eclipse_t>( "grim_eclipse", effect );
 }
 
 // Weapons
@@ -3430,7 +3674,7 @@ void singularity_supreme( special_effect_t& effect )
 
   auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
     ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-      if ( !new_ )
+      if ( new_ )
         lockout->trigger();
     } );
 
@@ -3510,6 +3754,102 @@ void dark_rangers_quiver( special_effect_t& effect )
   effect.custom_buff = buff;
   effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
   new dbc_proc_callback_t( effect.player, effect );
+}
+
+void soulwarped_seal_of_wrynn( special_effect_t& effect )
+{
+  if ( effect.player->type != PRIEST )
+  {
+    return;
+  }
+
+  struct lions_hope_cb_t : public dbc_proc_callback_t
+  {
+    lions_hope_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      assert( rppm );
+      assert( s->target );
+
+      // TODO: figure out how to mod the rppm based on how it works in game
+      // see: bloodthirsty_instinct_cb_t in unique_gear_legion.cpp
+      double mod = 1;
+
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
+      }
+
+      rppm->set_modifier( mod );
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
+
+  auto buff = buff_t::find( effect.player, "lions_hope" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 368689 ) )
+               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) )
+               ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
+  }
+
+  effect.custom_buff = buff;
+  // TODO: verify flags
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new lions_hope_cb_t( effect );
+}
+
+void soulwarped_seal_of_menethil( special_effect_t& effect )
+{
+  if ( effect.player->type != DEATH_KNIGHT )
+  {
+    return;
+  }
+
+  struct remnants_despair_cb_t : public dbc_proc_callback_t
+  {
+    double debuff_value;
+    remnants_despair_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.item, effect ),
+    debuff_value(effect.driver()->effectN(1).average(effect.item))
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      assert( rppm );
+      assert( s->target );
+
+      // TODO: Investigate Proc Rate changes based on enemy HP
+      double mod = 1;
+
+      if ( effect.player->sim->debug )
+      {
+        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
+      }
+
+      rppm->set_modifier( mod );
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      dbc_proc_callback_t::execute( a, s );
+      auto td = a->player->get_target_data( s->target );
+      td->debuff.remnants_despair->set_default_value( debuff_value );
+      td->debuff.remnants_despair->trigger();
+    }
+  };
+
+  // TODO: verify flags
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new remnants_despair_cb_t( effect );
 }
 
 // Runecarves
@@ -4349,6 +4689,15 @@ void shard_of_bek( special_effect_t& effect )
     {
     }
 
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      auto td = a->player->get_target_data( s->target );
+      if ( td->debuff.exsanguinated->check() )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+
     void execute( action_t* a, action_state_t* s ) override
     {
       dbc_proc_callback_t::execute( a, s );
@@ -4599,6 +4948,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 329536, items::rotbriar_sprout );
     unique_gear::register_special_effect( 339343, items::murmurs_in_the_dark );
     unique_gear::register_special_effect( 336219, items::dueling_form );
+    unique_gear::register_special_effect( 348139, items::instructors_divine_bell );
+    unique_gear::register_special_effect( 367896, items::instructors_divine_bell );
 
     // 9.1 Trinkets
     unique_gear::register_special_effect( 353492, items::forbidden_necromantic_tome );
@@ -4615,7 +4966,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 355303, items::relic_of_the_frozen_wastes_use );
     unique_gear::register_special_effect( 355321, items::shadowed_orb_of_torment );
     unique_gear::register_special_effect( 351679, items::ticking_sack_of_terror );
+    unique_gear::register_special_effect( 367901, items::ticking_sack_of_terror );
     unique_gear::register_special_effect( 351926, items::soleahs_secret_technique );
+    unique_gear::register_special_effect( 368509, items::soleahs_secret_technique );
     unique_gear::register_special_effect( 355329, items::reactive_defense_matrix );
 
     // 9.2 Trinkets
@@ -4624,6 +4977,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
+    unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
+    unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
+    unique_gear::register_special_effect( 367924, items::grim_eclipse );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -4641,6 +4997,8 @@ void register_special_effects()
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
     unique_gear::register_special_effect( 353513, items::dark_rangers_quiver );
+    unique_gear::register_special_effect( 367950, items::soulwarped_seal_of_wrynn );
+    unique_gear::register_special_effect( 367951, items::soulwarped_seal_of_menethil );
 
     // Runecarves
     unique_gear::register_special_effect( 338477, items::echo_of_eonar );
@@ -4759,8 +5117,29 @@ void register_target_data_initializers( sim_t& sim )
       td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 351682 ) );
       td->debuff.volatile_satchel->reset();
     }
+    else if ( unique_gear::find_special_effect( td->source, 367901 ) )
+    {
+      assert( !td->debuff.volatile_satchel );
+
+      td->debuff.volatile_satchel = make_buff<buff_t>( *td, "volatile_satchel", td->source->find_spell( 367902 ) );
+      td->debuff.volatile_satchel->reset();
+    }
     else
       td->debuff.volatile_satchel = make_buff( *td, "volatile_satchel" )->set_quiet( true );
+  } );
+
+  // Bells of the Endless Feast
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 367336 ) )
+    {
+      assert( !td->debuff.scent_of_souls );
+
+      td->debuff.scent_of_souls = make_buff<buff_t>( *td, "scent_of_souls", td->source->find_spell( 368585 ) );
+      td->debuff.scent_of_souls->set_period( 0_ms );
+      td->debuff.scent_of_souls->reset();
+    }
+    else
+      td->debuff.scent_of_souls = make_buff( *td, "scent_of_souls" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)
@@ -4795,6 +5174,19 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.exsanguinated = make_buff( *td, "exsanguinated" )->set_quiet( true );
+  } );
+
+  // Soulwarped Seal of Menethil
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 367951 ) )
+    {
+      assert( !td->debuff.remnants_despair );
+
+      td->debuff.remnants_despair = make_buff<buff_t>( *td, "remnants_despair", td->source->find_spell( 368690 ) );
+      td->debuff.remnants_despair->reset();
+    }
+    else
+      td->debuff.remnants_despair = make_buff( *td, "remnants_despair" )->set_quiet( true );
   } );
 }
 

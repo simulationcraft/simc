@@ -156,24 +156,21 @@ struct shadow_bolt_t : public affliction_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = affliction_spell_t::composite_crit_chance_multiplier();
+    double c = affliction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
@@ -770,24 +767,21 @@ struct drain_soul_t : public affliction_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = affliction_spell_t::composite_crit_chance_multiplier();
+    double c = affliction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 4 ).percent();
 
     return m;
@@ -1055,6 +1049,8 @@ void warlock_t::create_apl_affliction()
   action_priority_list_t* necro = get_action_priority_list( "necro_mw" );
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
+
+  def->add_action( "malefic_rapture,if=ptr=1&buff.calamitous_crescendo.up");
   
   def->add_action( "run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity", "Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS." );
 

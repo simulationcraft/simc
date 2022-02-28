@@ -421,24 +421,21 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = destruction_spell_t::composite_crit_chance_multiplier();
+    double c = destruction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
@@ -547,15 +544,22 @@ struct incinerate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = destruction_spell_t::composite_crit_chance_multiplier();
+    double c = destruction_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
+    
+    return c;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->buffs.shard_of_annihilation->check() )
+      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
 
     return m;
   }
@@ -610,7 +614,7 @@ struct chaos_bolt_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;      
   }
@@ -671,6 +675,7 @@ struct chaos_bolt_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
+    // PTR 2022-02-16: Backdraft is no longer consumed when using T28 free Chaos Bolt cast, but GCD is still shortened
     if ( p()->buffs.backdraft->check() )
       t *= backdraft_gcd;
 
@@ -711,7 +716,9 @@ struct chaos_bolt_t : public destruction_spell_t
     int shards_used = as<int>( cost() );
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->decrement();
+    // PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
+    if ( p()->buffs.ritual_of_ruin->check() )
+      p()->buffs.backdraft->decrement();
 
     // SL - Legendary
     if ( p()->legendary.madness_of_the_azjaqir->ok() )
@@ -894,7 +901,7 @@ struct rain_of_fire_t : public destruction_spell_t
     double c = destruction_spell_t::cost();
 
     if ( p()->buffs.ritual_of_ruin->check() )
-      c += p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
+      c *= 1 + p()->buffs.ritual_of_ruin->data().effectN( 2 ).percent();
 
     return c;        
   }
@@ -1284,11 +1291,12 @@ void warlock_t::create_apl_destruction()
   def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
   def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
-  def->add_action( "cataclysm,if=!(pet.infernal.active&dot.immolate.remains+1>pet.infernal.remains)|spell_targets.cataclysm>1" );
+  def->add_action( "cataclysm" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
   def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,cycle_targets=1,if=refreshable&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
+  def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
+  def->add_action( "chaos_bolt,if=(pet.infernal.active|pet.blasphemy.active)&soul_shard>=4" );
   def->add_action( "call_action_list,name=cds" );
   def->add_action( "channel_demonfire" );
   def->add_action( "scouring_tithe" );
@@ -1297,14 +1305,15 @@ void warlock_t::create_apl_destruction()
   def->add_action( "impending_catastrophe" );
   def->add_action( "soul_rot" );
   def->add_action( "havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped" );
-  def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|cooldown.summon_infernal.remains<=15&talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15|talent.dark_soul_instability.enabled&cooldown.dark_soul_instability.remains<=15&(cooldown.summon_infernal.remains>target.time_to_die|cooldown.summon_infernal.remains+cooldown.summon_infernal.duration>target.time_to_die)" );
+  def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|buff.ritual_of_ruin.up&talent.rain_of_chaos" );
   def->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards" );
-  def->add_action( "chaos_bolt,if=buff.dark_soul_instability.up" );
-  def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards&!talent.eradication.enabled" );
-  def->add_action( "chaos_bolt,if=!variable.pool_soul_shards&talent.eradication.enabled&(debuff.eradication.remains<cast_time|buff.backdraft.up)" );
+  def->add_action( "chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.remains>cast_time" );
+  def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards" );
+  def->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time" );
   def->add_action( "shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5" );
-  def->add_action( "chaos_bolt,if=(soul_shard>=4.5-0.2*active_enemies)" );
-  def->add_action( "conflagrate,if=charges>1" );
+  def->add_action( "chaos_bolt,if=soul_shard>3.5" );
+  def->add_action( "chaos_bolt,if=target.time_to_die<5&target.time_to_die>cast_time+travel_time" );
+  def->add_action( "conflagrate,if=charges>1|target.time_to_die<gcd" );
   def->add_action( "incinerate" );
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
@@ -1326,12 +1335,12 @@ void warlock_t::create_apl_destruction()
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected<target.time_to_die" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
-  cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<20" );
+  cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<21" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains" );

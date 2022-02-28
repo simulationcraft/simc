@@ -1657,9 +1657,7 @@ void player_t::init_initial_stats()
   // sim_t::enchant).
   if ( !is_pet() && !is_enemy() )
   {
-    gear_stats_t item_stats =
-        std::accumulate( items.begin(), items.end(), gear_stats_t(),
-                         []( const gear_stats_t& t, const item_t& i ) { return t + i.total_stats(); } );
+    gear_stats_t item_stats = range::accumulate( items, gear_stats_t{}, &item_t::total_stats );
 
     for ( stat_e stat = STAT_NONE; stat < STAT_MAX; ++stat )
     {
@@ -5344,6 +5342,8 @@ void player_t::reset()
 
   range::for_each( cooldown_list, []( cooldown_t* cooldown ) { cooldown->reset_init(); } );
 
+  range::for_each( target_specific_cooldown_list, []( target_specific_cooldown_t* tcd ) { tcd->reset(); } );
+
   range::for_each( dot_list, []( dot_t* dot ) { dot->reset(); } );
 
   range::for_each( stats_list, []( stats_t* stat ) { stat->reset(); } );
@@ -7264,6 +7264,11 @@ cooldown_t* player_t::find_cooldown( util::string_view name ) const
   return find_vector_member( cooldown_list, name );
 }
 
+target_specific_cooldown_t* player_t::find_target_specific_cooldown( util::string_view name ) const
+{
+  return find_vector_member( target_specific_cooldown_list, name );
+}
+
 action_t* player_t::find_action( util::string_view name ) const
 {
   return find_vector_member( action_list, name );
@@ -7284,6 +7289,32 @@ cooldown_t* player_t::get_cooldown( util::string_view name, action_t* a )
     c->action = a;
 
   return c;
+}
+
+target_specific_cooldown_t* player_t::get_target_specific_cooldown( util::string_view name, timespan_t duration )
+{
+  target_specific_cooldown_t* tcd = find_target_specific_cooldown( name );
+
+  if ( !tcd )
+  {
+    tcd = new target_specific_cooldown_t( name, *this, duration );
+    target_specific_cooldown_list.push_back( tcd );
+  }
+
+  return tcd;
+}
+
+target_specific_cooldown_t* player_t::get_target_specific_cooldown( cooldown_t& base_cooldown )
+{
+  target_specific_cooldown_t* tcd = find_target_specific_cooldown( base_cooldown.name() );
+
+  if ( !tcd )
+  {
+    tcd = new target_specific_cooldown_t( *this, base_cooldown );
+    target_specific_cooldown_list.push_back( tcd );
+  }
+
+  return tcd;
 }
 
 real_ppm_t* player_t::get_rppm( util::string_view name )
@@ -11098,6 +11129,11 @@ std::string player_t::create_profile( save_e stype )
         profile_str += "renown=" + util::to_string( covenant->renown() ) + term;
       }
     }
+
+    if ( !shadowlands_opts.soleahs_secret_technique_type.empty() )
+    {
+      profile_str += "shadowlands.soleahs_secret_technique_type_override=" + shadowlands_opts.soleahs_secret_technique_type + term;
+    }
   }
 
   if ( stype & SAVE_PLAYER )
@@ -12495,14 +12531,14 @@ void player_collected_data_t::collect_data( const player_t& p )
   absorb.add( p.iteration_absorb );
 
   // player + pet dmg
-  double total_iteration_dmg = range::accumulate_proj(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
+  double total_iteration_dmg = range::accumulate(p.pet_list, p.iteration_dmg, &player_t::iteration_dmg);
 
-  double total_priority_iteration_dmg = range::accumulate_proj(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
+  double total_priority_iteration_dmg = range::accumulate(p.pet_list, p.priority_iteration_dmg, &player_t::priority_iteration_dmg);
 
   // player + pet heal
-  double total_iteration_heal = range::accumulate_proj(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
+  double total_iteration_heal = range::accumulate(p.pet_list, p.iteration_heal, &player_t::iteration_heal);
 
-  double total_iteration_absorb = range::accumulate_proj(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
+  double total_iteration_absorb = range::accumulate(p.pet_list, p.iteration_absorb, &player_t::iteration_absorb);
 
   compound_dmg.add( total_iteration_dmg );
   prioritydps.add( uptime ? total_priority_iteration_dmg / uptime : 0 );

@@ -5,9 +5,9 @@ level=60
 race=undead
 role=tank
 position=front
-talents=2231133
-covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/withering_plague:11:1/spirit_drain:11:1/meat_shield:11:1/adaptive_armor_fragment:11:1/proliferation:11:1/soulglow_spectrometer/condensed_anima_sphere:11:1/effusive_anima_accelerator
+talents=2231132
+covenant=night_fae
+soulbind=niya,grove_invigoration/withering_plague:11:1/niyas_tools_burrs/meat_shield:11:1/called_shot/bonded_hearts/withering_ground:11:1/spirit_drain:11:1/hardened_bones:11:1
 renown=80
 
 # Default consumables
@@ -95,30 +95,30 @@ actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
 actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
-shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1498,gem_id=173130
-back=grimveiled_cape,id=173242,bonus_id=6716/6953/6649/6648/1588,enchant=soul_vitality
-chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1498,enchant=eternal_stats
-wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
-hands=unstable_giants_cuffs,id=189777,bonus_id=7187/1524,enchant=eternal_strength
-waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
-legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6648/1588
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173129
+neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1808/1588,gem_id=173129
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
+wrists=unstable_giants_cuffs,id=189777,bonus_id=1524/7187/6935,gem_id=173129
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1498,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6647/6650/1588/6935,gem_id=173129
+legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=intrusive_thoughtcage,id=188261,bonus_id=7187/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=280.67
-# gear_strength=1399
-# gear_stamina=2865
-# gear_crit_rating=415
-# gear_haste_rating=673
-# gear_mastery_rating=739
-# gear_versatility_rating=290
-# gear_armor=1793
+# gear_ilvl=283.00
+# gear_strength=1303
+# gear_stamina=2931
+# gear_crit_rating=784
+# gear_haste_rating=330
+# gear_mastery_rating=447
+# gear_versatility_rating=562
+# gear_armor=1827
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

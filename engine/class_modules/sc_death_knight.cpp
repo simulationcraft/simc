@@ -417,6 +417,7 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* frost_fever;
     // Unholy
     dot_t* soul_reaper;
+    dot_t* soul_reaper_t28;
     dot_t* virulent_plague;
   } dot;
 
@@ -1194,6 +1195,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Other dots
   dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
+  dot.soul_reaper_t28      = target -> get_dot( "soul_reaper_t28", p );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
@@ -3060,6 +3062,18 @@ struct death_knight_disease_t : public death_knight_spell_t
       disease -> set_target( s -> target );
       disease -> execute();
     }
+  }
+
+  double bonus_ta( const action_state_t* s ) const override
+  {
+    double ta = death_knight_spell_t::bonus_ta( s );
+    // Currently Remnants Despair affects all diseases
+    if ( const actor_target_data_t* td = debug_cast<const actor_target_data_t*>( p() -> find_target_data( s -> target ) ) )
+    {
+      ta += td -> debuff.remnants_despair -> value();
+    }
+
+    return ta;
   }
 };
 
@@ -5329,12 +5343,9 @@ struct festering_wound_t : public death_knight_spell_t
     if ( p -> bugs )
       base_multiplier *= 1.0 + p -> spec.festering_strike_2 -> effectN( 1 ).percent();
 
-    if ( p -> dbc -> ptr )
+    if ( p -> conduits.convocation_of_the_dead.ok() )
     {
-      if ( p -> conduits.convocation_of_the_dead.ok() )
-      {
-        base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
-      }
+      base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
     }
   }
 
@@ -5416,7 +5427,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.killing_machine -> up() )
     {
-      // Tier28, KM is up, so fire GA, in game fires before oblits
+      // Tier28, KM is up, so fire GA, in game fires after oblits
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
       {
         p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
@@ -5754,8 +5765,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
       p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
 
-      // Feb 11 2022.  !background is because the counterattack does not currently proc the 1% str buff or extension
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) && !background )
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
       {
         p() -> buffs.endless_rune_waltz -> trigger();
         if ( p() -> buffs.dancing_rune_weapon -> up() )
@@ -6172,17 +6182,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> conduits.eradicating_blow->ok() )
     {
       p() -> buffs.eradicating_blow -> trigger();
-    }
-
-    if ( p() -> legendary.koltiras_favor.ok() && p() -> cooldown.koltiras_favor_icd->is_ready() )
-    {
-      if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
-      {
-        // # of runes to restore was stored in a secondary affect
-        p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
-        p() -> cooldown.koltiras_favor_icd -> start();
-      }
-    }
+    }   
 
     // KM Rank 2 - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
@@ -6240,20 +6240,29 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     if ( hit_any_target )
     {
+      if ( p() -> legendary.koltiras_favor.ok() && p() -> cooldown.koltiras_favor_icd->is_ready() )
+      {
+        if ( p() -> rng().roll(p() -> legendary.koltiras_favor->proc_chance()))
+        {
+          // # of runes to restore was stored in a secondary affect
+          p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
+          p() -> cooldown.koltiras_favor_icd -> start();
+        }
+      }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
-        // Tier28, KM is up, so fire GA, in game fires before oblits
-        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-        {
-          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
-          p() -> active_spells.glacial_advance_t28_4pc -> execute();
-        }
         km_mh -> set_target( target );
         km_mh -> execute();
         if ( oh && km_oh )
         {
           km_oh -> set_target( target );
           km_oh -> execute();
+        }
+        // Tier28, KM is up, so fire GA, in game fires before oblits
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
+        {
+          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
+          p() -> active_spells.glacial_advance_t28_4pc -> execute();
         }
       }
       else
@@ -6750,13 +6759,10 @@ struct shackle_the_unworthy_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p() -> dbc -> ptr )
+    if ( p() -> legendary.final_sentence.ok() )
     {
-      if ( p() -> legendary.final_sentence.ok() )
-      {
-        p() -> buffs.final_sentence -> trigger();
-        p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
-      }
+      p() -> buffs.final_sentence -> trigger();
+      p() -> replenish_rune( as<unsigned int>( p() -> spell.final_sentence -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.final_sentence );
     }
   }
 };
@@ -7869,7 +7875,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     return;
   }
 
-  if ( ! talent.soul_reaper -> ok() )
+  if ( ! talent.soul_reaper -> ok() && ! sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
   {
     return;
   }
@@ -7880,6 +7886,28 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
                       target -> name(), name() );
 
     trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
+    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+    {
+      buffs.harvest_time -> trigger();
+      sim -> print_log( "Target {} died while affected by Soul Reaper T28, player {} gains Harvest Time buff.",
+                      target -> name(), name() );
+    }
+    return;
+  }
+
+  // T28 Set.  This is only run if a normal soul_reaper dot didn't exist, since in game a single buff is used.
+  if ( get_target_data( target ) -> dot.soul_reaper_t28 -> is_ticking() )
+  {
+    sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Runic Corruption buff.",
+                      target -> name(), name() );
+
+    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
+    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+    {
+      buffs.harvest_time -> trigger();
+      sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Harvest Time buff.",
+                      target -> name(), name() );
+    }
   }
 }
 
@@ -7919,19 +7947,11 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     }
   }
 
-  // 2021-Jun-21 Currently on PTR on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
+  // 2021-Jun-21 Currently on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
   if ( conduits.convocation_of_the_dead.ok() )
   {
-    if ( dbc -> ptr )
-    {
-      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-        conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
-    }
-    else
-    {
-      cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-        conduits.convocation_of_the_dead.value() / 10 ) );
-    }
+    cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+    conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
   }
 }
 
@@ -8003,8 +8023,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
   // for 1h weapons was incorrect.  This new version seems to match testing done by Bicepspump, via wcl log pull.
   if ( chance == 0 )
   {
-    // If we are using a 1H, km_proc_attempts*0.13 per attempt, with it going to 100% at 6 attempts
-    // On PTR for DW, it was reverted to km_proc_attempts*0.3
+    // If we are using a 1H, km_proc_attempts*0.3
     // with 2H it looks to be km_proc_attempts*0.7 through testing
     double km_proc_chance = 0.13;
     if ( spec.might_of_the_frozen_wastes_2 -> ok() && main_hand_weapon.group() == WEAPON_2H )
@@ -8013,16 +8032,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     }
     else
     {
-      if ( dbc -> ptr )
-      {
-        km_proc_chance = ++km_proc_attempts * 0.3;
-      }
-      else
-      {
-        km_proc_chance = ++km_proc_attempts * 0.13;
-        if ( km_proc_attempts >= 6 ) // 100% chance if it hits the 6th swing
-          km_proc_chance = 1.0;
-      }
+      km_proc_chance = ++km_proc_attempts * 0.3;
     }
 
     if ( rng().roll( km_proc_chance ) )
@@ -8160,16 +8170,8 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
         }
         if ( dk -> conduits.convocation_of_the_dead.ok() )
         {
-          if ( dk -> dbc -> ptr )
-          {
-            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-              dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
-          }
-          else
-          {
-            dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-              dk -> conduits.convocation_of_the_dead.value() / 10 ) );
-          }
+          dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
+          dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
         }
       }
 
@@ -8451,6 +8453,13 @@ std::unique_ptr<expr_t> death_knight_t::create_expression( util::string_view nam
         return _runes.time_to_regen( static_cast<unsigned>( n ) );
       } );
     }
+  }
+
+  // Check if IQD execute is disabled
+  if ( util::str_compare_ci( splits[ 0 ], "death_knight" ) && splits.size() > 1 )
+  {
+    if ( util::str_compare_ci( splits[ 1 ], "disable_iqd_execute" ) && splits.size() == 2 )
+      return expr_t::create_constant( " disable_iqd_execute_expression ", sim->shadowlands_opts.disable_iqd_execute);
   }
 
   // Death Knight special expressions
@@ -9466,7 +9475,7 @@ void death_knight_t::activate()
     // On target death triggers
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( talent.soul_reaper->ok() )
+      if ( talent.soul_reaper->ok() || sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
       {
         target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
       }
@@ -9843,12 +9852,9 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
   {
     m *= 1.0 + td -> debuff.unholy_blight -> stack_value();
 
-    if ( dbc -> ptr )
+    if( td -> debuff.abominations_frenzy -> up() )
     {
-      if( td -> debuff.abominations_frenzy -> up() )
-      {
-        m *= 1.0 + td -> debuff.abominations_frenzy -> value();
-      }
+      m *= 1.0 + td -> debuff.abominations_frenzy -> value();
     }
   }
 

@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -1721,7 +1721,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Bypass Visibility Check (320), No Summon Log (326), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=56703)    : Unknown(179)
+#1 (id=56703)    : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1489 | Radius: 8 yards | Target: AOE friendly (31)
 Description      : Summons a holy barrier to protect all allies at the target location for $d, reducing all damage taken by $81782s2% and preventing damage from delaying spellcasting.
 
@@ -2513,7 +2513,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Extra Initial Period (169), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=122871)   : Unknown(179)
+#1 (id=122871)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 2148 | Target: Custom (18)
 Description      : Throw a Divine Star forward 24 yds, healing allies in its path for $110745s1 and dealing $122128s1 Holy damage to enemies. After reaching its destination, the Divine Star returns to you, healing allies and damaging enemies in its path again. Healing reduced beyond $s1 targets.
 
@@ -2667,7 +2667,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Allow While Not Shapeshifted (caster form) (83), Always AOE Line of Sight (186), Do Not Add to Unlearn List (295), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=140102)   : Unknown(179)
+#1 (id=140102)   : Create Area Trigger (179)
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 658 | Target: Custom (18)
 Description      : Creates a ring of Holy energy around you that quickly expands to a 30 yd radius, healing allies for $120692s1 and dealing $120696s1 Holy damage to enemies. Healing reduced beyond $s1 targets.
 
@@ -3134,6 +3134,16 @@ Effects          :
                    Base Value: 47 | Scaled Value: 47 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Shadow Word: Pain (589)
                    Family Flags: 15
+#9 (id=914764)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Mindgames (323673)
+                   Family Flags: 84
+Hotfixed         : NEW EFFECT
+#10 (id=914765)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Affected Spells: Mindgames (323673)
+                   Family Flags: 84
+Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -9286,7 +9296,7 @@ Duration         : 5 seconds
 Cooldown         : 45 seconds
 Labels           : 976
 Proc Chance      : 101%
-Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3)
+Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4, #9, #10), Discipline Priest (137032 effects: #12, #13, #14), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Shadow Covenant (322105 effect#2), Shattered Perceptions (338315 effects: #1, #3), Hungering Void (345219 effect#1), Shadow Word: Manipulation (356392 effects: #1, #2, #3)
 Family Flags     : 72, 84
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9784,7 +9794,8 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=819295)   : Energize Power% (137)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=819296)   : Energize Power (30)
                    Base Value: 300 | Scaled Value: 300 | PvP Coefficient: 1.00000 | Misc Value: insanity | Target: Self (1)
 Description      : $@spelldesc327661
@@ -11707,6 +11718,7 @@ Name             : Pallid Command (id=356390) [Spell Family (6), Passive, Hidden
 Class            : Priest
 School           : Shadow
 Spell Type       : None
+Proc Chance      : 101%
 Triggered by     : Pallid Command (364916)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

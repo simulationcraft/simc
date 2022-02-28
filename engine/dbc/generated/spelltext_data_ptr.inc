@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42277
-static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.0.42423
+static const std::array<spelltext_data_t, 16025> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15688,7 +15688,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 364173, "Every 5th Scourge Strike casts Soul Reaper on your target. Soul Reaper's secondary effect grants your Ghoul $s1% attack speed and summons an Army of the Dead ghoul.", 0, 0 },
   { 364197, "$@spelldesc49028", 0, 0 },
   { 364198, "$@spelldesc363951", 0, 0 },
-  { 364234, "$@spelldesc363592", "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", 0 },
+  { 364234, "$@spelldesc363592", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well.", 0 },
   { 364235, "$@spelldesc363592", "Your next bullet will reload Between the Eyes.", 0 },
   { 364261, "Deals $s1 Shadowflame damage to the target.", 0, 0 },
   { 364262, "Deals $s1 Shadowflame damage to nearby enemies.\r\n", 0, 0 },
@@ -15738,7 +15738,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 364553, "$?s262161[Warbreaker][Colossus Smash] lasts ${$s1/1000} sec longer and increases your damage dealt to affected enemies by an additional $s2%.", 0, 0 },
   { 364554, "Raging Blow deals $s2% increased damage and gains an additional charge.", 0, 0 },
   { 364555, "Your Main Gauche has a $s1% chance to fire a Pistol Shot.", 0, 0 },
-  { 364556, "$@spelldesc363736", "Your next Pistol Shot will also blast your target with Between the Eyes as well.", 0 },
+  { 364556, "$@spelldesc363592", "Your next Pistol Shot will also blast your target with Between the Eyes as well.", 0 },
   { 364557, "Shadowstrike has a $s1% chance to grant Shadow Blades for ${$s3/1000} sec.", 0, 0 },
   { 364639, "Avatar increases your damage dealt by an additional $364641s1% and decreases damage taken by $364641s2%. Avatar instantly grants Outburst.", 0, 0 },
   { 364641, "$@spelldesc364639", "Damage dealt increased by $s1% and damage taken decreased by $s2%.", 0 },
@@ -15906,7 +15906,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 367726, "$@spelldesc367722", "Bleeding for $w1 every $t sec.", 0 },
   { 367733, "Your damaging and healing spells have a chance to call a raptora that graces you with her wisdom, increasing your intellect by $s1 for $367734d.", 0, 0 },
   { 367734, "$@spelldesc367733", "Intellect increased by $w1.", 0 },
-  { 367802, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", 0, 0 },
+  { 367802, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies.", 0, 0 },
   { 367804, "Periodically rummage through the cache, finding a new stolen weapon.", 0, 0 },
   { 367805, "Grab the weapon from the cache, gaining its benefit.", 0, 0 },
   { 367808, "Cause the ground to quake beneath your feet, dealing $s1 Nature damage split between all nearby enemies over $d. Damage increased per target hit.\r\n\r\nWhile quaking, you can sense nearby tectonic weak points. Moving over a weak point will deal an additional $s2 Nature damage to all nearby enemies.", 0, 0 },
@@ -15915,13 +15915,12 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 367835, "Whenever a nearby Automa dies, you exude Ephemera, healing up to $s3 nearby allies for ${$s2*$368932d} over $368932d.", 0, 0 },
   { 367885, "Establish a link deep within your target's mind, increasing your dodge rating by $s2, and draining ${$s1*($d/$t1)} health over $d.\r\n\r\nIf the link is still intact when this effect ends, their mind shatters, dealing $s3 Shadow damage to enemies within $s4 yds of them and Horrifying them for $368785d.", "Dodge rating increased by $w2.", 0 },
   { 367891, "Teleport to the location of one of Cartel Xy's associates.", 0, 0 },
-  { 367892, "You eat food faster. Much faster.\r\n", "You eat food faster. Much faster.", 0 },
-  { 367893, "Vendors inside Tazavesh sell you their wares at a discount.\r\n\r\n", 0, 0 },
   { 367894, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367896, "Grants you $s1 Mastery for $d.", "Mastery increased by $w1.", 0 },
   { 367898, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 367901, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
+  { 367903, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367907, "$@spelldesc364423", "Generating ${$o1/10} Astral Power over $d.", 0 },
   { 367911, "When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.", 0, 0 },
   { 367912, "When Pocopoc possesses a Coreless Scarabid, it reduces your damage taken by $368141M1%.", 0, 0 },
@@ -15935,7 +15934,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 367939, "$@spelldesc367912 \r\n$@spellaura366333\r\n", "$?a359766[Resonant Scarabid reduces your damage taken by $368141M1%.][When Pocopoc possesses a Coreless Scarabid, your damage taken is reduced.]", 0 },
   { 367940, "$@spelldesc367913 \r\n$@spellaura366333", "$?a359836[Resonant Helicid has a chance when attacking to slow enemy attack and cast speed.][When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy's attack and cast speed.]", 0 },
   { 367941, "$@spelldesc367914 \r\n$@spellaura366333", "$?a359878[Resonant Geomental periodically builds a restorative shield around you.][When Pocopoc possesses a Coreless Geomental, it periodically builds restorative shield around you.]", 0 },
-  { 367950, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", 0, 0 },
+  { 367950, "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.", 0, 0 },
   { 367951, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", 0, 0 },
   { 367952, "Your offensive spells build stacks of Singularity, gaining $s1 Versatility and Speed per stack, up to $s4.\r\n\r\nUpon reaching $s4, these bonuses are doubled and persist for $s2 seconds. After it expires, you lose all stacks and must wait $s3 seconds before approaching the Singularity again.", 0, 0 },
   { 367953, "Remove your target's soul to receive its final judgment.\r\n\r\nSlaying this soul will send it to the afterlife it truly deserves, granting you a Twisted Boon for $s3 seconds based on its destination.", 0, 0 },
@@ -15975,6 +15974,7 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 368491, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 368494, "Restoring $s1% health and mana every $368239t2 sec", 0, 0 },
   { 368509, "Select a player in your party or raid, granting them $351927s2 of their highest secondary stat, and granting you $351927s1 of that same stat, for $351952d.", 0, 0 },
+  { 368512, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },
   { 368634, "$@spelldesc367808", 0, 0 },
@@ -15986,6 +15986,22 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 368649, "$@spelldesc367805", "Haste increased by $w1. Your damaging spells and abilities increase your Haste, stacking up to $u times.", 0 },
+  { 368650, "$@spelldesc367805", "Your critical strikes cause the target to bleed for $w1 additional damage over $d.", 0 },
+  { 368651, "$@spelldesc367805", "Bleeding for $o1 over $d.", 0 },
+  { 368652, "$@spelldesc367805", "You ignore up to $s1 of your foe's armor.", 0 },
+  { 368653, "$@spelldesc367805", 0, 0 },
+  { 368654, "$@spelldesc367805", "Grab a wand from the cache and blast your enemies for $s1 Fire damage.", 0 },
+  { 368655, "$@spelldesc367805", "Grab a Mace from the cache, allowing you to ignore up to $s1 armor on your foes.", 0 },
+  { 368656, "$@spelldesc367805", "Grab an axe from the cache, causing all of your critical hits to cause the target to bleed for $s1 damage over $s2 sec.", 0 },
+  { 368657, "$@spelldesc367805", "Grab a sword from the cache, causing your damaging spells and abilities to increase your Haste by $w1 for $s2 sec, stacking up to $u times.", 0 },
+  { 368663, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368664, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368665, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368666, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368667, "Create a soulbound Sepulcher of the First Ones Class Set item appropriate for your class.", 0, 0 },
+  { 368689, "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.", "Your Intellect is increased by $w1.", 0 },
+  { 368690, "Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.\r\n\r\n", "Diseases from the Death Knight have increased effect.", 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -15997,20 +16013,33 @@ static const std::array<spelltext_data_t, 16004> __ptr_spelltext_data { {
   { 368921, "Create a broker's necklace appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368932, "$@spelldesc367835", "Restoring $w1 every second.", 0 },
   { 368937, "$@spelldesc367307", "Cooldowns recover $w1% faster.", 0 },
-  { 368938, "$@206930", 0, 0 },
+  { 368938, "$@spelldesc206930", 0, 0 },
   { 368976, "$@spelldesc368203", 0, 0 },
-  { 369046, "#@spelldesc367953", 0, 0 },
+  { 369046, "$@spelldesc367953", 0, 0 },
   { 369068, "$@spelldesc367808", 0, 0 },
   { 369069, "$@spelldesc367808", 0, 0 },
   { 369070, "$@spelldesc367808", 0, 0 },
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
+  { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
+  { 369438, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
+  { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
+  { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42277
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42423
+static constexpr std::array<hotfix::client_hotfix_entry_t, 8> __ptr_spelltext_hotfix_data { {
+  {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
+  {  364556,  0, "$@spelldesc363736", "$@spelldesc363592" },
+  {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
+  {  367950,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
+  {  368689,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
+  {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
+  {  368938,  0, "$@206930", "$@spelldesc206930" },
+  {  369046,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42277
+// Spell description variables, wow build 9.2.0.42423
 static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16320,7 +16349,7 @@ static const std::array<spelldesc_vars_data_t, 306> __ptr_spelldesc_vars_data { 
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42277
+// spelldesc_vars hotfix entries, wow build 9.2.0.42423
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 

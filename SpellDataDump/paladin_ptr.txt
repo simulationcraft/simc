@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -69,6 +69,7 @@ Effects          :
 Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Devotion Aura (id=465) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -83,9 +84,9 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=195)      : Apply Raid Aura (65) | Modify Damage Taken% (87)
                    Base Value: -3 | Scaled Value: -3 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 40 yards | Target: Self (1)
@@ -695,7 +696,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
 Effects          :
 #1 (id=301465)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=16533)    : Unknown(179)
+#2 (id=16533)    : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4488 | Target: Unknown(87)
 #3 (id=81786)    : Summon (28)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 43499 | Misc Value 2: 0xbba | Target: Custom (18)
@@ -2775,13 +2776,15 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179713)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 2.00000
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214)
                    Family Flags: 46, 90
+Hotfixed         : PvP Coefficient (1 -> 2)
 #2 (id=191084)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value: 22
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 2.00000 | Misc Value: 22
                    Affected Spells: Flash of Light (19750), Holy Shock (25914), Holy Light (82326), Word of Glory (85673), Arcing Light (119952), Judgment of Light (183811), Light of the Martyr (183998), Bestow Faith (223306), Light of Dawn (225311), Radiant Incandescence (278147), Grace of the Justicar (278785), Ashen Hallow (317223), Glimmer of Light (325983), Shock Barrier (337824), Hallowed Discernment (340214)
                    Family Flags: 46
+Hotfixed         : PvP Coefficient (1 -> 2)
 #3 (id=191085)   : Apply Aura (6) | Modify Max Mana% (178)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191086)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -3286,6 +3289,7 @@ Description      : Burdens an enemy target with the weight of their misdeeds, re
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Retribution Aura (id=183435) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -3303,9 +3307,9 @@ Attributes       : ........ x....... x.x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   x....... ........ ........ ........ 
+                 : .....x.. ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), No Target Aura Icon (188), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Class Ability Procs (416)
+                 : Do Not Log (8), Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), No Target Aura Icon (188), Allow While Riding Vehicle (204), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=265677)   : Apply Raid Aura (65) | Dummy (4)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Self (1)
@@ -3997,7 +4001,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), No Aura Icon (60), No Aura Log (202), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301056)   : Unknown(179)
+#1 (id=301056)   : Create Area Trigger (179)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 6006 | Target: Custom (18)
 #2 (id=818577)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
@@ -8405,7 +8409,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=801819)   : Apply Aura (6) | Periodic Dummy (226): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=802227)   : Unknown(179)
+#2 (id=802227)   : Create Area Trigger (179)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 19042 | Radius: 20 yards | Target: AOE Custom (8)
 Description      : Hallow the target area for $d. Enemies in the area suffer up to ${$317221s1*$d/$t1} Shadow damage, and allies are healed for up to ${$317223s1*$d/$t1}, reduced if there are more than $s2 targets.
 
@@ -8623,6 +8627,7 @@ Effects          :
 Description      : Art of War has an additional $s1% chance to trigger.
 
 Name             : Concentration Aura (id=317920) [Spell Family (10)] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -8636,9 +8641,9 @@ Attributes       : ........ ........ x.x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389)
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Use Shapeshift Bar (68), Allow Aura While Dead (116), Allow Entering Arena (149), Allow While Riding Vehicle (204), Vehicle Immunity Category (218), Aura Points On Client (268), Do Not Cancel Area Aura on Spec Switch (389), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=803397)   : Apply Raid Aura (65) | Modify Mechanic Duration% (Stacking) (232)
                    Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 26 | Radius: 40 yards | Target: Self (1)
@@ -9037,6 +9042,7 @@ Effects          :
 Description      : $@spelldesc328620
 
 Name             : Vanquisher's Hammer (desc=Necrolord) (id=328204) [Spell Family (10)] 
+Hotfixed         : Internal Cooldown (1 -> 100)
 Class            : Paladin
 Covenant         : Necrolord
 School           : Shadow
@@ -9049,7 +9055,7 @@ Duration         : 20 seconds
 Charges          : 1 (30 seconds cooldown)
 Category         : 1938: Duty-Bound Gavel (355099 effect#1)
 Labels           : 976
-Internal Cooldown: 0.001 seconds
+Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x.x. x....x.. ........ 
@@ -10865,6 +10871,7 @@ Effects          :
 Description      : Damage taken is reduced by $s1% while inside your Consecration.
 
 Name             : Retribution Aura (id=344217) [Spell Family (10), Hidden] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -10876,14 +10883,15 @@ Attributes       : .......x ........ ..x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=868377)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Devotion Aura (id=344218) [Spell Family (10), Hidden] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -10895,14 +10903,15 @@ Attributes       : .......x ........ ..x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=868378)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Crusader Aura (id=344219) [Spell Family (10), Hidden] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -10914,14 +10923,15 @@ Attributes       : .......x ........ ..x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=868380)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Concentration Aura (id=344220) [Spell Family (10), Hidden] 
+Hotfixed         : Attributes
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -10933,9 +10943,9 @@ Attributes       : .......x ........ ..x..... x..x....   ........ ........ .....
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ....x... 
                  : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Allow Class Ability Procs (416), Allow Aura On Level Scale (444)
 Effects          :
 #1 (id=868381)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11235,7 +11245,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=903232)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (2 -> 3)
 Description      : When you benefit from Art of War, you gain Seraphim for $s1 sec.
 
 Name             : Glorious Purpose (id=364304) [Spell Family (10), Passive, Hidden] 

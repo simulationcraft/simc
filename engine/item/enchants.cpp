@@ -543,7 +543,7 @@ item_socket_color enchant::initialize_gem( item_t& item, size_t gem_idx )
 
   if ( !dbc::valid_gem_color( gem_prop.color ) )
   {
-    throw std::invalid_argument( fmt::format( "Invalid gem color from id {}.", gem_id ) );
+    throw std::invalid_argument( fmt::format( "Invalid gem color {} from id {}.", gem_prop.color, gem_id ) );
   }
 
   return static_cast<item_socket_color>( gem_prop.color );

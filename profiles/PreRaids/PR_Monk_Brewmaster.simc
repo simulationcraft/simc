@@ -31,7 +31,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/fleshcraft
-actions.precombat+=/chi_burst
+actions.precombat+=/chi_burst,if=!covenant.night_fae
 actions.precombat+=/chi_wave
 
 # Executed every time the actor is available.

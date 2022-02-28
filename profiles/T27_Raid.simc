@@ -52,8 +52,9 @@ T27_Shaman_Elemental.simc
 T27_Shaman_Elemental_Necrolord.simc
 # T27_Shaman_Elemental_Venthyr.simc
 T27_Shaman_Enhancement.simc
-T27_Shaman_Enhancement_SORG.simc
-T27_Shaman_Enhancement_VDW.simc
+# T27_Shaman_Enhancement_Necrolord.simc
+# T27_Shaman_Enhancement_Venthyr.simc
+# T27_Shaman_Enhancement_Kyrian.simc
 
 T27_Warlock_Affliction.simc
 T27_Warlock_Demonology.simc

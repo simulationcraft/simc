@@ -1,4 +1,4 @@
-// Active class spells, wow build 9.1.5.42010
+// Active class spells, wow build 9.2.0.42488
 static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
@@ -427,7 +427,6 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  9,    0,    698,      0, "Ritual of Summoning"                },
   {  9,    0,    702,      0, "Curse of Weakness"                  },
   {  9,    0,    710,      0, "Banish"                             },
-  {  9,    0,    712,      0, "Summon Succubus"                    },
   {  9,    0,    755,      0, "Health Funnel"                      },
   {  9,    0,   1098,      0, "Subjugate Demon"                    },
   {  9,    0,   1714,      0, "Curse of Tongues"                   },
@@ -447,6 +446,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   {  9,    0, 333889,      0, "Fel Domination"                     },
   {  9,    0, 334275,      0, "Curse of Exhaustion"                },
   {  9,    0, 342601,      0, "Ritual of Doom"                     },
+  {  9,    0, 366222,      0, "Summon Sayaad"                      },
   {  9,  265,    980,      0, "Agony"                              },
   {  9,  265,  27243,      0, "Seed of Corruption"                 },
   {  9,  265, 205180,      0, "Summon Darkglare"                   },
@@ -614,7 +614,7 @@ static const std::array<active_class_spell_t, 612> __active_spells_data { {
   { 12,  581, 228477, 344862, "Soul Cleave"                        },
 } };
 
-// Pet active spells, wow build 9.1.5.42010
+// Pet active spells, wow build 9.2.0.42488
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

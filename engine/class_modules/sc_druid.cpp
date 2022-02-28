@@ -1322,9 +1322,7 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, s ), inc( b ), hp_mul( 1.0 )
   {
     set_cooldown( 0_ms );
-
-    if ( p.is_ptr() )
-      set_refresh_behavior( buff_refresh_behavior::EXTEND );
+    set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
     if ( !inc && p.specialization() == DRUID_GUARDIAN )
       name_str_reporting = "berserk";
@@ -1916,8 +1914,8 @@ public:
 
   unsigned get_dot_count() const
   {
-    return range::accumulate( dot_ids, 0U, [ this ]( unsigned sum, unsigned add ) {
-      return sum + ab::player->get_active_dots( add );
+    return range::accumulate( dot_ids, 0U, [ this ]( int add ) {
+      return ab::player->get_active_dots( add );
     } );
   }
 
@@ -1976,7 +1974,7 @@ public:
     trigger_galactic_guardian( d->state );
   }
 
-  void trigger_ravenous_frenzy( free_cast_e f )
+  virtual void trigger_ravenous_frenzy( free_cast_e f )
   {
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
@@ -2679,6 +2677,8 @@ struct druid_form_t : public druid_spell_t
       default: break;
     }
   }
+
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
 
   void execute() override
   {
@@ -4523,7 +4523,7 @@ struct architects_aligner_t : public bear_attack_t
 
   architects_aligner_t( druid_t* p ) : bear_attack_t( "architects_aligner", p, p->find_spell( 363789 ) )
   {
-    background = true;
+    background = proc = true;
     may_miss = may_glance = may_dodge = may_block = may_parry = false;
     aoe = -1;
 
@@ -5634,6 +5634,8 @@ struct heart_of_the_wild_t : public druid_spell_t
   {
     druid_spell_t::schedule_execute( s );
   }
+
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
 
   void execute() override
   {
@@ -7422,10 +7424,14 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
+  timespan_t gcd_add;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ), precombat_seconds( 11_s ), target_self( false )
+    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
+      precombat_seconds( 11_s ),
+      gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
+      target_self( false )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
     add_option( opt_bool( "target_self", target_self ) );
@@ -7445,6 +7451,16 @@ struct adaptive_swarm_t : public druid_spell_t
     damage->stats = stats;
     heal->other = damage;
     add_child( damage );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g += gcd_add;
+
+    return g;
   }
 
   void execute() override
@@ -9341,7 +9357,7 @@ void druid_t::create_buffs()
     buff.ravenous_frenzy->set_stack_change_callback( [ this ]( buff_t* b, int old_, int new_ ) {
       // spell data hasn't changed and still indicates 0.2s, but tooltip says 0.1s
       if ( old_ && new_ )
-        b->extend_duration( this, is_ptr() ? 100_ms : timespan_t::from_seconds( legendary.sinful_hysteria->effectN( 1 ).base_value() ) );
+        b->extend_duration( this, 100_ms );
       else if ( old_ )
         buff.sinful_hysteria->trigger( old_ );
     } );
@@ -9695,15 +9711,15 @@ void druid_t::init()
   {
     case DRUID_BALANCE:
       action_list_information +=
-          "\n# Annotated Balance APL can be found at "
-          "https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
-      break;
-    case DRUID_FERAL:
-      action_list_information +=
-          "\n# Feral APL can also be found at https://gist.github.com/Xanzara/6896c8996f5afce5ce115daa3a08daff\n";
+        "\n# Annotated Balance APL can be found at https://balance-simc.github.io/Balance-SimC/md.html?file=balance.txt\n";
       break;
     case DRUID_GUARDIAN:
-      action_list_information += "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+      action_list_information +=
+        "\n# Guardian APL can be found at https://www.dreamgrove.gg/sims/bear/guardian.txt\n";
+      break;
+    case DRUID_RESTORATION:
+      action_list_information +=
+        "\n# Restoration DPS APL can be found at https://www.dreamgrove.gg/sims/tree/restoration.txt\n";
       break;
     default:
       break;
@@ -10524,9 +10540,9 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
 
   if ( splits.size() >= 2 && util::str_compare_ci( splits[ 1 ], "clearcasting" ) )
   {
-    if ( spec.omen_of_clarity_cat->ok() )
+    if ( specialization() == DRUID_FERAL )
       splits[ 1 ] = "clearcasting_cat";
-    else if ( spec.omen_of_clarity_tree->ok() )
+    else
       splits[ 1 ] = "clearcasting_tree";
 
     return druid_t::create_expression( util::string_join( splits, "." ) );

@@ -1234,19 +1234,19 @@ struct tank_dummy_enemy_t : public enemy_t
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * ( is_ptr() ? 1.313 : 1.114 );  // M0/M+
+          base.armor_coeff = k_value * 1.313;  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * ( is_ptr() ? 1.418 : 1.220 );  // Normal Raid
+          base.armor_coeff = k_value * 1.418;  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * ( is_ptr() ? 1.537 : 1.313 );  // Heroic Raid
+          base.armor_coeff = k_value * 1.537;  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * ( is_ptr() ? 1.670 : 1.418 );  // Mythic Raid
+          base.armor_coeff = k_value * 1.670;  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:

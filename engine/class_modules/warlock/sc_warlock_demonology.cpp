@@ -333,24 +333,21 @@ struct demonbolt_t : public demonology_spell_t
     return m;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double m = demonology_spell_t::composite_crit_chance_multiplier();
+    double c = demonology_spell_t::composite_crit_chance();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //PTR 2021-06-19: "Critical Strike chance increased by 100%" appears to be guaranteeing crits
-      m += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
-    }
+    if ( p()->buffs.shard_of_annihilation->check() )
+      c += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
 
-    return m;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
     double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
+    if ( p()->buffs.shard_of_annihilation->check() )
       m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
 
     return m;
@@ -455,8 +452,6 @@ struct implosion_t : public demonology_spell_t
       dual               = true;
       background         = true;
       callbacks          = false;
-      reduced_aoe_targets = 1.0;
-      full_amount_targets = 1;
     }
 
     double composite_target_multiplier( player_t* t ) const override
@@ -503,9 +498,9 @@ struct implosion_t : public demonology_spell_t
     p()->buffs.implosive_potential->expire();
     p()->buffs.implosive_potential_small->expire();
 
-    auto imps_consumed = p()->warlock_pet_list.wild_imps.n_active_pets();
+    auto imps_consumed = as<int>( p()->warlock_pet_list.wild_imps.n_active_pets() );
     if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-      imps_consumed += p()->warlock_pet_list.malicious_imps.n_active_pets(); // T28 Malicious Imps count for Implosive Potential
+      imps_consumed += as<int>( p()->warlock_pet_list.malicious_imps.n_active_pets() ); // T28 Malicious Imps count for Implosive Potential
 
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
     timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
@@ -856,6 +851,13 @@ struct doom_t : public demonology_spell_t
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     return s->action->tick_time( s ); //Doom is a case where dot duration scales with haste so use the tick time to get the current correct value
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    demonology_spell_t::last_tick( d );
+
+    gain_energize_resource( RESOURCE_SOUL_SHARD, energize_amount, p()->gains.doom ); // 2022-02-17: Doom appears to always give a full shard on its partial tick
   }
 };
 
@@ -1239,6 +1241,7 @@ void warlock_t::init_spells_demonology()
 void warlock_t::init_gains_demonology()
 {
   gains.summon_demonic_tyrant = get_gain( "summon_demonic_tyrant" );
+  gains.doom = get_gain( "doom" );
 }
 
 void warlock_t::init_rng_demonology()
@@ -1268,21 +1271,29 @@ void warlock_t::create_apl_demonology()
 
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected" );
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
+  def->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings&!variable.in_opener" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=12,if=!variable.use_bolt_timings&variable.in_opener&!pet.dreadstalker.active" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&buff.wild_imps.stack>0&!talent.vilefiend.enabled" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&prev_gcd.1.hand_of_guldan&talent.vilefiend.enabled" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=cooldown.decimating_bolt.remains_expected,if=variable.use_bolt_timings" );
   def->add_action( "call_action_list,name=trinkets" );
+  def->add_action( "call_action_list,name=ogcd,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up&(!talent.power_siphon.enabled|buff.power_siphon.up))" );
+  def->add_action( "implosion,if=target.time_to_die<2*gcd" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
   def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up" );
-  def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd=0&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
+  def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
-  def->add_action( "call_action_list,name=ogcd,if=pet.demonic_tyrant.active" );
   def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&variable.next_tyrant_cd>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)" );
-  def->add_action( "call_dreadstalkers,if=variable.next_tyrant_cd>20-5*!runeforge.wilfreds_sigil_of_superior_summoning" );
+  def->add_action( "call_dreadstalkers,if=variable.use_bolt_timings&cooldown.summon_demonic_tyrant.remains_expected>22" );
+  def->add_action( "call_dreadstalkers,if=!variable.use_bolt_timings&(variable.next_tyrant_cd>20-5*!runeforge.wilfreds_sigil_of_superior_summoning)" );
   def->add_action( "power_siphon,if=!variable.use_bolt_timings&buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
   def->add_action( "bilescourge_bombers,if=buff.tyrant.down&variable.next_tyrant_cd>5" );
   def->add_action( "implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&variable.next_tyrant_cd>5" );
-  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&variable.next_tyrant_cd>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|buff.from_the_shadows.up)" );
+  def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&variable.next_tyrant_cd>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|debuff.from_the_shadows.up)" );
   def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.implosive_potential.remains<2&runeforge.implosive_potential" );
   def->add_action( "implosion,if=buff.wild_imps.stack>=12&talent.soul_conduit.enabled&talent.from_the_shadows.enabled&runeforge.implosive_potential&buff.tyrant.down&variable.next_tyrant_cd>5" );
   def->add_action( "grimoire_felguard,if=time_to_die<30" );
@@ -1311,15 +1322,17 @@ void warlock_t::create_apl_demonology()
   open->add_action( "grimoire_felguard" );
   open->add_action( "summon_vilefiend" );
   open->add_action( "shadow_bolt,if=soul_shard<5&cooldown.call_dreadstalkers.up" );
+  open->add_action( "shadow_bolt,if=variable.use_bolt_timings&soul_shard<5&buff.balespiders_burning_core.stack<4" );
   open->add_action( "call_dreadstalkers" );
 
   cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)" );
   cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
   cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics&!pet.demonic_tyrant.active&variable.next_tyrant_cd>18" );
-  cov->add_action( "decimating_bolt,if=!variable.use_bolt_timings&(soulbind.lead_by_example|soulbind.kevins_oozeling)&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)" );
-  cov->add_action( "decimating_bolt,if=!variable.use_bolt_timings&(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active" );
-  cov->add_action( "decimating_bolt,if=variable.use_bolt_timings&(!talent.power_siphon|cooldown.power_siphon.remains<action.decimating_bolt.execute_time)&(!talent.from_the_shadows|cooldown.call_dreadstalkers.remains<action.decimating_bolt.execute_time|buff.from_the_shadows.remains>action.decimating_bolt.execute_time+action.demonbolt.execute_time*2)" );
-  cov->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
+  cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)" );
+  cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.kevins_oozeling&(pet.demonic_tyrant.active|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)" );
+  cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active" );
+  cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=variable.use_bolt_timings&(!talent.power_siphon|cooldown.power_siphon.remains<action.decimating_bolt.execute_time)&!cooldown.summon_demonic_tyrant.up&(pet.demonic_tyrant.remains<8|cooldown.summon_demonic_tyrant.remains_expected<30)" );
+  cov->add_action( "fleshcraft,if=soulbind.volatile_solvent&buff.volatile_solvent_humanoid.down,cancel_if=buff.volatile_solvent_humanoid.up" );
   cov->add_action( "scouring_tithe,if=soulbind.combat_meditation&pet.demonic_tyrant.active" );
   cov->add_action( "scouring_tithe,if=!soulbind.combat_meditation" );
   cov->add_action( "impending_catastrophe,if=pet.demonic_tyrant.active&soul_shard=0" );
@@ -1335,21 +1348,26 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "fireblood" );
   ogcd->add_action( "use_items" );
 
-  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.next_tyrant_cd<22" );
+  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.buff_sync_cd<22" );
+  trinks->add_action( "use_item,name=scars_of_fraternal_strife" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&variable.next_tyrant_cd<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
-  trinks->add_action( "use_item,name=overflowing_anima_cage,if=pet.demonic_tyrant.active" );
-  trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&pet.demonic_tyrant.active" );
-  trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&pet.demonic_tyrant.active" );
-  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&variable.next_tyrant_cd>20" );
+  trinks->add_action( "use_item,name=overflowing_anima_cage,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
+  trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&((!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up))" );
+  trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&((!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up))" );
+  trinks->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&variable.buff_sync_cd>20" );
 
-  five_y->add_action( "use_item,name=soulletting_ruby,if=variable.next_tyrant_cd<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
-  five_y->add_action( "use_item,name=sunblood_amethyst,if=variable.next_tyrant_cd<target.distance%5&time>variable.first_tyrant_time-(target.distance%5)" );
-  five_y->add_action( "use_item,name=empyreal_ordnance,if=variable.next_tyrant_cd<(target.distance%5)+12&variable.next_tyrant_cd>(((target.distance%5)+12)-15)&time>variable.first_tyrant_time-((target.distance%5)+12)", "Ordnance has a 12 second delay and is therefore skipped for first Tyrant to line up with the rest" );
+  five_y->add_action( "use_item,name=soulletting_ruby,target_if=min:target.health.pct,if=variable.buff_sync_cd<target.distance%5-(2*gcd.max*variable.use_bolt_timings)" );
+  five_y->add_action( "use_item,name=sunblood_amethyst,if=variable.buff_sync_cd<target.distance%5+(2*variable.use_bolt_timings)" );
+  five_y->add_action( "use_item,name=empyreal_ordnance,if=variable.buff_sync_cd<(target.distance%5)+12+(2*variable.use_bolt_timings)" );
 
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
 
+  dmg->add_action( "use_item,name=grim_eclipse" );
+  dmg->add_action( "use_item,name=resonant_reservoir" );
+  dmg->add_action( "use_item,name=architects_ingenuity_core" );
+  dmg->add_action( "use_item,name=cosmic_gladiators_resonator" );
   dmg->add_action( "use_item,name=dreadfire_vessel" );
   dmg->add_action( "use_item,name=soul_igniter" );
   dmg->add_action( "use_item,name=glyph_of_assimilation,if=active_enemies=1" );

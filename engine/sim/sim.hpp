@@ -423,6 +423,8 @@ struct sim_t : private sc_thread_t
     std::string soleahs_secret_technique_type = "haste";
     /// How long before combat to start channeling Shadowed Orb of Torment
     timespan_t shadowed_orb_of_torment_precombat_channel = 0_ms;
+    /// How often does the player fall below 20% HP for Reactive Defense Matrix?
+    timespan_t reactive_defense_matrix_interval = 0_ms;
     /// Percentage of default duration for Field of Blossoms.
     double field_of_blossoms_duration_multiplier = 1.0;
     /// Modifier for Cruciform Veinripper to control uptime for tanks. When set to 0, proc rate is not affected unless position=front, in which case 0.4 is used.
@@ -438,8 +440,10 @@ struct sim_t : private sc_thread_t
     // Better Together Override
     // Defaults active
     bool better_together_ally = true;
-    bool enable_rune_words = true;
-    bool enable_domination_gems = true;
+    bool enable_rune_words = false;
+    bool enable_domination_gems = false;
+    // fleshcraft cancel dely from the_first_sigil
+    timespan_t the_first_sigil_fleshcraft_cancel_time = 50_ms;
   } shadowlands_opts;
 
   // Auras and De-Buffs

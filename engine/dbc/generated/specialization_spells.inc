@@ -1,5 +1,5 @@
-// Talent tree specialization abilities, wow build 9.1.5.42010
-static const std::array<specialization_spell_entry_t, 930> __specialization_spell_data { {
+// Talent tree specialization abilities, wow build 9.2.0.42488
+static const std::array<specialization_spell_entry_t, 929> __specialization_spell_data { {
   {  0,  535, 264656,      0, "Pathfinding"                       , 0 },
   {  0,  535, 264662,      0, "Endurance Training"                , 0 },
   {  0,  535, 264663,      0, "Predator's Thirst"                 , 0 },
@@ -118,7 +118,6 @@ static const std::array<specialization_spell_entry_t, 930> __specialization_spel
   {  2,   65, 272906,      0, "Holy Shock"                        , "Rank 2" },
   {  2,   65, 275773,  20271, "Judgment"                          , 0 },
   {  2,   65, 289941,      0, "Holy Shock"                        , 0 },
-  {  2,   65, 327979,      0, "Avenging Wrath"                    , "Rank 3" },
   {  2,   66,    498,      0, "Divine Protection"                 , 0 },
   {  2,   66,  25780,      0, "Righteous Fury"                    , 0 },
   {  2,   66,  31850,    498, "Ardent Defender"                   , 0 },

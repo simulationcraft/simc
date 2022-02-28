@@ -59,13 +59,13 @@ void arcane( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "arcane_familiar" );
   precombat->add_action( "conjure_mana_gem" );
-  precombat->add_action( "variable,name=aoe_target_count,op=reset,default=3" );
+  precombat->add_action( "variable,name=aoe_target_count,default=-1,op=set,if=variable.aoe_target_count=-1,value=3+(1*covenant.kyrian)" );
   precombat->add_action( "variable,name=evo_pct,op=reset,default=15" );
   precombat->add_action( "variable,name=prepull_evo,default=-1,op=set,if=variable.prepull_evo=-1,value=1*(runeforge.siphon_storm&(covenant.venthyr|covenant.necrolord|conduit.arcane_prodigy))" );
   precombat->add_action( "variable,name=have_opened,op=set,value=0+(1*active_enemies>=variable.aoe_target_count)" );
   precombat->add_action( "variable,name=final_burn,op=set,value=0" );
   precombat->add_action( "variable,name=harmony_stack_time,op=reset,default=9" );
-  precombat->add_action( "variable,name=always_sync_cooldowns,default=-1,op=set,if=variable.always_sync_cooldowns=-1,value=1*set_bonus.tier28_2pc" );
+  precombat->add_action( "variable,name=always_sync_cooldowns,default=-1,op=set,if=variable.always_sync_cooldowns=-1,value=1*set_bonus.tier28_4pc" );
   precombat->add_action( "variable,name=rs_max_delay_for_totm,op=reset,default=5" );
   precombat->add_action( "variable,name=rs_max_delay_for_rop,op=reset,default=5" );
   precombat->add_action( "variable,name=rs_max_delay_for_ap,op=reset,default=20" );
@@ -104,7 +104,8 @@ void arcane( player_t* p )
   default_->add_action( "ancestral_call,if=buff.arcane_power.up" );
   default_->add_action( "use_items,if=buff.arcane_power.up" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up" );
-  default_->add_action( "use_item,name=moonlit_prism,if=cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6" );
+  default_->add_action( "use_item,name=moonlit_prism,if=covenant.kyrian&cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10" );
+  default_->add_action( "use_item,name=moonlit_prism,if=!covenant.kyrian&cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=15&cooldown.touch_of_the_magi.remains<=15" );
   default_->add_action( "use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1" );
@@ -285,9 +286,10 @@ void arcane( player_t* p )
   aoe->add_action( "radiant_spark,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&(buff.arcane_charge.stack>=2|cooldown.touch_of_the_magi.remains<=execute_time)" );
   aoe->add_action( "touch_of_the_magi,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&prev_gcd.1.radiant_spark" );
   aoe->add_action( "arcane_power,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&prev_gcd.1.touch_of_the_magi" );
-  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_orb&active_enemies<7" );
+  aoe->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo&active_enemies<5,line_cd=25" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_orb&active_enemies<7&!runeforge.harmonic_echo" );
   aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4" );
-  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&(dot.radiant_spark.remains>6|debuff.radiant_spark_vulnerability.up)&debuff.radiant_spark_vulnerability.stack<4&active_enemies=3" );
+  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&(dot.radiant_spark.remains>6|debuff.radiant_spark_vulnerability.up)&debuff.radiant_spark_vulnerability.stack<4&active_enemies<5" );
   aoe->add_action( "arcane_orb,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=3" );
   aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=2" );
   aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies>3" );
@@ -445,6 +447,7 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "use_item,name=wakeners_frond" );
   combustion_cooldowns->add_action( "use_item,name=instructors_divine_bell" );
   combustion_cooldowns->add_action( "use_item,name=sunblood_amethyst" );
+  combustion_cooldowns->add_action( "use_item,name=the_first_sigil" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
@@ -565,9 +568,11 @@ void frost( player_t* p )
 
   aoe->add_action( "frozen_orb" );
   aoe->add_action( "blizzard" );
-  aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&buff.fingers_of_frost.react=0)" );
+  aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(buff.fingers_of_frost.react=0|runeforge.deaths_fathom&prev_gcd.1.frostbolt&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.up))" );
   aoe->add_action( "ice_nova" );
   aoe->add_action( "comet_storm" );
+  aoe->add_action( "frostbolt,if=runeforge.deaths_fathom&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.remains>cast_time+travel_time" );
+  aoe->add_action( "frostbolt,if=remaining_winters_chill=1&comet_storm_remains>action.ice_lance.travel_time" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill&debuff.winters_chill.remains>travel_time" );
   aoe->add_action( "radiant_spark,if=soulbind.combat_meditation" );
   aoe->add_action( "mirrors_of_torment" );
@@ -602,11 +607,13 @@ void frost( player_t* p )
 
   st->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!conduit.ire_of_the_ascended|cooldown.radiant_spark.remains|runeforge.freezing_winds)|prev_gcd.1.radiant_spark|buff.fingers_of_frost.react=0&(debuff.mirrors_of_torment.up|buff.freezing_winds.up|buff.expanded_potential.react)))" );
   st->add_action( "frozen_orb" );
-  st->add_action( "blizzard,if=buff.freezing_rain.up|active_enemies>=2" );
+  st->add_action( "comet_storm,if=remaining_winters_chill" );
+  st->add_action( "frostbolt,if=runeforge.deaths_fathom&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.remains>cast_time+travel_time&active_enemies>=2" );
+  st->add_action( "blizzard,if=(!runeforge.slick_ice|!conduit.icy_propulsion&buff.deathborne.down)&active_enemies>=2" );
   st->add_action( "ray_of_frost,if=remaining_winters_chill=1&debuff.winters_chill.remains" );
   st->add_action( "glacial_spike,if=remaining_winters_chill&debuff.winters_chill.remains>cast_time+travel_time" );
+  st->add_action( "frostbolt,if=remaining_winters_chill=1&comet_storm_remains>action.ice_lance.travel_time" );
   st->add_action( "ice_lance,if=remaining_winters_chill&remaining_winters_chill>buff.fingers_of_frost.react&debuff.winters_chill.remains>travel_time" );
-  st->add_action( "comet_storm" );
   st->add_action( "ice_nova" );
   st->add_action( "radiant_spark,if=buff.freezing_winds.up&active_enemies=1" );
   st->add_action( "radiant_spark,if=buff.brain_freeze.react&talent.glacial_spike&conduit.ire_of_the_ascended&buff.icicles.stack>=4" );

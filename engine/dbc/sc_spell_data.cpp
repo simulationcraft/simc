@@ -20,6 +20,9 @@
 
 namespace { // anonymous namespace ==========================================
 
+template <auto V> struct nontype_t {};
+template <auto V> constexpr nontype_t<V> nontype{};
+
 enum sdata_field_type_t : int
 {
   SD_TYPE_NUM = 0,
@@ -28,235 +31,189 @@ enum sdata_field_type_t : int
 
 struct sdata_field_t
 {
-  union field_data_t
+  using type_t = sdata_field_type_t;
+
+  union data_t
   {
     double num;
     const char* str;
 
-    constexpr explicit field_data_t( const char* s ) : str( s ) {}
+    constexpr explicit data_t( const char* s ) : str( s ) {}
 
-    template <typename T, typename = std::enable_if_t<std::is_arithmetic<T>::value>>
-    constexpr explicit field_data_t( T v ) : num( static_cast<double>( v ) ) {}
+    template <typename T, typename = std::enable_if_t<std::is_arithmetic_v<T>>>
+    constexpr explicit data_t( T v ) : num( static_cast<double>( v ) ) {}
   };
 
-  struct field_data_getter_t
+  struct getter_t
   {
-    using func_t = field_data_t(*)( const dbc_t&, const void* );
-    sdata_field_type_t type;
-    func_t             get;
+    type_t type = SD_TYPE_NUM;
+    data_t (*get)( const dbc_t&, const void* ) = nullptr;
+
+    constexpr getter_t() = default;
+
+    template <auto Ptr>
+    constexpr getter_t( nontype_t<Ptr> );
   };
 
-  util::string_view   name;
-  field_data_getter_t data;
+  util::string_view name;
+  getter_t          data;
 };
 
 namespace detail {
 
 template <typename T>
-struct mem_fn_traits_impl;
+constexpr sdata_field_type_t field_type() {
+  using U = std::decay_t<T>;
+  if constexpr ( std::is_arithmetic_v<U> )
+    return SD_TYPE_NUM;
+  else if constexpr ( std::is_same_v<U, const char*> )
+    return SD_TYPE_STR;
+  else
+    assert( false && "Unsupported field type!" );
+}
 
-template <typename T, typename U>
-struct mem_fn_traits_impl<T U::*> {
-  using base_type = T;
-  using object_type = U;
-};
+template <auto Ptr, typename Sig> struct getter_impl;
 
-template <typename T>
-using mem_fn_traits_t = mem_fn_traits_impl<std::remove_cv_t<T>>;
-
-template <typename T, typename U, T U::*Pm>
-struct mem_fn_t {
-  using object_type = U;
-
-  template <typename... Args>
-  decltype(auto) operator()( Args&&... args ) const {
-    return std::invoke( Pm, std::forward<Args>(args)... );
+template <auto Pm, typename DataType, typename U>
+struct getter_impl<Pm, U DataType::*> {
+  static constexpr auto type = field_type<std::invoke_result_t<decltype(Pm), const DataType&>>();
+  static auto get( const dbc_t&, const void* data ) {
+    return sdata_field_t::data_t( std::invoke( Pm, *static_cast<const DataType*>( data ) ) );
   }
 };
 
-template <typename T>
-constexpr sdata_field_type_t field_type_impl() {
-  if ( std::is_arithmetic<T>::value )
-    return SD_TYPE_NUM;
-  if ( std::is_same<T, const char*>::value )
-    return SD_TYPE_STR;
-  return static_cast<sdata_field_type_t>( -1 );
-}
+template <auto Fn, typename ResultType, typename DataType>
+struct getter_impl<Fn, ResultType(*)(const dbc_t&, const DataType&)> {
+  static constexpr auto type = field_type<ResultType>();
+  static constexpr auto get( const dbc_t& dbc, const void* data ) {
+    return sdata_field_t::data_t( Fn( dbc, *static_cast<const DataType*>( data ) ) );
+  }
+};
 
-template <typename T>
-constexpr sdata_field_type_t field_type() {
-  constexpr auto type = field_type_impl<std::decay_t<T>>();
-  assert( static_cast<int>( type ) != -1 );
-  return type;
-}
-
-template <typename DataType, typename Fn>
-sdata_field_t::field_data_t get_data_field( const dbc_t&, const void* data ) {
-  return sdata_field_t::field_data_t( Fn{}( *static_cast<const DataType*>( data ) ) );
-}
-
-template <typename Field>
-constexpr sdata_field_t::field_data_getter_t data_field( Field ) {
-  using data_type = typename Field::object_type;
-  using result_type = decltype( Field{}( std::declval<const data_type&>() ) );
-  return { field_type<result_type>(), get_data_field<data_type, Field> };
-}
+template <auto Ptr>
+using getter = getter_impl<Ptr, decltype(Ptr)>;
 
 } // namespace detail
 
-template <typename Impl, typename DataType>
-struct func_field_t {
-  static sdata_field_t::field_data_t get( const dbc_t& dbc, const void* data ) {
-    return sdata_field_t::field_data_t( Impl{}( dbc, *static_cast<const DataType*>( data ) ) );
-  }
-
-  constexpr operator sdata_field_t::field_data_getter_t() const {
-    using result_type = decltype( Impl{}( std::declval<const dbc_t&>(), std::declval<const DataType&>() ) );
-    return { detail::field_type<result_type>(), get };
-  }
-};
-
-// this and most of the supporting detail machinery could be greatly simplified with C++17 auto nttps
-#define MEM_FN_T(...) \
-  detail::mem_fn_t<detail::mem_fn_traits_t<decltype(__VA_ARGS__)>::base_type, \
-                   detail::mem_fn_traits_t<decltype(__VA_ARGS__)>::object_type, \
-                   __VA_ARGS__>
-
-#define FIELD(...) detail::data_field( MEM_FN_T(__VA_ARGS__){} )
+template <auto Ptr>
+constexpr sdata_field_t::getter_t::getter_t( nontype_t<Ptr> )
+  : type( detail::getter<Ptr>::type ), get( detail::getter<Ptr>::get )
+{}
 
 static constexpr std::array<sdata_field_t, 5> _talent_data_fields { {
-  { "name",  FIELD( &talent_data_t::_name ) },
-  { "id",    FIELD( &talent_data_t::_id ) },
-  { "flags", FIELD( &talent_data_t::_flags ) },
-  { "col",   FIELD( &talent_data_t::_col ) },
-  { "row",   FIELD( &talent_data_t::_row ) },
+  { "name",  nontype< &talent_data_t::_name > },
+  { "id",    nontype< &talent_data_t::_id > },
+  { "flags", nontype< &talent_data_t::_flags > },
+  { "col",   nontype< &talent_data_t::_col > },
+  { "row",   nontype< &talent_data_t::_row > },
 } };
 
 static constexpr std::array<sdata_field_t, 27> _effect_data_fields { {
-  { "id",              FIELD( &spelleffect_data_t::_id ) },
-  { "spell_id",        FIELD( &spelleffect_data_t::_spell_id ) },
-  { "index",           FIELD( &spelleffect_data_t::_index ) },
-  { "type",            FIELD( &spelleffect_data_t::_type ) },
-  { "sub_type" ,       FIELD( &spelleffect_data_t::_subtype ) },
-  { "scaling",         FIELD( &spelleffect_data_t::_scaling_type ) },
-  { "m_coefficient",   FIELD( &spelleffect_data_t::_m_coeff ) },
-  { "m_delta",         FIELD( &spelleffect_data_t::_m_delta ) },
-  { "m_bonus" ,        FIELD( &spelleffect_data_t::_m_unk ) },
-  { "coefficient",     FIELD( &spelleffect_data_t::_sp_coeff ) },
-  { "ap_coefficient",  FIELD( &spelleffect_data_t::_ap_coeff ) },
-  { "amplitude",       FIELD( &spelleffect_data_t::_amplitude ) },
-  { "radius",          FIELD( &spelleffect_data_t::_radius ) },
-  { "max_radius",      FIELD( &spelleffect_data_t::_radius_max ) },
-  { "base_value",      FIELD( &spelleffect_data_t::_base_value ) },
-  { "misc_value",      FIELD( &spelleffect_data_t::_misc_value ) },
-  { "misc_value2",     FIELD( &spelleffect_data_t::_misc_value_2 ) },
-  { "trigger_spell",   FIELD( &spelleffect_data_t::_trigger_spell_id ) },
-  { "m_chain",         FIELD( &spelleffect_data_t::_m_chain ) },
-  { "p_combo_points",  FIELD( &spelleffect_data_t::_pp_combo_points ) },
-  { "p_level",         FIELD( &spelleffect_data_t::_real_ppl ) },
-  { "mechanic",        FIELD( &spelleffect_data_t::_mechanic ) },
-  { "chain_target",    FIELD( &spelleffect_data_t::_chain_target ) },
-  { "target_1",        FIELD( &spelleffect_data_t::_targeting_1 ) },
-  { "target_2",        FIELD( &spelleffect_data_t::_targeting_2 ) },
-  { "m_value",         FIELD( &spelleffect_data_t::_m_value ) },
-  { "pvp_coefficient", FIELD( &spelleffect_data_t::_pvp_coeff ) },
+  { "id",              nontype< &spelleffect_data_t::_id > },
+  { "spell_id",        nontype< &spelleffect_data_t::_spell_id > },
+  { "index",           nontype< &spelleffect_data_t::_index > },
+  { "type",            nontype< &spelleffect_data_t::_type > },
+  { "sub_type" ,       nontype< &spelleffect_data_t::_subtype > },
+  { "scaling",         nontype< &spelleffect_data_t::_scaling_type > },
+  { "m_coefficient",   nontype< &spelleffect_data_t::_m_coeff > },
+  { "m_delta",         nontype< &spelleffect_data_t::_m_delta > },
+  { "m_bonus" ,        nontype< &spelleffect_data_t::_m_unk > },
+  { "coefficient",     nontype< &spelleffect_data_t::_sp_coeff > },
+  { "ap_coefficient",  nontype< &spelleffect_data_t::_ap_coeff > },
+  { "amplitude",       nontype< &spelleffect_data_t::_amplitude > },
+  { "radius",          nontype< &spelleffect_data_t::_radius > },
+  { "max_radius",      nontype< &spelleffect_data_t::_radius_max > },
+  { "base_value",      nontype< &spelleffect_data_t::_base_value > },
+  { "misc_value",      nontype< &spelleffect_data_t::_misc_value > },
+  { "misc_value2",     nontype< &spelleffect_data_t::_misc_value_2 > },
+  { "trigger_spell",   nontype< &spelleffect_data_t::_trigger_spell_id > },
+  { "m_chain",         nontype< &spelleffect_data_t::_m_chain > },
+  { "p_combo_points",  nontype< &spelleffect_data_t::_pp_combo_points > },
+  { "p_level",         nontype< &spelleffect_data_t::_real_ppl > },
+  { "mechanic",        nontype< &spelleffect_data_t::_mechanic > },
+  { "chain_target",    nontype< &spelleffect_data_t::_chain_target > },
+  { "target_1",        nontype< &spelleffect_data_t::_targeting_1 > },
+  { "target_2",        nontype< &spelleffect_data_t::_targeting_2 > },
+  { "m_value",         nontype< &spelleffect_data_t::_m_value > },
+  { "pvp_coefficient", nontype< &spelleffect_data_t::_pvp_coeff > },
 } };
 
-struct spell_replace_spell_id_t : func_field_t<spell_replace_spell_id_t, spell_data_t> {
-  unsigned operator()( const dbc_t& dbc, const spell_data_t& data ) const {
-    return dbc.replace_spell_id( data.id() );
-  }
-};
+static unsigned spell_replace_spell_id( const dbc_t& dbc, const spell_data_t& data ) {
+  return dbc.replace_spell_id( data.id() );
+}
 
-template <typename Fn>
-struct spell_text_field_t : func_field_t<spell_text_field_t<Fn>, spell_data_t> {
-  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
-    return Fn{}( dbc.spell_text( data.id() ) );
-  }
-};
+template <auto Pm>
+static const char* spell_text_field( const dbc_t& dbc, const spell_data_t& data ) {
+  return std::invoke( Pm, dbc.spell_text( data.id() ) );
+}
 
-struct spell_desc_vars_t : func_field_t<spell_desc_vars_t, spell_data_t> {
-  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
-    return dbc.spell_desc_vars( data.id() ).desc_vars();
-  }
-};
+static const char* spell_desc_vars( const dbc_t& dbc, const spell_data_t& data ) {
+  return dbc.spell_desc_vars( data.id() ).desc_vars();
+}
 
-struct spell_covenant_id_t : func_field_t<spell_covenant_id_t, spell_data_t> {
-  const char* operator()( const dbc_t& dbc, const spell_data_t& data ) const {
-    const auto& covenant_entry = covenant_ability_entry_t::find( data.name_cstr(), dbc.ptr );
-    if ( covenant_entry.spell_id && covenant_entry.spell_id == data.id() )
-    {
-      return util::covenant_type_string( static_cast<covenant_e>( covenant_entry.covenant_id ) );
-    }
+static const char* spell_covenant_id( const dbc_t& dbc, const spell_data_t& data ) {
+  const auto& covenant_entry = covenant_ability_entry_t::find( data.name_cstr(), dbc.ptr );
+  if ( covenant_entry.spell_id && covenant_entry.spell_id == data.id() )
+    return util::covenant_type_string( static_cast<covenant_e>( covenant_entry.covenant_id ) );
 
-    const auto& soulbind_entry = soulbind_ability_entry_t::find( data.id(), dbc.ptr );
-    if ( soulbind_entry.spell_id && soulbind_entry.spell_id == data.id() )
-    {
-      return util::covenant_type_string( static_cast<covenant_e>( soulbind_entry.covenant_id ) );
-    }
+  const auto& soulbind_entry = soulbind_ability_entry_t::find( data.id(), dbc.ptr );
+  if ( soulbind_entry.spell_id && soulbind_entry.spell_id == data.id() )
+    return util::covenant_type_string( static_cast<covenant_e>( soulbind_entry.covenant_id ) );
 
-    return "";
-  }
-};
+  return "";
+}
 
-struct spell_conduit_id_t : func_field_t<spell_conduit_id_t, spell_data_t> {
-  unsigned operator()( const dbc_t& dbc, const spell_data_t& data ) const {
-    const auto& conduit_entry = conduit_entry_t::find_by_spellid( data.id(), dbc.ptr );
-    if ( conduit_entry.spell_id && conduit_entry.spell_id == data.id() )
-    {
-      return conduit_entry.id;
-    }
+static unsigned spell_conduit_id( const dbc_t& dbc, const spell_data_t& data ) {
+  const auto& conduit_entry = conduit_entry_t::find_by_spellid( data.id(), dbc.ptr );
+  if ( conduit_entry.spell_id && conduit_entry.spell_id == data.id() )
+    return conduit_entry.id;
 
-    return 0;
-  }
-};
+  return 0;
+}
 
 static constexpr std::array<sdata_field_t, 41> _spell_data_fields { {
-  { "name",              FIELD( &spell_data_t::_name ) },
-  { "id",                FIELD( &spell_data_t::_id ) },
-  { "speed",             FIELD( &spell_data_t::_prj_speed ) },
-  { "delay",             FIELD( &spell_data_t::_prj_delay ) },
-  { "min_duration",      FIELD( &spell_data_t::_prj_min_duration ) },
-  { "max_scaling_level", FIELD( &spell_data_t::_max_scaling_level ) },
-  { "level",             FIELD( &spell_data_t::_spell_level ) },
-  { "max_level",         FIELD( &spell_data_t::_max_level ) },
-  { "min_range",         FIELD( &spell_data_t::_min_range ) },
-  { "max_range",         FIELD( &spell_data_t::_max_range ) },
-  { "cooldown",          FIELD( &spell_data_t::_cooldown ) },
-  { "gcd",               FIELD( &spell_data_t::_gcd ) },
-  { "category_cooldown", FIELD( &spell_data_t::_category_cooldown ) },
-  { "charges",           FIELD( &spell_data_t::_charges ) },
-  { "charge_cooldown",   FIELD( &spell_data_t::_charge_cooldown ) },
-  { "category",          FIELD( &spell_data_t::_category ) },
-  { "duration",          FIELD( &spell_data_t::_duration ) },
-  { "max_stack",         FIELD( &spell_data_t::_max_stack ) },
-  { "proc_chance",       FIELD( &spell_data_t::_proc_chance ) },
-  { "initial_stack",     FIELD( &spell_data_t::_proc_charges ) },
-  { "icd",               FIELD( &spell_data_t::_internal_cooldown ) },
-  { "rppm",              FIELD( &spell_data_t::_rppm ) },
-  { "equip_class",       FIELD( &spell_data_t::_equipped_class ) },
-  { "equip_imask",       FIELD( &spell_data_t::_equipped_invtype_mask ) },
-  { "equip_scmask",      FIELD( &spell_data_t::_equipped_subclass_mask ) },
-  { "cast_time",         FIELD( &spell_data_t::_cast_time ) },
-  { "replace_spellid",   spell_replace_spell_id_t{} },
-  { "family",            FIELD( &spell_data_t::_class_flags_family ) },
-  { "stance_mask",       FIELD( &spell_data_t::_stance_mask ) },
-  { "mechanic",          FIELD( &spell_data_t::_mechanic ) },
-  { "power_id",          FIELD( &spell_data_t::_power_id ) }, // Azereite power id
-  { "essence_id",        FIELD( &spell_data_t::_essence_id ) }, // Azereite essence id
-  { "desc",              spell_text_field_t< MEM_FN_T( &spelltext_data_t::desc ) >{} },
-  { "tooltip",           spell_text_field_t< MEM_FN_T( &spelltext_data_t::tooltip ) >{} },
-  { "rank",              spell_text_field_t< MEM_FN_T( &spelltext_data_t::rank ) >{} },
-  { "desc_vars",         spell_desc_vars_t{} },
-  { "req_max_level",     FIELD( &spell_data_t::_req_max_level ) },
-  { "dmg_class",         FIELD( &spell_data_t::_dmg_class ) },
-  { "max_targets",       FIELD( &spell_data_t::_max_targets ) },
-  { "covenant",          spell_covenant_id_t{} },
-  { "conduit_id",        spell_conduit_id_t{} },
+  { "name",              nontype< &spell_data_t::_name > },
+  { "id",                nontype< &spell_data_t::_id > },
+  { "speed",             nontype< &spell_data_t::_prj_speed > },
+  { "delay",             nontype< &spell_data_t::_prj_delay > },
+  { "min_duration",      nontype< &spell_data_t::_prj_min_duration > },
+  { "max_scaling_level", nontype< &spell_data_t::_max_scaling_level > },
+  { "level",             nontype< &spell_data_t::_spell_level > },
+  { "max_level",         nontype< &spell_data_t::_max_level > },
+  { "min_range",         nontype< &spell_data_t::_min_range > },
+  { "max_range",         nontype< &spell_data_t::_max_range > },
+  { "cooldown",          nontype< &spell_data_t::_cooldown > },
+  { "gcd",               nontype< &spell_data_t::_gcd > },
+  { "category_cooldown", nontype< &spell_data_t::_category_cooldown > },
+  { "charges",           nontype< &spell_data_t::_charges > },
+  { "charge_cooldown",   nontype< &spell_data_t::_charge_cooldown > },
+  { "category",          nontype< &spell_data_t::_category > },
+  { "duration",          nontype< &spell_data_t::_duration > },
+  { "max_stack",         nontype< &spell_data_t::_max_stack > },
+  { "proc_chance",       nontype< &spell_data_t::_proc_chance > },
+  { "initial_stack",     nontype< &spell_data_t::_proc_charges > },
+  { "icd",               nontype< &spell_data_t::_internal_cooldown > },
+  { "rppm",              nontype< &spell_data_t::_rppm > },
+  { "equip_class",       nontype< &spell_data_t::_equipped_class > },
+  { "equip_imask",       nontype< &spell_data_t::_equipped_invtype_mask > },
+  { "equip_scmask",      nontype< &spell_data_t::_equipped_subclass_mask > },
+  { "cast_time",         nontype< &spell_data_t::_cast_time > },
+  { "replace_spellid",   nontype< spell_replace_spell_id > },
+  { "family",            nontype< &spell_data_t::_class_flags_family > },
+  { "stance_mask",       nontype< &spell_data_t::_stance_mask > },
+  { "mechanic",          nontype< &spell_data_t::_mechanic > },
+  { "power_id",          nontype< &spell_data_t::_power_id > }, // Azereite power id
+  { "essence_id",        nontype< &spell_data_t::_essence_id > }, // Azereite essence id
+  { "desc",              nontype< spell_text_field< &spelltext_data_t::desc > > },
+  { "tooltip",           nontype< spell_text_field< &spelltext_data_t::tooltip > > },
+  { "rank",              nontype< spell_text_field< &spelltext_data_t::rank > > },
+  { "desc_vars",         nontype< spell_desc_vars > },
+  { "req_max_level",     nontype< &spell_data_t::_req_max_level > },
+  { "dmg_class",         nontype< &spell_data_t::_dmg_class > },
+  { "max_targets",       nontype< &spell_data_t::_max_targets > },
+  { "covenant",          nontype< spell_covenant_id > },
+  { "conduit_id",        nontype< spell_conduit_id > },
 } };
-
-#undef FIELD
-#undef MEM_FN_T
 
 struct class_info_t {
   util::string_view name;

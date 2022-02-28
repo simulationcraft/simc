@@ -1215,7 +1215,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
   {
     aoe         = -1;
-    reduced_aoe_targets = p->covenant.venthyr->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->covenant.venthyr->effectN( 2 ).base_value();
     dual        = true;
     direct_tick = true;
     background  = true;
@@ -1311,7 +1311,7 @@ struct ashen_hallow_t : public paladin_spell_t
     }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
                                             .duration( duration )
-                                            .pulse_time( data().effectN( 2 ).period() )
+                                            .pulse_time( data().effectN( 1 ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );

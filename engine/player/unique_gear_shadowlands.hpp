@@ -57,10 +57,13 @@ void overwhelming_power_crystal( special_effect_t& );
 void tablet_of_despair( special_effect_t& );
 void rotbriar_sprout( special_effect_t& );
 void murmurs_in_the_dark( special_effect_t& );
+void instructors_divine_bell( special_effect_t& );
 // 9.2 Trinkets & Weapons
 void scars_of_fraternal_strife( special_effect_t& );
 void singularity_supreme( special_effect_t& );
 void resonant_reservoir( special_effect_t& );
+void elegy_of_the_eternals( special_effect_t& );
+void grim_eclipse( special_effect_t& );
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );

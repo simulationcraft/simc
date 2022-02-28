@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -292,7 +292,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
 #3 (id=129192)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=274827)   : Unknown(179)
+#4 (id=274827)   : Create Area Trigger (179)
                    Base Value: 26 | Scaled Value: 26 | PvP Coefficient: 1.00000 | Misc Value: 4485 | Target: Unknown(87)
 Description      : Corrupts the targeted ground, causing ${$52212m1*11} Shadow damage over $d to targets within the area.$?!c2&(a316664|a316916)[
 
@@ -1267,7 +1267,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=43332)    : Unknown(179)
+#1 (id=43332)    : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1193 | Radius: 6.5 yards | Target: AOE friendly (31)
 Description      : Places an Anti-Magic Zone that reduces spell damage taken by party or raid members by $145629m1%. The Anti-Magic Zone lasts for $d or until it absorbs $<absorb> damage.
 Variables        : $absorb=${$MHP*1.5*(1+$@versadmg)}
@@ -3594,7 +3594,7 @@ Attributes       : ........ ........ x....... ........   ........ .x...... .....
 Effects          :
 #1 (id=210838)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-#2 (id=215541)   : Unknown(179)
+#2 (id=215541)   : Create Area Trigger (179)
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: 1713 | Target: Unknown(87)
 #3 (id=215543)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3840,7 +3840,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=279726)   : Unknown(179)
+#1 (id=279726)   : Create Area Trigger (179)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 4714 | Target: Custom (18)
 Description      : Summons Sindragosa, who breathes frost on all enemies within $s1 yd in front of you, dealing $190780s1 Frost damage and slowing movement speed by $190780s2% for $190780d.
 
@@ -8029,7 +8029,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=735551)   : Unknown(179)
+#1 (id=735551)   : Create Area Trigger (179)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 14881 | Target: Custom (18)
 Description      : Summons a frostwyrm who breathes on all enemies within $s1 yd in front of you, dealing $279303s1 Frost damage and slowing movement speed by $279303s2% for $279303d.
 
@@ -9228,7 +9228,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=750227)   : Unknown(179)
+#1 (id=750227)   : Create Area Trigger (179)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Misc Value: 15658 | Target: Custom (18)
 Description      : $@spelldesc287283
 
@@ -10917,7 +10917,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (28)
 #3 (id=813512)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#4 (id=813513)   : Unknown(179)
+#4 (id=813513)   : Create Area Trigger (179)
                    Base Value: 26 | Scaled Value: 26 | PvP Coefficient: 1.00000 | Misc Value: 4485 | Target: Unknown(87)
 Description      : Corrupts the targeted ground, causing ${$341340m1*11} Shadow damage over $d to targets within the area.$?!c2[
 
@@ -13110,6 +13110,7 @@ Effects          :
 Description      : Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] that burst Festering Wounds applies Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.
 
 Name             : Endless Rune Waltz (id=364399) [Spell Family (15), Passive, Hidden] 
+Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13118,14 +13119,14 @@ Proc Chance      : 101%
 Proc Flags       : ....x... ....x.x. x....... ........ 
                  : Yellow Melee, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=904374)   : Dummy (3)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000
@@ -13253,7 +13254,36 @@ Effects          :
 Description      : $@spelldesc363560
 Tooltip          : Minion damage increased by $w1%.
 
+Name             : Remnant's Despair (id=368690) [Spell Family (15)] 
+Hotfixed         : Attributes, Affecting Spells
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Req. Max Level   : 60
+Range            : 40 yards
+Duration         : 12 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), DoT Stacking Rule (103), Aura Points On Client (268)
+Effects          :
+#1 (id=913284)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 6)
+Description      : Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.
+
+
+Tooltip          : Diseases from the Death Knight have increased effect.
+
 Name             : Endless Rune Waltz Energize (id=368938) [Spell Family (15)] 
+Hotfixed         : Description
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13269,6 +13299,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=913784)   : Energize Power (30)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Misc Value: runic_power | Target: Self (1)
-Description      : $@206930
+Description      : $@spelldesc206930
 
 

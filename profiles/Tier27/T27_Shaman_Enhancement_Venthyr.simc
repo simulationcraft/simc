@@ -1,13 +1,13 @@
-shaman="T27_Shaman_Enhancement_SORG"
+shaman="T27_Shaman_Enhancement_Venthyr"
 source=default
 spec=enhancement
 level=60
 race=troll
 role=attack
 position=back
-talents=3211131
-covenant=night_fae
-soulbind=niya,grove_invigoration/magma_fist:9:1/niyas_tools_burrs/essential_extraction:9:1/bonded_hearts
+talents=3221131
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/magma_fist:9:1/focused_lightning:9:1/dauntless_duelist/fatal_flaw
 renown=80
 
 # Default consumables
@@ -38,7 +38,7 @@ actions.precombat+=/potion
 actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
-actions=bloodlust
+actions=bloodlust,line_cd=600
 # In-combat potion is before combat ends.
 actions+=/potion,if=expected_combat_length-time<60
 # Interrupt of casts.
@@ -61,36 +61,45 @@ actions+=/call_action_list,name=single,if=active_enemies=1
 actions+=/call_action_list,name=aoe,if=active_enemies>1
 
 # Multi target action priority list
-actions.aoe=windstrike,if=buff.crash_lightning.up
-actions.aoe+=/fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms
+actions.aoe=chain_harvest,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
-actions.aoe+=/frost_shock,if=buff.hailstorm.up
-actions.aoe+=/sundering
-actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord|runeforge.primal_lava_actuators.equipped
+actions.aoe+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
+actions.aoe+=/healing_stream_totem,if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0
+actions.aoe+=/earth_shield,if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)
 actions.aoe+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up
-actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
-actions.aoe+=/vesper_totem
-actions.aoe+=/lightning_bolt,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5
-actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
+actions.aoe+=/windstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up
+actions.aoe+=/stormstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up
+actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)
+actions.aoe+=/flame_shock,if=!ticking
+actions.aoe+=/flame_shock,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6
+actions.aoe+=/lightning_bolt,if=(active_dot.flame_shock>=active_enemies|active_dot.flame_shock>=4)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5
+actions.aoe+=/frost_shock,if=buff.hailstorm.up
+actions.aoe+=/fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.seeds_of_rampant_growth.equipped
+actions.aoe+=/crash_lightning,if=buff.crash_lightning.down&buff.primordial_wave.up&buff.maelstrom_weapon.stack<5
+actions.aoe+=/sundering,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5
+actions.aoe+=/stormstrike,if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5
+actions.aoe+=/sundering
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=4
 actions.aoe+=/crash_lightning,if=talent.crashing_storm.enabled|buff.crash_lightning.down
 actions.aoe+=/lava_lash,target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled
-actions.aoe+=/lava_lash,if=buff.crash_lightning.up&(buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6))
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
+actions.aoe+=/vesper_totem
+actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
+actions.aoe+=/lava_lash,if=buff.crash_lightning.up
 actions.aoe+=/stormstrike,if=buff.crash_lightning.up
-actions.aoe+=/crash_lightning
-actions.aoe+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
+actions.aoe+=/crash_lightning
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
 actions.aoe+=/windstrike
 actions.aoe+=/stormstrike
-actions.aoe+=/lava_lash
 actions.aoe+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
 actions.aoe+=/flame_shock,target_if=refreshable,cycle_targets=1
 actions.aoe+=/fae_transfusion
 actions.aoe+=/frost_shock
-actions.aoe+=/ice_strike
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack>=5
-actions.aoe+=/fire_nova,if=active_dot.flame_shock>1
 actions.aoe+=/earthen_spike
 actions.aoe+=/earth_elemental
 actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
@@ -98,58 +107,66 @@ actions.aoe+=/windfury_totem,if=buff.windfury_totem.remains<30
 # Single target action priority list
 actions.single=windstrike
 actions.single+=/lava_lash,if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)
-actions.single+=/primordial_wave,if=!buff.primordial_wave.up
+actions.single+=/windfury_totem,if=!buff.windfury_totem.up
 actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/ice_strike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/flame_shock,if=!ticking
-actions.single+=/vesper_totem
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains
+actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
+actions.single+=/vesper_totem,if=raid_event.adds.in>40
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
-actions.single+=/fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>15
+actions.single+=/lava_lash,if=dot.flame_shock.refreshable
+actions.single+=/fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>30
+actions.single+=/stormstrike,if=talent.stormflurry.enabled&buff.stormbringer.up
 actions.single+=/chain_lightning,if=buff.stormkeeper.up
 actions.single+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
+actions.single+=/healing_stream_totem,if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))
+actions.single+=/earth_shield,if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))
 actions.single+=/chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down
 actions.single+=/stormstrike
 actions.single+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
+actions.single+=/windfury_totem,if=buff.windfury_totem.remains<10
 actions.single+=/lava_lash
-actions.single+=/crash_lightning
-actions.single+=/flame_shock,target_if=refreshable
-actions.single+=/frost_shock
-actions.single+=/ice_strike
+actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down
 actions.single+=/sundering,if=raid_event.adds.in>=40
+actions.single+=/frost_shock
+actions.single+=/crash_lightning
+actions.single+=/ice_strike
 actions.single+=/fire_nova,if=active_dot.flame_shock
-actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5
 actions.single+=/fleshcraft,if=soulbind.pustule_eruption
 actions.single+=/earth_elemental
+actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
 neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
 shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
-back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
+back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
+chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
 wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
-hands=boneshatter_gauntlets,id=172324,bonus_id=6716/7708/6647/6649/1559
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187320
+hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
+waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
 legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187319,enchant=eternal_agility
-finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
+feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187320,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
+trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
 main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
 off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
 
 # Gear Summary
 # gear_ilvl=254.81
-# gear_agility=1096
-# gear_stamina=2084
-# gear_crit_rating=421
-# gear_haste_rating=1021
-# gear_mastery_rating=187
-# gear_versatility_rating=420
-# gear_armor=1029
+# gear_agility=1089
+# gear_stamina=2079
+# gear_crit_rating=462
+# gear_haste_rating=930
+# gear_mastery_rating=388
+# gear_versatility_rating=280
+# gear_speed_rating=60
+# gear_armor=1022

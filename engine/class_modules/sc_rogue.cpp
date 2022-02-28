@@ -143,8 +143,6 @@ public:
     damage_buff_t* grudge_match; // T28 Assassination 2pc
   } debuffs;
 
-  bool is_deathspiked;
-
   rogue_td_t( player_t* target, rogue_t* source );
 
   timespan_t lethal_poison_remains() const
@@ -188,11 +186,6 @@ public:
   {
     return dots.garrote->is_ticking() || dots.rupture->is_ticking() ||
       dots.crimson_tempest->is_ticking() || dots.internal_bleeding->is_ticking();
-  }
-
-  void set_is_deathspiked( bool is_deathspiked = true )
-  {
-    this->is_deathspiked = is_deathspiked;
   }
 };
 
@@ -342,7 +335,9 @@ public:
     cooldown_t* blind;
     cooldown_t* cloak_of_shadows;
     cooldown_t* dreadblades;
+    cooldown_t* echoing_reprimand;
     cooldown_t* flagellation;
+    cooldown_t* fleshcraft;
     cooldown_t* garrote;
     cooldown_t* ghostly_strike;
     cooldown_t* gouge;
@@ -361,7 +356,9 @@ public:
     cooldown_t* symbols_of_death;
     cooldown_t* vanish;
     cooldown_t* vendetta;
-    cooldown_t* weaponmaster;
+
+    target_specific_cooldown_t* perforated_veins;
+    target_specific_cooldown_t* weaponmaster;
   } cooldowns;
 
   // Gains
@@ -668,7 +665,6 @@ public:
     proc_t* serrated_bone_spike_refund;
     proc_t* serrated_bone_spike_waste;
     proc_t* serrated_bone_spike_waste_partial;
-    proc_t* serrated_bone_spike_waste_deathspike;
 
     // Conduits
     proc_t* count_the_odds;
@@ -741,7 +737,6 @@ public:
     cooldowns.marked_for_death         = get_cooldown( "marked_for_death"         );
     cooldowns.riposte                  = get_cooldown( "riposte"                  );
     cooldowns.roll_the_bones           = get_cooldown( "roll_the_bones"           );
-    cooldowns.weaponmaster             = get_cooldown( "weaponmaster"             );
     cooldowns.vendetta                 = get_cooldown( "vendetta"                 );
     cooldowns.shiv                     = get_cooldown( "shiv"                     );
     cooldowns.symbols_of_death         = get_cooldown( "symbols_of_death"         );
@@ -750,6 +745,11 @@ public:
     cooldowns.sepsis                   = get_cooldown( "sepsis"                   );
     cooldowns.serrated_bone_spike      = get_cooldown( "serrated_bone_spike"      );
     cooldowns.flagellation             = get_cooldown( "flagellation"             );
+    cooldowns.echoing_reprimand        = get_cooldown( "echoing_reprimand"        );
+    cooldowns.fleshcraft               = get_cooldown( "fleshcraft"               );
+
+    cooldowns.perforated_veins         = get_target_specific_cooldown( "perforated_veins" );
+    cooldowns.weaponmaster             = get_target_specific_cooldown( "weaponmaster" );
 
     resource_regeneration = regen_type::DYNAMIC;
     regen_caches[CACHE_HASTE] = true;
@@ -1543,6 +1543,7 @@ public:
   void trigger_dashing_scoundrel( const action_state_t* state );
   void trigger_count_the_odds( const action_state_t* state );
   void trigger_flagellation( const action_state_t* state );
+  void trigger_perforated_veins( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -2237,9 +2238,12 @@ struct melee_t : public rogue_attack_t
 {
   int sync_weapons;
   bool first;
+  bool canceled;
+  timespan_t prev_scheduled_time;
 
   melee_t( const char* name, rogue_t* p, int sw ) :
-    rogue_attack_t( name, p ), sync_weapons( sw ), first( true )
+    rogue_attack_t( name, p ), sync_weapons( sw ), first( true ),
+    canceled( false ), prev_scheduled_time( timespan_t::zero() )
   {
     background = repeating = may_glance = may_crit = true;
     special = false;
@@ -2256,28 +2260,45 @@ struct melee_t : public rogue_attack_t
   void reset() override
   {
     rogue_attack_t::reset();
-
     first = true;
+    canceled = false;
+    prev_scheduled_time = timespan_t::zero();
   }
 
   timespan_t execute_time() const override
   {
     timespan_t t = rogue_attack_t::execute_time();
+    
     if ( first )
     {
-      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? std::min( t / 2, timespan_t::zero() ) : t / 2 ) : timespan_t::zero();
+      return ( weapon->slot == SLOT_OFF_HAND ) ? ( sync_weapons ? timespan_t::zero() : t / 2 ) : timespan_t::zero();
     }
+
+    // If we cancel the swing timer mid-fight, use the previous swing timer
+    if ( canceled )
+    {
+      return std::min( t, std::max( prev_scheduled_time - p()->sim->current_time(), timespan_t::zero() ) );
+    }
+
     return t;
   }
 
-  void execute() override
+  void schedule_execute( action_state_t* state ) override
   {
+    rogue_attack_t::schedule_execute();
+
     if ( first )
     {
       first = false;
+      p()->sim->print_log( "{} schedules AA start {} with {} swing timer", *p(), *this, time_to_execute );
     }
 
-    rogue_attack_t::execute();
+    if ( canceled )
+    {
+      canceled = false;
+      prev_scheduled_time = timespan_t::zero();
+      p()->sim->print_log( "{} schedules AA restart {} with {} swing timer remaining", *p(), *this, time_to_execute );
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -2359,33 +2380,33 @@ struct auto_melee_attack_t : public action_t
       return;
     }
 
-    p -> melee_main_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_mh" ) );
-    if ( ! p -> melee_main_hand )
-      p -> melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
+    p->melee_main_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_mh" ) );
+    if ( !p->melee_main_hand )
+      p->melee_main_hand = new melee_t( "auto_attack_mh", p, sync_weapons );
 
-    p -> main_hand_attack = p -> melee_main_hand;
-    p -> main_hand_attack -> weapon = &( p -> main_hand_weapon );
-    p -> main_hand_attack -> base_execute_time = p -> main_hand_weapon.swing_time;
+    p->main_hand_attack = p->melee_main_hand;
+    p->main_hand_attack->weapon = &( p->main_hand_weapon );
+    p->main_hand_attack->base_execute_time = p->main_hand_weapon.swing_time;
 
-    if ( p -> off_hand_weapon.type != WEAPON_NONE )
+    if ( p->off_hand_weapon.type != WEAPON_NONE )
     {
-      p -> melee_off_hand = debug_cast<melee_t*>( p -> find_action( "auto_attack_oh" ) );
-      if ( ! p -> melee_off_hand )
-        p -> melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
+      p->melee_off_hand = debug_cast<melee_t*>( p->find_action( "auto_attack_oh" ) );
+      if ( !p->melee_off_hand )
+        p->melee_off_hand = new melee_t( "auto_attack_oh", p, sync_weapons );
 
-      p -> off_hand_attack = p -> melee_off_hand;
-      p -> off_hand_attack -> weapon = &( p -> off_hand_weapon );
-      p -> off_hand_attack -> base_execute_time = p -> off_hand_weapon.swing_time;
-      p -> off_hand_attack -> id = 1;
+      p->off_hand_attack = p->melee_off_hand;
+      p->off_hand_attack->weapon = &( p->off_hand_weapon );
+      p->off_hand_attack->base_execute_time = p->off_hand_weapon.swing_time;
+      p->off_hand_attack->id = 1;
     }
   }
 
   void execute() override
   {
-    player -> main_hand_attack -> schedule_execute();
+    player->main_hand_attack->schedule_execute();
 
-    if ( player -> off_hand_attack )
-      player -> off_hand_attack -> schedule_execute();
+    if ( player->off_hand_attack )
+      player->off_hand_attack->schedule_execute();
   }
 
   bool ready() override
@@ -3213,7 +3234,7 @@ struct pistol_shot_t : public rogue_attack_t
   {
     double m = rogue_attack_t::action_multiplier();
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       m *= 1.0 + p()->buffs.opportunity->value();
@@ -3229,7 +3250,7 @@ struct pistol_shot_t : public rogue_attack_t
     if ( g == 0.0 )
       return 0.0;
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest 9.2 build 2pc procs still benefit from CP gains
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
       if ( p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
@@ -3245,15 +3266,16 @@ struct pistol_shot_t : public rogue_attack_t
   {
     rogue_attack_t::execute();
 
-    // TOCHECK: Dev PTR notes say procs will not work with T28 in a future build
+    // 2022-02-16 -- As of latest 9.2 build 2pc proc damage does not benefit from or consume procs
+    //               However, they still appear to benefit from the CP gain modifier
+    if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
+    {
+      const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
+      trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
+    }
+
     if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
     {
-      if ( generate_cp() > 0 && p()->talent.quick_draw->ok() && p()->buffs.opportunity->check() )
-      {
-        const int cp_gain = as<int>( p()->talent.quick_draw->effectN( 2 ).base_value() );
-        trigger_combo_point_gain( cp_gain, p()->gains.quick_draw );
-      }
-
       p()->buffs.opportunity->expire();
       p()->buffs.greenskins_wickers->expire();
     }
@@ -3270,17 +3292,18 @@ struct pistol_shot_t : public rogue_attack_t
     }
 
     // T28 Outlaw 4pc Procs
-    // 2022-02-04 -- As of the current PTR build, both parts of the 4pc trigger from 2pc procs
     if ( p()->set_bonuses.t28_outlaw_4pc->ok() )
     {
       if ( p()->buffs.tornado_trigger->check() )
       {
-        p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
-        p()->buffs.tornado_trigger->expire();
+        if ( secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER )
+        {
+          p()->active.tornado_trigger_between_the_eyes->trigger_secondary_action( execute_state->target, 6 );
+          p()->buffs.tornado_trigger->expire();
+        }
       }
       else
       {
-        // 2022-02-04 -- As of the current PTR build, this doesn't stack if the BtE buff is up
         p()->buffs.tornado_trigger_loading->trigger();
       }
     }
@@ -3732,11 +3755,8 @@ struct shadow_blades_t : public rogue_spell_t
   {
     rogue_spell_t::execute();
 
-    // 2022-02-07 -- Updated to extend existing buffs on hard-casts in latest PTR build
-    if ( p()->is_ptr() )
-      p()->buffs.shadow_blades->extend_duration_or_trigger();
-    else
-      p()->buffs.shadow_blades->trigger();
+    // 2022-02-07 -- Updated to extend existing buffs on hard-casts in 9.2
+    p()->buffs.shadow_blades->extend_duration_or_trigger();
 
     if ( precombat_seconds > 0_s && !p()->in_combat )
     {
@@ -3814,12 +3834,7 @@ struct akaaris_shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2022-01-15 -- PTR spell data now allows this to proc from Akaari primary hits
-    if ( p()->is_ptr() && secondary_trigger_type != secondary_trigger::WEAPONMASTER )
-    {
-      p()->buffs.perforated_veins->trigger();
-    }
-
+    trigger_perforated_veins( state );
     trigger_weaponmaster( state, p()->active.weaponmaster.akaaris_shadowstrike );
   }
 
@@ -3875,12 +3890,6 @@ struct shadowstrike_t : public rogue_attack_t
       p()->buffs.premeditation->expire();
     }
 
-    // 2022-02-14 -- Latest PTR build triggers from 4pc and Akaari procs but not from WM
-    if ( !is_secondary_action() || secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
-    {
-      p()->buffs.perforated_veins->trigger();
-    }
-
     // 2021-08-30 -- Logs appear to show updated behavior of PV and The Rotten benefitting WM procs
     // 2022-02-07 -- Logs also confirm this delay applies to all AoE 4pc procs in the same cast
     if ( p()->buffs.the_rotten->up() )
@@ -3902,6 +3911,7 @@ struct shadowstrike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
+    trigger_perforated_veins( state );
     if ( secondary_trigger_type == secondary_trigger::IMMORTAL_TECHNIQUE )
       trigger_weaponmaster( state, p()->active.weaponmaster.immortal_technique_shadowstrike );
     else
@@ -4143,6 +4153,9 @@ struct sinister_strike_t : public rogue_attack_t
       trigger_guile_charm( execute_state );
       p()->active.triple_threat_mh->trigger_secondary_action( execute_state->target );
     }
+
+    bool procs_main_gauche() const override
+    { return true; }
 
     bool procs_blade_flurry() const override
     { return true; }
@@ -4809,7 +4822,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
       aoe = 0; // Technically affected by Deathspike, but interferes with our triggering logic
       hasted_ticks = true; // 2021-03-12 - Bone spike dot is hasted, despite not being flagged as such
       affected_by.zoldyck_insignia = true; // 2021-02-13 - Logs show that the SBS DoT is affected by Zoldyck
-      affected_by.t28_assassination_4pc = true; // 2022-02-22 -- Now works as of most recent PTR build 
+      affected_by.t28_assassination_4pc = true;
       dot_duration = timespan_t::from_seconds( sim->expected_max_time() * 3 );
 
       if ( p->conduit.sudden_fractures.ok() )
@@ -4829,12 +4842,12 @@ struct serrated_bone_spike_t : public rogue_attack_t
       }
     }
 
-    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     //               This works on both the initial hit and also the DoT, until it is applied again
     bool snapshots_nightstalker() const override
     { return p()->bugs; }
 
-    // 2021-07-05-- Confirmed as working in-game, although not on Sudden Fractures damage
+    // 2021-07-05 -- Confirmed as working in-game, although not on Sudden Fractures damage
     bool procs_shadow_blades_damage() const override
     { return true; }
   };
@@ -4846,7 +4859,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
     rogue_attack_t( name, p, p->covenant.serrated_bone_spike, options_str )
   {
     // Combo Point generation is in a secondary spell due to scripting logic
-    // 2021-07-09- Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
+    // 2021-07-09 -- Not in the whitelist but confirmed as working in-game as of 9.1 patch notes
     affected_by.shadow_blades_cp = true;
     affected_by.broadside_cp = true;
     energize_type = action_energize::ON_HIT;
@@ -4885,7 +4898,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
   {
     rogue_attack_t::impact( state );
 
-    // 2021-03-04-- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
+    // 2021-03-04 -- 9.0.5: Bonus CP gain now **supposed to** include the primary target DoT even on first activation
     unsigned active_dots = p()->get_active_dots( serrated_bone_spike_dot->internal_id );
 
     // BUG, see https://github.com/SimCMinMax/WoW-BugTracker/issues/823
@@ -4899,22 +4912,10 @@ struct serrated_bone_spike_t : public rogue_attack_t
       serrated_bone_spike_dot->execute();
       if ( count_after )
         active_dots += 1;
-
-      if ( p()->bugs && state->chain_target == 0 )
-      {
-        tdata->set_is_deathspiked( false );
-      }
-    }
-
-    // 2021-07-17 -- Testing currently shows that Deathspike-cleaved DoTs do not behave normally
-    // 2022-02-14 -- Most recent PTR build has fixed the Deathspike bugs, leaving in for live sims
-    if ( p()->bugs && state->chain_target > 0 && !p()->is_ptr() )
-    {
-      tdata->set_is_deathspiked( true );
     }
  
     // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
-    //               Deathspiked targets do not generate CP directly, and are randomly bugged as well
+    //               Deathspiked targets do not generate CP directly
     if ( state->chain_target == 0 )
     {
       trigger_combo_point_gain( base_impact_cp + active_dots, p()->gains.serrated_bone_spike );
@@ -4923,7 +4924,7 @@ struct serrated_bone_spike_t : public rogue_attack_t
 
   timespan_t travel_time() const override
   {
-    // 2021-03-28-- Testing shows that Nightstalker works if you are very close to the target's hitbox
+    // 2021-03-28 -- Testing shows that Nightstalker works if you are very close to the target's hitbox
     // Assume if the player is playing Nightstalker they are getting inside the hitbox to reduce travel time
     if ( p()->bugs && p()->talent.nightstalker->ok() && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
       return timespan_t::zero();
@@ -4934,11 +4935,11 @@ struct serrated_bone_spike_t : public rogue_attack_t
   bool procs_blade_flurry() const override
   { return true; }
 
-  // 2021-06-29-- Testing shows this does not proc Deadly Poison despite being direct
+  // 2021-06-29 -- Testing shows this does not proc Deadly Poison despite being direct
   bool procs_deadly_poison() const override
   { return false; }
 
-  // 2021-07-05-- Confirmed as working in-game
+  // 2021-07-05 -- Confirmed as working in-game
   bool procs_shadow_blades_damage() const override
   { return true; }
 };
@@ -4973,8 +4974,8 @@ struct cancel_autoattack_t : public action_t
 
   bool ready() override
   {
-    if ( ( rogue -> main_hand_attack && rogue -> main_hand_attack -> execute_event ) ||
-         ( rogue -> off_hand_attack && rogue -> off_hand_attack -> execute_event ) )
+    if ( ( rogue->main_hand_attack && rogue->main_hand_attack->execute_event ) ||
+         ( rogue->off_hand_attack && rogue->off_hand_attack->execute_event ) )
     {
       return action_t::ready();
     }
@@ -5454,8 +5455,9 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
     if ( r->legendary.invigorating_shadowdust.ok() || r->options.prepull_shadowdust )
     {
       shadowdust_cooldowns = { r->cooldowns.adrenaline_rush, r->cooldowns.between_the_eyes, r->cooldowns.blade_flurry,
-        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades, r->cooldowns.flagellation,
-        r->cooldowns.garrote, r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
+        r->cooldowns.blade_rush, r->cooldowns.blind, r->cooldowns.cloak_of_shadows, r->cooldowns.dreadblades,
+        r->cooldowns.echoing_reprimand, r->cooldowns.flagellation, r->cooldowns.fleshcraft, r->cooldowns.garrote,
+        r->cooldowns.ghostly_strike, r->cooldowns.gouge, r->cooldowns.grappling_hook, r->cooldowns.killing_spree,
         r->cooldowns.marked_for_death, r->cooldowns.riposte, r->cooldowns.roll_the_bones, r->cooldowns.secret_technique,
         r->cooldowns.sepsis, r->cooldowns.serrated_bone_spike, r->cooldowns.shadow_blades, r->cooldowns.shadow_dance,
         r->cooldowns.shiv, r->cooldowns.sprint, r->cooldowns.symbols_of_death, r->cooldowns.vendetta };
@@ -5955,7 +5957,7 @@ void rogue_t::trigger_t28_assassination_4pc( player_t* target )
 
   rogue_td_t* td = get_target_data( target );
 
-  // 2022-02-14 -- As of the most recent PTR build, Vendetta reverses the modifier of SBS when fading
+  // 2022-02-14 -- As of 9.2 Vendetta reverses the modifier of SBS when fading
   //               Haste snapshot is maintained however, so don't need to update the snapshot flags
   double rate = 1.0 + set_bonuses.t28_assassination_4pc->effectN( 1 ).percent();
   bool is_reversed = !td->debuffs.vendetta->check();
@@ -5987,10 +5989,6 @@ void actions::rogue_action_t<Base>::trigger_auto_attack( const action_state_t* /
 
   if ( !ab::data().flags( spell_attribute::SX_MELEE_COMBAT_START ) )
     return;
-
-  p()->melee_main_hand->first = true;
-  if ( p()->melee_off_hand )
-    p()->melee_off_hand->first = true;
 
   p()->auto_attack->execute();
 }
@@ -6234,14 +6232,19 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
 template <typename Base>
 void actions::rogue_action_t<Base>::trigger_weaponmaster( const action_state_t* state, actions::rogue_attack_t* action )
 {
-  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || p()->cooldowns.weaponmaster->down() || !action )
+  if ( !p()->talent.weaponmaster->ok() || !ab::result_is_hit( state->result ) || !action )
+    return;
+
+  // 2022-02-24 -- 9.2 now allows this to trigger with a per-target ICD
+  cooldown_t* tcd = p()->cooldowns.weaponmaster->get_cooldown( state->target );
+  if ( !tcd || tcd->down() )
     return;
 
   if ( !p()->rng().roll( p()->talent.weaponmaster->proc_chance() ) )
     return;
 
   p()->procs.weaponmaster->occur();
-  p()->cooldowns.weaponmaster->start( p()->talent.weaponmaster->internal_cooldown() );
+  tcd->start();
 
   p()->sim->print_log( "{} procs weaponmaster for {}", *p(), *this );
 
@@ -6264,7 +6267,7 @@ void actions::rogue_action_t<Base>::trigger_alacrity( const action_state_t* stat
   if ( !p()->talent.alacrity->ok() || !affected_by.alacrity )
     return;
 
-  // 2022-02-06 -- Current PTR testing shows this does not trigger from 4pc procs
+  // 2022-02-06 -- Current testing shows this does not trigger from 4pc procs
   if ( secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
     return;
 
@@ -6317,13 +6320,12 @@ void actions::rogue_action_t<Base>::trigger_dreadblades( const action_state_t* s
   if ( !p()->talent.dreadblades->ok() || !ab::result_is_hit( state->result ) )
     return;
 
-  // TOCHECK: Double check everything triggers this correctly
-  // 2022-02-04 -- Confirmed as of latest PTR build to work on Outlaw 2pc procs as well
-  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT )
+  if ( ab::energize_type == action_energize::NONE || ab::energize_resource != RESOURCE_COMBO_POINT || ab::energize_amount == 0 )
     return;
 
-  // 2022-02-04 -- Due to not being cast triggers, this appears to not work (although not relevant)
-  if ( secondary_trigger_type == secondary_trigger::CONCEALED_BLUNDERBUSS )
+  // 2022-02-04 -- Due to not being cast triggers, this appears to not work
+  if ( secondary_trigger_type == secondary_trigger::CONCEALED_BLUNDERBUSS ||
+       secondary_trigger_type == secondary_trigger::TORNADO_TRIGGER )
     return;
 
   if ( !p()->buffs.dreadblades->up() )
@@ -6432,7 +6434,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
         }
       }
 
-      // 2022-02-05 -- PTR testing shows that 4pc procs benefit on all AoE impacts
+      // 2022-02-05 -- Testing shows that 4pc procs benefit on all AoE impacts
       //               Manually expired here instead of the normal execute() location
       if ( expire_autocrit )
       {
@@ -6615,7 +6617,7 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
 
   p()->buffs.flagellation->trigger( cp_spend );
   
-  // 2022-02-06 -- PTR testing shows that Outlaw 4pc procs trigger buff stacks but not damage/CDR
+  // 2022-02-06 -- Testing shows that Outlaw 4pc procs trigger buff stacks but not damage/CDR
   if ( is_secondary_action() )
     return;
 
@@ -6631,6 +6633,21 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
   }
 }
 
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state_t* state )
+{
+  if ( !p()->conduit.perforated_veins->ok() || !ab::result_is_hit( state->result ) )
+    return;
+
+  // 2022-02-24 -- 9.2 now allows this to trigger from procs with a per-target ICD
+  cooldown_t* tcd = p()->cooldowns.perforated_veins->get_cooldown( state->target );
+  if ( !tcd || tcd->down() )
+    return;
+
+  tcd->start();
+  p()->buffs.perforated_veins->trigger();
+}
+
 // ==========================================================================
 // Rogue Targetdata Definitions
 // ==========================================================================
@@ -6638,8 +6655,7 @@ void actions::rogue_action_t<Base>::trigger_flagellation( const action_state_t* 
 rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   actor_target_data_t( target, source ),
   dots( dots_t() ),
-  debuffs( debuffs_t() ),
-  is_deathspiked( false )
+  debuffs( debuffs_t() )
 {
   dots.deadly_poison        = target->get_dot( "deadly_poison_dot", source );
   dots.garrote              = target->get_dot( "garrote", source );
@@ -6743,23 +6759,15 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
     target->register_on_demise_callback( source, [ this, source ]( player_t* ) {
       if ( dots.serrated_bone_spike->is_ticking() )
       {
-        // 2021-07-17-- Deathspike-cleaved DoTs currently do not appear to correctly refund charges
-        if ( source->bugs && this->is_deathspiked )
-        {
-          source->procs.serrated_bone_spike_waste_deathspike->occur();
-        }
+        double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
+        if ( refund_max > 1 )
+          source->procs.serrated_bone_spike_refund->occur();
+        else if ( refund_max <= 0 )
+          source->procs.serrated_bone_spike_waste->occur();
         else
-        {
-          double refund_max = source->cooldowns.serrated_bone_spike->charges - source->cooldowns.serrated_bone_spike->charges_fractional();
-          if ( refund_max > 1 )
-            source->procs.serrated_bone_spike_refund->occur();
-          else if ( refund_max <= 0 )
-            source->procs.serrated_bone_spike_waste->occur();
-          else
-            source->procs.serrated_bone_spike_waste_partial->occur();
+          source->procs.serrated_bone_spike_waste_partial->occur();
 
-          source->cooldowns.serrated_bone_spike->reset( false, 1 );
-        }
+        source->cooldowns.serrated_bone_spike->reset( false, 1 );
       }
     } );
   }
@@ -7235,23 +7243,25 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up", "Blade Flurry on 2+ enemies" );
-    cds->add_action( this, "Vanish", "if=!runeforge.mark_of_the_master_assassin&!stealthed.all&variable.ambush_condition&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
+    cds->add_action( this, "Vanish", "if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!stealthed.all&variable.ambush_condition&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)", "Using Ambush is a 2% increase, so Vanish can be sometimes be used as a utility spell unless using Master Assassin or Deathly Shadows" );
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&!talent.marked_for_death.enabled,value=(!cooldown.between_the_eyes.ready&variable.finish_condition)|(cooldown.between_the_eyes.ready&variable.ambush_condition)", "With Master Asssassin, sync Vanish with a finisher or Ambush depending on BtE cooldown, or always a finisher with MfD" );
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
     cds->add_action( this, "Vanish", "if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.time_to_max>2)", "Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry" );
     cds->add_action( "flagellation,if=!stealthed.all&(variable.finish_condition|target.time_to_die<13)" );
-    cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)" );
+    cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)&(!talent.marked_for_death|!cooldown.marked_for_death.ready)" );
     cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
-    cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1", "If no adds will die within the next 30s, use MfD on boss without any CP." );
+    cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1&(!covenant.venthyr|cooldown.flagellation.remains>10|debuff.flagellation.up)", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( "variable,name=killing_spree_vanish_sync,value=!runeforge.mark_of_the_master_assassin|cooldown.vanish.remains>10|master_assassin_remains>2", "Attempt to sync Killing Spree with Vanish for Master Assassin" );
     cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&variable.killing_spree_vanish_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.deficit>(energy.regen*2+15)|spell_targets.blade_flurry>(2-buff.deathly_shadows.up)|master_assassin_remains>0)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+ (2T+ with Deathly Shadows) or when Master Assassin is up." );
     cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&(energy.time_to_max>2&buff.dreadblades.down|energy<=30|spell_targets>2)" );
-    
+    cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!debuff.flagellation.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
+    cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
+
     cds->add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
-    
+
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
     cds->add_action( "blood_fury" );
@@ -8194,7 +8204,7 @@ void rogue_t::init_spells()
       secondary_trigger::CONCEALED_BLUNDERBUSS, "pistol_shot_concealed_blunderbuss" );
   }
 
-  // Active Spells = ========================================================
+  // Active Spells ==========================================================
 
   auto_attack = new actions::auto_melee_attack_t( this, "" );
 
@@ -8215,6 +8225,7 @@ void rogue_t::init_spells()
 
   if ( talent.weaponmaster->ok() && specialization() == ROGUE_SUBTLETY )
   {
+    cooldowns.weaponmaster->base_duration = talent.weaponmaster->internal_cooldown();
     active.weaponmaster.backstab = get_secondary_trigger_action<actions::backstab_t>(
       secondary_trigger::WEAPONMASTER, "backstab_weaponmaster" );
     active.weaponmaster.shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
@@ -8332,7 +8343,6 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_refund            = get_proc( "Serrated Bone Spike Refund" );
   procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
-  procs.serrated_bone_spike_waste_deathspike  = get_proc( "Serrated Bone Spike Refund Wasted (Deathspike Bug)" );
 
   procs.count_the_odds      = get_proc( "Count the Odds"               );
 
@@ -8630,6 +8640,9 @@ void rogue_t::create_buffs()
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
                                                      conduit.perforated_veins->effectN( 1 ).trigger(),
                                                      conduit.perforated_veins );
+  buffs.perforated_veins->set_cooldown( timespan_t::zero() );
+  cooldowns.perforated_veins->base_duration = conduit.perforated_veins->internal_cooldown();
+  
 
   if ( conduit.planned_execution.ok() )
   {
@@ -9009,6 +9022,10 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
     unique_gear::scoped_actor_callback_t<rogue_t>::initialize( e );
 
     // Create callback action to proc debuff stacks on the target
+    // Only create one instance of this, as dual-wielding does not change the application of the debuff
+    if ( e.player->find_action( "banshees_blight_debuff" ) )
+      return;
+
     e.execute_action = unique_gear::create_proc_action<banshees_blight_debuff_t>( "banshees_blight_debuff", e );
     new dbc_proc_callback_t( e.player, e );
   }
@@ -9137,12 +9154,20 @@ void rogue_t::break_stealth()
 
 void rogue_t::cancel_auto_attack()
 {
-  // Stop autoattacks
-  if ( main_hand_attack && main_hand_attack->execute_event )
-    event_t::cancel( main_hand_attack->execute_event );
+  // Cancel scheduled AA events and record the swing timer to reference on restart
+  if ( melee_main_hand && melee_main_hand->execute_event )
+  {
+    melee_main_hand->canceled = true;
+    melee_main_hand->prev_scheduled_time = melee_main_hand->execute_event->occurs();
+    event_t::cancel( melee_main_hand->execute_event );
+  }
 
-  if ( off_hand_attack && off_hand_attack->execute_event )
-    event_t::cancel( off_hand_attack->execute_event );
+  if ( melee_off_hand && melee_off_hand->execute_event )
+  {
+    melee_off_hand->canceled = true;
+    melee_off_hand->prev_scheduled_time = melee_off_hand->execute_event->occurs();
+    event_t::cancel( melee_off_hand->execute_event );
+  }
 }
 
 // rogue_t::swap_weapon =====================================================

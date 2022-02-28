@@ -172,6 +172,10 @@ warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
 {
   debuff_infernal_brand = make_buff( *this, "infernal_brand", pet.o()->find_spell( 340045 ) )
                               ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
+
+  debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
+                        ->set_default_value( pet.o()->min_version_check( VERSION_9_2_0 ) ? pet.o()->find_spell( 6360 )->effectN( 2 ).percent() : 0.0 )
+                        ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
 }
 
 namespace pets
@@ -288,18 +292,18 @@ timespan_t imp_pet_t::available() const
 
 /// Imp End
 
-/// Succubus Begin
+/// Sayaad Begin
 
-succubus_pet_t::succubus_pet_t( warlock_t* owner, util::string_view name )
-  : warlock_pet_t( owner, name, PET_SUCCUBUS, name != "succubus" )
+sayaad_pet_t::sayaad_pet_t( warlock_t* owner, util::string_view name )
+  : warlock_pet_t( owner, name, PET_SAYAAD, false )
 {
   main_hand_weapon.swing_time = 3_s;
-  action_list_str             = "lash_of_pain";
+  action_list_str             = "whiplash/lash_of_pain";
 
   is_main_pet = true;
 }
 
-void succubus_pet_t::init_base_stats()
+void sayaad_pet_t::init_base_stats()
 {
   warlock_pet_t::init_base_stats();
 
@@ -309,15 +313,40 @@ void succubus_pet_t::init_base_stats()
   melee_attack                = new warlock_pet_melee_t( this );
 }
 
-action_t* succubus_pet_t::create_action( util::string_view name, util::string_view options_str )
+struct whiplash_t : public warlock_pet_spell_t
+{
+  whiplash_t( warlock_pet_t* p ) : warlock_pet_spell_t( p, "Whiplash" )
+  {
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_pet_spell_t::impact( s );
+
+    pet_td( s->target )->debuff_whiplash->trigger();
+  }
+};
+
+double sayaad_pet_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_target_multiplier( target, school );
+
+  m *= 1 + get_target_data( target )->debuff_whiplash->check_stack_value();
+
+  return m;
+}
+
+action_t* sayaad_pet_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "lash_of_pain" )
     return new warlock_pet_spell_t( this, "Lash of Pain" );
+  if ( name == "whiplash" )
+    return new whiplash_t( this );
 
   return warlock_pet_t::create_action( name, options_str );
 }
 
-/// Succubus End
+/// Sayaad End
 
 /// Voidwalker Begin
 
@@ -701,12 +730,9 @@ wild_imp_pet_t::wild_imp_pet_t( warlock_t* owner )
 
 struct fel_firebolt_t : public warlock_pet_spell_t
 {
-  bool demonic_power_on_cast_start;
-
   fel_firebolt_t( warlock_pet_t* p ) : warlock_pet_spell_t( "fel_firebolt", p, p->find_spell( 104318 ) )
   {
     repeating = true;
-    demonic_power_on_cast_start = false;
   }
 
   void schedule_execute( action_state_t* execute_state ) override
@@ -719,8 +745,6 @@ struct fel_firebolt_t : public warlock_pet_spell_t
       return;
 
     warlock_pet_spell_t::schedule_execute( execute_state );
-
-    demonic_power_on_cast_start = p()->o()->buffs.demonic_power->check() && p()->resources.current[ RESOURCE_ENERGY ] < 100;
   }
 
   void consume_resource() override
@@ -741,8 +765,9 @@ struct fel_firebolt_t : public warlock_pet_spell_t
     if ( p()->o()->spec.fel_firebolt_2->ok() )
       c *= 1.0 + p()->o()->spec.fel_firebolt_2->effectN( 1 ).percent();
 
-    if ( demonic_power_on_cast_start )
+    if ( p()->o()->buffs.demonic_power->check() )
     {
+      // 2022-02-16 - At some point, Wild Imps stopped despawning if Demonic Tyrant is summoned during their final cast
       c *= 1.0 + p()->o()->buffs.demonic_power->data().effectN( 4 ).percent();
     }
 
