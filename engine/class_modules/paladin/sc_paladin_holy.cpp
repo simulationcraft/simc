@@ -642,26 +642,25 @@ void paladin_t::generate_action_prio_list_holy_dps()
   cds->add_action( "divine_toll" );
   if ( sim->allow_potions )
   {
-    cds->add_action( "potion,if=(buff.avenging_wrath.up)" );
+    cds->add_action( "potion,if=buff.avenging_wrath.up|fight_remains<25" );
   }
   cds->add_action( "blood_fury,if=(buff.avenging_wrath.up)" );
   cds->add_action( "berserking,if=(buff.avenging_wrath.up)" );
-  cds->add_action( "holy_avenger,if=(buff.avenging_wrath.up)" );
-  cds->add_action( "use_items,if=(buff.avenging_wrath.up)" );
+  cds->add_action( "holy_avenger,if=buff.avenging_wrath.up|fight_remains<20" );
+  cds->add_action( "use_items,if=buff.avenging_wrath.up|fight_remains<25" );
   cds->add_action( "seraphim" );
 
   priority->add_action( this, "Shield of the Righteous",
-                        "if=buff.avenging_wrath.up|buff.holy_avenger.up|!talent.awakening.enabled",
-                        "High priority SoR action with AW or HA active or when not talented into Awakening" );
-  priority->add_action( this, "Hammer of Wrath", "if=holy_power<5&spell_targets.consecration=2",
+                        "if=(buff.avenging_wrath.up|buff.holy_avenger.up)&!runeforge.the_mad_paragon|!talent.awakening.enabled");
+  priority->add_action("pool_resource,if=covenant.venthyr&mana<2000&!cooldown.ashen_hallow.remains"
+  priority->add_action( this, "Hammer of Wrath", "if=holy_power<5&(spell_targets.consecration>2|covenant.venthyr)",
                         "Use Hammer of Wrath when fighting 2 melee targets and you are not capped on Holy Power." );
   priority->add_action( "lights_hammer,if=spell_targets.lights_hammer>=2",
                         "High priority Light's Hammer action when fighting 2 or more melee targets." );
   priority->add_action( "consecration,if=spell_targets.consecration>=2&!consecration.up",
                         "High priority Consecration refresh when fighting 2 or more targets." );
   priority->add_action(
-      "light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|(buff.holy_avenger.up&"
-      "holy_power>=3))",
+      "light_of_dawn,if=talent.awakening.enabled&spell_targets.consecration<=5&(holy_power>=5|buff.holy_avenger.up&holy_power>=3))",
       "When talented into Awakening use Light of Dawn when fighting 5 or less targets and you are capped on Holy Power "
       "or Holy Avenger is active and you have 3 or more Holy Power." );
   priority->add_action( this, "Shield of the Righteous", "if=spell_targets.consecration>5" );
