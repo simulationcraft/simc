@@ -73,7 +73,7 @@ T28_Generate_Paladin.simc
 T28_Generate_Priest.simc
 
 # Rogue
-# T28_Generate_Rogue.simc
+T28_Generate_Rogue.simc
 
 # Shaman
 T28_Generate_Shaman.simc
