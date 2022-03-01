@@ -3571,6 +3571,53 @@ void grim_eclipse( special_effect_t& effect )
   effect.execute_action = create_proc_action<grim_eclipse_t>( "grim_eclipse", effect );
 }
 
+// id=367802 driver
+// id=368747 damage
+// id=368775 coeffs
+// id=368810 shield
+void pulsating_riftshard( special_effect_t& effect )
+{
+  struct pulsating_riftshard_t : public proc_spell_t
+  {
+    struct pulsating_riftshard_damage_t : public shadowlands_aoe_proc_t
+    {
+      pulsating_riftshard_damage_t( const special_effect_t& e )
+        : shadowlands_aoe_proc_t( e, "pulsating_riftshard_damage", 368747, true )
+      {
+        auto coeff_data = e.player->find_spell( 368775 );
+
+        max_scaling_targets = as<unsigned>( coeff_data->effectN( 3 ).base_value() );
+        base_dd_min = base_dd_max = coeff_data->effectN( 1 ).average( e.item );
+        background = dual = true;
+      }
+    };
+
+    action_t* damage;
+    timespan_t delay;
+
+    pulsating_riftshard_t( const special_effect_t& e )
+      : proc_spell_t( "pulsating_riftshard", e.player, e.driver() ),
+        damage( create_proc_action<pulsating_riftshard_damage_t>( "pulsating_riftshard_damage", e ) ),
+        delay( data().duration() )
+    {
+      damage->stats = stats;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // TODO: better modeling of frontal line behavior incl. mobs moving out, etc.
+      auto t = target;
+      make_event( *sim, delay, [ this, t ]() {
+        damage->execute_on_target( t );
+      } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<pulsating_riftshard_t>( "pulsating_riftshard", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -5048,6 +5095,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
     unique_gear::register_special_effect( 367924, items::grim_eclipse );
+    unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
