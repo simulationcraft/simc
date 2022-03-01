@@ -3525,14 +3525,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    /*
-     * While the cleave capability for the DT AiS can come from either a snapshot of Trick Shots taken at the
-     * point of the original AiS cast OR the existence of the buff at the point of its own cast, the Focused Trickery
-     * modifier depends on the Trick Shots buff being up explicitly at the point of the DT AiS cast, which still
-     * allows the Focused Trickery 2pc modifier to affect the damage if Trick Shots is applied immediately following
-     * the AiS cast, or an ongoing Volley is present. Allegedly being fixed as of 2022-01-25.
-     */
-    if ( p()->tier_set.focused_trickery_2pc.ok() && ( p()->buffs.trick_shots->check() || !p() -> bugs && trick_shots.up ) )
+    // XXX: 2022-02-28 Now both cleave capability and the damage modifier from
+    // Focused Trickery are based on the original cast's Trick Shots snapshot.
+    if ( p()->tier_set.focused_trickery_2pc.ok() && trick_shots_up() )
       m *= 1 + p()->tier_set.focused_trickery_2pc->effectN( 1 ).percent();
 
     return m;
@@ -3560,9 +3555,11 @@ struct aimed_shot_t : public aimed_shot_base_t
   struct state_data_t
   {
     bool secrets_of_the_vigil_up = false;
+    bool focused_trickery_vigil  = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "secrets_of_the_vigil_up={:d}", data.secrets_of_the_vigil_up );
+      fmt::format_to( out, "secrets_of_the_vigil_up={:d}, focused_trickery_vigil={:d}",
+          data.secrets_of_the_vigil_up, data.focused_trickery_vigil );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
@@ -3596,7 +3593,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       // XXX: Wild Spirits from Double Tap AiS at "close" range
       triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
 
-      // 2022-01-22 Double Tap AiS always consumes the Vigil buff
+      // 2022-02-28 Double Tap AiS always consumes the Vigil buff
       if ( p() -> bugs )
         p() -> buffs.secrets_of_the_vigil -> decrement();
     }
@@ -3674,16 +3671,14 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     // XXX: 2022-02-19 Vigil seems to always be snapshot and consumed *before* the cast
     secrets_of_the_vigil_up = p() -> buffs.secrets_of_the_vigil -> up();
+
     // XXX: 2020-12-02 Be on the safe side and assume the buff doesn't get consumed
     // only if the AiS *benefits* from LnL. It may work as Streamline though.
     if ( ! lock_and_loaded )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
-    // XXX: 2022-02-19 Vigil buff determines the order of the T28 4pc proc relative to
-    // the Aimed Shot cast. If Vigil is up the set procs after the AiS cast, if it's
-    // down the set procs before. Allegedly being fixed as of 2022-01-25.
-    if ( !p() -> bugs || !secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, base_cost() );
+    // XXX: 2022-02-28 All triggers now happen before the cast.
+    p() -> trigger_focused_trickery( this, base_cost() );
 
     aimed_shot_base_t::execute();
 
@@ -3697,10 +3692,6 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( serpentstalkers_trickery.action )
       serpentstalkers_trickery.action -> execute_on_target( target );
-
-    // XXX: Allegedly being fixed as of 2022-01-25.
-    if ( p() -> bugs && secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, base_cost() );
 
     secrets_of_the_vigil_up = false;
 
@@ -3744,9 +3735,9 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( s );
 
-    // XXX 2022-01-26 AiS consumes Vigil buff on impact if it was up on cast.
-    // Allegedly being fixed as of 2022-01-25.
-    if ( p() -> bugs && debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up )
+    // XXX 2022-02-28 AiS consumes Vigil buffs on impact if they were up on cast with
+    // the exception of Vigil buffs that were applied by a Focused Trickery Trick Shots.
+    if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
@@ -3781,6 +3772,8 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = secrets_of_the_vigil_up;
+    // XXX 2022-02-28 If a new Vigil is applied after the original is consumed, we protect this new one on impact.
+    debug_cast<state_t*>( s ) -> focused_trickery_vigil  = p() -> buffs.secrets_of_the_vigil -> check();
   }
 };
 
