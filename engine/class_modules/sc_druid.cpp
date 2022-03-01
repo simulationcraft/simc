@@ -7423,15 +7423,18 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
   timespan_t gcd_add;
+  int precombat_stacks;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
       precombat_seconds( 11_s ),
       gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
+      precombat_stacks( 0 ),
       target_self( false )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_int( "precombat_stacks", precombat_stacks ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -7468,7 +7471,17 @@ struct adaptive_swarm_t : public druid_spell_t
     if ( is_precombat && precombat_seconds > 0_s )
     {
       heal->set_target( player );
-      heal->schedule_execute();
+
+      if ( precombat_stacks )
+      {
+        auto new_state = heal->get_state();
+        debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = precombat_stacks;
+        heal->schedule_execute( new_state );
+      }
+      else
+      {
+        heal->schedule_execute();
+      }
 
       this->cooldown->adjust( -precombat_seconds, false );
       heal->get_dot( player )->adjust_duration( -precombat_seconds );
