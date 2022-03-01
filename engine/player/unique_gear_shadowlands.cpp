@@ -3526,7 +3526,17 @@ void bells_of_the_endless_feast( special_effect_t& effect )
         td->debuff.scent_of_souls->trigger( stacks );
       }
     }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      if ( a->background )
+        return;
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
   };
+
+  effect.proc_flags2_ = PF2_HIT;
 
   new brood_of_the_endless_feast_cb_t( effect );
 }
