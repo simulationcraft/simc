@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-03-01/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -13540,7 +13540,8 @@ Effects          :
 #1 (id=903204)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=903205)   : Dummy (3)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500
+Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : Kill Command critical hits increase the damage and cooldown reduction of your next Cobra Shot by $s2%.
 
 Name             : Focused Trickery (id=363666) [Passive, Hidden] 
@@ -13613,9 +13614,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Floating Combat Text On Cast (198), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=903358)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
+Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : $@spelldesc363665
 Tooltip          : Cobra Shot damage and cooldown reduction increased by $w1%.
 
@@ -13679,7 +13681,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=904534)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.666667)
 Description      : Trick Shots now also increases the damage of the affected shot by $s1%.
 
 Name             : Killing Frenzy (id=364492) [Passive, Hidden] 

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-03-01/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3168,6 +3168,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Lava Burst (51505), Lava Burst (285452)
                    Family Flags: 44
+#12 (id=915672)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
+                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value 2: 1445 (Label)
+                   Affected Spells (Label): Vesper Totem (356790)
+Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -13001,7 +13005,8 @@ Effects          :
 #2 (id=903221)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=913147)   : Dummy (3)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.60000
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal with $s3% effectiveness when you drop them.
 
 Name             : Heal the Soul (id=364470) [Spell Family (11), Passive, Hidden] 

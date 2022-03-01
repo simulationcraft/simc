@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-03-01/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -11743,7 +11743,6 @@ Description      : Abilities associated with your chosen Affinity are substantia
 Tooltip          : Abilities associated with your chosen Affinity are substantially empowered.
 
 Name             : Ravenous Frenzy (desc=Venthyr) (id=323546) [Spell Family (7)] 
-Hotfixed         : Internal Cooldown (500 -> 0)
 Class            : Druid
 Covenant         : Venthyr
 School           : Shadow
@@ -14524,7 +14523,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Include In Advanced Combat Log (72), DoT Stacking Rule (103), Aura Never Bounces (148), Extra Initial Period (169), Spell Haste Affects Periodic (173), Vehicle Immunity Category (218), Periodic Can Crit (265), Aura Points On Client (268), Heal Prediction (280), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=904878)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02600 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02600 | PvP Coefficient: 0.50000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc364365
 Tooltip          : Healing $s1 every $t sec.
 
