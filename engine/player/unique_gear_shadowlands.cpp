@@ -3886,17 +3886,26 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
       assert( rppm );
       assert( s->target );
 
-      // TODO: figure out how to mod the rppm based on how it works in game
-      // see: bloodthirsty_instinct_cb_t in unique_gear_legion.cpp
       double mod = 1;
 
-      if ( effect.player->sim->debug )
-      {
-        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
-                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
-      }
+      // right now this is just straight up full uptime regardless of health hp
+      // will need something like this in the future?
+      // if ( s->target->health_percentage() ? )
+      // {
+      //   mod = ?;
+      // }
 
-      rppm->set_modifier( mod );
+      if ( rppm->get_modifier() != mod )
+      {
+        if ( effect.player->sim->debug )
+        {
+          effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                                effect.player->name(), effect.name().c_str(), rppm->get_modifier(),
+                                                mod );
+        }
+
+        rppm->set_modifier( mod );
+      }
 
       dbc_proc_callback_t::trigger( a, s );
     }
@@ -3906,13 +3915,12 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 368689 ) )
-               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) )
-               ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
+               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.custom_buff = buff;
-  // TODO: verify flags
-  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  // TODO: seems to not proc at all on healing right now, not sure how to remove that
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   new lions_hope_cb_t( effect );
 }
 
