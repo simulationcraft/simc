@@ -3721,14 +3721,15 @@ void singularity_supreme( special_effect_t& effect )
   auto lockout = make_buff( effect.player, "singularity_supreme_lockout", effect.player->find_spell( 368865 ) )
     ->set_quiet( true );
 
-  auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
-    ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        lockout->trigger();
-    } );
+  auto buff =
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item )
+          ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
+            if ( new_ )
+              lockout->trigger();
+          } );
 
   effect.custom_buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ) )
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
           ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
