@@ -1933,7 +1933,7 @@ void enemy_t::demise()
   player_t::demise();
 }
 
-double enemy_t::k_value( int level, tank_dummy_e diff )
+double enemy_t::k_value( int level, tank_dummy_e dungeon_content )
 {
   // Armor coefficient
   // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
@@ -1971,7 +1971,7 @@ double enemy_t::k_value( int level, tank_dummy_e diff )
   */
   double k_value = dbc->armor_mitigation_constant( level );
 
-  switch ( diff )
+  switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
       return k_value * 1.313;  // M0/M+
@@ -1986,7 +1986,7 @@ double enemy_t::k_value( int level, tank_dummy_e diff )
       return k_value * 1.670;  // Mythic Raid
       break;
     default:
-      break;  // Use the default value set in enemy_t::init_base_stats()
+      break;  // tank_dummy_e::NONE
   }
   
   return k_value;
