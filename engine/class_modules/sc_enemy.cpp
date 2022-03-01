@@ -1971,7 +1971,7 @@ double enemy_t::k_value( int level, tank_dummy_e diff )
     Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
     Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
   */
-  double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
+  double k_value = dbc->armor_mitigation_constant( level );
 
   switch ( diff )
   {
