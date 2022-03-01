@@ -1418,10 +1418,8 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Soulrender Dormazain as a baseline
   std::array<int, numTankDummies> aa_damage = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
-  std::array<int, numTankDummies> dummy_strike_damage = {
-      0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
-  std::array<int, numTankDummies> background_spell_damage = {
-      0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
+  std::array<int, numTankDummies> dummy_strike_damage = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
+  std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
@@ -1990,6 +1988,8 @@ double enemy_t::k_value( int level, tank_dummy_e diff )
     default:
       break;  // Use the default value set in enemy_t::init_base_stats()
   }
+  
+  return k_value;
 }
 
 // ENEMY MODULE INTERFACE ===================================================
