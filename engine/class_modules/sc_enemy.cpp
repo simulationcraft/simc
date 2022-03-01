@@ -1250,6 +1250,8 @@ struct tank_dummy_enemy_t : public enemy_t
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
+          base.armor_coeff = k_value;
+          sim->print_debug( "{} Open World base armor coefficient set to {}.", *this, base.armor_coeff );
           break;  // Use the default value set in enemy_t::init_base_stats()
       }
     }
