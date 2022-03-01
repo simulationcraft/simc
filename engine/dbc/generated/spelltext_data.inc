@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42488
-static const std::array<spelltext_data_t, 16044> __spelltext_data { {
+static const std::array<spelltext_data_t, 16045> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15846,7 +15846,7 @@ static const std::array<spelltext_data_t, 16044> __spelltext_data { {
   { 366184, 0, "Suffering damage every $t1 sec.", 0 },
   { 366222, "Summons a Succubus or Incubus under your command to seduce enemy Humanoids, preventing them from attacking.\r\n", 0, 0 },
   { 366333, "Consume this crystal to gain its enhancement temporarily. \r\nThis effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", "This effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", 0 },
-  { 366436, "Every $t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
+  { 366436, "Every $369786t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
   { 366438, "$@spelldesc366436", "Your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast is enhanced, granting the target precisely what they require.", 0 },
   { 366656, "Your healing spells and abilities have a chance to activate a Pre-Fabricated Assistant who applies $s1 absorb to your most injured nearby ally every $368208t1 sec for $368208d.", 0, 0 },
   { 366769, "$@spelldesc363913", "Strength increased by $s1%.", 0 },
@@ -16044,10 +16044,11 @@ static const std::array<spelltext_data_t, 16044> __spelltext_data { {
   { 369438, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
   { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
+  { 369786, "$@spelldesc366436", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42488
-static constexpr std::array<hotfix::client_hotfix_entry_t, 64> __spelltext_hotfix_data { {
+static constexpr std::array<hotfix::client_hotfix_entry_t, 65> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16097,6 +16098,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 64> __spelltext_hotfi
   {  363805,  1, "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", "Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown." },
   {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
   {  364556,  0, "$@spelldesc363736", "$@spelldesc363592" },
+  {  366436,  0, "Every $t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", "Every $369786t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require." },
   {  367241,  1, nullptr, "Versatility increased by $w1." },
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
   {  367924,  0, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $369287d.\r\n\r\nAfter $369287d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter." },

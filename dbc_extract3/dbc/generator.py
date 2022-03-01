@@ -1347,6 +1347,7 @@ class SpellDataGenerator(DataGenerator):
          360074, # Magically Regulated Automa Core
          367971, # Extract of Prodigious Sands
          367466, 367467, # Broker's Lucky Coin
+         368747, # Pulsating Riftshard
         ),
 
         # Warrior:

@@ -3006,6 +3006,11 @@ void symbol_of_the_lupine( special_effect_t& effect )
 
 void scars_of_fraternal_strife( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "scars_of_fraternal_strife_1", "scars_of_fraternal_strife_2", "scars_of_fraternal_strife_3",
+                     "scars_of_fraternal_strife_4", "scars_of_fraternal_strife_5" } ) )
+    return;
+
   struct apply_rune_t : public proc_spell_t
   {
     struct first_rune_t : public stat_buff_t
@@ -3721,14 +3726,15 @@ void singularity_supreme( special_effect_t& effect )
   auto lockout = make_buff( effect.player, "singularity_supreme_lockout", effect.player->find_spell( 368865 ) )
     ->set_quiet( true );
 
-  auto buff = make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ) )
-    ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-      if ( new_ )
-        lockout->trigger();
-    } );
+  auto buff =
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item )
+          ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
+            if ( new_ )
+              lockout->trigger();
+          } );
 
   effect.custom_buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ) )
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
           ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
@@ -5024,7 +5030,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367973, items::extract_of_prodigious_sands );
     unique_gear::register_special_effect( 367464, items::brokers_lucky_coin );
     unique_gear::register_special_effect( 367722, items::symbol_of_the_lupine );
-    unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife );
+    unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife, true );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
     unique_gear::register_special_effect( 367241, items::the_first_sigil );

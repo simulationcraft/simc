@@ -52,7 +52,7 @@ ptr=1
 T28_Generate_Death_Knight.simc
 
 # Demon Hunter
-# T28_Generate_Demon_Hunter.simc
+T28_Generate_Demon_Hunter.simc
 
 # Druid
 T28_Generate_Druid.simc
@@ -73,7 +73,7 @@ T28_Generate_Paladin.simc
 T28_Generate_Priest.simc
 
 # Rogue
-# T28_Generate_Rogue.simc
+T28_Generate_Rogue.simc
 
 # Shaman
 T28_Generate_Shaman.simc

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-02-26/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-03-01/42488, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
