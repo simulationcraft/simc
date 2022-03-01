@@ -36,7 +36,7 @@ actions.precombat+=/variable,name=prepull_evo,default=-1,op=set,if=variable.prep
 actions.precombat+=/variable,name=have_opened,op=set,value=0+(1*active_enemies>=variable.aoe_target_count)
 actions.precombat+=/variable,name=final_burn,op=set,value=0
 actions.precombat+=/variable,name=harmony_stack_time,op=reset,default=9
-actions.precombat+=/variable,name=always_sync_cooldowns,default=-1,op=set,if=variable.always_sync_cooldowns=-1,value=1*set_bonus.tier28_4pc
+actions.precombat+=/variable,name=always_sync_cooldowns,op=reset,default=1
 actions.precombat+=/variable,name=rs_max_delay_for_totm,op=reset,default=5
 actions.precombat+=/variable,name=rs_max_delay_for_rop,op=reset,default=5
 actions.precombat+=/variable,name=rs_max_delay_for_ap,op=reset,default=20
