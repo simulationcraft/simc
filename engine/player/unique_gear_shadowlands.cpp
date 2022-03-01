@@ -3520,23 +3520,12 @@ void bells_of_the_endless_feast( special_effect_t& effect )
       }
       else
       {
-        // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
-        // 5 and 7 stacks of the debuff on each proc.
-        int stacks = static_cast<int>( rng().range( 5, 7 ) );
-        td->debuff.scent_of_souls->trigger( stacks );
+        td->debuff.scent_of_souls->trigger();
       }
-    }
-
-    void trigger( action_t* a, action_state_t* s ) override
-    {
-      if ( a->background )
-        return;
-
-      dbc_proc_callback_t::trigger( a, s );
     }
   };
 
-  effect.proc_flags2_ = PF2_HIT;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new brood_of_the_endless_feast_cb_t( effect );
 }
