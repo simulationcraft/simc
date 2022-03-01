@@ -147,7 +147,7 @@ void shadow( player_t* p )
   trinkets->add_action( "use_item,name=architects_ingenuity_core", "Use this on CD for max CDR" );
   trinkets->add_action(
       "use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff."
-      "power_infusion.up|cooldown.void_eruption.remains>10)",
+      "power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae",
       "Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack "
       "for cooldowns." );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
