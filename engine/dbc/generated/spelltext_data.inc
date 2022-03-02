@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42521
-static const std::array<spelltext_data_t, 16047> __spelltext_data { {
+// Spell text, wow build 9.2.0.42538
+static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15557,6 +15557,7 @@ static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   { 359766, 0, "Pocopoc has taken control of a scarabid  and gained a new ability.", 0 },
   { 359831, 0, "Pocopoc has taken control of a tarachnid and gained a new ability.", 0 },
   { 359836, 0, "Pocopoc has taken control of a helicid and gained a new ability.", 0 },
+  { 359866, 0, "Pocopoc has taken control of a vombata and gained a new ability.", 0 },
   { 359867, "Restores $s1 health.", 0, 0 },
   { 359878, 0, "Pocopoc has taken control of a geomental and gained a new ability.", 0 },
   { 359889, "Attune yourself to the energies of the targeted Sepulcher of the First Ones raid boss, increasing your Versatility by $354399s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
@@ -15925,6 +15926,7 @@ static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   { 367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
   { 367903, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367907, "$@spelldesc364423", "Generating ${$o1/10} Astral Power over $d.", 0 },
+  { 367910, "When Pocopoc possesses a Coreless Vombata, it has a chance to cast an $368245d sec Bloodlust on kill.", 0, 0 },
   { 367911, "When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.", 0, 0 },
   { 367912, "When Pocopoc possesses a Coreless Scarabid, it reduces your damage taken by $368141M1%.", 0, 0 },
   { 367913, "When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy attack and cast speed.\r\n", 0, 0 },
@@ -15933,6 +15935,7 @@ static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   { 367929, "Affix a Domination Rune to yourself, gaining power at a price.", 0, 0 },
   { 367930, "Add another.", 0, 0 },
   { 367931, "Drive a spike into your target, dealing $s1 Physical damage and creating a chain link between you for $d. While the chain persists, $s2% of all damage dealt to the target is stored within it, up to a maximum of $s3.\r\n\r\nMoving away from your target will rip the chain out, dealing the stored amount as Shadow damage to all enemies within $s4 yds of them.", "Moving away from the target will deal $w5 Shadow damage around it.", 0 },
+  { 367937, "$@spelldesc367910\r\n$@spellaura366333", "$?a359866[Resonant Vombata has a chance to cast an $368245d sec Bloodlust on kill.][When Pocopoc possesses a Coreless Vombata, it has a chance to cast an $368245d sec Bloodlust on kill.]", 0 },
   { 367938, "$@spelldesc367911\r\n$@spellaura366333\r\n", "$?a359831[Resonant Tarachnid gives you a chance to stun and poison melee attackers.][When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.]", 0 },
   { 367939, "$@spelldesc367912 \r\n$@spellaura366333\r\n", "$?a359766[Resonant Scarabid reduces your damage taken by $368141M1%.][When Pocopoc possesses a Coreless Scarabid, your damage taken is reduced.]", 0 },
   { 367940, "$@spelldesc367913 \r\n$@spellaura366333", "$?a359836[Resonant Helicid has a chance when attacking to slow enemy attack and cast speed.][When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy's attack and cast speed.]", 0 },
@@ -15973,6 +15976,7 @@ static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   { 368239, "The decrypted Urh cypher grants players $w1% increased spell and ability cool down rate and restores $368494s1% health and mana every $t2 sec for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\n$368494s1% health and mana restored every $t2 sec.", 0 },
   { 368240, "The decrypted Vy cypher grants players $s1% increased Haste and summons an orb of energy that damages or heals your targets for $d.", "$s1% increased Haste.\r\n\r\nYour damage and healing has a high chance to fire a bolt of Cosmic energy at the target.", 0 },
   { 368241, "The decrypted Wo cypher grants players $s1% increased movement speed, $s2% reduced damage taken, and conceals players from enemy detection while out of combat for $d.", "$s1% increased movement speed.\r\n$s2% reduced damage taken.\r\n\r\nConcealed from enemy detection while out of combat.", 0 },
+  { 368245, "Increases melee, ranged, and spell casting speed by $s1% for all party members. Lasts $d.", "Melee, ranged, and spell casting speed increased by $s1%.", 0 },
   { 368275, "$s1% of Heal or Flash Heal healing on other targets also heals you.", 0, 0 },
   { 368328, "Add the Encrypted affix to a Mythic Keystone.", 0, 0 },
   { 368342, 0, "Heals for $368343M~2% upon taking damage.", 0 },
@@ -16049,7 +16053,7 @@ static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   { 369786, "$@spelldesc366436", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42521
+// spelltext hotfix entries, wow build 9.2.0.42538
 static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
@@ -16119,7 +16123,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfi
   {  369183,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42521
+// Spell description variables, wow build 9.2.0.42538
 static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16429,7 +16433,7 @@ static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42521
+// spelldesc_vars hotfix entries, wow build 9.2.0.42538
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
