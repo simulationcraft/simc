@@ -3877,12 +3877,12 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
 
       double mod = 1;
 
-      // right now this is just straight up full uptime regardless of health hp
-      // will need something like this in the future?
-      // if ( s->target->health_percentage() ? )
-      // {
-      //   mod = ?;
-      // }
+      // Appears to be roughly 2 rppm + hasted above 30% HP
+      // Below that it will just be 20 rppm + hasted
+      if ( s->target->health_percentage() >= 30 )
+      {
+        mod = 0.1;
+      }
 
       if ( rppm->get_modifier() != mod )
       {
