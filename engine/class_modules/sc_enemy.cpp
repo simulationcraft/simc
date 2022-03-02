@@ -1311,7 +1311,7 @@ void enemy_t::init_base_stats()
   }
 
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
-  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : k_value( level(), tank_dummy_e::MYTHIC );
+  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : k_value( level(), tank_dummy_e::NONE );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
