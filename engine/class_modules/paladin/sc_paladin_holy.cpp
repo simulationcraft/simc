@@ -480,6 +480,10 @@ struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
   {
     holy_power_consumer_t::execute();
 
+    if ( p()->tier_sets.dawn_will_come_4pc->ok()) {
+      const double adjust_seconds = 10;
+      p()->cooldowns.avenging_wrath->adjust( timespan_t::from_seconds( -adjust_seconds ) );
+    }
     // deal with awakening
     if ( p()->talents.awakening->ok() )
     {
@@ -565,6 +569,7 @@ void paladin_t::create_buffs_holy()
   buffs.infusion_of_light = make_buff( this, "infusion_of_light", find_spell( 54149 ) );
   buffs.avenging_crusader =
       make_buff( this, "avenging_crusader", talents.avenging_crusader )->set_default_value_from_effect( 1 );
+  buffs.dawn_will_come = make_buff(this, "dawn_will_come", find_spell( 364468 ) ); // T28 2pc
 }
 
 void paladin_t::init_spells_holy()
