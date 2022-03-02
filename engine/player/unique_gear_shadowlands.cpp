@@ -3607,6 +3607,146 @@ void pulsating_riftshard( special_effect_t& effect )
   effect.execute_action = create_proc_action<pulsating_riftshard_t>( "pulsating_riftshard", effect );
 }
 
+// 367804 driver, periodic weapon choice rotation
+// 367805 on-use
+//
+// 368657 sword periodic weapon choice buff
+// 368649 stacking haste buff
+//
+// 368656 axe periodic weapon choice buff
+// 368650 axe on-crit bleed buff
+// 368651 axe bleed debuff
+//
+// 368654 wand periodic weapon choice buff
+// 368653 wand damage proc
+void cache_of_acquired_treasures( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs( effect, { "acquired_wand", "acquired_axe", "acquired_wand" } ) )
+    return;
+
+  struct acquire_weapon_t : public proc_spell_t
+  {
+    struct acquired_wand_t : public proc_spell_t
+    {
+      acquired_wand_t( const special_effect_t& effect )
+          : proc_spell_t( "acquired_wand", effect.player, effect.player->find_spell( 368653 ), effect.item )
+      {
+        base_dd_min = base_dd_max = data().effectN( 1 ).average( effect.item );
+      }
+    };
+
+    std::vector<buff_t*> weapons;
+    timespan_t cycle_period;
+    event_t* next_cycle;
+
+    action_t* wand_damage;
+    buff_t* axe_buff;
+    stat_buff_t* sword_buff;
+
+    acquire_weapon_t( const special_effect_t& effect ) : proc_spell_t( effect )
+    {
+      wand_damage = create_proc_action<acquired_wand_t>( "acquired_wand_blast", effect );
+      axe_buff = make_buff( effect.player, "acquired_axe_driver", effect.player->find_spell( 368650 ) );
+      sword_buff = make_buff<stat_buff_t>( effect.player, "acquired_sword_haste", effect.player->find_spell( 368649 ), effect.item );
+      sword_buff->set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+      auto haste_driver = new special_effect_t( effect.player );
+      haste_driver->name_str = "acquired_sword_driver";
+      haste_driver->spell_id = 368649;
+      haste_driver->proc_flags_ = effect.player->find_spell( 368649 )->proc_flags();
+      haste_driver->custom_buff = sword_buff;
+      effect.player->special_effects.push_back( haste_driver );
+
+      auto acquired_sword_cb = new dbc_proc_callback_t( effect.player, *haste_driver );
+      acquired_sword_cb->initialize();
+      acquired_sword_cb->deactivate();
+
+      sword_buff->set_stack_change_callback( [ acquired_sword_cb ]( buff_t*, int old, int new_ ) {
+        if ( old == 0 )
+          acquired_sword_cb->activate();
+        else if ( new_ == 0 )
+          acquired_sword_cb->deactivate();
+      } );
+
+      auto bleed = new proc_spell_t( "vicious_wound", effect.player, effect.player->find_spell( 368651 ), effect.item );
+
+      auto bleed_driver               = new special_effect_t( effect.player );
+      bleed_driver->name_str          = "acquired_axe_driver";
+      bleed_driver->spell_id          = 368650;
+      bleed_driver->proc_flags_       = effect.player->find_spell( 368650 )->proc_flags();
+      bleed_driver->proc_flags2_      = PF2_CRIT;
+      bleed_driver->execute_action    = bleed;
+      effect.player->special_effects.push_back( bleed_driver );
+
+      auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver);
+      vicious_wound_cb->initialize();
+      vicious_wound_cb->deactivate();
+
+      axe_buff->set_stack_change_callback( [ vicious_wound_cb ]( buff_t*, int old, int new_ ) {
+      if ( old == 0 )
+          vicious_wound_cb->activate();
+      else if ( new_ == 0 )
+          vicious_wound_cb->deactivate();
+      } );
+
+      weapons.emplace_back(
+          make_buff<buff_t>( effect.player, "acquired_sword", effect.player->find_spell( 368657 ), effect.item )
+              ->set_cooldown( 0_s ) );
+      weapons.push_back(
+          make_buff<buff_t>( effect.player, "acquired_axe", effect.player->find_spell( 368656 ), effect.item )
+              ->set_cooldown( 0_s ) );
+      weapons.push_back(
+          make_buff<buff_t>( effect.player, "acquired_wand", effect.player->find_spell( 368654 ), effect.item )
+              ->set_cooldown( 0_s ) );
+
+      cycle_period = effect.player->find_spell( 367804 )->effectN( 1 ).period();
+      effect.player->register_combat_begin( [ this ]( player_t* p ) {
+        // randomize the weapon choice and its remaining duration when combat starts
+        timespan_t first_update = p->rng().real() * cycle_period;
+        int first = p->rng().range( 3 );
+        std::rotate( weapons.begin(), weapons.begin() + first, weapons.end() );
+        weapons.front()->trigger();
+
+        next_cycle = make_event( p->sim, first_update, [ this, p ]() {
+          weapons.front()->expire();
+          std::rotate( weapons.begin(), weapons.begin() + 1, weapons.end() );
+          weapons.front()->trigger();
+
+          next_cycle = make_repeating_event( p->sim, cycle_period, [ this ]() {
+            weapons.front()->expire();
+            std::rotate( weapons.begin(), weapons.begin() + 1, weapons.end() );
+            weapons.front()->trigger();
+          } );
+        } );
+      } );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      weapons.front()->expire();
+      next_cycle->reschedule( effect->cooldown() );
+
+      if ( weapons.front()->data().id() == 368654 ) // wand
+      {
+        wand_damage->execute_on_target( player->target );
+      }
+      else if ( weapons.front()->data().id() == 368656 ) // axe
+      {
+        axe_buff->trigger();
+      }
+      else if ( weapons.front()->data().id() == 368657 ) // sword
+      {
+        sword_buff->trigger();
+      }
+    }
+  };
+
+  effect.type           = SPECIAL_EFFECT_USE;
+  effect.execute_action = create_proc_action<acquire_weapon_t>( "acquire_weapon", effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -5097,6 +5237,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
     unique_gear::register_special_effect( 367924, items::grim_eclipse );
     unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
+    unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
+
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
