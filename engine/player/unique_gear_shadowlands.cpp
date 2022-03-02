@@ -3164,7 +3164,7 @@ void architects_ingenuity_core( special_effect_t& effect )
       {
         // TODO: On the PTR this only affected class spells and did not affect the cooldown of charged
         // spells. Is this still the case?
-        if ( a->data().class_mask() != 0 && a->data().charges() == 0 )
+        if ( a->cooldown->duration != 0_ms && a->data().class_mask() != 0 && a->data().charges() == 0 )
         {
           cd_actions.push_back( a );
         }

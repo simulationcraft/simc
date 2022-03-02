@@ -9128,7 +9128,7 @@ void druid_t::create_buffs()
     ->set_reverse( true )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( !new_ )
-        cooldown.warrior_of_elune->start();
+        cooldown.warrior_of_elune->start( cooldown.warrior_of_elune->action );
     } );
 
   // Balance Legendaries
