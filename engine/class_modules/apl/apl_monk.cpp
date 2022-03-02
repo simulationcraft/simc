@@ -218,7 +218,7 @@ void brewmaster( player_t* p )
   // Covenant Abilities
   def->add_action( "weapons_of_order,if=!runeforge.call_to_arms.equipped|(buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&!buff.invoke_niuzao_the_black_ox.up)", "Use WoO on CD unless we have CtA equipped, in which case we treat it as mini-Niuzao not WoO." );
   def->add_action( "fallen_order" );
-  def->add_action( "bonedust_brew" );
+  def->add_action( "bonedust_brew,if=!debuff.bonedust_brew_debuff.up" );
 
   // Purifying Brew
   def->add_action( p, "Purifying Brew",
