@@ -3,8 +3,9 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "simulationcraft.hpp"
 #include "util/generic.hpp"
+
+#include "simulationcraft.hpp"
 
 // ==========================================================================
 // Enemy
@@ -87,6 +88,7 @@ struct enemy_t : public player_t
   void combat_end() override;
   virtual void recalculate_health();
   void demise() override;
+  double k_value( int level, tank_dummy_e diff );
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   timespan_t available() const override
   {
@@ -176,7 +178,7 @@ struct enemy_action_t : public ACTION_TYPE
       {
         if ( filtered_options.length() > 0 )
           filtered_options += ",";
-        filtered_options += std::string(split);
+        filtered_options += std::string( split );
       }
     }
     return filtered_options;
@@ -515,7 +517,7 @@ struct auto_attack_t : public enemy_action_t<attack_t>
     {
       for ( auto* mh : mh_list )
       {
-         // if the number of debuff stacks hasn't been specified yet, set it
+        // if the number of debuff stacks hasn't been specified yet, set it
         if ( mh->num_debuff_stacks == -1e6 )
         {
           if ( e->apply_damage_taken_debuff == 0 )
@@ -599,7 +601,7 @@ struct auto_attack_off_hand_t : public enemy_action_t<attack_t>
     {
       for ( auto* oh : oh_list )
       {
-         // if the number of debuff stacks hasn't been specified yet, set it
+        // if the number of debuff stacks hasn't been specified yet, set it
         if ( oh && oh->num_debuff_stacks == -1e6 )
         {
           if ( e->apply_damage_taken_debuff == 0 )
@@ -895,14 +897,17 @@ struct pause_action_t : public action_t
 
   pause_action_t( player_t* p, util::string_view options_str )
     : action_t( ACTION_OTHER, "pause_action", p, spell_data_t::nil() ),
-      duration_stddev( 0_s ), duration_min( 0_s ), duration_max( 0_s ),
-      cooldown_stddev( 0_s ), cooldown_min( 0_s ), cooldown_max( 0_s )
+      duration_stddev( 0_s ),
+      duration_min( 0_s ),
+      duration_max( 0_s ),
+      cooldown_stddev( 0_s ),
+      cooldown_min( 0_s ),
+      cooldown_max( 0_s )
   {
     // Dummy action to help model a boss attacking a different tank
     // or just diverting their attention from auto attacking the player in general
     // (targeting another player for an ability, dialogue/animations, etc.)
     interrupt_auto_attack = special = true;
-
 
     // Use the same duration and cooldown min/max/stddev system as raid events
     add_option( opt_timespan( "duration", base_execute_time ) );
@@ -924,10 +929,10 @@ struct pause_action_t : public action_t
     parse_options( options_str );
 
     // Set the cooldown and stats' name to the action's custom name
-    internal_id = p -> get_action_id( name_str );
-    cooldown = p -> get_cooldown( name_str );
-    cooldown -> duration = cooldown_duration;
-    stats = p -> get_stats( name_str, this );
+    internal_id        = p->get_action_id( name_str );
+    cooldown           = p->get_cooldown( name_str );
+    cooldown->duration = cooldown_duration;
+    stats              = p->get_stats( name_str, this );
 
     // Default duration and cooldown to 30s, and min/max to 0.5x and 1.5x.
     // Some sanity checks as well
@@ -955,7 +960,7 @@ struct pause_action_t : public action_t
       cooldown_min = cooldown->duration * 0.5;
     if ( cooldown_max <= 0_s )
       cooldown_max = cooldown->duration * 1.5;
-    if ( cooldown -> duration <= cooldown_stddev )
+    if ( cooldown->duration <= cooldown_stddev )
     {
       sim->error( "Cooldown value for {} lower than standard deviation, setting stddev to 0", name() );
       cooldown_stddev = 0_s;
@@ -979,13 +984,12 @@ struct pause_action_t : public action_t
 
   void update_ready( timespan_t /* cd_duration */ ) override
   {
-    timespan_t cd = sim->rng().gauss( cooldown -> duration, cooldown_stddev );
+    timespan_t cd = sim->rng().gauss( cooldown->duration, cooldown_stddev );
 
     cd = clamp( cd, cooldown_min, cooldown_max );
 
     action_t::update_ready( cd );
   }
-
 };
 }  // end namespace actions
 
@@ -1167,7 +1171,7 @@ struct tank_dummy_enemy_t : public enemy_t
     // Try parsing the name
     if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = convert_tank_dummy_string( name_str );
-    // if we still have no clue, pit them against the default value (mythic)
+    // if we still have no clue, pit them against the default value (Mythic)
     if ( tank_dummy_enum == tank_dummy_e::NONE )
       tank_dummy_enum = tank_dummy_e::MYTHIC;
   }
@@ -1195,62 +1199,22 @@ struct tank_dummy_enemy_t : public enemy_t
     // Don't change the value if it's specified by the user - handled in enemy_t::init_base_stats()
     if ( custom_armor_coeff <= 0 )
     {
-      // Armor coefficient
-      // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
-      // in. The default value stored in spelldata only works for outdoor and generally "easy" content. New values are
-      // added when new seasonal content (new raid, new M+ season) is released. ArmorConstantMod is pulled from the
-      // ExpectedStatMod table. Values are a combination of the base "K-values" for the intended level, multiplied by the
-      // ArmorConstantMod field.
-
-      // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for.
-      // You then take the Map ID and search the ID within the MapDifficulty table. For raids, you will come back with
-      // four records, one for each difficulty. Each of these will have a ContentTuningID. You then take the
-      // ContentTuningID and search the ID in the ContentTuningXExpected table. Often you will come back with multiple
-      // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
-      // than 1.000.
-
-      /*
-        9.0 values here
-        Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
-        Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
-        Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
-        Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
-        Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
-        Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-        Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
-        Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-        Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-        Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-        Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
-        Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
-        Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
-        Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
-      */
-      double k_value = dbc->armor_mitigation_constant( sim->max_player_level );
-
+      base.armor_coeff = k_value( sim->max_player_level, tank_dummy_enum );
       switch ( tank_dummy_enum )
       {
         case tank_dummy_e::DUNGEON:
-          base.armor_coeff = k_value * 1.313;  // M0/M+
           sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::RAID:
-          base.armor_coeff = k_value * 1.418;  // Normal Raid
           sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::HEROIC:
-          base.armor_coeff = k_value * 1.537;  // Heroic Raid
           sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         case tank_dummy_e::MYTHIC:
-          base.armor_coeff = k_value * 1.670;  // Mythic Raid
           sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
           break;
         default:
-          base.armor_coeff = k_value;
           sim->print_debug( "{} Open World base armor coefficient set to {}.", *this, base.armor_coeff );
           break;  // Use the default value set in enemy_t::init_base_stats()
       }
@@ -1347,7 +1311,7 @@ void enemy_t::init_base_stats()
   }
 
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
-  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : dbc->armor_mitigation_constant( level() );
+  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : k_value( level(), tank_dummy_e::MYTHIC );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
@@ -1377,7 +1341,7 @@ void enemy_t::create_buffs()
     for ( unsigned int i = 1; i <= 10; ++i )
     {
       buffs_health_decades.push_back(
-        make_buff( this, fmt::format( "Health Decade ({} - {})", ( i - 1 ) * 10, i * 10 ) ) );
+          make_buff( this, fmt::format( "Health Decade ({} - {})", ( i - 1 ) * 10, i * 10 ) ) );
     }
   }
 }
@@ -1417,7 +1381,7 @@ void enemy_t::init_target()
 
   for ( auto* p : sim->player_list )
   {
-     if ( p->primary_role() != ROLE_TANK )
+    if ( p->primary_role() != ROLE_TANK )
       continue;
 
     target = p;
@@ -1453,7 +1417,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
   // Raid values using Soulrender Dormazain as a baseline
-  std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };     // Base auto attack damage
+  std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
   std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
   std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
 
@@ -1461,9 +1425,11 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=2,cooldown=30,aoe_tanks=1";
+         ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) +
+         ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) + ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
+         ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) +
+         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
@@ -1476,7 +1442,7 @@ void enemy_t::add_tank_heal_raid_event( tank_dummy_e tank_dummy )
   constexpr size_t numTankDummies = static_cast<size_t>( tank_dummy_e::MAX );
   //                                           NONE, WEAK, DUNGEON, RAID,  HEROIC, MYTHIC
   std::array<int, numTankDummies> heal_value = { 0, 5000, 10000, 12500, 20000, 25000 };
-  size_t tank_dummy_index          = static_cast<size_t>( tank_dummy );
+  size_t tank_dummy_index                    = static_cast<size_t>( tank_dummy );
   std::string heal_raid_event = fmt::format( "heal,name=tank_heal,amount={},period=0.5,duration=0,player_if=role.tank",
                                              heal_value[ tank_dummy_index ] );
   sim->raid_events_str += "/" + heal_raid_event;
@@ -1548,7 +1514,7 @@ void enemy_t::init_action_list()
     std::vector<player_t*> tanks;
     for ( auto* p : sim->player_list )
     {
-       if ( p->primary_role() == ROLE_TANK )
+      if ( p->primary_role() == ROLE_TANK )
         tanks.push_back( p );
     }
 
@@ -1577,8 +1543,8 @@ void enemy_t::init_action_list()
         }
 
         // add a /run_action_list line to the new default APL
-        new_action_list_str += "/run_action_list,name=" + tank->name_str +
-                               ",if=current_target=" + util::to_string( tank->actor_index );
+        new_action_list_str +=
+            "/run_action_list,name=" + tank->name_str + ",if=current_target=" + util::to_string( tank->actor_index );
       }
 
       // finish off the default action list with an instruction to run the default target's APL
@@ -1744,7 +1710,7 @@ void enemy_t::recalculate_health()
                             health_recalculation_dampening_exponent );  // dampening factor, by default 1/n
     double factor = 1.0 - ( delta_time / sim->expected_iteration_time );
 
-    factor = clamp(factor, 0.5, 1.5);
+    factor = clamp( factor, 0.5, 1.5 );
 
     if ( sim->current_time() > sim->expected_iteration_time &&
          this != sim->target )  // Special case for aoe targets that do not die before fluffy pillow.
@@ -1814,7 +1780,6 @@ void enemy_t::reset_auto_attacks( timespan_t delay, proc_t* proc )
       }
     }
   }
-
 }
 
 void enemy_t::delay_auto_attacks( timespan_t delay, proc_t* proc )
@@ -1928,7 +1893,7 @@ std::unique_ptr<expr_t> enemy_t::create_expression( util::string_view expression
     for ( size_t i = 0; i < action_list.size(); ++i )
     {
       action_t* action = action_list[ i ];
-      if ( action -> name_str == splits[ 1 ] )
+      if ( action->name_str == splits[ 1 ] )
         return action->create_expression( splits[ 2 ] );
     }
   }
@@ -1966,6 +1931,65 @@ void enemy_t::demise()
   }
 
   player_t::demise();
+}
+
+double enemy_t::k_value( int level, tank_dummy_e dungeon_content )
+{
+  // Armor coefficient
+  // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
+  // in. The default value stored in spelldata only works for outdoor and generally "easy" content. New values are
+  // added when new seasonal content (new raid, new M+ season) is released. ArmorConstantMod is pulled from the
+  // ExpectedStatMod table. Values are a combination of the base "K-values" for the intended level, multiplied by the
+  // ArmorConstantMod field.
+
+  // In order to get the ArmorConstMod ID you first get the ID from the map you are looking for.
+  // You then take the Map ID and search the ID within the MapDifficulty table. For raids, you will come back with
+  // four records, one for each difficulty. Each of these will have a ContentTuningID. You then take the
+  // ContentTuningID and search the ID in the ContentTuningXExpected table. Often you will come back with multiple
+  // results but the one that is correct will generally be the one that has the ArmorConstMod value being greater
+  // than 1.000.
+
+  /*
+    9.0 values here
+    Level 60 Base/open world: 2500.000 (Level 60 Armor mitigation constants (K-values))
+    Level 60 M0/M+: 2455.0 (ExpectedStatModID: 176; ArmorConstMod: 0.982)
+    Castle Nathria LFR: 2500.0 (ExpectedStatModID: 181; ArmorConstMod: 1.000)
+    Castle Nathria Normal: 2662.5 (ExpectedStatModID: 177; ArmorConstMod: 1.065)
+    Castle Nathria Heroic: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
+    Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+    Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
+    Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+    Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+    Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
+    Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
+    Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+    Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+    Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
+    Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+    Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
+    Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
+  */
+  double k_value = dbc->armor_mitigation_constant( level );
+
+  switch ( dungeon_content )
+  {
+    case tank_dummy_e::DUNGEON:
+      return k_value * 1.313;  // M0/M+
+      break;
+    case tank_dummy_e::RAID:
+      return k_value * 1.418;  // Normal Raid
+      break;
+    case tank_dummy_e::HEROIC:
+      return k_value * 1.537;  // Heroic Raid
+      break;
+    case tank_dummy_e::MYTHIC:
+      return k_value * 1.670;  // Mythic Raid
+      break;
+    default:
+      break;  // tank_dummy_e::NONE
+  }
+  
+  return k_value;
 }
 
 // ENEMY MODULE INTERFACE ===================================================
