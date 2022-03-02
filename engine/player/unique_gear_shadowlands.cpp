@@ -3520,13 +3520,12 @@ void bells_of_the_endless_feast( special_effect_t& effect )
       }
       else
       {
-        // NOTE: I couldn't find it anywhere in the spell data, but from testing, the target seems to be gaining between
-        // 5 and 7 stacks of the debuff on each proc.
-        int stacks = static_cast<int>( rng().range( 5, 7 ) );
-        td->debuff.scent_of_souls->trigger( stacks );
+        td->debuff.scent_of_souls->trigger();
       }
     }
   };
+
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new brood_of_the_endless_feast_cb_t( effect );
 }
@@ -3559,6 +3558,53 @@ void grim_eclipse( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<grim_eclipse_t>( "grim_eclipse", effect );
+}
+
+// id=367802 driver
+// id=368747 damage
+// id=368775 coeffs
+// id=368810 shield
+void pulsating_riftshard( special_effect_t& effect )
+{
+  struct pulsating_riftshard_t : public proc_spell_t
+  {
+    struct pulsating_riftshard_damage_t : public shadowlands_aoe_proc_t
+    {
+      pulsating_riftshard_damage_t( const special_effect_t& e )
+        : shadowlands_aoe_proc_t( e, "pulsating_riftshard_damage", 368747, true )
+      {
+        auto coeff_data = e.player->find_spell( 368775 );
+
+        max_scaling_targets = as<unsigned>( coeff_data->effectN( 3 ).base_value() );
+        base_dd_min = base_dd_max = coeff_data->effectN( 1 ).average( e.item );
+        background = dual = true;
+      }
+    };
+
+    action_t* damage;
+    timespan_t delay;
+
+    pulsating_riftshard_t( const special_effect_t& e )
+      : proc_spell_t( "pulsating_riftshard", e.player, e.driver() ),
+        damage( create_proc_action<pulsating_riftshard_damage_t>( "pulsating_riftshard_damage", e ) ),
+        delay( data().duration() )
+    {
+      damage->stats = stats;
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      // TODO: better modeling of frontal line behavior incl. mobs moving out, etc.
+      auto t = target;
+      make_event( *sim, delay, [ this, t ]() {
+        damage->execute_on_target( t );
+      } );
+    }
+  };
+
+  effect.execute_action = create_proc_action<pulsating_riftshard_t>( "pulsating_riftshard", effect );
 }
 
 // Weapons
@@ -3829,17 +3875,26 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
       assert( rppm );
       assert( s->target );
 
-      // TODO: figure out how to mod the rppm based on how it works in game
-      // see: bloodthirsty_instinct_cb_t in unique_gear_legion.cpp
       double mod = 1;
 
-      if ( effect.player->sim->debug )
-      {
-        effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
-                                              effect.player->name(), effect.name().c_str(), rppm->get_modifier(), mod );
-      }
+      // right now this is just straight up full uptime regardless of health hp
+      // will need something like this in the future?
+      // if ( s->target->health_percentage() ? )
+      // {
+      //   mod = ?;
+      // }
 
-      rppm->set_modifier( mod );
+      if ( rppm->get_modifier() != mod )
+      {
+        if ( effect.player->sim->debug )
+        {
+          effect.player->sim->out_debug.printf( "Player %s adjusts %s rppm modifer: old=%.3f new=%.3f",
+                                                effect.player->name(), effect.name().c_str(), rppm->get_modifier(),
+                                                mod );
+        }
+
+        rppm->set_modifier( mod );
+      }
 
       dbc_proc_callback_t::trigger( a, s );
     }
@@ -3849,13 +3904,12 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
   if ( !buff )
   {
     buff = make_buff<stat_buff_t>( effect.player, "lions_hope", effect.player->find_spell( 368689 ) )
-               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) )
-               ->set_duration( timespan_t::from_seconds( effect.driver()->effectN( 2 ).base_value() ) );
+               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.custom_buff = buff;
-  // TODO: verify flags
-  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  // TODO: seems to not proc at all on healing right now, not sure how to remove that
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
   new lions_hope_cb_t( effect );
 }
 
@@ -5042,6 +5096,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
     unique_gear::register_special_effect( 367924, items::grim_eclipse );
+    unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

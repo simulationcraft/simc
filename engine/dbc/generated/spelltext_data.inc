@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42488
-static const std::array<spelltext_data_t, 16045> __spelltext_data { {
+// Spell text, wow build 9.2.0.42521
+static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15945,6 +15945,7 @@ static const std::array<spelltext_data_t, 16045> __spelltext_data { {
   { 367971, "$@spelldesc367973", 0, 0 },
   { 367973, "Your damaging and healing spells have a chance to pelt your target with magical sands, dealing $s1 Nature damage to an enemy or restoring $s2 health to an ally.", 0, 0 },
   { 367977, "$@spelldesc367973", 0, 0 },
+  { 367999, "Drop six land mines for players to step on.", 0, 0 },
   { 368069, "Create a soulbound weapon or offhand item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368089, "Create a broker's pair of spaulders appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 368090, "Create a broker's pair of pants appropriate for your loot specialization ($@lootspec).", 0, 0 },
@@ -16017,6 +16018,7 @@ static const std::array<spelltext_data_t, 16045> __spelltext_data { {
   { 368700, "$@spelldesc367953\r\n\r\n\r\n", "Suffering $w1 Nature damage every sec.", 0 },
   { 368701, "$@spelldesc367953\r\n\r\n\r\n", "Being leeched $w1 health per second.", 0 },
   { 368702, "$@spelldesc367953\r\n\r\n\r\n", 0, 0 },
+  { 368747, "$@spelldesc367802", 0, 0 },
   { 368785, "$@spelldesc367885", "Horrified.", 0 },
   { 368810, "$@spelldesc367802", "Absorbs $w1 damage.", 0 },
   { 368845, "$@spelldesc367952", "Speed and Versatility increased by $w1.", 0 },
@@ -16047,8 +16049,8 @@ static const std::array<spelltext_data_t, 16045> __spelltext_data { {
   { 369786, "$@spelldesc366436", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42488
-static constexpr std::array<hotfix::client_hotfix_entry_t, 65> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42521
+static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16103,6 +16105,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 65> __spelltext_hotfi
   {  367802,  0, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage in a line. Enemies hit by the blast have their essence plundered, granting you a shield for $368810d which absorbs $368775s2 damage, up to a maximum of $368775s3.\r\n\r\nDamage is increased for each enemy struck, up to $368775s4 enemies.", "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies." },
   {  367924,  0, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $369287d.\r\n\r\nAfter $369287d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter." },
   {  367950,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
+  {  367999,  0, nullptr, "Drop six land mines for players to step on." },
   {  368689,  0, "Your spells have a chance to grant Hope, increasing your damage and healing by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health.\r\n\r\n", "Your spells have a chance to grant Hope, increasing your Intellect by $s1 for $s2 seconds. You have a greater chance to gain Hope when targeting allies or enemies at lower health." },
   {  368689,  1, "Your damage and healing is increased by $s1.", "Your Intellect is increased by $w1." },
   {  368694,  1, "Your attacks have a chance to deal $369238w1 Arcane damage to nearby enemies and reduce the damage you take by $368699s3%.", "Your attacks have a chance to deal $369238w1 Arcane damage to nearby enemies and increase your armor by $369238w8." },
@@ -16116,7 +16119,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 65> __spelltext_hotfi
   {  369183,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42488
+// Spell description variables, wow build 9.2.0.42521
 static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16426,7 +16429,7 @@ static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42488
+// spelldesc_vars hotfix entries, wow build 9.2.0.42521
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

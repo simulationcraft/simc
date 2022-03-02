@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42488 Live (hotfix 2022-03-01/42488, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -11840,11 +11840,13 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902915)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1500 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=902917)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1633 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
+Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc363500
 Tooltip          : Burning for $365199s1% of your maximum health every $365199t sec. While burning your Fire Blast and Phoenix Flames recharge $s1% faster.
 
