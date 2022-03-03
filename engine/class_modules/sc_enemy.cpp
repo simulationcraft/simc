@@ -727,7 +727,9 @@ struct spell_nuke_driver_t : public enemy_action_driver_t<spell_nuke_t>
 
 struct spell_dot_t : public enemy_action_t<spell_t>
 {
-  spell_dot_t( player_t* p, util::string_view options_str ) : base_t( "spell_dot", p )
+  bool is_bleed;
+
+  spell_dot_t( player_t* p, util::string_view options_str ) : base_t( "spell_dot", p ), is_bleed( false )
   {
     school            = SCHOOL_FIRE;
     base_tick_time    = timespan_t::from_seconds( 1.0 );
@@ -741,12 +743,16 @@ struct spell_dot_t : public enemy_action_t<spell_t>
     add_option( opt_float( "damage", base_td ) );
     add_option( opt_timespan( "dot_duration", dot_duration ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }
 
   void init() override
   {
     base_t::init();
+
+    if ( is_bleed )
+      school = SCHOOL_PHYSICAL;
 
     if ( base_tick_time < timespan_t::zero() )  // User input sanity check
       base_tick_time = timespan_t::from_seconds( 1.0 );
@@ -776,6 +782,7 @@ struct spell_dot_driver_t : public enemy_action_driver_t<spell_dot_t>
     add_option( opt_float( "damage", base_td ) );
     add_option( opt_timespan( "dot_duration", dot_duration ) );
     add_option( opt_timespan( "tick_time", base_tick_time ) );
+    add_option( opt_bool( "bleed", is_bleed ) );
     parse_options( options_str );
   }
 
@@ -1429,7 +1436,7 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
   als += "/spell_dot,damage=" + util::to_string( background_spell_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( background_spell_damage[ tank_dummy_index ] * 0.1 ) ) +
-         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=60";
+         ",tick_time=2,cooldown=60,aoe_tanks=1,dot_duration=30,bleed=1";
   // pause periodically to mimic a tank swap
   als += "/pause_action,duration=30,cooldown=30,if=time>=30";
   return als;
