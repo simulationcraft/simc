@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.42538
-static const std::array<spelltext_data_t, 16051> __spelltext_data { {
+// Spell text, wow build 9.2.0.42560
+static const std::array<spelltext_data_t, 16047> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15539,7 +15539,7 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 359040, "Consume The Mad Duke's Tea, increasing your $pri, Haste, Critical Strike chance, or Versatility for $354018d.\r\n\r\nYou can only have the effect of one of The Mad Duke's Tea active at a time.", 0, 0 },
   { 359078, "An intense application of Numbing Poison reduces the target's casting speed by $s1% for $d.", "Casting slowed by $s1%.", 0 },
   { 359168, "While you are behind your enemies, their movement is impaired, or they are suffering from loss-of-control effects, your attacks have a high chance to cause them to bleed for ${$s1*($353466d/$353466t1+1)} Physical damage over $353466d.", 0, 0 },
-  { 359336, "Set out a Kettle of Stone Soup, ready to fill with delicious ingredients. Finish it to to feed up to 35 people in your raid or party!\r\n\r\nOnce complete, restores $327786o1 health and $327786o2 mana over $327786d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $327706s1 in a stat for $327706d.", 0, 0 },
+  { 359336, "Set out a Kettle of Stone Soup, ready to fill with delicious ingredients. Finish it to provide 70 servings to your raid or party!\r\n\r\nOnce complete, restores $327786o1 health and $327786o2 mana over $327786d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $327706s1 in a stat for $327706d.", 0, 0 },
   { 359387, "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", "While inside the Maw or Torghast, each time you deal a critical strike, the Winds accumulate $s2% of that effect, up to a cap of $s1 per critical strike. \r\n\r\nEvery $t3 sec, the Winds unleash, dealing Frost damage equal to the total accumulation and and surrounding you in the Winds for $355735d, absorbing $s4% of damage dealt by the Winds.", 0 },
   { 359395, "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", "While inside the Maw or Torghast, damaging an enemy establishes a Blood Link.\r\n\r\nBlood Link pulses every $t1 sec, dealing $s2 Shadow damage and healing you for $s3% of damage dealt. If your Blood Link would overheal you, it instead heals a nearby ally. Limit 1.", 0 },
   { 359396, "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d.", "While inside the Maw or Torghast, your spells and abilities have a chance to drain a Soul Fragment from your target, granting you $s3 Primary stat for $356042d and stacking up to $356042u times.\r\n\r\nWhen you reach $356042u stacks, unleash Chaos Bane, dealing $s5 Shadow damage split between nearby enemies and granting you $s4 Primary stat for $356043d.", 0 },
@@ -15557,7 +15557,6 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 359766, 0, "Pocopoc has taken control of a scarabid  and gained a new ability.", 0 },
   { 359831, 0, "Pocopoc has taken control of a tarachnid and gained a new ability.", 0 },
   { 359836, 0, "Pocopoc has taken control of a helicid and gained a new ability.", 0 },
-  { 359866, 0, "Pocopoc has taken control of a vombata and gained a new ability.", 0 },
   { 359867, "Restores $s1 health.", 0, 0 },
   { 359878, 0, "Pocopoc has taken control of a geomental and gained a new ability.", 0 },
   { 359889, "Attune yourself to the energies of the targeted Sepulcher of the First Ones raid boss, increasing your Versatility by $354399s1 when fighting that boss. This effect lasts for an entire week.\r\n\r\nYou can only use one Vantus Rune per week.", 0, 0 },
@@ -15926,7 +15925,6 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 367902, "Your melee attacks and abilities have a high chance to attach a Volatile Satchel onto your target. Upon reaching ${$u1+1} stacks, or when removed, the Volatile Satchel detonates and deals $367901s1 Fire damage.", "Upon reaching ${$u1+1} stacks or its removal, the Volatile Satchel detonates for $367901w1 Fire damage.", 0 },
   { 367903, "$@spelldesc367902", "$@auradesc367902", 0 },
   { 367907, "$@spelldesc364423", "Generating ${$o1/10} Astral Power over $d.", 0 },
-  { 367910, "When Pocopoc possesses a Coreless Vombata, it has a chance to cast an $368245d sec Bloodlust on kill.", 0, 0 },
   { 367911, "When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.", 0, 0 },
   { 367912, "When Pocopoc possesses a Coreless Scarabid, it reduces your damage taken by $368141M1%.", 0, 0 },
   { 367913, "When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy attack and cast speed.\r\n", 0, 0 },
@@ -15935,7 +15933,6 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 367929, "Affix a Domination Rune to yourself, gaining power at a price.", 0, 0 },
   { 367930, "Add another.", 0, 0 },
   { 367931, "Drive a spike into your target, dealing $s1 Physical damage and creating a chain link between you for $d. While the chain persists, $s2% of all damage dealt to the target is stored within it, up to a maximum of $s3.\r\n\r\nMoving away from your target will rip the chain out, dealing the stored amount as Shadow damage to all enemies within $s4 yds of them.", "Moving away from the target will deal $w5 Shadow damage around it.", 0 },
-  { 367937, "$@spelldesc367910\r\n$@spellaura366333", "$?a359866[Resonant Vombata has a chance to cast an $368245d sec Bloodlust on kill.][When Pocopoc possesses a Coreless Vombata, it has a chance to cast an $368245d sec Bloodlust on kill.]", 0 },
   { 367938, "$@spelldesc367911\r\n$@spellaura366333\r\n", "$?a359831[Resonant Tarachnid gives you a chance to stun and poison melee attackers.][When Pocopoc possesses a Coreless Tarachnid, it gives you a chance to stun and poison melee attackers.]", 0 },
   { 367939, "$@spelldesc367912 \r\n$@spellaura366333\r\n", "$?a359766[Resonant Scarabid reduces your damage taken by $368141M1%.][When Pocopoc possesses a Coreless Scarabid, your damage taken is reduced.]", 0 },
   { 367940, "$@spelldesc367913 \r\n$@spellaura366333", "$?a359836[Resonant Helicid has a chance when attacking to slow enemy attack and cast speed.][When Pocopoc possesses a Coreless Helicid, it has a chance when attacking to slow enemy's attack and cast speed.]", 0 },
@@ -15976,7 +15973,6 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 368239, "The decrypted Urh cypher grants players $w1% increased spell and ability cool down rate and restores $368494s1% health and mana every $t2 sec for $d.", "$w1% increased spell and ability cool down rate.\r\n\r\n$368494s1% health and mana restored every $t2 sec.", 0 },
   { 368240, "The decrypted Vy cypher grants players $s1% increased Haste and summons an orb of energy that damages or heals your targets for $d.", "$s1% increased Haste.\r\n\r\nYour damage and healing has a high chance to fire a bolt of Cosmic energy at the target.", 0 },
   { 368241, "The decrypted Wo cypher grants players $s1% increased movement speed, $s2% reduced damage taken, and conceals players from enemy detection while out of combat for $d.", "$s1% increased movement speed.\r\n$s2% reduced damage taken.\r\n\r\nConcealed from enemy detection while out of combat.", 0 },
-  { 368245, "Increases melee, ranged, and spell casting speed by $s1% for all party members. Lasts $d.", "Melee, ranged, and spell casting speed increased by $s1%.", 0 },
   { 368275, "$s1% of Heal or Flash Heal healing on other targets also heals you.", 0, 0 },
   { 368328, "Add the Encrypted affix to a Mythic Keystone.", 0, 0 },
   { 368342, 0, "Heals for $368343M~2% upon taking damage.", 0 },
@@ -16053,8 +16049,8 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 369786, "$@spelldesc366436", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.42538
-static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.0.42560
+static constexpr std::array<hotfix::client_hotfix_entry_t, 67> __spelltext_hotfix_data { {
   {  355721,  0, "|CFF20ff20Your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.2% when you have $s2% or more health than your target.|R" },
   {  355731,  0, "|CFF20ff20Incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, incoming healing you receive is increased by ${$s1/10}.1%. Your maximum health is increased by $s2.|R" },
   {  355739,  0, "|CFF20ff20Your Leech is increased by $s1.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your Leech is increased by $s1.|R" },
@@ -16100,6 +16096,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfi
   {  357075,  0, "|CFF20ff20Your critical hits cause a nearby ally to absorb the next ${$s1*(1+$@versadmg)} damage dealt to them within $356257d.|R\r\n", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your critical hits cause a nearby ally to absorb the next ${$s1*(1+$@versadmg)} damage dealt to them within $356257d.|R\r\n" },
   {  357076,  0, "|CFF20ff20Damaging a target increases your damage done to that target by ${$s1/100}.2% for $356329d, stacking up to $356329U times.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, damaging a target increases your damage done to that target by ${$s1/100}.2% for $356329d, stacking up to $356329U times.|R" },
   {  357077,  0, "|CFF20ff20Your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R", "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your helpful spells and abilities have a chance to grant your target an Unholy Aura, draining $s1 health from nearby enemies every $s2 sec for $356321d.|R" },
+  {  359336,  0, "Set out a Kettle of Stone Soup, ready to fill with delicious ingredients. Finish it to to feed up to 35 people in your raid or party!\r\n\r\nOnce complete, restores $327786o1 health and $327786o2 mana over $327786d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $327706s1 in a stat for $327706d.", "Set out a Kettle of Stone Soup, ready to fill with delicious ingredients. Finish it to provide 70 servings to your raid or party!\r\n\r\nOnce complete, restores $327786o1 health and $327786o2 mana over $327786d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $327706s1 in a stat for $327706d." },
   {  363805,  0, "$@spelldesc363667", "$@spelldesc364490" },
   {  363805,  1, "Your next Wildfire Bomb deals $s1% increased damage and incurs no cooldown.", "Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown." },
   {  364234,  1, "After loading $u bullets, Between the Eyes will have its cooldown and cost refunded.", "After loading $u bullets, your next Pistol Shot will also blast your target with Between the Eyes as well." },
@@ -16123,7 +16120,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 66> __spelltext_hotfi
   {  369183,  0, "#@spelldesc367953", "$@spelldesc367953" },
 } };
 
-// Spell description variables, wow build 9.2.0.42538
+// Spell description variables, wow build 9.2.0.42560
 static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16433,7 +16430,7 @@ static const std::array<spelldesc_vars_data_t, 306> __spelldesc_vars_data { {
   {  364365, "$heal=${$SP*$s1/100}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.42538
+// spelldesc_vars hotfix entries, wow build 9.2.0.42560
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
