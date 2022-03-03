@@ -479,7 +479,10 @@ struct light_of_dawn_t : public holy_power_consumer_t<paladin_heal_t>
   void execute() override
   {
     holy_power_consumer_t::execute();
-
+    if ( p()->tier_sets.dawn_will_come_4pc->ok()) {
+      double adjust_seconds = 5 * (( p()->tier_sets.dawn_will_come_4pc -> effectN( 2 ).base_value()) * rng().roll( p()->tier_sets.dawn_will_come_4pc->effectN(3).percent()));      
+      p()->cooldowns.avenging_wrath->adjust( timespan_t::from_seconds( -adjust_seconds ) );
+    }
     // deal with awakening
     if ( p()->talents.awakening->ok() )
     {
