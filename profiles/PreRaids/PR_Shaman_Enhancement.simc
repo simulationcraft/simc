@@ -111,9 +111,9 @@ actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/ice_strike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
+actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains
-actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/vesper_totem,if=raid_event.adds.in>40
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
