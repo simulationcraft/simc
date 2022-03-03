@@ -5393,8 +5393,9 @@ void register_target_data_initializers( sim_t& sim )
     {
       assert( !td->debuff.scent_of_souls );
 
-      td->debuff.scent_of_souls = make_buff<buff_t>( *td, "scent_of_souls", td->source->find_spell( 368585 ) );
-      td->debuff.scent_of_souls->set_period( 0_ms );
+      td->debuff.scent_of_souls = make_buff<buff_t>( *td, "scent_of_souls", td->source->find_spell( 368585 ) )
+        ->set_period( 0_ms )
+        ->set_cooldown( 0_ms );  // the debuff spell id seems to also be a driver of some kind giving extra stacks
       td->debuff.scent_of_souls->reset();
     }
     else
