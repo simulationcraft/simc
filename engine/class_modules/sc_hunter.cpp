@@ -644,6 +644,7 @@ public:
     std::string summon_pet_str = "turtle";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
+    bool separate_wfi_stats = false;
     // random testing stuff
     bool stomp_triggers_wild_spirits = true;
   } options;
@@ -5436,13 +5437,28 @@ struct wildfire_bomb_t: public hunter_spell_t
       dot_action -> aoe = aoe;
       dot_action -> radius = radius;
 
-      a -> add_child( this );
-      a -> add_child( dot_action );
+      if ( a -> p() -> talents.wildfire_infusion.ok() && a -> p() -> options.separate_wfi_stats )
+      {
+        add_child( dot_action );
+      }
+      else
+      {
+        a -> add_child( this );
+        a -> add_child( dot_action );
+      }
     }
 
     void execute() override
     {
       hunter_spell_t::execute();
+
+      if ( p() -> talents.wildfire_infusion.ok() && p() -> options.separate_wfi_stats )
+      {
+        // fudge trigger_gcd so gcd() returns a non-zero value and we get proper dpet values
+        const auto trigger_gcd_ = std::exchange( trigger_gcd, p() -> base_gcd );
+        stats -> add_execute( gcd(), target );
+        trigger_gcd = trigger_gcd_;
+      }
 
       if ( num_targets_hit > 0 )
       {
@@ -5480,7 +5496,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t( n, a, p -> find_spell( 270338 ), "shrapnel_bomb", p -> find_spell( 270339 ) )
     {
       attacks::internal_bleeding_t internal_bleeding( p );
-      a -> add_child( internal_bleeding.action );
+      if ( p -> options.separate_wfi_stats )
+        add_child( internal_bleeding.action );
+      else
+        a -> add_child( internal_bleeding.action );
     }
   };
 
@@ -5509,7 +5528,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t( n, a, p -> find_spell( 271048 ), "volatile_bomb", p -> find_spell( 271049 ) ),
       violent_reaction( p -> get_background_action<violent_reaction_t>( "violent_reaction" ) )
     {
-      a -> add_child( violent_reaction );
+      if ( p -> options.separate_wfi_stats )
+        add_child( violent_reaction );
+      else
+        a -> add_child( violent_reaction );
     }
 
     void execute() override
@@ -6890,6 +6912,7 @@ void hunter_t::create_options()
                             0.5_s, 4_s ) );
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
+  add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
 
   add_option( opt_bool( "hunter.stomp_triggers_wild_spirits", options.stomp_triggers_wild_spirits ) );
 
