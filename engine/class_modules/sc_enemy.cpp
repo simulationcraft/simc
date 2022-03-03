@@ -88,7 +88,7 @@ struct enemy_t : public player_t
   void combat_end() override;
   virtual void recalculate_health();
   void demise() override;
-  double k_value( int level, tank_dummy_e diff );
+  double armor_coefficient( int level, tank_dummy_e diff );
   std::unique_ptr<expr_t> create_expression( util::string_view expression_str ) override;
   timespan_t available() const override
   {
@@ -729,7 +729,8 @@ struct spell_dot_t : public enemy_action_t<spell_t>
 {
   bool is_bleed;
 
-  spell_dot_t( player_t* p, util::string_view options_str ) : base_t( "spell_dot", p ), is_bleed( false )
+  spell_dot_t( player_t* p, util::string_view options_str ) :
+    base_t( "spell_dot", p ), is_bleed( false )
   {
     school            = SCHOOL_FIRE;
     base_tick_time    = timespan_t::from_seconds( 1.0 );
@@ -1206,25 +1207,8 @@ struct tank_dummy_enemy_t : public enemy_t
     // Don't change the value if it's specified by the user - handled in enemy_t::init_base_stats()
     if ( custom_armor_coeff <= 0 )
     {
-      base.armor_coeff = k_value( sim->max_player_level, tank_dummy_enum );
-      switch ( tank_dummy_enum )
-      {
-        case tank_dummy_e::DUNGEON:
-          sim->print_debug( "{} Dungeon base armor coefficient set to {}.", *this, base.armor_coeff );
-          break;
-        case tank_dummy_e::RAID:
-          sim->print_debug( "{} Normal Raid base armor coefficient set to {}.", *this, base.armor_coeff );
-          break;
-        case tank_dummy_e::HEROIC:
-          sim->print_debug( "{} Heroic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
-          break;
-        case tank_dummy_e::MYTHIC:
-          sim->print_debug( "{} Mythic Raid base armor coefficient set to {}.", *this, base.armor_coeff );
-          break;
-        default:
-          sim->print_debug( "{} Open World base armor coefficient set to {}.", *this, base.armor_coeff );
-          break;  // Use the default value set in enemy_t::init_base_stats()
-      }
+      base.armor_coeff = armor_coefficient( sim->max_player_level, tank_dummy_enum );
+      sim->print_debug( "Enemy {} base armor coefficient set to {}.", *this, base.armor_coeff );
     }
   }
 
@@ -1318,7 +1302,7 @@ void enemy_t::init_base_stats()
   }
 
   // Armor Coefficient, based on level (1054 @ 50; 2500 @ 60-63)
-  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : k_value( level(), tank_dummy_e::NONE );
+  base.armor_coeff = custom_armor_coeff > 0 ? custom_armor_coeff : armor_coefficient( level(), tank_dummy_e::MYTHIC );
   sim->print_debug( "{} base armor coefficient set to {}.", *this, base.armor_coeff );
 }
 
@@ -1430,7 +1414,8 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
-         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) + ",attack_speed=1.5,aoe_tanks=1";
+         ",range=" + util::to_string( floor( aa_damage[ tank_dummy_index ] * 0.02 ) ) +
+         ",attack_speed=1.5,aoe_tanks=1";
   als += "/melee_nuke,damage=" + util::to_string( dummy_strike_damage[ tank_dummy_index ] ) +
          ",range=" + util::to_string( floor( dummy_strike_damage[ tank_dummy_index ] * 0.02 ) ) +
          ",attack_speed=2,cooldown=30,aoe_tanks=1";
@@ -1940,9 +1925,9 @@ void enemy_t::demise()
   player_t::demise();
 }
 
-double enemy_t::k_value( int level, tank_dummy_e dungeon_content )
+double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
 {
-  // Armor coefficient
+  // Armor coefficient (colloquially called "k-value")
   // Max level enemies have different armor coefficient based on the difficulty setting and the area they are fought
   // in. The default value stored in spelldata only works for outdoor and generally "easy" content. New values are
   // added when new seasonal content (new raid, new M+ season) is released. ArmorConstantMod is pulled from the
@@ -1976,27 +1961,27 @@ double enemy_t::k_value( int level, tank_dummy_e dungeon_content )
     Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
     Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
   */
-  double k_value = dbc->armor_mitigation_constant( level );
+  double k = dbc->armor_mitigation_constant( level );
 
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k_value * 1.313;  // M0/M+
+      return k * 1.313;  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k_value * 1.418;  // Normal Raid
+      return k * 1.418;  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k_value * 1.537;  // Heroic Raid
+      return k * 1.537;  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k_value * 1.670;  // Mythic Raid
+      return k * 1.670;  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE
   }
-  
-  return k_value;
+
+  return k;
 }
 
 // ENEMY MODULE INTERFACE ===================================================
