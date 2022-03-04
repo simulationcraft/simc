@@ -362,7 +362,7 @@ void survival( player_t* p )
   cleave -> add_action( "kill_command,target_if=dot.pheromone_bomb.ticking&set_bonus.tier28_2pc" );
   cleave -> add_action( "kill_shot,if=buff.flayers_mark.up" );
   cleave -> add_action( "flayed_shot,target_if=max:target.health.pct" );
-  cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&!ticking&next_wi_bomb.volatile&target.time_to_die>15&focus+cast_regen>35!&set_bonus.tier28_2pc&active_enemies<=4" );
+  cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&!ticking&next_wi_bomb.volatile&target.time_to_die>15&focus+cast_regen>35&active_enemies<=4" );
   cleave -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max&full_recharge_time<gcd&(runeforge.nessingwarys_trapping_apparatus.equipped&cooldown.freezing_trap.remains&cooldown.tar_trap.remains|!runeforge.nessingwarys_trapping_apparatus.equipped)" );
   cleave -> add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking&!set_bonus.tier28_2pc|charges_fractional>1.3" );
   cleave -> add_action( "butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion.enabled)&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
