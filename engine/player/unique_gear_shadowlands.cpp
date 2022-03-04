@@ -3624,7 +3624,7 @@ void pulsating_riftshard( special_effect_t& effect )
 // 368653 wand damage proc
 void cache_of_acquired_treasures( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "acquired_wand", "acquired_axe", "acquired_wand" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand" } ) )
     return;
 
   struct acquire_weapon_t : public proc_spell_t
