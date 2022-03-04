@@ -3635,9 +3635,9 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       }
     };
 
+    buff_t* last;
     std::vector<buff_t*> weapons;
     timespan_t cycle_period;
-    event_t* next_cycle;
 
     action_t* wand_damage;
     buff_t* axe_buff;
@@ -3695,30 +3695,42 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       weapons.push_back(
           make_buff<buff_t>( effect.player, "acquired_axe", effect.player->find_spell( 368656 ), effect.item )
               ->set_cooldown( 0_s ) );
-      weapons.push_back(
+      weapons.push_back( last =
           make_buff<buff_t>( effect.player, "acquired_wand", effect.player->find_spell( 368654 ), effect.item )
               ->set_cooldown( 0_s ) );
 
       cycle_period = effect.player->find_spell( 367804 )->effectN( 1 ).period();
-      effect.player->register_combat_begin( [ this ]( player_t* p ) {
+
+      auto cycle_weapon = [ this ]( int cycles ) {
+        if ( cooldown->up() )
+        {
+          weapons.front()->expire();
+          std::rotate( weapons.begin(), weapons.begin() + cycles, weapons.end() );
+          weapons.front()->trigger();
+        }
+      };
+
+      effect.player->register_combat_begin( [ this, &effect, cycle_weapon ]( player_t* p ) {
         // randomize the weapon choice and its remaining duration when combat starts
         timespan_t first_update = p->rng().real() * cycle_period;
         int first = p->rng().range( 3 );
-        std::rotate( weapons.begin(), weapons.begin() + first, weapons.end() );
-        weapons.front()->trigger();
+        cycle_weapon( first );
 
-        next_cycle = make_event( p->sim, first_update, [ this, p ]() {
-          weapons.front()->expire();
-          std::rotate( weapons.begin(), weapons.begin() + 1, weapons.end() );
-          weapons.front()->trigger();
-
-          next_cycle = make_repeating_event( p->sim, cycle_period, [ this ]() {
-            weapons.front()->expire();
-            std::rotate( weapons.begin(), weapons.begin() + 1, weapons.end() );
-            weapons.front()->trigger();
+        make_event( p->sim, first_update, [ this, &effect, cycle_weapon ]() {
+          cycle_weapon( 1 );
+          make_repeating_event( effect.player->sim, cycle_period, [ this, cycle_weapon ]() {
+            cycle_weapon( 1 );
           } );
         } );
       } );
+    }
+
+    bool ready() override
+    {
+      if ( !weapons.front()->check() )
+        return false;
+
+      return proc_spell_t::ready();
     }
 
     void execute() override
@@ -3726,7 +3738,6 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       proc_spell_t::execute();
 
       weapons.front()->expire();
-      next_cycle->reschedule( effect->cooldown() );
 
       if ( weapons.front()->data().id() == 368654 ) // wand
       {
@@ -3736,10 +3747,13 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       {
         axe_buff->trigger();
       }
-      else if ( weapons.front()->data().id() == 368657 ) // sword
+      else if ( weapons.front()->data().id() == 368657 )  // sword
       {
         sword_buff->trigger();
       }
+      
+      // resets to sword after on-use is triggered, rotate wand in front so sword will cycle in next after the cooldown recovers
+      std::rotate( weapons.begin(), range::find( weapons, last ), weapons.end() );
     }
   };
 
