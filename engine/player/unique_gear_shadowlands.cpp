@@ -3774,8 +3774,7 @@ void symbol_of_the_raptora( special_effect_t& effect )
                ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
   }
 
-  effect.custom_buff  = buff;
-  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
 
