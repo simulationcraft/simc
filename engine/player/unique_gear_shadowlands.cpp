@@ -3764,6 +3764,21 @@ void cache_of_acquired_treasures( special_effect_t& effect )
   effect.execute_action = create_proc_action<acquire_weapon_t>( "acquire_weapon", effect );
 }
 
+// driver=367733 trigger=367734
+void symbol_of_the_raptora( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "raptoras_wisdom" );
+  if ( !buff )
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "raptoras_wisdom", effect.trigger() )
+               ->add_stat( STAT_INTELLECT, effect.driver()->effectN( 1 ).average( effect.item ) );
+  }
+
+  effect.custom_buff  = buff;
+  effect.proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE | PF2_PERIODIC_HEAL;
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -5255,7 +5270,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367924, items::grim_eclipse );
     unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
-
+    unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
