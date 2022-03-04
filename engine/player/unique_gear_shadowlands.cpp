@@ -3392,7 +3392,7 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
     gladiators_resonator_damage_t( const special_effect_t& effect )
       : shadowlands_aoe_proc_t( effect, "gladiators_resonator", effect.driver()->effectN( 2 ).trigger(), true )
     {
-      split_aoe_damage    = true;
+      dual = split_aoe_damage = true;
       max_scaling_targets = as<unsigned>( effect.driver()->effectN( 3 ).base_value() );
     }
   };
@@ -3402,11 +3402,11 @@ void cosmic_gladiators_resonator( special_effect_t& effect )
     gladiators_resonator_t( const special_effect_t& effect )
       : generic_proc_t( effect, "gladiators_resonator", effect.trigger() )
     {
-      harmful       = false;
-      quiet         = true;
-      callbacks     = false;
-      impact_action = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
-      travel_delay  = effect.driver()->effectN( 2 ).misc_value1() / 1000;
+      harmful          = false;
+      callbacks        = false;
+      impact_action    = create_proc_action<gladiators_resonator_damage_t>( "gladiators_resonator_damage", effect );
+      s_data_reporting = effect.driver();
+      travel_delay     = effect.driver()->effectN( 2 ).misc_value1() / 1000;
     }
   };
 
