@@ -3308,6 +3308,9 @@ void resonant_reservoir( special_effect_t& effect )
 // TODO: use a separate fleshcraft_t action to trigger the effect so that the channel is cancelled correctly
 void the_first_sigil( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs( effect, { "the_first_sigil" } ) )
+    return;
+
   auto buff = buff_t::find( effect.player, "the_first_sigil" );
   if ( !buff )
   {
@@ -5245,7 +5248,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367930, items::scars_of_fraternal_strife, true );
     unique_gear::register_special_effect( 368203, items::architects_ingenuity_core, true );
     unique_gear::register_special_effect( 367236, items::resonant_reservoir );
-    unique_gear::register_special_effect( 367241, items::the_first_sigil );
+    unique_gear::register_special_effect( 367241, items::the_first_sigil, true );
     unique_gear::register_special_effect( 363481, items::cosmic_gladiators_resonator );
     unique_gear::register_special_effect( 367246, items::elegy_of_the_eternals );
     unique_gear::register_special_effect( 367336, items::bells_of_the_endless_feast );
