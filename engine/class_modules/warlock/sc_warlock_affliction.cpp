@@ -1050,7 +1050,7 @@ void warlock_t::create_apl_affliction()
 
   def->add_action( "call_action_list,name=aoe,if=active_enemies>3" );
 
-  def->add_action( "malefic_rapture,if=ptr=1&buff.calamitous_crescendo.up");
+  def->add_action( "malefic_rapture,if=buff.calamitous_crescendo.up");
   
   def->add_action( "run_action_list,name=necro_mw,if=covenant.necrolord&runeforge.malefic_wrath&active_enemies=1&talent.phantom_singularity", "Call separate action list for Necrolord MW in ST. Currently only optimized for use with PS." );
 
@@ -1225,7 +1225,7 @@ void warlock_t::create_apl_affliction()
   necro->add_action( "use_item,name=empyreal_ordnance,if=variable.trinket_delay<20", "Fire delayed trinkets in anticipation of Decimating Bolt." );
   necro->add_action( "use_item,name=sunblood_amethyst,if=variable.trinket_delay<6" ); 
   necro->add_action( "use_item,name=soulletting_ruby,if=variable.trinket_delay<8" );
-  necro->add_action( "use_item,name=name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
+  necro->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.trinket_delay<4" );
   necro->add_action( "phantom_singularity,if=!talent.shadow_embrace&variable.dots_ticking", "If the player is using Haunt or Gosac, fire PS on cooldown then follow with DB" );
   necro->add_action( "decimating_bolt,if=!talent.shadow_embrace&cooldown.phantom_singularity.remains>0" );
   necro->add_action( "decimating_bolt,if=talent.shadow_embrace&variable.dots_ticking", "If the player is using SE, fire DB on cooldown then following with PS" );
