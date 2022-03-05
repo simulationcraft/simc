@@ -10165,7 +10165,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 10 )
       .verification_value( 5 );
     
-    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's execute value buffed to 50% (was 25%)", 912019 )
+    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's execute value buffed to 50% (was 25%)", 912020 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 40 )
