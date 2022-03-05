@@ -4,25 +4,25 @@ race=undead
 spec=blood
 role=tank
 position=front
-talents=2231132
+talents=2231133
 covenant=night_fae
 soulbind=niya,grove_invigoration/withering_plague:11:1/niyas_tools_burrs/meat_shield:11:1/called_shot/bonded_hearts/withering_ground:11:1/spirit_drain:11:1/hardened_bones:11:1
 renown=80
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173129
+head=shadowghast_helm,id=171415,bonus_id=6716/8119/6647/6650/1588/6935,gem_id=173129
 neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1808/1588,gem_id=173129
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=unstable_giants_cuffs,id=189777,bonus_id=1524/7187/6935,gem_id=173129
-hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1498,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6647/6650/1588/6935,gem_id=173129
-legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
+wrists=realityshatter_vambraces,id=179354,bonus_id=1592/7187/6646/6935,gem_id=173129
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=1592/7187/6646/6935,gem_id=173129
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
 feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
+finger1=entwined_gorger_tendril,id=178848,bonus_id=7187/1592/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
-trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-trinket2=intrusive_thoughtcage,id=188261,bonus_id=7187/1524
+trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
+trinket2=spare_meat_hook,id=178751,bonus_id=7359/6652/7606/1592/6646
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save=T28_Death_Knight_Blood.simc
