@@ -9721,7 +9721,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2" );
     def->add_action( "run_action_list,name=se_single_target,if=talent.storm_elemental.enabled&active_enemies<=2" );
 
-    aoe->add_talent( this, "Storm Elemental" );
+    aoe->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
     aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
@@ -9871,7 +9871,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
-    se_single_target->add_talent( this, "Storm Elemental" );
+    se_single_target->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
     se_single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up");
     se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up" );
     se_single_target->add_action( this, "Frost Shock",
@@ -9945,7 +9945,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "use_items" );
     def->add_action( this, "Flame Shock", "if=!ticking" );
     def->add_action( this, "Fire Elemental" );
-    def->add_talent( this, "Storm Elemental" );
+    def->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
     def->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active&!pet.storm_elemental.active" );
 
     // Racials
