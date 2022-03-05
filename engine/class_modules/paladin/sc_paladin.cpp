@@ -39,7 +39,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.avenging_wrath               = get_cooldown( "avenging_wrath" );
   cooldowns.hammer_of_justice            = get_cooldown( "hammer_of_justice" );
   cooldowns.judgment_of_light_icd        = get_cooldown( "judgment_of_light_icd" );
-  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );  
+  cooldowns.the_magistrates_judgment_icd = get_cooldown( "the_magistrates_judgment_icd" );
 
   cooldowns.holy_shock    = get_cooldown( "holy_shock" );
   cooldowns.light_of_dawn = get_cooldown( "light_of_dawn" );
@@ -60,7 +60,7 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
-  cooldowns.t28_4p_icd = get_cooldown( "t28_4p_icd" );
+  cooldowns.t28_4p_prot_icd = get_cooldown( "t28_4p_prot_icd" );
 
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
@@ -1878,7 +1878,7 @@ void paladin_t::create_actions()
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
 
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ))
-    cooldowns.t28_4p_icd -> duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
+    cooldowns.t28_4p_prot_icd->duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
 
   player_t::create_actions();
 }
@@ -3025,18 +3025,17 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     trigger_holy_shield( s );
   }
 
-  // Trigger T28 4p if equipped
-  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_icd->up()
-  // The set doesn't proc on *all* damage despite saying so, and the default sims
-  // have a bit unrealistically high instances of damage, so just making this proc
-  // on blockable damage instead.
-        && s->action->may_block && school == SCHOOL_PHYSICAL
-        && !( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
-  // Haven't checked: This might be subject to block chance suppressio when the
-  // attacker is above the paladin's level. I'll assume it's not for now.
-        && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  // T28 4P bonus
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_prot_icd->up() &&
+       !( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
+     // The set doesn't proc on *all* damage despite saying so, and the default enemy damage
+     // has an unrealistically high amount of damage instances
+     // to counter that, the set only works on blockable and physical damage in simc
+       && s->action->may_block && school == SCHOOL_PHYSICAL
+     // TOCHECK: This might be subject to block chance reduction from level difference between attacker and target
+       && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
   {
-    trigger_t28_4p_pp( s );
+    trigger_t28_4p_prot( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )
