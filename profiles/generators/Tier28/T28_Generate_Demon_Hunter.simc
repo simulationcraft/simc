@@ -37,32 +37,32 @@ save=T28_Demon_Hunter_Havoc.simc
 
 # Vengeance profile WIP
 
-#demonhunter="T28_Demon_Hunter_Vengeance"
-#level=60
-#race=blood_elf
-#spec=vengeance
-#role=tank
-#position=front
-#talents=2323221
-#covenant=kyrian
-#soulbind=forgelite_prime_mikanikos,brons_call_to_action/growing_inferno:9:1/repeat_decree:9:1/adaptive_armor_fragment:9:1/soulglow_spectrometer/effusive_anima_accelerator
-#renown=80
+demonhunter="T28_Demon_Hunter_Vengeance"
+level=60
+race=blood_elf
+spec=vengeance
+role=tank
+position=front
+talents=2233221
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/repeat_decree:11:1/felfire_haste:11:1/fel_defender:11:1/condensed_anima_sphere:11:1/hammer_of_genesis/growing_inferno:11:1/effusive_anima_accelerator
+renown=80
 
-#head=cap_of_writhing_malevolence,id=186292,bonus_id=4800/4786/1498,gem_id=187312
-#neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173129
-#shoulder=spaulders_of_the_crooked_confidant,id=186336,bonus_id=7187/1498/6935,gem_id=187315
-#back=selfreplicating_tissue,id=186374,bonus_id=4800/4786/1498,enchant=soul_vitality
-#chest=witherheart_studded_breastplate,id=186334,bonus_id=7187/1498/6935,gem_id=187318,enchant=eternal_stats
-#wrist=umbrahide_armguards,id=172321,gem_id=173128,bonus_id=7048/6647/6650/6758/1559
-#hands=loyal_kvaldirs_handwraps,id=186295,bonus_id=4800/4786/1498,gem_id=187314
-#waist=windrunners_baldric,id=186332,bonus_id=7187/1498/6935,gem_id=173128
-#legs=elite_aranakk_breeches,id=186331,bonus_id=7187/1498/6935
-#feet=unstable_energizer_boots,id=186363,bonus_id=4800/4786/1498,gem_id=187313,enchant=eternal_agility
-#finger1=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-#finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=6536/1566/6646,gem_id=173128,enchant=tenet_of_haste
-#trinket1=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-#trinket2=relic_of_the_frozen_wastes,id=186437,bonus_id=7187/1498/6935
-#main_hand=cruciform_veinripper,id=186388,bonus_id=4800/4786/1498,enchant=sinful_revelation
-#off_hand=cruciform_veinripper,id=186388,bonus_id=4800/4786/1498,enchant=lightless_force
+head=mercurial_punishers_hood,id=188892,bonus_id=1498/7187/6935,gem_id=173129
+neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
+shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
+back=blighted_margraves_cloak,id=178755,bonus_id=1592/6536/6646,enchant=soul_vitality
+chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
+wrists=umbrahide_armguards,id=172321,bonus_id=1588/7046/6649/6650/6935,gem_id=173129
+hands=gloves_of_haunting_fixation,id=178832,bonus_id=1592/6536/6646
+waist=umbrahide_waistguard,id=172320,bonus_id=1588/8120/6649/6650/6935,gem_id=173129
+legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
+feet=moccasins_of_dreadful_absolution,id=189798,bonus_id=1524/7187,enchant=eternal_agility
+finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+trinket1=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
+trinket2=ticking_sack_of_terror,id=190652,bonus_id=1595/6536/6646
+main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=lightless_force
+off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,enchant=sinful_revelation
 
-#save=T28_Demon_Hunter_Vengeance.simc
+save=T28_Demon_Hunter_Vengeance.simc
