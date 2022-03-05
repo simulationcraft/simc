@@ -7792,8 +7792,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
-    // If an action is linked, fetch its base cost. Exclude Blood from this otherwise it uses the base cost for
-    // Insatiable Hunger instead of the actual rp spent for Bonestorm
+    // If an action is linked, fetch its base cost. Exclude Bonestorm from this otherwise it uses the base cost for
+    // Insatiable Hunger instead of the actual rp spent
     if ( action && action->id != 194844 )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
