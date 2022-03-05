@@ -5,9 +5,9 @@ level=60
 race=troll
 role=attack
 position=back
-talents=2203021
+talents=2303021
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:11:1/convocation_of_the_dead:11:1/lingering_plague:11:1/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/eternal_hunger:11:1/convocation_of_the_dead:11:1/brutal_grasp:11:1/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -174,7 +174,7 @@ chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173128
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173128
-legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
+legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
 feet=shadowghast_sabatons,id=171413,bonus_id=6716/8119/6649/6647/1588
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
@@ -187,9 +187,9 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_o
 # gear_strength=1431
 # gear_stamina=2962
 # gear_attack_power=20
-# gear_crit_rating=378
-# gear_haste_rating=681
-# gear_mastery_rating=812
+# gear_crit_rating=507
+# gear_haste_rating=561
+# gear_mastery_rating=804
 # gear_versatility_rating=261
 # gear_armor=1840
 # set_bonus=tier28_2pc=1

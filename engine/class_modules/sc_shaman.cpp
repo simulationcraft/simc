@@ -10072,9 +10072,9 @@ void shaman_t::init_action_list_enhancement()
   single->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_talent(this, "Ice Strike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_talent(this, "Sundering", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action("primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
   single->add_action(this, "Flame Shock", "if=!ticking");
   single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains");
-  single->add_action("primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
   single->add_action("vesper_totem,if=raid_event.adds.in>40");
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   single->add_talent(this, "Earthen Spike");
@@ -10129,12 +10129,12 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action("vesper_totem");
   aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   aoe->add_action(this, "Lava Lash", "if=buff.crash_lightning.up");
-  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=2");
   aoe->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
   aoe->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_action(this, "Crash Lightning");
   aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10");
+  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
+  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=2");
+  aoe->add_action(this, "Crash Lightning");
   aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
   aoe->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");

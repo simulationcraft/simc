@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -9166,8 +9166,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=723834)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-#2 (id=723841)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 52477 | Radius: 3 yards | Target: Unknown(72)
+#2 (id=723841)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: Unknown(72)
+Hotfixed         : Type (32 -> 3), Trigger Spell (52477 -> 0)
 Description      : $@spelldesc272742
 
 Name             : Wildfire Cluster (id=272745) [Spell Family (9)] 

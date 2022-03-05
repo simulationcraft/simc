@@ -87,12 +87,12 @@ actions.aoe+=/fire_nova,if=active_dot.flame_shock>=3
 actions.aoe+=/vesper_totem
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.up
 actions.aoe+=/lava_lash,if=buff.crash_lightning.up
-actions.aoe+=/stormstrike,if=buff.crash_lightning.up
-actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
 actions.aoe+=/elemental_blast,if=buff.maelstrom_weapon.stack>=5
 actions.aoe+=/stormkeeper,if=buff.maelstrom_weapon.stack>=5
-actions.aoe+=/crash_lightning
 actions.aoe+=/chain_lightning,if=buff.maelstrom_weapon.stack=10
+actions.aoe+=/stormstrike,if=buff.crash_lightning.up
+actions.aoe+=/fire_nova,if=active_dot.flame_shock>=2
+actions.aoe+=/crash_lightning
 actions.aoe+=/windstrike
 actions.aoe+=/stormstrike
 actions.aoe+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
@@ -112,9 +112,9 @@ actions.single+=/stormstrike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/crash_lightning,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/ice_strike,if=runeforge.doom_winds.equipped&buff.doom_winds.up
 actions.single+=/sundering,if=runeforge.doom_winds.equipped&buff.doom_winds.up
+actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/flame_shock,if=!ticking
 actions.single+=/lightning_bolt,if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains
-actions.single+=/primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)
 actions.single+=/vesper_totem,if=raid_event.adds.in>40
 actions.single+=/frost_shock,if=buff.hailstorm.up
 actions.single+=/earthen_spike
