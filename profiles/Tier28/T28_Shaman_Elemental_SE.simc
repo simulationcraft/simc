@@ -1,11 +1,11 @@
-shaman="T28_Shaman_Elemental"
+shaman="T28_Shaman_Elemental_SE"
 source=default
 spec=elemental
 level=60
 race=tauren
 role=spell
 position=ranged_back
-talents=2301022
+talents=1102021
 covenant=night_fae
 soulbind=dreamweaver,pyroclastic_shock:11:1/high_voltage:11:1/field_of_blossoms/essential_extraction:11:1/dream_delver
 renown=80
