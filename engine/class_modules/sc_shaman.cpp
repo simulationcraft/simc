@@ -11082,7 +11082,16 @@ struct shaman_module_t : public module_t
   { }
 
   void register_hotfixes() const override
-  { }
+  {
+    hotfix::register_spell( "Shaman", "2022-03-04",
+                            "Storm Elemental's Wind Gust effect gained from casting Lightning Bolt or Chain Lightning "
+                            "now has a maximum stack of 10 (was 20).",
+                            263806 )
+        .field( "max_stack" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 10 )
+        .verification_value( 20 );
+  }
 
   void combat_begin( sim_t* ) const override
   { }
