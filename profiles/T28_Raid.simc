@@ -50,9 +50,12 @@ T28_Rogue_Outlaw.simc
 T28_Rogue_Subtlety.simc
 
 T28_Shaman_Elemental.simc
-T28_Shaman_Elemental_Kyrian.simc
-T28_Shaman_Elemental_Necrolord.simc
-T28_Shaman_Elemental_Venthyr.simc
+T28_Shaman_Elemental_SE.simc
+# These profiles exist but are not terribly relevant for most situations,
+# so they remain but are not shown in the stack chart.
+# T28_Shaman_Elemental_Kyrian.simc
+# T28_Shaman_Elemental_Necrolord.simc
+# T28_Shaman_Elemental_Venthyr.simc
 T28_Shaman_Enhancement.simc
 T28_Shaman_Enhancement_Kyrian.simc
 T28_Shaman_Enhancement_Necrolord.simc
