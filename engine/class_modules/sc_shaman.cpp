@@ -4105,6 +4105,11 @@ struct storm_elemental_t : public shaman_spell_t
       storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
     }
 
+    // 2022-03-04 hotfix: if you cast Storm Elemental again while having a Storm Elemental active, the Wind Gust buff
+    // will be reset.
+    // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
+    p()->buff.wind_gust->expire();
+
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
     {
       p()->buff.fireheart->trigger();
