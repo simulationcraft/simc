@@ -7797,7 +7797,6 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     if ( action && specialization() != DEATH_KNIGHT_BLOOD )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
-
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
     // RE is using the ability's base cost for its proc chance calculation, just like Runic Corruption
     trigger_runic_empowerment( base_rp_cost );
