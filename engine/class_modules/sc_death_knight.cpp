@@ -10156,11 +10156,21 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
-  /*
+  
   void register_hotfixes() const override
   {
-
-  }*/
+    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's base value buffed to 10% (was 5%)", 912019 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 5 );
+    
+    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's execute value buffed to 50% (was 25%)", 912019 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 20 );
+  }
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
