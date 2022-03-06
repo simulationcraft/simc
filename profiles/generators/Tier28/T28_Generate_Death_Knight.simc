@@ -14,7 +14,7 @@ neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1808/1588,gem_i
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=realityshatter_vambraces,id=179354,bonus_id=1592/7187/6646/6935,gem_id=173129
+wrists=realityshatter_vambraces,id=179354,bonus_id=1592/6646/6935,gem_id=173129
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=waistguard_of_expurged_anguish,id=178842,bonus_id=1592/7187/6646/6935,gem_id=173129
 legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
