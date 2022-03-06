@@ -128,7 +128,7 @@ void blood( player_t* p )
   standard->add_action( "marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20" );
   standard->add_action( "death_strike,if=runic_power.deficit<=70&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)","Death Strike to prevent overcapping. Don't do this if are venthyr and swarming mist is about to come off cd, or if bonestorm is talented and about to come off cd" );
   standard->add_action( "marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15&(!covenant.night_fae|buff.deaths_due.remains>5)" );
-  standard->add_action( "heart_strike,if=!talent.blooddrinker.enabled&(death_and_decay.remains<5|buff.deaths_due.remains<5)&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  standard->add_action( "heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
   standard->add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
   standard->add_action( "death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10" );
   standard->add_action( "bonestorm,if=runic_power>=100&(!buff.dancing_rune_weapon.up|(covenant.venthyr&buff.swarming_mist.up))" );
