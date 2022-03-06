@@ -11,6 +11,10 @@ action_priority_list_t* stealth = get_action_priority_list( "stealth" );
 precombat->add_action( "variable,name=4cp_bite,value=0","Snapshot raid buffed stats before combat begins and pre-potting is done." );
 precombat->add_action( "variable,name=filler,value=1","Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4" );
 precombat->add_action( "variable,name=rip_ticks,value=7" );
+precombat->add_action( "variable,name=on_use_trinket,value=0","Cache of acquired treasures does not seem to work yet and has to be seen" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.1.has_proc.any&trinket.1.cooldown.duration)|trinket.1.is.inscrutable_quantum_device" );
+precombat->add_action( "variable,name=on_use_trinket,op=add,value=((trinket.2.has_proc.any&trinket.2.cooldown.duration)|trinket.2.is.inscrutable_quantum_device)*2" );
+precombat->add_action( "variable,name=max_trinket_hold,value=61" );
 precombat->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
@@ -56,16 +60,18 @@ bloodtalons->add_action( "thrash_cat,if=buff.bt_thrash.down" );
 
 cooldown->add_action( "adaptive_swarm,target_if=((!dot.adaptive_swarm_damage.ticking|dot.adaptive_swarm_damage.remains<2)&(dot.adaptive_swarm_damage.stack<3|!dot.adaptive_swarm_heal.stack>1)&!action.adaptive_swarm_heal.in_flight&!action.adaptive_swarm_damage.in_flight&!action.adaptive_swarm.in_flight)&target.time_to_die>5|active_enemies>2&!dot.adaptive_swarm_damage.ticking&energy<35&target.time_to_die>5" );
 cooldown->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)" );
+cooldown->add_action( "use_items,slots=trinket1,if=((cooldown.convoke_the_spirits.remains<2&(buff.bs_inc.up|cooldown.bs_inc.remains>10))|fight_remains<20)|(cooldown.convoke_the_spirits.remains-2>variable.max_trinket_hold)|variable.on_use_trinket=0|(variable.on_use_trinket=2&(cooldown.convoke_the_spirits.remains>22|fight_remains<20|trinket.2.cooldown.remains>20))" );
+cooldown->add_action( "use_items,slots=trinket2,if=((cooldown.convoke_the_spirits.remains<2&(buff.bs_inc.up|cooldown.bs_inc.remains>10)&(trinket.1.cooldown.remains>=2|variable.on_use_trinket=2))|fight_remains<20)|((cooldown.convoke_the_spirits.remains-2+60*((trinket.1.cooldown.remains<cooldown.convoke_the_spirits.remains-2)&(variable.on_use_trinket=1|variable.on_use_trinket>=3)))>variable.max_trinket_hold)|variable.on_use_trinket=0|(variable.on_use_trinket=1&(cooldown.convoke_the_spirits.remains>22|fight_remains<20|trinket.1.cooldown.remains>20))" );
 cooldown->add_action( "tigers_fury,sync=feral_frenzy,if=cooldown.bs_inc.up","Cast Tiger's Fury before (or immediatly after) casting Feral Frenzy if Berserk is on cooldown" );
 cooldown->add_action( "feral_frenzy,target_if=max:target.time_to_die,if=combo_points<3&target.time_to_die>7&(buff.savage_roar.up|!talent.savage_roar.enabled)&(!cooldown.tigers_fury.up|cooldown.bs_inc.up)|fight_remains<8&fight_remains>2" );
-cooldown->add_action( "berserk,if=combo_points>=3","TODO: Need to sync with with ravenous frenzy when we run frenzyband, or atleast check if its worth it" );
-cooldown->add_action( "incarnation,if=combo_points>=3" );
-cooldown->add_action( "tigers_fury,if=energy.deficit>40|buff.bs_inc.up|(talent.predator.enabled&variable.shortest_ttd<3)","Try and not waste TF energy, but also just use it for zerk and incarns" );
+cooldown->add_action( "berserk,if=dot.rip.ticking&(cooldown.convoke_the_spirits.up|cooldown.convoke_the_spirits.remains>32|fight_remains<20)","TODO: Need to sync with with ravenous frenzy when we run frenzyband, or atleast check if its worth it" );
+cooldown->add_action( "incarnation,if=dot.rip.ticking&(cooldown.convoke_the_spirits.up|fight_remains<30)" );
+cooldown->add_action( "tigers_fury,if=energy.deficit>40|buff.bs_inc.up|(talent.predator.enabled&variable.shortest_ttd<3)|(!dot.rip.ticking&buff.bloodtalons.up)","Try and not waste TF energy, but also just use it for zerk and incarns" );
 cooldown->add_action( "shadowmeld,if=buff.tigers_fury.up&buff.bs_inc.down&combo_points<4&buff.sudden_ambush.down&dot.rake.pmultiplier<1.6&energy>40&druid.rake.ticks_gained_on_refresh>spell_targets.swipe_cat*2-2&target.time_to_die>5","Might be wrong to use Smeld on Rake in very very niche situations, but very rarely" );
 cooldown->add_action( "berserking,if=buff.tigers_fury.up|buff.bs_inc.up" );
 cooldown->add_action( "potion,if=buff.bs_inc.up|fight_remains<cooldown.bs_inc.remains|fight_remains<25" );
 cooldown->add_action( "ravenous_frenzy,if=buff.bs_inc.up|fight_remains<21" );
-cooldown->add_action( "convoke_the_spirits,if=(dot.rip.remains>4&combo_points<5&(dot.rake.ticking|spell_targets.thrash_cat>1)&energy.deficit>=20)|fight_remains<5","TODO: Check moonkin hotw and stuff like this, and maybe better combat remain resync" );
+cooldown->add_action( "convoke_the_spirits,if=(dot.rip.remains>4&combo_points<5&(dot.rake.ticking|spell_targets.thrash_cat>1)&energy.deficit>=20&cooldown.bs_inc.remains>10)|fight_remains<5|(buff.bs_inc.up&buff.bs_inc.remains>12)","TODO: Check moonkin hotw and stuff like this, and maybe better combat remain resync" );
 cooldown->add_action( "kindred_spirits,if=buff.tigers_fury.up|(conduit.deep_allegiance.enabled)","Maybe there should be more conditions on the conduit" );
 cooldown->add_action( "use_item,name=jotungeirr_destinys_call,if=equipped.jotungeirr_destinys_call","Give priority to on-use weapon" );
 cooldown->add_action( "use_items" );
@@ -86,7 +92,7 @@ finisher->add_action( "ferocious_bite,target_if=max:time_to_die,if=buff.bs_inc.u
 
 owlweave->add_action( "starsurge,if=buff.heart_of_the_wild.up" );
 owlweave->add_action( "sunfire,line_cd=4*gcd" );
-owlweave->add_action( "moonfire,line_cd=4*gcd,if=buff.moonkin_form.up&spell_targets.thrash_cat<2&!talent.lunar_inspiration.enabled" );
+owlweave->add_action( "moonfire,line_cd=4*gcd,if=buff.moonkin_form.up&spell_targets.thrash_cat<2&!talent.lunar_inspiration.enabled&energy<60&!buff.clearcasting.up" );
 owlweave->add_action( "heart_of_the_wild,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=6.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&!buff.bs_inc.up&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)" );
 owlweave->add_action( "moonkin_form,if=energy<30&dot.rip.remains>4.5&(cooldown.tigers_fury.remains>=4.5|runeforge.cateye_curio)&buff.clearcasting.stack<1&!buff.apex_predators_craving.up&!buff.bloodlust.up&(!buff.bs_inc.up|covenant.necrolord&talent.savage_roar.enabled&buff.bs_inc.remains>6)&(cooldown.convoke_the_spirits.remains>6.5|!covenant.night_fae)&(!covenant.necrolord|cooldown.adaptive_swarm.remains>=5|dot.adaptive_swarm_damage.remains>7)&target.time_to_die>7" );
 
