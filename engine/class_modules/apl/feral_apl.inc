@@ -19,7 +19,7 @@ precombat->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volati
 precombat->add_action( "cat_form" );
 precombat->add_action( "prowl" );
 
-def->add_action( "call_action_list,name=owlweave,if=druid.owlweave_cat","Executed every time the actor is available." );
+def->add_action( "call_action_list,name=owlweave,if=druid.owlweave_cat" );
 def->add_action( "prowl","Prowl whenever possible" );
 def->add_action( "tigers_fury,if=buff.cat_form.down" );
 def->add_action( "cat_form,if=buff.cat_form.down" );
