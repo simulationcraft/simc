@@ -1241,13 +1241,21 @@ public:
       p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
                              original_value, p()->buff.seeing_red_tracking->current_value );
 
-      if ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
+      while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
       {
         p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
         p()->sim->print_debug(
             "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
             p()->name(), p()->buff.seeing_red_tracking->current_value );
+
         p()->buff.seeing_red->trigger();
+
+        if( p()->buff.seeing_red->at_max_stacks() )
+        {
+          p()->buff.seeing_red->expire();
+          p()->buff.outburst->trigger();
+        }
+
       }
     }
   }
@@ -7656,14 +7664,8 @@ void warrior_t::create_buffs()
 
   // Protection T28 Set Bonuses ===============================================================================================================
 
-  buff.seeing_red = make_buff( this, "seeing_red", find_spell( 364006 ) )
-                        ->set_stack_change_callback( [ this ]( buff_t* _buff, int /* old_stack */, int current_stack ) {
-                          if ( current_stack >= as<int>( _buff->data().max_stacks() ) )
-                          {
-                            buff.seeing_red->expire();
-                            buff.outburst->trigger();
-                          }
-                        } );
+  buff.seeing_red = make_buff( this, "seeing_red", find_spell( 364006 ) );
+
   buff.seeing_red_tracking =
       make_buff( this, "seeing_red_tracking", find_spell( 364002 ) )
           ->set_quiet( true )
