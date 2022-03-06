@@ -6,7 +6,7 @@ role=spell
 position=ranged_back
 talents=2301022
 covenant=night_fae
-soulbind=dreamweaver,pyroclastic_shock:11:1/high_voltage:11:1/field_of_blossoms/essential_extraction:11:1/dream_delver
+soulbind=dreamweaver,pyroclastic_shock:11:1/social_butterfly/field_of_blossoms/essential_extraction:11:1/dream_delver
 renown=80
 
 # unity
@@ -72,10 +72,9 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=1102021
-
+talents=2301022
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/call_of_flame:11:1/pyroclastic_shock:11:1/tumbling_waves:11:1/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/high_voltage:11:1/pyroclastic_shock:11:1/tumbling_waves:11:1/kevins_oozeling
 
 # unity
 head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
@@ -107,9 +106,9 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=1102021
+talents=2301022
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/call_of_flame:11:1/pyroclastic_shock:11:1/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/pyroclastic_shock:11:1/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
 
 # unity
 head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
@@ -141,10 +140,9 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=1102021
-
+talents=2301022
 covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/call_of_flame:11:1/dauntless_duelist/pyroclastic_shock:11:1/fatal_flaw
+soulbind=nadjia_the_mistblade,thrill_seeker/high_voltage:11:1/dauntless_duelist/pyroclastic_shock:11:1/fatal_flaw
 
 # unity
 head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
