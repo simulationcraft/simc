@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -203,7 +203,7 @@ Spell Type       : None
 Duration         : 30 seconds
 Proc Flags       : ..x.x... x...x... x....... ........ 
                  : White Melee, Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
-Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1)
+Affecting spells : Soul Rending (204909 effect#2), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Deadly Dance (363736 effect#3)
 Triggered by     : Metamorphosis (191427)
 Family Flags     : 15
 Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
@@ -645,7 +645,7 @@ Requires weapon  : One-handed Axe, One-handed Mace, One-handed Sword, War Glaive
 Cooldown         : 15 seconds
 Category         : 1640
 Category Cooldown: 15 seconds
-Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5)
+Affecting spells : Metamorphosis (162264 effect#6), First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Deadly Dance (364438 effect#1)
 Family Flags     : 25, 32, 42, 85
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...xx... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -785,7 +785,7 @@ Cooldown         : 300 seconds
 Category         : 1577: Demonic Origins (235893 effect#1)
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Category Cooldown: 300 seconds
-Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1)
+Affecting spells : Soul Rending (204909 effect#2), Havoc Demon Hunter (212612 effect#3), Vengeance Demon Hunter (212613 effect#3), Demonic Origins (235893 effect#2), Metamorphosis (320421 effect#1), Metamorphosis (320422 effect#1), Deadly Dance (363736 effect#3)
 Family Flags     : 15, 32
 Attributes       : ....x... x....... ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -940,7 +940,7 @@ Attributes       : ....x... ........ x....... .......x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), No Aura Log (202), Reset cooldown upon ending an encounter (333), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=288808)   : Unknown(179)
+#1 (id=288808)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6615 | Target: Unknown(62)
 #2 (id=374312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1134,7 +1134,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 6, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1156,7 +1156,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1206,7 +1206,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Metamorphosis (162264 effect#6), Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Blade Dance (320402 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Blade Dance (188499)
 Family Flags     : 12, 16, 25, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -1283,7 +1283,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 50
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -1341,7 +1341,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Do Not Display Range (126), Extra Initial Period (169), No Target Aura Icon (188), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=296820)   : Unknown(179)
+#1 (id=296820)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5758 | Target: Custom (18)
 Description      : Throws two demonic glaives in a whirlwind of energy, causing ${7*($201628sw1+$201789sw1)} Chaos damage over $d to all nearby enemies.
 
@@ -1454,7 +1454,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=297902)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301812)   : Unknown(179)
+#2 (id=301812)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6027 | Target: Unknown(87)
 Description      : Place a Sigil of Silence at the target location that activates after $d.
 
@@ -1484,7 +1484,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=297903)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301844)   : Unknown(179)
+#2 (id=301844)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6031 | Target: Unknown(87)
 Description      : Place a Sigil of Chains at the target location that activates after $d.
 
@@ -1512,7 +1512,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=297905)   : Unknown(179)
+#1 (id=297905)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6351 | Target: Unknown(125)
 Description      : Place a Sigil of Misery at your location that activates after $d.
 
@@ -1940,7 +1940,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=300650)   : Unknown(179)
+#1 (id=300650)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6710 | Target: Unknown(87)
 #2 (id=301006)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210788 | Target: Self (1)
@@ -2104,7 +2104,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=301463)   : Unknown(179)
+#1 (id=301463)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5977 | Target: Unknown(87)
 #2 (id=301484)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210788 | Target: Self (1)
@@ -2181,7 +2181,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301848)   : Unknown(179)
+#1 (id=301848)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6039 | Target: Unknown(125)
 Description      : Place a Sigil of Flame at your location that activates after $d.
 
@@ -2212,7 +2212,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301965)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301966)   : Unknown(179)
+#2 (id=301966)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6039 | Target: Unknown(87)
 Description      : Place a Sigil of Flame at the target location that activates after $d.
 
@@ -2551,7 +2551,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307122)   : Unknown(179)
+#1 (id=307122)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6031 | Target: Unknown(125)
 Description      : Place a Sigil of Chains at your location that activates after $d.
 
@@ -2608,7 +2608,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307154)   : Unknown(179)
+#1 (id=307154)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6027 | Target: Unknown(125)
 Description      : Place a Sigil of Silence at your location that activates after $d.
 
@@ -2639,7 +2639,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=307158)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=307159)   : Unknown(179)
+#2 (id=307159)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6351 | Target: Unknown(87)
 Description      : Place a Sigil of Misery at the target location that activates after $d.
 
@@ -3075,7 +3075,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 9 seconds
 Category         : 1640
 Category Cooldown: 9 seconds
-Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5)
+Affecting spells : First Blood (206416 effect#2), Havoc Demon Hunter (212612 effects: #3, #4), Vengeance Demon Hunter (212613 effects: #3, #4), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Deadly Dance (364438 effect#1)
 Family Flags     : 32, 37, 42, 85
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3107,7 +3107,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3131,7 +3131,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), First Blood (206416 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Revolving Blades (279581 effect#2), Revolving Blades (279584 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#5), Dancing with Fate (339228 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Death Sweep (210152)
 Family Flags     : 16, 37, 38, 42
 Attributes       : ....x... ........ ..x..... ........   ........ .x...... ........ ........ 
@@ -3801,7 +3801,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Chaos Strike (162794)
 Family Flags     : 14, 16, 43
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -3953,7 +3953,7 @@ School           : Chaos
 Spell Type       : Melee
 Range            : 15 yards
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, War Glaive, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Mastery: Demonic Presence (185164 effects: #1, #2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Thirsting Blades (278736 effect#1), Essence Break (320338 effect#1), Mark of the Ogre (326486 effect#3), Chaotic Blades (337567 effect#1), Chaos Strike (343206 effect#1), Demon Soul (347765 effects: #1, #2), Deadly Dance (364438 effect#1)
 Triggered by     : Annihilation (201427)
 Family Flags     : 16, 43, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -4246,15 +4246,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
-Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), No Threat (42), Do Not Display Cast Time (441)
+                 : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), No Cast Log (128), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=470901)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5751,7 +5751,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=727999)   : Unknown(179)
+#1 (id=727999)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13972 | Target: Unknown(87)
 Description      : $@spelldesc275144
 
@@ -7115,7 +7115,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=785015)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=795437)   : Unknown(179)
+#2 (id=795437)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 18264 | Target: Unknown(87)
 #3 (id=819493)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(87)
@@ -8226,7 +8226,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=819505)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(62)
-#2 (id=819506)   : Unknown(179)
+#2 (id=819506)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 18264 | Target: Unknown(62)
 #3 (id=819507)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(62)
@@ -9256,7 +9256,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Do Not Display Range (126), Extra Initial Period (169), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=844163)   : Unknown(179)
+#1 (id=844163)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21832 | Target: Unknown(62)
 #2 (id=900270)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
@@ -10060,13 +10060,15 @@ Effects          :
 #1 (id=880380)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Agony Gaze (id=355886) [Spell Family (107), Passive, Hidden] 
+Name             : Agony Gaze (id=355886) [Spell Family (107), Hidden] 
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : ........ ....x... x....... ........ 
                  : Generic Hostile Spell, Magic Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Triggered by     : Agony Gaze (364827)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10074,7 +10076,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=889341)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
@@ -10084,11 +10086,13 @@ Effects          :
                    Base Value: 750 | Scaled Value: 750 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sinful Brand deals $s1% increased damage and $?c1[Eye Beam][Fel Devastation] damage increases the duration of Sinful Brand by ${$s2/1000}.2 sec.
 
-Name             : Blazing Slaughter (id=355890) [Spell Family (107), Passive, Hidden] 
+Name             : Blazing Slaughter (id=355890) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Duration         : Aura (infinite)
+Triggered by     : Blazing Slaughter (364825)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10096,7 +10100,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=889346)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10125,11 +10129,13 @@ Effects          :
 Description      : $@spelldesc355890
 Tooltip          : Agility increased by $s1%.
 
-Name             : Blind Faith (id=355893) [Spell Family (107), Passive, Hidden] 
+Name             : Blind Faith (id=355893) [Spell Family (107), Hidden] 
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Duration         : Aura (infinite)
+Triggered by     : Blind Faith (364828)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10137,13 +10143,15 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=889351)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=889354)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $s2% Versatility and $356070s1 Fury.
+#3 (id=913501)   : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+Description      : Elysian Decree shatters $s1 additional Lesser Soul Fragments and grants you Blind Faith for $355894d. For each Lesser Soul Fragment you consume while Blind Faith is active you gain $356070s1 Fury and $s2% Versatility, up to $s3%.
 
 Name             : Blind Faith (id=355894) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -10168,10 +10176,12 @@ Effects          :
 Description      : $@spelldesc355893
 Tooltip          : Versatility increased by $w1%.
 
-Name             : Demonic Oath (id=355996) [Spell Family (107), Passive, Hidden] 
+Name             : Demonic Oath (id=355996) [Spell Family (107), Hidden] 
 School           : Physical
 Spell Type       : None
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Duration         : Aura (infinite)
+Triggered by     : Demonic Oath (364826)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10179,7 +10189,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
 Effects          :
 #1 (id=889546)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 8000 | Scaled Value: 8000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -10229,5 +10239,167 @@ Effects          :
                    Affected Spells: Darkness (196718)
                    Family Flags: 77
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
+
+Name             : Deadly Dance (id=363736) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Chaos
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903316)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=911715)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=911803)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Metamorphosis (162264), Metamorphosis (191427)
+                   Family Flags: 15
+Description      : Metamorphosis duration is increased by ${$s3/1000} sec. Every $s2 Fury you consume reduces the cooldown of Metamorphosis by $s1 sec.
+
+Name             : Rapacious Hunger (id=363737) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Chaos
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903317)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consuming a Lesser Soul Fragment reduces the remaining cooldown of your Immolation Aura or Fel Devastation by ${$s1/1000} sec.
+
+Name             : Deadly Dance (id=364438) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Chaos
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904430)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Blade Dance (188499), Chaos Strike (199547), Blade Dance (199552), Blade Dance (200685), Annihilation (201428), Death Sweep (210152), Death Sweep (210153), Death Sweep (210155), Chaos Strike (222031), Annihilation (227518)
+                   Family Flags: 6, 14, 25, 37, 50, 127
+Description      : Increases $?a162264[Death Sweep and Annihilation] [Blade Dance and Chaos Strike] damage by $s1%.
+
+Name             : Burning Hunger (id=364454) [Spell Family (107), Passive, Hidden] 
+Class            : Demon Hunter
+School           : Chaos
+Spell Type       : None
+Proc Chance      : 10%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ..x..... 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904459)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=904460)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=904461)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Damage dealt by Immolation Aura has a $s1% chance to generate a Lesser Soul Fragment.
+
+Name             : Blazing Slaughter (id=364825) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364824)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905206)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 355890 | Target: Self (1)
+Description      : $@spelldesc355890
+
+Name             : Demonic Oath (id=364826) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364824)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905207)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 355996 | Target: Self (1)
+Description      : $@spelldesc355996
+
+Name             : Agony Gaze (id=364827) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364824)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905208)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 355886 | Target: Self (1)
+Description      : $@spelldesc355886
+
+Name             : Blind Faith (id=364828) [Spell Family (107), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364824)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905210)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 355893 | Target: Self (1)
+Description      : $@spelldesc355893
 
 

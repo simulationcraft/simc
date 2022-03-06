@@ -1,5 +1,5 @@
-// Rank class spells, wow build 9.1.5.42010
-static const std::array<rank_class_spell_t, 338> __rank_spells_data { {
+// Rank class spells, wow build 9.2.0.42560
+static const std::array<rank_class_spell_t, 337> __rank_spells_data { {
   {  2,  66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10, 269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9, 265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -17,7 +17,6 @@ static const std::array<rank_class_spell_t, 338> __rank_spells_data { {
   {  1,  73, 316438,      0, "Avatar"                            , "Rank 2" },
   {  2,  66, 231665,      0, "Avenger's Shield"                  , "Rank 2" },
   {  2,   0, 317872,      0, "Avenging Wrath"                    , "Rank 2" },
-  {  2,  65, 327979,      0, "Avenging Wrath"                    , "Rank 3" },
   {  4, 261, 319949,      0, "Backstab"                          , "Rank 2" },
   { 11,   0, 327993,      0, "Barkskin"                          , "Rank 2" },
   {  2,  65, 231642,      0, "Beacon of Light"                   , "Rank 2" },

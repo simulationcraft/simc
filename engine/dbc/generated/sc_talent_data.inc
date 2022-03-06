@@ -1,4 +1,4 @@
-// 636 talents, wow build 9.1.5.42010
+// 636 talents, wow build 9.2.0.42560
 static std::array<talent_data_t, 636> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,  71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,  73,   1,   0,  275334,       0,  0 },
@@ -337,7 +337,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Infernal Armor"                    , 22324, 0x00, 0x0800, 581,   0,   2,  320331,       0,  0 },
   { "Angel's Mercy"                     , 22325, 0x00, 0x0010, 257,   0,   1,  238100,       0,  0 },
   { "Body and Soul"                     , 22326, 0x00, 0x0010, 257,   1,   1,   64129,       0,  0 },
-  { "Binding Heal"                      , 22327, 0x00, 0x0010, 257,   1,   4,   32546,       0,  0 },
+  { "Cosmic Ripple"                     , 22327, 0x00, 0x0010, 257,   1,   4,  238136,       0,  0 },
   { "Fortress of the Mind"              , 22328, 0x00, 0x0010, 258,   0,   0,  193195,       0,  0 },
   { "Schism"                            , 22329, 0x00, 0x0010, 256,   2,   0,  214621,       0,  0 },
   { "Sins of the Many"                  , 22330, 0x00, 0x0010, 256,   0,   4,  280391,       0,  0 },
@@ -459,7 +459,7 @@ static std::array<talent_data_t, 636> __talent_data { {
   { "Inferno"                           , 22480, 0x00, 0x0100, 267,   0,   3,  270545,       0,  0 },
   { "Justicar's Vengeance"              , 22483, 0x00, 0x0002,  70,   1,   5,  215661,       0,  0 },
   { "Awakening"                         , 22484, 0x00, 0x0002,  65,   2,   5,  248033,       0,  0 },
-  { "Cosmic Ripple"                     , 22487, 0x00, 0x0010, 257,   0,   2,  238136,       0,  0 },
+  { "Binding Heals"                     , 22487, 0x00, 0x0010, 257,   0,   2,  368275,       0,  0 },
   { "Menace"                            , 22488, 0x00, 0x0001,  73,   2,   3,  275338,       0,  0 },
   { "Fervor of Battle"                  , 22489, 0x00, 0x0001,  71,   1,   2,  202316,       0,  0 },
   { "Fresh Meat"                        , 22491, 0x00, 0x0001,  72,   2,   0,  215568,       0,  0 },

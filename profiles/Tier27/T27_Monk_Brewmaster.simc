@@ -32,7 +32,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/potion
 actions.precombat+=/fleshcraft
-actions.precombat+=/chi_burst
+actions.precombat+=/chi_burst,if=!covenant.night_fae
 actions.precombat+=/chi_wave
 
 # Executed every time the actor is available.
@@ -56,7 +56,7 @@ actions+=/touch_of_death,if=target.health.pct<=15
 # Use WoO on CD unless we have CtA equipped, in which case we treat it as mini-Niuzao not WoO.
 actions+=/weapons_of_order,if=!runeforge.call_to_arms.equipped|(buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&!buff.invoke_niuzao_the_black_ox.up)
 actions+=/fallen_order
-actions+=/bonedust_brew
+actions+=/bonedust_brew,if=!debuff.bonedust_brew_debuff.up
 # Cast PB during the Niuzao window, but only if recently hit.
 actions+=/purifying_brew,if=stagger.amounttototalpct>=0.7&(((target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&cooldown.invoke_niuzao_the_black_ox.remains<5)|buff.invoke_niuzao_the_black_ox.up)
 # Dump PB charges towards the end of Niuzao: anything is better than nothing.

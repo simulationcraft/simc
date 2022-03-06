@@ -1929,7 +1929,7 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) );
+  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
 }
 
 void priest_t::init_rng_shadow()

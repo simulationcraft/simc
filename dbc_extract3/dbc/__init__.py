@@ -96,15 +96,16 @@ class WowVersion:
 # repeated in the actual record data. For those files, the key block id is
 # actually not concatenated to the hotfix entry.
 KEY_FIELD_HOTFIX_RECORD = {
-    'ItemBonus'             : 'id_node',
-    'ItemBonusTreeNode'     : 'id_node',
-    'SkillLineAbility'      : 'id_skill',
-    'SpecializationSpells'  : 'spec_id',
-    'ItemModifiedAppearance': 'id_item',
-    'JournalEncounterItem'  : 'id_encounter',
-    'AzeritePowerSetMember' : 'unk_28366',
-    'RenownRewards'         : 'id_covenant',
-    'GarrTalent'            : 'id_garr_talent_tree'
+    'ItemBonus'                 : 'id_node',
+    'ItemBonusTreeNode'         : 'id_node',
+    'SkillLineAbility'          : 'id_skill',
+    'SpecializationSpells'      : 'spec_id',
+    'ItemModifiedAppearance'    : 'id_item',
+    'JournalEncounterItem'      : 'id_encounter',
+    'JournalEncounterCreature'  : 'id',
+    'AzeritePowerSetMember'     : 'unk_28366',
+    'RenownRewards'             : 'id_covenant',
+    'GarrTalent'                : 'id_garr_talent_tree'
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for

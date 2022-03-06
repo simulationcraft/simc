@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1656,7 +1656,7 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
 #2 (id=55820)    : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-#3 (id=263791)   : Unknown(179)
+#3 (id=263791)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3691 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and sometimes knocking down enemies.
 Variables        : $mawPower=$?a329580[${1+($329580m5/100)}][${1}]
@@ -6041,7 +6041,7 @@ Attributes       : ........ ........ x....... ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), No Redirection (35), No Reflection (39), Always Show Ground Texture (190), Periodic Can Crit (265), Aura Points On Client (268), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
-#1 (id=312254)   : Unknown(179)
+#1 (id=312254)   : Create Area Trigger (179)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 6826 | Radius: 4 yards | Target: Unknown(47)
 Description      : $@spelldesc192246
 

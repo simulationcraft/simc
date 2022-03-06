@@ -456,9 +456,9 @@ struct judgment_prot_t : public judgment_t
 // TODO: Woli
 // T28 4P damage proc ==================================================
 
-struct t28_4p_pp_t : public judgment_prot_t
+struct t28_4p_prot_t : public judgment_prot_t
 {
-  t28_4p_pp_t( paladin_t* p ) :
+  t28_4p_prot_t( paladin_t* p ) :
     judgment_prot_t( p, "judgment_t28_4p" )
   {
     background = proc = may_crit = true;
@@ -774,18 +774,15 @@ void paladin_t::trigger_holy_shield( action_state_t* s )
   active.holy_shield_damage -> schedule_execute();
 }
 
-void paladin_t::trigger_t28_4p_pp( action_state_t* s )
+void paladin_t::trigger_t28_4p_prot( action_state_t* s )
 {
-  // escape if we don't have t28 4p
-  // if ( !talents.holy_shield->ok() )
-  //  return;
-
-  // sanity check - no friendly-fire
+  active.t28_4p_prot->set_target( s->action->player );
+  // Fallback to the player's current target if the source isn't an enemy
   if ( !s->action->player->is_enemy() )
-    return;
+    active.t28_4p_prot->set_target( this->target );
 
-  active.t28_4p_pp->set_target( s->action->player );
-  active.t28_4p_pp->schedule_execute();
+  active.t28_4p_prot->schedule_execute();
+  cooldowns.t28_4p_prot_icd->start();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -820,7 +817,7 @@ void paladin_t::create_prot_actions()
 
   if ( specialization() == PALADIN_PROTECTION )
   {
-    active.t28_4p_pp = new t28_4p_pp_t( this );
+    active.t28_4p_prot = new t28_4p_prot_t( this );
   }
 }
 

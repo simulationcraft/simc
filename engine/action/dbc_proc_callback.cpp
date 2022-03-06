@@ -54,8 +54,18 @@ struct proc_event_t : public event_t
 
 const item_t dbc_proc_callback_t::default_item_ = item_t();
 
+cooldown_t* dbc_proc_callback_t::get_cooldown( player_t* target )
+{
+  if ( !target_specific_cooldown || !target )
+    return cooldown;
+
+  return target_specific_cooldown->get_cooldown( target );
+}
+
 void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 {
+  cooldown_t* cd = get_cooldown( state->target );
+
   // Fully overridden trigger condition check; if allowed, perform normal proc chance
   // behavior.
   if ( trigger_type == trigger_fn_type::TRIGGER )
@@ -67,7 +77,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
   }
   else
   {
-    if ( cooldown && cooldown->down() )
+    if ( cd && cd->down() )
       return;
 
     // Weapon-based proc triggering differs from "old" callbacks. When used
@@ -113,8 +123,8 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
     // Detach proc execution from proc triggering
     make_event<proc_event_t>( *listener->sim, this, a, state );
 
-    if ( cooldown )
-      cooldown->start();
+    if ( cd )
+      cd->start();
   }
 }
 
@@ -123,6 +133,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     item( i ),
     effect( e ),
     cooldown( nullptr ),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -142,6 +153,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     item( *i ),
     effect( e ),
     cooldown( nullptr ),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -161,6 +173,7 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     item( default_item_ ),
     effect( e ),
     cooldown( nullptr ),
+    target_specific_cooldown( nullptr ),
     rppm( nullptr ),
     proc_chance( 0 ),
     ppm( 0 ),
@@ -199,8 +212,12 @@ void dbc_proc_callback_t::initialize()
   // Initialize cooldown, if applicable
   if ( effect.cooldown() > timespan_t::zero() )
   {
-    cooldown           = listener->get_cooldown( effect.cooldown_name() );
-    cooldown->duration = effect.cooldown();
+    cooldown                     = listener->get_cooldown( effect.cooldown_name() );
+    cooldown->duration           = effect.cooldown();
+    if ( effect.has_target_specific_cooldown() )
+    {
+      target_specific_cooldown = listener->get_target_specific_cooldown( *cooldown );
+    }
   }
 
   // Initialize proc action

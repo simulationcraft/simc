@@ -1213,7 +1213,7 @@ public:
     double tact_rage = tactician_cost();  // Tactician resets based on cost before things make it cost less.
     double tactician_chance = tactician_per_rage;
     warrior_td_t* td        = this->td( ab::target );
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && td->debuffs_colossus_smash->check() )
     {
       tactician_chance *= ( ( p()->spec.tactician->effectN( 1 ).base_value() / 100 ) *
                             ( p()->tier_set.pile_on_4p->effectN( 1 ).percent() / 100 + 1 ) );
@@ -1226,7 +1226,7 @@ public:
       {
         p()->buff.striking_the_anvil->trigger();
       }
-      if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
+      if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) )
       {
         p()->buff.pile_on_ready->trigger();
       }
@@ -3407,7 +3407,7 @@ struct raging_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // RB refreshs, but does not initially trigger
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
     {
       if ( p()->buff.recklessness->check() )
       {
@@ -3544,7 +3544,7 @@ struct crushing_blow_t : public warrior_attack_t
     {
       ( p()->buff.will_of_the_berserker->trigger() ); // CB refreshs, but does not initially trigger
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
+    if ( p()->sets->has_set_bonus( WARRIOR_FURY, T28, B4 ) && rng().roll( frenzied_destruction_chance ) )
     {
       if ( p()->buff.recklessness->check() )
       {
@@ -3760,7 +3760,7 @@ struct overpower_t : public warrior_attack_t
       p()->cooldown.mortal_strike->reset( true );
       p() -> buff.battlelord -> trigger();
     }
-    if ( p()->dbc->ptr && p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
+    if ( p()->sets->has_set_bonus( WARRIOR_ARMS, T28, B4 ) && p()->buff.pile_on_ready->check() )
     {
       p()->buff.pile_on_ready->expire();
       p()->buff.pile_on_str->trigger();
@@ -6698,6 +6698,8 @@ void warrior_t::default_apl_dps_precombat()
   if ( specialization() == WARRIOR_FURY )
   precombat->add_action( this, "recklessness", "if=!runeforge.signet_of_tormented_kings.equipped" );
 
+  precombat->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
+
 }
 
 // Fury Warrior Action Priority List ========================================
@@ -6733,13 +6735,15 @@ void warrior_t::apl_fury()
 
   default_list->add_action( this, "Pummel", "if=target.debuff.casting.react" );
 
-  default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=rage>74" );
+  default_list->add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=rage>70" );
+
+  default_list->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&rage<70" );
 
   default_list->add_action( this, "Rampage", "if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled" );
 
   default_list->add_action( this, "Recklessness", "if=runeforge.sinful_surge&gcd.remains=0&(variable.execute_phase|(target.time_to_pct_35>40&talent.anger_management|target.time_to_pct_35>70&!talent.anger_management))&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
   default_list->add_action( this, "Recklessness", "if=runeforge.elysian_might&gcd.remains=0&(cooldown.spear_of_bastion.remains<5|cooldown.spear_of_bastion.remains>20)&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
-  default_list->add_action( this, "Recklessness", "if=!variable.unique_legendaries&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
+  default_list->add_action( this, "Recklessness", "if=!variable.unique_legendaries&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)&(!covenant.necrolord|cooldown.conquerors_banner.remains>20)" );
   default_list->add_action( this, "Recklessness", "use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)" );
 
   default_list->add_action( this, "Whirlwind", "if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up" );
@@ -6824,20 +6828,20 @@ void warrior_t::apl_fury()
   single_target->add_action( "cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(talent.massacre.enabled|covenant.venthyr.enabled)&variable.execute_phase&(rage>90|!cooldown.condemn.remains)" );
   single_target->add_action( this, covenant.condemn, "condemn", "if=(buff.enrage.up|buff.recklessness.up&runeforge.sinful_surge)&variable.execute_phase" );
   single_target->add_talent( this, "Siegebreaker", "if=spell_targets.whirlwind>1|raid_event.adds.in>15" );
-  single_target->add_action( this, "Rampage", "if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>90)|buff.frenzy.remains<1.5" );
+  single_target->add_action( this, "Rampage", "if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>80)|buff.frenzy.remains<1.5" );
   single_target->add_action( this, covenant.condemn, "condemn" );
   single_target->add_action( this, covenant.ancient_aftershock, "ancient_aftershock", "if=buff.enrage.up&cooldown.recklessness.remains>5&(target.time_to_die>95|buff.recklessness.up|target.time_to_die<20)&raid_event.adds.in>75" );
+  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)" );
   single_target->add_action( this, "Execute" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=runeforge.elysian_might&buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55" );
   single_target->add_talent( this, "Bladestorm",  "if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)" );
   single_target->add_action( this, covenant.spear_of_bastion, "spear_of_bastion", "if=buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55" );
+  single_target->add_action( this, "Raging Blow", "if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)" );
   single_target->add_action( this, "Bloodthirst", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35" );
   single_target->add_action( this, spec.bloodbath, "bloodbath", "if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled" );
   single_target->add_talent( this, "Dragon Roar", "if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)" );
-  single_target->add_talent( this, "Onslaught" );
   single_target->add_action( this, "Whirlwind", "if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3" );
-  single_target->add_action( this, "Raging Blow", "if=charges=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled" );
-  single_target->add_action( this, spec.crushing_blow, "crushing_blow", "if=charges=2|buff.recklessness.up&variable.execute_phase&talent.massacre.enabled" );
+  single_target->add_talent( this, "Onslaught", "if=buff.enrage.up" );
   single_target->add_action( this, "Bloodthirst" );
   single_target->add_action( this, spec.bloodbath, "bloodbath" );
   single_target->add_action( this, "Raging Blow" );

@@ -22,6 +22,7 @@
 // - Fae Transfusion should be affected by Master of the Elements
 // - Fae Transfusion should consume Master of the Elements
 // - Fae Transfusion shouldn't grant Maelstrom Weapons buffs for Elemental
+// - Add Surge of Power rotation with storm keeper
 //
 // Enhancement
 // - Review target caps
@@ -631,6 +632,7 @@ public:
 
     // Elemental
     const spell_data_t* chain_lightning_2;  // 7.1 Chain Lightning additional 2 targets passive
+    const spell_data_t* lightning_bolt_2;   // Lightning Bolt cast time reduction
     const spell_data_t* elemental_fury;     // general crit multiplier
     const spell_data_t* elemental_shaman;   // general spec multiplier
     const spell_data_t* fire_elemental_2;   // Fire Elemental Totem Rank 2
@@ -1131,8 +1133,7 @@ struct splintered_elements_buff_t : public buff_t
   shaman_t* shaman;
   splintered_elements_buff_t( shaman_t* p ) : buff_t( p, "splintered_elements", p->find_spell( 354648 ) ), shaman( p )
   {
-    unsigned max_targets = player->dbc->ptr ? as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() )
-                                            : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( shaman->find_class_spell( "Flame Shock" )->max_targets() );
     set_default_value( shaman->spell.splintered_elements->effectN( 1 ).percent() );
     set_default_value_from_effect_type( A_HASTE_ALL );
     set_pct_buff_type( STAT_PCT_BUFF_HASTE );
@@ -1775,8 +1776,7 @@ public:
 
       this->p()->trigger_legacy_of_the_frost_witch( stacks );
 
-      if ( this-> p()->dbc->ptr &&
-           this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
+      if ( this->p()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B2 ) &&
            this->p()->rng().roll(
              this->p()->spell.t28_2pc_enh->effectN( 1 ).percent() * stacks ) )
       {
@@ -2435,8 +2435,7 @@ struct wolf_base_auto_attack_t : public pet_melee_attack_t<T>
   {
     pet_melee_attack_t<T>::execute();
 
-    if ( this->p()->o()->dbc->ptr &&
-         this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
+    if ( this->p()->o()->sets->has_set_bonus( SHAMAN_ENHANCEMENT, T28, B4 ) &&
          this->rng().roll( this->p()->o()->spell.t28_4pc_enh->effectN( 1 ).percent() ) )
     {
       this->p()->o()->buff.stormbringer->trigger();
@@ -3418,10 +3417,7 @@ struct lava_lash_t : public shaman_attack_t
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
     // Add a 8 yard radius to support Flame Shock spreading in 9.2
-    if ( player->dbc->ptr )
-    {
-      radius = 8.0;
-    }
+    radius = 8.0;
 
     parse_options( options_str );
     weapon = &( player->off_hand_weapon );
@@ -3535,11 +3531,6 @@ struct lava_lash_t : public shaman_attack_t
   // Lash.
   void trigger_flame_shock( const action_state_t* state ) const
   {
-    if ( !player->dbc->ptr )
-    {
-      return;
-    }
-
     if ( !p()->spec.lava_lash_2->ok() )
     {
       return;
@@ -3777,7 +3768,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_flametongue = player->dbc->ptr;
+    may_proc_flametongue = true;
   }
 
   void execute() override
@@ -3786,15 +3777,8 @@ struct ice_strike_t : public shaman_attack_t
 
     if ( result_is_hit( execute_state->result ) )
     {
-      if ( player->dbc->ptr )
-      {
-        p()->cooldown.flame_shock->reset( false );
-        p()->cooldown.frost_shock->reset( false );
-      }
-      else
-      {
-        p()->cooldown.shock->reset( false );
-      }
+      p()->cooldown.flame_shock->reset( false );
+      p()->cooldown.frost_shock->reset( false );
     }
   }
 };
@@ -3817,7 +3801,7 @@ struct sundering_t : public shaman_attack_t
   {
     shaman_attack_t::init();
 
-    may_proc_stormbringer = may_proc_flametongue = player->dbc->ptr;
+    may_proc_stormbringer = may_proc_flametongue = true;
   }
 };
 
@@ -4121,6 +4105,11 @@ struct storm_elemental_t : public shaman_spell_t
       storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
     }
 
+    // 2022-03-04 hotfix: if you cast Storm Elemental again while having a Storm Elemental active, the Wind Gust buff
+    // will be reset.
+    // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
+    p()->buff.wind_gust->expire();
+
     if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
     {
       p()->buff.fireheart->trigger();
@@ -4195,10 +4184,7 @@ struct earth_shield_t : public shaman_heal_t
     shaman_heal_t::execute();
 
     // Earth Shield application consumes a Vesper Totem healing charge
-    if ( player->dbc->ptr )
-    {
-      p()->trigger_vesper_totem( execute_state );
-    }
+    p()->trigger_vesper_totem( execute_state );
 
     p()->buff.lightning_shield->expire();
   }
@@ -4427,10 +4413,10 @@ struct chain_lightning_t : public chained_base_t
     timespan_t t = chained_base_t::gcd();
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    // testing shows the min GCD is 0.5 sec
-    if ( t < timespan_t::from_millis( 500 ) )
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
     {
-      t = timespan_t::from_millis( 500 );
+      t = timespan_t::from_millis( 600 );
     }
     return t;
   }
@@ -5235,6 +5221,9 @@ struct lightning_bolt_t : public shaman_spell_t
       maelstrom_gain                     = player->spell.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
     }
 
+    // value is a negative time
+    base_execute_time += p()->spec.lightning_bolt_2->effectN(1).time_value();
+
     if ( player->mastery.elemental_overload->ok() )
     {
       overload = new lightning_bolt_overload_t( player, this );
@@ -5341,7 +5330,11 @@ struct lightning_bolt_t : public shaman_spell_t
       return timespan_t::zero();
     }
 
-    return shaman_spell_t::execute_time() * ( 1.0 + p()->buff.wind_gust->stack_value() );
+    timespan_t t = shaman_spell_t::execute_time();
+
+    t *= 1.0 + p()->buff.wind_gust->stack_value();
+
+    return t;
   }
 
   timespan_t gcd() const override
@@ -5349,10 +5342,10 @@ struct lightning_bolt_t : public shaman_spell_t
     timespan_t t = shaman_spell_t::gcd();
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    // testing shows the min GCD is 0.5 sec
-    if ( t < timespan_t::from_millis( 500 ) )
+    // testing shows the min GCD is 0.6 sec
+    if ( t < timespan_t::from_millis( 600 ) )
     {
-      t = timespan_t::from_millis( 500 );
+      t = timespan_t::from_millis( 600 );
     }
     return t;
   }
@@ -5893,9 +5886,7 @@ private:
 
   void track_flame_shock( const action_state_t* state )
   {
-    unsigned max_targets = player->dbc->ptr
-                           ? as<unsigned>( data().max_targets() )
-                           : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( data().max_targets() );
 
     // No need to track anything if there are not enough enemies
     if ( sim->target_list.size() <= max_targets )
@@ -5946,9 +5937,7 @@ private:
 
   void untrack_flame_shock( const dot_t* d )
   {
-    unsigned max_targets = player->dbc->ptr
-                           ? as<unsigned>( data().max_targets() )
-                           : std::numeric_limits<unsigned>::max();
+    unsigned max_targets = as<unsigned>( data().max_targets() );
 
     // No need to track anything if there are not enough enemies
     if ( sim->target_list.size() <= max_targets )
@@ -5989,10 +5978,6 @@ public:
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( !player->dbc->ptr )
-      {
-        cooldown         = p()->cooldown.shock;
-      }
       cooldown->duration = data().cooldown();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
     }
@@ -6122,17 +6107,12 @@ struct frost_shock_t : public shaman_spell_t
 {
   frost_shock_t( shaman_t* player, util::string_view options_str ) :
     shaman_spell_t( "frost_shock", player, player->find_class_spell( "Frost Shock" ) )
-
   {
     parse_options( options_str );
     affected_by_master_of_the_elements = true;
 
     if ( player->specialization() == SHAMAN_ENHANCEMENT )
     {
-      if ( !player->dbc->ptr )
-      {
-        cooldown         = p()->cooldown.shock;
-      }
       cooldown->duration = p()->spec.enhancement_shaman->effectN( 7 ).time_value();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
       track_cd_waste = true;
@@ -6406,6 +6386,32 @@ struct stormkeeper_t : public shaman_spell_t
     p()->buff.stormkeeper->trigger( p()->buff.stormkeeper->data().initial_stacks() );
   }
 };
+
+// Ancestral Guidance Spell ===================================================
+
+struct ancestral_guidance_t : public shaman_heal_t
+{
+  ancestral_guidance_t( shaman_t* player, util::string_view options_str ) :
+    shaman_heal_t( "ancestral_guidance", player, player->talent.ancestral_guidance )
+  {
+    parse_options( options_str );
+  }
+
+  void init() override
+  {
+    shaman_heal_t::init();
+
+    may_proc_bron = true;
+  }
+
+  void execute() override
+  {
+    shaman_heal_t::execute();
+
+    p()->trigger_vesper_totem( execute_state );
+  }
+};
+
 
 // Static Discharge Spell ===================================================
 
@@ -7314,7 +7320,7 @@ struct chain_harvest_t : public shaman_spell_t
     aoe = 5;
     spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
 
-    if ( player->dbc->ptr && player->specialization() == SHAMAN_ELEMENTAL )
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
       resource_current = resource_e::RESOURCE_MAELSTROM;
@@ -7805,6 +7811,8 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
     return new shaman_totem_t<spell_t, shaman_heal_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
   if ( name == "static_discharge" )
     return new static_discharge_t( this, options_str );
+  if ( name == "ancestral_guidance" )
+    return new ancestral_guidance_t( this, options_str );
   if ( name == "storm_elemental" )
     return new storm_elemental_t( this, options_str );
   if ( name == "thunderstorm" )
@@ -8228,6 +8236,7 @@ void shaman_t::init_spells()
   spec.chain_lightning_2 = find_rank_spell( "Chain Lightning", "Rank 2" );
   spec.fire_elemental_2  = find_rank_spell( "Fire Elemental Totem", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
+  spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
 
   // Enhancement
   spec.crash_lightning    = find_specialization_spell( "Crash Lightning" );
@@ -8283,6 +8292,7 @@ void shaman_t::init_spells()
   talent.liquid_magma_totem     = find_talent_spell( "Liquid Magma Totem" );
 
   // ancestral guidance
+  talent.ancestral_guidance = find_talent_spell("Ancestral Guidance");
 
   talent.surge_of_power      = find_talent_spell( "Surge of Power" );
   talent.primal_elementalist = find_talent_spell( "Primal Elementalist" );
@@ -9163,17 +9173,11 @@ void shaman_t::create_buffs()
                             }
                           } );
   // Covenant Legendaries
-  if ( legendary.splintered_elements->ok() )
-  {
-    buff.splintered_elements = new splintered_elements_buff_t( this );    
-  }
+  buff.splintered_elements = new splintered_elements_buff_t( this );    
 
-  if ( legendary.seeds_of_rampant_growth->ok() )
-  {
-    buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
-                                    ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
-                                    ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
-  }
+  buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
+                                  ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
+                                  ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
 
   //
   // Elemental
@@ -9689,7 +9693,10 @@ void shaman_t::init_action_list_elemental()
     def->add_action( this, "Flame Shock",
                      "if=(!talent.elemental_blast.enabled)&!ticking&!pet.storm_elemental.active&(spell_targets.chain_"
                      "lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)" );
-    def->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled)&(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|soulbind.lead_by_example.enabled)" );
+    def->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&"
+                     "(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&"
+                     "(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|"
+                     "soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&!buff.splintered_elements.up" );
     def->add_action( this, "Flame Shock",
                      "if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)"
                      "&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_"
@@ -9714,17 +9721,19 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2" );
     def->add_action( "run_action_list,name=se_single_target,if=talent.storm_elemental.enabled&active_enemies<=2" );
 
-    aoe->add_talent( this, "Storm Elemental" );
+    aoe->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
     aoe->add_action( this, "Earthquake", "if=buff.echoing_shock.up" );
     aoe->add_action( "chain_harvest" );
     aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
     aoe->add_action( this, "Flame Shock",
                      "if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_"
                      "shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|("
-                     "runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active),target_if=refreshable" );
+                     "runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active)|"
+                     "(runeforge.splintered_elements.equipped&(active_dot.flame_shock<3&!runeforge.echoes_of_great_sundering.equipped|active_dot.flame_shock<4)&"
+                     "(cooldown.primordial_wave.remains<16|buff.primordial_wave.up)),target_if=refreshable" );
     aoe->add_action( this, "Flame Shock",
                      "if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent."
-                     "master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)" );
+                     "master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)|(runeforge.splintered_elements.equipped&!ticking&buff.primordial_wave.up)" );
     aoe->add_talent( this, "Echoing Shock",
                      "if=talent.echoing_shock.enabled&maelstrom>=60&(runeforge.echoes_of_great_sundering.equipped&buff."
                      "echoes_of_great_sundering.up|!runeforge.echoes_of_great_sundering.equipped)" );
@@ -9742,7 +9751,12 @@ void shaman_t::init_action_list_elemental()
                      "if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_"
                      "of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)" );
     aoe->add_action( this, "Lava Burst",
-                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up" );
+                     "target_if=dot.flame_shock.remains,if=covenant.necrolord&runeforge.echoes_of_great_sundering.equipped&"
+                     "set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action( this, "Lava Burst",
+                     "target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up&(buff.primordial_wave.remains<3*gcd|"
+                     "active_dot.flame_shock=spell_targets.chain_lightning|active_dot.flame_shock=3&!runeforge.echoes_of_great_sundering.equipped|"
+                     "active_dot.flame_shock=4)" );
     aoe->add_action( this, "Lava Burst",
                      "target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_"
                      "demise.equipped&buff.lava_surge."
@@ -9759,6 +9773,12 @@ void shaman_t::init_action_list_elemental()
                      "up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50" );
     aoe->add_action( this, "Earthquake", "if=spell_targets.chain_lightning>=2" );
     aoe->add_action( this, "Chain Lightning", "if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack" );
+    aoe->add_action(
+        this, "Lava Burst",
+        "target_if=dot.flame_shock.remains,if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
+    aoe->add_action(
+        this, "Lava Burst",
+        "if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up" );
     aoe->add_action(
         this, "Lava Burst",
         "if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking" );
@@ -9841,7 +9861,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "chain_harvest" );
     single_target->add_action( this, "Frost Shock",
                                "if=talent.icefury.enabled&buff.icefury.up" );
-    single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
+    single_target->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
     single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     single_target->add_action( this, "Earth Elemental",
                                "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active" );
@@ -9851,13 +9871,15 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1" );
 
-    se_single_target->add_talent( this, "Storm Elemental" );
+    se_single_target->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=buff.surge_of_power.up");
+    se_single_target->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up" );
     se_single_target->add_action( this, "Frost Shock",
                                   "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury."
                                   "stack&buff.wind_gust.stack<18" );
     se_single_target->add_action( this,
-                                  "Flame Shock,target_if=(remains<=gcd)&(buff.lava_surge.up|!buff.bloodlust.up)" );
-    single_target->add_action(
+                                  "Flame Shock", "target_if=refreshable" );
+    se_single_target->add_action(
         this, "Frost Shock",
         "if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack" );
     se_single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
@@ -9866,8 +9888,7 @@ void shaman_t::init_action_list_elemental()
         this, "Echoing Shock",
         "if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>="
         "60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_"
-        "sundering.up)|spell_targets.chain_lightning<2&buff.wind_gust.stack>=18&(!runeforge.echoes_of_great_sundering."
-        "equipped|buff.echoes_of_great_sundering.up)&maelstrom>=60" );
+        "sundering.up)" );
     se_single_target->add_action( this, "Lava Burst",
                                   "if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up" );
     se_single_target->add_action( this, "Lava Burst,target_if=dot.flame_shock.remains",
@@ -9881,7 +9902,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action(
         this, "Earth Shock",
         "if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)|(runeforge.echoes_of_"
-        "great_sundering.equipped&!buff.echoes_of_great_sundering.up)" );
+        "great_sundering.equipped&!buff.echoes_of_great_sundering.up)|runeforge.windspeakers_lava_resurgence.equipped" );
     se_single_target->add_action( this, "Earthquake",
                                   "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)" );
     se_single_target->add_action( this, "Chain Lightning",
@@ -9894,7 +9915,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
     se_single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     se_single_target->add_action( "chain_harvest" );
-    se_single_target->add_action( "fleshcraft,interrupt=1,if=soulbind.volatile_solvent" );
+    se_single_target->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
     se_single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     se_single_target->add_action(
         this, "Earth Elemental",
@@ -9924,7 +9945,7 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "use_items" );
     def->add_action( this, "Flame Shock", "if=!ticking" );
     def->add_action( this, "Fire Elemental" );
-    def->add_talent( this, "Storm Elemental" );
+    def->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
     def->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active&!pet.storm_elemental.active" );
 
     // Racials
@@ -9950,7 +9971,7 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
     aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
     aoe->add_action( this, "Earth Shock", "if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up" );
-    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up" );
+    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up|set_bonus.tier28_4pc" );
     aoe->add_talent( this, "Echoing Shock", "if=talent.echoing_shock.enabled&maelstrom>=60" );
     aoe->add_action( this, "Earthquake" );
     aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
@@ -9977,7 +9998,6 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     single_target->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
   }
-
 
 }
 
@@ -10020,7 +10040,7 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
   // All Shamans Bloodlust by default
-  def->add_action( this, "Bloodlust" );
+  def->add_action( this, "Bloodlust", "line_cd=600");
 
   // In-combat potion
   def->add_action( "potion,if=expected_combat_length-time<60", "In-combat potion is before combat ends." );
@@ -10052,65 +10072,81 @@ void shaman_t::init_action_list_enhancement()
 
   single->add_action("windstrike");
   single->add_action(this, "Lava Lash", "if=buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6)");
-  single->add_action("primordial_wave,if=!buff.primordial_wave.up");
+  single->add_action(this, "Windfury Totem", "if=!buff.windfury_totem.up");
   single->add_action(this, "Stormstrike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_talent(this, "Ice Strike", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
   single->add_talent(this, "Sundering", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  single->add_action("primordial_wave,if=buff.primordial_wave.down&(raid_event.adds.in>42|raid_event.adds.in<6)");
   single->add_action(this, "Flame Shock", "if=!ticking");
-  single->add_action("vesper_totem");
+  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.up&raid_event.adds.in>buff.primordial_wave.remains");
+  single->add_action("vesper_totem,if=raid_event.adds.in>40");
   single->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   single->add_talent(this, "Earthen Spike");
-  single->add_action("fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>15");
+  single->add_action(this, "Lava Lash", "if=dot.flame_shock.refreshable");
+  single->add_action("fae_transfusion,if=!runeforge.seeds_of_rampant_growth.equipped|cooldown.feral_spirit.remains>30");
+  single->add_action(this, "Stormstrike", "if=talent.stormflurry.enabled&buff.stormbringer.up");
   single->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
   single->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
+  single->add_action(this, "Healing Stream Totem", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))");
+  single->add_talent(this, "Earth Shield", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&(vesper_totem_heal_charges>1|(vesper_totem_heal_charges>0&raid_event.adds.in>(buff.vesper_totem.remains-3)))");
   single->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5&raid_event.adds.in>=90");
-  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10");
+  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack=10&buff.primordial_wave.down");
   single->add_action(this, "Stormstrike");
   single->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
+  single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<10");
   single->add_action(this, "Lava Lash");
-  single->add_action(this, "Crash Lightning");
-  single->add_action(this, "Flame Shock", "target_if=refreshable");
-  single->add_action(this, "Frost Shock");
-  single->add_talent(this, "Ice Strike");
+  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5&buff.primordial_wave.down");
   single->add_talent(this, "Sundering", "if=raid_event.adds.in>=40");
+  single->add_action(this, "Frost Shock");
+  single->add_action(this, "Crash Lightning");
+  single->add_talent(this, "Ice Strike");
   single->add_talent(this, "Fire Nova", "if=active_dot.flame_shock");
-  single->add_action(this, "Lightning Bolt", "if=buff.maelstrom_weapon.stack>=5");
   single->add_action("fleshcraft,if=soulbind.pustule_eruption");
   single->add_action(this, "Earth Elemental");
+  single->add_action(this, "Flame Shock");
   single->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
 
-  aoe->add_action("windstrike,if=buff.crash_lightning.up");
-  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms");
+  aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
   aoe->add_action(this, "Crash Lightning", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
-  aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
-  aoe->add_talent(this, "Sundering");
-  aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1,if=talent.fire_nova.enabled|talent.lashing_flames.enabled|covenant.necrolord|runeforge.primal_lava_actuators.equipped");
+  aoe->add_talent(this, "Sundering", "if=runeforge.doom_winds.equipped&buff.doom_winds.up");
+  aoe->add_action(this, "Healing Stream Totem", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0");
+  aoe->add_talent(this, "Earth Shield", "if=runeforge.raging_vesper_vortex.equipped&talent.earth_shield.enabled&vesper_totem_heal_charges>0");
+  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=6|(active_dot.flame_shock>=4&active_dot.flame_shock=active_enemies)");
   aoe->add_action("primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
-  aoe->add_action("vesper_totem");
-  aoe->add_action(this, "Lightning Bolt", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5");
-  aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
+  aoe->add_action("windstrike,if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up");
+  aoe->add_action(this, "Stormstrike", "if=runeforge.deeply_rooted_elements.equipped&buff.crash_lightning.up");
+  aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
+  aoe->add_action(this, "Flame Shock", "if=!ticking");
+  aoe->add_action(this, "Flame Shock", "target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6");
+  aoe->add_action(this, "Lightning Bolt", "if=(active_dot.flame_shock>=active_enemies|active_dot.flame_shock>=4)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5");
+  aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
+  aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.seeds_of_rampant_growth.equipped");
+  aoe->add_action(this, "Crash Lightning", "if=buff.crash_lightning.down&buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
+  aoe->add_talent(this, "Sundering", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
+  aoe->add_action(this, "Stormstrike", "if=buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
+  aoe->add_talent(this, "Sundering");
+  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=4");
   aoe->add_action(this, "Crash Lightning", "if=talent.crashing_storm.enabled|buff.crash_lightning.down");
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=talent.lashing_flames.enabled");
-  aoe->add_action(this, "Lava Lash", "if=buff.crash_lightning.up&(buff.hot_hand.up|(runeforge.primal_lava_actuators.equipped&buff.primal_lava_actuators.stack>6))");
-  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
-  aoe->add_action(this, "Crash Lightning");
-  aoe->add_action("chain_harvest,if=buff.maelstrom_weapon.stack>=5");
+  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=3");
+  aoe->add_action("vesper_totem");
+  aoe->add_action(this, "Chain Lightning", "if=buff.stormkeeper.up");
+  aoe->add_action(this, "Lava Lash", "if=buff.crash_lightning.up");
   aoe->add_talent(this, "Elemental Blast", "if=buff.maelstrom_weapon.stack>=5");
   aoe->add_talent(this, "Stormkeeper", "if=buff.maelstrom_weapon.stack>=5");
   aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack=10");
+  aoe->add_action(this, "Stormstrike", "if=buff.crash_lightning.up");
+  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>=2");
+  aoe->add_action(this, "Crash Lightning");
   aoe->add_action("windstrike");
   aoe->add_action(this, "Stormstrike");
-  aoe->add_action(this, "Lava Lash");
   aoe->add_action("fleshcraft,interrupt=1,if=soulbind.volatile_solvent");
   aoe->add_action(this, "Flame Shock", "target_if=refreshable,cycle_targets=1");
   aoe->add_action("fae_transfusion");
   aoe->add_action(this, "Frost Shock");
-  aoe->add_talent(this, "Ice Strike");
   aoe->add_action(this, "Chain Lightning", "if=buff.maelstrom_weapon.stack>=5");
-  aoe->add_talent(this, "Fire Nova", "if=active_dot.flame_shock>1");
   aoe->add_talent(this, "Earthen Spike");
   aoe->add_action(this, "Earth Elemental");
   aoe->add_action(this, "Windfury Totem", "if=buff.windfury_totem.remains<30");
@@ -11051,7 +11087,16 @@ struct shaman_module_t : public module_t
   { }
 
   void register_hotfixes() const override
-  { }
+  {
+    hotfix::register_spell( "Shaman", "2022-03-04",
+                            "Storm Elemental's Wind Gust effect gained from casting Lightning Bolt or Chain Lightning "
+                            "now has a maximum stack of 10 (was 20).",
+                            263806 )
+        .field( "max_stack" )
+        .operation( hotfix::HOTFIX_SET )
+        .modifier( 10 )
+        .verification_value( 20 );
+  }
 
   void combat_begin( sim_t* ) const override
   { }

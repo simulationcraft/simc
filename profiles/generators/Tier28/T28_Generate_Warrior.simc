@@ -1,63 +1,63 @@
-warrior="T27_Warrior_Arms"
+warrior="T28_Warrior_Arms"
 level=60
 race=orc
 spec=arms
 role=attack
 position=back
-talents=2133122
+talents=2133222
 covenant=night_fae
-soulbind=dreamweaver,podtender/mortal_combo:9:1/adaptive_armor_fragment:9:1/field_of_blossoms/crash_the_ramparts:9:1/dream_delver
+soulbind=dreamweaver,podtender/mortal_combo:11:1/adaptive_armor_fragment:11:1/field_of_blossoms/crash_the_ramparts:11:1/dream_delver
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
-neck=weathered_talisman_of_the_shadowmoon,id=186378,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498"
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319
-hands=cavalier_oathbreakers_grasps,id=186311,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6647/6649/6758/6962/1559/6935,gem_id=173127
-legs=fateforged_legplates,id=186348,bonus_id=7187/1498"
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
-trinket2=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7747,enchant=sinful_revelation
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=shadowghast_armguards,id=171419,bonus_id=6648/6649/7451/8130/1588,gem_id=173127
+hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=7187/1498,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/6962/1588,gem_id=173127
+legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_critical_strike
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
 
-save=T27_Warrior_Arms.simc
+save=T28_Warrior_Arms.simc
 
 
-warrior="T27_Warrior_Fury"
+warrior="T28_Warrior_Fury"
 level=60
 race=mechagnome
 spec=fury
 role=attack
 position=back
-talents=2113322
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/ashen_juggernaut:9:1/dauntless_duelist/depths_of_insanity:9:1/fatal_flaw
+talents=2122321
+covenant=necrolord
+soulbind=bonesmith_heirmir,forgeborne_reveries/veterans_repute:11:1/depths_of_insanity:11:1/heirmirs_arsenal_gorestompers/hack_and_slash:11:1/carvers_eye/mnemonic_equipment
 renown=80
 
-head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1498/6935,gem_id=187318
-neck=shadowghast_necklace,id=178927,bonus_id=6648/6649/6758/7470/1559/6935,gem_id=173128
-shoulders=spires_of_broken_hope,id=186349,bonus_id=7187/1498,gem_id=187315
-back=selfreplicating_tissue,id=186374,bonus_id=7187/1498
-chest=ancient_colossus_chassis,id=186347,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=vyrazs_parade_cuffs,id=186351,bonus_id=7187/1498/6935,gem_id=187319
-hands=kyras_unending_protectors,id=186346,bonus_id=7187/1498,gem_id=187320,enchant=eternal_strength
-waist=disintegrationproof_waistband,id=186317,bonus_id=7187/1498/6935,gem_id=173128
-legs=galvanized_oxxein_legguards,id=178800,bonus_id=6536/1566/6646
-feet=greaves_of_haunting_ruination,id=186353,bonus_id=7187/1498
-finger1=signet_of_the_false_accuser,id=178824,bonus_id=6536/1566/6646/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=old_warriors_soul,id=186438,bonus_id=7187/1498
-trinket2=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-main_hand=jaithys_the_prison_blade,id=186410,bonus_id=7187/1498/7748,enchant=celestial_guidance
-off_hand=jaithys_the_prison_blade,id=186410,bonus_id=7745/7746/7747/7187/1498,enchant=sinful_revelation
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
 
 
-save=T27_Warrior_Fury.simc
+save=T28_Warrior_Fury.simc
 
 
 warrior="T27_Warrior_Protection"
@@ -88,4 +88,4 @@ trinket2=titanic_ocular_gland,id=186423,bonus_id=7187/1498
 main_hand=the_devouring_cold,id=187056,bonus_id=7187/1498,enchant=sinful_revelation
 off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
 
-save=T27_Warrior_Protection.simc
+# save=T27_Warrior_Protection.simc

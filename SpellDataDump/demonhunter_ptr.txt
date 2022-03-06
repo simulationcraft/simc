@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010, git build shadowlands 44390d11, no-networking)
+SimulationCraft 915-01 for World of Warcraft 9.1.5.42010 Live (hotfix 2022-01-28/42010)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -940,7 +940,7 @@ Attributes       : ....x... ........ x....... .......x   .....x.. ..x..... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No Aura Icon (60), No Aura Log (202), Reset cooldown upon ending an encounter (333), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=288808)   : Unknown(179)
+#1 (id=288808)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6615 | Target: Unknown(62)
 #2 (id=374312)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1341,7 +1341,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Do Not Display Range (126), Extra Initial Period (169), No Target Aura Icon (188), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=296820)   : Unknown(179)
+#1 (id=296820)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5758 | Target: Custom (18)
 Description      : Throws two demonic glaives in a whirlwind of energy, causing ${7*($201628sw1+$201789sw1)} Chaos damage over $d to all nearby enemies.
 
@@ -1454,7 +1454,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=297902)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301812)   : Unknown(179)
+#2 (id=301812)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6027 | Target: Unknown(87)
 Description      : Place a Sigil of Silence at the target location that activates after $d.
 
@@ -1484,7 +1484,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=297903)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301844)   : Unknown(179)
+#2 (id=301844)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6031 | Target: Unknown(87)
 Description      : Place a Sigil of Chains at the target location that activates after $d.
 
@@ -1512,7 +1512,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=297905)   : Unknown(179)
+#1 (id=297905)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6351 | Target: Unknown(125)
 Description      : Place a Sigil of Misery at your location that activates after $d.
 
@@ -1940,7 +1940,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=300650)   : Unknown(179)
+#1 (id=300650)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6710 | Target: Unknown(87)
 #2 (id=301006)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210788 | Target: Self (1)
@@ -2104,7 +2104,7 @@ Attributes       : ........ ........ ........ x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Aura Icon (60), Allow Dead Target (64), Allow While Invisible (78), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Doesn't Reset Swing Timer if Instant (217), Always Cast Log (255), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=301463)   : Unknown(179)
+#1 (id=301463)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5977 | Target: Unknown(87)
 #2 (id=301484)   : Trigger Spell (64): Soul Fragments
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 210788 | Target: Self (1)
@@ -2181,7 +2181,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No Aura Icon (60), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301848)   : Unknown(179)
+#1 (id=301848)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6039 | Target: Unknown(125)
 Description      : Place a Sigil of Flame at your location that activates after $d.
 
@@ -2212,7 +2212,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=301965)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=301966)   : Unknown(179)
+#2 (id=301966)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6039 | Target: Unknown(87)
 Description      : Place a Sigil of Flame at the target location that activates after $d.
 
@@ -2551,7 +2551,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307122)   : Unknown(179)
+#1 (id=307122)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6031 | Target: Unknown(125)
 Description      : Place a Sigil of Chains at your location that activates after $d.
 
@@ -2608,7 +2608,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Always Show Ground Texture (190), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=307154)   : Unknown(179)
+#1 (id=307154)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6027 | Target: Unknown(125)
 Description      : Place a Sigil of Silence at your location that activates after $d.
 
@@ -2639,7 +2639,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=307158)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=307159)   : Unknown(179)
+#2 (id=307159)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6351 | Target: Unknown(87)
 Description      : Place a Sigil of Misery at the target location that activates after $d.
 
@@ -5751,7 +5751,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=727999)   : Unknown(179)
+#1 (id=727999)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13972 | Target: Unknown(87)
 Description      : $@spelldesc275144
 
@@ -7115,7 +7115,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=785015)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87)
-#2 (id=795437)   : Unknown(179)
+#2 (id=795437)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 18264 | Target: Unknown(87)
 #3 (id=819493)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(87)
@@ -8226,7 +8226,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=819505)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(62)
-#2 (id=819506)   : Unknown(179)
+#2 (id=819506)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 18264 | Target: Unknown(62)
 #3 (id=819507)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Unknown(62)
@@ -9256,7 +9256,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Requires Main-Hand Weapon (106), Requires Off-Hand Weapon (120), Do Not Display Range (126), Extra Initial Period (169), Aura Points On Client (268), Haste Affects Duration (273), Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=844163)   : Unknown(179)
+#1 (id=844163)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 21832 | Target: Unknown(62)
 #2 (id=900270)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
@@ -10241,7 +10241,7 @@ Effects          :
 Description      : The radius of Darkness is increased by $s1 yds, and its duration by ${$s2/1000} sec.
 
 Name             : Deadly Dance (id=363736) [Spell Family (107), Passive, Hidden] 
-Class            : Rogue, Demon Hunter
+Class            : Demon Hunter
 School           : Chaos
 Spell Type       : None
 Proc Chance      : 101%

@@ -60,6 +60,8 @@ paladin_t::paladin_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.blessing_of_the_seasons = get_cooldown( "blessing_of_the_seasons" );
   cooldowns.ashen_hallow = get_cooldown( "ashen_hallow" );
 
+  cooldowns.t28_4p_prot_icd = get_cooldown( "t28_4p_prot_icd" );
+
   beacon_target         = nullptr;
   resource_regeneration = regen_type::DYNAMIC;
 }
@@ -1213,7 +1215,7 @@ struct ashen_hallow_tick_t : public paladin_spell_t
     : paladin_spell_t( "ashen_hallow_tick", p, p->find_spell( 317221 ) ), hd_damage_tick( hallowed_discernment )
   {
     aoe         = -1;
-    reduced_aoe_targets = p->covenant.venthyr->effectN( 1 ).base_value();
+    reduced_aoe_targets = p->covenant.venthyr->effectN( 2 ).base_value();
     dual        = true;
     direct_tick = true;
     background  = true;
@@ -1309,7 +1311,7 @@ struct ashen_hallow_t : public paladin_spell_t
     }
     ground_aoe_params_t hallow_params = ground_aoe_params_t()
                                             .duration( duration )
-                                            .pulse_time( data().effectN( 2 ).period() )
+                                            .pulse_time( data().effectN( 1 ).period() )
                                             .hasted( ground_aoe_params_t::SPELL_HASTE )
                                             .x( execute_state->target->x_position )
                                             .y( execute_state->target->y_position );
@@ -1874,6 +1876,9 @@ void paladin_t::create_actions()
 
   if ( legendary.the_magistrates_judgment->ok() )
     cooldowns.the_magistrates_judgment_icd->duration = legendary.the_magistrates_judgment->internal_cooldown();
+
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ))
+    cooldowns.t28_4p_prot_icd->duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
 
   player_t::create_actions();
 }
@@ -3020,12 +3025,17 @@ void paladin_t::assess_damage( school_e school, result_amount_type dtype, action
     trigger_holy_shield( s );
   }
 
-  // On a block event, trigger T28 4p if equipped
-  // todo: Woli -  Set bonus check
-  if ( ( s->block_result == BLOCK_RESULT_BLOCKED )  && sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 )
-        && rng().roll( tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
+  // T28 4P bonus
+  if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ) && cooldowns.t28_4p_prot_icd->up() &&
+       !( s->result == RESULT_DODGE || s->result == RESULT_PARRY || s->result == RESULT_MISS )
+     // The set doesn't proc on *all* damage despite saying so, and the default enemy damage
+     // has an unrealistically high amount of damage instances
+     // to counter that, the set only works on blockable and physical damage in simc
+       && s->action->may_block && school == SCHOOL_PHYSICAL
+     // TOCHECK: This might be subject to block chance reduction from level difference between attacker and target
+       && rng().roll( cache.block() * tier_sets.glorious_purpose_4pc->effectN( 1 ).percent() ) )
   {
-    trigger_t28_4p_pp( s );
+    trigger_t28_4p_prot( s );
   }
 
   if ( buffs.inner_light->up() && !s->action->special && cooldowns.inner_light_icd->up() )

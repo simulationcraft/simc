@@ -2299,7 +2299,10 @@ public:
 
       may_miss = false;
 
-      dot_duration = data().duration();
+      // Spell data does not have a cooldown associated but logs are showing
+      // Crane Fallen Order are only cast it once per summon.
+      cooldown->duration = timespan_t::from_seconds( 30 );
+      dot_duration       = data().duration();
       target       = p->o();
     }
 
@@ -2914,6 +2917,9 @@ public:
 
       may_miss = false;
 
+      // Spell data does not have a cooldown associated but logs are showing
+      // Crane Fallen Order are only cast it once per summon.
+      cooldown->duration = timespan_t::from_seconds( 30 );
       dot_duration = data().duration();
       target       = p->o();
     }

@@ -15,7 +15,6 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
-#include <numeric>
 #include <functional>
 #include <type_traits>
 
@@ -193,6 +192,9 @@ using iterator_t = decltype(range::begin(std::declval<R&>()));
 template <typename R>
 using value_type_t = typename std::iterator_traits<iterator_t<R>>::value_type;
 
+template <typename R>
+using reference_type_t = typename std::iterator_traits<iterator_t<R>>::reference;
+
 // Default projection for projection-enabled algorithms =====================
 
 struct identity {
@@ -237,26 +239,17 @@ inline Range& fill( Range& r, value_type_t<Range> const& t )
   return r;
 }
 
-template <typename Range, typename T>
-inline T accumulate( Range& r, const T& init )
+template <typename Range, typename T, typename Proj = identity,
+          typename U = decltype( std::declval<T&&>() + std::declval<std::invoke_result_t<Proj, reference_type_t<Range>>>() )>
+auto accumulate( Range&& r, T init, Proj proj = {} ) -> U
 {
-  return std::accumulate( range::begin( r ), range::end( r ), init );
-}
+  auto first = range::begin( r );
+  auto last = range::end( r );
 
-template <typename Range, typename T, typename BinaryOperation>
-inline T accumulate( Range& r, const T& init, BinaryOperation o )
-{
-  return std::accumulate( range::begin( r ), range::end( r ), init, o );
-}
-
-// This could probably be done with some SFINAE magic, for now just add a suffix
-template <typename Range, typename T, typename Proj>
-inline T accumulate_proj( Range& r, const T& init, Proj proj )
-{
-  const auto op = [&proj]( const T& current, auto&& v ) {
-    return std::invoke( proj, std::forward<decltype(v)>( v ) ) + current;
-  };
-  return std::accumulate( range::begin( r ), range::end( r ), init, op );
+  U accum = std::move( init );
+  for ( ; first != last; ++first )
+    accum = std::move( accum ) + std::invoke( proj, *first );
+  return accum;
 }
 
 #if defined( SC_GCC )
@@ -272,19 +265,15 @@ inline T ( &fill( T ( &r )[ N ], const T& t ) )[ N ]
 }
 #endif
 
-template <typename Range, typename T>
+template <typename Range, typename T,
+          typename Enable = decltype( std::declval<reference_type_t<Range>>() == std::declval<const T&>() )>
 inline iterator_t<Range> find( Range& r, T const& t )
 {
-  // Static assert for human-readable error message. Not 100% technically
-  // correct, since "comparability" is enough, but for our purposes convertible
-  // is good enough.
-  static_assert(
-      std::is_convertible<T, value_type_t<Range>>::value,
-      "Object to find must be convertible to value type of range" );
   return std::find( range::begin( r ), range::end( r ), t );
 }
 
-template <typename Range, typename T, typename Proj>
+template <typename Range, typename T, typename Proj,
+          typename Enable = decltype( std::declval<std::invoke_result_t<Proj, reference_type_t<Range>>>() == std::declval<const T&>() )>
 inline iterator_t<Range> find( Range& r, T const& value, Proj proj )
 {
   const auto pred = [&value, &proj]( auto&& v ) {
@@ -319,7 +308,9 @@ inline bool contains( Range&& r, const Value& v, Proj proj = Proj{} )
 template <typename Range, typename F>
 inline F for_each( Range&& r, F f )
 {
-  return std::for_each( range::begin( r ), range::end( r ), f );
+  std::for_each( range::begin( r ), range::end( r ),
+                 [ &f ]( auto&& v ) { std::invoke( f, std::forward<decltype(v)>( v ) ); } );
+  return f;
 }
 
 template <typename Range, typename Out, typename Predicate>
@@ -329,16 +320,19 @@ inline Out remove_copy_if( Range& r, Out o, Predicate p )
 }
 
 template <typename Range, typename Out, typename F>
-inline Out transform( Range&& r, Out o, F f )
+Out transform( Range&& r, Out o, F op )
 {
-  return std::transform( range::begin( r ), range::end( r ), o, f );
+  return std::transform( range::begin( r ), range::end( r ), o,
+                         [ &op ]( auto&& v ) { return std::invoke( op, std::forward<decltype(v)>( v ) ); } );
 }
 
 template <typename Range, typename Range2, typename Out, typename F>
-inline Out transform( Range&& r, Range2&& r2, Out o, F f )
+Out transform( Range&& r, Range2&& r2, Out o, F op_ )
 {
-  return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ),
-                         o, f );
+  const auto op = [ &op_ ] ( auto&& l, auto&& r ) {
+    return std::invoke( op_, std::forward<decltype(l)>( l ), std::forward<decltype(r)>( r ) );
+  };
+  return std::transform( range::begin( r ), range::end( r ), range::begin( r2 ), o, op );
 }
 
 template <typename Range, typename F>

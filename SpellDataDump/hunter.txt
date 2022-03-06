@@ -1,4 +1,4 @@
-SimulationCraft 915-01 for World of Warcraft 9.1.5.41359 Live (hotfix 2021-12-14/41359, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -528,7 +528,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=6174)     : Unknown(179)
+#1 (id=6174)     : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1614 | Radius: 2 yards | Target: Unknown(47)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
@@ -549,7 +549,7 @@ Attributes       : ........ ........ ........ ........   ...x...x ........ .....
                  : ........ ........ ........ ........   
                  : No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Not an Action (92), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=6175)     : Unknown(179)
+#1 (id=6175)     : Create Area Trigger (179)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 621 | Target: Unknown(87)
 Description      : Place a frost trap that creates an ice slick around itself for $13810d when the first enemy approaches it. All enemies within $13810s1 yards will be slowed by $135299s1% while in the area of effect. Trap will exist for $13809d.
 
@@ -628,7 +628,7 @@ Requires weapon  : Bow, Gun, Crossbow
 Charges          : 2 (12 seconds cooldown)
 Category         : 1715: Marksmanship Hunter (137016 effect#9), Trueshot (288613 effect#3), Dead Eye (321461 effect#1)
 Azerite Power Id : 97
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Aspect of the Wild (193530 effects: #1, #3), Lock and Load (194594 effects: #1, #2, #3), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effects: #1, #2), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Refocus (24531 effect#1), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2, #4), Aspect of the Wild (193530 effects: #1, #3), Lock and Load (194594 effects: #1, #2, #3), Sentinel's Sight (208913 effect#1), Gyroscopic Stabilization (235712 effects: #1, #2), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Lethal Shots (260395 effect#2), Arrowstorm (263814 effect#1), Coordinated Assault (266779 effects: #1, #2), Trueshot (288613 effect#4), Secrets of the Unblinking Vigil (336892 effect#1), Streamline (342076 effect#1)
 Triggered by     : Lock and Load (194594)
 Family Flags     : 1, 17, 106, 121
 Attributes       : .x..x... ........ x....... ........   ........ ........ ........ ...x.... 
@@ -666,9 +666,9 @@ Attributes       : ........ ........ x....... .....x..   ........ ..x....x .....
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
                  : .....x.. ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Immunities (29), No Threat (42), Immunity Purges Effect (47), Ignore Line of Sight (66), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Absorb Cannot Be Ignore (214), Allow While Charmed (261), Aura Points On Client (268), Do Not Log Absorb (348), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=10779)    : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 0.80000 | Target: Self (1)
@@ -2251,7 +2251,7 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), No Aura Icon (60), Extra Initial Period (169), No Aura Log (202), Bypass Visibility Check (320), Caster Death Cancels Persistent Area Auras (347), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=120669)   : Unknown(179)
+#1 (id=120669)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1524 | Target: Unknown(138)
 #2 (id=133047)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 5 yards | Target: Unknown(87)
@@ -2735,7 +2735,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .x...
                  : ........ ........ ........ ........   
                  : No Threat (42), No AutoCast (AI) (49), Ignore Line of Sight (66), No Initial Threat (86), Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=172844)   : Unknown(179)
+#1 (id=172844)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 510 | Target: Unknown(87)
 
 Name             : Tar Trap (id=135299) [Spell Family (9)] 
@@ -3500,7 +3500,7 @@ Attributes       : ........ ........ x...x... ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Ignore Line of Sight (66), Bypass Visibility Check (320), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=228163)   : Unknown(179)
+#1 (id=228163)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2392 | Target: Unknown(87)
 Description      : $@spelldesc162488
 
@@ -4001,7 +4001,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=273671)   : Unknown(179)
+#1 (id=273671)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4424 | Target: Unknown(87)
 Description      : $@spelldesc187650
 
@@ -4050,7 +4050,7 @@ Attributes       : ........ ........ x....... x..x....   .....x.. ........ .....
                  : ........ ........ ........ ........   
                  : Not Shapeshifted (16), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Ignore Weaponskill (91), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
-#1 (id=273749)   : Unknown(179)
+#1 (id=273749)   : Create Area Trigger (179)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 4435 | Target: Unknown(87)
 #2 (id=344394)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
@@ -4218,7 +4218,7 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Velocity         : 45 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Cobra Shot (262838 effect#1), Coordinated Assault (266779 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Hunter (137014 effect#3), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effects: #1, #3), Roar of the Seven Lions (207318 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Cobra Shot (262838 effect#1), Coordinated Assault (266779 effects: #1, #2), Killing Frenzy (363760 effect#1)
 Family Flags     : 1, 86, 106
 Attributes       : .x..x... ........ x....... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -4371,9 +4371,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=283928)   : Apply Aura (6) | Modify All Haste% (193)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4824,7 +4824,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Always Show Ground Texture (190), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=301778)   : Unknown(179)
+#1 (id=301778)   : Create Area Trigger (179)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6026 | Target: At Enemy (53)
 Description      : Focus the power of the Wind through your bow, dealing $sw1 damage to your target, and increases your movement speed by $s3% for $d.
 Tooltip          : Movement speed increased by $s3%.
@@ -5364,15 +5364,15 @@ School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
 Triggered by     : Vindicaar Matrix Crystal (255529)
-Attributes       : ........ ........ ........ ........   ...x...x ..x..... ........ ........ 
+Attributes       : ........ x....... ........ ........   ...x...x ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Redirection (35), No Reflection (39), No Threat (42), Do Not Display Cast Time (441)
+                 : Do Not Log (8), No Redirection (35), No Reflection (39), No Threat (42), No Cast Log (128), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=470901)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -5541,7 +5541,7 @@ GCD              : 1.5 seconds
 Duration         : 2 seconds
 Requires weapon  : Bow, Gun, Crossbow
 Cooldown         : 20 seconds
-Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Aspect of the Wild (193530 effect#3), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
+Affecting spells : Hunter (137014 effect#3), Mastery: Sniper Training (193468 effects: #1, #4), Aspect of the Wild (193530 effect#3), Trick Shots (257622 effect#2), Streamline (260367 effects: #1, #2), Double Tap (260402 effects: #1, #3), Whirling Rebound (264199 effect#1), Trueshot (288613 effect#1)
 Family Flags     : 1, 118, 121
 Attributes       : .x...... ........ x....... ........   ..x...x. .x...... ........ .....x.. 
                  : ........ ........ .x...... ........   ........ ........ ........ ........ 
@@ -5572,7 +5572,7 @@ Spell Level      : 3
 Range            : 40 yards
 Velocity         : 40 yards/sec
 Requires weapon  : Bow, Gun, Crossbow
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Streamline (260367 effects: #1, #2), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effects: #1, #2), Focused Fire (278531 effect#2), Surging Shots (336867 effects: #1, #2), Brutal Projectiles (339929 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Mastery: Sniper Training (193468 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Trick Shots (257622 effect#2), Thrill of the Hunt (257946 effect#1), Streamline (260367 effects: #1, #2), Lethal Shots (260395 effect#1), Coordinated Assault (266779 effects: #1, #2), Focused Fire (278531 effect#2), Surging Shots (336867 effects: #1, #2), Brutal Projectiles (339929 effect#1)
 Family Flags     : 3, 106, 121
 Attributes       : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ .x...... ........   .....x.. .x...... ........ ........ 
@@ -5698,6 +5698,10 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
 Effects          :
 #1 (id=480921)   : Apply Aura (6) | Dummy (4)
                    Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+#2 (id=903369)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Aimed Shot (19434), Rapid Fire (257044), Rapid Fire (257045)
+                   Family Flags: 3, 17, 118
 Description      : $@spelldesc257621
 Tooltip          : Your next Aimed Shot or Rapid Fire will ricochet and hit $257621s1 additional targets for $257621s4% of normal damage.
 
@@ -6013,7 +6017,7 @@ Velocity         : 35 yards/sec
 Min Travel Time  : 0.05 seconds
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -6082,7 +6086,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7553,7 +7557,7 @@ School           : Fire
 Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -7586,7 +7590,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66)
 Effects          :
-#1 (id=709128)   : Unknown(179)
+#1 (id=709128)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12863 | Target: At Enemy (53)
 Description      : $@spelldesc259495
 
@@ -7742,9 +7746,9 @@ Attributes       : ....x... ........ x....... ........   .....x.. ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Allow While Stealthed (37), No Threat (42), Ignore Line of Sight (66), Do Not Display Range (126), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=712710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -7875,7 +7879,7 @@ Attributes       : ....x... ........ x....... ........   ........ .x...... .....
                  : ........ ........ ........ ........   
                  : Is Ability (4), Not Shapeshifted (16), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=714405)   : Unknown(179)
+#1 (id=714405)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12253 | Target: Custom (18)
 Description      : Throw a pair of chakrams at your target, slicing all enemies in the chakrams' path for $259396s1 Physical damage. The chakrams will return to you, damaging enemies again.
 
@@ -8394,7 +8398,7 @@ Spell Type       : Magic
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8473,7 +8477,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -8510,9 +8514,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66)
 Effects          :
-#1 (id=719189)   : Unknown(179)
+#1 (id=719189)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13363 | Target: At Enemy (53)
-#2 (id=739521)   : Unknown(179)
+#2 (id=739521)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14919 | Target: At Enemy (53)
 Description      : $@spelldesc270323
 
@@ -8522,7 +8526,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8545,7 +8549,7 @@ Spell Type       : Ranged
 Spell Level      : 1
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8571,7 +8575,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ x....... ........   ........ .x...... .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -8606,9 +8610,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66)
 Effects          :
-#1 (id=719201)   : Unknown(179)
+#1 (id=719201)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13364 | Target: At Enemy (53)
-#2 (id=739522)   : Unknown(179)
+#2 (id=739522)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14920 | Target: At Enemy (53)
 Description      : $@spelldesc270335
 
@@ -8618,7 +8622,7 @@ School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
 Mechanic         : Bleed
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8644,7 +8648,7 @@ Duration         : 6 seconds
 Proc Chance      : 100%
 Proc Flags       : .....x.. .x...... ........ ........ 
                  : Yellow Melee Taken, Yellow Ranged Taken
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -8673,7 +8677,7 @@ Duration         : 9 seconds
 Stacks           : 3 maximum
 Proc Chance      : 101%
 Mechanic         : Bleed
-Affecting spells : Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -8748,7 +8752,7 @@ GCD              : 1.5 seconds
 Velocity         : 35 yards/sec
 Charges          : 1 (18 seconds cooldown)
 Category         : 1716: Hunter (137014 effect#10), Guerrilla Tactics (264332 effect#1)
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 1, 26
 Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
@@ -8783,9 +8787,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Ignore Line of Sight (66)
 Effects          :
-#1 (id=721014)   : Unknown(179)
+#1 (id=721014)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13428 | Target: At Enemy (53)
-#2 (id=739523)   : Unknown(179)
+#2 (id=739523)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14921 | Target: At Enemy (53)
 Description      : $@spelldesc271045
 
@@ -8794,7 +8798,7 @@ Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
 Range            : 50000 yards
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Guerrilla Tactics (264332 effect#2), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Flame Infusion (341401 effect#1), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 25, 106
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -8816,7 +8820,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 6 seconds
-Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2)
+Affecting spells : Freezing Trap (3355 effect#2), Bestial Wrath (19574 effects: #1, #4), Mortal Shots (36413 effect#1), Beast Mastery Hunter (137015 effects: #1, #2), Marksmanship Hunter (137016 effects: #1, #2), Survival Hunter (137017 effects: #1, #2), Lone Wolf (155228 effects: #1, #2), Aspect of the Wild (193530 effect#1), Unseen Predator's Cloak (248212 effect#1), Thrill of the Hunt (257946 effect#1), Coordinated Assault (266779 effects: #1, #2), Wildfire Bombs (321290 effects: #1, #2), Mad Bombardier (363667 effects: #1, #3)
 Family Flags     : 22, 106
 Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
@@ -9162,8 +9166,9 @@ Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=723834)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-#2 (id=723841)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 52477 | Radius: 3 yards | Target: Unknown(72)
+#2 (id=723841)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: Unknown(72)
+Hotfixed         : Type (32 -> 3), Trigger Spell (52477 -> 0)
 Description      : $@spelldesc272742
 
 Name             : Wildfire Cluster (id=272745) [Spell Family (9)] 
@@ -10795,9 +10800,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ .....x.. ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Never Bounces (148), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Never Bounces (148), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=752441)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (286)
                    Base Value: 240 | Scaled Value: 240 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11087,7 +11092,7 @@ Attributes       : ........ ........ x.x..... x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=787673)   : School Damage (2): arcane
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-#2 (id=787858)   : Unknown(179)
+#2 (id=787858)   : Create Area Trigger (179)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 18036 | Target: Unknown(87)
 #3 (id=871241)   : Apply Aura (6) | Dummy (4)
                    Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -11789,7 +11794,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : No Aura Cancel (31), Ignore Line of Sight (66), Can Proc From Procs (122), Always AOE Line of Sight (186), No Caster Aura Icon (187), Not In Spellbook Until Learned (269), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=821610)   : Unknown(179)
+#1 (id=821610)   : Create Area Trigger (179)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 20410 | Target: Unknown(87)
 #2 (id=821611)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -12123,8 +12128,9 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   
                  : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), Suppress Weapon Procs (151), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
-#1 (id=834562)   : Apply Aura (6) | Proc Trigger Spell (42): Secrets of the Unblinking Vigil
+#1 (id=834562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 336892 | Target: Self (1)
+Hotfixed         : Sub Type (42 -> 4)
 Description      : When you gain the Trick Shots effect, you have a $h% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
 
 Name             : Secrets of the Unblinking Vigil (id=336892) [Spell Family (9)] 
@@ -13401,14 +13407,16 @@ Effects          :
 Description      : $@spelldesc355589
 Tooltip          : Silenced.
 
-Name             : Pact of the Soulstalkers (id=356262) [Spell Family (9), Passive, Hidden] 
+Name             : Pact of the Soulstalkers (id=356262) [Spell Family (9), Hidden] 
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
 Internal Cooldown: 1 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Triggered by     : Pact of the Soulstalkers (364739)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13416,7 +13424,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=889999)   : Apply Aura (6) | Proc Trigger Spell (42): Pact of the Soulstalkers
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 356263 | Target: Self (1)
@@ -13442,13 +13450,15 @@ Effects          :
 Description      : $@spelldesc356262
 Tooltip          : Critical strike chance increased by $w1%.
 
-Name             : Bag of Munitions (id=356264) [Spell Family (9), Passive, Hidden] 
+Name             : Bag of Munitions (id=356264) [Spell Family (9), Hidden] 
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
-Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+Triggered by     : Bag of Munitions (364741)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13456,7 +13466,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : .x...... ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
 Effects          :
 #1 (id=890001)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -13468,6 +13478,7 @@ Spell Type       : None
 Proc Chance      : 101%
 Proc Flags       : ........ x....... ........ ........ 
                  : Yellow Ranged
+Triggered by     : Pouch of Razor Fragments (364740)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13512,5 +13523,241 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325028
 Tooltip          : Taking $w1% increased Physical damage from $@auracaster.
+
+Name             : Killing Frenzy (id=363665) [Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903204)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=903205)   : Dummy (3)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500
+Hotfixed         : PvP Coefficient (1 -> 0.625)
+Description      : Kill Command critical hits increase the damage and cooldown reduction of your next Cobra Shot by $s2%.
+
+Name             : Focused Trickery (id=363666) [Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... x.x.x... .....x.. ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Heal, Generic Hostile Spell, Trap Triggered
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903206)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=903207)   : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
+#3 (id=906908)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Spending $s1 Focus grants you $s2 $Lcharge:charges; of Trick Shots.
+
+Name             : Mad Bombardier (id=363667) [Spell Family (9), Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Labels           : 1426: Mad Bombardier (363805 effect#1)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903209)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Wildfire Bomb (259495), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270323), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270335), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271045), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Family Flags: 22, 26
+#2 (id=903210)   : Dummy (3)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000
+#3 (id=913609)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Wildfire Bomb (259495), Violent Reaction (260231), Wildfire Bomb (265157), Wildfire Bomb (269747), Pheromone Bomb (270323), Pheromone Bomb (270329), Pheromone Bomb (270332), Shrapnel Bomb (270335), Shrapnel Bomb (270338), Shrapnel Bomb (270339), Internal Bleeding (270343), Volatile Bomb (271045), Volatile Bomb (271048), Volatile Bomb (271049)
+                   Family Flags: 22, 26
+Description      : Your Wildfire Bombs deal $s1% additional damage. This bonus is increased to ${$363805m1+$m1}% for bombs empowered by Mad Bombardier.
+
+Name             : Killing Frenzy (id=363760) [Spell Family (9)] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Duration         : 8 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Floating Combat Text On Cast (198), Aura Points On Client (268), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=903358)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500 | Target: Self (1)
+                   Affected Spells: Cobra Shot (193455)
+                   Family Flags: 86
+Hotfixed         : PvP Coefficient (1 -> 0.625)
+Description      : $@spelldesc363665
+Tooltip          : Cobra Shot damage and cooldown reduction increased by $w1%.
+
+Name             : Mad Bombardier (id=363805) [Spell Family (9)] 
+Hotfixed         : Proc Stacks (1 -> 0), Attributes, Description, Tooltip
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Duration         : 20 seconds
+Proc Chance      : 101%
+Proc Flags       : ......x. x...x... x.x..... ........ 
+                 : White Ranged, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ....x... ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can Proc From Procs (122), Aura Points On Client (268), Only Proc From Class Abilities (415), Do Not Consume Aura Stack On Proc (428)
+Effects          :
+#1 (id=903436)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1426 (Label) | Target: Self (1)
+                   Affected Spells (Label): Mad Bombardier (363667)
+Description      : $@spelldesc364490
+Tooltip          : Your next Wildfire Bomb $?a363667[deals $363667s1% increased damage and ][]incurs no cooldown.
+
+Name             : Mad Bombardier (id=364490) [Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904532)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=904533)   : Dummy (3)
+                   Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000
+Description      : When Kill Command resets, it has a $s1% chance to make your next Wildfire Bomb incur no cooldown.
+
+Name             : Focused Trickery (id=364491) [Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904534)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.666667)
+Description      : Trick Shots now also increases the damage of the affected shot by $s1%.
+
+Name             : Killing Frenzy (id=364492) [Passive, Hidden] 
+Class            : Hunter
+School           : Nature
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ .....x.. ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=904535)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=904536)   : Dummy (3)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
+Description      : Your Kill Command critical strike chance is increased by $s1% for each stack of Frenzy your pet has.
+
+Name             : Pact of the Soulstalkers (id=364739) [Spell Family (9), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364743)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905007)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 356262 | Target: Self (1)
+Description      : $@spelldesc356262
+
+Name             : Pouch of Razor Fragments (id=364740) [Spell Family (9), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364743)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=905009)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 356618 | Target: Self (1)
+Description      : $@spelldesc356618
+
+Name             : Bag of Munitions (id=364741) [Spell Family (9), Passive, Hidden] 
+School           : Physical
+Spell Type       : None
+Triggered by     : Unity (364743)
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .x...... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122), Can Proc from Suppressed Caster Procs (385)
+Effects          :
+#1 (id=905010)   : Apply Aura (6) | Unknown(285)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 356264 | Target: Self (1)
+Description      : $@spelldesc356264
 
 

@@ -379,6 +379,7 @@ public:
 
     // Covenant Abilities
     buff_t* deathborne;
+    buff_t* lead_by_example;
 
 
     // Soulbind Conduits
@@ -965,7 +966,7 @@ struct touch_of_the_magi_t final : public buff_t
   {
     set_default_value( 0.0 );
     modify_duration( td->source->sets->set( MAGE_ARCANE, T28, B4 )->effectN( 1 ).time_value() );
-    if ( source->is_ptr() ) set_schools_from_effect( 2 ); // TODO: PTR
+    set_schools_from_effect( 2 );
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -1731,9 +1732,14 @@ public:
     if ( p()->buffs.deathborne->check() )
       p()->buffs.deathborne->current_value += p()->runeforge.deaths_fathom->effectN( 2 ).percent();
 
-    // TODO: On the PTR, this currently triggers some covenant cast callbacks, such as Lead by Example.
     if ( p()->rppm.deaths_fathom->trigger() )
-      p()->buffs.deathborne->extend_duration_or_trigger( p()->runeforge.deaths_fathom->effectN( 1 ).time_value() );
+    {
+      timespan_t d = p()->runeforge.deaths_fathom->effectN( 1 ).time_value();
+      if ( p()->buffs.lead_by_example && !p()->buffs.deathborne->check() )
+        p()->buffs.lead_by_example->trigger( d );
+
+      p()->buffs.deathborne->extend_duration_or_trigger( d );
+    }
   }
 };
 
@@ -3032,7 +3038,6 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = triggers.radiant_spark = true;
-    if ( !p->is_ptr() ) consumes_winters_chill = true; // TODO: PTR
   }
 
   void impact( action_state_t* s ) override
@@ -3046,6 +3051,9 @@ struct comet_storm_projectile_t final : public frost_mage_spell_t
 
 struct comet_storm_t final : public frost_mage_spell_t
 {
+  static constexpr int pulse_count = 7;
+  static constexpr timespan_t pulse_time = 0.2_s;
+
   action_t* projectile;
 
   comet_storm_t( std::string_view n, mage_t* p, std::string_view options_str, bool set_bonus = false ) :
@@ -3065,18 +3073,10 @@ struct comet_storm_t final : public frost_mage_spell_t
     }
   }
 
-  void execute() override
-  {
-    frost_mage_spell_t::execute();
-    if ( !p()->is_ptr() ) p()->expression_support.remaining_winters_chill = 0; // TODO: PTR
-  }
-
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
 
-    int pulse_count = 7;
-    timespan_t pulse_time = 0.2_s;
     p()->ground_aoe_expiration[ AOE_COMET_STORM ] = sim->current_time() + pulse_count * pulse_time;
 
     make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
@@ -3858,7 +3858,6 @@ struct frozen_orb_t final : public frost_mage_spell_t
     if ( background )
       return;
 
-    // TODO: Check how Cold Front and Freezing Winds interact
     p()->buffs.freezing_rain->trigger();
     p()->buffs.freezing_winds->trigger();
   }
@@ -5154,15 +5153,6 @@ struct harmonic_echo_t final : public mage_spell_t
     // Ignore Positive Damage Taken Modifiers (321)
     return std::min( mage_spell_t::composite_target_multiplier( target ), 1.0 );
   }
-
-  size_t available_targets( std::vector<player_t*>& tl ) const override
-  {
-    mage_spell_t::available_targets( tl );
-
-    if ( !p()->is_ptr() ) tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() ); // TODO: PTR
-
-    return tl.size();
-  }
 };
 
 struct radiant_spark_t final : public mage_spell_t
@@ -5845,17 +5835,6 @@ void mage_t::create_actions()
 
 void mage_t::create_options()
 {
-  if ( !is_ptr() ) // TODO: PTR
-  {
-    add_option( opt_deprecated( "frozen_duration", "mage.frozen_duration" ) );
-    add_option( opt_deprecated( "scorch_delay", "mage.scorch_delay" ) );
-    add_option( opt_deprecated( "mirrors_of_torment_interval", "mage.mirrors_of_torment_interval" ) );
-    add_option( opt_deprecated( "arcane_missiles_chain_delay", "mage.arcane_missiles_chain_delay" ) );
-    add_option( opt_deprecated( "arcane_missiles_chain_relstddev", "mage.arcane_missiles_chain_relstddev" ) );
-    add_option( opt_deprecated( "mage.prepull_dc", "override.precombat_state=buff.disciplinary_command.stack" ) );
-    add_option( opt_deprecated( "mage.prepull_harmony_stacks", "override.precombat_state=buff.arcane_harmony.stack" ) );
-  }
-
   add_option( opt_float( "mage.firestarter_duration_multiplier", options.firestarter_duration_multiplier ) );
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
   add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
@@ -6514,6 +6493,8 @@ void mage_t::init_finished()
   // Sort the procs to put the proc sources next to each other.
   if ( specialization() == MAGE_FROST )
     range::sort( proc_list, [] ( proc_t* a, proc_t* b ) { return a->name_str < b->name_str; } );
+
+  buffs.lead_by_example = buff_t::find( this, "lead_by_example" );
 }
 
 void mage_t::add_precombat_buff_state( buff_t* buff, int stacks, double value, timespan_t duration )
@@ -6949,6 +6930,30 @@ std::unique_ptr<expr_t> mage_t::create_expression( std::string_view name )
   {
     return make_fn_expr( name, [ this ]
     { return expression_support.remaining_winters_chill; } );
+  }
+
+  if ( util::str_compare_ci( name, "comet_storm_remains" ) )
+  {
+    std::vector<action_t*> in_flight_list;
+    for ( auto a : action_list )
+    {
+      if ( a->id == 153595 )
+        in_flight_list.push_back( a );
+    }
+
+    return make_fn_expr( name, [ this, in_flight_list ]
+    {
+      timespan_t remains = 0_ms;
+
+      if ( ground_aoe_expiration[ AOE_COMET_STORM ] > sim->current_time() )
+        remains = ground_aoe_expiration[ AOE_COMET_STORM ] - sim->current_time();
+
+      for ( auto a : in_flight_list )
+        if ( a->has_travel_events() )
+          remains = std::max( remains, a->shortest_travel_event() + actions::comet_storm_t::pulse_count * actions::comet_storm_t::pulse_time );
+
+      return remains.total_seconds();
+    } );
   }
 
   if ( util::str_compare_ci( name, "hot_streak_spells_in_flight" ) )

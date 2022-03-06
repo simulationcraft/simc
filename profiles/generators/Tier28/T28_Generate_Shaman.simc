@@ -1,9 +1,3 @@
-# 8128 unity
-# 6647 crit missive
-# 6649 haste missive
-# 6648 mastery missive
-# 6650 vers missive
-
 shaman="T28_Shaman_Elemental"
 level=60
 race=tauren
@@ -12,27 +6,64 @@ role=spell
 position=ranged_back
 talents=2301022
 covenant=night_fae
-soulbind=dreamweaver,call_of_flame:11:1/social_butterfly/field_of_blossoms/essential_extraction:11:1/dream_delver
+soulbind=dreamweaver,pyroclastic_shock:11:1/high_voltage:11:1/field_of_blossoms/essential_extraction:11:1/dream_delver
 renown=80
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+# unity
+head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+# recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+# recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
+shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
-
 save=T28_Shaman_Elemental.simc
+
+shaman="T28_Shaman_Elemental_SE"
+level=60
+race=tauren
+spec=elemental
+role=spell
+position=ranged_back
+talents=1102021
+covenant=night_fae
+soulbind=dreamweaver,pyroclastic_shock:11:1/high_voltage:11:1/field_of_blossoms/essential_extraction:11:1/dream_delver
+renown=80
+
+# unity
+head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,ilevel=285
+shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
+chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
+wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
+# recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+# recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
+feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
+trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
+shadowlands.soleahs_secret_technique_type_override=versatility
+main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
+
+save=T28_Shaman_Elemental_SE.simc
+
 
 shaman="T28_Shaman_Elemental_Necrolord"
 level=60
@@ -41,28 +72,33 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=2301022
+talents=1102021
 
 covenant=necrolord
 soulbind=plague_deviser_marileth,volatile_solvent/call_of_flame:11:1/pyroclastic_shock:11:1/tumbling_waves:11:1/kevins_oozeling
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+# unity
+head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+# recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+# recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
+shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
 save=T28_Shaman_Elemental_Necrolord.simc
+
 
 shaman="T28_Shaman_Elemental_Kyrian"
 level=60
@@ -71,28 +107,32 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=2301022
-
+talents=1102021
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/call_of_flame:11:1/hammer_of_genesis/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/call_of_flame:11:1/pyroclastic_shock:11:1/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+# unity
+head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+# recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+# recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
+shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
 save=T28_Shaman_Elemental_Kyrian.simc
+
 
 shaman="T28_Shaman_Elemental_Venthyr"
 level=60
@@ -101,89 +141,32 @@ role=spell
 position=ranged_back
 spec=elemental
 renown=80
-talents=2301022
+talents=1102021
 
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/call_of_flame:11:1/dauntless_duelist/pyroclastic_shock:11:1/fatal_flaw
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+# unity
+head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,ilevel=291,bonus_id=8128/6650/6649
+# recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+# recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
+shadowlands.soleahs_secret_technique_type_override=versatility
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
 save=T28_Shaman_Elemental_Venthyr.simc
-
-shaman="T28_Shaman_Enhancement_SORG"
-level=60
-race=troll
-spec=enhancement
-role=attack
-position=back
-talents=3211131
-covenant=night_fae
-soulbind=niya,grove_invigoration/magma_fist:9:1/niyas_tools_burrs/essential_extraction:9:1/bonded_hearts
-renown=80
-
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
-back=dealer_xyexas_cape,id=179349,bonus_id=6536/1566/6646
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,enchant=eternal_skirmish,gem_id=187312
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
-hands=boneshatter_gauntlets,id=172324,bonus_id=6716/7708/6647/6649/1559
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187320
-legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187319,enchant=eternal_agility
-finger1=miniature_breaking_wheel,id=186375,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=salvaged_fusion_amplifier,id=186432,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
-
-# save=T28_Shaman_Enhancement_SORG.simc
-
-
-shaman="T28_Shaman_Enhancement_VDW"
-level=60
-race=troll
-spec=enhancement
-role=attack
-position=back
-talents=2111133
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/unruly_winds:9:1/dauntless_duelist/focused_lightning:9:1/fatal_flaw
-renown=80
-
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173127
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
-back=grimveiled_cape,id=173242,bonus_id=6716/6993/6647/6649/1559
-chest=colossus_slayers_hauberk,id=186303,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173127
-hands=demigaunts_of_predestination,id=186345,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187319
-legs=aradnes_lancer_legguards,id=186307,bonus_id=7187/1498
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187320,enchant=eternal_agility
-finger1=sworn_oath_of_the_nine,id=186290,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_versatility
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1566/6646
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
-
-# save=T28_Shaman_Enhancement_VDW.simc
 
 
 shaman="T28_Shaman_Enhancement"
@@ -192,29 +175,122 @@ race=troll
 spec=enhancement
 role=attack
 position=back
-talents=3211131
-covenant=kyrian
-soulbind=forgelite_prime_mikanikos,brons_call_to_action/magma_fist:9:1/elysian_dirge:9:1/focused_lightning:9:1/soulglow_spectrometer/effusive_anima_accelerator
+talents=3221131
+covenant=night_fae
+soulbind=dreamweaver,podtender/field_of_blossoms/focused_lightning:11:1/essential_extraction:11:1/magma_fist:11:1/dream_delver
 renown=80
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
-chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
-hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187319
-legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187320,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
+wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173130
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
+trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
 
-# save=T28_Shaman_Enhancement.simc
+save=T28_Shaman_Enhancement.simc
+
+
+shaman="T28_Shaman_Enhancement_Venthyr"
+level=60
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=3221131
+covenant=venthyr
+soulbind=nadjia_the_mistblade,thrill_seeker/magma_fist:11:1/focused_lightning:11:1/dauntless_duelist/fatal_flaw
+renown=80
+
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
+wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173130
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
+trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
+
+save=T28_Shaman_Enhancement_Venthyr.simc
+
+
+shaman="T28_Shaman_Enhancement_Kyrian"
+level=60
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=3221131
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos,brons_call_to_action/magma_fist:11:1/focused_lightning:11:1/elysian_dirge:11:1/soulglow_spectrometer/effusive_anima_accelerator
+renown=80
+
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
+wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173130
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
+trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
+
+save=T28_Shaman_Enhancement_Kyrian.simc
+
+
+shaman="T28_Shaman_Enhancement_Necrolord"
+level=60
+race=troll
+spec=enhancement
+role=attack
+position=back
+talents=3221131
+covenant=necrolord
+soulbind=plague_deviser_marileth,volatile_solvent/magma_fist:11:1/focused_lightning:11:1/tumbling_waves:11:1/kevins_oozeling
+renown=80
+
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulder=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
+wrist=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173130
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
+trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
+trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
+
+save=T28_Shaman_Enhancement_Necrolord.simc
 
 
 shaman="T28_Shaman_Restoration"

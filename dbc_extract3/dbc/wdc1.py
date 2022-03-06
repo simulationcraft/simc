@@ -129,7 +129,7 @@ class WDC1HotfixKeyIdParser:
 # Parse a segment of the record data, and return a tuple containing the column data
 class WDC1SegmentParser:
     def __init__(self, record_parser, columns):
-        if isinstance(columns, collections.Iterable):
+        if isinstance(columns, collections.abc.Iterable):
             self.columns = columns
         else:
             self.columns = [ columns ]

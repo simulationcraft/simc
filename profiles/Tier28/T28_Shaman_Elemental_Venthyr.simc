@@ -5,10 +5,11 @@ level=60
 race=tauren
 role=spell
 position=ranged_back
-talents=2301022
+talents=1102021
 covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/call_of_flame:11:1/dauntless_duelist/pyroclastic_shock:11:1/fatal_flaw
 renown=80
+shadowlands.soleahs_secret_technique_type_override=versatility
 
 # Default consumables
 potion=potion_of_spectral_intellect
@@ -43,7 +44,7 @@ actions+=/wind_shear
 actions+=/potion
 actions+=/use_items
 actions+=/flame_shock,if=(!talent.elemental_blast.enabled)&!ticking&!pet.storm_elemental.active&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
-actions+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled)&(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|soulbind.lead_by_example.enabled)
+actions+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!buff.primordial_wave.up&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20|soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&(spell_targets.chain_lightning<5|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped|soulbind.lead_by_example.enabled|runeforge.splintered_elements.equipped)&!buff.splintered_elements.up
 actions+=/flame_shock,if=!ticking&(!pet.storm_elemental.active|spell_targets.chain_lightning<3&buff.wind_gust.stack<20)&(spell_targets.chain_lightning<3|talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
 actions+=/fire_elemental
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
@@ -62,8 +63,8 @@ actions.aoe=storm_elemental
 actions.aoe+=/earthquake,if=buff.echoing_shock.up
 actions.aoe+=/chain_harvest
 actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.aoe+=/flame_shock,if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|(runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active),target_if=refreshable
-actions.aoe+=/flame_shock,if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)
+actions.aoe+=/flame_shock,if=(active_dot.flame_shock<2&active_enemies<=3&cooldown.primordial_wave.remains<16&covenant.necrolord&!pet.storm_elemental.active|active_dot.flame_shock<1&active_enemies>=4&!pet.storm_elemental.active&talent.master_of_the_elements.enabled)|(runeforge.skybreakers_fiery_demise.equipped&!pet.storm_elemental.active)|(runeforge.splintered_elements.equipped&(active_dot.flame_shock<3&!runeforge.echoes_of_great_sundering.equipped|active_dot.flame_shock<4)&(cooldown.primordial_wave.remains<16|buff.primordial_wave.up)),target_if=refreshable
+actions.aoe+=/flame_shock,if=!active_dot.flame_shock&!pet.storm_elemental.active&(talent.master_of_the_elements.enabled|runeforge.skybreakers_fiery_demise.equipped)|(runeforge.splintered_elements.equipped&!ticking&buff.primordial_wave.up)
 actions.aoe+=/echoing_shock,if=talent.echoing_shock.enabled&maelstrom>=60&(runeforge.echoes_of_great_sundering.equipped&buff.echoes_of_great_sundering.up|!runeforge.echoes_of_great_sundering.equipped)
 actions.aoe+=/ascendance,if=talent.ascendance.enabled&(!pet.storm_elemental.active)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
 actions.aoe+=/liquid_magma_totem,if=talent.liquid_magma_totem.enabled
@@ -71,12 +72,15 @@ actions.aoe+=/chain_lightning,if=spell_targets.chain_lightning<4&buff.master_of_
 actions.aoe+=/earth_shock,if=runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&(buff.lava_surge.up&!buff.master_of_the_elements.up&talent.master_of_the_elements.enabled)
 actions.aoe+=/earthquake,if=spell_targets.chain_lightning>=2&!runeforge.echoes_of_great_sundering.equipped&(talent.master_of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up)
-actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=covenant.necrolord&runeforge.echoes_of_great_sundering.equipped&set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&buff.primordial_wave.up&(buff.primordial_wave.remains<3*gcd|active_dot.flame_shock=spell_targets.chain_lightning|active_dot.flame_shock=3&!runeforge.echoes_of_great_sundering.equipped|active_dot.flame_shock=4)
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=(spell_targets.chain_lightning<4&runeforge.skybreakers_fiery_demise.equipped&talent.master_of_the_elements.enabled)|(talent.master_of_the_elements.enabled&maelstrom>=50&!buff.master_of_the_elements.up&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)&!runeforge.skybreakers_fiery_demise.equipped)
 actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=spell_targets.chain_lightning=4&runeforge.skybreakers_fiery_demise.equipped&buff.lava_surge.up&talent.master_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50
 actions.aoe+=/earthquake,if=spell_targets.chain_lightning>=2
 actions.aoe+=/chain_lightning,if=buff.stormkeeper.remains<3*gcd*buff.stormkeeper.stack
+actions.aoe+=/lava_burst,target_if=dot.flame_shock.remains,if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up
+actions.aoe+=/lava_burst,if=set_bonus.tier28_4pc&buff.lava_surge.up&!buff.primordial_wave.up
 actions.aoe+=/lava_burst,if=buff.lava_surge.up&spell_targets.chain_lightning<4&(!pet.storm_elemental.active)&dot.flame_shock.ticking
 actions.aoe+=/elemental_blast,if=talent.elemental_blast.enabled&spell_targets.chain_lightning<5&(!pet.storm_elemental.active)
 actions.aoe+=/lava_beam,if=talent.ascendance.enabled
@@ -86,16 +90,20 @@ actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
 
 actions.se_single_target=storm_elemental
+actions.se_single_target+=/lightning_bolt,if=buff.surge_of_power.up
+actions.se_single_target+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack&buff.wind_gust.stack<18
+actions.se_single_target+=/flame_shock,target_if=refreshable
+actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 actions.se_single_target+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.se_single_target+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.se_single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>=60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)|spell_targets.chain_lightning<2&buff.wind_gust.stack>=18&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)&maelstrom>=60
+actions.se_single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>=60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)
 actions.se_single_target+=/lava_burst,if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up
 actions.se_single_target+=/lava_burst,if=talent.echoing_shock.enabled&buff.echoing_shock.up&spell_targets.chain_lightning<2
 actions.se_single_target+=/earthquake,if=talent.echoing_shock.enabled&buff.echoing_shock.up&spell_targets.chain_lightning>=2
 actions.se_single_target+=/lightning_bolt,if=buff.stormkeeper.up
 actions.se_single_target+=/earthquake,if=buff.echoes_of_great_sundering.up
-actions.se_single_target+=/earth_shock,if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)|(runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up)
+actions.se_single_target+=/earth_shock,if=spell_targets.chain_lightning<2&maelstrom>=60&(buff.wind_gust.stack<20|maelstrom>90)|(runeforge.echoes_of_great_sundering.equipped&!buff.echoes_of_great_sundering.up)|runeforge.windspeakers_lava_resurgence.equipped
 actions.se_single_target+=/earthquake,if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)
 actions.se_single_target+=/chain_lightning,if=active_enemies>1&pet.storm_elemental.active&buff.bloodlust.up
 actions.se_single_target+=/lightning_bolt,if=pet.storm_elemental.active&buff.bloodlust.up
@@ -104,7 +112,7 @@ actions.se_single_target+=/lava_burst,if=cooldown_react
 actions.se_single_target+=/lava_burst,if=cooldown_react&charges>talent.echo_of_the_elements.enabled
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up
 actions.se_single_target+=/chain_harvest
-actions.se_single_target+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
+actions.se_single_target+=/fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 actions.se_single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.se_single_target+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet.storm_elemental.active)
 actions.se_single_target+=/chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)
@@ -142,7 +150,7 @@ actions.single_target+=/flame_shock,target_if=refreshable
 actions.single_target+=/frost_shock,if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!talent.elemental_blast.enabled&!talent.echoing_shock.enabled
 actions.single_target+=/chain_harvest
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up
-actions.single_target+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
+actions.single_target+=/fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 actions.single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.single_target+=/earth_elemental,if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active
 actions.single_target+=/chain_lightning,if=spell_targets.chain_lightning>1
@@ -150,32 +158,31 @@ actions.single_target+=/lightning_bolt
 actions.single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.single_target+=/frost_shock,moving=1
-actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 
-head=theurgic_starspeakers_howl,id=188923,ilevel=278
+head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935,ilevel=291,gem_id=173128
 neck=worldkiller_iris,id=189859,ilevel=285
 shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=shroud_of_the_sires_chosen,id=189847,ilevel=285
+back=lurking_predators_camouflage,id=189815,ilevel=278
 chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
 wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=278
-waist=clasp_of_waning_shadow,id=178700,ilevel=278
-legs=unity,id=172326,bonus_id=8128/6650/6649,ilevel=291
+hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
+waist=kings_wolfheart_waistband,id=189837,ilevel=278
+legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649,ilevel=291
-finger1=ritual_commanders_ring,id=178781,ilevel=278,enchant=tenet_of_haste
-finger2=ritual_bone_band,id=178870,ilevel=278,enchant=tenet_of_haste
+finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6917,ilevel=278
-trinket2=miniscule_mailemental_in_an_envelope,id=185846,ilevel=278
+trinket2=soleahs_secret_technique,id=190958,ilevel=278
 main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=282.07
-# gear_stamina=2899
-# gear_intellect=1743
-# gear_crit_rating=682
-# gear_haste_rating=835
-# gear_mastery_rating=311
-# gear_versatility_rating=729
-# gear_armor=1191
+# gear_ilvl=283.00
+# gear_stamina=2941
+# gear_intellect=1879
+# gear_crit_rating=281
+# gear_haste_rating=875
+# gear_mastery_rating=879
+# gear_versatility_rating=427
+# gear_armor=1259
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
