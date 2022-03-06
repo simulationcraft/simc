@@ -6060,7 +6060,7 @@ public:
       p()->cooldown.fire_elemental->adjust( -1.0 * skybreakers_effect->effectN( 2 ).time_value() );
     }
 
-    if ( p()->is_ptr() && d->state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
+    if ( d->state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
     {
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
@@ -6087,7 +6087,7 @@ public:
   {
     shaman_spell_t::impact( state );
 
-    if ( p()->is_ptr() && state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
+    if ( state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
     {
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
