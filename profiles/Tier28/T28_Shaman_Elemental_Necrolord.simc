@@ -5,9 +5,9 @@ level=60
 race=tauren
 role=spell
 position=ranged_back
-talents=1102021
+talents=2301022
 covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/call_of_flame:11:1/pyroclastic_shock:11:1/tumbling_waves:11:1/kevins_oozeling
+soulbind=plague_deviser_marileth,volatile_solvent/high_voltage:11:1/pyroclastic_shock:11:1/tumbling_waves:11:1/kevins_oozeling
 renown=80
 shadowlands.soleahs_secret_technique_type_override=versatility
 
@@ -59,7 +59,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_ligh
 actions+=/run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2
 actions+=/run_action_list,name=se_single_target,if=talent.storm_elemental.enabled&active_enemies<=2
 
-actions.aoe=storm_elemental
+actions.aoe=storm_elemental,if=!pet.storm_elemental.active
 actions.aoe+=/earthquake,if=buff.echoing_shock.up
 actions.aoe+=/chain_harvest
 actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled
@@ -89,7 +89,7 @@ actions.aoe+=/lava_burst,moving=1,if=buff.lava_surge.up&cooldown_react
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
 
-actions.se_single_target=storm_elemental
+actions.se_single_target=storm_elemental,if=!pet.storm_elemental.active
 actions.se_single_target+=/lightning_bolt,if=buff.surge_of_power.up
 actions.se_single_target+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack&buff.wind_gust.stack<18
