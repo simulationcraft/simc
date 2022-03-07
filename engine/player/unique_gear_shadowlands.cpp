@@ -3548,7 +3548,15 @@ void grim_eclipse( special_effect_t& effect )
       : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
         buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
     {
-      // TODO: manually implement dot if non-standard method is used when it's implemented in-game
+      // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
+      dot_duration = 7_s;
+      base_tick_time = 1_s;
+
+      tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
+      tick_action->base_dd_min = tick_action->base_dd_max =
+          e.driver()->effectN( 1 ).average( e.item ) / dot_duration.total_seconds();
+
+      buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
     }
 
     void last_tick( dot_t* d ) override
