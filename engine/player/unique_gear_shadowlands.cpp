@@ -5338,6 +5338,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
     unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
     unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
+    unique_gear::register_special_effect( 364086, items::DISABLED_EFFECT ); // Cypher effect Strip Advantage
+    unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
 }
 
 void register_target_data_initializers( sim_t& sim )
