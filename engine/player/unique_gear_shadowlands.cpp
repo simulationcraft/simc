@@ -3694,6 +3694,14 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       vicious_wound_cb->initialize();
       vicious_wound_cb->deactivate();
 
+      // Bleed currently appears to only trigger from "class abilities" and cannot trigger from procs
+      effect.player->callbacks.register_callback_trigger_function(
+        bleed_driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+          return ( a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) &&
+                   ( ( !a->background && !a->proc ) || a->data().flags( spell_attribute::SX_NOT_A_PROC ) ) );
+      } );
+
       axe_buff->set_stack_change_callback( [ vicious_wound_cb, bleed ]( buff_t*, int old, int new_ ) {
         if ( old == 0 )
         {
