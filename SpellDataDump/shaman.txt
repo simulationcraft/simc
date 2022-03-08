@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-08/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -7096,6 +7096,7 @@ Description      : Increases the critical strike chance of Crash Lightning by $s
 Tooltip          : Increases the critical strike chance of Crash Lightning by $s1 and increases the radius of Crash Lightning by $s2.
 
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
+Hotfixed         : Max stacks (20 -> 10)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
