@@ -114,6 +114,11 @@ void shadow( player_t* p )
 
   // Trinkets
   trinkets->add_action(
+      "use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff."
+      "power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae",
+      "Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack "
+      "for cooldowns. Use before other on use to not trigger ICD between trinkets (bug?)." );
+  trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
   trinkets->add_action(
@@ -145,11 +150,6 @@ void shadow( player_t* p )
       "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or "
       "Necrolord line it up with stacked cooldowns." );
   trinkets->add_action( "use_item,name=architects_ingenuity_core", "Use this on CD for max CDR" );
-  trinkets->add_action(
-      "use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff."
-      "power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae",
-      "Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack "
-      "for cooldowns." );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 

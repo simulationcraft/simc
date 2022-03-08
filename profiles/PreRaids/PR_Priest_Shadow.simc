@@ -145,8 +145,10 @@ actions.main+=/shadow_word_death
 # Use SW:P as last resort if on the move and SW:D is on CD
 actions.main+=/shadow_word_pain
 
+# Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack for cooldowns. Use before other on use to not trigger ICD between trinkets (bug?).
+actions.trinkets=use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae
 # Use on CD ASAP to get DoT ticking and expire to line up better with Voidform
-actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
+actions.trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
 # Try to Sync IQD with Double Stacked CDs if possible. On longer fights with more IQD uses attempt to sync with any cd or just use it.
 actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff.power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion.remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>=190
 # Sync Sheet Music with Voidform
@@ -161,8 +163,6 @@ actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown
 actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10&(covenant.necrolord|covenant.kyrian)|(covenant.venthyr|covenant.night_fae)&(!buff.voidform.up|prev_gcd.1.void_bolt)|fight_remains<=40
 # Use this on CD for max CDR
 actions.trinkets+=/use_item,name=architects_ingenuity_core
-# Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack for cooldowns.
-actions.trinkets+=/use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 

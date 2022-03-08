@@ -3548,7 +3548,15 @@ void grim_eclipse( special_effect_t& effect )
       : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
         buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
     {
-      // TODO: manually implement dot if non-standard method is used when it's implemented in-game
+      // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
+      dot_duration = 7_s;
+      base_tick_time = 1_s;
+
+      tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
+      tick_action->base_dd_min = tick_action->base_dd_max =
+          e.driver()->effectN( 1 ).average( e.item ) / dot_duration.total_seconds();
+
+      buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
     }
 
     void last_tick( dot_t* d ) override
@@ -3624,7 +3632,7 @@ void pulsating_riftshard( special_effect_t& effect )
 // 368653 wand damage proc
 void cache_of_acquired_treasures( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand", "acquired_sword_haste" } ) )
     return;
 
   struct acquire_weapon_t : public proc_spell_t
@@ -3672,6 +3680,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       } );
 
       auto bleed = new proc_spell_t( "vicious_wound", effect.player, effect.player->find_spell( 368651 ), effect.item );
+      bleed->dual = true; // Executes added below in the callback for DPET values vs. Wand usage
 
       auto bleed_driver               = new special_effect_t( effect.player );
       bleed_driver->name_str          = "acquired_axe_driver";
@@ -3681,15 +3690,20 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       bleed_driver->execute_action    = bleed;
       effect.player->special_effects.push_back( bleed_driver );
 
-      auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver);
+      auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver );
       vicious_wound_cb->initialize();
       vicious_wound_cb->deactivate();
 
-      axe_buff->set_stack_change_callback( [ vicious_wound_cb ]( buff_t*, int old, int new_ ) {
-      if ( old == 0 )
+      axe_buff->set_stack_change_callback( [ vicious_wound_cb, bleed ]( buff_t*, int old, int new_ ) {
+        if ( old == 0 )
+        {
           vicious_wound_cb->activate();
-      else if ( new_ == 0 )
+          bleed->stats->add_execute( timespan_t::zero(), bleed->player );
+        }
+        else if ( new_ == 0 )
+        {
           vicious_wound_cb->deactivate();
+        }
       } );
 
       weapons.emplace_back(
@@ -3777,6 +3791,57 @@ void symbol_of_the_raptora( special_effect_t& effect )
   effect.custom_buff = buff;
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+// id=367808 driver
+//    effect #1: Periodic trigger for pulse damage spell, dummy damage value for tooltip only
+//    effect #2: Weak point damage value in dummy, overwrites spell value when dealing weak point damage
+//    effect #3-5: Area damage spell triggers for the 3 weak points spawned
+// id=368634 AoE damage spell, reused for both damage components
+void earthbreakers_impact( special_effect_t& effect )
+{
+  struct earthbreakers_impact_aoe_t : public shadowlands_aoe_proc_t
+  {
+    earthbreakers_impact_aoe_t( const special_effect_t& e, bool weak_point ) :
+      shadowlands_aoe_proc_t( e, weak_point ? "earthbreakers_impact_weak_point" : "earthbreakers_impact_pulse",
+                              e.driver()->effectN( 1 ).trigger(), true )
+    {
+      // The same AoE spell gets reused by both the normal ticks and the weak point triggers
+      if ( weak_point )
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      }
+    }
+  };
+
+  struct earthbreakers_impact_t : public proc_spell_t
+  {
+    action_t* weak_point;
+
+    earthbreakers_impact_t( const special_effect_t& e ) :
+      proc_spell_t( "earthbreakers_impact", e.player, e.driver() ),
+      weak_point( create_proc_action<earthbreakers_impact_aoe_t>( "earthbreakers_impact_weak_point", e, true ) )
+    {
+      tick_action = create_proc_action<earthbreakers_impact_aoe_t>( "earthbreakers_impact_pulse", e, false );
+      add_child( weak_point );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      
+      // Assume roughly a 1s delay between stepping on the triggers, as they are relatively close
+      for ( unsigned int i = 1; i <= player->sim->shadowlands_opts.earthbreakers_impact_weak_points; i++ )
+      {
+        make_event( *sim, 1_s * i, [this] {
+          this->weak_point->set_target( this->target );
+          this->weak_point->schedule_execute();
+        });
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<earthbreakers_impact_t>( "earthbreakers_impact", effect );
+};
 
 // Weapons
 
@@ -5270,6 +5335,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
+    unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -5338,6 +5404,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 329028, items::DISABLED_EFFECT ); // Light-Infused Armor shield
     unique_gear::register_special_effect( 333885, items::DISABLED_EFFECT ); // Darkmoon Deck: Putrescence shuffler
     unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
+    unique_gear::register_special_effect( 364086, items::DISABLED_EFFECT ); // Cypher effect Strip Advantage
+    unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
 }
 
 void register_target_data_initializers( sim_t& sim )

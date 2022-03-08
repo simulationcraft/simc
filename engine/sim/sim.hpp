@@ -444,6 +444,8 @@ struct sim_t : private sc_thread_t
     bool enable_domination_gems = false;
     // fleshcraft cancel dely from the_first_sigil
     timespan_t the_first_sigil_fleshcraft_cancel_time = 50_ms;
+    // Earthbreaker's Impact weak points triggered
+    unsigned int earthbreakers_impact_weak_points = 3;
   } shadowlands_opts;
 
   // Auras and De-Buffs
