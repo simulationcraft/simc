@@ -2991,9 +2991,8 @@ public:
 
       if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
       {
-        // -2.0 divisor from tooltip, not present in data
-        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() *
-                                              consumed / -2.0 );
+        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() * 0.1 *
+                                              consumed );
 
         if ( p()->talent.incarnation_cat->ok() )
           p()->cooldown.incarnation->adjust( dur_ );
