@@ -92,12 +92,12 @@ save="T28_Death_Knight_Frost_Breath.simc"
 
 deathknight="T28_Death_Knight_Frost_2H"
 level=60
-race=human
+race=void_elf
 spec=frost
 role=attack
 position=back
 talents=1201012
-covenant=void_elf
+covenant=night_fae
 soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/field_of_blossoms/dream_delver
 renown=80
 
