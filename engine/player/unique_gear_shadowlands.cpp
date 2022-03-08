@@ -3632,7 +3632,7 @@ void pulsating_riftshard( special_effect_t& effect )
 // 368653 wand damage proc
 void cache_of_acquired_treasures( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand", "acquired_sword_haste" } ) )
     return;
 
   struct acquire_weapon_t : public proc_spell_t
@@ -3680,6 +3680,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       } );
 
       auto bleed = new proc_spell_t( "vicious_wound", effect.player, effect.player->find_spell( 368651 ), effect.item );
+      bleed->dual = true; // Executes added below in the callback for DPET values vs. Wand usage
 
       auto bleed_driver               = new special_effect_t( effect.player );
       bleed_driver->name_str          = "acquired_axe_driver";
@@ -3689,15 +3690,20 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       bleed_driver->execute_action    = bleed;
       effect.player->special_effects.push_back( bleed_driver );
 
-      auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver);
+      auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver );
       vicious_wound_cb->initialize();
       vicious_wound_cb->deactivate();
 
-      axe_buff->set_stack_change_callback( [ vicious_wound_cb ]( buff_t*, int old, int new_ ) {
-      if ( old == 0 )
+      axe_buff->set_stack_change_callback( [ vicious_wound_cb, bleed ]( buff_t*, int old, int new_ ) {
+        if ( old == 0 )
+        {
           vicious_wound_cb->activate();
-      else if ( new_ == 0 )
+          bleed->stats->add_execute( timespan_t::zero(), bleed->player );
+        }
+        else if ( new_ == 0 )
+        {
           vicious_wound_cb->deactivate();
+        }
       } );
 
       weapons.emplace_back(
