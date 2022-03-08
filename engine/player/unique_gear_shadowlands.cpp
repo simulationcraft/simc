@@ -3549,7 +3549,7 @@ void grim_eclipse( special_effect_t& effect )
         buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
     {
       // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
-      dot_duration = 7_s;
+      dot_duration = data().duration();
       base_tick_time = 1_s;
 
       tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
