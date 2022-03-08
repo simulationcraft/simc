@@ -57,7 +57,7 @@ actions+=/run_action_list,name=aoe,if=active_enemies>2&(spell_targets.chain_ligh
 actions+=/run_action_list,name=single_target,if=!talent.storm_elemental.enabled&active_enemies<=2
 actions+=/run_action_list,name=se_single_target,if=talent.storm_elemental.enabled&active_enemies<=2
 
-actions.aoe=storm_elemental
+actions.aoe=storm_elemental,if=!pet.storm_elemental.active
 actions.aoe+=/earthquake,if=buff.echoing_shock.up
 actions.aoe+=/chain_harvest
 actions.aoe+=/stormkeeper,if=talent.stormkeeper.enabled
@@ -87,7 +87,7 @@ actions.aoe+=/lava_burst,moving=1,if=buff.lava_surge.up&cooldown_react
 actions.aoe+=/flame_shock,moving=1,target_if=refreshable
 actions.aoe+=/frost_shock,moving=1
 
-actions.se_single_target=storm_elemental
+actions.se_single_target=storm_elemental,if=!pet.storm_elemental.active
 actions.se_single_target+=/lightning_bolt,if=buff.surge_of_power.up
 actions.se_single_target+=/primordial_wave,target_if=min:dot.flame_shock.remains,cycle_targets=1,if=covenant.necrolord&!buff.primordial_wave.up&!buff.splintered_elements.up
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack&buff.wind_gust.stack<18
@@ -95,7 +95,7 @@ actions.se_single_target+=/flame_shock,target_if=refreshable
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&buff.icefury.remains<1.1*gcd*buff.icefury.stack
 actions.se_single_target+=/elemental_blast,if=talent.elemental_blast.enabled
 actions.se_single_target+=/stormkeeper,if=talent.stormkeeper.enabled
-actions.se_single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>=60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)|spell_targets.chain_lightning<2&buff.wind_gust.stack>=18&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)&maelstrom>=60
+actions.se_single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd&spell_targets.chain_lightning<2|maelstrom>=60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)
 actions.se_single_target+=/lava_burst,if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up
 actions.se_single_target+=/lava_burst,if=talent.echoing_shock.enabled&buff.echoing_shock.up&spell_targets.chain_lightning<2
 actions.se_single_target+=/earthquake,if=talent.echoing_shock.enabled&buff.echoing_shock.up&spell_targets.chain_lightning>=2
@@ -110,7 +110,7 @@ actions.se_single_target+=/lava_burst,if=cooldown_react
 actions.se_single_target+=/lava_burst,if=cooldown_react&charges>talent.echo_of_the_elements.enabled
 actions.se_single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up
 actions.se_single_target+=/chain_harvest
-actions.se_single_target+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
+actions.se_single_target+=/fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 actions.se_single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.se_single_target+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet.storm_elemental.active)
 actions.se_single_target+=/chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)
@@ -148,7 +148,7 @@ actions.single_target+=/flame_shock,target_if=refreshable
 actions.single_target+=/frost_shock,if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!talent.elemental_blast.enabled&!talent.echoing_shock.enabled
 actions.single_target+=/chain_harvest
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up
-actions.single_target+=/fleshcraft,interrupt=1,if=soulbind.volatile_solvent
+actions.single_target+=/fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 actions.single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.single_target+=/earth_elemental,if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active
 actions.single_target+=/chain_lightning,if=spell_targets.chain_lightning>1

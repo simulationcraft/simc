@@ -2,7 +2,7 @@ priest="T28_Priest_Shadow"
 source=default
 spec=shadow
 level=60
-race=mechagnome
+race=human
 role=spell
 position=ranged_back
 talents=1010122
@@ -91,8 +91,8 @@ actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nig
 actions.cwc+=/mind_blast,only_cwc=1
 
 actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
-# Use Void Eruption on cooldown pooling at least 25 insanity but not if you will overcap insanity in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before VE if Shadowflame is equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out.
-actions.main+=/void_eruption,if=variable.pool_for_cds&(insanity>=25|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(!soulbind.volatile_solvent|buff.volatile_solvent_humanoid.up)
+# Use Void Eruption on cooldown pooling at least 25 insanity (or 40 for Blood Elf on opener) but not if you will overcap insanity in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before VE if Shadowflame is equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out.
+actions.main+=/void_eruption,if=variable.pool_for_cds&(insanity>=25+(15*(race.blood_elf&time<30))|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(!soulbind.volatile_solvent|buff.volatile_solvent_humanoid.up)
 # Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets.
 actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4
 actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot.shadow_word_pain.ticking&!cooldown.fiend.up&spell_targets.mind_sear>=4
@@ -146,18 +146,24 @@ actions.main+=/shadow_word_death
 # Use SW:P as last resort if on the move and SW:D is on CD
 actions.main+=/shadow_word_pain
 
+# Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack for cooldowns. Use before other on use to not trigger ICD between trinkets (bug?).
+actions.trinkets=use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae
 # Use on CD ASAP to get DoT ticking and expire to line up better with Voidform
-actions.trinkets=use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
+actions.trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
 # Try to Sync IQD with Double Stacked CDs if possible. On longer fights with more IQD uses attempt to sync with any cd or just use it.
 actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff.power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion.remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>=190
 # Sync Sheet Music with Voidform
 actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
 # Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of Torment, just use on CD as much as possible.
 actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|equipped.shadowed_orb_of_torment,target_if=min:target.health.pct
+# First Sigil small optimization with Soulletting Ruby
+actions.trinkets+=/use_item,name=the_first_sigil,if=buff.voidform.up|buff.power_infusion.up|!priest.self_power_infusion|cooldown.void_eruption.remains>10|(equipped.soulletting_ruby&!trinket.soulletting_ruby.cooldown.up)|fight_remains<20
 # Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
 actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
 # Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or Necrolord line it up with stacked cooldowns.
 actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10&(covenant.necrolord|covenant.kyrian)|(covenant.venthyr|covenant.night_fae)&(!buff.voidform.up|prev_gcd.1.void_bolt)|fight_remains<=40
+# Use this on CD for max CDR
+actions.trinkets+=/use_item,name=architects_ingenuity_core
 # Default fallback for usable items: Use on cooldown in order by trinket slot.
 actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
 
@@ -171,19 +177,20 @@ hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
 waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7729/1588,gem_id=173130
 legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_mastery
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery
-trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-main_hand=guardstaff_of_the_great_cycle,id=189834,bonus_id=1524/7187,enchant=sinful_revelation
+trinket1=moonlit_prism,id=137541,bonus_id=3151
+trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 # Gear Summary
-# gear_ilvl=282.07
-# gear_stamina=2899
-# gear_intellect=1878
-# gear_crit_rating=380
-# gear_haste_rating=1111
-# gear_mastery_rating=759
+# gear_ilvl=282.75
+# gear_stamina=2922
+# gear_intellect=1667
+# gear_crit_rating=329
+# gear_haste_rating=1009
+# gear_mastery_rating=725
 # gear_versatility_rating=211
 # gear_armor=527
 # set_bonus=tier28_2pc=1

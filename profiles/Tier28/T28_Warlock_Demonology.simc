@@ -33,6 +33,7 @@ actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
 actions.precombat+=/variable,name=first_tyrant_time,op=set,value=10
+actions.precombat+=/variable,name=in_opener,op=set,value=1
 actions.precombat+=/variable,name=use_bolt_timings,op=set,value=runeforge.balespiders_burning_core&runeforge.shard_of_annihilation
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/demonbolt
@@ -40,11 +41,15 @@ actions.precombat+=/demonbolt
 # Executed every time the actor is available.
 actions=variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected
 actions+=/variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected
-actions+=/variable,name=next_tyrant_cd,op=set,value=variable.first_tyrant_time-time,if=time<variable.first_tyrant_time
-actions+=/variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings
+actions+=/variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active
+actions+=/variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings&!variable.in_opener
+actions+=/variable,name=buff_sync_cd,op=set,value=12,if=!variable.use_bolt_timings&variable.in_opener&!pet.dreadstalker.active
+actions+=/variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&buff.wild_imps.stack>0&!talent.vilefiend.enabled
+actions+=/variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&prev_gcd.1.hand_of_guldan&talent.vilefiend.enabled
 actions+=/variable,name=buff_sync_cd,op=set,value=cooldown.decimating_bolt.remains_expected,if=variable.use_bolt_timings
 actions+=/call_action_list,name=trinkets
 actions+=/call_action_list,name=ogcd,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up&(!talent.power_siphon.enabled|buff.power_siphon.up))
+actions+=/implosion,if=target.time_to_die<2*gcd
 actions+=/call_action_list,name=opener,if=time<variable.first_tyrant_time
 actions+=/interrupt,if=target.debuff.casting.react
 actions+=/doom,if=refreshable
@@ -146,32 +151,32 @@ actions.tyrant_setup+=/summon_vilefiend,if=(variable.next_tyrant_cd<15-(action.s
 actions.tyrant_setup+=/call_dreadstalkers,if=variable.next_tyrant_cd<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)
 actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
-head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
-hands=bindings_of_the_banished_one,id=189855,bonus_id=1524/7187
+hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
 waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=grimveiled_sandals,id=173243,bonus_id=6716/8129/6649/6648/1588
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
-trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
+trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 # Gear Summary
-# gear_ilvl=283.56
-# gear_stamina=2963
-# gear_intellect=1907
-# gear_crit_rating=310
-# gear_haste_rating=910
-# gear_mastery_rating=972
+# gear_ilvl=284.00
+# gear_stamina=2974
+# gear_intellect=1786
+# gear_crit_rating=350
+# gear_haste_rating=912
+# gear_mastery_rating=930
 # gear_versatility_rating=275
-# gear_armor=524
+# gear_armor=525
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
 default_pet=felguard

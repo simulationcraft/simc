@@ -114,6 +114,11 @@ void shadow( player_t* p )
 
   // Trinkets
   trinkets->add_action(
+      "use_item,name=scars_of_fraternal_strife,if=(!buff.scars_of_fraternal_strife_4.up&time>1)|(buff.voidform.up|buff."
+      "power_infusion.up|cooldown.void_eruption.remains>10)|covenant.night_fae",
+      "Use trinket after pull starts and then on CD after that until you get 4th stack. Try to delay getting 5th stack "
+      "for cooldowns. Use before other on use to not trigger ICD between trinkets (bug?)." );
+  trinkets->add_action(
       "use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27",
       "Use on CD ASAP to get DoT ticking and expire to line up better with Voidform" );
   trinkets->add_action(
@@ -131,6 +136,10 @@ void shadow( player_t* p )
       "Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of "
       "Torment, just use on CD as much as possible." );
   trinkets->add_action(
+      "use_item,name=the_first_sigil,if=buff.voidform.up|buff.power_infusion.up|!priest.self_power_infusion|cooldown."
+      "void_eruption.remains>10|(equipped.soulletting_ruby&!trinket.soulletting_ruby.cooldown.up)|fight_remains<20",
+      "First Sigil small optimization with Soulletting Ruby" );
+  trinkets->add_action(
       "use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10",
       "Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown "
       "is 10s or more away." );
@@ -140,6 +149,7 @@ void shadow( player_t* p )
       "bolt)|fight_remains<=40",
       "Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or "
       "Necrolord line it up with stacked cooldowns." );
+  trinkets->add_action( "use_item,name=architects_ingenuity_core", "Use this on CD for max CDR" );
   trinkets->add_action( "use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10",
                         "Default fallback for usable items: Use on cooldown in order by trinket slot." );
 
@@ -213,12 +223,13 @@ void shadow( player_t* p )
   main->add_call_action_list( boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action(
       p, "Void Eruption",
-      "if=variable.pool_for_cds&(insanity>=25|pet.fiend.active&runeforge.shadowflame_prism.equipped&!cooldown.mind_"
-      "blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_"
-      "nightmare_cutoff)&!cooldown.fiend.up&(!soulbind.volatile_solvent|buff.volatile_solvent_humanoid.up)",
-      "Use Void Eruption on cooldown pooling at least 25 insanity but not if you will overcap insanity "
-      "in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before VE if Shadowflame is "
-      "equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out." );
+      "if=variable.pool_for_cds&(insanity>=25+(15*(race.blood_elf&time<30))|pet.fiend.active&runeforge."
+      "shadowflame_prism.equipped&!cooldown.mind_blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|"
+      "talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(!soulbind."
+      "volatile_solvent|buff.volatile_solvent_humanoid.up)",
+      "Use Void Eruption on cooldown pooling at least 25 insanity (or 40 for Blood Elf on opener) but "
+      "not if you will overcap insanity in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before "
+      "VE if Shadowflame is equipped. Ignore pooling restrictions if using Shadowflame Prism and Bender is out." );
   main->add_action(
       p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4",
       "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets." );

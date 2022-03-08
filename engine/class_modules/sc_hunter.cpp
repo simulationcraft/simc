@@ -644,6 +644,7 @@ public:
     std::string summon_pet_str = "turtle";
     timespan_t pet_attack_speed = 2_s;
     timespan_t pet_basic_attack_delay = 0.15_s;
+    bool separate_wfi_stats = false;
     // random testing stuff
     bool stomp_triggers_wild_spirits = true;
   } options;
@@ -928,7 +929,7 @@ public:
     ab::execute();
 
     if ( triggers_focused_trickery )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? ab::base_cost() : ab::last_resource_cost );
+      p() -> trigger_focused_trickery( this, ab::base_cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -3525,14 +3526,9 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    /*
-     * While the cleave capability for the DT AiS can come from either a snapshot of Trick Shots taken at the
-     * point of the original AiS cast OR the existence of the buff at the point of its own cast, the Focused Trickery
-     * modifier depends on the Trick Shots buff being up explicitly at the point of the DT AiS cast, which still
-     * allows the Focused Trickery 2pc modifier to affect the damage if Trick Shots is applied immediately following
-     * the AiS cast, or an ongoing Volley is present.
-     */
-    if ( p()->tier_set.focused_trickery_2pc.ok() && p()->buffs.trick_shots->check() )
+    // XXX: 2022-02-28 Now both cleave capability and the damage modifier from
+    // Focused Trickery are based on the original cast's Trick Shots snapshot.
+    if ( p()->tier_set.focused_trickery_2pc.ok() && trick_shots_up() )
       m *= 1 + p()->tier_set.focused_trickery_2pc->effectN( 1 ).percent();
 
     return m;
@@ -3560,9 +3556,11 @@ struct aimed_shot_t : public aimed_shot_base_t
   struct state_data_t
   {
     bool secrets_of_the_vigil_up = false;
+    bool focused_trickery_vigil  = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "secrets_of_the_vigil_up={:d}", data.secrets_of_the_vigil_up );
+      fmt::format_to( out, "secrets_of_the_vigil_up={:d}, focused_trickery_vigil={:d}",
+          data.secrets_of_the_vigil_up, data.focused_trickery_vigil );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
@@ -3596,7 +3594,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       // XXX: Wild Spirits from Double Tap AiS at "close" range
       triggers_wild_spirits = p() -> get_player_distance( *target ) <= 20;
 
-      // 2022-01-22 Double Tap AiS always consumes the Vigil buff
+      // 2022-02-28 Double Tap AiS always consumes the Vigil buff
       if ( p() -> bugs )
         p() -> buffs.secrets_of_the_vigil -> decrement();
     }
@@ -3674,16 +3672,14 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     // XXX: 2022-02-19 Vigil seems to always be snapshot and consumed *before* the cast
     secrets_of_the_vigil_up = p() -> buffs.secrets_of_the_vigil -> up();
+
     // XXX: 2020-12-02 Be on the safe side and assume the buff doesn't get consumed
     // only if the AiS *benefits* from LnL. It may work as Streamline though.
     if ( ! lock_and_loaded )
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
-    // XXX: 2022-02-19 Vigil buff determines the order of the T28 4pc proc relative to
-    // the Aimed Shot cast. If Vigil is up the set procs after the AiS cast, if it's
-    // down the set procs before.
-    if ( !secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : cost() );
+    // XXX: 2022-02-28 All triggers now happen before the cast.
+    p() -> trigger_focused_trickery( this, base_cost() );
 
     aimed_shot_base_t::execute();
 
@@ -3698,8 +3694,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     if ( serpentstalkers_trickery.action )
       serpentstalkers_trickery.action -> execute_on_target( target );
 
-    if ( secrets_of_the_vigil_up )
-      p() -> trigger_focused_trickery( this, p() -> bugs ? base_cost() : last_resource_cost );
     secrets_of_the_vigil_up = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
@@ -3742,8 +3736,9 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::impact( s );
 
-    // XXX 2022-01-26 AiS consumes Vigil buff on impact if it was up on cast
-    if ( p() -> bugs && debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up )
+    // XXX 2022-02-28 AiS consumes Vigil buffs on impact if they were up on cast with
+    // the exception of Vigil buffs that were applied by a Focused Trickery Trick Shots.
+    if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
   }
 
@@ -3778,6 +3773,8 @@ struct aimed_shot_t : public aimed_shot_base_t
   {
     aimed_shot_base_t::snapshot_state( s, type );
     debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up = secrets_of_the_vigil_up;
+    // XXX 2022-02-28 If a new Vigil is applied after the original is consumed, we protect this new one on impact.
+    debug_cast<state_t*>( s ) -> focused_trickery_vigil  = p() -> buffs.secrets_of_the_vigil -> check();
   }
 };
 
@@ -4667,7 +4664,7 @@ struct a_murder_of_crows_t : public hunter_spell_t
     parse_options( options_str );
 
     triggers_wild_spirits = false;
-    triggers_focused_trickery = false; // XXX: 2022-01-22 manually triggered
+    triggers_focused_trickery = !p -> bugs;  // XXX: 2022-01-22 manually triggered
 
     tick_action = p -> get_background_action<peck_t>( "crow_peck" );
     starved_proc = p -> get_proc( "starved: a_murder_of_crows" );
@@ -5440,13 +5437,28 @@ struct wildfire_bomb_t: public hunter_spell_t
       dot_action -> aoe = aoe;
       dot_action -> radius = radius;
 
-      a -> add_child( this );
-      a -> add_child( dot_action );
+      if ( a -> p() -> talents.wildfire_infusion.ok() && a -> p() -> options.separate_wfi_stats )
+      {
+        add_child( dot_action );
+      }
+      else
+      {
+        a -> add_child( this );
+        a -> add_child( dot_action );
+      }
     }
 
     void execute() override
     {
       hunter_spell_t::execute();
+
+      if ( p() -> talents.wildfire_infusion.ok() && p() -> options.separate_wfi_stats )
+      {
+        // fudge trigger_gcd so gcd() returns a non-zero value and we get proper dpet values
+        const auto trigger_gcd_ = std::exchange( trigger_gcd, p() -> base_gcd );
+        stats -> add_execute( gcd(), target );
+        trigger_gcd = trigger_gcd_;
+      }
 
       if ( num_targets_hit > 0 )
       {
@@ -5484,7 +5496,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t( n, a, p -> find_spell( 270338 ), "shrapnel_bomb", p -> find_spell( 270339 ) )
     {
       attacks::internal_bleeding_t internal_bleeding( p );
-      a -> add_child( internal_bleeding.action );
+      if ( p -> options.separate_wfi_stats )
+        add_child( internal_bleeding.action );
+      else
+        a -> add_child( internal_bleeding.action );
     }
   };
 
@@ -5513,7 +5528,10 @@ struct wildfire_bomb_t: public hunter_spell_t
       bomb_base_t( n, a, p -> find_spell( 271048 ), "volatile_bomb", p -> find_spell( 271049 ) ),
       violent_reaction( p -> get_background_action<violent_reaction_t>( "violent_reaction" ) )
     {
-      a -> add_child( violent_reaction );
+      if ( p -> options.separate_wfi_stats )
+        add_child( violent_reaction );
+      else
+        a -> add_child( violent_reaction );
     }
 
     void execute() override
@@ -6894,6 +6912,7 @@ void hunter_t::create_options()
                             0.5_s, 4_s ) );
   add_option( opt_timespan( "hunter.pet_basic_attack_delay", options.pet_basic_attack_delay,
                             0_ms, 0.6_s ) );
+  add_option( opt_bool( "hunter.separate_wfi_stats", options.separate_wfi_stats ) );
 
   add_option( opt_bool( "hunter.stomp_triggers_wild_spirits", options.stomp_triggers_wild_spirits ) );
 

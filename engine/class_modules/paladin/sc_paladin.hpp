@@ -58,7 +58,7 @@ public:
   {
     heal_t* beacon_of_light;
     action_t* holy_shield_damage;
-    action_t* t28_4p_pp;
+    action_t* t28_4p_prot;
     action_t* judgment_of_light;
     action_t* shield_of_vengeance_damage;
     action_t* zeal;
@@ -213,6 +213,8 @@ public:
 
     cooldown_t* blessing_of_the_seasons;
     cooldown_t* ashen_hallow; // Radiant Embers Legendary
+
+    cooldown_t* t28_4p_prot_icd;
   } cooldowns;
 
   // Passives
@@ -527,7 +529,7 @@ public:
 
   void    trigger_grand_crusader();
   void    trigger_holy_shield( action_state_t* s );
-  void    trigger_t28_4p_pp( action_state_t* s );
+  void    trigger_t28_4p_prot( action_state_t* s );
   void    trigger_forbearance( player_t* target );
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;

@@ -1271,11 +1271,15 @@ void warlock_t::create_apl_demonology()
 
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected" );
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
-  def->add_action( "variable,name=next_tyrant_cd,op=set,value=variable.first_tyrant_time-time,if=time<variable.first_tyrant_time" );
-  def->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings" );
+  def->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings&!variable.in_opener" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=12,if=!variable.use_bolt_timings&variable.in_opener&!pet.dreadstalker.active" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&buff.wild_imps.stack>0&!talent.vilefiend.enabled" );
+  def->add_action( "variable,name=buff_sync_cd,op=set,value=0,if=!variable.use_bolt_timings&variable.in_opener&pet.dreadstalker.active&prev_gcd.1.hand_of_guldan&talent.vilefiend.enabled" );
   def->add_action( "variable,name=buff_sync_cd,op=set,value=cooldown.decimating_bolt.remains_expected,if=variable.use_bolt_timings" );
   def->add_action( "call_action_list,name=trinkets" );
   def->add_action( "call_action_list,name=ogcd,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up&(!talent.power_siphon.enabled|buff.power_siphon.up))" );
+  def->add_action( "implosion,if=target.time_to_die<2*gcd" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
   def->add_action( "doom,if=refreshable" );
@@ -1359,7 +1363,6 @@ void warlock_t::create_apl_demonology()
 
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
-
 
   dmg->add_action( "use_item,name=grim_eclipse" );
   dmg->add_action( "use_item,name=resonant_reservoir" );

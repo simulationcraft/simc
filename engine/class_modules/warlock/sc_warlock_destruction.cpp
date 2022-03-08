@@ -1307,12 +1307,13 @@ void warlock_t::create_apl_destruction()
   def->add_action( "havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped" );
   def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|buff.ritual_of_ruin.up&talent.rain_of_chaos" );
   def->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards" );
-  def->add_action( "chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.up" );
+  def->add_action( "chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.remains>cast_time" );
   def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards" );
   def->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time" );
   def->add_action( "shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5" );
   def->add_action( "chaos_bolt,if=soul_shard>3.5" );
-  def->add_action( "conflagrate,if=charges>1" );
+  def->add_action( "chaos_bolt,if=target.time_to_die<5&target.time_to_die>cast_time+travel_time" );
+  def->add_action( "conflagrate,if=charges>1|target.time_to_die<gcd" );
   def->add_action( "incinerate" );
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
@@ -1339,7 +1340,7 @@ void warlock_t::create_apl_destruction()
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
-  cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<20" );
+  cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<21" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains" );

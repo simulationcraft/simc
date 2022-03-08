@@ -65,7 +65,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=have_opened,op=set,value=0+(1*active_enemies>=variable.aoe_target_count)" );
   precombat->add_action( "variable,name=final_burn,op=set,value=0" );
   precombat->add_action( "variable,name=harmony_stack_time,op=reset,default=9" );
-  precombat->add_action( "variable,name=always_sync_cooldowns,default=-1,op=set,if=variable.always_sync_cooldowns=-1,value=1*set_bonus.tier28_4pc" );
+  precombat->add_action( "variable,name=always_sync_cooldowns,op=reset,default=1" );
   precombat->add_action( "variable,name=rs_max_delay_for_totm,op=reset,default=5" );
   precombat->add_action( "variable,name=rs_max_delay_for_rop,op=reset,default=5" );
   precombat->add_action( "variable,name=rs_max_delay_for_ap,op=reset,default=20" );

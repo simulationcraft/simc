@@ -1,4 +1,4 @@
-paladin="T27_Paladin_Protection"
+paladin="T28_Paladin_Protection"
 level=60
 race=draenei
 spec=protection
@@ -6,37 +6,37 @@ role=tank
 position=front
 talents=2200302
 covenant=venthyr
-soulbind=Nadja_the_mistblade,thrill_seeker/punish_the_guilty:9:1/hallowed_discernment:9:1/dauntless_duelist/fatal_flaw
+soulbind=Nadja_the_mistblade:8,thrill_seeker/punish_the_guilty:11:1/hallowed_discernment:11:1/dauntless_duelist/fatal_flaw
 renown=80
 
-head=Valorous_Visage_of_Krexus,id=186350,gem_id=187318,bonus_id=7187/1498
-neck=Interplanar_Keystone,id=186379,bonus_id=7187/1498,gem_id=173128
-shoulder=Spires_of_Broken_Hope,id=186349,gem_id=187315,bonus_id=7187/1498
-back=Cloak_of_Scarred_Honor,id=186289,enchant=soul_vitality,bonus_id=7187/1498
-chest=Cuirass_of_the_Lonely_Citadel,id=186312,enchant=eternal_stats,gem_id=187312,bonus_id=7187/1498
-wrist=Vyrazs_Parade_Cuffs,id=186351,gem_id=187313,bonus_id=7187/1498
-hands=Kyras_Unending_Protectors,id=186346,enchant=eternal_strength,gem_id=187314,bonus_id=7187/1498
-waist=Shadowghast_Waistguard,id=171418,bonus_id=6716/7054/6647/6649/1559
-legs=Fateforged_Legplates,id=186348,bonus_id=7187/1498
-feet=Greaves_of_Haunting_Ruination,id=186353,bonus_id=7187/1498
-finger1=Sworn_Oath_of_the_Nine,id=186290,enchant=tenet_of_haste,bonus_id=7187/1498,gem_id=173128
-finger2=Tarnished_Insignia_of_QuelThalas,id=186377,enchant=tenet_of_haste,bonus_id=7187/1498,gem_id=173128
-trinket1=Old_Warriors_Soul,id=186438,bonus_id=7187/1498
-trinket2=Titanic_Ocular_Gland,id=186423,bonus_id=7187/1498
-main_hand=The_Devouring_Cold,id=187056,enchant=sinful_revelation,bonus_id=7187/1498
-off_hand=Guard_of_the_Sundered_Defender,id=186417,bonus_id=7187/1498
+head=Luminous_Chevaliers_Casque,id=188933,bonus_id=7187/1498/6935,gem_id=173128
+neck=Worldkiller_Iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
+shoulder=Luminous_Chevaliers_Epaulettes,id=188932,bonus_id=7187/1505
+back=Shroud_of_the_Sires_Chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
+chest=Luminous_Chevaliers_Plackart,id=188929,bonus_id=7187/1505,enchant=eternal_stats
+wrist=Veiled_Auctioneers_Vambraces,id=189825,bonus_id=7187/1524/6935,gem_id=173128
+hands=Luminous_Chevaliers_Gauntlets,id=188928,bonus_id=7187/1505,enchant=eternal_strength
+waist=Shadowghast_Waistguard,id=171418,bonus_id=6648/6649/8125/6716/1588/6935,gem_id=173128
+legs=Legguards_of_the_Ultimate_Threat,id=189858,bonus_id=7187/1524
+feet=Shadowghast_Sabatons,id=171413,bonus_id=6648/6649/7054/6716/1588
+finger1=Rygelons_Heraldric_Ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
+finger2=Loquacious_Keepers_Peridot,id=189802,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
+trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
+trinket2=Phial_of_Putrefaction,id=178771,bonus_id=6536/1592/6646
+main_hand=Devastated_Worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=Ruined_Crest_of_Lordaeron,id=189845,bonus_id=7187/1524
 
 #Optimal soulbinds for other covenants
 #covenant=kyrian
-#soulbind=forgelite_prime_mikanikos:18,333950/196:9:1/331609/195:9:1/331611/216:9:1/352186/352188
+#soulbind=forgelite_prime_mikanikos:18,333950/196:11:1/331609/195:11:1/331611/216:11:1/352186/352188
 
 #covenant=necrolord
-#soulbind=plague_deviser_marileth:4,323074/195:9:1/323091/196:9:1/323095/284:9:1/352110
+#soulbind=plague_deviser_marileth:4,323074/195:11:1/323091/196:11:1/323095/284:11:1/352110
 
 #covenant=night_fae
-#soulbind=dreamweaver:2,319217/196:9:1/319210/319191/195:9:1/352786
+#soulbind=dreamweaver:2,319217/196:11:1/319210/319191/195:11:1/352786
 
-#save=T27_Paladin_Protection.simc
+save=T28_Paladin_Protection.simc
 
 
 paladin="T28_Paladin_Retribution"

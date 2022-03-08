@@ -7792,8 +7792,9 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // Some abilities use the actual RP spent by the ability, others use the base RP cost
     double base_rp_cost = actual_amount;
 
-    // If an action is linked, fetch its base cost
-    if ( action )
+    // If an action is linked, fetch its base cost. Exclude Bonestorm from this otherwise it uses the base cost for
+    // Insatiable Hunger instead of the actual rp spent
+    if ( action && action->id != 194844 )
       base_rp_cost = action -> base_costs[ RESOURCE_RUNIC_POWER ];
 
     // 2020-12-16 - Melekus: Based on testing with both Frost Strike and Breath of Sindragosa during Hypothermic Presence,
@@ -10156,11 +10157,21 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
-  /*
+  
   void register_hotfixes() const override
   {
-
-  }*/
+    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's base value buffed to 10% (was 5%)", 912019 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 10 )
+      .verification_value( 5 );
+    
+    hotfix::register_effect( "Death Knight", "2022-03-04", "Harvest Time's execute value buffed to 50% (was 25%)", 912020 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 40 )
+      .verification_value( 20 );
+  }
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }

@@ -1974,7 +1974,7 @@ public:
     trigger_galactic_guardian( d->state );
   }
 
-  void trigger_ravenous_frenzy( free_cast_e f )
+  virtual void trigger_ravenous_frenzy( free_cast_e f )
   {
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
@@ -2064,7 +2064,7 @@ public:
   {
     const auto& eff = s_data->effectN( i );
     double val      = eff.percent();
-    bool mastery    = false;
+    bool mastery    = p()->find_mastery_spell( p()->specialization() ) == s_data;
 
     // TODO: more robust logic around 'party' buffs with radius
     if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
@@ -2130,6 +2130,11 @@ public:
       p()->sim->print_debug( "buff-effects: {} ({}) {} modified by {}%{} with buff {} ({})", ab::name(), ab::id,
                              buffeffect_name, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
     }
+    else if ( mastery && !f )
+    {
+      p()->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}%+mastery from {} ({})", ab::name(), ab::id,
+                             buffeffect_name, val * 100.0, s_data->name_cstr(), s_data->id() );
+    }
     else
     {
       p()->sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({})", ab::name(),
@@ -2185,6 +2190,11 @@ public:
 
     for ( size_t i = 1 ; i <= spell->effect_count(); i++ )
       parse_buff_effect( nullptr, f, spell, i, false );
+  }
+
+  void parse_passive_effects( const spell_data_t* spell )
+  {
+    parse_conditional_effects( spell, nullptr );
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
@@ -2678,6 +2688,8 @@ struct druid_form_t : public druid_spell_t
     }
   }
 
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -2926,19 +2938,7 @@ public:
       snapshots.clearcasting =
           parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true, p->talent.moment_of_clarity );
 
-      if ( data().affected_by_all( p->mastery.razor_claws->effectN( 1 ) ) )
-      {
-        auto val = p->mastery.razor_claws->effectN( 1 ).percent();
-        da_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
-        p->sim->print_debug( "buff-effects: {} ({}) direct damage modified by {}%+mastery", name(), id, val * 100.0 );
-      }
-
-      if ( data().affected_by_all( p->mastery.razor_claws->effectN( 2 ) ) )
-      {
-        auto val = p->mastery.razor_claws->effectN( 2 ).percent();
-        ta_multiplier_buffeffects.emplace_back( nullptr, val, false, true );
-        p->sim->print_debug( "buff-effects: {} ({}) tick damage modified by {}%+mastery", name(), id, val * 100.0 );
-      }
+      parse_passive_effects( p->mastery.razor_claws );
     }
   }
 
@@ -5633,6 +5633,8 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::schedule_execute( s );
   }
 
+  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -7421,15 +7423,18 @@ struct adaptive_swarm_t : public druid_spell_t
   adaptive_swarm_base_t* heal;
   timespan_t precombat_seconds;
   timespan_t gcd_add;
+  int precombat_stacks;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
       precombat_seconds( 11_s ),
       gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
+      precombat_stacks( 0 ),
       target_self( false )
   {
     add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
+    add_option( opt_int( "precombat_stacks", precombat_stacks ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -7466,7 +7471,17 @@ struct adaptive_swarm_t : public druid_spell_t
     if ( is_precombat && precombat_seconds > 0_s )
     {
       heal->set_target( player );
-      heal->schedule_execute();
+
+      if ( precombat_stacks )
+      {
+        auto new_state = heal->get_state();
+        debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = precombat_stacks;
+        heal->schedule_execute( new_state );
+      }
+      else
+      {
+        heal->schedule_execute();
+      }
 
       this->cooldown->adjust( -precombat_seconds, false );
       heal->get_dot( player )->adjust_duration( -precombat_seconds );
@@ -9113,7 +9128,7 @@ void druid_t::create_buffs()
     ->set_reverse( true )
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( !new_ )
-        cooldown.warrior_of_elune->start();
+        cooldown.warrior_of_elune->start( cooldown.warrior_of_elune->action );
     } );
 
   // Balance Legendaries
@@ -11856,6 +11871,29 @@ struct druid_module_t : public module_t
 
   void register_hotfixes() const override
   {
+    hotfix::register_effect( "Druid", "2022-03-04", "Balance 2 set nerfed to 20% from 25%", 904411 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 25 );
+
+    hotfix::register_effect( "Druid", "2022-03-04", "Balance 4 set nerfed to 15% from 20%", 906687 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( -15 )
+      .verification_value( -20 );
+
+    hotfix::register_effect( "Druid", "2022-03-04", "Feral 2 set buffed from 0.5s to 0.7s", 904401 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 1.4 )
+      .verification_value( 1 );
+
+    hotfix::register_effect( "Druid", "2022-03-04", "Feral 4 set buffed from 320% to 400%", 903466 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.40025 )
+      .verification_value( 0.32020 );
   }
 
   void combat_begin( sim_t* ) const override {}
