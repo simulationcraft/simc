@@ -3792,6 +3792,57 @@ void symbol_of_the_raptora( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// id=367808 driver
+//    effect #1: Periodic trigger for pulse damage spell, dummy damage value for tooltip only
+//    effect #2: Weak point damage value in dummy, overwrites spell value when dealing weak point damage
+//    effect #3-5: Area damage spell triggers for the 3 weak points spawned
+// id=368634 AoE damage spell, reused for both damage components
+void earthbreakers_impact( special_effect_t& effect )
+{
+  struct earthbreakers_impact_aoe_t : public shadowlands_aoe_proc_t
+  {
+    earthbreakers_impact_aoe_t( const special_effect_t& e, bool weak_point ) :
+      shadowlands_aoe_proc_t( e, weak_point ? "earthbreakers_impact_weak_point" : "earthbreakers_impact_pulse",
+                              e.driver()->effectN( 1 ).trigger(), true )
+    {
+      // The same AoE spell gets reused by both the normal ticks and the weak point triggers
+      if ( weak_point )
+      {
+        base_dd_min = base_dd_max = e.driver()->effectN( 2 ).average( e.item );
+      }
+    }
+  };
+
+  struct earthbreakers_impact_t : public proc_spell_t
+  {
+    action_t* weak_point;
+
+    earthbreakers_impact_t( const special_effect_t& e ) :
+      proc_spell_t( "earthbreakers_impact", e.player, e.driver() ),
+      weak_point( create_proc_action<earthbreakers_impact_aoe_t>( "earthbreakers_impact_weak_point", e, true ) )
+    {
+      tick_action = create_proc_action<earthbreakers_impact_aoe_t>( "earthbreakers_impact_pulse", e, false );
+      add_child( weak_point );
+    }
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      
+      // Assume roughly a 1s delay between stepping on the triggers, as they are relatively close
+      for ( unsigned int i = 1; i <= player->sim->shadowlands_opts.earthbreakers_impact_weak_points; i++ )
+      {
+        make_event( *sim, 1_s * i, [this] {
+          this->weak_point->set_target( this->target );
+          this->weak_point->schedule_execute();
+        });
+      }
+    }
+  };
+
+  effect.execute_action = create_proc_action<earthbreakers_impact_t>( "earthbreakers_impact", effect );
+};
+
 // Weapons
 
 // id=331011 driver
@@ -5284,6 +5335,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
+    unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
