@@ -11,11 +11,11 @@ soulbind=Nadja_the_mistblade,thrill_seeker/punish_the_guilty:9:1/hallowed_discer
 renown=80
 
 # Default consumables
-potion=phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -90,6 +90,7 @@ off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
 # gear_ilvl=256.56
 # gear_strength=1126
 # gear_stamina=2149
+# gear_attack_power=20
 # gear_crit_rating=635
 # gear_haste_rating=908
 # gear_mastery_rating=417
