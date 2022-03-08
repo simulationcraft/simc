@@ -11871,29 +11871,6 @@ struct druid_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 2 set nerfed to 20% from 25%", 904411 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 4 set nerfed to 15% from 20%", 906687 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -15 )
-      .verification_value( -20 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 2 set buffed from 0.5s to 0.7s", 904401 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.4 )
-      .verification_value( 1 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 4 set buffed from 320% to 400%", 903466 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.40025 )
-      .verification_value( 0.32020 );
   }
 
   void combat_begin( sim_t* ) const override {}
