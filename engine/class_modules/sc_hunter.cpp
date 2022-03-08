@@ -7040,8 +7040,7 @@ struct hunter_module_t: public module_t
     hotfix::register_spell( "Hunter", "2022-03-08", "Hotfix does not match in-game behavior.", 336878 )
         .field( "proc_chance" )
         .operation( hotfix::HOTFIX_SET )
-        .modifier( 50 )
-        .verification_value( 100 );
+        .modifier( 50 );
   }
 
   void combat_begin( sim_t* ) const override {}
