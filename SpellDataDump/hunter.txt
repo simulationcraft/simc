@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-08/42560, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -8516,8 +8516,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719189)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13363 | Target: At Enemy (53)
-#2 (id=739521)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14919 | Target: At Enemy (53)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270329) [Spell Family (9)] 
@@ -8612,8 +8610,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719201)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13364 | Target: At Enemy (53)
-#2 (id=739522)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14920 | Target: At Enemy (53)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270338) [Spell Family (9)] 
@@ -8789,8 +8785,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721014)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13428 | Target: At Enemy (53)
-#2 (id=739523)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14921 | Target: At Enemy (53)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271048) [Spell Family (9)] 
@@ -12113,9 +12107,10 @@ Effects          :
 Description      : Aimed Shot also fires a Serpent Sting at the primary target.
 
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
+Hotfixed         : Proc Chance (50 -> 100)
 School           : Physical
 Spell Type       : None
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 

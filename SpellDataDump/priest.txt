@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-08/42560, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -2247,6 +2247,7 @@ Description      : $@spelldesc131556
 Tooltip          : Fleeing in terror.
 
 Name             : Holy Word: Chastise (id=88625) [Spell Family (6)] 
+Hotfixed         : Affecting Spells
 Class            : Holy Priest
 School           : Holy
 Spell Type       : Magic
@@ -2256,7 +2257,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Affecting spells : Spirit Shell (109964 effect#2), Twist of Fate (123254 effects: #1, #2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Apotheosis (200183 effect#2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1)
-Family Flags     : 21, 69, 72
+Family Flags     : 69, 72
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
