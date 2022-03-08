@@ -113,6 +113,7 @@ actions.cds+=/blood_fury,if=buff.symbols_of_death.up
 actions.cds+=/berserking,if=buff.symbols_of_death.up
 actions.cds+=/fireblood,if=buff.symbols_of_death.up
 actions.cds+=/ancestral_call,if=buff.symbols_of_death.up
+actions.cds+=/use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|spell_targets.shuriken_storm>1)|fight_remains<25
 # Default fallback for usable items: Use with Symbols of Death.
 actions.cds+=/use_items,if=buff.symbols_of_death.up|fight_remains<20
 
