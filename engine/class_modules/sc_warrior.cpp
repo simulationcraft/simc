@@ -1213,13 +1213,13 @@ public:
       if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
       {
         p()->legendary.glory_counter += ab::last_resource_cost;
-        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 ) )
+        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 25 ) )
         {
-          double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
+          double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 25) );
           p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->buff.conquerors_mastery->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->buff.veterans_repute->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
-          p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) * times_over_threshold ;
+          p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 25) * times_over_threshold ;
           p()->proc.glory->occur();
         }
       }
@@ -3463,20 +3463,20 @@ struct raging_blow_t : public warrior_attack_t
     {
       if ( p()->buff.recklessness->check() )
       {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
         }
       }
       else
       {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
         }
       }
     }
@@ -3600,20 +3600,20 @@ struct crushing_blow_t : public warrior_attack_t
     {
       if ( p()->buff.recklessness->check() )
       {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
         }
       }
       else
       {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
         }
       }
     }
