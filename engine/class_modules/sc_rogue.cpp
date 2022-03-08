@@ -2285,7 +2285,7 @@ struct melee_t : public rogue_attack_t
 
   void schedule_execute( action_state_t* state ) override
   {
-    rogue_attack_t::schedule_execute();
+    rogue_attack_t::schedule_execute( state );
 
     if ( first )
     {
