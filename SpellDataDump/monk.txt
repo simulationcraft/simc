@@ -12277,10 +12277,12 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=890913)   : Dummy (3)
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
-#3 (id=890914)   : Dummy (3)
-                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000
-#4 (id=913653)   : Dummy (3)
-                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000
+#3 (id=890914)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 1)
+#4 (id=913653)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 1)
 Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While your mystic portal is open your abilities that critically hit reduce the cooldown of Fallen Order by $?a137024[${$s4/1000}.1][${$s3/1000}] sec.
 
 Name             : Invoke Xuen, the White Tiger (id=358518) [Spell Family (53)] 

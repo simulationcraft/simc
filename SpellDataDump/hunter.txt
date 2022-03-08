@@ -12110,7 +12110,7 @@ Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9)
 Hotfixed         : Proc Chance (50 -> 100)
 School           : Physical
 Spell Type       : None
-Proc Chance      : 100%
+Proc Chance      : 50%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
