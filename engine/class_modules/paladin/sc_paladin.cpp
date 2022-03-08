@@ -2225,7 +2225,7 @@ std::string paladin_t::default_potion() const
 {
   std::string retribution_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
 
-  std::string protection_pot = ( true_level > 50 ) ? "phantom_fire" : "disabled";
+  std::string protection_pot = ( true_level > 50 ) ? "spectral_strength" : "disabled";
 
   std::string holy_dps_pot = ( true_level > 50 ) ? "spectral_intellect" : "disabled";
 
@@ -2302,7 +2302,7 @@ std::string paladin_t::default_temporary_enchant() const
   switch ( specialization() )
   {
     case PALADIN_PROTECTION:
-      return "main_hand:shadowcore_oil";
+      return "main_hand:shaded_sharpening_stone";
     case PALADIN_RETRIBUTION:
       return "main_hand:shaded_sharpening_stone";
 
