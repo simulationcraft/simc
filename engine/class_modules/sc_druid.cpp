@@ -2991,7 +2991,7 @@ public:
 
       if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
       {
-        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() * 0.1 *
+        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() * -0.1 *
                                               consumed );
 
         if ( p()->talent.incarnation_cat->ok() )
