@@ -30,7 +30,7 @@ save=T28_Death_Knight_Blood.simc
 
 deathknight="T28_Death_Knight_Frost"
 level=60
-race=orc
+race=human
 spec=frost
 role=attack
 position=back
@@ -92,12 +92,12 @@ save="T28_Death_Knight_Frost_Breath.simc"
 
 deathknight="T28_Death_Knight_Frost_2H"
 level=60
-race=orc
+race=human
 spec=frost
 role=attack
 position=back
 talents=1201012
-covenant=night_fae
+covenant=void_elf
 soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/field_of_blossoms/dream_delver
 renown=80
 
@@ -123,7 +123,7 @@ save=T28_Death_Knight_Frost_2H.simc
 deathknight="T28_Death_Knight_Frost_Icecap"
 spec=frost
 level=60
-race=tauren
+race=human
 role=attack
 position=back
 talents=2201011
