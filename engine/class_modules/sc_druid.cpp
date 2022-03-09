@@ -3751,6 +3751,8 @@ struct rake_t : public cat_attack_t
     return am;
   }
 
+  bool has_amount_result() const override { return bleed->has_amount_result(); }
+
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -4477,6 +4479,8 @@ struct thrash_bear_t : public bear_attack_t
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
   }
+
+  bool has_amount_result() const override { return dot->has_amount_result(); }
 
   void execute() override
   {
@@ -5578,6 +5582,8 @@ struct fury_of_elune_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override { return damage->has_amount_result(); }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -6134,6 +6140,8 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
   }
+
+  bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void init() override
   {
@@ -6785,6 +6793,8 @@ struct sunfire_t : public druid_spell_t
       base_costs[ RESOURCE_MANA ] = 0.0;   // so we don't need to enable mana regen
     }
   }
+
+  bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
   {
