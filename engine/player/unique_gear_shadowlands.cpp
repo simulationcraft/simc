@@ -4124,7 +4124,8 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
 
       // Appears to be roughly 2 rppm + hasted above 30% HP
       // Below that it will just be 20 rppm + hasted
-      if ( s->target->health_percentage() >= 30 )
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/886
+      if ( s->target->health_percentage() >= 30 && !effect.player->bugs )
       {
         mod = 0.1;
       }
