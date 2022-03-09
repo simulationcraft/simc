@@ -3077,14 +3077,15 @@ void scars_of_fraternal_strife( special_effect_t& effect )
       {
         name_str_reporting = "the_final_rune";
 
-        auto burst = new proc_spell_t( "the_final_rune", e.player, e.player->find_spell( 368642 ), e.item );
-        burst->aoe = -1;
+        auto burst = create_proc_action<generic_aoe_proc_t>( "the_final_rune", e, "the_final_rune", 368642 );
 
         set_stack_change_callback( [ a, burst ]( buff_t* buff, int, int new_ ) {
           if ( !new_ )
           {
             burst->execute_on_target( buff->player->target );
-
+          }
+          else
+          {
             range::for_each( a->buffs, [ buff ]( buff_t* b ) {
               if ( b != buff )
                 b->expire();
