@@ -1,4 +1,4 @@
-warrior="T28_Warrior_Fury_Kyrian"
+warrior="T28_Warrior_Fury_Necrolord"
 source=default
 spec=fury
 level=60
@@ -6,8 +6,8 @@ race=mechagnome
 role=attack
 position=back
 talents=2122322
-covenant=kyrian
-soulbind=kleia,valiant_strikes/depths_of_insanity:11:1/pointed_courage/hack_and_slash:11:1/spear_of_the_archon/light_the_path
+covenant=necrolord
+soulbind=bonesmith_heirmir,forgeborne_reveries/veterans_repute:11:1/depths_of_insanity:11:1/heirmirs_arsenal_gorestompers/hack_and_slash:11:1/carvers_eye/mnemonic_equipment
 renown=80
 
 # Default consumables
@@ -30,6 +30,7 @@ actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 actions.precombat+=/recklessness,if=!runeforge.signet_of_tormented_kings.equipped
+actions.precombat+=/conquerors_banner
 
 # Executed every time the actor is available.
 actions=auto_attack
@@ -43,7 +44,7 @@ actions+=/sequence,if=active_enemies=1&covenant.venthyr.enabled&runeforge.signet
 actions+=/sequence,if=active_enemies=1&!covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Charge:bloodthirst:heroic_charge
 actions+=/potion
 actions+=/pummel,if=target.debuff.casting.react
-actions+=/spear_of_bastion,if=buff.enrage.up&rage<70
+actions+=/conquerors_banner,if=rage>70
 actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
 actions+=/recklessness,if=runeforge.sinful_surge&gcd.remains=0&(variable.execute_phase|(target.time_to_pct_35>40&talent.anger_management|target.time_to_pct_35>70&!talent.anger_management))&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
 actions+=/recklessness,if=runeforge.elysian_might&gcd.remains=0&(cooldown.spear_of_bastion.remains<5|cooldown.spear_of_bastion.remains>20)&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
@@ -61,11 +62,9 @@ actions+=/call_action_list,name=aoe
 actions+=/call_action_list,name=single_target
 
 actions.aoe=cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd
-actions.aoe+=/spear_of_bastion,if=buff.enrage.up&rage<40&spell_targets.whirlwind>1
 actions.aoe+=/bladestorm,if=buff.enrage.up&spell_targets.whirlwind>2
 actions.aoe+=/siegebreaker,if=spell_targets.whirlwind>1
 actions.aoe+=/rampage,if=spell_targets.whirlwind>1
-actions.aoe+=/spear_of_bastion,if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1
 actions.aoe+=/bladestorm,if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1
 
 actions.movement=heroic_leap
@@ -77,9 +76,7 @@ actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.add
 actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>80)|buff.frenzy.remains<1.5
 actions.single_target+=/crushing_blow,if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)
 actions.single_target+=/execute
-actions.single_target+=/spear_of_bastion,if=runeforge.elysian_might&buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
 actions.single_target+=/bladestorm,if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)
-actions.single_target+=/spear_of_bastion,if=buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
 actions.single_target+=/raging_blow,if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)
 actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35
 actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled

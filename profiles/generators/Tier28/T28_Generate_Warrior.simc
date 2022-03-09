@@ -88,7 +88,7 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful
 off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
 
 
-save=T28_Warrior_Fury_Kyrian.simc
+save=T28_Warrior_Fury.simc
 
 warrior="T28_Warrior_Fury_Venthyr"
 level=60
