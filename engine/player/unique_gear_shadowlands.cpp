@@ -4018,20 +4018,18 @@ void singularity_supreme( special_effect_t& effect )
     ->set_quiet( true );
 
   auto buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item )
-          ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-            if ( new_ )
-              lockout->trigger();
-          } );
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item );
 
+  // despite spell data proc flags, logs seem to show it only procs on damage spell casts
+  effect.proc_flags2_ = PF2_CAST_DAMAGE;
   effect.custom_buff =
       make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
-          ->set_duration( 0_s )
-          ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
+          ->set_stack_change_callback( [ lockout, buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
+              lockout->trigger();
               buff->trigger();
-              b->expire();
+              make_event( *b->sim, [ b ] { b->expire(); } );
             }
           } );
 
@@ -4039,8 +4037,8 @@ void singularity_supreme( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ lockout, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-        return !lockout->check() && !buff->check();
+      [ lockout ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !lockout->check();
       } );
 }
 
