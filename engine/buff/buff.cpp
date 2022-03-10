@@ -916,7 +916,7 @@ buff_t* buff_t::set_expire_at_max_stack( bool expire )
 {
   if ( expire && _max_stack <= 1 )
   {
-    sim->error( "{} being set to expire with max stack <= 1. Setting expire_at_max_stack to false." );
+    sim->error( "{} being set to expire with max stack <= 1. Setting expire_at_max_stack to false.", *this );
     expire_at_max_stack = false;
   }
   else
