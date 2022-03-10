@@ -597,7 +597,7 @@ void windwalker( player_t* p )
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
-                            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
+                            ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
