@@ -927,6 +927,12 @@ buff_t* buff_t::set_expire_at_max_stack( bool expire )
   return this;
 }
 
+buff_t* buff_t::set_trigger_at_max_stack( buff_t* buff )
+{
+  trigger_at_max_stack = buff;
+  return this;
+}
+
 buff_t* buff_t::set_cooldown( timespan_t duration )
 {
   // Set Buff duration
@@ -2368,8 +2374,14 @@ void buff_t::bump( int stacks, double value )
       stack_change_callback( this, old_stack, current_stack );
   }
 
-  if ( expire_at_max_stack && at_max_stacks() )
-    make_event( *sim, [ this ] { expire(); } );
+  if ( at_max_stacks() )
+  {
+    if ( trigger_at_max_stack )
+      trigger_at_max_stack->trigger();
+
+    if ( expire_at_max_stack )
+      make_event( *sim, [ this ] { expire(); } );
+  }
 
   if ( player )
     player->trigger_ready();
