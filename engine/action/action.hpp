@@ -98,6 +98,12 @@ public:
   /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
   bool callbacks;
 
+  /// Allows triggering of procs marked to only proc from class abilities.
+  bool allow_class_ability_procs;
+
+  /// Specifies that a spell is not a proc and can be considered for triggering only proc from class abilities procs even if it is a background ability.
+  bool not_a_proc;
+
   /// Whether or not the spell uses the yellow attack hit table.
   bool special;
 

@@ -1280,6 +1280,7 @@ enum spell_attribute : unsigned
   SX_ALWAYS_HIT                     = 114u,
   SX_REQ_OFF_HAND                   = 120u,
   SX_TREAT_AS_PERIODIC              = 121u,
+  SX_CAN_PROC_FROM_PROCS            = 122u,
   SX_DISABLE_WEAPON_PROCS           = 151u,
   SX_TICK_ON_APPLICATION            = 169u,
   SX_DOT_HASTED                     = 173u,

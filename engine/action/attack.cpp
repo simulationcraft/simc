@@ -428,6 +428,9 @@ melee_attack_t::melee_attack_t( util::string_view n, player_t* p )
 melee_attack_t::melee_attack_t( util::string_view n, player_t* p, const spell_data_t* s )
   : attack_t( n, p, s )
 {
+  // Consider auto attacks to be class abilities and not procs for triggering effects
+  allow_class_ability_procs = not_a_proc = true;
+
   // Dodge/parry/block handled in action_t::parse_spell_data()
   may_miss = may_glance = true;
 
@@ -513,6 +516,9 @@ ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p )
 ranged_attack_t::ranged_attack_t( util::string_view token, player_t* p, const spell_data_t* s )
   : attack_t( token, p, s )
 {
+  // Consider auto attacks to be class abilities and not procs for triggering effects
+  allow_class_ability_procs = not_a_proc = true;
+
   may_miss  = true;
   may_dodge = true;
 }
