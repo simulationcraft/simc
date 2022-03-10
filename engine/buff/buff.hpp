@@ -91,6 +91,7 @@ public:
   bool reactable;
   bool reverse, constant, quiet, overridden, can_cancel;
   bool requires_invalidation;
+  bool expire_at_max_stack;
 
   int reverse_stack_reduction; /// Number of stacks reduced when reverse = true
 
@@ -325,6 +326,7 @@ public:
   buff_t* modify_max_stack( int max_stack );
   buff_t* set_initial_stack( int initial_stack );
   buff_t* modify_initial_stack( int initial_stack );
+  buff_t* set_expire_at_max_stack( bool );
   buff_t* set_cooldown( timespan_t duration );
   buff_t* modify_cooldown( timespan_t duration );
   buff_t* set_period( timespan_t );
