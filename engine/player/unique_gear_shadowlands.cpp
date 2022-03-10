@@ -4017,12 +4017,12 @@ void singularity_supreme( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
   effect.custom_buff =
       make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
+          ->set_expire_at_max_stack( true )
           ->set_stack_change_callback( [ lockout, buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
               lockout->trigger();
               buff->trigger();
-              make_event( *b->sim, [ b ] { b->expire(); } );
             }
           } );
 
