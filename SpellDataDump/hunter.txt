@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -8516,8 +8516,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719189)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13363 | Target: At Enemy (53)
-#2 (id=739521)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14919 | Target: At Enemy (53)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270329) [Spell Family (9)] 
@@ -8612,8 +8610,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719201)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13364 | Target: At Enemy (53)
-#2 (id=739522)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14920 | Target: At Enemy (53)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270338) [Spell Family (9)] 
@@ -8789,8 +8785,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721014)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13428 | Target: At Enemy (53)
-#2 (id=739523)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14921 | Target: At Enemy (53)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271048) [Spell Family (9)] 
@@ -12113,6 +12107,7 @@ Effects          :
 Description      : Aimed Shot also fires a Serpent Sting at the primary target.
 
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
+Hotfixed         : Proc Chance (50 -> 100)
 School           : Physical
 Spell Type       : None
 Proc Chance      : 50%
@@ -13525,6 +13520,7 @@ Description      : $@spelldesc325028
 Tooltip          : Taking $w1% increased Physical damage from $@auracaster.
 
 Name             : Killing Frenzy (id=363665) [Passive, Hidden] 
+Hotfixed         : Description
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -13543,7 +13539,10 @@ Effects          :
 #2 (id=903205)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500
 Hotfixed         : PvP Coefficient (1 -> 0.625)
-Description      : Kill Command critical hits increase the damage and cooldown reduction of your next Cobra Shot by $s2%.
+#3 (id=916000)   : Dummy (3)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 0.62500
+Hotfixed         : NEW EFFECT
+Description      : Kill Command critical hits empower your next Cobra Shot or Multi-Shot, increasing the damage and cooldown reduction of Cobra Shot by $363760s1% or causing Multi-Shot to grant an additional ${$m3/1000}.1 sec of Beast Cleave.
 
 Name             : Focused Trickery (id=363666) [Passive, Hidden] 
 Class            : Hunter
@@ -13598,10 +13597,12 @@ Effects          :
 Description      : Your Wildfire Bombs deal $s1% additional damage. This bonus is increased to ${$363805m1+$m1}% for bombs empowered by Mad Bombardier.
 
 Name             : Killing Frenzy (id=363760) [Spell Family (9)] 
+Hotfixed         : Internal Cooldown (0 -> 100), Tooltip
 Class            : Hunter
 School           : Nature
 Spell Type       : None
 Duration         : 8 seconds
+Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13620,7 +13621,7 @@ Effects          :
                    Family Flags: 86
 Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : $@spelldesc363665
-Tooltip          : Cobra Shot damage and cooldown reduction increased by $w1%.
+Tooltip          : Your next Cobra Shot has its damage and cooldown reduction increased by $w1%, or your next Multi-Shot grants an additional ${$363665m3/1000}.1 sec of Beast Cleave.
 
 Name             : Mad Bombardier (id=363805) [Spell Family (9)] 
 Hotfixed         : Proc Stacks (1 -> 0), Attributes, Description, Tooltip

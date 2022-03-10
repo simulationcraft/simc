@@ -179,17 +179,17 @@ legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery
 finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery
-trinket1=moonlit_prism,id=137541,bonus_id=3151
-trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
+trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
 # Gear Summary
-# gear_ilvl=282.75
+# gear_ilvl=282.69
 # gear_stamina=2922
-# gear_intellect=1667
+# gear_intellect=1917
 # gear_crit_rating=329
-# gear_haste_rating=1009
+# gear_haste_rating=884
 # gear_mastery_rating=725
 # gear_versatility_rating=211
 # gear_armor=527

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -11766,7 +11766,7 @@ Description      : $@spelldesc29838
 Tooltip          : Healing $202147s1% health every $202147t1 sec.
 
 Name             : Glory (id=353577) [Spell Family (4), Hidden] 
-Hotfixed         : Attributes
+Hotfixed         : Attributes, Description
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
@@ -11792,7 +11792,10 @@ Effects          :
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000
 #4 (id=885555)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Conqueror's Banner affects $s4 additional ally and every $?c1[$s1]?c2[$s1][$s2] Rage you spend while it is active increases the duration of your banner by ${$s3/1000}.1 sec.
+#5 (id=916016)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : NEW EFFECT
+Description      : Conqueror's Banner affects $s4 additional ally and every $?c1[$s1]?c2[$s5][$s2] Rage you spend while it is active increases the duration of your banner by ${$s3/1000}.1 sec.
 
 Name             : Sinful Surge (id=354131) [Spell Family (4), Hidden] 
 Hotfixed         : Attributes
@@ -11889,7 +11892,8 @@ Effects          :
 #1 (id=903320)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=903348)   : Dummy (3)
-                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (4000 -> 3000)
 Description      : Raging Blow has a $s1% chance to grant Recklessness for ${$s2/1000} sec.
 
 Name             : Pile On (id=363913) [Spell Family (4), Passive, Hidden] 
@@ -12038,9 +12042,10 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1672 | Target: Self (1)
                    Affected Spells (Category): Raging Blow (85288), Crushing Blow (335097)
 #2 (id=904637)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Raging Blow (85384), Raging Blow (96103), Crushing Blow (335098), Crushing Blow (335100)
                    Family Flags: 45
+Hotfixed         : Base Value (15 -> 10)
 Description      : Raging Blow deals $s2% increased damage and gains an additional charge.
 
 Name             : Outburst (id=364639) [Spell Family (4), Passive, Hidden] 

@@ -28,13 +28,13 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful
 save=T28_Warrior_Arms.simc
 
 
-warrior="T28_Warrior_Fury"
+warrior="T28_Warrior_Fury_Necrolord"
 level=60
 race=mechagnome
 spec=fury
 role=attack
 position=back
-talents=2122321
+talents=2122322
 covenant=necrolord
 soulbind=bonesmith_heirmir,forgeborne_reveries/veterans_repute:11:1/depths_of_insanity:11:1/heirmirs_arsenal_gorestompers/hack_and_slash:11:1/carvers_eye/mnemonic_equipment
 renown=80
@@ -57,7 +57,69 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful
 off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
 
 
+save=T28_Warrior_Fury_Necrolord.simc
+
+warrior="T28_Warrior_Fury_Kyrian"
+level=60
+race=mechagnome
+spec=fury
+role=attack
+position=back
+talents=2122322
+covenant=kyrian
+soulbind=kleia,valiant_strikes/depths_of_insanity:11:1/pointed_courage/hack_and_slash:11:1/spear_of_the_archon/light_the_path
+renown=80
+
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
+
+
 save=T28_Warrior_Fury.simc
+
+warrior="T28_Warrior_Fury_Venthyr"
+level=60
+race=mechagnome
+spec=fury
+role=attack
+position=back
+talents=2112322
+covenant=venthyr
+soulbind=theotar_the_mad_duke,soothing_shade/ashen_juggernaut:11:1/hack_and_slash:11:1/adaptive_armor_fragment:11:1/party_favors
+renown=80
+
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
+
+
+save=T28_Warrior_Fury_Venthyr.simc
 
 
 warrior="T27_Warrior_Protection"

@@ -2991,9 +2991,8 @@ public:
 
       if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
       {
-        // -2.0 divisor from tooltip, not present in data
-        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() *
-                                              consumed / -2.0 );
+        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() * -0.1 *
+                                              consumed );
 
         if ( p()->talent.incarnation_cat->ok() )
           p()->cooldown.incarnation->adjust( dur_ );
@@ -3752,6 +3751,8 @@ struct rake_t : public cat_attack_t
     return am;
   }
 
+  bool has_amount_result() const override { return bleed->has_amount_result(); }
+
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -4478,6 +4479,8 @@ struct thrash_bear_t : public bear_attack_t
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
   }
+
+  bool has_amount_result() const override { return dot->has_amount_result(); }
 
   void execute() override
   {
@@ -5579,6 +5582,8 @@ struct fury_of_elune_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override { return damage->has_amount_result(); }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -6135,6 +6140,8 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
   }
+
+  bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void init() override
   {
@@ -6786,6 +6793,8 @@ struct sunfire_t : public druid_spell_t
       base_costs[ RESOURCE_MANA ] = 0.0;   // so we don't need to enable mana regen
     }
   }
+
+  bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void execute() override
   {
@@ -11871,29 +11880,6 @@ struct druid_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 2 set nerfed to 20% from 25%", 904411 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 4 set nerfed to 15% from 20%", 906687 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -15 )
-      .verification_value( -20 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 2 set buffed from 0.5s to 0.7s", 904401 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.4 )
-      .verification_value( 1 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 4 set buffed from 320% to 400%", 903466 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.40025 )
-      .verification_value( 0.32020 );
   }
 
   void combat_begin( sim_t* ) const override {}

@@ -3077,14 +3077,15 @@ void scars_of_fraternal_strife( special_effect_t& effect )
       {
         name_str_reporting = "the_final_rune";
 
-        auto burst = new proc_spell_t( "the_final_rune", e.player, e.player->find_spell( 368642 ), e.item );
-        burst->aoe = -1;
+        auto burst = create_proc_action<generic_aoe_proc_t>( "the_final_rune", e, "the_final_rune", 368642 );
 
         set_stack_change_callback( [ a, burst ]( buff_t* buff, int, int new_ ) {
           if ( !new_ )
           {
             burst->execute_on_target( buff->player->target );
-
+          }
+          else
+          {
             range::for_each( a->buffs, [ buff ]( buff_t* b ) {
               if ( b != buff )
                 b->expire();
@@ -3549,7 +3550,7 @@ void grim_eclipse( special_effect_t& effect )
         buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
     {
       // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
-      dot_duration = 7_s;
+      dot_duration = data().duration();
       base_tick_time = 1_s;
 
       tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
@@ -3693,6 +3694,14 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver );
       vicious_wound_cb->initialize();
       vicious_wound_cb->deactivate();
+
+      // Bleed currently appears to only trigger from "class abilities" and cannot trigger from procs
+      effect.player->callbacks.register_callback_trigger_function(
+        bleed_driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+        []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+          return ( a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) &&
+                   ( ( !a->background && !a->proc ) || a->data().flags( spell_attribute::SX_NOT_A_PROC ) ) );
+      } );
 
       axe_buff->set_stack_change_callback( [ vicious_wound_cb, bleed ]( buff_t*, int old, int new_ ) {
         if ( old == 0 )
@@ -4009,19 +4018,18 @@ void singularity_supreme( special_effect_t& effect )
     ->set_quiet( true );
 
   auto buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item )
-          ->set_stack_change_callback( [ lockout ]( buff_t*, int, int new_ ) {
-            if ( new_ )
-              lockout->trigger();
-          } );
+      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item );
 
+  // despite spell data proc flags, logs seem to show it only procs on damage spell casts
+  effect.proc_flags2_ = PF2_CAST_DAMAGE;
   effect.custom_buff =
       make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
-          ->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
+          ->set_stack_change_callback( [ lockout, buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
+              lockout->trigger();
               buff->trigger();
-              b->expire();
+              make_event( *b->sim, [ b ] { b->expire(); } );
             }
           } );
 
@@ -4029,8 +4037,8 @@ void singularity_supreme( special_effect_t& effect )
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ lockout, buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-        return !lockout->check() && !buff->check();
+      [ lockout ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !lockout->check();
       } );
 }
 
@@ -4115,7 +4123,8 @@ void soulwarped_seal_of_wrynn( special_effect_t& effect )
 
       // Appears to be roughly 2 rppm + hasted above 30% HP
       // Below that it will just be 20 rppm + hasted
-      if ( s->target->health_percentage() >= 30 )
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/886
+      if ( s->target->health_percentage() >= 30 && !effect.player->bugs )
       {
         mod = 0.1;
       }
