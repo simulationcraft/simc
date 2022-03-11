@@ -5898,13 +5898,13 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
     {
       p->buff.primordial_power->trigger();
       p->storm_earth_and_fire_trigger_primordial_power();
-      make_event( b->sim, [ b ] { b->expire(); } );
     }
   }
 
   primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_stack_change_callback( primordial_potential_callback );
+    set_expire_at_max_stack( true );
   }
 };
 
