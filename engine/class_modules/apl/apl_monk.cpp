@@ -686,7 +686,7 @@ void windwalker( player_t* p )
   weapons_of_order->add_action( p, "Tiger Palm",
                                 "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
   weapons_of_order->add_action( p, "Blackout Kick",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up" );
   weapons_of_order->add_talent( p, "Chi Wave" );
   weapons_of_order->add_action( p, "Flying Serpent Kick", "interrupt=1" );
 
