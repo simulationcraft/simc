@@ -373,7 +373,7 @@ public:
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
-  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t>> prepull_swarm;
+  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
 
   // Buffs
   struct buffs_t
@@ -10008,8 +10008,11 @@ void druid_t::combat_begin()
 
     auto heal = get_secondary_action<swarm_t>( "adaptive_swarm_heal" );
 
-    for ( auto [ min_stack, max_stack, min_dur, max_dur ] : prepull_swarm )
+    for ( auto [ min_stack, max_stack, min_dur, max_dur, chance ] : prepull_swarm )
     {
+      if ( !rng().roll( chance ) )
+        continue;
+
       auto stacks = rng().range( min_stack, max_stack );
       auto duration = rng().range( min_dur, max_dur );
 
@@ -10750,20 +10753,27 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
   {
     auto values = util::string_split<std::string_view>( entry, ":" );
 
-    if ( range::accumulate( values, 0, []( std::string_view val ) { return util::is_number( val ) ? 1 : 0; } ) != 4 )
+    try
     {
-      sim->error( "Invalid entry '{}' for druid.adaptive_swarm_prepull_setup."
-                  "Format is <min stacks>:<max stacks>:<min duration>:<max duration>/...", entry );
+      if ( values.size() != 5 )
+        throw std::invalid_argument( "Missing syntax." );
 
-      return false;
+      auto min_stack = std::clamp( util::to_unsigned( values[ 0 ] ), 1U, 5U );
+      auto max_stack = std::clamp( util::to_unsigned( values[ 1 ] ), 1U, 5U );
+      auto min_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 2 ] ), 0.0, 12.0 ) );
+      auto max_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 3 ] ), 0.0, 12.0 ) );
+      auto chance = std::clamp( util::to_double( values[ 4 ] ), 0.0, 1.0 );
+
+      debug_cast<druid_t*>( sim->active_player )
+          ->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur, chance );
     }
-
-    auto min_stack = std::clamp( util::to_unsigned( values[ 0 ] ), 1U, 5U );
-    auto max_stack = std::clamp( util::to_unsigned( values[ 1 ] ), 1U, 5U );
-    auto min_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 2 ] ), 0.0, 12.0 ) );
-    auto max_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 3 ] ), 0.0, 12.0 ) );
-
-    debug_cast<druid_t*>( sim->active_player )->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur );
+    catch ( const std::invalid_argument& )
+    {
+      throw std::invalid_argument(
+          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup."
+                       "\n\tFormat is <min stacks>:<max stacks>:<min duration>:<max duration>:<chance>/...",
+                       entry ) );
+    }
   }
 
   return true;
