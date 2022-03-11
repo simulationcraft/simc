@@ -767,7 +767,7 @@ void memory_of_past_sins( special_effect_t& effect )
   } );
 
   timespan_t precast = effect.player->sim->shadowlands_opts.memory_of_past_sins_precast;
-  if (precast > 0_s) {
+  if ( precast > 0_s ) {
     effect.player->register_combat_begin( [&effect, buff, precast]( player_t* ) {
       buff->trigger( buff->buff_duration() - precast );
 
@@ -3114,6 +3114,15 @@ void scars_of_fraternal_strife( special_effect_t& effect )
       proc_spell_t::execute();
 
       buffs.front()->trigger();
+      // Using the Final Rune triggers the shared Trinket CD
+      if ( buffs.front()->data().id() == 368641 )
+      {
+        cooldown_t* group_cd = player->get_cooldown( "item_cd_1141" );
+        group_cd->start( player->default_item_group_cooldown );
+        sim->print_debug( "{} starts shared cooldown for {} ({}). Will be ready at {}", *player, name(),
+                          group_cd->name(), group_cd->ready );
+      }
+
       std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
     }
 
