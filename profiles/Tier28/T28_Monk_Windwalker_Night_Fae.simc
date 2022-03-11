@@ -29,7 +29,7 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
-actions.precombat+=/variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil
+actions.precombat+=/variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures
 actions.precombat+=/fleshcraft
 actions.precombat+=/chi_burst,if=!covenant.night_fae
 actions.precombat+=/chi_wave,if=!talent.energizing_elixir.enabled
@@ -78,7 +78,7 @@ actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)
 actions.cd_sef+=/use_item,name=shadowgrasp_totem,if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight
-actions.cd_sef+=/use_item,name=the_first_sigil,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20
+actions.cd_sef+=/use_item,name=the_first_sigil,if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20
 actions.cd_sef+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
