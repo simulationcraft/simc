@@ -79,13 +79,13 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588,gem_id=173129,enchant=eternal_intellect
 hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-waist=fallen_empresss_cord,id=178804,bonus_id=1592/6536/6646/6935,gem_id=173128
+waist=kintaras_baleful_cord,id=180109,bonus_id=1592/6536/6646/6935,gem_id=173129
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=codebreakers_cunning_sandals,id=185788,bonus_id=1595/6536/6646
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=empyreal_ordnance,id=180117,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
