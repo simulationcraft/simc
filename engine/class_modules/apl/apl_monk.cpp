@@ -382,7 +382,7 @@ void windwalker( player_t* p )
   // Snapshot stats
   pre->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
 
-  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil" );
+  pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures" );
   pre->add_action( "fleshcraft" );
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
@@ -597,7 +597,10 @@ void windwalker( player_t* p )
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
-                            ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
+                            ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
+      else if ( item.name_str == "cache_of_aquired_treasures" )
+        cd_sef->add_action( "use_item,name=" + item.name_str + 
+                            ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
