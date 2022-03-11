@@ -673,7 +673,7 @@ void windwalker( player_t* p )
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Blackout Kick",
-                                "target_if_min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
   weapons_of_order->add_action( p, "Tiger Palm",
                                 "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_action( p, "Fists of Fury",
@@ -709,8 +709,7 @@ void windwalker( player_t* p )
   st->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   st->add_talent( p, "Chi Burst",
       "if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
-  st->add_talent( p, "Chi Wave",
-      "if=!buff.primordial_power.up");
+  st->add_talent( p, "Chi Wave", "if=!buff.primordial_power.up");
   st->add_action( p, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&buff.storm_earth_and_fire.down" );
   st->add_action( p, "Spinning Crane Kick",
@@ -720,8 +719,7 @@ void windwalker( player_t* p )
   st->add_action( p, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2" );
   st->add_action( "arcane_torrent,if=chi.max-chi>=1" );
-  st->add_action( p, "Flying Serpent Kick",
-      "interrupt=1,if=!covenant.necrolord|buff.primordial_potential.up" );
+  st->add_action( p, "Flying Serpent Kick", "interrupt=1,if=!covenant.necrolord|buff.primordial_potential.up" );
   st->add_action( p, "Blackout Kick",
       "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&chi=2&prev_gcd.1.tiger_palm&energy.time_to_50<1" );
   st->add_action( p, "Blackout Kick",
