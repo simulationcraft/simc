@@ -1312,8 +1312,8 @@ void warlock_t::create_apl_destruction()
   def->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time" );
   def->add_action( "shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5" );
   def->add_action( "chaos_bolt,if=soul_shard>3.5" );
-  def->add_action( "chaos_bolt,if=target.time_to_die<5&target.time_to_die>cast_time+travel_time" );
-  def->add_action( "conflagrate,if=charges>1|target.time_to_die<gcd" );
+  def->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
+  def->add_action( "conflagrate,if=charges>1|time_to_die<gcd" );
   def->add_action( "incinerate" );
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
@@ -1333,14 +1333,14 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
   aoe->add_action( "incinerate" );
 
-  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42" );
+  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42" );
   cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die" );
+  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
-  cds->add_action( "use_items,if=pet.infernal.active|target.time_to_die<21" );
+  cds->add_action( "use_items,if=pet.infernal.active|time_to_die<21" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
   havoc->add_action( "soul_fire,if=cast_time<havoc_remains" );
