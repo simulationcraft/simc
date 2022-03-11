@@ -310,6 +310,7 @@ public:
     double adaptive_swarm_jump_distance_min = 5.0;
     double adaptive_swarm_jump_distance_max = 40.0;
     unsigned adaptive_swarm_friendly_targets = 20;
+    std::string adaptive_swarm_prepull_setup = "";
     double celestial_spirits_exceptional_chance = 0.85;
     int convoke_the_spirits_deck = 5;
     std::string kindred_affinity_covenant = "night_fae";
@@ -372,6 +373,7 @@ public:
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
+  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t>> prepull_swarm;
 
   // Buffs
   struct buffs_t
@@ -7430,20 +7432,16 @@ struct adaptive_swarm_t : public druid_spell_t
 
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
-  timespan_t precombat_seconds;
   timespan_t gcd_add;
-  int precombat_stacks;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
-      precombat_seconds( 11_s ),
       gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
-      precombat_stacks( 0 ),
       target_self( false )
   {
-    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
-    add_option( opt_int( "precombat_stacks", precombat_stacks ) );
+    add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
+    add_option( opt_deprecated( "precombat_stacs", "druid.adaptive_swarm_prepull_setup" ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -7477,26 +7475,7 @@ struct adaptive_swarm_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( is_precombat && precombat_seconds > 0_s )
-    {
-      heal->set_target( player );
-
-      if ( precombat_stacks )
-      {
-        auto new_state = heal->get_state();
-        debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = precombat_stacks;
-        heal->schedule_execute( new_state );
-      }
-      else
-      {
-        heal->schedule_execute();
-      }
-
-      this->cooldown->adjust( -precombat_seconds, false );
-      heal->get_dot( player )->adjust_duration( -precombat_seconds );
-      return;
-    }
-    else if ( target_self )
+    if ( target_self )
     {
       heal->set_target( player );
       heal->schedule_execute();
@@ -10022,6 +10001,21 @@ void druid_t::combat_begin()
     }
   }
 
+  if ( cov.necrolord->ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
+  {
+    using swarm_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t;
+
+    auto heal = get_secondary_action<swarm_t>( "adaptive_swarm_heal" );
+
+    for ( auto [ min_stack, max_stack, min_dur, max_dur ] : prepull_swarm )
+    {
+      auto stacks = rng().range( min_stack, max_stack );
+      auto duration = rng().range( min_dur, max_dur );
+
+      swarm_tracker.push_back( make_event<swarm_t::adaptive_swarm_heal_event_t>( *sim, this, heal, stacks, duration ) );
+    }
+  }
+
   // Legendary-related buffs & events
   if ( legendary.lycaras_fleeting_glimpse->ok() )
   {
@@ -10747,6 +10741,33 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
   return player_t::create_expression( name_str );
 }
 
+static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view setup_str )
+{
+  auto entries = util::string_split<std::string_view>( setup_str, "/" );
+
+  for ( auto entry : entries )
+  {
+    auto values = util::string_split<std::string_view>( entry, ":" );
+
+    if ( range::accumulate( values, 0, []( std::string_view val ) { return util::is_number( val ) ? 1 : 0; } ) != 4 )
+    {
+      sim->error( "Invalid entry '{}' for druid.adaptive_swarm_prepull_setup."
+                  "Format is <min stacks>:<max stacks>:<min duration>:<max duration>/...", entry );
+
+      return false;
+    }
+
+    auto min_stack = std::clamp( util::to_unsigned( values[ 0 ] ), 1U, 5U );
+    auto max_stack = std::clamp( util::to_unsigned( values[ 1 ] ), 1U, 5U );
+    auto min_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 2 ] ), 0.0, 12.0 ) );
+    auto max_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 3 ] ), 0.0, 12.0 ) );
+
+    debug_cast<druid_t*>( sim->active_player )->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur );
+  }
+
+  return true;
+}
+
 void druid_t::create_options()
 {
   player_t::create_options();
@@ -10783,6 +10804,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
   add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
+  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", options.celestial_spirits_exceptional_chance ) );
   add_option( opt_int( "druid.convoke_the_spirits_deck", options.convoke_the_spirits_deck ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", options.kindred_affinity_covenant ) );
