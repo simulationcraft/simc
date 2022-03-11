@@ -2420,6 +2420,8 @@ struct melee_t : public monk_melee_attack_t
     special                             = false;
     school                              = SCHOOL_PHYSICAL;
     weapon_multiplier                   = 1.0;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {

@@ -8070,6 +8070,7 @@ struct druid_melee_t : public Base
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p ), ooc_chance( 0.0 )
   {
     ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
+    ab::allow_class_ability_procs = ab::not_a_proc = true;
 
     ab::school = SCHOOL_PHYSICAL;
     ab::trigger_gcd = 0_ms;

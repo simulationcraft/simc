@@ -3349,6 +3349,7 @@ namespace attacks
       school = SCHOOL_PHYSICAL;
       special = false;
       background = repeating = may_glance = may_crit = true;
+      allow_class_ability_procs = not_a_proc = true;
       trigger_gcd = timespan_t::zero();
       weapon = w;
       weapon_multiplier = 1.0;

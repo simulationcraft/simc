@@ -1479,6 +1479,7 @@ struct melee_t : public warrior_attack_t
       devastator( nullptr )
   {
     background = repeating = may_glance = usable_while_channeling = true;
+    allow_class_ability_procs = not_a_proc = true;
     special           = false;
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();

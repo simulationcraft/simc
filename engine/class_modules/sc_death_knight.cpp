@@ -3347,6 +3347,8 @@ struct melee_t : public death_knight_melee_attack_t
     school            = SCHOOL_PHYSICAL;
     may_glance        = true;
     background        = true;
+    allow_class_ability_procs = true;
+    not_a_proc        = true;
     repeating         = true;
     trigger_gcd       = 0_ms;
     special           = false;

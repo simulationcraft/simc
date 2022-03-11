@@ -2246,6 +2246,7 @@ struct melee_t : public rogue_attack_t
     canceled( false ), prev_scheduled_time( timespan_t::zero() )
   {
     background = repeating = may_glance = may_crit = true;
+    allow_class_ability_procs = not_a_proc = true;
     special = false;
     school = SCHOOL_PHYSICAL;
     trigger_gcd = timespan_t::zero();
