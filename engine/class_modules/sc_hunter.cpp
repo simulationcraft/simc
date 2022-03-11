@@ -2495,6 +2495,7 @@ public:
   auto_attack_base_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s )
   {
+    ab::allow_class_ability_procs = ab::not_a_proc = true;
     ab::background = ab::repeating = true;
     ab::interrupt_auto_attack = false;
     ab::special = false;

@@ -638,7 +638,8 @@ void thrill_seeker( special_effect_t& effect )
   {
     counter_buff = make_buff( effect.player, "thrill_seeker", effect.player->find_spell( 331939 ) )
                        ->set_period( 0_ms )
-                       ->set_tick_behavior( buff_tick_behavior::NONE );
+                       ->set_tick_behavior( buff_tick_behavior::NONE )
+                       ->set_expire_at_max_stack( true );
   }
 
   auto euphoria_buff = buff_t::find( effect.player, "euphoria" );
@@ -651,10 +652,7 @@ void thrill_seeker( special_effect_t& effect )
 
   counter_buff->set_stack_change_callback( [ euphoria_buff ]( buff_t* b, int, int ) {
     if ( b->at_max_stacks() )
-    {
       euphoria_buff->trigger();
-      make_event( b->sim, [ b ] { b->expire(); } );
-    }
   } );
 
   buff_t* fatal_flaw_crit = nullptr;
@@ -2048,7 +2046,8 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
   auto counter_buff = buff_t::find( effect.player, "marrowed_gemstone_charging" );
   if ( !counter_buff )
     counter_buff = make_buff( effect.player, "marrowed_gemstone_charging", effect.player->find_spell( 327066 ) )
-                       ->modify_max_stack( 1 );
+                       ->modify_max_stack( 1 )
+                       ->set_expire_at_max_stack( true );
 
   auto buff = buff_t::find( effect.player, "marrowed_gemstone_enhancement" );
   if ( !buff )
@@ -2060,10 +2059,7 @@ void heirmirs_arsenal_marrowed_gemstone( special_effect_t& effect )
 
     counter_buff->set_stack_change_callback( [ buff ]( buff_t* b, int, int ) {
       if ( b->at_max_stacks() )
-      {
         buff->trigger();
-        b->expire();
-      }
     } );
   }
 

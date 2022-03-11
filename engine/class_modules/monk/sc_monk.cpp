@@ -2420,6 +2420,8 @@ struct melee_t : public monk_melee_attack_t
     special                             = false;
     school                              = SCHOOL_PHYSICAL;
     weapon_multiplier                   = 1.0;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
@@ -5896,13 +5898,13 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
     {
       p->buff.primordial_power->trigger();
       p->storm_earth_and_fire_trigger_primordial_power();
-      make_event( b->sim, [ b ] { b->expire(); } );
     }
   }
 
   primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_stack_change_callback( primordial_potential_callback );
+    set_expire_at_max_stack( true );
   }
 };
 

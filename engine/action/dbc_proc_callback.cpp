@@ -102,6 +102,18 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
       }
     }
 
+    if ( effect.driver()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+    {
+      if ( !a->allow_class_ability_procs )
+        return;
+    }
+
+    if ( !effect.driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+    {
+      if ( !a->not_a_proc && ( a->background || a->proc ) )
+        return;
+    }
+
     // Additional trigger condition to check before performing proc chance process.
     if ( trigger_type == trigger_fn_type::CONDITION && !(*trigger_fn)( this, a, state ) )
     {

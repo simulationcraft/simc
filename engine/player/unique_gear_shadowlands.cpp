@@ -3666,6 +3666,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       haste_driver->name_str = "acquired_sword_driver";
       haste_driver->spell_id = 368649;
       haste_driver->proc_flags_ = effect.player->find_spell( 368649 )->proc_flags();
+      haste_driver->proc_flags2_ = PF2_ALL_HIT;
       haste_driver->custom_buff = sword_buff;
       effect.player->special_effects.push_back( haste_driver );
 
@@ -3694,14 +3695,6 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       auto vicious_wound_cb = new dbc_proc_callback_t( effect.player, *bleed_driver );
       vicious_wound_cb->initialize();
       vicious_wound_cb->deactivate();
-
-      // Bleed currently appears to only trigger from "class abilities" and cannot trigger from procs
-      effect.player->callbacks.register_callback_trigger_function(
-        bleed_driver->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
-        []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
-          return ( a->data().flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS ) &&
-                   ( ( !a->background && !a->proc ) || a->data().flags( spell_attribute::SX_NOT_A_PROC ) ) );
-      } );
 
       axe_buff->set_stack_change_callback( [ vicious_wound_cb, bleed ]( buff_t*, int old, int new_ ) {
         if ( old == 0 )
@@ -4024,12 +4017,12 @@ void singularity_supreme( special_effect_t& effect )
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
   effect.custom_buff =
       make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
+          ->set_expire_at_max_stack( true )
           ->set_stack_change_callback( [ lockout, buff ]( buff_t* b, int, int ) {
             if ( b->at_max_stacks() )
             {
               lockout->trigger();
               buff->trigger();
-              make_event( *b->sim, [ b ] { b->expire(); } );
             }
           } );
 

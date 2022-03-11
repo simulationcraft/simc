@@ -3316,6 +3316,8 @@ struct melee_t : public shaman_attack_t
     : shaman_attack_t( name, player, s ), sync_weapons( sw ), first( true ), swing_timer_variance( stv )
   {
     background = repeating = may_glance = true;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
     special                             = false;
     trigger_gcd                         = timespan_t::zero();
     weapon                              = w;
@@ -7353,6 +7355,11 @@ struct primordial_wave_t : public shaman_spell_t
     if ( p()->conduit.tumbling_waves->ok() && rng().roll( p()->conduit.tumbling_waves.value() / 1000.0 ) )
     {
       cooldown->reset( true );
+    }
+
+    if ( p()->bugs && p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->cooldown.frost_shock->reset( true );
     }
   }
 

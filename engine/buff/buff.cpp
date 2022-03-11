@@ -604,6 +604,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     overridden(),
     can_cancel( true ),
     requires_invalidation(),
+    expire_at_max_stack(),
     reverse_stack_reduction( 1 ),
     current_value(),
     current_stack(),
@@ -908,6 +909,21 @@ buff_t* buff_t::modify_initial_stack( int initial_stack )
 {
   assert( _initial_stack > 0 && "Cannot modify invalid initial stack. Use set_initial_stack() with a postive value.");
   set_initial_stack( _initial_stack + initial_stack );
+  return this;
+}
+
+buff_t* buff_t::set_expire_at_max_stack( bool expire )
+{
+  if ( expire && _max_stack <= 1 )
+  {
+    sim->error( "{} being set to expire with max stack <= 1. Setting expire_at_max_stack to false.", *this );
+    expire_at_max_stack = false;
+  }
+  else
+  {
+    expire_at_max_stack = expire;
+  }
+
   return this;
 }
 
@@ -2351,6 +2367,9 @@ void buff_t::bump( int stacks, double value )
     if ( stack_change_callback )
       stack_change_callback( this, old_stack, current_stack );
   }
+
+  if ( expire_at_max_stack && at_max_stacks() )
+    make_event( *sim, [ this ] { expire(); } );
 
   if ( player )
     player->trigger_ready();
