@@ -424,7 +424,7 @@ void windwalker( player_t* p )
                    "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.bonedust_brew.up" );
   def->add_action( p, "Tiger Palm",
                    "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!debuff.bonedust_brew_debuff.up" );
-  def->add_action( p, "chi_burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains>25&(chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2)" );
+  def->add_talent( p, "Chi Burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains>25&(chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2)" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3" );
