@@ -103,6 +103,7 @@ void arcane( player_t* p )
   default_->add_action( "fireblood,if=buff.arcane_power.up" );
   default_->add_action( "ancestral_call,if=buff.arcane_power.up" );
   default_->add_action( "use_items,if=buff.arcane_power.up" );
+  default_->add_action( "use_item,name=scars_of_fraternal_strife" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up" );
   default_->add_action( "use_item,name=moonlit_prism,if=covenant.kyrian&cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10" );
   default_->add_action( "use_item,name=moonlit_prism,if=!covenant.kyrian&cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6" );
