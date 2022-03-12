@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-12/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -11804,10 +11804,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903657)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 30)
 #2 (id=907273)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 20)
 Description      : While Agony, Corruption, and Unstable Affliction are active, your $?s198590[Drain Soul has a $s2% chance][Shadow Bolt has a $s1% chance] to make your next Malefic Rapture cost no Soul Shards and cast instantly.
 
 Name             : Malicious Imp-Pact (id=364198) [Spell Family (5)] 
@@ -12043,7 +12041,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324540)
                    Family Flags: 73
-Hotfixed         : Base Value (15 -> 25)
 #2 (id=904823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Malefic Rapture's damage is increased by $s1% and each cast extends the duration of Corruption, Agony, and Unstable Affliction by $s2 sec.

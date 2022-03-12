@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-12/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -462,7 +462,6 @@ Effects          :
 #5 (id=914644)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Global Cooldown (21)
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Misc Value: 21 | Misc Value 2: 1162 (Label) | Target: Self (1)
                    Affected Spells (Label): Adaptive Swarm (325727)
-Hotfixed         : NEW EFFECT
 
 Name             : Wrath (id=5176) [Spell Family (7)] 
 Class            : Rogue, Druid
@@ -1364,7 +1363,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=13048)    : Apply Aura (6) | Periodic Heal% (20): every 1 seconds
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 0.62500 | Target: Self (1)
-Hotfixed         : PvP Coefficient (0.85 -> 0.625)
 #2 (id=815630)   : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 Description      : Heals you for $o1% health over $d$?s301768[, and increases healing received by $301768s1%][].
@@ -4453,12 +4451,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686)
                    Family Flags: 118
-Hotfixed         : PvP Coefficient (1 -> 0)
 #2 (id=191150)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 10 | Scaled Value: 10 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rejuvenation (774), Regrowth (8936), Swiftmend (18562), Lifebloom (33763), Lifebloom (33778), Wild Growth (48438), Nourish (50464), Efflorescence (81269), Cenarion Ward (102352), Rejuvenation (Germination) (155777), Tranquility (157982), Lifebloom (188550), Cultivation (200389), Reactive Resin (203406), Spring Blossoms (207386), Grove Tending (279793), Adaptive Swarm (325748), Renewing Bloom (364686)
                    Family Flags: 118
-Hotfixed         : PvP Coefficient (1 -> 0)
 #3 (id=191151)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=191152)   : Apply Aura (6) | Modify Max Mana% (178)
@@ -12719,7 +12715,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=837693)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.80000 | Misc Value: 23 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : Swiftmend no longer consumes a heal over time effect, and extends the duration of your heal over time effects on the target by $s1 sec.
 
 Name             : The Dark Titan's Lesson (id=338831) [Spell Family (7), Passive] 
@@ -14326,7 +14321,6 @@ Effects          :
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Starfall (50286), Starsurge (78674), Starfall (191034), Starfall (191037), Starsurge (197626)
                    Family Flags: 55, 89
-Hotfixed         : Base Value (-20 -> -15)
 Description      : While in an Eclipse, the cost of Starsurge and Starfall is reduced by $s2%.
 
 Name             : Sickle of the Lion (id=363498) [Spell Family (7), Passive, Hidden] 
@@ -14349,7 +14343,6 @@ Effects          :
 Description      : Entering Berserk causes you to strike all nearby enemies, dealing $363830o1 Bleed damage over $363830d. Deals reduced damage beyond $s1 targets.
 
 Name             : Architect's Aligner (id=363789) [Spell Family (7)] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Cosmic
 Spell Type       : Magic
@@ -14415,7 +14408,6 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=903466)   : Apply Aura (6) | Periodic Damage (3): physical every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.40025 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
-Hotfixed         : AP Coefficient (0.3202 -> 0.40025), Target 1 (62 -> 22), Target 2 (16 -> 15)
 Description      : $@spelldesc363498
 Tooltip          : Dealing $s1 every $t1 sec.
 
@@ -14461,7 +14453,6 @@ Description      : Healing from Rejuvenation has a $h% chance to grant Renewing 
 Variables        : $heal=${$SP*$s1/100}
 
 Name             : Heart of the Lion (id=364416) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Description
 Class            : Druid
 School           : Cosmic
 Spell Type       : None
@@ -14480,12 +14471,10 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904401)   : Apply Aura (6) | Dummy (4)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (1 -> 7)
 Description      : Each combo point spent reduces the cooldown of $?s102543[Incarnation: King of the Jungle][Berserk] by ${$s1*0.1}.1 sec.
 Variables        : $CDR=${s1*0.1}.1
 
 Name             : Celestial Pillar (id=364423) [Spell Family (7), Passive, Hidden] 
-Hotfixed         : Internal Cooldown (700 -> 0)
 Class            : Druid
 School           : Astral
 Spell Type       : None
@@ -14502,7 +14491,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904411)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (25 -> 20)
 #2 (id=906664)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Entering Lunar Eclipse creates a Fury of Elune at $s1% effectiveness that follows your current target for $s2 sec.
@@ -14529,7 +14517,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=904878)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.02600 | PvP Coefficient: 0.50000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : $@spelldesc364365
 Tooltip          : Healing $s1 every $t sec.
 

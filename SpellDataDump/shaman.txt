@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-12/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3171,7 +3171,6 @@ Effects          :
 #12 (id=915672)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value 2: 1445 (Label)
                    Affected Spells (Label): Vesper Totem (356790)
-Hotfixed         : NEW EFFECT
 Description      : Restoration Shaman core passive
 
 Name             : Elemental Shaman (id=137040) [Spell Family (11), Passive, Hidden] 
@@ -3259,7 +3258,6 @@ Effects          :
                    Family Flags: 28, 31
 #9 (id=830100)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (417 -> 4), Affects Spells
 #10 (id=830101)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: 9 | Scaled Value: 9 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
@@ -4931,7 +4929,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
 #2 (id=290614)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 11 yards | Target: Unknown(129)
-Hotfixed         : Type (6 -> 3), Sub Type (4 -> 0)
 #3 (id=290630)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 1 yards | Target: Unknown(47) -> Unknown(107)
 #4 (id=623637)   : Apply Aura (6) | Stun (12)
@@ -7096,7 +7093,6 @@ Description      : Increases the critical strike chance of Crash Lightning by $s
 Tooltip          : Increases the critical strike chance of Crash Lightning by $s1 and increases the radius of Crash Lightning by $s2.
 
 Name             : Wind Gust (id=263806) [Spell Family (11)] 
-Hotfixed         : Max stacks (20 -> 10)
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -13006,7 +13002,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=913147)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 0.60000
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal with $s3% effectiveness when you drop them.
 
 Name             : Heal the Soul (id=364470) [Spell Family (11), Passive, Hidden] 
