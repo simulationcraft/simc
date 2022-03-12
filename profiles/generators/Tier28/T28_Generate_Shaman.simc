@@ -11,19 +11,19 @@ renown=80
 
 # unity
 head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -44,19 +44,19 @@ renown=80
 
 # unity
 head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -78,19 +78,19 @@ soulbind=plague_deviser_marileth,volatile_solvent/high_voltage:11:1/pyroclastic_
 
 # unity
 head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -112,19 +112,19 @@ soulbind=forgelite_prime_mikanikos,brons_call_to_action/pyroclastic_shock:11:1/e
 
 # unity
 head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -146,19 +146,19 @@ soulbind=nadjia_the_mistblade,thrill_seeker/high_voltage:11:1/dauntless_duelist/
 
 # unity
 head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
