@@ -9892,7 +9892,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst",
                                "if=buff.lava_surge.up&(runeforge.windspeakers_lava_resurgence.equipped|!buff.master_of_"
                                "the_elements.up&talent.master_of_the_elements.enabled)" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)&!buff.ascendance.up" );
     single_target->add_talent(
         this, "Stormkeeper",
         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(maelstrom<44)" );
@@ -9914,6 +9914,9 @@ void shaman_t::init_action_list_elemental()
                                "if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_"
                                "great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_"
                                "elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
+    single_target->add_action(
+        this, "Earth Shock",
+        "if=runeforge.windspeakers_lava_resurgence.equipped&buff.ascendance.up" );
     single_target->add_action( this, "Lava Burst",
                                "if=cooldown_react&(!buff.master_of_the_elements.up&buff.icefury.up)" );
     single_target->add_action( this, "Lava Burst",
