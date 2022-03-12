@@ -166,18 +166,18 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&((trink
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6647/1588,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=unstable_giants_cuffs,id=189777,bonus_id=7187/1524/6935,gem_id=173128
+wrists=unstable_giants_cuffs,id=189777,bonus_id=7187/1524/6935
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6649/6647/1588,gem_id=173128
 legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
 feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=4800/4786/1524
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
 trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
@@ -187,8 +187,8 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_o
 # gear_strength=1431
 # gear_stamina=2962
 # gear_attack_power=20
-# gear_crit_rating=531
-# gear_haste_rating=747
+# gear_crit_rating=499
+# gear_haste_rating=699
 # gear_mastery_rating=876
 # gear_versatility_rating=203
 # gear_armor=1839
