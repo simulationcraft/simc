@@ -2460,6 +2460,18 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       drw_action_t::execute();
 
+      if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
+      {
+        dk() -> buffs.endless_rune_waltz -> trigger();
+        if ( dk() -> buffs.dancing_rune_weapon -> up() )
+        {
+          // We do not need to expire DRW buff, as the pet demise will expire it for us.
+          dk() -> pets.dancing_rune_weapon_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+          if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+            dk() -> pets.endless_rune_waltz_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+        }
+      }
+
       if ( dk() -> legendary.gorefiends_domination.ok() )
       {
         dk() -> cooldown.vampiric_blood -> adjust( -timespan_t::from_seconds( dk() -> legendary.gorefiends_domination -> effectN( 1 ).base_value() ) );
@@ -5698,6 +5710,7 @@ struct glacial_advance_t : public death_knight_spell_t
 struct heart_strike_t : public death_knight_melee_attack_t
 {
   double heartbreaker_rp_gen;
+  bool is_t28_counterattack;
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "heart_strike", p, p -> spec.heart_strike ),
@@ -5709,6 +5722,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
+    is_t28_counterattack = false;
   }
 
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
@@ -5724,6 +5738,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     // T28 reads the amount of RP gain directly from t28 spell data, it does not use the resources section in heart strike
     energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> spec.heart_strike_3 -> effectN( 1 ).percent();
+    is_t28_counterattack = true;
   }
 
   void init() override
@@ -5764,8 +5779,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
+      if( !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
+      {
+        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
+        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
+      }
 
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
       {
@@ -5779,7 +5797,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
         }
       }
 
-      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
       {
         p() -> pets.endless_rune_waltz_pet -> ability.heart_strike -> execute_on_target( target );
       }
@@ -9353,7 +9371,6 @@ void death_knight_t::create_buffs()
     -> set_cooldown( sets -> set( DEATH_KNIGHT_UNHOLY, T28, B2 ) -> internal_cooldown() );
 
   buffs.endless_rune_waltz = make_buff( this, "endless_rune_waltz", find_spell( 366008 ) )
-    -> set_cooldown( sets -> set( DEATH_KNIGHT_BLOOD, T28, B2 ) -> internal_cooldown() )
     -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
     -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
     -> add_invalidate( CACHE_STRENGTH );
