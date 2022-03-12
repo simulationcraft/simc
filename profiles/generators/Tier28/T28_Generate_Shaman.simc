@@ -4,30 +4,30 @@ race=tauren
 spec=elemental
 role=spell
 position=ranged_back
-talents=2301022
+talents=2301023
 covenant=night_fae
 soulbind=dreamweaver,pyroclastic_shock:11:1/social_butterfly/field_of_blossoms/essential_extraction:11:1/dream_delver
 renown=80
 
 # unity
-head=boneshatter_helm,id=172325,ilevel=291,bonus_id=8128/6650/6649/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,ilevel=285
-shoulders=theurgic_starspeakers_adornment,id=188920,ilevel=285
-back=lurking_predators_camouflage,id=189815,ilevel=278
-chest=theurgic_starspeakers_ringmail,id=188922,ilevel=285,enchant=eternal_insight
-wrists=interdimensional_manica,id=189849,ilevel=285,enchant=eternal_intellect
+head=boneshatter_helm,id=172325,bonus_id=8128/6650/6649/6935/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_insight
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
 # recreated from 285 drop, Lord of Dread - Gauntlets of Unseen Guests, 189844
-hands=theurgic_starspeakers_runebindings,id=188925,ilevel=285
-waist=kings_wolfheart_waistband,id=189837,ilevel=278
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=dark_praetorians_clasp,id=180110,bonus_id=1592/6536/6646,gem_id=173130
 # recreated from 285 drop, The Jailer - Epochal Opressor's Greaves, 189857
-legs=theurgic_starspeakers_tassets,id=188924,ilevel=285
-feet=boneshatter_treads,id=172323,ilevel=291,bonus_id=6992/6650/6649
-finger1=taciturn_keepers_lapis,id=189833,ilevel=278,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,ilevel=285,enchant=tenet_of_haste
-trinket1=unbound_changeling,id=178708,ilevel=278,bonus_id=6917
-trinket2=soleahs_secret_technique,id=190958,ilevel=278
-shadowlands.soleahs_secret_technique_type_override=versatility
-main_hand=pursuit_of_victory,id=189789,ilevel=278,enchant=sinful_revelation
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste,gem_id=173130
+trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=1524/7187
 
 save=T28_Shaman_Elemental.simc
 
