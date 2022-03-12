@@ -7,6 +7,7 @@ ptr=1
 # * Set pieces are permitted up to the item level cap (278/285). ["bonus_id=1498/7187" or "bonus_id=1505/7187"]
 # * Raid gear is permitted up to the Mythic item level cap (278/285). ["bonus_id=1524/7187"]
 # * Mythic+ gear is permitted up to the Mythic+ item level cap (278). ["bonus_id=1592/6536/6646" or Tazavesh: "bonus_id=1595/6536/6646"]
+# * Legion timewalking gear is permitted up to the Mythic+ item level cap (272, they are upgradeable with valor).
 # * Honor PvP gear is permitted up to the item level cap (242). ["bonus_id=1556"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 272). ["bonus_id=1544/6646"]
 # * 9.2 zone(s) gear is permitted up to the item level cap of (246). ["bonus_id=?"]
