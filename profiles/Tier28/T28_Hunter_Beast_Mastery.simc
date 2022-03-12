@@ -115,17 +115,17 @@ actions.trinkets+=/use_items,slots=trinket1,if=((trinket.1.has_use_buff|covenant
 actions.trinkets+=/use_items,slots=trinket2,if=((trinket.2.has_use_buff|covenant.kyrian&trinket.2.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.1.has_use_buff|covenant.kyrian&!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|trinket.2.has_cooldown&!trinket.1.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|!variable.strong_sync_up&(!trinket.1.has_use_buff&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|trinket.1.has_use_buff&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&(trinket.1.cooldown.ready&trinket.1.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.1.cooldown.duration%2|!trinket.1.cooldown.ready&(trinket.1.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.2.cooldown.duration-5<variable.sync_remains|trinket.1.cooldown.remains-5<variable.sync_remains&trinket.1.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up)|trinket.1.cooldown.remains-5>variable.strong_sync_remains&(trinket.2.cooldown.duration-5<variable.strong_sync_remains|!trinket.2.has_use_buff&(variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.2.has_use_buff&!covenant.kyrian&(trinket.1.has_use_buff&((!variable.sync_up|trinket.1.cooldown.remains>5)&(variable.sync_remains>20|trinket.1.cooldown.remains-5>variable.sync_remains))|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)))&(!trinket.2.is.cache_of_acquired_treasures|active_enemies<2&buff.acquired_wand.up|active_enemies>1&!buff.acquired_wand.up)
 
 head=boneshatter_helm,id=172325,bonus_id=6649/6650/8122/1588/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187/6935,gem_id=173128
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187
 hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
-waist=godstalkers_fauld,id=188857,bonus_id=1498/7187/6935,gem_id=173128
+waist=godstalkers_fauld,id=188857,bonus_id=1498/7187
 legs=godstalkers_tassets,id=188860,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=7010/6649/6650/1588,enchant=eternal_agility
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
 trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
 main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_embiggener
@@ -135,7 +135,7 @@ main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_emb
 # gear_agility=1438
 # gear_stamina=2978
 # gear_crit_rating=777
-# gear_haste_rating=968
+# gear_haste_rating=888
 # gear_mastery_rating=481
 # gear_versatility_rating=325
 # gear_armor=1261
