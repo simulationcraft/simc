@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -413,7 +413,7 @@ Cooldown         : 180 seconds
 Category         : 731
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
 Category Cooldown: 180 seconds
-Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1), Ritual of Ruin (364349 effect#4)
+Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Family Flags     : 50, 105
 Attributes       : ........ ........ x....... ........   ........ ........ .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -600,7 +600,7 @@ Spell Level      : 28
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 8 seconds
-Affecting spells : Ritual of Ruin (364349 effects: #5, #6)
+Affecting spells : Ritual of Ruin (364349 effects: #4, #5)
 Family Flags     : 124
 Attributes       : ........ ........ x....... ........   ...x...x ..x..... ........ ....x... 
                  : ........ ........ ......x. ........   ........ ........ ........ ........ 
@@ -1291,7 +1291,7 @@ Spell Type       : Magic
 Spell Level      : 22
 Range            : 50000 yards
 Duration         : 2 seconds
-Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1), Ritual of Ruin (364349 effect#4)
+Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Triggered by     : Summon Infernal (1122), Blasphemy (367680)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
@@ -11804,10 +11804,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903657)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 30)
 #2 (id=907273)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (10 -> 20)
 Description      : While Agony, Corruption, and Unstable Affliction are active, your $?s198590[Drain Soul has a $s2% chance][Shadow Bolt has a $s1% chance] to make your next Malefic Rapture cost no Soul Shards and cast instantly.
 
 Name             : Malicious Imp-Pact (id=364198) [Spell Family (5)] 
@@ -11969,18 +11967,16 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Chaos Bolt (116858)
                    Family Flags: 45
-#4 (id=907279)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: -22000 | Scaled Value: -22000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Summon Infernal (1122), Infernal Awakening (22703), Blasphemous Existence (367819)
-                   Family Flags: 50
-#5 (id=911682)   : Apply Aura (6) | Ignore Spell Cooldown (383)
+#4 (id=907279)   : Apply Aura (6) | Ignore Spell Cooldown (383)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rain of Fire (5740)
                    Family Flags: 124
-#6 (id=911683)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+Hotfixed         : Sub Type (107 -> 383), Base Value (-22000 -> 100), Misc Value (1 -> 0), Affects Spells
+#5 (id=911682)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Rain of Fire (5740)
                    Family Flags: 124
+Hotfixed         : Sub Type (383 -> 108), Base Value (100 -> -100), Misc Value (0 -> 14)
 Description      : $@spelldesc364433
 Tooltip          : Your next Chaos Bolt or Rain of Fire is free to cast.
 
@@ -12045,7 +12041,6 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Malefic Rapture (324540)
                    Family Flags: 73
-Hotfixed         : Base Value (15 -> 25)
 #2 (id=904823)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Malefic Rapture's damage is increased by $s1% and each cast extends the duration of Corruption, Agony, and Unstable Affliction by $s2 sec.
@@ -12155,7 +12150,7 @@ School           : Shadowflame
 Spell Type       : Magic
 Spell Level      : 22
 Range            : 50000 yards
-Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1), Ritual of Ruin (364349 effect#4)
+Affecting spells : Crashing Chaos (277705 effect#2), Summon Infernal (335175 effect#1)
 Family Flags     : 50
 Attributes       : ........ ........ ........ ........   ...x...x ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ........ ......x. 

@@ -125,7 +125,7 @@ actions.single_target+=/flame_shock,target_if=(!ticking|dot.flame_shock.remains<
 actions.single_target+=/flame_shock,if=buff.primordial_wave.up,target_if=min:dot.flame_shock.remains,cycle_targets=1,target_if=refreshable
 actions.single_target+=/ascendance,if=talent.ascendance.enabled&(time>=60|buff.bloodlust.up)&(cooldown.lava_burst.remains>0)&(!talent.icefury.enabled|!buff.icefury.up&!cooldown.icefury.up)
 actions.single_target+=/lava_burst,if=buff.lava_surge.up&(runeforge.windspeakers_lava_resurgence.equipped|!buff.master_of_the_elements.up&talent.master_of_the_elements.enabled)
-actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled&(maelstrom<70)
+actions.single_target+=/elemental_blast,if=talent.elemental_blast.enabled&(maelstrom<70)&!buff.ascendance.up
 actions.single_target+=/stormkeeper,if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(maelstrom<44)
 actions.single_target+=/echoing_shock,if=talent.echoing_shock.enabled&cooldown.lava_burst.remains<=gcd
 actions.single_target+=/lava_burst,if=talent.echoing_shock.enabled&buff.echoing_shock.up
@@ -134,6 +134,7 @@ actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&talent.m
 actions.single_target+=/lightning_bolt,if=buff.stormkeeper.up&buff.master_of_the_elements.up&maelstrom<60
 actions.single_target+=/earthquake,if=buff.echoes_of_great_sundering.up&(talent.master_of_the_elements.enabled&(buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92|spell_targets.chain_lightning<2&buff.stormkeeper.up&cooldown.lava_burst.remains<=gcd)|!talent.master_of_the_elements.enabled|cooldown.elemental_blast.remains<=1.1*gcd*2)
 actions.single_target+=/earthquake,if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)
+actions.single_target+=/earth_shock,if=runeforge.windspeakers_lava_resurgence.equipped&buff.ascendance.up
 actions.single_target+=/lava_burst,if=cooldown_react&(!buff.master_of_the_elements.up&buff.icefury.up)
 actions.single_target+=/lava_burst,if=cooldown_react&charges>talent.echo_of_the_elements.enabled&!buff.icefury.up
 actions.single_target+=/lava_burst,if=talent.echo_of_the_elements.enabled&!buff.master_of_the_elements.up&maelstrom>=50&!buff.echoes_of_great_sundering.up

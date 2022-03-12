@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -2006,7 +2006,6 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14318 | PvP Coefficient: 1.00000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.15 -> 0.143176)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc84714
@@ -3708,7 +3707,6 @@ Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ .....
 Effects          :
 #1 (id=278848)   : School Damage (2): frost
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.11264 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.1216 -> 0.11264)
 Description      : $@spelldesc190356
 
 Name             : Arcane Charge (id=190427) [Spell Family (3), Passive] 
@@ -10680,7 +10678,6 @@ Effects          :
 Description      : Blizzard's damage is increased by |cFFFFFFFF${$s1}.1%|r, and its movement speed reduction is increased by $s2%.
 
 Name             : Icy Propulsion (id=336522) [Spell Family (3), Passive, Hidden] 
-Hotfixed         : Internal Cooldown (350 -> 0)
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11423,7 +11420,6 @@ Description      : $@spelldesc342372
 Tooltip          : Rooted in place.
 
 Name             : Teleport (id=343127) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -11444,7 +11440,6 @@ Effects          :
 Description      : Teleports you to a major city.
 
 Name             : Portal (id=343140) [Spell Family (3)] 
-Hotfixed         : Attributes
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -11842,11 +11837,9 @@ Effects          :
 #1 (id=902915)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1500 | Target: Self (1)
                    Affected Spells (Category): Fire Blast (108853), Fire Blast (319836)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #2 (id=902917)   : Apply Aura (6) | Modify Cooldown Recharge Rate% (Category) (148)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.60000 | Misc Value: 1633 | Target: Self (1)
                    Affected Spells (Category): Phoenix's Flames (194466), Phoenix Flames (257541)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc363500
 Tooltip          : Burning for $365199s1% of your maximum health every $365199t sec. While burning your Fire Blast and Phoenix Flames recharge $s1% faster.
 

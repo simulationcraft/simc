@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12909,17 +12909,14 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903011)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (5 -> 10)
 #2 (id=903012)   : Apply Aura (6) | Proc Trigger Spell (42)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=912017)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (25 -> 50)
 #4 (id=912018)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 #5 (id=912019)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (5 -> 10)
 Description      : Your minions deal $s1% increased damage. When Soul Reaper's secondary effect triggers, this bonus increases to $s3% for $s4 seconds.
 
 Name             : Endless Rune Waltz (id=363590) [Spell Family (15), Passive, Hidden] 
@@ -13113,7 +13110,6 @@ Effects          :
 Description      : Every $s1 $?s207311[Clawing Shadows][Scourge Strikes] that burst Festering Wounds applies Soul Reaper on your target and summons an Army of the Dead ghoul for $s3 seconds.
 
 Name             : Endless Rune Waltz (id=364399) [Spell Family (15), Passive, Hidden] 
-Hotfixed         : Attributes
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13214,11 +13210,12 @@ Effects          :
 Description      : $@spelldesc353882
 
 Name             : Endless Rune Waltz (id=366008) [Spell Family (15)] 
+Hotfixed         : Max stacks (999 -> 75)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 999 maximum
+Stacks           : 75 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
@@ -13254,12 +13251,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=912020)   : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Base Value (20 -> 40)
 Description      : $@spelldesc363560
 Tooltip          : Minion damage increased by $w1%.
 
 Name             : Remnant's Despair (id=368690) [Spell Family (15)] 
-Hotfixed         : Attributes, Affecting Spells
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13280,14 +13275,12 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=913284)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 6)
 Description      : Your damaging spells have a chance to inflict Despair upon your enemies, increasing the effect of your Diseases against them by $s1 for $s2 seconds. You have a greater chance to inflict Despair against enemies who are at higher health.
 
 
 Tooltip          : Diseases from the Death Knight have increased effect.
 
 Name             : Endless Rune Waltz Energize (id=368938) [Spell Family (15)] 
-Hotfixed         : Description
 Class            : Death Knight
 School           : Physical
 Spell Type       : None

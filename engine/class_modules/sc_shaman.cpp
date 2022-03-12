@@ -626,6 +626,8 @@ public:
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
 
+    proc_t* pyroclastic_shock;
+
 
     // Enhancement
     proc_t* hot_hand;
@@ -5914,6 +5916,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( fs->is_ticking() )
       {
         fs->adjust_duration( extend_time );
+        p()->proc.pyroclastic_shock->occur();
       }
     }
   }
@@ -9448,6 +9451,8 @@ void shaman_t::init_procs()
   proc.surge_of_power_frost_shock             = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock             = get_proc( "Surge of Power: Flame Shock" );
 
+  proc.pyroclastic_shock                      = get_proc( "Pyroclastic Shock" );
+
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon       = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
@@ -9887,7 +9892,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst",
                                "if=buff.lava_surge.up&(runeforge.windspeakers_lava_resurgence.equipped|!buff.master_of_"
                                "the_elements.up&talent.master_of_the_elements.enabled)" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)&!buff.ascendance.up" );
     single_target->add_talent(
         this, "Stormkeeper",
         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(maelstrom<44)" );
@@ -9909,6 +9914,9 @@ void shaman_t::init_action_list_elemental()
                                "if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_"
                                "great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_"
                                "elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
+    single_target->add_action(
+        this, "Earth Shock",
+        "if=runeforge.windspeakers_lava_resurgence.equipped&buff.ascendance.up" );
     single_target->add_action( this, "Lava Burst",
                                "if=cooldown_react&(!buff.master_of_the_elements.up&buff.icefury.up)" );
     single_target->add_action( this, "Lava Burst",
@@ -11164,18 +11172,6 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   { }
-
-  void register_hotfixes() const override
-  {
-    hotfix::register_spell( "Shaman", "2022-03-04",
-                            "Storm Elemental's Wind Gust effect gained from casting Lightning Bolt or Chain Lightning "
-                            "now has a maximum stack of 10 (was 20).",
-                            263806 )
-        .field( "max_stack" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 20 );
-  }
 
   void combat_begin( sim_t* ) const override
   { }
