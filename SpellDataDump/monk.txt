@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-12/42614, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12621,6 +12621,7 @@ Effects          :
 Description      : Increases Fists of Fury damage by $s1%.
 
 Name             : Call to Arms (id=364858) [Spell Family (53), Passive, Hidden] 
+Hotfixed         : Description
 School           : Physical
 Spell Type       : None
 Triggered by     : Unity (364857)
@@ -12636,7 +12637,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=905257)   : Apply Aura (6) | Unknown(285)
                    Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Trigger Spell: 356684 | Target: Self (1)
-Description      : $@356684
+Description      : $@spelldesc356684
 
 Name             : Sinister Teachings (id=364859) [Spell Family (53), Passive, Hidden] 
 School           : Physical

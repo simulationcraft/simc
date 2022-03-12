@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-12/42614, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -12107,7 +12107,7 @@ Effects          :
 Description      : Aimed Shot also fires a Serpent Sting at the primary target.
 
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
-Hotfixed         : Proc Chance (50 -> 100)
+Hotfixed         : Proc Chance (50 -> 100), Description
 School           : Physical
 Spell Type       : None
 Proc Chance      : 50%
@@ -12126,7 +12126,7 @@ Effects          :
 #1 (id=834562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 336892 | Target: Self (1)
 Hotfixed         : Sub Type (42 -> 4)
-Description      : When you gain the Trick Shots effect, you have a $h% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
+Description      : When you gain the Trick Shots effect, you have a $s1% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
 
 Name             : Secrets of the Unblinking Vigil (id=336892) [Spell Family (9)] 
 School           : Physical
