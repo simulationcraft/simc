@@ -8660,15 +8660,15 @@ void rogue_t::create_buffs()
 
   buffs.tornado_trigger_loading = make_buff( this, "tornado_trigger_loading", set_bonuses.t28_outlaw_4pc->ok() ?
                                              find_spell( 364234 ) : spell_data_t::not_found() )
-    ->set_chance( set_bonuses.t28_outlaw_4pc->effectN( 1 ).percent() )
-    ->set_max_stack( 6 ) // Currently hard-coded
-    ->set_stack_change_callback( [this]( buff_t* b, int, int ) {
+    ->set_chance( set_bonuses.t28_outlaw_4pc->effectN( 1 ).percent() );
+  if ( set_bonuses.t28_outlaw_4pc->ok() )
+  {
+    buffs.tornado_trigger_loading->set_expire_at_max_stack( true )
+      ->set_stack_change_callback( [this]( buff_t* b, int, int ) {
       if ( b->at_max_stacks() )
-      {
         buffs.tornado_trigger->trigger();
-        b->expire();
-      }
-  } );
+    } );
+  }
 
   // Legendary Items ========================================================
 
