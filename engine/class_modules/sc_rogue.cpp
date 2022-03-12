@@ -7290,7 +7290,7 @@ void rogue_t::init_action_list()
     // Builders
     action_priority_list_t* build = get_action_priority_list( "build", "Builders" );
     build->add_action( "sepsis" );
-    build->add_talent( this, "Ghostly Strike,if=debuff.ghostly_strike.remains<=3" );
+    build->add_talent( this, "Ghostly Strike", "if=debuff.ghostly_strike.remains<=3" );
     build->add_action( this, "Shiv", "if=runeforge.tiny_toxic_blade" );
     build->add_action( "echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync" );
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );

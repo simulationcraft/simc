@@ -62,6 +62,7 @@ actions+=/bag_of_tricks
 
 # Builders
 actions.build=sepsis
+actions.build+=/ghostly_strike,if=debuff.ghostly_strike.remains<=3
 actions.build+=/shiv,if=runeforge.tiny_toxic_blade
 actions.build+=/echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync
 # Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target
