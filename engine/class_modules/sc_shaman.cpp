@@ -626,6 +626,8 @@ public:
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
 
+    proc_t* pyroclastic_shock;
+
 
     // Enhancement
     proc_t* hot_hand;
@@ -5914,6 +5916,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( fs->is_ticking() )
       {
         fs->adjust_duration( extend_time );
+        p()->proc.pyroclastic_shock->occur();
       }
     }
   }
@@ -9447,6 +9450,8 @@ void shaman_t::init_procs()
   proc.surge_of_power_lava_burst              = get_proc( "Surge of Power: Lava Burst" );
   proc.surge_of_power_frost_shock             = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock             = get_proc( "Surge of Power: Flame Shock" );
+
+  proc.pyroclastic_shock                      = get_proc( "Pyroclastic Shock" );
 
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon       = get_proc( "Maelstrom Weapon" );
