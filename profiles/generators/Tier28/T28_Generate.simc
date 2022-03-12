@@ -1,5 +1,3 @@
-# remove flag once 9.2 is live
-ptr=1
 # T28
 # Tier 28 Sepulcher of the First Ones
 # RULES IN PROGRESS
@@ -16,7 +14,7 @@ ptr=1
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
 # * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
-# * Up to 6 Prismatic sockets should be used on relevant gear slots since they are buyable. ["bonus_id=6935"]
+# * No random sockets. (in 9.2.0 only Legendaries have surefire sockets in the following slots: head, neck, wrist, waist, finger1, finger2)
 # * A piece of gear can not have more than one socket, regardless of type.
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
