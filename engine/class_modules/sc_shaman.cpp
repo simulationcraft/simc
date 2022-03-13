@@ -10119,9 +10119,8 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
   precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-
-  // Precombat potion
-  precombat->add_action( "potion" );
+  precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.the_first_sigil|trinket.1.is.scars_of_fraternal_strife|trinket.1.is.cache_of_acquired_treasures" );
+  precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.the_first_sigil|trinket.2.is.scars_of_fraternal_strife|trinket.2.is.cache_of_acquired_treasures" );
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -10130,7 +10129,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Bloodlust", "line_cd=600");
 
   // In-combat potion
-  def->add_action( "potion,if=expected_combat_length-time<60", "In-combat potion is before combat ends." );
+  def->add_action( "potion,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
@@ -10141,7 +10140,11 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "heart_essence" );
 
   // Use items
-  def->add_action( "use_items" );
+  def->add_action( "use_item,name=the_first_sigil,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30" );
+  def->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_sword.up|fight_remains<25" );
+  def->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
+  def->add_action( "use_items,slots=trinket1,if=!variable.trinket1_is_weird" );
+  def->add_action( "use_items,slots=trinket2,if=!variable.trinket2_is_weird" );
 
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );

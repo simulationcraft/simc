@@ -1,13 +1,13 @@
-shaman="T27_Shaman_Enhancement_Venthyr"
+shaman="T28_Shaman_Enhancement_SF"
 source=default
 spec=enhancement
 level=60
 race=troll
 role=attack
 position=back
-talents=3221131
-covenant=venthyr
-soulbind=nadjia_the_mistblade,thrill_seeker/magma_fist:9:1/focused_lightning:9:1/dauntless_duelist/fatal_flaw
+talents=3121131
+covenant=night_fae
+soulbind=dreamweaver,podtender/field_of_blossoms/focused_lightning:11:1/essential_extraction:11:1/chilled_to_the_core:11:1/dream_delver
 renown=80
 
 # Default consumables
@@ -147,30 +147,32 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=crest_of_the_fallen,id=186304,bonus_id=7187/1498,gem_id=187318
-neck=interplanar_keystone,id=186379,bonus_id=7187/1498/6935,gem_id=173128
-shoulders=epaulettes_of_the_master_ranger,id=186342,bonus_id=7187/1498,gem_id=187315
-back=cloak_of_scarred_honor,id=186289,bonus_id=7187/1498
-chest=conjunctionforged_chainmail,id=186340,bonus_id=7187/1498,gem_id=187312,enchant=eternal_skirmish
-wrists=bands_of_the_fallen_house,id=186365,bonus_id=7187/1498/6935,gem_id=173128
-hands=grasps_of_ancestral_whispers,id=186308,bonus_id=7187/1498
-waist=ceremonial_construct_clasp,id=186338,bonus_id=7187/1498,gem_id=187319,enchant=60runspeed
-legs=wind_dancers_legguards,id=178839,bonus_id=6536/1566/6646
-feet=greaves_of_extermination,id=186306,bonus_id=7187/1498,gem_id=187320,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6716/6995/6649/6648/1559/1808/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=tarnished_insignia_of_quelthalas,id=186377,bonus_id=7187/1498/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=titanic_ocular_gland,id=186423,bonus_id=7187/1498
-trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1566/6646
-main_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=sinful_revelation
-off_hand=cruciform_veinripper,id=186388,bonus_id=7187/1498,enchant=celestial_guidance
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6647/1588,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
+shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
+chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187
+hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187
+legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
+feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6647/1588/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_haste
+trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
+main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
 
 # Gear Summary
-# gear_ilvl=254.81
-# gear_agility=1089
-# gear_stamina=2079
-# gear_crit_rating=462
-# gear_haste_rating=930
-# gear_mastery_rating=388
-# gear_versatility_rating=280
-# gear_speed_rating=60
-# gear_armor=1022
+# gear_ilvl=284.00
+# gear_agility=1434
+# gear_stamina=2988
+# gear_crit_rating=570
+# gear_haste_rating=951
+# gear_mastery_rating=576
+# gear_versatility_rating=402
+# gear_avoidance_rating=30
+# gear_armor=1249
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1
