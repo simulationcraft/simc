@@ -224,18 +224,18 @@ actions.st+=/wrath
 # Fallthru
 actions.st+=/run_action_list,name=fallthru
 
-head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
 back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant=eternal_insight
-wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant=eternal_intellect
+wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,enchant=eternal_intellect
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
-waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,gem_id=173130
+waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935
 legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6649/1588
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807
 finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant=tenet_of_mastery
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_haste
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
 trinket2=soleahs_secret_technique,id=185818,bonus_id=1595/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -247,7 +247,7 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_intellect=1903
 # gear_crit_rating=245
 # gear_haste_rating=944
-# gear_mastery_rating=1070
+# gear_mastery_rating=990
 # gear_versatility_rating=198
 # gear_armor=863
 # set_bonus=tier28_2pc=1
