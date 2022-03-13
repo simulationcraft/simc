@@ -137,18 +137,18 @@ actions.generators+=/crusader_strike
 actions.generators+=/arcane_torrent
 actions.generators+=/consecration
 
-head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935
 shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
-wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
+wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935
 hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
 legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
 feet=songmad_sabatons,id=189786,bonus_id=1524/7187
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,enchant=tenet_of_haste
 trinket1=overwhelming_power_crystal,id=179342,bonus_id=1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
@@ -159,7 +159,7 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful
 # gear_stamina=2941
 # gear_attack_power=20
 # gear_crit_rating=455
-# gear_haste_rating=790
+# gear_haste_rating=710
 # gear_mastery_rating=853
 # gear_versatility_rating=261
 # gear_armor=1850

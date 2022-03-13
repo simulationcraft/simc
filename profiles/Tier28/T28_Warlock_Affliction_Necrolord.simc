@@ -259,18 +259,18 @@ actions.trinket_split_check+=/variable,name=trinket_two,value=(trinket.2.has_pro
 actions.trinket_split_check+=/variable,name=damage_trinket,value=(!(trinket.1.has_proc.any&trinket.1.has_cooldown))|(!(trinket.2.has_proc.any&trinket.2.has_cooldown))|equipped.glyph_of_assimilation
 actions.trinket_split_check+=/variable,name=trinket_split,value=(variable.trinket_one&variable.damage_trinket)|(variable.trinket_two&variable.damage_trinket)|(variable.trinket_one^variable.special_equipped)|(variable.trinket_two^variable.special_equipped)
 
-head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
+head=horns_of_the_demon_star,id=188889,bonus_id=1498/7187/6935
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
 waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=boots_of_ceaseless_conflict,id=189794,bonus_id=1524/7187
-finger1=death_gods_signet,id=179355,bonus_id=1592/7187,gem_id=173128,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=death_gods_signet,id=179355,bonus_id=1592/7187,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/7187
 trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
@@ -281,7 +281,7 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_stamina=2924
 # gear_intellect=1913
 # gear_crit_rating=310
-# gear_haste_rating=937
+# gear_haste_rating=857
 # gear_mastery_rating=941
 # gear_versatility_rating=262
 # gear_armor=526

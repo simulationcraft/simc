@@ -69,18 +69,18 @@ actions.standard+=/arcane_torrent
 actions.standard+=/consecration
 actions.standard+=/word_of_glory,if=buff.shining_light_free.up&!covenant.necrolord
 
-head=luminous_chevaliers_casque,id=188933,bonus_id=7187/1498/6935,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
+head=luminous_chevaliers_casque,id=188933,bonus_id=7187/1498/6935
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935
 shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
 chest=luminous_chevaliers_plackart,id=188929,bonus_id=7187/1505,enchant=eternal_stats
-wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524/6935,gem_id=173128
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524/6935
 hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=7187/1505,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/8125/6716/1588/6935,gem_id=173128
 legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
 feet=shadowghast_sabatons,id=171413,bonus_id=6648/6649/7054/6716/1588
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,enchant=tenet_of_haste
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
 trinket2=phial_of_putrefaction,id=178771,bonus_id=6536/1592/6646
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
@@ -92,7 +92,7 @@ off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
 # gear_stamina=2983
 # gear_attack_power=20
 # gear_crit_rating=585
-# gear_haste_rating=1098
+# gear_haste_rating=1018
 # gear_mastery_rating=714
 # gear_versatility_rating=150
 # gear_armor=2802

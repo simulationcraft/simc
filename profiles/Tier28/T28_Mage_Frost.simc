@@ -102,17 +102,17 @@ actions.st+=/glacial_spike,if=buff.brain_freeze.react
 actions.st+=/frostbolt
 
 head=grimveiled_hood,id=173245,bonus_id=1588/8123/6647/6649/6935,gem_id=173128
-neck=ornately_engraved_amplifier,id=185842,bonus_id=1595/6536/6646/6935,gem_id=173127
+neck=ornately_engraved_amplifier,id=185842,bonus_id=1595/6536/6646
 shoulders=erudite_occultists_mantle,id=188843,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=erudite_occultists_robes,id=188839,bonus_id=1505/7187,enchant=eternal_stats
-wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect
 hands=erudite_occultists_handwraps,id=188845,bonus_id=1498/7187
 waist=grimveiled_belt,id=173248,bonus_id=1588/6823/6647/6649/6935,gem_id=173128
 legs=erudite_occultists_leggings,id=188842,bonus_id=1498/7187
 feet=erudite_occultists_treads,id=188838,bonus_id=1498/7187
-finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=arachnid_cipher_ring,id=178933,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
+finger2=arachnid_cipher_ring,id=178933,bonus_id=1592/6536/6646,enchant=tenet_of_haste
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
@@ -122,8 +122,8 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_ilvl=282.25
 # gear_stamina=2909
 # gear_intellect=1917
-# gear_crit_rating=995
-# gear_haste_rating=832
+# gear_crit_rating=963
+# gear_haste_rating=800
 # gear_mastery_rating=275
 # gear_versatility_rating=323
 # gear_armor=527
