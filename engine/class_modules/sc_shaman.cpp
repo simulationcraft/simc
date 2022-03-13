@@ -364,6 +364,8 @@ public:
   std::vector<action_t*> flame_shock_dependants;
   /// A time-ordered list of active Flame Shocks on enemies
   std::vector<std::pair<timespan_t, dot_t*>> active_flame_shock;
+  /// Maximum number of active flame shocks
+  unsigned max_active_flame_shock;
 
   struct
   {
@@ -824,8 +826,8 @@ public:
       proc(),
       spec(),
       mastery(),
-      talent(),
       uptime(),
+      talent(),
       spell()
   {
     /*
@@ -3458,9 +3460,12 @@ struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<
 struct lava_lash_t : public shaman_attack_t
 {
   molten_weapon_dot_t* mw_dot;
+  unsigned max_spread_targets;
 
-  lava_lash_t( shaman_t* player, util::string_view options_str )
-    : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ), mw_dot( nullptr )
+  lava_lash_t( shaman_t* player, util::string_view options_str ) :
+    shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ),
+    mw_dot( nullptr ),
+    max_spread_targets( as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
@@ -3575,8 +3580,24 @@ struct lava_lash_t : public shaman_attack_t
                               feed_amount );
   }
 
-  // 2021-12-20: Randomly triggers on any 3 targets, including the target of the Lava
-  // Lash.
+  void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
+  {
+    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    out.push_back( in[ idx ] );
+    in.erase( in.begin() + idx );
+  }
+
+  static std::string actor_list_str( const std::vector<player_t*>& actors,
+                                     util::string_view             delim = ", " )
+  {
+    static const auto transform_fn = []( player_t* t ) { return t->name(); };
+    std::vector<const char*> tmp;
+
+    range::transform( actors, std::back_inserter( tmp ), transform_fn );
+
+    return tmp.size() ? util::string_join( tmp, delim ) : "none";
+  }
+
   void trigger_flame_shock( const action_state_t* state ) const
   {
     if ( !p()->spec.lava_lash_2->ok() )
@@ -3589,25 +3610,121 @@ struct lava_lash_t : public shaman_attack_t
       return;
     }
 
+    // Targets to spread Flame Shock to
     std::vector<player_t*> targets;
-    if ( target_list().size() <=
-         as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+    // Maximum number of spreads, deduct one from available targets since the target of this Lava
+    // Lash execution (always receives it) is in there
+    unsigned actual_spread_targets = std::min( max_spread_targets,
+        as<unsigned>( target_list().size() ) - 1U );
+
+    if ( actual_spread_targets == 0 )
     {
-      targets = target_list();
+      return;
     }
-    else
-    {
-      while ( targets.size() <
-              as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+
+    // Lashing Flames, no Flame Shock
+    std::vector<player_t*> lf_no_fs_targets,
+    // Lashing Flames, Flame Shock
+                           lf_fs_targets,
+    // No Lashing Flames, no Flame Shock
+                           no_lf_no_fs_targets,
+    // No Lashing Flames, Flame Shock
+                           no_lf_fs_targets;
+
+    // Target of the Lava Lash has Lashing Flames
+    bool mt_has_lf = td( state->target )->debuff.lashing_flames->check();
+
+    // Categorize all available targets (within 8 yards of the main target) based on Lashing
+    // Flames and Flame Shock state.
+    range::for_each( target_list(), [&]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
       {
-        auto idx = static_cast<unsigned>( rng().range( 0, target_list().size() ) );
-        auto candidate = target_list()[ idx ];
-        if ( range::find( targets, candidate ) == targets.end() )
-        {
-          targets.push_back( candidate );
-        }
+        return;
       }
+
+      if ( td( t )->debuff.lashing_flames->check() &&
+           !td( t )->dot.flame_shock->is_ticking() )
+      {
+        lf_no_fs_targets.push_back( t );
+      }
+      else if ( td( t )->debuff.lashing_flames->check() &&
+                td( t )->dot.flame_shock->is_ticking() )
+      {
+        lf_fs_targets.push_back( t );
+      }
+      else if ( !td( t )->debuff.lashing_flames->check() &&
+                 td( t )->dot.flame_shock->is_ticking() )
+      {
+        no_lf_fs_targets.push_back( t );
+      }
+      else if ( !td( t )->debuff.lashing_flames->check() &&
+                !td( t )->dot.flame_shock->is_ticking() )
+      {
+        no_lf_no_fs_targets.push_back( t );
+      }
+    } );
+
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} spreads flame_shock, n_fs={} ll_target={} "
+                            "state={}LF{}FS, targets_in_range={{ {} }}",
+        player->name(), p()->active_flame_shock.size(), state->target->name(),
+        td( state->target )->debuff.lashing_flames->check() ? '+' : '-',
+        td( state->target )->dot.flame_shock->is_ticking() ? '+' : '-',
+        actor_list_str( target_list() ) );
+
+      sim->out_debug.print( "{} +LF-FS: targets={{ {} }}", player->name(),
+          actor_list_str( lf_no_fs_targets ) );
+      sim->out_debug.print( "{} -LF-FS: targets={{ {} }}", player->name(),
+          actor_list_str( no_lf_no_fs_targets ) );
+      sim->out_debug.print( "{} +LF+FS: targets={{ {} }}", player->name(),
+          actor_list_str( lf_fs_targets ) );
+      sim->out_debug.print( "{} -LF+FS: targets={{ {} }}", player->name(),
+          actor_list_str( no_lf_fs_targets ) );
     }
+
+    // 1) Randomly select targets with Lashing Flame and no Flame Shock, unless there already are
+    // the maximum number of Flame Shocked targets with Lashing Flames up.
+    while ( lf_no_fs_targets.size() > 0 &&
+            ( lf_fs_targets.size() + mt_has_lf ) < p()->max_active_flame_shock &&
+            targets.size() < actual_spread_targets )
+    {
+      move_random_target( lf_no_fs_targets, targets );
+    }
+
+    // 2) Randomly select targets without Lashing Flames and Flame Shock, but only if we are not at
+    // Flame Shock cap.
+    while ( no_lf_no_fs_targets.size() > 0 &&
+            ( lf_fs_targets.size() + no_lf_fs_targets.size() + 1U ) < p()->max_active_flame_shock &&
+            targets.size() < actual_spread_targets )
+    {
+      move_random_target( no_lf_no_fs_targets, targets );
+    }
+
+    // 3) Randomly select targets that have Lashing Flames and Flame Shock on them. This prioritizes
+    // refreshing existing Flame Shocks on targets with Lashing Flames up.
+    while ( lf_fs_targets.size() > 0 && targets.size() < actual_spread_targets )
+    {
+      move_random_target( lf_fs_targets, targets );
+    }
+
+    // 4) Randomly select targets that don't have Lashing Flames but have Flame Shock on them. This
+    // prioritizes refreshing existing Flame Shocks on targets when we are at maximum Flame Shocks,
+    // preventing random expirations.
+    while ( no_lf_fs_targets.size() > 0 && targets.size() < actual_spread_targets )
+    {
+      move_random_target( no_lf_fs_targets, targets );
+    }
+
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} selected targets={{ {} }}",
+          player->name(), actor_list_str( targets ) );
+    }
+
+    // Always trigger Flame Shock on main target
+    p()->trigger_secondary_flame_shock( state->target );
 
     range::for_each( targets, [ shaman = p() ]( player_t* target ) {
       shaman->trigger_secondary_flame_shock( target );
@@ -5939,10 +6056,8 @@ private:
 
   void track_flame_shock( const action_state_t* state )
   {
-    unsigned max_targets = as<unsigned>( data().max_targets() );
-
     // No need to track anything if there are not enough enemies
-    if ( sim->target_list.size() <= max_targets )
+    if ( sim->target_list.size() <= p()->max_active_flame_shock )
     {
       return;
     }
@@ -5954,7 +6069,7 @@ private:
 
     // Max targets reached (the new Flame Shock application is on a target without a dot
     // active), remove one of the oldest applied dots to make room.
-    if ( p()->active_flame_shock.size() == max_targets )
+    if ( p()->active_flame_shock.size() == p()->max_active_flame_shock )
     {
       auto start_time = p()->active_flame_shock.front().first;
       auto entry = range::find_if( p()->active_flame_shock, [ start_time ]( const auto& entry ) {
@@ -5962,7 +6077,7 @@ private:
       } );
 
       // Randomize equal start time application removal
-      auto candidate_targets= as<double>(
+      auto candidate_targets = as<double>(
           std::distance( p()->active_flame_shock.begin(), entry ) );
       auto idx = static_cast<unsigned>( rng().range( 0.0, candidate_targets ) );
 
@@ -5975,10 +6090,11 @@ private:
         }
 
         sim->out_debug.print(
-          "{} canceling oldest {} from target={} (index={}), start_time={}, "
+          "{} canceling oldest {}: new_target={} cancel_target={} (index={}), start_time={}, "
           "candidate_targets={} ({})",
-          player->name(), name(), entry->second->state->target->name(), idx,
-          entry->first, as<unsigned>( candidate_targets ),
+          player->name(), name(), state->target->name(),
+          p()->active_flame_shock[ idx ].second->state->target->name(), idx,
+          p()->active_flame_shock[ idx ].first, as<unsigned>( candidate_targets ),
           util::string_join( enemies ) );
       }
 
@@ -8459,6 +8575,9 @@ void shaman_t::init_spells()
   // this is the actually useful spell
   spell.t28_2pc_ele        = find_spell( 364523 );
   spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
+
+  // Misc spell-related init
+  max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
 
   player_t::init_spells();
 }
