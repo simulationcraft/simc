@@ -22,7 +22,7 @@ feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
-trinket2=spare_meat_hook,id=178751,bonus_id=6652/1592/6646
+trinket2=earthbreakers_impact,id=188264,bonus_id=6805/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save=T28_Death_Knight_Blood.simc
