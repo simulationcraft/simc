@@ -6447,7 +6447,9 @@ void hunter_t::create_buffs()
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( legendary.secrets_of_the_vigil );
+      -> set_trigger_spell( legendary.secrets_of_the_vigil )
+      // XXX 3-11-2022 Proc chance was hotfixed to 100% but description changed to refer to the dummy value for a 50% proc chance.
+      -> set_chance( legendary.secrets_of_the_vigil -> effectN( 1 ).percent() );
 
   buffs.pact_of_the_soulstalkers =
     make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )
@@ -7038,10 +7040,6 @@ struct hunter_module_t: public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_spell( "Hunter", "2022-03-08", "Hotfix does not match in-game behavior.", 336878 )
-        .field( "proc_chance" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 50 );
   }
 
   void combat_begin( sim_t* ) const override {}

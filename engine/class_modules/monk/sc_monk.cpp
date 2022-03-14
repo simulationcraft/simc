@@ -4077,7 +4077,8 @@ struct bountiful_brew_t : public monk_spell_t
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
     {
       auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
-      buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      // Unlike Bountiful Brew procs that extend it's duration, Lead by Example overrides it's buff.
+      buff->trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
     }
   }
 

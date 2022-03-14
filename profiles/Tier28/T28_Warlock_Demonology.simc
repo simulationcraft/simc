@@ -152,16 +152,16 @@ actions.tyrant_setup+=/call_dreadstalkers,if=variable.next_tyrant_cd<12-(action.
 actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
 head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,enchant=eternal_intellect
 hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935,gem_id=173128
+waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
 trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
@@ -173,8 +173,8 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_stamina=2974
 # gear_intellect=1786
 # gear_crit_rating=350
-# gear_haste_rating=912
-# gear_mastery_rating=930
+# gear_haste_rating=864
+# gear_mastery_rating=914
 # gear_versatility_rating=275
 # gear_armor=525
 # set_bonus=tier28_2pc=1

@@ -9991,6 +9991,23 @@ void druid_t::combat_begin()
   {
     eclipse_handler.reset_stacks();
 
+    switch ( eclipse_handler.state )
+    {
+      case eclipse_state_e::IN_BOTH:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_LUNAR:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_SOLAR:
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      default:
+        uptime.eclipse_none->update( true, sim->current_time() );
+        break;
+    }
+
     if ( options.raid_combat )
     {
       double cap = talent.natures_balance->ok() ? 50.0 : 20.0;

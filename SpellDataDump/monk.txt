@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42614 Live (hotfix 2022-03-08/42614, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -11407,7 +11407,6 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
                    Family Flags: 95
-Hotfixed         : Base Value (100 -> 60)
 #2 (id=844368)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Expel Harm (322101)
@@ -11725,7 +11724,6 @@ Description      : $@spelldesc325216
 Tooltip          : Cast time and cost of Enveloping Mist reduced by $w2%.
 
 Name             : Enveloping Mist (id=344008) [Spell Family (53)] 
-Hotfixed         : Attributes
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -12279,10 +12277,8 @@ Effects          :
                    Base Value: 24 | Scaled Value: 24 | PvP Coefficient: 1.00000
 #3 (id=890914)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 1)
 #4 (id=913653)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2500 | Scaled Value: 2500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Type (3 -> 6), Sub Type (0 -> 4), Target 1 (0 -> 1)
 Description      : Fallen Order summons $s1 additional $?$C1[Ox]?$C2[Crane][Tiger] adept for $s2 sec. While your mystic portal is open your abilities that critically hit reduce the cooldown of Fallen Order by $?a137024[${$s4/1000}.1][${$s3/1000}] sec.
 
 Name             : Invoke Xuen, the White Tiger (id=358518) [Spell Family (53)] 
@@ -12531,7 +12527,6 @@ Effects          :
                    Base Value: 22 | Scaled Value: 22 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc363734
 Tooltip          : Increases offensive ability damage by $w1%.
 
@@ -12636,7 +12631,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=905257)   : Apply Aura (6) | Unknown(285)
                    Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Trigger Spell: 356684 | Target: Self (1)
-Description      : $@356684
+Description      : $@spelldesc356684
 
 Name             : Sinister Teachings (id=364859) [Spell Family (53), Passive, Hidden] 
 School           : Physical
