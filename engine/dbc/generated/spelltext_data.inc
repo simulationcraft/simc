@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42698
-static const std::array<spelltext_data_t, 16052> __spelltext_data { {
+static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15591,7 +15591,6 @@ static const std::array<spelltext_data_t, 16052> __spelltext_data { {
   { 361090, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361091, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361118, "Increases the duration of Flask, Elixir, and Well Fed effects by $s1%.", 0, 0 },
-  { 361287, "$@spelldesc360370", 0, 0 },
   { 361356, "$@spelldesc367262\r\n$@spellaura366333", "$@spellaura367262", 0 },
   { 361357, "$@spelldesc367261\r\n$@spellaura366333", "$@spellaura367261", 0 },
   { 361358, "$@spelldesc367260 $@spellaura366333", "$@spellaura367260", 0 },
