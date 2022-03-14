@@ -3619,6 +3619,8 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( actual_spread_targets == 0 )
     {
+      // Always trigger Flame Shock on main target
+      p()->trigger_secondary_flame_shock( state->target );
       return;
     }
 
