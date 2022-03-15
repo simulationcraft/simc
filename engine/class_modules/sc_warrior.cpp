@@ -1038,7 +1038,7 @@ public:
 
       if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
       {
-        percent_increase *= 1.0 + p()->tier_set.outburst_4p->effectN( 1 ).percent();
+        percent_increase += p()->tier_set.outburst_4p->effectN( 1 ).percent();
       }
 
       dm *= 1.0 + percent_increase;
@@ -1064,11 +1064,6 @@ public:
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
       double percent_increase = p()->buff.avatar->data().effectN( 8 ).percent();
-
-      if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
-      {
-        percent_increase *= 1.0 + p()->tier_set.outburst_4p->effectN( 1 ).percent();
-      }
 
       tm *= 1.0 + percent_increase;
     }
