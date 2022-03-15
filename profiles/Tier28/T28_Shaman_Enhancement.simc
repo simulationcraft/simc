@@ -33,19 +33,23 @@ actions.precombat+=/lightning_shield
 actions.precombat+=/stormkeeper,if=talent.stormkeeper.enabled
 actions.precombat+=/windfury_totem,if=!runeforge.doom_winds.equipped
 actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
-actions.precombat+=/potion
+actions.precombat+=/variable,name=trinket1_is_weird,value=trinket.1.is.the_first_sigil|trinket.1.is.scars_of_fraternal_strife|trinket.1.is.cache_of_acquired_treasures
+actions.precombat+=/variable,name=trinket2_is_weird,value=trinket.2.is.the_first_sigil|trinket.2.is.scars_of_fraternal_strife|trinket.2.is.cache_of_acquired_treasures
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
 
 # Executed every time the actor is available.
 actions=bloodlust,line_cd=600
-# In-combat potion is before combat ends.
-actions+=/potion,if=expected_combat_length-time<60
+actions+=/potion,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30
 # Interrupt of casts.
 actions+=/wind_shear
 actions+=/auto_attack
 actions+=/heart_essence
-actions+=/use_items
+actions+=/use_item,name=the_first_sigil,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30
+actions+=/use_item,name=cache_of_acquired_treasures,if=buff.acquired_sword.up|fight_remains<25
+actions+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30
+actions+=/use_items,slots=trinket1,if=!variable.trinket1_is_weird
+actions+=/use_items,slots=trinket2,if=!variable.trinket2_is_weird
 actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
@@ -143,20 +147,20 @@ actions.single+=/earth_elemental
 actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
-head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173130
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
 trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
-trinket2=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
 
@@ -165,8 +169,8 @@ off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_
 # gear_agility=1434
 # gear_stamina=2988
 # gear_crit_rating=316
-# gear_haste_rating=919
-# gear_mastery_rating=926
+# gear_haste_rating=951
+# gear_mastery_rating=830
 # gear_versatility_rating=402
 # gear_avoidance_rating=30
 # gear_armor=1249

@@ -171,7 +171,7 @@ legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=boneshatter_treads,id=172323,bonus_id=6992/6650/6649/1588
 finger1=taciturn_keepers_lapis,id=189833,bonus_id=1524/7187,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
-trinket1=unbound_changeling,id=178708,bonus_id=6919/1592/6536/6646
+trinket1=unbound_changeling,id=178708,bonus_id=6917/1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=1524/7187

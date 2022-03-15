@@ -578,6 +578,31 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                   p.name(), util::slot_type_string( slot ) );
     }
 
+    // T28 allows gems only on legendaries in the correct slot
+    if ( tier_name == "T28" && gem_count ) {
+      if ( item.parsed.data.quality != ITEM_QUALITY_LEGENDARY || item.parsed.data.id == 186414 ) {
+        sim.error( "Player {} has prismatic socket on {} with a non-legendary, prismatic sockets are only valid on legendaries.\n",
+                    p.name(), util::slot_type_string( slot ) );
+      }
+    }
+
+    // T28 wants you to use gems on legendaries in the corect slot
+    if ( tier_name == "T28" && !gem_count ) {
+      bool valid_gem_slot = false;
+      for ( auto& gem_slot : SLOT_GEMS )
+      {
+        if ( item.slot == gem_slot )
+        {
+          valid_gem_slot = true;
+          break;
+        }
+      }
+      if ( valid_gem_slot && item.parsed.data.quality == ITEM_QUALITY_LEGENDARY && item.parsed.data.id != 186414 ) {
+        sim.error( "Player {} has no prismatic socket on {}, this legendary item on this slot should have a prismatic socket.\n",
+                    p.name(), util::slot_type_string( slot ) );
+      }
+    }
+
     // Check if an unique equipped item is equipped multiple times
     if ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_TRINKET_1 || slot == SLOT_TRINKET_2 )
     {

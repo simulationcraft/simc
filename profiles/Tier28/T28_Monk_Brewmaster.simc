@@ -103,7 +103,7 @@ wrists=risen_monstrosity_cuffs,id=178741,bonus_id=1592/6536/6646
 hands=umbrahide_gauntlets,id=172316,bonus_id=7077/1588/6650/6647
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant_id=6211
+feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant=eternal_agility
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
 finger2=shadowghast_ring,id=178926,bonus_id=8124/1588/6650/6647/6935,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646

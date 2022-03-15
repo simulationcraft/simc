@@ -2981,7 +2981,11 @@ void brokers_lucky_coin( special_effect_t& effect )
       : dbc_proc_callback_t( e.player, e ),
         heads( make_buff<stat_buff_t>( effect.player, "heads", effect.player->find_spell( 367466 ) ) ),
         tails( make_buff<stat_buff_t>( effect.player, "tails", effect.player->find_spell( 367467 ) ) )
-    {}
+    {
+      // Values in the stat buffs are set to 0 and passed down from the trigger spell aura
+      heads->stats[ 0 ].amount = e.driver()->effectN( 1 ).average( effect.item );
+      tails->stats[ 0 ].amount = e.driver()->effectN( 1 ).average( effect.item );
+    }
 
     void execute( action_t*, action_state_t* ) override
     {

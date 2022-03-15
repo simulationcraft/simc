@@ -9,20 +9,20 @@ covenant=venthyr
 soulbind=theotar_the_mad_duke:9,336239/336147/263:11:1/336184/319983/280:11:1/351748/351750
 renown=80
 
-head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
+head=headpiece_of_the_fixed_stars,id=188847,bonus_id=7187/1498/6935
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=7187/1505
 back=lurking_predators_camouflage,id=189815,bonus_id=1524/7187
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=7187/1505,enchant=eternal_insight
-wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,gem_id=173130,enchant=eternal_intellect
+wrists=wrists_of_the_wicked_star,id=189836,bonus_id=1524/7187,enchant=eternal_intellect
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=7187/1505
-waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935,gem_id=173130
+waist=runecarvers_twisted_ward,id=189856,bonus_id=7187/1524/6935
 legs=umbrahide_leggings,id=172318,bonus_id=6716/8121/6648/6649/1588
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1522/6807
 finger1=shadowghast_ring,id=178926,bonus_id=6716/7088/6649/6648/1588,gem_id=173130,enchant=tenet_of_mastery
-finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,gem_id=173130,enchant=tenet_of_haste
+finger2=signet_of_the_false_accuser,id=178824,bonus_id=1592/6536/6646,enchant=tenet_of_haste
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-trinket2=soleahs_secret_technique,id=185818,bonus_id=1595/6536/6646
+trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
@@ -44,18 +44,18 @@ soulbind=niya:1,322721/265:11:1/342270/260:11:1/320668/271:11:1/279:11:1/320660/
 renown=80
 druid.owlweave_cat=1
 
-head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
-neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
+head=headpiece_of_the_fixed_stars,id=188847,bonus_id=1498
+neck=beacon_of_stormwind,id=189838,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
 back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
 chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
-waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
 feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
@@ -77,18 +77,18 @@ soulbind=niya:1,322721/265:11:1/342270/260:11:1/320668/271:11:1/279:11:1/320660/
 renown=80
 druid.owlweave_cat=0
 
-head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
-neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
+head=headpiece_of_the_fixed_stars,id=188847,bonus_id=1498
+neck=beacon_of_stormwind,id=189838,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
 back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
 chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
-waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
 feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
@@ -110,18 +110,18 @@ soulbind=niya:1,322721/265:11:1/342270/260:11:1/320668/271:11:1/279:11:1/320660/
 renown=80
 druid.owlweave_cat=0
 
-head=headpiece_of_the_fixed_stars,id=188847,gem_id=173127,bonus_id=1498
-neck=beacon_of_stormwind,id=189838,gem_id=173129,bonus_id=1524
+head=headpiece_of_the_fixed_stars,id=188847,bonus_id=1498
+neck=beacon_of_stormwind,id=189838,bonus_id=1524
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=1505
 back=shroud_of_the_sires_chosen,id=189847,enchant=soul_vitality,bonus_id=1524
 chest=umbrahide_vest,id=172314,bonus_id=7086/6647/6650/1588,enchant=eternal_stats
 wrists=umbrahide_armguards,id=172321,bonus_id=8121/7451/6647/6650/1588,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=1498
-waist=runecarvers_twisted_ward,id=189856,gem_id=173130,bonus_id=1524
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=1498
 feet=treads_of_titanic_curiosity,id=189848,enchant=eternal_agility,bonus_id=1524
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524
 trinket2=sinful_gladiators_badge_of_ferocity,id=175921,bonus_id=1547
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524,enchant=sinful_revelation
@@ -140,19 +140,19 @@ covenant=night_fae
 soulbind=niya:1,322721/269:11:1/342270/260:11:1/320668/254:11:1/271:11:1/320659/279:11:1/352501/283:11:1/352503
 
 head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
-neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524
 shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
-wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
-waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
 feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
-finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
-trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
+finger1=taciturn_keepers_lapis,id=189833,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=4800/4786/1524
+trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
 
 save=T28_Druid_Guardian.simc
@@ -170,17 +170,17 @@ covenant=venthyr
 soulbind=theotar_the_mad_duke:9,336239/254:11:1/336140/269:11:1/336184/271:11:1/270:11:1/336245/280:11:1/351748/283:11:1/351750
 
 head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
-neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524
 shoulder=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
-wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
+wrist=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
-waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
 feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=3536/4786/1592
 trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
