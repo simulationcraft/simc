@@ -578,14 +578,6 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                   p.name(), util::slot_type_string( slot ) );
     }
 
-    // T28 allows gems only on legendaries in the correct slot
-    if ( tier_name == "T28" && gem_count ) {
-      if ( item.parsed.data.quality != ITEM_QUALITY_LEGENDARY || item.parsed.data.id == 186414 ) {
-        sim.error( "Player {} has prismatic socket on {} with a non-legendary, prismatic sockets are only valid on legendaries.\n",
-                    p.name(), util::slot_type_string( slot ) );
-      }
-    }
-
     // T28 wants you to use gems on legendaries in the corect slot
     if ( tier_name == "T28" && !gem_count ) {
       bool valid_gem_slot = false;
@@ -597,8 +589,8 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
           break;
         }
       }
-      if ( valid_gem_slot && item.parsed.data.quality == ITEM_QUALITY_LEGENDARY && item.parsed.data.id != 186414 ) {
-        sim.error( "Player {} has no prismatic socket on {}, this legendary item on this slot should have a prismatic socket.\n",
+      if ( valid_gem_slot ) {
+        sim.error( "Player {} has no prismatic socket on {}, sockets are buyable for weekly chest currency.\n",
                     p.name(), util::slot_type_string( slot ) );
       }
     }
