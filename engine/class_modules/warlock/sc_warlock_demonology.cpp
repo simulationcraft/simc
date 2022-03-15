@@ -1348,10 +1348,11 @@ void warlock_t::create_apl_demonology()
   ogcd->add_action( "fireblood" );
   ogcd->add_action( "use_items" );
 
-  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.buff_sync_cd<22" );
   trinks->add_action( "use_item,name=scars_of_fraternal_strife" );
+  trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.buff_sync_cd<22" );
+  trinks->add_action( "use_item,name=grim_eclipse,if=variable.buff_sync_cd<7" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&variable.next_tyrant_cd<20" );
-  trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly to target require additional, separate handling" );
+  trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly from the target require additional, separate handling" );
   trinks->add_action( "use_item,name=overflowing_anima_cage,if=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   trinks->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&((!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up))" );
   trinks->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&((!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up))" );
@@ -1364,7 +1365,6 @@ void warlock_t::create_apl_demonology()
   hp->add_action( "use_item,name=sinful_gladiators_emblem" );
   hp->add_action( "use_item,name=sinful_aspirants_emblem" );
 
-  dmg->add_action( "use_item,name=grim_eclipse" );
   dmg->add_action( "use_item,name=resonant_reservoir" );
   dmg->add_action( "use_item,name=architects_ingenuity_core" );
   dmg->add_action( "use_item,name=cosmic_gladiators_resonator" );
