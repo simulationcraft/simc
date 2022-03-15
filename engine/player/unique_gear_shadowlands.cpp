@@ -3859,6 +3859,28 @@ void earthbreakers_impact( special_effect_t& effect )
   effect.execute_action = create_proc_action<earthbreakers_impact_t>( "earthbreakers_impact", effect );
 };
 
+void prismatic_brilliance( special_effect_t& effect )
+{
+  auto val = effect.driver()->effectN( 1 ).average( effect.item );
+  std::vector<stat_buff_t*> buffs;
+
+  buffs.push_back( make_buff<stat_buff_t>( effect.player, "brilliantly_critical", effect.player->find_spell( 367327 ) )
+                       ->add_stat( STAT_CRIT_RATING, val ) );
+  buffs.push_back( make_buff<stat_buff_t>( effect.player, "brilliantly_masterful", effect.player->find_spell( 367455 ) )
+                       ->add_stat( STAT_MASTERY_RATING, val ) );
+  buffs.push_back( make_buff<stat_buff_t>( effect.player, "brilliantly_versatile", effect.player->find_spell( 367457 ) )
+                       ->add_stat( STAT_VERSATILITY_RATING, val ) );
+  buffs.push_back( make_buff<stat_buff_t>( effect.player, "brilliantly_hasty", effect.player->find_spell( 367458 ) )
+                       ->add_stat( STAT_HASTE_RATING, val ) );
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_execute_function(
+      effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
+        buffs[ cb->rng().range( buffs.size() ) ]->trigger();
+      } );
+}
+
 // Weapons
 
 // id=331011 driver
@@ -5352,6 +5374,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
     unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
+    unique_gear::register_special_effect( 367325, items::prismatic_brilliance );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );

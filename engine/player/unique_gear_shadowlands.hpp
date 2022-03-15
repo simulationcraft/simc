@@ -65,6 +65,7 @@ void resonant_reservoir( special_effect_t& );
 void elegy_of_the_eternals( special_effect_t& );
 void grim_eclipse( special_effect_t& );
 void pulsating_riftshard( special_effect_t& );
+void prismatic_brilliance( special_effect_t& );
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );

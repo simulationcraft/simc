@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42698
-static const std::array<spelltext_data_t, 16051> __spelltext_data { {
+static const std::array<spelltext_data_t, 16057> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15886,12 +15886,16 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 367272, "Protects the bearer from stun, root, and snare effects from enemy creatures. This effect can only occur once every $366085d.", "Protected from stun, root, and snare effects from enemy creatures. This effect can only occur once every $366085d.", 0 },
   { 367307, "Whenever a nearby Automa dies, your cooldowns recover $s2% more quickly for $368937d.", 0, 0 },
   { 367325, "Your damaging and healing spells have a chance to shine through one of the facets, increasing a random secondary stat by $s1 for 10 seconds.", 0, 0 },
+  { 367327, "$@spelldesc367325", "Critical Strike increased by $w1.", 0 },
   { 367333, "Taking damage has a chance to fabricate an ally from the Pocket Protoforge who interferes with your enemies' attacks, assisting in combat and absorbing $s2 damage.", 0, 0 },
   { 367336, "Your damaging abilities have a high chance to smell out the scent of delicious soul energy, stacking up to $s2 times. At full stacks, a swarm of devourers burst forth, chomping your target for $s1 Physical damage.\r\n\r\nEffects that cause your target to move generate bonus stacks.", 0, 0 },
   { 367389, "Craft a Glyph of the Spectral Lupine.", 0, 0 },
   { 367393, "Craft a Glyph of the Spectral Vulpine.", 0, 0 },
   { 367405, "Increases Agility, Intellect and Strength by $s1 for $d.  Augment Rune.", "Agility, Intellect and Strength increased by $w1.", 0 },
   { 367421, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
+  { 367455, "$@spelldesc367325", "Mastery increased by $w1.", 0 },
+  { 367457, "$@spelldesc367325", "Versatility increased by $w1.", 0 },
+  { 367458, "$@spelldesc367325", "Haste increased by $w1.", 0 },
   { 367464, "Your damaging attacks and spells have a chance to flip a coin granting $s1 of a secondary stat for 15 sec. Heads is Critical Strike, and Tails is Haste.", 0, 0 },
   { 367466, "$@spelldesc367464", "Critical Strike increased by $w1.", 0 },
   { 367467, "$@spelldesc367464", "Haste increased by $w1.", 0 },
@@ -16051,6 +16055,8 @@ static const std::array<spelltext_data_t, 16051> __spelltext_data { {
   { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
   { 369786, "$@spelldesc366436", 0, 0 },
+  { 370353, "Add a socket to a Shadowlands Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
+  { 370359, "Increase the Renown of your currently active Covenant by $s1.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42698
