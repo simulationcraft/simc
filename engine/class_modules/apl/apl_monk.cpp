@@ -252,6 +252,8 @@ void brewmaster( player_t* p )
                    "if=buff.blackout_combo.down&incoming_damage_1999ms>(health.max*0.1+stagger.last_tick_damage_4)&buff.elusive_brawler.stack<2",
                    "Celestial Brew priority whenever it took significant damage (adjust the health.max coefficient "
                    "according to intensity of damage taken), and to dump excess charges before BoB." );
+  
+  def->add_action( "exploding_keg" );
 
   def->add_action( p, "Tiger Palm",
                    "if=talent.rushing_jade_wind.enabled&buff.blackout_combo.up&buff.rushing_jade_wind.up" );
