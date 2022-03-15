@@ -17,10 +17,10 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588,gem_id=173128
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=boots_of_ceaseless_conflict,id=189794,bonus_id=1524/7187
-finger1=death_gods_signet,id=179355,bonus_id=1592/7187,gem_id=173128,enchant=tenet_of_haste
+finger1=death_gods_signet,id=179355,bonus_id=1592/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/7187
 trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
@@ -48,10 +48,10 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588,gem_id=173128
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=boots_of_ceaseless_conflict,id=189794,bonus_id=1524/7187
-finger1=death_gods_signet,id=179355,bonus_id=1592/7187,gem_id=173128,enchant=tenet_of_haste
+finger1=death_gods_signet,id=179355,bonus_id=1592/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/7187
 trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
@@ -72,7 +72,7 @@ soulbind=emeni,lead_by_example/borne_of_blood:11:1/emenis_magnificent_skin/pustu
 renown=80
 default_pet=sayaad
 
-head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173129
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588/6935,gem_id=173129
 neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
@@ -102,7 +102,7 @@ covenant=night_fae
 soulbind=dreamweaver,field_of_blossoms/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/dream_delver
 renown=80
 
-head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588,gem_id=173130
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6648/1808/1588/6935,gem_id=173130
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
@@ -113,7 +113,7 @@ waist=sash_of_exquisite_acquisitions,id=179343,bonus_id=1592/6536/6646/6935,gem_
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588,gem_id=173128,enchant=tenet_of_haste
+finger2=shadowghast_ring,id=178926,bonus_id=6716/7025/6649/6648/1808/1588/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
 trinket2=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
@@ -133,14 +133,14 @@ covenant=night_fae
 renown=80
 default_pet=sayaad
 
-head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588,gem_id=173128
+head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
 hands=grasps_of_the_demon_star,id=188890,bonus_id=1498/7187
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=slippers_of_leavened_station,id=178831,bonus_id=1592/6536/6646
 finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
