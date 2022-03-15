@@ -447,7 +447,7 @@ struct sim_t : private sc_thread_t
     // Earthbreaker's Impact weak points triggered
     unsigned int earthbreakers_impact_weak_points = 3;
     // Grim Eclipse Dot Duration override
-    timespan_t grim_eclipse_dot_uptime = 7_s;
+    double grim_eclipse_dot_duration_multiplier = 1.0;
     // Percentage of default duration for Grim Eclipse haste buff. Set to 90% by default assuming about 1s of movement to get to the Event Horizon
     double grim_eclipse_buff_duration_multiplier = 0.9;
   } shadowlands_opts;

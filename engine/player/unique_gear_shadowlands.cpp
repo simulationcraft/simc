@@ -3565,20 +3565,23 @@ void grim_eclipse( special_effect_t& effect )
         buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) ),
         base_duration( 10_s )
     {
-      // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
       dot_duration   = data().duration();
+      // Not in spelldata
       base_tick_time = 1_s;
 
-      if ( e.player->sim->shadowlands_opts.grim_eclipse_dot_uptime > 0_ms )
+      if ( e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier > 0.0 )
       {
-        dot_duration = e.player->sim->shadowlands_opts.grim_eclipse_dot_uptime;
-        e.player->sim->print_debug( "Altering grim_eclipse DoT Uptime: grim_eclipse_dot_uptime={}",
-                                    e.player->sim->shadowlands_opts.grim_eclipse_dot_uptime );
+        e.player->sim->print_debug(
+            "Altering grim_eclipse DoT Uptime by {}. Old Duration: {}. New duration: {}",
+            e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier, data().duration(),
+            data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier );
+        dot_duration = data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier;
       }
 
       tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
+      // Use data().duration() here so that if you alter dot_duration the tick value is not changed
       tick_action->base_dd_min = tick_action->base_dd_max =
-          e.driver()->effectN( 1 ).average( e.item ) / dot_duration.total_seconds();
+          e.driver()->effectN( 1 ).average( e.item ) / data().duration().total_seconds();
 
       buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
       base_duration = buff->buff_duration();
