@@ -148,17 +148,17 @@ actions.single+=/flame_shock
 actions.single+=/windfury_totem,if=buff.windfury_totem.remains<30
 
 head=boneshatter_helm,id=172325,bonus_id=8128/7451/6649/6648/1588,gem_id=173128
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173128
 shoulders=theurgic_starspeakers_adornment,id=188920,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=fortified_avoidance
 chest=theurgic_starspeakers_ringmail,id=188922,bonus_id=1505/7187,enchant=eternal_stats
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187,gem_id=173128
 hands=theurgic_starspeakers_runebindings,id=188925,bonus_id=1505/7187
-waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187
+waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173130
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,enchant=tenet_of_haste
+finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6648/1588/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173130,enchant=tenet_of_haste
 trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation
@@ -169,8 +169,8 @@ off_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_
 # gear_agility=1434
 # gear_stamina=2988
 # gear_crit_rating=316
-# gear_haste_rating=951
-# gear_mastery_rating=830
+# gear_haste_rating=967
+# gear_mastery_rating=878
 # gear_versatility_rating=402
 # gear_avoidance_rating=30
 # gear_armor=1249
