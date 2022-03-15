@@ -14,8 +14,13 @@
 # * World Bosses gear is permitted.
 # * World Drop gear is permitted.
 # * World Quests gear is permitted as long as item level is only scaled from Renown / Average Character Item Level.
-# * No random sockets. (in 9.2.0 only Legendaries have surefire sockets in the following slots: head, neck, wrist, waist, finger1, finger2)
+# * Use sockets on the slots head, neck, wrist, waist, finger1, finger2. (9.2.0 introduced buyable socket slots via weekly chest currency)
 # * A piece of gear can not have more than one socket, regardless of type.
+# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
+#   * gem crit: 173127
+#   * gem haste: 173128
+#   * gem mastery: 173130
+#   * gem versatility: 173129
 # * No Tertiary Stats.
 # * No Hardcoded Stats (generally if an item gives wrong stats: either bonus_id is wrong, or the item no longer exists in-game).
 # * Renown is considered to be >= 80, so every row from each soulbind tree is unlocked.
@@ -39,11 +44,6 @@
 #   * 8129: ['Affliction', 'Demonology', 'Destruction']
 #   * 8130: ['Fury', 'Arms', 'Protection']
 # * Must use enchant name (ex: ",enchant=tenet_of_haste") instead of ids/hardcoded stats.
-# * Must use gem ids (ex: ",gem_id=173127") instead of hardcoded stats.
-#   * gem crit: 173127
-#   * gem haste: 173128
-#   * gem mastery: 173130
-#   * gem versatility: 173129
 # * Must use soulbind npc/ability/conduit name (ex: "soulbind=npc_name,ability1_name/conduit1_name:11:1/..."") instead of ids.
 
 
