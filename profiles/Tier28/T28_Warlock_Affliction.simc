@@ -266,10 +266,10 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588,gem_id=173128
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
 feet=boots_of_ceaseless_conflict,id=189794,bonus_id=1524/7187
-finger1=death_gods_signet,id=179355,bonus_id=1592/7187,gem_id=173128,enchant=tenet_of_haste
+finger1=death_gods_signet,id=179355,bonus_id=1592/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=soulletting_ruby,id=178809,bonus_id=1592/7187
 trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
