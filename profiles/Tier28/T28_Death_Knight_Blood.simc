@@ -106,13 +106,13 @@ neck=shadowghast_necklace,id=178927,bonus_id=6716/6953/6647/6650/1808/1588,gem_i
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=realityshatter_vambraces,id=179354,bonus_id=1592/6646/6935
+wrists=realityshatter_vambraces,id=179354,bonus_id=1592/6646/6935,gem_id=173129
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-waist=waistguard_of_expurged_anguish,id=178842,bonus_id=1592/6646/6935
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=1592/6646/6935,gem_id=173129
 legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
 feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
-finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6646/6935,enchant=tenet_of_versatility
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,enchant=tenet_of_versatility
+finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
 trinket2=spare_meat_hook,id=178751,bonus_id=6652/1592/6646
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
@@ -124,7 +124,7 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_o
 # gear_crit_rating=917
 # gear_haste_rating=355
 # gear_mastery_rating=515
-# gear_versatility_rating=625
+# gear_versatility_rating=689
 # gear_armor=1841
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

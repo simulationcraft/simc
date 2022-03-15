@@ -170,17 +170,17 @@ actions.vanish+=/vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&debuff.
 # Vanish with Master Assasin: Rupture+Garrote not in refresh range, during Vendetta+Shiv. Sync with Sepsis final hit if possible.
 actions.vanish+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&(debuff.shiv.up|debuff.vendetta.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
-head=soulblade_guise,id=188901,bonus_id=1498/7187/6935
+head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173129
 neck=shadowghast_necklace,id=178927,bonus_id=6716/8127/6647/6649/1808/1588,gem_id=173127
 shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173127
 hands=soulblade_grasps,id=188907,bonus_id=1505/7187
-waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
 legs=soulblade_leggings,id=188902,bonus_id=1498/7187
 feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant=eternal_agility
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6935,ilevel=272,enchant=tenet_of_haste
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6935,ilevel=272,gem_id=173129,enchant=tenet_of_haste
 finger2=shadowghast_ring,id=178926,bonus_id=6716/7118/6647/6649/1808/1588,gem_id=173127,enchant=tenet_of_versatility
 trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
 trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
@@ -192,10 +192,10 @@ off_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=sinful_revel
 # gear_agility=1407
 # gear_stamina=2910
 # gear_attack_power=40
-# gear_crit_rating=967
+# gear_crit_rating=999
 # gear_haste_rating=780
 # gear_mastery_rating=243
-# gear_versatility_rating=487
+# gear_versatility_rating=519
 # gear_armor=855
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

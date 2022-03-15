@@ -178,17 +178,17 @@ actions.stealthed+=/shadowstrike
 actions.stealthed+=/cheap_shot,if=!target.is_boss&combo_points.deficit>=1&buff.shot_in_the_dark.up&energy.time_to_40>gcd.max
 
 head=umbrahide_helm,id=172317,bonus_id=7124/6716/6647/6650/1588/6935,gem_id=173129
-neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935
+neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
 shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
 back=drape_of_mournful_melodies,id=189791,bonus_id=1524/7187
 chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173129
 hands=soulblade_grasps,id=188907,bonus_id=1505/7187
-waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173129
 legs=soulblade_leggings,id=188902,bonus_id=1498/7187
 feet=umbrahide_treads,id=172315,bonus_id=6716/8127/6647/6650/1588,enchant=eternal_agility
-finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,enchant=tenet_of_versatility
-finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,enchant=tenet_of_versatility
+finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
 trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
 main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
@@ -202,7 +202,7 @@ off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_rev
 # gear_crit_rating=1069
 # gear_haste_rating=179
 # gear_mastery_rating=145
-# gear_versatility_rating=954
+# gear_versatility_rating=1034
 # gear_armor=867
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

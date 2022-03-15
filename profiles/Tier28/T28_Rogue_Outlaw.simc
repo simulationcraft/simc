@@ -126,18 +126,18 @@ actions.finish+=/dispatch
 actions.stealth=dispatch,if=variable.finish_condition
 actions.stealth+=/ambush
 
-head=soulblade_guise,id=188901,bonus_id=1498/7187/6935
+head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173129
 neck=shadowghast_necklace,id=178927,bonus_id=6716/7114/6647/6649/1808/1588,gem_id=173129
 shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
 back=blighted_margraves_cloak,id=178755,bonus_id=1592/6536/6646
 chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935
+wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935,gem_id=173127
 hands=umbrahide_gauntlets,id=172316,bonus_id=6716/8127/6647/6650/1588
-waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
 legs=soulblade_leggings,id=188902,bonus_id=1498/7187
 feet=moccasins_of_dreadful_absolution,id=189798,bonus_id=1524/7187,enchant=eternal_agility
-finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646,enchant=tenet_of_versatility
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6935,ilevel=272,enchant=tenet_of_critical_strike
+finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646,gem_id=173127,enchant=tenet_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6935,ilevel=272,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=faulty_countermeasure,id=137539,ilevel=272
 trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
 main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
@@ -148,10 +148,10 @@ off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_rev
 # gear_agility=1261
 # gear_stamina=2830
 # gear_attack_power=40
-# gear_crit_rating=891
+# gear_crit_rating=939
 # gear_haste_rating=702
 # gear_mastery_rating=82
-# gear_versatility_rating=796
+# gear_versatility_rating=828
 # gear_armor=853
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

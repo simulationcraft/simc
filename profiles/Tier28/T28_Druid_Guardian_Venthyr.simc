@@ -133,17 +133,17 @@ actions.owlweave+=/starfire,if=(eclipse.in_lunar|eclipse.solar_next)|(eclipse.in
 actions.owlweave+=/wrath
 
 head=umbrahide_helm,id=172317,bonus_id=6716/8121/6647/6650/1808/1588,gem_id=173129
-neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524
+neck=worldkiller_iris,id=189859,bonus_id=4800/4786/1524,gem_id=173129
 shoulders=shoulderpads_of_the_fixed_stars,id=188851,bonus_id=4800/4786/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=4800/4786/1524,enchant=soul_vitality
 chest=chestguard_of_the_fixed_stars,id=188849,bonus_id=4800/4786/1505,enchant=eternal_skirmish
-wrists=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592
+wrists=risen_monstrosity_cuffs,id=178741,bonus_id=3536/4786/1592,gem_id=173129
 hands=handwraps_of_the_fixed_stars,id=188853,bonus_id=4800/4786/1498
-waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524
+waist=runecarvers_twisted_ward,id=189856,bonus_id=4800/4786/1524,gem_id=173129
 legs=leggings_of_the_fixed_stars,id=188848,bonus_id=4800/4786/1498
 feet=umbrahide_treads,id=172315,bonus_id=6716/7095/6647/6650/1588,enchant=eternal_agility
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,enchant=tenet_of_critical_strike
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=4800/4786/1524,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=3536/4786/1592
 trinket2=shadowgrasp_totem,id=179356,bonus_id=3536/4786/1592
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinful_revelation
@@ -155,7 +155,7 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=4800/4786/1524,enchant=sinfu
 # gear_crit_rating=755
 # gear_haste_rating=786
 # gear_mastery_rating=518
-# gear_versatility_rating=403
+# gear_versatility_rating=483
 # gear_armor=865
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

@@ -127,13 +127,13 @@ neck=shadowghast_necklace,id=178927,bonus_id=6716/7043/6647/6649/1808/1588/6935,
 shoulders=mercurial_punishers_shoulderpads,id=188896,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=mercurial_punishers_jerkin,id=188894,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935
+wrists=devourers_sandblown_hidebinders,id=189812,bonus_id=1524/7187/6935,gem_id=173129
 hands=mercurial_punishers_grips,id=188898,bonus_id=1498/7187
-waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935
+waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173129
 legs=mercurial_punishers_breeches,id=188893,bonus_id=1498/7187
 feet=vanquished_usurpers_footpads,id=178797,bonus_id=1592/6536/6646,enchant=eternal_agility
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,enchant=tenet_of_versatility
-finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,enchant=tenet_of_versatility
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173129,enchant=tenet_of_versatility
+finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
 trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
 main_hand=alandiens_tortured_twinblades,id=189846,bonus_id=1524/7187,enchant=sinful_revelation
@@ -147,7 +147,7 @@ off_hand=poxstorm_longsword_of_pestilence,id=178754,bonus_id=1592/6536/6646,ench
 # gear_crit_rating=603
 # gear_haste_rating=1190
 # gear_mastery_rating=130
-# gear_versatility_rating=542
+# gear_versatility_rating=606
 # gear_armor=857
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
