@@ -9,18 +9,18 @@ covenant=venthyr
 soulbind=Nadja_the_mistblade:8,thrill_seeker/punish_the_guilty:11:1/hallowed_discernment:11:1/dauntless_duelist/fatal_flaw
 renown=80
 
-head=Luminous_Chevaliers_Casque,id=188933,bonus_id=7187/1498/6935
-neck=Worldkiller_Iris,id=189859,bonus_id=7187/1524/6935
+head=Luminous_Chevaliers_Casque,id=188933,bonus_id=7187/1498/6935,gem_id=173128
+neck=Worldkiller_Iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
 shoulder=Luminous_Chevaliers_Epaulettes,id=188932,bonus_id=7187/1505
 back=Shroud_of_the_Sires_Chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
 chest=Luminous_Chevaliers_Plackart,id=188929,bonus_id=7187/1505,enchant=eternal_stats
-wrist=Veiled_Auctioneers_Vambraces,id=189825,bonus_id=7187/1524/6935
+wrist=Veiled_Auctioneers_Vambraces,id=189825,bonus_id=7187/1524/6935,gem_id=173128
 hands=Luminous_Chevaliers_Gauntlets,id=188928,bonus_id=7187/1505,enchant=eternal_strength
 waist=Shadowghast_Waistguard,id=171418,bonus_id=6648/6649/8125/6716/1588/6935,gem_id=173128
 legs=Legguards_of_the_Ultimate_Threat,id=189858,bonus_id=7187/1524
 feet=Shadowghast_Sabatons,id=171413,bonus_id=6648/6649/7054/6716/1588
-finger1=Rygelons_Heraldric_Ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_haste
-finger2=Loquacious_Keepers_Peridot,id=189802,bonus_id=7187/1524/6935,enchant=tenet_of_haste
+finger1=Rygelons_Heraldric_Ring,id=189854,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
+finger2=Loquacious_Keepers_Peridot,id=189802,bonus_id=7187/1524/6935,enchant=tenet_of_haste,gem_id=173128
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
 trinket2=Phial_of_Putrefaction,id=178771,bonus_id=6536/1592/6646
 main_hand=Devastated_Worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
@@ -50,18 +50,18 @@ covenant=kyrian
 soulbind=mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/ringing_clarity:11:1/virtuous_command:11:1/templars_vindication:11:1
 renown=80
 
-head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935
+head=luminous_chevaliers_casque,id=188933,bonus_id=1498/7187/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
 shoulders=luminous_chevaliers_epaulettes,id=188932,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=shadowghast_breastplate,id=171412,bonus_id=6649/6648/6758/7064/1588,enchant=eternal_stats
-wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935
+wrists=bracers_of_the_inscrutable_inventor,id=189805,bonus_id=1524/7187/6935,gem_id=173128
 hands=luminous_chevaliers_gauntlets,id=188928,bonus_id=1505/7187,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6650/6648/6758/8125/1588/6935,gem_id=173128
 legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
 feet=songmad_sabatons,id=189786,bonus_id=1524/7187
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,enchant=tenet_of_haste
-finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,enchant=tenet_of_haste
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=overwhelming_power_crystal,id=179342,bonus_id=1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation

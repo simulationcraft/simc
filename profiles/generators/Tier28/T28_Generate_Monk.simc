@@ -21,7 +21,7 @@ wrists=risen_monstrosity_cuffs,id=178741,bonus_id=1592/6536/6646
 hands=umbrahide_gauntlets,id=172316,bonus_id=7077/1588/6650/6647
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant=eternal_agility
+feet=viscerastitched_footpads,id=178731,bonus_id=1592/6536/6646,enchant_id=6211
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
 finger2=shadowghast_ring,id=178926,bonus_id=8124/1588/6650/6647/6935,gem_id=173129,enchant=tenet_of_critical_strike
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
@@ -53,7 +53,7 @@ wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187
 hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant=eternal_agility
+feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant_id=6211
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
 finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646,enchant=tenet_of_versatility
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
@@ -85,7 +85,7 @@ wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187
 hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant=eternal_agility
+feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant_id=6211
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
 finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646,enchant=tenet_of_versatility
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
@@ -117,7 +117,7 @@ wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646
 hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187
 legs=umbrahide_leggings,id=172318,bonus_id=8124/1588/6650/6647
-feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant=eternal_agility
+feet=umbrahide_treads,id=172315,bonus_id=7076/1588/6650/6647,enchant_id=6211
 finger1=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646,enchant=tenet_of_critical_strike
 finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646,enchant=tenet_of_versatility
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646

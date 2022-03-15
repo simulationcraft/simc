@@ -142,7 +142,7 @@ wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
 hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
 legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6648/6649/7451/6969/1588
+feet=shadowghast_sabatons,id=171413,bonus_id=6648/6649/7451/6969/1588,gem_id=173128
 finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
 trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
