@@ -154,18 +154,18 @@ actions.st+=/mongoose_bite,target_if=max:debuff.latent_poison_injection.stack,if
 actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack
 actions.st+=/wildfire_bomb,if=(next_wi_bomb.volatile&dot.serpent_sting.ticking|next_wi_bomb.pheromone|next_wi_bomb.shrapnel&focus>50)&!set_bonus.tier28_2pc
 
-head=godstalkers_sallet,id=188859,bonus_id=1498/7187
-neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646
+head=godstalkers_sallet,id=188859,bonus_id=1498/7187/6935,gem_id=173128
+neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173128
 shoulders=godstalkers_pauldrons,id=188856,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=godstalkers_hauberk,id=188858,bonus_id=1505/7187,enchant=eternal_stats
-wrists=interdimensional_manica,id=189849,bonus_id=1524/7187
+wrists=interdimensional_manica,id=189849,bonus_id=1524/7187/6935,gem_id=173128
 hands=godstalkers_gauntlets,id=188861,bonus_id=1505/7187
 waist=boneshatter_waistguard,id=172328,bonus_id=6649/6650/7015/1588/6935,gem_id=173128
 legs=epochal_oppressors_greaves,id=189857,bonus_id=1524/7187
 feet=boneshatter_treads,id=172323,bonus_id=6649/6650/8122/1588,enchant=eternal_agility
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,enchant=tenet_of_haste
-finger2=bloodoath_signet,id=178871,bonus_id=1592/6536/6646,enchant=tenet_of_haste
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=shadowgrasp_totem,id=179356,bonus_id=1592/6536/6646
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
@@ -176,7 +176,7 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_rev
 # gear_stamina=2941
 # gear_attack_power=20
 # gear_crit_rating=670
-# gear_haste_rating=1260
+# gear_haste_rating=1340
 # gear_versatility_rating=515
 # gear_armor=1258
 # set_bonus=tier28_2pc=1
