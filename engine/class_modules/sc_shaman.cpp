@@ -7478,11 +7478,6 @@ struct primordial_wave_t : public shaman_spell_t
     {
       cooldown->reset( true );
     }
-
-    if ( p()->bugs && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      p()->cooldown.frost_shock->reset( true );
-    }
   }
 
   void impact( action_state_t* s ) override
