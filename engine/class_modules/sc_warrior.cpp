@@ -4453,6 +4453,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.outburst->check() )
     {
+      rage_gain += p() -> buff.outburst->data().effectN( 3 ).resource( RESOURCE_RAGE );
       p()->buff.ignore_pain->trigger();
       p()->buff.outburst->expire();
     }
@@ -4658,6 +4659,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p()->buff.outburst->check() )
     {
+      rage_gain += p() -> buff.outburst->data().effectN( 4 ).resource( RESOURCE_RAGE );
       p()->buff.ignore_pain->trigger();
       p()->buff.outburst->expire();
     }
