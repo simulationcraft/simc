@@ -3558,28 +3558,62 @@ void grim_eclipse( special_effect_t& effect )
   struct grim_eclipse_t : public proc_spell_t
   {
     stat_buff_t* buff;
+    timespan_t base_duration;
 
     grim_eclipse_t( const special_effect_t& e )
       : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
-        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
+        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) ),
+        base_duration( 10_s )
     {
-      // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
-      dot_duration = data().duration();
+      dot_duration   = data().duration();
+      // Not in spelldata
       base_tick_time = 1_s;
 
+      if ( e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier > 0.0 )
+      {
+        e.player->sim->print_debug(
+            "Altering grim_eclipse DoT Uptime by {}. Old Duration: {}. New duration: {}",
+            e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier, data().duration(),
+            data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier );
+        dot_duration = data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier;
+      }
+
       tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
+      // Use data().duration() here so that if you alter dot_duration the tick value is not changed
       tick_action->base_dd_min = tick_action->base_dd_max =
-          e.driver()->effectN( 1 ).average( e.item ) / dot_duration.total_seconds();
+          e.driver()->effectN( 1 ).average( e.item ) / data().duration().total_seconds();
 
       buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+      base_duration = buff->buff_duration();
+
+      if ( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier > 0.0 )
+      {
+        buff->set_duration_multiplier( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier );
+        e.player->sim->print_debug( "Altering grim_eclipse Haste buff duration by {}",
+                                    player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier );
+      }
     }
 
-    void last_tick( dot_t* d ) override
+    void execute() override
     {
-      proc_spell_t::last_tick( d );
+      proc_spell_t::execute();
 
-      // TODO: implement modeling of leaving/entering the buff zone
-      buff->trigger();
+      // Always give the haste buff after the Quasar expires, regardless of DoT duration overrides
+      make_event( *sim, data().duration(), [ this ] {
+        // TODO: implement modeling of leaving/entering the buff zone
+        if ( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier > 0.0 )
+        {
+          // Delay the buff proportional to the multiplier change
+          timespan_t buff_delay = base_duration - buff->buff_duration();
+          make_event( *sim, buff_delay, [ this ] { buff->trigger(); } );
+
+          if ( buff_delay > 0_s )
+          {
+            player->sim->print_debug( "Scheduling grim_eclipse haste buff with a {}s delay.",
+                                      buff_delay.total_seconds() );
+          }
+        }
+      } );
     }
   };
 

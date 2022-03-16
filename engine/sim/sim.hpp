@@ -442,10 +442,14 @@ struct sim_t : private sc_thread_t
     bool better_together_ally = true;
     bool enable_rune_words = false;
     bool enable_domination_gems = false;
-    // fleshcraft cancel dely from the_first_sigil
+    // fleshcraft cancel delay from the_first_sigil
     timespan_t the_first_sigil_fleshcraft_cancel_time = 50_ms;
     // Earthbreaker's Impact weak points triggered
     unsigned int earthbreakers_impact_weak_points = 3;
+    // Grim Eclipse Dot Duration override
+    double grim_eclipse_dot_duration_multiplier = 1.0;
+    // Percentage of default duration for Grim Eclipse haste buff. Set to 90% by default assuming about 1s of movement to get to the Event Horizon
+    double grim_eclipse_buff_duration_multiplier = 0.9;
   } shadowlands_opts;
 
   // Auras and De-Buffs
