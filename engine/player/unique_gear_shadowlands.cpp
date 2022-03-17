@@ -3235,6 +3235,14 @@ void resonant_reservoir( special_effect_t& effect )
         // duration is reset on refresh but the current tick does not clip
         return t;
       }
+
+      timespan_t travel_time() const override
+      {
+        // NOTE: Preliminary estimation of time it takes for circle to expand and hit the target. Note that logs DO NOT
+        // show when the missile lands and the halo begins to expand, so we will have to confirm these estimations with
+        // further reviews.
+        return rng().gauss( 0.5_s, 0.25_s );
+      }
     };
 
     struct disintegration_halo_missile_t : public proc_spell_t
@@ -3242,12 +3250,8 @@ void resonant_reservoir( special_effect_t& effect )
       disintegration_halo_missile_t( const special_effect_t& e, std::string_view n, unsigned i, action_t* a )
         : proc_spell_t( n, e.player, e.player->find_spell( i ), e.item )
       {
+        aoe = -1;
         impact_action = a;
-      }
-
-      timespan_t travel_time() const override
-      {
-        return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
       }
     };
 
@@ -3262,21 +3266,16 @@ void resonant_reservoir( special_effect_t& effect )
       buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_3", 368224 ) );
       buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_4", 368225 ) );
 
+      aoe = -1;
       impact_action = create_proc_action<disintegration_halo_dot_t>( "disintegration_halo_dot", e );
 
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_2", 368232, impact_action ) );
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_3", 368233, impact_action ) );
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_4", 368234, impact_action ) );
 
-      // NOTE: Preliminary estimation of time between repeated missile launches, as well as random time range for
-      // the ring to expand on impact to hit the target. Note that logs DO NOT show missile firings so we will have to
-      // confirm these estimations with further log reviews.
+      // NOTE: Preliminary estimation of time between repeated missile launches. Note that logs DO NOT show missile
+      // firings so we will have to confirm these estimations with further log reviews.
       repeat_time = 0.333_s;
-    }
-
-    timespan_t travel_time() const override
-    {
-      return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
     }
 
     void execute() override
