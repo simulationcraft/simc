@@ -252,6 +252,9 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
+
+    // t28
+    gain_t* t28_2pc;
   } gain;
 
   // Spells
@@ -4453,6 +4456,7 @@ struct shield_slam_t : public warrior_attack_t
 
     if ( p()->buff.outburst->check() )
     {
+      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 3 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
       p()->buff.ignore_pain->trigger();
       p()->buff.outburst->expire();
     }
@@ -4658,6 +4662,7 @@ struct thunder_clap_t : public warrior_attack_t
 
     if ( p()->buff.outburst->check() )
     {
+      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 4 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
       p()->buff.ignore_pain->trigger();
       p()->buff.outburst->expire();
     }
@@ -7733,6 +7738,9 @@ void warrior_t::init_gains()
 
   // Azerite
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
+
+  // T28
+  gain.t28_2pc = get_gain( "t28_2pc" );
 }
 
 // warrior_t::init_position ====================================================
