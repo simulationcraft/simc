@@ -4071,6 +4071,204 @@ void singularity_supreme( special_effect_t& effect )
       } );
 }
 
+/** Gavel of the First Arbiter
+  367953 driver
+  369046 on-use
+
+  Boon of Looming Winter
+  368693 driver, buff
+  368698 Absorb buff and frost damage
+
+  Boon of Divine Command
+  368694 driver
+  368699 arcane Damage + armor buff
+
+  Boon of Harvested Hope
+  368695 driver
+  368701 Health leech dot
+
+  Boon of Assured Victory
+  368696 Victory driver
+  368700 Rotting Decay Nature dot, stacks
+
+  Boon of the End
+  368697 driver
+  368702 Proc/buff
+
+  Common
+  369238 - Stores all the damage values
+  s1 - Divine Command arcane damage
+  s2 - Assured Victory - Rotting Decay, stacking nature damage
+  s3 - Looming Winter frost damage
+  s4 - Looming Winter absorb amount
+  s5 - Harvest Hope bleed damage
+  s6 - Boon of the End Shadow Damage
+  s7 - Pretty sure this is Boon of the End Strength buff amount
+  s8 - Divine Command +armor
+
+*/
+void gavel_of_the_first_arbiter( special_effect_t& effect )
+{
+  struct twisted_judgment_t : public proc_spell_t
+  {
+    buff_t* looming_winter_active_buff;
+    buff_t* looming_winter_absorb_buff;
+
+    buff_t* divine_command_active_buff;
+    // buff_t* divine_command_armor_buff;  NYI
+
+    buff_t* harvested_hope_active_buff;
+
+    buff_t* assured_victory_active_buff;
+
+    buff_t* boon_of_the_end_active_buff;
+    buff_t* boon_of_the_end_str_buff;
+
+    twisted_judgment_t( const special_effect_t& effect ) : proc_spell_t( effect )
+    {
+      // Buffs
+      looming_winter_absorb_buff = buff_t::find( effect.player, "boon_of_looming_winter_absorb" );
+      if ( !looming_winter_absorb_buff )
+      {
+        looming_winter_absorb_buff = make_buff<absorb_buff_t>( effect.player, "boon_of_looming_winter_absorb", effect.player -> find_spell( 368698 ) )
+          ->set_default_value( effect.player->find_spell( 369238 )->effectN( 4 ).average( effect.item ) );
+      }
+
+      // Create effect and callback for the damage proc
+      auto looming_winter = new special_effect_t( effect.player );
+      looming_winter -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      looming_winter -> name_str = "looming_winter";
+      looming_winter -> spell_id = 368693;
+      looming_winter -> proc_flags_ = effect.player->find_spell( 368693 )->proc_flags();
+      looming_winter -> proc_flags2_ = PF2_ALL_HIT;
+      looming_winter -> execute_action = create_proc_action<boon_of_looming_winter_t>( "boon_of_looming_winter_proc", effect, looming_winter_absorb_buff );
+      effect.player->special_effects.push_back( looming_winter );
+
+      auto divine_command = new special_effect_t( effect.player );
+      divine_command -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      divine_command -> name_str = "divine_command";
+      divine_command -> spell_id = 368694;
+      divine_command -> proc_flags_ = effect.player->find_spell( 368694 )->proc_flags();
+      divine_command -> proc_flags2_ = PF2_ALL_HIT;
+      divine_command -> execute_action = create_proc_action<boon_of_divine_command_t>( "boon_of_divine_command_proc", effect );
+      divine_command -> disable_buff();  // Need to disable, or it auto creates the armor buff
+      effect.player->special_effects.push_back( divine_command );
+
+      auto harvested_hope = new special_effect_t( effect.player );
+      harvested_hope -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      harvested_hope -> name_str = "harvested_hope";
+      harvested_hope -> spell_id = 368695;
+      harvested_hope -> proc_flags_ = effect.player->find_spell( 368695 )->proc_flags();
+      harvested_hope -> proc_flags2_ = PF2_ALL_HIT;
+      harvested_hope -> execute_action = create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_proc", effect );
+      effect.player->special_effects.push_back( harvested_hope );
+
+      auto looming_winter_cb = new dbc_proc_callback_t( effect.player, *looming_winter );
+      looming_winter_cb -> initialize();
+      looming_winter_cb -> deactivate();
+
+      auto divine_command_cb = new dbc_proc_callback_t( effect.player, *divine_command );
+      divine_command_cb -> initialize();
+      divine_command_cb -> deactivate();
+
+      auto harvested_hope_cb = new dbc_proc_callback_t( effect.player, *harvested_hope );
+      harvested_hope_cb -> initialize();
+      harvested_hope_cb -> deactivate();
+
+      looming_winter_active_buff = buff_t::find( effect.player, "boon_of_looming_winter_active" );
+      if ( !looming_winter_active_buff )
+      {
+        looming_winter_active_buff = make_buff( effect.player, "boon_of_looming_winter_active", effect.player-> find_spell( 368693 ) )
+          ->set_chance( 1.0 )
+          ->set_cooldown( 0_ms )
+          ->set_stack_change_callback( [ looming_winter_cb ]( buff_t*, int old, int new_ ) {
+            if ( old == 0 )
+              looming_winter_cb->activate();
+            else if ( new_ == 0 )
+              looming_winter_cb->deactivate();
+          });
+      }
+
+      divine_command_active_buff = buff_t::find( effect.player, "boon_of_divine_command_active" );
+      if ( !divine_command_active_buff )
+      {
+        divine_command_active_buff = make_buff( effect.player, "boon_of_divine_command_active", effect.player-> find_spell( 368694 ) )
+          ->set_chance( 1.0 )
+          ->set_cooldown( 0_ms )
+          ->set_stack_change_callback( [ divine_command_cb ]( buff_t*, int old, int new_ ) {
+            if ( old == 0 )
+              divine_command_cb->activate();
+            else if ( new_ == 0 )
+              divine_command_cb->deactivate();
+          });
+      }
+
+      harvested_hope_active_buff = buff_t::find( effect.player, "boon_of_harvested_hope_active" );
+      if ( !harvested_hope_active_buff )
+      {
+        harvested_hope_active_buff = make_buff( effect.player, "boon_of_harvested_hope_active", effect.player-> find_spell( 368695 ) )
+          ->set_chance( 1.0 )
+          ->set_cooldown( 0_ms )
+          ->set_stack_change_callback( [ harvested_hope_cb ]( buff_t*, int old, int new_ ) {
+            if ( old == 0 )
+              harvested_hope_cb->activate();
+            else if ( new_ == 0 )
+              harvested_hope_cb->deactivate();
+          });
+      }
+    }
+
+    struct boon_of_looming_winter_t : public proc_spell_t
+    {
+      buff_t* absorb;
+      boon_of_looming_winter_t( const special_effect_t& effect, buff_t* absorb_ )
+        : proc_spell_t( "boon_of_looming_winter_damage", effect.player, effect.player->find_spell( 368698 ), effect.item ),
+        absorb( absorb_ )
+        {
+          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 3 ).average( effect.item );
+        }
+
+        void execute() override
+        {
+          proc_spell_t::execute();
+          absorb->trigger();
+        }
+    };
+
+    struct boon_of_divine_command_t : public proc_spell_t
+    {
+      boon_of_divine_command_t( const special_effect_t& effect )
+        : proc_spell_t( "boon_of_divine_command_damage", effect.player, effect.player->find_spell( 368699 ) )
+        {
+          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 1 ).average( effect.item );
+          aoe = -1;
+        }
+    };
+
+    struct boon_of_harvested_hope_t : public proc_spell_t
+    {
+      boon_of_harvested_hope_t( const special_effect_t& effect )
+        : proc_spell_t( "boon_of_harvested_hope_damage", effect.player, effect.player->find_spell( 368701 ) )
+        {
+          base_td = effect.player->find_spell( 369238 )->effectN( 5 ).average( effect.item );
+          aoe = -1;
+        }
+    };
+
+    void execute() override
+    {
+      proc_spell_t::execute();
+      // Here is where we select which buff we are going to trigger via random selection
+      //looming_winter_active_buff->trigger();
+      //divine_command_active_buff->trigger();
+      harvested_hope_active_buff->trigger();
+    }
+  };
+
+  effect.type           = SPECIAL_EFFECT_USE;
+  effect.execute_action = create_proc_action<twisted_judgment_t>( "twisted_judgment", effect );
+}
+
 // Armor
 
 /**Passably-Forged Credentials
@@ -5388,6 +5586,7 @@ void register_special_effects()
 
     // 9.2 Weapons
     unique_gear::register_special_effect( 367952, items::singularity_supreme );
+    unique_gear::register_special_effect( 367953, items::gavel_of_the_first_arbiter );
 
     // Armor
     unique_gear::register_special_effect( 352081, items::passablyforged_credentials );
