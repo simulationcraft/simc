@@ -4111,6 +4111,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
 {
   struct twisted_judgment_t : public proc_spell_t
   {
+	std::vector<buff_t*> buffs;
+	
     buff_t* looming_winter_active_buff;
     buff_t* looming_winter_absorb_buff;
 
@@ -4122,7 +4124,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
     buff_t* assured_victory_active_buff;
 
     buff_t* boon_of_the_end_active_buff;
-    buff_t* boon_of_the_end_str_buff;
+    // buff_t* boon_of_the_end_str_buff;   NYI
 
     twisted_judgment_t( const special_effect_t& effect ) : proc_spell_t( effect )
     {
@@ -4162,6 +4164,24 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       harvested_hope -> proc_flags2_ = PF2_ALL_HIT;
       harvested_hope -> execute_action = create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_proc", effect );
       effect.player->special_effects.push_back( harvested_hope );
+	  
+      auto assured_victory = new special_effect_t( effect.player );
+      assured_victory -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      assured_victory -> name_str = "assured_victory";
+      assured_victory -> spell_id = 368696;
+      assured_victory -> proc_flags_ = effect.player->find_spell( 368696 )->proc_flags();
+      assured_victory -> proc_flags2_ = PF2_ALL_HIT;
+      assured_victory -> execute_action = create_proc_action<boon_of_assured_victory_t>( "boon_of_assured_victory_proc", effect );
+      effect.player->special_effects.push_back( assured_victory );
+	  
+	  auto boon_of_the_end = new special_effect_t( effect.player );
+      boon_of_the_end -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+      boon_of_the_end -> name_str = "boon_of_the_end";
+      boon_of_the_end -> spell_id = 368697;
+      boon_of_the_end -> proc_flags_ = effect.player->find_spell( 368697 )->proc_flags();
+      boon_of_the_end -> proc_flags2_ = PF2_ALL_HIT;
+      boon_of_the_end -> execute_action = create_proc_action<boon_of_the_end_t>( "boon_of_the_end_proc", effect );
+      effect.player->special_effects.push_back( boon_of_the_end );
 
       auto looming_winter_cb = new dbc_proc_callback_t( effect.player, *looming_winter );
       looming_winter_cb -> initialize();
@@ -4174,6 +4194,14 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       auto harvested_hope_cb = new dbc_proc_callback_t( effect.player, *harvested_hope );
       harvested_hope_cb -> initialize();
       harvested_hope_cb -> deactivate();
+	  
+	  auto assured_victory_cb = new dbc_proc_callback_t( effect.player, *assured_victory );
+      assured_victory_cb -> initialize();
+      assured_victory_cb -> deactivate();
+	  
+	  auto boon_of_the_end_cb = new dbc_proc_callback_t( effect.player, *boon_of_the_end );
+      boon_of_the_end_cb -> initialize();
+      boon_of_the_end_cb -> deactivate();
 
       looming_winter_active_buff = buff_t::find( effect.player, "boon_of_looming_winter_active" );
       if ( !looming_winter_active_buff )
@@ -4216,7 +4244,45 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
               harvested_hope_cb->deactivate();
           });
       }
-    }
+	  
+	  assured_victory_active_buff = buff_t::find( effect.player, "boon_of_assured_victory_active" );
+      if ( !assured_victory_active_buff )
+      {
+        assured_victory_active_buff = make_buff( effect.player, "boon_of_assured_victory_active", effect.player-> find_spell( 368696 ) )
+          ->set_chance( 1.0 )
+          ->set_cooldown( 0_ms )
+          ->set_stack_change_callback( [ assured_victory_cb ]( buff_t*, int old , int new_ ) {
+            if ( old == 0 )
+              assured_victory_cb->activate();
+            else if ( new_ == 0 )
+              assured_victory_cb->deactivate();
+          });
+	  }
+	  
+	  boon_of_the_end_active_buff = buff_t::find( effect.player, "boon_of_the_end_active" );
+      if ( !boon_of_the_end_active_buff )
+      {
+        boon_of_the_end_active_buff = make_buff( effect.player, "boon_of_the_end_active", effect.player-> find_spell( 368697 ) )
+          ->set_chance( 1.0 )
+          ->set_cooldown( 0_ms )
+          ->set_stack_change_callback( [ boon_of_the_end_cb ]( buff_t*, int old , int new_ ) {
+            if ( old == 0 )
+              boon_of_the_end_cb->activate();
+            else if ( new_ == 0 )
+              boon_of_the_end_cb->deactivate();
+          });
+      }
+	  
+	  // Define buff array for random selection
+      buffs = 
+	  { 
+	    looming_winter_active_buff, 
+	    divine_command_active_buff, 
+	    harvested_hope_active_buff,
+	    assured_victory_active_buff, 
+	    boon_of_the_end_active_buff 
+	  };
+	}
 
     struct boon_of_looming_winter_t : public proc_spell_t
     {
@@ -4254,14 +4320,36 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
           aoe = -1;
         }
     };
+	
+	struct boon_of_assured_victory_t : public proc_spell_t
+    {
+      boon_of_assured_victory_t( const special_effect_t& effect )
+        : proc_spell_t( "boon_of_assured_victory_damage", effect.player, effect.player->find_spell( 368700 ) )
+        {
+          base_td = effect.player->find_spell( 369238 )->effectN( 2 ).average( effect.item );
+          aoe = -1;
+        }
+    };
+	
+	struct boon_of_the_end_t : public proc_spell_t
+    {
+      boon_of_the_end_t( const special_effect_t& effect )
+        : proc_spell_t( "boon_of_the_end_damage", effect.player, effect.player->find_spell( 368702 ) )
+        {
+          base_td = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
+        }
+    };
 
     void execute() override
     {
-      proc_spell_t::execute();
-      // Here is where we select which buff we are going to trigger via random selection
-      //looming_winter_active_buff->trigger();
-      //divine_command_active_buff->trigger();
-      harvested_hope_active_buff->trigger();
+	  // Here is where we select which buff we are going to trigger via random selection
+	  int selected_buff = -1;
+	
+      selected_buff = (int) ( player -> sim -> rng().real() * buffs.size() );
+     
+	  proc_spell_t::execute();
+	  
+      buffs[selected_buff] -> trigger();
     }
   };
 
