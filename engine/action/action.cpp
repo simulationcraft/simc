@@ -4339,7 +4339,7 @@ double action_t::composite_target_damage_vulnerability(player_t* target) const
 
   for (auto base_school : base_schools)
   {
-    tmp = target->composite_player_vulnerability(base_school);
+    tmp = target->composite_player_vulnerability(base_school, aoe);
     if (tmp > target_vulnerability) target_vulnerability = tmp;
   }
 

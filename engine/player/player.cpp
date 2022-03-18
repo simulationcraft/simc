@@ -3381,6 +3381,7 @@ void player_t::create_buffs()
     debuffs.flying        = make_buff( this, "flying" )->set_max_stack( 1 );
     debuffs.mortal_wounds = make_buff( this, "mortal_wounds", find_spell( 115804 ) )
         ->set_default_value( std::fabs( find_spell( 115804 )->effectN( 1 ).percent() ) );
+    debuffs.aoe_vulnerable = make_buff( this, "aoe_vulnerable" )->set_max_stack( 1 );
 
     // BfA Raid Damage Modifier Debuffs
     debuffs.chaos_brand = make_buff( this, "chaos_brand", find_spell( 1490 ) )
@@ -4526,12 +4527,15 @@ double player_t::composite_rating( rating_e rating ) const
   return util::round( v * composite_rating_multiplier( rating ), 0 );
 }
 
-double player_t::composite_player_vulnerability( school_e school ) const
+double player_t::composite_player_vulnerability( school_e school, int aoe ) const
 {
   double m = debuffs.invulnerable && debuffs.invulnerable->check() ? 0.0 : 1.0;
 
   if ( debuffs.vulnerable && debuffs.vulnerable->check() )
     m *= 1.0 + debuffs.vulnerable->check_value();
+
+  if ( ( aoe == -1 || aoe >  1) && debuffs.aoe_vulnerable && debuffs.aoe_vulnerable->check() )
+    m *= 1.0 + debuffs.aoe_vulnerable->check_value();
 
   // 1% damage taken per stack, arbitrary because this buff is completely fabricated!
   if ( debuffs.damage_taken && debuffs.damage_taken->check() )

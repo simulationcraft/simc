@@ -1285,6 +1285,29 @@ struct vulnerable_event_t final : public raid_event_t
   }
 };
 
+// AoE Vulnerable ============================================================
+
+struct aoe_vulnerable_event_t final : public raid_event_t
+{
+  double multiplier;
+
+  aoe_vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "aoe_vulnerable" ), multiplier( 1.0 )
+  {
+    add_option( opt_float( "multiplier", multiplier ) );
+    parse_options( options_str );
+  }
+
+  void _start() override
+  {
+    sim->target->debuffs.aoe_vulnerable->increment( 1, multiplier );
+  }
+
+  void _finish() override
+  {
+    sim->target->debuffs.aoe_vulnerable->decrement();
+  }
+};
+
 // Position Switch ==========================================================
 
 struct position_event_t : public raid_event_t
@@ -1863,6 +1886,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new damage_taken_debuff_event_t( sim, options_str ) );
   if ( name == "damage_done_buff" )
     return std::unique_ptr<raid_event_t>( new damage_done_buff_event_t( sim, options_str ) );
+  if ( name == "aoe_vulnerable" )
+    return std::unique_ptr<raid_event_t>( new aoe_vulnerable_event_t( sim, options_str ) );
 
   throw std::invalid_argument( fmt::format( "Invalid raid event type '{}'.", name ) );
 }

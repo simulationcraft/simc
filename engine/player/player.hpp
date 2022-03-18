@@ -557,6 +557,7 @@ struct player_t : public actor_t
     buff_t* invulnerable;
     buff_t* vulnerable;
     buff_t* damage_taken;
+    buff_t* aoe_vulnerable;
 
     // WoD debuffs
     buff_t* mortal_wounds;
@@ -1132,7 +1133,7 @@ public:
   virtual void pre_analyze_hook() {}
 
   /* New stuff */
-  virtual double composite_player_vulnerability( school_e ) const;
+  virtual double composite_player_vulnerability( school_e, int ) const;
 
   virtual void activate_action_list( action_priority_list_t* a, execute_type type = execute_type::FOREGROUND );
 
