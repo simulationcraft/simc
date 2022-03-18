@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42698
-static const std::array<spelltext_data_t, 16057> __spelltext_data { {
+static const std::array<spelltext_data_t, 16058> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15999,6 +15999,7 @@ static const std::array<spelltext_data_t, 16057> __spelltext_data { {
   { 368639, "$@spelldesc367930", "Movement speed decreased by $w1%.", 0 },
   { 368641, "$@spelldesc367930", "Your Critical Strike, Haste, Mastery, and Versatility are increased by $w1. When the Final Rune fades, explode for $w2 damage.", 0 },
   { 368642, "$@spelldesc367930", 0, 0 },
+  { 368643, "$@spelldesc367931", 0, 0 },
   { 368645, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 368649, "$@spelldesc367805", "Haste increased by $w1. Your damaging spells and abilities increase your Haste, stacking up to $u times.", 0 },
   { 368650, "$@spelldesc367805", "Your critical strikes cause the target to bleed for $w1 additional damage over $d.", 0 },
