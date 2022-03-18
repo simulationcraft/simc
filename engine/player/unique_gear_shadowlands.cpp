@@ -4274,15 +4274,15 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       }
 	  
 	  // Define buff array for random selection
-      buffs = 
-	  { 
-	    looming_winter_active_buff, 
-	    divine_command_active_buff, 
-	    harvested_hope_active_buff,
-	    assured_victory_active_buff, 
-	    boon_of_the_end_active_buff 
-	  };
-	}
+    buffs =
+    {
+      looming_winter_active_buff,
+      divine_command_active_buff,
+      harvested_hope_active_buff,
+      assured_victory_active_buff,
+      boon_of_the_end_active_buff
+    };
+  }
 
     struct boon_of_looming_winter_t : public proc_spell_t
     {
@@ -4346,7 +4346,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       // Here is where we select which buff we are going to trigger via random selection
       auto selected_buff = player -> sim -> rng().range( buffs.size() );
      
-      buffs[selected_buff] -> trigger();
+      //buffs[selected_buff] -> trigger();
+      buffs[3] -> trigger();
     }
   };
 
