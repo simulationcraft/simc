@@ -3141,7 +3141,7 @@ void scars_of_fraternal_strife( special_effect_t& effect )
 
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
-};
+}
 
 // pet cast: 368203
 // pet spell damage coeff: 367307
@@ -3857,7 +3857,7 @@ void earthbreakers_impact( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<earthbreakers_impact_t>( "earthbreakers_impact", effect );
-};
+}
 
 void prismatic_brilliance( special_effect_t& effect )
 {
@@ -4124,7 +4124,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
     buff_t* assured_victory_active_buff;
 
     buff_t* boon_of_the_end_active_buff;
-    // buff_t* boon_of_the_end_str_buff;   NYI
+    buff_t* boon_of_the_end_str_buff;
 
     twisted_judgment_t( const special_effect_t& effect ) : proc_spell_t( effect )
     {
@@ -4134,6 +4134,14 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       {
         looming_winter_absorb_buff = make_buff<absorb_buff_t>( effect.player, "boon_of_looming_winter_absorb", effect.player -> find_spell( 368698 ) )
           ->set_default_value( effect.player->find_spell( 369238 )->effectN( 4 ).average( effect.item ) );
+      }
+
+      boon_of_the_end_str_buff = buff_t::find( effect.player, "boon_of_the_end_str" );
+      if ( !boon_of_the_end_str_buff )
+      {
+        boon_of_the_end_str_buff = make_buff<stat_buff_t>( effect.player, "boon_of_the_end_str", effect.player->find_spell( 368697 ) )
+          ->add_stat( STAT_STRENGTH, effect.player->find_spell( 369238 )->effectN( 7 ).average( effect.item ) )
+          ->set_rppm( RPPM_DISABLE );
       }
 
       // Create effect and callback for the damage proc
@@ -4317,7 +4325,6 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         : proc_spell_t( "boon_of_harvested_hope_damage", effect.player, effect.player->find_spell( 368701 ) )
         {
           base_td = effect.player->find_spell( 369238 )->effectN( 5 ).average( effect.item );
-          aoe = -1;
         }
     };
 
@@ -4327,7 +4334,6 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         : proc_spell_t( "boon_of_assured_victory_damage", effect.player, effect.player->find_spell( 368700 ) )
         {
           base_td = effect.player->find_spell( 369238 )->effectN( 2 ).average( effect.item );
-          aoe = -1;
         }
     };
 
@@ -4336,7 +4342,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       boon_of_the_end_t( const special_effect_t& effect )
         : proc_spell_t( "boon_of_the_end_damage", effect.player, effect.player->find_spell( 368702 ) )
         {
-          base_td = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
+          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
+          aoe = -1;
         }
     };
 
@@ -4346,8 +4353,9 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       // Here is where we select which buff we are going to trigger via random selection
       auto selected_buff = player -> sim -> rng().range( buffs.size() );
      
-      //buffs[selected_buff] -> trigger();
-      buffs[3] -> trigger();
+      buffs[selected_buff] -> trigger();
+      if ( selected_buff == 4 )  //  Boon of the end gives STR as well while it's up
+        boon_of_the_end_str_buff->trigger();
     }
   };
 
