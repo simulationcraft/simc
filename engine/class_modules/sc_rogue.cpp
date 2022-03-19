@@ -1021,12 +1021,13 @@ private:
   int base_cp;
   int total_cp;
   double exsanguinated_rate;
+  bool exsanguinated;
 
 public:
   rogue_action_state_t( action_t* action, player_t* target ) :
     action_state_t( action, target ),
     action( dynamic_cast<T_ACTION*>( action ) ),
-    base_cp( 0 ), total_cp( 0 ), exsanguinated_rate( 1.0 )
+    base_cp( 0 ), total_cp( 0 ), exsanguinated_rate( 1.0 ), exsanguinated( false )
   {}
 
   void initialize() override
@@ -1035,6 +1036,7 @@ public:
     base_cp = 0;
     total_cp = 0;
     exsanguinated_rate = 1.0;
+    exsanguinated = false;
   }
 
   std::ostringstream& debug_str( std::ostringstream& s ) override
@@ -1050,6 +1052,7 @@ public:
     base_cp = rs->base_cp;
     total_cp = rs->total_cp;
     exsanguinated_rate = rs->exsanguinated_rate;
+    exsanguinated = rs->exsanguinated;
   }
 
   T_ACTION* get_action() const
@@ -1074,11 +1077,23 @@ public:
   void set_exsanguinated_rate( double rate )
   {
     exsanguinated_rate = rate;
+    exsanguinated = true;
   }
 
   double get_exsanguinated_rate() const
   {
     return exsanguinated_rate;
+  }
+
+  double is_exsanguinated() const
+  {
+    return exsanguinated;
+  }
+
+  void clear_exsanguinated()
+  {
+    exsanguinated_rate = 1.0;
+    exsanguinated = false;
   }
 
   proc_types2 cast_proc_type2() const override
@@ -1379,14 +1394,16 @@ public:
     return new rogue_action_state_t<base_t>( this, ab::target );
   }
 
-  void snapshot_internal( action_state_t* state, unsigned flags, result_amount_type rt ) override
+  void update_state( action_state_t* state, unsigned flags, result_amount_type rt ) override
   {
     // Exsanguinated bleeds snapshot hasted tick time when the ticks are rescheduled.
     // This will make snapshot_internal on haste updates discard the new value.
-    if ( cast_state( state )->get_exsanguinated_rate() != 1.0 )
+    if ( cast_state( state )->is_exsanguinated() )
+    {
       flags &= ~STATE_HASTE;
-
-    ab::snapshot_internal( state, flags, rt );
+    }
+    
+    ab::update_state( state, flags, rt );
   }
 
   void snapshot_state( action_state_t* state, result_amount_type rt ) override
@@ -1409,6 +1426,10 @@ public:
          p()->get_target_data( state->target )->debuffs.vendetta->check() )
     {
       rs->set_exsanguinated_rate( 1.0 + p()->set_bonuses.t28_assassination_4pc->effectN( 1 ).percent() );
+    }
+    else
+    {
+      rs->clear_exsanguinated();
     }
 
     ab::snapshot_state( state, rt );
@@ -4907,13 +4928,14 @@ struct serrated_bone_spike_t : public rogue_attack_t
     bool count_after = p()->bugs ? rng().roll( 0.5 ) : true;
 
     auto tdata = td( state->target );
-    if ( !tdata->dots.serrated_bone_spike->is_ticking() )
+    if ( !tdata->dots.serrated_bone_spike->is_ticking() && count_after )
     {
-      serrated_bone_spike_dot->set_target( state->target );
-      serrated_bone_spike_dot->execute();
-      if ( count_after )
-        active_dots += 1;
+      active_dots++;
     }
+
+    // Due to the Vendetta 4pc, we need to re-apply the DoT to recalculate the haste snapshot
+    serrated_bone_spike_dot->set_target( state->target );
+    serrated_bone_spike_dot->execute();
  
     // 2022-01-26 -- PTR shows this happens on impact but only for the primary target
     //               Deathspiked targets do not generate CP directly
@@ -5933,8 +5955,8 @@ void rogue_t::do_exsanguinate( dot_t* dot, double rate )
 
   // Since the advent of hasted bleed exsanguinate works differently though.
   // Note: PTR testing shows Exsanguinated compound multiplicatively (2x -> 4x -> 8x -> etc.)
-  dot->adjust_full_ticks( coeff );
   rs->set_exsanguinated_rate( new_rate );
+  dot->adjust_full_ticks( coeff );
 }
 
 void rogue_t::trigger_exsanguinate( player_t* target )
@@ -7122,12 +7144,15 @@ void rogue_t::init_action_list()
     precombat->add_action( "variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)", "The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic" );
     precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(trinket.1.is.shadowgrasp_totem&covenant.venthyr)", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
     precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(trinket.2.is.shadowgrasp_totem&covenant.venthyr)" );
+    precombat->add_action( "variable,name=use_trinket_1_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.1.has_stat.haste_rating|trinket.1.is.inscrutable_quantum_device)" );
+    precombat->add_action( "variable,name=use_trinket_2_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.2.has_stat.haste_rating|trinket.2.is.inscrutable_quantum_device)" );
     precombat->add_action( this, "Stealth" );
     precombat->add_action( this, "Slice and Dice", "precombat_seconds=1,if=!talent.nightstalker.enabled" );
 
     // Main Rotation
     def->add_action( "variable,name=single_target,value=spell_targets.fan_of_knives<2" );
     def->add_action( "variable,name=regen_saturated,value=energy.regen_combined>35", "Combined Energy Regen needed to saturate" );
+    def->add_action( "variable,name=vendetta_cooldown_remains,value=cooldown.vendetta.remains*variable.vendetta_cdr" );
     def->add_action( "call_action_list,name=stealthed,if=stealthed.rogue" );
     def->add_action( "call_action_list,name=cds" );
     def->add_action( this, "Slice and Dice", "if=!buff.slice_and_dice.up&combo_points>=1", "Put SnD up initially for Cut to the Chase, refresh with Envenom if at low duration" );
@@ -7149,13 +7174,16 @@ void rogue_t::init_action_list()
     cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.venthyr,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.flagellation.remains)%(120*variable.vendetta_cdr))|buff.flagellation_buff.up|debuff.flagellation.up|fight_remains<20" );
     cds->add_action( "variable,name=vendetta_covenant_condition,if=covenant.night_fae,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.sepsis.remains)%(120*variable.vendetta_cdr))|dot.sepsis.ticking|fight_remains<20" );
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)", "Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle" );
-    cds->add_action( "flagellation,if=!stealthed.rogue&(cooldown.vendetta.remains<3&variable.vendetta_ma_condition&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)", "Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration" );
-    cds->add_action( "flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-cooldown.vendetta.remains*variable.vendetta_cdr)%(cooldown*variable.flagellation_cdr)))" );
+    cds->add_action( "flagellation,if=!stealthed.rogue&(variable.vendetta_cooldown_remains<3&variable.vendetta_ma_condition&effective_combo_points>=4&target.time_to_die>10|debuff.vendetta.up|fight_remains<24)", "Sync Flagellation with Vendetta as long as we won't lose a cast over the fight duration" );
+    cds->add_action( "flagellation,if=!stealthed.rogue&effective_combo_points>=4&(floor((fight_remains-24)%(cooldown*variable.flagellation_cdr))>floor((fight_remains-24-variable.vendetta_cooldown_remains)%(cooldown*variable.flagellation_cdr)))" );
     cds->add_action( "sepsis,if=!stealthed.rogue&dot.garrote.ticking&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
-    cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-cooldown.vendetta.remains*variable.vendetta_cdr)%cooldown))" );
-    cds->add_action( this, "Vendetta", "if=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition" );
+    cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-variable.vendetta_cooldown_remains)%cooldown))" );
+    cds->add_action( "variable,name=vendetta_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition", "Vendetta to be used if not stealthed, Rupture is up, and all other talent/covenant conditions are satisfied");
+    cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.vendetta.up|variable.use_trinket_1_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
+    cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.vendetta.up|variable.use_trinket_2_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)" );
+    cds->add_action( this, "Vendetta", "if=variable.vendetta_condition&(!set_bonus.tier28_4pc|(dot.garrote.haste_pct>=(dot.garrote.haste_pct_next_tick-3))&(dot.rupture.haste_pct>=(dot.rupture.haste_pct_next_tick-3)))", "If using T28 4pc, delay until the next DoT tick if we can gain more than a 3% haste snapshot compared to the current tick value");
     cds->add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
-    cds->add_action( this, "Shiv", "if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking)&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|cooldown.vendetta.remains*variable.vendetta_cdr>12)=2))", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Vendetta if we won't waste more than half Shiv's cooldown" );
+    cds->add_action( this, "Shiv", "if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking)&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|variable.vendetta_cooldown_remains>12)=2))", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Vendetta if we won't waste more than half Shiv's cooldown" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
@@ -7166,8 +7194,6 @@ void rogue_t::init_action_list()
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25" );
-    cds->add_action( "use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
-    cds->add_action( "use_items,slots=trinket2,if=variable.trinket_sync_slot=2&(debuff.vendetta.up|fight_remains<=20)|(variable.trinket_sync_slot=1&!trinket.1.cooldown.ready)|!variable.trinket_sync_slot" );
 
     // Vanish
     action_priority_list_t* vanish = get_action_priority_list( "vanish", "Vanish" );
@@ -7215,7 +7241,7 @@ void rogue_t::init_action_list()
     direct->add_action( "serrated_bone_spike,if=set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&debuff.grudge_match.up&!buff.lead_by_example.up&raid_event.adds.in>5" );
     direct->add_action( this, "Fan of Knives", "if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))", "Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets." );
     direct->add_action( this, "Fan of Knives", "target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3", "Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T" );
-    direct->add_action( "echoing_reprimand,if=variable.use_filler&cooldown.vendetta.remains>10" );
+    direct->add_action( "echoing_reprimand,if=variable.use_filler&variable.vendetta_cooldown_remains>10" );
     direct->add_action( this, "Ambush", "if=variable.use_filler&(master_assassin_remains=0&!runeforge.doomblade|buff.blindside.up)" );
     direct->add_action( this, "Mutilate", "target_if=!dot.deadly_poison_dot.ticking,if=variable.use_filler&spell_targets.fan_of_knives=2", "Tab-Mutilate to apply Deadly Poison at 2 targets" );
     direct->add_action( this, "Mutilate", "if=variable.use_filler" );

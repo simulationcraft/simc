@@ -565,6 +565,22 @@ std::unique_ptr<expr_t> dot_t::create_expression( dot_t* dot, action_t* action, 
         return dot->state ? ( 1.0 / dot->state->haste - 1.0 ) * 100 : 0;
       } );
   }
+  else if ( name_str == "haste_pct_next_tick" )
+  {
+    return make_dot_expr( "dot_haste_pct_next_tick",
+                          [ state = std::unique_ptr<action_state_t>() ]( dot_t* dot ) mutable {
+      if ( dot == nullptr || !dot->is_ticking() || !dot->state )
+        return 0.0;
+
+      if ( !state )
+      {
+        state.reset( dot->current_action->get_state() );
+      }
+      state->copy_state( dot->state );
+      dot->current_action->update_state( state.get(), result_amount_type::DMG_OVER_TIME );
+      return state.get() ? ( 1.0 / state.get()->haste - 1.0 ) * 100 : 0;
+    } );
+  }
   else if ( name_str == "current_ticks" )
   {
     return make_dot_expr( "dot_current_ticks",
@@ -965,7 +981,7 @@ void dot_t::adjust( double coefficient )
 
 void dot_t::adjust_full_ticks( double coefficient )
 {
-  if ( !ticking )
+  if ( !ticking || target->is_sleeping() )
     return;
 
   // Always at least 1 tick left (even if we would round down before the last partial)
@@ -974,6 +990,13 @@ void dot_t::adjust_full_ticks( double coefficient )
   timespan_t elapsed     = tick_time - time_to_next_full_tick();
   timespan_t tick_occurs = tick_event->occurs();
   timespan_t end_occurs  = end_event->occurs();
+
+  // Update the current state of the DoT to ensure we update the haste values for the snapshot
+  // 2022-03-06 -- Exsanguinate casts don't currently update the snapshot and rely on tick scheduling
+  if ( !current_action->player->bugs )
+  {
+    current_action->update_state( this->state, current_action->amount_type( this->state, true ) );
+  }
 
   timespan_t new_dot_remains  = remains() * coefficient;
   timespan_t new_duration     = current_duration * coefficient;

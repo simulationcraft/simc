@@ -220,7 +220,7 @@ waist=girdle_of_the_first_gate,id=189776,bonus_id=1524/7187,gem_id=173128
 legs=theurgic_starspeakers_tassets,id=188924,bonus_id=1505/7187
 feet=winters_stampeding_striders,id=189795,bonus_id=1524/7187,enchant=eternal_agility
 finger1=shadowghast_ring,id=178926,bonus_id=6995/7451/6649/6647/1588/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187,gem_id=173128,enchant=tenet_of_haste
+finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187,gem_id=173128,enchant=tenet_of_haste
 trinket1=elegy_of_the_eternals,id=188270,bonus_id=1524/7187
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=sinful_revelation

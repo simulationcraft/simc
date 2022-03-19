@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-14/42698, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-17/42698, git build  , no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -11148,7 +11148,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=835240)   : Apply Aura (6) | Proc Trigger Spell (42): Tempest Barrier
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 337299 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.50000 | Trigger Spell: 337299 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Gain a shield that absorbs |cFFFFFFFF${$s1}.1%|r of your maximum health for $337299d after you Blink.
 
 Name             : Tempest Barrier (id=337299) [Spell Family (3)] 

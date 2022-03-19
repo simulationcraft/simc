@@ -3235,6 +3235,14 @@ void resonant_reservoir( special_effect_t& effect )
         // duration is reset on refresh but the current tick does not clip
         return t;
       }
+
+      timespan_t travel_time() const override
+      {
+        // NOTE: Preliminary estimation of time it takes for circle to expand and hit the target. Note that logs DO NOT
+        // show when the missile lands and the halo begins to expand, so we will have to confirm these estimations with
+        // further reviews.
+        return rng().gauss( 0.5_s, 0.25_s );
+      }
     };
 
     struct disintegration_halo_missile_t : public proc_spell_t
@@ -3242,12 +3250,8 @@ void resonant_reservoir( special_effect_t& effect )
       disintegration_halo_missile_t( const special_effect_t& e, std::string_view n, unsigned i, action_t* a )
         : proc_spell_t( n, e.player, e.player->find_spell( i ), e.item )
       {
+        aoe = -1;
         impact_action = a;
-      }
-
-      timespan_t travel_time() const override
-      {
-        return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
       }
     };
 
@@ -3262,21 +3266,16 @@ void resonant_reservoir( special_effect_t& effect )
       buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_3", 368224 ) );
       buffs.push_back( make_buff<disintegration_halo_counter_t>( e, "disintegration_halo_4", 368225 ) );
 
+      aoe = -1;
       impact_action = create_proc_action<disintegration_halo_dot_t>( "disintegration_halo_dot", e );
 
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_2", 368232, impact_action ) );
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_3", 368233, impact_action ) );
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_4", 368234, impact_action ) );
 
-      // NOTE: Preliminary estimation of time between repeated missile launches, as well as random time range for
-      // the ring to expand on impact to hit the target. Note that logs DO NOT show missile firings so we will have to
-      // confirm these estimations with further log reviews.
+      // NOTE: Preliminary estimation of time between repeated missile launches. Note that logs DO NOT show missile
+      // firings so we will have to confirm these estimations with further log reviews.
       repeat_time = 0.333_s;
-    }
-
-    timespan_t travel_time() const override
-    {
-      return proc_spell_t::travel_time() + rng().gauss( 0.5_s, 0.25_s );  // NOTE: this is just a temporary estimation
     }
 
     void execute() override
@@ -3558,28 +3557,62 @@ void grim_eclipse( special_effect_t& effect )
   struct grim_eclipse_t : public proc_spell_t
   {
     stat_buff_t* buff;
+    timespan_t base_duration;
 
     grim_eclipse_t( const special_effect_t& e )
       : proc_spell_t( "grim_eclipse", e.player, e.trigger() ),
-        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) )
+        buff( make_buff<stat_buff_t>( e.player, "grim_eclipse", e.player->find_spell( 368645 ), e.item ) ),
+        base_duration( 10_s )
     {
-      // TODO: CHECK EVERYTHING SINCE NOTHING IS TESTABLE AND EVERYTHING IS A GUESS
-      dot_duration = data().duration();
+      dot_duration   = data().duration();
+      // Not in spelldata
       base_tick_time = 1_s;
 
+      if ( e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier > 0.0 )
+      {
+        e.player->sim->print_debug(
+            "Altering grim_eclipse DoT Uptime by {}. Old Duration: {}. New duration: {}",
+            e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier, data().duration(),
+            data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier );
+        dot_duration = data().duration() * e.player->sim->shadowlands_opts.grim_eclipse_dot_duration_multiplier;
+      }
+
       tick_action = create_proc_action<generic_proc_t>( "grim_eclipse_damage", e, "grim_eclipse_damage", 369318 );
+      // Use data().duration() here so that if you alter dot_duration the tick value is not changed
       tick_action->base_dd_min = tick_action->base_dd_max =
-          e.driver()->effectN( 1 ).average( e.item ) / dot_duration.total_seconds();
+          e.driver()->effectN( 1 ).average( e.item ) / data().duration().total_seconds();
 
       buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
+      base_duration = buff->buff_duration();
+
+      if ( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier > 0.0 )
+      {
+        buff->set_duration_multiplier( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier );
+        e.player->sim->print_debug( "Altering grim_eclipse Haste buff duration by {}",
+                                    player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier );
+      }
     }
 
-    void last_tick( dot_t* d ) override
+    void execute() override
     {
-      proc_spell_t::last_tick( d );
+      proc_spell_t::execute();
 
-      // TODO: implement modeling of leaving/entering the buff zone
-      buff->trigger();
+      // Always give the haste buff after the Quasar expires, regardless of DoT duration overrides
+      make_event( *sim, data().duration(), [ this ] {
+        // TODO: implement modeling of leaving/entering the buff zone
+        if ( player->sim->shadowlands_opts.grim_eclipse_buff_duration_multiplier > 0.0 )
+        {
+          // Delay the buff proportional to the multiplier change
+          timespan_t buff_delay = base_duration - buff->buff_duration();
+          make_event( *sim, buff_delay, [ this ] { buff->trigger(); } );
+
+          if ( buff_delay > 0_s )
+          {
+            player->sim->print_debug( "Scheduling grim_eclipse haste buff with a {}s delay.",
+                                      buff_delay.total_seconds() );
+          }
+        }
+      } );
     }
   };
 
@@ -3879,6 +3912,184 @@ void prismatic_brilliance( special_effect_t& effect )
       effect.driver()->id(), [ buffs ]( const dbc_proc_callback_t* cb, action_t*, action_state_t* ) {
         buffs[ cb->rng().range( buffs.size() ) ]->trigger();
       } );
+}
+
+// id=367931 driver, physical damage, and debuff
+// Proc flags on the driver are set up as damage taken flags as it is a debuff
+//    effect #1: Direct physical damage on use effect
+//    effect #2: Percentage of damage absorbed by the debuff proc trigger
+//    effect #3: Damage absorb and AoE damage cap
+//    effect #4: AoE radius
+// id=368643 AoE shadow damage spell
+struct chains_of_domination_cb_t : public dbc_proc_callback_t
+{
+  double accumulated_damage;
+  double damage_cap;
+  double damage_fraction;
+  buff_t* debuff;
+  bool auto_break;
+
+  chains_of_domination_cb_t( const special_effect_t& e ) :
+    dbc_proc_callback_t( e.player, e ),
+    accumulated_damage( 0.0 ),
+    damage_cap( e.driver()->effectN( 3 ).average( e.item ) ),
+    damage_fraction( e.driver()->effectN( 2 ).percent() ),
+    debuff( nullptr ),
+    auto_break( e.player->sim->shadowlands_opts.chains_of_domination_auto_break )
+  {
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    if ( debuff && debuff->check() && s->target == debuff->player )
+    {
+      accumulated_damage = std::min( damage_cap, accumulated_damage + ( s->result_amount * damage_fraction ) );
+      if ( auto_break && accumulated_damage >= damage_cap )
+      {
+        debuff->expire();
+      }
+    }
+  }
+
+  void reset() override
+  {
+    dbc_proc_callback_t::reset();
+    accumulated_damage = 0.0;
+    debuff = nullptr;
+  }
+};
+
+// Action to trigger the chain break for the Chains of Domination trinket
+struct break_chains_of_domination_t : public action_t
+{
+  chains_of_domination_cb_t* cb_driver;
+
+  break_chains_of_domination_t( player_t* p, util::string_view opt )
+    : action_t( ACTION_OTHER, "break_chains_of_domination", p ),
+    cb_driver( nullptr )
+  {
+    parse_options( opt );
+    trigger_gcd = 0_ms;
+    harmful = false;
+    ignore_false_positive = usable_while_casting = true;
+  }
+
+  void init_finished() override
+  {
+    cb_driver = dynamic_cast<chains_of_domination_cb_t*>(
+      *( range::find_if( player->callbacks.all_callbacks, []( action_callback_t* t ) {
+      return static_cast<dbc_proc_callback_t*>( t )->effect.spell_id == 367931;
+    } ) ) );
+
+    // If this action exists in the APL, disable the auto break option
+    if ( cb_driver )
+    {
+      cb_driver->auto_break = false;
+    }
+
+    action_t::init_finished();
+  }
+
+  void execute() override
+  {
+    if ( !cb_driver || !cb_driver->debuff || !cb_driver->debuff->check() )
+      return;
+
+    cb_driver->debuff->expire();
+  }
+
+  bool ready() override
+  {
+    if ( !cb_driver || !cb_driver->debuff || !cb_driver->debuff->check() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+void chains_of_domination( special_effect_t& effect )
+{
+  struct chains_of_domination_t : public proc_spell_t
+  {
+    // This is currently uncapped and does not split
+    struct chains_of_domination_break_t : public proc_spell_t
+    {
+      chains_of_domination_break_t( const special_effect_t& e ) :
+        proc_spell_t( "chains_of_domination_break", e.player, e.player->find_spell( 368643 ) )
+      {
+        dual = true;
+        radius = e.driver()->effectN( 4 ).base_value();
+        base_dd_min = base_dd_max = 1.0;
+      }
+    };
+
+    action_t* chain_break;
+    chains_of_domination_cb_t* cb_driver;
+
+    chains_of_domination_t( const special_effect_t& e, chains_of_domination_cb_t* cb ) :
+      proc_spell_t( "chains_of_domination", e.player, e.driver(), e.item ),
+      chain_break( create_proc_action<chains_of_domination_break_t>( "chains_of_domination_break", e ) ),
+      cb_driver( cb )
+    {
+      add_child( chain_break );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      proc_spell_t::impact( s );
+
+      actor_target_data_t* td = player->get_target_data( s->target );
+      if ( !td->debuff.chains_of_domination->stack_change_callback )
+      {
+        td->debuff.chains_of_domination->set_stack_change_callback( [this]( buff_t* b, int old_, int new_ ) {
+          if ( old_ == 0 && new_ > 0 )
+          {
+            cb_driver->debuff = b;
+            cb_driver->accumulated_damage = 0.0;
+            cb_driver->activate();
+          }
+          else if ( new_ == 0 )
+          {
+            // If the target dies with the debuff on them or the debuff expires, it does not trigger an explosion
+            // However, if shadowlands_opts.chains_of_domination_auto_break is set, allow it to deal damage anyway
+            if ( cb_driver->auto_break || ( !b->player->is_sleeping() && b->elapsed( sim->current_time() ) < b->base_buff_duration ) )
+            {
+              chain_break->base_dd_min = chain_break->base_dd_max = cb_driver->accumulated_damage;
+              chain_break->set_target( b->player );
+              chain_break->schedule_execute();
+            }
+            else
+            {
+              sim->print_debug( "{} debuff {} on {} expired without dealing damage ({} accumulated)",
+                                *player, *b, *b->player, cb_driver->accumulated_damage );
+            }
+            cb_driver->deactivate();
+            cb_driver->debuff = nullptr;
+            cb_driver->accumulated_damage = 0.0;
+          }
+        } );
+      }
+
+      td->debuff.chains_of_domination->trigger();
+    }
+  };
+
+  auto cb_driver = new special_effect_t( effect.player );
+  cb_driver->name_str = "chains_of_domination_break_driver";
+  cb_driver->spell_id = effect.spell_id;
+  cb_driver->item = effect.item;
+  cb_driver->proc_chance_ = effect.driver()->proc_chance();
+  cb_driver->cooldown_ = 0_s;
+  cb_driver->proc_flags_ = PF_ALL_DAMAGE | PF_PERIODIC;
+  cb_driver->proc_flags2_ = PF2_ALL_HIT;
+  effect.player->special_effects.push_back( cb_driver );
+
+  auto callback = new chains_of_domination_cb_t( *cb_driver );
+  callback->initialize();
+  callback->deactivate();
+
+  auto proc = create_proc_action<chains_of_domination_t>( "chains_of_domination", effect, callback );
+  effect.execute_action = proc; 
 }
 
 // Weapons
@@ -5667,6 +5878,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
     unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
     unique_gear::register_special_effect( 367325, items::prismatic_brilliance );
+    unique_gear::register_special_effect( 367931, items::chains_of_domination );
 
     // Weapons
     unique_gear::register_special_effect( 331011, items::poxstorm );
@@ -5738,6 +5950,13 @@ void register_special_effects()
     unique_gear::register_special_effect( 329446, items::DISABLED_EFFECT ); // Darkmoon Deck: Voracity shuffler
     unique_gear::register_special_effect( 364086, items::DISABLED_EFFECT ); // Cypher effect Strip Advantage
     unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
+}
+
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
+{
+  if ( util::str_compare_ci( name, "break_chains_of_domination" ) ) return new items::break_chains_of_domination_t( player, options );
+
+  return nullptr;
 }
 
 void register_target_data_initializers( sim_t& sim )
@@ -5831,6 +6050,21 @@ void register_target_data_initializers( sim_t& sim )
     }
     else
       td->debuff.scent_of_souls = make_buff( *td, "scent_of_souls" )->set_quiet( true );
+  } );
+
+  // Chains of Domination
+  sim.register_target_data_initializer( []( actor_target_data_t* td ) {
+    if ( unique_gear::find_special_effect( td->source, 367931 ) )
+    {
+      assert( !td->debuff.chains_of_domination );
+
+      td->debuff.chains_of_domination = make_buff<buff_t>( *td, "chains_of_domination", td->source->find_spell( 367931 ) )
+        ->set_period( 0_ms )
+        ->set_cooldown( 0_ms );
+      td->debuff.chains_of_domination->reset();
+    }
+    else
+      td->debuff.chains_of_domination = make_buff( *td, "chains_of_domination" )->set_quiet( true );
   } );
 
   // Shard of Dyz (Scouring Touch debuff)
