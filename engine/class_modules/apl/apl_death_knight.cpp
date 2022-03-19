@@ -125,7 +125,7 @@ void blood( player_t* p )
   covenants->add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains>3&runic_power>=(90-(spell_targets.swarming_mist*3))" );
   covenants->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
   covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
-  covenants->add_action( "shackle_the_unworthy,if=if=rune<6" );
+  covenants->add_action( "shackle_the_unworthy,if=rune<6" );
 
   drw_up->add_action( "tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon" );
   drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20" );
