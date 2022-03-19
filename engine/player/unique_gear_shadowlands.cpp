@@ -4281,7 +4281,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
           });
       }
 	  
-	  // Define buff array for random selection
+    // Define buff array for random selection
     buffs =
     {
       looming_winter_active_buff,
