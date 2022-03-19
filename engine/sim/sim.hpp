@@ -450,6 +450,8 @@ struct sim_t : private sc_thread_t
     double grim_eclipse_dot_duration_multiplier = 1.0;
     // Percentage of default duration for Grim Eclipse haste buff. Set to 90% by default assuming about 1s of movement to get to the Event Horizon
     double grim_eclipse_buff_duration_multiplier = 0.9;
+    // Automatically break the Chains of Domination trinket at maximum
+    bool chains_of_domination_auto_break = true;
   } shadowlands_opts;
 
   // Auras and De-Buffs

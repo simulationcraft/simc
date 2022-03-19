@@ -3853,6 +3853,7 @@ void sim_t::create_options()
   add_option( opt_uint( "shadowlands.earthbreakers_impact_weak_points", shadowlands_opts.earthbreakers_impact_weak_points, 0, 3 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_dot_duration_multiplier", shadowlands_opts.grim_eclipse_dot_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_buff_duration_multiplier", shadowlands_opts.grim_eclipse_buff_duration_multiplier, 0.0, 1.0 ) );
+  add_option( opt_bool( "shadowlands.chains_of_domination_auto_break", shadowlands_opts.chains_of_domination_auto_break ) );
 }
 
 // sim_t::parse_option ======================================================
