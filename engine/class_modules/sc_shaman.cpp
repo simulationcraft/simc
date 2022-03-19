@@ -364,6 +364,8 @@ public:
   std::vector<action_t*> flame_shock_dependants;
   /// A time-ordered list of active Flame Shocks on enemies
   std::vector<std::pair<timespan_t, dot_t*>> active_flame_shock;
+  /// Maximum number of active flame shocks
+  unsigned max_active_flame_shock;
 
   struct
   {
@@ -626,6 +628,8 @@ public:
     proc_t* surge_of_power_frost_shock;
     proc_t* surge_of_power_flame_shock;
 
+    proc_t* pyroclastic_shock;
+
 
     // Enhancement
     proc_t* hot_hand;
@@ -637,6 +641,7 @@ public:
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
+    proc_t* reset_aa_feral_spirit;
   } proc;
 
   // Class Specializations
@@ -822,8 +827,8 @@ public:
       proc(),
       spec(),
       mastery(),
-      talent(),
       uptime(),
+      talent(),
       spell()
   {
     /*
@@ -3316,6 +3321,8 @@ struct melee_t : public shaman_attack_t
     : shaman_attack_t( name, player, s ), sync_weapons( sw ), first( true ), swing_timer_variance( stv )
   {
     background = repeating = may_glance = true;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
     special                             = false;
     trigger_gcd                         = timespan_t::zero();
     weapon                              = w;
@@ -3454,9 +3461,12 @@ struct molten_weapon_dot_t : public residual_action::residual_periodic_action_t<
 struct lava_lash_t : public shaman_attack_t
 {
   molten_weapon_dot_t* mw_dot;
+  unsigned max_spread_targets;
 
-  lava_lash_t( shaman_t* player, util::string_view options_str )
-    : shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ), mw_dot( nullptr )
+  lava_lash_t( shaman_t* player, util::string_view options_str ) :
+    shaman_attack_t( "lava_lash", player, player->find_specialization_spell( "Lava Lash" ) ),
+    mw_dot( nullptr ),
+    max_spread_targets( as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
@@ -3571,8 +3581,24 @@ struct lava_lash_t : public shaman_attack_t
                               feed_amount );
   }
 
-  // 2021-12-20: Randomly triggers on any 3 targets, including the target of the Lava
-  // Lash.
+  void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
+  {
+    auto idx = static_cast<unsigned>( rng().range( 0, in.size() ) );
+    out.push_back( in[ idx ] );
+    in.erase( in.begin() + idx );
+  }
+
+  static std::string actor_list_str( const std::vector<player_t*>& actors,
+                                     util::string_view             delim = ", " )
+  {
+    static const auto transform_fn = []( player_t* t ) { return t->name(); };
+    std::vector<const char*> tmp;
+
+    range::transform( actors, std::back_inserter( tmp ), transform_fn );
+
+    return tmp.size() ? util::string_join( tmp, delim ) : "none";
+  }
+
   void trigger_flame_shock( const action_state_t* state ) const
   {
     if ( !p()->spec.lava_lash_2->ok() )
@@ -3585,25 +3611,123 @@ struct lava_lash_t : public shaman_attack_t
       return;
     }
 
+    // Targets to spread Flame Shock to
     std::vector<player_t*> targets;
-    if ( target_list().size() <=
-         as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+    // Maximum number of spreads, deduct one from available targets since the target of this Lava
+    // Lash execution (always receives it) is in there
+    unsigned actual_spread_targets = std::min( max_spread_targets,
+        as<unsigned>( target_list().size() ) - 1U );
+
+    if ( actual_spread_targets == 0 )
     {
-      targets = target_list();
+      // Always trigger Flame Shock on main target
+      p()->trigger_secondary_flame_shock( state->target );
+      return;
     }
-    else
-    {
-      while ( targets.size() <
-              as<unsigned>( p()->spec.lava_lash_2->effectN( 2 ).base_value() ) )
+
+    // Lashing Flames, no Flame Shock
+    std::vector<player_t*> lf_no_fs_targets,
+    // Lashing Flames, Flame Shock
+                           lf_fs_targets,
+    // No Lashing Flames, no Flame Shock
+                           no_lf_no_fs_targets,
+    // No Lashing Flames, Flame Shock
+                           no_lf_fs_targets;
+
+    // Target of the Lava Lash has Lashing Flames
+    bool mt_has_lf = td( state->target )->debuff.lashing_flames->check();
+
+    // Categorize all available targets (within 8 yards of the main target) based on Lashing
+    // Flames and Flame Shock state.
+    range::for_each( target_list(), [&]( player_t* t ) {
+      // Ignore main target
+      if ( t == state->target )
       {
-        auto idx = static_cast<unsigned>( rng().range( 0, target_list().size() ) );
-        auto candidate = target_list()[ idx ];
-        if ( range::find( targets, candidate ) == targets.end() )
-        {
-          targets.push_back( candidate );
-        }
+        return;
       }
+
+      if ( td( t )->debuff.lashing_flames->check() &&
+           !td( t )->dot.flame_shock->is_ticking() )
+      {
+        lf_no_fs_targets.push_back( t );
+      }
+      else if ( td( t )->debuff.lashing_flames->check() &&
+                td( t )->dot.flame_shock->is_ticking() )
+      {
+        lf_fs_targets.push_back( t );
+      }
+      else if ( !td( t )->debuff.lashing_flames->check() &&
+                 td( t )->dot.flame_shock->is_ticking() )
+      {
+        no_lf_fs_targets.push_back( t );
+      }
+      else if ( !td( t )->debuff.lashing_flames->check() &&
+                !td( t )->dot.flame_shock->is_ticking() )
+      {
+        no_lf_no_fs_targets.push_back( t );
+      }
+    } );
+
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} spreads flame_shock, n_fs={} ll_target={} "
+                            "state={}LF{}FS, targets_in_range={{ {} }}",
+        player->name(), p()->active_flame_shock.size(), state->target->name(),
+        td( state->target )->debuff.lashing_flames->check() ? '+' : '-',
+        td( state->target )->dot.flame_shock->is_ticking() ? '+' : '-',
+        actor_list_str( target_list() ) );
+
+      sim->out_debug.print( "{} +LF-FS: targets={{ {} }}", player->name(),
+          actor_list_str( lf_no_fs_targets ) );
+      sim->out_debug.print( "{} -LF-FS: targets={{ {} }}", player->name(),
+          actor_list_str( no_lf_no_fs_targets ) );
+      sim->out_debug.print( "{} +LF+FS: targets={{ {} }}", player->name(),
+          actor_list_str( lf_fs_targets ) );
+      sim->out_debug.print( "{} -LF+FS: targets={{ {} }}", player->name(),
+          actor_list_str( no_lf_fs_targets ) );
     }
+
+    // 1) Randomly select targets with Lashing Flame and no Flame Shock, unless there already are
+    // the maximum number of Flame Shocked targets with Lashing Flames up.
+    while ( lf_no_fs_targets.size() > 0 &&
+            ( lf_fs_targets.size() + mt_has_lf ) < p()->max_active_flame_shock &&
+            targets.size() < actual_spread_targets )
+    {
+      move_random_target( lf_no_fs_targets, targets );
+    }
+
+    // 2) Randomly select targets without Lashing Flames and Flame Shock, but only if we are not at
+    // Flame Shock cap.
+    while ( no_lf_no_fs_targets.size() > 0 &&
+            ( lf_fs_targets.size() + no_lf_fs_targets.size() + 1U ) < p()->max_active_flame_shock &&
+            targets.size() < actual_spread_targets )
+    {
+      move_random_target( no_lf_no_fs_targets, targets );
+    }
+
+    // 3) Randomly select targets that have Lashing Flames and Flame Shock on them. This prioritizes
+    // refreshing existing Flame Shocks on targets with Lashing Flames up.
+    while ( lf_fs_targets.size() > 0 && targets.size() < actual_spread_targets )
+    {
+      move_random_target( lf_fs_targets, targets );
+    }
+
+    // 4) Randomly select targets that don't have Lashing Flames but have Flame Shock on them. This
+    // prioritizes refreshing existing Flame Shocks on targets when we are at maximum Flame Shocks,
+    // preventing random expirations.
+    while ( no_lf_fs_targets.size() > 0 && targets.size() < actual_spread_targets )
+    {
+      move_random_target( no_lf_fs_targets, targets );
+    }
+
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} selected targets={{ {} }}",
+          player->name(), actor_list_str( targets ) );
+    }
+
+    // Always trigger Flame Shock on main target
+    p()->trigger_secondary_flame_shock( state->target );
 
     range::for_each( targets, [ shaman = p() ]( player_t* target ) {
       shaman->trigger_secondary_flame_shock( target );
@@ -4062,11 +4186,11 @@ struct earth_elemental_t : public shaman_spell_t
 
     if ( p()->talent.primal_elementalist->ok() )
     {
-      if ( p()->talent.storm_elemental->ok() ) 
+      if ( p()->talent.storm_elemental->ok() )
       {
         p()->pet.pet_storm_elemental->demise();
-      } 
-      else 
+      }
+      else
       {
         p()->pet.pet_fire_elemental->demise();
       }
@@ -5912,6 +6036,7 @@ struct earth_shock_t : public shaman_spell_t
       if ( fs->is_ticking() )
       {
         fs->adjust_duration( extend_time );
+        p()->proc.pyroclastic_shock->occur();
       }
     }
   }
@@ -5934,10 +6059,8 @@ private:
 
   void track_flame_shock( const action_state_t* state )
   {
-    unsigned max_targets = as<unsigned>( data().max_targets() );
-
     // No need to track anything if there are not enough enemies
-    if ( sim->target_list.size() <= max_targets )
+    if ( sim->target_list.size() <= p()->max_active_flame_shock )
     {
       return;
     }
@@ -5949,7 +6072,7 @@ private:
 
     // Max targets reached (the new Flame Shock application is on a target without a dot
     // active), remove one of the oldest applied dots to make room.
-    if ( p()->active_flame_shock.size() == max_targets )
+    if ( p()->active_flame_shock.size() == p()->max_active_flame_shock )
     {
       auto start_time = p()->active_flame_shock.front().first;
       auto entry = range::find_if( p()->active_flame_shock, [ start_time ]( const auto& entry ) {
@@ -5957,7 +6080,7 @@ private:
       } );
 
       // Randomize equal start time application removal
-      auto candidate_targets= as<double>(
+      auto candidate_targets = as<double>(
           std::distance( p()->active_flame_shock.begin(), entry ) );
       auto idx = static_cast<unsigned>( rng().range( 0.0, candidate_targets ) );
 
@@ -5970,10 +6093,11 @@ private:
         }
 
         sim->out_debug.print(
-          "{} canceling oldest {} from target={} (index={}), start_time={}, "
+          "{} canceling oldest {}: new_target={} cancel_target={} (index={}), start_time={}, "
           "candidate_targets={} ({})",
-          player->name(), name(), entry->second->state->target->name(), idx,
-          entry->first, as<unsigned>( candidate_targets ),
+          player->name(), name(), state->target->name(),
+          p()->active_flame_shock[ idx ].second->state->target->name(), idx,
+          p()->active_flame_shock[ idx ].first, as<unsigned>( candidate_targets ),
           util::string_join( enemies ) );
       }
 
@@ -7244,22 +7368,11 @@ struct fae_transfusion_tick_t : public shaman_spell_t
       seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
+    allow_class_ability_procs = true;
+    not_a_proc = true;
 
     aoe        = 4;
     background = split_aoe_damage = true;
-    callbacks  = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    return m;
-  }
-
-  result_amount_type amount_type( const action_state_t*, bool ) const override
-  {
-    return result_amount_type::DMG_DIRECT;
   }
 
   void execute() override
@@ -7297,6 +7410,9 @@ struct fae_transfusion_t : public shaman_spell_t
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
     cooldown->duration += p()->conduit.essential_extraction.time_value();
   }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  { return result_amount_type::DMG_DIRECT; }
 
   void last_tick( dot_t* d ) override
   {
@@ -8450,6 +8566,9 @@ void shaman_t::init_spells()
   spell.t28_2pc_ele        = find_spell( 364523 );
   spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
 
+  // Misc spell-related init
+  max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
+
   player_t::init_spells();
 }
 
@@ -8579,6 +8698,11 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
   }
 
   buff.feral_spirit_maelstrom->trigger( 1, duration );
+
+  if ( bugs )
+  {
+    reset_auto_attacks( 0_s, proc.reset_aa_feral_spirit );
+  }
 }
 
 void shaman_t::summon_fire_elemental( timespan_t duration )
@@ -9441,6 +9565,8 @@ void shaman_t::init_procs()
   proc.surge_of_power_frost_shock             = get_proc( "Surge of Power: Frost Shock" );
   proc.surge_of_power_flame_shock             = get_proc( "Surge of Power: Flame Shock" );
 
+  proc.pyroclastic_shock                      = get_proc( "Pyroclastic Shock" );
+
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon       = get_proc( "Maelstrom Weapon" );
   proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
@@ -9452,6 +9578,8 @@ void shaman_t::init_procs()
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
   proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
   proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
+
+  proc.reset_aa_feral_spirit = get_proc( "Autoattack Swing Reset: Feral Spirit" );
 }
 
 // shaman_t::init_uptimes ====================================================
@@ -9880,7 +10008,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( this, "Lava Burst",
                                "if=buff.lava_surge.up&(runeforge.windspeakers_lava_resurgence.equipped|!buff.master_of_"
                                "the_elements.up&talent.master_of_the_elements.enabled)" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)" );
+    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled&(maelstrom<70)&!buff.ascendance.up" );
     single_target->add_talent(
         this, "Stormkeeper",
         "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)&(maelstrom<44)" );
@@ -9902,6 +10030,9 @@ void shaman_t::init_action_list_elemental()
                                "if=spell_targets.chain_lightning>1&!dot.flame_shock.refreshable&!runeforge.echoes_of_"
                                "great_sundering.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_"
                                "elements.up|cooldown.lava_burst.remains>0&maelstrom>=92)" );
+    single_target->add_action(
+        this, "Earth Shock",
+        "if=runeforge.windspeakers_lava_resurgence.equipped&buff.ascendance.up" );
     single_target->add_action( this, "Lava Burst",
                                "if=cooldown_react&(!buff.master_of_the_elements.up&buff.icefury.up)" );
     single_target->add_action( this, "Lava Burst",
@@ -10104,9 +10235,8 @@ void shaman_t::init_action_list_enhancement()
   precombat->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
   precombat->add_action( this, "Windfury Totem", "if=!runeforge.doom_winds.equipped" );
   precombat->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent" );
-
-  // Precombat potion
-  precombat->add_action( "potion" );
+  precombat->add_action( "variable,name=trinket1_is_weird,value=trinket.1.is.the_first_sigil|trinket.1.is.scars_of_fraternal_strife|trinket.1.is.cache_of_acquired_treasures" );
+  precombat->add_action( "variable,name=trinket2_is_weird,value=trinket.2.is.the_first_sigil|trinket.2.is.scars_of_fraternal_strife|trinket.2.is.cache_of_acquired_treasures" );
 
   // Snapshot stats
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
@@ -10115,7 +10245,7 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( this, "Bloodlust", "line_cd=600");
 
   // In-combat potion
-  def->add_action( "potion,if=expected_combat_length-time<60", "In-combat potion is before combat ends." );
+  def->add_action( "potion,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30" );
 
   // "Default" APL controlling logic flow to specialized sub-APLs
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
@@ -10126,7 +10256,11 @@ void shaman_t::init_action_list_enhancement()
   def->add_action( "heart_essence" );
 
   // Use items
-  def->add_action( "use_items" );
+  def->add_action( "use_item,name=the_first_sigil,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30" );
+  def->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_sword.up|fight_remains<25" );
+  def->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
+  def->add_action( "use_items,slots=trinket1,if=!variable.trinket1_is_weird" );
+  def->add_action( "use_items,slots=trinket2,if=!variable.trinket2_is_weird" );
 
   // Racials
   def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
@@ -11157,18 +11291,6 @@ struct shaman_module_t : public module_t
 
   void static_init() const override
   { }
-
-  void register_hotfixes() const override
-  {
-    hotfix::register_spell( "Shaman", "2022-03-04",
-                            "Storm Elemental's Wind Gust effect gained from casting Lightning Bolt or Chain Lightning "
-                            "now has a maximum stack of 10 (was 20).",
-                            263806 )
-        .field( "max_stack" )
-        .operation( hotfix::HOTFIX_SET )
-        .modifier( 10 )
-        .verification_value( 20 );
-  }
 
   void combat_begin( sim_t* ) const override
   { }

@@ -2,7 +2,7 @@ deathknight="T28_Death_Knight_Frost_2H"
 source=default
 spec=frost
 level=60
-race=orc
+race=void_elf
 role=attack
 position=back
 talents=1201012
@@ -224,17 +224,17 @@ feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
-trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=283.47
-# gear_strength=1318
+# gear_ilvl=283.00
+# gear_strength=1443
 # gear_stamina=2982
 # gear_attack_power=20
 # gear_crit_rating=742
-# gear_haste_rating=411
-# gear_mastery_rating=882
+# gear_haste_rating=485
+# gear_mastery_rating=1033
 # gear_versatility_rating=91
 # gear_armor=1859
 # set_bonus=tier28_2pc=1

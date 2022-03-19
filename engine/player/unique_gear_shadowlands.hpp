@@ -65,6 +65,7 @@ void resonant_reservoir( special_effect_t& );
 void elegy_of_the_eternals( special_effect_t& );
 void grim_eclipse( special_effect_t& );
 void pulsating_riftshard( special_effect_t& );
+void prismatic_brilliance( special_effect_t& );
 
 // Runecarves
 void echo_of_eonar( special_effect_t& );
@@ -85,6 +86,7 @@ std::unique_ptr<expr_t> create_expression( const player_t&, util::string_view );
 
 void register_hotfixes();
 void register_special_effects();
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
 void register_target_data_initializers( sim_t& );
 
 }  // namespace unique_gear::shadowlands

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42560 Live (hotfix 2022-03-04/42560, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-17/42698, git build  , no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -8516,8 +8516,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719189)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13363 | Target: At Enemy (53)
-#2 (id=739521)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14919 | Target: At Enemy (53)
 Description      : $@spelldesc270323
 
 Name             : Pheromone Bomb (id=270329) [Spell Family (9)] 
@@ -8612,8 +8610,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=719201)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13364 | Target: At Enemy (53)
-#2 (id=739522)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14920 | Target: At Enemy (53)
 Description      : $@spelldesc270335
 
 Name             : Shrapnel Bomb (id=270338) [Spell Family (9)] 
@@ -8789,8 +8785,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=721014)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 13428 | Target: At Enemy (53)
-#2 (id=739523)   : Create Area Trigger (179)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14921 | Target: At Enemy (53)
 Description      : $@spelldesc271045
 
 Name             : Volatile Bomb (id=271048) [Spell Family (9)] 
@@ -9168,7 +9162,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #2 (id=723841)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 3 yards | Target: Unknown(72)
-Hotfixed         : Type (32 -> 3), Trigger Spell (52477 -> 0)
 Description      : $@spelldesc272742
 
 Name             : Wildfire Cluster (id=272745) [Spell Family (9)] 
@@ -12115,7 +12108,7 @@ Description      : Aimed Shot also fires a Serpent Sting at the primary target.
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
@@ -12130,8 +12123,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=834562)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Trigger Spell: 336892 | Target: Self (1)
-Hotfixed         : Sub Type (42 -> 4)
-Description      : When you gain the Trick Shots effect, you have a $h% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
+Description      : When you gain the Trick Shots effect, you have a $s1% chance to refund a charge of Aimed Shot, and cause your next Aimed Shot to not consume any Focus.
 
 Name             : Secrets of the Unblinking Vigil (id=336892) [Spell Family (9)] 
 School           : Physical
@@ -13542,8 +13534,9 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=903205)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500
-Hotfixed         : PvP Coefficient (1 -> 0.625)
-Description      : Kill Command critical hits increase the damage and cooldown reduction of your next Cobra Shot by $s2%.
+#3 (id=916000)   : Dummy (3)
+                   Base Value: 6000 | Scaled Value: 6000 | PvP Coefficient: 0.62500
+Description      : Kill Command critical hits empower your next Cobra Shot or Multi-Shot, increasing the damage and cooldown reduction of Cobra Shot by $363760s1% or causing Multi-Shot to grant an additional ${$m3/1000}.1 sec of Beast Cleave.
 
 Name             : Focused Trickery (id=363666) [Passive, Hidden] 
 Class            : Hunter
@@ -13602,6 +13595,7 @@ Class            : Hunter
 School           : Nature
 Spell Type       : None
 Duration         : 8 seconds
+Internal Cooldown: 0.1 seconds
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13618,12 +13612,10 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.62500 | Target: Self (1)
                    Affected Spells: Cobra Shot (193455)
                    Family Flags: 86
-Hotfixed         : PvP Coefficient (1 -> 0.625)
 Description      : $@spelldesc363665
-Tooltip          : Cobra Shot damage and cooldown reduction increased by $w1%.
+Tooltip          : Your next Cobra Shot has its damage and cooldown reduction increased by $w1%, or your next Multi-Shot grants an additional ${$363665m3/1000}.1 sec of Beast Cleave.
 
 Name             : Mad Bombardier (id=363805) [Spell Family (9)] 
-Hotfixed         : Proc Stacks (1 -> 0), Attributes, Description, Tooltip
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -13683,7 +13675,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904534)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.66667 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.666667)
 Description      : Trick Shots now also increases the damage of the affected shot by $s1%.
 
 Name             : Killing Frenzy (id=364492) [Passive, Hidden] 

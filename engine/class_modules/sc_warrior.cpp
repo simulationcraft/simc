@@ -157,6 +157,9 @@ public:
     // Tier
     buff_t* pile_on_ready;
     buff_t* pile_on_str;
+    buff_t* seeing_red;
+    buff_t* seeing_red_tracking;
+    buff_t* outburst;
 
     // Shadowland Legendary
     buff_t* battlelord;
@@ -249,6 +252,9 @@ public:
     gain_t* simmering_rage;
     gain_t* memory_of_lucid_dreams;
     gain_t* conquerors_banner;
+
+    // t28
+    gain_t* t28_2pc;
   } gain;
 
   // Spells
@@ -453,6 +459,7 @@ public:
     const spell_data_t* frenzied_destruction_4p;
     const spell_data_t* pile_on_2p;
     const spell_data_t* pile_on_4p;
+    const spell_data_t* outburst_4p;
   } tier_set;
 
   struct legendary_t
@@ -1030,7 +1037,14 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      dm *= 1.0 + p()->buff.avatar->data().effectN( 1 ).percent();
+      double percent_increase = p()->buff.avatar->data().effectN( 1 ).percent();
+
+      if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
+      {
+        percent_increase += p()->tier_set.outburst_4p->effectN( 1 ).percent();
+      }
+
+      dm *= 1.0 + percent_increase;
     }
 
     if ( affected_by.sweeping_strikes && s->chain_target > 0 )
@@ -1052,7 +1066,9 @@ public:
 
     if ( affected_by.avatar && p()->buff.avatar->up() )
     {
-      tm *= 1.0 + p()->buff.avatar->data().effectN( 8 ).percent();
+      double percent_increase = p()->buff.avatar->data().effectN( 8 ).percent();
+
+      tm *= 1.0 + percent_increase;
     }
 
     return tm;
@@ -1195,15 +1211,49 @@ public:
       if ( p()->legendary.glory->ok() && p()->buff.conquerors_banner->check() )
       {
         p()->legendary.glory_counter += ab::last_resource_cost;
-        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 20 ) )
+        if ( p()->legendary.glory_counter > ( p()->specialization() >= WARRIOR_PROTECTION ? 10 : 25 ) )
         {
-          double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) );
+          double times_over_threshold = floor( p()->legendary.glory_counter / (p()->specialization() == WARRIOR_PROTECTION ? 10 : 25) );
           p()->buff.conquerors_banner->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->buff.conquerors_mastery->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
           p()->buff.veterans_repute->extend_duration( p(), timespan_t::from_millis( p()->legendary.glory->effectN( 3 ).base_value() ) * times_over_threshold );
-          p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 20) * times_over_threshold ;
+          p()->legendary.glory_counter -= (p()->specialization() == WARRIOR_PROTECTION ? 10 : 25) * times_over_threshold ;
           p()->proc.glory->occur();
         }
+      }
+    }
+
+    // Protection Warrior T28 Tracking
+    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B2 ) &&
+         rage > 0 )
+    {
+      // Trigger the buff if this is the first rage consumption of the iteration
+      if ( !p()->buff.seeing_red_tracking->check() )
+      {
+        p()->buff.seeing_red_tracking->trigger();
+      }
+
+      double original_value = p()->buff.seeing_red_tracking->current_value;
+      double rage_per_stack = p()->buff.seeing_red_tracking->data().effectN( 1 ).base_value();
+      p()->buff.seeing_red_tracking->current_value += rage;
+      p()->sim->print_debug( "{} increments seeing_red_tracking by {}. Old={} New={}", p()->name(), rage,
+                             original_value, p()->buff.seeing_red_tracking->current_value );
+
+      while ( p()->buff.seeing_red_tracking->current_value >= rage_per_stack )
+      {
+        p()->buff.seeing_red_tracking->current_value -= rage_per_stack;
+        p()->sim->print_debug(
+            "{} reaches seeing_red_tracking threshold, triggering seeing_red buff. New seeing_red_tracking value is {}",
+            p()->name(), p()->buff.seeing_red_tracking->current_value );
+
+        p()->buff.seeing_red->trigger();
+
+        if( p()->buff.seeing_red->at_max_stacks() )
+        {
+          p()->buff.seeing_red->expire();
+          p()->buff.outburst->trigger();
+        }
+
       }
     }
   }
@@ -1427,6 +1477,7 @@ struct melee_t : public warrior_attack_t
       devastator( nullptr )
   {
     background = repeating = may_glance = usable_while_channeling = true;
+    allow_class_ability_procs = not_a_proc = true;
     special           = false;
     school            = SCHOOL_PHYSICAL;
     trigger_gcd       = timespan_t::zero();
@@ -3411,20 +3462,20 @@ struct raging_blow_t : public warrior_attack_t
     {
       if ( p()->buff.recklessness->check() )
       {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
         }
       }
       else
       {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
         }
       }
     }
@@ -3548,20 +3599,20 @@ struct crushing_blow_t : public warrior_attack_t
     {
       if ( p()->buff.recklessness->check() )
       {
-        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+        p()->buff.recklessness->extend_duration( p(), timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->extend_duration( p(), timespan_t::from_seconds( 3 ) );
         }
       }
       else
       {
-      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+      p()->buff.recklessness->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
 
         if ( p()->talents.reckless_abandon->ok() ) // tier triggers ability override, but not rage gen
         {
-          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 4 ) );
+          p()->buff.reckless_abandon->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, timespan_t::from_seconds( 3 ) );
         }
       }
     }
@@ -4369,6 +4420,11 @@ struct shield_slam_t : public warrior_attack_t
       am *= 1.0 + p() -> talents.punish -> effectN( 1 ).percent();
     }
 
+    if ( p()->buff.outburst->check() )
+    {
+      am *= 1.0 + p()->buff.outburst->data().effectN( 1 ).percent();
+    }
+
     return am;
   }
 
@@ -4396,6 +4452,13 @@ struct shield_slam_t : public warrior_attack_t
     if ( p() -> azerite.brace_for_impact.enabled() )
     {
       p() -> buff.brace_for_impact -> trigger();
+    }
+
+    if ( p()->buff.outburst->check() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 3 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
+      p()->buff.ignore_pain->trigger();
+      p()->buff.outburst->expire();
     }
   }
 
@@ -4552,9 +4615,14 @@ struct thunder_clap_t : public warrior_attack_t
       am *= 1.0 + p() -> talents.unstoppable_force -> effectN( 1 ).percent();
     }
 
-        if ( p()->buff.show_of_force->check() )
+    if ( p()->buff.show_of_force->check() )
     {
       am *= 1.0 + ( p()-> buff.show_of_force -> stack_value() );
+    }
+
+    if ( p()->buff.outburst->check() )
+    {
+      am *= 1.0 + p()->buff.outburst->data().effectN( 1 ).percent();
     }
 
     return am;
@@ -4590,6 +4658,13 @@ struct thunder_clap_t : public warrior_attack_t
     {
      p() -> cooldown.demoralizing_shout -> adjust( - p() -> legendary.thunderlord -> effectN( 1 ).time_value() *
           std::min( execute_state->n_targets, as<unsigned int>( p()->legendary.thunderlord->effectN( 2 ).base_value() ) ) );
+    }
+
+    if ( p()->buff.outburst->check() )
+    {
+      p()->resource_gain( RESOURCE_RAGE, p() -> buff.outburst->data().effectN( 4 ).resource( RESOURCE_RAGE ), p() -> gain.t28_2pc );
+      p()->buff.ignore_pain->trigger();
+      p()->buff.outburst->expire();
     }
 
     p()->resource_gain( RESOURCE_RAGE, rage_gain, p() -> gain.thunder_clap );
@@ -5511,6 +5586,11 @@ struct avatar_t : public warrior_spell_t
 
       if ( p() -> specialization() == WARRIOR_PROTECTION )
         p() -> active.bastion_of_might_ip -> execute();
+    }
+
+    if ( p()->specialization() == WARRIOR_PROTECTION && p()->sets->has_set_bonus( WARRIOR_PROTECTION, T28, B4 ) )
+    {
+      p()->buff.outburst->trigger();
     }
   }
 
@@ -6439,6 +6519,7 @@ void warrior_t::init_spells()
   tier_set.frenzied_destruction_4p    = sets -> set( WARRIOR_FURY, T28, B4 );
   tier_set.pile_on_2p                 = sets -> set( WARRIOR_ARMS, T28, B2 );
   tier_set.pile_on_4p                 = sets -> set( WARRIOR_ARMS, T28, B4 );
+  tier_set.outburst_4p                = find_spell( 364639 );
 
 
   // Generic spells
@@ -7582,7 +7663,17 @@ void warrior_t::create_buffs()
                      ->add_invalidate( CACHE_STRENGTH )
                      ->set_default_value( find_spell( 366769 )->effectN( 1 ).percent() );
 
+  // Protection T28 Set Bonuses ===============================================================================================================
 
+  buff.seeing_red = make_buff( this, "seeing_red", find_spell( 364006 ) );
+
+  buff.seeing_red_tracking =
+      make_buff( this, "seeing_red_tracking", find_spell( 364002 ) )
+          ->set_quiet( true )
+          ->set_duration( timespan_t::zero() )
+          ->set_max_stack( 100 )
+          ->set_default_value( 0 );
+  buff.outburst = make_buff( this, "outburst", find_spell( 364010 ) );
 }
 // warrior_t::init_rng ==================================================
 void warrior_t::init_rng()
@@ -7647,6 +7738,9 @@ void warrior_t::init_gains()
 
   // Azerite
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
+
+  // T28
+  gain.t28_2pc = get_gain( "t28_2pc" );
 }
 
 // warrior_t::init_position ====================================================

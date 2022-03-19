@@ -2495,6 +2495,7 @@ public:
   auto_attack_base_t( util::string_view n, hunter_t* p, const spell_data_t* s = spell_data_t::nil() ) :
     ab( n, p, s )
   {
+    ab::allow_class_ability_procs = ab::not_a_proc = true;
     ab::background = ab::repeating = true;
     ab::interrupt_auto_attack = false;
     ab::special = false;
@@ -2634,13 +2635,16 @@ struct barrage_t: public hunter_spell_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
+  const timespan_t beast_cleave_duration;
+
   multi_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
+    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) ),
+    beast_cleave_duration( p -> find_spell( 118455 ) -> duration() )
   {
     parse_options( options_str );
 
     aoe = -1;
-    reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
+    reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -2650,8 +2654,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
+    timespan_t duration = beast_cleave_duration;
+    if ( p() -> buffs.killing_frenzy -> up() )
+      duration += p() -> tier_set.killing_frenzy_4pc -> effectN( 3 ).time_value();
+
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-      pet -> buffs.beast_cleave -> trigger();
+      pet -> buffs.beast_cleave -> trigger( duration );
+
+    p() -> buffs.killing_frenzy -> expire();
 
     if ( num_targets_hit >= p() -> specs.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
@@ -6446,7 +6456,9 @@ void hunter_t::create_buffs()
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> set_trigger_spell( legendary.secrets_of_the_vigil );
+      -> set_trigger_spell( legendary.secrets_of_the_vigil )
+      // XXX 3-11-2022 Proc chance was hotfixed to 100% but description changed to refer to the dummy value for a 50% proc chance.
+      -> set_chance( legendary.secrets_of_the_vigil -> effectN( 1 ).percent() );
 
   buffs.pact_of_the_soulstalkers =
     make_buff( this, "pact_of_the_soulstalkers", find_spell( 356263 ) )

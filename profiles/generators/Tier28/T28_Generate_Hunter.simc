@@ -22,7 +22,7 @@ feet=boneshatter_treads,id=172323,bonus_id=7010/6649/6650/1588,enchant=eternal_a
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
 main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=optical_target_embiggener
 
 save=T28_Hunter_Beast_Mastery.simc
@@ -52,7 +52,7 @@ feet=godstalkers_sabatons,id=188862,bonus_id=1498/7187,enchant=eternal_agility
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
 finger2=modified_defense_grid,id=189772,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
 trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
-trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+trinket2=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
 main_hand=astral_verdict,id=189853,bonus_id=1524/7187,enchant=sinful_revelation
 
 save=T28_Hunter_Marksmanship.simc

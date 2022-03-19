@@ -777,15 +777,15 @@ void sc_format_to( const cooldown_t& cooldown, fmt::format_context::iterator out
 }
 
 target_specific_cooldown_t::target_specific_cooldown_t( player_t& p, cooldown_t& base_cd ) :
-  name_str( base_cd.name() ),
   player( &p ),
+  name_str( base_cd.name() ),
   base_duration( base_cd.duration )
 {
 }
 
 target_specific_cooldown_t::target_specific_cooldown_t( util::string_view name, player_t& p, timespan_t duration ) :
-  name_str( name ),
   player( &p ),
+  name_str( name ),
   base_duration( duration )
 {
 }

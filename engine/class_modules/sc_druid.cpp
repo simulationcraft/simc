@@ -310,6 +310,7 @@ public:
     double adaptive_swarm_jump_distance_min = 5.0;
     double adaptive_swarm_jump_distance_max = 40.0;
     unsigned adaptive_swarm_friendly_targets = 20;
+    std::string adaptive_swarm_prepull_setup = "";
     double celestial_spirits_exceptional_chance = 0.85;
     int convoke_the_spirits_deck = 5;
     std::string kindred_affinity_covenant = "night_fae";
@@ -372,6 +373,7 @@ public:
   event_t* lycaras_event;
   timespan_t lycaras_event_remains;
   std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
+  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
 
   // Buffs
   struct buffs_t
@@ -2991,9 +2993,8 @@ public:
 
       if ( p()->sets->has_set_bonus( DRUID_FERAL, T28, B2 ) )
       {
-        // -2.0 divisor from tooltip, not present in data
-        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() *
-                                              consumed / -2.0 );
+        auto dur_ = timespan_t::from_seconds( p()->sets->set( DRUID_FERAL, T28, B2 )->effectN( 1 ).base_value() * -0.1 *
+                                              consumed );
 
         if ( p()->talent.incarnation_cat->ok() )
           p()->cooldown.incarnation->adjust( dur_ );
@@ -3752,6 +3753,8 @@ struct rake_t : public cat_attack_t
     return am;
   }
 
+  bool has_amount_result() const override { return bleed->has_amount_result(); }
+
   void impact( action_state_t* s ) override
   {
     cat_attack_t::impact( s );
@@ -4478,6 +4481,8 @@ struct thrash_bear_t : public bear_attack_t
     if ( p->specialization() == DRUID_GUARDIAN )
       name_str_reporting = "thrash";
   }
+
+  bool has_amount_result() const override { return dot->has_amount_result(); }
 
   void execute() override
   {
@@ -5579,6 +5584,8 @@ struct fury_of_elune_t : public druid_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override { return damage->has_amount_result(); }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -6135,6 +6142,8 @@ struct moonfire_t : public druid_spell_t
     damage = p->get_secondary_action_n<moonfire_damage_t>( name_str + "_dmg" );
     damage->stats = stats;
   }
+
+  bool has_amount_result() const override { return damage->has_amount_result(); }
 
   void init() override
   {
@@ -6787,6 +6796,8 @@ struct sunfire_t : public druid_spell_t
     }
   }
 
+  bool has_amount_result() const override { return damage->has_amount_result(); }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -7421,20 +7432,16 @@ struct adaptive_swarm_t : public druid_spell_t
 
   adaptive_swarm_base_t* damage;
   adaptive_swarm_base_t* heal;
-  timespan_t precombat_seconds;
   timespan_t gcd_add;
-  int precombat_stacks;
   bool target_self;
 
   adaptive_swarm_t( druid_t* p, std::string_view opt )
     : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
-      precombat_seconds( 11_s ),
       gcd_add( p->query_aura_effect( p->spec.cat_form, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
-      precombat_stacks( 0 ),
       target_self( false )
   {
-    add_option( opt_timespan( "precombat_seconds", precombat_seconds ) );
-    add_option( opt_int( "precombat_stacks", precombat_stacks ) );
+    add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
+    add_option( opt_deprecated( "precombat_stacs", "druid.adaptive_swarm_prepull_setup" ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -7468,26 +7475,7 @@ struct adaptive_swarm_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( is_precombat && precombat_seconds > 0_s )
-    {
-      heal->set_target( player );
-
-      if ( precombat_stacks )
-      {
-        auto new_state = heal->get_state();
-        debug_cast<adaptive_swarm_state_t*>( new_state )->stacks = precombat_stacks;
-        heal->schedule_execute( new_state );
-      }
-      else
-      {
-        heal->schedule_execute();
-      }
-
-      this->cooldown->adjust( -precombat_seconds, false );
-      heal->get_dot( player )->adjust_duration( -precombat_seconds );
-      return;
-    }
-    else if ( target_self )
+    if ( target_self )
     {
       heal->set_target( player );
       heal->schedule_execute();
@@ -8082,6 +8070,7 @@ struct druid_melee_t : public Base
   druid_melee_t( std::string_view n, druid_t* p ) : Base( n, p ), ooc_chance( 0.0 )
   {
     ab::may_glance = ab::background = ab::repeating = ab::is_auto_attack = true;
+    ab::allow_class_ability_procs = ab::not_a_proc = true;
 
     ab::school = SCHOOL_PHYSICAL;
     ab::trigger_gcd = 0_ms;
@@ -10002,6 +9991,23 @@ void druid_t::combat_begin()
   {
     eclipse_handler.reset_stacks();
 
+    switch ( eclipse_handler.state )
+    {
+      case eclipse_state_e::IN_BOTH:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_LUNAR:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_SOLAR:
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      default:
+        uptime.eclipse_none->update( true, sim->current_time() );
+        break;
+    }
+
     if ( options.raid_combat )
     {
       double cap = talent.natures_balance->ok() ? 50.0 : 20.0;
@@ -10010,6 +10016,24 @@ void druid_t::combat_begin()
       resources.current[ RESOURCE_ASTRAL_POWER ] = std::min( cap, curr );
       if ( curr > cap )
         sim->print_debug( "Astral Power capped at combat start to {} (was {})", cap, curr );
+    }
+  }
+
+  if ( cov.necrolord->ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
+  {
+    using swarm_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t;
+
+    auto heal = get_secondary_action<swarm_t>( "adaptive_swarm_heal" );
+
+    for ( auto [ min_stack, max_stack, min_dur, max_dur, chance ] : prepull_swarm )
+    {
+      if ( !rng().roll( chance ) )
+        continue;
+
+      auto stacks = rng().range( min_stack, max_stack );
+      auto duration = rng().range( min_dur, max_dur );
+
+      swarm_tracker.push_back( make_event<swarm_t::adaptive_swarm_heal_event_t>( *sim, this, heal, stacks, duration ) );
     }
   }
 
@@ -10738,6 +10762,40 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
   return player_t::create_expression( name_str );
 }
 
+static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view setup_str )
+{
+  auto entries = util::string_split<std::string_view>( setup_str, "/" );
+
+  for ( auto entry : entries )
+  {
+    auto values = util::string_split<std::string_view>( entry, ":" );
+
+    try
+    {
+      if ( values.size() != 5 )
+        throw std::invalid_argument( "Missing syntax." );
+
+      auto min_stack = std::clamp( util::to_unsigned( values[ 0 ] ), 1U, 5U );
+      auto max_stack = std::clamp( util::to_unsigned( values[ 1 ] ), 1U, 5U );
+      auto min_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 2 ] ), 0.0, 12.0 ) );
+      auto max_dur = timespan_t::from_seconds( std::clamp( util::to_double( values[ 3 ] ), 0.0, 12.0 ) );
+      auto chance = std::clamp( util::to_double( values[ 4 ] ), 0.0, 1.0 );
+
+      debug_cast<druid_t*>( sim->active_player )
+          ->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur, chance );
+    }
+    catch ( const std::invalid_argument& )
+    {
+      throw std::invalid_argument(
+          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup."
+                       "\n\tFormat is <min stacks>:<max stacks>:<min duration>:<max duration>:<chance>/...",
+                       entry ) );
+    }
+  }
+
+  return true;
+}
+
 void druid_t::create_options()
 {
   player_t::create_options();
@@ -10774,6 +10832,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
   add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
   add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
+  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", options.celestial_spirits_exceptional_chance ) );
   add_option( opt_int( "druid.convoke_the_spirits_deck", options.convoke_the_spirits_deck ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", options.kindred_affinity_covenant ) );
@@ -11871,29 +11930,6 @@ struct druid_module_t : public module_t
 
   void register_hotfixes() const override
   {
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 2 set nerfed to 20% from 25%", 904411 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 20 )
-      .verification_value( 25 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Balance 4 set nerfed to 15% from 20%", 906687 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( -15 )
-      .verification_value( -20 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 2 set buffed from 0.5s to 0.7s", 904401 )
-      .field( "base_value" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 1.4 )
-      .verification_value( 1 );
-
-    hotfix::register_effect( "Druid", "2022-03-04", "Feral 4 set buffed from 320% to 400%", 903466 )
-      .field( "ap_coefficient" )
-      .operation( hotfix::HOTFIX_SET )
-      .modifier( 0.40025 )
-      .verification_value( 0.32020 );
   }
 
   void combat_begin( sim_t* ) const override {}

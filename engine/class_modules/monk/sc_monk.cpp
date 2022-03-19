@@ -2420,6 +2420,8 @@ struct melee_t : public monk_melee_attack_t
     special                             = false;
     school                              = SCHOOL_PHYSICAL;
     weapon_multiplier                   = 1.0;
+    allow_class_ability_procs           = true;
+    not_a_proc                          = true;
 
     if ( player->main_hand_weapon.group() == WEAPON_1H )
     {
@@ -4075,7 +4077,8 @@ struct bountiful_brew_t : public monk_spell_t
     if ( p()->find_soulbind_spell( "lead_by_example" ) )
     {
       auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
-      buff->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      // Unlike Bountiful Brew procs that extend it's duration, Lead by Example overrides it's buff.
+      buff->trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
     }
   }
 
@@ -5896,13 +5899,13 @@ struct primordial_potential_buff_t : public monk_buff_t<buff_t>
     {
       p->buff.primordial_power->trigger();
       p->storm_earth_and_fire_trigger_primordial_power();
-      make_event( b->sim, [ b ] { b->expire(); } );
     }
   }
 
   primordial_potential_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_stack_change_callback( primordial_potential_callback );
+    set_expire_at_max_stack( true );
   }
 };
 

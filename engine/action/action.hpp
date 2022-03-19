@@ -98,6 +98,12 @@ public:
   /// enables/disables proc callback system on the action, like trinkets, enchants, rppm.
   bool callbacks;
 
+  /// Allows triggering of procs marked to only proc from class abilities.
+  bool allow_class_ability_procs;
+
+  /// Specifies that a spell is not a proc and can be considered for triggering only proc from class abilities procs even if it is a background ability.
+  bool not_a_proc;
+
   /// Whether or not the spell uses the yellow attack hit table.
   bool special;
 
@@ -984,11 +990,17 @@ public:
 
   virtual void snapshot_internal( action_state_t*, unsigned flags, result_amount_type );
 
+  virtual void snapshot_state( action_state_t* s, unsigned flags, result_amount_type rt )
+  { snapshot_internal( s, flags, rt ); }
+
   virtual void snapshot_state( action_state_t* s, result_amount_type rt )
-  { snapshot_internal( s, snapshot_flags, rt ); }
+  { snapshot_state( s, snapshot_flags, rt ); }
+
+  virtual void update_state( action_state_t* s, unsigned flags, result_amount_type rt )
+  { snapshot_internal( s, flags, rt ); }
 
   virtual void update_state( action_state_t* s, result_amount_type rt )
-  { snapshot_internal( s, update_flags, rt ); }
+  { update_state( s, update_flags, rt ); }
 
   event_t* start_action_execute_event( timespan_t time, action_state_t* state = nullptr );
 

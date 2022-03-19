@@ -10,11 +10,11 @@ covenant=venthyr
 soulbind=nadjia_the_mistblade,thrill_seeker/punish_the_guilty:4
 
 # Default consumables
-potion=phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -89,6 +89,7 @@ off_hand=encrusted_canopic_lid,id=178750,bonus_id=6807/1498/6646
 # gear_ilvl=184.38
 # gear_strength=587
 # gear_stamina=860
+# gear_attack_power=20
 # gear_crit_rating=428
 # gear_haste_rating=701
 # gear_mastery_rating=151

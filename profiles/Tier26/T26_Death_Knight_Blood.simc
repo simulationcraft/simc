@@ -33,66 +33,73 @@ actions.precombat+=/fleshcraft
 
 # Executed every time the actor is available.
 actions=auto_attack
+actions+=/variable,name=death_strike_dump_amount,value=70,op=setif,condition=covenant.night_fae&buff.deaths_due.remains>6,value_else=55
 # Interrupt
 actions+=/mind_freeze,if=target.debuff.casting.react
-actions+=/blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
-actions+=/berserking
-actions+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
-actions+=/lights_judgment,if=buff.unholy_strength.up
-actions+=/ancestral_call
-actions+=/fireblood
-actions+=/bag_of_tricks
 # Since the potion cooldown has changed, we'll sync with DRW
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/use_items
 actions+=/raise_dead
 actions+=/blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|buff.deaths_due.remains>7)
-actions+=/blood_boil,if=charges>=2&(covenant.kyrian|buff.dancing_rune_weapon.up)
-actions+=/death_strike,if=fight_remains<3
+# Marrowrend on pull if Necrolord in order to guarantee ossuary during the first DRW with AL
+actions+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
+actions+=/call_action_list,name=racials
+# Attempt to sacrifice the ghoul if we predictably will not do much in the near future
+actions+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<2|target.time_to_die<gcd)
 actions+=/call_action_list,name=covenants
+actions+=/blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd
+actions+=/dancing_rune_weapon,if=!covenant.venthyr
+actions+=/run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up&!covenant.venthyr
+actions+=/dancing_rune_weapon,if=covenant.venthyr&cooldown.swarming_mist.ready&runic_power>=(90-(spell_targets.swarming_mist*3))
+actions+=/run_action_list,name=drw_up_venthyr,if=covenant.venthyr&(buff.dancing_rune_weapon.up|buff.swarming_mist.up)
 actions+=/call_action_list,name=standard
 
-# Burn RP if we have time between DD refreshes and bonestorm isn't coming off cooldown soon.
-actions.covenants=death_strike,if=covenant.night_fae&buff.deaths_due.remains>6&runic_power>70&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
-# Make sure we never lose that buff
-actions.covenants+=/heart_strike,if=covenant.night_fae&death_and_decay.ticking&((buff.deaths_due.up|buff.dancing_rune_weapon.up)&buff.deaths_due.remains<6)
-# And that we always cast DD as high prio when we actually need it
-actions.covenants+=/deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
-# Pool RP for swarming and hold it if drw is about to come off cd.
-actions.covenants+=/swarming_mist,if=(cooldown.dancing_rune_weapon.remains>3&covenant.venthyr&runic_power>=(90-(spell_targets.swarming_mist*3)))
-# Attempt to sacrifice the ghoul if we predictably will not do much in the near future
-actions.covenants+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<10|target.time_to_die<gcd)
-# Pre-AL marrow on pull in order to guarantee ossuary during the first DRW
-actions.covenants+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
-# And we cast AL
+actions.covenants=deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
+actions.covenants+=/swarming_mist,if=cooldown.dancing_rune_weapon.remains>3&runic_power>=(90-(spell_targets.swarming_mist*3))
 actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
-# We just don't cast this during DRW
-actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
 actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
+actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
 
-# Use blood tap to prevent overcapping charges if we have space for a rune and a GCD to spare to burn it
-actions.standard=blood_tap,if=rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8
-# Hold DRW if we are venthyr until Swarming Mists is about to come off cd and we have pooled runic power to dump into it
-actions.standard+=/dancing_rune_weapon,if=(!talent.blooddrinker.enabled|!cooldown.blooddrinker.ready)&!(covenant.venthyr&cooldown.swarming_mist.ready&runic_power>=(90-(spell_targets.swarming_mist*3)))
-actions.standard+=/tombstone,if=buff.bone_shield.stack>=7&rune>=2
-actions.standard+=/marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*2)|buff.bone_shield.stack<3)&runic_power.deficit>=20
-# Death Strike to prevent overcapping. Don't do this if are venthyr and swarming mist is about to come off cd, or if bonestorm is talented and about to come off cd
-actions.standard+=/death_strike,if=runic_power.deficit<=70&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
-actions.standard+=/marrowrend,if=buff.bone_shield.stack<6&runic_power.deficit>=15&(!covenant.night_fae|buff.deaths_due.remains>5)
-actions.standard+=/heart_strike,if=!talent.blooddrinker.enabled&death_and_decay.remains<5&runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.drw_up=variable,name=heart_strike_rp_drw,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2
+actions.drw_up+=/marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<3)&runic_power.deficit>20
+actions.drw_up+=/blood_boil,if=charges>=2
+actions.drw_up+=/death_strike,if=(runic_power.deficit<=variable.death_strike_dump_amount&!(buff.dancing_rune_weapon.remains<=2&talent.bonestorm.enabled&cooldown.bonestorm.remains<2))|runic_power.deficit<=variable.heart_strike_rp_drw
+actions.drw_up+=/variable,name=deaths_due_buff_check,value=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)
+actions.drw_up+=/heart_strike,if=variable.deaths_due_buff_check|rune.time_to_4<gcd|runic_power.deficit>variable.heart_strike_rp_drw
+
+actions.drw_up_venthyr=variable,name=tombstone_bone_count,value=7,op=setif,condition=buff.dancing_rune_weapon.up,value_else=5
+actions.drw_up_venthyr+=/tombstone,if=buff.bone_shield.stack>=variable.tombstone_bone_count&rune>=2&runic_power.deficit>30
+actions.drw_up_venthyr+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4|buff.bone_shield.stack<5))&runic_power.deficit>20
+actions.drw_up_venthyr+=/blood_boil,if=charges>=2
+actions.drw_up_venthyr+=/death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
+actions.drw_up_venthyr+=/bonestorm,if=runic_power>=100&buff.swarming_mist.up
+actions.drw_up_venthyr+=/variable,name=heart_strike_rp_drw_venthyr,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.drw_up_venthyr+=/heart_strike,if=rune.time_to_4<gcd|runic_power.deficit>=variable.heart_strike_rp_drw_venthyr
+
+actions.racials=blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
+actions.racials+=/berserking
+actions.racials+=/arcane_pulse,if=active_enemies>=2|rune<1&runic_power.deficit>60
+actions.racials+=/lights_judgment,if=buff.unholy_strength.up
+actions.racials+=/ancestral_call
+actions.racials+=/fireblood
+actions.racials+=/bag_of_tricks
+actions.racials+=/arcane_torrent,if=runic_power.deficit>20
+
+actions.standard=heart_strike,if=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)
+actions.standard+=/tombstone,if=buff.bone_shield.stack>=7&rune>=2&!covenant.venthyr
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>=15
+actions.standard+=/death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
-actions.standard+=/death_and_decay,if=(buff.crimson_scourge.up&talent.relish_in_blood.enabled)&runic_power.deficit>10
-actions.standard+=/bonestorm,if=runic_power>=100&(!buff.dancing_rune_weapon.up|(covenant.venthyr&buff.swarming_mist.up))
-actions.standard+=/death_strike,if=runic_power.deficit<=(15+buff.dancing_rune_weapon.up*5+spell_targets.heart_strike*talent.heartbreaker.enabled*2)|target.1.time_to_die<10
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up&talent.relish_in_blood.enabled&runic_power.deficit>10
+actions.standard+=/bonestorm,if=runic_power>=100&!covenant.venthyr
+actions.standard+=/variable,name=heart_strike_rp,value=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2
+actions.standard+=/death_strike,if=(runic_power.deficit<=variable.heart_strike_rp)|target.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
-actions.standard+=/heart_strike,if=buff.dancing_rune_weapon.up|rune.time_to_4<gcd
-actions.standard+=/blood_boil,if=buff.dancing_rune_weapon.up
-actions.standard+=/blood_tap,if=rune.time_to_3>gcd
-actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled|spell_targets.death_and_decay>=2
+actions.standard+=/heart_strike,if=rune.time_to_4<gcd
+actions.standard+=/death_and_decay,if=buff.crimson_scourge.up|talent.rapid_decomposition.enabled
 actions.standard+=/consumption
 actions.standard+=/blood_boil,if=charges_fractional>=1.1
 actions.standard+=/heart_strike,if=(rune>1&(rune.time_to_3<gcd|buff.bone_shield.stack>7))
-actions.standard+=/arcane_torrent,if=runic_power.deficit>20
 
 head=diadem_of_imperious_desire,id=182997,bonus_id=7187/1498/6935,gem_id=173127
 neck=nobles_birthstone_pendant,id=183039,bonus_id=7187/1498/6935,gem_id=173127

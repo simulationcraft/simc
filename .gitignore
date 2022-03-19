@@ -124,6 +124,8 @@ gui/*_resource*
 .vscode/
 .idea/
 .ycm_*
+compile_commands.json
+.cache/
 dbc_extract3/cache/live/DBCache.bin
 dbc_extract3/cache/ptr/DBCache.bin
 

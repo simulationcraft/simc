@@ -4766,6 +4766,14 @@ void unique_gear::unregister_special_effects()
     delete dbitem.cb_obj;
 }
 
+action_t* unique_gear::create_action( player_t* player, util::string_view name, util::string_view options )
+{
+  if ( auto action = shadowlands::create_action( player, name, options ) )
+    return action;
+
+  return nullptr;
+}
+
 void unique_gear::register_hotfixes()
 {
   register_hotfixes_legion();
