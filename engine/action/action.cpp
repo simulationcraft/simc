@@ -615,7 +615,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
   may_dodge = may_parry = may_block = !spell_data.flags( spell_attribute::SX_NO_D_P_B );
   allow_class_ability_procs         = spell_data.flags( spell_attribute::SX_ALLOW_CLASS_ABILITY_PROCS );
   not_a_proc          = spell_data.flags( spell_attribute::SX_NOT_A_PROC );
-  
+
   if ( spell_data.flags( spell_attribute::SX_REFRESH_EXTENDS_DURATION ) )
     dot_behavior = dot_behavior_e::DOT_REFRESH_PANDEMIC;
 

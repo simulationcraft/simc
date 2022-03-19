@@ -7368,22 +7368,11 @@ struct fae_transfusion_tick_t : public shaman_spell_t
       seeds_effect( player->find_spell( 356218 ) )
   {
     affected_by_master_of_the_elements = true;
+    allow_class_ability_procs = true;
+    not_a_proc = true;
 
     aoe        = 4;
     background = split_aoe_damage = true;
-    callbacks  = false;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    return m;
-  }
-
-  result_amount_type amount_type( const action_state_t*, bool ) const override
-  {
-    return result_amount_type::DMG_DIRECT;
   }
 
   void execute() override
@@ -7421,6 +7410,9 @@ struct fae_transfusion_t : public shaman_spell_t
     tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
     cooldown->duration += p()->conduit.essential_extraction.time_value();
   }
+
+  result_amount_type amount_type( const action_state_t*, bool ) const override
+  { return result_amount_type::DMG_DIRECT; }
 
   void last_tick( dot_t* d ) override
   {
