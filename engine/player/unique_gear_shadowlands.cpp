@@ -3141,7 +3141,7 @@ void scars_of_fraternal_strife( special_effect_t& effect )
 
   effect.type = SPECIAL_EFFECT_USE;
   effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
-};
+}
 
 // pet cast: 368203
 // pet spell damage coeff: 367307
@@ -3890,7 +3890,7 @@ void earthbreakers_impact( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<earthbreakers_impact_t>( "earthbreakers_impact", effect );
-};
+}
 
 void prismatic_brilliance( special_effect_t& effect )
 {
@@ -5659,7 +5659,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 364087, items::DISABLED_EFFECT ); // Cypher effect Cosmic Boom
 }
 
-action_t* shadowlands::create_action( player_t* player, util::string_view name, util::string_view options )
+action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
   if ( util::str_compare_ci( name, "break_chains_of_domination" ) ) return new items::break_chains_of_domination_t( player, options );
 
