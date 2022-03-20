@@ -3082,6 +3082,7 @@ void scars_of_fraternal_strife( special_effect_t& effect )
         name_str_reporting = "the_final_rune";
 
         auto burst = create_proc_action<generic_aoe_proc_t>( "the_final_rune", e, "the_final_rune", 368642 );
+        burst->split_aoe_damage = false;
 
         set_stack_change_callback( [ a, burst ]( buff_t* buff, int, int new_ ) {
           if ( !new_ )
