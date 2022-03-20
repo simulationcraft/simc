@@ -578,6 +578,23 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
                   p.name(), util::slot_type_string( slot ) );
     }
 
+    // T28 wants you to use gems on legendaries in the corect slot
+    if ( tier_name == "T28" && !gem_count ) {
+      bool valid_gem_slot = false;
+      for ( auto& gem_slot : SLOT_GEMS )
+      {
+        if ( item.slot == gem_slot )
+        {
+          valid_gem_slot = true;
+          break;
+        }
+      }
+      if ( valid_gem_slot ) {
+        sim.error( "Player {} has no prismatic socket on {}, sockets are buyable for weekly chest currency.\n",
+                    p.name(), util::slot_type_string( slot ) );
+      }
+    }
+
     // Check if an unique equipped item is equipped multiple times
     if ( slot == SLOT_FINGER_1 || slot == SLOT_FINGER_2 || slot == SLOT_TRINKET_1 || slot == SLOT_TRINKET_2 )
     {

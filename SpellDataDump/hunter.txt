@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-12/42698)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-17/42698, git build  , no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -12108,7 +12108,7 @@ Description      : Aimed Shot also fires a Serpent Sting at the primary target.
 Name             : Secrets of the Unblinking Vigil (id=336878) [Spell Family (9), Passive] 
 School           : Physical
 Spell Type       : None
-Proc Chance      : 50%
+Proc Chance      : 100%
 Proc Flags       : ........ ..x...x. ........ ........ 
                  : Generic Heal, Magic Heal
 Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 

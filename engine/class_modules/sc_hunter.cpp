@@ -2635,13 +2635,16 @@ struct barrage_t: public hunter_spell_t
 
 struct multi_shot_t: public hunter_ranged_attack_t
 {
+  const timespan_t beast_cleave_duration;
+
   multi_shot_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) )
+    hunter_ranged_attack_t( "multishot", p, p -> find_class_spell( "Multi-Shot" ) ),
+    beast_cleave_duration( p -> find_spell( 118455 ) -> duration() )
   {
     parse_options( options_str );
 
     aoe = -1;
-    reduced_aoe_targets = p->find_spell( 2643 )->effectN( 1 ).base_value();
+    reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
   }
 
   void execute() override
@@ -2651,8 +2654,14 @@ struct multi_shot_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
+    timespan_t duration = beast_cleave_duration;
+    if ( p() -> buffs.killing_frenzy -> up() )
+      duration += p() -> tier_set.killing_frenzy_4pc -> effectN( 3 ).time_value();
+
     for ( auto pet : pets::active<pets::hunter_main_pet_base_t>( p() -> pets.main, p() -> pets.animal_companion ) )
-      pet -> buffs.beast_cleave -> trigger();
+      pet -> buffs.beast_cleave -> trigger( duration );
+
+    p() -> buffs.killing_frenzy -> expire();
 
     if ( num_targets_hit >= p() -> specs.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();

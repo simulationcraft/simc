@@ -1348,6 +1348,8 @@ class SpellDataGenerator(DataGenerator):
          367971, # Extract of Prodigious Sands
          367466, 367467, # Broker's Lucky Coin
          368747, # Pulsating Riftshard
+         367327, 367455, 367457, 367458, # Gemstone of Prismatic Brilliance
+         368643, # Chains of Domination AoE damage
         ),
 
         # Warrior:

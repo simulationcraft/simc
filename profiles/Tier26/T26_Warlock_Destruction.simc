@@ -62,8 +62,8 @@ actions+=/chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards
 actions+=/chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time
 actions+=/shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5
 actions+=/chaos_bolt,if=soul_shard>3.5
-actions+=/chaos_bolt,if=target.time_to_die<5&target.time_to_die>cast_time+travel_time
-actions+=/conflagrate,if=charges>1|target.time_to_die<gcd
+actions+=/chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time
+actions+=/conflagrate,if=charges>1|time_to_die<gcd
 actions+=/incinerate
 
 actions.aoe=rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)
@@ -83,14 +83,14 @@ actions.aoe+=/scouring_tithe,if=!(talent.fire_and_brimstone.enabled|talent.infer
 actions.aoe+=/impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)
 actions.aoe+=/incinerate
 
-actions.cds=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|target.time_to_die<42
+actions.cds=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42
 actions.cds+=/summon_infernal
-actions.cds+=/dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>target.time_to_die
+actions.cds+=/dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>time_to_die
 actions.cds+=/potion,if=pet.infernal.active
 actions.cds+=/berserking,if=pet.infernal.active
 actions.cds+=/blood_fury,if=pet.infernal.active
 actions.cds+=/fireblood,if=pet.infernal.active
-actions.cds+=/use_items,if=pet.infernal.active|target.time_to_die<21
+actions.cds+=/use_items,if=pet.infernal.active|time_to_die<21
 
 actions.havoc=conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4
 actions.havoc+=/soul_fire,if=cast_time<havoc_remains

@@ -28,13 +28,17 @@ T28_Mage_Frost.simc
 T28_Mage_Arcane.simc
 
 T28_Monk_Brewmaster.simc
-T28_Monk_Brewmaster_Necrolord.simc
-T28_Monk_Brewmaster_Night_Fae.simc
-T28_Monk_Brewmaster_Venthyr.simc
+# These profiles exist but are not terribly relevant for most situations,
+# so they remain but are not shown in the stack chart.
+#T28_Monk_Brewmaster_Necrolord.simc
+#T28_Monk_Brewmaster_Night_Fae.simc
+#T28_Monk_Brewmaster_Venthyr.simc
 T28_Monk_Windwalker.simc
-T28_Monk_Windwalker_Necrolord.simc
-T28_Monk_Windwalker_Night_Fae.simc
-T28_Monk_Windwalker_Venthyr.simc
+# These profiles exist but are not terribly relevant for most situations,
+# so they remain but are not shown in the stack chart.
+#T28_Monk_Windwalker_Necrolord.simc
+#T28_Monk_Windwalker_Night_Fae.simc
+#T28_Monk_Windwalker_Venthyr.simc
 
 T28_Paladin_Protection.simc
 T28_Paladin_Retribution.simc
@@ -57,9 +61,10 @@ T28_Shaman_Elemental_SE.simc
 # T28_Shaman_Elemental_Necrolord.simc
 # T28_Shaman_Elemental_Venthyr.simc
 T28_Shaman_Enhancement.simc
-T28_Shaman_Enhancement_Kyrian.simc
-T28_Shaman_Enhancement_Necrolord.simc
-T28_Shaman_Enhancement_Venthyr.simc
+T28_Shaman_Enhancement_SF.simc
+# T28_Shaman_Enhancement_Kyrian.simc
+# T28_Shaman_Enhancement_Necrolord.simc
+# T28_Shaman_Enhancement_Venthyr.simc
 
 T28_Warlock_Affliction.simc
 T28_Warlock_Affliction_Necrolord.simc

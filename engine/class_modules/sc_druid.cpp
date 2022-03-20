@@ -2938,7 +2938,7 @@ public:
           parse_persistent_buff_effects<C>( p->buff.tigers_fury, 0u, true, p->conduit.carnivorous_instinct );
 
       snapshots.clearcasting =
-          parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true, p->talent.moment_of_clarity );
+          parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, false, p->talent.moment_of_clarity );
 
       parse_passive_effects( p->mastery.razor_claws );
     }
@@ -9990,6 +9990,23 @@ void druid_t::combat_begin()
   if ( spec.astral_power->ok() )
   {
     eclipse_handler.reset_stacks();
+
+    switch ( eclipse_handler.state )
+    {
+      case eclipse_state_e::IN_BOTH:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_LUNAR:
+        uptime.eclipse_lunar->update( true, sim->current_time() );
+        break;
+      case eclipse_state_e::IN_SOLAR:
+        uptime.eclipse_solar->update( true, sim->current_time() );
+        break;
+      default:
+        uptime.eclipse_none->update( true, sim->current_time() );
+        break;
+    }
 
     if ( options.raid_combat )
     {

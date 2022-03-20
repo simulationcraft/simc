@@ -9163,6 +9163,9 @@ action_t* player_t::create_action( util::string_view name, util::string_view opt
   if ( name == "retarget_auto_attack" )
     return new retarget_auto_attack_t( this, options_str );
 
+  if ( auto action = unique_gear::create_action( this, name, options_str ) )
+    return action;
+
   if ( auto action = azerite::create_action( this, name, options_str ) )
     return action;
 

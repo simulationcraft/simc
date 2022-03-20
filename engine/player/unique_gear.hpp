@@ -40,6 +40,8 @@ void unregister_special_effects();
 void add_effect( const special_effect_db_item_t& );
 special_effect_set_t find_special_effect_db_item( unsigned spell_id );
 
+action_t* create_action( player_t* player, util::string_view name, util::string_view options );
+
 void register_target_data_initializers( sim_t* );
 void register_target_data_initializers_legion( sim_t* );  // Legion targetdata initializers
 void register_target_data_initializers_bfa( sim_t* );     // Battle for Azeroth targetdata initializers

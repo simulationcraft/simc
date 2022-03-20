@@ -4278,12 +4278,16 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
       p() -> buffs.bone_shield -> trigger ( bone_shield_stack_gain );
     }
 
-    p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
-                                                                             p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+    // Only summon the rune weapons if the buff is down.
+    if ( ! p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
-                                                                               p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
+      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                              p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> spec.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                                p() -> conduits.meat_shield -> effectN( 2 ).time_value() );
+      }
     }
   }
 };
