@@ -3854,6 +3854,8 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.grim_eclipse_dot_duration_multiplier", shadowlands_opts.grim_eclipse_dot_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_buff_duration_multiplier", shadowlands_opts.grim_eclipse_buff_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_bool( "shadowlands.chains_of_domination_auto_break", shadowlands_opts.chains_of_domination_auto_break ) );
+  add_option( opt_float( "shadowlands.first_strike_chance", shadowlands_opts.first_strike_chance, 0.0, 1.0 ) );
+  add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
 }
 
 // sim_t::parse_option ======================================================

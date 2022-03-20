@@ -452,6 +452,10 @@ struct sim_t : private sc_thread_t
     double grim_eclipse_buff_duration_multiplier = 0.9;
     // Automatically break the Chains of Domination trinket at maximum
     bool chains_of_domination_auto_break = true;
+    // First Strike proc period
+    double first_strike_chance = 0.0;
+    // First Strike proc chance when the period is set
+    timespan_t first_strike_period = 5_s;
   } shadowlands_opts;
 
   // Auras and De-Buffs

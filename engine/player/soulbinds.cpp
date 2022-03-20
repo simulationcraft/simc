@@ -514,14 +514,14 @@ void first_strike( special_effect_t& effect )
     }
   };
 
-  effect.custom_buff = buff_t::find( effect.player, "first_strike" );
-  if ( !effect.custom_buff )
+  auto buff = buff_t::find( effect.player, "first_strike" );
+  if ( !buff )
   {
-    effect.custom_buff = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
-                             ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-                             ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+    buff = make_buff( effect.player, "first_strike", effect.player->find_spell( 325381 ) )
+      ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+      ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
   }
-
+  effect.custom_buff = buff;
   // The effect does not actually proc on periodic damage at all.
   effect.proc_flags_ = effect.proc_flags() & ~PF_PERIODIC;
 
@@ -529,6 +529,19 @@ void first_strike( special_effect_t& effect )
   effect.proc_flags2_ = PF2_ALL_HIT;
 
   new first_strike_cb_t( effect );
+
+  // Create repeating combat even to easier simulate increased uptime on encounters where you can get first strike procs while contuining your single target rotation
+  effect.player->register_combat_begin( [buff]( player_t* )
+  {
+    if ( buff->sim->shadowlands_opts.first_strike_chance > 0.0 && buff->sim->shadowlands_opts.first_strike_period > 0_s )
+    {
+      make_repeating_event( buff->sim, buff->sim->shadowlands_opts.first_strike_period, [buff]
+      {
+        if ( buff->rng().roll( buff->sim->shadowlands_opts.first_strike_chance ) )
+          buff->trigger();
+      } );
+    }
+  } );
 }
 
 void wild_hunt_tactics( special_effect_t& effect )
