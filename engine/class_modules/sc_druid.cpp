@@ -2938,7 +2938,7 @@ public:
           parse_persistent_buff_effects<C>( p->buff.tigers_fury, 0u, true, p->conduit.carnivorous_instinct );
 
       snapshots.clearcasting =
-          parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, true, p->talent.moment_of_clarity );
+          parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0u, false, p->talent.moment_of_clarity );
 
       parse_passive_effects( p->mastery.razor_claws );
     }
