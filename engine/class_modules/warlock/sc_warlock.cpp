@@ -1382,7 +1382,12 @@ void warlock_t::apl_precombat()
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
     //tested different values, even with gfg/vf its better to summon tyrant sooner in the opener
-    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=10-(!talent.summon_vilefiend.enabled&!talent.grimoire_felguard.enabled)" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.summon_vilefiend.execute_time,if=talent.summon_vilefiend.enabled" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=gcd.max,if=talent.grimoire_felguard.enabled|talent.summon_vilefiend.enabled" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
+    precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10" );
     precombat->add_action( "variable,name=in_opener,op=set,value=1" );
     precombat->add_action( "variable,name=use_bolt_timings,op=set,value=runeforge.balespiders_burning_core&runeforge.shard_of_annihilation" );
     precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
