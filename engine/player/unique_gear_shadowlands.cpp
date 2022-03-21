@@ -3845,6 +3845,36 @@ void symbol_of_the_raptora( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 367470: driver
+// 367471: buff + 2nd driver
+// 367472: damage
+void protectors_diffusion_implement( special_effect_t& effect )
+{
+  auto damage = create_proc_action<generic_aoe_proc_t>( "protectors_diffusion_implement", effect,
+                                                        "protectors_diffusion_implement", 367472 );
+  damage->split_aoe_damage = false;
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+
+  auto proc = new special_effect_t( effect.player );
+  proc->name_str = "protectors_diffusion_implement_proc";
+  proc->spell_id = 367471;
+  proc->execute_action = damage;
+  effect.player->special_effects.push_back( proc );
+
+  auto proc_cb = new dbc_proc_callback_t( effect.player, *proc );
+  proc_cb->deactivate();
+
+  effect.custom_buff = make_buff( effect.player, "protectors_diffusion_implement", effect.player->find_spell( 367471 ) )
+    ->set_stack_change_callback( [ proc_cb ]( buff_t*, int, int new_ ) {
+      if ( new_ )
+        proc_cb->activate();
+      else
+        proc_cb->deactivate();
+    } );
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // id=367808 driver
 //    effect #1: Periodic trigger for pulse damage spell, dummy damage value for tooltip only
 //    effect #2: Weak point damage value in dummy, overwrites spell value when dealing weak point damage
@@ -5880,6 +5910,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367802, items::pulsating_riftshard );
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
+    unique_gear::register_special_effect( 367470, items::protectors_diffusion_implement );
     unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
     unique_gear::register_special_effect( 367325, items::prismatic_brilliance );
     unique_gear::register_special_effect( 367931, items::chains_of_domination );
