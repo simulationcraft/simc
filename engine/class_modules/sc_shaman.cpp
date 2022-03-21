@@ -10258,7 +10258,7 @@ void shaman_t::init_action_list_enhancement()
   // Use items
   def->add_action( "use_item,name=the_first_sigil,if=(talent.ascendance.enabled&raid_event.adds.in>=90&cooldown.ascendance.remains<10)|(talent.hot_hand.enabled&buff.molten_weapon.up)|buff.icy_edge.up|(talent.stormflurry.enabled&buff.crackling_surge.up)|debuff.earthen_spike.up|active_enemies>1|fight_remains<30" );
   def->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_sword.up|fight_remains<25" );
-  def->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
+  def->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<31|raid_event.adds.in<16|active_enemies>1" );
   def->add_action( "use_items,slots=trinket1,if=!variable.trinket1_is_weird" );
   def->add_action( "use_items,slots=trinket2,if=!variable.trinket2_is_weird" );
 
