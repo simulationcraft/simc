@@ -3229,7 +3229,9 @@ void resonant_reservoir( special_effect_t& effect )
     {
       disintegration_halo_dot_t( const special_effect_t& e )
         : proc_spell_t( "disintegration_halo_dot", e.player, e.player->find_spell( 368231 ), e.item )
-      {}
+      {
+        dual = true;
+      }
 
       timespan_t calculate_dot_refresh_duration( const dot_t*, timespan_t t ) const override
       {
@@ -3269,6 +3271,7 @@ void resonant_reservoir( special_effect_t& effect )
 
       aoe = -1;
       impact_action = create_proc_action<disintegration_halo_dot_t>( "disintegration_halo_dot", e );
+      impact_action->stats = stats;
 
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_2", 368232, impact_action ) );
       missiles.push_back( new disintegration_halo_missile_t( e, "disintegration_halo_3", 368233, impact_action ) );
