@@ -4211,16 +4211,6 @@ struct faeline_stomp_damage_t : public monk_spell_t
 
     return cam;
   }
-
-  void impact( action_state_t* s ) override
-  {
-    monk_spell_t::impact( s );
-
-    get_td( s->target )->debuff.faeline_stomp->trigger();
-
-    if ( p()->legendary.faeline_harmony->ok() )
-      get_td( s->target )->debuff.fae_exposure->trigger();
-  }
 };
 
 struct faeline_stomp_heal_t : public monk_heal_t
@@ -4247,11 +4237,15 @@ struct faeline_stomp_t : public monk_spell_t
   faeline_stomp_damage_t* damage;
   faeline_stomp_heal_t* heal;
   faeline_stomp_ww_damage_t* ww_damage;
+  int aoe_initial_cap;
+  int ww_aoe_cap;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
-      ww_damage( new faeline_stomp_ww_damage_t( p ) )
+      ww_damage( new faeline_stomp_ww_damage_t( p ) ),
+      aoe_initial_cap( 0 ),
+      ww_aoe_cap( 0 )
   {
     parse_options( options_str );
     may_combo_strike = true;
@@ -4263,38 +4257,53 @@ struct faeline_stomp_t : public monk_spell_t
 
   void execute() override
   {
+    // Values are hard coded into the tooltip.
+    // The initial hit is bugged and hitting 6 targets instead of 5
+    aoe_initial_cap = ( p()->bugs ? 6 : 5 );
+    ww_aoe_cap      = 5;
+
     monk_spell_t::execute();
 
     p()->buff.faeline_stomp_reset->expire();
+
+    p()->buff.faeline_stomp->trigger();
+
+    if ( p()->specialization() == MONK_MISTWEAVER && p()->legendary.faeline_harmony->ok() )
+      p()->buff.fae_exposure->trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     monk_spell_t::impact( s );
 
-    heal->execute();
-
-    damage->set_target( s->target );
-    damage->execute();
-
-    p()->buff.faeline_stomp->trigger();
-
-    switch ( p()->specialization() )
+    // Only the first 5 targets are hit with any damage or healing
+    if ( aoe_initial_cap > 0 )
     {
-      case MONK_WINDWALKER:
+      heal->execute();
+
+      damage->set_target( s->target );
+      damage->execute();
+
+      if ( p()->specialization() == MONK_WINDWALKER && ww_aoe_cap > 0 )
       {
         ww_damage->set_target( s->target );
         ww_damage->execute();
-        break;
+        ww_aoe_cap--;
       }
-      case MONK_BREWMASTER:
-      {
-        p()->buff.faeline_stomp_brm->trigger();
-        break;
-      }
-      default:
-        break;
     }
+
+    // The Stagger debuff is being applied to all targets even if they are damaged or not
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      get_td( s->target )->debuff.faeline_stomp_brm->trigger();
+      p()->buff.faeline_stomp_brm->trigger();
+    }
+
+    // Fae Exposure is applied to all targets, even if they are healed/damage or not
+    if ( p()->legendary.faeline_harmony->ok() )
+      get_td( s->target )->debuff.fae_exposure->trigger();
+
+    aoe_initial_cap--;
   }
 };
 
@@ -6063,6 +6072,9 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
   debuff.faeline_stomp = make_buff( *this, "faeline_stomp_debuff", p->find_spell( 327257 ) );
 
+  debuff.faeline_stomp_brm = make_buff( *this, "faeline_stomp_stagger_debuff", p->passives.faeline_stomp_brm )
+                                 ->set_default_value_from_effect( 1 );
+
   debuff.fallen_monk_keg_smash = make_buff( *this, "fallen_monk_keg_smash", p->passives.fallen_monk_keg_smash )
                                      ->set_default_value_from_effect( 3 );
 
@@ -7124,8 +7136,11 @@ void monk_t::create_buffs()
                            ->set_default_value_from_effect( 2 )
                            ->set_trigger_spell( covenant.night_fae );
 
-  buff.faeline_stomp_brm =
-      make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )->set_default_value_from_effect( 1 );
+  buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_max_stack( 99 )
+                               ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+                               ->set_quiet( true );
 
   buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
 
