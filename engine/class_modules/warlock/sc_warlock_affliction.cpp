@@ -1202,7 +1202,9 @@ void warlock_t::create_apl_affliction()
   stat->add_action( "use_item,name=wakeners_frond" );
   stat->add_action( "use_item,name=tablet_of_despair" );
   stat->add_action( "use_item,name=sinful_aspirants_badge_of_ferocity" );
+  stat->add_action( "use_item,name=cosmic_aspirants_badge_of_ferocity" );
   stat->add_action( "use_item,name=sinful_gladiators_badge_of_ferocity" );
+  stat->add_action( "use_item,name=cosmic_gladiators_badge_of_ferocity" );
   stat->add_action( "use_item,name=obelisk_of_the_void" );
   stat->add_action( "use_item,name=horn_of_valor" );
   stat->add_action( "use_item,name=moonlit_prism" );
@@ -1221,6 +1223,7 @@ void warlock_t::create_apl_affliction()
   dmg->add_action( "use_item,name=grim_eclipse" );
   dmg->add_action( "use_item,name=toe_knees_promise" );
   dmg->add_action( "use_item,name=mrrgrias_favor" );
+  dmg->add_action( "use_item,name=cosmic_gladiators_resonator" );
 
   split->add_action( "variable,name=special_equipped,value=(((equipped.empyreal_ordnance^equipped.inscrutable_quantum_device)^equipped.soulletting_ruby)^equipped.sunblood_amethyst)" );
   split->add_action( "variable,name=trinket_one,value=(trinket.1.has_proc.any&trinket.1.has_cooldown)" );
