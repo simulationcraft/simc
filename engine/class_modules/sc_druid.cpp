@@ -2378,7 +2378,7 @@ public:
 
   double cost() const override
   {
-    double c = ab::cost() * get_buff_effects_value( cost_buffeffects, false, false );
+    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
 
     if ( ( p()->buff.innervate->up() && p()->specialization() == DRUID_RESTORATION ) || free_cast )
       c *= 0;
