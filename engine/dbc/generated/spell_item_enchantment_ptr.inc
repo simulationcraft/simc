@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 9.2.0.42423
-static const std::array<item_enchantment_data_t, 4269> __ptr_spell_item_ench_data { {
+// Item enchantment data, wow build 9.2.5.42850
+static const std::array<item_enchantment_data_t, 4270> __ptr_spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4269,5 +4269,6 @@ static const std::array<item_enchantment_data_t, 4269> __ptr_spell_item_ench_dat
   { 6369, 189762, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 367270,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "$spell@spelldesc367270"            },
   { 6370, 189763, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 367269,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "$spell@spelldesc367269"            },
   { 6371, 189764, -4,   0,  35, 0, 0,   0,   0, {   3,   0,   0 }, {  324,    0,    0 }, { 367268,      0,      0 }, {  0.7500,  0.0000,  0.0000 },      0, "$spell@spelldesc367268"            },
+  { 6378,      0,  0,   0,  50, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Eternal Flux"                      },
 } };
 
