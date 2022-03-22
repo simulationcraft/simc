@@ -3370,6 +3370,14 @@ void player_t::create_buffs()
       // Runecarves
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
+
+      // 9.2 Jailer raid buff
+      buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
+        ->add_stat( STAT_MASTERY_RATING, 350 )
+        ->set_default_value_from_effect( 2 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
     }
   }
   // .. for enemies
@@ -4803,6 +4811,7 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.conquerors_banner, buffs.conquerors_banner );
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
+  add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
 
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
@@ -11649,6 +11658,7 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.rallying_cry", external_buffs.rallying_cry ) );
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
+  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
