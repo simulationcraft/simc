@@ -185,7 +185,7 @@ void marksmanship( player_t* p )
   st->add_action( "a_murder_of_crows" );
   st->add_action( "wailing_arrow,if=cooldown.resonating_arrow.remains<gcd&(!talent.explosive_shot|buff.bloodlust.up)|!covenant.kyrian|cooldown.resonating_arrow.remains|target.time_to_die<5" );
   st->add_action( "resonating_arrow,if=(buff.double_tap.up|!talent.double_tap|fight_remains<12)&(!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<10|raid_event.adds.in>40|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>9|active_enemies>1)" );
-  st->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)" );
+  st->add_action( "volley,if=buff.resonating_arrow.up|!covenant.kyrian&(buff.precise_shots.down|!talent.chimaera_shot|active_enemies<2)&(!talent.double_tap|!set_bonus.tier28_2pc|set_bonus.tier28_4pc|buff.double_tap.up)" );
   st->add_action( "steady_shot,if=covenant.kyrian&focus+cast_regen<focus.max&((cooldown.resonating_arrow.remains<gcd*3&(!soulbind.effusive_anima_accelerator|!talent.double_tap))|talent.double_tap&cooldown.double_tap.remains<3)" );
   st->add_action( "rapid_fire,if=runeforge.surging_shots&talent.streamline&(cooldown.resonating_arrow.remains>10|!covenant.kyrian|!talent.double_tap|soulbind.effusive_anima_accelerator)" );
   st->add_action( "chimaera_shot,if=set_bonus.tier28_4pc&buff.trick_shots.down&focused_trickery_count<5&buff.precise_shots.up" );

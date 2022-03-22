@@ -3847,8 +3847,10 @@ struct rapid_fire_t: public hunter_spell_t
       dual = true;
       direct_tick = true;
       radius = 8;
-      base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent() +
-                            p -> conduits.deadly_chain.percent();
+
+      // XXX: 2022-03-22 Rapid Fire appears to deal full damage to secondary targets, regardless of Deadly Chain
+      if ( !p -> bugs )
+        base_aoe_multiplier = p -> specs.trick_shots -> effectN( 5 ).percent() + p -> conduits.deadly_chain.percent();
 
       if ( p -> find_rank_spell( "Rapid Fire", "Rank 2" ) -> ok() )
         parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );

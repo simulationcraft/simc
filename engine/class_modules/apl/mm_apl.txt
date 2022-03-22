@@ -1,29 +1,3 @@
-hunter="T26_Hunter_Marksmanship"
-source=default
-spec=marksmanship
-level=60
-race=troll
-role=attack
-position=ranged_back
-talents=1101032
-covenant=night_fae
-soulbind=niya,grove_invigoration/spirit_attunement:7/niyas_tools_burrs
-renown=40
-
-# Default consumables
-potion=spectral_agility
-flask=spectral_flask_of_power
-food=feast_of_gluttonous_hedonism
-augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
-
-# This default action priority list is automatically created based on your character.
-# It is a attempt to provide you with a action list that is both simple and practicable,
-# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
-# Feel free to edit, adapt and improve it to your own needs.
-# SimulationCraft is always looking for updates and improvements to the default action lists.
-
-# Executed before combat begins. Accepts non-harmful actions only.
 actions.precombat=flask
 actions.precombat+=/augmentation
 actions.precombat+=/food
@@ -115,31 +89,7 @@ actions.trinkets+=/variable,name=strong_sync_up,value=covenant.kyrian&buff.reson
 actions.trinkets+=/variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains<?cooldown.trueshot.remains_guess,value_else=cooldown.trueshot.remains_guess,if=buff.trueshot.down
 actions.trinkets+=/variable,name=strong_sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains,value_else=cooldown.trueshot.remains_guess,if=buff.trueshot.up
 actions.trinkets+=/variable,name=sync_remains,op=setif,condition=covenant.kyrian,value=cooldown.resonating_arrow.remains>?cooldown.trueshot.remains_guess,value_else=cooldown.trueshot.remains_guess
+
 actions.trinkets+=/use_items,slots=trinket1,if=((trinket.1.has_use_buff|covenant.kyrian&trinket.1.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.2.has_use_buff|covenant.kyrian&!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.1.has_use_buff&(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.has_cooldown&!trinket.2.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|!variable.strong_sync_up&(!trinket.2.has_use_buff&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|trinket.2.has_use_buff&(trinket.1.has_use_buff&trinket.1.cooldown.duration>=trinket.2.cooldown.duration&(trinket.1.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2)|(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)&(trinket.2.cooldown.ready&trinket.2.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.2.cooldown.duration%2|!trinket.2.cooldown.ready&(trinket.2.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.1.cooldown.duration-5<variable.sync_remains|trinket.2.cooldown.remains-5<variable.sync_remains&trinket.2.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up)|trinket.2.cooldown.remains-5>variable.strong_sync_remains&(trinket.1.cooldown.duration-5<variable.strong_sync_remains|trinket.1.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.1.cooldown.duration>fight_remains|!trinket.1.has_use_buff&(variable.sync_remains>trinket.1.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.1.has_use_buff&!covenant.kyrian&(trinket.2.has_use_buff&((!variable.sync_up|trinket.2.cooldown.remains>5)&(variable.sync_remains>20|trinket.2.cooldown.remains-5>variable.sync_remains))|!trinket.2.has_use_buff&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)))&(!trinket.1.is.cache_of_acquired_treasures|!buff.acquired_wand.up)
+
 actions.trinkets+=/use_items,slots=trinket2,if=((trinket.2.has_use_buff|covenant.kyrian&trinket.2.has_cooldown)&(variable.strong_sync_up&(!covenant.kyrian&!trinket.1.has_use_buff|covenant.kyrian&!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.2.has_use_buff&(!trinket.1.has_use_buff|trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|trinket.2.has_cooldown&!trinket.1.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration)|!variable.strong_sync_up&(!trinket.1.has_use_buff&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|trinket.1.has_use_buff&(trinket.2.has_use_buff&trinket.2.cooldown.duration>=trinket.1.cooldown.duration&(trinket.2.cooldown.duration-5<variable.sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2)|(!trinket.2.has_use_buff|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)&(trinket.1.cooldown.ready&trinket.1.cooldown.duration-5>variable.sync_remains&variable.sync_remains<trinket.1.cooldown.duration%2|!trinket.1.cooldown.ready&(trinket.1.cooldown.remains-5<variable.strong_sync_remains&variable.strong_sync_remains>20&(trinket.2.cooldown.duration-5<variable.sync_remains|trinket.1.cooldown.remains-5<variable.sync_remains&trinket.1.cooldown.duration-10+variable.sync_remains<variable.strong_sync_remains|variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up)|trinket.1.cooldown.remains-5>variable.strong_sync_remains&(trinket.2.cooldown.duration-5<variable.strong_sync_remains|trinket.2.cooldown.duration<fight_remains&variable.strong_sync_remains+trinket.2.cooldown.duration>fight_remains|!trinket.2.has_use_buff&(variable.sync_remains>trinket.2.cooldown.duration%2|variable.sync_up))))))|target.time_to_die<variable.sync_remains)|!trinket.2.has_use_buff&!covenant.kyrian&(trinket.1.has_use_buff&((!variable.sync_up|trinket.1.cooldown.remains>5)&(variable.sync_remains>20|trinket.1.cooldown.remains-5>variable.sync_remains))|!trinket.1.has_use_buff&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)))&(!trinket.2.is.cache_of_acquired_treasures|!buff.acquired_wand.up)
-
-head=rattling_deadeye_hood,id=178738,bonus_id=6536/1540/6646/6935,gem_id=173127
-neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
-shoulders=pauldrons_of_fatal_finality,id=183003,bonus_id=7187/1498
-back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
-chest=consumptive_chainmail_carapace,id=183000,bonus_id=7187/1498,enchant=eternal_skirmish
-wrists=bangles_of_errant_pride,id=182977,bonus_id=7187/1498/6935,gem_id=173127
-hands=oathsworn_soldiers_gauntlets,id=182991,bonus_id=7187/1498
-waist=doublechained_utility_belt,id=182976,bonus_id=7187/1498/6935,gem_id=173127
-legs=blightborne_chain_legguards,id=178762,bonus_id=6536/1540/6646
-feet=stoneclas_stompers,id=183006,bonus_id=7187/1498,enchant=eternal_agility
-finger1=shadowghast_ring,id=178926,bonus_id=6647/6648/6758/7013/1532/1808,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=7187/1498/6935,gem_id=173127,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1540/6646
-trinket2=dreadfire_vessel,id=184030,bonus_id=7187/1498
-main_hand=dredfang_ironspitter,id=182398,bonus_id=7187/1531,enchant=sinful_revelation
-
-# Gear Summary
-# gear_ilvl=229.40
-# gear_agility=871
-# gear_stamina=1521
-# gear_crit_rating=853
-# gear_haste_rating=339
-# gear_mastery_rating=441
-# gear_versatility_rating=336
-# gear_armor=872
