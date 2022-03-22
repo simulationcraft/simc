@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42698
-static const std::array<spelltext_data_t, 16058> __spelltext_data { {
+static const std::array<spelltext_data_t, 16060> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15622,6 +15622,7 @@ static const std::array<spelltext_data_t, 16058> __spelltext_data { {
   { 363328, "Greatly reduces fall damage taken in outdoor Shadowlands zones.", 0, 0 },
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${$s4+$s3*5}]?pc94651[${$s4+$s3*4}]?pc94650[${$s4+$s3*3}]?pc64649[${$s4+$s3*2}]?pc94746[${$s4+$s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363330, "Allows you to reconstruct yourself upon death in outdoor Shadowlands zones with $363429s1% health and mana. This effect can occur only once every $?pc94626[${$s3+$s2*5}]?pc94651[${$s3+$s2*4}]?pc94650[${$s3+$s2*3}]?pc64649[${$s3+$s2*2}]?pc94746[${$s3+$s2}][$s3] minutes.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
+  { 363338, "Azeroth empowers the heroes of Azeroth, freeing them from their bonds and increasing Mastery by $s1, and Haste, Critical Strike and Versatility by $s2%.", "Mastery increased by $s1.\r\nHaste increased by $s2%.\r\nCritical Strike increased by $s3%.\r\nVersatility increased by $s4%.", 0 },
   { 363411, "Consuming Killing Machine fires a Glacial Advance through your target.\r\n\r\n", 0, 0 },
   { 363469, "Consuming a Dark Thought causes your shadow to animate after a moment, dealing ${$366971s2*$363656d} Shadow damage over $363656d to all enemies within 10 yards of your target.", 0, 0 },
   { 363481, "Throw the cosmic resonator which explodes after $s2 sec, dealing $363491s1 Cosmic damage split between all nearby enemies.\r\n\r\nDamage is increased for each enemy struck, up to $s3 enemies.", 0, 0 },
@@ -16058,6 +16059,7 @@ static const std::array<spelltext_data_t, 16058> __spelltext_data { {
   { 369786, "$@spelldesc366436", 0, 0 },
   { 370353, "Add a socket to a Shadowlands Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
   { 370359, "Increase the Renown of your currently active Covenant by $s1.", 0, 0 },
+  { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.0.42698
