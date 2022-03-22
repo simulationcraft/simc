@@ -1350,6 +1350,7 @@ class SpellDataGenerator(DataGenerator):
          368747, # Pulsating Riftshard
          367327, 367455, 367457, 367458, # Gemstone of Prismatic Brilliance
          368643, # Chains of Domination AoE damage
+         363338, # Jailer fight buff
         ),
 
         # Warrior:
