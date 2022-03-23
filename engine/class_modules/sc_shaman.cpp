@@ -5331,7 +5331,8 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     maelstrom_gain                     = p->spell.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
-    affected_by_stormkeeper_damage = true;
+    affected_by_stormkeeper_damage = p->talent.stormkeeper->ok() &&
+      p->specialization() == SHAMAN_ELEMENTAL;
   }
 };
 
