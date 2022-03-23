@@ -34,9 +34,9 @@ race=troll
 spec=marksmanship
 role=attack
 position=ranged_back
-talents=1101032
-covenant=night_fae
-soulbind=dreamweaver,field_of_blossoms/dream_delver/spirit_attunement:11:1/powerful_precision:11:1/sharpshooters_focus:11:1
+talents=1102032
+covenant=venthyr
+soulbind=nadjia,thrill_seeker/fatal_flaw/dauntless_duelist/empowered_release:11:1/sharpshooters_focus:11:1
 renown=80
 
 head=boneshatter_helm,id=172325,bonus_id=6647/6648/8122/1588/6935,gem_id=173130
