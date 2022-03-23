@@ -7204,8 +7204,8 @@ struct adaptive_swarm_t : public druid_spell_t
       new_state->stacks = stack;
       new_state->jump = true;
       new_state->swarm_target = swarm_target;
+      new_state->target = swarm_target;
 
-      set_target( swarm_target );
       schedule_execute( new_state );
     }
 
@@ -7441,7 +7441,7 @@ struct adaptive_swarm_t : public druid_spell_t
       target_self( false )
   {
     add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
-    add_option( opt_deprecated( "precombat_stacs", "druid.adaptive_swarm_prepull_setup" ) );
+    add_option( opt_deprecated( "precombat_stacks", "druid.adaptive_swarm_prepull_setup" ) );
     add_option( opt_bool( "target_self", target_self ) );
     parse_options( opt );
 
@@ -10845,7 +10845,15 @@ void druid_t::create_options()
 
 std::string druid_t::create_profile( save_e type )
 {
-  return player_t::create_profile( type );
+  std::string profile = player_t::create_profile( type );
+
+  if ( type & SAVE_PLAYER )
+  {
+    if ( !options.adaptive_swarm_prepull_setup.empty() )
+      profile += fmt::format( "druid.adaptive_swarm_prepull_setup={}\n", options.adaptive_swarm_prepull_setup );
+  }
+
+  return profile;
 }
 
 role_e druid_t::primary_role() const
@@ -11602,6 +11610,7 @@ void druid_t::copy_from( player_t* source )
   player_t::copy_from( source );
 
   options = debug_cast<druid_t*>( source )->options;
+  prepull_swarm = debug_cast<druid_t*>( source )->prepull_swarm;
 }
 
 void druid_t::apply_affecting_auras( action_t& action )
