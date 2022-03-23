@@ -2,6 +2,7 @@
 
 #include "item/item.hpp"
 #include "player/player.hpp"
+#include "player/covenant.hpp"
 #include "dbc/dbc.hpp"
 #include "dbc/spell_data.hpp"
 
@@ -130,12 +131,21 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
 {
   std::string legendary_str;
 
-  auto add_to_str = [ & ]( const item_t& item, unsigned spell_id ) {
-    auto s_data = player.find_spell( spell_id );
+  auto add_to_str = [ & ]( const item_t& item, const runeforge_legendary_entry_t& entry ) {
+    auto s_data = player.find_spell( entry.spell_id );
     if ( s_data->ok() )
     {
-      legendary_str += fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ),
-                                    report_decorators::decorated_spell_data( *player.sim, s_data ) );
+      auto html_str = report_decorators::decorated_spell_data( *player.sim, s_data );
+      if ( util::str_compare_ci( entry.name, "Unity" ) )
+      {
+        auto cov = player.covenant->type();
+        if ( cov != covenant_e::DISABLED && cov != covenant_e::INVALID )
+        {
+          html_str.insert( html_str.find( "\">" ), "?covenant=" + std::to_string( static_cast<unsigned>( cov ) ) );
+        }
+      }
+      legendary_str +=
+          fmt::format( "<li class=\"nowrap\">{} ({})</li>\n", report_decorators::decorated_item( item ), html_str );
       return true;
     }
     return false;
@@ -154,7 +164,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
       auto entry = runeforge_legendary_entry_t::find( id, player.dbc->ptr );
       if ( !entry.empty() )
       {
-        if ( add_to_str( item, entry.front().spell_id ) )
+        if ( add_to_str( item, entry.front() ) )
           found = true;
       }
     }
@@ -167,7 +177,7 @@ report::sc_html_stream& generate_report( const player_t& player, report::sc_html
         auto entry = runeforge_legendary_entry_t::find_by_spellid( eff.spell_id, player.dbc->ptr );
         if ( !entry.empty() )
         {
-          add_to_str( item, entry.front().spell_id );
+          add_to_str( item, entry.front() );
         }
       }
     }
