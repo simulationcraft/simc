@@ -322,7 +322,7 @@ void survival( player_t* p )
   st -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking" );
   st -> add_action( "mongoose_bite,if=dot.shrapnel_bomb.ticking" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>7|buff.vipers_venom.up" );
-  st -> add_action( "wildfire_bomb,if=next_wi_bomb.shrapnel&focus>variable.mb_rs_cost*2&dot.serpent_sting.remains>5*gcd" );
+  st -> add_action( "wildfire_bomb,if=next_wi_bomb.shrapnel&focus>variable.mb_rs_cost*2&dot.serpent_sting.remains>5*gcd&!set_bonus.tier28_2pc" );
   st -> add_action( "chakrams" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max" );
   st -> add_action( "wildfire_bomb,if=runeforge.rylakstalkers_confounding_strikes.equipped" );
