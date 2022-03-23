@@ -7114,7 +7114,7 @@ void warrior_t::apl_prot()
 
   generic -> add_talent( this, "Ravager" );
   generic -> add_talent( this, "Dragon Roar" );
-  generic -> add_action( this, "Shield Slam", "if=buff.shield_block.up||buff.outburst.up&rage<=55" );
+  generic -> add_action( this, "Shield Slam", "if=buff.shield_block.up|buff.outburst.up&rage<=55" );
   generic -> add_action( this, "Execute");
   generic -> add_action( this, covenant.condemn, "condemn");
   generic -> add_action( this, "Shield Slam" );
