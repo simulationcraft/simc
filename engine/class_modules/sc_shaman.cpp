@@ -1893,7 +1893,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   bool may_proc_stormbringer = false;
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
-  bool affected_by_stormkeeper            = false;
+  bool affected_by_stormkeeper_cast_time  = false;
+  bool affected_by_stormkeeper_damage     = false;
 
   // Echoing Shock stuff
   bool may_proc_echoing_shock;
@@ -1913,10 +1914,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       crit_bonus_multiplier *= 1.0 + p->spec.elemental_fury->effectN( 1 ).percent();
     }
 
-    if ( data().affected_by( p->find_spell( 191634 )->effectN( 1 ) ) )
-    {
-      affected_by_stormkeeper = true;
-    }
+    affected_by_stormkeeper_cast_time =
+      data().affected_by( p->talent.stormkeeper->effectN( 1 ) );
+    affected_by_stormkeeper_damage =
+      data().affected_by( p->talent.stormkeeper->effectN( 2 ) );
 
     may_proc_stormbringer = false;
   }
@@ -1970,13 +1971,32 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   double action_multiplier() const override
   {
     double m = base_t::action_multiplier();
+
     // BfA Elemental talent - Master of the Elements
     if ( affected_by_master_of_the_elements )
     {
       m *= 1.0 + p()->buff.master_of_the_elements->value();
     }
 
+    if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() )
+    {
+      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
+    }
+
     return m;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t t = base_t::execute_time();
+
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() )
+    {
+      // stormkeeper has a -100% value as effect 1
+      t *= 1.0 + p()->talent.stormkeeper->effectN( 1 ).percent();
+    }
+
+    return t;
   }
 
   void execute() override
@@ -2054,24 +2074,23 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   virtual double overload_chance( const action_state_t* ) const
   {
+    double chance = 0.0;
+
     if ( p()->mastery.elemental_overload->ok() )
     {
-      return p()->cache.mastery_value();
+      chance += p()->cache.mastery_value();
     }
-    else
+
+    if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() )
     {
-      return 0;
+      chance += 1.0;
     }
+
+    return chance;
   }
 
   // Additional guaranteed overloads
   virtual unsigned n_overloads( const action_state_t* ) const
-  {
-    return 0;
-  }
-
-  // Additional overload chances
-  virtual size_t n_overload_chances( const action_state_t* ) const
   {
     return 0;
   }
@@ -2091,13 +2110,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return;
     }
 
-    /* Hacky to recreate ingame behavior. Stormkeeper forces only the first overload to happen. */
     unsigned overloads = rng().roll( overload_chance( source_state ) );
-
-    if ( p()->buff.stormkeeper->up() && affected_by_stormkeeper )
-    {
-      overloads = 1;
-    }
 
     overloads += n_overloads( source_state );
 
@@ -4474,13 +4487,6 @@ struct chained_base_t : public shaman_spell_t
 
   double overload_chance( const action_state_t* s ) const override
   {
-    /*
-    // Please check shaman_spell_t for the overload logic of Stormkeeper
-    if ( p()->buff.stormkeeper->check() )
-    {
-      return 1.0;
-    }*/
-
     double base_chance = shaman_spell_t::overload_chance( s );
 
     return base_chance / 3.0;
@@ -4520,11 +4526,6 @@ struct chain_lightning_t : public chained_base_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
-    // Stormkeeper only buffs damage on chain lightning for enhancement
-    if ( p()->buff.stormkeeper->up() && p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
-    }
 
     if (p()->buff.chains_of_devastation_chain_lightning->up())
     {
@@ -4562,12 +4563,6 @@ struct chain_lightning_t : public chained_base_t
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    if ( p()->buff.stormkeeper->up() )
-    {
-      // stormkeeper has a -100% value as effect 1
-      t *= 1 + p()->talent.stormkeeper->effectN( 1 ).percent();
-    }
-
     if ( p()->buff.chains_of_devastation_chain_lightning->up() )
     {
       t *= 1 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 1 ).percent();
@@ -4595,12 +4590,6 @@ struct chain_lightning_t : public chained_base_t
       return false;
 
     return shaman_spell_t::ready();
-  }
-
-  /* Number of potential overloads */
-  size_t n_overload_chances( const action_state_t* ) const override
-  {
-    return (size_t)0;
   }
 
   void execute() override
@@ -4670,12 +4659,6 @@ struct lava_beam_t : public chained_base_t
       return false;
 
     return shaman_spell_t::ready();
-  }
-
-  /* Number of potential overloads */
-  size_t n_overload_chances( const action_state_t* ) const override
-  {
-    return (size_t)0;
   }
 };
 
@@ -5347,22 +5330,8 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
   {
     maelstrom_gain                     = p->spell.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
     affected_by_master_of_the_elements = true;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    auto m = shaman_spell_t::composite_target_multiplier( target );
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-    if ( p()->buff.stormkeeper->up() )
-    {
-      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
-    }
-    return m;
+    // Stormkeeper affected by flagging is applied to the Energize spell ...
+    affected_by_stormkeeper_damage = true;
   }
 };
 
@@ -5419,19 +5388,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return coeff;
   }
 
-  double overload_chance( const action_state_t* s ) const override
-  {
-    double chance = shaman_spell_t::overload_chance( s );
-
-    /*
-    if ( p()->buff.stormkeeper->check() )
-    {
-      chance = 1.0;
-    }*/
-
-    return chance;
-  }
-
   /* Number of guaranteed overloads */
   unsigned n_overloads( const action_state_t* t ) const override
   {
@@ -5461,12 +5417,6 @@ struct lightning_bolt_t : public shaman_spell_t
     return n;
   }
 
-  /* Number of potential overloads */
-  size_t n_overload_chances( const action_state_t* t ) const override
-  {
-    return shaman_spell_t::n_overload_chances( t );
-  }
-
   size_t available_targets( std::vector<player_t*>& tl ) const override
   {
     shaman_spell_t::available_targets( tl );
@@ -5479,10 +5429,6 @@ struct lightning_bolt_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
-    if ( p()->buff.stormkeeper->up() && p()->specialization() == SHAMAN_ELEMENTAL )
-    {
-      m *= 1.0 + p()->talent.stormkeeper->effectN( 2 ).percent();
-    }
 
     if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
     {
@@ -5494,11 +5440,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
   timespan_t execute_time() const override
   {
-    if ( p()->buff.stormkeeper->up() && p()->specialization() == SHAMAN_ELEMENTAL )
-    {
-      return timespan_t::zero();
-    }
-
     timespan_t t = shaman_spell_t::execute_time();
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
@@ -6089,7 +6030,7 @@ private:
         std::vector<util::string_view> enemies;
         for ( auto it = p()->active_flame_shock.begin(); it < entry; ++it )
         {
-          enemies.push_back( it->second->target->name() );
+          enemies.emplace_back( it->second->target->name() );
         }
 
         sim->out_debug.print(
@@ -6552,6 +6493,7 @@ struct ascendance_dre_t : public ascendance_t
 };
 
 // Stormkeeper Spell ========================================================
+
 struct stormkeeper_t : public shaman_spell_t
 {
   stormkeeper_t( shaman_t* player, util::string_view options_str ) :
@@ -7552,7 +7494,7 @@ struct chain_harvest_t : public shaman_spell_t
     return __check_distance_targeting( this, tl );
   }
 
-  virtual void trigger_maelstrom_gain( const action_state_t* state ) override
+  void trigger_maelstrom_gain( const action_state_t* state ) override
   {
     shaman_spell_t::trigger_maelstrom_gain( state );
     if ( maelstrom_gain == 0 )
