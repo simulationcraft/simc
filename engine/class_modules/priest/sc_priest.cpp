@@ -1285,8 +1285,8 @@ private:
   priest_t* priest;
 
 public:
-  benevolent_faerie_t( player_t* p )
-    : buff_t( p, "benevolent_faerie", p->find_spell( 327710 ) ),
+  benevolent_faerie_t( player_t* p, util::string_view n )
+    : buff_t( p, n, p->find_spell( 327710 ) ),
       affected_actions_initialized( false ),
       priest( dynamic_cast<priest_t*>( player ) )
   {
@@ -2389,7 +2389,9 @@ struct priest_module_t final : public module_t
                                           p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
-    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p );
+    p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
+    p->buffs.bwonsamdis_pact_benevolent =
+        make_buff<buffs::benevolent_faerie_t>( p, "bwonsamdis_pact_benevolent_faerie" );
   }
   void static_init() const override
   {
