@@ -68,21 +68,21 @@ role=spell
 position=ranged_back
 talents=1201011
 covenant=necrolord
-soulbind=emeni,lead_by_example/borne_of_blood:11:1/emenis_magnificent_skin/pustule_eruption/carnivorous_stalkers:11:1/323918/tyrants_soul:11:1
+soulbind=plague_deviser_marileth:4,323074/204:11:1/323091/323079/205:11:1/323095/206:11:1/352108/352110
 renown=80
 default_pet=sayaad
 
-head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588/6935,gem_id=173129
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173129
 neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588/6935,gem_id=173129,enchant=eternal_intellect
+wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588,gem_id=173129,enchant=eternal_intellect
 hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-waist=kintaras_baleful_cord,id=180109,bonus_id=1592/6536/6646/6935,gem_id=173129
+waist=kintaras_baleful_cord,id=180109,bonus_id=1592/6536/6646/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=codebreakers_cunning_sandals,id=185788,bonus_id=1595/6536/6646
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+feet=windscale_moccasins,id=179322,bonus_id=1592/6536/6646
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
 finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 trinket2=empyreal_ordnance,id=180117,bonus_id=1592/6536/6646
