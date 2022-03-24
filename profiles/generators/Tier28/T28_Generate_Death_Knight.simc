@@ -23,7 +23,7 @@ finger1=bloodoath_signet,id=178871,bonus_id=1592/6646/6935,gem_id=173128,enchant
 finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
 trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
-main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=6807/1524,enchant=rune_of_the_fallen_crusader
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 save=T28_Death_Knight_Blood.simc
 
