@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-17/42698, git build  , no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42852 Live (hotfix 2022-03-24/42852)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -12059,12 +12059,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Avatar (107574)
                    Family Flags: 32
-Hotfixed         : Sub Type (4 -> 107), Misc Value (0 -> 3), Affects Spells
 #2 (id=981714)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Avatar (107574)
                    Family Flags: 32
-Hotfixed         : NEW EFFECT
 Description      : Avatar increases your damage dealt by an additional $364641s1% and decreases damage taken by $364641s2%. Avatar instantly grants Outburst.
 
 Name             : Outburst (id=364641) [Spell Family (4), Hidden] 
@@ -12084,13 +12082,11 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=904798)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (3 -> 0), Affects Spells
 #2 (id=904802)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #3 (id=904803)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-Hotfixed         : Sub Type (107 -> 4), Misc Value (12 -> 0), Affects Spells
 Description      : $@spelldesc364639
 Tooltip          : Damage dealt increased by $s1% and damage taken decreased by $s2%.
 

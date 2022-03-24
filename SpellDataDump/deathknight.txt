@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-17/42698, git build  , no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42852 Live (hotfix 2022-03-24/42852)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -10837,7 +10837,6 @@ Range            : 20 yards
 Max Targets      : 1
 Duration         : 4 seconds
 Labels           : 1062: Brutal Grasp (338651 effect#1)
-Mechanic         : Grip
 Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2)
 Triggered by     : Abomination Limb (315443)
 Family Flags     : 43, 78
@@ -13210,7 +13209,6 @@ Effects          :
 Description      : $@spelldesc353882
 
 Name             : Endless Rune Waltz (id=366008) [Spell Family (15)] 
-Hotfixed         : Max stacks (999 -> 75)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
