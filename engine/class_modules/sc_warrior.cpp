@@ -7092,7 +7092,7 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge", "if=time=0" );
-  default_list -> add_action( this, "heroic_charge,if=rage<=40");
+  default_list -> add_action( "heroic_charge,if=rage<=40" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
   for ( const auto& racial_action : racial_actions )
