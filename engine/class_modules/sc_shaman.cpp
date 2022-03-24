@@ -10231,7 +10231,7 @@ void shaman_t::init_action_list_enhancement()
   aoe->add_action(this, "Lava Lash", "target_if=min:debuff.lashing_flames.remains,cycle_targets=1,if=dot.flame_shock.ticking&(active_dot.flame_shock<active_enemies&active_dot.flame_shock<6)");
   aoe->add_action(this, "Flame Shock", "if=!ticking");
   aoe->add_action(this, "Flame Shock", "target_if=min:dot.flame_shock.remains,cycle_targets=1,if=!talent.hailstorm.enabled&active_dot.flame_shock<active_enemies&active_dot.flame_shock<6");
-  aoe->add_action(this, "Lightning Bolt", "if=(active_dot.flame_shock>=active_enemies|active_dot.flame_shock>=4)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5&!buff.splintered_elements.up");
+  aoe->add_action(this, "Lightning Bolt", "if=(active_dot.flame_shock>=active_enemies|active_dot.flame_shock>=4)&buff.primordial_wave.up&buff.maelstrom_weapon.stack>=5&(!buff.splintered_elements.up|fight_remains<=12|raid_event.adds.remains<=gcd)");
   aoe->add_action(this, "Frost Shock", "if=buff.hailstorm.up");
   aoe->add_action("fae_transfusion,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|runeforge.seeds_of_rampant_growth.equipped");
   aoe->add_action(this, "Crash Lightning", "if=buff.crash_lightning.down&buff.primordial_wave.up&buff.maelstrom_weapon.stack<5");
