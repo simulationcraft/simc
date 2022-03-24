@@ -6,7 +6,7 @@ role=tank
 position=front
 talents=3231133
 covenant=night_fae
-soulbind=dreamweaver:podtender/withering_plague:11:1/withering_ground:11:1/adaptive_armor_fragment:11:1/field_of_blossoms/dream_delver
+soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/adaptive_armor_fragment:11:1/field_of_blossoms/dream_delver
 renown=80
 
 head=shadowghast_helm,id=171415,bonus_id=6716/8119/6647/6649/1588/6935,gem_id=173128
