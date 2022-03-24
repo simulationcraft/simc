@@ -7118,7 +7118,7 @@ void warrior_t::apl_prot()
   generic -> add_action( this, "Execute");
   generic -> add_action( this, covenant.condemn, "condemn");
   generic -> add_action( this, "Shield Slam" );
-  generic -> add_action( this, "Thunder Clap", "if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains&buff.outburst.down" );
+  generic -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>1|cooldown.shield_slam.remains&buff.outburst.down" );
   generic -> add_action( this, "Revenge", "if=rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20" );
   generic -> add_action( this, "Thunder Clap", "if=buff.outburst.down" );
   generic -> add_action( this, "Revenge" );
