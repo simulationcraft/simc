@@ -614,15 +614,6 @@ public:
     proc_t* t28_4pc_ele_cd_extension;
     proc_t* t28_4pc_ele_cd_reduction;
 
-    // Elemental buff consumption tracking
-    proc_t* master_of_the_elements_chain_lightning;
-    proc_t* master_of_the_elements_lightning_bolt;
-    proc_t* master_of_the_elements_earth_shock;
-    proc_t* master_of_the_elements_earthquake;
-    proc_t* master_of_the_elements_frost_shock;
-    proc_t* master_of_the_elements_elemental_blast;
-    proc_t* master_of_the_elements_icefury;
-
     proc_t* surge_of_power_lightning_bolt;
     proc_t* surge_of_power_lava_burst;
     proc_t* surge_of_power_frost_shock;
@@ -1893,6 +1884,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   bool may_proc_stormbringer = false;
   proc_t* proc_sb;
   bool affected_by_master_of_the_elements = false;
+  proc_t* proc_moe;
   bool affected_by_stormkeeper_cast_time  = false;
   bool affected_by_stormkeeper_damage     = false;
 
@@ -1904,7 +1896,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
   execute_type exec_type;
 
   shaman_spell_t( util::string_view token, shaman_t* p, const spell_data_t* s = spell_data_t::nil() ) :
-    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ),
+    base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr ),
     may_proc_echoing_shock( false ),
     echoing_shock_stats( nullptr ), normal_stats( nullptr ),
     exec_type( execute_type::NORMAL )
@@ -1965,6 +1957,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       }
     }
 
+    if ( affected_by_master_of_the_elements )
+    {
+      proc_moe = p()->get_proc( "Master of the Elements: " + full_name() );
+    }
+
     base_t::init_finished();
   }
 
@@ -2007,34 +2004,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_master_of_the_elements && !background )
     {
       p()->buff.master_of_the_elements->decrement();
-      if ( strcmp(name(), "lightning_bolt") == 0 )
-      {
-        p()->proc.master_of_the_elements_lightning_bolt->occur();
-      } 
-      else if ( strcmp(name(), "chain_lightning") == 0 )
-      {
-        p()->proc.master_of_the_elements_chain_lightning->occur();
-      } 
-      else if ( strcmp(name(), "earthquake") == 0 )
-      {
-        p()->proc.master_of_the_elements_earthquake->occur();
-      } 
-      else if ( strcmp(name(), "earth_shock") == 0 )
-      {
-        p()->proc.master_of_the_elements_earth_shock->occur();
-      }
-      else if ( strcmp(name(), "elemental_blast") == 0 )
-      {
-        p()->proc.master_of_the_elements_elemental_blast->occur();
-      }
-      else if ( strcmp(name(), "frost_shock") == 0 )
-      {
-        p()->proc.master_of_the_elements_frost_shock->occur();
-      }
-      else if ( strcmp(name(), "icefury") == 0 )
-      {
-        p()->proc.master_of_the_elements_icefury->occur();
-      }
+      proc_moe->occur();
     }
 
     // Shaman has spells that may fail to execute, so don't trigger stuff that requires a
@@ -9494,14 +9464,6 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_fireheart              = get_proc( "Lava Surge: Wasted Fireheart" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
-
-  proc.master_of_the_elements_chain_lightning = get_proc( "Master of the Elements: Chain Lightning" );
-  proc.master_of_the_elements_lightning_bolt  = get_proc( "Master of the Elements: Lightning Bolt" );
-  proc.master_of_the_elements_earth_shock     = get_proc( "Master of the Elements: Earth Shock" );
-  proc.master_of_the_elements_earthquake      = get_proc( "Master of the Elements: Earthquake" );
-  proc.master_of_the_elements_frost_shock     = get_proc( "Master of the Elements: Frost Shock" );
-  proc.master_of_the_elements_elemental_blast = get_proc( "Master of the Elements: Elemental Blast" );
-  proc.master_of_the_elements_icefury         = get_proc( "Master of the Elements: Icefury" );
 
   proc.surge_of_power_lightning_bolt          = get_proc( "Surge of Power: Lightning Bolt" );
   proc.surge_of_power_lava_burst              = get_proc( "Surge of Power: Lava Burst" );
