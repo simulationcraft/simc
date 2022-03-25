@@ -7105,7 +7105,6 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, covenant.spear_of_bastion, "spear_of_bastion");
   default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
-  default_list -> add_action( this, "Intervene", "if=rage<=40&runeforge.reprisal");
   default_list -> add_action( this, "Shield Block", "if=buff.shield_block.down&cooldown.shield_slam.ready" );
   default_list -> add_action( this, "Shield Slam", "if=buff.outburst.up");
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
