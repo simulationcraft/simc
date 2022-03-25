@@ -93,7 +93,7 @@ save=T28_Warlock_Demonology_Necrolord.simc
 
 warlock="T28_Warlock_Demonology"
 level=60
-race=orc
+race=troll
 spec=demonology
 role=spell
 position=ranged_back
