@@ -7103,6 +7103,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=buff.conquerors_banner.down");
   default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
   default_list -> add_action( this, covenant.spear_of_bastion, "spear_of_bastion");
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up),use_off_gcd=1");
   default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Shield Block", "if=buff.shield_block.down&cooldown.shield_slam.ready" );
