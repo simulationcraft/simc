@@ -140,7 +140,7 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
 chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
 wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1505/7187/6935,gem_id=173128
 hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
-waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/7187
+waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/6536/6646/6935,gem_id=173128
 legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
 feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/6969/1588
 finger1=bloodoath_signet,id=178871,bonus_id=3536/4786/1808/1592,gem_id=173128,enchant=tenet_of_haste
