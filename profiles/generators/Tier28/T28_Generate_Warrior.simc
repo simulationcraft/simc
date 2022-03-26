@@ -134,7 +134,7 @@ soulbind=volatile_solvent/oozs_frictionless_coating/Kevins_oozeling/ashen_jugger
 renown=80
 
 head=shadowghast_helm,id=171415,bonus_id=6647/6649/6716/8130/1588/6935,gem_id=173128
-neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=3536/4786/1808/1595
+neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173128
 shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
 chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
