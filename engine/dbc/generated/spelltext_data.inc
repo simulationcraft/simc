@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42852
-static const std::array<spelltext_data_t, 16060> __spelltext_data { {
+static const std::array<spelltext_data_t, 16062> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15151,6 +15151,7 @@ static const std::array<spelltext_data_t, 16060> __spelltext_data { {
   { 351922, "$@spelldesc351093", "Cannot benefit from Resilient Stitching.", 0 },
   { 351926, "Select a player in your party or raid, granting them $351927s2 of their highest secondary stat, and granting you $351927s1 of that same stat, for $351952d.", 0, 0 },
   { 351952, "$@spelldesc351926", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
+  { 351953, "$@spelldesc351926", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 351986, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
   { 351987, 0, "Your $?$w1!=0[Agility]?$w2!=0[Intellect]?$w3!=0[Strength][highest primary stat] is increased by $w4.", 0 },
   { 352081, "Your attacks and abilities have a chance to grant you $s1 primary stat for $351987d.", 0, 0 },
@@ -15988,6 +15989,7 @@ static const std::array<spelltext_data_t, 16060> __spelltext_data { {
   { 368491, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 368494, "Restoring $s1% health and mana every $368239t2 sec", 0, 0 },
   { 368509, "Select a player in your party or raid, granting them $368513s2 of their highest secondary stat, and granting you $368513s1 of that same stat, for $368512d.", 0, 0 },
+  { 368510, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368512, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368583, "$@spelldesc320674", 0, 0 },
   { 368585, "$@spelldesc367336", 0, 0 },
