@@ -138,7 +138,7 @@ neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=3536/4786/1808/1595
 shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
 chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1505/7187,gem_id=173128
+wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1505/7187/6935,gem_id=173128
 hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
 waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/7187
 legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
