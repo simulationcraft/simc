@@ -72,6 +72,7 @@ actions.cooldowns+=/use_item,name=unchained_gladiators_badge_of_ferocity,if=buff
 actions.cooldowns+=/use_item,name=unchained_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
 actions.cooldowns+=/use_item,name=sinful_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45
+actions.cooldowns+=/use_item,name=gavel_of_the_first_arbiter,if=(buff.avenging_wrath.up|buff.crusade.up)
 actions.cooldowns+=/avenging_wrath,if=(holy_power>=4&time<5|holy_power>=3&(time>5|runeforge.the_magistrates_judgment)|holy_power>=2&runeforge.vanguards_momentum&talent.final_reckoning|talent.holy_avenger&cooldown.holy_avenger.remains=0)&(!talent.seraphim|!talent.final_reckoning|cooldown.seraphim.remains>0)
 actions.cooldowns+=/crusade,if=holy_power>=4&time<5|holy_power>=3&time>5
 actions.cooldowns+=/ashen_hallow

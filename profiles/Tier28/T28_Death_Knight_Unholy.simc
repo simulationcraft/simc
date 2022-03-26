@@ -156,6 +156,7 @@ actions.racials+=/bag_of_tricks,if=active_enemies=1&(buff.unholy_strength.up|fig
 
 # Trinkets
 actions.trinkets=use_item,name=inscrutable_quantum_device,if=(cooldown.unholy_blight.remains>20|cooldown.dark_transformation.remains_expected>20)&(active_enemies>=2|pet.army_ghoul.active|pet.apoc_ghoul.active&(talent.unholy_assault|death_knight.disable_aotd)|pet.gargoyle.active)|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5
+actions.trinkets+=/use_item,name=gavel_of_the_first_arbiter
 actions.trinkets+=/use_item,name=scars_of_fraternal_strife
 actions.trinkets+=/use_item,name=the_first_sigil,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device)
 actions.trinkets+=/use_item,name=overwhelming_power_crystal,if=variable.major_cooldowns_active&(time>30|!equipped.inscrutable_quantum_device&!equipped.the_first_sigil)

@@ -51,6 +51,7 @@ actions+=/recklessness,if=!variable.unique_legendaries&gcd.remains=0&((buff.bloo
 actions+=/recklessness,use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
 actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up
 actions+=/use_item,name=scars_of_fraternal_strife
+actions+=/use_item,name=gavel_of_the_first_arbiter
 actions+=/blood_fury
 actions+=/berserking,if=buff.recklessness.up
 actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down

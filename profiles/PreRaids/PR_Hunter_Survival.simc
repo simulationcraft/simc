@@ -144,7 +144,7 @@ actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=full_recharge_tim
 actions.st+=/raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=buff.tip_of_the_spear.stack=3|dot.shrapnel_bomb.ticking
 actions.st+=/mongoose_bite,if=dot.shrapnel_bomb.ticking
 actions.st+=/serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>7|buff.vipers_venom.up
-actions.st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>variable.mb_rs_cost*2&dot.serpent_sting.remains>5*gcd
+actions.st+=/wildfire_bomb,if=next_wi_bomb.shrapnel&focus>variable.mb_rs_cost*2&dot.serpent_sting.remains>5*gcd&!set_bonus.tier28_2pc
 actions.st+=/chakrams
 actions.st+=/kill_command,target_if=min:bloodseeker.remains,if=focus+cast_regen<focus.max
 actions.st+=/wildfire_bomb,if=runeforge.rylakstalkers_confounding_strikes.equipped

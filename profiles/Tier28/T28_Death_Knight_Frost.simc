@@ -63,7 +63,7 @@ actions+=/call_action_list,name=cold_heart,if=talent.cold_heart&(!buff.killing_m
 actions+=/run_action_list,name=bos_ticking,if=buff.breath_of_sindragosa.up
 actions+=/run_action_list,name=bos_pooling,if=talent.breath_of_sindragosa&(cooldown.breath_of_sindragosa.remains<10)&(raid_event.adds.in>25|!raid_event.adds.exists|cooldown.pillar_of_frost.remains<10&raid_event.adds.exists&raid_event.adds.in<10)
 actions+=/run_action_list,name=obliteration,if=buff.pillar_of_frost.up&talent.obliteration
-actions+=/run_action_list,name=obliteration_pooling,if=!set_bonus.tier28_4pc&talent.obliteration&cooldown.pillar_of_frost.remains<10&(variable.st_planning|raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)
+actions+=/run_action_list,name=obliteration_pooling,if=!set_bonus.tier28_4pc&!runeforge.rage_of_the_frozen_champion&talent.obliteration&cooldown.pillar_of_frost.remains<10&(variable.st_planning|raid_event.adds.exists&raid_event.adds.in<10|!raid_event.adds.exists)
 actions+=/run_action_list,name=aoe,if=active_enemies>=2
 actions+=/call_action_list,name=standard
 
@@ -130,7 +130,7 @@ actions.cooldowns+=/empower_rune_weapon,if=talent.breath_of_sindragosa&rune<5&ru
 actions.cooldowns+=/empower_rune_weapon,if=talent.icecap
 actions.cooldowns+=/pillar_of_frost,if=talent.breath_of_sindragosa&(variable.st_planning|variable.adds_remain)&(cooldown.breath_of_sindragosa.remains|cooldown.breath_of_sindragosa.ready&runic_power>65)
 actions.cooldowns+=/pillar_of_frost,if=talent.icecap&!buff.pillar_of_frost.up
-actions.cooldowns+=/pillar_of_frost,if=talent.obliteration&(runic_power>=35&!buff.abomination_limb.up|buff.abomination_limb.up)&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)
+actions.cooldowns+=/pillar_of_frost,if=talent.obliteration&(runic_power>=35&!buff.abomination_limb.up|buff.abomination_limb.up|runeforge.rage_of_the_frozen_champion)&(variable.st_planning|variable.adds_remain)&(talent.gathering_storm.enabled&buff.remorseless_winter.up|!talent.gathering_storm.enabled)
 actions.cooldowns+=/breath_of_sindragosa,if=buff.pillar_of_frost.up
 actions.cooldowns+=/frostwyrms_fury,if=active_enemies=1&buff.pillar_of_frost.remains<gcd&buff.pillar_of_frost.up&!talent.obliteration&(!raid_event.adds.exists|raid_event.adds.in>30)|fight_remains<3
 actions.cooldowns+=/frostwyrms_fury,if=active_enemies>=2&(buff.pillar_of_frost.up|raid_event.adds.exists&raid_event.adds.in>cooldown.pillar_of_frost.remains+7)&(buff.pillar_of_frost.remains<gcd|raid_event.adds.exists&raid_event.adds.remains<gcd)
@@ -145,7 +145,7 @@ actions.covenants=deaths_due,if=(!talent.obliteration|talent.obliteration&active
 actions.covenants+=/swarming_mist,if=runic_power.deficit>13&cooldown.pillar_of_frost.remains<3&!talent.breath_of_sindragosa&variable.st_planning
 actions.covenants+=/swarming_mist,if=!talent.breath_of_sindragosa&variable.adds_remain
 actions.covenants+=/swarming_mist,if=talent.breath_of_sindragosa&(buff.breath_of_sindragosa.up&(variable.st_planning&runic_power.deficit>40|variable.adds_remain&runic_power.deficit>60|variable.adds_remain&raid_event.adds.remains<9&raid_event.adds.exists)|!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains)
-actions.covenants+=/abomination_limb,if=cooldown.pillar_of_frost.remains<3&variable.st_planning&(talent.breath_of_sindragosa&runic_power>65&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)
+actions.covenants+=/abomination_limb,if=cooldown.pillar_of_frost.remains<gcd*2&variable.st_planning&(talent.breath_of_sindragosa&runic_power>65&cooldown.breath_of_sindragosa.remains<2|!talent.breath_of_sindragosa)
 actions.covenants+=/abomination_limb,if=variable.adds_remain
 actions.covenants+=/shackle_the_unworthy,if=variable.st_planning&(cooldown.pillar_of_frost.remains<3|talent.icecap)
 actions.covenants+=/shackle_the_unworthy,if=variable.adds_remain
@@ -202,6 +202,7 @@ actions.standard+=/arcane_torrent
 
 # Trinkets
 actions.trinkets=use_item,name=inscrutable_quantum_device,if=!talent.breath_of_sindragosa&buff.pillar_of_frost.up&buff.empower_rune_weapon.up|talent.breath_of_sindragosa&((buff.pillar_of_frost.up&cooldown.breath_of_sindragosa.ready)|(buff.pillar_of_frost.up&((fight_remains-cooldown.breath_of_sindragosa.remains)<21)))|fight_remains<21|death_knight.disable_iqd_execute=0&target.time_to_pct_20<5
+actions.trinkets+=/use_item,name=gavel_of_the_first_arbiter
 actions.trinkets+=/use_item,name=scars_of_fraternal_strife
 actions.trinkets+=/use_item,name=the_first_sigil,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
 # The trinket with the highest estimated value, will be used first and paired with Pillar of Frost.

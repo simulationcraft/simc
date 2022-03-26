@@ -11,11 +11,11 @@ soulbind=kleia,pointed_courage/proliferation:7
 renown=40
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=potion_of_spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_weightstone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -39,42 +39,32 @@ actions+=/mind_freeze,if=target.debuff.casting.react
 # Since the potion cooldown has changed, we'll sync with DRW
 actions+=/potion,if=buff.dancing_rune_weapon.up
 actions+=/use_items
+actions+=/use_item,name=gavel_of_the_first_arbiter
 actions+=/raise_dead
 actions+=/blooddrinker,if=!buff.dancing_rune_weapon.up&(!covenant.night_fae|buff.deaths_due.remains>7)
-# Marrowrend on pull if Necrolord in order to guarantee ossuary during the first DRW with AL
-actions+=/marrowrend,if=covenant.necrolord&buff.bone_shield.stack<=0
 actions+=/call_action_list,name=racials
 # Attempt to sacrifice the ghoul if we predictably will not do much in the near future
-actions+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&!buff.dancing_rune_weapon.up&(pet.ghoul.remains<2|target.time_to_die<gcd)
+actions+=/sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&buff.dancing_rune_weapon.remains>4&(pet.ghoul.remains<2|target.time_to_die<gcd)
 actions+=/call_action_list,name=covenants
 actions+=/blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd
-actions+=/dancing_rune_weapon,if=!covenant.venthyr
-actions+=/run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up&!covenant.venthyr
-actions+=/dancing_rune_weapon,if=covenant.venthyr&cooldown.swarming_mist.ready&runic_power>=(90-(spell_targets.swarming_mist*3))
-actions+=/run_action_list,name=drw_up_venthyr,if=covenant.venthyr&(buff.dancing_rune_weapon.up|buff.swarming_mist.up)
+actions+=/dancing_rune_weapon,if=!buff.dancing_rune_weapon.up
+actions+=/run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up
 actions+=/call_action_list,name=standard
 
 actions.covenants=deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
 actions.covenants+=/swarming_mist,if=cooldown.dancing_rune_weapon.remains>3&runic_power>=(90-(spell_targets.swarming_mist*3))
 actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
 actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
-actions.covenants+=/shackle_the_unworthy,if=cooldown.dancing_rune_weapon.remains<3|!buff.dancing_rune_weapon.up
+actions.covenants+=/shackle_the_unworthy,if=rune<3&runic_power<100
 
-actions.drw_up=variable,name=heart_strike_rp_drw,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2
-actions.drw_up+=/marrowrend,if=(!covenant.necrolord|buff.abomination_limb.up)&(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<3)&runic_power.deficit>20
-actions.drw_up+=/blood_boil,if=charges>=2
-actions.drw_up+=/death_strike,if=(runic_power.deficit<=variable.death_strike_dump_amount&!(buff.dancing_rune_weapon.remains<=2&talent.bonestorm.enabled&cooldown.bonestorm.remains<2))|runic_power.deficit<=variable.heart_strike_rp_drw
-actions.drw_up+=/variable,name=deaths_due_buff_check,value=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)
-actions.drw_up+=/heart_strike,if=variable.deaths_due_buff_check|rune.time_to_4<gcd|runic_power.deficit>variable.heart_strike_rp_drw
-
-actions.drw_up_venthyr=variable,name=tombstone_bone_count,value=7,op=setif,condition=buff.dancing_rune_weapon.up,value_else=5
-actions.drw_up_venthyr+=/tombstone,if=buff.bone_shield.stack>=variable.tombstone_bone_count&rune>=2&runic_power.deficit>30
-actions.drw_up_venthyr+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4|buff.bone_shield.stack<5))&runic_power.deficit>20
-actions.drw_up_venthyr+=/blood_boil,if=charges>=2
-actions.drw_up_venthyr+=/death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
-actions.drw_up_venthyr+=/bonestorm,if=runic_power>=100&buff.swarming_mist.up
-actions.drw_up_venthyr+=/variable,name=heart_strike_rp_drw_venthyr,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
-actions.drw_up_venthyr+=/heart_strike,if=rune.time_to_4<gcd|runic_power.deficit>=variable.heart_strike_rp_drw_venthyr
+actions.drw_up=tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon
+actions.drw_up+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20
+actions.drw_up+=/blood_boil,if=charges>=2&rune<=1
+actions.drw_up+=/variable,name=heart_strike_rp_drw,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.drw_up+=/death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
+actions.drw_up+=/bonestorm,if=runic_power>=100
+actions.drw_up+=/heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw
+actions.drw_up+=/death_and_decay,if=spell_targets.death_and_decay>=3
 
 actions.racials=blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions.racials+=/berserking
@@ -86,12 +76,12 @@ actions.racials+=/bag_of_tricks
 actions.racials+=/arcane_torrent,if=runic_power.deficit>20
 
 actions.standard=heart_strike,if=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)
-actions.standard+=/tombstone,if=buff.bone_shield.stack>=7&rune>=2&!covenant.venthyr
-actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>=15
+actions.standard+=/tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>20
 actions.standard+=/death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
 actions.standard+=/death_and_decay,if=buff.crimson_scourge.up&talent.relish_in_blood.enabled&runic_power.deficit>10
-actions.standard+=/bonestorm,if=runic_power>=100&!covenant.venthyr
+actions.standard+=/bonestorm,if=runic_power>=100
 actions.standard+=/variable,name=heart_strike_rp,value=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2
 actions.standard+=/death_strike,if=(runic_power.deficit<=variable.heart_strike_rp)|target.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
@@ -121,6 +111,7 @@ main_hand=polemarchs_scepter_of_faith,id=180315,bonus_id=7187/1531,enchant=rune_
 # gear_ilvl=229.40
 # gear_strength=882
 # gear_stamina=1534
+# gear_attack_power=20
 # gear_crit_rating=464
 # gear_haste_rating=873
 # gear_mastery_rating=467
