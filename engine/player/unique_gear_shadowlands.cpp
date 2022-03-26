@@ -4396,7 +4396,9 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       looming_winter -> spell_id = 368693;
       looming_winter -> proc_flags_ = effect.player->find_spell( 368693 )->proc_flags();
       looming_winter -> proc_flags2_ = PF2_ALL_HIT;
-      looming_winter -> execute_action = create_proc_action<boon_of_looming_winter_t>( "boon_of_looming_winter_proc", effect, looming_winter_absorb_buff );
+      looming_winter -> execute_action = create_proc_action<boon_of_looming_winter_t>( "boon_of_looming_winter_damage", effect, looming_winter_absorb_buff );
+      add_child( looming_winter->execute_action );
+      looming_winter -> disable_buff();
       effect.player->special_effects.push_back( looming_winter );
 
       auto divine_command = new special_effect_t( effect.player );
@@ -4405,7 +4407,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       divine_command -> spell_id = 368694;
       divine_command -> proc_flags_ = effect.player->find_spell( 368694 )->proc_flags();
       divine_command -> proc_flags2_ = PF2_ALL_HIT;
-      divine_command -> execute_action = create_proc_action<boon_of_divine_command_t>( "boon_of_divine_command_proc", effect );
+      divine_command -> execute_action = create_proc_action<boon_of_divine_command_t>( "boon_of_divine_command_damage", effect );
+      add_child( divine_command->execute_action );
       divine_command -> disable_buff();  // Need to disable, or it auto creates the armor buff
       effect.player->special_effects.push_back( divine_command );
 
@@ -4415,7 +4418,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       harvested_hope -> spell_id = 368695;
       harvested_hope -> proc_flags_ = effect.player->find_spell( 368695 )->proc_flags();
       harvested_hope -> proc_flags2_ = PF2_ALL_HIT;
-      harvested_hope -> execute_action = create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_proc", effect );
+      harvested_hope -> execute_action = create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_damage", effect );
+      add_child( harvested_hope->execute_action );
       effect.player->special_effects.push_back( harvested_hope );
 
       auto assured_victory = new special_effect_t( effect.player );
@@ -4424,7 +4428,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       assured_victory -> spell_id = 368696;
       assured_victory -> proc_flags_ = effect.player->find_spell( 368696 )->proc_flags();
       assured_victory -> proc_flags2_ = PF2_ALL_HIT;
-      assured_victory -> execute_action = create_proc_action<boon_of_assured_victory_t>( "boon_of_assured_victory_proc", effect );
+      assured_victory -> execute_action = create_proc_action<boon_of_assured_victory_t>( "boon_of_assured_victory_damage", effect );
+      add_child( assured_victory->execute_action );
       effect.player->special_effects.push_back( assured_victory );
 
       auto boon_of_the_end = new special_effect_t( effect.player );
@@ -4433,7 +4438,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       boon_of_the_end -> spell_id = 368697;
       boon_of_the_end -> proc_flags_ = effect.player->find_spell( 368697 )->proc_flags();
       boon_of_the_end -> proc_flags2_ = PF2_ALL_HIT;
-      boon_of_the_end -> execute_action = create_proc_action<boon_of_the_end_t>( "boon_of_the_end_proc", effect );
+      boon_of_the_end -> execute_action = create_proc_action<boon_of_the_end_t>( "boon_of_the_end_damage", effect );
+      add_child( boon_of_the_end->execute_action );
       effect.player->special_effects.push_back( boon_of_the_end );
 
       auto looming_winter_cb = new dbc_proc_callback_t( effect.player, *looming_winter );
@@ -4462,6 +4468,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         looming_winter_active_buff = make_buff( effect.player, "boon_of_looming_winter_active", effect.player-> find_spell( 368693 ) )
           ->set_chance( 1.0 )
           ->set_cooldown( 0_ms )
+          ->set_name_reporting( "boon_of_looming_winter" )
           ->set_stack_change_callback( [ looming_winter_cb ]( buff_t*, int old, int new_ ) {
             if ( old == 0 )
               looming_winter_cb->activate();
@@ -4476,6 +4483,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         divine_command_active_buff = make_buff( effect.player, "boon_of_divine_command_active", effect.player-> find_spell( 368694 ) )
           ->set_chance( 1.0 )
           ->set_cooldown( 0_ms )
+          ->set_name_reporting( "boon_of_divine_command" )
           ->set_stack_change_callback( [ divine_command_cb ]( buff_t*, int old, int new_ ) {
             if ( old == 0 )
               divine_command_cb->activate();
@@ -4490,6 +4498,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         harvested_hope_active_buff = make_buff( effect.player, "boon_of_harvested_hope_active", effect.player-> find_spell( 368695 ) )
           ->set_chance( 1.0 )
           ->set_cooldown( 0_ms )
+          ->set_name_reporting( "boon_of_harvested_hope" )
           ->set_stack_change_callback( [ harvested_hope_cb ]( buff_t*, int old, int new_ ) {
             if ( old == 0 )
               harvested_hope_cb->activate();
@@ -4504,6 +4513,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         assured_victory_active_buff = make_buff( effect.player, "boon_of_assured_victory_active", effect.player-> find_spell( 368696 ) )
           ->set_chance( 1.0 )
           ->set_cooldown( 0_ms )
+          ->set_name_reporting( "boon_of_assured_victory" )
           ->set_stack_change_callback( [ assured_victory_cb ]( buff_t*, int old , int new_ ) {
             if ( old == 0 )
               assured_victory_cb->activate();
@@ -4518,6 +4528,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         boon_of_the_end_active_buff = make_buff( effect.player, "boon_of_the_end_active", effect.player-> find_spell( 368697 ) )
           ->set_chance( 1.0 )
           ->set_cooldown( 0_ms )
+          ->set_name_reporting( "boon_of_the_end")
           ->set_stack_change_callback( [ boon_of_the_end_cb ]( buff_t*, int old , int new_ ) {
             if ( old == 0 )
               boon_of_the_end_cb->activate();
@@ -4545,6 +4556,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         absorb( absorb_ )
         {
           base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 3 ).average( effect.item );
+          name_str_reporting = "boon_of_looming_winter";
         }
 
         void execute() override
@@ -4561,6 +4573,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         {
           base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 1 ).average( effect.item );
           aoe = -1;
+          name_str_reporting = "boon_of_divine_command";
         }
     };
 
@@ -4570,6 +4583,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         : proc_spell_t( "boon_of_harvested_hope_damage", effect.player, effect.player->find_spell( 368701 ) )
         {
           base_td = effect.player->find_spell( 369238 )->effectN( 5 ).average( effect.item );
+          name_str_reporting = "boon_of_harvested_hope";
         }
     };
 
@@ -4579,6 +4593,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         : proc_spell_t( "boon_of_assured_victory_damage", effect.player, effect.player->find_spell( 368700 ) )
         {
           base_td = effect.player->find_spell( 369238 )->effectN( 2 ).average( effect.item );
+          name_str_reporting = "rotting_decay";
         }
     };
 
@@ -4589,6 +4604,7 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
         {
           base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
           aoe = -1;
+          name_str_reporting = "boon_of_the_end";
         }
     };
 
