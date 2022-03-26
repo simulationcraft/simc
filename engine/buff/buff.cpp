@@ -1288,6 +1288,12 @@ buff_t* buff_t::set_allow_precombat( bool b )
   return this;
 }
 
+buff_t* buff_t::set_name_reporting( std::string_view n )
+{
+  name_str_reporting = n;
+  return this;
+}
+
 buff_t* buff_t::apply_affecting_aura( const spell_data_t* spell )
 {
   if ( !spell->ok() )

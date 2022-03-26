@@ -366,6 +366,7 @@ public:
   buff_t* set_reverse_stack_count( int count );
   buff_t* set_stack_behavior( buff_stack_behavior b );
   buff_t* set_allow_precombat( bool b );
+  buff_t* set_name_reporting( std::string_view );
 
   virtual buff_t* apply_affecting_aura( const spell_data_t* spell );
   virtual buff_t* apply_affecting_effect( const spelleffect_data_t& effect );
