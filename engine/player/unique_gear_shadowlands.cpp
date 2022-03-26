@@ -4377,244 +4377,257 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
       looming_winter_absorb_buff = buff_t::find( effect.player, "boon_of_looming_winter_absorb" );
       if ( !looming_winter_absorb_buff )
       {
-        looming_winter_absorb_buff = make_buff<absorb_buff_t>( effect.player, "boon_of_looming_winter_absorb", effect.player -> find_spell( 368698 ) )
-          ->set_default_value( effect.player->find_spell( 369238 )->effectN( 4 ).average( effect.item ) );
+        looming_winter_absorb_buff =
+            make_buff<absorb_buff_t>( effect.player, "boon_of_looming_winter_absorb", effect.player->find_spell( 368698 ) )
+                ->set_default_value( effect.player->find_spell( 369238 )->effectN( 4 ).average( effect.item ) );
       }
 
       boon_of_the_end_str_buff = buff_t::find( effect.player, "boon_of_the_end_str" );
       if ( !boon_of_the_end_str_buff )
       {
-        boon_of_the_end_str_buff = make_buff<stat_buff_t>( effect.player, "boon_of_the_end_str", effect.player->find_spell( 368697 ) )
-          ->add_stat( STAT_STRENGTH, effect.player->find_spell( 369238 )->effectN( 7 ).average( effect.item ) )
-          ->set_rppm( RPPM_DISABLE );
+        boon_of_the_end_str_buff =
+            make_buff<stat_buff_t>( effect.player, "boon_of_the_end_str", effect.player->find_spell( 368697 ) )
+                ->add_stat( STAT_STRENGTH, effect.player->find_spell( 369238 )->effectN( 7 ).average( effect.item ) )
+                ->set_rppm( RPPM_DISABLE );
       }
 
       // Create effect and callback for the damage proc
       auto looming_winter = new special_effect_t( effect.player );
-      looming_winter -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-      looming_winter -> name_str = "looming_winter";
-      looming_winter -> spell_id = 368693;
-      looming_winter -> proc_flags_ = effect.player->find_spell( 368693 )->proc_flags();
-      looming_winter -> proc_flags2_ = PF2_ALL_HIT;
-      looming_winter -> execute_action = create_proc_action<boon_of_looming_winter_t>( "boon_of_looming_winter_damage", effect, looming_winter_absorb_buff );
+      looming_winter->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      looming_winter->name_str = "looming_winter";
+      looming_winter->spell_id = 368693;
+      looming_winter->proc_flags_ = effect.player->find_spell( 368693 )->proc_flags();
+      looming_winter->proc_flags2_ = PF2_ALL_HIT;
+      looming_winter->execute_action =
+          create_proc_action<boon_of_looming_winter_t>( "boon_of_looming_winter_damage", effect, looming_winter_absorb_buff );
       add_child( looming_winter->execute_action );
-      looming_winter -> disable_buff();
+      looming_winter->disable_buff();  // disable auto creation of absorb buff
       effect.player->special_effects.push_back( looming_winter );
 
       auto divine_command = new special_effect_t( effect.player );
-      divine_command -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-      divine_command -> name_str = "divine_command";
-      divine_command -> spell_id = 368694;
-      divine_command -> proc_flags_ = effect.player->find_spell( 368694 )->proc_flags();
-      divine_command -> proc_flags2_ = PF2_ALL_HIT;
-      divine_command -> execute_action = create_proc_action<boon_of_divine_command_t>( "boon_of_divine_command_damage", effect );
+      divine_command->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      divine_command->name_str = "divine_command";
+      divine_command->spell_id = 368694;
+      divine_command->proc_flags_ = effect.player->find_spell( 368694 )->proc_flags();
+      divine_command->proc_flags2_ = PF2_ALL_HIT;
+      divine_command->execute_action =
+          create_proc_action<boon_of_divine_command_t>( "boon_of_divine_command_damage", effect );
       add_child( divine_command->execute_action );
-      divine_command -> disable_buff();  // Need to disable, or it auto creates the armor buff
+      divine_command->disable_buff();  // Need to disable, or it auto creates the armor buff
       effect.player->special_effects.push_back( divine_command );
 
       auto harvested_hope = new special_effect_t( effect.player );
-      harvested_hope -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-      harvested_hope -> name_str = "harvested_hope";
-      harvested_hope -> spell_id = 368695;
-      harvested_hope -> proc_flags_ = effect.player->find_spell( 368695 )->proc_flags();
-      harvested_hope -> proc_flags2_ = PF2_ALL_HIT;
-      harvested_hope -> execute_action = create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_damage", effect );
+      harvested_hope->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      harvested_hope->name_str = "harvested_hope";
+      harvested_hope->spell_id = 368695;
+      harvested_hope->proc_flags_ = effect.player->find_spell( 368695 )->proc_flags();
+      harvested_hope->proc_flags2_ = PF2_ALL_HIT;
+      harvested_hope->execute_action =
+          create_proc_action<boon_of_harvested_hope_t>( "boon_of_harvested_hope_damage", effect );
       add_child( harvested_hope->execute_action );
       effect.player->special_effects.push_back( harvested_hope );
 
       auto assured_victory = new special_effect_t( effect.player );
-      assured_victory -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-      assured_victory -> name_str = "assured_victory";
-      assured_victory -> spell_id = 368696;
-      assured_victory -> proc_flags_ = effect.player->find_spell( 368696 )->proc_flags();
-      assured_victory -> proc_flags2_ = PF2_ALL_HIT;
-      assured_victory -> execute_action = create_proc_action<boon_of_assured_victory_t>( "boon_of_assured_victory_damage", effect );
+      assured_victory->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      assured_victory->name_str = "assured_victory";
+      assured_victory->spell_id = 368696;
+      assured_victory->proc_flags_ = effect.player->find_spell( 368696 )->proc_flags();
+      assured_victory->proc_flags2_ = PF2_ALL_HIT;
+      assured_victory->execute_action =
+          create_proc_action<boon_of_assured_victory_t>( "boon_of_assured_victory_damage", effect );
       add_child( assured_victory->execute_action );
       effect.player->special_effects.push_back( assured_victory );
 
       auto boon_of_the_end = new special_effect_t( effect.player );
-      boon_of_the_end -> source = SPECIAL_EFFECT_SOURCE_ITEM;
-      boon_of_the_end -> name_str = "boon_of_the_end";
-      boon_of_the_end -> spell_id = 368697;
-      boon_of_the_end -> proc_flags_ = effect.player->find_spell( 368697 )->proc_flags();
-      boon_of_the_end -> proc_flags2_ = PF2_ALL_HIT;
-      boon_of_the_end -> execute_action = create_proc_action<boon_of_the_end_t>( "boon_of_the_end_damage", effect );
+      boon_of_the_end->source = SPECIAL_EFFECT_SOURCE_ITEM;
+      boon_of_the_end->name_str = "boon_of_the_end";
+      boon_of_the_end->spell_id = 368697;
+      boon_of_the_end->proc_flags_ = effect.player->find_spell( 368697 )->proc_flags();
+      boon_of_the_end->proc_flags2_ = PF2_ALL_HIT;
+      boon_of_the_end->execute_action =
+          create_proc_action<boon_of_the_end_t>( "boon_of_the_end_damage", effect );
       add_child( boon_of_the_end->execute_action );
       effect.player->special_effects.push_back( boon_of_the_end );
 
       auto looming_winter_cb = new dbc_proc_callback_t( effect.player, *looming_winter );
-      looming_winter_cb -> initialize();
-      looming_winter_cb -> deactivate();
+      looming_winter_cb->initialize();
+      looming_winter_cb->deactivate();
 
       auto divine_command_cb = new dbc_proc_callback_t( effect.player, *divine_command );
-      divine_command_cb -> initialize();
-      divine_command_cb -> deactivate();
+      divine_command_cb->initialize();
+      divine_command_cb->deactivate();
 
       auto harvested_hope_cb = new dbc_proc_callback_t( effect.player, *harvested_hope );
-      harvested_hope_cb -> initialize();
-      harvested_hope_cb -> deactivate();
+      harvested_hope_cb->initialize();
+      harvested_hope_cb->deactivate();
 
       auto assured_victory_cb = new dbc_proc_callback_t( effect.player, *assured_victory );
-      assured_victory_cb -> initialize();
-      assured_victory_cb -> deactivate();
+      assured_victory_cb->initialize();
+      assured_victory_cb->deactivate();
 
       auto boon_of_the_end_cb = new dbc_proc_callback_t( effect.player, *boon_of_the_end );
-      boon_of_the_end_cb -> initialize();
-      boon_of_the_end_cb -> deactivate();
+      boon_of_the_end_cb->initialize();
+      boon_of_the_end_cb->deactivate();
 
       looming_winter_active_buff = buff_t::find( effect.player, "boon_of_looming_winter_active" );
       if ( !looming_winter_active_buff )
       {
-        looming_winter_active_buff = make_buff( effect.player, "boon_of_looming_winter_active", effect.player-> find_spell( 368693 ) )
-          ->set_chance( 1.0 )
-          ->set_cooldown( 0_ms )
-          ->set_name_reporting( "boon_of_looming_winter" )
-          ->set_stack_change_callback( [ looming_winter_cb ]( buff_t*, int old, int new_ ) {
-            if ( old == 0 )
-              looming_winter_cb->activate();
-            else if ( new_ == 0 )
-              looming_winter_cb->deactivate();
-          });
+        looming_winter_active_buff =
+            make_buff( effect.player, "boon_of_looming_winter_active", effect.player->find_spell( 368693 ) )
+                ->set_chance( 1.0 )
+                ->set_cooldown( 0_ms )
+                ->set_name_reporting( "boon_of_looming_winter" )
+                ->set_stack_change_callback( [ looming_winter_cb ]( buff_t*, int old, int new_ ) {
+                  if ( old == 0 )
+                    looming_winter_cb->activate();
+                  else if ( new_ == 0 )
+                    looming_winter_cb->deactivate();
+                } );
       }
 
       divine_command_active_buff = buff_t::find( effect.player, "boon_of_divine_command_active" );
       if ( !divine_command_active_buff )
       {
-        divine_command_active_buff = make_buff( effect.player, "boon_of_divine_command_active", effect.player-> find_spell( 368694 ) )
-          ->set_chance( 1.0 )
-          ->set_cooldown( 0_ms )
-          ->set_name_reporting( "boon_of_divine_command" )
-          ->set_stack_change_callback( [ divine_command_cb ]( buff_t*, int old, int new_ ) {
-            if ( old == 0 )
-              divine_command_cb->activate();
-            else if ( new_ == 0 )
-              divine_command_cb->deactivate();
-          });
+        divine_command_active_buff =
+            make_buff( effect.player, "boon_of_divine_command_active", effect.player->find_spell( 368694 ) )
+                ->set_chance( 1.0 )
+                ->set_cooldown( 0_ms )
+                ->set_name_reporting( "boon_of_divine_command" )
+                ->set_stack_change_callback( [ divine_command_cb ]( buff_t*, int old, int new_ ) {
+                  if ( old == 0 )
+                    divine_command_cb->activate();
+                  else if ( new_ == 0 )
+                    divine_command_cb->deactivate();
+                } );
       }
 
       harvested_hope_active_buff = buff_t::find( effect.player, "boon_of_harvested_hope_active" );
       if ( !harvested_hope_active_buff )
       {
-        harvested_hope_active_buff = make_buff( effect.player, "boon_of_harvested_hope_active", effect.player-> find_spell( 368695 ) )
-          ->set_chance( 1.0 )
-          ->set_cooldown( 0_ms )
-          ->set_name_reporting( "boon_of_harvested_hope" )
-          ->set_stack_change_callback( [ harvested_hope_cb ]( buff_t*, int old, int new_ ) {
-            if ( old == 0 )
-              harvested_hope_cb->activate();
-            else if ( new_ == 0 )
-              harvested_hope_cb->deactivate();
-          });
+        harvested_hope_active_buff =
+            make_buff( effect.player, "boon_of_harvested_hope_active", effect.player->find_spell( 368695 ) )
+                ->set_chance( 1.0 )
+                ->set_cooldown( 0_ms )
+                ->set_name_reporting( "boon_of_harvested_hope" )
+                ->set_stack_change_callback( [ harvested_hope_cb ]( buff_t*, int old, int new_ ) {
+                  if ( old == 0 )
+                    harvested_hope_cb->activate();
+                  else if ( new_ == 0 )
+                    harvested_hope_cb->deactivate();
+                } );
       }
 
       assured_victory_active_buff = buff_t::find( effect.player, "boon_of_assured_victory_active" );
       if ( !assured_victory_active_buff )
       {
-        assured_victory_active_buff = make_buff( effect.player, "boon_of_assured_victory_active", effect.player-> find_spell( 368696 ) )
-          ->set_chance( 1.0 )
-          ->set_cooldown( 0_ms )
-          ->set_name_reporting( "boon_of_assured_victory" )
-          ->set_stack_change_callback( [ assured_victory_cb ]( buff_t*, int old , int new_ ) {
-            if ( old == 0 )
-              assured_victory_cb->activate();
-            else if ( new_ == 0 )
-              assured_victory_cb->deactivate();
-          });
+        assured_victory_active_buff =
+            make_buff( effect.player, "boon_of_assured_victory_active", effect.player->find_spell( 368696 ) )
+                ->set_chance( 1.0 )
+                ->set_cooldown( 0_ms )
+                ->set_name_reporting( "boon_of_assured_victory" )
+                ->set_stack_change_callback( [ assured_victory_cb ]( buff_t*, int old, int new_ ) {
+                  if ( old == 0 )
+                    assured_victory_cb->activate();
+                  else if ( new_ == 0 )
+                    assured_victory_cb->deactivate();
+                } );
       }
 
       boon_of_the_end_active_buff = buff_t::find( effect.player, "boon_of_the_end_active" );
       if ( !boon_of_the_end_active_buff )
       {
-        boon_of_the_end_active_buff = make_buff( effect.player, "boon_of_the_end_active", effect.player-> find_spell( 368697 ) )
-          ->set_chance( 1.0 )
-          ->set_cooldown( 0_ms )
-          ->set_name_reporting( "boon_of_the_end")
-          ->set_stack_change_callback( [ boon_of_the_end_cb ]( buff_t*, int old , int new_ ) {
-            if ( old == 0 )
-              boon_of_the_end_cb->activate();
-            else if ( new_ == 0 )
-              boon_of_the_end_cb->deactivate();
-          });
+        boon_of_the_end_active_buff =
+            make_buff( effect.player, "boon_of_the_end_active", effect.player->find_spell( 368697 ) )
+                ->set_chance( 1.0 )
+                ->set_cooldown( 0_ms )
+                ->set_name_reporting( "boon_of_the_end" )
+                ->set_stack_change_callback( [ boon_of_the_end_cb ]( buff_t*, int old, int new_ ) {
+                  if ( old == 0 )
+                    boon_of_the_end_cb->activate();
+                  else if ( new_ == 0 )
+                    boon_of_the_end_cb->deactivate();
+                } );
       }
-	  
-    // Define buff array for random selection
-    buffs =
-    {
-      looming_winter_active_buff,
-      divine_command_active_buff,
-      harvested_hope_active_buff,
-      assured_victory_active_buff,
-      boon_of_the_end_active_buff
-    };
-  }
+
+      // Define buff array for random selection
+      buffs =
+      {
+        looming_winter_active_buff,
+        divine_command_active_buff,
+        harvested_hope_active_buff,
+        assured_victory_active_buff,
+        boon_of_the_end_active_buff
+      };
+    }
 
     struct boon_of_looming_winter_t : public proc_spell_t
     {
       buff_t* absorb;
       boon_of_looming_winter_t( const special_effect_t& effect, buff_t* absorb_ )
-        : proc_spell_t( "boon_of_looming_winter_damage", effect.player, effect.player->find_spell( 368698 ), effect.item ),
-        absorb( absorb_ )
-        {
-          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 3 ).average( effect.item );
-          name_str_reporting = "boon_of_looming_winter";
-        }
+        : proc_spell_t( "boon_of_looming_winter_damage", effect.player, effect.player->find_spell( 368698 ),
+                        effect.item ),
+          absorb( absorb_ )
+      {
+        base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 3 ).average( effect.item );
+        name_str_reporting = "boon_of_looming_winter";
+      }
 
-        void execute() override
-        {
-          proc_spell_t::execute();
-          absorb->trigger();
-        }
+      void execute() override
+      {
+        proc_spell_t::execute();
+        absorb->trigger();
+      }
     };
 
     struct boon_of_divine_command_t : public proc_spell_t
     {
       boon_of_divine_command_t( const special_effect_t& effect )
         : proc_spell_t( "boon_of_divine_command_damage", effect.player, effect.player->find_spell( 368699 ) )
-        {
-          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 1 ).average( effect.item );
-          aoe = -1;
-          name_str_reporting = "boon_of_divine_command";
-        }
+      {
+        base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 1 ).average( effect.item );
+        aoe = -1;
+        name_str_reporting = "boon_of_divine_command";
+      }
     };
 
     struct boon_of_harvested_hope_t : public proc_spell_t
     {
       boon_of_harvested_hope_t( const special_effect_t& effect )
         : proc_spell_t( "boon_of_harvested_hope_damage", effect.player, effect.player->find_spell( 368701 ) )
-        {
-          base_td = effect.player->find_spell( 369238 )->effectN( 5 ).average( effect.item );
-          name_str_reporting = "boon_of_harvested_hope";
-        }
+      {
+        base_td = effect.player->find_spell( 369238 )->effectN( 5 ).average( effect.item );
+        name_str_reporting = "boon_of_harvested_hope";
+      }
     };
 
     struct boon_of_assured_victory_t : public proc_spell_t
     {
       boon_of_assured_victory_t( const special_effect_t& effect )
         : proc_spell_t( "boon_of_assured_victory_damage", effect.player, effect.player->find_spell( 368700 ) )
-        {
-          base_td = effect.player->find_spell( 369238 )->effectN( 2 ).average( effect.item );
-          name_str_reporting = "rotting_decay";
-        }
+      {
+        base_td = effect.player->find_spell( 369238 )->effectN( 2 ).average( effect.item );
+        name_str_reporting = "rotting_decay";
+      }
     };
 
     struct boon_of_the_end_t : public proc_spell_t
     {
       boon_of_the_end_t( const special_effect_t& effect )
         : proc_spell_t( "boon_of_the_end_damage", effect.player, effect.player->find_spell( 368702 ) )
-        {
-          base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
-          aoe = -1;
-          name_str_reporting = "boon_of_the_end";
-        }
+      {
+        base_dd_min = base_dd_max = effect.player->find_spell( 369238 )->effectN( 6 ).average( effect.item );
+        aoe = -1;
+        name_str_reporting = "boon_of_the_end";
+      }
     };
 
     void execute() override
     {
       proc_spell_t::execute();
       // Here is where we select which buff we are going to trigger via random selection
-      auto selected_buff = player -> sim -> rng().range( buffs.size() );
-     
-      buffs[selected_buff] -> trigger();
+      auto selected_buff = player->sim->rng().range( buffs.size() );
+
+      buffs[ selected_buff ]->trigger();
       if ( selected_buff == 4 )  //  Boon of the end gives STR as well while it's up
         boon_of_the_end_str_buff->trigger();
     }
