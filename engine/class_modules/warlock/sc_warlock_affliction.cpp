@@ -292,7 +292,6 @@ struct corruption_t : public affliction_spell_t
       spell_power_mod.direct = 0; //Rank 3 is required for direct damage
     }
 
-
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
 
@@ -1186,11 +1185,14 @@ void warlock_t::create_apl_affliction()
   dot->add_action( "unstable_affliction,if=dot.unstable_affliction.remains<8&cooldown.summon_darkglare.remains>dot.unstable_affliction.remains" );
   dot->add_action( "corruption,if=dot.corruption.remains<8&cooldown.summon_darkglare.remains>dot.corruption.remains" );
 
+  delay->add_action( "use_item,name=grim_eclipse,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
   delay->add_action( "use_item,name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)" );
 
+  stat->add_action( "use_item,name=the_first_sigil" );
+  stat->add_action( "use_item,name=scars_of_fraternal_strife" );
   stat->add_action( "use_item,name=inscrutable_quantum_device" );
   stat->add_action( "use_item,name=instructors_divine_bell" );
   stat->add_action( "use_item,name=overflowing_anima_cage" );
@@ -1200,7 +1202,13 @@ void warlock_t::create_apl_affliction()
   stat->add_action( "use_item,name=wakeners_frond" );
   stat->add_action( "use_item,name=tablet_of_despair" );
   stat->add_action( "use_item,name=sinful_aspirants_badge_of_ferocity" );
+  stat->add_action( "use_item,name=cosmic_aspirants_badge_of_ferocity" );
   stat->add_action( "use_item,name=sinful_gladiators_badge_of_ferocity" );
+  stat->add_action( "use_item,name=cosmic_gladiators_badge_of_ferocity" );
+  stat->add_action( "use_item,name=obelisk_of_the_void" );
+  stat->add_action( "use_item,name=horn_of_valor" );
+  stat->add_action( "use_item,name=moonlit_prism" );
+  stat->add_action( "use_item,name=figurehead_of_the_naglfar" );
   stat->add_action( "blood_fury" );
   stat->add_action( "fireblood" );
   stat->add_action( "berserking" );
@@ -1210,6 +1218,12 @@ void warlock_t::create_apl_affliction()
   dmg->add_action( "use_item,name=glyph_of_assimilation" );
   dmg->add_action( "use_item,name=unchained_gladiators_shackles" );
   dmg->add_action( "use_item,name=ebonsoul_vice" );
+  dmg->add_action( "use_item,name=resonant_reservoir" );
+  dmg->add_action( "use_item,name=architects_ingenuity_core" );
+  dmg->add_action( "use_item,name=grim_eclipse" );
+  dmg->add_action( "use_item,name=toe_knees_promise" );
+  dmg->add_action( "use_item,name=mrrgrias_favor" );
+  dmg->add_action( "use_item,name=cosmic_gladiators_resonator" );
 
   split->add_action( "variable,name=special_equipped,value=(((equipped.empyreal_ordnance^equipped.inscrutable_quantum_device)^equipped.soulletting_ruby)^equipped.sunblood_amethyst)" );
   split->add_action( "variable,name=trinket_one,value=(trinket.1.has_proc.any&trinket.1.has_cooldown)" );
