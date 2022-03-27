@@ -7092,35 +7092,34 @@ void warrior_t::apl_prot()
 
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( this, "Charge", "if=time=0" );
-  default_list -> add_action( "heroic_charge", "if=runeforge.reprisal" );
+  default_list -> add_action( "heroic_charge", "if=rage<=40" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
 
   for ( const auto& racial_action : racial_actions )
     default_list->add_action( racial_action );
 
-  default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&!covenant.venthyr,line_cd=15","Prioritize Execute over Ignore Pain as a rage dump below 20%" );
-  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15","Venthyr Condemn has 2 execute windows, 20% and 80%" );
-  default_list -> add_action( this, "heroic_charge,if=rage<60&buff.revenge.down&runeforge.reprisal","Uses Charge when Reprisal is equiped for the benefits");
-  default_list -> add_action( "conquerors_banner", "if=runeforge.glory");
-  default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
   default_list -> add_action( this, "Avatar" );
-  default_list -> add_action( "ancient_aftershock");
-  default_list -> add_action( "spear_of_bastion");
-  default_list -> add_action( "conquerors_banner");
-  default_list -> add_action( this, "Shield Block", "if=buff.shield_block.down" );
+  default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
+  default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=buff.conquerors_banner.down");
+  default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
+  default_list -> add_action( this, covenant.spear_of_bastion, "spear_of_bastion");
+  default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up),use_off_gcd=1");
+  default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
+  default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled" );
+  default_list -> add_action( this, "Shield Block", "if=buff.shield_block.down&cooldown.shield_slam.ready" );
+  default_list -> add_action( this, "Shield Slam", "if=buff.outburst.up");
   default_list -> add_action( "run_action_list,name=aoe,if=spell_targets.thunder_clap>=3" );
   default_list -> add_action( "call_action_list,name=generic" );
 
   generic -> add_talent( this, "Ravager" );
   generic -> add_talent( this, "Dragon Roar" );
-  generic -> add_action( this, "Shield Slam", "if=buff.shield_block.up" );
-  generic -> add_action( this, "Thunder Clap", "if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains)&talent.unstoppable_force.enabled&buff.avatar.up" );
-  generic -> add_action( this, "Shield Slam" );
+  generic -> add_action( this, "Shield Slam", "if=buff.shield_block.up|buff.outburst.up&rage<=55" );
+  generic -> add_action( this, "Execute" );
   generic -> add_action( this, covenant.condemn, "condemn");
-  generic -> add_action( this, "Execute");
-  generic -> add_action( this, "Revenge", "if=rage>80&target.health.pct>20|buff.revenge.up" );
-  generic -> add_action( this, "Thunder Clap" );
+  generic -> add_action( this, "Shield Slam" );
+  generic -> add_action( this, "Thunder Clap", "if=spell_targets.thunder_clap>1|cooldown.shield_slam.remains&buff.outburst.down" );
+  generic -> add_action( this, "Revenge", "if=rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20" );
+  generic -> add_action( this, "Thunder Clap", "if=buff.outburst.down" );
   generic -> add_action( this, "Revenge" );
   generic -> add_action( this, "Devastate" );
   generic -> add_action( this, "Storm Bolt");
