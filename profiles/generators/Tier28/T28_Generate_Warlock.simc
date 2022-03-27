@@ -68,7 +68,7 @@ role=spell
 position=ranged_back
 talents=1201011
 covenant=necrolord
-soulbind=plague_deviser_marileth:4,323074/204:11:1/323091/323079/205:11:1/323095/206:11:1/352108/352110
+soulbind=plague_deviser_marileth:4,volatile_solvent/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/kevins_oozeling
 renown=80
 default_pet=sayaad
 
