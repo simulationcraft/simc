@@ -3116,10 +3116,8 @@ void scars_of_fraternal_strife( special_effect_t& effect )
       buffs.push_back( make_buff<final_rune_t>( e, this ) );
     }
 
-    void execute() override
+    void add_another()
     {
-      proc_spell_t::execute();
-
       buffs.front()->trigger();
       // Using the Final Rune triggers the shared Trinket CD
       if ( buffs.front()->data().id() == 368641 )
@@ -3132,6 +3130,13 @@ void scars_of_fraternal_strife( special_effect_t& effect )
       std::rotate( buffs.begin(), buffs.begin() + 1, buffs.end() );
     }
 
+    void execute() override
+    {
+      proc_spell_t::execute();
+
+      add_another();
+    }
+
     void reset() override
     {
       proc_spell_t::reset();
@@ -3141,7 +3146,16 @@ void scars_of_fraternal_strife( special_effect_t& effect )
   };
 
   effect.type = SPECIAL_EFFECT_USE;
-  effect.execute_action = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
+
+  auto apply_rune = create_proc_action<apply_rune_t>( "scars_of_fraternal_strife", effect );
+  effect.execute_action = apply_rune;
+
+  // Currently the first rune does not get removed on encounter start, allowing you to pre-use the trinket 30s before
+  // and immediately apply the 2nd rune once combat starts.
+  // TODO: Remove this if this behavior is a bug and is fixed.
+  effect.player->register_combat_begin( [ apply_rune ]( player_t* ) {
+    debug_cast<apply_rune_t*>( apply_rune )->add_another();
+  });
 }
 
 // pet cast: 368203
