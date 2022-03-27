@@ -1325,9 +1325,9 @@ void warlock_t::create_apl_demonology()
   open->add_action( "shadow_bolt,if=variable.use_bolt_timings&soul_shard<5&buff.balespiders_burning_core.stack<4" );
   open->add_action( "call_dreadstalkers" );
 
-  cov->add_action( "soul_rot,if=soulbind.grove_invigoration&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)" );
-  cov->add_action( "soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active" );
-  cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics&!pet.demonic_tyrant.active&variable.next_tyrant_cd>18" );
+  cov->add_action( "soul_rot,if=(soulbind.field_of_blossoms|runeforge.decaying_soul_satchel)&pet.demonic_tyrant.active" );
+  cov->add_action( "soul_rot,if=soulbind.grove_invigoration&!runeforge.decaying_soul_satchel&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)" );
+  cov->add_action( "soul_rot,if=soulbind.wild_hunt_tactics&!runeforge.decaying_soul_satchel&!pet.demonic_tyrant.active&variable.next_tyrant_cd>18" );
   cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)" );
   cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.kevins_oozeling&(pet.demonic_tyrant.active|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)" );
   cov->add_action( "decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active" );
