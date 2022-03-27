@@ -1318,19 +1318,20 @@ void warlock_t::create_apl_destruction()
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
   aoe->add_action( "soul_rot" );
+  aoe->add_action( "impending_castastrophe" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
-  aoe->add_action( "immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
+  aoe->add_action( "immolate,cycle_targets=1,if=active_enemies<5&remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
   aoe->add_action( "rain_of_fire" );
   aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
-  aoe->add_action( "decimating_bolt,if=(soulbind.lead_by_example.enabled|!talent.fire_and_brimstone.enabled)" );
+  aoe->add_action( "decimating_bolt" );
   aoe->add_action( "incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies" );
   aoe->add_action( "soul_fire" );
   aoe->add_action( "conflagrate,if=buff.backdraft.down" );
   aoe->add_action( "shadowburn,if=target.health.pct<20" );
-  aoe->add_action( "scouring_tithe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
-  aoe->add_action( "impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)" );
+  aoe->add_action( "immolate");
+  aoe->add_action( "scouring_tithe" );
   aoe->add_action( "incinerate" );
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42" );
