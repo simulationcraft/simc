@@ -1318,7 +1318,7 @@ void warlock_t::create_apl_destruction()
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
   aoe->add_action( "soul_rot" );
-  aoe->add_action( "impending_castastrophe" );
+  aoe->add_action( "impending_catastrophe" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
   aoe->add_action( "immolate,cycle_targets=1,if=active_enemies<5&remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   aoe->add_action( "call_action_list,name=cds" );
