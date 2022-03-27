@@ -548,6 +548,9 @@ struct player_t : public actor_t
     // 9.1 Shards of Domination
     buff_t* coldhearted; // Shard of Cor
 
+    // Trinkets
+    buff_t* soleahs_secret_technique_external;
+
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
   } buffs;
@@ -587,6 +590,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> pact_of_the_soulstalkers;
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
+    int soleahs_secret_technique;
   } external_buffs;
 
 

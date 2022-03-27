@@ -3371,6 +3371,23 @@ void player_t::create_buffs()
       buffs.norgannons_sagacity_stacks = make_buff( this, "norgannons_sagacity_stacks", find_spell( 339443 ) );
       buffs.norgannons_sagacity = make_buff( this, "norgannons_sagacity", find_spell( 339445 ) );
 
+      // External trinkets
+      if ( external_buffs.soleahs_secret_technique )
+      {
+        // TODO: confirm what happens if ratings are the same. For now assuming it follows same priority as IQD.
+        static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING,
+                                                           STAT_HASTE_RATING, STAT_CRIT_RATING };
+
+        auto ilevel = external_buffs.soleahs_secret_technique;
+        auto coeff  = find_spell( 368513 )->effectN( 2 ).m_coefficient();
+        auto points = dbc->random_property( ilevel ).p_epic[ 0 ];
+        auto mult   = dbc->combat_rating_multiplier( ilevel, CR_MULTIPLIER_TRINKET );
+
+        buffs.soleahs_secret_technique_external =
+            make_buff<stat_buff_t>( this, "soleahs_secret_technique_external", find_spell( 368510 ) )
+                ->add_stat( util::highest_stat( this, ratings ), coeff * points * mult );
+      }
+
       // 9.2 Jailer raid buff
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
         ->add_stat( STAT_MASTERY_RATING, 350 )
@@ -5702,6 +5719,9 @@ void player_t::arise()
 
   if ( buffs.focus_magic && external_buffs.focus_magic )
     buffs.focus_magic->override_buff();
+
+  if ( buffs.soleahs_secret_technique_external )
+    buffs.soleahs_secret_technique_external->trigger();
 
   if ( is_enemy() )
   {
@@ -11630,6 +11650,7 @@ void player_t::create_options()
 
   // Permanent External Buffs
   add_option( opt_bool( "external_buffs.focus_magic", external_buffs.focus_magic ) );
+  add_option( opt_int( "external_buffs.soleahs_secret_technique_ilevel", external_buffs.soleahs_secret_technique, 1, MAX_ILEVEL ) );
 
   // Timed External Buffs
   auto opt_external_buff_times = [] ( util::string_view name, std::vector<timespan_t>& times )
