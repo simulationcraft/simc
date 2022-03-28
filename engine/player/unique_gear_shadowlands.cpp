@@ -3889,6 +3889,25 @@ void protectors_diffusion_implement( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+// 367682 driver
+// 367689 projectile
+// 367687 damage
+void vombatas_headbutt( special_effect_t& effect )
+{
+  auto damage =
+      create_proc_action<generic_proc_t>( "vombatas_headbutt_damage", effect, "vombatas_headbutt_damage", 367687 );
+  damage->base_dd_min = damage->base_dd_max = effect.driver()->effectN( 1 ).average( effect.item );
+  damage->dual = true;
+
+  auto action = create_proc_action<proc_spell_t>( "vombatas_headbutt", effect );
+  action->impact_action = damage;
+  damage->stats = action->stats;
+
+  effect.execute_action = action;
+
+  new dbc_proc_callback_t( effect.player, effect );
+}
+
 // id=367808 driver
 //    effect #1: Periodic trigger for pulse damage spell, dummy damage value for tooltip only
 //    effect #2: Weak point damage value in dummy, overwrites spell value when dealing weak point damage
@@ -5954,6 +5973,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 367805, items::cache_of_acquired_treasures, true );
     unique_gear::register_special_effect( 367733, items::symbol_of_the_raptora );
     unique_gear::register_special_effect( 367470, items::protectors_diffusion_implement );
+    unique_gear::register_special_effect( 367682, items::vombatas_headbutt );
     unique_gear::register_special_effect( 367808, items::earthbreakers_impact );
     unique_gear::register_special_effect( 367325, items::prismatic_brilliance );
     unique_gear::register_special_effect( 367931, items::chains_of_domination );
