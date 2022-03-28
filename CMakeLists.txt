@@ -49,6 +49,23 @@ function(sc_common_compiler_options target)
   )
 endfunction()
 
+
+### Git Hash ###
+# Get the current working branch
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+# Get the latest abbreviated commit hash of the working branch
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE GIT_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+
 # link in all activated targets
 add_subdirectory(engine)
 if (BUILD_GUI)
@@ -76,3 +93,5 @@ install(FILES
   LICENSE.MIT
   LICENSE.UNLICENSE
 DESTINATION ${SIMC_INSTALL_SHARED})
+
+include(${PROJECT_SOURCE_DIR}/cmake/package.cmake)
