@@ -418,6 +418,7 @@ void fire( player_t* p )
   precombat->add_action( "use_item,name=soul_igniter,if=!variable.combustion_on_use&!equipped.dreadfire_vessel&(!talent.firestarter|variable.firestarter_combustion)" );
   precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
   precombat->add_action( "mirror_image" );
+  precombat->add_action( "fleshcraft" );
   precombat->add_action( "pyroblast" );
 
   default_->add_action( "counterspell,if=!runeforge.disciplinary_command" );
@@ -589,6 +590,7 @@ void frost( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "summon_water_elemental" );
   precombat->add_action( "snapshot_stats" );
+  precombat->add_action( "fleshcraft" );
   precombat->add_action( "blizzard,if=active_enemies>=2" );
   precombat->add_action( "frostbolt,if=active_enemies=1" );
 
