@@ -4529,6 +4529,7 @@ struct architects_aligner_t : public bear_attack_t
     background = proc = true;
     may_miss = may_glance = may_dodge = may_block = may_parry = false;
     aoe = -1;
+    reduced_aoe_targets = 5.0;
 
     heal = p->get_secondary_action<architects_aligner_heal_t>( "architects_aligner_heal" );
     heal->name_str_reporting = "architects_aligner";
