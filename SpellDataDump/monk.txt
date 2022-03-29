@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42852 Live (hotfix 2022-03-24/42852)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42937 Live (hotfix 2022-03-29/42937, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3598,9 +3598,10 @@ Effects          :
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
 #14 (id=260835)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 92 | Scaled Value: 92 | PvP Coefficient: 1.00000
+                   Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000
                    Affected Spells: Spinning Crane Kick (107270)
                    Family Flags: 8
+Hotfixed         : Base Value (92 -> 150)
 #15 (id=741702)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 400 | Scaled Value: 400 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Crackling Jade Lightning (117952)

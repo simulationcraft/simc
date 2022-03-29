@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42852 Live (hotfix 2022-03-24/42852)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42937 Live (hotfix 2022-03-29/42937, no-networking)
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
 School           : Physical
