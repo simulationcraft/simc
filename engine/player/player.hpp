@@ -550,6 +550,7 @@ struct player_t : public actor_t
 
     // Trinkets
     buff_t* soleahs_secret_technique_external;
+    buff_t* elegy_of_the_eternals_external;
 
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
@@ -591,6 +592,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
     int soleahs_secret_technique;
+    std::string elegy_of_the_eternals;
   } external_buffs;
 
 
