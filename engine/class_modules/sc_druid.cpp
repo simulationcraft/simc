@@ -10773,7 +10773,7 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
     try
     {
       if ( values.size() != 5 )
-        throw std::invalid_argument( "Missing syntax." );
+        throw std::invalid_argument( "Missing value." );
 
       auto min_stack = std::clamp( util::to_unsigned( values[ 0 ] ), 1U, 5U );
       auto max_stack = std::clamp( util::to_unsigned( values[ 1 ] ), 1U, 5U );
@@ -10784,12 +10784,12 @@ static bool parse_swarm_setup( sim_t* sim, std::string_view, std::string_view se
       debug_cast<druid_t*>( sim->active_player )
           ->prepull_swarm.emplace_back( min_stack, max_stack, min_dur, max_dur, chance );
     }
-    catch ( const std::invalid_argument& )
+    catch ( const std::invalid_argument& msg )
     {
       throw std::invalid_argument(
-          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup."
+          fmt::format( "\n\tInvalid entry '{}' for druid.adaptive_swarm_prepull_setup. {}"
                        "\n\tFormat is <min stacks>:<max stacks>:<min duration>:<max duration>:<chance>/...",
-                       entry ) );
+                       entry, msg.what() ) );
     }
   }
 
