@@ -67,19 +67,20 @@ actions+=/incinerate
 
 actions.aoe=rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)
 actions.aoe+=/soul_rot
+actions.aoe+=/impending_catastrophe
 actions.aoe+=/channel_demonfire,if=dot.immolate.remains>cast_time
-actions.aoe+=/immolate,cycle_targets=1,if=remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
+actions.aoe+=/immolate,cycle_targets=1,if=active_enemies<5&remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)
 actions.aoe+=/call_action_list,name=cds
 actions.aoe+=/havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4
 actions.aoe+=/rain_of_fire
 actions.aoe+=/havoc,cycle_targets=1,if=!(self.target=target)
-actions.aoe+=/decimating_bolt,if=(soulbind.lead_by_example.enabled|!talent.fire_and_brimstone.enabled)
+actions.aoe+=/decimating_bolt
 actions.aoe+=/incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies
 actions.aoe+=/soul_fire
 actions.aoe+=/conflagrate,if=buff.backdraft.down
 actions.aoe+=/shadowburn,if=target.health.pct<20
-actions.aoe+=/scouring_tithe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)
-actions.aoe+=/impending_catastrophe,if=!(talent.fire_and_brimstone.enabled|talent.inferno.enabled)
+actions.aoe+=/immolate
+actions.aoe+=/scouring_tithe
 actions.aoe+=/incinerate
 
 actions.cds=use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42

@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=1201011
 covenant=necrolord
-soulbind=emeni,lead_by_example/borne_of_blood:11:1/emenis_magnificent_skin/pustule_eruption/carnivorous_stalkers:11:1/323918/tyrants_soul:11:1
+soulbind=plague_deviser_marileth:4,volatile_solvent/borne_of_blood:11:1/carnivorous_stalkers:11:1/tyrants_soul:11:1/kevins_oozeling
 renown=80
 
 # Default consumables
@@ -32,7 +32,12 @@ actions.precombat+=/use_item,name=tome_of_monstrous_constructions
 actions.precombat+=/use_item,name=soleahs_secret_technique
 actions.precombat+=/snapshot_stats
 actions.precombat+=/fleshcraft
-actions.precombat+=/variable,name=first_tyrant_time,op=set,value=10
+actions.precombat+=/variable,name=first_tyrant_time,op=set,value=12
+actions.precombat+=/variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled
+actions.precombat+=/variable,name=first_tyrant_time,op=add,value=action.summon_vilefiend.execute_time,if=talent.summon_vilefiend.enabled
+actions.precombat+=/variable,name=first_tyrant_time,op=add,value=gcd.max,if=talent.grimoire_felguard.enabled|talent.summon_vilefiend.enabled
+actions.precombat+=/variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time
+actions.precombat+=/variable,name=first_tyrant_time,op=min,value=10
 actions.precombat+=/variable,name=in_opener,op=set,value=1
 actions.precombat+=/variable,name=use_bolt_timings,op=set,value=runeforge.balespiders_burning_core&runeforge.shard_of_annihilation
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
@@ -96,9 +101,9 @@ actions.5y_per_sec_trinkets=use_item,name=soulletting_ruby,target_if=min:target.
 actions.5y_per_sec_trinkets+=/use_item,name=sunblood_amethyst,if=variable.buff_sync_cd<target.distance%5+(2*variable.use_bolt_timings)
 actions.5y_per_sec_trinkets+=/use_item,name=empyreal_ordnance,if=variable.buff_sync_cd<(target.distance%5)+12+(2*variable.use_bolt_timings)
 
-actions.covenant_ability=soul_rot,if=soulbind.grove_invigoration&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)
-actions.covenant_ability+=/soul_rot,if=soulbind.field_of_blossoms&pet.demonic_tyrant.active
-actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics&!pet.demonic_tyrant.active&variable.next_tyrant_cd>18
+actions.covenant_ability=soul_rot,if=(soulbind.field_of_blossoms|runeforge.decaying_soul_satchel)&pet.demonic_tyrant.active
+actions.covenant_ability+=/soul_rot,if=soulbind.grove_invigoration&!runeforge.decaying_soul_satchel&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)
+actions.covenant_ability+=/soul_rot,if=soulbind.wild_hunt_tactics&!runeforge.decaying_soul_satchel&!pet.demonic_tyrant.active&variable.next_tyrant_cd>18
 actions.covenant_ability+=/decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.lead_by_example&(pet.demonic_tyrant.active&soul_shard<2|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)
 actions.covenant_ability+=/decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&soulbind.kevins_oozeling&(pet.demonic_tyrant.active|!pet.demonic_tyrant.active&variable.next_tyrant_cd>40)
 actions.covenant_ability+=/decimating_bolt,target_if=min:target.health.pct,if=!variable.use_bolt_timings&(soulbind.forgeborne_reveries|(soulbind.volatile_solvent&!soulbind.kevins_oozeling))&!pet.demonic_tyrant.active
@@ -153,17 +158,17 @@ actions.tyrant_setup+=/summon_vilefiend,if=(variable.next_tyrant_cd<15-(action.s
 actions.tyrant_setup+=/call_dreadstalkers,if=variable.next_tyrant_cd<12-(action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)
 actions.tyrant_setup+=/summon_demonic_tyrant,if=time>variable.first_tyrant_time&(pet.dreadstalker.active&pet.dreadstalker.remains>action.summon_demonic_tyrant.execute_time)&(!talent.summon_vilefiend.enabled|pet.vilefiend.active)&(soul_shard=0|(pet.dreadstalker.active&pet.dreadstalker.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(pet.vilefiend.active&pet.vilefiend.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time)|(buff.grimoire_felguard.up&buff.grimoire_felguard.remains<action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time))
 
-head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588/6935,gem_id=173129
+head=grimveiled_hood,id=173245,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173129
 neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173129
 shoulders=mantle_of_the_demon_star,id=188888,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
-wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588/6935,gem_id=173129,enchant=eternal_intellect
+wrists=grimveiled_bracers,id=173249,bonus_id=6716/7036/6649/6650/1808/1588,gem_id=173129,enchant=eternal_intellect
 hands=grasps_of_the_demon_star,id=188890,bonus_id=1505/7187
-waist=kintaras_baleful_cord,id=180109,bonus_id=1592/6536/6646/6935,gem_id=173129
+waist=kintaras_baleful_cord,id=180109,bonus_id=1592/6536/6646/6935,gem_id=173128
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=codebreakers_cunning_sandals,id=185788,bonus_id=1595/6536/6646
-finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant=tenet_of_versatility
+feet=windscale_moccasins,id=179322,bonus_id=1592/6536/6646
+finger1=stitchfleshs_misplaced_signet,id=178736,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
 finger2=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_versatility
 trinket1=infinitely_divisible_ooze,id=178769,bonus_id=1592/6536/6646
 trinket2=empyreal_ordnance,id=180117,bonus_id=1592/6536/6646
@@ -174,10 +179,10 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_ilvl=282.25
 # gear_stamina=2905
 # gear_intellect=1791
-# gear_crit_rating=192
-# gear_haste_rating=1185
+# gear_crit_rating=239
+# gear_haste_rating=1130
 # gear_mastery_rating=283
-# gear_versatility_rating=893
+# gear_versatility_rating=901
 # gear_armor=527
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

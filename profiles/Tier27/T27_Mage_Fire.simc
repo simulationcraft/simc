@@ -66,6 +66,7 @@ actions.precombat+=/snapshot_stats
 actions.precombat+=/use_item,name=soul_igniter,if=!variable.combustion_on_use&!equipped.dreadfire_vessel&(!talent.firestarter|variable.firestarter_combustion)
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/mirror_image
+actions.precombat+=/fleshcraft
 actions.precombat+=/pyroblast
 
 # Executed every time the actor is available.

@@ -5,9 +5,9 @@ level=60
 race=draenei
 role=tank
 position=front
-talents=3120011
-covenant=night_fae
-soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:11:1/unnerving_focus:11:1/destructive_reverberations:11:1
+talents=3122011
+covenant=necrolord
+soulbind=volatile_solvent/oozs_frictionless_coating/Kevins_oozeling/ashen_juggernaut:11:1/unnerving_focus:11:1/veterans_repute:11:1/adaptive_armor_fragment:11:1
 renown=80
 
 # Default consumables
@@ -29,11 +29,12 @@ actions.precombat+=/food
 actions.precombat+=/augmentation
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/snapshot_stats
+actions.precombat+=/conquerors_banner
 
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/charge,if=time=0
-# if=runeforge.reprisal
+# if=rage<=40
 actions+=/heroic_charge
 actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/blood_fury
@@ -43,19 +44,14 @@ actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
-actions+=/potion,if=buff.avatar.up|target.time_to_die<25
-# Prioritize Execute over Ignore Pain as a rage dump below 20%
-actions+=/ignore_pain,if=target.health.pct>20&!covenant.venthyr,line_cd=15
-# Venthyr Condemn has 2 execute windows, 20% and 80%
-actions+=/ignore_pain,if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15
-# if=runeforge.glory
-actions+=/conquerors_banner
-actions+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions+=/avatar
-actions+=/ancient_aftershock
-actions+=/spear_of_bastion
-actions+=/conquerors_banner
-actions+=/shield_block,if=buff.shield_block.down
+actions+=/potion,if=buff.avatar.up|target.time_to_die<25
+actions+=/conquerors_banner,if=buff.conquerors_banner.down
+actions+=/ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up),use_off_gcd=1
+actions+=/last_stand,if=target.health.pct>=90|target.health.pct<=20
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/shield_block,if=buff.shield_block.down&cooldown.shield_slam.ready
+actions+=/shield_slam,if=buff.outburst.up
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
 actions+=/call_action_list,name=generic
 
@@ -67,41 +63,41 @@ actions.aoe+=/shield_slam
 
 actions.generic=ravager
 actions.generic+=/dragon_roar
-actions.generic+=/shield_slam,if=buff.shield_block.up
-actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains)&talent.unstoppable_force.enabled&buff.avatar.up
-actions.generic+=/shield_slam
+actions.generic+=/shield_slam,if=buff.shield_block.up|buff.outburst.up&rage<=55
 actions.generic+=/execute
-actions.generic+=/revenge,if=rage>80&target.health.pct>20|buff.revenge.up
-actions.generic+=/thunder_clap
+actions.generic+=/shield_slam
+actions.generic+=/thunder_clap,if=spell_targets.thunder_clap>1|cooldown.shield_slam.remains&buff.outburst.down
+actions.generic+=/revenge,if=rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20
+actions.generic+=/thunder_clap,if=buff.outburst.down
 actions.generic+=/revenge
 actions.generic+=/devastate
 
-head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+head=shadowghast_helm,id=171415,bonus_id=6647/6649/6716/8130/1588/6935,gem_id=173128
+neck=cabochon_of_the_infinite_flight,id=185820,bonus_id=1595/6536/6646/6935,gem_id=173128
 shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524
 chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
-wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
-hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+wrists=vambraces_of_the_infinite_infantry,id=188943,bonus_id=1505/7187/6935,gem_id=173128
+hands=grasps_of_the_infinite_infantry,id=188937,bonus_id=1505/7187,enchant=eternal_strength
+waist=girdle_of_the_soulflayer,id=179326,bonus_id=1592/6536/6646/6935,gem_id=173128
 legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
-feet=shadowghast_sabatons,id=171413,bonus_id=6648/6649/7451/6969/1588,gem_id=173128
-finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
-finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
-trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
-trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6649/6716/6969/1588
+finger1=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+finger2=arachnid_cipher_ring,id=178933,bonus_id=1592/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=ticking_sack_of_terror,id=185844,bonus_id=1595/6536/6646
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
 
 # Gear Summary
-# gear_ilvl=282.38
-# gear_strength=1284
-# gear_stamina=2929
+# gear_ilvl=282.69
+# gear_strength=1313
+# gear_stamina=2927
 # gear_intellect=216
-# gear_crit_rating=426
-# gear_haste_rating=1099
-# gear_mastery_rating=688
-# gear_versatility_rating=264
-# gear_armor=2789
+# gear_crit_rating=768
+# gear_haste_rating=1248
+# gear_mastery_rating=381
+# gear_versatility_rating=252
+# gear_armor=2802
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
