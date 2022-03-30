@@ -2051,9 +2051,11 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       chance += p()->cache.mastery_value();
     }
 
+    // Add excessive amount to ensure overload proc with SK,
+    // since chain spells divide chance by X
     if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->check() )
     {
-      chance += 1.0;
+      chance += 10.0;
     }
 
     return chance;
