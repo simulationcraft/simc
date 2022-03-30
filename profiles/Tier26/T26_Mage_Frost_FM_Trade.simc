@@ -30,6 +30,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/arcane_intellect
 actions.precombat+=/summon_water_elemental
 actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft
 actions.precombat+=/blizzard,if=active_enemies>=2
 actions.precombat+=/frostbolt,if=active_enemies=1
 

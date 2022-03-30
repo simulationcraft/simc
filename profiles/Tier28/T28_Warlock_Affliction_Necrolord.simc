@@ -162,6 +162,12 @@ actions.damage_trinkets+=/use_item,name=dreadfire_vessel
 actions.damage_trinkets+=/use_item,name=glyph_of_assimilation
 actions.damage_trinkets+=/use_item,name=unchained_gladiators_shackles
 actions.damage_trinkets+=/use_item,name=ebonsoul_vice
+actions.damage_trinkets+=/use_item,name=resonant_reservoir
+actions.damage_trinkets+=/use_item,name=architects_ingenuity_core
+actions.damage_trinkets+=/use_item,name=grim_eclipse
+actions.damage_trinkets+=/use_item,name=toe_knees_promise
+actions.damage_trinkets+=/use_item,name=mrrgrias_favor
+actions.damage_trinkets+=/use_item,name=cosmic_gladiators_resonator
 
 actions.darkglare_prep=vile_taint
 actions.darkglare_prep+=/dark_soul
@@ -172,7 +178,8 @@ actions.darkglare_prep+=/berserking
 actions.darkglare_prep+=/call_action_list,name=covenant,if=!covenant.necrolord
 actions.darkglare_prep+=/summon_darkglare
 
-actions.delayed_trinkets=use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)
+actions.delayed_trinkets=use_item,name=grim_eclipse,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)
+actions.delayed_trinkets+=/use_item,name=empyreal_ordnance,if=(covenant.night_fae&cooldown.soul_rot.remains<20)|(covenant.venthyr&cooldown.impending_catastrophe.remains<20)|(covenant.necrolord|covenant.kyrian|covenant.none)
 actions.delayed_trinkets+=/use_item,name=sunblood_amethyst,if=(covenant.night_fae&cooldown.soul_rot.remains<6)|(covenant.venthyr&cooldown.impending_catastrophe.remains<6)|(covenant.necrolord|covenant.kyrian|covenant.none)
 actions.delayed_trinkets+=/use_item,name=soulletting_ruby,if=(covenant.night_fae&cooldown.soul_rot.remains<8)|(covenant.venthyr&cooldown.impending_catastrophe.remains<8)|(covenant.necrolord|covenant.kyrian|covenant.none)
 actions.delayed_trinkets+=/use_item,name=shadowed_orb_of_torment,if=(covenant.night_fae&cooldown.soul_rot.remains<4)|(covenant.venthyr&cooldown.impending_catastrophe.remains<4)|(covenant.necrolord|covenant.kyrian|covenant.none)
@@ -239,7 +246,9 @@ actions.se=haunt
 actions.se+=/drain_soul,interrupt_global=1,interrupt_if=debuff.shadow_embrace.stack>=3
 actions.se+=/shadow_bolt
 
-actions.stat_trinkets=use_item,name=inscrutable_quantum_device
+actions.stat_trinkets=use_item,name=the_first_sigil
+actions.stat_trinkets+=/use_item,name=scars_of_fraternal_strife
+actions.stat_trinkets+=/use_item,name=inscrutable_quantum_device
 actions.stat_trinkets+=/use_item,name=instructors_divine_bell
 actions.stat_trinkets+=/use_item,name=overflowing_anima_cage
 actions.stat_trinkets+=/use_item,name=darkmoon_deck_putrescence
@@ -248,7 +257,13 @@ actions.stat_trinkets+=/use_item,name=flame_of_battle
 actions.stat_trinkets+=/use_item,name=wakeners_frond
 actions.stat_trinkets+=/use_item,name=tablet_of_despair
 actions.stat_trinkets+=/use_item,name=sinful_aspirants_badge_of_ferocity
+actions.stat_trinkets+=/use_item,name=cosmic_aspirants_badge_of_ferocity
 actions.stat_trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity
+actions.stat_trinkets+=/use_item,name=cosmic_gladiators_badge_of_ferocity
+actions.stat_trinkets+=/use_item,name=obelisk_of_the_void
+actions.stat_trinkets+=/use_item,name=horn_of_valor
+actions.stat_trinkets+=/use_item,name=moonlit_prism
+actions.stat_trinkets+=/use_item,name=figurehead_of_the_naglfar
 actions.stat_trinkets+=/blood_fury
 actions.stat_trinkets+=/fireblood
 actions.stat_trinkets+=/berserking

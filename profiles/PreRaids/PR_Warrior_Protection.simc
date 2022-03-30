@@ -32,7 +32,7 @@ actions.precombat+=/snapshot_stats
 # Executed every time the actor is available.
 actions=auto_attack
 actions+=/charge,if=time=0
-# if=runeforge.reprisal
+# if=rage<=40
 actions+=/heroic_charge
 actions+=/use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up
 actions+=/blood_fury
@@ -42,19 +42,14 @@ actions+=/lights_judgment
 actions+=/fireblood
 actions+=/ancestral_call
 actions+=/bag_of_tricks
-actions+=/potion,if=buff.avatar.up|target.time_to_die<25
-# Prioritize Execute over Ignore Pain as a rage dump below 20%
-actions+=/ignore_pain,if=target.health.pct>20&!covenant.venthyr,line_cd=15
-# Venthyr Condemn has 2 execute windows, 20% and 80%
-actions+=/ignore_pain,if=target.health.pct>20&target.health.pct<80&covenant.venthyr,line_cd=15
-# if=runeforge.glory
-actions+=/conquerors_banner
-actions+=/demoralizing_shout,if=talent.booming_voice.enabled
 actions+=/avatar
-actions+=/ancient_aftershock
+actions+=/potion,if=buff.avatar.up|target.time_to_die<25
 actions+=/spear_of_bastion
-actions+=/conquerors_banner
-actions+=/shield_block,if=buff.shield_block.down
+actions+=/ignore_pain,if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up),use_off_gcd=1
+actions+=/last_stand,if=target.health.pct>=90|target.health.pct<=20
+actions+=/demoralizing_shout,if=talent.booming_voice.enabled
+actions+=/shield_block,if=buff.shield_block.down&cooldown.shield_slam.ready
+actions+=/shield_slam,if=buff.outburst.up
 actions+=/run_action_list,name=aoe,if=spell_targets.thunder_clap>=3
 actions+=/call_action_list,name=generic
 
@@ -66,12 +61,12 @@ actions.aoe+=/shield_slam
 
 actions.generic=ravager
 actions.generic+=/dragon_roar
-actions.generic+=/shield_slam,if=buff.shield_block.up
-actions.generic+=/thunder_clap,if=(spell_targets.thunder_clap>1|cooldown.shield_slam.remains)&talent.unstoppable_force.enabled&buff.avatar.up
-actions.generic+=/shield_slam
+actions.generic+=/shield_slam,if=buff.shield_block.up|buff.outburst.up&rage<=55
 actions.generic+=/execute
-actions.generic+=/revenge,if=rage>80&target.health.pct>20|buff.revenge.up
-actions.generic+=/thunder_clap
+actions.generic+=/shield_slam
+actions.generic+=/thunder_clap,if=spell_targets.thunder_clap>1|cooldown.shield_slam.remains&buff.outburst.down
+actions.generic+=/revenge,if=rage>=60&target.health.pct>20|buff.revenge.up&target.health.pct<=20&rage<=18&cooldown.shield_slam.remains|buff.revenge.up&target.health.pct>20
+actions.generic+=/thunder_clap,if=buff.outburst.down
 actions.generic+=/revenge
 actions.generic+=/devastate
 
