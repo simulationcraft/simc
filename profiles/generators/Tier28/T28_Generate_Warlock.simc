@@ -163,6 +163,7 @@ talents=2103021
 covenant=necrolord
 soulbind=plague_deviser_marileth:4,volatile_solvent/211:11:1/214:11:1/218:11:1/kevins_oozeling
 renown=80
+default_pet=sayaad
 
 head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
