@@ -717,7 +717,7 @@ struct chaos_bolt_t : public destruction_spell_t
     destruction_spell_t::execute();
 
     // PTR 2022-02-16: Backdraft is no longer consumed for T28 free Chaos Bolts
-    if ( p()->buffs.ritual_of_ruin->check() )
+    if ( !p()->buffs.ritual_of_ruin->check() )
       p()->buffs.backdraft->decrement();
 
     // SL - Legendary
