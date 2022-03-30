@@ -161,7 +161,7 @@ role=spell
 position=ranged_back
 talents=2103021
 covenant=necrolord
-soulbind=bonesmith_heirmir:10,forgeborne_reveries/211:11:1/heirmirs_arsenal_marrowed_gemstone/214:11:1/carvers_eye/mnemonic_equipment
+soulbind=plague_deviser_marileth:4,volatile_solvent/211:11:1/214:11:1/218:11:1/kevins_oozeling
 renown=80
 
 head=grimveiled_hood,id=173245,bonus_id=6716/7039/6647/6649/1808/1588/6935,gem_id=173128
