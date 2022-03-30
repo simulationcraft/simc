@@ -1801,8 +1801,10 @@ void plagueys_preemptive_strike( special_effect_t& effect )
   struct plagueys_preemptive_strike_cb_t : public dbc_proc_callback_t
   {
     std::vector<int> target_list;
+    buff_t* current_debuff;
 
-    plagueys_preemptive_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ), target_list()
+    plagueys_preemptive_strike_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ),
+      target_list(), current_debuff( nullptr )
     {
     }
 
@@ -1817,14 +1819,20 @@ void plagueys_preemptive_strike( special_effect_t& effect )
       dbc_proc_callback_t::execute( a, s );
       target_list.push_back( s->target->actor_spawn_index );
 
+      // Due to "Limit 1" behavior, hits are tracked but ignored for targets hit when another debuff is up
+      if ( current_debuff && current_debuff->check() )
+        return;
+
       auto td = a->player->get_target_data( s->target );
-      td->debuff.plagueys_preemptive_strike->trigger();
+      current_debuff = td->debuff.plagueys_preemptive_strike;
+      current_debuff->trigger();
     }
 
     void reset() override
     {
       dbc_proc_callback_t::reset();
       target_list.clear();
+      current_debuff = nullptr;
     }
   };
 
