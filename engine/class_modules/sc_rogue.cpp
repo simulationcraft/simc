@@ -3333,11 +3333,13 @@ struct pistol_shot_t : public rogue_attack_t
 
   // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
   bool procs_combat_potency() const override
-  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS; }
+  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
+    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER; }
 
   // TOCHECK: On 9.0.5 PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS || !p()->bugs; }
+  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
+    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER || !p()->bugs; }
 };
 
 // Main Gauche ==============================================================
@@ -5154,15 +5156,17 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
   // Garrote and Rupture and APL lines using "exsanguinated"
   // TODO: Add Internal Bleeding (not the same id as Kidney Shot)
   else if ( util::str_compare_ci( name_str, "exsanguinated" ) && 
-    ( ab::data().id() == 703 || ab::data().id() == 1943 || this->name_str == "crimson_tempest" ) )
+    ( ab::data().id() == 703 || ab::data().id() == 1943 ||
+      this->name_str == "crimson_tempest" || this->name_str == "serrated_bone_spike" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       dot_t* d = ab::get_dot( ab::target );
-      return d->is_ticking() && cast_state( d->state )->get_exsanguinated_rate() != 1.0;
+      return d->is_ticking() && cast_state( d->state )->is_exsanguinated();
     } );
   }
   else if ( util::str_compare_ci( name_str, "exsanguinated_rate" ) &&
-    ( ab::data().id() == 703 || ab::data().id() == 1943 || this->name_str == "crimson_tempest" ) )
+    ( ab::data().id() == 703 || ab::data().id() == 1943 ||
+      this->name_str == "crimson_tempest" || this->name_str == "serrated_bone_spike" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       dot_t* d = ab::get_dot( ab::target );
@@ -5170,7 +5174,8 @@ std::unique_ptr<expr_t> actions::rogue_action_t<Base>::create_expression( util::
     } );
   }
   else if ( util::str_compare_ci( name_str, "will_lose_exsanguinate" ) &&
-    ( ab::data().id() == 703 || ab::data().id() == 1943 || this->name_str == "crimson_tempest" ) )
+    ( ab::data().id() == 703 || ab::data().id() == 1943
+      || this->name_str == "crimson_tempest" || this->name_str == "serrated_bone_spike" ) )
   {
     return make_fn_expr( name_str, [ this ]() {
       dot_t* d = ab::get_dot( ab::target );
@@ -7182,7 +7187,7 @@ void rogue_t::init_action_list()
     cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.vendetta.up|variable.use_trinket_1_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
     cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.vendetta.up|variable.use_trinket_2_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( this, "Vendetta", "if=variable.vendetta_condition&(!set_bonus.tier28_4pc|(dot.garrote.haste_pct>=(dot.garrote.haste_pct_next_tick-3))&(dot.rupture.haste_pct>=(dot.rupture.haste_pct_next_tick-3)))", "If using T28 4pc, delay until the next DoT tick if we can gain more than a 3% haste snapshot compared to the current tick value");
-    cds->add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
+    cds->add_talent( this, "Exsanguinate", "if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains*(1+set_bonus.tier28_4pc*debuff.vendetta.up)>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4", "Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough." );
     cds->add_action( this, "Shiv", "if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking)&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|variable.vendetta_cooldown_remains>12)=2))", "Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Vendetta if we won't waste more than half Shiv's cooldown" );
 
     // Non-spec stuff with lower prio
@@ -7219,7 +7224,7 @@ void rogue_t::init_action_list()
     dot->add_action( "variable,name=skip_cycle_rupture,value=priority_rotation&(debuff.shiv.up&spell_targets.fan_of_knives>2|variable.regen_saturated)", "Limit secondary Ruptures for priority rotation if we have 35 energy regen or Shiv is up on 2T+" );
     dot->add_action( "variable,name=skip_rupture,value=debuff.vendetta.up&(debuff.shiv.up|master_assassin_remains>0)&dot.rupture.remains>2", "Limit Ruptures if Vendetta+Shiv/Master Assassin is up and we have 2+ seconds left on the Rupture DoT" );
     dot->add_action( this, "Garrote", "if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot.garrote.pmultiplier<=1&cooldown.exsanguinate.remains<2&spell_targets.fan_of_knives=1&raid_event.adds.in>6&dot.garrote.remains*0.5<target.time_to_die", "Special Garrote and Rupture setup prior to Exsanguinate cast" );
-    dot->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
+    dot->add_action( this, "Rupture", "if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot.rupture.pmultiplier<=1&(effective_combo_points>=cp_max_spend&cooldown.exsanguinate.remains<1&dot.rupture.remains*0.5<target.time_to_die)" );
     dot->add_action( "pool_resource,for_next=1", "Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher" );
     dot->add_action( this, "Garrote", "if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0" );
     dot->add_action( "pool_resource,for_next=1" );
@@ -7691,7 +7696,8 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
     ( util::str_compare_ci( split[ 1 ], "garrote" ) ||
       util::str_compare_ci( split[ 1 ], "internal_bleeding" ) ||
       util::str_compare_ci( split[ 1 ], "rupture" ) ||
-      util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ) )
+      util::str_compare_ci( split[ 1 ], "crimson_tempest" ) ||
+      util::str_compare_ci( split[ 1 ], "serrated_bone_spike" ) ) )
   {
     action_t* action = find_action( split[ 1 ] );
     if ( !action )
@@ -7701,7 +7707,7 @@ std::unique_ptr<expr_t> rogue_t::create_expression( util::string_view name_str )
 
     return make_fn_expr( name_str, [ action ]() {
       dot_t* d = action->get_dot( action->target );
-      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->get_exsanguinated_rate() != 1.0;
+      return d->is_ticking() && actions::rogue_attack_t::cast_state( d->state )->is_exsanguinated();
     } );
   }
   // rtb_list.<buffs>
