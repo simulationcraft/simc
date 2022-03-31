@@ -1836,7 +1836,7 @@ void plagueys_preemptive_strike( special_effect_t& effect )
     }
   };
 
-  effect.proc_flags2_ = PF2_CAST | PF2_CAST_DAMAGE;
+  effect.proc_flags2_ = PF2_ALL_HIT;
 
   new plagueys_preemptive_strike_cb_t( effect );
 }
