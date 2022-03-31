@@ -456,6 +456,8 @@ struct sim_t : private sc_thread_t
     double first_strike_chance = 0.0;
     // First Strike proc chance when the period is set
     timespan_t first_strike_period = 5_s;
+    // Expected uptime of Adaptive Armor Fragment
+    double adaptive_armor_fragment_uptime = 0.4;
   } shadowlands_opts;
 
   // Auras and De-Buffs

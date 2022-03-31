@@ -2623,8 +2623,14 @@ void initialize_soulbinds( player_t* player )
                  ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
                  ->set_pct_buff_type( STAT_PCT_BUFF_AGILITY );
     }
-    player->register_combat_begin(
-        [ buff ]( player_t* p ) { make_repeating_event( *p->sim, 2.0_s, [ buff ] { buff->trigger(); } ); } );
+    if ( buff->sim->shadowlands_opts.adaptive_armor_fragment_uptime > 0.0 )
+    {
+      buff->player->register_combat_begin( [ buff ]( player_t* p ) {
+        buff->trigger();
+        make_repeating_event( *p->sim, buff->buff_duration() / buff->sim->shadowlands_opts.adaptive_armor_fragment_uptime,
+                              [ buff ] { buff->trigger(); } );
+      } );
+    }
   }
 }
 

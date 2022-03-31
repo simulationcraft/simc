@@ -3856,6 +3856,7 @@ void sim_t::create_options()
   add_option( opt_bool( "shadowlands.chains_of_domination_auto_break", shadowlands_opts.chains_of_domination_auto_break ) );
   add_option( opt_float( "shadowlands.first_strike_chance", shadowlands_opts.first_strike_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
+  add_option( opt_float( "shadowlands.adaptive_armor_fragment_uptime", shadowlands_opts.adaptive_armor_fragment_uptime, 0.0, 0.5 ) );
 }
 
 // sim_t::parse_option ======================================================
