@@ -3387,7 +3387,7 @@ struct main_gauche_t : public rogue_attack_t
   { return true; }
 
   bool procs_poison() const override
-  { return false; }
+  { return true; }
 
   bool procs_blade_flurry() const override
   { return true; }
