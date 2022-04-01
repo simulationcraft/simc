@@ -7,6 +7,7 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineCore REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS WebEngineWidgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS LinguistTools QUIET)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
@@ -64,3 +65,8 @@ install(FILES
   locale/sc_it.qm
   locale/sc_ko.qm
 DESTINATION ${SIMC_INSTALL_SHARED}/locale)
+
+if(WIN32)
+  include(${PROJECT_SOURCE_DIR}/cmake/windeployqt.cmake)
+  windeployqt(SimulationCraft)
+endif()
