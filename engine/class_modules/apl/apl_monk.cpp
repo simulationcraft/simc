@@ -181,10 +181,12 @@ void brewmaster( player_t* p )
 
   for ( const auto& item : p->items )
   {
-    std::string name_str;
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( item.name_str == "jotungeirr_destinys_call" )
+      if ( item.name_str == "scars_of_fraternal_strife" )
+        def->add_action( "use_item,name=" + item.name_str + 
+            ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+      else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
         def->add_action( "use_item,name=" + item.name_str );
@@ -329,7 +331,9 @@ void mistweaver( player_t* p )
     std::string name_str;
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
-      if ( item.name_str == "jotungeirr_destinys_call" )
+      if ( item.name_str == "scars_of_fraternal_strife" )
+        def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+      else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
         def->add_action( "use_item,name=" + item.name_str );
@@ -603,6 +607,9 @@ void windwalker( player_t* p )
       else if ( item.name_str == "cache_of_aquired_treasures" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
+      else if ( item.name_str == "scars_of_fraternal_strife" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
+                            ",if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
