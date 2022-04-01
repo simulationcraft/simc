@@ -1857,6 +1857,8 @@ public:
   std::string dot_name;
   // form spell to automatically cast
   action_t* autoshift;
+  // druaght uptime pointer for action, if valid indicates action is affected by draught
+  uptime_t* draught_uptime;
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
   free_cast_e free_cast;
   // Restricts use of a spell based on form.
@@ -1871,6 +1873,7 @@ public:
     : ab( n, player, s ),
       dot_name( n ),
       autoshift( nullptr ),
+      draught_uptime( nullptr ),
       free_cast( free_cast_e::NONE ),
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
@@ -1970,6 +1973,7 @@ public:
     ab::impact( s );
 
     trigger_galactic_guardian( s );
+    update_draught_uptime();
   }
 
   void tick( dot_t* d ) override
@@ -1977,6 +1981,13 @@ public:
     ab::tick( d );
 
     trigger_galactic_guardian( d->state );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    ab::last_tick( d );
+
+    update_draught_uptime();
   }
 
   virtual void trigger_ravenous_frenzy( free_cast_e f )
@@ -2008,6 +2019,17 @@ public:
     {
       if ( p()->buff.galactic_guardian->trigger() )
         p()->active.galactic_guardian->execute_on_target( s->target );
+    }
+  }
+
+  void update_draught_uptime()
+  {
+    if ( draught_uptime && p()->legendary.draught_of_deep_focus->ok() )
+    {
+      if ( get_dot_count() <= 1 )
+        draught_uptime->update( true, ab::sim->current_time() );
+      else
+        draught_uptime->update( false, ab::sim->current_time() );
     }
   }
 
@@ -2377,6 +2399,16 @@ public:
                           p()->spec.moonfire_dmg, p()->conduit.fury_of_the_skies );
     parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
                           p()->spec.sunfire_dmg, p()->conduit.fury_of_the_skies );
+  }
+
+  double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+
+    if ( draught_uptime && p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
+      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
+
+    return am;
   }
 
   double cost() const override
@@ -3698,16 +3730,7 @@ struct rake_t : public cat_attack_t
       form_mask = 0;
 
       dot_name = "rake";
-    }
-
-    double action_multiplier() const override
-    {
-      double am = cat_attack_t::action_multiplier();
-
-      if ( p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
-        am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
-
-      return am;
+      draught_uptime = p->get_uptime( "Rake (Draught)" );
     }
   };
 
@@ -3824,6 +3847,8 @@ struct rip_t : public cat_attack_t
   rip_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt ) : cat_attack_t( n, p, s, opt )
   {
     may_crit = false;
+
+    draught_uptime = p->get_uptime( "Rip (Draught)" );
   }
 
   action_state_t* new_state() override { return new rip_state_t( p(), this, target ); }
@@ -3833,16 +3858,6 @@ struct rip_t : public cat_attack_t
     timespan_t t = cat_attack_t::composite_dot_duration( s );
 
     return t *= ( p()->resources.current[ RESOURCE_COMBO_POINT ] + 1 );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = cat_attack_t::action_multiplier();
-
-    if ( p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
-      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
-
-    return am;
   }
 
   void tick( dot_t* d ) override
@@ -3934,6 +3949,7 @@ struct primal_wrath_t : public cat_attack_t
     }
 
     target_rip->trigger( base_dur * ( combo_points + 1 ) );  // this seems to be hardcoded
+    rip->update_draught_uptime();
 
     action_state_t::release( b_state );
 
@@ -5966,6 +5982,7 @@ struct moonfire_t : public druid_spell_t
 
       triggers_galactic_guardian = false;
       dot_name = "moonfire";
+      draught_uptime = p->get_uptime( "Moonfire (Draught)" );
 
       if ( p->talent.twin_moons->ok() )
       {
@@ -5996,16 +6013,6 @@ struct moonfire_t : public druid_spell_t
         feral_override_ta =
             p->query_aura_effect( p->spec.feral_overrides, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent();
       }
-    }
-
-    double action_multiplier() const override
-    {
-      double am = druid_spell_t::action_multiplier();
-
-      if ( p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
-        am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
-
-      return am;
     }
 
     double composite_da_multiplier( const action_state_t* s  ) const override
