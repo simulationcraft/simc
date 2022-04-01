@@ -306,6 +306,9 @@ public:
     bool catweave_bear = false;
     bool owlweave_bear = false;
 
+    // Restoration
+    double time_spend_healing = 0.0;
+
     // Covenant options
     double adaptive_swarm_jump_distance_min = 5.0;
     double adaptive_swarm_jump_distance_max = 40.0;
@@ -10822,6 +10825,9 @@ void druid_t::create_options()
   // Guardian
   add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );
   add_option( opt_bool( "druid.owlweave_bear", options.owlweave_bear ) );
+
+  // Restoration
+  add_option( opt_float( "druid.time_spend_healing", options.time_spend_healing ) );
 
   // Covenant
   add_option( opt_deprecated( "druid.adaptive_swarm_jump_distance",
