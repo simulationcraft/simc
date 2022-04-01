@@ -1048,11 +1048,11 @@ struct soul_fragment_t
 
      timespan_t duration =  (dh->set_bonuses.t28_vengeance_4pc->effectN( 1 ).time_value()) ;
 
-      if ( dh->cooldown.immolation_aura->is_ready() && !dh->cooldown.fel_devastation->is_ready() )
+      if ( !dh->cooldown.immolation_aura->is_ready() && dh->cooldown.fel_devastation->is_ready() )
       {
         dh->cooldown.immolation_aura->adjust( -duration );
       }
-      else if ( dh->cooldown.fel_devastation->is_ready() && !dh->cooldown.immolation_aura->is_ready() )
+      else if ( !dh->cooldown.fel_devastation->is_ready() && dh->cooldown.immolation_aura->is_ready() )
       {
         dh->cooldown.fel_devastation->adjust( -duration );
       }
@@ -2651,7 +2651,7 @@ struct immolation_aura_t : public demon_hunter_spell_t
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
         }
-        if ( p()->sets->has_set_bonus( DEMON_HUNTER_VENGEANCE, T28, B2 ) && rng().roll( (p()->set_bonuses.t28_vengeance_2pc->effectN( 1 ).base_value()) ) )
+        if ( p()->sets->has_set_bonus( DEMON_HUNTER_VENGEANCE, T28, B2 ) && rng().roll( p()->set_bonuses.t28_vengeance_2pc->proc_chance() ) )
         {
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_hunger->occur();
