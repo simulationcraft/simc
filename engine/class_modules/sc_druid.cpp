@@ -10494,6 +10494,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return make_fn_expr( "no_cds", [ this ]() {
         return options.no_cds;
       } );
+    if ( util::str_compare_ci( splits[ 1 ], "time_spend_healing" ) && splits.size() == 2 )
+      return make_fn_expr( "time_spend_healing", [ this ]() {
+        return options.time_spend_healing;
+      } );
   }
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
