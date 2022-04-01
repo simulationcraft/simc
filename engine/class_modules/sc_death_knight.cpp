@@ -417,7 +417,6 @@ struct death_knight_td_t : public actor_target_data_t {
     dot_t* frost_fever;
     // Unholy
     dot_t* soul_reaper;
-    dot_t* soul_reaper_t28;
     dot_t* virulent_plague;
   } dot;
 
@@ -1195,7 +1194,6 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Other dots
   dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
-  dot.soul_reaper_t28      = target -> get_dot( "soul_reaper_t28", p );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.mark_of_blood )
@@ -6656,8 +6654,10 @@ struct sacrificial_pact_t : public death_knight_heal_t
 
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
+  timespan_t summon_duration; // For T28 Ghoul summon, remove after shadowlands
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
-    death_knight_melee_attack_t( name, p, spell )
+    death_knight_melee_attack_t( name, p, spell ),
+    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) )
   {
     weapon = &( player -> main_hand_weapon );
   }
@@ -6713,6 +6713,8 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
       {
         p() -> active_spells.soul_reaper_t28 -> set_target( target );
         p() -> active_spells.soul_reaper_t28 -> execute();
+        if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+          p() -> pets.harvest_ghouls.spawn( summon_duration, 1 );
         p() -> buffs.harvest_time_stack -> expire();
       }
     }
@@ -6824,64 +6826,45 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     hasted_ticks = false;
   }
 
-  void init() override
+  // T28 constructor
+  soul_reaper_t( death_knight_t* p ) :
+    death_knight_melee_attack_t( "soul_reaper", p, p -> find_spell( 343294 ) ),  // T28, they may not have soul reaper talented
+    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
   {
-    death_knight_melee_attack_t::init();
-    may_proc_bron = true;
-  }
+    add_child( soul_reaper_execute );
 
-  void last_tick( dot_t* dot ) override
-  {
-    if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
-    {
-      soul_reaper_execute -> set_target ( dot -> target );
-      soul_reaper_execute -> execute();
-    }
-  }
-};
-
-struct soul_reaper_t28_t : public death_knight_melee_attack_t
-{
-  action_t* soul_reaper_execute;
-  timespan_t summon_duration;
-  soul_reaper_t28_t( death_knight_t* p ) :
-    death_knight_melee_attack_t( "soul_reaper_t28", p, p -> find_spell( 343294 ) ),
-    soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_t28_execute", p ) ),
-    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) )
-  {
-    background = false;
+    triggers_shackle_the_unworthy = true;
     hasted_ticks = false;
-    add_child ( soul_reaper_execute );
-  }
-
-  void init() override
-  {
-    death_knight_melee_attack_t::init();
-    may_proc_bron = true;
+    background = true;
   }
 
   double cost() const override
   {
-    return 0;
+    // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
+    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
+      return 0;
+
+    return death_knight_melee_attack_t::cost();
   }
 
   double runic_power_generation_multiplier( const action_state_t* state ) const override
   {
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
-    m *= 1.0 + ( -1.0 );
+    // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
+    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
+      m *= 1.0 + ( -1.0 );
 
     return m;
   }
 
-  void execute() override
+  void init() override
   {
-    death_knight_melee_attack_t::execute();
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
-      p() -> pets.harvest_ghouls.spawn( summon_duration, 1 );
+    death_knight_melee_attack_t::init();
+    may_proc_bron = true;
   }
 
-  void last_tick( dot_t* dot ) override
+  void tick( dot_t* dot ) override
   {
     if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
     {
@@ -7919,21 +7902,6 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     }
     return;
   }
-
-  // T28 Set.  This is only run if a normal soul_reaper dot didn't exist, since in game a single buff is used.
-  if ( get_target_data( target ) -> dot.soul_reaper_t28 -> is_ticking() )
-  {
-    sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Runic Corruption buff.",
-                      target -> name(), name() );
-
-    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
-    if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
-    {
-      buffs.harvest_time -> trigger();
-      sim -> print_log( "Target {} died while affected by Soul Reaper T28 2PC, player {} gains Harvest Time buff.",
-                      target -> name(), name() );
-    }
-  }
 }
 
 void death_knight_t::trigger_festering_wound_death( player_t* target )
@@ -8310,7 +8278,7 @@ void death_knight_t::create_actions()
 
   if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
   {
-    active_spells.soul_reaper_t28 = new soul_reaper_t28_t( this );
+    active_spells.soul_reaper_t28 = new soul_reaper_t( this );
   }
 
   if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
