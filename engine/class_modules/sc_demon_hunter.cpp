@@ -466,6 +466,7 @@ public:
     cooldown_t* elysian_decree;
     cooldown_t* felblade;
     cooldown_t* fel_eruption;
+    cooldown_t* immolation_aura;
 
     // Havoc
     cooldown_t* blade_dance;
@@ -485,6 +486,7 @@ public:
     // Vengeance
     cooldown_t* demon_spikes;
     cooldown_t* fiery_brand;
+    cooldown_t* fel_devastation;
     cooldown_t* sigil_of_chains;
     cooldown_t* sigil_of_flame;
     cooldown_t* sigil_of_misery;
@@ -544,6 +546,7 @@ public:
     proc_t* soul_fragment_from_fracture;
     proc_t* soul_fragment_from_fallout;
     proc_t* soul_fragment_from_meta;
+    proc_t* soul_fragment_from_hunger;
 
     // Legendary
     proc_t* darkglare_boon_resets;
@@ -1038,6 +1041,29 @@ struct soul_fragment_t
     {
       dh->buff.blind_faith->trigger();
       dh->resource_gain( RESOURCE_FURY, dh->spec.blind_faith_fury->effectN( 1 ).resource( RESOURCE_FURY ), dh->gain.blind_faith );
+    }
+
+    if ( is_type( soul_fragment::LESSER ) && dh->set_bonuses.t28_vengeance_4pc->ok() )
+    {
+
+     timespan_t duration =  (dh->set_bonuses.t28_vengeance_4pc->effectN( 1 ).time_value()) ;
+
+      if ( !dh->cooldown.immolation_aura->is_ready() && dh->cooldown.fel_devastation->is_ready() )
+      {
+        dh->cooldown.immolation_aura->adjust( -duration );
+      }
+      else if ( !dh->cooldown.fel_devastation->is_ready() && dh->cooldown.immolation_aura->is_ready() )
+      {
+        dh->cooldown.fel_devastation->adjust( -duration );
+      }
+      else if ( dh->rng().roll( 0.5 ) )
+      {
+        dh->cooldown.immolation_aura->adjust( -duration );
+      }
+      else
+      {
+        dh->cooldown.fel_devastation->adjust( -duration );
+      }
     }
 
     remove();
@@ -2624,6 +2650,11 @@ struct immolation_aura_t : public demon_hunter_spell_t
         {
           p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
           p()->proc.soul_fragment_from_fallout->occur();
+        }
+        if ( p()->sets->has_set_bonus( DEMON_HUNTER_VENGEANCE, T28, B2 ) && rng().roll( p()->set_bonuses.t28_vengeance_2pc->proc_chance() ) )
+        {
+          p()->spawn_soul_fragment( soul_fragment::LESSER, 1 );
+          p()->proc.soul_fragment_from_hunger->occur();
         }
 
         if ( p()->talent.charred_flesh->ok() )
@@ -5334,6 +5365,7 @@ void demon_hunter_t::init_procs()
   proc.soul_fragment_from_fracture    = get_proc( "soul_fragment_from_fracture" );
   proc.soul_fragment_from_fallout     = get_proc( "soul_fragment_from_fallout" );
   proc.soul_fragment_from_meta        = get_proc( "soul_fragment_from_meta" );
+  proc.soul_fragment_from_hunger      = get_proc( "soul_fragment_from_hunger" );
 
   // Legendary
   proc.darkglare_boon_resets          = get_proc( "darkglare_boon_resets" );
@@ -5953,6 +5985,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.elysian_decree       = get_cooldown( "elysian_decree" );
   cooldown.felblade             = get_cooldown( "felblade" );
   cooldown.fel_eruption         = get_cooldown( "fel_eruption" );
+  cooldown.immolation_aura      = get_cooldown( "immolation_aura" );
 
   // Havoc
   cooldown.blade_dance          = get_cooldown( "blade_dance" );
@@ -5975,6 +6008,7 @@ void demon_hunter_t::create_cooldowns()
   cooldown.sigil_of_flame       = get_cooldown( "sigil_of_flame" );
   cooldown.sigil_of_misery      = get_cooldown( "sigil_of_misery" );
   cooldown.sigil_of_silence     = get_cooldown( "sigil_of_silence" );
+  cooldown.fel_devastation      = get_cooldown( "fel_devastation" );
 }
 
 // demon_hunter_t::create_gains =============================================
