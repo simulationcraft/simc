@@ -1043,7 +1043,7 @@ struct soul_fragment_t
       dh->resource_gain( RESOURCE_FURY, dh->spec.blind_faith_fury->effectN( 1 ).resource( RESOURCE_FURY ), dh->gain.blind_faith );
     }
 
-    if ( is_type( soul_fragment::LESSER ) && dh->sets->has_set_bonus( DEMON_HUNTER_VENGEANCE, T28, B4))
+    if ( is_type( soul_fragment::LESSER ) && dh->set_bonuses.t28_vengeance_2pc->ok() )
     {
 
      timespan_t duration =  (dh->set_bonuses.t28_vengeance_4pc->effectN( 1 ).time_value()) ;
