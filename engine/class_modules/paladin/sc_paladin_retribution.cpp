@@ -1003,8 +1003,9 @@ void paladin_t::generate_action_prio_list_ret()
   // Items
 
   // special-cased items
-  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "the_first_sigil", "scars_of_fraternal_strife", "chains_of_domination", "earthbreakers_impact", "heart_of_the_swarm", "cosmic_gladiators_badge_of_ferocity", "cosmic_aspirants_badge_of_ferocity", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone" };
+  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "the_first_sigil", "scars_of_fraternal_strife", "chains_of_domination", "earthbreakers_impact", "heart_of_the_swarm", "cosmic_gladiators_badge_of_ferocity", "cosmic_aspirants_badge_of_ferocity", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone", "gavel_of_the_first_arbiter" };
 
+  cds -> add_action( "actions.cooldowns+=/use_item,name=gavel_of_the_first_arbiter" );
   cds -> add_action( "use_item,name=the_first_sigil,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
   cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30" );
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15" );
@@ -1022,7 +1023,7 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "use_item,name=scars_of_fraternal_strife" );
   cds -> add_action( "use_item,name=chains_of_domination" );
   cds -> add_action( "use_item,name=earthbreakers_impact" );
-  cds -> add_action( "use_item,name=heart_of_the_swarm,if=!buff.avenging_wrath.up&buff.crusade.up" );
+  cds -> add_action( "use_item,name=heart_of_the_swarm,if=!buff.avenging_wrath.up&!buff.crusade.up" );
   cds -> add_action( "use_item,name=cosmic_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=cosmic_aspirants_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
   cds -> add_action( "use_item,name=unchained_gladiators_badge_of_ferocity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack>=10|cooldown.avenging_wrath.remains>45|cooldown.crusade.remains>45" );
@@ -1090,7 +1091,7 @@ void paladin_t::generate_action_prio_list_ret()
   generators -> add_action( "vanquishers_hammer,if=!runeforge.dutybound_gavel|!talent.final_reckoning&!talent.execution_sentence|fight_remains<8" );
   generators -> add_action( this, "Hammer of Wrath", "if=runeforge.the_mad_paragon|covenant.venthyr&cooldown.ashen_hallow.remains>210" );
   generators -> add_action( this, "Wake of Ashes", "if=holy_power<=2&set_bonus.tier28_4pc&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
-  generators -> add_action( "divine_toll,if=holy_power<=1&!debuff.judgment.up&(!talent.seraphim|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&!talent.final_reckoning&(!talent.execution_sentence|fight_remains<8|spell_targets.divine_storm>=5)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
+  generators -> add_action( "divine_toll,if=holy_power<=2&!debuff.judgment.up&(!talent.seraphim|buff.seraphim.up)&(!raid_event.adds.exists|raid_event.adds.in>30|raid_event.adds.up)&!talent.final_reckoning&(!talent.execution_sentence|fight_remains<8|spell_targets.divine_storm>=5)&(cooldown.avenging_wrath.remains>15|cooldown.crusade.remains>15|fight_remains<8)" );
   generators -> add_action( this, "Judgment", "if=!debuff.judgment.up&(holy_power>=1&runeforge.the_magistrates_judgment|holy_power>=2)" );
   generators -> add_action( this, "Wake of Ashes", "if=(holy_power=0|holy_power<=2&cooldown.blade_of_justice.remains>gcd*2)&(!raid_event.adds.exists|raid_event.adds.in>20|raid_event.adds.up)&(!talent.seraphim|cooldown.seraphim.remains>5|covenant.kyrian)&(!talent.execution_sentence|cooldown.execution_sentence.remains>15|target.time_to_die<8|spell_targets.divine_storm>=5)&(!talent.final_reckoning|cooldown.final_reckoning.remains>15|fight_remains<8)&(cooldown.avenging_wrath.remains|cooldown.crusade.remains)" );
   generators -> add_action( "call_action_list,name=finishers,if=holy_power>=3&buff.crusade.up&buff.crusade.stack<10" );
