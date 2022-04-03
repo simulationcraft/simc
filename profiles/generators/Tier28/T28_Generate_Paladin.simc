@@ -45,7 +45,7 @@ level=60
 race=dark_iron_dwarf
 role=attack
 position=back
-talents=1200303
+talents=1200101
 covenant=kyrian
 soulbind=mikanikos,brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator/ringing_clarity:11:1/virtuous_command:11:1/templars_vindication:11:1
 renown=80
@@ -62,7 +62,7 @@ legs=luminous_chevaliers_robes,id=188931,bonus_id=1505/7187
 feet=songmad_sabatons,id=189786,bonus_id=1524/7187
 finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=loquacious_keepers_peridot,id=189802,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=overwhelming_power_crystal,id=179342,bonus_id=1592/6536/6646
+trinket1=old_warriors_soul,id=186438,bonus_id=4800/4786/1498
 trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=1524/7187,enchant=sinful_revelation
 
