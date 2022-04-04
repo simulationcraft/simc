@@ -1005,7 +1005,7 @@ void paladin_t::generate_action_prio_list_ret()
   // special-cased items
   std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "the_first_sigil", "scars_of_fraternal_strife", "chains_of_domination", "earthbreakers_impact", "heart_of_the_swarm", "cosmic_gladiators_badge_of_ferocity", "cosmic_aspirants_badge_of_ferocity", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone", "gavel_of_the_first_arbiter" };
 
-  cds -> add_action( "actions.cooldowns+=/use_item,name=gavel_of_the_first_arbiter" );
+  cds -> add_action( "use_item,name=gavel_of_the_first_arbiter" );
   cds -> add_action( "use_item,name=the_first_sigil,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
   cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30" );
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15" );
