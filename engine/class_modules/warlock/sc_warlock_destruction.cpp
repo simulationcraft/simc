@@ -1330,7 +1330,7 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "soul_fire" );
   aoe->add_action( "conflagrate,if=buff.backdraft.down" );
   aoe->add_action( "shadowburn,if=target.health.pct<20" );
-  aoe->add_action( "immolate");
+  aoe->add_action( "immolate,if=refreshable");
   aoe->add_action( "scouring_tithe" );
   aoe->add_action( "incinerate" );
 
