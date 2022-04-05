@@ -67,7 +67,7 @@ actions+=/bag_of_tricks
 # If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP.
 actions.cds=marked_for_death,line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(!variable.single_target|target.time_to_die<30)&(target.time_to_die<combo_points.deficit*1.5|combo_points.deficit>=cp_max_spend)
 # If no adds will die within the next 30s, use MfD for max CP. Attempt to sync with Flagellation if possible.
-actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend&!cooldown.shiv.ready&(!covenant.venthyr|debuff.flagellation.up|cooldown.flagellation.remains>15)
+actions.cds+=/marked_for_death,if=raid_event.adds.in>30-raid_event.adds.duration&combo_points.deficit>=cp_max_spend&(!covenant.venthyr|(debuff.flagellation.up|cooldown.flagellation.remains>15)&(talent.crimson_tempest.enabled|!cooldown.shiv.ready))
 # Sync Vendetta window with Nightstalker+Exsanguinate if applicable
 actions.cds+=/variable,name=vendetta_nightstalker_condition,value=!talent.nightstalker.enabled|!talent.exsanguinate.enabled|cooldown.exsanguinate.remains<5-2*talent.deeper_stratagem.enabled
 # Wait on Vendetta for Garrote with MA, unless we are at max CP for Flagellation
@@ -94,7 +94,7 @@ actions.cds+=/vendetta,if=variable.vendetta_condition&(!set_bonus.tier28_4pc|(do
 # Exsanguinate when not stealthed and both Rupture and Garrote are up for long enough.
 actions.cds+=/exsanguinate,if=!stealthed.rogue&(!dot.garrote.refreshable&dot.rupture.remains*(1+set_bonus.tier28_4pc*debuff.vendetta.up)>4+4*cp_max_spend|dot.rupture.remains*0.5>target.time_to_die)&target.time_to_die>4
 # Shiv if DoTs are up; if Night Fae attempt to sync with Sepsis or Vendetta if we won't waste more than half Shiv's cooldown
-actions.cds+=/shiv,if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking)&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|variable.vendetta_cooldown_remains>12)=2))
+actions.cds+=/shiv,if=!debuff.shiv.up&(dot.garrote.ticking&dot.rupture.ticking&(!talent.crimson_tempest.enabled|!set_bonus.tier28_2pc&variable.single_target|dot.crimson_tempest.ticking))&(!covenant.night_fae|((cooldown.sepsis.ready|cooldown.sepsis.remains>12)+(cooldown.vendetta.ready|variable.vendetta_cooldown_remains>12)=2))
 actions.cds+=/potion,if=buff.bloodlust.react|fight_remains<30|debuff.vendetta.up
 actions.cds+=/blood_fury,if=debuff.vendetta.up
 actions.cds+=/berserking,if=debuff.vendetta.up
@@ -117,7 +117,7 @@ actions.direct+=/serrated_bone_spike,if=variable.use_filler&master_assassin_rema
 actions.direct+=/serrated_bone_spike,if=!set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&(soulbind.lead_by_example.enabled&!buff.lead_by_example.up&debuff.vendetta.up|buff.marrowed_gemstone_enhancement.up|!variable.single_target&debuff.shiv.up)
 actions.direct+=/serrated_bone_spike,if=set_bonus.tier28_2pc&variable.use_filler&master_assassin_remains<0.8&debuff.grudge_match.up&!buff.lead_by_example.up&raid_event.adds.in>5
 # Fan of Knives at 19+ stacks of Hidden Blades or against 4+ targets.
-actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=4+stealthed.rogue))
+actions.direct+=/fan_of_knives,if=variable.use_filler&(buff.hidden_blades.stack>=19|(!priority_rotation&spell_targets.fan_of_knives>=3+stealthed.rogue))
 # Fan of Knives to apply poisons if inactive on any target (or any bleeding targets with priority rotation) at 3T
 actions.direct+=/fan_of_knives,target_if=!dot.deadly_poison_dot.ticking&(!priority_rotation|dot.garrote.ticking|dot.rupture.ticking),if=variable.use_filler&spell_targets.fan_of_knives>=3
 actions.direct+=/echoing_reprimand,if=variable.use_filler&variable.vendetta_cooldown_remains>10
@@ -149,7 +149,7 @@ actions.dot+=/rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.
 # Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture
 actions.dot+=/crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)
 # Crimson Tempest on ST if in pandemic and nearly max energy and if Envenom won't do more damage due to TB/MA
-actions.dot+=/crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&master_assassin_remains=0&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&(!debuff.shiv.up|debuff.grudge_match.remains>2)&target.time_to_die-remains>4
+actions.dot+=/crimson_tempest,if=spell_targets=1&(!runeforge.dashing_scoundrel|rune_word.frost.enabled)&effective_combo_points>=(cp_max_spend-1)&refreshable&!will_lose_exsanguinate&(!debuff.shiv.up|debuff.grudge_match.remains>2)&target.time_to_die-remains>4
 
 # Stealthed Actions
 # Nighstalker on 3T: Crimson Tempest
