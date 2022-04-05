@@ -767,9 +767,9 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
-      // Hard code a 25% reduced cast time to not cause any clipping issues
-      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-      dot_duration = data().duration() / 1.25;
+      // Hard code a 10% reduced cast time to not cause any clipping issues.
+      // Obtained from logs as of 04-05-2022
+      dot_duration = data().duration() / 1.1;
       // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = ( dot_duration / 4 );
 
@@ -1186,6 +1186,17 @@ public:
 
   void trigger_attack( sef_ability_e ability, const action_t* source_action )
   {
+    if ( channeling ) {
+      // the only time we're not cancellign is if we use something instant 
+      // and we're channeling spinning crane kick
+      if ( dynamic_cast<sef_spinning_crane_kick_t*>( channeling ) == nullptr ||
+           ability == sef_ability_e::SEF_FISTS_OF_FURY ||
+           ability == sef_ability_e::SEF_SPINNING_CRANE_KICK )
+      {
+        channeling->cancel();
+      }
+    }
+
     if ( (int)ability >= (int)sef_ability_e::SEF_SPELL_MIN )
     {
       auto spell_index = sef_spell_index( (int)ability );
