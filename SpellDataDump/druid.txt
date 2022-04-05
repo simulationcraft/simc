@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-01/42979, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-05/42979, git build shadowlands b3be0c72, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -5609,7 +5609,7 @@ Name             : Thrash (id=192090) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 18
+Spell Level      : 11
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
@@ -14360,11 +14360,11 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=903409)   : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26600 | PvP Coefficient: 0.50000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17290 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Hotfixed         : AP Coefficient (0.266 -> 0.1729), PvP Coefficient (1 -> 0.75)
 #2 (id=904877)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39700 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25805 | PvP Coefficient: 0.75000 | Target: Self (1)
+Hotfixed         : AP Coefficient (0.397 -> 0.25805), PvP Coefficient (1 -> 0.75)
 Description      : $@spelldesc363496
 
 Name             : Architect's Aligner (id=363793) 
