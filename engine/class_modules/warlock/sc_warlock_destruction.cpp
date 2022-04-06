@@ -1335,6 +1335,7 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "incinerate" );
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42" );
+  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
   cds->add_action( "summon_infernal" );
   cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
