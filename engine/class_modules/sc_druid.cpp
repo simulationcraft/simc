@@ -62,6 +62,7 @@ enum free_cast_e
   NATURAL,   // natural orders will legendary
   ONETHS,    // oneths clear vision legendary
   PILLAR,    // celestial pillar balance tier 28 2pc
+  URSOCS,    // ursoc's fury remembered legendary
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -335,7 +336,7 @@ public:
     action_t* lycaras_fleeting_glimpse;  // fake holder action for reporting
 
     // Balance
-    action_t* celestial_pillar;    // Balance T28 2pc Set Bonus
+    action_t* celestial_pillar;          // Balance T28 2pc Set Bonus
     spell_t* shooting_stars;
     action_t* starfall_oneth;            // free starfall from oneth's clear vision
     action_t* starsurge_oneth;           // free starsurge from oneth's clear vision
@@ -343,14 +344,15 @@ public:
     // Feral
     action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
     action_t* frenzied_assault;
-    action_t* sickle_of_the_lion;  // Feral T28 4pc Set Bonus
+    action_t* sickle_of_the_lion;        // Feral T28 4pc Set Bonus
 
     // Guardian
-    action_t* architects_aligner;  // Guardian T28 4pc Set Bonus
+    action_t* architects_aligner;        // Guardian T28 4pc Set Bonus
     action_t* brambles;
     action_t* galactic_guardian;
     action_t* natures_guardian;
     action_t* the_natural_orders_will;   // fake holder action for reporting
+    action_t* thrash_bear_ursocs;        // free thrash from ursoc's fury remembered
 
     // Restoration
     action_t* yseras_gift;
@@ -4513,7 +4515,7 @@ struct thrash_bear_t : public bear_attack_t
     if ( p()->legendary.ursocs_fury_remembered->ok() &&
          rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
     {
-      make_event( *sim, 500_ms, [ this ]() { execute(); } );
+      make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_ursocs->execute_on_target( target ); } );
     }
   }
 
@@ -9501,6 +9503,15 @@ void druid_t::create_actions()
   if ( legendary.the_natural_orders_will->ok() )
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
 
+  if ( legendary.ursocs_fury_remembered->ok() )
+  {
+    auto ufr = get_secondary_action_n<thrash_bear_t>( "ursocs_fury_remembered", spec.thrash_bear, "" );
+    ufr->s_data_reporting = legendary.ursocs_fury_remembered;
+    ufr->name_str_reporting = "ursocs_fury_remembered";
+    ufr->set_free_cast( free_cast_e::URSOCS );
+    active.thrash_bear_ursocs = ufr;
+  }
+
   // Restoration
   if ( spec.yseras_gift->ok() )
     active.yseras_gift = new heals::yseras_gift_t( this );
@@ -9529,6 +9540,7 @@ void druid_t::create_actions()
   find_parent( active.starfall_oneth, "starfall" );
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
+  find_parent( active.thrash_bear_ursocs, "thrash_bear" );
 
   // setup dot_ids used by druid_action_t::get_dot_count()
   setup_dot_ids<sunfire_t::sunfire_damage_t>();
