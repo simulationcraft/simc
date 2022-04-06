@@ -632,7 +632,6 @@ public:
     proc_t* stormflurry;
     proc_t* windfury_uw;
     proc_t* t28_4pc_enh;
-    proc_t* reset_aa_feral_spirit;
   } proc;
 
   // Class Specializations
@@ -8613,11 +8612,6 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
   }
 
   buff.feral_spirit_maelstrom->trigger( 1, duration );
-
-  if ( bugs )
-  {
-    reset_auto_attacks( 0_s, proc.reset_aa_feral_spirit );
-  }
 }
 
 void shaman_t::summon_fire_elemental( timespan_t duration )
@@ -9485,8 +9479,6 @@ void shaman_t::init_procs()
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
   proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
   proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
-
-  proc.reset_aa_feral_spirit = get_proc( "Autoattack Swing Reset: Feral Spirit" );
 }
 
 // shaman_t::init_uptimes ====================================================
