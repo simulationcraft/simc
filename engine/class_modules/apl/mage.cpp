@@ -606,7 +606,10 @@ void frost( player_t* p )
   default_->add_action( "call_action_list,name=movement" );
 
   aoe->add_action( "frozen_orb" );
-  aoe->add_action( "blizzard" );
+  aoe->add_action( "blizzard,if=buff.deathborne.down|!runeforge.deaths_fathom|buff.freezing_rain.up|active_enemies>=6" );
+  aoe->add_action( "blizzard,if=buff.deathborne.up&active_enemies=5&(talent.freezing_rain|talent.bone_chilling|conduit.shivering_core|!runeforge.cold_front)" );
+  aoe->add_action( "blizzard,if=buff.deathborne.up&active_enemies=4&(talent.freezing_rain|talent.bone_chilling&conduit.shivering_core|!runeforge.cold_front&!runeforge.slick_ice)" );
+  aoe->add_action( "blizzard,if=buff.deathborne.up&active_enemies<=3&!runeforge.slick_ice&!runeforge.cold_front&conduit.shivering_core&(talent.freezing_rain|talent.bone_chilling)" );
   aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(buff.fingers_of_frost.react=0|runeforge.deaths_fathom&prev_gcd.1.frostbolt&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.up))" );
   aoe->add_action( "ice_nova" );
   aoe->add_action( "comet_storm" );
@@ -628,7 +631,7 @@ void frost( player_t* p )
   cds->add_action( "deathborne" );
   cds->add_action( "mirrors_of_torment,if=active_enemies<3&(conduit.siphoned_malice|soulbind.wasteland_propriety)&buff.brain_freeze.react=0" );
   cds->add_action( "rune_of_power,if=cooldown.icy_veins.remains>12&buff.rune_of_power.down" );
-  cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)&(buff.slick_ice.down|active_enemies>=2)" );
+  cds->add_action( "icy_veins,if=buff.rune_of_power.down&(buff.icy_veins.down|talent.rune_of_power)&(buff.slick_ice.down|conduit.icy_propulsion&(talent.comet_storm|set_bonus.tier28_2pc)|active_enemies>=2)" );
   cds->add_action( "time_warp,if=runeforge.temporal_warp&buff.exhaustion.up&(prev_off_gcd.icy_veins|fight_remains<40)" );
   cds->add_action( "use_items" );
   cds->add_action( "blood_fury" );
