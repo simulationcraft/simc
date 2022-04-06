@@ -89,6 +89,8 @@ actions+=/fire_blast,use_while_casting=1,if=action.mirrors_of_torment.executing&
 actions+=/use_item,effect_name=gladiators_badge,if=variable.time_to_combustion>cooldown-5
 actions+=/use_item,name=empyreal_ordnance,if=variable.time_to_combustion<=variable.empyreal_ordnance_delay&variable.time_to_combustion>variable.empyreal_ordnance_delay-5
 actions+=/use_item,name=shadowed_orb_of_torment,if=(variable.time_to_combustion<=variable.combustion_precast_time+2|fight_remains<variable.time_to_combustion)&buff.combustion.down
+actions+=/use_item,name=grim_eclipse,if=variable.time_to_combustion<=8|fight_remains<variable.time_to_combustion
+actions+=/use_item,name=moonlit_prism,if=variable.time_to_combustion<=5|fight_remains<variable.time_to_combustion
 actions+=/use_item,name=glyph_of_assimilation,if=(buff.combustion.down&variable.time_to_combustion>=variable.on_use_cutoff|variable.on_use_cutoff=0)
 actions+=/use_item,name=macabre_sheet_music,if=variable.time_to_combustion<=5
 # If using a steroid on-use item, always use Dreadfire Vessel outside of Combustion. Otherwise, prioritize using Dreadfire Vessel with Combustion only if Infernal Cascade is enabled and a usage won't be lost over the duration of the fight. This adds a small value to the cooldown of Dreadfire Vessel when doing this calculation because it is unrealstic to assume that it will be used perfectly on cooldown.
@@ -103,6 +105,7 @@ actions+=/use_item,name=flame_of_battle,if=equipped.gladiators_badge&(buff.combu
 actions+=/use_item,name=wakeners_frond,if=equipped.gladiators_badge&(buff.combustion.down&variable.time_to_combustion>=variable.on_use_cutoff|variable.on_use_cutoff=0)
 actions+=/use_item,name=instructors_divine_bell,if=equipped.gladiators_badge&(buff.combustion.down&variable.time_to_combustion>=variable.on_use_cutoff|variable.on_use_cutoff=0)
 actions+=/use_item,name=sunblood_amethyst,if=equipped.gladiators_badge&(buff.combustion.down&variable.time_to_combustion>=variable.on_use_cutoff|variable.on_use_cutoff=0)
+actions+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.down
 actions+=/use_items,if=buff.combustion.down&variable.time_to_combustion>=variable.on_use_cutoff|variable.on_use_cutoff=0
 # Use Frost Nova to trigger Grisly Icicle.
 actions+=/frost_nova,if=runeforge.grisly_icicle&buff.combustion.down&(variable.time_to_combustion>cooldown|variable.time_to_combustion<variable.combustion_precast_time+execute_time)
@@ -143,6 +146,7 @@ actions.combustion_cooldowns+=/berserking,if=buff.combustion.up
 actions.combustion_cooldowns+=/fireblood
 actions.combustion_cooldowns+=/ancestral_call
 actions.combustion_cooldowns+=/time_warp,if=runeforge.temporal_warp&buff.exhaustion.up
+actions.combustion_cooldowns+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up
 actions.combustion_cooldowns+=/use_item,effect_name=gladiators_badge
 actions.combustion_cooldowns+=/use_item,name=inscrutable_quantum_device
 actions.combustion_cooldowns+=/use_item,name=flame_of_battle

@@ -139,7 +139,7 @@ actions.aoe+=/variable,name=starfire_in_solar,value=spell_targets.starfire>4+flo
 # On 2 targets without Soul of the Forest you should fill with Wrath during Inc
 actions.aoe+=/wrath,if=!buff.ravenous_frenzy.up&!buff.ravenous_frenzy_sinful_hysteria.up&!talent.soul_of_the_forest.enabled&spell_targets.starfire<3&buff.eclipse_solar.remains>execute_time&fight_remains>buff.ca_inc.remains+12*runeforge.primordial_arcanic_pulsar
 # Calculates whether to Wrath during Frenzy
-actions.aoe+=/variable,name=wrath_in_frenzy,value=1%spell_haste<2-(0.2*(spell_targets.starfire-1)*(1+talent.soul_of_the_forest.enabled*1.5))+0.15*buff.ravenous_frenzy.remains
+actions.aoe+=/variable,name=wrath_in_frenzy,value=1%spell_haste<2-(0.2*((spell_targets.starfire-1)%((spell_targets.starfire-1)%20+1))*(1+talent.soul_of_the_forest.enabled*1.5))+0.15*buff.ravenous_frenzy.remains
 # Use Wrath in Solar Eclipse or if no Starfire will fit into CA/Inc anymore
 actions.aoe+=/wrath,if=(eclipse.lunar_next|eclipse.any_next&variable.is_cleave)&(target.time_to_die>4|eclipse.lunar_in_2|fight_remains<10)|buff.eclipse_solar.remains<action.starfire.execute_time&buff.eclipse_solar.up|eclipse.in_solar&!variable.starfire_in_solar|buff.ca_inc.remains<action.starfire.execute_time&!variable.is_cleave&buff.ca_inc.remains<execute_time&buff.ca_inc.up|buff.ravenous_frenzy.up&variable.wrath_in_frenzy|!variable.is_cleave&buff.ca_inc.remains>execute_time
 # Use Starfire if in Lunar Eclipse, in Solar Eclipse on 4+ targets or to proc Solar Eclipse
