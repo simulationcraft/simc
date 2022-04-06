@@ -1335,13 +1335,14 @@ void warlock_t::create_apl_destruction()
   aoe->add_action( "incinerate" );
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42" );
-  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
   cds->add_action( "summon_infernal" );
   cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>time_to_die" );
   cds->add_action( "potion,if=pet.infernal.active" );
   cds->add_action( "berserking,if=pet.infernal.active" );
   cds->add_action( "blood_fury,if=pet.infernal.active" );
   cds->add_action( "fireblood,if=pet.infernal.active" );
+  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
+  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&pet.infernal.active" );
   cds->add_action( "use_items,if=pet.infernal.active|time_to_die<21" );
 
   havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
