@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-05/42979, git build shadowlands b3be0c72, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-07/42979, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1140,7 +1140,7 @@ Spell Type       : Melee
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Celerity (340087 effect#1)
 Family Flags     : 39
 Attributes       : ....x... ........ x....... ........   ........ ..x..... ........ ........ 
@@ -2354,7 +2354,7 @@ Spell Level      : 42
 Range            : 30 yards
 Duration         : 20 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Family Flags     : 56
 Attributes       : ........ ........ x....... ........   .....x.. ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2986,7 +2986,7 @@ Spell Type       : None
 Spell Level      : 42
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Proc Chance      : 101%
 Proc Flags       : ....x... x...x... x.x..... ........ 
                  : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell, Periodic
@@ -11026,10 +11026,12 @@ Description      : $@spelldesc343160
 Tooltip          : Shadowstrike grants up to $343160s1 sec. of Slice and Dice, and generate $343160s2 additional combo points if Slice and Dice is active.
 
 Name             : Evasion (desc=Rank 2) (id=344363) [Spell Family (8), Passive] 
+Hotfixed         : Internal Cooldown (0 -> 250)
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None
 Spell Level      : 58
+Internal Cooldown: 0.25 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...... ........ ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken

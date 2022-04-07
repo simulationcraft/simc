@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.42979
-static const std::array<spelltext_data_t, 16082> __spelltext_data { {
+static const std::array<spelltext_data_t, 16083> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15452,6 +15452,7 @@ static const std::array<spelltext_data_t, 16082> __spelltext_data { {
   { 356881, "$@spelldesc356877", "Haste and Critical Strike increased by $s1%.", 0 },
   { 356890, "$@spelldesc355098", 0, 0 },
   { 356959, "Enter a pact with the Death Loa, calling forth a haunted mask that lingers on a target until Fae Guardians ends.\r\n\r\n$@spellname356908: Copies the benefit of the current faerie on the target. Follows your Direct Mask.", 0, 0 },
+  { 356968, "$@spelldesc356391", "$?e1[The cooldown of a major ability recovers $s1% faster.]?e5[Direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity to $@auracaster.]?e6[Reduces damage taken by $s7%.][Haunted Mask is providing no benefits.]", "Night Fae" },
   { 357020, "Create an Offering Condensing Kit that you can use to wrap an offering for someone. ", 0, 0 },
   { 357028, "$@spelldesc356392", "Critical Strike is increased by $s1%.", 0 },
   { 357031, "$?pc96341[|CFF20ff20][|CFF808080]While in the Maw, your damage is increased by ${$s1/100}.1% when you have $s2% or more health than your target.|R", 0, 0 },
