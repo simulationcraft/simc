@@ -2390,10 +2390,12 @@ struct priest_module_t final : public module_t
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
+    // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
         make_buff<buffs::benevolent_faerie_t>( p, "bwonsamdis_pact_benevolent_faerie" );
 
-    p->buffs.bwonsamdis_pact_benevolent->set_default_value(0.5);
+    p->buffs.bwonsamdis_pact_benevolent->default_value_effect_idx = 0;
+    p->buffs.bwonsamdis_pact_benevolent->set_default_value(0.5, 0);
   }
   void static_init() const override
   {

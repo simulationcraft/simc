@@ -1537,6 +1537,7 @@ class SpellDataGenerator(DataGenerator):
             ( 356515, 0 ),          # Bwonsamdi's Pact buff from the Legendary Power
             ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
             (  32409, 0 ),          # Shadow Word: Death self-damage id
+            ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
