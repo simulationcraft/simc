@@ -2392,6 +2392,8 @@ struct priest_module_t final : public module_t
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     p->buffs.bwonsamdis_pact_benevolent =
         make_buff<buffs::benevolent_faerie_t>( p, "bwonsamdis_pact_benevolent_faerie" );
+
+    p->buffs.bwonsamdis_pact_benevolent->set_default_value(0.5);
   }
   void static_init() const override
   {
