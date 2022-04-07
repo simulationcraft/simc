@@ -281,6 +281,9 @@ public:
     if ( !p()->mastery.combo_strikes->ok() )
       return;
 
+    if ( p()->bugs && !trigger_ww_t28_4p_power && !trigger_ww_t28_4p_power_channel )
+      return;
+
     if ( is_combo_strike() )
     {
       p()->buff.combo_strikes->trigger();
