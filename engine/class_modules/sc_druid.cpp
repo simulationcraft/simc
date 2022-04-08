@@ -6301,7 +6301,7 @@ struct thrash_proxy_t : public druid_spell_t
   action_t* thrash_bear;
 
   thrash_proxy_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "thrash", p, p->find_specialization_spell( "Thrash" ), opt ),
+    : druid_spell_t( "thrash", p, p->find_affinity_spell( "Thrash" ), opt ),
       thrash_cat( new cat_attacks::thrash_cat_t( p, opt ) ),
       thrash_bear( new bear_attacks::thrash_bear_t( p, opt ) )
   {
@@ -8846,7 +8846,7 @@ void druid_t::init_spells()
   spec.lightning_reflexes      = find_specialization_spell( "Lightning Reflexes" );
   spec.survival_instincts_2    = find_rank_spell( "Survival Instincts", "Rank 2" );
   spec.swipe_bear              = check( find_specialization_spell( "Swipe" )->ok(), 213771 );
-  spec.thrash_bear             = check( find_specialization_spell( "Thrash" )->ok(), 77758 );
+  spec.thrash_bear             = check( find_affinity_spell( "Thrash" )->ok(), 77758 );
   spec.thrash_bear_dot         = find_spell( 192090 );  // dot for thrash_bear
 
   // Restoration
