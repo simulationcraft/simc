@@ -604,7 +604,7 @@ void windwalker( player_t* p )
       else if ( item.name_str == "the_first_sigil" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
-      else if ( item.name_str == "cache_of_aquired_treasures" )
+      else if ( item.name_str == "cache_of_acquired_treasures" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
       else if ( item.name_str == "scars_of_fraternal_strife" )
