@@ -674,9 +674,9 @@ void windwalker( player_t* p )
   weapons_of_order->add_action( p, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
   weapons_of_order->add_action( p, "Blackout Kick",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
-  // Cancel FoF after the GCD if we do not have T28 2PC 
+  // Cancel FoF in ST after the GCD if we do not have T28 2PC 
   weapons_of_order->add_action( p, "Fists of Fury",
-                                "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc" );
+                                "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc&active_enemies<2" );
   // Full channel FoF with T28 2PC or at the end of the buff in AoE
   weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&set_bonus.tier28_2pc|active_enemies>=2&buff.weapons_of_order_ww.remains<1" );
   weapons_of_order->add_talent( p, "Whirling Dragon Punch", "if=active_enemies>=2" );
