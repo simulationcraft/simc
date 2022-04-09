@@ -865,7 +865,7 @@ public:
   // Misc
   bool is_elemental_pet_active() const;
   pet_t* get_active_elemental_pet() const;
-  void summon_feral_spirits( timespan_t duration, unsigned n = 2 );
+  void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
 
@@ -1798,7 +1798,8 @@ public:
         this->p()->summon_feral_spirits(
             timespan_t::from_seconds(
               this->p()->spell.t28_2pc_enh->effectN( 2 ).base_value() ),
-              1 );
+              1,
+              true );
       }
     }
 
@@ -8576,42 +8577,48 @@ pet_t* shaman_t::get_active_elemental_pet() const
   return nullptr;
 }
 
-void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n )
+void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28 )
 {
-  // No elemental spirits selected, just summon normal pets and exit
+  // No elemental spirits selected, just summon normal pets
   if ( !talent.elemental_spirits->ok() )
   {
     pet.spirit_wolves.spawn( duration, n );
-    return;
   }
-
-  // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
-  // the available pool of wolves to spawn.
-  while ( n )
+  else
   {
-    // +1, because the normal spirit wolves are enum value 0
-    switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
+    // This summon evaluates the wolf type to spawn as the roll, instead of rolling against
+    // the available pool of wolves to spawn.
+    while ( n )
     {
-      case FIRE_WOLF:
-        pet.fire_wolves.spawn( duration );
-        buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-        break;
-      case FROST_WOLF:
-        pet.frost_wolves.spawn( duration );
-        buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-        break;
-      case LIGHTNING_WOLF:
-        pet.lightning_wolves.spawn( duration );
-        buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
-        break;
-      default:
-        assert( 0 );
-        break;
+      // +1, because the normal spirit wolves are enum value 0
+      switch ( static_cast<wolf_type_e>( 1 + rng().range( 0, 3 ) ) )
+      {
+        case FIRE_WOLF:
+          pet.fire_wolves.spawn( duration );
+          buff.molten_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+          break;
+        case FROST_WOLF:
+          pet.frost_wolves.spawn( duration );
+          buff.icy_edge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+          break;
+        case LIGHTNING_WOLF:
+          pet.lightning_wolves.spawn( duration );
+          buff.crackling_surge->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+          break;
+        default:
+          assert( 0 );
+          break;
+      }
+      n--;
     }
-    n--;
   }
 
-  buff.feral_spirit_maelstrom->trigger( 1, duration );
+  // Enhancement T28 bonus will only override the buff from manually cast spell
+  // if the new duration exceeds the remaining duration of the buff.
+  if ( !t28 || ( t28 && duration > buff.feral_spirit_maelstrom->remains() ) )
+  {
+    buff.feral_spirit_maelstrom->trigger( 1, duration );
+  }
 }
 
 void shaman_t::summon_fire_elemental( timespan_t duration )
