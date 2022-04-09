@@ -25,7 +25,7 @@ std::string potion( const player_t* p )
         return "superior_battle_potion_of_intellect";
       else
         return "disabled";
-      break;
+      break;df
     case MONK_WINDWALKER:
       if ( p->true_level >= 60 )
         return "potion_of_spectral_agility";
