@@ -682,19 +682,13 @@ void windwalker( player_t* p )
   weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&(active_enemies>=3&buff.weapons_of_order_ww.up|buff.dance_of_chiji.up)" );
-  weapons_of_order->add_action( p, "Expel Harm",
-                                "if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4" );
-  weapons_of_order->add_action( p, "Tiger Palm",
-                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4" );
-  weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
-  weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4|chi<3" );
   weapons_of_order->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   weapons_of_order->add_talent( p, "Chi Burst", "if=chi.max-chi>=(1+active_enemies>1)" );
   weapons_of_order->add_action( p, "Tiger Palm",
-                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
+                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4|(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
+   weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
   weapons_of_order->add_action( p, "Blackout Kick",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up" );
   weapons_of_order->add_talent( p, "Chi Wave" );
