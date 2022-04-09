@@ -679,14 +679,13 @@ void windwalker( player_t* p )
                                 "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc&active_enemies<2" );
   // Full channel FoF with T28 2PC or at the end of the buff in AoE
   weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&set_bonus.tier28_2pc|active_enemies>=2&buff.weapons_of_order_ww.remains<1" );
-  weapons_of_order->add_talent( p, "Whirling Dragon Punch", "if=active_enemies>=2" );
+  weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&(active_enemies>=3&buff.weapons_of_order_ww.up|buff.dance_of_chiji.up)" );
   weapons_of_order->add_action( p, "Expel Harm",
                                 "if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_talent( p, "Fist of the White Tiger",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4" );
-  weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Tiger Palm",
                                 "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4" );
   weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
