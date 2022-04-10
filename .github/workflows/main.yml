@@ -172,7 +172,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        tier: [ Tier27 ]
+        tier: [ Tier28 ]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
