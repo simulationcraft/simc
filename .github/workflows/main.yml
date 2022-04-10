@@ -172,7 +172,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17]
-        tier: [ Tier27 ]
+        tier: [ Tier28 ]
         spec: [
             Death_Knight_Blood, Death_Knight_Frost, Death_Knight_Unholy,
             Demon_Hunter_Havoc, Demon_Hunter_Vengeance,
@@ -181,9 +181,9 @@ jobs:
             Mage_Arcane, Mage_Fire, Mage_Frost,
             Monk_Brewmaster, Monk_Windwalker,
             Paladin_Holy, Paladin_Protection, Paladin_Retribution,
-            Priest_Discipline, Priest_Shadow,
+            Priest_Shadow,
             Rogue_Assassination, Rogue_Outlaw, Rogue_Subtlety,
-            Shaman_Elemental, Shaman_Enhancement, Shaman_Restoration,
+            Shaman_Elemental, Shaman_Enhancement,
             Warlock_Affliction, Warlock_Demonology, Warlock_Destruction,
             Warrior_Arms, Warrior_Fury, Warrior_Protection,
           ]
