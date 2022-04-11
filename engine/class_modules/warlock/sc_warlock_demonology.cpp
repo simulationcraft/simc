@@ -1282,7 +1282,6 @@ void warlock_t::create_apl_demonology()
   def->add_action( "implosion,if=time_to_die<2*gcd" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
-  def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
   def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
@@ -1299,6 +1298,7 @@ void warlock_t::create_apl_demonology()
   def->add_action( "summon_demonic_tyrant,if=time_to_die<15" );
   def->add_action( "hand_of_guldan,if=soul_shard=5" );
   def->add_action( "shadow_bolt,if=soul_shard<5&runeforge.balespiders_burning_core&buff.balespiders_burning_core.remains<5" );
+  def->add_action( "doom,if=refreshable" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)", "If Dreadstalkers are already active, no need to save shards" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time-gcd.max" );
