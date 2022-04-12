@@ -1352,7 +1352,7 @@ void warlock_t::create_apl_demonology()
   trinks->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
   trinks->add_action( "use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.buff_sync_cd<22" );
-  trinks->add_action( "use_item,name=moonlit_prism,if=variable.use_bolt_timings&variable.buff_sync_cd<9" );
+  trinks->add_action( "use_item,name=moonlit_prism,if=variable.use_bolt_timings&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,name=grim_eclipse,if=variable.buff_sync_cd<7" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&variable.next_tyrant_cd<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly from the target require additional, separate handling" );
