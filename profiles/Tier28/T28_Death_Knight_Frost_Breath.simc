@@ -5,9 +5,9 @@ level=60
 race=blood_elf
 role=attack
 position=back
-talents=2101013
-covenant=necrolord
-soulbind=plague_deviser_marileth,volatile_solvent/accelerated_cold:11:1/everfrost:11:1/adaptive_armor_fragment:11:1/kevins_oozeling
+talents=2201013
+covenant=night_fae
+soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/adaptive_armor_fragment:11:1/field_of_blossoms/dream_delver
 renown=80
 
 # Default consumables
@@ -217,27 +217,27 @@ neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=shadowghast_armguards,id=171419,bonus_id=6647/6648/7160/7451/1588,gem_id=173127
+wrists=shadowghast_armguards,id=171419,bonus_id=6647/6649/7160/7451/1588,gem_id=173127
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-waist=remnants_blasphemous_scourgebelt,id=189840,bonus_id=7187/1524/6935,gem_id=173127
+waist=waistguard_of_expurged_anguish,id=178842,bonus_id=6652/1592/6646,gem_id=173127
 legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_mastery
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_mastery
-trinket1=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
-trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1524/7187
+feet=shadowghast_sabatons,id=171413,bonus_id=8119/7882/8156/6647/6648/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=6652/1592/6646
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
 off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=283.56
-# gear_strength=1310
+# gear_ilvl=281.94
+# gear_strength=1415
 # gear_stamina=2961
 # gear_attack_power=40
-# gear_crit_rating=919
-# gear_haste_rating=451
-# gear_mastery_rating=902
-# gear_versatility_rating=261
+# gear_crit_rating=1035
+# gear_haste_rating=504
+# gear_mastery_rating=776
+# gear_versatility_rating=218
 # gear_armor=1852
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

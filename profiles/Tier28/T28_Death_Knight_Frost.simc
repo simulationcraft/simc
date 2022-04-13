@@ -212,32 +212,32 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pi
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&(!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 
-head=shadowghast_helm,id=171415,bonus_id=6647/6648/6954/7451/1588,gem_id=173130
+head=shadowghast_helm,id=171415,bonus_id=6647/6649/6954/7451/1588,gem_id=173128
 neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-back=drape_of_mournful_melodies,id=189791,bonus_id=7187/1524,enchant=soul_vitality
+back=duplicating_drape,id=185843,bonus_id=6652/1595/6646,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173128
+wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173130
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
 waist=enforcers_containment_cinch,id=189826,bonus_id=7187/1524/6935,gem_id=173127
 legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
-feet=shadowghast_sabatons,id=171413,bonus_id=6649/6648/8119/7451/1588
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
+feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
+finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
+finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
-trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=282.69
-# gear_strength=1437
+# gear_ilvl=281.50
+# gear_strength=1417
 # gear_stamina=2968
 # gear_attack_power=40
-# gear_crit_rating=785
-# gear_haste_rating=589
-# gear_mastery_rating=1033
-# gear_versatility_rating=125
+# gear_crit_rating=880
+# gear_haste_rating=622
+# gear_mastery_rating=939
+# gear_versatility_rating=91
 # gear_armor=1857
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
