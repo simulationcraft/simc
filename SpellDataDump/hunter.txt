@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-07/42979, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43114 Live (hotfix 2022-04-13/43114, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
