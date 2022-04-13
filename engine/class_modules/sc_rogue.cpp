@@ -1843,12 +1843,7 @@ public:
 
     if ( affected_by.symbols_of_death_autocrit && p()->buffs.symbols_of_death_autocrit->check() )
     {
-      // 2022-02-05 -- PTR testing shows that 4pc procs benefit on all AoE impacts
-      //               Manually expired in spend_combo_points() trigger loop for 4pc
-      if ( secondary_trigger_type != secondary_trigger::IMMORTAL_TECHNIQUE )
-      {
-        p()->buffs.symbols_of_death_autocrit->expire();
-      }
+      p()->buffs.symbols_of_death_autocrit->expire();
       symbols_of_death_autocrit_proc->occur();
     }
 
@@ -4677,6 +4672,12 @@ struct echoing_reprimand_t : public rogue_attack_t
         unsigned buff_idx = static_cast<int>( rng().range( random_min, random_max ) );
         p()->buffs.echoing_reprimand[ buff_idx ]->trigger();
       }
+
+      // Due to beta behavior never removed, Echoing Reprimand can trigger FW from Stealth
+      if ( p()->bugs && p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWDANCE ) )
+      {
+        trigger_find_weakness( state );
+      }
     }
   }
 
@@ -6439,13 +6440,11 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   }
 
   // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
-  // 2022-02-07 -- Confirmed as still working with SnD after the Stealth fix
   if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
   {
     if ( p()->rng().roll( rs->get_combo_points() * p()->set_bonuses.t28_subtlety_4pc->effectN( 2 ).percent() ) )
     {
       p()->procs.t28_subtlety_4pc->occur();
-      bool expire_autocrit = false;
       int num_shadowstrike_targets = as<int>( p()->set_bonuses.t28_subtlety_4pc->effectN( 3 ).base_value() );
       for ( auto candidate_target : p()->sim->target_non_sleeping_list )
       {
@@ -6457,16 +6456,8 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
         {
           p()->active.immortal_technique_shadowstrike->set_target( candidate_target );
           p()->active.immortal_technique_shadowstrike->execute();
-          expire_autocrit = true;
           --num_shadowstrike_targets;
         }
-      }
-
-      // 2022-02-05 -- Testing shows that 4pc procs benefit on all AoE impacts
-      //               Manually expired here instead of the normal execute() location
-      if ( expire_autocrit )
-      {
-        p()->buffs.symbols_of_death_autocrit->expire();
       }
     }
   }
@@ -7388,7 +7379,7 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=buff.symbols_of_death.up" );
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
-    cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|spell_targets.shuriken_storm>1)|fight_remains<25" );
+    cds->add_action( "use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1" );
     cds->add_action( "use_items,if=buff.symbols_of_death.up|fight_remains<20", "Default fallback for usable items: Use with Symbols of Death." );
 
     // Stealth Cooldowns
@@ -8293,12 +8284,15 @@ void rogue_t::init_spells()
 
   if ( set_bonuses.t28_subtlety_4pc->ok() )
   {
+    // 2022-04-12 -- Testing shows 4pc procs don't consume or benefit from the SoD crit buff
     active.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
       secondary_trigger::IMMORTAL_TECHNIQUE, "shadowstrike_t28" );
+    active.immortal_technique_shadowstrike->affected_by.symbols_of_death_autocrit = false;
     if ( talent.weaponmaster->ok() )
     {
       active.weaponmaster.immortal_technique_shadowstrike = get_secondary_trigger_action<actions::shadowstrike_t>(
         secondary_trigger::WEAPONMASTER, "shadowstrike_t28_weaponmaster" );
+      active.weaponmaster.immortal_technique_shadowstrike->affected_by.symbols_of_death_autocrit = false;
       active.immortal_technique_shadowstrike->add_child( active.weaponmaster.immortal_technique_shadowstrike );
     }
   }
