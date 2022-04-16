@@ -1484,6 +1484,7 @@ sim_t::sim_t() :
   dbc(new dbc_t()),
   dbc_override( std::make_unique<dbc_override_t>() ),
   timewalk( -1 ), scale_to_itemlevel( -1 ), challenge_mode( false ), scale_itemlevel_down_only( false ),
+  keystone_level( 10 ), keystone_pct_hp( 27 ),
   disable_set_bonuses( false ),
   enable_taunts( false ),
   use_item_verification( true ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
@@ -3566,6 +3567,9 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
+  add_option( opt_int( "keystone_level", keystone_level, 10, 50 ) );
+  add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "demonhunter", parse_player ) );

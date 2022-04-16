@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43114 Live (hotfix 2022-04-13/43114, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-15/43206, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -11025,7 +11025,6 @@ Description      : $@spelldesc343160
 Tooltip          : Shadowstrike grants up to $343160s1 sec. of Slice and Dice, and generate $343160s2 additional combo points if Slice and Dice is active.
 
 Name             : Evasion (desc=Rank 2) (id=344363) [Spell Family (8), Passive] 
-Hotfixed         : Internal Cooldown (0 -> 250)
 Class            : Outlaw Rogue
 School           : Physical
 Spell Type       : None

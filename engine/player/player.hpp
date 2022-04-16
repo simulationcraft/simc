@@ -554,6 +554,10 @@ struct player_t : public actor_t
 
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
+
+    // 9.2 Encrypted Affix Buffs
+    buff_t* decrypted_urh_cypher;
+    buff_t* decrypted_vy_cypher;
   } buffs;
 
   struct debuffs_t
@@ -608,6 +612,7 @@ struct player_t : public actor_t
     gain_t* vampiric_embrace;
     gain_t* warlords_unseeing_eye;
     gain_t* embrace_of_bwonsamdi;
+    gain_t* urh_restoration;
 
     gain_t* leech;
   } gains;

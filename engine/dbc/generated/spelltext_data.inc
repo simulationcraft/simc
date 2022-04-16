@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.43114
-static const std::array<spelltext_data_t, 16083> __spelltext_data { {
+// Spell text, wow build 9.2.0.43206
+static const std::array<spelltext_data_t, 16084> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16009,6 +16009,7 @@ static const std::array<spelltext_data_t, 16083> __spelltext_data { {
   { 368342, 0, "Heals for $368343M~2% upon taking damage.", 0 },
   { 368491, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
   { 368494, "Restoring $s1% health and mana every $368239t2 sec", 0, 0 },
+  { 368495, "Damaging a target has a high chance to fire a bolt of energy at the target dealing ${$<points>} Cosmic damage.\r\n", 0, 0 },
   { 368509, "Select a player in your party or raid, granting them $368513s2 of their highest secondary stat, and granting you $368513s1 of that same stat, for $368512d.", 0, 0 },
   { 368510, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
   { 368512, "$@spelldesc368509", "Your $?$w1!=0[Versatility]?$w2!=0[Mastery]?$w3!=0[Haste]?$w4!=0[Critical Strike][highest secondary stat] is increased by $w5.", 0 },
@@ -16085,12 +16086,12 @@ static const std::array<spelltext_data_t, 16083> __spelltext_data { {
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.43114
+// spelltext hotfix entries, wow build 9.2.0.43206
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.43114
-static const std::array<spelldesc_vars_data_t, 307> __spelldesc_vars_data { {
+// Spell description variables, wow build 9.2.0.43206
+static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -16398,9 +16399,10 @@ static const std::array<spelldesc_vars_data_t, 307> __spelldesc_vars_data { {
   {  363041, "$absorb=${($AP*6)*(1+$@versadmg)}\r\n" },
   {  364365, "$heal=${$SP*$s1/100}" },
   {  364416, "$CDR=${s1*0.1}.1" },
+  {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.43114
+// spelldesc_vars hotfix entries, wow build 9.2.0.43206
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

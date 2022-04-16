@@ -2005,6 +2005,17 @@ void player_t::create_special_effects()
     }
   }
 
+  if ( sim->fight_style == "DungeonRoute" )
+  {
+    special_effect_t effect( this );
+
+    unique_gear::initialize_special_effect( effect, 368240 );
+    if ( !effect.custom_init_object.empty() )
+    {
+      special_effects.push_back( new special_effect_t( effect ) );
+    }
+  }
+
   // Initialize generic azerite powers. Note that this occurs later in the process than the class
   // module spell initialization (init_spells()), which is where the core presumes that each class
   // module gets the state their azerite powers (through the invocation of find_azerite_spells).
@@ -2403,6 +2414,7 @@ void player_t::init_gains()
   gains.vampiric_embrace   = get_gain( "vampiric_embrace" );
   gains.leech              = get_gain( "leech" );
   gains.embrace_of_bwonsamdi = get_gain( "embrace_of_bwonsamdi" );
+  gains.urh_restoration    = get_gain( "urh_restoration" );
 }
 
 void player_t::init_procs()
@@ -3434,6 +3446,35 @@ void player_t::create_buffs()
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+
+      // 9.2 Encrypted Affix Buffs
+      auto urh_restoration = find_spell( 368494 );
+      buffs.decrypted_urh_cypher = make_buff( this, "decrypted_urh_cypher", find_spell( 368239 ) );
+      buffs.decrypted_urh_cypher->set_period( buffs.decrypted_urh_cypher->data().effectN( 2 ).period() );
+      buffs.decrypted_urh_cypher->set_refresh_behavior( buff_refresh_behavior::DURATION );
+      buffs.decrypted_urh_cypher->set_tick_callback( [ this, urh_restoration ]( buff_t* b, int, timespan_t ) {
+        double gain = resources.max[ RESOURCE_MANA ] * urh_restoration->effectN( 2 ).percent();
+        resource_gain( RESOURCE_MANA, gain, gains.urh_restoration );
+      } );
+      buffs.decrypted_urh_cypher->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
+        double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( 1 ).percent() );
+        for ( auto a : action_list )
+        {
+          if ( a->cooldown->duration != 0_ms && a->data().class_mask() != 0 )
+          {
+            if ( new_ == 1 )
+              a->base_recharge_multiplier *= recharge_mult;
+            else
+              a->base_recharge_multiplier /= recharge_mult;
+
+            a->cooldown->adjust_recharge_multiplier();
+          }
+        }
+      } );
+
+      buffs.decrypted_vy_cypher = make_buff<stat_buff_t>( this, "decrypted_vy_cypher", find_spell( 368240 ) )
+          ->set_default_value_from_effect( 1 )
+          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
     }
   }
   // .. for enemies
