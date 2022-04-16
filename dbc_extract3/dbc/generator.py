@@ -1925,6 +1925,7 @@ class SpellDataGenerator(DataGenerator):
 
           ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
           ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
+          ( 365476, 1 ), ( 365478, 1 ), # tier 28 balance 2pc ground effect spell
         ),
         # Demon Hunter:
         (

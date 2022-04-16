@@ -5589,16 +5589,19 @@ struct fury_of_elune_t : public druid_spell_t
   };
 
   action_t* damage;
+  buff_t* energize;
   timespan_t tick_period;
 
   fury_of_elune_t( druid_t* p, std::string_view opt )
-    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), opt )
+    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), p->buff.fury_of_elune,
+                       opt )
   {}
 
-  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage,
+  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage, buff_t* b,
                    std::string_view opt )
     : druid_spell_t( n, p, s, opt ),
-      tick_period( p->query_aura_effect( &data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
+      energize( b ),
+      tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
     dot_duration = 0_ms;  // AP gain handled via buffs
 
@@ -5612,10 +5615,7 @@ struct fury_of_elune_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( free_cast == free_cast_e::PILLAR )
-      p()->buff.celestial_infusion->trigger();
-    else
-      p()->buff.fury_of_elune->trigger();
+    energize->trigger();
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -9445,8 +9445,8 @@ void druid_t::create_actions()
   // Balance
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
   {
-    auto pillar =
-        get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 367907 ), find_spell( 365640 ), "" );
+    auto pillar = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 365478 ),
+                                                           find_spell( 365640 ), buff.celestial_infusion, "" );
     pillar->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     pillar->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
     pillar->set_free_cast( free_cast_e::PILLAR );

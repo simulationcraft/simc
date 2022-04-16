@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.0.43206
-static const std::array<spelltext_data_t, 16084> __spelltext_data { {
+static const std::array<spelltext_data_t, 16086> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15842,6 +15842,8 @@ static const std::array<spelltext_data_t, 16084> __spelltext_data { {
   { 365456, "$@spelldesc365457", 0, 0 },
   { 365457, "Your spells and abilities have a chance to create a mote of harmonized ephemera nearby. Collecting the mote grants you $s1 $pri for $365474d.", 0, 0 },
   { 365474, "$@spelldesc365457", "$pri increased by $w1.", 0 },
+  { 365476, "$@spelldesc364423", "Your next cast of Starfire will expose the Lunar Umbra.", 0 },
+  { 365478, "$@spelldesc364423", 0, 0 },
   { 365522, "$@spelldesc367259\r\n$@spellaura366333", "$@spellaura367259", 0 },
   { 365524, "$@spelldesc367258\r\n$@spellaura366333", "$@spellaura367258", 0 },
   { 365527, "$@spelldesc367257\r\n$@spellaura366333", "$@spellaura367257", 0 },
