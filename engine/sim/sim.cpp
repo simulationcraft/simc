@@ -2655,6 +2655,10 @@ void sim_t::init()
                            ->set_default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_STAMINA );
 
+  // Fight style initialization must be performed before target creation and raid event initialization, since fight
+  // styles may define/override these things.
+  init_fight_style();
+
   // Find Already defined target, otherwise create a new one.
   print_debug( "Creating Enemies." );
 
@@ -2715,10 +2719,6 @@ void sim_t::init()
       while ( targets_create > 1 );
     }
   }
-
-  // Fight style initialization must be performed before raid event initialization, since fight
-  // styles may define raid events.
-  init_fight_style();
 
   raid_event_t::init( this );
 
