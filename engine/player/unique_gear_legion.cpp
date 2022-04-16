@@ -4544,6 +4544,9 @@ void item::faulty_countermeasures( special_effect_t& effect )
       } else if ( new_ == 0 )
         callback -> deactivate();
     } );
+
+  // since the on-use effect doesn't use the rppm, set to 0 so trinket expressions correctly determine it has a cooldown
+  effect.ppm_ = 0;
 }
 
 // Stabilized Energy Pendant ================================================
