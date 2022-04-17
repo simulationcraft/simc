@@ -103,7 +103,7 @@ namespace color
       return *this;
     }
     
-    rgb operator+( rgb other ) const
+    constexpr rgb operator+( rgb other ) const
     {
       rgb new_color( *this );
       new_color += other;
@@ -148,50 +148,50 @@ namespace color
   rgb school_color(school_e school);
 
   // Class colors
-  constexpr rgb COLOR_DEATH_KNIGHT( "C41F3B" );
-  constexpr rgb COLOR_DEMON_HUNTER( "A330C9" );
-  constexpr rgb COLOR_DRUID( "FF7D0A" );
-  constexpr rgb COLOR_HUNTER( "ABD473" );
-  constexpr rgb COLOR_MAGE( "69CCF0" );
-  constexpr rgb COLOR_MONK( "00FF96" );
-  constexpr rgb COLOR_PALADIN( "F58CBA" );
-  constexpr rgb COLOR_PRIEST( "FFFFFF" );
-  constexpr rgb COLOR_ROGUE( "FFF569" );
-  constexpr rgb COLOR_SHAMAN( "0070DE" );
-  constexpr rgb COLOR_WARLOCK( "9482C9" );
-  constexpr rgb COLOR_WARRIOR( "C79C6E" );
+  inline constexpr rgb COLOR_DEATH_KNIGHT( "C41F3B" );
+  inline constexpr rgb COLOR_DEMON_HUNTER( "A330C9" );
+  inline constexpr rgb COLOR_DRUID( "FF7D0A" );
+  inline constexpr rgb COLOR_HUNTER( "ABD473" );
+  inline constexpr rgb COLOR_MAGE( "69CCF0" );
+  inline constexpr rgb COLOR_MONK( "00FF96" );
+  inline constexpr rgb COLOR_PALADIN( "F58CBA" );
+  inline constexpr rgb COLOR_PRIEST( "FFFFFF" );
+  inline constexpr rgb COLOR_ROGUE( "FFF569" );
+  inline constexpr rgb COLOR_SHAMAN( "0070DE" );
+  inline constexpr rgb COLOR_WARLOCK( "9482C9" );
+  inline constexpr rgb COLOR_WARRIOR( "C79C6E" );
 
-  constexpr rgb WHITE( "FFFFFF" );
-  constexpr rgb GREY( "333333" );
-  constexpr rgb GREY2( "666666" );
-  constexpr rgb GREY3( "8A8A8A" );
-  constexpr rgb YELLOW = COLOR_ROGUE;
-  constexpr rgb PURPLE( "9482C9" );
-  constexpr rgb RED = COLOR_DEATH_KNIGHT;
-  constexpr rgb TEAL( "009090" );
-  constexpr rgb BLACK( "000000" );
+  inline constexpr rgb WHITE( "FFFFFF" );
+  inline constexpr rgb GREY( "333333" );
+  inline constexpr rgb GREY2( "666666" );
+  inline constexpr rgb GREY3( "8A8A8A" );
+  inline constexpr rgb YELLOW = COLOR_ROGUE;
+  inline constexpr rgb PURPLE( "9482C9" );
+  inline constexpr rgb RED = COLOR_DEATH_KNIGHT;
+  inline constexpr rgb TEAL( "009090" );
+  inline constexpr rgb BLACK( "000000" );
 
   // School colors
-  constexpr rgb COLOR_NONE = WHITE;
-  constexpr rgb PHYSICAL = COLOR_WARRIOR;
-  constexpr rgb HOLY( "FFCC00" );
-  constexpr rgb FIRE = COLOR_DEATH_KNIGHT;
-  constexpr rgb NATURE = COLOR_HUNTER;
-  constexpr rgb FROST = COLOR_SHAMAN;
-  constexpr rgb SHADOW = PURPLE;
-  constexpr rgb ARCANE = COLOR_MAGE;
-  constexpr rgb ELEMENTAL = COLOR_MONK;
-  constexpr rgb FROSTFIRE( "9900CC" );
-  constexpr rgb CHAOS( "00C800" );
+  inline constexpr rgb COLOR_NONE = WHITE;
+  inline constexpr rgb PHYSICAL = COLOR_WARRIOR;
+  inline constexpr rgb HOLY( "FFCC00" );
+  inline constexpr rgb FIRE = COLOR_DEATH_KNIGHT;
+  inline constexpr rgb NATURE = COLOR_HUNTER;
+  inline constexpr rgb FROST = COLOR_SHAMAN;
+  inline constexpr rgb SHADOW = PURPLE;
+  inline constexpr rgb ARCANE = COLOR_MAGE;
+  inline constexpr rgb ELEMENTAL = COLOR_MONK;
+  inline constexpr rgb FROSTFIRE( "9900CC" );
+  inline constexpr rgb CHAOS( "00C800" );
 
   // Item quality colors
-  constexpr rgb POOR( "9D9D9D" );
-  constexpr rgb COMMON = WHITE;
-  constexpr rgb UNCOMMON( "1EFF00" );
-  constexpr rgb RARE( "0070DD" );
-  constexpr rgb EPIC( "A335EE" );
-  constexpr rgb LEGENDARY( "FF8000" );
-  constexpr rgb HEIRLOOM( "E6CC80" );
+  inline constexpr rgb POOR( "9D9D9D" );
+  inline constexpr rgb COMMON = WHITE;
+  inline constexpr rgb UNCOMMON( "1EFF00" );
+  inline constexpr rgb RARE( "0070DD" );
+  inline constexpr rgb EPIC( "A335EE" );
+  inline constexpr rgb LEGENDARY( "FF8000" );
+  inline constexpr rgb HEIRLOOM( "E6CC80" );
 
 }  // color
 
