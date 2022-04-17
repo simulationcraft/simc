@@ -1017,9 +1017,10 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   const tm localtime  = fmt::localtime( rawtime );
 
   os << "<ul class=\"params\">\n";
-#if defined( SC_NO_NETWORKING )
-  os.format( "<li><b>No Networking</b></li>\n" );
-#endif
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    os.format( "<li><b>No Networking</b></li>\n" );
+  }
   os.format( "<li><b>Timestamp:</b> {:%Y-%m-%d %H:%M:%S%z}</li>\n", localtime);
   os.printf( "<li><b>Iterations:</b> %d</li>\n", sim.iterations );
 

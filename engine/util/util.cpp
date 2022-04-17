@@ -241,9 +241,10 @@ std::string util::version_info_str( const dbc_t* dbc )
         git_info::branch(), git_info::revision());
   }
 
-#if defined( SC_NO_NETWORKING )
-  build_info += ", no-networking";
-#endif
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    build_info += ", no-networking";
+  }
 
   return fmt::format( "SimulationCraft {} for World of Warcraft {} {} ({})",
       SC_VERSION, dbc::client_data_version_str( dbc->ptr ),

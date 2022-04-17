@@ -30,6 +30,7 @@
 #include "utf8-h/utf8.h"
 
 #include <iostream>
+#include <stdexcept>
 
 // ==========================================================================
 // Blizzard Community Platform API
@@ -56,8 +57,6 @@ struct player_spec_t
   std::string local_json_soulbinds;
 };
 
-static constexpr util::string_view GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
-static constexpr util::string_view CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
 
 static constexpr util::string_view GLOBAL_GUILD_ENDPOINT_URI = "https://{}.api.blizzard.com/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
 static constexpr util::string_view CHINA_GUILD_ENDPOINT_URI = "https://gateway.battlenet.com.cn/data/wow/guild/{}/{}/roster?namespace=profile-{}&locale={}";
@@ -87,10 +86,8 @@ static constexpr struct {
 
 static std::string token_path;
 static std::string token;
-static bool authorization_failed = false;
 mutex_t token_mutex;
 
-#ifndef SC_NO_NETWORKING
 
 std::vector<std::string> token_paths()
 {
@@ -117,6 +114,11 @@ std::vector<std::string> token_paths()
 
   return paths;
 }
+
+#ifndef SC_NO_NETWORKING
+static constexpr util::string_view GLOBAL_OAUTH_ENDPOINT_URI = "https://{}.battle.net/oauth/token";
+static constexpr util::string_view CHINA_OAUTH_ENDPOINT_URI = "https://www.battlenet.com.cn/oauth/token";
+static bool authorization_failed = false;
 
 // Authorize to the blizzard api
 void authorize( sim_t* sim, const std::string& region )
@@ -249,6 +251,10 @@ void download( sim_t*               sim,
                const std::string&   url,
                cache::behavior_e    caching )
 {
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    throw std::runtime_error( "networking disabled (SC_NO_NETWORKING)" );
+  }
   std::vector<std::string> headers;
   std::string result;
 
@@ -1361,9 +1367,13 @@ bool bcp_api::download_guild( sim_t* sim, const std::string& region, const std::
   return true;
 }
 
-#ifndef SC_NO_NETWORKING
 void bcp_api::token_load()
 {
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    return;
+  }
+
   for ( auto& path : token_paths() )
   {
     io::ifstream file;
@@ -1382,6 +1392,11 @@ void bcp_api::token_load()
 
 void bcp_api::token_save()
 {
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    return;
+  }
+
   if ( token.empty() )
   {
     return;
@@ -1412,7 +1427,6 @@ void bcp_api::token_save()
       strerror(errno) << std::endl;
   }
 }
-#endif
 
 /// Check if api key is valid
 bool bcp_api::validate_api_key( const std::string& key )

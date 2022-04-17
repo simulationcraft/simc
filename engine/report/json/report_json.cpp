@@ -1326,9 +1326,10 @@ void print_json_pretty( FILE* o, const sim_t& sim, const ::report::json::report_
   root[ "build_date" ] = __DATE__;
   root[ "build_time" ] = __TIME__;
   root[ "timestamp" ] = as<uint64_t>( std::time( nullptr ) );
-#if defined( SC_NO_NETWORKING )
-  root[ "no_networking" ] = true;
-#endif
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    root[ "no_networking" ] = true;
+  }
 
   if ( git_info::available())
   {
