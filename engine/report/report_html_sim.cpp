@@ -1254,7 +1254,9 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
   js::sc_js_t highcharts_theme;
   highchart::theme( highcharts_theme, highchart::THEME_DEFAULT );
   os << "<script type=\"text/javascript\">\n"
-     << "Highcharts.setOptions(" << highcharts_theme.to_json() << ");\n";
+     << "Highcharts.setOptions(";
+  highcharts_theme.print( os );
+  os << ");\n";
 
   // Scripts that deal with chart click events. These needs to be loaded first so they're available as the page opens to
   // the starting charts
@@ -1300,7 +1302,7 @@ void print_html_head( report::sc_html_stream& os, const sim_t& sim )
      << "</script>\n";
 }
 
-void print_nothing_to_report( report::sc_html_stream& os, const std::string& reason )
+void print_nothing_to_report( report::sc_html_stream& os, std::string_view reason )
 {
   os << "<div id=\"notice\" class=\"section section-open\">\n"
      << "<h2>Nothing to report</h2>\n"
@@ -1487,7 +1489,7 @@ void print_html_( report::sc_html_stream& os, sim_t& sim )
   for ( const auto& entry : sim.chart_data )
   {
     os << "\"" + entry.first + "\": [\n";
-    const std::vector<std::string> data = entry.second;
+    const std::vector<std::string>& data = entry.second;
     for ( size_t j = 0; j < data.size(); ++j )
     {
       os << data[ j ];

@@ -38,7 +38,7 @@ struct sc_js_t
   sc_js_t( const sc_js_t& );
   virtual ~sc_js_t() = default;
 
-  virtual std::string to_json() const;
+  void print(std::ostream&) const;
 
   sc_js_t& set( rapidjson::Value& obj, util::string_view name_, const rapidjson::Value& value_ );
 
