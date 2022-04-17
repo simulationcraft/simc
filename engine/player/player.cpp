@@ -3452,7 +3452,7 @@ void player_t::create_buffs()
       buffs.decrypted_urh_cypher = make_buff( this, "decrypted_urh_cypher", find_spell( 368239 ) );
       buffs.decrypted_urh_cypher->set_period( buffs.decrypted_urh_cypher->data().effectN( 2 ).period() );
       buffs.decrypted_urh_cypher->set_refresh_behavior( buff_refresh_behavior::DURATION );
-      buffs.decrypted_urh_cypher->set_tick_callback( [ this, urh_restoration ]( buff_t* b, int, timespan_t ) {
+      buffs.decrypted_urh_cypher->set_tick_callback( [ this, urh_restoration ]( buff_t*, int, timespan_t ) {
         double gain = resources.max[ RESOURCE_MANA ] * urh_restoration->effectN( 2 ).percent();
         resource_gain( RESOURCE_MANA, gain, gains.urh_restoration );
       } );

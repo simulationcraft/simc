@@ -3333,8 +3333,8 @@ struct pistol_shot_t : public rogue_attack_t
 
   // TOCHECK: On 9.0.5 PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
-    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER || !p()->bugs; }
+  { return ( secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
+    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER ) || !p()->bugs; }
 };
 
 // Main Gauche ==============================================================
@@ -6740,7 +6740,7 @@ rogue_td_t::rogue_td_t( player_t* target, rogue_t* source ) :
   // T28 Assassination 4pc
   if ( source->set_bonuses.t28_assassination_4pc->ok() )
   {
-    debuffs.vendetta->set_stack_change_callback( [this, source]( buff_t* b, int, int ) {
+    debuffs.vendetta->set_stack_change_callback( [ source ]( buff_t* b, int, int ) {
       source->trigger_t28_assassination_4pc( b->player );
     } );
   }

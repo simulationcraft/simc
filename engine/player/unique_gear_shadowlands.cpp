@@ -2941,7 +2941,7 @@ void reactive_defense_matrix( special_effect_t& effect )
     cooldown->duration = timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() );
     effect.player->register_combat_begin( [ cooldown, proc_action, period ]( player_t* p ) mutable
     {
-      make_repeating_event( p->sim, period, [ p, cooldown, proc_action ]()
+      make_repeating_event( p->sim, period, [ cooldown, proc_action ]()
       {
         if ( cooldown->down() )
           return;
@@ -3802,7 +3802,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
 
         make_event( p->sim, first_update, [ this, &effect, cycle_weapon ]() {
           cycle_weapon( 1 );
-          make_repeating_event( effect.player->sim, cycle_period, [ this, cycle_weapon ]() {
+          make_repeating_event( effect.player->sim, cycle_period, [ cycle_weapon ]() {
             cycle_weapon( 1 );
           } );
         } );

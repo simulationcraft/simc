@@ -361,7 +361,7 @@ struct pull_event_t final : raid_event_t
     {
     }
 
-    void demise()
+    void demise() override
     {
       pet_t::demise();
 
