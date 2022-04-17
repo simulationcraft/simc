@@ -1152,13 +1152,13 @@ void warlock_t::create_buffs_demonology()
   buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
-          ->set_max_stack( legendary.implosive_potential->effectN( 4 ).base_value() ); // Hotfixed to cap of 15 on 2022-04-04
+          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
 
   //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
   buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
-          ->set_max_stack( legendary.implosive_potential->effectN( 4 ).base_value() ); // Hotfixed to cap of 15 on 2022-04-04
+          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
                             ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
