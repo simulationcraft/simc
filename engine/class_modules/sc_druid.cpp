@@ -301,7 +301,6 @@ public:
     // Feral
     double predator_rppm_rate = 0.0;
     bool owlweave_cat = true;
-    bool ptr_bugs = false;
 
     // Guardian
     bool catweave_bear = false;
@@ -2299,7 +2298,16 @@ public:
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_conditional_effects( p()->sets->set( DRUID_BALANCE, T28, B4 ), [ this ]() {
-      return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
+      if ( ( p()->eclipse_handler.state == eclipse_state_e::IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) > 50_ms ) ||
+           ( p()->eclipse_handler.state == eclipse_state_e::IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) > 50_ms ) ||
+           p()->eclipse_handler.state == eclipse_state_e::IN_BOTH )
+      {
+        return true;
+      }
+
+      return false;
     } );
 
     // Feral
@@ -10843,7 +10851,6 @@ void druid_t::create_options()
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
   add_option( opt_bool( "druid.owlweave_cat", options.owlweave_cat ) );
-  add_option( opt_bool( "druid.ptr_bugs", options.ptr_bugs ) );
 
   // Guardian
   add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );
