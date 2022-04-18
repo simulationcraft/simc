@@ -1122,6 +1122,7 @@ private:
   /// typedef for the templated action type, eg. spell_t, attack_t, heal_t
   using ab = Base;
   bool _requires_stealth;
+  bool _breaks_stealth;
 
 public:
   // Secondary triggered ability, due to Weaponmaster talent or Death from Above. Secondary
@@ -1181,6 +1182,7 @@ public:
                   util::string_view options = {} )
     : ab( n, p, s ),
     _requires_stealth( false ),
+    _breaks_stealth( true ),
     secondary_trigger_type( secondary_trigger::NONE ),
     symbols_of_death_autocrit_proc( nullptr ),
     animacharged_cp_proc( nullptr )
@@ -1333,6 +1335,9 @@ public:
   {
     if ( s->stance_mask() & 0x20000000)
       _requires_stealth = true;
+
+    if ( s->flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
+      _breaks_stealth = false;
 
     for ( size_t i = 1; i <= s->effect_count(); i++ )
     {
@@ -1527,6 +1532,10 @@ public:
 
     return _requires_stealth;
   }
+
+  // Overridable wrapper for checking stealth breaking
+  virtual bool breaks_stealth() const
+  { return _breaks_stealth; }
 
   // Overridable function to determine whether a finisher is working with Echoing Reprimand.
   virtual bool consumes_echoing_reprimand() const
@@ -1836,7 +1845,7 @@ public:
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
-    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) && !ab::data().flags( spell_attribute::SX_NO_STEALTH_BREAK ) )
+    if ( p()->stealthed( STEALTH_BASIC | STEALTH_SHADOWMELD ) && breaks_stealth() )
     {
       p()->break_stealth();
     }
@@ -1922,6 +1931,9 @@ struct rogue_heal_t : public rogue_action_t<heal_t>
     harmful = false;
     set_target( p );
   }
+
+  bool breaks_stealth() const override
+  { return false; }
 };
 
 struct rogue_spell_t : public rogue_action_t<spell_t>
