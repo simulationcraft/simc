@@ -297,6 +297,7 @@ public:
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
+    bool delay_berserking = false;
 
     // Feral
     double predator_rppm_rate = 0.0;
@@ -10518,6 +10519,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return make_fn_expr( "time_spend_healing", [ this ]() {
         return options.time_spend_healing;
       } );
+    if ( util::str_compare_ci( splits[1], "delay_berserking" ) && splits.size() == 2 )
+      return make_fn_expr( "delay_berserking", [this]() {
+      return options.delay_berserking;
+    } );
   }
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
@@ -10847,6 +10852,7 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
+  add_option( opt_bool( "druid.delay_berserking", options.delay_berserking ) );
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
