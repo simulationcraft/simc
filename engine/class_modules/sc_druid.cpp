@@ -1997,6 +1997,10 @@ public:
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
 
+    // an instant executed immediately after casting RF does not grant a stack
+    if ( p()->buff.ravenous_frenzy->elapsed( p()->sim->current_time() ) < 50_ms )
+      return;
+
     // trigger on non-free_cast or free_cast that requires you to actually cast
     if ( !f || f == free_cast_e::APEX || f == free_cast_e::ONETHS )
       p()->buff.ravenous_frenzy->trigger();
