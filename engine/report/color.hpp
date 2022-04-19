@@ -75,7 +75,7 @@ namespace color
       return rgb( *this ).adjust( 1.0 + pct );
     }
 
-    constexpr rgb opacity( double pct = 1.0 ) const
+    constexpr rgb opacity( float pct = 1.0 ) const
     {
       rgb r( *this );
       r.a_ = pct;
