@@ -852,6 +852,10 @@ void gluttonous_spike( special_effect_t& effect )
         proc_spell_t::execute();
         buff->trigger();
       }
+      else if ( pre_execute_state )
+      {
+        action_state_t::release( pre_execute_state );
+      }
     }
   };
 
