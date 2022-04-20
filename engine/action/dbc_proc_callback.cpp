@@ -353,8 +353,12 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
 
     if ( triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
     {
-      proc_action->target = target( state );
-      proc_action->schedule_execute();
+      // Snapshot a new state for schedule_execute() as AoE-triggered procs may require different targets
+      proc_action->set_target( target( state ) );
+      auto proc_state = proc_action->get_state();
+      proc_state->target = proc_action->target;
+      proc_action->snapshot_state( proc_state, proc_action->amount_type( proc_state ) );
+      proc_action->schedule_execute( proc_state );
 
       // Decide whether to expire the buff even with 1 max stack
       if ( expire_on_max_stack )
