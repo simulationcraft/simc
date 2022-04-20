@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-15/43206, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-19/43206, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -12118,13 +12118,14 @@ Description      : Summons a Blasphemy from the Twisting Nether, impacting for $
 The Blasphemy will serve you for $363950s1 sec, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.
 
 Name             : Blasphemy (desc=Guardian) (id=367680) [Spell Family (5)] 
+Hotfixed         : Attributes
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
 Range            : 50000 yards
 Duration         : Aura (infinite)
 Triggered by     : Summon Blasphemy (367679)
-Attributes       : ........ ........ x....... ........   ........ ........ .x...... ........ 
+Attributes       : ........ ........ x....... .......x   ........ ........ .x...... ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12132,7 +12133,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .x...
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Aura Cancel (31), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow While Not Shapeshifted (caster form) (83), Do Not Display Range (126), No 'Summon + Dest from Client' Targeting Pathing Requirement (277), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=911565)   : Summon (28)
                    Base Value: 1 | Scaled Value: 61 | Points Per Level: 1 | PvP Coefficient: 1.00000 | Misc Value: 185584 | Misc Value 2: 0x13f0 | Target: Unknown(87)
