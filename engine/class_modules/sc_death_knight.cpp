@@ -3018,6 +3018,9 @@ struct death_knight_melee_attack_t : public death_knight_action_t<melee_attack_t
     special    = true;
     may_crit   = true;
     may_glance = false;
+    // not_a_proc is manually added here, as DK background melee abilities act as if they have it, even though they do not.
+    // Arma April 19 2022
+    not_a_proc = true;
   }
 
   void execute() override;
