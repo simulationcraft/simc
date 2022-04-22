@@ -110,7 +110,7 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
 
     if ( !effect.driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
     {
-      if ( !a->not_a_proc && ( a->background || a->proc ) )
+      if ( !a->not_a_proc && a->proc )
         return;
     }
 
