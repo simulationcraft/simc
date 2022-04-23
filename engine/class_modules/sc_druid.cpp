@@ -117,12 +117,17 @@ struct druid_td_t : public actor_target_data_t
            hots.wild_growth->is_ticking();
   }
 
-  int dots_ticking() const
-  {
-    return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
-           dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
-           dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
-  }
+  /* Currently this helper method is only used for adapative swarm, which is bugged to not count lunar inspiration.
+    The bugged check is implemented locally in adaptive_swarm_damage_t and this is commented out for now until it
+    becomes needed in the future or the bug is fixed.
+    
+    int dots_ticking() const
+    {
+      return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
+             dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
+             dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
+    }
+  */
 };
 
 struct snapshot_counter_t
@@ -7283,6 +7288,13 @@ struct adaptive_swarm_t : public druid_spell_t
       : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->cov.adaptive_swarm_damage )
     {}
 
+    bool dots_ticking( druid_td_t* td )
+    {
+      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
+             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
+             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
+    }
+
     swarm_target_t new_swarm_target( swarm_target_t exclude ) override
     {
       auto tl = target_list();
@@ -7305,14 +7317,14 @@ struct adaptive_swarm_t : public druid_spell_t
 
         if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_1.push_back( t );
           else
             tl_2.push_back( t );
         }
         else
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_3.push_back( t );
           else
             tl_4.push_back( t );
