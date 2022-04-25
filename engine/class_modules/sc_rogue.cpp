@@ -7056,7 +7056,7 @@ std::string rogue_t::default_flask() const
 
 std::string rogue_t::default_potion() const
 {
-  return ( true_level >= 51 ) ? "phantom_fire" :
+  return ( true_level >= 51 ) ? "potion_of_spectral_agility" :
          ( true_level >= 40 ) ? "potion_of_unbridled_fury" :
          ( true_level >= 35 ) ? "draenic_agility" :
          "disabled";

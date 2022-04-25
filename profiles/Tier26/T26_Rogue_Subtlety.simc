@@ -11,7 +11,7 @@ soulbind=nadjia_the_mistblade,thrill_seeker/lashing_scars:7/dauntless_duelist
 renown=40
 
 # Default consumables
-potion=phantom_fire
+potion=potion_of_spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled

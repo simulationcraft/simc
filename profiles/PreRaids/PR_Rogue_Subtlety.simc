@@ -10,7 +10,7 @@ covenant=kyrian
 soulbind=pelagos,combat_meditation/planned_execution:4
 
 # Default consumables
-potion=phantom_fire
+potion=potion_of_spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled

@@ -11,7 +11,7 @@ soulbind=niya,grove_invigoration/count_the_odds:7/niyas_tools_burrs
 renown=40
 
 # Default consumables
-potion=phantom_fire
+potion=potion_of_spectral_agility
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
