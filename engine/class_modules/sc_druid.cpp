@@ -1301,12 +1301,12 @@ struct architects_aligner_buff_t : public druid_buff_t<buff_t>
 
   void expire( timespan_t d ) override
   {
-    // There seems to be rounding or possibly frame related cutoff where you do not get the extra tick if the
-    // buff expires within a certain time period of the previous tick, currently estimated to be 6ms.
-    // Note that simc truncates down to millisecond, so while in game the breakpoint required to get 6th tick is 832
-    // haste rating, in simc it is 831 haste rating.
+    // Buff ticks seem to occur at 150 frames per second, so if the buff expires within 1/150 second (6.67ms) of a tic,
+    // both events happen in the same frame and you do not get a partial tick. Note that simc truncates down to
+    // millisecond, so while in game the breakpoint required to get 6th tick is 832 haste rating, in simc it is 831
+    // haste rating.
 
-    if ( tick_time() - tick_time_remains() > 6_ms )
+    if ( tick_event && tick_time() - tick_time_remains() > 6_ms )
       p().active.architects_aligner->execute();
 
     base_t::expire( d );
