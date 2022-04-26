@@ -69,6 +69,7 @@ position="back"
 talents="1320031"
 covenant="kyrian"
 soulbind=forgelite_prime_mikanikos,stiletto_staccato:11:1/deeper_daggers:11:1/perforated_veins:11:1/brons_call_to_action/soulglow_spectrometer/effusive_anima_accelerator
+renown="80"
 
 head=umbrahide_helm,id=172317,bonus_id=7124/6716/6647/6650/1588/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129

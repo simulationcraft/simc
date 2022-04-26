@@ -7203,6 +7203,7 @@ void rogue_t::init_action_list()
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25" );
+    cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
 
     // Vanish
     action_priority_list_t* vanish = get_action_priority_list( "vanish", "Vanish" );
@@ -7311,6 +7312,7 @@ void rogue_t::init_action_list()
 
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up|fight_remains<25" );
+    cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=debuff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
     cds->add_action( "use_items,slots=trinket2,if=debuff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
 
@@ -7395,6 +7397,7 @@ void rogue_t::init_action_list()
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1" );
+    cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,if=buff.symbols_of_death.up|fight_remains<20", "Default fallback for usable items: Use with Symbols of Death." );
 
     // Stealth Cooldowns
