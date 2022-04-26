@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-19/43206, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-26/43340, git build shadowlands e718ffa2, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -1620,7 +1620,8 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Heal Prediction (280), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=81809)    : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 1.20000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.60000 | PvP Coefficient: 1.40000 | Target: Friend (21)
+Hotfixed         : PvP Coefficient (1.2 -> 1.4)
 Description      : An efficient spell, healing a friendly target for $s1.
 
 Name             : Grand Crusader (id=85043) [Spell Family (10), Passive] 
@@ -8647,7 +8648,8 @@ Effects          :
 #3 (id=868382)   : Apply Aura (6) | Unknown(285)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 344220 | Target: Self (1)
 #4 (id=871959)   : Apply Raid Aura (65) | Modify Mechanic Duration% (Stacking) (232)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 5 | Radius: 40 yards | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Misc Value: 5 | Radius: 40 yards | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Interrupt and Silence effects on party and raid members within $a1 yards are $s1% shorter. $?s339124[Fear effects are also reduced.][]
 Tooltip          : Interrupt and Silence effects reduced by $w1%. $?s339124[Fear effects are reduced by $w4%.][]
 

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-19/43206, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-26/43340, git build shadowlands e718ffa2, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -14557,7 +14557,6 @@ Effects          :
 Description      : $@spelldesc354118
 
 Name             : Darkening Moon (id=365476) [Hidden] 
-Hotfixed         : Attributes
 Class            : Druid
 School           : Astral
 Spell Type       : None
@@ -14573,7 +14572,6 @@ Attributes       : .......x ........ ........ ........   ........ ..x..... ...x.
 Effects          :
 #1 (id=906421)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE Custom (8)
-Hotfixed         : Target 2 (16 -> 8)
 Description      : $@spelldesc364423
 Tooltip          : Your next cast of Starfire will expose the Lunar Umbra.
 
@@ -14595,7 +14593,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=906425)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Hotfixed         : Target 1 (6 -> 25)
 #2 (id=913775)   : Create Area Trigger (179)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6887 | Radius: 1.25 yards | Target: Unknown(148)
 Description      : $@spelldesc364423
