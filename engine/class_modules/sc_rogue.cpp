@@ -7150,8 +7150,8 @@ void rogue_t::init_action_list()
     // Pre-Combat
     precombat->add_action( "variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_patch*(0.45+(set_bonus.tier28_4pc*0.1)))" );
     precombat->add_action( "variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)", "The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic" );
-    precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(trinket.1.is.shadowgrasp_totem&covenant.venthyr)", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
-    precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(trinket.2.is.shadowgrasp_totem&covenant.venthyr)" );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.2.has_stat.any_dps&trinket.1.is.shadowgrasp_totem)", "Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta." );
+    precombat->add_action( "variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.1.has_stat.any_dps&trinket.2.is.shadowgrasp_totem)" );
     precombat->add_action( "variable,name=use_trinket_1_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.1.has_stat.haste_rating|trinket.1.is.inscrutable_quantum_device)" );
     precombat->add_action( "variable,name=use_trinket_2_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.2.has_stat.haste_rating|trinket.2.is.inscrutable_quantum_device)" );
     precombat->add_action( this, "Stealth" );
