@@ -5407,6 +5407,7 @@ struct wildfire_bomb_t: public hunter_spell_t
       hunter_spell_t( n, p, p -> find_spell( 336899 ) )
     {
       aoe = -1;
+      reduced_aoe_targets   = p -> find_spell( 336895 ) -> effectN( 2 ).base_value();
       triggers_wild_spirits = false;
     }
   };
