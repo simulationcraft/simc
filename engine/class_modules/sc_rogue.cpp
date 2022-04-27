@@ -3340,13 +3340,11 @@ struct pistol_shot_t : public rogue_attack_t
 
   // TOCHECK: On beta as of 8/28/2020, Blunderbuss procs don't trigger. Possibly only "on cast".
   bool procs_combat_potency() const override
-  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
-    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER; }
+  { return secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS; }
 
   // TOCHECK: On 9.0.5 PTR as of 2/22/2021, Blunderbuss procs don't trigger Blade Flurry hits.
   bool procs_blade_flurry() const override
-  { return ( secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS &&
-    secondary_trigger_type != secondary_trigger::TORNADO_TRIGGER ) || !p()->bugs; }
+  { return ( secondary_trigger_type != secondary_trigger::CONCEALED_BLUNDERBUSS || !p()->bugs ); }
 };
 
 // Main Gauche ==============================================================
@@ -3450,19 +3448,6 @@ struct mutilate_t : public rogue_attack_t
       {
         dual = true;
       }
-
-      // Residual periodic actions don't use normal snapshot modifiers. The appears to match game functionality.
-      // 2pc is intended to affect this based on the whitelist but it does not appear to work
-      /*
-      double calculate_tick_amount( action_state_t* state, double dot_multiplier ) const override
-      {
-        double amount = spell_t::calculate_tick_amount( state, dot_multiplier );
-
-        amount *= rogue->get_target_data( state->target )->debuffs.grudge_match->value_direct();
-
-        return amount;
-      }
-      */
     };
 
     doomblade_t* doomblade_dot;
