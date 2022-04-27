@@ -311,7 +311,7 @@ void frost( player_t* p )
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard->add_action( "howling_blast,if=variable.rotfc_rime" );
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
-  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|rune>=4|main_hand.2h&talent.gathering_storm&buff.remorseless_winter.up" );
+  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|rune>=4|(main_hand.2h|!covenant.night_fae)&talent.gathering_storm&buff.remorseless_winter.up" );
   standard->add_action( "frost_strike" );
   standard->add_action( "horn_of_winter" );
   standard->add_action( "arcane_torrent" );
