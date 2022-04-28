@@ -1486,7 +1486,7 @@ void phial_of_putrefaction( special_effect_t& effect )
 
     special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
     putrefaction_proc->proc_flags_ = proc_spell->proc_flags();
-    putrefaction_proc->proc_flags2_ = PF2_ALL_HIT;
+    putrefaction_proc->proc_flags2_ = PF2_CAST_DAMAGE;
     putrefaction_proc->spell_id = 345464;
     putrefaction_proc->custom_buff = putrefaction_buff;
     putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>( "liquefying_ooze", effect );
