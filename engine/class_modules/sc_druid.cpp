@@ -549,6 +549,7 @@ public:
   {
     // Balance
     proc_t* pulsar;
+    proc_t* bugged_4t28;
 
     // Feral & Resto
     proc_t* clearcasting;
@@ -6550,6 +6551,22 @@ struct starfall_t : public druid_spell_t
     return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
+  }
+
   void execute() override
   {
     if ( !free_cast && p()->buff.oneths_free_starfall->up() )
@@ -6765,6 +6782,22 @@ struct starsurge_t : public druid_spell_t
     // effect that follows, such as proccing pulsar, can correctly reset empowerments
     if ( hit_any_target )
       p()->eclipse_handler.cast_starsurge();
+  }
+
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
   }
 
   void execute() override
@@ -9860,6 +9893,7 @@ void druid_t::init_procs()
 
   // Balance
   proc.pulsar = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
+  proc.bugged_4t28 = get_proc( "Bugged 4T28" )->collect_count();
 
   // Feral
   proc.predator            = get_proc( "Predator" );
