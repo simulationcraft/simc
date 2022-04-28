@@ -103,6 +103,7 @@ void shadow( player_t* p )
   default_list->add_action( "variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&variable.cd_management",
                             "Cooldown Pool Variable, Used to pool before activating Voidform." );
   // Racials
+  default_list->add_action( "blood_fury,if=buff.power_infusion.up" );
   default_list->add_action( "fireblood,if=buff.voidform.up" );
   default_list->add_action( "berserking,if=buff.voidform.up" );
   default_list->add_action(
