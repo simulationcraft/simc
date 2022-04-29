@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-26/43340, git build shadowlands e718ffa2, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12334,6 +12334,8 @@ Tooltip          : Increases the threshold at which Shadow Word: Death will do e
 Name             : Spheres' Harmony (id=364913) [Spell Family (6), Passive, Hidden] 
 School           : Arcane
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12352,6 +12354,8 @@ Description      : $@spelldesc356395
 Name             : Shadow Word: Manipulation (id=364914) [Spell Family (6), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12370,6 +12374,8 @@ Description      : $@spelldesc356392
 Name             : Bwonsamdi's Pact (id=364915) [Spell Family (6), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12388,6 +12394,8 @@ Description      : $@spelldesc356391
 Name             : Pallid Command (id=364916) [Spell Family (6), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-26/43340, git build shadowlands e718ffa2, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -13091,8 +13091,10 @@ Description      : $@spelldesc364472
 Tooltip          : Gaining Lava Surge every $t1 sec. Lava Burst deals $w2% additional damage.
 
 Name             : Elemental Conduit (id=364734) [Spell Family (11), Passive, Hidden] 
+Hotfixed         : Max stacks (0 -> 2)
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
 Proc Chance      : 101%
 Proc Flags       : ........ ........ x.x..... ........ 
                  : Magic Hostile Spell, Periodic

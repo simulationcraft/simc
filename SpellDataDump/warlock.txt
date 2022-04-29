@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-26/43340, git build shadowlands e718ffa2, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -11668,6 +11668,8 @@ Name             : Shard of Annihilation (id=356344) [Spell Family (5), Hidden]
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Shard of Annihilation (364936), Unity (364939)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11687,6 +11689,8 @@ Name             : Decaying Soul Satchel (id=356362) [Spell Family (5), Hidden]
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Decaying Soul Satchel (364935), Unity (364939)
 Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12047,6 +12051,8 @@ Description      : Malefic Rapture's damage is increased by $s1% and each cast e
 Name             : Languishing Soul Detritus (id=364937) [Spell Family (5), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364939)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
