@@ -838,6 +838,7 @@ enum set_bonus_type_e
   T23_TITANIC_EMPOWERMENT,
   T26_HACK_AND_GORE,
   T28,
+  T28_RIPPED_SECRETS,
   SET_BONUS_MAX
 };
 
