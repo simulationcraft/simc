@@ -2,12 +2,12 @@ monk="T28_Monk_Windwalker_Necrolord"
 source=default
 spec=windwalker
 level=60
-race=troll
+race=mechagnome
 role=dps
 position=back
-talents=1020012
+talents=2020012
 covenant=necrolord
-soulbind=emeni:5,lead_by_example/coordinated_offensive:11:1/emenis_magnificent_skin/tumbling_technique:11:1/harm_denial:11:1/xuens_bond:11:1/gristled_toes/bone_marrow_hops:11:1/sole_slough/condensed_anima_sphere:11:1/pustule_eruption
+soulbind=emeni:5,342156/22:11:1/323921/41:11:1/324440/15:11:1/24:11:1/323918/60:11:1/351089/283:11:1/351094
 renown=80
 
 # Default consumables
