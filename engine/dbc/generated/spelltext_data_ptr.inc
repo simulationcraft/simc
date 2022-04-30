@@ -1,4 +1,4 @@
-// Spell text, wow build 9.2.5.43254
+// Spell text, wow build 9.2.5.43412
 static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -73,12 +73,12 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   {   1122, "Summons an Infernal from the Twisting Nether, impacting for $22703s1 Fire damage and stunning all enemies in the area for $22703d.\r\n\r\nThe Infernal will serve you for $111685d, dealing ${$20153s1*(100+$137046s3)/100} damage to all nearby enemies every $19483t1 sec and generating $264365s1 Soul Shard Fragment every $264364t1 sec.", 0, "Guardian" },
   {   1137, "Restores ${$m2/5*30} mana over $d.  Must remain seated while drinking.", "Restores ${$m2/5} mana per second.", 0 },
   {   1139, "Increases time between target's attacks by $s1% for $d.", "Slowed attack speed.", 0 },
-  {   1160, "$?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[\r\n\r\n|cFFFFFFFFGenerates ${$m5/10} Rage.|r][]", "$?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]", 0 },
+  {   1160, "$?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[\r\n\r\n|cFFFFFFFFGenerates ${$m5/10} Rage.|r][]", "$?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]$?s202743[\r\nTaking $w3% increased damage from $@auracaster.][]", 0 },
   {   1161, "Taunts all enemies within $A1 yds to attack you for $d.", "Taunted.", 0 },
   {   1329, "Attack with both weapons, dealing a total of $<dmg> Physical damage.\r\n\r\n|cFFFFFFFFAwards $s2 combo $lpoint:points;.|r", 0, 0 },
   {   1330, "Silences an enemy for $d.", "Silenced.", 0 },
   {   1449, "Causes an explosion of magic around the caster, dealing $s2 Arcane damage to all enemies within $A2 yards.$?a137021[\r\n\r\n|cFFFFFFFFGenerates $s1 Arcane Charge if any targets are hit.|r][]", 0, 0 },
-  {   1459, "Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  \r\n\r\nIf target is in your party or raid, all party and raid members will be affected.", "Intellect increased by $w1%.", 0 },
+  {   1459, "Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  \r\n\r\nIf the target is in your party or raid, all party and raid members will be affected.", "Intellect increased by $w1%.", 0 },
   {   1462, "Gathers information about the target beast, displaying diet, abilities, specialization, whether or not the creature is tameable, and if it is exotic.", "Lore revealed.", 0 },
   {   1463, "Magical energy flows through you while in combat, building up to ${$116267m1*5}% increased damage and then diminishing down to $116267s1% increased damage, cycling every 10 sec.", 0, 0 },
   {   1464, "Slams an opponent, causing $s1 Physical damage.", 0, 0 },
@@ -608,7 +608,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   {  19434, "A powerful aimed shot that deals $s1 Physical damage.", 0, 0 },
   {  19483, "Burns nearby enemies for $20153s1 fire damage every $t1 sec.", "Burns nearby enemies for fire damage every $t1 sec.", 0 },
   {  19505, "Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.\r\n", 0, "Special Ability" },
-  {  19574, "Sends you and your pet into a rage, instantly dealing $<damage> Physical damage to its target, and increasing all damage you both deal by $s1% for $d. Removes Fear and Horrify effects from your pet. $?s231548&s217200[\r\n\r\nBestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]", "Damage dealt increased by $w1%.", 0 },
+  {  19574, "Sends you and your pet into a rage, instantly dealing $<damage> Physical damage to its target, and increasing all damage you both deal by $s1% for $d. Removes all crowd control effects from your pet. $?s231548&s217200[\r\n\r\nBestial Wrath's remaining cooldown is reduced by $s3 sec each time you use Barbed Shot.][]", "Damage dealt increased by $w1%.", 0 },
   {  19577, "Commands your pet to intimidate the target, stunning it for $24394d.", "Stuns the target for $24394d.", 0 },
   {  19581, 0, "Max Health increased by $s1%.", 0 },
   {  19638, "Increases all resistances by $s1 for $d.", 0, 0 },
@@ -4632,7 +4632,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 148103, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 148104, "Create a soulbound item appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 148114, "$@spelldesc146974", 0, 0 },
-  { 148118, "$@spelldesc147788", 0, 0 },
+  { 148118, "Summons a random Fire, Water, or Earth familiar.  Familiars of different types have a tendency to fight each other.", 0, 0 },
   { 148135, "$@spelldesc123986", 0, 0 },
   { 148187, "$@spelldesc116847", 0, 0 },
   { 148233, "Your heals have a ${$m1/100}.2% chance to Cleave, dealing the same healing to up to 5 other nearby targets. Reduced effectiveness at level $ctrmin2066 and higher.", 0, 0 },
@@ -6330,7 +6330,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 196813, "Heals up to $x targets for $s1.", 0, 0 },
   { 196816, "Heals the target for $o over $d.", "Healing for $w1 every $t sec.", 0 },
   { 196819, "Finishing move that disembowels the target, causing damage per combo point.$?s231716[ Targets with Find Weakness suffer an additional $231716s1% damage as Shadow.][]\r\n   1 point  : ${$m1*1} damage\r\n   2 points: ${$m1*2} damage\r\n   3 points: ${$m1*3} damage\r\n   4 points: ${$m1*4} damage\r\n   5 points: ${$m1*5} damage$?s193531[\r\n   6 points: ${$m1*6} damage][]", 0, 0 },
-  { 196840, "Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d.$?s33757[\r\n\r\nFrost Shock shares a cooldown with Flame Shock.][]", "Movement speed reduced by $s2%.", 0 },
+  { 196840, "Chills the target with frost, causing $s1 Frost damage and reducing the target's movement speed by $s2% for $d.", "Movement speed reduced by $s2%.", 0 },
   { 196847, "The instincts of the Elderhorn make your mount more sure and swift. Only usable within Highmountain.", "Mounted speed increased by $s1%.", 0 },
   { 196861, "Increase the duration of Garrote's silence effect by $s2 sec.\r\n\r\nEnemies silenced by Garrote deal $256148s1% reduced damage for $256148d.", 0, 0 },
   { 196864, "Increases the damage done by your weapon poisons by $s1% and their non-damaging effects by $s3%.", 0, 0 },
@@ -7363,8 +7363,8 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 215276, "Summon a Chaos Tear.", 0, 0 },
   { 215279, "Unleashes a devastating blast of chaos, causing $s1 Chaos damage. Chaos Bolt always critically strikes and your critical strike chance increases its damage.", 0, 0 },
   { 215293, "Your healing spells have a chance to grant you Gathering Clouds, stacking up to $215294u times.\r\n", 0, 0 },
-  { 215294, "$@spelldesc215293", "Can be consumed to heal friendly targets at a location for $215296s2 health every 1 sec for $215296d.", 0 },
-  { 215296, "Consume all Gathering Clouds, creating a Raging Storm for $d that heals up to 5 nearby allies every 1 sec for $s2 health per Gathering Cloud consumed.", 0, 0 },
+  { 215294, "$@spelldesc215293", "Can be consumed to heal friendly targets at a location for $w1 health every 1 sec for $215296d.", 0 },
+  { 215296, "Consume all Gathering Clouds, creating a Raging Storm for $d that heals up to 5 nearby allies every 1 sec for $215293s1 health per Gathering Cloud consumed.", 0, 0 },
   { 215404, "Your ranged attacks and spells have a chance to launch a ball of venom that deals up to $215405s1 Nature damage, based on your distance from the target (maximum damage at 20 yards).", 0, 0 },
   { 215405, "$@spelldesc215404", 0, 0 },
   { 215407, "$@spelldesc215444", 0, 0 },
@@ -11936,7 +11936,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 298861, "Creates a cauldron that raid members can use to gain the benefit of a flask appropriate to their class and talents.   Cauldron has 30 uses and lasts for $d.", 0, 0 },
   { 298869, "Immerse yourself in the sounds of the ocean.", "The sounds of the ocean follow you.", 0 },
   { 298926, "Assembles the upgraded Blingtron 7000, a savage, yet generous, robot.  While he will give out gifts to players once per day, he will also fight other Blingtron units to the death.", 0, 0 },
-  { 298948, 0, "Masquerading as a K'thir.", 0 },
+  { 298948, "Call forth a friend from the deep to rest atop your head.", "Masquerading as a K'thir.", 0 },
   { 298950, "You gain $s1% resistance to forced movement effects.", "Resisting $w% of forced movement effects.", 0 },
   { 299039, "Infuse your Heart of Azeroth with Blood of the Enemy.", 0, 0 },
   { 299042, "Override a Mechanical creature's synaptic circuits, making them assist you in combat for $d.", "Override enabled.", 0 },
@@ -12488,7 +12488,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 307165, "Cures poisons up to level $ctrmax2060 and reduces the duration of newly applied poisons by $s2% for $d. Cannot be used in instances.", "Poison duration reduced by $s2%.", 0 },
   { 307166, "Grants the effect of a flask based on your class and talents.  Lasts $92725d and persists through death.", "$pri increased by $w1.", 0 },
   { 307185, "Increases primary stat by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "$pri increased by $w1.", 0 },
-  { 307187, "Increases Stamina by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Stamina increased by $W1.", 0 },
+  { 307187, "Increases Stamina by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Stamina increased by $w1.", 0 },
   { 307192, "Restores $s1 health.", 0, 0 },
   { 307193, "Restores $s1 mana.", 0, 0 },
   { 307194, "Restores $s1 health and $s2 mana.", 0, 0 },
@@ -14141,7 +14141,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 336890, "Targets affected by your Leg Sweep deal |cFFFFFFFF${$s1*-.1}.1%|r less damage for $336891d.", 0, 0 },
   { 336891, "$@spelldesc336890", "Damage done reduced by ${$w}.1%.", 0 },
   { 336892, "$@spelldesc336878", "Your next Aimed Shot will consume $s1% less Focus.", 0 },
-  { 336895, "Wildfire Bomb drops an additional cluster of bombs around the target, each exploding for $336899s1 Fire damage.", 0, 0 },
+  { 336895, "Wildfire Bomb drops an additional cluster of bombs around the target, each exploding for $336899s1 Fire damage. Damage is reduced beyond $s2 targets.", 0, 0 },
   { 336897, "Power Infusion also grants you 100% of its effects when used on an ally.", 0, 0 },
   { 336899, "$@spelldesc336895", 0, 0 },
   { 336901, "$?s259387[Mongoose Bite][Raptor Strike] has a $h% chance to $?a264332[add a charge to][reset the cooldown of] Wildfire Bomb.", 0, 0 },
@@ -14176,7 +14176,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 337128, "Corruption and Agony each grant an application of Wrath of Consumption when a target dies, increasing all periodic damage dealt by $337130s1% for $337130d, stacking up to $337130u times.", 0, 0 },
   { 337130, "$@spelldesc337128", "Periodic damage increased by $s1%.", 0 },
   { 337134, "While under the effects of Celestial Brew, your effects that heal you are increased by |cFFFFFFFF${$s1}.1%|r.", 0, 0 },
-  { 337135, "Implosion grants $s3% haste for $337139d for each Imp exploded. When this damages at least $s1 targets, instead gain $s2% haste per Imp.", 0, 0 },
+  { 337135, "Implosion grants $s3% haste for $337139d for each Imp exploded. When this damages at least $s1 targets, instead gain $s2% haste per Imp. A maximum of $s4 exploded Imps can grant this benefit.", 0, 0 },
   { 337136, "Your Barriers heal you for |cFFFFFFFF$s1%|r of the damage absorbed.", 0, 0 },
   { 337139, "$@spelldesc337135", "Haste increased by $w1%.", 0 },
   { 337141, "Each Soul Shard spent on Hand of Gul'dan increases the damage of your next Call Dreadstalkers by $s1%.", 0, 0 },
@@ -15879,7 +15879,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 366769, "$@spelldesc363913", "Strength increased by $s1%.", 0 },
   { 366779, "$@spelldesc364470", "Chain Heal critical chance increased by $w1%.", 0 },
   { 366780, "$@spelldesc363672", 0, 0 },
-  { 366792, "Keg Smash deals an additional $s1% damage, heals you for $s2% of damage dealt, and grants $s3% of damage dealt as maximum health for $366794d.\r\n", 0, 0 },
+  { 366792, "Keg Smash deals $s1% additional damage, heals you for $s2% of damage dealt, and grants $s3% of damage dealt as maximum health for $366794d, stacking up to $366794u times.", 0, 0 },
   { 366793, "Heals for $s1.\r\n", 0, 0 },
   { 366794, "Increase maximum health by $s1.\r\n", "Increases maximum health by $w1.", 0 },
   { 366861, "Gaze deeply into the orb while sitting, pondering its secrets.", 0, 0 },
@@ -15908,7 +15908,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 367268, "$s2% chance to reflect incoming damage back to the attacker.", "$s2% chance to reflect incoming damage back to the attacker.", 0 },
   { 367269, "Your abilities have a $h% chance to incur no cooldown.", "Your abilities have a $h% chance to incur no cooldown.", 0 },
   { 367270, "This effect will absorb a lethal attack, recovering $s2% of your maximum health instead.\r\n\r\nThis effect can only occur once every $366129d.", "Absorbs a lethal attack, recovering $s2% of your maximum health instead.", 0 },
-  { 367271, "Inflict up to $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 sec.", "Inflict periodic damage to up to $366184i enemies within $366184A1 yards. Elite enemies suffer reduced damage.", 0 },
+  { 367271, "Inflict up to $366184s1% max health damage to up to $366184i enemies within $366184A1 yards every $t1 sec.  Elite enemies suffer reduced damage.", "Inflict periodic damage to up to $366184i enemies within $366184A1 yards.", 0 },
   { 367272, "Protects the bearer from stun, root, and snare effects from enemy creatures. This effect can only occur once every $366085d.", "Protected from stun, root, and snare effects from enemy creatures. This effect can only occur once every $366085d.", 0 },
   { 367307, "Whenever a nearby Automa dies, your cooldowns recover $s2% more quickly for $368937d.", 0, 0 },
   { 367325, "Your damaging and healing spells have a chance to shine through one of the facets, increasing a random secondary stat by $s1 for 10 seconds.", 0, 0 },
@@ -15940,7 +15940,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 367726, "$@spelldesc367722", "Bleeding for $w1 every $t sec.", 0 },
   { 367733, "Your damaging and healing spells have a chance to call a raptora that graces you with her wisdom, increasing your intellect by $s1 for $367734d.", 0, 0 },
   { 367734, "$@spelldesc367733", "Intellect increased by $w1.", 0 },
-  { 367802, "Places a Rift Portal in front of you that charges for $d sec before unleashing a blast of $368775s1 Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs $368775s2 damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies.", 0, 0 },
+  { 367802, "Places a Rift Portal in front of you that charges for $d before unleashing a blast of ${$368775s1*(1+$@versadmg)} Cosmic damage split between enemies in a line. The portal plunders reality itself, granting you a shield for $368810d which absorbs ${$368775s2*(1+$@versadmg)} damage.\r\n\r\nDamage and absorption are increased for each enemy struck, up to $368775s3 enemies.", 0, 0 },
   { 367804, "Periodically rummage through the cache, finding a new stolen weapon.", 0, 0 },
   { 367805, "Grab the weapon from the cache, gaining its benefit.", 0, 0 },
   { 367808, "Cause the ground to quake beneath your feet, dealing $s1 Nature damage split between all nearby enemies over $d. Damage increased per target hit.\r\n\r\nWhile quaking, you can sense nearby tectonic weak points. Moving over a weak point will deal an additional $s2 Nature damage to all nearby enemies.", 0, 0 },
@@ -16088,11 +16088,11 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 371574, "Combine $s2 Confounding Ancient Cyphers to create the |cFFE6CC80Sacred Creation Impetus|r, which can be used to improve Fated raid items to Mythic quality.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.43254
+// spelltext hotfix entries, wow build 9.2.5.43412
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.5.43254
+// Spell description variables, wow build 9.2.5.43412
 static const std::array<spelldesc_vars_data_t, 308> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16404,7 +16404,7 @@ static const std::array<spelldesc_vars_data_t, 308> __ptr_spelldesc_vars_data { 
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.43254
+// spelldesc_vars hotfix entries, wow build 9.2.5.43412
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
