@@ -54,6 +54,7 @@ actions+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time
 actions+=/variable,name=vts_applied,op=set,value=active_dot.vampiric_touch>=variable.max_vts|!variable.is_vt_possible
 # Cooldown Pool Variable, Used to pool before activating Voidform.
 actions+=/variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&variable.cd_management
+actions+=/blood_fury,if=buff.power_infusion.up
 actions+=/fireblood,if=buff.voidform.up
 actions+=/berserking,if=buff.voidform.up
 # Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s.

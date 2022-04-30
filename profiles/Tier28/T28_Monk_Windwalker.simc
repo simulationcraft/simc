@@ -3,7 +3,7 @@ source=default
 spec=windwalker
 level=60
 race=mechagnome
-role=dps
+role=hybrid
 position=back
 talents=1020012
 covenant=kyrian
@@ -79,7 +79,7 @@ actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)
 actions.cd_sef+=/use_item,name=inscrutable_quantum_device,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20
-actions.cd_sef+=/use_item,name=the_first_sigil,if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20
+actions.cd_sef+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen
 actions.cd_sef+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
@@ -101,7 +101,7 @@ actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch
 actions.cd_serenity+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10
 actions.cd_serenity+=/weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time
 actions.cd_serenity+=/use_item,name=inscrutable_quantum_device,if=variable.serenity_burst|fight_remains<20
-actions.cd_serenity+=/use_item,name=the_first_sigil,if=variable.serenity_burst|fight_remains<20
+actions.cd_serenity+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen
 actions.cd_serenity+=/faeline_stomp
 actions.cd_serenity+=/fallen_order
 actions.cd_serenity+=/bonedust_brew,if=fight_remains<15|(chi>=2&(fight_remains>60&((cooldown.serenity.remains>10|buff.serenity.up|cooldown.serenity.up)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)))|(fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)))
@@ -185,13 +185,13 @@ main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
 
 # Gear Summary
 # gear_ilvl=282.53
-# gear_agility=1424
+# gear_agility=1434
 # gear_stamina=2958
 # gear_attack_power=20
-# gear_crit_rating=922
+# gear_crit_rating=938
 # gear_haste_rating=204
 # gear_mastery_rating=394
-# gear_versatility_rating=1009
+# gear_versatility_rating=993
 # gear_armor=865
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
