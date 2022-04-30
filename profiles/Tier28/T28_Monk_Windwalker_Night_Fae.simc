@@ -2,12 +2,12 @@ monk="T28_Monk_Windwalker_Night_Fae"
 source=default
 spec=windwalker
 level=60
-race=troll
+race=mechagnome
 role=dps
 position=back
 talents=3020012
 covenant=night_fae
-soulbind=niya:1,grove_invigoration/xuens_bond:11:1/run_without_tiring/tumbling_technique:11:1/natures_splendor/harm_denial:11:1/condensed_anima_sphere:11:1/niyas_tools_burrs/coordinated_offensive:11:1/called_shot/fortifying_ingredients:11:1/bonded_hearts
+soulbind=niya:1,322721/22:11:1/342270/41:11:1/320668/15:11:1/283:11:1/320659/24:11:1/352501/352503
 renown=80
 
 # Default consumables
