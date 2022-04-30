@@ -1103,6 +1103,10 @@ struct incanters_flow_t final : public buff_t
     set_period( p->talents.incanters_flow->effectN( 1 ).period() );
     set_chance( p->talents.incanters_flow->ok() );
     set_default_value_from_effect( 1 );
+
+    // The hidden "Flowing Thoughts" buff counts as an actual Arcane spell for DC.
+    set_stack_change_callback( [ p ] ( buff_t*, int old, int cur )
+    { if ( old == 3 && cur == 4 ) p->trigger_disciplinary_command( SCHOOL_ARCANE ); } );
   }
 
   void reset() override
