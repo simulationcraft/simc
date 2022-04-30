@@ -2,12 +2,12 @@ monk="T28_Monk_Windwalker"
 source=default
 spec=windwalker
 level=60
-race=orc
+race=mechagnome
 role=dps
 position=back
 talents=1020012
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/xuens_bond:11:1/forgelite_filter/regenerating_materials/harm_denial:11:1/coordinated_offensive:11:1/soulsteel_clamps/inner_fury:11:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos:18,333950/22:11:1/331609/331726/24:11:1/331611/16:11:1/352186/352188
 renown=80
 
 # Default consumables
