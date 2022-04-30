@@ -2,12 +2,12 @@ monk="T28_Monk_Windwalker_Necrolord"
 source=default
 spec=windwalker
 level=60
-race=troll
+race=mechagnome
 role=dps
 position=back
-talents=1020012
+talents=2020012
 covenant=necrolord
-soulbind=emeni:5,lead_by_example/coordinated_offensive:11:1/emenis_magnificent_skin/tumbling_technique:11:1/harm_denial:11:1/xuens_bond:11:1/gristled_toes/bone_marrow_hops:11:1/sole_slough/condensed_anima_sphere:11:1/pustule_eruption
+soulbind=emeni:5,342156/22:11:1/323921/41:11:1/324440/15:11:1/24:11:1/323918/60:11:1/351089/283:11:1/351094
 renown=80
 
 # Default consumables
@@ -168,30 +168,30 @@ actions.weapons_of_order+=/chi_wave
 actions.weapons_of_order+=/flying_serpent_kick,interrupt=1
 
 head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173128
 shoulders=tassets_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173130
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant_id=6208
+chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant_id=6230
+wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173128
 hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
-waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173130
+waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173127
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant=eternal_agility
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_mastery
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant_id=6211
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173127,enchant_id=6164
+finger2=bloodoath_signet,id=178871,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant_id=6170
+trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
 
 # Gear Summary
 # gear_ilvl=283.00
 # gear_agility=1424
 # gear_stamina=2971
 # gear_attack_power=20
-# gear_crit_rating=758
-# gear_haste_rating=483
-# gear_mastery_rating=626
-# gear_versatility_rating=675
+# gear_crit_rating=883
+# gear_haste_rating=475
+# gear_mastery_rating=514
+# gear_versatility_rating=671
 # gear_armor=865
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
