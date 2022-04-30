@@ -305,16 +305,16 @@ void survival( player_t* p )
   nta -> add_action( "tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&cooldown.kill_command.remains" );
 
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max&(!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<5)|raid_event.adds.up&raid_event.adds.remains>40" );
-  st -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7|buff.vipers_venom.up&buff.vipers_venom.remains<gcd" );
+  st -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&(!dot.pheromone_bomb.ticking|buff.mad_bombardier.up&next_wi_bomb.pheromone)|buff.vipers_venom.up&buff.vipers_venom.remains<gcd|!set_bonus.tier28_2pc&!dot.serpent_sting.ticking&target.time_to_die>7" );
   st -> add_action( "flayed_shot" );
   st -> add_action( "resonating_arrow,if=!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>40|time_to_die<10" );
   st -> add_action( "wild_spirits,if=!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.up&raid_event.adds.remains>20|time_to_die<20" );
   st -> add_action( "coordinated_assault,if=!raid_event.adds.exists|covenant.night_fae&cooldown.wild_spirits.remains|!covenant.night_fae&(!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<30|raid_event.adds.up&raid_event.adds.remains>20|!raid_event.adds.up)|time_to_die<30" );
-  st -> add_action( "kill_shot" );
   st -> add_action( "flanking_strike,if=focus+cast_regen<focus.max" );
   st -> add_action( "a_murder_of_crows" );
   st -> add_action( "wildfire_bomb,if=full_recharge_time<2*gcd&set_bonus.tier28_2pc|buff.mad_bombardier.up|!set_bonus.tier28_2pc&(full_recharge_time<gcd|focus+cast_regen<focus.max&(next_wi_bomb.volatile&dot.serpent_sting.ticking&dot.serpent_sting.refreshable|next_wi_bomb.pheromone&!buff.mongoose_fury.up&focus+cast_regen<focus.max-action.kill_command.cast_regen*3)|time_to_die<10)" );
   st -> add_action( "kill_command,target_if=min:bloodseeker.remains,if=set_bonus.tier28_2pc&dot.pheromone_bomb.ticking&!buff.mad_bombardier.up" );
+  st -> add_action( "kill_shot" );
   st -> add_action( "carve,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped" );
   st -> add_action( "butchery,if=active_enemies>1&!runeforge.rylakstalkers_confounding_strikes.equipped&cooldown.wildfire_bomb.full_recharge_time>spell_targets&(charges_fractional>2.5|dot.shrapnel_bomb.ticking)" );
   st -> add_action( "steel_trap,if=focus+cast_regen<focus.max" );

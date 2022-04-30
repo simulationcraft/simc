@@ -2730,6 +2730,15 @@ struct metamorphosis_t : public demon_hunter_spell_t
       radius = 8; // TOCHECK: Test actual application radius, not in spell data
     }
 
+    void trigger_dot( action_state_t* s ) override
+    {
+      // 2022-04-22 -- As of 9.2 Metamorphosis can't overwrite Sinful Brand with a lower duration
+      if ( get_dot( s->target )->remains() >= composite_dot_duration( s ) )
+        return;
+
+      demon_hunter_spell_t::trigger_dot( s );
+    }
+
     dot_t* get_dot( player_t* t ) override
     {
       if ( !t ) t = target;
@@ -5866,10 +5875,8 @@ void demon_hunter_t::apl_havoc()
   apl_default->add_action( "run_action_list,name=normal" );
 
   action_priority_list_t* apl_cooldown = get_action_priority_list( "cooldown" );
-  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=!talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20|fight_remains<25)", "If Venthyr and Sinful Brand duration is over 8 seconds with 1T, purposfully whiff Metamorphosis impact to not refresh with a lower duration DoT"  );
-  apl_cooldown->add_action( this, "Metamorphosis", "landing_distance=10,if=talent.demonic.enabled&covenant.venthyr.enabled&runeforge.agony_gaze&dot.sinful_brand.remains>8&spell_targets.metamorphosis_impact<2&(cooldown.eye_beam.remains>20&!variable.blade_dance|cooldown.blade_dance.remains>gcd.max|fight_remains<25)" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=!talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8|spell_targets.metamorphosis_impact>1)|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh and won't overwrite Sinful Brand duration or if the encounter is almost over" );
-  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)&(!covenant.venthyr.enabled|dot.sinful_brand.remains<=8|spell_targets.metamorphosis_impact>1)|fight_remains<25)" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=!talent.demonic.enabled&(cooldown.eye_beam.remains>20|fight_remains<25)", "Cast Metamorphosis if we will get a full Eye Beam refresh or if the encounter is almost over" );
+  apl_cooldown->add_action( this, "Metamorphosis", "if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)" );
   apl_cooldown->add_action( "potion,if=buff.metamorphosis.remains>25|fight_remains<60" );
   add_havoc_use_items( this, apl_cooldown );
   apl_cooldown->add_action( "sinful_brand,if=!dot.sinful_brand.ticking&(!runeforge.agony_gaze|(cooldown.eye_beam.remains<=gcd&fury>=30))&(!cooldown.metamorphosis.up|active_enemies=1)" );

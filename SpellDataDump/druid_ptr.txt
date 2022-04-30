@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-22/42698, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Class            : Guardian Druid
 School           : Physical
@@ -71,7 +71,7 @@ GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Category         : 46
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Affecting spells : Starfall (191034 effect#2), Inner Peace (197073 effect#1), Astral Influence (197524 effects: #1, #3), Stellar Drift (202461 effect#1), Ekowraith, Creator of Worlds (210667 effects: #1, #7)
 Family Flags     : 53
@@ -1976,7 +1976,7 @@ Spell Level      : 34
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Category         : 1208
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effects: #1, #2)
 Family Flags     : 84
@@ -2186,7 +2186,7 @@ Duration         : 6 seconds
 Cooldown         : 6 seconds
 Charges          : 1 (180 seconds cooldown)
 Category         : 1469: Survival of the Fittest (203965 effect#2), Dual Determination (208228 effect#1), Dual Determination (208228 effect#2), Strive for Perfection (296320 effect#7), Strive for Perfection (296320 effect#8), Strive for Perfection (299367 effect#7), Strive for Perfection (299369 effect#7), Survival Instincts (328767 effect#1)
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Dual Determination (208228 effect#3)
 Family Flags     : 71
 Attributes       : ....x... ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3211,7 +3211,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x... ........ ........ 
@@ -3294,7 +3294,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Metamorphosis Rune (23724 effect#1), Cheaper Druid Shapeshifting (38314 effect#1), Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Legacy of the Sleeper (339062 effect#1), Unchecked Aggression (340552 effect#1), Berserk (343240 effects: #1, #2)
@@ -3363,7 +3363,7 @@ Spell Level      : 1
 Duration         : 30 seconds
 Cooldown         : 180 seconds
 Category         : 1333
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Proc Chance      : 101%
 Affecting spells : Incarnation (117679 effect#1), Druid (137009 effect#4), Wildcat Celerity (184877 effect#1), Starfall (191034 effect#2), Stellar Drift (202461 effect#1)
@@ -3462,7 +3462,7 @@ Effects          :
 #2 (id=222211)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 #3 (id=222212)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.35000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.40250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #4 (id=819579)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards
 Description      : Swipe all nearby enemies, inflicting $s3 Physical damage. Deals reduced damage beyond $s4 targets.$?a231283[ Deals $s2% increased damage against bleeding targets.][]
@@ -3492,9 +3492,9 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Not In Spellbook (143), Spell Haste Affects Periodic (173), Treat as Area Effect (175), Always AOE Line of Sight (186), Periodic Can Crit (265), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=117262)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.06600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=117263)   : Apply Aura (6) | Periodic Damage (3): physical every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.03500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.04200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Mechanic: Bleed | Target: At Caster (22) -> AOE enemy (15)
 Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an additional $o2 Bleed damage over $d.
 
 |cFFFFFFFFAwards $211141s1 combo $lpoint:points;.|r
@@ -3588,7 +3588,7 @@ Spell Level      : 34
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Category         : 1208
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Category Cooldown: 180 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ..x.x... ........ ........ 
@@ -4401,11 +4401,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179694)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
 #2 (id=191154)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 29 | Scaled Value: 29 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 32 | Scaled Value: 32 | PvP Coefficient: 0.66667 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Rip (1079), Rake (1822), Shred (5221), Ferocious Bite (22568), Maim (22570), Swipe (106785), Thrash (106830), Moonfire (155625), Rake (155722), Brutal Slash (202028), Feral Frenzy (274838), Primal Wrath (285381), Sickle of the Lion (363830)
                    Family Flags: 98
 #3 (id=191155)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
@@ -5609,7 +5609,7 @@ Name             : Thrash (id=192090) [Spell Family (7)]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 18
+Spell Level      : 11
 Range            : 100 yards
 Duration         : 15 seconds
 Stacks           : 3 maximum
@@ -5715,7 +5715,7 @@ Spell Type       : Magic
 Spell Level      : 39
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Starfall (191034 effect#2), Stellar Drift (202461 effect#1), Precise Alignment (340706 effect#1)
 Family Flags     : 113
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -6362,7 +6362,7 @@ Effects          :
 #1 (id=297726)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: combo_points | Target: Self (1)
 #2 (id=297727)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.69000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.82800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #3 (id=819590)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Strikes all nearby enemies with a massive slash, inflicting $s2 Physical damage. Deals reduced damage beyond $s3 targets.
@@ -11022,7 +11022,7 @@ Attributes       : ....x... ........ ..x..... ........   ........ .x...... .....
                  : Is Ability (4), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Spell Haste Affects Periodic (173), Treat as Area Effect (175), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=747140)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.05500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
 #2 (id=873122)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 Description      : Finishing move that deals instant damage and applies Rip to all enemies within $A1 yards. Lasts longer per combo point.
@@ -14297,8 +14297,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=902899)   : Apply Aura (6) | Proc Trigger Spell (42): Architect's Aligner
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 363793 | Target: Self (1)
-Description      : While Berserked, you radiate $363789s1 Cosmic damage to nearby enemies and heal yourself for $363789s2 every $363793t sec.
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 363793 | Target: Self (1)
+Description      : While Berserked, you radiate $363789s1 Cosmic damage to nearby enemies and heal yourself for $363789s2 every $363793t sec. Deals reduced damage beyond $s1 targets.
 
 Name             : Umbral Infusion (id=363497) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
@@ -14360,9 +14360,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=903409)   : School Damage (2): cosmic
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.26600 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.17290 | PvP Coefficient: 0.75000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=904877)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.39700 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.25805 | PvP Coefficient: 0.75000 | Target: Self (1)
 Description      : $@spelldesc363496
 
 Name             : Architect's Aligner (id=363793) 
@@ -14555,6 +14555,47 @@ Effects          :
 #1 (id=905179)   : Apply Aura (6) | Unknown(285)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 354118 | Target: Self (1)
 Description      : $@spelldesc354118
+
+Name             : Darkening Moon (id=365476) [Hidden] 
+Class            : Druid
+School           : Astral
+Spell Type       : None
+Attributes       : .......x ........ ........ ........   ........ ..x..... ...x.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Threat (42), Exclude Caster (51)
+Effects          :
+#1 (id=906421)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE Custom (8)
+Description      : $@spelldesc364423
+Tooltip          : Your next cast of Starfire will expose the Lunar Umbra.
+
+Name             : Celestial Pillar (id=365478) [Spell Family (7)] 
+Class            : Druid
+School           : Astral
+Spell Type       : None
+Range            : 100 yards
+Duration         : 8 seconds
+Attributes       : ........ ........ x....... ........   ........ ........ ........ ....x... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), No Aura Icon (60), Allow While Not Shapeshifted (caster form) (83), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=906425)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#2 (id=913775)   : Create Area Trigger (179)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 6887 | Radius: 1.25 yards | Target: Unknown(148)
+Description      : $@spelldesc364423
 
 Name             : Fury of Elune (id=365640) [Spell Family (7)] 
 Class            : Druid

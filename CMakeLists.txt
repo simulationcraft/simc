@@ -39,7 +39,7 @@ else()
 endif()
 
 # output a compile_commands.json used for editor tooling
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE STRING "Enable compile_commands.json generation")
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 function(sc_common_compiler_options target)
   target_compile_options(${target} PRIVATE

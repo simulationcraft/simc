@@ -554,6 +554,11 @@ struct player_t : public actor_t
 
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
+    buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
+
+    // 9.2 Encrypted Affix Buffs
+    buff_t* decrypted_urh_cypher;
+    buff_t* decrypted_vy_cypher;
   } buffs;
 
   struct debuffs_t
@@ -591,6 +596,7 @@ struct player_t : public actor_t
     std::vector<timespan_t> pact_of_the_soulstalkers;
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
+    std::vector<timespan_t> boon_of_azeroth_mythic;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
   } external_buffs;
@@ -608,6 +614,7 @@ struct player_t : public actor_t
     gain_t* vampiric_embrace;
     gain_t* warlords_unseeing_eye;
     gain_t* embrace_of_bwonsamdi;
+    gain_t* urh_restoration;
 
     gain_t* leech;
   } gains;

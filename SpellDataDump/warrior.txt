@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-07/42979, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -11974,9 +11974,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=903738)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Shield Slam (23922)
                    Family Flags: 7, 41
+Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=903837)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343)
@@ -12096,6 +12097,8 @@ Tooltip          : Damage dealt increased by $s1% and damage taken decreased by 
 Name             : Elysian Might (id=364930) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364929)
 Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12114,6 +12117,8 @@ Description      : $@spelldesc357996
 Name             : Nature's Fury (id=364931) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364929)
 Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12132,6 +12137,8 @@ Description      : $@spelldesc354161
 Name             : Sinful Surge (id=364933) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364929)
 Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 
@@ -12150,6 +12157,8 @@ Description      : $@spelldesc354131
 Name             : Glory (id=364934) [Spell Family (4), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364929)
 Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ xx..x... ........ 

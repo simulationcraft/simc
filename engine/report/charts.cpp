@@ -35,31 +35,6 @@ namespace
 
 
 
-struct filter_non_performing_players
-{
-  std::string type;
-  filter_non_performing_players( std::string type_ ) : type( std::move(type_) )
-  {
-  }
-  bool operator()( player_t* p ) const
-  {
-    if ( type == "dps" && p->collected_data.dps.mean() <= 0 )
-      return true;
-    else if ( type == "prioritydps" &&
-              p->collected_data.prioritydps.mean() <= 0 )
-      return true;
-    else if ( type == "hps" && p->collected_data.hps.mean() <= 0 )
-      return true;
-    else if ( type == "dtps" && p->collected_data.dtps.mean() <= 0 )
-      return true;
-    else if ( type == "tmi" &&
-              p->collected_data.theck_meloree_index.mean() <= 0 )
-      return true;
-
-    return false;
-  }
-};
-
 struct filter_stats_dpet
 {
   bool player_is_healer;
@@ -138,7 +113,7 @@ enum metric_value_e
   VALUE_METRIC_MAX
 };
 
-const std::array<unsigned, METRIC_MAX> enabled_values =
+constexpr std::array<unsigned, METRIC_MAX> enabled_values =
   { { 0,
     ( 1 << VALUE_MEAN ) | ( 1 << VALUE_BURST_MAX ),
     ( 1 << VALUE_MEAN ),
@@ -184,7 +159,7 @@ double compute_player_burst_max( const sc_timeline_t& container )
   return m;
 }
 
-metric_e populate_player_list( const std::string& type, const sim_t& sim,
+metric_e populate_player_list( std::string_view type, const sim_t& sim,
                                std::vector<const player_t*>& pl,
                                std::string& name )
 {
@@ -240,8 +215,22 @@ metric_e populate_player_list( const std::string& type, const sim_t& sim,
 
   if ( source_list != nullptr )
   {
-    range::remove_copy_if( *source_list, back_inserter( pl ),
-                           filter_non_performing_players( type ) );
+    auto filter_non_performing_players = [ type ]( player_t* p ) constexpr {
+      if ( type == "dps" && p->collected_data.dps.mean() <= 0 )
+        return true;
+      else if ( type == "prioritydps" && p->collected_data.prioritydps.mean() <= 0 )
+        return true;
+      else if ( type == "hps" && p->collected_data.hps.mean() <= 0 )
+        return true;
+      else if ( type == "dtps" && p->collected_data.dtps.mean() <= 0 )
+        return true;
+      else if ( type == "tmi" && p->collected_data.theck_meloree_index.mean() <= 0 )
+        return true;
+
+      return false;
+    };
+
+    range::remove_copy_if( *source_list, back_inserter( pl ), filter_non_performing_players );
   }
 
   return pl.size() > 1 ? m : METRIC_NONE;
@@ -471,7 +460,7 @@ std::string get_metric_value_name( metric_value_e val )
 
 
 void profilesets_insert_data( highchart::bar_chart_t& chart,
-                  const std::string& name,
+                  std::string_view name,
                   const color::rgb c,
                   const profileset::statistical_data_t& data,
                   bool baseline,
@@ -716,19 +705,13 @@ bool chart::generate_reforge_plot( highchart::chart_t& chart, const player_t& p 
   chart.set_yaxis_title( "Damage Per Second" );
   std::string from_stat  = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
   std::string to_stat    = util::stat_type_abbrev( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
-  std::string from_color = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
-  std::string to_color   = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
+  auto from_color = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 0 ] );
+  auto to_color   = color::stat_color( p.sim->reforge_plot->reforge_plot_stat_indices[ 1 ] );
 
-  std::string span_from_stat = "<span style=\"color:" + from_color +
-                               ";font-weight:bold;\">" + from_stat + "</span>";
-  std::string span_from_stat_abbrev = "<span style=\"color:" + from_color +
-                                      ";font-weight:bold;\">" +
-                                      from_stat.substr( 0, 2 ) + "</span>";
-  std::string span_to_stat = "<span style=\"color:" + to_color +
-                             ";font-weight:bold;\">" + to_stat + "</span>";
-  std::string span_to_stat_abbrev = "<span style=\"color:" + to_color +
-                                    ";font-weight:bold;\">" +
-                                    to_stat.substr( 0, 2 ) + "</span>";
+  std::string span_from_stat = fmt::format( "<span style=\"color:{};font-weight:bold;\">{}</span>", from_color, from_stat );
+  std::string span_from_stat_abbrev = fmt::format( "<span style=\"color:{};font-weight:bold;\">{}</span>", from_color, from_stat.substr( 0, 2 ) );
+  std::string span_to_stat = fmt::format( "<span style=\"color:{};font-weight:bold;\">{}</span>", to_color, to_stat );
+  std::string span_to_stat_abbrev = fmt::format( "<span style=\"color:{};font-weight:bold;\">{}</span>", to_color, to_stat.substr( 0, 2 ) );
 
   chart.set( "yAxis.min", baseline - yrange );
   chart.set( "yAxis.max", baseline + yrange );
@@ -750,7 +733,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& chart, const player_t& p 
   chart.set( "xAxis.labels.formatter", formatter_function );
   chart.value( "xAxis.labels.formatter" ).SetRawOutput( true );
 
-  chart.add_yplotline( baseline, "baseline", 1.25, "#FF8866" );
+  chart.add_yplotline( baseline, "baseline", 1.25, color::rgb{"FF8866"} );
 
   std::vector<std::pair<double, double> > mean;
   std::vector<highchart::data_triple_t> range;
@@ -782,7 +765,7 @@ bool chart::generate_reforge_plot( highchart::chart_t& chart, const player_t& p 
 // chart::distribution_dps ==================================================
 
 bool chart::generate_distribution( highchart::histogram_chart_t& hc, const player_t* p,
-                                   const std::vector<size_t>& dist_data, const std::string& distribution_name,
+                                   const std::vector<size_t>& dist_data, std::string_view distribution_name,
                                    double avg, double min, double max, bool percent )
 {
   int max_buckets = as<int>( dist_data.size() );
@@ -791,7 +774,7 @@ bool chart::generate_distribution( highchart::histogram_chart_t& hc, const playe
     return false;
 
   hc.set( "plotOptions.column.color", color::YELLOW.str() );
-  hc.set_title( distribution_name + " Distribution" );
+  hc.set_title( fmt::format("{} Distribution", distribution_name ) );
   if ( p && p->sim->player_no_pet_list.size() > 1 )
   {
     hc.set_toggle_id( "player" + util::to_string( p->index ) + "toggle" );
@@ -978,7 +961,7 @@ bool chart::generate_spent_time( highchart::pie_chart_t& pc, const player_t& p )
   return true;
 }
 
-bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, const std::string& title,
+bool chart::generate_stats_sources( highchart::pie_chart_t& pc, const player_t& p, std::string_view title,
                                     const std::vector<stats_t*>& stats_list )
 {
   if ( stats_list.empty() )
@@ -1087,7 +1070,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
   return true;
 }
 
-bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, const std::string& type )
+bool chart::generate_raid_aps( highchart::bar_chart_t& bc, const sim_t& s, std::string_view type )
 {
   // Prepare list, based on the selected metric
   std::vector<const player_t*> player_list;
@@ -1568,7 +1551,7 @@ bool chart::generate_scaling_plot( highchart::chart_t& chart, const player_t& p,
           util::round( pdata.value, p.sim->report_precision ) );
     }
 
-    chart.add_simple_series( "", "", util::stat_type_abbrev( i ), data );
+    chart.add_simple_series( "", {}, util::stat_type_abbrev( i ), data );
   }
 
   return true;
@@ -1634,7 +1617,7 @@ bool chart::generate_scale_factors( highchart::bar_chart_t& chart, const player_
 
   chart.add_simple_series( "bar", color::class_color( p.type ),
                            util::scale_metric_type_abbrev( metric ) + std::string( " per point" ), data );
-  chart.add_simple_series( "errorbar", "", "Error", error );
+  chart.add_simple_series( "errorbar", {}, "Error", error );
 
   return true;
 }
@@ -1672,7 +1655,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
 
   ts.set_title( fmt::format( "{} {}", stat_name, chart_title_base ) );
 
-  std::string area_color = color::YELLOW;
+  auto area_color = color::YELLOW;
   if ( !s.action_list.empty() )
     area_color = color::school_color( s.action_list[ 0 ]->school );
 
@@ -1709,7 +1692,7 @@ bool chart::generate_actor_dps_series( highchart::time_series_t& series, const p
 
 highchart::time_series_t& chart::generate_actor_timeline(
     highchart::time_series_t& ts, const player_t& p,
-    const std::string& attribute, const std::string& series_color,
+    std::string_view attribute, color::rgb series_color,
     const sc_timeline_t& data )
 {
   std::string attr_str = util::inverse_tokenize( attribute );

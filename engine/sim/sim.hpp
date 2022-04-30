@@ -167,6 +167,8 @@ struct sim_t : private sc_thread_t
 
   int timewalk;
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
+  int keystone_level; // keystone difficulty for scaling purposes
+  int keystone_pct_hp;     // keystone mob health percent
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.

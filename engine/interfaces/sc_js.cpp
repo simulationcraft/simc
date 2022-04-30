@@ -198,14 +198,14 @@ namespace js {
     return *this;
   }
 
-  std::string sc_js_t::to_json() const
+  void sc_js_t::print( std::ostream& os ) const
   {
     rapidjson::StringBuffer b;
-    rapidjson::PrettyWriter< rapidjson::StringBuffer > writer(b);
+    rapidjson::PrettyWriter<rapidjson::StringBuffer> writer( b );
 
-    js_.Accept(writer);
+    js_.Accept( writer );
 
-    return b.GetString();
+    os << b.GetStringView();
   }
 
   JsonOutput& js::JsonOutput::operator=(const cooldown_t& v)

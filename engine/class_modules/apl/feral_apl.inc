@@ -105,6 +105,7 @@ setup->add_action( "call_action_list,name=cooldown" );
 setup->add_action( "call_action_list,name=finisher,if=combo_points>3&(buff.bloodtalons.up|!talent.bloodtalons.enabled)" );
 
 stealth->add_action( "pool_resource,for_next=1","Rake needs roughly 50% of its length at a minimum to surpass shreds dpe" );
+stealth->add_action( "swipe_cat,if=buff.bs_inc.up&spell_targets.swipe_cat>3&runeforge.frenzyband" );
 stealth->add_action( "rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=(dot.rake.pmultiplier<1.5|refreshable)&druid.rake.ticks_gained_on_refresh>2|(persistent_multiplier>dot.rake.pmultiplier&buff.bs_inc.up&spell_targets.thrash_cat<3&covenant.necrolord)|buff.bs_inc.remains<1" );
 stealth->add_action( "lunar_inspiration,if=spell_targets.thrash_cat<3&refreshable&druid.lunar_inspiration.ticks_gained_on_refresh>5&(combo_points=4|dot.lunar_inspiration.remains<5|!dot.lunar_inspiration.ticking)" );
 stealth->add_action( "brutal_slash,if=spell_targets.brutal_slash>2","Brutal Slash is better than stealth Shred at 3 targets" );

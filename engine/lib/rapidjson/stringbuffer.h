@@ -24,6 +24,8 @@
 
 #include "internal/stack.h"
 
+#include <string_view>
+
 #if defined(__clang__)
 RAPIDJSON_DIAG_PUSH
 RAPIDJSON_DIAG_OFF(c++98-compat)
@@ -76,6 +78,11 @@ public:
         stack_.template Pop<Ch>(1);
 
         return stack_.template Bottom<Ch>();
+    }
+
+    std::basic_string_view<Ch> GetStringView() const
+    {
+      return std::string_view{ stack_.template Bottom<Ch>(), GetLength() };
     }
 
     //! Get the size of string in bytes in the string buffer.

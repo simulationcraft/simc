@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-07/42979, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1818,12 +1818,14 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Low Level Buff (67), Include In Advanced Combat Log (72), Do Not Reset Combat Timers (81), Vehicle Immunity Category (218), Aura Points On Client (268), Allow Cast While Channeling (308), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.33000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 1.33)
 #2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #3 (id=798098)   : Dummy (3)
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.33000
+Hotfixed         : PvP Coefficient (1 -> 1.33)
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<newshield> damage$?s343744[ and increasing all healing over time received by $m2%][].
 Tooltip          : Absorbing $w1 damage$?$w2!=0[ and healing from heal over time effects are increased by $w2%][].
 Variables        : $shield=${($SP*11)*(1+$@versadmg)}
@@ -3686,12 +3688,10 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977)
                    Family Flags: 4, 10, 118
-Hotfixed         : NEW EFFECT
 #17 (id=984590)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
-Hotfixed         : NEW EFFECT
 
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -12638,6 +12638,8 @@ Description      : Increases Fists of Fury damage by $s1%.
 Name             : Call to Arms (id=364858) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364857)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12656,6 +12658,8 @@ Description      : $@spelldesc356684
 Name             : Sinister Teachings (id=364859) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364857)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12674,6 +12678,8 @@ Description      : $@spelldesc356818
 Name             : Bountiful Brew (id=364860) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364857)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12692,6 +12698,8 @@ Description      : $@spelldesc356592
 Name             : Faeline Harmony (id=364861) [Spell Family (53), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364857)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

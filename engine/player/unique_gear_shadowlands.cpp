@@ -852,6 +852,10 @@ void gluttonous_spike( special_effect_t& effect )
         proc_spell_t::execute();
         buff->trigger();
       }
+      else if ( pre_execute_state )
+      {
+        action_state_t::release( pre_execute_state );
+      }
     }
   };
 
@@ -1482,7 +1486,7 @@ void phial_of_putrefaction( special_effect_t& effect )
 
     special_effect_t* putrefaction_proc = new special_effect_t( effect.player );
     putrefaction_proc->proc_flags_ = proc_spell->proc_flags();
-    putrefaction_proc->proc_flags2_ = PF2_ALL_HIT;
+    putrefaction_proc->proc_flags2_ = PF2_CAST_DAMAGE;
     putrefaction_proc->spell_id = 345464;
     putrefaction_proc->custom_buff = putrefaction_buff;
     putrefaction_proc->execute_action = create_proc_action<liquefying_ooze_t>( "liquefying_ooze", effect );
@@ -2941,7 +2945,7 @@ void reactive_defense_matrix( special_effect_t& effect )
     cooldown->duration = timespan_t::from_seconds( effect.driver()->effectN( 3 ).base_value() );
     effect.player->register_combat_begin( [ cooldown, proc_action, period ]( player_t* p ) mutable
     {
-      make_repeating_event( p->sim, period, [ p, cooldown, proc_action ]()
+      make_repeating_event( p->sim, period, [ cooldown, proc_action ]()
       {
         if ( cooldown->down() )
           return;
@@ -3802,7 +3806,7 @@ void cache_of_acquired_treasures( special_effect_t& effect )
 
         make_event( p->sim, first_update, [ this, &effect, cycle_weapon ]() {
           cycle_weapon( 1 );
-          make_repeating_event( effect.player->sim, cycle_period, [ this, cycle_weapon ]() {
+          make_repeating_event( effect.player->sim, cycle_period, [ cycle_weapon ]() {
             cycle_weapon( 1 );
           } );
         } );
@@ -4967,6 +4971,73 @@ void vitality_sacrifice( special_effect_t& /* effect */ )
 
 }
 
+void decrypted_vy_cypher( special_effect_t& effect )
+{
+  struct vy_proc_callback_t : public dbc_proc_callback_t
+  {
+    struct decrypted_vy_cypher_damage_t : public proc_spell_t
+    {
+      decrypted_vy_cypher_damage_t( const special_effect_t& effect )
+        : proc_spell_t( "decrypted_vy_cypher", effect.player, effect.player->find_spell( 368495 ) )
+      {
+        attack_power_mod.direct = spell_power_mod.direct = data().effectN( 2 ).percent();
+      }
+
+      double attack_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        const double ap = attack_power_mod.direct * s->composite_attack_power();
+        const double sp = spell_power_mod.direct * s->composite_spell_power();
+
+        if ( ap <= sp )
+          return 0;
+
+        return spell_t::attack_direct_power_coefficient( s );
+      }
+
+      double spell_direct_power_coefficient( const action_state_t* s ) const override
+      {
+        const double ap = attack_power_mod.direct * s->composite_attack_power();
+        const double sp = spell_power_mod.direct * s->composite_spell_power();
+
+        if ( ap > sp )
+          return 0;
+
+        return spell_t::spell_direct_power_coefficient( s );
+      }
+    };
+
+    action_t* damage;
+
+    vy_proc_callback_t( const special_effect_t& effect )
+      : dbc_proc_callback_t( effect.player, effect ),
+        damage( create_proc_action<decrypted_vy_cypher_damage_t>( "decrypted_vy_cypher", effect ) )
+    {
+    }
+
+    void execute( action_t*, action_state_t* state ) override
+    {
+      damage->execute_on_target( state->target );
+    }
+  };
+
+  auto proc = new vy_proc_callback_t( effect );
+
+  auto vy_buff = buff_t::find( effect.player, "decrypted_vy_cypher" );
+  assert( vy_buff );
+  vy_buff->set_stack_change_callback( [ proc ]( buff_t*, int /* old_ */, int new_ ) {
+    if ( new_ == 1 )
+    {
+      proc->activate();
+    }
+    else
+    {
+      proc->deactivate();
+    }
+  } );
+
+  proc->deactivate();
+}
+
 namespace shards_of_domination
 {
   using id_rank_pair_t = std::pair<int, unsigned>;
@@ -6006,6 +6077,9 @@ void register_special_effects()
     unique_gear::register_special_effect( 339348, items::sephuzs_proclamation );
     unique_gear::register_special_effect( 339058, items::third_eye_of_the_jailer );
     unique_gear::register_special_effect( 338743, items::vitality_sacrifice );
+
+    // 9.2 Encrypted Affixes
+    unique_gear::register_special_effect( 368240, items::decrypted_vy_cypher );
 
     // 9.1 Shards of Domination
     unique_gear::register_special_effect( 357347, items::blood_link ); // Rune Word: Blood

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-22/42698, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -25,8 +25,11 @@ Effects          :
 #2 (id=217521)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 2 | Misc Value 2: 0x4 | Target: Self (1)
 #3 (id=884933)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+#4 (id=982928)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 1692 | Target: Self (1)
+                   Affected Spells (Category): Spell Reflection (23920), Spell Reflection (335255)
 Description      : Hardened by battle, all damage taken is reduced by $s3%, your Stamina is increased by $s2% and your Armor is increased by $s1% of your Strength.
 
 Name             : Charge (id=100) [Spell Family (4)] 
@@ -241,10 +244,10 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Always Hit (114), Taps immediately (215), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=423)      : Apply Aura (6) | Modify Damage Done% to Caster (269)
-                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected School(s): All
 #2 (id=159300)   : Apply Aura (6) | Modify Damage Done% (79)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
                    Affected School(s): All
 #3 (id=292881)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
@@ -257,7 +260,8 @@ Effects          :
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
 
 |cFFFFFFFFGenerates ${$m5/10} Rage.|r][]
-Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]
+Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]$?s202743[
+Taking $w3% increased damage from $@auracaster.][]
 
 Name             : Challenging Shout (id=1161) [Spell Family (4)] 
 Class            : Warrior
@@ -378,7 +382,7 @@ Spell Type       : Melee
 Spell Level      : 38
 Duration         : 10 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Warrior (137047 effect#2), Reckless Abandon (202751 effect#1), Recklessness (316828 effect#1), Depths of Insanity (337162 effect#1)
 Family Flags     : 4, 8
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -1049,7 +1053,7 @@ Spell Level      : 47
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Ararat's Bloodmirrors (248117 effect#2)
+Category         : 1692: Vanguard (71 effect#4), Ararat's Bloodmirrors (248117 effect#2)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
@@ -2251,7 +2255,7 @@ Spell Type       : None
 Spell Level      : 32
 Duration         : 20 seconds
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
                  : 771: Strive for Perfection (296320 effect#9)
 Affecting spells : Recklessness (1719 effect#9), Warrior (137047 effect#2), Unstoppable Force (275336 effects: #1, #2), Avatar (316438 effect#1), Unnerving Focus (337155 effect#6), Outburst (364639 effects: #1, #2)
 Family Flags     : 8, 32
@@ -3104,7 +3108,7 @@ Velocity         : 30 yards/sec
 Duration         : 12 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 45 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Warrior (137047 effect#2)
 Family Flags     : 8, 107
 Attributes       : ....x... ........ x....... .......x   ........ ........ ........ ....x... 
@@ -3610,8 +3614,8 @@ School           : Physical
 Spell Type       : None
 Resource         : 40 Rage (1) (id=10534) w/ Arms Warrior (id=137049)
 Resource         : 60 Rage (1) (id=192514) w/ Fury Warrior (id=137050)
-Resource         : 40 Rage (1) (id=192515) w/ Protection Warrior (id=137048)
-Resource         : 40 Rage (1) (id=192743) w/ Initial Warrior (id=325446)
+Resource         : 35 Rage (1) (id=192515) w/ Protection Warrior (id=137048)
+Resource         : 35 Rage (1) (id=192743) w/ Initial Warrior (id=325446)
 Spell Level      : 17
 Duration         : 12 seconds
 Cooldown         : 12 seconds
@@ -3631,7 +3635,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=299580)   : Dummy (3)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=342429)   : Apply Aura (6) | Modify Base Resistance (142)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
 Description      : Fight through the pain, ignoring $s2% of damage taken, up to $<absorb> total damage prevented.
@@ -5082,7 +5086,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 90 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Recklessness (1719 effect#8), Warrior (137047 effect#2), Arms Warrior (137049 effect#4), Fury Warrior (137050 effect#6), Unnerving Focus (337155 effect#5)
 Family Flags     : 8, 46
 Attributes       : ....x... ........ x.x..... .....x..   ....x... .xx....x ........ ........ 
@@ -10836,7 +10840,7 @@ Max Targets      : 1
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
-Category         : 1692: Ararat's Bloodmirrors (248117 effect#2)
+Category         : 1692: Vanguard (71 effect#4), Ararat's Bloodmirrors (248117 effect#2)
 Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : .....x.x .x...x.. .x...... ........ 
@@ -11971,7 +11975,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=903738)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Shield Slam (23922)
                    Family Flags: 7, 41
 #2 (id=903837)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)

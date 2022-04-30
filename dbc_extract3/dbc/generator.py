@@ -1332,7 +1332,7 @@ class SpellDataGenerator(DataGenerator):
          # Codex of the First Technique's damage spell
          351450,
          # 9.2 Encrypted M+ Affix
-         368239, 368240, 368241,
+         368239, 368240, 368241, 368495,
          # 9.2 Trinkets & Weapons
          368845, 368863, 368865, # Antumbra, Shadow of the Cosmos
          368635, 368636, 368637, 368638, 363839, 368641, 368642, 368850, # Scars of Fraternal Strife
@@ -1925,6 +1925,7 @@ class SpellDataGenerator(DataGenerator):
 
           ( 365640, 1 ), # tier 28 balance 2pc foe damage spell
           ( 367907, 1 ), # tier 28 balance 2pc foe energize spell
+          ( 365476, 1 ), ( 365478, 1 ), # tier 28 balance 2pc ground effect spell
         ),
         # Demon Hunter:
         (

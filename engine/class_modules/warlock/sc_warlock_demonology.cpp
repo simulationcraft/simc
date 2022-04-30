@@ -1152,13 +1152,13 @@ void warlock_t::create_buffs_demonology()
   buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
-          ->set_max_stack( legendary.implosive_potential->effectN( 4 ).base_value() ); // Hotfixed to cap of 15 on 2022-04-04
+          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
 
   //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
   buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
           ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
-          ->set_max_stack( legendary.implosive_potential->effectN( 4 ).base_value() ); // Hotfixed to cap of 15 on 2022-04-04
+          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
 
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
                             ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
@@ -1282,15 +1282,12 @@ void warlock_t::create_apl_demonology()
   def->add_action( "implosion,if=time_to_die<2*gcd" );
   def->add_action( "call_action_list,name=opener,if=time<variable.first_tyrant_time" );
   def->add_action( "interrupt,if=target.debuff.casting.react" );
-  def->add_action( "doom,if=refreshable" );
   def->add_action( "call_action_list,name=covenant_ability,if=soulbind.grove_invigoration|soulbind.field_of_blossoms|soulbind.combat_meditation|covenant.necrolord" );
-  def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up" );
   def->add_action( "potion,if=(!variable.use_bolt_timings&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time|soulbind.refined_palate&variable.next_tyrant_cd<38)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   def->add_action( "call_action_list,name=tyrant_setup" );
   def->add_action( "demonic_strength,if=(!runeforge.wilfreds_sigil_of_superior_summoning&variable.next_tyrant_cd>9)|(pet.demonic_tyrant.active&pet.demonic_tyrant.remains<6*gcd.max)" );
   def->add_action( "call_dreadstalkers,if=variable.use_bolt_timings&cooldown.summon_demonic_tyrant.remains_expected>22" );
   def->add_action( "call_dreadstalkers,if=!variable.use_bolt_timings&(variable.next_tyrant_cd>20-5*!runeforge.wilfreds_sigil_of_superior_summoning)" );
-  def->add_action( "power_siphon,if=!variable.use_bolt_timings&buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
   def->add_action( "bilescourge_bombers,if=buff.tyrant.down&variable.next_tyrant_cd>5" );
   def->add_action( "implosion,if=active_enemies>1+(1*talent.sacrificed_souls.enabled)&buff.wild_imps.stack>=6&buff.tyrant.down&variable.next_tyrant_cd>5" );
   def->add_action( "implosion,if=active_enemies>2&buff.wild_imps.stack>=6&buff.tyrant.down&variable.next_tyrant_cd>5&!runeforge.implosive_potential&(!talent.from_the_shadows.enabled|debuff.from_the_shadows.up)" );
@@ -1301,14 +1298,18 @@ void warlock_t::create_apl_demonology()
   def->add_action( "summon_demonic_tyrant,if=time_to_die<15" );
   def->add_action( "hand_of_guldan,if=soul_shard=5" );
   def->add_action( "shadow_bolt,if=soul_shard<5&runeforge.balespiders_burning_core&buff.balespiders_burning_core.remains<5" );
+  def->add_action( "doom,if=refreshable" );
   def->add_action( "hand_of_guldan,if=soul_shard>=3&(pet.dreadstalker.active|pet.demonic_tyrant.active)", "If Dreadstalkers are already active, no need to save shards" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&buff.nether_portal.up&cooldown.call_dreadstalkers.remains>2*gcd.max" );
   def->add_action( "hand_of_guldan,if=soul_shard>=1&variable.next_tyrant_cd<gcd.max&time>variable.first_tyrant_time-gcd.max" );
   def->add_action( "call_action_list,name=covenant_ability,if=!covenant.venthyr" );
   def->add_action( "soul_strike,if=!talent.sacrificed_souls.enabled", "Without Sacrificed Souls, Soul Strike is stronger than Demonbolt, so it has a higher priority" );
+  def->add_action( "power_siphon,if=!variable.use_bolt_timings&buff.wild_imps.stack>1&buff.demonic_core.stack<3" );
+  def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up&buff.shard_of_annihilation.stack<3" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&variable.next_tyrant_cd>20", "Spend Demonic Cores for Soul Shards until Tyrant cooldown is close to ready" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&variable.next_tyrant_cd<12", "During Tyrant setup, spend Demonic Cores for Soul Shards" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&(buff.demonic_core.stack>2|talent.sacrificed_souls.enabled)" );
+  def->add_action( "power_siphon,if=variable.use_bolt_timings&buff.shard_of_annihilation.up" );
   def->add_action( "demonbolt,if=set_bonus.tier28_2pc&soul_shard<4&((6-soul_shard)*action.shadow_bolt.execute_time>pet.dreadstalker.remains-action.hand_of_guldan.execute_time-action.demonbolt.execute_time)&buff.demonic_core.stack>=1" );
   def->add_action( "demonbolt,if=buff.demonic_core.react&soul_shard<4&active_enemies>1" );
   def->add_action( "soul_strike" );
@@ -1352,6 +1353,7 @@ void warlock_t::create_apl_demonology()
   trinks->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
   trinks->add_action( "use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,name=shadowed_orb_of_torment,if=variable.buff_sync_cd<22" );
+  trinks->add_action( "use_item,name=moonlit_prism,if=variable.use_bolt_timings&pet.demonic_tyrant.active" );
   trinks->add_action( "use_item,name=grim_eclipse,if=variable.buff_sync_cd<7" );
   trinks->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&variable.next_tyrant_cd<20" );
   trinks->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly from the target require additional, separate handling" );

@@ -1119,7 +1119,6 @@ struct regen_event_t : public event_t
   }
 };
 
-#ifndef SC_NO_NETWORKING
 /// List of files from which to look for Blizzard API key
 std::vector<std::string> get_api_key_locations()
 {
@@ -1162,6 +1161,10 @@ std::vector<std::string> get_api_key_locations()
  */
 std::string get_api_key()
 {
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    return {};
+  }
   auto key_locations = get_api_key_locations();
 
   for ( const auto& filename : key_locations )
@@ -1190,7 +1193,6 @@ std::string get_api_key()
 #endif /* SC_DEFAULT_APIKEY */
   return {};
 }
-#endif /* SC_NO_NETWORKING */
 
 /// Setup a periodic check for Bloodlust
 struct bloodlust_check_t : public event_t
@@ -1483,7 +1485,12 @@ sim_t::sim_t() :
   target_adds( 0 ), desired_targets( 1 ), 
   dbc(new dbc_t()),
   dbc_override( std::make_unique<dbc_override_t>() ),
-  timewalk( -1 ), scale_to_itemlevel( -1 ), challenge_mode( false ), scale_itemlevel_down_only( false ),
+  timewalk( -1 ),
+  scale_to_itemlevel( -1 ),
+  keystone_level( 10 ),
+  keystone_pct_hp( 27 ),
+  challenge_mode( false ),
+  scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
   enable_taunts( false ),
   use_item_verification( true ), disable_2_set( 1 ), disable_4_set( 1 ), enable_2_set( 1 ), enable_4_set( 1 ),
@@ -1525,9 +1532,7 @@ sim_t::sim_t() :
   allow_augmentations( true ),
   solo_raid( false ),
   maximize_reporting( false ),
-#ifndef SC_NO_NETWORKING
   apikey( get_api_key() ),
-#endif
   distance_targeting_enabled( false ),
   ignore_invulnerable_targets( false ),
   enable_dps_healing( false ),
@@ -2654,6 +2659,10 @@ void sim_t::init()
                            ->set_default_value( dbc::find_spell( this, 21562 ) -> effectN( 1 ).percent() )
                            ->add_invalidate( CACHE_STAMINA );
 
+  // Fight style initialization must be performed before target creation and raid event initialization, since fight
+  // styles may define/override these things.
+  init_fight_style();
+
   // Find Already defined target, otherwise create a new one.
   print_debug( "Creating Enemies." );
 
@@ -2714,10 +2723,6 @@ void sim_t::init()
       while ( targets_create > 1 );
     }
   }
-
-  // Fight style initialization must be performed before raid event initialization, since fight
-  // styles may define raid events.
-  init_fight_style();
 
   raid_event_t::init( this );
 
@@ -3566,6 +3571,9 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
+  add_option( opt_int( "keystone_level", keystone_level, 10, 50 ) );
+  add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "demonhunter", parse_player ) );

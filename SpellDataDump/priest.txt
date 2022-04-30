@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42979 Live (hotfix 2022-04-07/42979, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -12225,25 +12225,22 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
 Effects          :
 #1 (id=903306)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66666 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 0.66666)
 #2 (id=907109)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061)
                    Family Flags: 7, 9, 11, 12, 34
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #3 (id=908499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861)
                    Family Flags: 10, 28
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #4 (id=908500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Circle of Healing (204883)
                    Family Flags: 86
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 #5 (id=983483)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000
-Hotfixed         : NEW EFFECT
 Description      : $@spelldesc363492
 Tooltip          : Your next Holy-Word-affecting spell reduces the cooldown by an additional $s1 sec$?a363492[ and its effectiveness is increased by $s2%][].
 
@@ -12337,6 +12334,8 @@ Tooltip          : Increases the threshold at which Shadow Word: Death will do e
 Name             : Spheres' Harmony (id=364913) [Spell Family (6), Passive, Hidden] 
 School           : Arcane
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -12355,6 +12354,8 @@ Description      : $@spelldesc356395
 Name             : Shadow Word: Manipulation (id=364914) [Spell Family (6), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12373,6 +12374,8 @@ Description      : $@spelldesc356392
 Name             : Bwonsamdi's Pact (id=364915) [Spell Family (6), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12391,6 +12394,8 @@ Description      : $@spelldesc356391
 Name             : Pallid Command (id=364916) [Spell Family (6), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364911)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

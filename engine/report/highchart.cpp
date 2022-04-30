@@ -6,12 +6,14 @@
 #include "highchart.hpp"
 
 #include "buff/buff.hpp"
+#include "fmt/format.h"
 #include "player/player.hpp"
 #include "player/stats.hpp"
 #include "rapidjson/prettywriter.h"
 #include "rapidjson/stringbuffer.h"
 #include "sim/sim.hpp"
 #include "util/util.hpp"
+#include <iterator>
 
 namespace
 {
@@ -137,35 +139,22 @@ sc_js_t& highchart::theme( sc_js_t& json, highchart_theme_e theme )
 }
 
 std::string highchart::build_id( const stats_t& stats,
-                                 const std::string& suffix )
+                                 std::string_view suffix )
 {
-  std::string s;
-
-  s += "actor" + util::to_string( stats.player->index );
-  s += "_" + util::remove_special_chars( stats.name_str );
-  s += "_";
-  s += util::stats_type_string( stats.type );
-  s += suffix;
-
-  return s;
+  return fmt::format( "actor{}_{}_{}{}", stats.player->index, util::remove_special_chars( stats.name_str ), stats.type,
+                      suffix );
 }
 
 std::string highchart::build_id( const player_t& actor,
-                                 const std::string& suffix )
+                                 std::string_view suffix )
 {
-  std::string s = "actor" + util::to_string( actor.index );
-  s += suffix;
-  return s;
+  return fmt::format( "actor{}{}", actor.index, suffix );
 }
 
-std::string highchart::build_id( const buff_t& buff, const std::string& suffix )
+std::string highchart::build_id( const buff_t& buff, std::string_view suffix )
 {
-  std::string s = "buff_" + util::remove_special_chars( buff.name_str );
-  if ( buff.player )
-    s += "_actor" + util::to_string( buff.player->index );
-
-  s += suffix;
-  return s;
+  return fmt::format( "buff_{}{}{}", util::remove_special_chars( buff.name_str ),
+                      buff.player ? fmt::format( "_actor{}", buff.player->index ) : "", suffix );
 }
 
 // Init default (shared) json structure
@@ -177,13 +166,8 @@ chart_t::chart_t( std::string id_str, const sim_t& sim )
 
 std::string chart_t::to_target_div() const
 {
-  std::string str_ = "<div class=\"charts\" id=\"" + id_str_ + "\"";
-  str_ += " style=\"min-width: " + util::to_string( width_ ) + "px;";
-  if ( height_ > 0 )
-    str_ += " min-height: " + util::to_string( height_ ) + "px;";
-  str_ += "\"></div>\n";
-
-  return str_;
+  return fmt::format( "<div class=\"charts\" id=\"{}\" style=\"min-width: {}px;{}\"></div>\n", id_str_, width_,
+                      height_ > 0 ? fmt::format( " min-height: {}px;", height_ ) : "" );
 }
 
 std::string chart_t::to_data() const
@@ -192,11 +176,7 @@ std::string chart_t::to_data() const
   sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
 
   js_.Accept( writer );
-  std::string str_ = "{ \"target\": \"" + id_str_ + "\", \"data\": ";
-  str_ += b.GetString();
-  str_ += " }\n";
-
-  return str_;
+  return fmt::format( "{{ \"target\": \"{}\", \"data\": {} }}\n", id_str_, b.GetStringView() );
 }
 
 std::string chart_t::to_aggregate_string( bool on_click ) const
@@ -205,25 +185,21 @@ std::string chart_t::to_aggregate_string( bool on_click ) const
   sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
 
   js_.Accept( writer );
-  std::string javascript = b.GetString();
 
-  std::string str_;
+  auto out = fmt::memory_buffer();
   if ( on_click )
   {
     assert( !toggle_id_str_.empty() );
-    str_ += "$('#" + toggle_id_str_ + "').one('click', function() {\n";
+    fmt::format_to( std::back_inserter( out ), "$('#{}').one('click', function() {{\n", toggle_id_str_ );
     // str_ += "console.log(\"Loading " + id_str_ + ": " + toggle_id_str_ + "
     // ...\" );\n";
   }
-  str_ += "$('#" + id_str_ + "').highcharts(";
-  str_ += javascript;
-  str_ += ");\n";
+  fmt::format_to( std::back_inserter( out ), "$('#{}').highcharts({});\n", id_str_, b.GetStringView() );
   if ( on_click )
   {
-    str_ += "});\n";
+    fmt::format_to( std::back_inserter( out ), "}});\n" );
   }
-
-  return str_;
+  return fmt::to_string( out );
 }
 
 std::string chart_t::to_string() const
@@ -232,33 +208,33 @@ std::string chart_t::to_string() const
   sc_json_writer_t<rapidjson::StringBuffer> writer( b, sim_ );
 
   js_.Accept( writer );
-  std::string javascript = b.GetString();
+  auto javascript = std::string{ b.GetStringView() };
   javascript.erase( std::remove( javascript.begin(), javascript.end(), '\n' ),
                     javascript.end() );
-  std::string str_ = "<div class=\"charts\" id=\"" + id_str_ + "\"";
-  str_ += " style=\"min-width: " + util::to_string( width_ ) + "px;";
+
+  auto out = fmt::memory_buffer();
+  fmt::format_to( std::back_inserter( out ), "<div class=\"charts\" id=\"{}\" style=\"min-width: {}px;", id_str_,
+                  width_ );
   if ( height_ > 0 )
-    str_ += " height: " + util::to_string( height_ ) + "px;";
-  str_ += "\"></div>\n";
-  str_ += "<script type=\"text/javascript\">\n";
+  {
+    fmt::format_to( std::back_inserter( out ), " height: {}px;", height_ );
+  }
+  fmt::format_to( std::back_inserter( out ), "\"></div>\n" );
+  fmt::format_to( std::back_inserter( out ), "<script type=\"text/javascript\">\n" );
   if ( !toggle_id_str_.empty() )
   {
-    str_ += "jQuery( document ).ready( function( $ ) {\n";
-    str_ += "$('#" + toggle_id_str_ + "').on('click', function() {\n";
-    str_ += "console.log(\"Loading " + id_str_ + ": " + toggle_id_str_ + " ...\" );\n";
-    str_ += "$('#" + id_str_ + "').highcharts(";
-    str_ += javascript;
-    str_ += ");\n});\n});\n";
+    fmt::format_to( std::back_inserter( out ), "jQuery( document ).ready( function( $ ) {{\n" );
+    fmt::format_to( std::back_inserter( out ), "$('#{}').on('click', function() {{\n", toggle_id_str_ );
+    fmt::format_to( std::back_inserter( out ), "console.log(\"Loading {}: {} ...\" );\n", id_str_, toggle_id_str_ );
+    fmt::format_to( std::back_inserter( out ), "$('#{}').highcharts({});\n}});\n}});\n", id_str_, javascript );
   }
   else
   {
-    str_ += "jQuery('#" + id_str_ + "').highcharts(";
-    str_ += javascript;
-    str_ += ");\n";
+    fmt::format_to( std::back_inserter( out ), "jQuery('#{}').highcharts({});\n", id_str_, javascript );
   }
-  str_ += "</script>\n";
+  fmt::format_to( std::back_inserter( out ), "</script>\n" );
 
-  return str_;
+  return fmt::to_string( out );
 }
 
 std::string chart_t::to_xml() const
@@ -268,11 +244,7 @@ std::string chart_t::to_xml() const
 
   js_.Accept( writer );
 
-  std::string str = "<!CDATA[";
-  str += b.GetString();
-  str += "]]>";
-
-  return str;
+  return fmt::format("<!CDATA[{}]]>", b.GetStringView());
 }
 
 void chart_t::set_xaxis_max( double max )
@@ -280,22 +252,22 @@ void chart_t::set_xaxis_max( double max )
   set( "xAxis.max", max );
 }
 
-void chart_t::set_xaxis_title( const std::string& label )
+void chart_t::set_xaxis_title( std::string_view label )
 {
   set( "xAxis.title.text", label );
 }
 
-void chart_t::set_yaxis_title( const std::string& label )
+void chart_t::set_yaxis_title( std::string_view label )
 {
   set( "yAxis.title.text", label );
 }
 
-void chart_t::set_title( const std::string& title )
+void chart_t::set_title( std::string_view title )
 {
   set( "title.text", title );
 }
 
-void chart_t::add_data_series( const std::string& type, const std::string& name,
+void chart_t::add_data_series( std::string_view type, std::string_view name,
                                std::vector<sc_js_t>& d )
 {
   rapidjson::Value obj( rapidjson::kObjectType );
@@ -323,9 +295,9 @@ void chart_t::add_data_series( std::vector<sc_js_t>& d )
   add_data_series( "", "", d );
 }
 
-void chart_t::add_simple_series( const std::string& type,
-                                 const std::string& color,
-                                 const std::string& name,
+void chart_t::add_simple_series( std::string_view type,
+                                 std::optional<color::rgb> color,
+                                 std::string_view name,
                                  const std::vector<data_triple_t>& series )
 {
   rapidjson::Value obj( rapidjson::kObjectType );
@@ -353,20 +325,15 @@ void chart_t::add_simple_series( const std::string& type,
 
   set( obj, "data", arr );
 
-  if ( !color.empty() )
+  if ( color.has_value() )
   {
-    std::string color_hex = color;
-    if ( color_hex[ 0 ] != '#' )
-      color_hex = '#' + color_hex;
-
-    add( "colors", color_hex );
+    add( "colors", color->str() );
   }
-
   add( "series", obj );
 }
 
 void chart_t::add_simple_series(
-    const std::string& type, const std::string& color, const std::string& name,
+    std::string_view type, std::optional<color::rgb> color, std::string_view name,
     const std::vector<std::pair<double, double> >& series )
 {
   rapidjson::Value obj( rapidjson::kObjectType );
@@ -393,21 +360,16 @@ void chart_t::add_simple_series(
 
   set( obj, "data", arr );
 
-  if ( !color.empty() )
+  if ( color.has_value() )
   {
-    std::string color_hex = color;
-    if ( color_hex[ 0 ] != '#' )
-      color_hex = '#' + color_hex;
-
-    add( "colors", color_hex );
+    add( "colors", color->str() );
   }
-
   add( "series", obj );
 }
 
-void chart_t::add_simple_series( const std::string& type,
-                                 const std::string& color,
-                                 const std::string& name,
+void chart_t::add_simple_series( std::string_view type,
+                                 std::optional<color::rgb> color,
+                                 std::string_view name,
                                  const std::vector<double>& series )
 {
   rapidjson::Value obj( rapidjson::kObjectType );
@@ -416,14 +378,10 @@ void chart_t::add_simple_series( const std::string& type,
   set( obj, "data", series );
   set( obj, "name", name );
 
-  if ( !color.empty() )
+  if ( color.has_value() )
   {
-    std::string color_hex = color;
-    if ( color_hex[ 0 ] != '#' )
-      color_hex = '#' + color_hex;
-    add( "colors", color_hex );
+    add( "colors", color->str() );
   }
-
   add( "series", obj );
 }
 
@@ -434,27 +392,21 @@ void chart_t::add_simple_series( const std::string& type,
  * there are multiple plotlines defined, the subtitle text will be concatenated
  * at the end.
  */
-chart_t& chart_t::add_yplotline( double value_, const std::string& name_,
-                                 double line_width_, const std::string& color_ )
+chart_t& chart_t::add_yplotline( double value, std::string_view name,
+                                 double line_width, std::optional<color::rgb> color )
 {
   if ( rapidjson::Value* obj = path_value( "yAxis.plotLines" ) )
   {
     if ( obj->GetType() != rapidjson::kArrayType )
       obj->SetArray();
 
-    std::string color = color_;
-    if ( color.empty() )
-      color = "#FFFFFF";
+    if ( !color.has_value() )
+      color = "FFFFFF";
 
     if ( rapidjson::Value* text_v = path_value( "subtitle.text" ) )
     {
-      std::string mean_str = "<span style=\"color: ";
-      mean_str += color;
-      mean_str += ";\">";
-      if ( !name_.empty() )
-        mean_str += name_ + "=";
-      mean_str += util::to_string( value_ );
-      mean_str += "</span>";
+      auto mean_str = fmt::format( "<span style=\"color: {};\"{}{}</span>", *color,
+                                   name.empty() ? "" : fmt::format( "{}=", name ), value );
 
       if ( text_v->GetType() == rapidjson::kStringType )
         mean_str = std::string( text_v->GetString() ) + ", " + mean_str;
@@ -465,9 +417,9 @@ chart_t& chart_t::add_yplotline( double value_, const std::string& name_,
     }
 
     rapidjson::Value new_obj( rapidjson::kObjectType );
-    set( new_obj, "color", color );
-    set( new_obj, "value", value_ );
-    set( new_obj, "width", line_width_ );
+    set( new_obj, "color", color->str() );
+    set( new_obj, "value", value );
+    set( new_obj, "width", line_width );
     set( new_obj, "zIndex", 5 );
 
     obj->PushBack( new_obj, js_.GetAllocator() );
@@ -477,7 +429,7 @@ chart_t& chart_t::add_yplotline( double value_, const std::string& name_,
 }
 
 time_series_t::time_series_t( std::string id_str, const sim_t& sim )
-  : chart_t( std::move(id_str), sim )
+  : chart_t( std::move( id_str ), sim )
 {
   set( "chart.type", "area" );
 
@@ -486,28 +438,26 @@ time_series_t::time_series_t( std::string id_str, const sim_t& sim )
 }
 
 time_series_t& time_series_t::set_mean( double value_,
-                                        const std::string& color )
+                                        std::optional<color::rgb> color )
 {
-  std::string mean_color = color;
-  if ( mean_color.empty() )
-    mean_color = TEXT_MEAN_COLOR;
+  if ( !color.has_value() )
+    color = TEXT_MEAN_COLOR;
 
-  add_yplotline( value_, "mean", 1.25, mean_color );
+  add_yplotline( value_, "mean", 1.25, color );
   return *this;
 }
 
-time_series_t& time_series_t::set_max( double value_, const std::string& color )
+time_series_t& time_series_t::set_max( double value_, std::optional<color::rgb> color )
 {
-  std::string max_color = color;
-  if ( max_color.empty() )
-    max_color = TEXT_MAX_COLOR;
+  if ( !color.has_value() )
+    color = TEXT_MAX_COLOR;
 
-  add_yplotline( value_, "max", 1.25, max_color );
+  add_yplotline( value_, "max", 1.25, color );
   return *this;
 }
 
-bar_chart_t::bar_chart_t( const std::string& id_str, const sim_t& sim )
-  : chart_t( id_str, sim )
+bar_chart_t::bar_chart_t( std::string id_str, const sim_t& sim )
+  : chart_t( std::move( id_str ), sim )
 {
   set( "chart.type", "bar" );
 
@@ -518,8 +468,8 @@ bar_chart_t::bar_chart_t( const std::string& id_str, const sim_t& sim )
   set( "xAxis.offset", -10 );
 }
 
-pie_chart_t::pie_chart_t( const std::string& id_str, const sim_t& sim )
-  : chart_t( id_str, sim )
+pie_chart_t::pie_chart_t( std::string id_str, const sim_t& sim )
+  : chart_t( std::move(id_str), sim )
 {
   height_ = 300;  // Default Pie Chart height
 
@@ -528,9 +478,9 @@ pie_chart_t::pie_chart_t( const std::string& id_str, const sim_t& sim )
   // set( "plotOptions.bar.states.hover.lineWidth", 1 );
 }
 
-histogram_chart_t::histogram_chart_t( const std::string& id_str,
+histogram_chart_t::histogram_chart_t( std::string id_str,
                                       const sim_t& sim )
-  : chart_t( id_str, sim )
+  : chart_t( std::move(id_str), sim )
 {
   height_ = 300;
 

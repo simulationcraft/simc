@@ -43,8 +43,9 @@ actions+=/fireblood,if=debuff.colossus_smash.up
 actions+=/ancestral_call,if=debuff.colossus_smash.up
 actions+=/bag_of_tricks,if=debuff.colossus_smash.down&cooldown.mortal_strike.remains
 actions+=/sweeping_strikes,if=spell_targets.whirlwind>1&(cooldown.bladestorm.remains>15|talent.ravager.enabled)
-actions+=/run_action_list,name=hac,if=raid_event.adds.exists
-actions+=/run_action_list,name=execute,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20|(target.health.pct>80&covenant.venthyr)
+actions+=/call_action_list,name=execute,target_if=max:target.health.pct,if=target.health.pct>80&covenant.venthyr
+actions+=/call_action_list,name=execute,target_if=min:target.health.pct,if=(talent.massacre.enabled&target.health.pct<35)|target.health.pct<20
+actions+=/run_action_list,name=hac,if=raid_event.adds.up|spell_targets.whirlwind>1
 actions+=/run_action_list,name=single_target
 
 actions.execute=deadly_calm

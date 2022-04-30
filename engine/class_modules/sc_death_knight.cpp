@@ -6322,6 +6322,10 @@ struct obliterate_t : public death_knight_melee_attack_t
 
     return c;
   }
+
+  // Allow on-cast procs
+  bool has_amount_result() const override
+  { return true; }
 };
 
 // Outbreak and Virulent Eruption ===========================================

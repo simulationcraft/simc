@@ -746,9 +746,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
   fmt::print(
       os,
       "\n\nBaseline Performance:\n"
-#if defined( SC_NO_NETWORKING )
-      "  No-Networking = true\n"
-#endif
+      "  Networking    = {}\n"
       "  RNG Engine    = {}{}\n"
       "  Iterations    = {}{}\n"
       "  TotalEvents   = {}\n"
@@ -768,6 +766,7 @@ void sim_summary_performance( std::ostream& os, sim_t* sim )
       "  AnalyzeSeconds= {}\n"
       "  SpeedUp       = {:.0f}\n"
       "  EndTime       = {:%Y-%m-%d %H:%M:%S%z} ({})\n\n",
+      SC_NO_NETWORKING_ON ? "disabled" : "enabled",
       sim->rng().name(), sim->deterministic ? " (deterministic)" : "",
       sim->iterations,
       sim -> threads > 1 ? iterations_str : "",

@@ -117,12 +117,17 @@ struct druid_td_t : public actor_target_data_t
            hots.wild_growth->is_ticking();
   }
 
-  int dots_ticking() const
-  {
-    return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
-           dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
-           dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
-  }
+  /* Currently this helper method is only used for adapative swarm, which is bugged to not count lunar inspiration.
+    The bugged check is implemented locally in adaptive_swarm_damage_t and this is commented out for now until it
+    becomes needed in the future or the bug is fixed.
+    
+    int dots_ticking() const
+    {
+      return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
+             dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
+             dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
+    }
+  */
 };
 
 struct snapshot_counter_t
@@ -297,11 +302,11 @@ public:
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
+    bool delay_berserking = false;
 
     // Feral
     double predator_rppm_rate = 0.0;
     bool owlweave_cat = true;
-    bool ptr_bugs = false;
 
     // Guardian
     bool catweave_bear = false;
@@ -544,6 +549,7 @@ public:
   {
     // Balance
     proc_t* pulsar;
+    proc_t* bugged_4t28;
 
     // Feral & Resto
     proc_t* clearcasting;
@@ -1282,6 +1288,32 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
 
 // Druid Buffs ==============================================================
 
+// Architect's Aligner (Guardian Tier 28 4 Set) =============================
+struct architects_aligner_buff_t : public druid_buff_t<buff_t>
+{
+  architects_aligner_buff_t( druid_t& p )
+    : base_t( p, "architects_aligner", p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
+  {
+    set_duration( 0_ms );
+    set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
+      p.active.architects_aligner->execute();
+    } );
+  }
+
+  void expire( timespan_t d ) override
+  {
+    // Buff ticks seem to occur at 150 frames per second, so if the buff expires within 1/150 second (6.67ms) of a tic,
+    // both events happen in the same frame and you do not get a partial tick. Note that simc truncates down to
+    // millisecond, so while in game the breakpoint required to get 6th tick is 832 haste rating, in simc it is 831
+    // haste rating.
+
+    if ( tick_event && tick_time() - tick_time_remains() > 6_ms )
+      p().active.architects_aligner->execute();
+
+    base_t::expire( d );
+  }
+};
+
 // Berserk (Feral) / Incarn Buff ============================================
 struct berserk_cat_buff_t : public druid_buff_t<buff_t>
 {
@@ -1997,6 +2029,10 @@ public:
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
 
+    // an instant executed immediately after casting RF does not grant a stack
+    if ( p()->buff.ravenous_frenzy->elapsed( p()->sim->current_time() ) < 50_ms )
+      return;
+
     // trigger on non-free_cast or free_cast that requires you to actually cast
     if ( !f || f == free_cast_e::APEX || f == free_cast_e::ONETHS )
       p()->buff.ravenous_frenzy->trigger();
@@ -2299,7 +2335,16 @@ public:
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 2U, p()->mastery.total_eclipse, p()->spec.eclipse_2 );
     parse_conditional_effects( p()->sets->set( DRUID_BALANCE, T28, B4 ), [ this ]() {
-      return p()->buff.eclipse_lunar->check() || p()->buff.eclipse_solar->check();
+      if ( ( p()->eclipse_handler.state == eclipse_state_e::IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) > 50_ms ) ||
+           ( p()->eclipse_handler.state == eclipse_state_e::IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) > 50_ms ) ||
+           p()->eclipse_handler.state == eclipse_state_e::IN_BOTH )
+      {
+        return true;
+      }
+
+      return false;
     } );
 
     // Feral
@@ -5589,16 +5634,19 @@ struct fury_of_elune_t : public druid_spell_t
   };
 
   action_t* damage;
+  buff_t* energize;
   timespan_t tick_period;
 
   fury_of_elune_t( druid_t* p, std::string_view opt )
-    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), opt )
+    : fury_of_elune_t( p, "fury_of_elune", p->talent.fury_of_elune, p->find_spell( 211545 ), p->buff.fury_of_elune,
+                       opt )
   {}
 
-  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage,
+  fury_of_elune_t( druid_t* p, std::string_view n, const spell_data_t* s, const spell_data_t* s_damage, buff_t* b,
                    std::string_view opt )
     : druid_spell_t( n, p, s, opt ),
-      tick_period( p->query_aura_effect( &data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
+      energize( b ),
+      tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
     dot_duration = 0_ms;  // AP gain handled via buffs
 
@@ -5612,10 +5660,7 @@ struct fury_of_elune_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( free_cast == free_cast_e::PILLAR )
-      p()->buff.celestial_infusion->trigger();
-    else
-      p()->buff.fury_of_elune->trigger();
+    energize->trigger();
 
     make_event<ground_aoe_event_t>( *sim, p(),
                                     ground_aoe_params_t()
@@ -6506,6 +6551,22 @@ struct starfall_t : public druid_spell_t
     return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
+  }
+
   void execute() override
   {
     if ( !free_cast && p()->buff.oneths_free_starfall->up() )
@@ -6721,6 +6782,22 @@ struct starsurge_t : public druid_spell_t
     // effect that follows, such as proccing pulsar, can correctly reset empowerments
     if ( hit_any_target )
       p()->eclipse_handler.cast_starsurge();
+  }
+
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
   }
 
   void execute() override
@@ -7270,6 +7347,13 @@ struct adaptive_swarm_t : public druid_spell_t
       : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->cov.adaptive_swarm_damage )
     {}
 
+    bool dots_ticking( druid_td_t* td )
+    {
+      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
+             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
+             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
+    }
+
     swarm_target_t new_swarm_target( swarm_target_t exclude ) override
     {
       auto tl = target_list();
@@ -7292,14 +7376,14 @@ struct adaptive_swarm_t : public druid_spell_t
 
         if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_1.push_back( t );
           else
             tl_2.push_back( t );
         }
         else
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_3.push_back( t );
           else
             tl_4.push_back( t );
@@ -9243,12 +9327,7 @@ void druid_t::create_buffs()
   buff.incarnation_bear =
       make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", talent.incarnation_bear, true );
 
-  buff.architects_aligner =
-      make_buff( this, "architects_aligner", sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
-          ->set_duration( 0_ms )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-            active.architects_aligner->execute_on_target( target );
-          } );
+  buff.architects_aligner = make_buff<architects_aligner_buff_t>( *this );
 
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
@@ -9445,8 +9524,8 @@ void druid_t::create_actions()
   // Balance
   if ( sets->has_set_bonus( DRUID_BALANCE, T28, B2 ) )
   {
-    auto pillar =
-        get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 367907 ), find_spell( 365640 ), "" );
+    auto pillar = get_secondary_action_n<fury_of_elune_t>( "celestial_pillar", find_spell( 365478 ),
+                                                           find_spell( 365640 ), buff.celestial_infusion, "" );
     pillar->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     pillar->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
     pillar->set_free_cast( free_cast_e::PILLAR );
@@ -9814,6 +9893,7 @@ void druid_t::init_procs()
 
   // Balance
   proc.pulsar = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
+  proc.bugged_4t28 = get_proc( "Bugged 4T28" )->collect_count();
 
   // Feral
   proc.predator            = get_proc( "Predator" );
@@ -10510,6 +10590,10 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
       return make_fn_expr( "time_spend_healing", [ this ]() {
         return options.time_spend_healing;
       } );
+    if ( util::str_compare_ci( splits[1], "delay_berserking" ) && splits.size() == 2 )
+      return make_fn_expr( "delay_berserking", [this]() {
+      return options.delay_berserking;
+    } );
   }
 
   if ( splits[ 0 ] == "action" && splits[ 1 ] == "ferocious_bite_max" && splits[ 2 ] == "damage" )
@@ -10839,11 +10923,11 @@ void druid_t::create_options()
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
+  add_option( opt_bool( "druid.delay_berserking", options.delay_berserking ) );
 
   // Feral
   add_option( opt_float( "druid.predator_rppm", options.predator_rppm_rate ) );
   add_option( opt_bool( "druid.owlweave_cat", options.owlweave_cat ) );
-  add_option( opt_bool( "druid.ptr_bugs", options.ptr_bugs ) );
 
   // Guardian
   add_option( opt_bool( "druid.catweave_bear", options.catweave_bear ) );

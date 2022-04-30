@@ -102,13 +102,13 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
       }
     }
 
-    if ( effect.driver()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+    if ( effect.can_only_proc_from_class_abilites() )
     {
       if ( !a->allow_class_ability_procs )
         return;
     }
 
-    if ( !effect.driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+    if ( !effect.can_proc_from_procs() )
     {
       if ( !a->not_a_proc && ( a->background || a->proc ) )
         return;
@@ -353,8 +353,12 @@ void dbc_proc_callback_t::execute( action_t* action, action_state_t* state )
 
     if ( triggered && proc_action && ( !proc_buff || proc_buff->check() == proc_buff->max_stack() ) )
     {
-      proc_action->target = target( state );
-      proc_action->schedule_execute();
+      // Snapshot a new state for schedule_execute() as AoE-triggered procs may require different targets
+      proc_action->set_target( target( state ) );
+      auto proc_state = proc_action->get_state();
+      proc_state->target = proc_action->target;
+      proc_action->snapshot_state( proc_state, proc_action->amount_type( proc_state ) );
+      proc_action->schedule_execute( proc_state );
 
       // Decide whether to expire the buff even with 1 max stack
       if ( expire_on_max_stack )

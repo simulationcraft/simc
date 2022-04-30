@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42698 Live (hotfix 2022-03-22/42698, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -156,7 +156,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Do Not Chain To Crowd-Controlled Targets (200), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91)       : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.78000 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.93600 | PvP Coefficient: 0.95833 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
@@ -267,7 +267,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Unknown(118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
 
-If target is in your party or raid, all party and raid members will be affected.
+If the target is in your party or raid, all party and raid members will be affected.
 Tooltip          : Intellect increased by $w1%.
 
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
@@ -532,7 +532,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=4785)     : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.43120 | PvP Coefficient: 0.95238 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.51710 | PvP Coefficient: 0.89800 | Target: Enemy (6)
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Ice Barrier (id=11426) [Spell Family (3)] 
@@ -583,7 +583,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Icy Veins (12472 effect#2), Overpowered (155147 effects: #1, #2, #3), Wild Arcanist (184903 effects: #1, #2, #3), Norgannon's Foresight (236380 effect#1), Arcane Power (321739 effect#1)
 Family Flags     : 51, 67
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -646,7 +646,7 @@ Spell Type       : Magic
 Spell Level      : 29
 Duration         : 20 seconds
 Cooldown         : 180 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Thermal Void (155149 effect#2), Norgannon's Foresight (236380 effect#1), Icy Veins (321702 effect#1)
 Family Flags     : 46, 67, 105
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
@@ -2304,7 +2304,7 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Allow Cast While Casting (135), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=120062)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.91080 | PvP Coefficient: 0.86957 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.00200 | PvP Coefficient: 0.79000 | Target: Enemy (6)
 Description      : Blasts the enemy for $s1 Fire damage. 
 
 |cFFFFFFFFFire:|r Castable while casting other spells.$?a231568[ Always deals a critical strike.][]
@@ -3606,7 +3606,7 @@ Resource         : 10% Base Mana (0) (id=10319)
 Spell Level      : 29
 Duration         : 10 seconds
 Cooldown         : 120 seconds
-Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Affecting spells : Norgannon's Foresight (236380 effect#1), Combustion (321710 effect#1), Fiery Rush (364476 effect#1)
 Family Flags     : 58, 67
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -5483,7 +5483,7 @@ Attributes       : ........ ........ x.x..... ........   .......x ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Reflection (39), No Threat (42), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Ignore Caster Healing Modifiers (312), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=355674)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -10544,8 +10544,6 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11953,7 +11951,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Can Proc From Procs (122), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=904509)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 4000 | Scaled Value: 4000 | PvP Coefficient: 0.50000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 Description      : Increases the duration of Combustion by ${$s1/1000} sec.

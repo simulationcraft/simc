@@ -1,5 +1,5 @@
-// Item effects, wow build 9.2.5.42850
-static const std::array<item_effect_t, 7830> __ptr_item_effect_data { {
+// Item effects, wow build 9.2.5.43412
+static const std::array<item_effect_t, 7847> __ptr_item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7830,9 +7830,26 @@ static const std::array<item_effect_t, 7830> __ptr_item_effect_data { {
   { 140544, 368509, 190958,   0,   0,    0,      -1,      -1 }, // So'leah's Secret Technique
   { 140545, 368513, 190958,   1,   1,    0,      -1,      -1 }, // So'leah's Secret Technique
   { 140570, 368867, 191031,   0,   0,    0,      -1,      -1 }, // Open
+  { 147826, 345228, 192295,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 147827, 345229, 192296,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 147828, 345231, 192297,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 147829, 336126, 192298,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 147830, 336128, 192299,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 147831, 336135, 192300,   0,   1,    0,      -1,      -1 }, // Adaptation
+  { 147832, 363117, 192301,   0,   0,    0,      -1,      -1 }, // Gladiator's Fastidious Resolve
+  { 147833, 363121, 192302,   0,   1,    0,      -1,      -1 }, // Gladiator's Echoing Resolve
+  { 147834, 363481, 192303,   0,   0,    0,      -1,      -1 }, // Gladiator's Resonator
+  { 147835, 363522, 192304,   0,   0,    0,      -1,      -1 }, // Gladiator's Eternal Aegis
+  { 147836, 363532, 192305,   0,   0,    0,      -1,      -1 }, // Gladiator's Devouring Malediction
+  { 147841, 345228, 192352,   0,   0,    0,      -1,      -1 }, // Gladiator's Badge
+  { 147842, 345229, 192388,   0,   1,    0,      -1,      -1 }, // Gladiator's Insignia
+  { 147843, 345231, 192392,   0,   0, 1141,  120000,   20000 }, // Gladiator's Emblem
+  { 147844, 336126, 192412,   0,   0,    0,      -1,      -1 }, // Gladiator's Medallion
+  { 147845, 336128, 192413,   0,   1,    0,      -1,      -1 }, // Relentless
+  { 147846, 336135, 192414,   0,   1,    0,      -1,      -1 }, // Adaptation
 } };
 
-static const std::array<uint16_t, 7830> __ptr_item_effect_id_index { {
+static const std::array<uint16_t, 7847> __ptr_item_effect_id_index { {
     388,   389,   390,   391,   392,   393,   394,   397,
     398,   399,   400,   401,   402,   403,   404,   405,
     406,   407,   408,   409,   412,   413,   414,   415,
@@ -8811,6 +8828,8 @@ static const std::array<uint16_t, 7830> __ptr_item_effect_id_index { {
     312,   313,  7822,  7823,  7741,  7739,  7740,  7738,
    7736,  7737,  7733,  7797,  7824,  7825,  7728,  7729,
    7798,  7799,  7800,  7801,  7826,   314,  7827,  7828,
-   7742,  7751,  7829,  7749,  7802,  7730,
+   7742,  7751,  7829,  7749,  7802,  7730,  7830,  7831,
+   7832,  7833,  7834,  7835,  7836,  7837,  7838,  7839,
+   7840,  7841,  7842,  7843,  7844,  7845,  7846,
 } };
 

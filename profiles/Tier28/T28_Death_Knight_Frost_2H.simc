@@ -195,7 +195,7 @@ actions.standard+=/glacial_advance,if=!death_knight.runeforge.razorice&(debuff.r
 actions.standard+=/frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm
 actions.standard+=/howling_blast,if=variable.rotfc_rime
 actions.standard+=/frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)
-actions.standard+=/obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|talent.gathering_storm&buff.remorseless_winter.up|runic_power.deficit>(25+talent.runic_attenuation*5)
+actions.standard+=/obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|rune>=4|main_hand.2h&talent.gathering_storm&buff.remorseless_winter.up
 actions.standard+=/frost_strike
 actions.standard+=/horn_of_winter
 actions.standard+=/arcane_torrent
@@ -213,9 +213,9 @@ actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&(!trink
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 
 head=shadowghast_helm,id=171415,bonus_id=6647/6648/6954/7451/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173128
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
 shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/6807,enchant=soul_vitality
+back=drape_of_mournful_melodies,id=189791,bonus_id=7187/1524,enchant=soul_vitality
 chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
 wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173127
 hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
@@ -225,18 +225,18 @@ feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
 finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
-trinket2=elegy_of_the_eternals,id=188270,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=283.00
-# gear_strength=1443
-# gear_stamina=2982
+# gear_ilvl=281.27
+# gear_strength=1418
+# gear_stamina=2969
 # gear_attack_power=20
-# gear_crit_rating=742
-# gear_haste_rating=485
-# gear_mastery_rating=1033
-# gear_versatility_rating=91
-# gear_armor=1859
+# gear_crit_rating=774
+# gear_haste_rating=400
+# gear_mastery_rating=1049
+# gear_versatility_rating=125
+# gear_armor=1857
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

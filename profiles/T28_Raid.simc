@@ -34,9 +34,9 @@ T28_Monk_Brewmaster.simc
 #T28_Monk_Brewmaster_Night_Fae.simc
 #T28_Monk_Brewmaster_Venthyr.simc
 T28_Monk_Windwalker.simc
+T28_Monk_Windwalker_Necrolord.simc
 # These profiles exist but are not terribly relevant for most situations,
 # so they remain but are not shown in the stack chart.
-#T28_Monk_Windwalker_Necrolord.simc
 #T28_Monk_Windwalker_Night_Fae.simc
 #T28_Monk_Windwalker_Venthyr.simc
 
@@ -71,6 +71,7 @@ T28_Warlock_Affliction_Necrolord.simc
 T28_Warlock_Demonology.simc
 T28_Warlock_Demonology_Necrolord.simc
 T28_Warlock_Destruction.simc
+T28_Warlock_Destruction_Necrolord.simc
 
 T28_Warrior_Arms.simc
 T28_Warrior_Fury.simc

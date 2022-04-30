@@ -32,24 +32,8 @@ void parse_additional_args( SC_MainWindow& w, QStringList args )
   }
 }
 
-#if 0
-namespace
-{
-std::ofstream debugStream("debug.log");
-
-void messageOutput(QtMsgType /* type */, const QMessageLogContext& context, const QString& message)
-{
-  debugStream << context.file << ":" << context.line << ": " << message.toStdString() << std::endl;
-}
-}
-#endif
-
 int main( int argc, char* argv[] )
 {
-#if 0
-  qInstallMessageHandler(messageOutput);
-#endif
-
 #if ( QT_VERSION < QT_VERSION_CHECK( 6, 0, 0 ) )
   QCoreApplication::setAttribute( Qt::AA_EnableHighDpiScaling );
   qputenv( "QT_AUTO_SCREEN_SCALE_FACTOR", "1" );
@@ -67,9 +51,7 @@ int main( int argc, char* argv[] )
   unique_gear::register_special_effects();
   unique_gear::sort_special_effects();
 
-#ifndef SC_NO_NETWORKING
   bcp_api::token_load();
-#endif
 
   hotfix::apply();
 
@@ -133,9 +115,7 @@ int main( int argc, char* argv[] )
 
   auto ret = a.exec();
 
-#ifndef SC_NO_NETWORKING
   bcp_api::token_save();
-#endif
 
   return ret;
 }

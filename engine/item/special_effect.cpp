@@ -104,6 +104,11 @@ void special_effect_t::reset()
   aoe = 0;
   reverse_stack_reduction = 0;
 
+  can_proc_from_procs_ = false;
+  can_only_proc_from_class_abilites_ = false;
+  override_can_proc_from_procs = false;
+  override_can_only_proc_from_class_abilites = false;
+
   // Must match buff creator defaults for now
   max_stacks = -1;
   proc_chance_ = -1;
@@ -756,6 +761,34 @@ bool special_effect_t::has_target_specific_cooldown() const
     return target_specific_cooldown;
 
   return driver()->flags( spell_attribute::SX_TARGET_SPECIFIC_COOLDOWN );
+}
+
+bool special_effect_t::can_proc_from_procs() const
+{
+  if ( override_can_proc_from_procs )
+    return can_proc_from_procs_;
+
+  return driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS );
+}
+
+bool special_effect_t::can_only_proc_from_class_abilites() const
+{
+  if ( override_can_only_proc_from_class_abilites )
+    return can_only_proc_from_class_abilites_;
+
+  return driver()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES );
+}
+
+void special_effect_t::set_can_proc_from_procs( bool value )
+{
+  override_can_proc_from_procs = true;
+  can_proc_from_procs_ = value;
+}
+
+void special_effect_t::set_can_only_proc_from_class_abilites( bool value )
+{
+  override_can_only_proc_from_class_abilites = true;
+  can_only_proc_from_class_abilites_ = value;
 }
 
 timespan_t special_effect_t::duration() const

@@ -30,68 +30,6 @@ rgb::operator std::string() const
   return str();
 }
 
-rgb& rgb::adjust( double v )
-{
-  if ( v < 0 || v > 1 )
-  {
-    return *this;
-  }
-
-  r_ = static_cast<uint8_t>(r_ * v);
-  g_ = static_cast<uint8_t>(g_ * v);
-  b_ = static_cast<uint8_t>(b_ * v);
-  return *this;
-}
-
-rgb rgb::adjust( double v ) const
-{
-  return rgb( *this ).adjust( v );
-}
-
-rgb rgb::dark( double pct ) const
-{
-  return rgb( *this ).adjust( 1.0 - pct );
-}
-
-rgb rgb::light( double pct ) const
-{
-  return rgb( *this ).adjust( 1.0 + pct );
-}
-
-rgb rgb::opacity( double pct ) const
-{
-  rgb r( *this );
-  r.a_ = pct;
-
-  return r;
-}
-
-rgb& rgb::operator=( util::string_view color_str )
-{
-  parse_color( color_str );
-  return *this;
-}
-
-rgb& rgb::operator+=( rgb other )
-{
-  unsigned mix_r = ( r_ + other.r_ ) / 2;
-  unsigned mix_g = ( g_ + other.g_ ) / 2;
-  unsigned mix_b = ( b_ + other.b_ ) / 2;
-
-  r_ = static_cast<uint8_t>( mix_r );
-  g_ = static_cast<uint8_t>( mix_g );
-  b_ = static_cast<uint8_t>( mix_b );
-
-  return *this;
-}
-
-rgb rgb::operator+( rgb other ) const
-{
-  rgb new_color( *this );
-  new_color += other;
-  return new_color;
-}
-
 rgb class_color( player_e type )
 {
   switch ( type )

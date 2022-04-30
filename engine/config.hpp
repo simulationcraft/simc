@@ -126,6 +126,12 @@
 // Networking library
 // ==========================================================================
 
+#ifndef SC_NO_NETWORKING
+constexpr bool SC_NO_NETWORKING_ON = false;
+#else
+constexpr bool SC_NO_NETWORKING_ON = true;
+#endif
+
 #if !defined( SC_NO_NETWORKING ) && !defined( SC_WINDOWS )
 #  define SC_USE_CURL
 #elif !defined( SC_NO_NETWORKING ) && defined( SC_WINDOWS )

@@ -655,18 +655,19 @@ void SC_MainWindow::startNewImport( const QString& region, const QString& realm,
   simProgress = 0;
   import_sim  = initSim();
 
-#ifndef SC_NO_NETWORKING
-  // Try to import the API key from the GUI options
-  if ( import_sim->apikey.empty() )
+  if constexpr ( !SC_NO_NETWORKING_ON )
   {
-    std::string apikey = optionsTab->get_api_key().toStdString();
-
-    if ( bcp_api::validate_api_key( apikey ) )
+    // Try to import the API key from the GUI options
+    if ( import_sim->apikey.empty() )
     {
-      import_sim->apikey = apikey;
+      std::string apikey = optionsTab->get_api_key().toStdString();
+
+      if ( bcp_api::validate_api_key( apikey ) )
+      {
+        import_sim->apikey = apikey;
+      }
     }
   }
-#endif
 
   importThread->start( import_sim, region, realm, character, specialization );
   simulateTab->add_Text( defaultSimulateText, tr( "Importing" ) );
@@ -791,9 +792,10 @@ void SC_MainWindow::startSim()
   // Build combined input profile
   auto simc_gui_profile = std::get<1>( value );
   QString noNetworking;
-#ifdef SC_NO_NETWORKING
-  noNetworking = " NoNetworking";
-#endif
+  if constexpr ( SC_NO_NETWORKING_ON )
+  {
+    noNetworking = " NoNetworking";
+  }
   QString simc_version;
   if ( !git_info::available() )
   {

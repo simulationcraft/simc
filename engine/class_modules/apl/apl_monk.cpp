@@ -565,7 +565,7 @@ void windwalker( player_t* p )
 
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
-      "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)|fight_remains<35" );
+      "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)|fight_remains<35" );
   cd_sef->add_action( "faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)" );
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
   cd_sef->add_action(
@@ -672,28 +672,23 @@ void windwalker( player_t* p )
   weapons_of_order->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
   weapons_of_order->add_talent( p, "Energizing Elixir", "if=chi.max-chi>=2&energy.time_to_max>3" );
   weapons_of_order->add_action( p, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
-  weapons_of_order->add_action( p, "Fists of Fury", "if=active_enemies>=2&buff.weapons_of_order_ww.remains<1" );
-  weapons_of_order->add_talent( p, "Whirling Dragon Punch", "if=active_enemies>=2" );
-  weapons_of_order->add_action( p, "Spinning Crane Kick",
-                                "if=combo_strike&(active_enemies>=3&buff.weapons_of_order_ww.up|buff.dance_of_chiji.up)" );
-  weapons_of_order->add_action( p, "Expel Harm",
-                                "if=chi=0&buff.weapons_of_order_ww.remains<4" );
-  weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4" );
-  weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Blackout Kick",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
-  weapons_of_order->add_action( p, "Tiger Palm",
-                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4" );
+  // Cancel FoF in ST after the GCD if we do not have T28 2PC 
   weapons_of_order->add_action( p, "Fists of Fury",
-                                "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up" );
-  weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
+                                "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc&active_enemies<2" );
+  // Full channel FoF with T28 2PC or at the end of the buff in AoE
+  weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&set_bonus.tier28_2pc|active_enemies>=2&buff.weapons_of_order_ww.remains<1" );
+  weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
+  weapons_of_order->add_action( p, "Spinning Crane Kick",
+                                "if=combo_strike&(active_enemies>=3&buff.weapons_of_order_ww.up|buff.dance_of_chiji.up)" );
   weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4|chi<3" );
   weapons_of_order->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   weapons_of_order->add_talent( p, "Chi Burst", "if=chi.max-chi>=(1+active_enemies>1)" );
   weapons_of_order->add_action( p, "Tiger Palm",
-                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
+                                "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4|(!talent.hit_combo|combo_strike)&chi.max-chi>=2" );
+   weapons_of_order->add_action( p, "Spinning Crane Kick", "if=buff.chi_energy.stack>30-5*active_enemies" );
   weapons_of_order->add_action( p, "Blackout Kick",
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up" );
   weapons_of_order->add_talent( p, "Chi Wave" );
@@ -708,7 +703,7 @@ void windwalker( player_t* p )
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
   st->add_action(  "fleshcraft,interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
   st->add_action( p, "Rising Sun Kick",
-                  "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)" );
+                  "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
   st->add_action( p, "Fists of Fury",
       "if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|raid_event.adds.up)&(energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains<execute_time+1)|fight_remains<execute_time+1|debuff.bonedust_brew_debuff.up|buff.primordial_power.up" );
   st->add_action( p, "Crackling Jade Lightning",

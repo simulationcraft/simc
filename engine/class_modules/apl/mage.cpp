@@ -613,6 +613,7 @@ void frost( player_t* p )
   aoe->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(buff.fingers_of_frost.react=0|runeforge.deaths_fathom&prev_gcd.1.frostbolt&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.up))" );
   aoe->add_action( "ice_nova" );
   aoe->add_action( "comet_storm" );
+  aoe->add_action( "fleshcraft,if=soulbind.volatile_solvent&buff.volatile_solvent_humanoid.down,interrupt_immediate=1,interrupt_global=1,interrupt_if=1" );
   aoe->add_action( "frostbolt,if=runeforge.deaths_fathom&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.remains>cast_time+travel_time" );
   aoe->add_action( "frostbolt,if=remaining_winters_chill=1&comet_storm_remains>action.ice_lance.travel_time" );
   aoe->add_action( "ice_lance,if=buff.fingers_of_frost.react|debuff.frozen.remains>travel_time|remaining_winters_chill&debuff.winters_chill.remains>travel_time" );
@@ -650,6 +651,7 @@ void frost( player_t* p )
   st->add_action( "flurry,if=(remaining_winters_chill=0|debuff.winters_chill.down)&(prev_gcd.1.ebonbolt|buff.brain_freeze.react&(prev_gcd.1.glacial_spike|prev_gcd.1.frostbolt&(!conduit.ire_of_the_ascended|cooldown.radiant_spark.remains|runeforge.freezing_winds)|prev_gcd.1.radiant_spark|buff.fingers_of_frost.react=0&(debuff.mirrors_of_torment.up|buff.freezing_winds.up|buff.expanded_potential.react)))" );
   st->add_action( "frozen_orb" );
   st->add_action( "comet_storm,if=remaining_winters_chill" );
+  st->add_action( "ice_lance,if=talent.splitting_ice&talent.chain_reaction&buff.fingers_of_frost.react=buff.fingers_of_frost.max_stack" );
   st->add_action( "frostbolt,if=runeforge.deaths_fathom&(runeforge.cold_front|runeforge.slick_ice)&buff.deathborne.remains>cast_time+travel_time&active_enemies>=2" );
   st->add_action( "blizzard,if=(!runeforge.slick_ice|!conduit.icy_propulsion&buff.deathborne.down)&active_enemies>=2" );
   st->add_action( "ray_of_frost,if=remaining_winters_chill=1&debuff.winters_chill.remains" );
@@ -667,6 +669,7 @@ void frost( player_t* p )
   st->add_action( "arcane_explosion,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_arcane.down" );
   st->add_action( "fire_blast,if=runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down" );
   st->add_action( "glacial_spike,if=buff.brain_freeze.react" );
+  st->add_action( "fleshcraft,if=soulbind.volatile_solvent&buff.volatile_solvent_humanoid.down,interrupt_immediate=1,interrupt_global=1,interrupt_if=1" );
   st->add_action( "frostbolt" );
 }
 //frost_apl_end
