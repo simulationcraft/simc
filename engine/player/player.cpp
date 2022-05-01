@@ -3466,16 +3466,21 @@ void player_t::create_buffs()
       } );
       buffs.decrypted_urh_cypher->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
         double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( 1 ).percent() );
+        int label = b->data().effectN( 1 ).misc_value1();
         for ( auto a : action_list )
         {
-          if ( a->cooldown->action && a->cooldown->duration != 0_ms && a->data().class_mask() != 0 )
+          if ( a->cooldown->duration != 0_ms && a->data().affected_by_label( label ) )
           {
             if ( new_ == 1 )
-              a->base_recharge_multiplier *= recharge_mult;
+              a->dynamic_recharge_rate_multiplier *= recharge_mult;
             else
-              a->base_recharge_multiplier /= recharge_mult;
+              a->dynamic_recharge_rate_multiplier /= recharge_mult;
 
-            a->cooldown->adjust_recharge_multiplier();
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
           }
         }
       } );
