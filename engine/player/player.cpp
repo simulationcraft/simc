@@ -3468,7 +3468,7 @@ void player_t::create_buffs()
         double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( 1 ).percent() );
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && a->data().class_mask() != 0 )
+          if ( a->cooldown->action && a->cooldown->duration != 0_ms && a->data().class_mask() != 0 )
           {
             if ( new_ == 1 )
               a->base_recharge_multiplier *= recharge_mult;
