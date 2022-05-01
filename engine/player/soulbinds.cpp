@@ -1602,6 +1602,7 @@ void effusive_anima_accelerator( special_effect_t& effect )
           if ( !range::contains( affected_cooldowns, a->cooldown ) )
           {
             affected_cooldowns.push_back( a->cooldown );
+            a->add_child( this );
           }
         }
       }
