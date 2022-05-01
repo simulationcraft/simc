@@ -13478,7 +13478,7 @@ bool player_t::is_active() const
     }
     else
     {
-      return sim->current_index == actor_index;
+      return sim->player_no_pet_list[ sim->current_index ] == this;
     }
   }
   else
