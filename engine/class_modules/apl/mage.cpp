@@ -361,7 +361,6 @@ void arcane( player_t* p )
   harmony->add_action( "radiant_spark,if=variable.empowered_barrage&(buff.arcane_charge.stack>=2|cooldown.arcane_orb.ready)&(!talent.rune_of_power|cooldown.rune_of_power.remains>5)&variable.estimated_ap_cooldown>=30&(!conduit.arcane_prodigy|!variable.always_sync_cooldowns)" );
   harmony->add_action( "touch_of_the_magi,if=variable.time_until_ap<50&variable.time_until_ap>30&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5)", "When running prodigy, use totm by itself in order to align it with ap" );
   harmony->add_action( "arcane_orb,if=variable.just_used_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
-  harmony->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo,line_cd=25", "When using Harmonic Echo, you do not want to queue Arcane Barrage during the Arcane Blast cast" );
   harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack" );
   harmony->add_action( "arcane_blast,if=variable.just_used_spark|(debuff.radiant_spark_vulnerability.up&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)" );
   harmony->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.bloodlust.up&cooldown.radiant_spark.remains<=10&buff.arcane_harmony.stack>=16", "Use mini Barrage between radiant sparks if under BL without delaying Radiant Spark ideally" );
