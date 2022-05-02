@@ -1380,6 +1380,7 @@ struct mage_spell_t : public spell_t
     bool bone_chilling = false;
     bool from_the_ashes = false;
     bool ignite = false;
+    bool touch_of_the_magi = true;
 
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
@@ -1692,7 +1693,7 @@ public:
       }
 
       auto totm = td->debuffs.touch_of_the_magi;
-      if ( totm->check() && s->action != p()->action.touch_of_the_magi_explosion )
+      if ( totm->check() && triggers.touch_of_the_magi )
       {
         // Touch of the Magi factors out debuffs with effect subtype 87 (Modify Damage Taken%), but only
         // if they increase damage taken. It does not factor out debuffs with effect subtype 270
@@ -1701,7 +1702,7 @@ public:
 
         // Arcane Echo doesn't use the normal callbacks system (both in simc and in game). To prevent
         // loops, we need to explicitly check that the triggering action wasn't Arcane Echo.
-        if ( p()->talents.arcane_echo->ok() && s->action != p()->action.arcane_echo )
+        if ( p()->talents.arcane_echo->ok() && this != p()->action.arcane_echo )
           make_event( *sim, [ this, t = s->target ] { p()->action.arcane_echo->execute_on_target( t ); } );
       }
     }
@@ -5024,7 +5025,7 @@ struct touch_of_the_magi_explosion_t final : public arcane_mage_spell_t
   {
     background = true;
     may_miss = may_crit = callbacks = false;
-    affected_by.radiant_spark = false;
+    affected_by.radiant_spark = triggers.touch_of_the_magi = false;
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
@@ -5140,7 +5141,7 @@ struct harmonic_echo_t final : public mage_spell_t
   {
     background = true;
     may_miss = may_crit = callbacks = false;
-    affected_by.radiant_spark = false;
+    affected_by.radiant_spark = triggers.touch_of_the_magi = false;
     base_dd_min = base_dd_max = 1.0;
   }
 
