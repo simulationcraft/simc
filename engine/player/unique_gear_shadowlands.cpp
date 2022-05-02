@@ -5933,7 +5933,50 @@ void hack_and_gore( special_effect_t& effect )
 
   new dbc_proc_callback_t( effect.player, effect );
 }
+
+void ripped_secrets( special_effect_t& effect )
+{
+
 }
+
+void branding_blade( special_effect_t& effect )
+{
+  auto ripped      = new special_effect_t( effect.player );
+  ripped->type     = SPECIAL_EFFECT_EQUIP;
+  ripped->source   = SPECIAL_EFFECT_SOURCE_ITEM;
+  ripped->spell_id = 366757;
+  effect.player->special_effects.push_back( ripped );
+
+  auto ripped_dot =
+      create_proc_action<generic_proc_t>( "ripped_secrets", *ripped, "ripped_secrets", ripped->trigger() );
+  ripped_dot->base_td = ripped->driver()->effectN( 1 ).base_value();
+
+  ripped->execute_action = ripped_dot;
+
+  new dbc_proc_callback_t( effect.player, *ripped );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      ripped->spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      []( const dbc_proc_callback_t*, action_t* a, action_state_t* ) {
+        return a->weapon && a->weapon->slot == SLOT_MAIN_HAND;
+      } );
+
+  auto branding_dam =
+      create_proc_action<generic_proc_t>( "branding_blade", effect, "branding_blade", effect.trigger() );
+  branding_dam->base_dd_min = branding_dam->base_dd_max = effect.driver()->effectN( 1 ).base_value();
+
+  effect.execute_action = branding_dam;
+
+  new dbc_proc_callback_t( effect.player, effect );
+
+  effect.player->callbacks.register_callback_trigger_function(
+      effect.spell_id, dbc_proc_callback_t::trigger_fn_type::CONDITION,
+      [ ripped_dot ]( const dbc_proc_callback_t*, action_t* a, action_state_t* s ) {
+        return a->weapon && a->weapon->slot == SLOT_OFF_HAND && s->target &&
+               ripped_dot->get_dot( s->target )->is_ticking();
+      } );
+}
+}  // namespace set_bonus
 
 void register_hotfixes()
 {
@@ -5962,6 +6005,9 @@ void register_special_effects()
 
     // Set Bonus
     unique_gear::register_special_effect( 337893, set_bonus::hack_and_gore );
+    //as current set bonus parsing can only handle one spell per bonus, both effects are handled in branding_blade
+    //unique_gear::register_special_effect( 366757, set_bonus::ripped_secrets );
+    unique_gear::register_special_effect( 366876, set_bonus::branding_blade );
 
     // Trinkets
     unique_gear::register_special_effect( 347047, items::darkmoon_deck_putrescence );

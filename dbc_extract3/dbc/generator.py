@@ -3377,13 +3377,13 @@ class SetBonusListGenerator(DataGenerator):
             'tier'   : 26
         },
         {
-            'name'   : 'cypher_attunement_rigging',
-            'bonuses': [ 1495 ],
+            'name'   : 'tier28',
+            'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
             'tier'   : 28
         },
         {
-            'name'   : 'tier28',
-            'bonuses': [ 1496, 1497, 1498, 1499, 1500, 1501, 1502, 1503, 1504, 1505, 1506, 1507],
+            'name'   : 'ripped_secrets',
+            'bonuses': [ 1508 ],
             'tier'   : 28
         }
     ]
