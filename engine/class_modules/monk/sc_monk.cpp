@@ -5964,13 +5964,14 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
   {
     // Currently this is bugged in that it takes the most recent hit and multiplies that value with the number of
     // stacks. So HP bonus values can swing wildly if you crit.
-    if ( p().bugs )
+    /* if ( p().bugs )
     {
       auto pre_trigger_value = stack_value();
       current_value          = value;
     }
     else
     {
+    */
       if ( at_max_stacks() )
       {
         auto amount = values.front();
@@ -5990,15 +5991,15 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
       current_value = 0;
 
       values.push_back( value );
-    }
+    //}
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   double value() override
   {
-    if ( p().bugs )
-      return stack_value();
+   // if ( p().bugs )
+   //   return stack_value();
 
     double total_value = 0;
 
