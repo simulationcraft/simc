@@ -3872,7 +3872,8 @@ struct empowered_tiger_lightning_t : public monk_spell_t
   double miss_chance( double hit, player_t* t ) const override
   {
     double miss = monk_spell_t::miss_chance( hit, t );
-    return miss + 0.075;
+    miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
+    return miss;
   }
 
   bool ready() override
@@ -3891,9 +3892,17 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
     may_miss   = true;
   }
 
+  // For some reason this is a yellow spell that is not following the normal hit rules
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double miss = monk_spell_t::miss_chance( hit, t );
+    miss += 0.03 + ( 0.015 * ( t->level() - p()->level() ) );
+    return miss;
+  }
+
   bool ready() override
   {
-    return p()->legendary.call_to_arms->ok();
+    return p()->legendary.call_to_arms->ok() && p()->spec.invoke_xuen_2->ok();
   }
 };
 
@@ -5998,6 +6007,7 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 
   double value() override
   {
+   // if ( p().bugs )
    // if ( p().bugs )
    //   return stack_value();
 
