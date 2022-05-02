@@ -3868,6 +3868,13 @@ struct empowered_tiger_lightning_t : public monk_spell_t
     may_miss   = true;
   }
 
+  // For some reason this is a yellow spell that is not following the normal hit rules
+  double miss_chance( double hit, player_t* t ) const override
+  {
+    double miss = monk_spell_t::miss_chance( hit, t );
+    return miss + 0.075;
+  }
+
   bool ready() override
   {
     return p()->spec.invoke_xuen_2->ok();
@@ -5955,30 +5962,44 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( at_max_stacks() )
+    // Currently this is bugged in that it takes the most recent hit and multiplies that value with the number of
+    // stacks. So HP bonus values can swing wildly if you crit.
+    if ( p().bugs )
     {
-      auto amount = values.front();
-      p().sim->print_debug( "First stack of keg_of_the_heavens buff is getting removed. Removing (amount: {}) Health", amount );
-      p().stat_loss( STAT_MAX_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-      p().stat_loss( STAT_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-      values.pop_front();
+      auto pre_trigger_value = stack_value();
+      current_value          = value;
     }
+    else
+    {
+      if ( at_max_stacks() )
+      {
+        auto amount = values.front();
+        p().sim->print_debug( "First stack of keg_of_the_heavens buff is getting removed. Removing (amount: {}) Health",
+                              amount );
+        p().stat_loss( STAT_MAX_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
+        p().stat_loss( STAT_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
+        values.pop_front();
+      }
 
-    p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff", value );
+      p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff", value );
 
-    p().stat_gain( STAT_MAX_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
-    p().stat_gain( STAT_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_gain( STAT_MAX_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_gain( STAT_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
-    // Make sure the value is reset upon each trigger
-    current_value = 0;
+      // Make sure the value is reset upon each trigger
+      current_value = 0;
 
-    values.push_back( value );
+      values.push_back( value );
+    }
 
     return buff_t::trigger( stacks, value, chance, duration );
   }
 
   double value() override
   {
+    if ( p().bugs )
+      return stack_value();
+
     double total_value = 0;
 
     if ( !values.empty() )
