@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13217,11 +13217,12 @@ Effects          :
 Description      : $@spelldesc353882
 
 Name             : Endless Rune Waltz (id=366008) [Spell Family (15)] 
+Hotfixed         : Max stacks (75 -> 40)
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : Aura (infinite)
-Stacks           : 75 maximum
+Stacks           : 40 maximum
 Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3634,15 +3634,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-11 -> -7)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-11 -> -7)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -11 | Scaled Value: -11 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-11 -> -7)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
