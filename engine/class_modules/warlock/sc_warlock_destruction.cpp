@@ -1351,7 +1351,8 @@ void warlock_t::create_apl_destruction()
   havoc->add_action( "decimating_bolt,if=cast_time<havoc_remains&soulbind.lead_by_example.enabled" );
   havoc->add_action( "scouring_tithe,if=cast_time<havoc_remains" );
   havoc->add_action( "immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
-  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
+  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&!(set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled)" );
+  havoc->add_action( "rain_of_fire,if=set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled" );
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 }
