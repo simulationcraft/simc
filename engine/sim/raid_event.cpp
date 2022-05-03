@@ -444,7 +444,6 @@ struct pull_event_t final : raid_event_t
   std::vector<double> adds_health;
   std::vector<bool> adds_relics;
   timespan_t delay;
-  timespan_t spawn_time;
   int pull;
   bool bloodlust;
   bool spawned;
@@ -457,7 +456,6 @@ struct pull_event_t final : raid_event_t
       enemies_str(),
       relic( "urh" ),
       delay( 0_s ),
-      spawn_time( 0_s ),
       pull( 0 ),
       spawned( false ),
       automation_spawned( false ),
@@ -536,7 +534,6 @@ struct pull_event_t final : raid_event_t
     }
 
     spawned = false;
-    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
@@ -623,7 +620,6 @@ struct pull_event_t final : raid_event_t
     
     spawned = true;
     automation_spawned = false;
-    spawn_time = sim->current_time();
 
     if ( bloodlust )
     {
@@ -658,7 +654,7 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->automaton = false;
     }
 
-    sim->print_log( "Spawned Pull {}: {} mobs", pull, adds.size() );
+    sim->print_debug( "Spawned Pull {}: {} mobs", pull, adds.size() );
 
     regenerate_cache();
   }

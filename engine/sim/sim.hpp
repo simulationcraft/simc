@@ -460,8 +460,6 @@ struct sim_t : private sc_thread_t
     timespan_t first_strike_period = 5_s;
     // Expected uptime of Adaptive Armor Fragment
     double adaptive_armor_fragment_uptime = 0.5;
-    /// Percentage of default duration for Soothing Shade.
-    double soothing_shade_duration_multiplier = 1.0;
   } shadowlands_opts;
 
   // Auras and De-Buffs
