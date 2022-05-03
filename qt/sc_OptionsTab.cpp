@@ -367,7 +367,7 @@ void SC_OptionsTab::createGlobalsTab()
                                                               "Giant", "Undead" ) );
   globalsLayout_middle->addRow(
       tr( "Target Type" ),
-      choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
+      choice.boss_type = createChoice( 3, "Custom", "Fluffy Pillow", "Tank Dummy" ) );
   globalsLayout_middle->addRow( tr( "Tank Dummy" ),
                                 choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
   globalsLayout_middle->addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice(
@@ -1524,7 +1524,7 @@ void SC_OptionsTab::toggleInterdependentOptions()
   else
     choice.plots_iterations->setEnabled( true );
 
-  // on Globals tab, toggle Tank Dummy and TMI Standard Boss settings
+  // on Globals tab, toggle Tank Dummy Boss settings
   choice.tank_dummy->setDisabled( true );
   choice.target_level->setEnabled( true );
   choice.target_race->setEnabled( true );
