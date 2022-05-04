@@ -753,9 +753,15 @@ void fatal_flaw( special_effect_t& effect )
 
 void soothing_shade( special_effect_t& effect )
 {
+  if ( effect.player->sim->shadowlands_opts.soothing_shade_duration_multiplier == 0.0 )
+    return;
+
   auto buff = buff_t::find( effect.player, "soothing_shade" );
   if ( !buff )
-    buff = make_buff<stat_buff_t>( effect.player, "soothing_shade", effect.player->find_spell( 336885 ) );
+  {
+    buff = make_buff<stat_buff_t>( effect.player, "soothing_shade", effect.player->find_spell( 336885 ) )
+      ->set_duration_multiplier( effect.player->sim->shadowlands_opts.soothing_shade_duration_multiplier );
+  }
 
   effect.custom_buff = buff;
 
