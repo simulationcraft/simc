@@ -9,7 +9,7 @@ action_priority_list_t* setup = get_action_priority_list( "setup" );
 action_priority_list_t* stealth = get_action_priority_list( "stealth" );
 
 precombat->add_action( "variable,name=4cp_bite,value=0","Snapshot raid buffed stats before combat begins and pre-potting is done." );
-precombat->add_action( "variable,name=filler,value=1","Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4" );
+precombat->add_action( "variable,name=filler,value=1","Defines what ability to use as a filler. Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4" );
 precombat->add_action( "variable,name=rip_ticks,value=7" );
 precombat->add_action( "variable,name=on_use_trinket,value=0","Cache of acquired treasures does not seem to work yet and has to be seen" );
 precombat->add_action( "variable,name=on_use_trinket,op=add,value=(trinket.1.has_proc.any&trinket.1.cooldown.duration)|trinket.1.is.inscrutable_quantum_device" );
@@ -80,6 +80,7 @@ filler->add_action( "rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=va
 filler->add_action( "rake,if=variable.filler=2" );
 filler->add_action( "lunar_inspiration,if=variable.filler=3" );
 filler->add_action( "swipe,if=variable.filler=4" );
+filler->add_action( "swipe_cat,if=spell_targets.swipe_cat=1&!buff.clearcasting.up" );
 filler->add_action( "shred,if=buff.sudden_ambush.down" );
 
 finisher->add_action( "pool_resource,for_next=1" );
