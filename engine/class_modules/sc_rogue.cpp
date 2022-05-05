@@ -6243,8 +6243,11 @@ void actions::rogue_action_t<Base>::trigger_shadow_techniques( const action_stat
   if ( ++p()->shadow_techniques_counter >= shadow_techniques_upper || ( p()->shadow_techniques_counter == shadow_techniques_lower && p()->rng().roll( 0.5 ) ) )
   {
     // SimC-side tracking buffs for reaction delay
-    p()->buffs.shadow_techniques->set_default_value( p()->current_cp() );
-    p()->buffs.shadow_techniques->trigger();
+    if ( p()->current_cp() < p()->resources.max[ RESOURCE_COMBO_POINT ] )
+    {
+      p()->buffs.shadow_techniques->set_default_value( p()->current_cp() );
+      p()->buffs.shadow_techniques->trigger();
+    }
 
     p()->sim->print_debug( "{} trigger_shadow_techniques proc'd at {}, resetting counter to 0", *p(), p()->shadow_techniques_counter );
     p()->shadow_techniques_counter = 0;
