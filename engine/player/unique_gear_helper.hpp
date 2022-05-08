@@ -336,7 +336,47 @@ struct proc_action_t : public T_ACTION
     if ( effect )
     {
       override_data( *effect );
+
+      // If ALL of the following are true:
+      //   1) the special_effect_t is an offensive spell action or an attack action
+      //   2) the proc action has 0 damage after parsing the spell data
+      //   3) the proc action has a trigger effect referencing the driver
+      //   4) the driver has a trigger effect referencing the proc action
+      // then the coefficient of the effect in 4) will be used for the damage of action 2)
+
+      bool is_dot = effect->duration() > 0_ms && effect->tick_time() > 0_ms;
+      auto type   = effect->action_type();
+
+      if ( ( type == SPECIAL_EFFECT_ACTION_SPELL || type == SPECIAL_EFFECT_ACTION_ATTACK ) &&
+           ( ( is_dot && this->base_td == 0 ) || ( this->base_dd_min == 0 && this->base_dd_max == 0 ) ) )
+      {
+        for ( const auto& eff : this->data().effects() )  // go thru the driver's effects
+        {
+          auto trg = eff.trigger();
+
+          if ( trg->ok() )  // trigger'd damage spell found
+          {
+            for ( const auto& trg_eff : trg->effects() )  // go thru the trigger's effects
+            {
+              if ( trg_eff.trigger()->ok() && trg_eff.trigger()->id() == this->data().id() )  // match found
+              {
+                auto coeff = effect->item ? trg_eff.average( effect->item ) : trg_eff.average( effect->player );
+
+                if ( is_dot )
+                  this->base_td = coeff;
+                else
+                  this->base_dd_min = this->base_dd_max = coeff;
+
+                break;
+              }
+            }
+
+            break;
+          }
+        }
+      }
     }
+
     super::init();
   }
 
