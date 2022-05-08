@@ -347,8 +347,9 @@ struct proc_action_t : public T_ACTION
       bool is_dot = effect->duration() > 0_ms && effect->tick_time() > 0_ms;
       auto type   = effect->action_type();
 
-      if ( ( type == SPECIAL_EFFECT_ACTION_SPELL || type == SPECIAL_EFFECT_ACTION_ATTACK ) &&
-           ( ( is_dot && this->base_td == 0 ) || ( this->base_dd_min == 0 && this->base_dd_max == 0 ) ) )
+      if ( ( type == SPECIAL_EFFECT_ACTION_SPELL || type == SPECIAL_EFFECT_ACTION_ATTACK ||
+             type == SPECIAL_EFFECT_ACTION_CUSTOM ) &&
+           ( ( is_dot && this->base_td == 0 ) || ( !is_dot && this->base_dd_min == 0 && this->base_dd_max == 0 ) ) )
       {
         for ( const auto& eff : this->data().effects() )  // go thru the driver's effects
         {
