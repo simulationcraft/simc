@@ -31,6 +31,7 @@ struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
+struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
 }  // namespace actions::spells
@@ -334,6 +335,7 @@ public:
     propagate_const<actions::spells::ascended_eruption_heal_t*> ascended_eruption_heal;
     propagate_const<actions::spells::eternal_call_to_the_void_t*> eternal_call_to_the_void;
     propagate_const<actions::spells::psychic_link_t*> psychic_link;
+    propagate_const<actions::spells::shadow_weaving_t*> shadow_weaving;
     propagate_const<actions::spells::shadowy_apparition_spell_t*> shadowy_apparitions;
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
@@ -550,6 +552,7 @@ public:
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
+  void trigger_shadow_weaving( action_state_t* );
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
   void refresh_talbadars_buff( action_state_t* s );

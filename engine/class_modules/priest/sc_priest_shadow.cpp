@@ -1528,6 +1528,29 @@ struct psychic_link_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Shadow Weaving
+// ==========================================================================
+struct shadow_weaving_t final : public priest_spell_t
+{
+  shadow_weaving_t( priest_t& p ) : priest_spell_t( "shadow_weaving", p, p.find_spell( 346111 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = false;
+    may_crit                   = false;
+    may_miss                   = false;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    base_dd_min = base_dd_max = ( original_amount * ( priest().shadow_weaving_multiplier( target, 0 ) - 1 ) );
+    player->sim->print_debug( "{} triggered shadow weaving on target {}.", priest(), *target );
+
+    set_target( target );
+    execute();
+  }
+};
+
+// ==========================================================================
 // Shadow Crash
 // ==========================================================================
 struct shadow_crash_damage_t final : public priest_spell_t
@@ -2113,6 +2136,8 @@ void priest_t::init_background_actions_shadow()
   {
     background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
   }
+
+  background_actions.shadow_weaving = new actions::spells::shadow_weaving_t( *this );
 }
 
 // ==========================================================================
@@ -2156,6 +2181,14 @@ void priest_t::trigger_psychic_link( action_state_t* s )
       background_actions.psychic_link->trigger( priest_td->target, s->result_amount );
     }
   }
+}
+
+// ==========================================================================
+// Trigger Shadow Weaving on the Target
+// ==========================================================================
+void priest_t::trigger_shadow_weaving( action_state_t* s )
+{
+  background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
 // ==========================================================================
