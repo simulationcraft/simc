@@ -1536,13 +1536,13 @@ struct shadow_weaving_t final : public priest_spell_t
   {
     background                 = true;
     affected_by_shadow_weaving = false;
-    may_crit   = false;
-    may_miss   = false;
+    may_crit                   = false;
+    may_miss                   = false;
   }
 
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * (priest().shadow_weaving_multiplier( target, 0 )-1) );
+    base_dd_min = base_dd_max = ( original_amount * ( priest().shadow_weaving_multiplier( target, 0 ) - 1 ) );
     player->sim->print_debug( "{} triggered shadow weaving on target {}.", priest(), *target );
 
     set_target( target );
@@ -2190,7 +2190,6 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
 {
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
-
 
 // ==========================================================================
 // Check for the Hungering Void talent and find the debuff on that target
