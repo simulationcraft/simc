@@ -141,15 +141,6 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  /*double composite_target_multiplier( player_t* target ) const override
-  {
-    double mul = attack_t::composite_target_multiplier( target );
-
-    mul *= p().o().shadow_weaving_multiplier( target, 0 );
-
-    return mul;
-  }*/
-
   timespan_t execute_time() const override
   {
     // First swing comes instantly after summoning the pet
