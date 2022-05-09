@@ -141,14 +141,14 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  /*double composite_target_multiplier( player_t* target ) const override
   {
     double mul = attack_t::composite_target_multiplier( target );
 
     mul *= p().o().shadow_weaving_multiplier( target, 0 );
 
     return mul;
-  }
+  }*/
 
   timespan_t execute_time() const override
   {
@@ -431,6 +431,8 @@ struct fiend_melee_t : public priest_pet_melee_t
                                  p().o().gains.insanity_surrender_to_madness );
         }
         p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
+
+        p().o().trigger_shadow_weaving( s );
       }
       else
       {
