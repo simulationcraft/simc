@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.0.43206
-static const std::array<spelltext_data_t, 16086> __spelltext_data { {
+// Spell text, wow build 9.2.0.43345
+static const std::array<spelltext_data_t, 16090> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15875,6 +15875,7 @@ static const std::array<spelltext_data_t, 16086> __spelltext_data { {
   { 366436, "Every $369786t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
   { 366438, "$@spelldesc366436", "Your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast is enhanced, granting the target precisely what they require.", 0 },
   { 366656, "Your healing spells and abilities have a chance to activate a Pre-Fabricated Assistant who applies $s1 absorb to your most injured nearby ally every $368208t1 sec for $368208d.", 0, 0 },
+  { 366757, "Striking with your Main Hand has a chance to make the target bleed for ${$s1*$366884d1} damage over $366884d1.", 0, 0 },
   { 366769, "$@spelldesc363913", "Strength increased by $s1%.", 0 },
   { 366779, "$@spelldesc364470", "Chain Heal critical chance increased by $w1%.", 0 },
   { 366780, "$@spelldesc363672", 0, 0 },
@@ -15882,7 +15883,10 @@ static const std::array<spelltext_data_t, 16086> __spelltext_data { {
   { 366793, "Heals for $s1.\r\n", 0, 0 },
   { 366794, "Increase maximum health by $s1.\r\n", "Increases maximum health by $w1.", 0 },
   { 366861, "Gaze deeply into the orb while sitting, pondering its secrets.", 0, 0 },
+  { 366876, "While affected, your Off-Hand strikes sear the wound, dealing $s1 Fire damage.", 0, 0 },
   { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
+  { 366884, "$@spelldesc366757", "Bleeding for $w1 every $t sec.", 0 },
+  { 366890, "$@spelldesc366757", 0, 0 },
   { 366971, "$@spelldesc363656", "Causing shadow damage to all targets within $a2 yards.", 0 },
   { 367173, "Your equipment suffers no durability loss.", "Your equipment suffers no durability loss.", 0 },
   { 367202, "Summon a circle of Jiro to serenade you.", "You have summoned a circle of Jiro.", 0 },
@@ -16088,11 +16092,11 @@ static const std::array<spelltext_data_t, 16086> __spelltext_data { {
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.0.43206
+// spelltext hotfix entries, wow build 9.2.0.43345
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.0.43206
+// Spell description variables, wow build 9.2.0.43345
 static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16404,7 +16408,7 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.0.43206
+// spelldesc_vars hotfix entries, wow build 9.2.0.43345
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

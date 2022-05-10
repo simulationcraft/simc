@@ -357,8 +357,44 @@ struct pull_event_t final : raid_event_t
     bool relic = false;
     bool automaton = false;
 
-    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt )
+    mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt ),
+      pull_event( nullptr )
     {
+    }
+
+    timespan_t time_to_percent( double percent ) const override
+    {
+      double target_hp = resources.initial[ RESOURCE_HEALTH ] * percent;
+      if ( target_hp >= resources.current[ RESOURCE_HEALTH ])
+        return timespan_t::zero();
+
+      // Per-Add DPS Calculation
+      // This extrapolates the DTPS of the current add only. Potentially more precise but also volatile
+      //double add_dps = ( resources.initial[ RESOURCE_HEALTH ] - resources.current[ RESOURCE_HEALTH ] ) / ( sim->current_time() - arise_time ).total_seconds();
+      //if ( add_dps > 0 )
+      //{
+      //  return timespan_t::from_seconds( ( resources.current[ RESOURCE_HEALTH ] - target_hp ) / add_dps );
+      //}
+
+      // Per-Wave DPS Calculation
+      // This extrapolates the DTPS of the wave and divides evenly across all targets, less volatile but potentially incaccurate
+      int add_count = 0;
+      double pull_damage = 0;
+      for ( auto add : pull_event->adds_spawner->active_pets() )
+      {
+        if ( add->is_active() )
+          add_count++;
+
+        pull_damage += add->resources.initial[ RESOURCE_HEALTH ] - add->resources.current[ RESOURCE_HEALTH ];
+      }
+
+      if ( pull_damage > 0 )
+      {
+        double pull_dps = pull_damage / ( sim->current_time() - pull_event->spawn_time ).total_seconds();
+        return timespan_t::from_seconds( ( resources.current[ RESOURCE_HEALTH ] - target_hp ) / ( pull_dps / add_count ) );
+      }
+      
+      return pet_t::time_to_percent( percent );
     }
 
     void demise() override
@@ -412,8 +448,14 @@ struct pull_event_t final : raid_event_t
           adds[ 0 ]->relic      = false;
           adds[ 0 ]->automaton  = true;
 
+          // Only for use with log output options as it makes the report strange but log much better
+          if ( sim->log )
+          {
+            adds[ 0 ]->full_name_str = adds[ 0 ]->name_str = pull_event->relic + " Automaton";
+          }
+
           pull_event->automation_spawned = true;
-          sim->print_debug( "Spawned {} Automation with {} hp", pull_event->relic, adds[ 0 ]->resources.base[ RESOURCE_HEALTH ] );
+          sim->print_debug( "Spawned {} Automaton with {} hp", pull_event->relic, adds[ 0 ]->resources.base[ RESOURCE_HEALTH ] );
 
           for ( auto add : pull_event->adds_spawner->active_pets() )
           {
@@ -441,14 +483,22 @@ struct pull_event_t final : raid_event_t
   player_t* master;
   std::string enemies_str;
   std::string relic;
-  std::vector<double> adds_health;
-  std::vector<bool> adds_relics;
   timespan_t delay;
+  timespan_t spawn_time;
   int pull;
   bool bloodlust;
   bool spawned;
   bool automation_spawned;
   event_t* spawn_event;
+
+  struct spawn_parameter
+  {
+    double health = 0;
+    bool relic = false;
+    std::string name;
+  };
+  std::vector<spawn_parameter> spawn_parameters;
+
   spawner::pet_spawner_t<mob_t, player_t>* adds_spawner;
 
   pull_event_t( sim_t* s, util::string_view options_str )
@@ -456,6 +506,7 @@ struct pull_event_t final : raid_event_t
       enemies_str(),
       relic( "urh" ),
       delay( 0_s ),
+      spawn_time( 0_s ),
       pull( 0 ),
       spawned( false ),
       automation_spawned( false ),
@@ -513,10 +564,18 @@ struct pull_event_t final : raid_event_t
           }
           else
           {
-            adds_relics.emplace_back( util::starts_with( splits[ 0 ], "RELIC_" ) );
-            adds_health.emplace_back( util::to_double( splits[ 1 ] ) );
+            spawn_parameter spawn;
+            spawn.name = splits[ 0 ];
+            spawn.health = util::to_double( splits[ 1 ] );
+            spawn.relic = util::starts_with( splits[ 0 ], "RELIC_" );
+            spawn_parameters.emplace_back( spawn );
           }
         }
+
+        // Sort adds by descending HP order to improve retargeting logic
+        range::sort( spawn_parameters, []( const spawn_parameter a, const spawn_parameter b ) {
+          return a.health > b.health;
+        } );
       }
     }
   }
@@ -534,6 +593,7 @@ struct pull_event_t final : raid_event_t
     }
 
     spawned = false;
+    sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     // find the next pull and spawn it
     if ( auto next = next_pull() )
@@ -620,6 +680,7 @@ struct pull_event_t final : raid_event_t
     
     spawned = true;
     automation_spawned = false;
+    spawn_time = sim->current_time();
 
     if ( bloodlust )
     {
@@ -643,18 +704,27 @@ struct pull_event_t final : raid_event_t
       }
     }    
 
-    auto adds = adds_spawner->spawn( as<unsigned>( adds_health.size() ) );
+    auto adds = adds_spawner->spawn( as<unsigned>( spawn_parameters.size() ) );
+    double total_health = 0;
     for ( size_t i = 0; i < adds.size(); i++ )
     {
-      adds[ i ]->resources.base[ RESOURCE_HEALTH ] = adds_health[ i ];
+      adds[ i ]->resources.base[ RESOURCE_HEALTH ] = spawn_parameters[ i ].health;
       adds[ i ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
       adds[ i ]->init_resources( true );
       adds[ i ]->pull_event = this;
-      adds[ i ]->relic = adds_relics[ i ];
+      adds[ i ]->relic = spawn_parameters[ i ].relic;
       adds[ i ]->automaton = false;
+
+      // Only for use with log output options as it makes the report strange but log much better
+      if ( sim->log )
+      {
+        adds[ i ]->full_name_str = adds[ i ]->name_str = spawn_parameters[ i ].name;
+        total_health += spawn_parameters[ i ].health;
+      }
     }
 
-    sim->print_debug( "Spawned Pull {}: {} mobs", pull, adds.size() );
+    sim->print_log( "Spawned Pull {}: {} mobs with {} total health, {:.1f}s delay from previous",
+                    pull, adds.size(), total_health, delay.total_seconds() );
 
     regenerate_cache();
   }
@@ -1344,21 +1414,47 @@ struct damage_done_buff_event_t final : public raid_event_t
 struct vulnerable_event_t final : public raid_event_t
 {
   double multiplier;
+  player_t* target = nullptr;
 
   vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
+    add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
     parse_options( options_str );
+  }
+
+  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  {
+    auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
+      return util::str_compare_ci( value, target->name() );
+    } );
+
+    if ( it != sim->target_list.end() )
+    {
+      target = *it;
+      return true;
+    }
+    else
+    {
+      sim->error( "Unknown vulnerability raid event target '{}'", value );
+      return true;
+    }
   }
 
   void _start() override
   {
-    sim->target->debuffs.vulnerable->increment( 1, multiplier );
+    if ( target )
+      target->debuffs.vulnerable->increment( 1, multiplier );
+    else
+      sim->target->debuffs.vulnerable->increment( 1, multiplier );
   }
 
   void _finish() override
   {
-    sim->target->debuffs.vulnerable->decrement();
+    if ( target )
+      target->debuffs.vulnerable->decrement();
+    else
+      sim->target->debuffs.vulnerable->decrement();
   }
 };
 
@@ -2125,7 +2221,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
     if ( filter == "count" )
     {
       if ( next_pull )
-        return as<double>( next_pull->adds_health.size() );
+        return as<double>( next_pull->spawn_parameters.size() );
       else
         return 0.0;
     }

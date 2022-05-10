@@ -2,12 +2,12 @@ monk="T28_Monk_Windwalker"
 source=default
 spec=windwalker
 level=60
-race=orc
-role=dps
+race=mechagnome
+role=hybrid
 position=back
 talents=1020012
 covenant=kyrian
-soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/xuens_bond:11:1/forgelite_filter/regenerating_materials/harm_denial:11:1/coordinated_offensive:11:1/soulsteel_clamps/inner_fury:11:1/soulglow_spectrometer/effusive_anima_accelerator
+soulbind=forgelite_prime_mikanikos:18,333950/22:11:1/331609/331726/24:11:1/331611/16:11:1/352186/352188
 renown=80
 
 # Default consumables
@@ -79,7 +79,7 @@ actions.cd_sef+=/storm_earth_and_fire,if=cooldown.storm_earth_and_fire.charges=2
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)
 actions.cd_sef+=/storm_earth_and_fire,if=covenant.necrolord&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)
 actions.cd_sef+=/use_item,name=inscrutable_quantum_device,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20
-actions.cd_sef+=/use_item,name=the_first_sigil,if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20
+actions.cd_sef+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen
 actions.cd_sef+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
 actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
 actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
@@ -101,7 +101,7 @@ actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch
 actions.cd_serenity+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10
 actions.cd_serenity+=/weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time
 actions.cd_serenity+=/use_item,name=inscrutable_quantum_device,if=variable.serenity_burst|fight_remains<20
-actions.cd_serenity+=/use_item,name=the_first_sigil,if=variable.serenity_burst|fight_remains<20
+actions.cd_serenity+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen
 actions.cd_serenity+=/faeline_stomp
 actions.cd_serenity+=/fallen_order
 actions.cd_serenity+=/bonedust_brew,if=fight_remains<15|(chi>=2&(fight_remains>60&((cooldown.serenity.remains>10|buff.serenity.up|cooldown.serenity.up)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)))|(fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)))
@@ -168,30 +168,30 @@ actions.weapons_of_order+=/chi_wave
 actions.weapons_of_order+=/flying_serpent_kick,interrupt=1
 
 head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
-neck=beacon_of_stormwind,id=189838,bonus_id=1524/7187/6935,gem_id=173129
+neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
 shoulders=tassets_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
-chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173129
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant_id=6208
+chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant_id=6230
+wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173129
 hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
 waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
 legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant=eternal_agility
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173130,enchant=tenet_of_mastery
-finger2=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173130,enchant=tenet_of_mastery
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant_id=6211
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173129,enchant_id=6164
+finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant_id=6164
 trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
-trinket2=the_first_sigil,id=188271,bonus_id=1524/7187
-main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant=sinful_revelation
+trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
 
 # Gear Summary
 # gear_ilvl=282.53
-# gear_agility=1424
+# gear_agility=1434
 # gear_stamina=2958
 # gear_attack_power=20
-# gear_crit_rating=947
-# gear_haste_rating=164
-# gear_mastery_rating=518
-# gear_versatility_rating=903
+# gear_crit_rating=938
+# gear_haste_rating=204
+# gear_mastery_rating=394
+# gear_versatility_rating=993
 # gear_armor=865
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

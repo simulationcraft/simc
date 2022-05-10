@@ -4488,6 +4488,7 @@ void item::moonlit_prism( special_effect_t& effect )
   effect2->spell_id         = effect.driver()->id();
   effect2->cooldown_        = effect.driver()->internal_cooldown();
   effect2->proc_flags_      = PF_RANGED | PF_RANGED_ABILITY | PF_MAGIC_SPELL | PF_NONE_SPELL;
+  effect2->proc_flags2_     = PF2_HIT | PF2_CRIT;
   effect.player->special_effects.push_back( effect2 );
 
   // Create callback; it will be enabled when the buff is active.

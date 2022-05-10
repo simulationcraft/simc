@@ -71,6 +71,11 @@ struct special_effect_t
   bool weapon_proc;
   /// Expire procced buff on max stack, 0 = never, 1 = always, -1 = autodetect (default)
   int expire_on_max_stack;
+private:
+  bool override_can_proc_from_procs, can_proc_from_procs_;
+  bool override_can_only_proc_from_class_abilites, can_only_proc_from_class_abilites_;
+
+public:
   unsigned spell_id, trigger_spell_id;
   action_t* execute_action; // Allows custom action to be executed on use
   buff_t* custom_buff; // Allows custom action
@@ -154,6 +159,11 @@ struct special_effect_t
   double proc_chance() const;
   timespan_t cooldown() const;
   bool has_target_specific_cooldown() const;
+
+  bool can_proc_from_procs() const;
+  bool can_only_proc_from_class_abilites() const;
+  void set_can_proc_from_procs( bool );
+  void set_can_only_proc_from_class_abilites( bool );
 
   /* Accessors for buff specific features of the proc. */
   timespan_t duration() const;

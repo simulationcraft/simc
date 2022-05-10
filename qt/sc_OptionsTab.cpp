@@ -245,7 +245,6 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) : QTabWidget( parent ), ma
   connect( choice.update_check, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.boss_type, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tank_dummy, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.tmi_boss, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.tmi_window, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.show_etmi, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.deterministic_rng, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -336,7 +335,7 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_left->addRow( tr( "Default Role" ),
                               choice.default_role = createChoice( 4, "Auto", "DPS", "Heal", "Tank" ) );
   globalsLayout_left->addRow( tr( "GUI Localization" ),
-                              choice.gui_localization = createChoice( 6, "auto", "en", "de", "zh", "it", "ko" ) );
+                              choice.gui_localization = createChoice( 6, "auto", "en", "de", "cn", "it", "ko" ) );
   globalsLayout_left->addRow( tr( "Update Check" ), choice.update_check = createChoice( 2, "Yes", "No" ) );
 
   QPushButton* resetb = new QPushButton( tr( "Reset all Settings" ), this );
@@ -368,11 +367,9 @@ void SC_OptionsTab::createGlobalsTab()
                                                               "Giant", "Undead" ) );
   globalsLayout_middle->addRow(
       tr( "Target Type" ),
-      choice.boss_type = createChoice( 4, "Custom", "Fluffy Pillow", "Tank Dummy", "TMI Standard Boss" ) );
+      choice.boss_type = createChoice( 3, "Custom", "Fluffy Pillow", "Tank Dummy" ) );
   globalsLayout_middle->addRow( tr( "Tank Dummy" ),
                                 choice.tank_dummy = createChoice( 5, "None", "Weak", "Dungeon", "Raid", "Mythic" ) );
-  globalsLayout_middle->addRow( tr( "TMI Standard Boss" ),
-                                choice.tmi_boss = createChoice( 5, "None", "T19M", "T19H", "T19N", "T19L" ) );
   globalsLayout_middle->addRow( tr( "TMI Window (sec)" ), choice.tmi_window = createChoice(
                                                               10, "0", "2", "3", "4", "5", "6", "7", "8", "9", "10" ) );
   globalsLayout_middle->addRow( tr( "Show ETMI" ),
@@ -826,7 +823,6 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "boss_type", choice.boss_type, "Custom" );
   load_setting( settings, "pvp_crit", choice.pvp_crit, "Disable" );
   load_setting( settings, "tank_dummy", choice.tank_dummy, "None" );
-  load_setting( settings, "tmi_boss", choice.tmi_boss, "None" );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
   load_setting( settings, "world_lag", choice.world_lag, "Medium - 100 ms" );
@@ -920,7 +916,6 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "default_role", choice.default_role->currentText() );
   settings.setValue( "boss_type", choice.boss_type->currentText() );
   settings.setValue( "tank_dummy", choice.tank_dummy->currentText() );
-  settings.setValue( "tmi_boss", choice.tmi_boss->currentText() );
   settings.setValue( "tmi_window_global", choice.tmi_window->currentText() );
   settings.setValue( "show_etmi", choice.show_etmi->currentText() );
   settings.setValue( "world_lag", choice.world_lag->currentText() );
@@ -1065,11 +1060,6 @@ void SC_OptionsTab::createToolTips()
       tr( "If \"Tank Dummy\" is chosen above, this drop-down selects the type of tank dummy used.\n"
           "Leaving at *None* will default back to a Fluffy Pillow." ) );
 
-  choice.tmi_boss->setToolTip(
-      tr( "If \"TMI Standard Boss\" is chosen in \"Target Type\", this box selects the TMI standard.\n"
-          "TMI Standard Bosses provide damage output similar to bosses in the appropriate tier.\n"
-          "Leaving at *None* will default back to a Fluffy Pillow." ) );
-
   choice.tmi_window->setToolTip(
       tr( "Specify window duration for calculating TMI. Default is 6 sec.\n"
           "Reducing this increases the metric's sensitivity to shorter damage spikes.\n"
@@ -1205,13 +1195,6 @@ QString SC_OptionsTab::get_globalSettings()
       // boss setup
       options += "tank_dummy=Tank_Dummy_" + choice.tank_dummy->currentText() + "\n";
       options += "tank_dummy_type=" + choice.tank_dummy->currentText() + "\n";
-    }
-
-    if ( choice.boss_type->currentText() == "TMI Standard Boss" && choice.tmi_boss->currentIndex() != 0 )
-    {
-      // boss setup
-      options += "tmi_boss=TMI_Standard_Boss_" + choice.tmi_boss->currentText() + "\n";
-      options += "tmi_boss_type=" + choice.tmi_boss->currentText() + "\n";
     }
   }
   else
@@ -1541,20 +1524,13 @@ void SC_OptionsTab::toggleInterdependentOptions()
   else
     choice.plots_iterations->setEnabled( true );
 
-  // on Globals tab, toggle Tank Dummy and TMI Standard Boss settings
+  // on Globals tab, toggle Tank Dummy Boss settings
   choice.tank_dummy->setDisabled( true );
-  choice.tmi_boss->setDisabled( true );
   choice.target_level->setEnabled( true );
   choice.target_race->setEnabled( true );
   if ( choice.boss_type->currentIndex() == 2 )
   {
     choice.tank_dummy->setEnabled( true );
-    choice.target_level->setDisabled( true );
-    choice.target_race->setDisabled( true );
-  }
-  if ( choice.boss_type->currentIndex() == 3 )
-  {
-    choice.tmi_boss->setEnabled( true );
     choice.target_level->setDisabled( true );
     choice.target_race->setDisabled( true );
   }

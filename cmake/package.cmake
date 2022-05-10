@@ -13,8 +13,14 @@ if (SC_MINOR_VERSION_MATCH)
   message(VERBOSE "Simc minor version: ${CMAKE_MATCH_1}")
   set(CPACK_PACKAGE_VERSION_MINOR ${CMAKE_MATCH_1})
 endif()
-message(VERBOSE "Simc git hash: ${GIT_COMMIT_HASH}")
 set(CPACK_PACKAGE_VERSION_PATCH ${GIT_COMMIT_HASH})
+message(VERBOSE "CPACK_PACKAGE_VERSION_PATCH: ${CPACK_PACKAGE_VERSION_PATCH}")
+
+# We need to manually compose CPACK_PACKAGE_VERSION since cmake does no longer like the non-digit git hash in the patch part, see
+# https://gitlab.kitware.com/cmake/cmake/-/issues/19310
+set(CPACK_PACKAGE_VERSION ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR}.${CPACK_PACKAGE_VERSION_PATCH})
+message(VERBOSE "CPACK_PACKAGE_VERSION: ${CPACK_PACKAGE_VERSION}")
+
 
 # Global options
 set(CPACK_PACKAGE_VENDOR "SimulationCraft")

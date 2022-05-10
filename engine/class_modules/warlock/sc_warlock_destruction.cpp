@@ -1292,7 +1292,7 @@ void warlock_t::create_apl_destruction()
   def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
   def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
   def->add_action( "cataclysm" );
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>2" );
+  def->add_action( "call_action_list,name=aoe,if=active_enemies>2-set_bonus.tier28_4pc" );
   def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
   def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
@@ -1317,6 +1317,7 @@ void warlock_t::create_apl_destruction()
   def->add_action( "incinerate" );
 
   aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
+  aoe->add_action( "rain_of_fire,if=set_bonus.tier28_4pc" );
   aoe->add_action( "soul_rot" );
   aoe->add_action( "impending_catastrophe" );
   aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
@@ -1350,7 +1351,8 @@ void warlock_t::create_apl_destruction()
   havoc->add_action( "decimating_bolt,if=cast_time<havoc_remains&soulbind.lead_by_example.enabled" );
   havoc->add_action( "scouring_tithe,if=cast_time<havoc_remains" );
   havoc->add_action( "immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
-  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains" );
+  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&!(set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled)" );
+  havoc->add_action( "rain_of_fire,if=set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled" );
   havoc->add_action( "shadowburn" );
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 }

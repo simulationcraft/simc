@@ -102,13 +102,13 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
       }
     }
 
-    if ( effect.driver()->flags( spell_attribute::SX_ONLY_PROC_FROM_CLASS_ABILITIES ) )
+    if ( effect.can_only_proc_from_class_abilites() )
     {
       if ( !a->allow_class_ability_procs )
         return;
     }
 
-    if ( !effect.driver()->flags( spell_attribute::SX_CAN_PROC_FROM_PROCS ) )
+    if ( !effect.can_proc_from_procs() )
     {
       if ( !a->not_a_proc && ( a->background || a->proc ) )
         return;

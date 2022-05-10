@@ -97,7 +97,8 @@ void blood( player_t* p )
   precombat->add_action( "fleshcraft" );
 
   default_->add_action( "auto_attack" );
-  default_->add_action( "variable,name=death_strike_dump_amount,value=70,op=setif,condition=covenant.night_fae&buff.deaths_due.remains>6,value_else=55" );
+  default_->add_action( "variable,name=death_strike_dump_amount,if=!covenant.night_fae,value=70" );
+  default_->add_action( "variable,name=death_strike_dump_amount,if=covenant.night_fae,value=55" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "potion,if=buff.dancing_rune_weapon.up","Since the potion cooldown has changed, we'll sync with DRW" );
   default_->add_action( "use_items" );
@@ -123,26 +124,27 @@ void blood( player_t* p )
 
   covenants->add_action( "deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up" );
   covenants->add_action( "swarming_mist,if=cooldown.dancing_rune_weapon.remains>3&runic_power>=(90-(spell_targets.swarming_mist*3))" );
-  covenants->add_action( "abomination_limb,if=!buff.dancing_rune_weapon.up" );
+  covenants->add_action( "abomination_limb" );
   covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
   covenants->add_action( "shackle_the_unworthy,if=rune<3&runic_power<100" );
 
-  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon" );
-  drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20" );
-  drw_up->add_action( "blood_boil,if=charges>=2&rune<=1" );
-  drw_up->add_action( "variable,name=heart_strike_rp_drw,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
-  drw_up->add_action( "death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)" );
-  drw_up->add_action( "bonestorm,if=runic_power>=100" );
+  drw_up->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon" );
+  drw_up->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20" );
+  drw_up->add_action( "blood_boil,if=((charges>=2&rune<=1)|dot.blood_plague.remains<=2)|(spell_targets.blood_boil>5&charges_fractional>=1.1)&!(covenant.venthyr&buff.swarming_mist.up)" );
+  drw_up->add_action( "variable,name=heart_strike_rp_drw,value=(25+spell_targets.heart_strike*talent.heartbreaker.enabled*2)" );
+  drw_up->add_action( "death_strike,if=((runic_power.deficit<=variable.heart_strike_rp_drw)|(runic_power.deficit<=variable.death_strike_dump_amount&covenant.venthyr))&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)" );
+  drw_up->add_action( "death_and_decay,if=(spell_targets.death_and_decay==3&buff.crimson_scourge.up)|spell_targets.death_and_decay>=4" );
+  drw_up->add_action( "bonestorm,if=runic_power>=100&buff.endless_rune_waltz.stack>4&!(covenant.venthyr&cooldown.swarming_mist.remains<3)" );
   drw_up->add_action( "heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw" );
-  drw_up->add_action( "death_and_decay,if=spell_targets.death_and_decay>=3" );
+  drw_up->add_action( "consumption" );
 
   standard->add_action( "heart_strike,if=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)" );
-  standard->add_action( "tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30" );
-  standard->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>20" );
+  standard->add_action( "tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!(covenant.venthyr&cooldown.swarming_mist.remains<3)" );
+  standard->add_action( "marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>20&!(runeforge.crimson_rune_weapon&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)" );
   standard->add_action( "death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)" );
   standard->add_action( "blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)" );
   standard->add_action( "death_and_decay,if=buff.crimson_scourge.up&talent.relish_in_blood.enabled&runic_power.deficit>10" );
-  standard->add_action( "bonestorm,if=runic_power>=100" );
+  standard->add_action( "bonestorm,if=runic_power>=100&!(covenant.venthyr&cooldown.swarming_mist.remains<3)" );
   standard->add_action( "variable,name=heart_strike_rp,value=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2" );
   standard->add_action( "death_strike,if=(runic_power.deficit<=variable.heart_strike_rp)|target.time_to_die<10" );
   standard->add_action( "death_and_decay,if=spell_targets.death_and_decay>=3" );
@@ -311,7 +313,7 @@ void frost( player_t* p )
   standard->add_action( "frost_strike,if=cooldown.remorseless_winter.remains<=2*gcd&talent.gathering_storm" );
   standard->add_action( "howling_blast,if=variable.rotfc_rime" );
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
-  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|rune>=4|main_hand.2h&talent.gathering_storm&buff.remorseless_winter.up" );
+  standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|variable.deaths_due_active&buff.deaths_due.stack<4|rune>=4&set_bonus.tier28_4pc|(main_hand.2h|!covenant.night_fae|!set_bonus.tier28_4pc)&talent.gathering_storm&buff.remorseless_winter.up|!set_bonus.tier28_4pc&runic_power.deficit>(25+talent.runic_attenuation*5)" );
   standard->add_action( "frost_strike" );
   standard->add_action( "horn_of_winter" );
   standard->add_action( "arcane_torrent" );

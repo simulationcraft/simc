@@ -4,9 +4,9 @@ race=goblin
 spec=blood
 role=tank
 position=front
-talents=3231133
+talents=3131133
 covenant=night_fae
-soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/adaptive_armor_fragment:11:1/meat_shield:11:1/field_of_blossoms/dream_delver
+soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/eternal_hunger:11:1/meat_shield:11:1/field_of_blossoms/dream_delver
 renown=80
 
 head=shadowghast_helm,id=171415,bonus_id=6716/8119/6647/6649/1588/6935,gem_id=173128
@@ -21,7 +21,7 @@ legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
 feet=muckwallow_stompers,id=178774,bonus_id=6646/1592
 finger1=bloodoath_signet,id=178871,bonus_id=1592/6646/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=4800/4786/1524
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 

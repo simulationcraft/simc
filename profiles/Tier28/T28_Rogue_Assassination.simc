@@ -5,9 +5,9 @@ level=60
 race=mechagnome
 role=attack
 position=back
-talents=2220021
-covenant=night_fae
-soulbind=dreamweaver:2,septic_shock:11:1/lethal_poisons:11:1/wellplaced_steel:11:1/field_of_blossoms/dream_delver
+talents=2330023
+covenant=venthyr
+soulbind=theotar_the_mad_duke:9,soothing_shade/lashing_scars:11:1/lethal_poisons:11:1/wellplaced_steel:11:1/party_favors
 renown=80
 
 # Default consumables
@@ -36,8 +36,8 @@ actions.precombat+=/variable,name=vendetta_cdr,value=1-(runeforge.duskwalkers_pa
 # The average CDR is 0.22 but due to the RNG nature of CP gen, 2x this value is optimal for syncing logic
 actions.precombat+=/variable,name=flagellation_cdr,value=1-(runeforge.obedience*0.44)
 # Determine which (if any) stat buff trinket we want to attempt to sync with Vendetta.
-actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(trinket.1.is.shadowgrasp_totem&covenant.venthyr)
-actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(trinket.2.is.shadowgrasp_totem&covenant.venthyr)
+actions.precombat+=/variable,name=trinket_sync_slot,value=1,if=trinket.1.has_stat.any_dps&(!trinket.2.has_stat.any_dps|trinket.1.cooldown.duration>=trinket.2.cooldown.duration)|trinket.1.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.2.has_stat.any_dps&trinket.1.is.shadowgrasp_totem)
+actions.precombat+=/variable,name=trinket_sync_slot,value=2,if=trinket.2.has_stat.any_dps&(!trinket.1.has_stat.any_dps|trinket.2.cooldown.duration>trinket.1.cooldown.duration)|trinket.2.is.inscrutable_quantum_device|(covenant.venthyr&!trinket.1.has_stat.any_dps&trinket.2.is.shadowgrasp_totem)
 actions.precombat+=/variable,name=use_trinket_1_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.1.has_stat.haste_rating|trinket.1.is.inscrutable_quantum_device)
 actions.precombat+=/variable,name=use_trinket_2_pre_vendetta,value=set_bonus.tier28_4pc&(trinket.2.has_stat.haste_rating|trinket.2.is.inscrutable_quantum_device)
 actions.precombat+=/stealth
@@ -75,7 +75,7 @@ actions.cds+=/variable,name=vendetta_nightstalker_condition,value=!talent.nights
 actions.cds+=/variable,name=vendetta_ma_condition,value=!talent.master_assassin.enabled|dot.garrote.ticking|covenant.venthyr&combo_points.deficit=0
 # Sync Vendetta with Flagellation and Sepsis as long as we won't lose a cast over the fight duration
 actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.kyrian|covenant.necrolord|covenant.none,value=1
-actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.venthyr,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.flagellation.remains)%(120*variable.vendetta_cdr))|buff.flagellation_buff.up|debuff.flagellation.up|fight_remains<20
+actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.venthyr,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.flagellation.remains)%(120*variable.vendetta_cdr))&cooldown.flagellation.remains>10|buff.flagellation_buff.up|debuff.flagellation.up|fight_remains<20
 actions.cds+=/variable,name=vendetta_covenant_condition,if=covenant.night_fae,value=floor((fight_remains-20)%(120*variable.vendetta_cdr))>floor((fight_remains-20-cooldown.sepsis.remains)%(120*variable.vendetta_cdr))|dot.sepsis.ticking|fight_remains<20
 # Fleshcraft for Pustule Eruption if not stealthed or in a cooldown cycle
 actions.cds+=/fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&!debuff.vendetta.up&master_assassin_remains=0&(energy.time_to_max_combined>2|!debuff.shiv.up)
@@ -105,6 +105,7 @@ actions.cds+=/ancestral_call,if=debuff.vendetta.up
 actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0
 actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7
 actions.cds+=/use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.
@@ -141,12 +142,17 @@ actions.dot+=/rupture,if=talent.exsanguinate.enabled&!will_lose_exsanguinate&dot
 # Garrote upkeep, also tries to use it as a special generator for the last CP before a finisher
 actions.dot+=/pool_resource,for_next=1
 actions.dot+=/garrote,if=refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>4&master_assassin_remains=0
+# Early refresh Garrote if it is at low duration (but not yet pandemic) at the end of Vendetta with 4pc
+actions.dot+=/pool_resource,for_next=1
+actions.dot+=/garrote,if=set_bonus.tier28_4pc&debuff.vendetta.up&debuff.vendetta.remains<3&remains<7&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>2
 actions.dot+=/pool_resource,for_next=1
 actions.dot+=/garrote,cycle_targets=1,if=!variable.skip_cycle_garrote&target!=self.target&refreshable&combo_points.deficit>=1&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&(target.time_to_die-remains)>12&master_assassin_remains=0
 # Crimson Tempest on multiple targets at 4+ CP when running out in 2-5s as long as we have enough regen and aren't setting up for Vendetta
 actions.dot+=/crimson_tempest,target_if=min:remains,if=spell_targets>=2&effective_combo_points>=4&energy.regen_combined>20&(!cooldown.vendetta.ready|dot.rupture.ticking)&remains<(2+3*(spell_targets>=4))*(1-(set_bonus.tier28_4pc*debuff.vendetta.up*0.5))
 # Keep up Rupture at 4+ on all targets (when living long enough and not snapshot)
 actions.dot+=/rupture,if=!variable.skip_rupture&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))
+# Early refresh Rupture if it is at low duration (but not yet pandemic) at the end of Vendetta with 4pc
+actions.dot+=/rupture,if=set_bonus.tier28_4pc&effective_combo_points>=4&debuff.vendetta.up&debuff.vendetta.remains<3&remains<8&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))%2
 actions.dot+=/rupture,cycle_targets=1,if=!variable.skip_cycle_rupture&!variable.skip_rupture&target!=self.target&effective_combo_points>=4&refreshable&(pmultiplier<=1|remains<=tick_time&spell_targets.fan_of_knives>=3)&(!will_lose_exsanguinate|remains<=tick_time*2&spell_targets.fan_of_knives>=3)&target.time_to_die-remains>(4+(runeforge.dashing_scoundrel*5)+(runeforge.doomblade*5)+(variable.regen_saturated*6))
 # Fallback AoE Crimson Tempest with the same logic as above, but ignoring the energy conditions if we aren't using Rupture
 actions.dot+=/crimson_tempest,if=spell_targets>=2&effective_combo_points>=4&remains<2+3*(spell_targets>=4)
@@ -178,31 +184,31 @@ actions.vanish+=/vanish,if=talent.subterfuge.enabled&cooldown.garrote.up&debuff.
 actions.vanish+=/vanish,if=(talent.master_assassin.enabled|runeforge.mark_of_the_master_assassin)&!dot.rupture.refreshable&dot.garrote.remains>3&debuff.vendetta.up&(debuff.shiv.up|debuff.vendetta.remains<4|dot.sepsis.ticking)&dot.sepsis.remains<3
 
 head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173129
-neck=shadowghast_necklace,id=178927,bonus_id=6716/8127/6647/6649/1808/1588,gem_id=173127
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173127
 shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173127
+wrists=bracers_of_autonomous_classification,id=185817,bonus_id=1595/6536/6646/6935,gem_id=173127
 hands=soulblade_grasps,id=188907,bonus_id=1505/7187
 waist=runecarvers_twisted_ward,id=189856,bonus_id=1524/7187/6935,gem_id=173127
-legs=soulblade_leggings,id=188902,bonus_id=1498/7187
-feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant=eternal_agility
-finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6935,ilevel=272,gem_id=173129,enchant=tenet_of_haste
-finger2=shadowghast_ring,id=178926,bonus_id=6716/7118/6647/6649/1808/1588,gem_id=173127,enchant=tenet_of_versatility
+legs=umbrahide_leggings,id=172318,bonus_id=6716/8127/6647/6649/1588
+feet=soulblade_footpads,id=188908,bonus_id=1505/7187,enchant=eternal_agility
+finger1=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/7579/7749/7798/3151/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
+finger2=shadowghast_ring,id=178926,bonus_id=6716/7118/6647/6649/1808/1588/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
 trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
 main_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=observers_umbral_shiv,id=191001,bonus_id=1524/7187,enchant=sinful_revelation
 
 # Gear Summary
-# gear_ilvl=282.75
-# gear_agility=1407
-# gear_stamina=2910
+# gear_ilvl=283.19
+# gear_agility=1424
+# gear_stamina=2943
 # gear_attack_power=40
-# gear_crit_rating=999
-# gear_haste_rating=780
-# gear_mastery_rating=243
-# gear_versatility_rating=519
-# gear_armor=855
+# gear_crit_rating=988
+# gear_haste_rating=890
+# gear_mastery_rating=308
+# gear_versatility_rating=356
+# gear_armor=866
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43206 Live (hotfix 2022-04-16/43206, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -260,7 +260,8 @@ Effects          :
 Description      : $?s199023[Demoralizes all enemies within $A2 yards, reducing the damage they do by $s2% for $d.][Demoralizes all enemies within $A2 yards, reducing the damage they deal to you by $s1% for $d.]$?s202743[
 
 |cFFFFFFFFGenerates ${$m5/10} Rage.|r][]
-Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]
+Tooltip          : $?s199023[Demoralized, dealing $w2% less damage.][Demoralized, dealing $w1% less damage to $@auracaster.]$?s202743[
+Taking $w3% increased damage from $@auracaster.][]
 
 Name             : Challenging Shout (id=1161) [Spell Family (4)] 
 Class            : Warrior
@@ -11974,7 +11975,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=903738)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 0.50000 | Target: Self (1)
                    Affected Spells: Thunder Clap (6343), Shield Slam (23922)
                    Family Flags: 7, 41
 #2 (id=903837)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)

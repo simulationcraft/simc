@@ -3588,7 +3588,6 @@ void sim_t::create_options()
   add_option( opt_func( "warlock", parse_player ) );
   add_option( opt_func( "warrior", parse_player ) );
   add_option( opt_func( "enemy", parse_player ) );
-  add_option( opt_func( "tmi_boss", parse_player ) );
   add_option( opt_func( "tank_dummy", parse_player ) );
   add_option( opt_func( "pet", parse_player ) );
   add_option( opt_func( "guardian", parse_player ) );
@@ -3865,6 +3864,7 @@ void sim_t::create_options()
   add_option( opt_float( "shadowlands.first_strike_chance", shadowlands_opts.first_strike_chance, 0.0, 1.0 ) );
   add_option( opt_timespan( "shadowlands.first_strike_period", shadowlands_opts.first_strike_period, 1_s, timespan_t::max() ) );
   add_option( opt_float( "shadowlands.adaptive_armor_fragment_uptime", shadowlands_opts.adaptive_armor_fragment_uptime, 0.0, 0.5 ) );
+  add_option( opt_float( "shadowlands.soothing_shade_duration_multiplier", shadowlands_opts.soothing_shade_duration_multiplier, 0.0, 1.0 ) );
 }
 
 // sim_t::parse_option ======================================================

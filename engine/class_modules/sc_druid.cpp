@@ -117,12 +117,17 @@ struct druid_td_t : public actor_target_data_t
            hots.wild_growth->is_ticking();
   }
 
-  int dots_ticking() const
-  {
-    return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
-           dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
-           dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
-  }
+  /* Currently this helper method is only used for adapative swarm, which is bugged to not count lunar inspiration.
+    The bugged check is implemented locally in adaptive_swarm_damage_t and this is commented out for now until it
+    becomes needed in the future or the bug is fixed.
+    
+    int dots_ticking() const
+    {
+      return dots.lunar_inspiration->is_ticking() + dots.moonfire->is_ticking() + dots.rake->is_ticking() +
+             dots.rip->is_ticking() + dots.stellar_flare->is_ticking() + dots.sunfire->is_ticking() +
+             dots.thrash_bear->is_ticking() + dots.thrash_cat->is_ticking();
+    }
+  */
 };
 
 struct snapshot_counter_t
@@ -544,6 +549,7 @@ public:
   {
     // Balance
     proc_t* pulsar;
+    proc_t* bugged_4t28;
 
     // Feral & Resto
     proc_t* clearcasting;
@@ -1281,6 +1287,32 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
 };
 
 // Druid Buffs ==============================================================
+
+// Architect's Aligner (Guardian Tier 28 4 Set) =============================
+struct architects_aligner_buff_t : public druid_buff_t<buff_t>
+{
+  architects_aligner_buff_t( druid_t& p )
+    : base_t( p, "architects_aligner", p.sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
+  {
+    set_duration( 0_ms );
+    set_tick_callback( [ & ]( buff_t*, int, timespan_t ) {
+      p.active.architects_aligner->execute();
+    } );
+  }
+
+  void expire( timespan_t d ) override
+  {
+    // Buff ticks seem to occur at 150 frames per second, so if the buff expires within 1/150 second (6.67ms) of a tic,
+    // both events happen in the same frame and you do not get a partial tick. Note that simc truncates down to
+    // millisecond, so while in game the breakpoint required to get 6th tick is 832 haste rating, in simc it is 831
+    // haste rating.
+
+    if ( tick_event && tick_time() - tick_time_remains() > 6_ms )
+      p().active.architects_aligner->execute();
+
+    base_t::expire( d );
+  }
+};
 
 // Berserk (Feral) / Incarn Buff ============================================
 struct berserk_cat_buff_t : public druid_buff_t<buff_t>
@@ -6519,6 +6551,22 @@ struct starfall_t : public druid_spell_t
     return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
   }
 
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
+  }
+
   void execute() override
   {
     if ( !free_cast && p()->buff.oneths_free_starfall->up() )
@@ -6734,6 +6782,22 @@ struct starsurge_t : public druid_spell_t
     // effect that follows, such as proccing pulsar, can correctly reset empowerments
     if ( hit_any_target )
       p()->eclipse_handler.cast_starsurge();
+  }
+
+  void consume_resource() override
+  {
+    druid_spell_t::consume_resource();
+
+    if ( p()->sets->has_set_bonus( DRUID_BALANCE, T28, B4 ) )
+    {
+      if ( ( p()->eclipse_handler.state == IN_LUNAR &&
+             p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
+           ( p()->eclipse_handler.state == IN_SOLAR &&
+             p()->buff.eclipse_solar->elapsed( p()->sim->current_time() ) <= 50_ms ) )
+      {
+        p()->proc.bugged_4t28->occur();
+      }
+    }
   }
 
   void execute() override
@@ -7283,6 +7347,13 @@ struct adaptive_swarm_t : public druid_spell_t
       : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->cov.adaptive_swarm_damage )
     {}
 
+    bool dots_ticking( druid_td_t* td )
+    {
+      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
+             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
+             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
+    }
+
     swarm_target_t new_swarm_target( swarm_target_t exclude ) override
     {
       auto tl = target_list();
@@ -7305,14 +7376,14 @@ struct adaptive_swarm_t : public druid_spell_t
 
         if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_1.push_back( t );
           else
             tl_2.push_back( t );
         }
         else
         {
-          if ( t_td->dots_ticking() )
+          if ( dots_ticking( t_td ) )
             tl_3.push_back( t );
           else
             tl_4.push_back( t );
@@ -9256,12 +9327,7 @@ void druid_t::create_buffs()
   buff.incarnation_bear =
       make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", talent.incarnation_bear, true );
 
-  buff.architects_aligner =
-      make_buff( this, "architects_aligner", sets->set( DRUID_GUARDIAN, T28, B4 )->effectN( 1 ).trigger() )
-          ->set_duration( 0_ms )
-          ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-            active.architects_aligner->execute_on_target( target );
-          } );
+  buff.architects_aligner = make_buff<architects_aligner_buff_t>( *this );
 
   buff.bristling_fur = make_buff( this, "bristling_fur", talent.bristling_fur )
     ->set_cooldown( 0_ms );
@@ -9827,6 +9893,7 @@ void druid_t::init_procs()
 
   // Balance
   proc.pulsar = get_proc( "Primordial Arcanic Pulsar" )->collect_interval();
+  proc.bugged_4t28 = get_proc( "Bugged 4T28" )->collect_count();
 
   // Feral
   proc.predator            = get_proc( "Predator" );

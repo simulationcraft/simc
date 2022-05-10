@@ -77,7 +77,6 @@ public:
     QComboBox* update_check;
     QComboBox* boss_type;
     QComboBox* tank_dummy;
-    QComboBox* tmi_boss;
     QComboBox* tmi_window;
     QComboBox* show_etmi;
     QComboBox* debug;

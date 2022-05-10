@@ -4171,11 +4171,11 @@ struct earth_elemental_t : public shaman_spell_t
 
     if ( p()->talent.primal_elementalist->ok() )
     {
-      if ( p()->talent.storm_elemental->ok() )
+      if ( p()->talent.storm_elemental->ok() && p()->pet.pet_storm_elemental )
       {
         p()->pet.pet_storm_elemental->demise();
       }
-      else
+      else if ( !p()->talent.storm_elemental->ok() && p()->pet.pet_fire_elemental )
       {
         p()->pet.pet_fire_elemental->demise();
       }
@@ -8632,7 +8632,10 @@ void shaman_t::summon_fire_elemental( timespan_t duration )
   {
     if ( pet.pet_fire_elemental->is_sleeping() )
     {
-      pet.pet_earth_elemental->demise();
+      if ( pet.pet_earth_elemental )
+      {
+        pet.pet_earth_elemental->demise();
+      }
       pet.pet_fire_elemental->summon( duration );
       pet.pet_fire_elemental->get_cooldown( "meteor" )->reset( false );
     }
@@ -8669,7 +8672,10 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
   {
     if ( pet.pet_storm_elemental->is_sleeping() )
     {
-      pet.pet_earth_elemental->demise();
+      if ( pet.pet_earth_elemental )
+      {
+        pet.pet_earth_elemental->demise();
+      }
       pet.pet_storm_elemental->summon( duration );
       pet.pet_storm_elemental->get_cooldown( "eye_of_the_storm" )->reset( false );
     }

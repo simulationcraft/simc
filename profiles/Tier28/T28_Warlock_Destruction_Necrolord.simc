@@ -7,7 +7,7 @@ role=spell
 position=ranged_back
 talents=2103021
 covenant=necrolord
-soulbind=plague_deviser_marileth:4,volatile_solvent/211:11:1/214:11:1/218:11:1/kevins_oozeling
+soulbind=plague_deviser_marileth:4,volatile_solvent/ashen_remains:11:1/infernal_brand:11:1/fatal_decimation:11:1/kevins_oozeling
 renown=80
 
 # Default consumables

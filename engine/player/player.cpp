@@ -3440,12 +3440,25 @@ void player_t::create_buffs()
       }
 
       // 9.2 Jailer raid buff
+      // Values are hard-coded because difficulty-specific spell data is not fully extracted.
       buffs.boon_of_azeroth = make_buff<stat_buff_t>( this, "boon_of_azeroth", find_spell( 363338 ) )
         ->add_stat( STAT_MASTERY_RATING, 350 )
-        ->set_default_value_from_effect( 2 )
+        ->set_default_value( 0.1 )
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+
+      buffs.boon_of_azeroth_mythic = make_buff<stat_buff_t>( this, "boon_of_azeroth_mythic", find_spell( 363338 ) )
+        ->add_stat( STAT_MASTERY_RATING, 418 )
+        ->set_default_value( 0.12 )
+        ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
+        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT );
+
+      buffs.forced_bloodlust  = make_buff( this, "forced_bloodlust", find_spell( 2825 ) )
+          ->set_max_stack( 1 )
+          ->set_default_value_from_effect_type( A_HASTE_ALL )
+          ->add_invalidate( CACHE_HASTE );
 
       // 9.2 Encrypted Affix Buffs
       auto urh_restoration = find_spell( 368494 );
@@ -3458,16 +3471,21 @@ void player_t::create_buffs()
       } );
       buffs.decrypted_urh_cypher->set_stack_change_callback( [ this ]( buff_t* b, int, int new_ ) {
         double recharge_mult = 1.0 / ( 1.0 + b->data().effectN( 1 ).percent() );
+        int label = b->data().effectN( 1 ).misc_value1();
         for ( auto a : action_list )
         {
-          if ( a->cooldown->duration != 0_ms && a->data().class_mask() != 0 )
+          if ( a->cooldown->duration != 0_ms && a->data().affected_by_label( label ) )
           {
             if ( new_ == 1 )
-              a->base_recharge_multiplier *= recharge_mult;
+              a->dynamic_recharge_rate_multiplier *= recharge_mult;
             else
-              a->base_recharge_multiplier /= recharge_mult;
+              a->dynamic_recharge_rate_multiplier /= recharge_mult;
 
-            a->cooldown->adjust_recharge_multiplier();
+            if ( a->cooldown->action == a )
+              a->cooldown->adjust_recharge_multiplier();
+
+            if ( a->internal_cooldown->action == a )
+              a->internal_cooldown->adjust_recharge_multiplier();
           }
         }
       } );
@@ -3613,6 +3631,9 @@ double player_t::composite_melee_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
+
+    if ( buffs.forced_bloodlust->check() )
+      h *= 1.0 / ( 1.0 + buffs.forced_bloodlust->check_stack_value() );
 
     if ( buffs.mongoose_mh && buffs.mongoose_mh->check() )
       h *= 1.0 / ( 1.0 + 30 / current.rating.attack_haste );
@@ -3959,6 +3980,9 @@ double player_t::composite_spell_haste() const
 
     if ( buffs.bloodlust->check() )
       h *= 1.0 / ( 1.0 + buffs.bloodlust->check_stack_value() );
+
+    if ( buffs.forced_bloodlust->check() )
+      h *= 1.0 / ( 1.0 + buffs.forced_bloodlust->check_stack_value() );
 
     if ( buffs.berserking->check() )
       h *= 1.0 / ( 1.0 + buffs.berserking->data().effectN( 1 ).percent() );
@@ -4910,6 +4934,8 @@ void player_t::combat_begin()
   add_timed_buff_triggers( external_buffs.rallying_cry, buffs.rallying_cry );
   add_timed_buff_triggers( external_buffs.pact_of_the_soulstalkers, buffs.pact_of_the_soulstalkers );
   add_timed_buff_triggers( external_buffs.boon_of_azeroth, buffs.boon_of_azeroth );
+  add_timed_buff_triggers( external_buffs.boon_of_azeroth_mythic, buffs.boon_of_azeroth_mythic );
+  add_timed_buff_triggers( external_buffs.forced_bloodlust, buffs.forced_bloodlust );
 
   auto add_timed_blessing_triggers = [ this, add_timed_buff_triggers ] ( const std::vector<timespan_t>& times, buff_t* buff, timespan_t duration = timespan_t::min() )
   {
@@ -11766,6 +11792,8 @@ void player_t::create_options()
   add_option( opt_external_buff_times( "external_buffs.pact_of_the_soulstalkers", external_buffs.pact_of_the_soulstalkers ) ); // 9.1 Kyrian Hunter Legendary
   add_option( opt_external_buff_times( "external_buffs.kindred_affinity", external_buffs.kindred_affinity ) ) ;
   add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth", external_buffs.boon_of_azeroth ) );
+  add_option( opt_external_buff_times( "external_buffs.boon_of_azeroth_mythic", external_buffs.boon_of_azeroth_mythic ) );
+  add_option( opt_external_buff_times( "external_buffs.forced_bloodlust", external_buffs.forced_bloodlust ) );
 
   // Additional Options for Timed External Buffs
   add_option( opt_bool( "external_buffs.seasons_of_plenty", external_buffs.seasons_of_plenty ) );
@@ -13463,7 +13491,7 @@ bool player_t::is_active() const
     }
     else
     {
-      return sim->current_index == actor_index;
+      return sim->player_no_pet_list[ sim->current_index ] == this;
     }
   }
   else

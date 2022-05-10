@@ -432,6 +432,7 @@ struct player_t : public actor_t
     std::array<buff_t*, 4> ancestral_call;
     buff_t* fireblood;
     buff_t* embrace_of_paku;
+    buff_t* forced_bloodlust;
 
     buff_t* berserking;
     buff_t* bloodlust;
@@ -554,6 +555,7 @@ struct player_t : public actor_t
 
     // 9.2 Sepulcher of the First Ones
     buff_t* boon_of_azeroth; // Jailer fight buff
+    buff_t* boon_of_azeroth_mythic; // Jailer fight buff (Mythic)
 
     // 9.2 Encrypted Affix Buffs
     buff_t* decrypted_urh_cypher;
@@ -595,6 +597,8 @@ struct player_t : public actor_t
     std::vector<timespan_t> pact_of_the_soulstalkers;
     std::vector<timespan_t> kindred_affinity;
     std::vector<timespan_t> boon_of_azeroth;
+    std::vector<timespan_t> boon_of_azeroth_mythic;
+    std::vector<timespan_t> forced_bloodlust;
     int soleahs_secret_technique;
     std::string elegy_of_the_eternals;
   } external_buffs;
