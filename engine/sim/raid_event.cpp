@@ -1414,21 +1414,47 @@ struct damage_done_buff_event_t final : public raid_event_t
 struct vulnerable_event_t final : public raid_event_t
 {
   double multiplier;
+  player_t* target = nullptr;
 
   vulnerable_event_t( sim_t* s, util::string_view options_str ) : raid_event_t( s, "vulnerable" ), multiplier( 2.0 )
   {
     add_option( opt_float( "multiplier", multiplier ) );
+    add_option( opt_func( "target", [this](sim_t* sim, util::string_view name, util::string_view value) { return parse_target(sim, name, value); } ) );
     parse_options( options_str );
+  }
+
+  bool parse_target( sim_t* /* sim */, util::string_view /* name */, util::string_view value )
+  {
+    auto it = range::find_if( sim->target_list, [ &value ]( const player_t* target ) {
+      return util::str_compare_ci( value, target->name() );
+    } );
+
+    if ( it != sim->target_list.end() )
+    {
+      target = *it;
+      return true;
+    }
+    else
+    {
+      sim->error( "Unknown vulnerability raid event target '{}'", value );
+      return true;
+    }
   }
 
   void _start() override
   {
-    sim->target->debuffs.vulnerable->increment( 1, multiplier );
+    if ( target )
+      target->debuffs.vulnerable->increment( 1, multiplier );
+    else
+      sim->target->debuffs.vulnerable->increment( 1, multiplier );
   }
 
   void _finish() override
   {
-    sim->target->debuffs.vulnerable->decrement();
+    if ( target )
+      target->debuffs.vulnerable->decrement();
+    else
+      sim->target->debuffs.vulnerable->decrement();
   }
 };
 

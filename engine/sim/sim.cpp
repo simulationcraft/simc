@@ -1538,6 +1538,7 @@ sim_t::sim_t() :
   enable_dps_healing( false ),
   count_overheal_as_heal( false ),
   scaling_normalized( 1.0 ),
+  merge_enemy_priority_dmg( false ),
   // Multi-Threading
   threads( 0 ), thread_index( 0 ), process_priority( computer_process::BELOW_NORMAL ),
   work_queue( new work_queue_t() ),
@@ -3643,6 +3644,7 @@ void sim_t::create_options()
   add_option( opt_bool( "enable_dps_healing", enable_dps_healing ) );
   add_option( opt_bool( "count_overheal_as_heal", count_overheal_as_heal ) );
   add_option( opt_float( "scaling_normalized", scaling_normalized ) );
+  add_option( opt_bool( "merge_enemy_priority_dmg", merge_enemy_priority_dmg ) );
   add_option( opt_obsoleted( "global_item_upgrade_level" ) );
   add_option( opt_int( "decorated_tooltips", decorated_tooltips ) );
   // Charts

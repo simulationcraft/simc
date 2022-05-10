@@ -1960,10 +1960,10 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
     Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
     Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
-    Fated Season 4 Raid LFR: 3842.5 (ExpectedStatModID: 189; ArmorConstMod: 1.537)
-    Fated Season 4 Raid Normal: 4175.0 (ExpectedStatModID: 190; ArmorConstMod: 1.670)
-    Fated Season 4 Raid Heroic: 4552.5 (ExpectedStatModID: 206; ArmorConstMod: 1.821)
-    Fated Season 4 Raid Mythic: 4980.0 (ExpectedStatModID: 207; ArmorConstMod: 1.992)
+    Fated Season 4 Raids LFR: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
+    Fated Season 4 Raids Normal: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
+    Fated Season 4 Raids Heroic: 4552.5 (ExpectedStatModID: 206; ArmorConstMod: 1.821)
+    Fated Season 4 Raids Mythic: 4980.0 (ExpectedStatModID: 207; ArmorConstMod: 1.992)
   */
   double k = dbc->armor_mitigation_constant( level );
 

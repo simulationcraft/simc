@@ -141,15 +141,6 @@ struct priest_pet_melee_t : public melee_attack_t
     first_swing = true;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double mul = attack_t::composite_target_multiplier( target );
-
-    mul *= p().o().shadow_weaving_multiplier( target, 0 );
-
-    return mul;
-  }
-
   timespan_t execute_time() const override
   {
     // First swing comes instantly after summoning the pet
@@ -431,6 +422,8 @@ struct fiend_melee_t : public priest_pet_melee_t
                                  p().o().gains.insanity_surrender_to_madness );
         }
         p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
+
+        p().o().trigger_shadow_weaving( s );
       }
       else
       {
@@ -721,7 +714,7 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   {
     parse_options( options );
     channeled   = true;
-    tick_zero = true;
+    tick_zero   = true;
     tick_action = new your_shadow_torment_mind_tick_t( p, torment_mind_tick_spell );
   }
 
