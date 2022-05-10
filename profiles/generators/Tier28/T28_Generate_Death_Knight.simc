@@ -28,7 +28,7 @@ main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_o
 save=T28_Death_Knight_Blood.simc
 
 
-deathknight="T28_Death_Knight_Frost"
+deathknight="T28_Death_Knight_Frost_DW"
 level=60
 race=human
 spec=frost
@@ -56,10 +56,10 @@ trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=sinful_revelation
 off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
-save=T28_Death_Knight_Frost.simc
+save=T28_Death_Knight_Frost_DW.simc
 
 
-deathknight="T28_Death_Knight_Frost_Breath"
+deathknight="T28_Death_Knight_Frost"
 level=60
 race=blood_elf
 spec=frost
@@ -87,7 +87,7 @@ trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
 main_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_hysteria
 off_hand=devastated_worldshard,id=189851,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
-save="T28_Death_Knight_Frost_Breath.simc"
+save="T28_Death_Knight_Frost.simc"
 
 
 deathknight="T28_Death_Knight_Frost_2H"
