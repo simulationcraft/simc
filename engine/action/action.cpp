@@ -1920,7 +1920,7 @@ void action_t::assess_damage( result_amount_type type, action_state_t* state )
   // TODO: Should part of this move to assessing, priority_iteration_damage for example?
   if ( state->result_raw > 0 || result_is_miss( state->result ) )
   {
-    if ( state->target == sim->target )
+    if ( state->target == sim->target || sim->merge_enemy_priority_dmg && state->target->is_enemy() && !state->target->is_pet() )
     {
       player->priority_iteration_dmg += state->result_amount;
     }

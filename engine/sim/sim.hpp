@@ -545,6 +545,7 @@ struct sim_t : private sc_thread_t
   bool enable_dps_healing;
   bool count_overheal_as_heal;
   double scaling_normalized;
+  bool merge_enemy_priority_dmg;
 
   // Multi-Threading
   mutex_t merge_mutex;
