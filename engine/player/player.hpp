@@ -660,6 +660,17 @@ struct player_t : public actor_t
     const spell_data_t* brush_it_off;
   } racials;
 
+  struct antumbra_t
+  {
+    bool swap           = false;
+    double int_diff     = 0.0;
+    double haste_diff   = 0.0;
+    double crit_diff    = 0.0;
+    double mastery_diff = 0.0;
+    double vers_diff    = 0.0;
+    double stam_diff    = 0.0;
+  } antumbra; // 9.2 Rygelon Dagger
+
   struct passives_t
   {
     double amplification_1;
