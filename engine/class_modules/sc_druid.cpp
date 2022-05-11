@@ -7711,6 +7711,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     a->set_free_cast( free_cast_e::CONVOKE );
     stats->add_child( a->stats );
     a->gain = gain;
+    a->proc = true;
     return a;
   }
 
