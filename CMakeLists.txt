@@ -16,7 +16,7 @@ option(SC_NO_NETWORKING "Disable all networking related stuff." OFF)
 # Install everything into a flat folder structure by default for packaging on windows
 option(SC_USE_FLAT_INSTALL "Install files into a flat folder structure" ${WIN32})
 
-set(CMAKE_CXX_STANDARD 17 CACHE STRING "C++ standard to conform to")
+set(CMAKE_CXX_STANDARD 20 CACHE STRING "C++ standard to conform to")
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 

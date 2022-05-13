@@ -21,17 +21,20 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cc: [gcc-12, gcc-9]
-        cppVersion: [17, 20]
+        cc: [gcc-12, gcc-10]
+        cppVersion: [20, 23]
         include:
-          - cc: gcc-9
-            cxx: g++-9
-            packages: gcc-9 g++-9
+          - cc: gcc-10
+            cxx: g++-10
+            packages: gcc-10 g++-10
             os: ubuntu-20.04
           - cc: gcc-12
             cxx: g++-12
             packages: gcc-12 g++-12
             os: ubuntu-22.04
+        exclude:
+          - cc: gcc-10
+            cppVersion: 23
 
     steps:
       - uses: actions/checkout@v3
@@ -78,7 +81,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cppVersion: [17, 20]
+        cppVersion: [20, 23]
         cc: [clang++-12, clang++-14]
         include:
           - cc: clang++-12
@@ -140,8 +143,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cppVersion: [17, 20]
-        compiler: [clang++-12, clang++-14, gcc-9, gcc-12]
+        cppVersion: [20, 23]
+        compiler: [clang++-12, clang++-14, gcc-10, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -158,8 +161,11 @@ jobs:
             os: ubuntu-22.04
           - compiler: gcc-12
             os: ubuntu-22.04
-          - compiler: gcc-9
+          - compiler: gcc-10
             os: ubuntu-20.04
+        exclude:
+          - compiler: gcc-10
+            cppVersion: 23
 
     steps:
       - uses: actions/cache@v3
@@ -183,7 +189,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        cppVersion: [17]
+        cppVersion: [20]
         tier: [ Tier29 ]
         compiler: [clang++-14]
         spec: [
@@ -239,12 +245,12 @@ jobs:
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
-    name: windows-VS-${{ matrix.vs }}-${{ matrix.arch }}
-    runs-on: windows-latest
+    name: ${{ matrix.os }}-${{ matrix.arch }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        vs: [2019]
         arch: [x64, amd64_arm64]
+        os: [windows-2019, windows-2022]
         include:
           - arch: x64
             runSmokeTest: true

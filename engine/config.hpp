@@ -60,20 +60,19 @@
 // ==========================================================================
 
 
-// Last updated 2021-06: Support gcc7 / clang 5 / MSVS 19.14 which have (~full) C++17 support
+// Last updated 2022-05: Support gcc10 / clang 10 / MSVC 19.29 which have large C++20 support
 // Ubuntu LTS EOL is +5 years, Debian has ~+3year EOL, +5 years with separate LTS support
-// Ubuntu 18.04: gcc 7.3 clang 6.0
-// Debian 10 (Buster) (Release 2019-07): gcc 8.3 clang 7
-// Ubuntu 20.04: gcc 9.3 clang 10
-// Debian 11 (Bullseye) (Planned Release 2021): gcc 10.2 clang 11
-#if defined( SC_CLANG ) && SC_CLANG < 50000
-#  error "clang++ below version 5 not supported"
+// Ubuntu 20.04: gcc 9.3 (10.3 available), clang 10
+// Debian 11 (Bullseye, released 2021-08-14): gcc 10.2 clang 11
+// Ubuntu 22.04 (Jammy, release 2022-04-21): gcc 11.2 clang 14.0
+#if defined( SC_CLANG ) && SC_CLANG < 100000
+#  error "clang++ below version 10 not supported"
 #endif
-#if defined( SC_GCC ) && SC_GCC < 70000
-#  error "g++ below version 7 not supported"
+#if defined( SC_GCC ) && SC_GCC < 100200
+#  error "g++ below version 10.2 not supported " 
 #endif
-#if defined( SC_VS ) && SC_VS < 1914
-#  error "Visual Studio 2017 below version 15.7 not supported"
+#if defined( SC_VS ) && SC_VS < 1929
+#  error "Visual Studio 2019 below version 16.11 not supported"
 #endif
 
 
