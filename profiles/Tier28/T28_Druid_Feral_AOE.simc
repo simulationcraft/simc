@@ -33,7 +33,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 # Snapshot raid buffed stats before combat begins and pre-potting is done.
 actions.precombat+=/variable,name=4cp_bite,value=0
-# Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4
+# Defines what ability to use as a filler. Shred = 0, Non-snapshot Rake = 1, Snapshot Rake = 2, LI = 3, Swipe = 4
 actions.precombat+=/variable,name=filler,value=1
 actions.precombat+=/variable,name=rip_ticks,value=7
 # Cache of acquired treasures does not seem to work yet and has to be seen
@@ -119,6 +119,7 @@ actions.filler=rake,target_if=max:druid.rake.ticks_gained_on_refresh,if=variable
 actions.filler+=/rake,if=variable.filler=2
 actions.filler+=/lunar_inspiration,if=variable.filler=3
 actions.filler+=/swipe,if=variable.filler=4
+actions.filler+=/swipe_cat,if=spell_targets.swipe_cat=1&!buff.clearcasting.up
 actions.filler+=/shred,if=buff.sudden_ambush.down
 
 actions.finisher=pool_resource,for_next=1
