@@ -60,7 +60,7 @@ actions.aoe+=/fire_blast,if=runeforge.disciplinary_command&cooldown.buff_discipl
 actions.aoe+=/arcane_explosion,if=mana.pct>30&active_enemies>=6&!runeforge.glacial_fragments
 actions.aoe+=/ebonbolt
 actions.aoe+=/ice_lance,if=runeforge.glacial_fragments&(talent.splitting_ice|active_enemies>=5)&travel_time<ground_aoe.blizzard.remains
-actions.aoe+=/wait,sec=0.1,if=runeforge.glacial_fragments&(talent.splitting_ice|active_enemies>=5)
+actions.aoe+=/wait,sec=0.1,if=runeforge.glacial_fragments&!runeforge.deaths_fathom&(!talent.comet_storm&active_enemies>=5|active_enemies>=6)
 actions.aoe+=/frostbolt
 
 actions.cds=use_item,name=shadowed_orb_of_torment,if=buff.rune_of_power.down

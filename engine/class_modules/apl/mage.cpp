@@ -624,7 +624,7 @@ void frost( player_t* p )
   aoe->add_action( "arcane_explosion,if=mana.pct>30&active_enemies>=6&!runeforge.glacial_fragments" );
   aoe->add_action( "ebonbolt" );
   aoe->add_action( "ice_lance,if=runeforge.glacial_fragments&(talent.splitting_ice|active_enemies>=5)&travel_time<ground_aoe.blizzard.remains" );
-  aoe->add_action( "wait,sec=0.1,if=runeforge.glacial_fragments&(talent.splitting_ice|active_enemies>=5)" );
+  aoe->add_action( "wait,sec=0.1,if=runeforge.glacial_fragments&!runeforge.deaths_fathom&(!talent.comet_storm&active_enemies>=5|active_enemies>=6)" );
   aoe->add_action( "frostbolt" );
 
   cds->add_action( "use_item,name=shadowed_orb_of_torment,if=buff.rune_of_power.down" );

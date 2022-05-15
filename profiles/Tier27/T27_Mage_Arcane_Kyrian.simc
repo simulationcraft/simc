@@ -286,7 +286,7 @@ actions.harmony+=/radiant_spark,if=variable.empowered_barrage&(buff.arcane_charg
 actions.harmony+=/touch_of_the_magi,if=variable.time_until_ap<50&variable.time_until_ap>30&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5)
 actions.harmony+=/arcane_orb,if=variable.just_used_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack
 # When using Harmonic Echo, you do not want to queue Arcane Barrage during the Arcane Blast cast
-actions.harmony+=/wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo,line_cd=25
+actions.harmony+=/wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo&active_enemies>1,line_cd=25
 actions.harmony+=/arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack
 actions.harmony+=/arcane_blast,if=variable.just_used_spark|(debuff.radiant_spark_vulnerability.up&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)
 # Use mini Barrage between radiant sparks if under BL without delaying Radiant Spark ideally

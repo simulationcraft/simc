@@ -5,9 +5,9 @@ level=60
 race=goblin
 role=tank
 position=front
-talents=3231133
+talents=3131133
 covenant=night_fae
-soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/adaptive_armor_fragment:11:1/meat_shield:11:1/field_of_blossoms/dream_delver
+soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/eternal_hunger:11:1/meat_shield:11:1/field_of_blossoms/dream_delver
 renown=80
 
 # Default consumables
@@ -33,7 +33,8 @@ actions.precombat+=/fleshcraft
 
 # Executed every time the actor is available.
 actions=auto_attack
-actions+=/variable,name=death_strike_dump_amount,value=70,op=setif,condition=covenant.night_fae&buff.deaths_due.remains>6,value_else=55
+actions+=/variable,name=death_strike_dump_amount,if=!covenant.night_fae,value=70
+actions+=/variable,name=death_strike_dump_amount,if=covenant.night_fae,value=55
 # Interrupt
 actions+=/mind_freeze,if=target.debuff.casting.react
 # Since the potion cooldown has changed, we'll sync with DRW
@@ -53,18 +54,19 @@ actions+=/call_action_list,name=standard
 
 actions.covenants=deaths_due,if=!buff.deaths_due.up|buff.deaths_due.remains<4|buff.crimson_scourge.up
 actions.covenants+=/swarming_mist,if=cooldown.dancing_rune_weapon.remains>3&runic_power>=(90-(spell_targets.swarming_mist*3))
-actions.covenants+=/abomination_limb,if=!buff.dancing_rune_weapon.up
+actions.covenants+=/abomination_limb
 actions.covenants+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent
 actions.covenants+=/shackle_the_unworthy,if=rune<3&runic_power<100
 
-actions.drw_up=tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon
-actions.drw_up+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20
-actions.drw_up+=/blood_boil,if=charges>=2&rune<=1
-actions.drw_up+=/variable,name=heart_strike_rp_drw,value=(15+buff.dancing_rune_weapon.up*10+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
-actions.drw_up+=/death_strike,if=runic_power.deficit<=variable.heart_strike_rp_drw&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
-actions.drw_up+=/bonestorm,if=runic_power>=100
+actions.drw_up=tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&runeforge.crimson_rune_weapon
+actions.drw_up+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|(buff.bone_shield.stack<2&(!covenant.necrolord|buff.abomination_limb.up)))&runic_power.deficit>20
+actions.drw_up+=/blood_boil,if=((charges>=2&rune<=1)|dot.blood_plague.remains<=2)|(spell_targets.blood_boil>5&charges_fractional>=1.1)&!(covenant.venthyr&buff.swarming_mist.up)
+actions.drw_up+=/variable,name=heart_strike_rp_drw,value=(25+spell_targets.heart_strike*talent.heartbreaker.enabled*2)
+actions.drw_up+=/death_strike,if=((runic_power.deficit<=variable.heart_strike_rp_drw)|(runic_power.deficit<=variable.death_strike_dump_amount&covenant.venthyr))&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)
+actions.drw_up+=/death_and_decay,if=(spell_targets.death_and_decay==3&buff.crimson_scourge.up)|spell_targets.death_and_decay>=4
+actions.drw_up+=/bonestorm,if=runic_power>=100&buff.endless_rune_waltz.stack>4&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
 actions.drw_up+=/heart_strike,if=rune.time_to_2<gcd|runic_power.deficit>=variable.heart_strike_rp_drw
-actions.drw_up+=/death_and_decay,if=spell_targets.death_and_decay>=3
+actions.drw_up+=/consumption
 
 actions.racials=blood_fury,if=cooldown.dancing_rune_weapon.ready&(!cooldown.blooddrinker.ready|!talent.blooddrinker.enabled)
 actions.racials+=/berserking
@@ -76,12 +78,12 @@ actions.racials+=/bag_of_tricks
 actions.racials+=/arcane_torrent,if=runic_power.deficit>20
 
 actions.standard=heart_strike,if=covenant.night_fae&death_and_decay.ticking&(buff.deaths_due.up&buff.deaths_due.remains<6)
-actions.standard+=/tombstone,if=buff.bone_shield.stack>=5&rune>=2&runic_power.deficit>=30
-actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>20
+actions.standard+=/tombstone,if=buff.bone_shield.stack>5&rune>=2&runic_power.deficit>=30&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
+actions.standard+=/marrowrend,if=(buff.bone_shield.remains<=rune.time_to_3|buff.bone_shield.remains<=(gcd+cooldown.blooddrinker.ready*talent.blooddrinker.enabled*4)|buff.bone_shield.stack<6|((!covenant.night_fae|buff.deaths_due.remains>5)&buff.bone_shield.remains<7))&runic_power.deficit>20&!(runeforge.crimson_rune_weapon&cooldown.dancing_rune_weapon.remains<buff.bone_shield.remains)
 actions.standard+=/death_strike,if=runic_power.deficit<=variable.death_strike_dump_amount&!(talent.bonestorm.enabled&cooldown.bonestorm.remains<2)&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
 actions.standard+=/blood_boil,if=charges_fractional>=1.8&(buff.hemostasis.stack<=(5-spell_targets.blood_boil)|spell_targets.blood_boil>2)
 actions.standard+=/death_and_decay,if=buff.crimson_scourge.up&talent.relish_in_blood.enabled&runic_power.deficit>10
-actions.standard+=/bonestorm,if=runic_power>=100
+actions.standard+=/bonestorm,if=runic_power>=100&!(covenant.venthyr&cooldown.swarming_mist.remains<3)
 actions.standard+=/variable,name=heart_strike_rp,value=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2),op=setif,condition=covenant.night_fae&death_and_decay.ticking,value_else=(15+spell_targets.heart_strike*talent.heartbreaker.enabled*2)*1.2
 actions.standard+=/death_strike,if=(runic_power.deficit<=variable.heart_strike_rp)|target.time_to_die<10
 actions.standard+=/death_and_decay,if=spell_targets.death_and_decay>=3
@@ -103,16 +105,16 @@ legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
 feet=muckwallow_stompers,id=178774,bonus_id=6646/1592
 finger1=bloodoath_signet,id=178871,bonus_id=1592/6646/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=faulty_countermeasure,id=137539,bonus_id=1524/1642/6646
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=4800/4786/1524
 trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
 main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=280.87
+# gear_ilvl=281.73
 # gear_strength=1298
 # gear_stamina=2969
 # gear_attack_power=20
-# gear_crit_rating=646
+# gear_crit_rating=521
 # gear_haste_rating=1316
 # gear_mastery_rating=376
 # gear_versatility_rating=126
