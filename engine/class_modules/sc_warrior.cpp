@@ -3209,6 +3209,14 @@ struct intervene_t : public warrior_attack_t
     parse_options( options_str );
     ignore_false_positive   = true;
     movement_directionality = movement_direction_type::OMNI;
+
+    // Reprisal rage gain for Intervene
+    if ( p->legendary.reprisal->ok() )
+    {
+      energize_resource = RESOURCE_RAGE;
+      energize_type     = action_energize::ON_CAST;
+      energize_amount += p->find_spell( 335734 )->effectN( 1 ).resource( RESOURCE_RAGE );
+    }
   }
 
   void execute() override
@@ -3222,6 +3230,20 @@ struct intervene_t : public warrior_attack_t
               p()->current.distance_to_move /
               ( p()->base_movement_speed * ( 1 + p()->passive_movement_modifier() + movement_speed_increase ) ) ) );
       p()->current.moving_away = 0;
+    }
+    
+    //Reprisal Shield Block and Revenge! gain for Intervene.
+    if ( p()->legendary.reprisal->ok() )
+    {
+      if ( p()->buff.shield_block->check() )
+      {
+        // Even though it isn't mentionned anywhere in spelldata, reprisal only triggers shield block for 4s
+        p()->buff.shield_block->extend_duration( p(), 4_s );
+      }
+      else
+        p()->buff.shield_block->trigger( 4_s );
+
+      p()->buff.revenge->trigger();
     }
   }
 
@@ -6528,7 +6550,7 @@ void warrior_t::init_spells()
   spell.charge                = find_class_spell( "Charge" );
   spell.charge_rank_2         = find_spell( 319157 );
   spell.colossus_smash_debuff = find_spell( 208086 );
-  spell.intervene             = find_spell( 147833 );
+  spell.intervene             = find_spell( 3411 );
   spell.hamstring             = find_class_spell( "Hamstring" );
   spell.warrior_aura          = find_spell( 137047 );  // Warrior class aura
   spell.heroic_leap           = find_class_spell( "Heroic Leap" );
