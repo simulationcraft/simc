@@ -6802,7 +6802,7 @@ void warrior_t::default_apl_dps_precombat()
   precombat->add_action( this, "recklessness", "if=!runeforge.signet_of_tormented_kings.equipped" );
 
   precombat->add_action( this, covenant.conquerors_banner, "conquerors_banner" );
-  precombat->add_action( this, "fleshcraft" );
+  precombat->add_action( "fleshcraft" );
 
 }
 
@@ -7112,26 +7112,28 @@ void warrior_t::apl_prot()
   action_priority_list_t* aoe          = get_action_priority_list( "aoe" );
 
   default_list -> add_action( "auto_attack" );
-  default_list -> add_action( this, "Charge,if=time=0" );
-  default_list -> add_action( "heroic_charge,if=buff.revenge.down&(rage<80|rage<35&buff.last_stand.up)" );
+  default_list -> add_action( "charge,if=time=0" );
+  default_list -> add_action( "heroic_charge,if=buff.revenge.down&(rage<60|rage<44&buff.last_stand.up)" );
+  default_list -> add_action( "intervene,if=buff.revenge.down&(rage<80|rage<77&buff.last_stand.up)" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
-
   //use off GCD racial buffs with avatar.
-  default_list -> add_action( "blood_fury", "if=buff.avatar.up" );
-  default_list -> add_action( "berserking", "if=buff.avatar.up" );
-  default_list -> add_action( "fireblood", "if=buff.avatar.up" );
-  default_list -> add_action( "ancestral_call", "if=buff.avatar.up" );
-  //Don't Avatar if we have an Outburst proc so it doesn't get eaten.
+  default_list -> add_action( "blood_fury,if=buff.avatar.up" );
+  default_list -> add_action( "berserking,if=buff.avatar.up" );
+  default_list -> add_action( "fireblood,if=buff.avatar.up" );
+  default_list -> add_action( "ancestral_call,if=buff.avatar.up" );
+  //
+  default_list -> add_action( "thunder_clap,if=buff.outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))" );
+  // Don't Avatar if we have an Outburst proc so it doesn't get eaten.
   default_list -> add_action( this, "Avatar", "if=buff.outburst.down" );
   default_list -> add_action( "potion,if=buff.avatar.up|target.time_to_die<25" );
-  default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner", "if=buff.conquerors_banner.down");
+  default_list -> add_action( this, covenant.conquerors_banner, "conquerors_banner" );
   default_list -> add_action( this, covenant.ancient_aftershock, "ancient_aftershock");
   default_list -> add_action( this, covenant.spear_of_bastion, "spear_of_bastion");
   //Prioritize Revenge! procs if SS is on cd and not in execute.
   default_list -> add_action( this, "Revenge", "if=buff.revenge.up&(target.health.pct>20|spell_targets.thunder_clap>3)&cooldown.shield_slam.remains" );
   default_list -> add_action( this, "Ignore Pain", "if=target.health.pct>=20&(target.health.pct>=80&!covenant.venthyr)&(rage>=85&cooldown.shield_slam.ready&buff.shield_block.up|rage>=60&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled|rage>=70&cooldown.avatar.ready|rage>=40&cooldown.demoralizing_shout.ready&talent.booming_voice.enabled&buff.last_stand.up|rage>=55&cooldown.avatar.ready&buff.last_stand.up|rage>=80|rage>=55&cooldown.shield_slam.ready&buff.outburst.up&buff.shield_block.up|rage>=30&cooldown.shield_slam.ready&buff.outburst.up&buff.last_stand.up&buff.shield_block.up),use_off_gcd=1");
   //Shield Block if missing the buff, or SS is about to come off CD, but ignore during execute.
-  default_list -> add_action( this, "Shield Block", "if=(buff.shield_block.down|cooldown.shield_slam.remains<3)&target.health.pct>20" );
+  default_list -> add_action( this, "Shield Block", "if=(buff.shield_block.down|buff.shield_block.remains<cooldown.shield_slam.remains)&target.health.pct>20" );
   default_list -> add_action( this, "Last Stand", "if=target.health.pct>=90|target.health.pct<=20");
   default_list -> add_action( this, "Demoralizing Shout", "if=talent.booming_voice.enabled&rage<60" );
   default_list -> add_action( this, "Shield Slam", "if=buff.outburst.up&rage<=55");
@@ -7139,9 +7141,8 @@ void warrior_t::apl_prot()
   default_list -> add_action( "call_action_list,name=generic" );
   //Lower priority for on GCD racials.
   default_list -> add_action( "bag_of_tricks" );
-  default_list -> add_action( "arcane_torrent", "if=rage<80" );
+  default_list -> add_action( "arcane_torrent,if=rage<80" );
   default_list -> add_action( "lights_judgment" );
-
 
   generic -> add_talent( this, "Ravager" );
   generic -> add_talent( this, "Dragon Roar" );
@@ -7156,7 +7157,7 @@ void warrior_t::apl_prot()
   aoe -> add_talent( this, "Dragon Roar" );
   //This only gets called around 1/3 of Outburst procs due to the SS call being higher priority, which is about
   //how often you want to TC on 4+ targets for more damage without sacrificing Banner uptime.
-  aoe -> add_action( this, "Thunder Clap", "if=buff.outburst.up" );
+  aoe -> add_action( this, "Thunder Clap,if=buff.outburst.up" );
   aoe -> add_action( this, "Revenge" );
   aoe -> add_action( this, "Thunder Clap" );
   aoe -> add_action( this, "Shield Slam" );
