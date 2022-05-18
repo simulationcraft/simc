@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.5.43412
-static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
+// Spell text, wow build 9.2.5.43741
+static const std::array<spelltext_data_t, 16091> __ptr_spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15608,7 +15608,7 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 360980, "When you kill an enemy that yields experience or honor, your highest secondary is increased by $368212s1 for $360984d, stacking up to $360984u times.", 0, 0 },
   { 360984, "$@spelldesc360980", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 361020, "Taking damage has a chance to infuse you with Cosmic energy, healing you for $s1.", 0, 0 },
-  { 361085, "Plant a banner representing your successes against the Tormented.", 0, 0 },
+  { 361085, "Plant a banner representing your successes against the Encrypted.", 0, 0 },
   { 361090, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361091, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361118, "Increases the duration of Flask, Elixir, and Well Fed effects by $s1%.", 0, 0 },
@@ -15630,8 +15630,6 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 361756, "$@spelldesc325028", "Taking $w1% increased Physical damage from $@auracaster.", 0 },
   { 361839, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 2.", 0, 0 },
   { 361864, "Create a piece of Unchained Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
-  { 362332, "Realize the potential in a Fated raid item, upgrading it to Heroic quality.", 0, 0 },
-  { 362350, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.\r\n\r\n", 0, 0 },
   { 362616, "Attacks have a chance to protect the bearer, increasing armor by $34199s1 for $34199d.", 0, 0 },
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
@@ -15875,7 +15873,9 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 366333, "Consume this crystal to gain its enhancement temporarily. \r\nThis effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", "This effect will last for $?S365394[60]?S365335[45]?S365332[30][15] min. Only works in Shadowlands outdoor areas or Oribos.", 0 },
   { 366436, "Every $369786t1 sec you gain $@spellname366438, causing your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast to be enhanced, granting the target precisely what they require.", 0, 0 },
   { 366438, "$@spelldesc366436", "Your next $?a137012|a137013[Regrowth]?a137024[Enveloping Mist]?a137029[Flash of Light]?a137032|a137033[Shadow Mend]?a137031[Flash Heal]?a137039|a137040[Healing Surge][appropriate healing spell] cast is enhanced, granting the target precisely what they require.", 0 },
+  { 366563, "Add the Shrouded affix to a Mythic Keystone.", 0, 0 },
   { 366656, "Your healing spells and abilities have a chance to activate a Pre-Fabricated Assistant who applies $s1 absorb to your most injured nearby ally every $368208t1 sec for $368208d.", 0, 0 },
+  { 366757, "Striking with your Main Hand has a chance to make the target bleed for ${$s1*$366884d1} damage over $366884d1.", 0, 0 },
   { 366769, "$@spelldesc363913", "Strength increased by $s1%.", 0 },
   { 366779, "$@spelldesc364470", "Chain Heal critical chance increased by $w1%.", 0 },
   { 366780, "$@spelldesc363672", 0, 0 },
@@ -15883,7 +15883,10 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 366793, "Heals for $s1.\r\n", 0, 0 },
   { 366794, "Increase maximum health by $s1.\r\n", "Increases maximum health by $w1.", 0 },
   { 366861, "Gaze deeply into the orb while sitting, pondering its secrets.", 0, 0 },
+  { 366876, "While affected, your Off-Hand strikes sear the wound, dealing $s1 Fire damage.", 0, 0 },
   { 366882, "Increase your attunement to the Shadowlands, learning all Conduits and raising them to item level $s2.", 0, 0 },
+  { 366884, "$@spelldesc366757", "Bleeding for $w1 every $t sec.", 0 },
+  { 366890, "$@spelldesc366757", 0, 0 },
   { 366971, "$@spelldesc363656", "Causing shadow damage to all targets within $a2 yards.", 0 },
   { 367173, "Your equipment suffers no durability loss.", "Your equipment suffers no durability loss.", 0 },
   { 367202, "Summon a circle of Jiro to serenade you.", "You have summoned a circle of Jiro.", 0 },
@@ -16086,13 +16089,15 @@ static const std::array<spelltext_data_t, 16086> __ptr_spelltext_data { {
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
   { 371525, "Combine $s2 Confounding Antique Cyphers to create the |cFFE6CC80Cosmic Creation Impetus|r, which can be used to improve Fated raid items to Heroic quality.", 0, 0 },
   { 371574, "Combine $s2 Confounding Ancient Cyphers to create the |cFFE6CC80Sacred Creation Impetus|r, which can be used to improve Fated raid items to Mythic quality.", 0, 0 },
+  { 373264, "Realize the potential in a Fated raid item, upgrading it to Heroic quality.", 0, 0 },
+  { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.43412
+// spelltext hotfix entries, wow build 9.2.5.43741
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.5.43412
+// Spell description variables, wow build 9.2.5.43741
 static const std::array<spelldesc_vars_data_t, 308> __ptr_spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16404,7 +16409,7 @@ static const std::array<spelldesc_vars_data_t, 308> __ptr_spelldesc_vars_data { 
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.43412
+// spelldesc_vars hotfix entries, wow build 9.2.5.43741
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __ptr_spelldesc_vars_hotfix_data { {
 } };
 
