@@ -372,7 +372,7 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=st_planning,value=active_enemies=1&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>10))" );
   default_->add_action( "variable,name=major_cooldowns_active,value=(talent.summon_gargoyle&!pet.gargoyle.active&cooldown.summon_gargoyle.remains|!talent.summon_gargoyle)&(buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up&buff.dark_transformation.remains>5|active_enemies>=2&death_and_decay.ticking)" );
-  default_->add_action( "variable,name=dump_wounds,value=covenant.night_fae&death_and_decay.ticking&buff.deaths_due.stack<4|buff.marrowed_gemstone_enhancement.up|buff.thrill_seeker.up|buff.frenzied_monstrosity.up|buff.lead_by_example.up|buff.chaos_bane.up|cooldown.unholy_assault.remains<5&cooldown.apocalypse.remains>10" );
+  default_->add_action( "variable,name=dump_wounds,value=cooldown.apocalypse.remains_expected>15&(covenant.night_fae&death_and_decay.ticking&buff.deaths_due.stack<4|buff.marrowed_gemstone_enhancement.up|buff.thrill_seeker.up|buff.frenzied_monstrosity.up|buff.lead_by_example.up|buff.chaos_bane.up|cooldown.unholy_assault.remains<5)" );
   default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&!talent.unholy_blight&!raid_event.adds.exists", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,target_if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&(cooldown.unholy_blight.remains>(15%active_enemies+dot.virulent_plague.remains)|active_enemies>=3))" );
   default_->add_action( "outbreak,if=runeforge.superstrain&(dot.frost_fever.refreshable|dot.blood_plague.refreshable)" );
@@ -409,7 +409,7 @@ void unholy( player_t* p )
   aoe_setup->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=rune.time_to_4<(cooldown.death_and_decay.remains&!talent.defile|cooldown.defile.remains&talent.defile|covenant.night_fae&cooldown.deaths_due.remains)" );
 
   cooldowns->add_action( "potion,if=variable.major_cooldowns_active|pet.gargoyle.active&pet.gargoyle.remains<=26|fight_remains<26", "Potion" );
-  cooldowns->add_action( "army_of_the_dead,if=cooldown.dark_transformation.remains_expected<7&(equipped.gavel_of_the_first_arbiter&cooldown.twisted_judgement.remains<7|!equipped.gavel_of_the_first_arbiter)&(cooldown.unholy_blight.remains<7&talent.unholy_blight|!talent.unholy_blight)&(set_bonus.tier28_4pc&target.time_to_pct_35<4|!set_bonus.tier28_4pc|fight_remains>200)&(cooldown.abomination_limb.remains<18&(runeforge.abominations_frenzy|soulbind.kevins_oozeling)|!runeforge.abominations_frenzy&!soulbind.kevins_oozeling)&(cooldown.apocalypse.remains_expected<7&variable.full_cdr|!variable.full_cdr|variable.dc_rt)|fight_remains<35", "Cooldowns" );
+  cooldowns->add_action( "army_of_the_dead,if=cooldown.dark_transformation.remains_expected<10&(cooldown.unholy_blight.remains<10&talent.unholy_blight|!talent.unholy_blight)&(set_bonus.tier28_4pc&target.time_to_pct_35<4|!set_bonus.tier28_4pc|fight_remains>200)&(cooldown.abomination_limb.remains<18&(runeforge.abominations_frenzy|soulbind.kevins_oozeling)|!runeforge.abominations_frenzy&!soulbind.kevins_oozeling)&(cooldown.apocalypse.remains_expected<10&variable.full_cdr|!variable.full_cdr|variable.dc_rt)|fight_remains<35", "Cooldowns" );
   cooldowns->add_action( "soul_reaper,if=active_enemies=1&target.time_to_pct_35<5&target.time_to_die>(dot.soul_reaper.remains+5)" );
   cooldowns->add_action( "soul_reaper,target_if=min:dot.soul_reaper.remains,if=target.time_to_pct_35<5&active_enemies>=2&target.time_to_die>(dot.soul_reaper.remains+5)&(active_enemies<=3|set_bonus.tier28_4pc&active_enemies<=5&(buff.dark_transformation.up|runeforge.reanimated_shambler)&(!death_and_decay.ticking|covenant.night_fae))" );
   cooldowns->add_action( "unholy_blight,if=variable.st_planning&(cooldown.apocalypse.remains_expected<5|cooldown.apocalypse.remains_expected>10)&(cooldown.dark_transformation.remains<gcd|buff.dark_transformation.up)", "Holds Blight for up to 5 seconds to sync with Apocalypse, Otherwise, use with Dark Transformation." );
@@ -422,7 +422,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "unholy_assault,if=variable.st_planning&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up&cooldown.apocalypse.remains>10|cooldown.apocalypse.remains>10&cooldown.dark_transformation.remains>10)" );
   cooldowns->add_action( "unholy_assault,target_if=min:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack<2&(pet.apoc_ghoul.active|buff.dark_transformation.up|cooldown.death_and_decay.remains<gcd)" );
   cooldowns->add_action( "raise_dead,if=!pet.ghoul.active" );
-  cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&cooldown.dark_transformation.remains>5|fight_remains<gcd" );
+  cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&cooldown.dark_transformation.remains>6|fight_remains<gcd" );
 
   covenants->add_action( "swarming_mist,if=variable.st_planning&runic_power.deficit>16&(cooldown.apocalypse.remains|!talent.army_of_the_damned&cooldown.dark_transformation.remains)|fight_remains<11", "Covenant Abilities" );
   covenants->add_action( "swarming_mist,if=cooldown.apocalypse.remains&(active_enemies>=2&active_enemies<=5&runic_power.deficit>10+(active_enemies*6)&variable.adds_remain|active_enemies>5&runic_power.deficit>40)", "Set to use after apoc is on CD as to prevent overcapping RP while setting up CD's" );
@@ -434,14 +434,14 @@ void unholy( player_t* p )
   covenants->add_action( "shackle_the_unworthy,if=variable.adds_remain&(death_and_decay.ticking|raid_event.adds.remains<=14)" );
   covenants->add_action( "fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
 
-  generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=13+(runeforge.rampant_transference*3+death_knight.runeforge.hysteria*3))|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up", "Single Target" );
+  generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=20+(runeforge.rampant_transference*5+death_knight.runeforge.hysteria*5))|pet.gargoyle.active&rune<=3|fight_remains<10&!debuff.festering_wound.up|talent.army_of_the_damned&talent.unholy_blight&cooldown.unholy_blight.remains<cooldown.apocalypse.remains_expected&rune<=2", "Single Target" );
   generic->add_action( "any_dnd,if=(talent.defile.enabled|covenant.night_fae|runeforge.phearomones)&((!variable.pooling_runes|talent.defile&conduit.withering_ground)|fight_remains<5)" );
-  generic->add_action( "wound_spender,if=variable.dump_wounds&debuff.festering_wound.stack>=1&cooldown.apocalypse.remains_expected>15-(runeforge.deadliest_coil*10)&!variable.pooling_runes" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>3&!variable.pooling_runes|debuff.festering_wound.up&fight_remains<(debuff.festering_wound.stack*gcd)" );
-  generic->add_action( "death_coil,if=runic_power.deficit<=20+(runeforge.rampant_transference*4+death_knight.runeforge.hysteria*4)&!variable.pooling_runic_power" );
+  generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&cooldown.apocalypse.remains<gcd*3" );
+  generic->add_action( "wound_spender,if=variable.dump_wounds&debuff.festering_wound.stack>=1&cooldown.apocalypse.remains_expected>15-(runeforge.deadliest_coil)&!variable.pooling_runes" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>3&!variable.pooling_runes|debuff.festering_wound.up&fight_remains<(debuff.festering_wound.stack*gcd)|debuff.festering_wound.stack>4&cooldown.apocalypse.remains_expected>cooldown.unholy_blight.remains&conduit.convocation_of_the_dead" );
   generic->add_action( "festering_strike,if=debuff.festering_wound.stack<4&!variable.pooling_runes" );
   generic->add_action( "death_coil,if=!variable.pooling_runic_power" );
-  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>=1&rune<2&!variable.pooling_runes&cooldown.apocalypse.remains_expected>5" );
+  generic->add_action( "wound_spender,if=debuff.festering_wound.stack>=1&rune<2&!variable.pooling_runes&cooldown.apocalypse.remains_expected>15" );
 
   generic_aoe->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies<=3", "Generic AoE Priority" );
   generic_aoe->add_action( "death_coil,if=(!variable.pooling_runic_power|buff.sudden_doom.react)&(buff.dark_transformation.up&runeforge.deadliest_coil&active_enemies<=3|active_enemies=2)" );
