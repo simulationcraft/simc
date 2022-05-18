@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -11996,6 +11996,8 @@ Description      : Enemies hit by Comet Storm take $363544s1% increased damage f
 Name             : Sinful Delight (id=364854) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364852)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12014,6 +12016,8 @@ Description      : $@spelldesc354333
 Name             : Death's Fathom (id=364855) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364852)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -12032,6 +12036,8 @@ Description      : $@spelldesc354294
 Name             : Heart of the Fae (id=364856) [Spell Family (3), Passive, Hidden] 
 School           : Physical
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364852)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

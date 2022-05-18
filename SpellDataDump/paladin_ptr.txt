@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43340 Live (hotfix 2022-04-29/43340, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -11346,6 +11346,8 @@ Tooltip          : Recently benefited from Dawn Will Come.
 Name             : Radiant Embers (id=367663) [Spell Family (10), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364642)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11364,6 +11366,8 @@ Description      : $@spelldesc355447
 Name             : Duty-Bound Gavel (id=367664) [Spell Family (10), Passive, Hidden] 
 School           : Shadow
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364642)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -11382,6 +11386,8 @@ Description      : $@spelldesc355099
 Name             : Seasons of Plenty (id=367665) [Spell Family (10), Passive, Hidden] 
 School           : Nature
 Spell Type       : None
+Stacks           : 2 maximum
+Proc Chance      : 101%
 Triggered by     : Unity (364642)
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
