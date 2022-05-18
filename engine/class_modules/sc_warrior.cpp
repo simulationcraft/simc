@@ -7121,7 +7121,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "berserking,if=buff.avatar.up" );
   default_list -> add_action( "fireblood,if=buff.avatar.up" );
   default_list -> add_action( "ancestral_call,if=buff.avatar.up" );
-  //
+  //Use TC if we have Outburst and High stacks of Seeing Red to prevent wasting Outburst procs.
   default_list -> add_action( "thunder_clap,if=buff.outburst.up&((buff.seeing_red.stack>6&cooldown.shield_slam.remains>2))" );
   // Don't Avatar if we have an Outburst proc so it doesn't get eaten.
   default_list -> add_action( this, "Avatar", "if=buff.outburst.down" );
