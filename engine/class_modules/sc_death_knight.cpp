@@ -5528,6 +5528,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     if ( p() -> buffs.eradicating_blow -> check() )
     {
       m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
+      // Arma - May 5 2022 - On 9.2.0 live and 9.2.5.43741 eradicating blow applies the stack value twice to the off hand only.
+      if( p() -> bugs && weapon->slot == SLOT_OFF_HAND )
+        m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
     }
 
     return m;
