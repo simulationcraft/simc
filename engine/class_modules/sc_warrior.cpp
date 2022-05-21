@@ -7114,7 +7114,7 @@ void warrior_t::apl_prot()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "charge,if=time=0" );
   default_list -> add_action( "heroic_charge,if=buff.revenge.down&(rage<60|rage<44&buff.last_stand.up)" );
-  default_list -> add_action( "intervene,if=buff.revenge.down&(rage<80|rage<77&buff.last_stand.up)" );
+  default_list -> add_action( "intervene,if=buff.revenge.down&(rage<80|rage<77&buff.last_stand.up)&runeforge.reprisal" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
   //use off GCD racial buffs with avatar.
   default_list -> add_action( "blood_fury,if=buff.avatar.up" );
