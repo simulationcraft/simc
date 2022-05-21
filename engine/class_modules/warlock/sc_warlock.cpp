@@ -355,6 +355,17 @@ struct scouring_tithe_t : public warlock_spell_t
 
     LSD_alt_value = p->find_spell( 360953 )->effectN( 2 ).percent();
   }
+  
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    if ( td( s->target )->dots_scouring_tithe->remains() > p()->find_spell( 312321 )->duration() &&
+         p()->legendary.languishing_soul_detritus.ok() )
+    {
+      p()->buffs.languishing_soul_detritus->trigger( 1, LSD_alt_value );
+    }
+  }
 
   void last_tick( dot_t* d ) override
   {
