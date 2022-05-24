@@ -10250,9 +10250,15 @@ const spell_data_t* player_t::find_spell( unsigned int id ) const
 {
   if ( id )
   {
+    auto spell_cache_entry = spell_cache.find( id );
+    if ( spell_cache_entry != spell_cache.end() ) {
+      return spell_cache_entry->second;
+    }
+
     auto spell = dbc::find_spell( this, id );
     if ( spell->id() && as<int>( spell->level() ) <= true_level )
     {
+      spell_cache[id] = spell;
       return spell;
     }
   }
