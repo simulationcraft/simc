@@ -1270,7 +1270,7 @@ void warlock_t::create_apl_demonology()
   action_priority_list_t* dmg    		= get_action_priority_list( "pure_damage_trinks" );
 
   def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected" );
-  def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
+  def->add_action( "variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=(soulbind.field_of_blossoms|runeforge.decaying_soul_satchel)&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected" );
   def->add_action( "variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active" );
   def->add_action( "variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings&!variable.in_opener" );
   def->add_action( "variable,name=buff_sync_cd,op=set,value=12,if=!variable.use_bolt_timings&variable.in_opener&!pet.dreadstalker.active" );
