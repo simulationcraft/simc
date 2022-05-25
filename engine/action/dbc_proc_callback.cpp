@@ -102,13 +102,13 @@ void dbc_proc_callback_t::trigger( action_t* a, action_state_t* state )
       }
     }
 
-    if ( effect.can_only_proc_from_class_abilites() )
+    if ( can_only_proc_from_class_abilites )
     {
       if ( !a->allow_class_ability_procs )
         return;
     }
 
-    if ( !effect.can_proc_from_procs() )
+    if ( !can_proc_from_procs )
     {
       if ( !a->not_a_proc && ( a->background || a->proc ) )
         return;
@@ -155,7 +155,9 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t& i, const special_effect_
     expire_on_max_stack( false ),
     trigger_type( trigger_fn_type::NONE ),
     trigger_fn( nullptr ),
-    execute_fn( nullptr )
+    execute_fn( nullptr ),
+    can_only_proc_from_class_abilites( false ),
+    can_proc_from_procs( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -175,7 +177,9 @@ dbc_proc_callback_t::dbc_proc_callback_t( const item_t* i, const special_effect_
     expire_on_max_stack( false ),
     trigger_type( trigger_fn_type::NONE ),
     trigger_fn( nullptr ),
-    execute_fn( nullptr )
+    execute_fn( nullptr ),
+    can_only_proc_from_class_abilites( false ),
+    can_proc_from_procs( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -195,7 +199,9 @@ dbc_proc_callback_t::dbc_proc_callback_t( player_t* p, const special_effect_t& e
     expire_on_max_stack( false ),
     trigger_type( trigger_fn_type::NONE ),
     trigger_fn( nullptr ),
-    execute_fn( nullptr )
+    execute_fn( nullptr ),
+    can_only_proc_from_class_abilites( false ),
+    can_proc_from_procs( false )
 {
   assert( e.proc_flags() != 0 );
 }
@@ -268,6 +274,9 @@ void dbc_proc_callback_t::initialize()
   {
     execute_fn = listener->callbacks.callback_execute_function( effect.driver()->id() );
   }
+
+  can_only_proc_from_class_abilites = effect.can_only_proc_from_class_abilites();
+  can_proc_from_procs = effect.can_proc_from_procs();
 }
 
 // Determine target for the callback (action).

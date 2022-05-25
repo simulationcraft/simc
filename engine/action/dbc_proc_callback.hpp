@@ -89,6 +89,9 @@ struct dbc_proc_callback_t : public action_callback_t
   /// Override execution behavior with a separate callback function
   execute_fn_t* execute_fn;
 
+  bool can_only_proc_from_class_abilites;
+  bool can_proc_from_procs;
+
   dbc_proc_callback_t(const item_t& i, const special_effect_t& e);
 
   dbc_proc_callback_t(const item_t* i, const special_effect_t& e);
