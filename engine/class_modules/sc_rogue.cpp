@@ -9472,6 +9472,36 @@ public:
       .operation( hotfix::HOTFIX_SET )
       .modifier( 0.5 )
       .verification_value( 1 );
+
+    hotfix::register_effect( "Rogue", "2022-05-27", "Between the Eyes damage increased by 20%", 799020 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.2172 )
+      .verification_value( 0.180999 );
+
+    hotfix::register_effect( "Rogue", "2022-05-27", "Pistol Shot damage increased by 20%", 269972 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.42162 )
+      .verification_value( 0.351351 );
+
+    hotfix::register_effect( "Rogue", "2022-05-27", "Sinister Strike damage increased by 20%", 283619 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.54335 )
+      .verification_value( 0.45279 );
+
+    hotfix::register_effect( "Rogue", "2022-05-27", "Sinister Strike damage increased by 20% (Extra Attack)", 290715 )
+      .field( "ap_coefficient" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 0.54335 )
+      .verification_value( 0.45279 );
+
+    hotfix::register_effect( "Rogue", "2022-05-27", "Blade Flurry damage increased to 60% of single target damage (was 50%)", 806205 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 60 )
+      .verification_value( 50 );
   }
 
   void init( player_t* ) const override {}
