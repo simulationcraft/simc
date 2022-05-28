@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, git build shadowlands 96c6f822ad)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1820,10 +1820,12 @@ Effects          :
 #1 (id=132060)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.33000 | Misc Value: 0x7f | Target: Friend (21)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 1.33)
 #2 (id=139560)   : Apply Aura (6) | Modify Periodic Healing Recevied% (259)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Friend (21)
 #3 (id=798098)   : Dummy (3)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.33000
+Hotfixed         : PvP Coefficient (1 -> 1.33)
 Description      : Encases the target in a cocoon of Chi energy for $d, absorbing $<newshield> damage$?s343744[ and increasing all healing over time received by $m2%][].
 Tooltip          : Absorbing $w1 damage$?$w2!=0[ and healing from heal over time effects are increased by $w2%][].
 Variables        : $shield=${($SP*11)*(1+$@versadmg)}
@@ -3632,15 +3634,18 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179709)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.57143 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-11 -> -7)
 #2 (id=191100)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.57143 | Misc Value: 22 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780), Blackout Kick (100784), Spinning Crane Kick (107270), Fists of Fury (113656), Breath of Fire (115181), Fists of Fury (117418), Crackling Jade Lightning (117952), Keg Smash (121253), Flying Serpent Kick (123586), Chi Wave (132467), Chi Burst (148135), Rushing Jade Wind (148187), Whirling Dragon Punch (158221), Rising Sun Kick (185099), Eye of the Tiger (196608), Special Delivery (196733), Blackout Kick (205523), Blackout Kick (228649), Fist of the White Tiger (261947), Fist of the White Tiger (261977), Sunrise Technique (275673), Faeline Stomp (327264), Spinning Crane Kick (330901), Spinning Crane Kick (330903), Breath of Fire (330907), Keg Smash (330911), Chi Explosion (337342), Fists of Fury (345714), Faeline Stomp (345727)
                    Family Flags: 103
+Hotfixed         : Base Value (-11 -> -7)
 #3 (id=191101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.57143 | Target: Self (1)
+                   Base Value: -7 | Scaled Value: -7 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (-11 -> -7)
 #4 (id=191102)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
@@ -12762,7 +12767,8 @@ Effects          :
                    Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=910061)   : Apply Aura (6) | Dummy (4)
                    Base Value: 66 | Scaled Value: 66 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Keg Smash deals $s1% additional damage, heals you for $s2% of damage dealt, and grants $s3% of damage dealt as maximum health for $366794d, stacking up to $366794u times.
+Description      : Keg Smash deals an additional $s1% damage, heals you for $s2% of damage dealt, and grants $s3% of damage dealt as maximum health for $366794d.
+
 
 Name             : Keg of the Heavens (id=366793) [Spell Family (53)] 
 Class            : Monk
@@ -12800,7 +12806,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Aura Points On Client (268)
 Effects          :
-#1 (id=910063)   : Apply Aura (6) | Unknown(145)
+#1 (id=910063)   : Apply Aura (6) | Increase Health (34)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increase maximum health by $s1.
 

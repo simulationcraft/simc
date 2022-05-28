@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, git build shadowlands 96c6f822ad)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -267,7 +267,7 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 0x8 | Radius: 100 yards | Target: Unknown(118)
 Description      : Infuses the target with brilliance, increasing their Intellect by $s1% for $d.  
 
-If the target is in your party or raid, all party and raid members will be affected.
+If target is in your party or raid, all party and raid members will be affected.
 Tooltip          : Intellect increased by $w1%.
 
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
@@ -5485,6 +5485,7 @@ Effects          :
 #1 (id=355674)   : Apply Aura (6) | Absorb Damage (69)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.75000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : PvP Coefficient (1 -> 0.75)
 #2 (id=355675)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=355719)   : Apply Aura (6) | Modify Damage Taken% (87)
@@ -10544,6 +10545,8 @@ Spell Type       : None
 Duration         : 15 seconds
 Stacks           : 5 maximum
 Proc Chance      : 101%
+Proc Flags       : ........ ........ x....... ........ 
+                 : Magic Hostile Spell
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
