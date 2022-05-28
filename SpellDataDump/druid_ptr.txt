@@ -1204,7 +1204,8 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=12001)    : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (450 -> 550)
 #2 (id=12002)    : Apply Aura (6) | Override Action Spell (Misc /w Base) (332)
                    Base Value: 16979 | Scaled Value: 16979 | PvP Coefficient: 1.00000 | Misc Value 2: 0x3 | Target: Self (1)
                    Affected Spells: Wild Charge (102401)
@@ -14297,8 +14298,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226)
 Effects          :
 #1 (id=902899)   : Apply Aura (6) | Proc Trigger Spell (42): Architect's Aligner
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 363793 | Target: Self (1)
-Description      : While Berserked, you radiate $363789s1 Cosmic damage to nearby enemies and heal yourself for $363789s2 every $363793t sec.
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 363793 | Target: Self (1)
+Description      : While Berserked, you radiate $363789s1 Cosmic damage to nearby enemies and heal yourself for $363789s2 every $363793t sec. Deals reduced damage beyond $s1 targets.
 
 Name             : Umbral Infusion (id=363497) [Spell Family (7), Passive, Hidden] 
 Class            : Druid
