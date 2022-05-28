@@ -2610,8 +2610,12 @@ struct between_the_eyes_t : public rogue_attack_t
       td( execute_state->target )->debuffs.between_the_eyes->trigger( 3_s * cp_spend );
 
       // 2022-02-06 -- 4pc procs are triggering this in the current PTR build
-      if ( p()->legendary.greenskins_wickers.ok() && rng().roll( cp_spend * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
-        p()->buffs.greenskins_wickers->trigger();
+      if ( p()->legendary.greenskins_wickers.ok() )
+      {
+        // 2022-05-28 -- Greenskins ignores animacharged CP values for calculating proc chance
+        if ( rng().roll( rs->get_combo_points( p()->bugs ) * p()->legendary.greenskins_wickers->effectN( 1 ).percent() ) )
+          p()->buffs.greenskins_wickers->trigger();
+      }
     }
   }
 
