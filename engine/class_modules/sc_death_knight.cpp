@@ -6712,7 +6712,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) && get_td( target ) -> debuff.festering_wound -> up() )
     {
       p() -> buffs.harvest_time_stack -> trigger();
 
