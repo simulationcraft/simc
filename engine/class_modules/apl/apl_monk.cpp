@@ -532,7 +532,7 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
-      else if ( item.name_str == "gladiators_badge" )
+      else if ( item.name_str.find( "gladiators_badge" ) )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
@@ -600,7 +600,7 @@ void windwalker( player_t* p )
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
-      else if ( item.name_str == "gladiators_badge" )
+      else if ( item.name_str.find( "gladiators_badge" ) )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
