@@ -9501,7 +9501,7 @@ public:
       .modifier( 0.54335 )
       .verification_value( 0.45279 );
 
-    hotfix::register_effect( "Rogue", "2022-05-27", "Blade Flurry damage increased to 60% of single target damage (was 50%)", 806205 )
+    hotfix::register_effect( "Rogue", "2022-05-27", "Blade Flurry damage increased to 60% of single target damage (was 50%)", 136652 )
       .field( "base_value" )
       .operation( hotfix::HOTFIX_SET )
       .modifier( 60 )
