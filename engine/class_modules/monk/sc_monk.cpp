@@ -1770,7 +1770,7 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
           get_td( s->target )->dots.breath_of_fire->refresh_duration();
-          p()->cooldown.charred_passions->start( p()->find_spell( 338140 )->internal_cooldown() );
+          p()->cooldown.charred_passions->start( p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
     }
@@ -4069,6 +4069,8 @@ struct weapons_of_order_t : public monk_spell_t
 // ==========================================================================
 struct bountiful_brew_t : public monk_spell_t
 {
+  buff_t* lead_by_example;
+
   bountiful_brew_t( monk_t& p )
     : monk_spell_t( "bountiful_brew", &p, p.legendary.bountiful_brew )
   {
@@ -4077,6 +4079,13 @@ struct bountiful_brew_t : public monk_spell_t
     aoe                = -1;
     base_dd_min        = 0;
     base_dd_max        = 0;
+  }
+
+  void init_finished() override
+  {
+    monk_spell_t::init_finished();
+
+    lead_by_example = buff_t::find( player, "lead_by_example" );
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
@@ -4094,14 +4103,13 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
-    if ( p()->find_soulbind_spell( "lead_by_example" ) )
+    if ( lead_by_example )
     {
-      auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
       // Unlike Bountiful Brew procs that extend it's duration, Lead by Example overrides it's buff.
-      buff->trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
     }
   }
 
@@ -4109,7 +4117,7 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
   }
 };
 
@@ -5171,7 +5179,7 @@ struct chi_burst_damage_t : public monk_spell_t
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
-        p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
+        p()->resource_gain( RESOURCE_CHI, p()->passives.chi_burst_energize->effectN( 1 ).base_value(), p()->gain.chi_burst );
     }
   }
 };
@@ -6767,12 +6775,13 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
-  passives.aura_monk        = find_spell( 137022 );
-  passives.chi_burst_damage = find_spell( 148135 );
-  passives.chi_burst_heal   = find_spell( 130654 );
-  passives.chi_wave_damage  = find_spell( 132467 );
-  passives.chi_wave_heal    = find_spell( 132463 );
-  passives.fortifying_brew  = find_spell( 120954 );
+  passives.aura_monk          = find_spell( 137022 );
+  passives.chi_burst_damage   = find_spell( 148135 );
+  passives.chi_burst_energize = find_spell( 261682 );
+  passives.chi_burst_heal     = find_spell( 130654 );
+  passives.chi_wave_damage    = find_spell( 132467 );
+  passives.chi_wave_heal      = find_spell( 132463 );
+  passives.fortifying_brew    = find_spell( 120954 );
   passives.healing_elixir =
       find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
   passives.mystic_touch = find_spell( 8647 );
@@ -7947,9 +7956,9 @@ double monk_t::composite_player_target_pet_damage_multiplier( player_t* target, 
   if ( td && td->debuff.weapons_of_order->check() )
   {
     if ( guardian )
-        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 3 ).percent() );
+        multiplier *= 1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 3 ).percent() );
     else
-        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 2 ).percent() );
+        multiplier *= 1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 2 ).percent() );
   }
 
   if ( td && td->debuff.fae_exposure->check() )
