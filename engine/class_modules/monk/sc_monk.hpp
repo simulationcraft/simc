@@ -559,6 +559,7 @@ public:
     // General
     const spell_data_t* aura_monk;
     const spell_data_t* chi_burst_damage;
+    const spell_data_t* chi_burst_energize;
     const spell_data_t* chi_burst_heal;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
