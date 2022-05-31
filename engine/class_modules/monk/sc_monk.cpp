@@ -2124,8 +2124,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     // while trying to keep AoE damage the same.
     // ( 70% - 11% ) * 120% = 70.8%
     if ( state->target != target )
-      cam *= ( p()->spec.fists_of_fury->effectN( 6 ).percent() + 
-          ( p()->is_ptr() ? p()->spec.windwalker_monk->effectN( 20 ).percent() : 0 ) );
+      cam *= ( p()->spec.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 20 ).percent() : 0 );
 
     return cam;
   }
