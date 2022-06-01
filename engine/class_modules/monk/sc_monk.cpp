@@ -5966,14 +5966,12 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Tier 28 Keg of the Heavens Buff
 // ===============================================================================
-// The way the buff works is that it takes the last 10 Keg Smash amounts and adds
-// them as health to the monk. Once the 11th stack triggers, the first stack is
-// removed and the new stack goes to the end of the list. Once the buff expires
-// the stack is reset.
+// The way the buff works is averages out the number of Keg Smashes over the course
+// of the fight with more emphesis to the most recent values. This is done by a rolling
+// calculation.
 
 struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 {
-  std::deque<double> values;
   keg_of_the_heavens_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
@@ -5982,55 +5980,29 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // Currently this is bugged in that it takes the most recent hit and multiplies that value with the number of
-    // stacks. So HP bonus values can swing wildly if you crit.
-    /* if ( p().bugs )
+    auto previous_value = current_value;
+
+    auto new_value = std::min( ( current_stack + stacks ), max_stack() ) 
+        * std::floor( ( current_value + value ) / std::min( ( current_stack + stacks ), ( max_stack() + 1 ) ) );
+
+    if ( previous_value <= new_value )
     {
-      auto pre_trigger_value = stack_value();
-      current_value          = value;
+      p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff",
+                            new_value - previous_value );
+
+      p().stat_gain( STAT_MAX_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_gain( STAT_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
     }
     else
     {
-    */
-      if ( at_max_stacks() )
-      {
-        auto amount = values.front();
-        p().sim->print_debug( "First stack of keg_of_the_heavens buff is getting removed. Removing (amount: {}) Health",
-                              amount );
-        p().stat_loss( STAT_MAX_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-        p().stat_loss( STAT_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-        values.pop_front();
-      }
+      p().sim->print_debug( "Average keg_of_the_heavens value is less than the current value. Removing (amount: {}) Health",
+                            previous_value - new_value );
+      p().stat_loss( STAT_MAX_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_loss( STAT_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
-      p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff", value );
-
-      p().stat_gain( STAT_MAX_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
-      p().stat_gain( STAT_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
-
-      // Make sure the value is reset upon each trigger
-      current_value = 0;
-
-      values.push_back( value );
-    //}
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  double value() override
-  {
-   // if ( p().bugs )
-   // if ( p().bugs )
-   //   return stack_value();
-
-    double total_value = 0;
-
-    if ( !values.empty() )
-    {
-      for ( auto& i : values )
-        total_value += i;
     }
-
-    return total_value;
+    
+    return buff_t::trigger( stacks, new_value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6039,7 +6011,6 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
     p().sim->print_debug( "keg_of_the_heavens buff is resetting. Reducing Health by (amount: {})", hp_reset );
     p().stat_loss( STAT_MAX_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
     p().stat_loss( STAT_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
-    values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
