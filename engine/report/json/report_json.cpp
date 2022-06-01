@@ -1168,6 +1168,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "average_range" ] = sim.average_range;
   options_root[ "average_gauss" ] = sim.average_gauss;
   options_root[ "fight_style" ] = sim.fight_style;
+  options_root[ "desired_targets" ] = sim.desired_targets;
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;
 

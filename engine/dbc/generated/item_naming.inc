@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.2.0.43345
-static const std::array<item_name_description_t, 656> __item_name_description_data { {
+// Item name descriptions, wow build 9.2.5.43971
+static const std::array<item_name_description_t, 660> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -656,5 +656,9 @@ static const std::array<item_name_description_t, 656> __item_name_description_da
   { 13914, "Protoform Synthesis"                         },
   { 13915, "Unity"                                       },
   { 13916, "Cypher Equipment"                            },
+  { 13922, "Fated"                                       },
+  { 13923, "Fated Heroic"                                },
+  { 13924, "Fated Mythic"                                },
+  { 13932, "Fated Raid Finder"                           },
 } };
 

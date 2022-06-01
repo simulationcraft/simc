@@ -374,7 +374,6 @@ void survival( player_t* p )
   cleave -> add_action( "kill_command,target_if=min:(bloodseeker.remains-1000*dot.pheromone_bomb.ticking),if=dot.pheromone_bomb.ticking&set_bonus.tier28_2pc&!buff.mad_bombardier.up" );
   cleave -> add_action( "kill_shot,if=buff.flayers_mark.up" );
   cleave -> add_action( "flayed_shot,target_if=max:target.health.pct" );
-  cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&!ticking&next_wi_bomb.volatile&target.time_to_die>15&focus+cast_regen>35&active_enemies<=4" );
   cleave -> add_action( "wildfire_bomb,if=!dot.wildfire_bomb.ticking&!set_bonus.tier28_2pc|raid_event.adds.exists&(charges_fractional>1.2&active_enemies>4|charges_fractional>1.4&active_enemies>3|charges_fractional>1.6)|!raid_event.adds.exists&charges_fractional>1.5" );
   cleave -> add_action( "butchery,if=(!next_wi_bomb.shrapnel|!talent.wildfire_infusion.enabled)&cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>spell_targets%2" );
