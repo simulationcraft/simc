@@ -5995,8 +5995,8 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
     }
     else
     {
-      p().sim->print_debug( "Average keg_of_the_heavens value is less than the current value. Removing (amount: {}) Health",
-                            previous_value - new_value );
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the current value (amount: {}). Removing (amount: {}) Health",
+                            new_value, previous_value, previous_value - new_value );
       p().stat_loss( STAT_MAX_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
       p().stat_loss( STAT_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
