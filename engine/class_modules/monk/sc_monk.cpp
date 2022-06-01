@@ -5987,19 +5987,21 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 
     if ( previous_value <= new_value )
     {
-      p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff",
-                            new_value - previous_value );
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is greater than the previous value (amount: {}). Increasing current and max health by (amount: {})",
+                             new_value, previous_value, new_value - previous_value );
 
       p().stat_gain( STAT_MAX_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
       p().stat_gain( STAT_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
     }
     else
     {
-      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the current value (amount: {}). Removing (amount: {}) Health",
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the previous value (amount: {}). Lowering max health by (amount: {})",
                             new_value, previous_value, previous_value - new_value );
       p().stat_loss( STAT_MAX_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
-      p().stat_loss( STAT_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
+      // Current HP does not decrease on Max Health change; except when Current HP is greater than Max HP
+      // Current HP will be recalculated to the Max HP in the player_t::recalculate_resource_max(resource_e resource_type, gain_t* source) function.
+      // Don't need to add special code for that here.
     }
     
     return buff_t::trigger( stacks, new_value, chance, duration );
