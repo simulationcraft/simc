@@ -1316,9 +1316,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
+     if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
          p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
+      
 
     // Bonedust Brew
     if ( p()->specialization() == MONK_BREWMASTER && get_td( s->target )->debuff.bonedust_brew->up() )
@@ -6367,6 +6368,7 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
+    
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
@@ -7524,86 +7526,34 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
 
 // monk_t::retarget_storm_earth_and_fire ====================================
 
-void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const
+void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets ) const
 {
-  player_t* original_target = pet->target;
-
-  // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target
-  // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-  auto td = find_target_data( original_target );
-  if (!td)
-    return;
-  if ( !td->debuff.mark_of_the_crane->check() )
-    return;
-
-  // Everyone attacks the same (single) target
-  if ( n_targets == 1 )
-  {
-    pet->target = targets.front();
-  }
-  // Pets attack the target the owner is not attacking
-  else if ( n_targets == 2 )
-  {
-    pet->target = targets.front() == pet->owner->target ? targets.back() : targets.front();
-  }
-  // 3 targets, split evenly by skipping the owner's target and picking the first available target
-  else if ( n_targets == 3 )
-  {
-    auto it = targets.begin();
-    while ( it != targets.end() )
-    {
-      // Don't attack owner's target
-      if ( *it == pet->owner->target )
-      {
-        it++;
-        continue;
-      }
-
-      pet->target = *it;
-      // This target has been chosen, so remove from the list (so that the second pet can choose
-      // something else)
-      targets.erase( it );
-      break;
-    }
-  }
-  // More than 3 targets, choose suitable ones from the target list
+  // Clones attack your target if there are no other targets available
+  if ( targets.size() == 1 )
+    pet->target = pet->owner->target;
   else
   {
-    auto it = targets.begin();
-    while ( it != targets.end() )
+    // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target
+    // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+    auto td = find_target_data( pet->target );
+
+    if ( !td || !td->debuff.mark_of_the_crane->check() )
+      return;
+
+    for ( auto it = targets.begin(); it != targets.end(); ++it )
     {
-      // Don't attack owner's target
-      if ( *it == pet->owner->target )
-      {
-        it++;
-        continue;
-      }
+      player_t* candidate_target = *it;
 
-      // Don't attack my own target
-      if ( *it == pet->target )
+      // Candidate target is a valid target
+      if ( *it != pet->owner->target && *it != pet->target && !candidate_target->debuffs.invulnerable->check() )
       {
-        it++;
-        continue;
+        pet->target = *it;
+        // This target has been chosen, so remove from the list (so that the second pet can choose something else)
+        targets.erase( it );
+        break;
       }
-
-      // Clones will no longer target Immune enemies, or crowd-controlled enemies, or enemies you aren’t in combat with.
-      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-      player_t* player = *it;
-      if ( player->debuffs.invulnerable )
-      {
-        it++;
-        continue;
-      }
-
-      pet->target = *it;
-      // This target has been chosen, so remove from the list (so that the second pet can choose
-      // something else)
-      targets.erase( it );
-      break;
     }
   }
-
-  sim->print_debug( "{} {} (re)target={} old_target={}", *this, *pet, *pet->target, *original_target );
 
   range::for_each( pet->action_list,
                    [ pet ]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
