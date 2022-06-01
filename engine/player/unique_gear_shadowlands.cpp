@@ -2804,6 +2804,7 @@ void soleahs_secret_technique( special_effect_t& effect )
 {
   // Assuming you don't actually use this trinket during combat but rather beforehand
   effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.cooldown_ = 0_s;
 
   std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   // Override with player option if defined
