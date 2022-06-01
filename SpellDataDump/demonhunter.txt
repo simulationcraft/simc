@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971, git build shadowlands 67a0388541)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -774,7 +774,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=278012)   : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
 
 Name             : Metamorphosis (id=191427) [Spell Family (107)] 
 Class            : Demon Hunter
