@@ -5996,7 +5996,7 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
     }
     else
     {
-      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the previous value (amount: {}). Lowering max health by (amount: {})",
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the previous value (amount: {}). Reducing max health by (amount: {})",
                             new_value, previous_value, previous_value - new_value );
       p().stat_loss( STAT_MAX_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
