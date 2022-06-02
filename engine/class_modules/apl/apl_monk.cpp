@@ -188,7 +188,7 @@ void brewmaster( player_t* p )
             ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
       else if( item.name_str == "cache_of_acquired_treasures" )
           def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
-      if ( item.name_str == "jotungeirr_destinys_call" )
+      else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
         def->add_action( "use_item,name=" + item.name_str );
