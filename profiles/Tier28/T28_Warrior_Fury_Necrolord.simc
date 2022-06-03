@@ -31,6 +31,7 @@ actions.precombat+=/augmentation
 actions.precombat+=/snapshot_stats
 actions.precombat+=/recklessness,if=!runeforge.signet_of_tormented_kings.equipped
 actions.precombat+=/conquerors_banner
+actions.precombat+=/fleshcraft
 
 # Executed every time the actor is available.
 actions=auto_attack

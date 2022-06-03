@@ -97,7 +97,7 @@ actions+=/rushing_jade_wind
 
 head=umbrahide_helm,id=172317,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
 neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-shoulders=tassets_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
+shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
 chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
 wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173127
