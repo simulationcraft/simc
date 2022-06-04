@@ -6712,7 +6712,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+    if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) && get_td( target ) -> debuff.festering_wound -> up() )
     {
       p() -> buffs.harvest_time_stack -> trigger();
 
@@ -7034,6 +7034,10 @@ struct tombstone_t : public death_knight_spell_t
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
     p() -> buffs.bone_shield -> decrement( charges );
     p() -> cooldown.dancing_rune_weapon -> adjust( p() -> legendary.crimson_rune_weapon -> effectN( 1 ).time_value() * charges );
+    if ( p() -> talent.blood_tap -> ok() )
+    {
+      p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood_tap -> effectN( 2 ).base_value() ) * charges );
+    }
   }
 };
 

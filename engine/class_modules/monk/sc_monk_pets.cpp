@@ -3059,16 +3059,17 @@ void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_
     return;
   }
 
-  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->trigger_attack( sef_ability, a );
-  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->trigger_attack( sef_ability, a );
   // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
   // Strike triggering abilities
-  if ( !pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target &&
+   if ( !pets.sef[ (int)sef_pet_e::SEF_EARTH ]->sticky_target &&
        ( sef_ability == sef_ability_e::SEF_TIGER_PALM || sef_ability == sef_ability_e::SEF_BLACKOUT_KICK ||
          sef_ability == sef_ability_e::SEF_RISING_SUN_KICK ) )
   {
     retarget_storm_earth_and_fire_pets();
   }
+
+  pets.sef[ (int)sef_pet_e::SEF_EARTH ]->trigger_attack( sef_ability, a );
+  pets.sef[ (int)sef_pet_e::SEF_FIRE ]->trigger_attack( sef_ability, a );
 }
 
 void monk_t::storm_earth_and_fire_fixate( player_t* target )
@@ -3119,14 +3120,13 @@ void monk_t::storm_earth_and_fire_trigger_primordial_power()
 void monk_t::summon_storm_earth_and_fire( timespan_t duration )
 {
   auto targets   = create_storm_earth_and_fire_target_list();
-  auto n_targets = targets.size();
 
   auto summon_sef_pet = [ & ]( pets::storm_earth_and_fire_pet_t* pet ) {
     // Start targeting logic from "owner" always
     pet->reset_targeting();
     pet->target        = target;
     pet->sticky_target = false;
-    retarget_storm_earth_and_fire( pet, targets, n_targets );
+    retarget_storm_earth_and_fire( pet, targets );
     pet->summon( duration );
   };
 
@@ -3144,9 +3144,8 @@ void monk_t::retarget_storm_earth_and_fire_pets() const
   }
 
   auto targets   = create_storm_earth_and_fire_target_list();
-  auto n_targets = targets.size();
-  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_EARTH ], targets, n_targets );
-  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_FIRE ], targets, n_targets );
+  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_EARTH ], targets );
+  retarget_storm_earth_and_fire( pets.sef[ (int)sef_pet_e::SEF_FIRE ], targets );
 }
 
 // Callback to retarget Storm Earth and Fire pets when new target appear, or old targets depsawn
@@ -3160,24 +3159,23 @@ void sef_despawn_cb_t::operator()( player_t* )
   }
 
   auto targets   = monk->create_storm_earth_and_fire_target_list();
-  auto n_targets = targets.size();
 
   // If the active clone's target is sleeping, reset it's targeting, and jump it to a new target.
   // Note that if sticky targeting is used, both targets will jump (since both are going to be
   // stickied to the dead target)
-  range::for_each( monk->pets.sef, [ this, &targets, &n_targets ]( pets::storm_earth_and_fire_pet_t* pet ) {
+  range::for_each( monk->pets.sef, [ this, &targets ]( pets::storm_earth_and_fire_pet_t* pet ) {
     // Arise time went negative, so the target is sleeping. Can't check "is_sleeping" here, because
     // the callback is called before the target goes to sleep.
     if ( pet->target->arise_time < timespan_t::zero() )
     {
       pet->reset_targeting();
-      monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
+      monk->retarget_storm_earth_and_fire( pet, targets );
     }
     else
     {
       // Retarget pets otherwise (a new target has appeared). Note that if the pets are sticky
       // targeted, this will do nothing.
-      monk->retarget_storm_earth_and_fire( pet, targets, n_targets );
+      monk->retarget_storm_earth_and_fire( pet, targets );
     }
   } );
 }

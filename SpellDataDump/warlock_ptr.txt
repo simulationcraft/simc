@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, git build shadowlands 96c6f822ad)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -1599,7 +1599,8 @@ Effects          :
 #1 (id=175537)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.81600 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Cone Front (104)
 #2 (id=19796)    : Apply Aura (6) | Modify Healing Recevied% (118)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 0.50000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.25000 | Misc Value: 127 | Radius: 6 yards | Target: Cone Front (104)
+Hotfixed         : PvP Coefficient (0.5 -> 1.25)
 #3 (id=319698)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : A strong attack that deals $<damage> damage to all enemies in front of it, and reduces the effectiveness of any healing the victim receives by $s2% for $d.

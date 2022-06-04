@@ -6,7 +6,7 @@ race=vulpera
 vulpera_tricks=flames
 role=tank
 position=front
-talents=2020121
+talents=2010121
 covenant=kyrian
 soulbind=forgelite_prime_mikanikos:18,brons_call_to_action/scalding_brew:11:1/forgelite_filter/walk_with_the_ox:11:1/soulsteel_clamps/strike_with_clarity:11:1/soulglow_spectrometer/condensed_anima_sphere:11:1/effusive_anima_accelerator
 renown=80
@@ -97,7 +97,7 @@ actions+=/rushing_jade_wind
 
 head=crown_of_the_grand_upwelling,id=188910,bonus_id=1498/7187/6935,gem_id=173127
 neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
-shoulders=tassets_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
+shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
 chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
 wrists=risen_monstrosity_cuffs,id=178741,bonus_id=1592/6536/6646/6935,gem_id=173129

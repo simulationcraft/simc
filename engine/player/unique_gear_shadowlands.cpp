@@ -2804,6 +2804,7 @@ void soleahs_secret_technique( special_effect_t& effect )
 {
   // Assuming you don't actually use this trinket during combat but rather beforehand
   effect.type = SPECIAL_EFFECT_EQUIP;
+  effect.cooldown_ = 0_s;
 
   std::string_view opt_str = effect.player->sim->shadowlands_opts.soleahs_secret_technique_type;
   // Override with player option if defined
@@ -3703,7 +3704,7 @@ void pulsating_riftshard( special_effect_t& effect )
 // 368653 wand damage proc
 void cache_of_acquired_treasures( special_effect_t& effect )
 {
-  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_wand", "acquired_sword_haste" } ) )
+  if ( unique_gear::create_fallback_buffs( effect, { "acquired_sword", "acquired_axe", "acquired_axe_driver", "acquired_wand", "acquired_sword_haste" } ) )
     return;
 
   struct acquire_weapon_t : public proc_spell_t

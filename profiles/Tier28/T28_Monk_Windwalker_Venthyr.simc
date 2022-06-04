@@ -154,11 +154,10 @@ actions.weapons_of_order+=/call_action_list,name=cd_serenity,if=talent.serenity
 actions.weapons_of_order+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
 actions.weapons_of_order+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up
 actions.weapons_of_order+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
-actions.weapons_of_order+=/fists_of_fury,interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc&active_enemies<2
-actions.weapons_of_order+=/fists_of_fury,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&set_bonus.tier28_2pc|active_enemies>=2&buff.weapons_of_order_ww.remains<1
+actions.weapons_of_order+=/fists_of_fury,if=buff.weapons_of_order_ww.up
 actions.weapons_of_order+=/whirling_dragon_punch
 actions.weapons_of_order+=/spinning_crane_kick,if=combo_strike&active_enemies>=3&buff.weapons_of_order_ww.up
-actions.weapons_of_order+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4|chi<3
+actions.weapons_of_order+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi<3
 actions.weapons_of_order+=/expel_harm,if=chi.max-chi>=1
 actions.weapons_of_order+=/chi_burst,if=chi.max-chi>=(1+active_enemies>1)
 actions.weapons_of_order+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4|(!talent.hit_combo|combo_strike)&chi.max-chi>=2
@@ -169,7 +168,7 @@ actions.weapons_of_order+=/flying_serpent_kick,interrupt=1
 
 head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
 neck=worldkiller_iris,id=189859,bonus_id=1524/7187/6935,gem_id=173129
-shoulders=tassets_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
+shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant=soul_vitality
 chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant=eternal_skirmish
 wrists=bands_of_the_undergrowth,id=178702,bonus_id=1592/6536/6646/6935,gem_id=173129

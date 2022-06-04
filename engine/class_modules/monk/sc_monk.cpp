@@ -1316,9 +1316,10 @@ struct tiger_palm_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     // Apply Mark of the Crane
-    if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
+     if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
          p()->spec.spinning_crane_kick_2_ww->ok() )
       p()->trigger_mark_of_the_crane( s );
+      
 
     // Bonedust Brew
     if ( p()->specialization() == MONK_BREWMASTER && get_td( s->target )->debuff.bonedust_brew->up() )
@@ -1770,7 +1771,7 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
           get_td( s->target )->dots.breath_of_fire->refresh_duration();
-          p()->cooldown.charred_passions->start( p()->find_spell( 338140 )->internal_cooldown() );
+          p()->cooldown.charred_passions->start( p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
     }
@@ -2120,8 +2121,11 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
   {
     double cam = melee_attack_t::composite_aoe_multiplier( state );
 
+    // 2022-05-27 Patch 9.2.5 added an -11% effect that is to offset an increased to the single target damage
+    // while trying to keep AoE damage the same.
+    // ( 70% - 11% ) * 120% = 70.8%
     if ( state->target != target )
-      cam *= p()->spec.fists_of_fury->effectN( 6 ).percent();
+      cam *= ( p()->spec.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 20 ).percent() );
 
     return cam;
   }
@@ -4065,6 +4069,8 @@ struct weapons_of_order_t : public monk_spell_t
 // ==========================================================================
 struct bountiful_brew_t : public monk_spell_t
 {
+  buff_t* lead_by_example;
+
   bountiful_brew_t( monk_t& p )
     : monk_spell_t( "bountiful_brew", &p, p.legendary.bountiful_brew )
   {
@@ -4073,6 +4079,13 @@ struct bountiful_brew_t : public monk_spell_t
     aoe                = -1;
     base_dd_min        = 0;
     base_dd_max        = 0;
+  }
+
+  void init_finished() override
+  {
+    monk_spell_t::init_finished();
+
+    lead_by_example = buff_t::find( player, "lead_by_example" );
   }
 
   // Need to disable multipliers in init() so that it doesn't double-dip on anything
@@ -4090,14 +4103,13 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
-    if ( p()->find_soulbind_spell( "lead_by_example" ) )
+    if ( lead_by_example )
     {
-      auto buff = buff_t::find( p()->buff_list, "lead_by_example" );
       // Unlike Bountiful Brew procs that extend it's duration, Lead by Example overrides it's buff.
-      buff->trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+      lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
     }
   }
 
@@ -4105,7 +4117,7 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->find_spell( 356592 )->effectN( 1 ).time_value() );
+    get_td( s->target )->debuff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
   }
 };
 
@@ -5167,7 +5179,7 @@ struct chi_burst_damage_t : public monk_spell_t
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( num_hit <= p()->talent.chi_burst->effectN( 3 ).base_value() )
-        p()->resource_gain( RESOURCE_CHI, p()->find_spell( 261682 )->effectN( 1 ).base_value(), p()->gain.chi_burst );
+        p()->resource_gain( RESOURCE_CHI, p()->passives.chi_burst_energize->effectN( 1 ).base_value(), p()->gain.chi_burst );
     }
   }
 };
@@ -5955,14 +5967,12 @@ struct primordial_power_buff_t : public monk_buff_t<buff_t>
 // ===============================================================================
 // Tier 28 Keg of the Heavens Buff
 // ===============================================================================
-// The way the buff works is that it takes the last 10 Keg Smash amounts and adds
-// them as health to the monk. Once the 11th stack triggers, the first stack is
-// removed and the new stack goes to the end of the list. Once the buff expires
-// the stack is reset.
+// The way the buff works is averages out the number of Keg Smashes over the course
+// of the fight with more emphesis to the most recent values. This is done by a rolling
+// calculation.
 
 struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 {
-  std::deque<double> values;
   keg_of_the_heavens_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_can_cancel( true );
@@ -5971,55 +5981,31 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // Currently this is bugged in that it takes the most recent hit and multiplies that value with the number of
-    // stacks. So HP bonus values can swing wildly if you crit.
-    /* if ( p().bugs )
+    auto previous_value = current_value;
+
+    auto new_value = std::min( ( current_stack + stacks ), max_stack() ) 
+        * std::floor( ( current_value + value ) / std::min( ( current_stack + stacks ), ( max_stack() + 1 ) ) );
+
+    if ( previous_value <= new_value )
     {
-      auto pre_trigger_value = stack_value();
-      current_value          = value;
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is greater than the previous value (amount: {}). Increasing current and max health by (amount: {})",
+                             new_value, previous_value, new_value - previous_value );
+
+      p().stat_gain( STAT_MAX_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
+      p().stat_gain( STAT_HEALTH, new_value - previous_value, (gain_t*)nullptr, (action_t*)nullptr, true );
     }
     else
     {
-    */
-      if ( at_max_stacks() )
-      {
-        auto amount = values.front();
-        p().sim->print_debug( "First stack of keg_of_the_heavens buff is getting removed. Removing (amount: {}) Health",
-                              amount );
-        p().stat_loss( STAT_MAX_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-        p().stat_loss( STAT_HEALTH, amount, (gain_t*)nullptr, (action_t*)nullptr, true );
-        values.pop_front();
-      }
+      p().sim->print_debug( "Average keg_of_the_heavens value (amount: {}) is less than the previous value (amount: {}). Reducing max health by (amount: {})",
+                            new_value, previous_value, previous_value - new_value );
+      p().stat_loss( STAT_MAX_HEALTH, previous_value - new_value, (gain_t*)nullptr, (action_t*)nullptr, true );
 
-      p().sim->print_debug( "Keg Smash adds (amount: {}) Health to keg_of_the_heavens buff", value );
-
-      p().stat_gain( STAT_MAX_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
-      p().stat_gain( STAT_HEALTH, value, (gain_t*)nullptr, (action_t*)nullptr, true );
-
-      // Make sure the value is reset upon each trigger
-      current_value = 0;
-
-      values.push_back( value );
-    //}
-
-    return buff_t::trigger( stacks, value, chance, duration );
-  }
-
-  double value() override
-  {
-   // if ( p().bugs )
-   // if ( p().bugs )
-   //   return stack_value();
-
-    double total_value = 0;
-
-    if ( !values.empty() )
-    {
-      for ( auto& i : values )
-        total_value += i;
+      // Current HP does not decrease on Max Health change; except when Current HP is greater than Max HP
+      // Current HP will be recalculated to the Max HP in the player_t::recalculate_resource_max(resource_e resource_type, gain_t* source) function.
+      // Don't need to add special code for that here.
     }
-
-    return total_value;
+    
+    return buff_t::trigger( stacks, new_value, chance, duration );
   }
 
   void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
@@ -6028,7 +6014,6 @@ struct keg_of_the_heavens_buff_t : public monk_buff_t<buff_t>
     p().sim->print_debug( "keg_of_the_heavens buff is resetting. Reducing Health by (amount: {})", hp_reset );
     p().stat_loss( STAT_MAX_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
     p().stat_loss( STAT_HEALTH, hp_reset, (gain_t*)nullptr, (action_t*)nullptr, true );
-    values.clear();
     buff_t::expire_override( expiration_stacks, remaining_duration );
   }
 };
@@ -6385,6 +6370,7 @@ void monk_t::trigger_celestial_fortune( action_state_t* s )
 
 void monk_t::trigger_mark_of_the_crane( action_state_t* s )
 {
+    
   if ( get_target_data( s->target )->debuff.mark_of_the_crane->up() ||
        mark_of_the_crane_counter() < as<int>( passives.cyclone_strikes->max_stacks() ) )
     get_target_data( s->target )->debuff.mark_of_the_crane->trigger();
@@ -6763,12 +6749,13 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
-  passives.aura_monk        = find_spell( 137022 );
-  passives.chi_burst_damage = find_spell( 148135 );
-  passives.chi_burst_heal   = find_spell( 130654 );
-  passives.chi_wave_damage  = find_spell( 132467 );
-  passives.chi_wave_heal    = find_spell( 132463 );
-  passives.fortifying_brew  = find_spell( 120954 );
+  passives.aura_monk          = find_spell( 137022 );
+  passives.chi_burst_damage   = find_spell( 148135 );
+  passives.chi_burst_energize = find_spell( 261682 );
+  passives.chi_burst_heal     = find_spell( 130654 );
+  passives.chi_wave_damage    = find_spell( 132467 );
+  passives.chi_wave_heal      = find_spell( 132463 );
+  passives.fortifying_brew    = find_spell( 120954 );
   passives.healing_elixir =
       find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
   passives.mystic_touch = find_spell( 8647 );
@@ -7541,86 +7528,34 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
 
 // monk_t::retarget_storm_earth_and_fire ====================================
 
-void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets, size_t n_targets ) const
+void monk_t::retarget_storm_earth_and_fire( pet_t* pet, std::vector<player_t*>& targets ) const
 {
-  player_t* original_target = pet->target;
-
-  // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target
-  // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-  auto td = find_target_data( original_target );
-  if (!td)
-    return;
-  if ( !td->debuff.mark_of_the_crane->check() )
-    return;
-
-  // Everyone attacks the same (single) target
-  if ( n_targets == 1 )
-  {
-    pet->target = targets.front();
-  }
-  // Pets attack the target the owner is not attacking
-  else if ( n_targets == 2 )
-  {
-    pet->target = targets.front() == pet->owner->target ? targets.back() : targets.front();
-  }
-  // 3 targets, split evenly by skipping the owner's target and picking the first available target
-  else if ( n_targets == 3 )
-  {
-    auto it = targets.begin();
-    while ( it != targets.end() )
-    {
-      // Don't attack owner's target
-      if ( *it == pet->owner->target )
-      {
-        it++;
-        continue;
-      }
-
-      pet->target = *it;
-      // This target has been chosen, so remove from the list (so that the second pet can choose
-      // something else)
-      targets.erase( it );
-      break;
-    }
-  }
-  // More than 3 targets, choose suitable ones from the target list
+  // Clones attack your target if there are no other targets available
+  if ( targets.size() == 1 )
+    pet->target = pet->owner->target;
   else
   {
-    auto it = targets.begin();
-    while ( it != targets.end() )
+    // Clones will now only re-target when you use an ability that applies Mark of the Crane, and their current target
+    // already has Mark of the Crane. https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
+    auto td = find_target_data( pet->target );
+
+    if ( !td || !td->debuff.mark_of_the_crane->check() )
+      return;
+
+    for ( auto it = targets.begin(); it != targets.end(); ++it )
     {
-      // Don't attack owner's target
-      if ( *it == pet->owner->target )
-      {
-        it++;
-        continue;
-      }
+      player_t* candidate_target = *it;
 
-      // Don't attack my own target
-      if ( *it == pet->target )
+      // Candidate target is a valid target
+      if ( *it != pet->owner->target && *it != pet->target && !candidate_target->debuffs.invulnerable->check() )
       {
-        it++;
-        continue;
+        pet->target = *it;
+        // This target has been chosen, so remove from the list (so that the second pet can choose something else)
+        targets.erase( it );
+        break;
       }
-
-      // Clones will no longer target Immune enemies, or crowd-controlled enemies, or enemies you aren’t in combat with.
-      // https://us.battle.net/forums/en/wow/topic/20752377961?page=29#post-573
-      player_t* player = *it;
-      if ( player->debuffs.invulnerable )
-      {
-        it++;
-        continue;
-      }
-
-      pet->target = *it;
-      // This target has been chosen, so remove from the list (so that the second pet can choose
-      // something else)
-      targets.erase( it );
-      break;
     }
   }
-
-  sim->print_debug( "{} {} (re)target={} old_target={}", *this, *pet, *pet->target, *original_target );
 
   range::for_each( pet->action_list,
                    [ pet ]( action_t* a ) { a->acquire_target( retarget_source::SELF_ARISE, nullptr, pet->target ); } );
@@ -7943,9 +7878,9 @@ double monk_t::composite_player_target_pet_damage_multiplier( player_t* target, 
   if ( td && td->debuff.weapons_of_order->check() )
   {
     if ( guardian )
-        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 3 ).percent() );
+        multiplier *= 1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 3 ).percent() );
     else
-        multiplier *= 1 + ( get_target_data( target )->debuff.weapons_of_order->stack() * find_spell( 312106 )->effectN( 2 ).percent() );
+        multiplier *= 1 + ( td->debuff.weapons_of_order->check() * td->debuff.weapons_of_order->data().effectN( 2 ).percent() );
   }
 
   if ( td && td->debuff.fae_exposure->check() )

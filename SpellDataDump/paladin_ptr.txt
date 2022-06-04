@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, git build shadowlands 96c6f822ad)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -621,7 +621,8 @@ Attributes       : ......xx ........ x.x..... ........   ........ ..x..... .x...
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), No AutoCast (AI) (49), Allow Aura While Dead (116), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=15691)    : Apply Aura (6) | Threat (10)
-                   Base Value: 450 | Scaled Value: 450 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+                   Base Value: 550 | Scaled Value: 550 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
+Hotfixed         : Base Value (450 -> 550)
 #2 (id=15692)    : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
@@ -688,10 +689,10 @@ Attributes       : ........ ........ x....... ........   ...x...x ..x..... .....
                  : ........ ........ ........ ........   ........ .x...x.. ........ ......x. 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : x....... ........ ........ ........   ........ ........ ........ ...x.... 
+                 : x.....x. ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Aura Log (202), Bypass Visibility Check (320), Don't close loot window (379), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Redirection (35), No Reflection (39), No Threat (42), No Aura Icon (60), Extra Initial Period (169), Spell Haste Affects Periodic (173), Always Show Ground Texture (190), No Aura Log (202), Bypass Visibility Check (320), No Summon Log (326), Don't close loot window (379), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=301465)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -2533,7 +2534,7 @@ Description      : $@spelldesc53600
 Tooltip          : Armor increased by $?c1[${$W1*$INT/100}][${$W1*$STR/100}].
 
 Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
-Class            : Paladin
+Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
@@ -2551,7 +2552,7 @@ Effects          :
 Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
 
 Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
-Class            : Paladin
+Class            : Paladin, Priest
 School           : Physical
 Spell Type       : None
 Duration         : 20 seconds

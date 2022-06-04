@@ -1,4 +1,4 @@
-// Racial abilities, wow build 9.2.0.43345
+// Racial abilities, wow build 9.2.5.43971
 static const std::array<racial_spell_entry_t, 140> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },

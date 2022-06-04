@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.43345 Live (hotfix 2022-05-03/43345, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971, git build shadowlands 67a0388541)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -29,7 +29,9 @@ Description      : Shields an ally for $d, absorbing $<shield> damage.  You cann
 Tooltip          : Absorbs $w1 damage.
 Variables        : $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
 $shadow=$?a137033[${1.00}][${1}]
-$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>}
+$pvp=$?a134735[${1.1}][${1}]
+$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}
+
 
 Name             : Renew (id=139) [Spell Family (6)] 
 Class            : Holy Priest
@@ -3060,6 +3062,65 @@ Effects          :
 #3 (id=171890)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Creates a shadowy fiend to attack the target. Lasts $d.
+
+Name             : Battle Fatigue (id=134732) [Passive, Hidden] 
+Class            : Paladin, Priest
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=171790)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 134735 | Target: Self (1)
+Description      : Dealing damage to another player in battle causes them to receive $134735m1% less healing from critical heals.
+
+Name             : PvP Rules Enabled (HARDCODED) (id=134735) [Hidden] 
+Class            : Paladin, Priest
+School           : Physical
+Spell Type       : None
+Duration         : 20 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ........ ........ x....... 
+                 : Death
+Triggered by     : Battle Fatigue (134732)
+Attributes       : .......x x....... .......x ..xx.x.x   ........ ........ ........ ....x... 
+                 : x....... ........ ........ ........   ........ ........ xx..x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .......x 
+                 : .......x ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Aura Is Debuff (26), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), No Aura Icon (60), Allow Dead Target (64), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Aura Points On Client (268), Do Not Log Aura Refresh (291), Apply Zone Aura Spell To Pets (383), Do Not Re-apply Area Aura if it Persists Through Update (391), Recompute Aura On Level Scale (446)
+Effects          :
+#1 (id=171791)   : Apply Aura (6) | Modify Healing Recevied% (118)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=239967)   : Apply Aura (6) | Modify Absorb% Done (422)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=255562)   : Apply Aura (6) | Unknown(448)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=255744)   : Apply Aura (6) | Modify Expertise% (240)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=255745)   : Apply Aura (6) | Unknown(119)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#6 (id=342165)   : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#7 (id=351564)   : Apply Aura (6) | Unknown(309)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=746554)   : Apply Aura (6) | Modify Mana Regen% (379)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#9 (id=748514)   : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc134732
+Tooltip          : Reduces healing received from critical heals by $w1%.$?$w2>0[
+Damage taken increased by $w2.][]
 
 Name             : Priest (id=137030) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
@@ -12226,7 +12287,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=903306)   : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66666 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.66666)
 #2 (id=907109)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.60000 | Target: Self (1)
                    Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061)

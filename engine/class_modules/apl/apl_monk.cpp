@@ -186,6 +186,8 @@ void brewmaster( player_t* p )
       if ( item.name_str == "scars_of_fraternal_strife" )
         def->add_action( "use_item,name=" + item.name_str + 
             ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+      else if( item.name_str == "cache_of_acquired_treasures" )
+          def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
@@ -532,7 +534,7 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
-      else if ( item.name_str == "gladiators_badge" )
+      else if ( item.name_str.find( "gladiators_badge" ) != -1 )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
@@ -600,7 +602,7 @@ void windwalker( player_t* p )
       else if ( item.name_str == "overcharged_anima_battery" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
-      else if ( item.name_str == "gladiators_badge" )
+      else if ( item.name_str.find( "gladiators_badge" ) != -1 )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
@@ -677,16 +679,12 @@ void windwalker( player_t* p )
                                 "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&buff.dance_of_chiji.up" );
-  // Cancel FoF in ST after the GCD if we do not have T28 2PC 
-  weapons_of_order->add_action( p, "Fists of Fury",
-                                "interrupt=1,interrupt_immediate=1,if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&!set_bonus.tier28_2pc&active_enemies<2" );
-  // Full channel FoF with T28 2PC or at the end of the buff in AoE
-  weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up&buff.storm_earth_and_fire.up&set_bonus.tier28_2pc|active_enemies>=2&buff.weapons_of_order_ww.remains<1" );
+  weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up" );
   weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&active_enemies>=3&buff.weapons_of_order_ww.up" );
   weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi=0&buff.weapons_of_order_ww.remains<4|chi<3" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   weapons_of_order->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   weapons_of_order->add_talent( p, "Chi Burst", "if=chi.max-chi>=(1+active_enemies>1)" );
   weapons_of_order->add_action( p, "Tiger Palm",
