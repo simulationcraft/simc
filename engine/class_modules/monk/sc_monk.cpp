@@ -1,4 +1,4 @@
-﻿
+
 // ==========================================================================
 // Dedmonwakeen's DPS-DPM Simulator.
 // Send questions to natehieter@gmail.com
@@ -156,6 +156,10 @@ public:
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_strike );
     else if ( name_str == "combo_break" )
       return make_mem_fn_expr( name_str, *this, &monk_action_t::is_combo_break );
+    else if ( name_str == "cap_energy" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::cap_energy );
+    else if ( name_str == "tp_fill" )
+      return make_mem_fn_expr( name_str, *this, &monk_action_t::tp_fill );
     return ab::create_expression( name_str );
   }
 
@@ -242,6 +246,18 @@ public:
       return ab::current_resource();
 
     return resource_by_stance;
+  }
+  
+  // Allow resource capping during BDB
+  bool cap_energy()
+  {
+    return p()->get_bdb_zone() == 4;
+  }
+
+  // Break mastery during BDB
+  bool tp_fill() 
+  {
+    return p()->get_bdb_zone() < 3;
   }
 
   // Check if the combo ability under consideration is different from the last
@@ -1915,6 +1931,144 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     return std::min( (int)p()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
   }
+  
+  int monk_t::get_bdb_zone()
+{ 
+  std::vector<player_t*> target_list = sim->target_non_sleeping_list.data();
+
+  int N           = target_list.size();
+  int bdb_targets = 0;
+
+  if ( specialization() != MONK_WINDWALKER || N < 2 )
+    return 0;
+
+  for ( player_t* target : target_list )
+  {
+    if ( auto td = find_target_data( target ) )
+    {
+      if ( td->debuff.bonedust_brew->check() )
+      {
+        bdb_targets++;
+      }
+    }
+  }
+
+  // Hina: needs effect ids
+  const spelleffect_data_t* spell_data_tp  = sim->dbc->effect( 1 ); 
+  const spelleffect_data_t* spell_data_sck = sim->dbc->effect( 2 );
+  const spell_data_t* spell_data_ascension = find_talent_spell( "Ascension" );
+
+  // Hina: Character sheet haste divided by 100 I.e., 7% haste = 0.07
+  double H = 0;
+  // Hina: Character sheet mastery divided by 100 I.e., 10% mastery = 0.1  
+  double M = 0;
+
+  bool ascension = ( spell_data_ascension != spell_data_t::not_found() );
+
+  float eps = 0.2;
+
+  /* Hina: Get these auras intrinsically
+   * I currently have the values 
+   *   tp: .27 * 1.1214
+   *   sck: .4 * 2.136
+ */
+  float tiger_palm_AP_ratio_by_aura = spell_data_tp->ap_coeff() * 1.1214;
+  float SCK_AP_ratio_by_aura        = spell_data_sck->ap_coeff() * 2.136;
+
+  // Hina: This isn't the right method
+  conduit_data_t calculated_strikes    = find_conduit_spell("Calculated Strikes" );
+  conduit_data_t *coordinated_offensive = find_conduit_spell( "Coordinated Offensive" );
+  conduit_data_t *bone_marrow_hops      = find_conduit_spell( "Bone Marrow Hops" );
+
+  float CO_bonus = coordinated_offensive->rank() ? coordinated_offensive->percent() : 1.0;
+  float CS_bonus = calculated_strikes->rank() ? calculated_strikes->percent() : 0.16;  // Hina: Use MotC base spell bonus
+  float BMH_bonus = bone_marrow_hops->rank() ? bone_marrow_hops->percent() : 0;
+
+  // sqrt scaling
+  float N_effective_targets_above = 5 * pow( ( N / 5 ), 0.5 );
+  float N_effective_targets       = N < N_effective_targets_above ? N : N_effective_targets_above;
+
+  int MotC_stacks             = mark_of_the_crane_counter();
+  float MotC_bonus_per_target = .18 + CS_bonus;
+  float MotC_bonus            = MotC_bonus_per_target * MotC_stacks;
+  float MotC_multiplier       = 1 + MotC_bonus;
+
+  float SCK_dmg_total = ( N_effective_targets * SCK_AP_ratio_by_aura * MotC_multiplier ) -
+                        ( 1.1 / 1.676 * .81 / 2.5 * 1.5 );  // Subtract auto attacks
+  float p = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
+
+  float flAmp = 1.0;
+
+  // TODO: Amps
+
+  flAmp = flAmp * ( 1 + ( .5 * .4 * ( static_cast<float>( bdb_targets ) / N ) * ( 1 + BMH_bonus ) ) );
+
+  // TP->SCK
+  float damage         = flAmp * M * ( 1 + p );
+  float execution_time = 2;
+  int net_chi          = 1;
+  float net_energy     = -50;
+  bool capped          = false;
+
+  float TP_SCK_damage         = damage;
+  float TP_SCK_execution_time = execution_time;
+  int TP_SCK_net_chi          = net_chi;
+  float TP_SCK_net_energy     = capped ? net_energy : net_energy + ( ( ascension ? 11 : 10 ) * execution_time );
+  float TP_SCK_idps           = TP_SCK_damage / TP_SCK_execution_time;
+  float TP_SCK_cps            = TP_SCK_net_chi / TP_SCK_execution_time;
+  float TP_SCK_eps            = TP_SCK_net_energy / TP_SCK_execution_time;
+  float TP_SCK_rdps           = TP_SCK_idps + 0.5 * M * TP_SCK_cps + 0.02 * M * ( 1 + p ) * TP_SCK_eps;
+
+  // SCK->SCK (capped)
+  damage         = flAmp;
+  execution_time = 1.5 / H + eps;
+  net_chi          = -1;
+  net_energy     = 0;
+  capped          = true;
+
+  float rSCK_cap_damage         = damage;
+  float rSCK_cap_execution_time = execution_time;
+  int rSCK_cap_net_chi          = net_chi;
+  float rSCK_cap_net_energy     = capped ? net_energy : net_energy + ( ( ascension ? 11 : 10 ) * execution_time );
+  float rSCK_cap_idps           = rSCK_cap_damage / rSCK_cap_execution_time;
+  float rSCK_cap_cps            = rSCK_cap_net_chi / rSCK_cap_execution_time;
+  float rSCK_cap_eps            = rSCK_cap_net_energy / rSCK_cap_execution_time;
+  float rSCK_cap_rdps           = rSCK_cap_idps + 0.5 * M * rSCK_cap_cps + 0.02 * M * ( 1 + p ) * rSCK_cap_eps;
+
+  // SCK->SCK (uncapped)
+  capped = false;
+
+  float rSCK_unc_damage         = damage;
+  float rSCK_unc_execution_time = execution_time;
+  int rSCK_unc_net_chi          = net_chi;
+  float rSCK_unc_net_energy     = capped ? net_energy : net_energy + ( ( ascension ? 11 : 10 ) * execution_time );
+  float rSCK_unc_idps           = rSCK_unc_damage / rSCK_unc_execution_time;
+  float rSCK_unc_cps            = rSCK_unc_net_chi / rSCK_unc_execution_time;
+  float rSCK_unc_eps            = rSCK_unc_net_energy / rSCK_unc_execution_time;
+  float rSCK_unc_rdps           = rSCK_unc_idps + 0.5 * M * rSCK_unc_cps + 0.02 * M * ( 1 + p ) * rSCK_unc_eps;
+
+  if ( rSCK_unc_rdps > TP_SCK_rdps )
+  {
+    float regen      = ascension ? 0.22 : 0.2;
+    float N_oc_expr  = ( 1 - 2 * regen * H ) / ( 1.5 + H * eps ) / regen;
+    float w_oc_expr  = 1 / ( 1 + N_oc_expr );
+    float rdps_nocap = w_oc_expr * TP_SCK_rdps + ( 1 - w_oc_expr ) * rSCK_unc_rdps;
+
+    // Purple
+    if ( rSCK_cap_rdps > rdps_nocap )
+      return 4;
+
+    return 3;
+  }
+  else
+  {
+    if ( rSCK_unc_idps < TP_SCK_idps )
+      return 1;
+
+    return 2;
+  }
+
+}
 
   double action_multiplier() const override
   {
