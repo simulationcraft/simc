@@ -904,6 +904,7 @@ public:
   double partial_clear_stagger_amount( double );
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
+  int get_bdb_zone();
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
