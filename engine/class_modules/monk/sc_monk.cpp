@@ -360,8 +360,8 @@ public:
           bdb_targets++;
     }
 
-    double H = p()->get_stat_value(stat_e::STAT_HASTE_RATING);
-    double M = p()->get_stat_value( stat_e::STAT_MASTERY_RATING );
+    double H = p()->composite_melee_haste();
+    double M = p()->composite_mastery();
 
     bool ascension = ( p()->talent.ascension != spell_data_t::not_found() );
 
@@ -395,7 +395,7 @@ public:
 
     auto SCK_dmg_total = ( N_effective_targets * SCK_AP_ratio_by_aura * MotC_multiplier ) -
                           ( 1.1 / 1.676 * .81 / 2.5 * 1.5 );  // Subtract auto attacks
-    auto p = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
+    auto tp_over_sck = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
 
     auto flAmp = 1.0;
 
@@ -404,10 +404,10 @@ public:
     flAmp = flAmp * ( 1 + ( .5 * .4 * ( static_cast<double>( bdb_targets ) / N ) * ( 1 + BMH_bonus ) ) );
 
     // TP->SCK
-    auto damage          = flAmp * M * ( 1 + p );
+    auto damage            = flAmp * M * ( 1 + tp_over_sck );
     auto execution_time  = 2.0;
     auto net_chi         = 1;
-    auto net_energy      = -1 * p()->spec.tiger_palm->cost();
+    double net_energy      = -1 * p()->spec.tiger_palm->powerN( power_e::POWER_ENERGY ).cost();
     auto capped          = false;
 
     auto TP_SCK_damage          = damage;
@@ -417,7 +417,7 @@ public:
     auto TP_SCK_idps            = TP_SCK_damage / TP_SCK_execution_time;
     auto TP_SCK_cps             = TP_SCK_net_chi / TP_SCK_execution_time;
     auto TP_SCK_eps             = TP_SCK_net_energy / TP_SCK_execution_time;
-    auto TP_SCK_rdps            = TP_SCK_idps + 0.5 * M * TP_SCK_cps + 0.02 * M * ( 1 + p ) * TP_SCK_eps;
+    auto TP_SCK_rdps            = TP_SCK_idps + 0.5 * M * TP_SCK_cps + 0.02 * M * ( 1 + tp_over_sck ) * TP_SCK_eps;
 
     // SCK->SCK (capped)
     damage         = flAmp;
@@ -433,7 +433,7 @@ public:
     auto rSCK_cap_idps            = rSCK_cap_damage / rSCK_cap_execution_time;
     auto rSCK_cap_cps             = rSCK_cap_net_chi / rSCK_cap_execution_time;
     auto rSCK_cap_eps             = rSCK_cap_net_energy / rSCK_cap_execution_time;
-    auto rSCK_cap_rdps            = rSCK_cap_idps + 0.5 * M * rSCK_cap_cps + 0.02 * M * ( 1 + p ) * rSCK_cap_eps;
+    auto rSCK_cap_rdps            = rSCK_cap_idps + 0.5 * M * rSCK_cap_cps + 0.02 * M * ( 1 + tp_over_sck ) * rSCK_cap_eps;
 
     // SCK->SCK (uncapped)
     capped = false;
@@ -445,7 +445,7 @@ public:
     auto rSCK_unc_idps            = rSCK_unc_damage / rSCK_unc_execution_time;
     auto rSCK_unc_cps             = rSCK_unc_net_chi / rSCK_unc_execution_time;
     auto rSCK_unc_eps             = rSCK_unc_net_energy / rSCK_unc_execution_time;
-    auto rSCK_unc_rdps            = rSCK_unc_idps + 0.5 * M * rSCK_unc_cps + 0.02 * M * ( 1 + p ) * rSCK_unc_eps;
+    auto rSCK_unc_rdps            = rSCK_unc_idps + 0.5 * M * rSCK_unc_cps + 0.02 * M * ( 1 + tp_over_sck ) * rSCK_unc_eps;
 
     if ( rSCK_unc_rdps > TP_SCK_rdps )
     {
