@@ -412,7 +412,7 @@ public:
     auto damage          = flAmp * M * ( 1 + p );
     auto execution_time  = 2.0;
     auto net_chi         = 1;
-    auto net_energy      = -50;
+    auto net_energy      = -1 * p()->spec.tiger_palm->cost();
     auto capped          = false;
 
     auto TP_SCK_damage          = damage;
