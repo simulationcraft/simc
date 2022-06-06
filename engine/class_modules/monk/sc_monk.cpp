@@ -360,19 +360,14 @@ public:
           bdb_targets++;
     }
 
-    // Hina: Character sheet haste divided by 100 I.e., 7% haste = 0.07
-    double H = 0;
-    // Hina: Character sheet mastery divided by 100 I.e., 10% mastery = 0.1
-    double M = 0;
+    double H = p()->get_stat_value(stat_e::STAT_HASTE_RATING);
+    double M = p()->get_stat_value( stat_e::STAT_MASTERY_RATING );
 
     bool ascension = ( p()->talent.ascension != spell_data_t::not_found() );
 
     double eps = 0.2;
 
     /* Hina: Get these auras intrinsically
-     * I currently have the values
-     *   tp: .27 * 1.1214
-     *   sck: .4 * 2.136
      */
     auto tiger_palm_AP_ratio_by_aura = p()->spec.tiger_palm->effectN( 1 ).ap_coeff() *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 1 ).percent() ) *
