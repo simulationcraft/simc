@@ -347,7 +347,7 @@ public:
   {
     std::vector<player_t*> target_list = p()->sim->target_non_sleeping_list.data();
 
-    int N           = target_list.size();
+    int N           = static_cast<int>( target_list.size() );
     int bdb_targets = 0;
 
     if ( p()->specialization() != MONK_WINDWALKER || N < 2 )
@@ -385,16 +385,9 @@ public:
                                 ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
                                 ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() );
 
-    // Hina: This isn't the right method
-    auto calculated_strikes     = p()->conduit.calculated_strikes;
-    auto coordinated_offensive = p()->conduit.coordinated_offensive;
-    auto bone_marrow_hops      = p()->conduit.bone_marrow_hops;
-
-    auto CO_bonus = coordinated_offensive->ok() ? coordinated_offensive.percent() : 1.0;
-    auto CS_bonus  = calculated_strikes->ok()
-                         ? calculated_strikes.percent()
+    auto CS_bonus  = p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent()
                          : p()->passives.cyclone_strikes->effectN( 1 ).percent();
-    auto BMH_bonus = bone_marrow_hops->ok() ? bone_marrow_hops.percent() : 0;
+    auto BMH_bonus = p()->conduit.bone_marrow_hops->ok() ? p()->conduit.bone_marrow_hops.percent() : 0;
 
     // sqrt scaling
     auto N_effective_targets_above = 5 * pow( ( N / 5 ), 0.5 );
@@ -413,11 +406,11 @@ public:
 
     // TODO: Amps
 
-    flAmp = flAmp * ( 1 + ( .5 * .4 * ( static_cast<float>( bdb_targets ) / N ) * ( 1 + BMH_bonus ) ) );
+    flAmp = flAmp * ( 1 + ( .5 * .4 * ( static_cast<double>( bdb_targets ) / N ) * ( 1 + BMH_bonus ) ) );
 
     // TP->SCK
     auto damage          = flAmp * M * ( 1 + p );
-    auto execution_time  = 2;
+    auto execution_time  = 2.0;
     auto net_chi         = 1;
     auto net_energy      = -50;
     auto capped          = false;
