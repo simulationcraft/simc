@@ -252,13 +252,13 @@ public:
   // Allow resource capping during BDB
   bool cap_energy()
   {
-    return get_bdb_zone() == 4;
+    return bonedust_brew_zone() == 4;
   }
 
   // Break mastery during BDB
   bool tp_fill()
   {
-    return get_bdb_zone() < 3;
+    return bonedust_brew_zone() < 3;
   }
 
   // Check if the combo ability under consideration is different from the last
@@ -344,15 +344,18 @@ public:
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
-   int get_bdb_zone()
+ int bonedust_brew_zone()
   {
+    // This function is derived from the Google collab by Tostad0ra found here
+    // https://colab.research.google.com/drive/1IlNnwzigBG_xa0VdXhiofvuy-mgJAhGa?usp=sharing
+
     std::vector<player_t*> target_list = p()->sim->target_non_sleeping_list.data();
 
-    int N           = static_cast<int>( target_list.size() );
-    int bdb_targets = 0;
-    int MotC_stacks = 0;
+    auto target_count           = static_cast<int>( target_list.size() );
+    auto targets_affected       = 0;
+    auto cyclone_strike_counter = 0;
 
-    if ( p()->specialization() != MONK_WINDWALKER || N < 2 )
+    if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
       return 0;
 
     for ( player_t* target : target_list )
@@ -360,20 +363,20 @@ public:
       if ( auto td = p()->find_target_data( target ) )
       {
         if ( td->debuff.bonedust_brew->check() )
-          bdb_targets++;
+          targets_affected++;
         if ( td->debuff.mark_of_the_crane->check() )
-          MotC_stacks++;
+          cyclone_strike_counter++;
       }
     }
 
-    if ( bdb_targets == 0 )
+    if ( targets_affected == 0 )
       return 0;
 
-    double H = 1 / p()->composite_melee_haste();
-    double M = 1 + p()->composite_mastery_value();
+    auto haste_bonus   = 1 / p()->composite_melee_haste();
+    auto mastery_bonus = 1 + p()->composite_mastery_value();
 
     // Delay when chaining SCK (approximately 200ms from in game testing)
-    double eps = 0.2;
+    auto player_delay = 0.2;
 
     auto tiger_palm_AP_ratio_by_aura = p()->spec.tiger_palm->effectN( 1 ).ap_coeff() *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 1 ).percent() ) *
@@ -391,100 +394,104 @@ public:
     auto CO_bonus  = p()->conduit.coordinated_offensive->ok() ? p()->conduit.coordinated_offensive.percent() : 0;
 
     // sqrt scaling
-    auto N_effective_targets_above = 5 * pow( ( N / 5 ), 0.5 );
-    auto N_effective_targets       = N < N_effective_targets_above ? N : N_effective_targets_above;
+    auto N_effective_targets_above = 5 * pow( ( target_count / 5 ), 0.5 );
+    auto N_effective_targets = target_count < N_effective_targets_above ? target_count : N_effective_targets_above;
 
     auto MotC_bonus_per_target = .18 + CS_bonus;
-    auto MotC_bonus            = MotC_bonus_per_target * MotC_stacks;
+    auto MotC_bonus            = MotC_bonus_per_target * cyclone_strike_counter;
     auto MotC_multiplier       = 1 + MotC_bonus;
 
     auto SCK_dmg_total = ( N_effective_targets * SCK_AP_ratio_by_aura * MotC_multiplier ) -
                          ( 1.1 / 1.676 * .81 / 2.5 * 1.5 );  // Subtract auto attacks
     auto tp_over_sck = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
 
-    auto flAmp = 1 + p()->composite_damage_versatility();
+    auto total_damage_amplifier = 1 + p()->composite_damage_versatility();
 
     if ( p()->buff.invoke_xuen->check() )
     {
       // Tiger Lightning
-      flAmp *= ( 1 + p()->spec.invoke_xuen_2->effectN( 2 ).percent() );
+      total_damage_amplifier *= ( 1 + p()->spec.invoke_xuen_2->effectN( 2 ).percent() );
     }
 
     if ( p()->buff.storm_earth_and_fire->check() )
     {
       auto sef_multiplier = ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
-      flAmp *= sef_multiplier;
-      flAmp *= ( 2 * CO_bonus + 1 ) / 3;
+      total_damage_amplifier *= sef_multiplier;
+      total_damage_amplifier *= ( 2 * CO_bonus + 1 ) / 3;
     }
 
-    flAmp = flAmp * ( 1 + ( .5 * .4 * ( static_cast<double>( bdb_targets ) / N ) * ( 1 + BMH_bonus ) ) );
+    total_damage_amplifier *=
+        1 + ( p()->covenant.necrolord->proc_chance() *           // Chance for bonus damage from Bonedust Brew
+              p()->covenant.necrolord->effectN( 1 ).percent() *  // Damage amplifier from Bonedust Brew
+              ( 1 + BMH_bonus ) *                                // Damage amplifier from Bone Marrow Hops conduit
+              ( static_cast<double>( targets_affected ) / target_count ) );  // Delta targets affected by Bonedust Brew
 
     auto energy_regen_per_second = p()->resource_regen_per_second( RESOURCE_ENERGY );
 
-    // TP->SCK
-    auto damage         = flAmp * M * ( 1 + tp_over_sck );
-    auto execution_time = 2.0;
-    auto net_chi        = 1;
-    double net_energy   = -1 * p()->spec.tiger_palm->powerN( power_e::POWER_ENERGY ).cost();
-    auto capped         = false;
+    // Generate a lambda to refactor these expressions for ease of use and legibility
+    // TODO:
+    // all of this could maybe be automated to recieve
+    // any combination of monk_spell_t structures but we only care about these 3 scenarios currently
 
-    auto TP_SCK_damage         = damage;
-    auto TP_SCK_execution_time = execution_time;
-    auto TP_SCK_net_chi        = net_chi;
-    auto TP_SCK_net_energy     = capped ? net_energy : net_energy + ( energy_regen_per_second * execution_time );
-    auto TP_SCK_idps           = TP_SCK_damage / TP_SCK_execution_time;
-    auto TP_SCK_cps            = TP_SCK_net_chi / TP_SCK_execution_time;
-    auto TP_SCK_eps            = TP_SCK_net_energy / TP_SCK_execution_time;
-    auto TP_SCK_rdps           = TP_SCK_idps + 0.5 * M * TP_SCK_cps + 0.02 * M * ( 1 + tp_over_sck ) * TP_SCK_eps;
+    struct Action
+    {
+      double idps;
+      double rdps;
+    };
+
+    auto DefineAction = [ &, this ]( auto damage, auto execution_time, auto net_chi, auto net_energy,
+                                     bool capped = false ) {
+      Action new_action;
+      auto eps = ( capped ? net_energy
+                          : net_energy + ( p()->resource_regen_per_second( RESOURCE_ENERGY ) * execution_time ) ) /
+                 execution_time;
+
+      new_action.idps = damage / execution_time;
+      new_action.rdps = new_action.idps + 0.5 * mastery_bonus * ( net_chi / execution_time ) +
+                        0.02 * mastery_bonus * ( 1 + tp_over_sck ) * eps;
+
+      return new_action;
+    };
+
+    // TP->SCK
+    Action TP_SCK = DefineAction( total_damage_amplifier * mastery_bonus * ( 1 + tp_over_sck ), 2.0, 1,
+                                  -1 * p()->spec.tiger_palm->powerN( power_e::POWER_ENERGY ).cost() );
 
     // SCK->SCK (capped)
-    damage         = flAmp;
-    execution_time = 1.5 / H + eps;
-    net_chi        = -1;
-    net_energy     = 0;
-    capped         = true;
-
-    auto rSCK_cap_damage         = damage;
-    auto rSCK_cap_execution_time = execution_time;
-    auto rSCK_cap_net_chi        = net_chi;
-    auto rSCK_cap_net_energy     = capped ? net_energy : net_energy + ( energy_regen_per_second * execution_time );
-    auto rSCK_cap_idps           = rSCK_cap_damage / rSCK_cap_execution_time;
-    auto rSCK_cap_cps            = rSCK_cap_net_chi / rSCK_cap_execution_time;
-    auto rSCK_cap_eps            = rSCK_cap_net_energy / rSCK_cap_execution_time;
-    auto rSCK_cap_rdps = rSCK_cap_idps + 0.5 * M * rSCK_cap_cps + 0.02 * M * ( 1 + tp_over_sck ) * rSCK_cap_eps;
+    Action rSCK_cap = DefineAction( total_damage_amplifier, 1.5 / haste_bonus + player_delay, -1, 0, true );
 
     // SCK->SCK (uncapped)
-    capped = false;
+    Action rSCK_unc = DefineAction( total_damage_amplifier, 1.5 / haste_bonus + player_delay, -1, 0 );
 
-    auto rSCK_unc_damage         = damage;
-    auto rSCK_unc_execution_time = execution_time;
-    auto rSCK_unc_net_chi        = net_chi;
-    auto rSCK_unc_net_energy     = capped ? net_energy : net_energy + ( energy_regen_per_second * execution_time );
-    auto rSCK_unc_idps           = rSCK_unc_damage / rSCK_unc_execution_time;
-    auto rSCK_unc_cps            = rSCK_unc_net_chi / rSCK_unc_execution_time;
-    auto rSCK_unc_eps            = rSCK_unc_net_energy / rSCK_unc_execution_time;
-    auto rSCK_unc_rdps = rSCK_unc_idps + 0.5 * M * rSCK_unc_cps + 0.02 * M * ( 1 + tp_over_sck ) * rSCK_unc_eps;
-
-    if ( rSCK_unc_rdps > TP_SCK_rdps )
+    if ( rSCK_unc.rdps > TP_SCK.rdps )
     {
-      auto regen      = energy_regen_per_second * 2;
-      auto N_oc_expr  = ( 1 - 2 * regen ) / ( 1.5 + H * eps ) / ( regen / H );
+      auto regen      = p()->resource_regen_per_second( RESOURCE_ENERGY ) * 2;
+      auto N_oc_expr  = ( 1 - 2 * regen ) / ( 1.5 + haste_bonus * player_delay ) / ( regen / haste_bonus );
       auto w_oc_expr  = 1 / ( 1 + N_oc_expr );
-      auto rdps_nocap = w_oc_expr * TP_SCK_rdps + ( 1 - w_oc_expr ) * rSCK_unc_rdps;
+      auto rdps_nocap = w_oc_expr * TP_SCK.rdps + ( 1 - w_oc_expr ) * rSCK_unc.rdps;
 
       // Purple
-      if ( rSCK_cap_rdps > rdps_nocap )
+      if ( rSCK_cap.rdps > rdps_nocap )
         return 4;
 
+      // Red
       return 3;
     }
     else
     {
-      if ( rSCK_unc_idps < TP_SCK_idps )
+      // Blue
+      if ( rSCK_unc.idps < TP_SCK.idps )
         return 1;
 
+      // Green
       return 2;
     }
+
+    // TODO: Enumerate return values and colors
+    // 1 = Blue = TP_FILL1
+    // 2 = Green = TP_FILL2
+    // 3 = Red = NO_CAP
+    // 4 = PURPLE = CAP
   }
 
   void trigger_shuffle( double time_extension )
