@@ -38,13 +38,13 @@ actions.precombat+=/variable,name=first_tyrant_time,op=add,value=gcd.max,if=tale
 actions.precombat+=/variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time
 actions.precombat+=/variable,name=first_tyrant_time,op=min,value=10
 actions.precombat+=/variable,name=in_opener,op=set,value=1
-actions.precombat+=/variable,name=use_bolt_timings,op=set,value=runeforge.balespiders_burning_core&runeforge.shard_of_annihilation
+actions.precombat+=/variable,name=use_bolt_timings,op=set,value=runeforge.shard_of_annihilation&(runeforge.balespiders_burning_core+talent.sacrificed_souls.enabled+talent.power_siphon.enabled>1)
 actions.precombat+=/use_item,name=shadowed_orb_of_torment
 actions.precombat+=/demonbolt
 
 # Executed every time the actor is available.
 actions=variable,name=next_tyrant_cd,op=set,value=cooldown.summon_demonic_tyrant.remains_expected,if=!soulbind.field_of_blossoms|cooldown.summon_demonic_tyrant.remains_expected>cooldown.soul_rot.remains_expected
-actions+=/variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=soulbind.field_of_blossoms&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected
+actions+=/variable,name=next_tyrant_cd,op=set,value=cooldown.soul_rot.remains_expected,if=(soulbind.field_of_blossoms|runeforge.decaying_soul_satchel)&cooldown.summon_demonic_tyrant.remains_expected<cooldown.soul_rot.remains_expected
 actions+=/variable,name=in_opener,op=set,value=0,if=pet.demonic_tyrant.active
 actions+=/variable,name=buff_sync_cd,op=set,value=variable.next_tyrant_cd,if=!variable.use_bolt_timings&!variable.in_opener
 actions+=/variable,name=buff_sync_cd,op=set,value=12,if=!variable.use_bolt_timings&variable.in_opener&!pet.dreadstalker.active
@@ -121,7 +121,7 @@ actions.ogcd+=/blood_fury
 actions.ogcd+=/fireblood
 actions.ogcd+=/use_items
 
-actions.opener=soul_rot,if=soulbind.grove_invigoration
+actions.opener=soul_rot,if=soulbind.grove_invigoration,if=!runeforge.decaying_soul_satchel
 actions.opener+=/nether_portal
 actions.opener+=/grimoire_felguard
 actions.opener+=/summon_vilefiend
