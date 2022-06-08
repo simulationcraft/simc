@@ -378,32 +378,33 @@ public:
     // Delay when chaining SCK (approximately 200ms from in game testing)
     auto player_delay = 0.2;
 
+    // Tiger Palm 
     auto tiger_palm_AP_ratio_by_aura = p()->spec.tiger_palm->effectN( 1 ).ap_coeff() *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 1 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 5 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 16 ).percent() ) *
                                        ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
+  
+    // SCK
     auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 2 ).ap_coeff() *
                                 // 4 ticks
                                 4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
                                 ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() );
 
-    auto CS_bonus  = p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent()
-                                                           : p()->passives.cyclone_strikes->effectN( 1 ).percent();
-    auto BMH_bonus = p()->conduit.bone_marrow_hops->ok() ? p()->conduit.bone_marrow_hops.percent() : 0;
-    auto CO_bonus  = p()->conduit.coordinated_offensive->ok() ? p()->conduit.coordinated_offensive.percent() : 0;
+    // SQRT Scaling
+    if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
+      SCK_AP_ratio_by_aura *= std::sqrt( p()->spec.spinning_crane_kick->effectN( 1 ).base_value() /
+                                         std::min<int>( p()->sim->max_aoe_enemies, target_count ) );
 
-    // sqrt scaling
-    auto N_effective_targets_above = 5 * pow( ( target_count / 5 ), 0.5 );
-    auto N_effective_targets = target_count < N_effective_targets_above ? target_count : N_effective_targets_above;
+    auto cyclone_strike_bonus_per_target = p()->passives.cyclone_strikes->effectN( 1 ).percent() 
+                                        + ( p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent() : 0 );
 
-    auto MotC_bonus_per_target = .18 + CS_bonus;
-    auto MotC_bonus            = MotC_bonus_per_target * cyclone_strike_counter;
-    auto MotC_multiplier       = 1 + MotC_bonus;
+    auto cyclone_strike_bonus = 1 + (cyclone_strike_bonus_per_target * cyclone_strike_counter);
 
-    auto SCK_dmg_total = ( N_effective_targets * SCK_AP_ratio_by_aura * MotC_multiplier ) -
-                         ( 1.1 / 1.676 * .81 / 2.5 * 1.5 );  // Subtract auto attacks
+    auto SCK_dmg_total = ( target_count * SCK_AP_ratio_by_aura * cyclone_strike_bonus );
     auto tp_over_sck = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
+
+    // Damage amplifiers
 
     auto total_damage_amplifier = 1 + p()->composite_damage_versatility();
 
@@ -415,18 +416,19 @@ public:
 
     if ( p()->buff.storm_earth_and_fire->check() )
     {
+      // Base 135% from SEF
       auto sef_multiplier = ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       total_damage_amplifier *= sef_multiplier;
-      total_damage_amplifier *= ( 2 * CO_bonus + 1 ) / 3;
+
+      // Coordinated Offensive
+      total_damage_amplifier *= ( 2 * ( p()->conduit.coordinated_offensive->ok() ? p()->conduit.coordinated_offensive.percent() : 0 ) + 1 ) / 3;
     }
 
     total_damage_amplifier *=
-        1 + ( p()->covenant.necrolord->proc_chance() *           // Chance for bonus damage from Bonedust Brew
-              p()->covenant.necrolord->effectN( 1 ).percent() *  // Damage amplifier from Bonedust Brew
-              ( 1 + BMH_bonus ) *                                // Damage amplifier from Bone Marrow Hops conduit
-              ( static_cast<double>( targets_affected ) / target_count ) );  // Delta targets affected by Bonedust Brew
-
-    auto energy_regen_per_second = p()->resource_regen_per_second( RESOURCE_ENERGY );
+        1 + ( p()->covenant.necrolord->proc_chance() *                                                           // Chance for bonus damage from Bonedust Brew
+              p()->covenant.necrolord->effectN( 1 ).percent() *                                                 // Damage amplifier from Bonedust Brew
+              ( 1 + ( p()->conduit.bone_marrow_hops->ok() ? p()->conduit.bone_marrow_hops.percent() : 0 ) ) *  // Damage amplifier from Bone Marrow Hops conduit
+              ( static_cast<double>( targets_affected ) / target_count ) );                                   // Delta targets affected by Bonedust Brew
 
     // Generate a lambda to refactor these expressions for ease of use and legibility
     // TODO:
@@ -492,6 +494,28 @@ public:
     // 2 = Green = TP_FILL2
     // 3 = Red = NO_CAP
     // 4 = PURPLE = CAP
+  }
+
+  void trigger_shuffle( double time_extension )
+  {
+    if ( p()->specialization() == MONK_BREWMASTER && p()->spec.shuffle->ok() )
+    {
+      timespan_t base_time = timespan_t::from_seconds( time_extension );
+      if ( p()->buff.shuffle->up() )
+      {
+        timespan_t max_time     = p()->buff.shuffle->buff_duration();
+        timespan_t old_duration = p()->buff.shuffle->remains();
+        timespan_t new_length   = std::min( max_time, base_time + old_duration );
+        p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
+      }
+      else
+      {
+        p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
+      }
+
+      if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
+        p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
+    }
   }
 
   void trigger_shuffle( double time_extension )
