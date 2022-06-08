@@ -420,8 +420,11 @@ public:
       auto sef_multiplier = ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       total_damage_amplifier *= sef_multiplier;
 
+      p()->sim->print_debug( " JEREMY sef_multiplier {}", sef_multiplier );
+
       // Coordinated Offensive
-      total_damage_amplifier *= ( 2 * ( p()->conduit.coordinated_offensive->ok() ? p()->conduit.coordinated_offensive.percent() : 0 ) + 1 ) / 3;
+      if ( p()->conduit.coordinated_offensive->ok() )
+        total_damage_amplifier *= ( 2 * ( 1 + p()->conduit.coordinated_offensive.percent() ) + 1 ) / 3;
     }
 
     total_damage_amplifier *=
