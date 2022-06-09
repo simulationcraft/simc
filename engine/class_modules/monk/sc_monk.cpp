@@ -258,7 +258,9 @@ public:
   // Break mastery during BDB
   bool tp_fill()
   {
-    return ( ( (int)bonedust_brew_zone() == (int)bonedust_brew_results_e::TP_FILL1 ) || ( (int)bonedust_brew_zone() == (int)bonedust_brew_results_e::TP_FILL2 ) );
+    auto result = bonedust_brew_zone();
+    return ( ( result == bonedust_brew_results_e::TP_FILL1 ) ||
+             ( result == bonedust_brew_results_e::TP_FILL2 ) );
   }
 
   // Check if the combo ability under consideration is different from the last
