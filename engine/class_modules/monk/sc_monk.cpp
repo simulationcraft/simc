@@ -252,13 +252,13 @@ public:
   // Allow resource capping during BDB
   bool cap_energy()
   {
-    return bonedust_brew_zone() == 4;
+    return bonedust_brew_zone() == bonedust_brew_results_e::CAP;
   }
 
   // Break mastery during BDB
   bool tp_fill()
   {
-    return bonedust_brew_zone() < 3;
+    return (int)bonedust_brew_zone() < (int)bonedust_brew_results_e::NO_CAP;
   }
 
   // Check if the combo ability under consideration is different from the last
@@ -344,7 +344,7 @@ public:
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
- int bonedust_brew_zone()
+ bonedust_brew_results_e bonedust_brew_zone()
   {
     // This function is derived from the Google collab by Tostad0ra found here
     // https://colab.research.google.com/drive/1IlNnwzigBG_xa0VdXhiofvuy-mgJAhGa?usp=sharing
@@ -356,7 +356,7 @@ public:
     auto cyclone_strike_counter = 0;
 
     if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
-      return 0;
+      return bonedust_brew_results_e::NONE;
 
     for ( player_t* target : target_list )
     {
@@ -370,7 +370,7 @@ public:
     }
 
     if ( targets_affected == 0 )
-      return 0;
+      return bonedust_brew_results_e::NONE;
 
     auto haste_bonus   = 1 / p()->composite_melee_haste();
     auto mastery_bonus = 1 + p()->composite_mastery_value();
@@ -477,47 +477,19 @@ public:
 
       // Purple
       if ( rSCK_cap.rdps > rdps_nocap )
-        return 4;
+        return bonedust_brew_results_e::CAP;
 
       // Red
-      return 3;
+      return bonedust_brew_results_e::NO_CAP;
     }
     else
     {
       // Blue
       if ( rSCK_unc.idps < TP_SCK.idps )
-        return 1;
+        return bonedust_brew_results_e::TP_FILL1;
 
       // Green
-      return 2;
-    }
-
-    // TODO: Enumerate return values and colors
-    // 1 = Blue = TP_FILL1
-    // 2 = Green = TP_FILL2
-    // 3 = Red = NO_CAP
-    // 4 = PURPLE = CAP
-  }
-
-  void trigger_shuffle( double time_extension )
-  {
-    if ( p()->specialization() == MONK_BREWMASTER && p()->spec.shuffle->ok() )
-    {
-      timespan_t base_time = timespan_t::from_seconds( time_extension );
-      if ( p()->buff.shuffle->up() )
-      {
-        timespan_t max_time     = p()->buff.shuffle->buff_duration();
-        timespan_t old_duration = p()->buff.shuffle->remains();
-        timespan_t new_length   = std::min( max_time, base_time + old_duration );
-        p()->buff.shuffle->refresh( 1, buff_t::DEFAULT_VALUE(), new_length );
-      }
-      else
-      {
-        p()->buff.shuffle->trigger( 1, buff_t::DEFAULT_VALUE(), -1.0, base_time );
-      }
-
-      if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
-        p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
+      return bonedust_brew_results_e::TP_FILL2;
     }
   }
 
