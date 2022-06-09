@@ -1389,7 +1389,7 @@ void warlock_t::apl_precombat()
     precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
     precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10" );
     precombat->add_action( "variable,name=in_opener,op=set,value=1" );
-    precombat->add_action( "variable,name=use_bolt_timings,op=set,value=runeforge.balespiders_burning_core&runeforge.shard_of_annihilation" );
+    precombat->add_action( "variable,name=use_bolt_timings,op=set,value=runeforge.shard_of_annihilation&(runeforge.balespiders_burning_core+talent.sacrificed_souls.enabled+talent.power_siphon.enabled>1)" );
     precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
     precombat->add_action( "demonbolt" );
   }

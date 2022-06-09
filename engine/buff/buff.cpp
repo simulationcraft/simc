@@ -547,6 +547,16 @@ std::unique_ptr<expr_t> create_buff_expression( util::string_view buff_name, uti
         return buff->default_chance == 0;
       } );
   }
+  else if ( type == "expiration_delay_remains" )
+  {
+    return make_const_buff_expr( "buff_expiration_delay_remains",
+      []( buff_t* buff ) {
+        return buff->expiration_delay ? buff->expiration_delay->remains() : 0_ms;
+      },
+      []( buff_t* buff ) {
+        return buff->default_chance == 0;
+      } );
+  }
 
   throw std::invalid_argument( fmt::format( "Unsupported buff expression '{}'.", type ) );
 }
