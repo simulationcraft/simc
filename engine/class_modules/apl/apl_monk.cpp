@@ -417,7 +417,6 @@ void windwalker( player_t* p )
       "variable,name=hold_sef,op=set,value=cooldown.bonedust_brew.up&cooldown.storm_earth_and_fire.charges<2&chi<3|buff.bonedust_brew.remains<8" );
   def->add_action(
       "variable,name=max_stacks,op=set,value=active_enemies<3|spinning_crane_kick.count>=active_enemies|spinning_crane_kick.count=5" );
-  def->add_action( "variable,name=bdb_setup_time,value=4.5*gcd" );
   def->add_action(
       "variable,name=skip_setup,value=soulbind.carvers_eye|!conduit.calculated_strikes|!talent.whirling_dragon_punch|fight_remains<20" ); 
   def->add_action(
@@ -471,25 +470,15 @@ void windwalker( player_t* p )
                    "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy" );
 
   // Bonedust Brew Setup
-  bdb_setup->add_action( "bonedust_brew,if=active_enemies<3&chi>=3&variable.max_stacks|active_enemies>=3&(variable.skip_setup&variable.max_stacks|cooldown.fists_of_fury.remains>variable.bdb_setup_time&cooldown.rising_sun_kick.remains>=2)&chi>=4" );
+  bdb_setup->add_action( "bonedust_brew,if=active_enemies<3&chi>=3&variable.max_stacks|active_enemies>=3&(variable.skip_setup&variable.max_stacks|cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains>=2)&chi>=4" );
   bdb_setup->add_action( p, "Rising Sun Kick",
       "target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5&variable.skip_setup" );
   bdb_setup->add_action( p, "Fists of Fury",
       "target_if=max:target.time_to_die,if=chi>=5&active_enemies>=3&!variable.skip_setup" );
-  bdb_setup->add_talent( p, "Fist of the White Tiger",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&cooldown.fists_of_fury.remains<variable.bdb_setup_time&active_enemies>=2" );
-  bdb_setup->add_action(p, "Expel Harm",
-      "if=talent.chi_burst.enabled&chi.max-chi>=3&cooldown.fists_of_fury.remains<variable.bdb_setup_time&active_enemies>=2" );
-  bdb_setup->add_action(p, "Tiger Palm", 
-      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&cooldown.fists_of_fury.remains<variable.bdb_setup_time&active_enemies>=2" );
-  bdb_setup->add_talent( p, "Chi Burst",
-      "if=chi.max-chi>=2&cooldown.fists_of_fury.remains<variable.bdb_setup_time&active_enemies>=2" );
-  bdb_setup->add_action( p, "Expel Harm",
-      "if=cooldown.fists_of_fury.remains<variable.bdb_setup_time&active_enemies>=2" );
   bdb_setup->add_action(p, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&active_enemies>=2" );
   bdb_setup->add_action(p, "Rising Sun Kick", 
-      "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains>variable.bdb_setup_time&active_enemies>=2" );
+      "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains&active_enemies>=2" );
 
   // AoE
   aoe->add_talent( p, "Whirling Dragon Punch", "if=(buff.primordial_potential.stack<9|cooldown.rising_sun_kick.remains<2*gcd)&(!covenant.necrolord|!buff.bonedust_brew.up&cooldown.bonedust_brew.remains>cooldown.fists_of_fury.remains)" );
@@ -598,11 +587,11 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.serenity.down&buff.bonedust_brew.down" );
  
   // Storm, Earth and Fire Cooldowns
-  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&covenant.necrolord&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2&(variable.skip_setup|cooldown.fists_of_fury.remains>variable.bdb_setup_time|cooldown.fists_of_fury.up))|fight_remains<25" );
+  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&covenant.necrolord&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2&(variable.skip_setup|cooldown.fists_of_fury.remains|cooldown.fists_of_fury.up))|fight_remains<25" );
 
   cd_sef->add_action(
       p, "Storm, Earth, and Fire",
-      "if=covenant.necrolord&(fight_remains<30&variable.badge_ready&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!variable.max_stacks&active_enemies>=3&cooldown.bonedust_brew.remains<=2&variable.badge_ready&(variable.skip_setup|cooldown.fists_of_fury.remains>variable.bdb_setup_time&(cooldown.rising_sun_kick.up|cooldown.rising_sun_kick.remains>variable.bdb_setup_time))&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
+      "if=covenant.necrolord&(fight_remains<30&variable.badge_ready&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!variable.max_stacks&active_enemies>=3&cooldown.bonedust_brew.remains<=2&variable.badge_ready&(variable.skip_setup|cooldown.fists_of_fury.remains&(cooldown.rising_sun_kick.up|cooldown.rising_sun_kick.remains))&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
 
   cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&variable.max_stacks)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&variable.max_stacks&chi>=4)|fight_remains<10&soulbind.lead_by_example" );
  
