@@ -252,15 +252,15 @@ public:
   // Allow resource capping during BDB
   bool cap_energy()
   {
-    return bonedust_brew_zone() == bonedust_brew_results_e::CAP;
+    return bonedust_brew_zone() == bonedust_brew_zone_results_e::CAP;
   }
 
   // Break mastery during BDB
   bool tp_fill()
   {
     auto result = bonedust_brew_zone();
-    return ( ( result == bonedust_brew_results_e::TP_FILL1 ) ||
-             ( result == bonedust_brew_results_e::TP_FILL2 ) );
+    return ( ( result == bonedust_brew_zone_results_e::TP_FILL1 ) ||
+             ( result == bonedust_brew_zone_results_e::TP_FILL2 ) );
   }
 
   // Check if the combo ability under consideration is different from the last
@@ -346,7 +346,7 @@ public:
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
- bonedust_brew_results_e bonedust_brew_zone()
+ bonedust_brew_zone_results_e bonedust_brew_zone()
   {
     // This function is derived from the Google collab by Tostad0ra found here
     // https://colab.research.google.com/drive/1IlNnwzigBG_xa0VdXhiofvuy-mgJAhGa?usp=sharing
@@ -358,7 +358,7 @@ public:
     auto cyclone_strike_counter = 0;
 
     if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
-      return bonedust_brew_results_e::NONE;
+      return bonedust_brew_zone_results_e::NONE;
 
     for ( player_t* target : target_list )
     {
@@ -372,7 +372,7 @@ public:
     }
 
     if ( targets_affected == 0 )
-      return bonedust_brew_results_e::NONE;
+      return bonedust_brew_zone_results_e::NONE;
 
     auto haste_bonus   = 1 / p()->composite_melee_haste();
     auto mastery_bonus = 1 + p()->composite_mastery_value();
@@ -479,19 +479,19 @@ public:
 
       // Purple
       if ( rSCK_cap.rdps > rdps_nocap )
-        return bonedust_brew_results_e::CAP;
+        return bonedust_brew_zone_results_e::CAP;
 
       // Red
-      return bonedust_brew_results_e::NO_CAP;
+      return bonedust_brew_zone_results_e::NO_CAP;
     }
     else
     {
       // Blue
       if ( rSCK_unc.idps < TP_SCK.idps )
-        return bonedust_brew_results_e::TP_FILL1;
+        return bonedust_brew_zone_results_e::TP_FILL1;
 
       // Green
-      return bonedust_brew_results_e::TP_FILL2;
+      return bonedust_brew_zone_results_e::TP_FILL2;
     }
   }
 

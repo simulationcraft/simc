@@ -59,7 +59,7 @@ enum class sef_ability_e
   SEF_MAX
 };
 
-enum class bonedust_brew_results_e
+enum class bonedust_brew_zone_results_e
 {
   NONE = 0,
   TP_FILL1,
