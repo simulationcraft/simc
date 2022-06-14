@@ -4969,7 +4969,7 @@ struct revival_t : public monk_heal_t
     may_miss = false;
     aoe      = -1;
 
-    if ( sim->pvp_crit )
+    if ( sim->pvp_mode )
       base_multiplier *= 2;  // 2016-08-03
   }
 };

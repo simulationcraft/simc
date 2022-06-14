@@ -1162,7 +1162,7 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "enemy_death_pct" ] = sim.enemy_death_pct;
   options_root[ "challenge_mode" ] = sim.challenge_mode;
   options_root[ "timewalk" ] = sim.timewalk;
-  options_root[ "pvp_crit" ] = sim.pvp_crit;
+  options_root[ "pvp_mode" ] = sim.pvp_mode;
   options_root[ "rng" ] = sim.rng();
   options_root[ "deterministic" ] = sim.deterministic;
   options_root[ "average_range" ] = sim.average_range;
