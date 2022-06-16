@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971, git build shadowlands 67a0388541)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1714,7 +1714,7 @@ Effects          :
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #6 (id=879224)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: 20 | Scaled Value: 20 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 Description      : Reduces the damage your pet takes from area of effect attacks by an additional $s1%.
 Reduces the range at which enemies detect your pet.
@@ -3265,7 +3265,7 @@ Effects          :
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #11 (id=842534)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 13 | Scaled Value: 13 | Target: Self (1)
+                   Base Value: 13 | Scaled Value: 13 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Healing Surge (8004)
                    Family Flags: 7
 #12 (id=875415)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971, git build shadowlands 67a0388541)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -10374,7 +10374,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), DoT Stacking Rule (103), Aura Points On Client (268), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=839600)   : Apply Aura (6) | Modify Damage Taken% from Caster (270)
-                   Base Value: 0 | Scaled Value: 0 | Misc Value: 0x2 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.00000 | Misc Value: 0x2 | Target: Enemy (6)
                    Affected School(s): Holy
 Description      : $@spelldesc340006
 Tooltip          : Suffering $w1% more Holy damage.
