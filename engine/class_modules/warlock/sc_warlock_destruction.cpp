@@ -1294,8 +1294,8 @@ void warlock_t::create_apl_destruction()
   def->add_action( "cataclysm" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>2-set_bonus.tier28_4pc" );
   def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
+  def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)&!action.soul_fire.in_flight" );
+  def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5&!action.soul_fire.in_flight" );
   def->add_action( "chaos_bolt,if=(pet.infernal.active|pet.blasphemy.active)&soul_shard>=4" );
   def->add_action( "call_action_list,name=cds" );
   def->add_action( "channel_demonfire" );
