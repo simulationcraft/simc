@@ -668,6 +668,7 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
+    proc_t* count_the_odds_wasted;
 
     // Legendary
     proc_t* duskwalker_patch;
@@ -2155,7 +2156,7 @@ struct crippling_poison_t : public rogue_poison_t
   struct crippling_poison_proc_t : public rogue_poison_t
   {
     crippling_poison_proc_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
+      rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger(), true )
     { }
 
     void impact( action_state_t* state ) override
@@ -5746,11 +5747,22 @@ struct roll_the_bones_t : public buff_t
 
     count_the_odds_states.clear();
 
+    if ( !save_remains )
+      return;
+
     for ( buff_t* buff : buffs )
     {
-      if ( save_remains && buff->check() && buff->remains() != remains() )
+      if ( buff->check() )
       {
-        count_the_odds_states.push_back( { buff, buff->remains() } );
+        // 2022-06-19 -- 9.2.5: Recent testing shows only buffs with longer duration than existing RtB buffs are preserved
+        if ( buff->remains() < remains() )
+        {
+          rogue->procs.count_the_odds_wasted->occur();
+        }
+        else if ( buff->remains() > remains() )
+        {
+          count_the_odds_states.push_back( { buff, buff->remains() } );
+        }
       }
     }
   }
@@ -5761,6 +5773,7 @@ struct roll_the_bones_t : public buff_t
       return;
 
     // 2021-03-08 -- 9.0.5: If the same roll as an existing partial buff is in the result, the partial buff is lost
+    // 2022-06-09 -- TOCHECK: This may be the cause of odd reroll behavior, need to investgate
     for ( auto &state : count_the_odds_states )
     {
       if ( !state.buff->check() )
@@ -5863,7 +5876,7 @@ struct roll_the_bones_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    // 2020-11-21-- Count the Odds buffs are kept if rerolling can be overwritten
+    // 2020-11-21 -- Count the Odds buffs are kept if rerolling in some situations
     count_the_odds_expire( true );
 
     buff_t::execute( stacks, value, duration );
@@ -8386,7 +8399,8 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
 
-  procs.count_the_odds      = get_proc( "Count the Odds"               );
+  procs.count_the_odds          = get_proc( "Count the Odds"           );
+  procs.count_the_odds_wasted   = get_proc( "Count the Odds Wasted"    );
 
   procs.duskwalker_patch    = get_proc( "Duskwalker Patch"             );
 
