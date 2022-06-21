@@ -1246,13 +1246,18 @@ public:
   /// Start-of-combat effects
   using combat_begin_fn_t = std::function<void(player_t*)>;
   std::vector<combat_begin_fn_t> combat_begin_functions;
+  std::vector<combat_begin_fn_t> precombat_begin_functions;
 
   /// Register a buff that triggers at the beginning of combat
   void register_combat_begin( buff_t* b );
+  /// Register a buff that triggers at the beginning of precombat
+  void register_precombat_begin( buff_t* b );
   /// Register an action that triggers at the beginning of combat
   void register_combat_begin( action_t* a );
   /// Register a custom function that triggers at the beginning of combat
   void register_combat_begin( const combat_begin_fn_t& fn );
+  /// Register a custom function that triggers at the beginning of precombat
+  void register_precombat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 
