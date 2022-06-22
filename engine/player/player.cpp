@@ -3128,7 +3128,7 @@ void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value,
   if ( !buff->allow_precombat )
     throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
 
-  register_combat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
+  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
 }
 
 void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
@@ -3142,7 +3142,7 @@ void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration
   if ( action->cooldown != cd )
     action = nullptr;
 
-  register_combat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
+  register_precombat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
 }
 
 /// Called in every action constructor for all actions constructred for a player
@@ -4849,6 +4849,12 @@ void player_t::combat_begin()
   }
 
   init_resources( true );
+
+  // Trigger registered pre-pull functions
+  for ( const auto& f : precombat_begin_functions )
+  {
+    f( this );
+  }
 
   // Execute pre-combat actions
   if ( !is_pet() && !is_add() )
@@ -13423,6 +13429,11 @@ void player_t::register_combat_begin( buff_t* b )
   combat_begin_functions.emplace_back([ b ]( player_t* ) { b -> trigger(); } );
 }
 
+void player_t::register_precombat_begin( buff_t* b )
+{
+  precombat_begin_functions.emplace_back( [ b ]( player_t* ) { b->trigger(); } );
+}
+
 void player_t::register_combat_begin( action_t* a )
 {
   combat_begin_functions.emplace_back([ a ]( player_t* ) { a -> execute(); } );
@@ -13431,6 +13442,11 @@ void player_t::register_combat_begin( action_t* a )
 void player_t::register_combat_begin( const combat_begin_fn_t& fn )
 {
   combat_begin_functions.push_back( fn );
+}
+
+void player_t::register_precombat_begin( const combat_begin_fn_t& fn )
+{
+  precombat_begin_functions.push_back( fn );
 }
 
 void player_t::register_combat_begin( double amount, resource_e resource, gain_t* g )
