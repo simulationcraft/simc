@@ -6372,7 +6372,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.serenity                = get_cooldown( "serenity" );
 
   // Covenants
-  cooldown.weapons_of_order = get_cooldown( "weapnos_of_order" );
+  cooldown.weapons_of_order = get_cooldown( "weapons_of_order" );
   cooldown.bonedust_brew    = get_cooldown( "bonedust_brew" );
   cooldown.faeline_stomp    = get_cooldown( "faeline_stomp" );
   cooldown.fallen_order     = get_cooldown( "fallen_order" );
