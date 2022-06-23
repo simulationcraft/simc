@@ -11571,6 +11571,8 @@ void player_t::copy_from( player_t* source )
   temporary_enchant_str = source->temporary_enchant_str;
 
   external_buffs = source->external_buffs;
+
+  antumbra = source->antumbra;
 }
 
 void player_t::create_options()
