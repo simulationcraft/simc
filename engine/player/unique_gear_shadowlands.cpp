@@ -4387,7 +4387,7 @@ struct singularity_supreme_t : public stat_buff_t
 
 void singularity_supreme( special_effect_t& effect )
 {
-  // despite spell data proc flags, logs seem to show it only procs on damage spell casts
+  // logs seem to show it only procs on damage spell casts
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
 
   auto singularity_buff = new singularity_supreme_t( effect.player, effect.item );
