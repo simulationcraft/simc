@@ -1769,11 +1769,14 @@ void infernal_t::arise()
 {
   warlock_pet_t::arise();
 
-  buffs.embers->trigger();
-  immolation->trigger();
+  // TODO: Work out a more precise timing on this, this seems to be about correct from logs.
+  make_event( *sim, timespan_t::from_seconds( 1.2 ), [ this ] {
+    buffs.embers->trigger();
+    immolation->trigger();
 
-  melee_attack->set_target( target );
-  melee_attack->schedule_execute();
+    melee_attack->set_target( target );
+    melee_attack->schedule_execute();
+  } );
 }
 
 void infernal_t::demise()
