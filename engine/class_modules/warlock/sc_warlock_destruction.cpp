@@ -742,11 +742,6 @@ struct chaos_bolt_t : public destruction_spell_t
             p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
           }
 
-          if ( p()->talents.rain_of_chaos->ok() )
-          {
-            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
-          }
-
           // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
           // This will require first fixing Infernal Awakening to properly be on Infernal pet
           p()->warlock_pet_list.blasphemy.active_pet()->blasphemous_existence->execute();
