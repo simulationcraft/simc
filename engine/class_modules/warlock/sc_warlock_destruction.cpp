@@ -861,7 +861,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
       if ( p()->talents.inferno && result_is_hit( s->result ) )
       {
-        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
+        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
         {
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
         }
