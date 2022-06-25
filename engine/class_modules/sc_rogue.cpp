@@ -7897,17 +7897,34 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
   resource_e r = util::parse_resource_type( splits[ 0 ] );
   if ( r == RESOURCE_ENERGY )
   {
-    // Custom Rogue Energy Regen Functions
-    // Handles things that are outside of the normal resource_regen_per_second flow
-    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
-                                 splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" ) )
+    // Custom Rogue Energy Deficit
+    // Ignores temporary energy max when calculating the current deficit
+    if ( splits.size() == 2 && ( splits[ 1 ] == "base_deficit" ) )
     {
-      bool regen = ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" );
-      bool combined = ( splits[ 1 ] == "regen_combined" || splits[ 1 ] == "time_to_max_combined" );
+      return make_fn_expr( name_str, [this] {
+        return std::max( resources.max[ RESOURCE_ENERGY ] -
+                         resources.current[ RESOURCE_ENERGY ] -
+                         resources.temporary[ RESOURCE_ENERGY ], 0.0 );
+      } );
+    }
+    // Custom Rogue Energy Regen Functions
+    // Optionally handles things that are outside of the normal resource_regen_per_second flow
+    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
+                                 splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" || 
+                                 splits[ 1 ] == "base_time_to_max" || splits[ 1 ] == "base_time_to_max_combined" ) )
+    {
+      const bool regen = util::str_prefix_ci( splits[ 1 ], "regen" );
+      const bool combined = util::str_in_str_ci( splits[ 1 ], "_combined" );
+      const bool base_max = util::str_prefix_ci( splits[ 1 ], "base" );
 
-      return make_fn_expr( name_str, [ this, regen, combined ] {
-        const double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
+      return make_fn_expr( name_str, [ this, regen, combined, base_max] {
+        double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
         double energy_regen_per_second = resource_regen_per_second( RESOURCE_ENERGY );
+
+        if ( base_max )
+        {
+          energy_deficit = std::max( energy_deficit - resources.temporary[ RESOURCE_ENERGY ], 0.0 );
+        }
 
         if ( buffs.adrenaline_rush->check() )
         {
