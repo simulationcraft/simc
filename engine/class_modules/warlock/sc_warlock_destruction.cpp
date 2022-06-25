@@ -1066,15 +1066,11 @@ struct soul_fire_t : public destruction_spell_t
     immolate->base_dd_multiplier *= 0.0;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    destruction_spell_t::impact( s );
+    destruction_spell_t::execute();
 
-    if ( result_is_hit( s->result ) )
-    {
-      immolate->set_target( s->target );
-      immolate->execute();
-    }
+    immolate->execute_on_target( target );
   }
 };
 
