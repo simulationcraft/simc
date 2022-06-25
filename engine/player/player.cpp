@@ -11577,6 +11577,8 @@ void player_t::copy_from( player_t* source )
   temporary_enchant_str = source->temporary_enchant_str;
 
   external_buffs = source->external_buffs;
+
+  antumbra = source->antumbra;
 }
 
 void player_t::create_options()
@@ -11738,6 +11740,15 @@ void player_t::create_options()
   add_option( opt_bool( "infinite_rage", resources.infinite_resource[ RESOURCE_RAGE ] ) );
   add_option( opt_bool( "infinite_runic", resources.infinite_resource[ RESOURCE_RUNIC_POWER ] ) );
   add_option( opt_bool( "infinite_astral_power", resources.infinite_resource[ RESOURCE_ASTRAL_POWER ] ) );
+
+  // Rygelon Dagger / Antumbra
+  add_option( opt_bool( "antumbra.swap", antumbra.swap ) );
+  add_option( opt_float( "antumbra.int_diff", antumbra.int_diff ) );
+  add_option( opt_float( "antumbra.crit_diff", antumbra.crit_diff ) );
+  add_option( opt_float( "antumbra.haste_diff", antumbra.haste_diff ) );
+  add_option( opt_float( "antumbra.mastery_diff", antumbra.mastery_diff ) );
+  add_option( opt_float( "antumbra.vers_diff", antumbra.vers_diff ) );
+  add_option( opt_float( "antumbra.stam_diff", antumbra.stam_diff ) );
 
   // Resources
   add_option( opt_func( "initial_resource", parse_initial_resource ) );
