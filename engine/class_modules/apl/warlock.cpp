@@ -4,27 +4,27 @@
 #include "player/player.hpp"
 
 namespace warlock_apl{
-  std::string potion( player_t* p )
+  std::string potion( const player_t* p )
   {
     return ( p->true_level >= 60 ) ? "spectral_intellect" : "disabled";
   }
 
-  std::string flask( player_t* p )
+  std::string flask( const player_t* p )
   {
     return ( p->true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
   }
 
-  std::string food( player_t* p )
+  std::string food( const player_t* p )
   {
     return ( p->true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
   }
 
-  std::string rune( player_t* p )
+  std::string rune( const player_t* p )
   {
     return ( p->true_level >= 60 ) ? "veiled" : "disabled";
   }
 
-  std::string temporary_enchant( player_t* p )
+  std::string temporary_enchant( const player_t* p )
   {
     return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
   }
