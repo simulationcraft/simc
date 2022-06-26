@@ -1370,12 +1370,20 @@ void warlock_t::init_action_list()
   {
     clear_action_priority_lists();
 
-    if ( specialization() == WARLOCK_AFFLICTION )
-      create_apl_affliction();
-    else if ( specialization() == WARLOCK_DEMONOLOGY )
-      create_apl_demonology();
-    else if ( specialization() == WARLOCK_DESTRUCTION )
-      create_apl_destruction();
+    switch ( specialization() )
+    {
+    case WARLOCK_AFFLICTION:
+      warlock_apl::affliction( this );
+      break;
+    case WARLOCK_DEMONOLOGY:
+      warlock_apl::demonology( this );
+      break;
+    case WARLOCK_DESTRUCTION:
+      warlock_apl::destruction( this );
+      break;
+    default:
+      break;
+    }
 
     use_default_action_list = true;
   }
