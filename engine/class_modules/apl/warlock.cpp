@@ -262,7 +262,7 @@ void demonology( player_t* p )
 {
   action_priority_list_t* default_ = p->get_action_priority_list( "default" );
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
-  action_priority_list_t* 5y_per_sec_trinkets = p->get_action_priority_list( "5y_per_sec_trinkets" );
+  action_priority_list_t* slow_trinkets = p->get_action_priority_list( "slow_trinkets" );
   action_priority_list_t* covenant_ability = p->get_action_priority_list( "covenant_ability" );
   action_priority_list_t* hp_trinks = p->get_action_priority_list( "hp_trinks" );
   action_priority_list_t* ogcd = p->get_action_priority_list( "ogcd" );
@@ -339,9 +339,9 @@ void demonology( player_t* p )
   default_->add_action( "doom,cycle_targets=1,if=refreshable&time>variable.first_tyrant_time" );
   default_->add_action( "shadow_bolt" );
 
-  5y_per_sec_trinkets->add_action( "use_item,name=soulletting_ruby,target_if=min:target.health.pct,if=variable.buff_sync_cd<target.distance%5-(2*gcd.max*variable.use_bolt_timings)" );
-  5y_per_sec_trinkets->add_action( "use_item,name=sunblood_amethyst,if=variable.buff_sync_cd<target.distance%5+(2*variable.use_bolt_timings)" );
-  5y_per_sec_trinkets->add_action( "use_item,name=empyreal_ordnance,if=variable.buff_sync_cd<(target.distance%5)+12+(2*variable.use_bolt_timings)" );
+  slow_trinkets->add_action( "use_item,name=soulletting_ruby,target_if=min:target.health.pct,if=variable.buff_sync_cd<target.distance%5-(2*gcd.max*variable.use_bolt_timings)" );
+  slow_trinkets->add_action( "use_item,name=sunblood_amethyst,if=variable.buff_sync_cd<target.distance%5+(2*variable.use_bolt_timings)" );
+  slow_trinkets->add_action( "use_item,name=empyreal_ordnance,if=variable.buff_sync_cd<(target.distance%5)+12+(2*variable.use_bolt_timings)" );
 
   covenant_ability->add_action( "soul_rot,if=(soulbind.field_of_blossoms|runeforge.decaying_soul_satchel)&pet.demonic_tyrant.active" );
   covenant_ability->add_action( "soul_rot,if=soulbind.grove_invigoration&!runeforge.decaying_soul_satchel&(variable.next_tyrant_cd<20|variable.next_tyrant_cd>30)" );
@@ -388,7 +388,7 @@ void demonology( player_t* p )
   trinkets->add_action( "use_item,name=moonlit_prism,if=variable.use_bolt_timings&pet.demonic_tyrant.active" );
   trinkets->add_action( "use_item,name=grim_eclipse,if=variable.buff_sync_cd<7" );
   trinkets->add_action( "call_action_list,name=hp_trinks,if=talent.demonic_consumption.enabled&variable.next_tyrant_cd<20" );
-  trinkets->add_action( "call_action_list,name=5y_per_sec_trinkets", "Effects that travel slowly from the target require additional, separate handling" );
+  trinkets->add_action( "call_action_list,name=slow_trinkets", "Effects that travel slowly from the target require additional, separate handling" );
   trinkets->add_action( "use_item,name=overflowing_anima_cage,if=variable.use_buff_trinkets" );
   trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&variable.use_buff_trinkets" );
   trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&variable.use_buff_trinkets" );
