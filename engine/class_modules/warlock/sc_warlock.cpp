@@ -1364,23 +1364,18 @@ void warlock_t::init_assessors()
   }
 }
 
-void warlock_t::apl_default()
-{
-  if ( specialization() == WARLOCK_AFFLICTION )
-    create_apl_affliction();
-  else if ( specialization() == WARLOCK_DEMONOLOGY )
-    create_apl_demonology();
-  else if ( specialization() == WARLOCK_DESTRUCTION )
-    create_apl_destruction();
-}
-
 void warlock_t::init_action_list()
 {
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
 
-    apl_default();
+    if ( specialization() == WARLOCK_AFFLICTION )
+      create_apl_affliction();
+    else if ( specialization() == WARLOCK_DEMONOLOGY )
+      create_apl_demonology();
+    else if ( specialization() == WARLOCK_DESTRUCTION )
+      create_apl_destruction();
 
     use_default_action_list = true;
   }

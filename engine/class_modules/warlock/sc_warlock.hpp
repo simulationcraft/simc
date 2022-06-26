@@ -622,9 +622,6 @@ public:
   pet_t* create_demo_pet( util::string_view pet_name, util::string_view pet_type );
   void create_all_pets();
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
-
-private:
-  void apl_default();
 };
 
 namespace actions
