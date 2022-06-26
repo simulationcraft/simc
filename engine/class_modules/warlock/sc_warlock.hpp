@@ -624,7 +624,6 @@ public:
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
 
 private:
-  void apl_precombat();
   void apl_default();
 };
 
