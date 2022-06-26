@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971, git build shadowlands 67a0388541)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -3200,7 +3200,7 @@ Effects          :
                    Affected Spells: Mindgames (323673)
                    Family Flags: 84
 #10 (id=914765)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Mindgames (323673)
                    Family Flags: 84
 Description      : Holy Priest core passive

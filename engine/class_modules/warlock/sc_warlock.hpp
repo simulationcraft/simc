@@ -3,6 +3,7 @@
 
 #include "player/pet_spawner.hpp"
 #include "sc_warlock_pets.hpp"
+#include "class_modules/apl/warlock.hpp"
 
 namespace warlock
 {
@@ -559,11 +560,11 @@ public:
   void combat_begin() override;
   void init_assessors() override;
   std::unique_ptr<expr_t> create_expression( util::string_view name_str ) override;
-  std::string default_potion() const override;
-  std::string default_flask() const override;
-  std::string default_food() const override;
-  std::string default_rune() const override;
-  std::string default_temporary_enchant() const override;
+  std::string default_potion() const override { return warlock_apl::potion( this ); }
+  std::string default_flask() const override { return warlock_apl::flask( this ); }
+  std::string default_food() const override { return warlock_apl::food( this ); }
+  std::string default_rune() const override { return warlock_apl::rune( this ); }
+  std::string default_temporary_enchant() const override { return warlock_apl::temporary_enchant( this ); }
   void apply_affecting_auras( action_t& action ) override;
 
   target_specific_t<warlock_td_t> target_data;
@@ -593,8 +594,6 @@ public:
   void init_gains_affliction();
   void init_rng_affliction();
   void init_procs_affliction();
-  void create_options_affliction();
-  void create_apl_affliction();
 
   // sc_warlock_demonology
   action_t* create_action_demonology( util::string_view, util::string_view );
@@ -603,8 +602,6 @@ public:
   void init_gains_demonology();
   void init_rng_demonology();
   void init_procs_demonology();
-  void create_options_demonology();
-  void create_apl_demonology();
 
   // sc_warlock_destruction
   action_t* create_action_destruction( util::string_view, util::string_view );
@@ -613,19 +610,12 @@ public:
   void init_gains_destruction();
   void init_rng_destruction();
   void init_procs_destruction();
-  void create_options_destruction();
-  void create_apl_destruction();
 
   // sc_warlock_pets
   pet_t* create_main_pet( util::string_view pet_name, util::string_view pet_type );
   pet_t* create_demo_pet( util::string_view pet_name, util::string_view pet_type );
   void create_all_pets();
   std::unique_ptr<expr_t> create_pet_expression( util::string_view name_str );
-
-private:
-  void apl_precombat();
-  void apl_default();
-  void apl_global_filler();
 };
 
 namespace actions

@@ -75,7 +75,7 @@ void beast_mastery( player_t* p )
 
   cleave->add_action( "aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
   cleave->add_action( "barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers" );
-  cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25" );
+  cleave->add_action( "multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25|buff.killing_frenzy.up&pet.main.buff.beast_cleave.remains<2" );
   cleave->add_action( "kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up" );
   cleave->add_action( "flayed_shot,if=runeforge.pouch_of_razor_fragments" );
   cleave->add_action( "tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd" );
@@ -306,6 +306,7 @@ void survival( player_t* p )
 
   st -> add_action( "death_chakram,if=focus+cast_regen<focus.max&(!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<5)|raid_event.adds.up&raid_event.adds.remains>40" );
   st -> add_action( "serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&(!dot.pheromone_bomb.ticking|buff.mad_bombardier.up&next_wi_bomb.pheromone)|buff.vipers_venom.up&buff.vipers_venom.remains<gcd|!set_bonus.tier28_2pc&!dot.serpent_sting.ticking&target.time_to_die>7" );
+  st -> add_action( "raptor_strike,target_if=max:debuff.latent_poison_injection.stack,if=(buff.tip_of_the_spear.stack=3&(!dot.pheromone_bomb.ticking|buff.mad_bombardier.up&next_wi_bomb.pheromone))|next_wi_bomb.pheromone&buff.tip_of_the_spear.stack=3&(cooldown.wildfire_bomb.full_recharge_time<2*gcd|buff.mad_bombardier.up)" );
   st -> add_action( "flayed_shot" );
   st -> add_action( "kill_shot,if=buff.flayers_mark.up" );
   st -> add_action( "resonating_arrow,if=!raid_event.adds.exists|!raid_event.adds.up&(raid_event.adds.duration+raid_event.adds.in<20|raid_event.adds.count=1)|raid_event.adds.up&raid_event.adds.remains>40|time_to_die<10" );

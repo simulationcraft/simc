@@ -392,16 +392,20 @@ void windwalker( player_t* p )
 
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures" );
   pre->add_action( "fleshcraft" );
+  pre->add_action( p, "Expel Harm", "if=chi<chi.max" );
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
   action_priority_list_t* def              = p->get_action_priority_list( "default" );
   action_priority_list_t* opener           = p->get_action_priority_list( "opener" );
+  action_priority_list_t* spend_energy     = p->get_action_priority_list( "spend_energy" );
+  action_priority_list_t* bdb_setup        = p->get_action_priority_list( "bdb_setup" );
   action_priority_list_t* cd_sef           = p->get_action_priority_list( "cd_sef" );
   action_priority_list_t* cd_serenity      = p->get_action_priority_list( "cd_serenity" );
   action_priority_list_t* serenity         = p->get_action_priority_list( "serenity" );
   action_priority_list_t* weapons_of_order = p->get_action_priority_list( "weapons_of_order" );
+  action_priority_list_t* bonedust         = p->get_action_priority_list( "bonedust" );
   action_priority_list_t* aoe              = p->get_action_priority_list( "aoe" );
   action_priority_list_t* st               = p->get_action_priority_list( "st" );
 
@@ -411,6 +415,14 @@ void windwalker( player_t* p )
       "variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))" );
   def->add_action(
       "variable,name=hold_sef,op=set,value=cooldown.bonedust_brew.up&cooldown.storm_earth_and_fire.charges<2&chi<3|buff.bonedust_brew.remains<8" );
+  def->add_action(
+      "variable,name=max_stacks,op=set,value=active_enemies<3|spinning_crane_kick.count>=active_enemies|spinning_crane_kick.count=5" );
+  def->add_action(
+      "variable,name=skip_setup,value=soulbind.carvers_eye|!conduit.calculated_strikes|!talent.whirling_dragon_punch|fight_remains<20" ); 
+  def->add_action(
+      "variable,name=badge_ready,value=cooldown.cosmic_gladiators_badge_of_ferocity.up|cooldown.cosmic_gladiators_badge_of_ferocity.remains>5|!equipped.cosmic_gladiators_badge_of_ferocity" );
+
+  def->add_action( "storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled&variable.max_stacks" );
 
   if ( p->sim->allow_potions )
   {
@@ -423,21 +435,19 @@ void windwalker( player_t* p )
 
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
   def->add_action( "call_action_list,name=weapons_of_order,if=buff.weapons_of_order.up" );
-  def->add_action( p, "faeline_stomp", "if=combo_strike&(raid_event.adds.in>10|active_enemies>2)&(runeforge.faeline_harmony|soulbind.grove_invigoration|active_enemies<3&buff.storm_earth_and_fire.down)" );
   if ( monk->spec.invoke_xuen->ok() )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active" );
   else
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5" );
-  def->add_talent( p, "Fist of the White Tiger",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!debuff.bonedust_brew_debuff.up" );
-  def->add_action( p, "Expel Harm",
-                   "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.bonedust_brew.up" );
-  def->add_action( p, "Tiger Palm",
-                   "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!debuff.bonedust_brew_debuff.up" );
-  def->add_talent( p, "Chi Burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains>25&(chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2)" );
+  def->add_action( "faeline_stomp,if=combo_strike" );
+  
+  def->add_action( "call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up" );
+
+  def->add_talent( p, "Chi Burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up" );
   def->add_talent( p, "Energizing Elixir", "if=prev_gcd.1.tiger_palm&chi<4" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
+  def->add_action( "call_action_list,name=bonedust,if=buff.bonedust_brew.up" );
   def->add_action( "call_action_list,name=st,if=active_enemies<3" );
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
@@ -452,16 +462,36 @@ void windwalker( player_t* p )
   opener->add_action( p, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=2" );
 
+  // Spend Energy
+  spend_energy->add_talent( p, "Fist of the White Tiger",
+                            "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy" );
+  spend_energy->add_action( p, "Expel Harm", "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&(!buff.bonedust_brew.up|buff.bloodlust.up|buff.invokers_delight.up)&!cap_energy" );
+  spend_energy->add_action( p, "Tiger Palm",
+                   "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy" );
+
+  // Bonedust Brew Setup
+  bdb_setup->add_action( "bonedust_brew,if=active_enemies<3&chi>=3&variable.max_stacks|active_enemies>=3&(variable.skip_setup&variable.max_stacks|cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains>=2)&chi>=4" );
+  bdb_setup->add_action( p, "Rising Sun Kick",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5&variable.skip_setup" );
+  bdb_setup->add_action( p, "Fists of Fury",
+      "target_if=max:target.time_to_die,if=chi>=5&active_enemies>=3&!variable.skip_setup" );
+  bdb_setup->add_action(p, "Tiger Palm",
+      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&active_enemies>=2" );
+  bdb_setup->add_action(p, "Rising Sun Kick", 
+      "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains&active_enemies>=2" );
+
   // AoE
-  aoe->add_talent( p, "Whirling Dragon Punch" );
-  aoe->add_action( p, "Spinning Crane Kick", "if=combo_strike&(buff.dance_of_chiji.up|debuff.bonedust_brew_debuff.up)" );
-  aoe->add_action( p, "Fists of Fury", "if=energy.time_to_max>execute_time|chi.max-chi<=1" );
+  aoe->add_talent( p, "Whirling Dragon Punch", "if=(buff.primordial_potential.stack<9|cooldown.rising_sun_kick.remains<2*gcd)&(!covenant.necrolord|!buff.bonedust_brew.up&cooldown.bonedust_brew.remains>cooldown.fists_of_fury.remains)" );
+  aoe->add_action( p, "Fists of Fury",
+                   "target_if=max:target.time_to_die,if=buff.first_strike.up&!buff.dance_of_chiji.up" );
+  aoe->add_action( p, "Spinning Crane Kick", "if=combo_strike&buff.dance_of_chiji.up&(!covenant.necrolord|cooldown.bonedust_brew.remains>buff.dance_of_chiji.remains&cooldown.bonedust_brew.remains>6|fight_remains<10)" );
+  aoe->add_action( p, "Fists of Fury", "target_if=max:target.time_to_die,if=energy.time_to_max>execute_time|chi.max-chi<=1|buff.primordial_power.up" );
   aoe->add_action( p, "Rising Sun Kick",
       "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   aoe->add_talent( p, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
-  aoe->add_talent( p, "Chi Burst", "if=chi.max-chi>=2" );
+  aoe->add_talent( p, "Chi Burst", "if=chi.max-chi>=2&!buff.bonedust_brew.up" );
   aoe->add_action( p, "Crackling Jade Lightning",
                    "if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.fists_of_fury.remains>execute_time" );
   aoe->add_action( p, "Tiger Palm",
@@ -557,7 +587,20 @@ void windwalker( player_t* p )
   cd_serenity->add_action( "fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.serenity.down&buff.bonedust_brew.down" );
  
   // Storm, Earth and Fire Cooldowns
-  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&(!covenant.necrolord|cooldown.bonedust_brew.remains<2)|fight_remains<25" );
+  cd_sef->add_action( p, "Invoke Xuen, the White Tiger", "if=!variable.hold_xuen&covenant.necrolord&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2&(variable.skip_setup|cooldown.fists_of_fury.remains|cooldown.fists_of_fury.up))|fight_remains<25" );
+
+  cd_sef->add_action(
+      p, "Storm, Earth, and Fire",
+      "if=covenant.necrolord&(fight_remains<30&variable.badge_ready&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!variable.max_stacks&active_enemies>=3&cooldown.bonedust_brew.remains<=2&variable.badge_ready&(variable.skip_setup|cooldown.fists_of_fury.remains&(cooldown.rising_sun_kick.up|cooldown.rising_sun_kick.remains))&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)" );
+
+  cd_sef->add_action( "bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&variable.max_stacks)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&variable.max_stacks&chi>=4)|fight_remains<10&soulbind.lead_by_example" );
+ 
+  cd_sef->add_action(
+      "call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&covenant.necrolord&variable.badge_ready&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))" );
+
+  cd_sef->add_action( p, "Invoke Xuen, the White Tiger",
+                      "if=!variable.hold_xuen&!covenant.necrolord&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&chi>=3" );
+
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Death",
@@ -570,17 +613,9 @@ void windwalker( player_t* p )
   // Storm, Earth, and Fire Covenant Abilities
   cd_sef->add_action(
       "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)|fight_remains<35" );
-  cd_sef->add_action( "faeline_stomp,if=combo_strike&(raid_event.adds.in>10|raid_event.adds.up)" );
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
-  cd_sef->add_action(
-      "bonedust_brew,if=!buff.bonedust_brew.up&(chi>=2&fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|(chi>=2&fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>fight_remains|buff.storm_earth_and_fire.up))|fight_remains<15)|fight_remains<10&soulbind.lead_by_example" );
-  cd_sef->add_action( "storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled" );
   cd_sef->add_action( p, "Storm, Earth, and Fire",
-      "if=cooldown.storm_earth_and_fire.charges=2|fight_remains<20|(raid_event.adds.remains>15|(!covenant.kyrian&!covenant.necrolord)&((raid_event.adds.in>cooldown.storm_earth_and_fire.full_recharge_time|!raid_event.adds.exists)&(cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|variable.hold_xuen))&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)" );
-  cd_sef->add_action( p, "Storm, Earth, and Fire",
-      "if=covenant.kyrian&(buff.weapons_of_order.up|(fight_remains<cooldown.weapons_of_order.remains|cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12)" );
-  cd_sef->add_action( p, "Storm, Earth, and Fire",
-      "if=covenant.necrolord&(debuff.bonedust_brew_debuff.up&!variable.hold_sef)&debuff.bonedust_brew_debuff.up&(pet.xuen_the_white_tiger.active|variable.hold_xuen|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>30)" );
+      "if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
   // Storm, Earth, and Fire on-use trinkets
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
@@ -624,7 +659,7 @@ void windwalker( player_t* p )
 
   if ( monk->spec.invoke_xuen->ok() )
     cd_sef->add_action( p, "Touch of Karma",
-                        "if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
+                        "target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
   else
     cd_sef->add_action( p, "Touch of Karma", "if=fight_remains>159|variable.hold_xuen" );
 
@@ -671,12 +706,32 @@ void windwalker( player_t* p )
                         "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo" );
   serenity->add_action( p, "Spinning Crane Kick" );
 
+  // Bonedust Brew
+  bonedust->add_action( "whirling_dragon_punch,if=cooldown.rising_sun_kick.remains<2*gcd" );
+  bonedust->add_action(
+      "call_action_list,name=spend_energy,if=active_enemies>=3&prev_gcd.1.spinning_crane_kick&!buff.whirling_dragon_"
+      "punch.up" );
+
+  bonedust->add_action( p, "Spinning Crane Kick","if=combo_strike&buff.dance_of_chiji.up" );
+  bonedust->add_action( p, "Rising Sun Kick",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5&buff.bonedust_brew.remains>gcd*2&spinning_crane_kick.count<4&cooldown.rising_sun_kick.duration>gcd+1&cooldown.fists_of_fury.remains>gcd+1&cooldown.whirling_dragon_punch.remains<1&talent.whirling_dragon_punch&active_enemies<5" );
+  bonedust->add_action( p, "Fists of Fury", 
+      "target_if=max:target.time_to_die,if=active_enemies>=3&(set_bonus.tier28_2pc&debuff.carvers_eye_debuff.up|spinning_crane_kick.count<4|!conduit.calculated_strikes)" );
+  bonedust->add_action( p, "Spinning Crane Kick",
+      "if=active_enemies>=3&(combo_strike|buff.bonedust_brew.remains<2*gcd|(!tp_fill|chi.max-chi<2&conduit.calculated_strikes.enabled&spinning_crane_kick.count>3)&variable.max_stacks)" );
+  bonedust->add_talent( p, "Fist of the White Tiger",
+      "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies>=3&chi.max-chi>=3" );
+  bonedust->add_action( p, "Tiger Palm",
+      "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=active_enemies>=3&chi.max-chi>=2" );
+  bonedust->add_action( p, "Spinning Crane Kick",
+      "if=active_enemies>=3|(combo_strike|!tp_fill|chi.max-chi<2|buff.bonedust_brew.remains<2*gcd)&conduit.calculated_strikes.enabled&spinning_crane_kick.count=5" );
+
   // Weapons of Order
   weapons_of_order->add_action( "call_action_list,name=cd_sef,if=!talent.serenity" );
   weapons_of_order->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
   weapons_of_order->add_action( p, "Rising Sun Kick", "target_if=min:debuff.mark_of_the_crane.remains" );
   weapons_of_order->add_action( p, "Blackout Kick",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up" );
+                                "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up&active_enemies<4" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&buff.dance_of_chiji.up" );
   weapons_of_order->add_action( p, "Fists of Fury", "if=buff.weapons_of_order_ww.up" );
@@ -697,14 +752,18 @@ void windwalker( player_t* p )
 
   // Single Target
   st->add_talent( p, "Whirling Dragon Punch",
-                  "if=(buff.primordial_potential.stack<9|buff.bonedust_brew.remains<cooldown.rising_sun_kick.remains&buff.bonedust_brew.up&pet.xuen_the_white_tiger.active)&(raid_event.adds.in>cooldown.whirling_dragon_punch.duration*0.8|spell_targets>1)" );
+                  "if=buff.primordial_potential.stack<9&(raid_event.adds.in>cooldown.whirling_dragon_punch.duration*0.8|active_enemies>1)" );
   st->add_action( p, "Spinning Crane Kick",
       "if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)" );
   st->add_action(  "fleshcraft,interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down" );
+  st->add_action( p, "Blackout Kick", 
+      "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&spinning_crane_kick.count<3&active_enemies=2&buff.bonedust_brew.down&buff.bok_proc.up" );
   st->add_action( p, "Rising Sun Kick",
                   "target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
   st->add_action( p, "Fists of Fury",
-      "if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|raid_event.adds.up)&(energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains<execute_time+1)|fight_remains<execute_time+1|debuff.bonedust_brew_debuff.up|buff.primordial_power.up" );
+      "target_if=max:target.time_to_die,if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|raid_event.adds.up)&(energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains<execute_time+1)|fight_remains<execute_time+1|debuff.bonedust_brew_debuff.up|buff.primordial_power.up" );
+  st->add_action( p, "Spinning Crane Kick",
+                  "if=combo_strike&buff.bonedust_brew.up&conduit.calculated_strikes.enabled&spell_targets>1&spinning_crane_kick.count>1" );
   st->add_action( p, "Crackling Jade Lightning",
       "if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|cooldown.weapons_of_order.remains<5&covenant.kyrian|fight_remains<5)" );
   st->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );

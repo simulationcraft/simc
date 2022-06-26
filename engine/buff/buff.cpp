@@ -2016,6 +2016,11 @@ void buff_t::extend_duration( player_t* p, timespan_t extra_seconds )
     throw std::runtime_error( fmt::format( "{} attempts to extend asynchronous {}.", *p, *this ) );
   }
 
+  if ( expiration.empty() )
+  {
+    return;
+  }
+
   assert( expiration.size() == 1 );
 
   if ( extra_seconds > timespan_t::zero() )

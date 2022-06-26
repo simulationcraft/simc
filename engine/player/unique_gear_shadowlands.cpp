@@ -4325,35 +4325,130 @@ void cruciform_veinripper(special_effect_t& effect)
   new dbc_proc_callback_t(effect.player, effect);
 }
 
+struct singularity_supreme_t : public stat_buff_t
+{
+  stat_buff_t* supremacy_buff;
+  buff_t* lockout;
+  stat_buff_t* swap_stat_compensation;
+
+  singularity_supreme_t( player_t* p, const item_t* i )
+    : stat_buff_t( p, "singularity_supreme_counter", p->find_spell( 368845 ), i )
+  {
+    lockout = buff_t::find( p, "singularity_supreme_lockout" );
+    if ( !lockout )
+    {
+      lockout = make_buff( p, "singularity_supreme_lockout", p->find_spell( 368865 ) )
+                    ->set_quiet( true )
+                    ->set_can_cancel( false );
+    }
+
+    supremacy_buff = dynamic_cast<stat_buff_t*>( buff_t::find( p, "singularity_supreme" ) );
+    if ( !supremacy_buff )
+    {
+      supremacy_buff = make_buff<stat_buff_t>( p, "singularity_supreme", p->find_spell( 368863 ), i );
+      supremacy_buff->set_can_cancel( false );
+    }
+
+    swap_stat_compensation = dynamic_cast<stat_buff_t*>( buff_t::find( p, "swap_stat_compensation" ) );
+
+    if ( !swap_stat_compensation )
+    {
+      swap_stat_compensation = make_buff<stat_buff_t>( p, "swap_stat_compensation" );
+      swap_stat_compensation->set_name_reporting( "antumbra_swapped_with_other_weapon" );
+      swap_stat_compensation->set_duration( 0_s )->set_can_cancel( false );
+    }
+
+    if ( p->antumbra.swap )
+    {
+      swap_stat_compensation->stats.clear();
+      if ( p->antumbra.int_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_INTELLECT, p->antumbra.int_diff );
+      if ( p->antumbra.crit_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_CRIT_RATING, p->antumbra.crit_diff );
+      if ( p->antumbra.haste_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_HASTE_RATING, p->antumbra.haste_diff );
+      if ( p->antumbra.vers_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_VERSATILITY_RATING, p->antumbra.vers_diff );
+      if ( p->antumbra.mastery_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_MASTERY_RATING, p->antumbra.mastery_diff );
+      if ( p->antumbra.stam_diff != 0.0 )
+        swap_stat_compensation->add_stat( STAT_STAMINA, p->antumbra.stam_diff );
+    }
+
+    set_expire_at_max_stack( true );
+    set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+      if ( b->at_max_stacks() )
+      {
+        lockout->trigger();
+        supremacy_buff->trigger();
+      }
+    } );
+  }
+};
+
 void singularity_supreme( special_effect_t& effect )
 {
-  auto lockout = make_buff( effect.player, "singularity_supreme_lockout", effect.player->find_spell( 368865 ) )
-    ->set_quiet( true );
-
-  auto buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme", effect.player->find_spell( 368863 ), effect.item );
-
-  // despite spell data proc flags, logs seem to show it only procs on damage spell casts
+  // logs seem to show it only procs on damage spell casts
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
-  effect.custom_buff =
-      make_buff<stat_buff_t>( effect.player, "singularity_supreme_counter", effect.player->find_spell( 368845 ), effect.item )
-          ->set_expire_at_max_stack( true )
-          ->set_stack_change_callback( [ lockout, buff ]( buff_t* b, int, int ) {
-            if ( b->at_max_stacks() )
-            {
-              lockout->trigger();
-              buff->trigger();
-            }
-          } );
+
+  auto singularity_buff = new singularity_supreme_t( effect.player, effect.item );
+
+  effect.custom_buff = singularity_buff;
 
   new dbc_proc_callback_t( effect.player, effect );
 
   effect.player->callbacks.register_callback_trigger_function(
       effect.driver()->id(), dbc_proc_callback_t::trigger_fn_type::CONDITION,
-      [ lockout ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
-        return !lockout->check();
+      [ singularity_buff ]( const dbc_proc_callback_t*, action_t*, action_state_t* ) {
+        return !singularity_buff->swap_stat_compensation->check() && !singularity_buff->lockout->check();
       } );
 }
+
+// Action to weapon swap Antumbra
+struct antumbra_swap_t : public action_t
+{
+  singularity_supreme_t* singularity_buff;
+
+  antumbra_swap_t( player_t* p, util::string_view opt ) : action_t( ACTION_OTHER, "antumbra_swap", p )
+  {
+    parse_options( opt );
+    trigger_gcd           = 1500_ms;
+    gcd_type              = gcd_haste_type::NONE;
+    harmful               = false;
+    ignore_false_positive = true;
+  }
+
+  void init_finished() override
+  {
+    action_t::init_finished();
+    singularity_buff = dynamic_cast<singularity_supreme_t*>( buff_t::find( player, "singularity_supreme_counter" ) );
+  }
+
+  void execute() override
+  {
+    if ( !singularity_buff || !player->antumbra.swap )
+      return;
+
+    if ( singularity_buff->swap_stat_compensation->check() )
+    {
+      singularity_buff->swap_stat_compensation->cancel();
+    }
+    else
+    {
+      singularity_buff->swap_stat_compensation->trigger();
+      singularity_buff->supremacy_buff->cancel();
+      singularity_buff->cancel();
+    }
+  }
+
+  bool ready() override
+  {
+    if ( !singularity_buff || !player->antumbra.swap )
+      return false;
+
+    return action_t::ready();
+  }
+};
 
 /** Gavel of the First Arbiter
   367953 driver
@@ -6174,8 +6269,9 @@ void register_special_effects()
 
 action_t* create_action( player_t* player, util::string_view name, util::string_view options )
 {
-  if ( util::str_compare_ci( name, "break_chains_of_domination" ) ) return new items::break_chains_of_domination_t( player, options );
-
+  if ( util::str_compare_ci( name, "break_chains_of_domination" ) )  return new items::break_chains_of_domination_t( player, options );
+  if ( util::str_compare_ci( name, "antumbra_swap" ) )               return new items::antumbra_swap_t( player, options );
+  
   return nullptr;
 }
 

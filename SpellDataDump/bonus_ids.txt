@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.0.42521 Live (hotfix 2022-03-01/42521, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.43971 Live (hotfix 2022-06-01/43971)
 bonus_id={ 1 }, desc={ Heroic }, stats={ 100% Sta [1.5789] }
 bonus_id={ 2 }, desc={ Crafting Material }, quality={ epic }
 bonus_id={ 3 }, suffix={ of Power }, socket={ 2 }, stats={ 100% StrAgiInt [0.5263] }
@@ -4394,3 +4394,20 @@ bonus_id={ 8144 }, quality={ rare }
 bonus_id={ 8145 }, quality={ rare }
 bonus_id={ 8148 }, quality={ epic }
 bonus_id={ 8157 }
+bonus_id={ 8165 }, ilevel={ 5 @plvl 1 - 272 @plvl 60 }
+bonus_id={ 8176 }, suffix={ of the Fireflash }, stats={ 71% Crit [0.5000], 29% Haste [0.2000] }
+bonus_id={ 8177 }, suffix={ of the Fireflash }, stats={ 29% Crit [0.2000], 71% Haste [0.5000] }
+bonus_id={ 8178 }, suffix={ of the Peerless }, stats={ 71% Crit [0.5000], 29% Mastery [0.2000] }
+bonus_id={ 8179 }, suffix={ of the Peerless }, stats={ 29% Crit [0.2000], 71% Mastery [0.5000] }
+bonus_id={ 8180 }, suffix={ of the Quickblade }, stats={ 71% Crit [0.5000], 29% Vers [0.2000] }
+bonus_id={ 8181 }, suffix={ of the Quickblade }, stats={ 29% Crit [0.2000], 71% Vers [0.5000] }
+bonus_id={ 8182 }, suffix={ of the Feverflare }, stats={ 71% Haste [0.5000], 29% Mastery [0.2000] }
+bonus_id={ 8183 }, suffix={ of the Feverflare }, stats={ 29% Haste [0.2000], 71% Mastery [0.5000] }
+bonus_id={ 8184 }, suffix={ of the Aurora }, stats={ 71% Haste [0.5000], 29% Vers [0.2000] }
+bonus_id={ 8185 }, suffix={ of the Aurora }, stats={ 29% Haste [0.2000], 71% Vers [0.5000] }
+bonus_id={ 8186 }, suffix={ of the Harmonious }, stats={ 71% Mastery [0.5000], 29% Vers [0.2000] }
+bonus_id={ 8187 }, suffix={ of the Harmonious }, stats={ 29% Mastery [0.2000], 71% Vers [0.5000] }
+bonus_id={ 8289 }, socket={ 1 }
+bonus_id={ 8402 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 210 @plvl 60 }
+bonus_id={ 8403 }, desc={ Timewarped }, ilevel={ 5 @plvl 1 - 200 @plvl 60 }
+bonus_id={ 8760 }, desc={ Timewarped }, quality={ rare }, ilevel={ 3 @plvl 1 - 236 @plvl 60 }

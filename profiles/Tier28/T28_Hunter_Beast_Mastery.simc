@@ -53,7 +53,7 @@ actions.cds+=/potion,if=buff.aspect_of_the_wild.up|target.time_to_die<26
 
 actions.cleave=aspect_of_the_wild,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2
 actions.cleave+=/barbed_shot,target_if=min:dot.barbed_shot.remains,if=pet.main.buff.frenzy.up&pet.main.buff.frenzy.remains<=gcd|buff.wild_spirits.up&charges_fractional>1.4&runeforge.fragments_of_the_elder_antlers
-actions.cleave+=/multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25
+actions.cleave+=/multishot,if=gcd-pet.main.buff.beast_cleave.remains>0.25|buff.killing_frenzy.up&pet.main.buff.beast_cleave.remains<2
 actions.cleave+=/kill_shot,if=runeforge.pouch_of_razor_fragments&buff.flayers_mark.up
 actions.cleave+=/flayed_shot,if=runeforge.pouch_of_razor_fragments
 actions.cleave+=/tar_trap,if=runeforge.soulforge_embers&tar_trap.remains<gcd&cooldown.flare.remains<gcd

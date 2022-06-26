@@ -1437,11 +1437,8 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
     s << " | AP Coefficient: " << tmp_buffer.data();
   }
 
-  if ( e -> pvp_coeff() != 0 )
-  {
-    snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> pvp_coeff() );
-    s << " | PvP Coefficient: " << tmp_buffer.data();
-  }
+  snprintf( tmp_buffer.data(), tmp_buffer.size(), "%.5f", e -> pvp_coeff() );
+  s << " | PvP Coefficient: " << tmp_buffer.data();
 
   if ( e -> chain_target() != 0 )
     s << " | Chain Multiplier: " << e -> chain_multiplier();

@@ -660,6 +660,17 @@ struct player_t : public actor_t
     const spell_data_t* brush_it_off;
   } racials;
 
+  struct antumbra_t
+  {
+    bool swap           = false;
+    double int_diff     = 0.0;
+    double haste_diff   = 0.0;
+    double crit_diff    = 0.0;
+    double mastery_diff = 0.0;
+    double vers_diff    = 0.0;
+    double stam_diff    = 0.0;
+  } antumbra; // 9.2 Rygelon Dagger
+
   struct passives_t
   {
     double amplification_1;
@@ -1246,13 +1257,18 @@ public:
   /// Start-of-combat effects
   using combat_begin_fn_t = std::function<void(player_t*)>;
   std::vector<combat_begin_fn_t> combat_begin_functions;
+  std::vector<combat_begin_fn_t> precombat_begin_functions;
 
   /// Register a buff that triggers at the beginning of combat
   void register_combat_begin( buff_t* b );
+  /// Register a buff that triggers at the beginning of precombat
+  void register_precombat_begin( buff_t* b );
   /// Register an action that triggers at the beginning of combat
   void register_combat_begin( action_t* a );
   /// Register a custom function that triggers at the beginning of combat
   void register_combat_begin( const combat_begin_fn_t& fn );
+  /// Register a custom function that triggers at the beginning of precombat
+  void register_precombat_begin( const combat_begin_fn_t& fn );
   /// Register a resource gain that triggers at the beginning of combat
   void register_combat_begin( double amount, resource_e resource, gain_t* g = nullptr );
 

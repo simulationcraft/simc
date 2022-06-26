@@ -60,7 +60,7 @@ void arcane( player_t* p )
   precombat->add_action( "arcane_intellect" );
   precombat->add_action( "arcane_familiar" );
   precombat->add_action( "conjure_mana_gem" );
-  precombat->add_action( "variable,name=aoe_target_count,default=-1,op=set,if=variable.aoe_target_count=-1,value=3+(1*covenant.kyrian)" );
+  precombat->add_action( "variable,name=aoe_target_count,default=-1,op=set,if=variable.aoe_target_count=-1,value=3" );
   precombat->add_action( "variable,name=evo_pct,op=reset,default=15" );
   precombat->add_action( "variable,name=prepull_evo,default=-1,op=set,if=variable.prepull_evo=-1,value=1*(runeforge.siphon_storm&(covenant.venthyr|covenant.necrolord|conduit.arcane_prodigy))" );
   precombat->add_action( "variable,name=have_opened,op=set,value=0+(1*active_enemies>=variable.aoe_target_count)" );
@@ -84,6 +84,8 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=aoe_totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=fishing_opener,default=-1,op=set,if=variable.fishing_opener=-1,value=1*(equipped.empyreal_ordnance|(talent.rune_of_power&(talent.arcane_echo|!covenant.kyrian)&(!covenant.necrolord|active_enemies=1|runeforge.siphon_storm)&!covenant.venthyr))|(covenant.venthyr&equipped.moonlit_prism)" );
   precombat->add_action( "variable,name=ap_on_use,op=set,value=equipped.macabre_sheet_music|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.darkmoon_deck_putrescence|equipped.inscrutable_quantum_device|equipped.soulletting_ruby|equipped.sunblood_amethyst|equipped.wakeners_frond|equipped.flame_of_battle" );
+  precombat->add_action( "variable,name=aoe_spark_target_count,op=reset,default=8+(2*runeforge.harmonic_echo)" );
+  precombat->add_action( "variable,name=aoe_spark_target_count,op=max,value=variable.aoe_target_count" );
   precombat->add_action( "snapshot_stats" );
   precombat->add_action( "mirror_image" );
   precombat->add_action( "fleshcraft,if=soulbind.volatile_solvent|soulbind.pustule_eruption" );
@@ -106,8 +108,8 @@ void arcane( player_t* p )
   default_->add_action( "use_items,if=buff.arcane_power.up" );
   default_->add_action( "use_item,name=scars_of_fraternal_strife" );
   default_->add_action( "use_item,effect_name=gladiators_badge,if=buff.arcane_power.up|cooldown.arcane_power.remains>=55&debuff.touch_of_the_magi.up" );
-  default_->add_action( "use_item,name=moonlit_prism,if=covenant.kyrian&cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10" );
-  default_->add_action( "use_item,name=moonlit_prism,if=!covenant.kyrian&cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6&time>30&(!covenant.venthyr|active_enemies<variable.aoe_target_count)" );
+  default_->add_action( "use_item,name=moonlit_prism,if=covenant.kyrian&cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
+  default_->add_action( "use_item,name=moonlit_prism,if=!covenant.kyrian&cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6&time>30&(!covenant.venthyr|active_enemies<variable.aoe_target_count)&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=15&cooldown.touch_of_the_magi.remains<=15" );
   default_->add_action( "use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1" );
@@ -119,7 +121,7 @@ void arcane( player_t* p )
   default_->add_action( "newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking" );
   default_->add_action( "call_action_list,name=calculations" );
   default_->add_action( "call_action_list,name=vaoe,if=covenant.venthyr&runeforge.siphon_storm&talent.arcane_echo&active_enemies>=variable.aoe_target_count" );
-  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=variable.aoe_target_count" );
+  default_->add_action( "call_action_list,name=aoe,if=active_enemies>=variable.aoe_target_count&!(covenant.kyrian&runeforge.arcane_infinity)" );
   default_->add_action( "call_action_list,name=harmony,if=covenant.kyrian&runeforge.arcane_infinity" );
   default_->add_action( "call_action_list,name=fishing_opener,if=variable.have_opened=0&variable.fishing_opener&!(covenant.kyrian&runeforge.arcane_infinity)" );
   default_->add_action( "call_action_list,name=opener,if=variable.have_opened=0&!(covenant.kyrian&runeforge.arcane_infinity)" );
@@ -140,13 +142,14 @@ void arcane( player_t* p )
   calculations->add_action( "variable,name=holding_totm,op=set,value=cooldown.touch_of_the_magi.ready&variable.time_until_ap<20", "We'll delay TotM up to 20sec for AP" );
   calculations->add_action( "variable,name=just_used_spark,op=set,value=(prev_gcd.1.radiant_spark|prev_gcd.2.radiant_spark|prev_gcd.3.radiant_spark)&debuff.radiant_spark_vulnerability.down", "Radiant Spark does not immediately put up the vulnerability debuff so it can be difficult to discern that we're at the zeroth vulnerability stack" );
   calculations->add_action( "variable,name=outside_of_cooldowns,op=set,value=buff.arcane_power.down&buff.rune_of_power.down&debuff.touch_of_the_magi.down&!variable.just_used_spark&debuff.radiant_spark_vulnerability.down" );
-  calculations->add_action( "variable,name=stack_harmony,op=set,value=runeforge.arcane_infinity&((covenant.kyrian&cooldown.radiant_spark.remains<variable.harmony_stack_time))" );
+  calculations->add_action( "variable,name=stack_harmony,op=set,value=runeforge.arcane_infinity&((covenant.kyrian&cooldown.touch_of_the_magi.remains<variable.harmony_stack_time))" );
 
   opener->add_action( "fire_blast,if=runeforge.disciplinary_command&buff.disciplinary_command_frost.up" );
   opener->add_action( "frost_nova,if=runeforge.grisly_icicle&mana.pct>95" );
   opener->add_action( "use_item,name=soulletting_ruby" );
   opener->add_action( "deathborne" );
   opener->add_action( "radiant_spark,if=mana.pct>40" );
+  opener->add_action( "rune_of_power,if=covenant.venthyr" );
   opener->add_action( "mirrors_of_torment" );
   opener->add_action( "shifting_power,if=buff.arcane_power.down&cooldown.arcane_power.remains" );
   opener->add_action( "arcane_orb,if=cooldown.arcane_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
@@ -177,7 +180,7 @@ void arcane( player_t* p )
   fishing_opener->add_action( "arcane_orb,if=cooldown.rune_of_power.ready" );
   fishing_opener->add_action( "arcane_blast,if=cooldown.rune_of_power.ready&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
   fishing_opener->add_action( "mirrors_of_torment,if=time>=5+(1*set_bonus.tier28_4pc)" );
-  fishing_opener->add_action( "use_item,name=moonlit_prism,if=time>6" );
+  fishing_opener->add_action( "use_item,name=moonlit_prism,if=time>6&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
   fishing_opener->add_action( "rune_of_power" );
   fishing_opener->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.clearcasting.stack=buff.clearcasting.max_stack&covenant.venthyr&cooldown.mirrors_of_torment.ready&!variable.empowered_barrage&cooldown.arcane_power.ready", "If we're at max stacks of CC and we haven't used MoT yet, use a stack to prevent munching unless running the Harmony legendary" );
   fishing_opener->add_action( "potion,if=!runeforge.temporal_warp&(!runeforge.siphon_storm|(variable.prepull_evo=1&buff.arcane_charge.stack=buff.arcane_charge.max_stack))", "Normally we pair potion use with AP, but it will last long enough for both the RoP and AP windows unless running the SS or TW legendaries" );
@@ -270,7 +273,6 @@ void arcane( player_t* p )
   aoe->add_action( "fire_blast,if=(runeforge.disciplinary_command&cooldown.buff_disciplinary_command.ready&buff.disciplinary_command_fire.down&prev_gcd.1.frostbolt)|(runeforge.disciplinary_command&time=0)" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remains>30&cooldown.touch_of_the_magi.remains=0&(buff.arcane_charge.stack<=variable.aoe_totm_max_charges&((talent.rune_of_power&cooldown.rune_of_power.remains<=gcd&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|(!talent.rune_of_power&cooldown.arcane_power.remains>variable.totm_max_delay_for_ap)|cooldown.arcane_power.remains<=gcd))" );
   aoe->add_action( "frost_nova,if=runeforge.grisly_icicle&cooldown.arcane_power.remains=0&(((cooldown.touch_of_the_magi.remains>variable.ap_max_delay_for_totm&buff.arcane_charge.stack=buff.arcane_charge.max_stack)|(cooldown.touch_of_the_magi.remains=0&buff.arcane_charge.stack<=variable.aoe_totm_max_charges))&buff.rune_of_power.down)" );
-  aoe->add_action( "arcane_missiles,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_harmony.stack<15&cooldown.radiant_spark.remains<=variable.harmony_stack_time+execute_time&cooldown.touch_of_the_magi.remains<=variable.harmony_stack_time+execute_time+action.radiant_spark.execute_time&cooldown.arcane_power.remains<=variable.harmony_stack_time+execute_time+action.radiant_spark.execute_time+action.touch_of_the_magi.execute_time,chain=1" );
   aoe->add_action( "arcane_missiles,if=covenant.venthyr&runeforge.arcane_infinity&buff.arcane_harmony.stack<15&cooldown.touch_of_the_magi.remains<=variable.harmony_stack_time+execute_time&cooldown.arcane_power.remains<=variable.harmony_stack_time+execute_time+action.touch_of_the_magi.execute_time,chain=1" );
   aoe->add_action( "arcane_blast,if=covenant.venthyr&talent.arcane_echo&time<10&cooldown.mirrors_of_torment.remains&buff.clearcasting.stack<3" );
   aoe->add_action( "use_item,name=soulletting_ruby,if=runeforge.siphon_storm&prev_gcd.1.evocation" );
@@ -296,14 +298,6 @@ void arcane( player_t* p )
   aoe->add_action( "radiant_spark,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&(buff.arcane_charge.stack>=2|cooldown.touch_of_the_magi.remains<=execute_time)" );
   aoe->add_action( "touch_of_the_magi,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&prev_gcd.1.radiant_spark" );
   aoe->add_action( "arcane_power,if=soulbind.effusive_anima_accelerator&runeforge.harmonic_echo&prev_gcd.1.touch_of_the_magi" );
-  aoe->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo&active_enemies<5,line_cd=25" );
-  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4&prev_gcd.1.arcane_orb&active_enemies<7&!runeforge.harmonic_echo" );
-  aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=4" );
-  aoe->add_action( "arcane_blast,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&(dot.radiant_spark.remains>6|debuff.radiant_spark_vulnerability.up)&debuff.radiant_spark_vulnerability.stack<4&active_enemies<5" );
-  aoe->add_action( "arcane_orb,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=3" );
-  aoe->add_action( "arcane_barrage,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=2" );
-  aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&prev_gcd.2.radiant_spark&active_enemies>3" );
-  aoe->add_action( "arcane_explosion,if=covenant.kyrian&runeforge.arcane_infinity&buff.arcane_power.up&debuff.radiant_spark_vulnerability.stack=1&active_enemies>3" );
   aoe->add_action( "arcane_explosion,if=runeforge.harmonic_echo&debuff.radiant_spark_vulnerability.stack=1" );
   aoe->add_action( "arcane_explosion,if=runeforge.harmonic_echo&(prev_gcd.1.radiant_spark|(prev_gcd.2.radiant_spark&debuff.touch_of_the_magi.up))" );
   aoe->add_action( "arcane_orb,if=runeforge.harmonic_echo&debuff.radiant_spark_vulnerability.stack=3" );
@@ -324,7 +318,7 @@ void arcane( player_t* p )
   vaoe->add_action( "rune_of_power,if=time<7" );
   vaoe->add_action( "arcane_orb,if=time<7" );
   vaoe->add_action( "arcane_explosion,if=time<7" );
-  vaoe->add_action( "use_item,name=moonlit_prism,if=prev_gcd.1.mirrors_of_torment" );
+  vaoe->add_action( "use_item,name=moonlit_prism,if=prev_gcd.1.mirrors_of_torment&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
   vaoe->add_action( "evocation,if=cooldown.touch_of_the_magi.remains<=(action.evocation.execute_time+13)&cooldown.arcane_power.remains<=(action.evocation.execute_time+14)" );
   vaoe->add_action( "mirrors_of_torment,if=time>6&cooldown.touch_of_the_magi.remains<=9&buff.siphon_storm.up" );
   vaoe->add_action( "arcane_explosion,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.siphon_storm.remains>20&!debuff.mirrors_of_torment.up" );
@@ -345,7 +339,7 @@ void arcane( player_t* p )
 
   harmony->add_action( "cancel_action,if=action.evocation.channeling&mana.pct>=95" );
   harmony->add_action( "evocation,if=mana.pct<=30&variable.outside_of_cooldowns&(talent.rune_of_power&cooldown.rune_of_power.remains<10)", "If low on mana and cooldowns are coming up, go ahead and evo" );
-  harmony->add_action( "arcane_missiles,if=(variable.stack_harmony|time<10)&buff.arcane_harmony.stack<16,chain=1", "We want to stack harmony fully. The use of 16 stacks here is to account for the tick left on the channel and the missile in flight." );
+  harmony->add_action( "arcane_missiles,if=(variable.stack_harmony|time<10)&buff.arcane_harmony.stack<16&(active_enemies<variable.aoe_spark_target_count|variable.outside_of_cooldowns),chain=1", "We want to stack harmony fully. The use of 16 stacks here is to account for the tick left on the channel and the missile in flight." );
   harmony->add_action( "arcane_missiles,if=equipped.empyreal_ordnance&time<30&cooldown.empyreal_ordnance.remains>168", "When using Empyreal Ordnance, cast a few extra missiles while waiting for the buff at the start of the fight" );
   harmony->add_action( "use_item,name=soulletting_ruby,if=buff.arcane_power.up&target.distance<=10" );
   harmony->add_action( "use_item,name=soulletting_ruby,if=variable.empowered_barrage&cooldown.touch_of_the_magi.remains<=execute_time&cooldown.arcane_power.remains<=(execute_time*2)&target.distance>10" );
@@ -361,7 +355,13 @@ void arcane( player_t* p )
   harmony->add_action( "radiant_spark,if=variable.empowered_barrage&(buff.arcane_charge.stack>=2|cooldown.arcane_orb.ready)&(!talent.rune_of_power|cooldown.rune_of_power.remains>5)&variable.estimated_ap_cooldown>=30&(!conduit.arcane_prodigy|!variable.always_sync_cooldowns)" );
   harmony->add_action( "touch_of_the_magi,if=variable.time_until_ap<50&variable.time_until_ap>30&(!equipped.soulletting_ruby|conduit.arcane_prodigy.rank>=5)", "When running prodigy, use totm by itself in order to align it with ap" );
   harmony->add_action( "arcane_orb,if=variable.just_used_spark&buff.arcane_charge.stack<buff.arcane_charge.max_stack" );
-  harmony->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo&active_enemies>1,line_cd=25", "When using Harmonic Echo, you do not want to queue Arcane Barrage during the Arcane Blast cast" );
+  harmony->add_action( "arcane_orb,if=debuff.radiant_spark_vulnerability.stack=3&active_enemies>=variable.aoe_spark_target_count" );
+  harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=2&active_enemies>=variable.aoe_spark_target_count", "When doing the AoE spark sequence, you will use harmony stacks on the second spark stack to get a second barrage on the fourth" );
+  harmony->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=1&prev_gcd.1.arcane_blast&active_enemies>=variable.aoe_spark_target_count,line_cd=25", "When using Harmonic Echo, you do not want to queue Arcane Barrage during the Arcane Blast cast if there is more than one target" );
+  harmony->add_action( "arcane_blast,if=debuff.radiant_spark_vulnerability.stack=1&runeforge.harmonic_echo&active_enemies>=variable.aoe_spark_target_count", "When using Harmonic Echo, Arcane Blast should be used instead of Arcane Explosion for the first spark stack when doing the AoE spark sequence" );
+  harmony->add_action( "arcane_explosion,if=debuff.radiant_spark_vulnerability.stack=1&active_enemies>=variable.aoe_spark_target_count" );
+  harmony->add_action( "arcane_explosion,if=prev_gcd.2.radiant_spark&active_enemies>=variable.aoe_spark_target_count" );
+  harmony->add_action( "wait,sec=0.04,if=debuff.radiant_spark_vulnerability.stack=(debuff.radiant_spark_vulnerability.max_stack-1)&runeforge.harmonic_echo&active_enemies>1,line_cd=25", "When using Harmonic Echo, you do not want to queue Arcane Barrage during the Arcane Blast cast if there is more than one target" );
   harmony->add_action( "arcane_barrage,if=debuff.radiant_spark_vulnerability.stack=debuff.radiant_spark_vulnerability.max_stack" );
   harmony->add_action( "arcane_blast,if=variable.just_used_spark|(debuff.radiant_spark_vulnerability.up&debuff.radiant_spark_vulnerability.stack<debuff.radiant_spark_vulnerability.max_stack)" );
   harmony->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.arcane_power.down&buff.bloodlust.up&cooldown.radiant_spark.remains<=10&buff.arcane_harmony.stack>=16", "Use mini Barrage between radiant sparks if under BL without delaying Radiant Spark ideally" );
@@ -369,7 +369,10 @@ void arcane( player_t* p )
   harmony->add_action( "arcane_missiles,if=buff.clearcasting.react&buff.arcane_power.up,chain=1" );
   harmony->add_action( "arcane_barrage,if=buff.rune_of_power.up&buff.rune_of_power.remains<=action.arcane_missiles.execute_time&buff.arcane_power.up&buff.arcane_charge.stack=buff.arcane_charge.max_stack&buff.arcane_harmony.stack&buff.power_infusion.up&buff.bloodlust.up", "If we get power infusion during lust we'll have enough haste to get off a strong barrage during the rop/ap window" );
   harmony->add_action( "arcane_blast,if=buff.presence_of_mind.up&(buff.arcane_charge.stack<buff.arcane_charge.max_stack|!(buff.power_infusion.up&buff.bloodlust.up))&!(buff.arcane_charge.stack=0&buff.presence_of_mind.stack=1)", "If we get power infusion during lust we'll have enough haste to get off a strong barrage during the rop/ap window, so we'll only use enough blasts initially to get to four charges" );
-  harmony->add_action( "presence_of_mind,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_power.up", "The best use of pom is to use it to quickly build charges during ap after they get dumped by the harmony barrage" );
+  harmony->add_action( "presence_of_mind,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&buff.arcane_power.up&active_enemies<variable.aoe_target_count", "The best use of pom is to use it to quickly build charges during ap after they get dumped by the harmony barrage" );
+  harmony->add_action( "arcane_missiles,if=buff.clearcasting.react&active_enemies>=variable.aoe_target_count,chain=1", "In AoE situations, CC AM is prioritized over other filler actions" );
+  harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&active_enemies>=variable.aoe_target_count", "In AoE situations, barrage at four charges regardless of harmony stacks" );
+  harmony->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&active_enemies>=variable.aoe_target_count", "Use Arcane Explosion as the filler in AoE situations instead of building harmony stacks with Missiles" );
   harmony->add_action( "arcane_missiles,if=buff.arcane_harmony.stack<16,chain=1,interrupt=1,interrupt_global=1", "We want to stack harmony fully. The use of 16 stacks here is to account for the tick left on the channel and the missile in flight." );
   harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.empowered_barrage" );
   harmony->add_action( "evocation,if=mana.pct<15" );

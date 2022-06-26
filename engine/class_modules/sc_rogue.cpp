@@ -668,6 +668,7 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
+    proc_t* count_the_odds_wasted;
 
     // Legendary
     proc_t* duskwalker_patch;
@@ -2155,7 +2156,7 @@ struct crippling_poison_t : public rogue_poison_t
   struct crippling_poison_proc_t : public rogue_poison_t
   {
     crippling_poison_proc_t( util::string_view name, rogue_t* p ) :
-      rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger() )
+      rogue_poison_t( name, p, p->find_class_spell( "Crippling Poison" )->effectN( 1 ).trigger(), true )
     { }
 
     void impact( action_state_t* state ) override
@@ -5746,11 +5747,22 @@ struct roll_the_bones_t : public buff_t
 
     count_the_odds_states.clear();
 
+    if ( !save_remains )
+      return;
+
     for ( buff_t* buff : buffs )
     {
-      if ( save_remains && buff->check() && buff->remains() != remains() )
+      if ( buff->check() )
       {
-        count_the_odds_states.push_back( { buff, buff->remains() } );
+        // 2022-06-19 -- 9.2.5: Recent testing shows only buffs with longer duration than existing RtB buffs are preserved
+        if ( buff->remains() < remains() )
+        {
+          rogue->procs.count_the_odds_wasted->occur();
+        }
+        else if ( buff->remains() > remains() )
+        {
+          count_the_odds_states.push_back( { buff, buff->remains() } );
+        }
       }
     }
   }
@@ -5761,6 +5773,7 @@ struct roll_the_bones_t : public buff_t
       return;
 
     // 2021-03-08 -- 9.0.5: If the same roll as an existing partial buff is in the result, the partial buff is lost
+    // 2022-06-09 -- TOCHECK: This may be the cause of odd reroll behavior, need to investgate
     for ( auto &state : count_the_odds_states )
     {
       if ( !state.buff->check() )
@@ -5863,7 +5876,7 @@ struct roll_the_bones_t : public buff_t
 
   void execute( int stacks, double value, timespan_t duration ) override
   {
-    // 2020-11-21-- Count the Odds buffs are kept if rerolling can be overwritten
+    // 2020-11-21 -- Count the Odds buffs are kept if rerolling in some situations
     count_the_odds_expire( true );
 
     buff_t::execute( stacks, value, duration );
@@ -7268,7 +7281,7 @@ void rogue_t::init_action_list()
     def->add_action( "call_action_list,name=cds" );
     def->add_action( "run_action_list,name=finish,if=variable.finish_condition" );
     def->add_action( "call_action_list,name=build" );
-    def->add_action( "arcane_torrent,if=energy.deficit>=15+energy.regen" );
+    def->add_action( "arcane_torrent,if=energy.base_deficit>=15+energy.regen" );
     def->add_action( "arcane_pulse" );
     def->add_action( "lights_judgment" );
     def->add_action( "bag_of_tricks" );
@@ -7281,15 +7294,15 @@ void rogue_t::init_action_list()
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
     cds->add_action( this, "Vanish", "if=variable.vanish_ma_condition&master_assassin_remains=0&variable.blade_flurry_sync" );
     cds->add_action( this, "Adrenaline Rush", "if=!buff.adrenaline_rush.up" );
-    cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.time_to_max>2)", "Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry" );
-    cds->add_action( "flagellation,target_if=max:target.time_to_die,if=!stealthed.all&(variable.finish_condition|target.time_to_die<13)" );
+    cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.base_time_to_max>2)", "Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry" );
+    cds->add_action( "flagellation,target_if=max:target.time_to_die,if=!stealthed.all&(variable.finish_condition&target.time_to_die>10|fight_remains<13)" );
     cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=2&(!covenant.venthyr|debuff.flagellation.up)&(!talent.marked_for_death|!cooldown.marked_for_death.ready)" );
     cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1&(!covenant.venthyr|cooldown.flagellation.remains>10|debuff.flagellation.up)", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( "variable,name=killing_spree_vanish_sync,value=!runeforge.mark_of_the_master_assassin|cooldown.vanish.remains>10|master_assassin_remains>2", "Attempt to sync Killing Spree with Vanish for Master Assassin" );
-    cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&variable.killing_spree_vanish_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.deficit>(energy.regen*2+15)|spell_targets.blade_flurry>(2-buff.deathly_shadows.up)|master_assassin_remains>0)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+ (2T+ with Deathly Shadows) or when Master Assassin is up." );
-    cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&(energy.time_to_max>2&!buff.dreadblades.up&!debuff.flagellation.up|energy<=30|spell_targets>2)" );
+    cds->add_talent( this, "Killing Spree", "if=variable.blade_flurry_sync&variable.killing_spree_vanish_sync&!stealthed.rogue&(debuff.between_the_eyes.up&buff.dreadblades.down&energy.base_deficit>(energy.regen*2+15)|spell_targets.blade_flurry>(2-buff.deathly_shadows.up)|master_assassin_remains>0)", "Use in 1-2T if BtE is up and won't cap Energy, or at 3T+ (2T+ with Deathly Shadows) or when Master Assassin is up." );
+    cds->add_talent( this, "Blade Rush", "if=variable.blade_flurry_sync&(energy.base_time_to_max>2&!buff.dreadblades.up&!debuff.flagellation.up|energy<=30|spell_targets>2)" );
     cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!debuff.flagellation.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
     cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
 
@@ -7327,9 +7340,9 @@ void rogue_t::init_action_list()
     build->add_action( "echoing_reprimand,if=!soulbind.effusive_anima_accelerator|variable.blade_flurry_sync" );
     build->add_action( "serrated_bone_spike,if=!dot.serrated_bone_spike_dot.ticking", "Apply SBS to all targets without a debuff as priority, preferring targets dying sooner after the primary target" );
     build->add_action( "serrated_bone_spike,target_if=min:target.time_to_die+(dot.serrated_bone_spike_dot.ticking*600),if=!dot.serrated_bone_spike_dot.ticking" );
-    build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
+    build->add_action( "serrated_bone_spike,if=fight_remains<=5|cooldown.serrated_bone_spike.max_charges-charges_fractional<=0.25|combo_points.deficit=cp_gain&!buff.skull_and_crossbones.up&energy.base_time_to_max>1", "Attempt to use when it will cap combo points and SnD is down, otherwise keep from capping charges" );
     build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(buff.greenskins_wickers.up|buff.concealed_blunderbuss.up|buff.tornado_trigger.up)" );
-    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy.deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw" );
+    build->add_action( this, "Pistol Shot", "if=buff.opportunity.up&(energy.base_deficit>energy.regen*1.5|!talent.weaponmaster&combo_points.deficit<=1+buff.broadside.up|talent.quick_draw.enabled)", "Use Pistol Shot with Opportunity if Combat Potency won't overcap energy, when it will exactly cap CP, or when using Quick Draw" );
     build->add_action( this, "Sinister Strike", "target_if=min:dot.vicious_wound.remains,if=buff.acquired_axe_driver.up", "Use Sinister Strike on targets without the Cache DoT if the trinket is up" );
     build->add_action( this, "Sinister Strike" );
   }
@@ -7884,17 +7897,34 @@ std::unique_ptr<expr_t> rogue_t::create_resource_expression( util::string_view n
   resource_e r = util::parse_resource_type( splits[ 0 ] );
   if ( r == RESOURCE_ENERGY )
   {
-    // Custom Rogue Energy Regen Functions
-    // Handles things that are outside of the normal resource_regen_per_second flow
-    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
-                                 splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" ) )
+    // Custom Rogue Energy Deficit
+    // Ignores temporary energy max when calculating the current deficit
+    if ( splits.size() == 2 && ( splits[ 1 ] == "base_deficit" ) )
     {
-      bool regen = ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" );
-      bool combined = ( splits[ 1 ] == "regen_combined" || splits[ 1 ] == "time_to_max_combined" );
+      return make_fn_expr( name_str, [this] {
+        return std::max( resources.max[ RESOURCE_ENERGY ] -
+                         resources.current[ RESOURCE_ENERGY ] -
+                         resources.temporary[ RESOURCE_ENERGY ], 0.0 );
+      } );
+    }
+    // Custom Rogue Energy Regen Functions
+    // Optionally handles things that are outside of the normal resource_regen_per_second flow
+    if ( splits.size() == 2 && ( splits[ 1 ] == "regen" || splits[ 1 ] == "regen_combined" ||
+                                 splits[ 1 ] == "time_to_max" || splits[ 1 ] == "time_to_max_combined" || 
+                                 splits[ 1 ] == "base_time_to_max" || splits[ 1 ] == "base_time_to_max_combined" ) )
+    {
+      const bool regen = util::str_prefix_ci( splits[ 1 ], "regen" );
+      const bool combined = util::str_in_str_ci( splits[ 1 ], "_combined" );
+      const bool base_max = util::str_prefix_ci( splits[ 1 ], "base" );
 
-      return make_fn_expr( name_str, [ this, regen, combined ] {
-        const double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
+      return make_fn_expr( name_str, [ this, regen, combined, base_max] {
+        double energy_deficit = resources.max[ RESOURCE_ENERGY ] - resources.current[ RESOURCE_ENERGY ];
         double energy_regen_per_second = resource_regen_per_second( RESOURCE_ENERGY );
+
+        if ( base_max )
+        {
+          energy_deficit = std::max( energy_deficit - resources.temporary[ RESOURCE_ENERGY ], 0.0 );
+        }
 
         if ( buffs.adrenaline_rush->check() )
         {
@@ -8386,7 +8416,8 @@ void rogue_t::init_procs()
   procs.serrated_bone_spike_waste             = get_proc( "Serrated Bone Spike Refund Wasted" );
   procs.serrated_bone_spike_waste_partial     = get_proc( "Serrated Bone Spike Refund Wasted (Partial)" );
 
-  procs.count_the_odds      = get_proc( "Count the Odds"               );
+  procs.count_the_odds          = get_proc( "Count the Odds"           );
+  procs.count_the_odds_wasted   = get_proc( "Count the Odds Wasted"    );
 
   procs.duskwalker_patch    = get_proc( "Duskwalker Patch"             );
 

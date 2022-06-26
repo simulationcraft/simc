@@ -46,7 +46,7 @@ public:
         if ( p()->rain_of_chaos_rng->trigger() )
         {
           //Currently storing infernal duration (spell 335286) in buff default value
-          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ), 1U);
+          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 2000_ms, 1U); // 2022-06-26 Summoned Infernals appear to have a 2 second pad, likely to offset losses due to inaction on summoning
           p()->procs.rain_of_chaos->occur();
         }
       }
@@ -732,7 +732,7 @@ struct chaos_bolt_t : public destruction_spell_t
         {
           // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
           // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 + 2000_ms; // 2022-06-26 Summoned Infernals appear to have a 2 second pad, likely to offset losses due to inaction on summoning
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
             p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
@@ -740,11 +740,6 @@ struct chaos_bolt_t : public destruction_spell_t
           else
           {
             p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
-          }
-
-          if ( p()->talents.rain_of_chaos->ok() )
-          {
-            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
           }
 
           // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
@@ -811,7 +806,7 @@ struct summon_infernal_t : public destruction_spell_t
     parse_options( options_str );
 
     harmful = may_crit        = false;
-    infernal_duration         = p->find_spell( 111685 )->duration() + 1_ms;
+    infernal_duration         = p->find_spell( 111685 )->duration() + 2000_ms; // 2022-06-26 Summoned Infernals appear to have a 2 second pad, likely to offset losses due to inaction on summoning
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
@@ -866,7 +861,7 @@ struct rain_of_fire_t : public destruction_spell_t
 
       if ( p()->talents.inferno && result_is_hit( s->result ) )
       {
-        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() ) )
+        if ( rng().roll( p()->talents.inferno->effectN( 1 ).percent() * ( 5.0 / std::max(5u, s->n_targets ) ) ) )
         {
           p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.inferno );
         }
@@ -927,11 +922,6 @@ struct rain_of_fire_t : public destruction_spell_t
           else
           {
             p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
-          }
-
-          if ( p()->talents.rain_of_chaos->ok() )
-          {
-            p()->buffs.rain_of_chaos->extend_duration_or_trigger( duration );
           }
 
           // TOFIX: As of 2022-02-03 PTR, Blasphemy appears to trigger Infernal Awakening on spawn, and Blasphemous Existence if already out
@@ -1076,15 +1066,11 @@ struct soul_fire_t : public destruction_spell_t
     immolate->base_dd_multiplier *= 0.0;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    destruction_spell_t::impact( s );
+    destruction_spell_t::execute();
 
-    if ( result_is_hit( s->result ) )
-    {
-      immolate->set_target( s->target );
-      immolate->execute();
-    }
+    immolate->execute_on_target( target );
   }
 };
 
@@ -1276,85 +1262,4 @@ void warlock_t::init_procs_destruction()
   procs.rain_of_chaos = get_proc( "rain_of_chaos" );
 }
 
-void warlock_t::create_options_destruction()
-{
-}
-
-//destruction_apl_start
-void warlock_t::create_apl_destruction()
-{
-  action_priority_list_t* def = get_action_priority_list( "default" );
-  action_priority_list_t* aoe = get_action_priority_list( "aoe" );
-  action_priority_list_t* cds = get_action_priority_list( "cds" );
-  action_priority_list_t* havoc = get_action_priority_list( "havoc" );
-
-  def->add_action( "call_action_list,name=havoc,if=havoc_active&active_enemies>1&active_enemies<5-talent.inferno.enabled+(talent.inferno.enabled&talent.internal_combustion.enabled)" );
-  def->add_action( "fleshcraft,if=soulbind.volatile_solvent,cancel_if=buff.volatile_solvent_humanoid.up" );
-  def->add_action( "conflagrate,if=talent.roaring_blaze.enabled&debuff.roaring_blaze.remains<1.5" );
-  def->add_action( "cataclysm" );
-  def->add_action( "call_action_list,name=aoe,if=active_enemies>2-set_bonus.tier28_4pc" );
-  def->add_action( "soul_fire,cycle_targets=1,if=refreshable&soul_shard<=4&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,cycle_targets=1,if=remains<3&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  def->add_action( "immolate,if=talent.internal_combustion.enabled&action.chaos_bolt.in_flight&remains<duration*0.5" );
-  def->add_action( "chaos_bolt,if=(pet.infernal.active|pet.blasphemy.active)&soul_shard>=4" );
-  def->add_action( "call_action_list,name=cds" );
-  def->add_action( "channel_demonfire" );
-  def->add_action( "scouring_tithe" );
-  def->add_action( "decimating_bolt" );
-  def->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&(dot.immolate.remains>dot.immolate.duration*0.5|!talent.internal_combustion.enabled)" );
-  def->add_action( "impending_catastrophe" );
-  def->add_action( "soul_rot" );
-  def->add_action( "havoc,if=runeforge.odr_shawl_of_the_ymirjar.equipped" );
-  def->add_action( "variable,name=pool_soul_shards,value=active_enemies>1&cooldown.havoc.remains<=10|buff.ritual_of_ruin.up&talent.rain_of_chaos" );
-  def->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1.5-0.3*talent.flashover.enabled&!variable.pool_soul_shards" );
-  def->add_action( "chaos_bolt,if=pet.infernal.active|buff.rain_of_chaos.remains>cast_time" );
-  def->add_action( "chaos_bolt,if=buff.backdraft.up&!variable.pool_soul_shards" );
-  def->add_action( "chaos_bolt,if=talent.eradication&!variable.pool_soul_shards&debuff.eradication.remains<cast_time" );
-  def->add_action( "shadowburn,if=!variable.pool_soul_shards|soul_shard>=4.5" );
-  def->add_action( "chaos_bolt,if=soul_shard>3.5" );
-  def->add_action( "chaos_bolt,if=time_to_die<5&time_to_die>cast_time+travel_time" );
-  def->add_action( "conflagrate,if=charges>1|time_to_die<gcd" );
-  def->add_action( "incinerate" );
-
-  aoe->add_action( "rain_of_fire,if=pet.infernal.active&(!cooldown.havoc.ready|active_enemies>3)" );
-  aoe->add_action( "rain_of_fire,if=set_bonus.tier28_4pc" );
-  aoe->add_action( "soul_rot" );
-  aoe->add_action( "impending_catastrophe" );
-  aoe->add_action( "channel_demonfire,if=dot.immolate.remains>cast_time" );
-  aoe->add_action( "immolate,cycle_targets=1,if=active_enemies<5&remains<5&(!talent.cataclysm.enabled|cooldown.cataclysm.remains>remains)" );
-  aoe->add_action( "call_action_list,name=cds" );
-  aoe->add_action( "havoc,cycle_targets=1,if=!(target=self.target)&active_enemies<4" );
-  aoe->add_action( "rain_of_fire" );
-  aoe->add_action( "havoc,cycle_targets=1,if=!(self.target=target)" );
-  aoe->add_action( "decimating_bolt" );
-  aoe->add_action( "incinerate,if=talent.fire_and_brimstone.enabled&buff.backdraft.up&soul_shard<5-0.2*active_enemies" );
-  aoe->add_action( "soul_fire" );
-  aoe->add_action( "conflagrate,if=buff.backdraft.down" );
-  aoe->add_action( "shadowburn,if=target.health.pct<20" );
-  aoe->add_action( "immolate,if=refreshable");
-  aoe->add_action( "scouring_tithe" );
-  aoe->add_action( "incinerate" );
-
-  cds->add_action( "use_item,name=shadowed_orb_of_torment,if=cooldown.summon_infernal.remains<3|time_to_die<42" );
-  cds->add_action( "summon_infernal" );
-  cds->add_action( "dark_soul_instability,if=pet.infernal.active|cooldown.summon_infernal.remains_expected>time_to_die" );
-  cds->add_action( "potion,if=pet.infernal.active" );
-  cds->add_action( "berserking,if=pet.infernal.active" );
-  cds->add_action( "blood_fury,if=pet.infernal.active" );
-  cds->add_action( "fireblood,if=pet.infernal.active" );
-  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
-  cds->add_action( "use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&pet.infernal.active" );
-  cds->add_action( "use_items,if=pet.infernal.active|time_to_die<21" );
-
-  havoc->add_action( "conflagrate,if=buff.backdraft.down&soul_shard>=1&soul_shard<=4" );
-  havoc->add_action( "soul_fire,if=cast_time<havoc_remains" );
-  havoc->add_action( "decimating_bolt,if=cast_time<havoc_remains&soulbind.lead_by_example.enabled" );
-  havoc->add_action( "scouring_tithe,if=cast_time<havoc_remains" );
-  havoc->add_action( "immolate,if=talent.internal_combustion.enabled&remains<duration*0.5|!talent.internal_combustion.enabled&refreshable" );
-  havoc->add_action( "chaos_bolt,if=cast_time<havoc_remains&!(set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled)" );
-  havoc->add_action( "rain_of_fire,if=set_bonus.tier28_4pc&active_enemies>1&talent.inferno.enabled" );
-  havoc->add_action( "shadowburn" );
-  havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
-}
-//destruction_apl_end
 }  // namespace warlock

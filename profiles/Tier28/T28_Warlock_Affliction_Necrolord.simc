@@ -5,9 +5,9 @@ level=60
 race=mechagnome
 role=spell
 position=ranged_back
-talents=3302023
+talents=3302013
 covenant=necrolord
-soulbind=bonesmith_heirmir,forgeborne_reveries/carvers_eye/mnemonic_equipment/focused_malignancy:11:1/withering_bolt:11:1/heirmirs_arsenal_marrowed_gemstone
+soulbind=plague_deviser_marileth,volatile_solvent/kevins_oozeling/focused_malignancy:11:1/withering_bolt:11:1/fatal_decimation:11:1
 renown=80
 
 # Default consumables
@@ -198,7 +198,7 @@ actions.necro_mw+=/variable,name=trinket_delay,value=cooldown.phantom_singularit
 actions.necro_mw+=/malefic_rapture,if=time_to_die<execute_time*soul_shard&dot.unstable_affliction.ticking
 # Cast haunt to refresh before falloff.
 actions.necro_mw+=/haunt,if=dot.haunt.remains<2+execute_time
-# High - priority MW refresh if spending one global would cause us to miss the opportunity to refresh MW. 
+# High - priority MW refresh if spending one global would cause us to miss the opportunity to refresh MW.
 actions.necro_mw+=/malefic_rapture,if=time>7&buff.malefic_wrath.remains<gcd.max+execute_time
 # Fire delayed trinkets in anticipation of Decimating Bolt.
 actions.necro_mw+=/use_item,name=empyreal_ordnance,if=variable.trinket_delay<20
@@ -281,13 +281,13 @@ back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=robes_of_the_demon_star,id=188884,bonus_id=1505/7187,enchant=eternal_stats
 wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187/6935,gem_id=173128,enchant=eternal_intellect
 hands=grimveiled_mittens,id=173244,bonus_id=7031/6649/6648/1588
-waist=grimveiled_belt,id=173248,bonus_id=6648/6649/8129/1588/6935,gem_id=173128
+waist=grimveiled_belt,id=173248,bonus_id=6716/8129/6649/6650/1808/1588,gem_id=173129
 legs=leggings_of_the_demon_star,id=188887,bonus_id=1498/7187
-feet=boots_of_ceaseless_conflict,id=189794,bonus_id=1524/7187
-finger1=death_gods_signet,id=179355,bonus_id=1592/7187/6935,gem_id=173128,enchant=tenet_of_haste
+feet=prefabricated_footpads,id=189770,bonus_id=1524/7187
+finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
 finger2=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=soulletting_ruby,id=178809,bonus_id=1592/7187
-trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
+trinket1=the_first_sigil,id=188271,bonus_id=1524/7187
+trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6916
 main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 
@@ -296,9 +296,9 @@ off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
 # gear_stamina=2924
 # gear_intellect=1913
 # gear_crit_rating=310
-# gear_haste_rating=937
-# gear_mastery_rating=941
-# gear_versatility_rating=262
+# gear_haste_rating=844
+# gear_mastery_rating=737
+# gear_versatility_rating=560
 # gear_armor=526
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

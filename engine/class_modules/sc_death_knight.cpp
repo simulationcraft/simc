@@ -7728,6 +7728,8 @@ void runeforge::reanimated_shambler( special_effect_t& effect )
 
     void execute() override
     {
+      death_knight_spell_t::execute();
+
       p() -> procs.reanimated_shambler -> occur();
 
       p() -> pets.reanimated_shambler.spawn( 1 );

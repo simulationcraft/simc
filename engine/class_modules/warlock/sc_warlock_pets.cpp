@@ -1769,11 +1769,15 @@ void infernal_t::arise()
 {
   warlock_pet_t::arise();
 
-  buffs.embers->trigger();
-  immolation->trigger();
+  // 2022-06-26 Testing indicates there is a ~1.2 second delay after spawn before any actions are taken.
+  // Additionally, there is some unknown amount of movement adjustment the pet can take, so we model this with a distribution
+  make_event( *sim, timespan_t::from_seconds( rng().gauss( 1.4, 0.2, true ) ), [ this ] {
+    buffs.embers->trigger();
+    immolation->trigger();
 
-  melee_attack->set_target( target );
-  melee_attack->schedule_execute();
+    melee_attack->set_target( target );
+    melee_attack->schedule_execute();
+  } );
 }
 
 void infernal_t::demise()

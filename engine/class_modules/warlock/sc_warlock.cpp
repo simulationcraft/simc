@@ -4,6 +4,7 @@
 
 #include "sc_warlock_pets.hpp"
 #include "util/util.hpp"
+#include "class_modules/apl/warlock.hpp"
 
 #include <queue>
 
@@ -1363,98 +1364,26 @@ void warlock_t::init_assessors()
   }
 }
 
-void warlock_t::apl_precombat()
-{
-  action_priority_list_t* precombat = get_action_priority_list( "precombat" );
-
-  precombat->add_action( "flask" );
-  precombat->add_action( "food" );
-  precombat->add_action( "augmentation" );
-  precombat->add_action( "summon_pet" );
-  precombat->add_action( "use_item,name=tome_of_monstrous_constructions" );
-  precombat->add_action( "use_item,name=soleahs_secret_technique" );
-  if ( specialization() != WARLOCK_DEMONOLOGY )
-    precombat->add_action( "grimoire_of_sacrifice,if=talent.grimoire_of_sacrifice.enabled" );
-
-  precombat->add_action( "snapshot_stats" );
-  precombat->add_action( "fleshcraft" );
-
-  if ( specialization() == WARLOCK_DEMONOLOGY )
-  {
-    //tested different values, even with gfg/vf its better to summon tyrant sooner in the opener
-    precombat->add_action( "variable,name=first_tyrant_time,op=set,value=12" );
-    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.grimoire_felguard.execute_time,if=talent.grimoire_felguard.enabled" );
-    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=action.summon_vilefiend.execute_time,if=talent.summon_vilefiend.enabled" );
-    precombat->add_action( "variable,name=first_tyrant_time,op=add,value=gcd.max,if=talent.grimoire_felguard.enabled|talent.summon_vilefiend.enabled" );
-    precombat->add_action( "variable,name=first_tyrant_time,op=sub,value=action.summon_demonic_tyrant.execute_time+action.shadow_bolt.execute_time" );
-    precombat->add_action( "variable,name=first_tyrant_time,op=min,value=10" );
-    precombat->add_action( "variable,name=in_opener,op=set,value=1" );
-    precombat->add_action( "variable,name=use_bolt_timings,op=set,value=runeforge.shard_of_annihilation&(runeforge.balespiders_burning_core+talent.sacrificed_souls.enabled+talent.power_siphon.enabled>1)" );
-    precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
-    precombat->add_action( "demonbolt" );
-  }
-  if ( specialization() == WARLOCK_DESTRUCTION )
-  {
-    precombat->add_action( "use_item,name=shadowed_orb_of_torment" );
-    precombat->add_action( "soul_fire" );
-    precombat->add_action( "incinerate" );
-  }
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    precombat->add_action( "seed_of_corruption,if=spell_targets.seed_of_corruption_aoe>=3" );
-    precombat->add_action( "haunt" );
-    precombat->add_action( "unstable_affliction" );
-  }
-}
-
-std::string warlock_t::default_potion() const
-{
-  return ( true_level >= 60 ) ? "spectral_intellect" : "disabled";
-}
-
-std::string warlock_t::default_flask() const
-{
-  return ( true_level >= 60 ) ? "spectral_flask_of_power" : "disabled";
-}
-
-std::string warlock_t::default_food() const
-{
-  return ( true_level >= 60 ) ? "feast_of_gluttonous_hedonism" : "disabled";
-}
-
-std::string warlock_t::default_rune() const
-{
-  return ( true_level >= 60 ) ? "veiled" : "disabled";
-}
-
-std::string warlock_t::default_temporary_enchant() const
-{
-  return ( true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
-}
-
-void warlock_t::apl_global_filler()
-{
-}
-
-void warlock_t::apl_default()
-{
-  if ( specialization() == WARLOCK_AFFLICTION )
-    create_apl_affliction();
-  else if ( specialization() == WARLOCK_DEMONOLOGY )
-    create_apl_demonology();
-  else if ( specialization() == WARLOCK_DESTRUCTION )
-    create_apl_destruction();
-}
-
 void warlock_t::init_action_list()
 {
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
 
-    apl_precombat();
-
-    apl_default();
+    switch ( specialization() )
+    {
+    case WARLOCK_AFFLICTION:
+      warlock_apl::affliction( this );
+      break;
+    case WARLOCK_DEMONOLOGY:
+      warlock_apl::demonology( this );
+      break;
+    case WARLOCK_DESTRUCTION:
+      warlock_apl::destruction( this );
+      break;
+    default:
+      break;
+    }
 
     use_default_action_list = true;
   }

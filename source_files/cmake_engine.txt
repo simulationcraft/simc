@@ -19,6 +19,7 @@ class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_priest.hpp
 class_modules/apl/mage.hpp
+class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
 class_modules/monk/sc_monk.hpp
 class_modules/paladin/sc_paladin.hpp
@@ -165,9 +166,10 @@ util/generic.hpp
 util/git_info.hpp
 util/io.hpp
 util/plot_data.hpp
+util/resourcepaths.hpp
 util/rng.hpp
 util/sample_data.hpp
-util/resourcepaths.hpp
+util/sc_resourcepaths.hpp
 util/scoped_callback.hpp
 util/span.hpp
 util/static_map.hpp
@@ -198,6 +200,7 @@ class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp
 class_modules/apl/apl_priest.cpp
 class_modules/apl/mage.cpp
+class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp
 class_modules/monk/sc_monk_pets.cpp
 class_modules/paladin/sc_paladin.cpp

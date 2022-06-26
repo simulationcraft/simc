@@ -3128,7 +3128,7 @@ void player_t::add_precombat_buff_state( buff_t* buff, int stacks, double value,
   if ( !buff->allow_precombat )
     throw std::invalid_argument( fmt::format( "Invalid buff for 'override.precombat_state' option. Precombat states for '{}' are disabled.", buff->name_str ) );
 
-  register_combat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
+  register_precombat_begin( [ buff, stacks, value, duration ] ( player_t* ) { buff->execute( stacks, value, duration ); } );
 }
 
 void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration )
@@ -3142,7 +3142,7 @@ void player_t::add_precombat_cooldown_state( cooldown_t* cd, timespan_t duration
   if ( action->cooldown != cd )
     action = nullptr;
 
-  register_combat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
+  register_precombat_begin( [ cd, action, duration ] ( player_t* ) { cd->start( action, duration ); } );
 }
 
 /// Called in every action constructor for all actions constructred for a player
@@ -4849,6 +4849,12 @@ void player_t::combat_begin()
   }
 
   init_resources( true );
+
+  // Trigger registered pre-pull functions
+  for ( const auto& f : precombat_begin_functions )
+  {
+    f( this );
+  }
 
   // Execute pre-combat actions
   if ( !is_pet() && !is_add() )
@@ -11571,6 +11577,8 @@ void player_t::copy_from( player_t* source )
   temporary_enchant_str = source->temporary_enchant_str;
 
   external_buffs = source->external_buffs;
+
+  antumbra = source->antumbra;
 }
 
 void player_t::create_options()
@@ -11732,6 +11740,15 @@ void player_t::create_options()
   add_option( opt_bool( "infinite_rage", resources.infinite_resource[ RESOURCE_RAGE ] ) );
   add_option( opt_bool( "infinite_runic", resources.infinite_resource[ RESOURCE_RUNIC_POWER ] ) );
   add_option( opt_bool( "infinite_astral_power", resources.infinite_resource[ RESOURCE_ASTRAL_POWER ] ) );
+
+  // Rygelon Dagger / Antumbra
+  add_option( opt_bool( "shadowlands.antumbra.swap", antumbra.swap ) );
+  add_option( opt_float( "shadowlands.antumbra.int_diff", antumbra.int_diff ) );
+  add_option( opt_float( "shadowlands.antumbra.crit_diff", antumbra.crit_diff ) );
+  add_option( opt_float( "shadowlands.antumbra.haste_diff", antumbra.haste_diff ) );
+  add_option( opt_float( "shadowlands.antumbra.mastery_diff", antumbra.mastery_diff ) );
+  add_option( opt_float( "shadowlands.antumbra.vers_diff", antumbra.vers_diff ) );
+  add_option( opt_float( "shadowlands.antumbra.stam_diff", antumbra.stam_diff ) );
 
   // Resources
   add_option( opt_func( "initial_resource", parse_initial_resource ) );
@@ -13423,6 +13440,11 @@ void player_t::register_combat_begin( buff_t* b )
   combat_begin_functions.emplace_back([ b ]( player_t* ) { b -> trigger(); } );
 }
 
+void player_t::register_precombat_begin( buff_t* b )
+{
+  precombat_begin_functions.emplace_back( [ b ]( player_t* ) { b->trigger(); } );
+}
+
 void player_t::register_combat_begin( action_t* a )
 {
   combat_begin_functions.emplace_back([ a ]( player_t* ) { a -> execute(); } );
@@ -13431,6 +13453,11 @@ void player_t::register_combat_begin( action_t* a )
 void player_t::register_combat_begin( const combat_begin_fn_t& fn )
 {
   combat_begin_functions.push_back( fn );
+}
+
+void player_t::register_precombat_begin( const combat_begin_fn_t& fn )
+{
+  precombat_begin_functions.push_back( fn );
 }
 
 void player_t::register_combat_begin( double amount, resource_e resource, gain_t* g )
