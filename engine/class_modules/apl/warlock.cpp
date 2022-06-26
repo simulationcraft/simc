@@ -29,6 +29,17 @@ namespace warlock_apl{
     return ( p->true_level >= 60 ) ? "main_hand:shadowcore_oil" : "disabled";
   }
 
+  bool alternate_apl( player_t* p, std::string apl_name )
+  {
+    if ( apl_name == "test" )
+    {
+      test( p );
+      return true;
+    }
+
+    return false;
+  }
+
 //affliction_apl_start
 void affliction( player_t* p )
 {
@@ -493,5 +504,13 @@ void destruction( player_t* p )
   havoc->add_action( "incinerate,if=cast_time<havoc_remains" );
 }
 //destruction_apl_end
+
+//test_apl_start
+void test( player_t* p )
+{
+  action_priority_list_t* default_ = p->get_action_priority_list( "default" );
+
+  default_->add_action( "corruption", "Corruption spam can be done in all specs" );
+}
 
 } // namespace warlock_apl

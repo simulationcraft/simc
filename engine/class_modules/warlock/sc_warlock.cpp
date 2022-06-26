@@ -1370,20 +1370,25 @@ void warlock_t::init_action_list()
   if ( action_list_str.empty() )
   {
     clear_action_priority_lists();
+    
+    bool alternate_apl_generated = warlock_apl::alternate_apl( this, alternate_apl );
 
-    switch ( specialization() )
+    if ( !alternate_apl_generated )
     {
-    case WARLOCK_AFFLICTION:
-      warlock_apl::affliction( this );
-      break;
-    case WARLOCK_DEMONOLOGY:
-      warlock_apl::demonology( this );
-      break;
-    case WARLOCK_DESTRUCTION:
-      warlock_apl::destruction( this );
-      break;
-    default:
-      break;
+      switch ( specialization() )
+      {
+      case WARLOCK_AFFLICTION:
+        warlock_apl::affliction( this );
+        break;
+      case WARLOCK_DEMONOLOGY:
+        warlock_apl::demonology( this );
+        break;
+      case WARLOCK_DESTRUCTION:
+        warlock_apl::destruction( this );
+        break;
+      default:
+        break;
+      }
     }
 
     use_default_action_list = true;

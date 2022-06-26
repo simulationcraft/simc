@@ -15,5 +15,7 @@ namespace warlock_apl{
   void affliction( player_t* );
   void demonology( player_t* );
   void destruction( player_t* );
+  bool alternate_apl( player_t*, std::string apl_name );
+  void test( player_t* );
 
 } // namespace warlock_apl
