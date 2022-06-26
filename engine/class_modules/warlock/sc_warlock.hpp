@@ -505,6 +505,7 @@ public:
 
   int initial_soul_shards;
   std::string default_pet;
+  std::string alternate_apl;
   shuffled_rng_t* rain_of_chaos_rng;
   const spell_data_t* version_9_2_0_data;
 

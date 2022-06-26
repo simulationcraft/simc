@@ -846,7 +846,8 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     gains(),
     procs(),
     initial_soul_shards( 3 ),
-    default_pet()
+    default_pet(),
+    alternate_apl()
 {
   cooldowns.haunt               = get_cooldown( "haunt" );
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
@@ -1474,6 +1475,7 @@ void warlock_t::create_options()
 
   add_option( opt_int( "soul_shards", initial_soul_shards ) );
   add_option( opt_string( "default_pet", default_pet ) );
+  add_option( opt_string( "alternate_apl", alternate_apl ) );
 }
 
 // Used to determine how many Wild Imps are waiting to be spawned from Hand of Guldan
@@ -1619,6 +1621,7 @@ void warlock_t::copy_from( player_t* source )
 
   initial_soul_shards  = p->initial_soul_shards;
   default_pet          = p->default_pet;
+  alternate_apl        = p->alternate_apl;
 }
 
 stat_e warlock_t::convert_hybrid_stat( stat_e s ) const
