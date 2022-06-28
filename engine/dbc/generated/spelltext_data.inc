@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.5.43971
-static const std::array<spelltext_data_t, 16091> __spelltext_data { {
+// Spell text, wow build 9.2.5.44325
+static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -15609,7 +15609,7 @@ static const std::array<spelltext_data_t, 16091> __spelltext_data { {
   { 360984, "$@spelldesc360980", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 361020, "Taking damage has a chance to infuse you with Cosmic energy, healing you for $s1.", 0, 0 },
   { 361085, "Plant a banner representing your successes against the Encrypted.", 0, 0 },
-  { 361090, "Plant a banner representing your successes against the Tormented.", 0, 0 },
+  { 361090, "Plant a banner representing your successes against the Shrouded.", 0, 0 },
   { 361091, "Plant a banner representing your successes against the Tormented.", 0, 0 },
   { 361118, "Increases the duration of Flask, Elixir, and Well Fed effects by $s1%.", 0, 0 },
   { 361356, "$@spelldesc367262\r\n$@spellaura366333", "$@spellaura367262", 0 },
@@ -15634,11 +15634,11 @@ static const std::array<spelltext_data_t, 16091> __spelltext_data { {
   { 362620, "Increases Agility by $235007s1 for $d.", "Increases Agility by $235007s1.", 0 },
   { 362628, "Steals $s1 life from target enemy.", 0, 0 },
   { 362629, "Your attacks have a chance to steal $362628s1 life from the enemy.", 0, 0 },
-  { 362699, "Protects from spell interruption and crowd control effects.", "Immune to interrupt and crowd control effects.", 0 },
+  { 362699, "Protects from crowd control effects.", "Immune to crowd control effects.", 0 },
   { 362986, "Open your Companions page and select a companion to raise their level to $s1.", 0, 0 },
   { 363041, "A swig of strong brew that coalesces purified chi escaping your body into a celestial guard, absorbing $<absorb> damage.", "Absorbs $w1 damage.", 0 },
   { 363117, "Activate the Broker defenses, protecting yourself from spell interruption and crowd control effects. The defenses withstand up to $s1 $Leffect:effects; and persist for $362699d.", 0, 0 },
-  { 363121, "Duration of incoming crowd control effects increased by $s1%. Does not stack with similar effects. When affected, protects from the next spell interruption and crowd control effect, persisting for $362699d.", 0, "PvP Talent" },
+  { 363121, "Duration of incoming crowd control effects increased by $s1%. Does not stack with similar effects. When affected, protects from the next crowd control effect, persisting for $362699d.", 0, "PvP Talent" },
   { 363327, "Activate the dimensional translators to cross a great distance in outdoor Shadowlands zones.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
   { 363328, "Greatly reduces fall damage taken in outdoor Shadowlands zones.", 0, 0 },
   { 363329, "Increases your movement and mounted speed in outdoor Shadowlands zones by $?pc94626[${$s4+$s3*5}]?pc94651[${$s4+$s3*4}]?pc94650[${$s4+$s3*3}]?pc64649[${$s4+$s3*2}]?pc94746[${$s4+$s3}][$s4]%.\r\n\r\nThis ability grows more powerful as you research the Cyphers of the First Ones.", 0, 0 },
@@ -16091,13 +16091,15 @@ static const std::array<spelltext_data_t, 16091> __spelltext_data { {
   { 371574, "Combine $s2 Confounding Ancient Cyphers to create the |cFFE6CC80Sacred Creation Impetus|r, which can be used to improve Fated raid items to Mythic quality.", 0, 0 },
   { 373264, "Realize the potential in a Fated raid item, upgrading it to Heroic quality.", 0, 0 },
   { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
+  { 376635, "Create a piece of Cosmic Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
+  { 376808, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 3.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.43971
+// spelltext hotfix entries, wow build 9.2.5.44325
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.5.43971
+// Spell description variables, wow build 9.2.5.44325
 static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16409,7 +16411,7 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.43971
+// spelldesc_vars hotfix entries, wow build 9.2.5.44325
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
