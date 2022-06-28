@@ -2379,6 +2379,8 @@ public:
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
+    // Auto attack bonus
+    parse_passive_effects( p()->spec.guardian, 1U, 10U );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
