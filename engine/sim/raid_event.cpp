@@ -525,7 +525,7 @@ struct pull_event_t final : raid_event_t
     else
       first = timespan_t::max();
 
-    cooldown = sim->max_time;
+    cooldown = sim->max_time * 2;
 
     master = sim->target_list.data().front();
     if ( !master )
@@ -582,9 +582,6 @@ struct pull_event_t final : raid_event_t
 
   void on_demise()
   {
-    if ( !spawned )
-      return;
-
     // don't schedule another pull until all adds from this one are dead
     for ( auto add : adds_spawner->active_pets() )
     {
@@ -592,7 +589,6 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
-    spawned = false;
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     // find the next pull and spawn it
@@ -617,7 +613,8 @@ struct pull_event_t final : raid_event_t
 
   void _start() override
   {
-    make_event( *sim, delay, [ this ] { spawn_pull(); } );
+    if (!spawned)
+      make_event( *sim, delay, [ this ] { spawn_pull(); } );
   }
 
   void _finish() override
@@ -718,6 +715,7 @@ struct pull_event_t final : raid_event_t
       // Only for use with log output options as it makes the report strange but log much better
       if ( sim->log )
       {
+        sim->print_log( "Renaming {} to {}", adds[ i ]->name_str, spawn_parameters[ i ].name );
         adds[ i ]->full_name_str = adds[ i ]->name_str = spawn_parameters[ i ].name;
         total_health += spawn_parameters[ i ].health;
       }
