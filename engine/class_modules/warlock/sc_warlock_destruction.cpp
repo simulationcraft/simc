@@ -732,7 +732,7 @@ struct chaos_bolt_t : public destruction_spell_t
         {
           // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
           // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 + 2000_ms; // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 + 1000_ms; // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
             p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
