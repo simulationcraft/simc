@@ -1781,7 +1781,7 @@ void infernal_t::arise()
     melee_attack->schedule_execute();
   } );
 
-  make_event( *sim, delay + 75_ms, [ this ] {
+  make_event( *sim, delay + 750_ms, [ this ] {
     immolation->trigger();
   } );
 }
