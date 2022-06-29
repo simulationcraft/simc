@@ -257,7 +257,7 @@ SC_OptionsTab::SC_OptionsTab( SC_MainWindow* parent ) : QTabWidget( parent ), ma
   connect( choice.plots_step, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_target_error, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.plots_iterations, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
-  connect( choice.pvp_crit, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
+  connect( choice.pvp_mode, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.reforgeplot_amount, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.reforgeplot_step, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
   connect( choice.report_pets, SIGNAL( currentIndexChanged( int ) ), this, SLOT( _optionsChanged() ) );
@@ -360,8 +360,8 @@ void SC_OptionsTab::createGlobalsTab()
   globalsLayout_middle->addRow(
       tr( "Target Level" ),
       choice.target_level = createChoice( 4, "Raid Boss", "5-Man Heroic", "5-Man Normal", "Max Player Level" ) );
-  globalsLayout_middle->addRow( tr( "PVP Crit Damage Reduction" ),
-                                choice.pvp_crit = createChoice( 2, "Disable", "Enable" ) );
+  globalsLayout_middle->addRow( tr( "PVP Mode" ),
+                                choice.pvp_mode = createChoice( 2, "Disable", "Enable" ) );
   globalsLayout_middle->addRow(
       tr( "Target Race" ), choice.target_race = createChoice( 7, "Humanoid", "Beast", "Demon", "Dragonkin", "Elemental",
                                                               "Giant", "Undead" ) );
@@ -821,7 +821,7 @@ void SC_OptionsTab::decodeOptions()
   load_setting( settings, "update_check", choice.update_check );
   load_setting( settings, "default_role", choice.default_role );
   load_setting( settings, "boss_type", choice.boss_type, "Custom" );
-  load_setting( settings, "pvp_crit", choice.pvp_crit, "Disable" );
+  load_setting( settings, "pvp_mode", choice.pvp_mode, "Disable" );
   load_setting( settings, "tank_dummy", choice.tank_dummy, "None" );
   load_setting( settings, "tmi_window_global", choice.tmi_window, "6" );
   load_setting( settings, "show_etmi", choice.show_etmi );
@@ -923,7 +923,7 @@ void SC_OptionsTab::encodeOptions()
   settings.setValue( "api_client_secret", api_client_secret->text() );
   settings.setValue( "debug", choice.debug->currentText() );
   settings.setValue( "target_level", choice.target_level->currentText() );
-  settings.setValue( "pvp_crit", choice.pvp_crit->currentText() );
+  settings.setValue( "pvp_mode", choice.pvp_mode->currentText() );
   settings.setValue( "report_pets", choice.report_pets->currentText() );
   settings.setValue( "statistics_level", choice.statistics_level->currentText() );
   settings.setValue( "deterministic_rng", choice.deterministic_rng->currentText() );
@@ -1027,9 +1027,7 @@ void SC_OptionsTab::createToolTips()
 
   choice.target_level->setToolTip( tr( "Level of the target and any adds." ) );
 
-  choice.pvp_crit->setToolTip(
-      tr( "In PVP, critical strikes deal 150% damage instead of 200%.\n"
-          "Enabling this option will set target level to max player level." ) );
+  choice.pvp_mode->setToolTip( tr( "Will use PvP crit modifier and PvP iLvl." ) );
 
   choice.threads->setToolTip(
       tr( "Match the number of CPUs for optimal performance.\n"
@@ -1200,7 +1198,7 @@ QString SC_OptionsTab::get_globalSettings()
   else
   {
     static const char* const targetlevel[] = { "3", "2", "1", "0" };
-    if ( choice.pvp_crit->currentIndex() == 1 )
+    if ( choice.pvp_mode->currentIndex() == 1 )
     {
       options += "target_level+=0\n";
       options += "pvp=1\n";

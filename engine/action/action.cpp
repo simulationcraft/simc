@@ -1190,7 +1190,7 @@ double action_t::total_crit_bonus( const action_state_t* state ) const
   double crit_multiplier_buffed = crit_multiplier * composite_player_critical_multiplier( state );
 
   double base_crit_bonus = crit_bonus;
-  if ( sim->pvp_crit )
+  if ( sim->pvp_mode )
     base_crit_bonus += sim->pvp_rules->effectN( 3 ).percent();
 
   double damage_bonus = composite_crit_damage_bonus_multiplier() * composite_target_crit_damage_bonus_multiplier( state->target );
