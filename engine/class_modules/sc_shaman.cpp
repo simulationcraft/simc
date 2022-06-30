@@ -10006,7 +10006,7 @@ void shaman_t::init_action_list_elemental()
         "60&spell_targets.chain_lightning>=2&(!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_"
         "sundering.up)" );
     se_single_target->add_action( this, "Lava Burst",
-                                  "if=(buff.wind_gust.stack<18&!buff.bloodlust.up)|buff.lava_surge.up" );
+                                  "if=buff.lava_surge.up" );
     se_single_target->add_action( this, "Lava Burst,target_if=dot.flame_shock.remains",
                                   "if=buff.lava_surge.up&buff.primordial_wave.up" );
     se_single_target->add_action(
@@ -10023,7 +10023,6 @@ void shaman_t::init_action_list_elemental()
                                   "if=(spell_targets.chain_lightning>1)&(!dot.flame_shock.refreshable)" );
     se_single_target->add_action( this, "Chain Lightning",
                                   "if=active_enemies>1&pet.storm_elemental.active&buff.bloodlust.up" );
-    se_single_target->add_action( this, "Lightning Bolt", "if=pet.storm_elemental.active&buff.bloodlust.up" );
     se_single_target->add_action( this, "Lava Burst", "if=buff.ascendance.up" );
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
     se_single_target->add_action( this, "Icefury",
@@ -10031,6 +10030,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Lava Burst", "if=cooldown_react&charges>talent.echo_of_the_elements.enabled" );
     se_single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
     se_single_target->add_action( "chain_harvest" );
+    se_single_target->add_action( this, "Lightning Bolt", "if=pet.storm_elemental.active&buff.bloodlust.up" );
     se_single_target->add_action( "fleshcraft,if=soulbind.volatile_solvent&!buff.volatile_solvent_humanoid.up,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent" );
     se_single_target->add_talent( this, "Static Discharge", "if=talent.static_discharge.enabled" );
     se_single_target->add_action(
