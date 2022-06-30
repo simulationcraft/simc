@@ -668,6 +668,7 @@ public:
 
     // Conduits
     proc_t* count_the_odds;
+    proc_t* count_the_odds_capped;
     proc_t* count_the_odds_wasted;
 
     // Legendary
@@ -811,7 +812,7 @@ public:
   void      apply_affecting_auras( action_t& action ) override;
 
   void break_stealth();
-  void cancel_auto_attack();
+  void cancel_auto_attacks() override;
   void do_exsanguinate( dot_t* dot, double coeff );
 
   void trigger_venomous_wounds_death( player_t* ); // On-death trigger for Venomous Wounds energy replenish
@@ -2283,8 +2284,6 @@ struct melee_t : public rogue_attack_t
 
     if ( p->dual_wield() )
       base_hit -= 0.19;
-
-    p->auto_attack = this;
   }
 
   void reset() override
@@ -4997,7 +4996,7 @@ struct cancel_autoattack_t : public action_t
   void execute() override
   {
     action_t::execute();
-    rogue->cancel_auto_attack();
+    rogue->cancel_auto_attacks();
   }
 
   bool ready() override
@@ -5466,7 +5465,7 @@ struct stealth_t : public stealth_like_buff_t<buff_t>
   void execute( int stacks, double value, timespan_t duration ) override
   {
     base_t::execute( stacks, value, duration );
-    rogue->cancel_auto_attack();
+    rogue->cancel_auto_attacks();
 
     // Activating stealth buff (via expiring Vanish) also removes Shadow Dance. Not an issue in general since Stealth cannot be used during Dance.
     rogue->buffs.shadow_dance->expire();
@@ -5498,7 +5497,7 @@ struct vanish_t : public stealth_like_buff_t<buff_t>
   void execute( int stacks, double value, timespan_t duration ) override
   {
     base_t::execute( stacks, value, duration );
-    rogue->cancel_auto_attack();
+    rogue->cancel_auto_attacks();
 
     // Confirmed on early beta that Invigorating Shadowdust triggers from Vanish buff (via old Sepsis), not just Vanish casts
     if ( rogue->legendary.invigorating_shadowdust.ok() || ( rogue->options.prepull_shadowdust && rogue->sim->current_time() == 0_s ) )
@@ -5734,7 +5733,10 @@ struct roll_the_bones_t : public buff_t
     }
 
     if ( inactive_buffs.empty() )
+    {
+      rogue->procs.count_the_odds_capped->occur();
       return;
+    }
 
     unsigned buff_idx = static_cast<int>( rng().range( 0, as<double>( inactive_buffs.size() ) ) );
     inactive_buffs[ buff_idx ]->trigger( duration );
@@ -8418,6 +8420,7 @@ void rogue_t::init_procs()
 
   procs.count_the_odds          = get_proc( "Count the Odds"           );
   procs.count_the_odds_wasted   = get_proc( "Count the Odds Wasted"    );
+  procs.count_the_odds_capped   = get_proc( "Count the Odds Capped" );
 
   procs.duskwalker_patch    = get_proc( "Duskwalker Patch"             );
 
@@ -9184,7 +9187,7 @@ struct restealth_callback_t
     if ( r->sim->target_non_sleeping_list.empty() )
     {
       r->restealth_allowed = true;
-      r->cancel_auto_attack();
+      r->cancel_auto_attacks();
     }
   }
 };
@@ -9225,22 +9228,22 @@ void rogue_t::break_stealth()
 
 // rogue_t::cancel_auto_attack ==============================================
 
-void rogue_t::cancel_auto_attack()
+void rogue_t::cancel_auto_attacks()
 {
   // Cancel scheduled AA events and record the swing timer to reference on restart
   if ( melee_main_hand && melee_main_hand->execute_event )
   {
     melee_main_hand->canceled = true;
     melee_main_hand->prev_scheduled_time = melee_main_hand->execute_event->occurs();
-    event_t::cancel( melee_main_hand->execute_event );
   }
 
   if ( melee_off_hand && melee_off_hand->execute_event )
   {
     melee_off_hand->canceled = true;
     melee_off_hand->prev_scheduled_time = melee_off_hand->execute_event->occurs();
-    event_t::cancel( melee_off_hand->execute_event );
   }
+
+  player_t::cancel_auto_attacks();
 }
 
 // rogue_t::swap_weapon =====================================================
