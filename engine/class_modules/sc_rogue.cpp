@@ -4300,11 +4300,10 @@ struct slice_and_dice_t : public rogue_spell_t
     int cp = cast_state( execute_state )->get_combo_points();
     timespan_t snd_duration = get_triggered_duration( cp );
 
-    if ( precombat_seconds > 0_s && ! p() -> in_combat )
+    if ( precombat_seconds > 0_s && !p()->in_combat )
       snd_duration -= precombat_seconds;
 
-    double snd_mod = 1.0; // Multiplier for the SnD effects. Was changed in Legion for Loaded Dice artifact trait.
-    p() -> buffs.slice_and_dice -> trigger( 1, snd_mod, -1.0, snd_duration );
+    p()->buffs.slice_and_dice->trigger( snd_duration );
 
     // Grand melee extension goes on top of SnD buff application.
     trigger_grand_melee( execute_state );
@@ -6836,7 +6835,7 @@ double rogue_t::composite_melee_speed() const
 
   if ( buffs.slice_and_dice->check() )
   {
-    h *= 1.0 / ( 1.0 + spell.slice_and_dice->effectN( 1 ).percent() * buffs.slice_and_dice->check_value() );
+    h *= 1.0 / ( 1.0 + buffs.slice_and_dice->check_value() );
   }
 
   if ( buffs.adrenaline_rush->check() )
@@ -7308,7 +7307,7 @@ void rogue_t::init_action_list()
     cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&covenant.venthyr&!stealthed.all&variable.ambush_condition&(!cooldown.flagellation.ready&(!talent.dreadblades|!cooldown.dreadblades.ready|!buff.flagellation_buff.up))", "If using Invigorating Shadowdust, use normal logic in addition to checking major CDs." );
     cds->add_action( this, "Vanish", "if=runeforge.invigorating_shadowdust&!covenant.venthyr&!stealthed.all&(cooldown.echoing_reprimand.remains>6|!cooldown.sepsis.ready|cooldown.serrated_bone_spike.full_recharge_time>20)" );
 
-    cds->add_action( "shadowmeld,if=!stealthed.all&variable.ambush_condition" );
+    cds->add_action( "shadowmeld,if=!stealthed.all&(conduit.count_the_odds&variable.finish_condition|!talent.weaponmaster.enabled&variable.ambush_condition)" );
 
     // Non-spec stuff with lower prio
     cds->add_action( potion_action );
