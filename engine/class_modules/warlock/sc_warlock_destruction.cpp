@@ -46,7 +46,7 @@ public:
         if ( p()->rain_of_chaos_rng->trigger() )
         {
           //Currently storing infernal duration (spell 335286) in buff default value
-          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 1000_ms, 1U); // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
+          p()->warlock_pet_list.roc_infernals.spawn( timespan_t::from_millis( p()->buffs.rain_of_chaos->default_value ) + 1000_ms, 1U); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
           p()->procs.rain_of_chaos->occur();
         }
       }
@@ -732,14 +732,14 @@ struct chaos_bolt_t : public destruction_spell_t
         {
           // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
           // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 + 1000_ms; // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000;
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
             p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
           }
           else
           {
-            p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
+            p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
           }
 
           if ( p()->talents.rain_of_chaos->ok() )
@@ -811,7 +811,7 @@ struct summon_infernal_t : public destruction_spell_t
     parse_options( options_str );
 
     harmful = may_crit        = false;
-    infernal_duration         = p->find_spell( 111685 )->duration() + 1000_ms; // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
+    infernal_duration         = p->find_spell( 111685 )->duration() + 1000_ms; // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
     infernal_awakening        = new infernal_awakening_t( p );
     infernal_awakening->stats = stats;
     radius                    = infernal_awakening->radius;
@@ -919,14 +919,14 @@ struct rain_of_fire_t : public destruction_spell_t
         {
           // Note: Tier set spell (363950) has duration in Effect 1, but there is also a duration adjustment in Ritual of Ruin buff data Effect 4
           // Unsure which is being used at this time
-          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000 + 1000_ms; // 2022-06-28 Animation has 2 second pad, but safety window for actions is smaller. TOCHECK
+          timespan_t duration = p()->sets->set( WARLOCK_DESTRUCTION, T28, B4 )->effectN( 1 ).time_value() * 1000; 
           if ( p()->warlock_pet_list.blasphemy.active_pet() )
           {
             p()->warlock_pet_list.blasphemy.active_pet()->adjust_duration( duration );
           }
           else
           {
-            p()->warlock_pet_list.blasphemy.spawn( duration, 1U );
+            p()->warlock_pet_list.blasphemy.spawn( duration + 1000_ms, 1U ); // 2022-06-29 Animation has 2 second pad at end of lifetime, but safety window for actions is smaller. TOCHECK
           }
 
           if ( p()->talents.rain_of_chaos->ok() )
