@@ -5972,7 +5972,7 @@ struct ignore_pain_t : public warrior_spell_t
     may_crit     = false;
     range        = -1;
     target       = player;
-    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : 40 );
+    base_costs[ RESOURCE_RAGE ] = ( p->specialization() == WARRIOR_FURY ? 60 : p->specialization() == WARRIOR_ARMS ? 40 : 35);
 
     base_dd_max = base_dd_min = 0;
     cooldown->duration += p->spec.ignore_pain_2->effectN( 1 ).time_value();
@@ -7822,7 +7822,7 @@ std::string warrior_t::default_potion() const
 
   std::string protection_pot =
       ( true_level > 50 )
-          ? "potion_of_phantom_fire"
+          ? "spectral_strength"
           : ( true_level > 40 )
                 ? "potion_of_unbridled_fury"
                 : "disabled";
@@ -7907,7 +7907,7 @@ std::string warrior_t::default_temporary_enchant() const
                               : "disabled";
 
   std::string protection_temporary_enchant = ( true_level >= 60 )
-                              ? "main_hand:shadowcore_oil"
+                              ? "main_hand:shaded_sharpening_stone"
                               : "disabled";
   switch ( specialization() )
   {
