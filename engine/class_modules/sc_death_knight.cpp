@@ -6861,8 +6861,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
     // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
-    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
-      m *= 1.0 + ( -1.0 );
+    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )    
+      m *= 1.0 + ( -1.0 );         
 
     return m;
   }
