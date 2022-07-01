@@ -6831,6 +6831,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 
     triggers_shackle_the_unworthy = true;
     hasted_ticks = false;
+    dot_behavior = DOT_EXTEND;
   }
 
   // T28 constructor
@@ -6843,6 +6844,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     triggers_shackle_the_unworthy = true;
     hasted_ticks = false;
     background = true;
+    dot_behavior = DOT_EXTEND;
   }
 
   double cost() const override
@@ -6859,8 +6861,8 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     double m = death_knight_melee_attack_t::runic_power_generation_multiplier( state );
 
     // This will only ever be at max stacks when we have triggered it by scourge strike, and we have called execute on the t28 version
-    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )
-      m *= 1.0 + ( -1.0 );
+    if ( p() -> buffs.harvest_time_stack->at_max_stacks() )    
+      m *= 1.0 + ( -1.0 );         
 
     return m;
   }
@@ -6878,6 +6880,21 @@ struct soul_reaper_t : public death_knight_melee_attack_t
       soul_reaper_execute -> set_target ( dot -> target );
       soul_reaper_execute -> execute();
     }
+  }
+
+  // 6-28-22 In 9.2.5 a bug was introduced that causes soul reaper refreshes to add the remaining debuff duration to the refreshed duration
+  // if set procs SR with 3s remaining on the debuff, it adds 3s from the remaining, then the 5s it should. leading to an 11s debuff rather than 8s
+  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
+  {
+    timespan_t d = death_knight_melee_attack_t::calculate_dot_refresh_duration( dot, triggered_duration );
+
+    // only the t28 version is a background action
+    if ( p() -> bugs && background )
+    {
+      d = d + dot->remains();
+    }
+
+    return d;
   }
 };
 
