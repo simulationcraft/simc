@@ -4746,6 +4746,10 @@ struct flagellation_t : public rogue_attack_t
       } );
     }
   }
+
+  // 2022-07-02 -- Initial damage procs Blade Flurry, lashes do not
+  bool procs_blade_flurry() const override
+  { return true; }
 };
 
 // Sepsis ===================================================================
@@ -7290,6 +7294,7 @@ void rogue_t::init_action_list()
     // Cooldowns
     action_priority_list_t* cds = get_action_priority_list( "cds", "Cooldowns" );
     cds->add_action( this, "Blade Flurry", "if=spell_targets>=2&!buff.blade_flurry.up", "Blade Flurry on 2+ enemies" );
+    cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&buff.dreadblades.down&(!buff.roll_the_bones.up|variable.rtb_reroll)" );
     cds->add_action( this, "Vanish", "if=!runeforge.mark_of_the_master_assassin&!runeforge.invigorating_shadowdust&!stealthed.all&(variable.ambush_condition&(!buff.flagellation_buff.up|runeforge.deathly_shadows)|variable.finish_condition)&(!runeforge.deathly_shadows|buff.deathly_shadows.down&combo_points<=2)" );
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&!talent.marked_for_death.enabled,value=(!cooldown.between_the_eyes.ready&variable.finish_condition)|(cooldown.between_the_eyes.ready&variable.ambush_condition)", "With Master Asssassin, sync Vanish with a finisher or Ambush depending on BtE cooldown, or always a finisher with MfD" );
     cds->add_action( "variable,name=vanish_ma_condition,if=runeforge.mark_of_the_master_assassin&talent.marked_for_death.enabled,value=variable.finish_condition" );
@@ -7298,7 +7303,6 @@ void rogue_t::init_action_list()
     cds->add_action( "fleshcraft,if=(soulbind.pustule_eruption|soulbind.volatile_solvent)&!stealthed.all&(!buff.blade_flurry.up|spell_targets.blade_flurry<2)&(!buff.adrenaline_rush.up|energy.base_time_to_max>2)", "Fleshcraft for Pustule Eruption if not stealthed and not with Blade Flurry" );
     cds->add_action( "flagellation,target_if=max:target.time_to_die,if=!stealthed.all&(variable.finish_condition&target.time_to_die>10|fight_remains<13)" );
     cds->add_talent( this, "Dreadblades", "if=!stealthed.all&combo_points<=2&(!covenant.venthyr|buff.flagellation_buff.up)&(!talent.marked_for_death|!cooldown.marked_for_death.ready)" );
-    cds->add_action( this, "Roll the Bones", "if=master_assassin_remains=0&buff.dreadblades.down&(buff.roll_the_bones.remains<=3|variable.rtb_reroll)" );
     cds->add_talent( this, "Marked for Death", "line_cd=1.5,target_if=min:target.time_to_die,if=raid_event.adds.up&(target.time_to_die<combo_points.deficit|!stealthed.rogue&combo_points.deficit>=cp_max_spend-1)", "If adds are up, snipe the one with lowest TTD. Use when dying faster than CP deficit or without any CP." );
     cds->add_talent( this, "Marked for Death", "if=raid_event.adds.in>30-raid_event.adds.duration&!stealthed.rogue&combo_points.deficit>=cp_max_spend-1&(!covenant.venthyr|cooldown.flagellation.remains>10|buff.flagellation_buff.up)", "If no adds will die within the next 30s, use MfD on boss without any CP." );
     cds->add_action( "variable,name=killing_spree_vanish_sync,value=!runeforge.mark_of_the_master_assassin|cooldown.vanish.remains>10|master_assassin_remains>2", "Attempt to sync Killing Spree with Vanish for Master Assassin" );
