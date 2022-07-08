@@ -2280,6 +2280,7 @@ void sim_t::init_fight_style()
       ignore_invulnerable_targets = true;
       shadowlands_opts.enable_rune_words = false;
       overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+      break;
     
     case FIGHT_STYLE_CLEAVE_ADD:
     {
