@@ -2070,11 +2070,11 @@ void raid_event_t::init( sim_t* sim )
       {
         throw std::invalid_argument( "Cooldown lower than cooldown standard deviation." );
       }
-      if ( sim->fight_style != "DungeonRoute" && raid_event->type == "pull" )
+      if ( sim->fight_style != FIGHT_STYLE_DUNGEON_ROUTE && raid_event->type == "pull" )
       {
         throw std::invalid_argument( "DungeonRoute fight style is required for pull events." );
       }
-      if ( sim->fight_style == "DungeonRoute" && raid_event->type == "adds" )
+      if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE && raid_event->type == "adds" )
       {
         throw std::invalid_argument( "DungeonRoute fight style is only compatible with pull events." );
       }
@@ -2088,7 +2088,7 @@ void raid_event_t::init( sim_t* sim )
     }
   }
 
-  if ( sim->fight_style == "DungeonRoute" )
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     for ( const auto& raid_event : sim->raid_events )
     {
@@ -2151,7 +2151,7 @@ double raid_event_t::evaluate_raid_event_expression( sim_t* s, util::string_view
   // special handling for "pull" events since they're not time based events
   // "adds" and "pull" event types are mutually exclusive within a sim
   // handled via the same apl expression syntax as adds
-  if ( util::str_compare_ci( type_or_name, "adds" ) && s->fight_style == "DungeonRoute" )
+  if ( util::str_compare_ci( type_or_name, "adds" ) && s->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     pull_event_t* current_pull = nullptr;
     for ( const auto& raid_event : s->raid_events )

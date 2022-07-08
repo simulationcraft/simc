@@ -6264,7 +6264,7 @@ struct prowl_t : public druid_spell_t
       if ( p()->buff.jungle_stalker->check() )
         return druid_spell_t::ready();
 
-      if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
+      if ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
         return druid_spell_t::ready();
 
       if ( p()->sim->target_non_sleeping_list.empty() )
@@ -9840,8 +9840,7 @@ void druid_t::init()
       break;
   }
 
-  if ( util::str_compare_ci( sim->fight_style, "DungeonSlice" ) ||
-       util::str_compare_ci( sim->fight_style, "DungeonRoute" ) )
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     options.adaptive_swarm_friendly_targets = 5;
   }

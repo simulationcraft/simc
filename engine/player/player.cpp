@@ -2005,7 +2005,7 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( sim->fight_style == "DungeonRoute" )
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     special_effect_t effect( this );
 

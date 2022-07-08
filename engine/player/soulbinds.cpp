@@ -720,7 +720,7 @@ void thrill_seeker( special_effect_t& effect )
   // DungeonSlice & DungeonRoute: 1/4 = 0.25
   if ( killing_blow_chance < 0 )
   {
-    if ( p->sim->fight_style == "DungeonSlice" || p->sim->fight_style == "DungeonRoute" )
+    if ( p->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || p->sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
     {
       number_of_players = 4;
     }
@@ -1974,7 +1974,7 @@ void lead_by_example( special_effect_t& effect )
         case POSITION_BACK:
         case POSITION_FRONT:
           // For DungeonSlice, always assume two allies
-          if ( util::str_compare_ci( effect.player->sim->fight_style, "DungeonSlice" ) )
+          if ( effect.player->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE )
             allies_nearby = 2;
           else
             allies_nearby = 4;

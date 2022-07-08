@@ -1036,7 +1036,7 @@ void print_html_masthead( report::sc_html_stream& os, const sim_t& sim )
   {
     os.printf( "<li><b>Fight Length:</b> %.0f</li>\n", sim.max_time.total_seconds() );
   }
-  os.printf( "<li><b>Fight Style:</b> %s</li>\n", util::encode_html( sim.fight_style ).c_str() );
+  os.printf( "<li><b>Fight Style:</b> %s</li>\n", util::encode_html( util::fight_style_string( sim.fight_style ) ).c_str() );
   os << "</ul>\n"
      << "<div class=\"clear\"></div>\n\n"
      << "</div>\n\n";

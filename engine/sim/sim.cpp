@@ -701,22 +701,12 @@ bool parse_fight_style( sim_t*             sim,
                         util::string_view /*name*/,
                         util::string_view value )
 {
-  static constexpr std::array<util::string_view, 11> FIGHT_STYLES { {
-    "Patchwerk", "Ultraxion", "CleaveAdd", "HelterSkelter", "LightMovement", "HeavyMovement",
-    "HecticAddCleave", "Beastlord", "CastingPatchwerk", "DungeonSlice", "DungeonRoute"
-  } };
+  sim->fight_style = util::parse_fight_style( value );
 
-  auto it = range::find_if( FIGHT_STYLES, [ &value ]( util::string_view n ) {
-    return util::str_compare_ci( value, n );
-  } );
-
-  if ( it == FIGHT_STYLES.end() )
+  if ( sim->fight_style == FIGHT_STYLE_NONE )
   {
-    throw std::invalid_argument( fmt::format( "Unknown fight style {}, available values: {}",
-      value, fmt::join( FIGHT_STYLES, ", " ) ) );
+    throw std::invalid_argument( fmt::format( "Invalid fight style {}", value ) );
   }
-
-  sim->fight_style = *it;
 
   return true;
 }
@@ -2227,127 +2217,147 @@ void sim_t::check_actors()
  */
 void sim_t::init_fight_style()
 {
-  if ( util::str_compare_ci( fight_style, "Patchwerk" ) )
+  bool deprecated = false;
+
+  switch ( fight_style )
   {
-    raid_events_str.clear();
-  }
-  else if ( util::str_compare_ci( fight_style, "Ultraxion" ) )
-  {
-    max_time    = timespan_t::from_seconds( 366.0 );
-    fixed_time  = true;
-    vary_combat_length = 0.0;
-    raid_events_str += "/flying,first=0,duration=500,cooldown=500";
-    raid_events_str += "/position_switch,first=0,duration=500,cooldown=500";
-    raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
-    raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
-    raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
-    raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
-    raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
-    raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
-    raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
-    raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
-  }
-  else if ( util::str_compare_ci( fight_style, "CleaveAdd" ) || util::str_compare_ci(fight_style, "Cleave_Add" ) )
-  {
-    auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
-    auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
-    auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
+    case FIGHT_STYLE_PATCHWERK:
+      raid_events_str.clear();
+      break;
+    
+    case FIGHT_STYLE_CASTING_PATCHWERK:
+      raid_events_str += "/casting,cooldown=500,duration=500";
+      break;
+    
+    case FIGHT_STYLE_HECTIC_ADD_CLEAVE:
+    {
+      // Phase 1 - Adds and move into position to fight adds
+      auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1U );
+      auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1U );
+      auto last = static_cast<unsigned>( max_time.total_seconds() * 0.75 );
 
-    raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
-                                     first_and_duration, cooldown, first_and_duration, last );
-  }
-  else if ( util::str_compare_ci( fight_style, "HelterSkelter" ) || util::str_compare_ci( fight_style, "Helter_Skelter" ) )
-  {
-    raid_events_str += "/casting,cooldown=30,duration=3,first=15";
-    raid_events_str += "/movement,cooldown=30,distance=20";
-    raid_events_str += "/stun,cooldown=60,duration=2";
-    raid_events_str += "/invulnerable,cooldown=120,duration=3";
-  }
-  else if ( util::str_compare_ci( fight_style, "LightMovement" ) )
-  {
-    raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
-  }
-  else if ( util::str_compare_ci( fight_style, "HeavyMovement" ) )
-  {
-    raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
-    raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
-  }
-  else if ( util::str_compare_ci( fight_style, "HecticAddCleave" ) )
-  {
-    // Phase 1 - Adds and move into position to fight adds
-    auto first_and_duration = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.05 ), 1U );
-    auto cooldown = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.075 ), 1U );
-    auto last = static_cast<unsigned>( max_time.total_seconds() * 0.75 );
+      raid_events_str += fmt::format( "/adds,count=5,first={},cooldown={},duration={},last={}",
+                                      first_and_duration, cooldown, first_and_duration, last );
 
-    raid_events_str += fmt::format( "/adds,count=5,first={},cooldown={},duration={},last={}",
-                                    first_and_duration, cooldown, first_and_duration, last );
+      raid_events_str += fmt::format( "/movement,distance=25,first={},cooldown={},last={}",
+                                      first_and_duration, cooldown, last );
 
-    raid_events_str += fmt::format( "/movement,distance=25,first={},cooldown={},last={}",
-                                    first_and_duration, cooldown, last );
+      // Phase2 - Move out of stuff
+      auto first2 = static_cast<unsigned>( max_time.total_seconds() * 0.03 );
+      auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1U );
 
-    // Phase2 - Move out of stuff
-    auto first2 = static_cast<unsigned>( max_time.total_seconds() * 0.03 );
-    auto cooldown2 = std::max( static_cast<unsigned>( max_time.total_seconds() * 0.04 ), 1U );
+      raid_events_str += fmt::format( "/movement,players_only=1,distance=8,first={},cooldown={}",
+                                      first2, cooldown2 );
+    }
+    break;
+    
+    case FIGHT_STYLE_DUNGEON_SLICE:
+      //Based on the Hero Dungeon setup
+      max_time = timespan_t::from_seconds( 360.0 );
+      //Disables all raidbuffs, except those provided by scrolls or the character itself.
+      optimal_raid = 0;
+      overrides.arcane_intellect = 1;
+      overrides.battle_shout = 1;
+      overrides.power_word_fortitude = 1;
+      overrides.bloodlust = 1;
+      overrides.windfury_totem = 0;
 
-    raid_events_str += fmt::format( "/movement,players_only=1,distance=8,first={},cooldown={}",
-                                    first2, cooldown2 );
-  }
-  else if ( util::str_compare_ci( fight_style, "Beastlord" ) )
-  {
-    raid_events_str += "/adds,name=Pack_Beast,count=6,"
-                       "first=15,duration=10,cooldown=30,angle_start=0,angle_end=360,distance=3";
-    raid_events_str += "/adds,name=Heavy_Spear,count=2,"
-                       "first=15,duration=15,cooldown=20,spawn_x=-15,spawn_y=0,distance=15";
-    raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
+      shadowlands_opts.enable_rune_words = false;
 
-    auto beast_duration = static_cast<int>( max_time.total_seconds() * 0.15 );
-    auto beast_cooldown = static_cast<int>( max_time.total_seconds() * 0.25 );
-    // Ensure min cooldown (cd - 6*stddev) is larger than duration
-    auto beast_cooldown_stddev = std::max(
-        static_cast<int>( ( beast_duration - beast_cooldown ) / 6.0 ) - 1, 0 );
-    auto beast_last = static_cast<unsigned>( max_time.total_seconds() * 0.65 );
+      ignore_invulnerable_targets = true;
 
-    raid_events_str += fmt::format( "/adds,name=Beast,count=1,first=10,duration_stddev=5,"
-                                    "duration={},cooldown={},cooldown_stddev={},last={}",
-                                    beast_duration, beast_cooldown, beast_cooldown_stddev,
-                                    beast_last );
-  }
-  else if ( util::str_compare_ci( fight_style, "CastingPatchwerk" ) )
-  {
-    raid_events_str += "/casting,cooldown=500,duration=500";
-  }
-  else if ( util::str_compare_ci( fight_style, "DungeonSlice" ) )
-  { //Based on the Hero Dungeon setup
-    max_time                           = timespan_t::from_seconds( 360.0 );
-    //Disables all raidbuffs, except those provided by scrolls or the character itself.
-    optimal_raid                       = 0;
-    overrides.arcane_intellect         = 1;
-    overrides.battle_shout             = 1;
-    overrides.power_word_fortitude     = 1;
-    overrides.bloodlust                = 1;
-    overrides.windfury_totem           = 0;
-
-    shadowlands_opts.enable_rune_words = false;
-
-    ignore_invulnerable_targets        = true;
-
-    raid_events_str +=
+      raid_events_str +=
         "/invulnerable,cooldown=500,duration=500,retarget=1"
         "/adds,name=Boss,count=1,cooldown=500,duration=135,type=add_boss,duration_stddev=1"
         "/adds,name=SmallAdd,count=5,count_range=1,first=140,cooldown=45,duration=15,duration_stddev=2"
         "/adds,name=BigAdd,count=2,count_range=1,first=160,cooldown=50,duration=30,duration_stddev=2";
+      break;
+    
+    case FIGHT_STYLE_DUNGEON_ROUTE:
+      // To be used in conjunction with "pull" raid events for a simulated dungeon run.
+      desired_targets = 1;
+      fixed_time = false;
+      ignore_invulnerable_targets = true;
+      shadowlands_opts.enable_rune_words = false;
+      overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
+    
+    case FIGHT_STYLE_CLEAVE_ADD:
+    {
+      auto first_and_duration = static_cast<unsigned>( max_time.total_seconds() * 0.05 );
+      auto cooldown = static_cast<unsigned>( max_time.total_seconds() * 0.075 );
+      auto last = static_cast<unsigned>( max_time.total_seconds() * 0.90 );
+
+      raid_events_str += fmt::format( "/adds,count=1,first={},cooldown={},duration={},last={}",
+                                      first_and_duration, cooldown, first_and_duration, last );
+    }
+    break;
+    
+    case FIGHT_STYLE_LIGHT_MOVEMENT:
+      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
+      break;
+    
+    case FIGHT_STYLE_HEAVY_MOVEMENT:
+      raid_events_str += "/movement,players_only=1,cooldown=20,cooldown_stddev=15,distance=25,distance_min=20,distance_max=30,first=15";
+      raid_events_str += "/movement,players_only=1,cooldown=45,cooldown_stddev=15,distance=45,distance_min=40,distance_max=50,first=30";
+      break;
+    
+    case FIGHT_STYLE_BEASTLORD:
+    {
+      deprecated = true;
+      raid_events_str += "/adds,name=Pack_Beast,count=6,"
+        "first=15,duration=10,cooldown=30,angle_start=0,angle_end=360,distance=3";
+      raid_events_str += "/adds,name=Heavy_Spear,count=2,"
+        "first=15,duration=15,cooldown=20,spawn_x=-15,spawn_y=0,distance=15";
+      raid_events_str += "/movement,first=13,distance=5,cooldown=20,players_only=1,player_chance=0.1";
+
+      auto beast_duration = static_cast<int>( max_time.total_seconds() * 0.15 );
+      auto beast_cooldown = static_cast<int>( max_time.total_seconds() * 0.25 );
+      // Ensure min cooldown (cd - 6*stddev) is larger than duration
+      auto beast_cooldown_stddev = std::max(
+        static_cast<int>( ( beast_duration - beast_cooldown ) / 6.0 ) - 1, 0 );
+      auto beast_last = static_cast<unsigned>( max_time.total_seconds() * 0.65 );
+
+      raid_events_str += fmt::format( "/adds,name=Beast,count=1,first=10,duration_stddev=5,"
+                                      "duration={},cooldown={},cooldown_stddev={},last={}",
+                                      beast_duration, beast_cooldown, beast_cooldown_stddev,
+                                      beast_last );
+    }
+    break;
+    
+    case FIGHT_STYLE_HELTER_SKELTER:
+      deprecated = true;
+      raid_events_str += "/casting,cooldown=30,duration=3,first=15";
+      raid_events_str += "/movement,cooldown=30,distance=20";
+      raid_events_str += "/stun,cooldown=60,duration=2";
+      raid_events_str += "/invulnerable,cooldown=120,duration=3";
+      break;
+    
+    case FIGHT_STYLE_ULTRAXION:
+      deprecated = true;
+      max_time = timespan_t::from_seconds( 366.0 );
+      fixed_time = true;
+      vary_combat_length = 0.0;
+      raid_events_str += "/flying,first=0,duration=500,cooldown=500";
+      raid_events_str += "/position_switch,first=0,duration=500,cooldown=500";
+      raid_events_str += "/stun,duration=1.0,first=45.0,period=45.0";
+      raid_events_str += "/stun,duration=1.0,first=57.0,period=57.0";
+      raid_events_str += "/damage,first=6.0,period=6.0,last=59.5,amount=44000,type=shadow";
+      raid_events_str += "/damage,first=60.0,period=5.0,last=119.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=120.0,period=4.0,last=179.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=180.0,period=3.0,last=239.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=240.0,period=2.0,last=299.5,amount=44855,type=shadow";
+      raid_events_str += "/damage,first=300.0,period=1.0,amount=44855,type=shadow";
+      break;
+    
+    default:
+      fight_style = FIGHT_STYLE_PATCHWERK;
+      raid_events_str.clear();
+      break;
   }
-  else if( util::str_compare_ci( fight_style, "DungeonRoute" ) )
-  { // To be used in conjunction with "pull" raid events for a simulated dungeon run.
-    desired_targets = 1;
-    fixed_time = false;
-    ignore_invulnerable_targets = true;
-    shadowlands_opts.enable_rune_words = false;
-    overrides.bloodlust = 0; // Bloodlust is handled by an option on each pull raid event
-  }
-  else
+
+  if ( deprecated )
   {
-    fight_style = "Patchwerk";
+    error( "Fight style {} is currently unsupported, use with caution!", fight_style );
   }
 }
 
