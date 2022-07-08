@@ -1824,34 +1824,6 @@ std::unique_ptr<expr_t> warlock_t::create_expression( util::string_view name_str
       return false;
     });
   }
-  else if ( name_str == "active_immolates" )
-  {
-    std::vector<action_t*> immo_list;
-    for ( auto a : action_list )
-    {
-      if ( a->name_str == "immolate" )
-        immo_list.push_back( a );
-    }
-
-    return make_fn_expr( name_str, [this, immo_list] {
-      std::vector<player_t*> no_dots;
-
-      if ( immo_list.empty() ) 
-        return 0;
-
-      //All the actions should have the same target list, so do this once only
-      auto tl = immo_list[ 0 ]->target_list();
-      int count = 0;
-
-      for ( auto t : tl )
-      {
-        if ( get_target_data( t )->dots_immolate->is_ticking() )
-          count++;
-      }
-
-      return count;
-    });
-  }
 
   auto splits = util::string_split<util::string_view>( name_str, "." );
 
