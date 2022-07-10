@@ -2352,7 +2352,6 @@ void sim_t::init_fight_style()
     
     default:
       fight_style = FIGHT_STYLE_PATCHWERK;
-      raid_events_str.clear();
       break;
   }
 
