@@ -8620,6 +8620,7 @@ void rogue_t::create_buffs()
   buffs.master_assassin_aura = make_buff( this, "master_assassin_aura", master_assassin )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
     ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
@@ -8733,10 +8734,12 @@ void rogue_t::create_buffs()
   // Set Bonus Items ========================================================
   
   buffs.tornado_trigger = make_buff( this, "tornado_trigger", set_bonuses.t28_outlaw_4pc->ok() ?
-                                     find_spell( 364556 ) : spell_data_t::not_found() );
+                                     find_spell( 364556 ) : spell_data_t::not_found() )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
   buffs.tornado_trigger_loading = make_buff( this, "tornado_trigger_loading", set_bonuses.t28_outlaw_4pc->ok() ?
                                              find_spell( 364234 ) : spell_data_t::not_found() )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_chance( set_bonuses.t28_outlaw_4pc->effectN( 1 ).percent() );
   if ( set_bonuses.t28_outlaw_4pc->ok() )
   {
@@ -8765,6 +8768,7 @@ void rogue_t::create_buffs()
   buffs.master_assassins_mark_aura = make_buff( this, "master_assassins_mark_aura", master_assassins_mark )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_CRIT )
     ->add_invalidate( CACHE_CRIT_CHANCE )
+    ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
     ->set_duration( sim->max_time / 2 ) // So it appears in sample sequence table
     ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
       if ( new_ == 0 )
