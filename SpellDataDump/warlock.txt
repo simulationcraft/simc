@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-06-28/44325)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-07-13/44325)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -2805,7 +2805,8 @@ Effects          :
 #2 (id=180660)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=728489)   : Dummy (3)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.20000 | Target: Self (1)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #4 (id=817750)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 5.00000 | PvP Coefficient: 1.00000
 Description      : Sacrifices $s2% of your current health to shield you for $s3% of the sacrificed health plus an additional $<points> for $d. Usable while suffering from control impairing effects.
