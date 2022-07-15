@@ -936,3 +936,5 @@
 4579858, DBFilesClient\UIDeadlyDebuff.db2
 4620073, DBFilesClient\SharedString.db2
 4623413, DBFilesClient\ProfessionRating.db2
+4492239, GameTables\ProfessionRatings.txt
+4494528, GameTables\BaseProfessionRatings.txt
