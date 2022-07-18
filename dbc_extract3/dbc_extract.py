@@ -48,7 +48,7 @@ parser.add_argument("-f",            dest = "format",
                     help = "DBC Format file")
 parser.add_argument("--delim",       dest = "delim",        default = ',',
                     help = "Delimiter for -t csv")
-parser.add_argument("-l", "--level", dest = "level",        default = 60, type = int,
+parser.add_argument("-l", "--level", dest = "level",        default = 70, type = int,
                     help = "Scaling values up to level [125]")
 parser.add_argument("-b", "--build", dest = "build",        default = None, type = parse_version,
                     help = "World of Warcraft build version (8.0.1.12345)")

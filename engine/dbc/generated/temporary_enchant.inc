@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 9.2.5.44325
-static const std::array<temporary_enchant_entry_t, 46> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.0.0.44649
+static const std::array<temporary_enchant_entry_t, 65> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
   {  3265,  45395, "blessed_weapon_coating"       },
@@ -11,6 +11,24 @@ static const std::array<temporary_enchant_entry_t, 46> __temporary_enchant_data 
   {    20,   3113, "coarse_weightstone"           },
   {  2795,  32426, "comfortable_insoles"          },
   {  3593,  28891, "consecrated_sharpening_stone" },
+  {  6382, 371641, "dnt__stonename_razorstone"    },
+  {  6383, 371680, "dnt__stonename_razorstone"    },
+  {  6384, 371681, "dnt__stonename_razorstone"    },
+  {  6199, 322761, "dnt__stonename_weightstone"   },
+  {  6199, 322761, "dnt__stonename_weightstone"   },
+  {  6199, 322761, "dnt__stonename_weightstone"   },
+  {  6198, 322749, "dnt__stonename_whetstone"     },
+  {  6198, 322749, "dnt__stonename_whetstone"     },
+  {  6198, 322749, "dnt__stonename_whetstone"     },
+  {  6382, 371641, "dnt_tempered_dracothyst_razorstone" },
+  {  6383, 371680, "dnt_tempered_dracothyst_razorstone" },
+  {  6384, 371681, "dnt_tempered_dracothyst_razorstone" },
+  {  6379, 371676, "dnt_tempered_dracothyst_weightstone" },
+  {  6380, 371677, "dnt_tempered_dracothyst_weightstone" },
+  {  6381, 371678, "dnt_tempered_dracothyst_weightstone" },
+  {  6380, 371647, "dnt_tempered_dracothyst_whetstone" },
+  {  6381, 371649, "dnt_tempered_dracothyst_whetstone" },
+  {  6382, 371641, "dnt_tempered_dracothyst_whetstone" },
   {  1643,  16138, "dense_sharpening_stone"       },
   {  1703,  16622, "dense_weightstone"            },
   {  6224, 324064, "desolate_armor_kit"           },
@@ -45,6 +63,7 @@ static const std::array<temporary_enchant_entry_t, 46> __temporary_enchant_data 
   {  2677,  28013, "superior_mana_oil"            },
   {  2678,  28017, "superior_wizard_oil"          },
   {  6252, 334456, "tempered_armor_patch"         },
+  {  6200, 322762, "wildercloth_weapon_upholstery" },
   {  2627,  25121, "wizard_oil"                   },
 } };
 

@@ -1,5 +1,5 @@
-// Gem properties, wow build 9.2.5.44325
-static const std::array<gem_property_data_t, 1950> __gem_property_data { {
+// Gem properties, wow build 10.0.0.44649
+static const std::array<gem_property_data_t, 2041> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
   {    4,  2688, 0x00000004 }, // +$k1 Stamina
@@ -1950,5 +1950,96 @@ static const std::array<gem_property_data_t, 1950> __gem_property_data { {
   { 3920,  6369, 0x00800000 }, // $spell@spelldesc367270
   { 3921,  6370, 0x00800000 }, // $spell@spelldesc367269
   { 3922,  6371, 0x00800000 }, // $spell@spelldesc367268
+  { 3927,  6392, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3928,  6393, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3929,  6394, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3930,  6395, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3931,  6396, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3932,  6397, 0x0000000e }, // +$k1 Critical Strike and +$k2 Haste
+  { 3933,  6398, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
+  { 3934,  6399, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
+  { 3935,  6400, 0x0000000e }, // +$k1 Primary Stat and +$k2 Haste
+  { 3936,  6401, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3937,  6402, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3938,  6403, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3939,  6404, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3940,  6405, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3941,  6406, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3942,  6407, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3943,  6408, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3944,  6409, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3945,  6410, 0x0000000e }, // +$k1 Stamina
+  { 3946,  6411, 0x0000000e }, // +$k1 Stamina
+  { 3947,  6412, 0x0000000e }, // +$k1 Stamina
+  { 3948,  6413, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 3949,  6414, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 3950,  6415, 0x0000000e }, // +$k1 Critical Strike and +$k2 Mastery
+  { 3951,  6416, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 3952,  6417, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 3953,  6418, 0x0000000e }, // +$k1 Critical Strike and +$k2 Versatility
+  { 3954,  6419, 0x0000000e }, // +$k1 Critical Strike
+  { 3955,  6420, 0x0000000e }, // +$k1 Critical Strike
+  { 3956,  6421, 0x0000000e }, // +$k1 Critical Strike
+  { 3957,  6422, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 3958,  6423, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 3959,  6424, 0x0000000e }, // +$k1 Versatility and +$k2 Haste
+  { 3960,  6425, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3961,  6426, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3962,  6427, 0x0000000e }, // +$k1 Versatility and +$k2 Mastery
+  { 3963,  6428, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 3964,  6429, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 3965,  6430, 0x0000000e }, // +$k1 Versatility and +$k2 Critical Strike
+  { 3966,  6431, 0x0000000e }, // +$k1 Versatility
+  { 3967,  6432, 0x0000000e }, // +$k1 Versatility
+  { 3968,  6433, 0x0000000e }, // +$k1 Versatility
+  { 3969,  6434, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3970,  6435, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3971,  6436, 0x0000000e }, // +$k1 Haste and +$k2 Versatility
+  { 3972,  6437, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 3973,  6438, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 3974,  6439, 0x0000000e }, // +$k1 Haste and +$k2 Mastery
+  { 3975,  6440, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 3976,  6441, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 3977,  6442, 0x0000000e }, // +$k1 Haste and +$k2 Critical Strike
+  { 3978,  6443, 0x0000000e }, // +$k1 Haste
+  { 3979,  6444, 0x0000000e }, // +$k1 Haste
+  { 3980,  6445, 0x0000000e }, // +$k1 Haste
+  { 3981,  6446, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 3982,  6447, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 3983,  6448, 0x0000000e }, // +$k1 Mastery and +$k2 Versatility
+  { 3984,  6449, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 3985,  6450, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 3986,  6451, 0x0000000e }, // +$k1 Mastery and +$k2 Haste
+  { 3987,  6452, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3988,  6453, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3989,  6454, 0x0000000e }, // +$k1 Mastery and +$k2 Critical Strike
+  { 3990,  6455, 0x0000000e }, // +$k1 Mastery
+  { 3991,  6456, 0x0000000e }, // +$k1 Mastery
+  { 3992,  6457, 0x0000000e }, // +$k1 Mastery
+  { 3993,  6458, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 3994,  6459, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 3995,  6460, 0x0000000e }, // +$k1 Stamina and +$k2 Critical Strike
+  { 3996,  6461, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 3997,  6462, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 3998,  6463, 0x0000000e }, // +$k1 Stamina and +$k2 Haste
+  { 3999,  6464, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4000,  6465, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4001,  6466, 0x0000000e }, // +$k1 Stamina and +$k2 Mastery
+  { 4002,  6467, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4003,  6468, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4004,  6469, 0x0000000e }, // +$k1 Stamina and +$k2 Versatility
+  { 4005,  6470, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
+  { 4006,  6471, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
+  { 4007,  6472, 0x0000000e }, // +$k1 Primary Stat and +$k2 Critical Strike
+  { 4008,  6473, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
+  { 4009,  6474, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
+  { 4010,  6475, 0x0000000e }, // +$k1 Primary Stat and +$k2 Mastery
+  { 4011,  6476, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
+  { 4012,  6477, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
+  { 4013,  6478, 0x0000000e }, // +$k1 Primary Stat and +$k2 Versatility
+  { 4014,  6485, 0x0000000e }, // Speed increased by $k1
+  { 4015,  6486, 0x0000000e }, // Speed increased by $k1
+  { 4016,  6487, 0x0000000e }, // Speed increased by $k1
+  { 4017,  6499, 0x00020000 }, // $spell@spelldesc382957
 } };
 

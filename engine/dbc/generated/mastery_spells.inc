@@ -1,5 +1,5 @@
-// Mastery abilities, wow build 9.2.5.44325
-static const std::array<mastery_spell_entry_t, 36> __mastery_spell_data { {
+// Mastery abilities, wow build 10.0.0.44649
+static const std::array<mastery_spell_entry_t, 38> __mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
   {   64,  76613 }, // Mastery: Icicles (Frost Mage)
@@ -36,5 +36,7 @@ static const std::array<mastery_spell_entry_t, 36> __mastery_spell_data { {
   {  270, 117907 }, // Mastery: Gust of Mists (Mistweaver Monk)
   {  577, 185164 }, // Mastery: Demonic Presence (Havoc Demon Hunter)
   {  581, 203747 }, // Mastery: Fel Blood (Vengeance Demon Hunter)
+  { 1467, 362980 }, // Mastery: Giantkiller (Devastation Evoker)
+  { 1468, 363510 }, // Mastery: Life-Binder (Preservation Evoker)
 } };
 

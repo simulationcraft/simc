@@ -5,6 +5,7 @@ from collections import defaultdict
 import dbc.db, dbc.data, dbc.parser, dbc.file
 
 from dbc import constants, util
+from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
@@ -447,21 +448,9 @@ class RealPPMModifierGenerator(DataGenerator):
 
 class SpecializationEnumGenerator(DataGenerator):
     def filter(self):
-        enum_ids = [
-            [ None, None, None, None ], # pets come here
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-            [ None, None, None, None ],
-        ]
+        enum_ids = []
+        for idx in range(0, len(constants.CLASS_INFO) + 1):
+            enum_ids.append([None] * constants.MAX_SPECIALIZATION)
 
         max_specialization = 0
         for spec_id, spec_data in sorted(self.db('ChrSpecialization').items()):
@@ -472,7 +461,7 @@ class SpecializationEnumGenerator(DataGenerator):
 
             if spec_data.class_id > 0:
                 spec_name = '%s_%s' % (
-                    DataGenerator._class_names[spec_data.class_id].upper().replace(" ", "_"),
+                    util.class_name(class_id=spec_data.class_id).upper().replace(" ", "_"),
                     spec_data.name.upper().replace(" ", "_"),
                 )
             elif spec_data.name in [ 'Ferocity', 'Cunning', 'Tenacity' ]:
@@ -533,7 +522,7 @@ class TalentDataGenerator(DataGenerator):
             fields = talent.ref('id_spell').field('name')
             fields += talent.field('id')
             fields += [ '%#.2x' % 0 ]
-            fields += [ '%#.04x' % (DataGenerator._class_masks[talent.class_id] or 0) ]
+            fields += [ '%#.04x' % (util.class_mask(class_id=talent.class_id) or 0) ]
             fields += talent.field('spec_id', 'col', 'row', 'id_spell', 'id_replace' )
             # Pad struct with empty pointers for direct rank based spell data access
             fields += [ ' 0' ]
@@ -1586,7 +1575,7 @@ class SpellDataGenerator(DataGenerator):
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
-	  ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
+          ( 368690, 0 ), # T28 Remnant's Despair (DK ring) buff
         ),
 
         # Shaman:
@@ -1633,7 +1622,7 @@ class SpellDataGenerator(DataGenerator):
           ( 286976, 0 ),                                # Tectonic Thunder Azerite Trait buff
           ( 327164, 0 ),                                # Primordial Wave buff
           ( 336732, 0 ), ( 336733, 0 ),                 # Legendary: Elemental Equilibrium school buffs
-	  ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
+          ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
           ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
         ),
 
@@ -1796,8 +1785,8 @@ class SpellDataGenerator(DataGenerator):
           ( 242387, 3 ), # Thunderfist Artifact trait buff
           ( 261682, 3 ), # Chi Burst Chi generation cap
           ( 285594, 3 ), # Good Karma Healing Spell
-		  ( 290461, 3 ), # Reverse Harm Damage
-		  ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
+          ( 290461, 3 ), # Reverse Harm Damage
+          ( 335913, 3 ), # Empowered Tiger Lightning Damage spell
 
           # Covenant
           ( 325217, 0 ), # Necrolord Bonedust Brew damage
@@ -2203,26 +2192,26 @@ class SpellDataGenerator(DataGenerator):
     def class_mask_by_skill(self, skill):
         for i in range(0, len(constants.CLASS_SKILL_CATEGORIES)):
             if constants.CLASS_SKILL_CATEGORIES[i] == skill:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_spec_skill(self, spec_skill):
         for i in range(0, len(self._spec_skill_categories)):
             if spec_skill in self._spec_skill_categories[i]:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def class_mask_by_pet_skill(self, pet_skill):
         for i in range(0, len(self._pet_skill_categories)):
             if pet_skill in self._pet_skill_categories[i]:
-                return DataGenerator._class_masks[i]
+                return util.class_mask(class_id=i)
 
         return 0
 
     def race_mask_by_skill(self, skill):
-        return util.race_mask(skill = skill)
+        return util.race_mask(skill=skill)
 
     def process_spell(self, spell_id, result_dict, mask_class = 0, mask_race = 0, state = True):
         filter_list = { }
@@ -2376,7 +2365,7 @@ class SpellDataGenerator(DataGenerator):
         for talent in TalentSet(self._options).get():
             # These may now be pet talents
             if talent.class_id > 0:
-                mask_class = DataGenerator._class_masks[talent.class_id]
+                mask_class = util.class_mask(class_id=talent.class_id)
                 self.process_spell(talent.id_spell, ids, mask_class, 0, False)
 
         # Get all perks
@@ -2392,7 +2381,7 @@ class SpellDataGenerator(DataGenerator):
             if spec_data.id == 0:
                 continue
 
-            self.process_spell(spell_id, ids, DataGenerator._class_masks[spec_data.class_id], 0, False)
+            self.process_spell(spell_id, ids, util.class_mask(class_id=spec_data.class_id), 0, False)
 
         # Get base skills from SkillLineAbility
         for ability in self.db('SkillLineAbility').values():
@@ -2405,7 +2394,7 @@ class SpellDataGenerator(DataGenerator):
                 continue
 
             # Guess class based on skill category identifier
-            mask_class_category = self.class_mask_by_skill(skill_id)
+            mask_class_category = util.class_mask(skill=skill_id)
             if mask_class_category == 0:
                 mask_class_category = self.class_mask_by_spec_skill(skill_id)
 
@@ -2441,15 +2430,15 @@ class SpellDataGenerator(DataGenerator):
 
             mask_class = 0
             if spec_data.class_id > 0:
-                mask_class = DataGenerator._class_masks[spec_data.class_id]
+                mask_class = util.class_mask(class_id=spec_data.class_id)
             # Hunter pet classes have a class id of 0, tag them as "hunter spells" like before
             else:
-                mask_class = DataGenerator._class_masks[3]
+                mask_class = util.class_mask(class_id=Class.HUNTER)
 
             self.process_spell(spell.id, ids, mask_class, 0, False)
 
         for entry in MasterySpellSet(self._options).get():
-            self.process_spell(entry.id_mastery_1, ids, DataGenerator._class_masks[entry.class_id], 0, False)
+            self.process_spell(entry.id_mastery_1, ids, util.class_mask(class_id=entry.class_id), 0, False)
 
 
         # Get spells relating to item enchants, so we can populate a (nice?) list
@@ -2739,6 +2728,7 @@ class SpellDataGenerator(DataGenerator):
                 if pattern.match(spell_data.name):
                     self.process_spell(spell_id, ids, 0, 0)
 
+
         # After normal spells have been fetched, go through all spell ids,
         # and get all the relevant aura_ids for selected spells
         more_ids = { }
@@ -2757,6 +2747,7 @@ class SpellDataGenerator(DataGenerator):
             else:
                 ids[id]['mask_class'] |= data['mask_class']
                 ids[id]['mask_race'] |= data['mask_race']
+
 
         #print('filter done', datetime.datetime.now() - _start)
         return ids
@@ -3366,7 +3357,7 @@ class SetBonusListGenerator(DataGenerator):
             'bonuses': [ 1443 ],
             'tier'   : 23
         },
-		{
+        {
             'name'   : 'titanic_empowerment',
             'bonuses': [ 1452 ],
             'tier'   : 24
@@ -4127,7 +4118,7 @@ class RankSpellGenerator(DataGenerator):
 
         for class_id, spec_id, spell, replace_spell in data:
             fields = []
-            fields += ['{:2d}'.format(class_id), '{:3d}'.format(spec_id)]
+            fields += ['{:2d}'.format(class_id), '{:4d}'.format(spec_id)]
             fields += spell.field('id')
             fields += replace_spell.field('id')
             fields += spell.field('name')

@@ -81,6 +81,34 @@ def is_blacklisted(**kwargs):
 
     return False
 
+def class_mask(**kwargs):
+    skill = kwargs.get('skill', 0)
+    id = kwargs.get('class_id', 0)
+
+    if id != 0:
+        if not hasattr(class_mask, '_byid'):
+            class_mask._byid = dict()
+            for v in constants.CLASS_INFO:
+                if v['id'] not in class_mask._byid:
+                    class_mask._byid[v['id']] = 0
+
+                class_mask._byid[v['id']] |= (1 << v['bit'])
+
+        return class_mask._byid.get(id, 0)
+
+
+    if skill != 0:
+        if not hasattr(class_mask, '_byskill'):
+            class_mask._byskill = dict()
+            for v in constants.CLASS_INFO:
+                if v['skill'] not in class_mask._byskill:
+                    class_mask._byskill[v['skill']] = 0
+
+                class_mask._byskill[v['skill']] |= (1 << v['bit'])
+
+        return class_mask._byskill.get(skill, 0)
+
+    return 0
 def race_mask(**kwargs):
     skill = kwargs.get('skill', 0)
 

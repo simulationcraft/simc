@@ -1,4 +1,4 @@
-// Runeforge legendary bonuses, wow build 9.2.5.44325
+// Runeforge legendary bonuses, wow build 10.0.0.44649
 static const std::array<runeforge_legendary_entry_t, 762> __runeforge_legendary_data { {
   { 6823, 64, 327508, 0x000000c0, 0, "Slick Ice" },
   { 6828, 64, 327284, 0x00110020, 0, "Cold Front" },
@@ -610,10 +610,10 @@ static const std::array<runeforge_legendary_entry_t, 762> __runeforge_legendary_
   { 7473, 62, 354186, 0x00010042, 1, "Harmonic Echo" },
   { 7473, 63, 354186, 0x00010042, 1, "Harmonic Echo" },
   { 7473, 64, 354186, 0x00010042, 1, "Harmonic Echo" },
-  { 7474, 102, 354109, 0x00000440, 2, "Sinful Hysteria" },
-  { 7474, 103, 354109, 0x00000440, 2, "Sinful Hysteria" },
-  { 7474, 104, 354109, 0x00000440, 2, "Sinful Hysteria" },
-  { 7474, 105, 354109, 0x00000440, 2, "Sinful Hysteria" },
+  { 7474, 102, 354109, 0x00000440, 2, "Sinful Indulgence" },
+  { 7474, 103, 354109, 0x00000440, 2, "Sinful Indulgence" },
+  { 7474, 104, 354109, 0x00000440, 2, "Sinful Indulgence" },
+  { 7474, 105, 354109, 0x00000440, 2, "Sinful Indulgence" },
   { 7475, 62, 354294, 0x00000308, 4, "Death's Fathom" },
   { 7475, 63, 354294, 0x00000308, 4, "Death's Fathom" },
   { 7475, 64, 354294, 0x00000308, 4, "Death's Fathom" },

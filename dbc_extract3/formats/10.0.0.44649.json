@@ -1509,10 +1509,10 @@
   "TraitDefinitionEffectPoints": {
     "fields": [
       { "data_type": "i", "field": "id" },
-      { "data_type": "i", "field": "id_trait_definition", "ref": "TraitDefinition" },
-      { "data_type": "i", "field": "effect_index" },
-      { "data_type": "i", "field": "type" },
-      { "data_type": "i", "field": "id_curve", "ref": "Curve" }
+      { "data_type": "i", "field": "id_trait_definition", "ref": "TraitDefinition", "format": { "cpp": "%5d" } },
+      { "data_type": "i", "field": "effect_index", "format": { "cpp": "%2d" } },
+      { "data_type": "i", "field": "operation" },
+      { "data_type": "i", "field": "id_curve", "ref": "Curve", "format": { "cpp": "%5d" } }
     ]
   },
   "TraitNode": {

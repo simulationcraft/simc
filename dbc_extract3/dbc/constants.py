@@ -14,11 +14,14 @@ class Class(enum.IntEnum):
   MONK         = 10
   DRUID        = 11
   DEMON_HUNTER = 12
+  EVOKER       = 13
 
 class HotfixType(enum.IntEnum):
   DISABLED = 0
   ENABLED  = 1
   REMOVED  = 2
+
+MAX_SPECIALIZATION = 4
 
 CONSUMABLE_ITEM_WHITELIST = {
   # Food
@@ -64,18 +67,19 @@ ITEM_WHITELIST = list(set(ITEM_WHITELIST))
 
 CLASS_SKILL_CATEGORIES = [
    0,
-   840,    # Warrior
-   800,    # Paladin
-   795,    # Hunter
-   921,    # Rogue
-   804,    # Priest
-   796,    # Death Knight
-   924,    # Shaman
-   904,    # Mage
-   849,    # Warlock
-   829,    # Monk
-   798,    # Druid
-   1848,   # Demon Hunter
+   840,   # Warrior
+   800,   # Paladin
+   795,   # Hunter
+   921,   # Rogue
+   804,   # Priest
+   796,   # Death Knight
+   924,   # Shaman
+   904,   # Mage
+   849,   # Warlock
+   829,   # Monk
+   798,   # Druid
+   1848,  # Demon Hunter
+   2810,  # Evoker
 ]
 
 RACE_INFO = [
@@ -118,7 +122,8 @@ CLASS_INFO = [
   { 'id':  9, 'bit':  8, 'name': 'Warlock',      'skill': 849,  'family': 5   },
   { 'id': 10, 'bit':  9, 'name': 'Monk',         'skill': 829,  'family': 53  },
   { 'id': 11, 'bit': 10, 'name': 'Druid',        'skill': 798,  'family': 7   },
-  { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848, 'family': 107 }
+  { 'id': 12, 'bit': 11, 'name': 'Demon Hunter', 'skill': 1848, 'family': 107 },
+  { 'id': 13, 'bit': 12, 'name': 'Evoker',       'skill': 2810, 'family': 224 }
 ]
 
 PET_SKILL_CATEGORIES = [
