@@ -117,6 +117,8 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
+    propagate_const<buff_t*> translucent_image;
+    propagate_const<buff_t*> mind_devourer;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -126,8 +128,6 @@ public:
     propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
-    propagate_const<buff_t*> translucent_image;
-    propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
 
     // Covenants
@@ -150,6 +150,10 @@ public:
     player_talent_t mindbender;
     // Row 9
     player_talent_t rabid_shadows;
+
+    // Shadow Tree
+    // Row 8
+    player_talent_t mind_devourer;
 
     // Shared
     const spell_data_t* twist_of_fate;
