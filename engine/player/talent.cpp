@@ -8,6 +8,11 @@
 #include "dbc/item_database.hpp"
 #include "player/player.hpp"
 
+player_talent_t::player_talent_t() :
+  m_player( nullptr ), m_trait( &( trait_data_t::nil() ) ), m_spell( spell_data_t::not_found() ),
+  m_rank( 0 )
+{ }
+
 player_talent_t::player_talent_t( const player_t* player ) :
   m_player( player ), m_trait( &( trait_data_t::nil() ) ), m_spell( spell_data_t::not_found() ),
   m_rank( 0 )

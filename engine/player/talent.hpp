@@ -19,7 +19,7 @@ class player_talent_t
   std::vector<double> m_values;
 
 public:
-  player_talent_t() = delete;
+  player_talent_t();
   player_talent_t( const player_t* );
   player_talent_t( const player_t*, const trait_data_t*, unsigned rank );
 
@@ -41,6 +41,11 @@ public:
   double base_value( unsigned effect_index ) const
   {
     assert( effect_index > 0 );
+
+    if ( !enabled() )
+    {
+      return 0.0;
+    }
 
     if ( effect_index > m_values.size() )
     {

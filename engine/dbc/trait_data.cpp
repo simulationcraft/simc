@@ -15,8 +15,6 @@
 #include "generated/trait_data_ptr.inc"
 #endif
 
-#include <iostream>
-
 util::span<const trait_data_t> trait_data_t::data( bool ptr )
 {
   return SC_DBC_GET_DATA( __trait_data_data, __ptr_trait_data_data, ptr );
