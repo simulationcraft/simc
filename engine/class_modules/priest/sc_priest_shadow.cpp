@@ -56,6 +56,11 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
+    if ( priest().talents.mind_devourer.enabled() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().talents.mind_devourer.percent( 1 ) );
+    }
+
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting = only_cwc;
 
@@ -1940,10 +1945,21 @@ void priest_t::create_buffs_shadow()
                                            talents.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
   buffs.void_torrent          = make_buff( this, "void_torrent", talents.void_torrent );
 
+  // TODO: Check Buff ID(s) for Mind Devourer
+  if ( talents.mind_devourer.enabled() )
+  {
+    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                              ->set_trigger_spell( talents.mind_devourer.spell() )
+                              ->set_chance( talents.mind_devourer.percent( 2 ) );
+  }
+  else
+  {
+    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+                              ->set_trigger_spell( conduits.mind_devourer )
+                              ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
+  }
+
   // Conduits (Shadowlands)
-  buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
-                            ->set_trigger_spell( conduits.mind_devourer )
-                            ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 
@@ -1962,6 +1978,8 @@ void priest_t::init_rng_shadow()
 
 void priest_t::init_spells_shadow()
 {
+  talents.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
+
   // Talents
   // T15
   talents.fortress_of_the_mind       = find_talent_spell( "Fortress of the Mind" );
