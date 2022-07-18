@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 from dbc import db, util, constants
 
 # Simple cache for raw filter results
@@ -376,4 +378,166 @@ class TemporaryEnchantItemSet(DataSet):
 
     def ids(self):
         return list(set(v[0] for v in self.get()))
+
+class TraitSet(DataSet):
+    def _filter(self, **kwargs):
+        _spec_map = dict(
+            (entry.id_parent, entry.id_spec) for entry in self.db('SpecSetMember').values()
+        )
+
+        # List of SkillLineXTraitTree entries related to player skills
+        _trait_skills = [
+            entry for entry in self.db('SkillLineXTraitTree').values()
+                if util.class_id(player_skill=entry.id_skill_line) != -1
+        ]
+
+        # Map of TraitTree entries
+        _trait_trees = dict(
+            (data.id_trait_tree, (data.ref('id_trait_tree'), data.id_skill_line))
+                for data in _trait_skills
+        )
+
+        # Map TraitTreeNodeGroups to "tree indices" based on the trait tree currency used
+        _trait_node_group_map = dict()
+        for entry in self.db('TraitTreeXTraitCurrency').values():
+            if entry.id_trait_tree not in _trait_trees:
+                continue
+
+            currency = entry.ref('id_trait_currency')
+            if currency.id == 0:
+                continue
+
+            cost_definition = currency.child_ref('TraitCostDefinition')
+            if cost_definition.id == 0:
+                continue
+
+            cost = cost_definition.parent_record()
+            if cost.id == 0:
+                continue
+
+            node_group = cost.child_ref('TraitNodeGroupXTraitCost')
+            if node_group.id == 0:
+                continue
+
+            _trait_node_group_map[node_group.id_trait_node_group] = entry.index
+
+        # Map of trait_node_id, node_data
+        _trait_nodes = dict()
+
+        # Map of trait_node_group_id, group_data
+        _trait_node_groups = dict(
+            (entry.id, {'group': entry, 'nodes': {}, 'cond': set()})
+                for tree, id_skill in _trait_trees.values()
+                    for entry in tree.child_refs('TraitNodeGroup')
+        )
+
+        # Map TraitNode entries to TraitNodeGroups
+        for data in self.db('TraitNodeGroupXTraitNode').values():
+            group_id = data.id_trait_node_group
+            node_id = data.id_trait_node
+
+            if group_id not in _trait_node_groups:
+                continue
+
+            if node_id not in _trait_nodes:
+                _trait_nodes[node_id] = {
+                    'node': data.ref('id_trait_node'),
+                    'index': data.index,
+                    'cond': set(),
+                    'entries': set()
+                }
+
+            _trait_node_groups[group_id]['nodes'][node_id] = _trait_nodes[node_id]
+
+        # Collect TraitCond entries for each used TraitNodeGroup
+        for data in self.db('TraitNodeGroupXTraitCond').values():
+            group_id = data.id_trait_node_group
+            if group_id not in _trait_node_groups:
+                continue
+
+            _trait_node_groups[group_id]['cond'].add(data.ref('id_trait_cond'))
+
+        # Collect TraitCond entries for each used TraitNode
+        for data in self.db('TraitNodeXTraitCond').values():
+            node_id = data.id_trait_node
+
+            if node_id not in _trait_nodes:
+                continue
+
+            _trait_nodes[node_id]['cond'].add(data.ref('id_trait_cond'))
+
+        # Collect TraitNodeEntry entries for each used TraitNode
+        for data in self.db('TraitNodeXTraitNodeEntry').values():
+            node_id = data.id_trait_node
+            entry_id = data.id_trait_node_entry
+
+            if node_id not in _trait_nodes:
+                continue
+
+            entry = data.ref('id_trait_node_entry')
+
+            trait_def = entry.ref('id_trait_definition')
+            if trait_def.id_spell == 0:
+                continue
+
+            spell = trait_def.ref('id_spell')
+            if spell.id == 0:
+                continue
+
+            _trait_nodes[node_id]['entries'].add(entry)
+
+        # A map of (spell_id, trait_node_id), trait_data
+        _traits = defaultdict(lambda: {
+            'spell': None,
+            'specs': set(),
+            'starter': set(),
+            'class_': 0,
+            'node': None,
+            'definition': None,
+            'entry': None,
+            'groups': set(),
+            'tree': 0
+        })
+
+        for group in _trait_node_groups.values():
+            class_id = util.class_id(player_skill=_trait_trees[group['group'].id_parent][1])
+            tree_index = _trait_node_group_map.get(group['group'].id, 0)
+
+            group_specs = set(_spec_map.get(cond.id_spec_set)
+                for cond in group['cond'] if cond.type == 1
+            )
+
+            group_starter = set(_spec_map.get(cond.id_spec_set)
+                for cond in group['cond'] if cond.type == 2
+            )
+
+            for node in group['nodes'].values():
+                node_specs = set(_spec_map.get(cond.id_spec_set)
+                    for cond in node['cond'] if cond.type == 1
+                )
+
+                node_starter = set(_spec_map.get(cond.id_spec_set)
+                    for cond in node['cond'] if cond.type == 2
+                )
+
+                for entry in node['entries']:
+                    key = entry.id
+                    definition = entry.ref('id_trait_definition')
+
+                    _traits[key]['groups'].add(group['group'])
+                    _traits[key]['node'] = node['node']
+                    _traits[key]['entry']= entry
+                    _traits[key]['definition'] = definition
+                    _traits[key]['spell'] = definition.ref('id_spell')
+                    _traits[key]['class_'] = class_id
+                    _traits[key]['specs'] |= group_specs | node_specs
+                    _traits[key]['starter'] |= group_starter | node_starter
+
+                    if tree_index != 0 and _traits[key]['tree'] == 0:
+                        _traits[key]['tree'] = tree_index
+
+        return _traits
+
+    def ids(self):
+        return [ v['spell'].id for v in self.get().values() ]
 

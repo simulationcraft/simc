@@ -1413,3 +1413,17 @@ enum fight_style_e
   FIGHT_STYLE_ULTRAXION,
   FIGHT_STYLE_MAX
 };
+
+// Dragonflight player talent tree indices
+enum class talent_tree : unsigned
+{
+  ANY = 0,
+  CLASS,
+  SPECIALIZATION
+};
+
+enum trait_definition_op : unsigned
+{
+  TRAIT_OP_SET = 0,
+  TRAIT_OP_MUL
+};

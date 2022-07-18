@@ -19,6 +19,7 @@
 #include "util/cache.hpp"
 #include "dbc/specialization.hpp"
 #include "assessor.hpp"
+#include "talent.hpp"
 #include <map>
 #include <set>
 #include <unordered_map>
@@ -142,6 +143,7 @@ struct player_t : public actor_t
   std::string talents_str, id_str, target_str;
   std::string region_str, server_str, origin_str;
   std::string race_str, professions_str, position_str;
+  std::string class_talents_str, spec_talents_str;
   enum timeofday_e { NIGHT_TIME, DAY_TIME, } timeofday; // Specify InGame time of day to determine Night Elf racial
   enum zandalari_loa_e {AKUNDA, BWONSAMDI, GONK, KIMBUL, KRAGWA, PAKU} zandalari_loa; //Specify which loa zandalari has chosen to determine racial
   enum vulpera_tricks_e { CORROSIVE, FLAMES, SHADOWS, HEALING, HOLY } vulpera_tricks; //Specify which trick to use for vulpera bag of tricks
@@ -180,6 +182,9 @@ struct player_t : public actor_t
   // Talent Parsing
   std::unique_ptr<player_talent_points_t> talent_points;
   std::string talent_overrides_str;
+
+  // Player selected (trait entry id, rank) tuples
+  std::vector<std::tuple<talent_tree, unsigned, unsigned>> player_traits;
 
   // Profs
   std::array<int, PROFESSION_MAX> profession;
@@ -838,6 +843,10 @@ public:
                                        specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_pet_spell( util::string_view name ) const;
   const spell_data_t* find_talent_spell( util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false, bool check_validity = true ) const;
+  player_talent_t find_talent_spell( talent_tree tree, util::string_view name, specialization_e s = SPEC_NONE, bool name_tokenized = false ) const;
+  player_talent_t find_talent_spell( talent_tree tree, unsigned spell_id, specialization_e s = SPEC_NONE  ) const;
+  player_talent_t find_talent_spell( unsigned talent_entry_id, specialization_e s = SPEC_NONE ) const;
+
   const spell_data_t* find_specialization_spell( util::string_view name, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( util::string_view name, util::string_view desc, specialization_e s = SPEC_NONE ) const;
   const spell_data_t* find_specialization_spell( unsigned spell_id, specialization_e s = SPEC_NONE ) const;

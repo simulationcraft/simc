@@ -82,6 +82,7 @@ SRC += \
     dbc$(PATHSEP)spelltext_data.cpp \
     dbc$(PATHSEP)talent_data.cpp \
     dbc$(PATHSEP)temporary_enchant.cpp \
+    dbc$(PATHSEP)trait_data.cpp \
     interfaces$(PATHSEP)bcp_api.cpp \
     interfaces$(PATHSEP)sc_http.cpp \
     interfaces$(PATHSEP)sc_http_curl.cpp \
@@ -115,6 +116,7 @@ SRC += \
     player$(PATHSEP)set_bonus.cpp \
     player$(PATHSEP)soulbinds.cpp \
     player$(PATHSEP)spawner_base.cpp \
+    player$(PATHSEP)talent.cpp \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \

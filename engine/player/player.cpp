@@ -26,6 +26,7 @@
 #include "dbc/rank_spells.hpp"
 #include "dbc/specialization_spell.hpp"
 #include "dbc/temporary_enchant.hpp"
+#include "dbc/trait_data.hpp"
 #include "dbc/covenant_data.hpp"
 #include "item/item.hpp"
 #include "item/special_effect.hpp"
@@ -2351,6 +2352,67 @@ void player_t::override_talent( util::string_view override_str )
   }
 }
 
+static void parse_traits(
+    talent_tree tree,
+    const std::string& opt_str,
+    player_t* player )
+{
+  auto talents = util::string_split<util::string_view>( opt_str, "/" );
+  for ( const auto talent : talents )
+  {
+    auto talent_split = util::string_split<util::string_view>( talent, ":" );
+    if ( talent_split.size() != 2 )
+    {
+      player->sim->error( "Invalid talent string {}", talent );
+      player->sim->cancel();
+      return;
+    }
+
+    auto entry_id = util::to_unsigned_ignore_error( talent_split[0], 0 );
+    auto ranks = util::to_unsigned( talent_split[1] );
+    const trait_data_t* trait_obj = nullptr;
+    if ( entry_id != 0 )
+    {
+      trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+    }
+    else
+    {
+      trait_obj = trait_data_t::find_tokenized( tree,
+        talent_split[0], util::class_id( player->type ), player->specialization(), player->dbc->ptr );
+    }
+
+    if ( trait_obj->id_spell == 0 )
+    {
+      player->sim->error( "Unable to find talent {}", talent_split[0] );
+      player->sim->cancel();
+    }
+    else
+    {
+      auto it = range::find_if( player->player_traits, [trait_obj]( const auto& entry ) {
+        return std::get<1>( entry ) == trait_obj->id_trait_node_entry;
+      } );
+
+      auto entry = std::make_tuple( tree, trait_obj->id_trait_node_entry,
+          std::min( ranks, trait_obj->max_ranks ));
+      if ( it != player->player_traits.end() )
+      {
+        if ( std::get<2>( *it ) != std::get<2>( entry ) )
+        {
+          player->sim->error( "Overwriting talent {} ({}), rank {} -> {}",
+            trait_obj->name, trait_obj->id_trait_node_entry,
+            std::get<2>( *it ), std::get<2>( entry ) );
+        }
+
+        *it = entry;
+      }
+      else
+      {
+        player->player_traits.push_back( entry );
+      }
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
@@ -2362,6 +2424,9 @@ void player_t::init_talents()
       override_talent( split );
     }
   }
+
+  parse_traits( talent_tree::CLASS, class_talents_str, this );
+  parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
 }
 
 void player_t::init_spells()
@@ -9920,6 +9985,101 @@ const spell_data_t* player_t::find_talent_spell( util::string_view n, specializa
   return spell_data_t::not_found();
 }
 
+static player_talent_t create_talent_obj(
+    const player_t*     player,
+    specialization_e    spec,
+    const trait_data_t* trait )
+{
+  auto it = range::find_if( player->player_traits, [trait]( const auto& entry ) {
+    return std::get<1>( entry ) == trait->id_trait_node_entry;
+  } );
+
+  bool is_starter = range::find( trait->id_spec_starter,
+      spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end();
+
+  if ( std::get<2>( *it ) == 0U || ( it == player->player_traits.end() && !is_starter ) )
+  {
+    return { player };
+  }
+
+  return { player, trait, is_starter ? trait->max_ranks : std::get<2>( *it ) };
+}
+
+player_talent_t player_t::find_talent_spell(
+    talent_tree        tree,
+    util::string_view name,
+    specialization_e  s,
+    bool              name_tokenized ) const
+{
+  const trait_data_t* trait;
+  uint32_t class_idx, spec_idx;
+
+  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
+
+  if ( name_tokenized )
+  {
+    trait = trait_data_t::find_tokenized( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+  }
+  else
+  {
+    trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
+  }
+
+  return create_talent_obj( this, s, trait );
+}
+
+player_talent_t player_t::find_talent_spell(
+  talent_tree      tree,
+  unsigned         spell_id,
+  specialization_e s ) const
+{
+  const trait_data_t *generic_trait = nullptr, *spec_trait = nullptr;
+  uint32_t class_idx, spec_idx;
+
+  dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
+
+  auto traits = trait_data_t::data( class_idx, tree, dbc->ptr );
+  for ( const auto& trait : traits )
+  {
+    if ( trait.id_spell != spell_id )
+    {
+      continue;
+    }
+
+    if ( trait.id_spec[ 0 ] == 0 )
+    {
+      generic_trait = &( trait );
+    }
+    else
+    {
+      auto it = range::find( trait.id_spec, s == SPEC_NONE ? _spec : s );
+      if ( it != trait.id_spec.end() )
+      {
+        spec_trait = &( trait );
+      }
+    }
+  }
+
+  if ( spec_trait )
+  {
+    return create_talent_obj( this, s, spec_trait );
+  }
+  else if ( generic_trait )
+  {
+    return create_talent_obj( this, s, generic_trait );
+  }
+  else
+  {
+    return create_talent_obj( this, s, &( trait_data_t::nil() ) );
+  }
+}
+
+player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
+{
+  const trait_data_t* trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+  return create_talent_obj( this, s, trait );
+}
+
 const spell_data_t* player_t::find_specialization_spell( util::string_view name,
                                                          specialization_e s ) const
 {
@@ -10775,14 +10935,27 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
   // talents
   if ( splits.size() >= 2 && splits[ 0 ] == "talent" )
   {
-    const spell_data_t* s = find_talent_spell( splits[ 1 ], specialization(), true );
-    if ( s == spell_data_t::nil() )
+    const auto ctalent = find_talent_spell( talent_tree::CLASS,
+        splits[ 1 ], specialization(), true );
+    const auto stalent = find_talent_spell( talent_tree::SPECIALIZATION,
+        splits[ 1 ], specialization(), true );
+
+    if ( ctalent.spell() == spell_data_t::nil() && stalent.spell() == spell_data_t::nil() )
+    {
       throw std::invalid_argument(fmt::format("Cannot find talent '{}'.", splits[ 1 ]));
+    }
 
     if ( splits.size() == 2 || ( splits.size() == 3 && splits[ 2 ] == "enabled" ) )
-      return expr_t::create_constant( expression_str, s->ok() );
+    {
+      return expr_t::create_constant( expression_str, ctalent.enabled() || stalent.enabled() );
+    }
+    else if ( splits.size() == 3 && splits[ 2 ] == "rank" )
+    {
+      return expr_t::create_constant( expression_str, std::max( ctalent.rank(), stalent.rank() ) );
+    }
 
-    throw std::invalid_argument(fmt::format("Unsupported talent expression '{}'.", splits[ 2 ]));
+    throw std::invalid_argument(
+        fmt::format( "Unsupported talent expression '{}'.", splits[ 2 ] ) );
   }
 
   // trinkets
@@ -11229,6 +11402,16 @@ std::string player_t::create_profile( save_e stype )
       profile_str += "talents=" + talents_str + term;
     }
 
+    if ( !class_talents_str.empty() )
+    {
+      profile_str += "class_talents=" + class_talents_str + term;
+    }
+
+    if ( !spec_talents_str.empty() )
+    {
+      profile_str += "spec_talents=" + spec_talents_str + term;
+    }
+
     if ( !talent_overrides_str.empty() )
     {
       auto splits = util::string_split<util::string_view>( talent_overrides_str, "/" );
@@ -11628,6 +11811,11 @@ void player_t::create_options()
   add_option( opt_bool( "disable_hotfixes", disable_hotfixes ) );
   add_option( opt_func( "min_gcd", parse_min_gcd ) );
 
+  add_option( opt_string( "class_talents", class_talents_str ) );
+  add_option( opt_append( "class_talents+", class_talents_str ) );
+
+  add_option( opt_string( "spec_talents", spec_talents_str ) );
+  add_option( opt_append( "spec_talents+", spec_talents_str ) );
   // Cosumables
   add_option( opt_string( "potion", potion_str ) );
   add_option( opt_string( "flask", flask_str ) );

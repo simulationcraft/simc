@@ -62,6 +62,7 @@ dbc/spell_query/spell_data_expr.hpp
 dbc/spelltext_data.hpp
 dbc/talent_data.hpp
 dbc/temporary_enchant.hpp
+dbc/trait_data.hpp
 interfaces/bcp_api.hpp
 interfaces/sc_http.hpp
 interfaces/sc_http_curl.hpp
@@ -117,6 +118,7 @@ player/soulbinds.hpp
 player/spawner_base.hpp
 player/special_effect_db_item.hpp
 player/stats.hpp
+player/talent.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
 player/unique_gear_helper.hpp
@@ -260,6 +262,7 @@ dbc/spell_item_enchantment.cpp
 dbc/spelltext_data.cpp
 dbc/talent_data.cpp
 dbc/temporary_enchant.cpp
+dbc/trait_data.cpp
 interfaces/bcp_api.cpp
 interfaces/sc_http.cpp
 interfaces/sc_http_curl.cpp
@@ -293,6 +296,7 @@ player/runeforge_data.cpp
 player/set_bonus.cpp
 player/soulbinds.cpp
 player/spawner_base.cpp
+player/talent.cpp
 player/target_specific.cpp
 player/unique_gear.cpp
 player/unique_gear_bfa.cpp

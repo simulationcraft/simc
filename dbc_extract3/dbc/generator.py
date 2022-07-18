@@ -7,6 +7,7 @@ import dbc.db, dbc.data, dbc.parser, dbc.file
 from dbc import constants, util
 from dbc.constants import Class
 from dbc.filter import ActiveClassSpellSet, PetActiveSpellSet, RacialSpellSet, MasterySpellSet, RankSpellSet, ConduitSet, SoulbindAbilitySet, CovenantAbilitySet, RenownRewardSet, TalentSet, TemporaryEnchantItemSet
+from dbc.filter import TraitSet
 
 # Special hotfix field_id value to indicate an entry is new (added completely through the hotfix entry)
 HOTFIX_MAP_NEW_ENTRY  = 0xFFFFFFFF
@@ -2691,6 +2692,12 @@ class SpellDataGenerator(DataGenerator):
         for entry in self.db('RuneforgeLegendaryAbility').values():
             self.process_spell(entry.id_spell, ids, 0, 0)
 
+        # Dragonflight player traits
+        for data in TraitSet(self._options).get().values():
+            class_mask = util.class_mask(class_id=data['class_'])
+
+            self.process_spell(data['spell'].id, ids, class_mask, 0, False)
+
         # Temporary item enchants
         for item, spell, enchant_id in TemporaryEnchantItemSet(self._options).get():
             enchant = self.db('SpellItemEnchantment')[enchant_id]
@@ -4301,3 +4308,71 @@ class SoulbindConduitEnhancedSocketGenerator(DataGenerator):
             self.output_record(f[:-1], comment = f[-1].strip('"'))
 
         self.output_footer()
+
+class TraitGenerator(DataGenerator):
+    def filter(self):
+        return TraitSet(self._options).get()
+
+    def _generate_table(self, data):
+        for entry in data:
+            fields = []
+
+            fields.append(f'{entry["tree"]}')
+            fields.append(f'{entry["class_"]:2d}')
+            fields += entry['entry'].field('id')
+            fields += entry['entry'].field('max_ranks')
+            fields += entry['definition'].field('id')
+            fields += entry['spell'].field('id')
+            fields += entry['definition'].field('id_override_spell')
+            fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (4 - len(entry["specs"]))])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (4 - len(entry["starter"]))])} }}')
+
+            self.output_record(fields)
+
+    def generate(self, data=None):
+        sorted_data = sorted(
+            data.values(),
+            key=lambda v: (v['tree'], v['class_'], v['entry'].id)
+        )
+
+        self.output_header(
+                header='Player trait definitions',
+                type='trait_data_t',
+                array='trait_data',
+                length=len(data))
+
+        self._generate_table(sorted_data)
+
+        self.output_footer()
+
+        # Definition effects
+        definition_effects = [
+            e for entry in sorted_data
+                for e in entry['definition'].child_refs('TraitDefinitionEffectPoints')
+        ]
+
+        definition_effects.sort(key=lambda v: (v.id_parent, v.effect_index))
+
+        self.output_header(
+                header='Player trait definition effect entries',
+                type='trait_definition_effect_entry_t',
+                array='trait_definition_effect',
+                length=len(definition_effects)
+        )
+
+        for e in definition_effects:
+            self.output_record(e.field('id_trait_definition', 'effect_index', 'operation', 'id_curve'))
+
+        self.output_footer()
+
+        """
+        print(
+            f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '
+            f'groups=[{", ".join([str(x.id) for x in sorted(entry["groups"], key=lambda v:v.id)])}] '
+            f'tree={entry["tree"]} node_id={entry["node"].id} node_type={entry["node"].type} '
+            f'entry={entry["entry"].id} '
+            f'override={entry["definition"].id_override_spell} '
+            f'spell={entry["spell"].name} ({entry["spell"].id}) ({util.tokenize(entry["spell"].name)})'
+        )
+        """
