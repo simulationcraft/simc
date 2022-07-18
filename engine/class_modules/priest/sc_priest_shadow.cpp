@@ -1986,7 +1986,6 @@ void priest_t::init_spells_shadow()
   talents.shadow_crash       = find_talent_spell( "Shadow Crash" );
   // T45
   talents.damnation    = find_talent_spell( "Damnation" );
-  talents.mindbender   = find_talent_spell( "Mindbender" );
   talents.void_torrent = find_talent_spell( "Void Torrent" );
   // T50
   talents.ancient_madness      = find_talent_spell( "Ancient Madness" );

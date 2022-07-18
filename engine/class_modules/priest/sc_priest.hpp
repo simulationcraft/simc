@@ -141,8 +141,13 @@ public:
   // Talents
   struct
   {
+    // Priest Tree
+    // Row 5
+    player_talent_t shadowfiend;
+    // Row 8
+    player_talent_t mindbender;
+
     // Shared
-    const spell_data_t* mindbender;
     const spell_data_t* twist_of_fate;
     const spell_data_t* angelic_feather;
     const spell_data_t* body_and_soul;  // implemented for PW:S

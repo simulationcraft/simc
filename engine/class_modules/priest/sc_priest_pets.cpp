@@ -909,7 +909,8 @@ action_t* void_lasher_t::create_action( util::string_view name, util::string_vie
 // summoned through the action list, so please check for null.
 fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
 {
-  pet_t* current_main_pet = priest.talents.mindbender->ok() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  pet_t* current_main_pet = priest.talents.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+
   return debug_cast<fiend::base_fiend_pet_t*>( current_main_pet );
 }
 

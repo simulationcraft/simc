@@ -291,7 +291,7 @@ void shadow( player_t* p )
                     "prev_gcd.1.void_bolt&!buff.bloodlust.react&spell_targets.mind_sear<3)&variable.vts_applied&spell_"
                     "targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
-  main->add_talent( p, "Mindbender",
+  main->add_action( p, "Mindbender",
                     "if=(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff|dot.shadow_"
                     "word_pain.ticking)&variable.vts_applied",
                     "Activate mindbender with dots up, if using shadowflame prism make sure vampiric touches are "

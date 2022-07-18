@@ -977,7 +977,7 @@ public:
 struct summon_shadowfiend_t final : public summon_pet_t
 {
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "shadowfiend", p, p.find_class_spell( "Shadowfiend" ) )
+    : summon_pet_t( "shadowfiend", p, p.talents.shadowfiend.spell() )
   {
     parse_options( options_str );
     harmful            = false;
@@ -987,11 +987,14 @@ struct summon_shadowfiend_t final : public summon_pet_t
 
 // ==========================================================================
 // Summon Mindbender
+// TODO: wire up a non-shadow one
+// Shadow - 200174 (base effect 2 value)
+// Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
   summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.find_talent_spell( "Mindbender" ) )
+    : summon_pet_t( "mindbender", p, p.find_spell( p.talents.mindbender.spell()->effectN( 2 ).base_value() ) )
   {
     parse_options( options_str );
     harmful            = false;
@@ -1763,7 +1766,7 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   }
   if ( ( name == "shadowfiend" ) || ( name == "mindbender" ) )
   {
-    if ( talents.mindbender->ok() )
+    if ( talents.mindbender.enabled() )
     {
       return new summon_mindbender_t( *this, options_str );
     }
@@ -1824,12 +1827,14 @@ void priest_t::create_pets()
 {
   base_t::create_pets();
 
-  if ( find_action( "shadowfiend" ) && !talents.mindbender->ok() )
+  // TODO: add find_action back
+  if ( talents.shadowfiend.enabled() && !talents.mindbender.enabled() )
   {
     pets.shadowfiend = create_pet( "shadowfiend" );
   }
 
-  if ( ( find_action( "mindbender" ) || find_action( "shadowfiend" ) ) && talents.mindbender->ok() )
+  // TODO: add find_action back
+  if ( talents.mindbender.enabled() )
   {
     pets.mindbender = create_pet( "mindbender" );
   }
@@ -1983,6 +1988,10 @@ void priest_t::init_spells()
   covenant.mindgames_healing_reversal = find_spell( 323707 );
   covenant.mindgames_damage_reversal  = find_spell( 323706 );
   covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
+
+  // Priest Tree Talents
+  talents.shadowfiend = find_talent_spell(talent_tree::CLASS, "Shadowfiend");
+  talents.mindbender  = find_talent_spell(talent_tree::CLASS, "Mindbender");
 }
 
 void priest_t::create_buffs()
