@@ -993,8 +993,8 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
-  summon_mindbender_t( priest_t& p, util::string_view options_str )
-    : summon_pet_t( "mindbender", p, p.find_spell( p.talents.mindbender.spell()->effectN( 2 ).base_value() ) )
+  summon_mindbender_t( priest_t& p, util::string_view options_str, int version )
+    : summon_pet_t( "mindbender", p, p.find_spell( p.talents.mindbender.spell()->effectN( version ).base_value() ) )
   {
     parse_options( options_str );
     harmful            = false;
@@ -1768,7 +1768,14 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     if ( talents.mindbender.enabled() )
     {
-      return new summon_mindbender_t( *this, options_str );
+      if ( specialization() == PRIEST_SHADOW )
+      {
+        return new summon_mindbender_t( *this, options_str, 2 );
+      }
+      else
+      {
+        return new summon_mindbender_t( *this, options_str, 3 );
+      }
     }
     else
     {
@@ -1990,8 +1997,14 @@ void priest_t::init_spells()
   covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 
   // Priest Tree Talents
-  talents.shadowfiend = find_talent_spell(talent_tree::CLASS, "Shadowfiend");
-  talents.mindbender  = find_talent_spell(talent_tree::CLASS, "Mindbender");
+  // Row 5
+  talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
+  // Row 6
+  talents.improved_shadowfiend = find_talent_spell( talent_tree::CLASS, "Improved Shadowfiend" );
+  // Row 8
+  talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
+  // Row 9
+  talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
 }
 
 void priest_t::create_buffs()
@@ -2404,7 +2417,7 @@ struct priest_module_t final : public module_t
         make_buff<buffs::benevolent_faerie_t>( p, "bwonsamdis_pact_benevolent_faerie" );
 
     p->buffs.bwonsamdis_pact_benevolent->default_value_effect_idx = 0;
-    p->buffs.bwonsamdis_pact_benevolent->set_default_value(0.5, 0);
+    p->buffs.bwonsamdis_pact_benevolent->set_default_value( 0.5, 0 );
   }
   void static_init() const override
   {

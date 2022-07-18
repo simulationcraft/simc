@@ -262,7 +262,8 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::init_gains();
 
-    if ( o().specialization() == PRIEST_SHADOW )
+    if ( o().specialization() == PRIEST_SHADOW &&
+         ( o().talents.mindbender.enabled() || o().talents.improved_shadowfiend.enabled() ) )
     {
       gains.fiend = o().gains.insanity_pet;
     }
@@ -316,7 +317,10 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    return power_leech_insanity;
+    if ( o().talents.improved_shadowfiend.enabled() )
+    {
+      return power_leech_insanity;
+    }
   }
 };
 
@@ -403,6 +407,11 @@ struct fiend_melee_t : public priest_pet_melee_t
       hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
     }
 
+    if ( p().o().talents.rabid_shadows.enabled() )
+    {
+      hasted_time /= 1.0 + p().o().talents.rabid_shadows.percent( 1 );
+    }
+
     return hasted_time;
   }
 
@@ -412,26 +421,33 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( result_is_hit( s->result ) )
     {
+      // Insanity generation hack for Shadow Weaving
       if ( p().o().specialization() == PRIEST_SHADOW )
       {
-        double amount = p().insanity_gain();
-        if ( p().o().buffs.surrender_to_madness->check() )
-        {
-          p().o().resource_gain( RESOURCE_INSANITY,
-                                 amount * p().o().talents.surrender_to_madness->effectN( 2 ).percent(),
-                                 p().o().gains.insanity_surrender_to_madness );
-        }
-        p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
-
         p().o().trigger_shadow_weaving( s );
       }
-      else
+
+      if ( p().o().talents.improved_shadowfiend.enabled() )
       {
-        double mana_reg_pct = p().mana_return_percent();
-        if ( mana_reg_pct > 0.0 )
+        if ( p().o().specialization() == PRIEST_SHADOW )
         {
-          p().o().resource_gain( RESOURCE_MANA, p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
-                                 p().gains.fiend );
+          double amount = p().insanity_gain();
+          if ( p().o().buffs.surrender_to_madness->check() )
+          {
+            p().o().resource_gain( RESOURCE_INSANITY,
+                                   amount * p().o().talents.surrender_to_madness->effectN( 2 ).percent(),
+                                   p().o().gains.insanity_surrender_to_madness );
+          }
+          p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
+        }
+        else
+        {
+          double mana_reg_pct = p().mana_return_percent();
+          if ( mana_reg_pct > 0.0 )
+          {
+            p().o().resource_gain( RESOURCE_MANA, p().o().resources.max[ RESOURCE_MANA ] * p().mana_return_percent(),
+                                   p().gains.fiend );
+          }
         }
       }
     }
