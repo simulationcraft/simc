@@ -486,7 +486,7 @@ class TraitSet(DataSet):
 
             _trait_nodes[node_id]['entries'].add(entry)
 
-        # A map of (spell_id, trait_node_id), trait_data
+        # A map of trait_node_entry_id, trait_data
         _traits = defaultdict(lambda: {
             'spell': None,
             'specs': set(),

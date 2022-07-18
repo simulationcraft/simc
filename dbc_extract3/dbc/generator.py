@@ -4325,8 +4325,8 @@ class TraitGenerator(DataGenerator):
             fields += entry['spell'].field('id')
             fields += entry['definition'].field('id_override_spell')
             fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (4 - len(entry["specs"]))])} }}')
-            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (4 - len(entry["starter"]))])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
+            fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 
             self.output_record(fields)
 

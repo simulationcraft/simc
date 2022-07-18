@@ -12,7 +12,7 @@
 
 #include "generated/trait_data.inc"
 #if SC_USE_PTR == 1
-#include "generated/trait_data_ptr"
+#include "generated/trait_data_ptr.inc"
 #endif
 
 #include <iostream>
