@@ -538,7 +538,7 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 struct mental_fortitude_t : public priest_absorb_t
 {
-  mental_fortitude_t( priest_t& p ) : priest_absorb_t( "mental_fortitude_t", p )
+  mental_fortitude_t( priest_t& p ) : priest_absorb_t( "mental_fortitude", p, p.talents.shadow.mental_fortitude.spell() )
   {
     may_miss = may_crit = callbacks = false;
     background = proc = true;
@@ -1680,7 +1680,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct mental_fortitude_buff_t final : public absorb_buff_t
 {
-  mental_fortitude_buff_t( priest_t* player ) : absorb_buff_t( player, "mental_fortitude" )
+  mental_fortitude_buff_t( priest_t* player ) : absorb_buff_t( player, "mental_fortitude", player->talents.shadow.mental_fortitude.spell() )
   {
     set_absorb_source( player->get_stats( "mental_fortitude" ) );
   }
