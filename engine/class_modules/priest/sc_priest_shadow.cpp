@@ -889,7 +889,7 @@ struct vampiric_touch_t final : public priest_spell_t
       child_swp->background = true;
     }
 
-    if ( priest().talents.unfurling_darkness->ok() )
+    if ( priest().talents.shadow.unfurling_darkness.enabled() )
     {
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
@@ -911,7 +911,7 @@ struct vampiric_touch_t final : public priest_spell_t
     }
     else
     {
-      if ( priest().talents.unfurling_darkness->ok() && !priest().buffs.unfurling_darkness_cd->check() )
+      if ( priest().talents.shadow.unfurling_darkness.enabled() && !priest().buffs.unfurling_darkness_cd->check() )
       {
         priest().buffs.unfurling_darkness->trigger();
         // The CD Starts as soon as the buff is applied
@@ -1949,10 +1949,11 @@ void priest_t::create_buffs_shadow()
                                          ->set_default_value( 0.0 )
                                          ->set_chance( 1.0 );
   buffs.unfurling_darkness =
-      make_buff( this, "unfurling_darkness", talents.unfurling_darkness->effectN( 1 ).trigger() );
-  buffs.unfurling_darkness_cd = make_buff( this, "unfurling_darkness_cd",
-                                           talents.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-  buffs.void_torrent          = make_buff( this, "void_torrent", talents.void_torrent );
+      make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness.spell()->effectN( 1 ).trigger() );
+  buffs.unfurling_darkness_cd =
+      make_buff( this, "unfurling_darkness_cd",
+                 talents.shadow.unfurling_darkness.spell()->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
+  buffs.void_torrent = make_buff( this, "void_torrent", talents.void_torrent );
 
   // TODO: Check Buff ID(s) for Mind Devourer
   if ( talents.shadow.mind_devourer.enabled() )
@@ -2001,11 +2002,11 @@ void priest_t::init_spells_shadow()
   talents.shadow.silence              = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
   talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
+  talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
   talents.shadow.last_word = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
 
   // Talents
   // T15
-  talents.unfurling_darkness = find_talent_spell( "Unfurling Darkness" );
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );

@@ -171,6 +171,7 @@ public:
       player_talent_t silence;
       player_talent_t fortress_of_the_mind;
       // Row 4
+      player_talent_t unfurling_darkness;
       player_talent_t last_word;
       
       // Row 8
@@ -208,8 +209,6 @@ public:
     const spell_data_t* apotheosis;
 
     // Shadow
-    // T15
-    const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;
     const spell_data_t* intangibility;  // CDR implemented, healing NYI
