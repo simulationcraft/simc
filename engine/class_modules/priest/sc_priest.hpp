@@ -210,7 +210,10 @@ public:
       player_talent_t damnation;
       player_talent_t void_touched;
       // Row 7
+      player_talent_t shadow_crash;
       player_talent_t ancient_madness;
+      player_talent_t malediction;
+      player_talent_t void_torrent;
       // Row 8
       player_talent_t mind_devourer;
       // Row 9
@@ -254,11 +257,6 @@ public:
     // T35
     const spell_data_t* mind_bomb;
     const spell_data_t* psychic_horror;
-    // T40
-    const spell_data_t* shadow_crash;
-    // T45
-    const spell_data_t* void_torrent;
-    // T50
   } talents;
 
   // Specialization Spells

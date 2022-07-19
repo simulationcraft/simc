@@ -39,7 +39,7 @@ public:
       mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( p.talents.shadow.mind_flay.spell() ),
       mind_sear_spell( p.talents.shadow.mind_sear.spell() ),
-      void_torrent_spell( p.talents.void_torrent ),
+      void_torrent_spell( p.talents.shadow.void_torrent.spell() ),
       only_cwc( false )
   {
     add_option( opt_bool( "only_cwc", only_cwc ) );

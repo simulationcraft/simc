@@ -1193,8 +1193,8 @@ struct void_torrent_t final : public priest_spell_t
   double insanity_gain;
 
   void_torrent_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_torrent", p, p.talents.void_torrent ),
-      insanity_gain( p.talents.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+    : priest_spell_t( "void_torrent", p, p.talents.shadow.void_torrent.spell() ),
+      insanity_gain( p.talents.shadow.void_torrent.spell()->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -1284,7 +1284,7 @@ struct shadow_weaving_t final : public priest_spell_t
 struct shadow_crash_damage_t final : public priest_spell_t
 {
   shadow_crash_damage_t( priest_t& p )
-    : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow_crash->effectN( 1 ).trigger() )
+    : priest_spell_t( "shadow_crash_damage", p, p.talents.shadow.shadow_crash.spell()->effectN( 1 ).trigger() )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
@@ -1296,7 +1296,7 @@ struct shadow_crash_t final : public priest_spell_t
   double insanity_gain;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_crash", p, p.talents.shadow_crash ),
+    : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash.spell() ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
@@ -1706,7 +1706,7 @@ void priest_t::create_buffs_shadow()
   buffs.unfurling_darkness_cd =
       make_buff( this, "unfurling_darkness_cd",
                  talents.shadow.unfurling_darkness.spell()->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-  buffs.void_torrent = make_buff( this, "void_torrent", talents.void_torrent );
+  buffs.void_torrent = make_buff( this, "void_torrent", talents.shadow.void_torrent.spell() );
 
   // TODO: Check Buff ID(s) for Mind Devourer
   if ( talents.shadow.mind_devourer.enabled() )
@@ -1780,7 +1780,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.damnation            = find_talent_spell( talent_tree::SPECIALIZATION, "Damnation" );
   talents.shadow.void_touched         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Touched" );
 
+  talents.shadow.shadow_crash    = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Crash" );
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
+  talents.shadow.void_torrent    = find_talent_spell( talent_tree::SPECIALIZATION, "Void Torrent" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
@@ -1794,9 +1796,7 @@ void priest_t::init_spells_shadow()
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
   // T40
-  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
   // T45
-  talents.void_torrent = find_talent_spell( "Void Torrent" );
   // T50
 
   // General Spells
