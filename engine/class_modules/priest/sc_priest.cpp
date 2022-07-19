@@ -1654,6 +1654,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.vampiric_touch     = target->get_dot( "vampiric_touch", &p );
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
+  dots.mind_flay          = target->get_dot( "mind_flay", &p );
+  dots.mind_sear          = target->get_dot( "mind_sear", &p );
 
   buffs.schism                      = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff    = make_buff<buffs::death_and_madness_debuff_t>( *this );

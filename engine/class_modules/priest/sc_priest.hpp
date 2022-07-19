@@ -49,6 +49,8 @@ public:
     propagate_const<dot_t*> vampiric_touch;
     propagate_const<dot_t*> devouring_plague;
     propagate_const<dot_t*> unholy_transfusion;
+    propagate_const<dot_t*> mind_flay;
+    propagate_const<dot_t*> mind_sear;
   } dots;
 
   struct buffs_t
@@ -193,9 +195,15 @@ public:
       player_talent_t shadowy_apparitions;     // Passive effect
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
-
+      player_talent_t monomania;
+      const spell_data_t* monomania_tickrate;
+      // Row 6
+      // Row 7
       // Row 8
       player_talent_t mind_devourer;
+      // Row 9
+      player_talent_t abyssal_knowledge;
+
     } shadow;
 
     // Shared
@@ -597,6 +605,7 @@ public:
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
   void refresh_talbadars_buff( action_state_t* s );
+  bool is_monomania_up( player_t* target ) const;
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
