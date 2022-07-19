@@ -34,6 +34,7 @@ struct psychic_link_t;
 struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
+struct echoing_void_t;
 }  // namespace actions::spells
 
 /**
@@ -49,6 +50,8 @@ public:
     propagate_const<dot_t*> vampiric_touch;
     propagate_const<dot_t*> devouring_plague;
     propagate_const<dot_t*> unholy_transfusion;
+    propagate_const<dot_t*> mind_flay;
+    propagate_const<dot_t*> mind_sear;
   } dots;
 
   struct buffs_t
@@ -59,6 +62,8 @@ public:
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
     propagate_const<buff_t*> hungering_void;
+    propagate_const<buff_t*> echoing_void;
+    propagate_const<buff_t*> echoing_void_collapse;
   } buffs;
 
   priest_t& priest()
@@ -91,7 +96,9 @@ public:
     propagate_const<buff_t*> desperate_prayer;
 
     // Talents
+    propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
+    propagate_const<buff_t*> puppet_master;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -117,6 +124,15 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
+    propagate_const<buff_t*> translucent_image;
+    propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> vampiric_insight;
+    propagate_const<buff_t*> void_touched;
+    propagate_const<absorb_buff_t*> mental_fortitude;
+    propagate_const<buff_t*> insidious_ire;
+    propagate_const<buff_t*> thing_from_beyond;
+    propagate_const<buff_t*> idol_of_yoggsaron;
+    propagate_const<buff_t*> yshaarj_pride;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -126,8 +142,6 @@ public:
     propagate_const<buff_t*> rigor_mortis;
 
     // Conduits
-    propagate_const<buff_t*> translucent_image;
-    propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> dissonant_echoes;
 
     // Covenants
@@ -141,9 +155,95 @@ public:
   // Talents
   struct
   {
+    // Priest Tree
+    // Row 1
+    const spell_data_t* shadow_word_death;
+    // Row 2
+    player_talent_t improved_shadow_word_death;
+    player_talent_t shadow_mend;
+    const spell_data_t* shadow_mend_self_damage;
+    // Row 3
+    player_talent_t masochism;
+    const spell_data_t* masochism_buff;
+    // Row 4
+    player_talent_t power_infusion;
+    player_talent_t improved_mind_blast;
+    player_talent_t twist_of_fate;
+    player_talent_t taming_the_shadows;
+    // Row 5
+    player_talent_t shadowfiend;
+    // Row 6
+    player_talent_t throes_of_pain;
+    player_talent_t improved_shadowfiend;
+    // Row 7
+    player_talent_t puppet_master;
+    // Row 8
+    player_talent_t mindbender;
+    // Row 9
+    player_talent_t rabid_shadows;
+    // Row 10
+    player_talent_t mindgames;
+    player_talent_t shadowflame_prism;
+
+    struct
+    {
+      // Shadow Tree
+      // Row 1
+      player_talent_t mind_flay;
+      // Row 2
+      player_talent_t vampiric_touch;
+      player_talent_t devouring_plague;
+      player_talent_t mind_sear;
+      const spell_data_t* mind_sear_insanity;
+      // Row 3
+      player_talent_t death_and_madness;
+      player_talent_t searing_nightmare;
+      player_talent_t misery;
+      const spell_data_t* death_and_madness_insanity;
+      player_talent_t silence;
+      player_talent_t fortress_of_the_mind;
+      // Row 4
+      player_talent_t unfurling_darkness;
+      player_talent_t vampiric_insight;
+      player_talent_t last_word;
+      // Row 5
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
+      player_talent_t monomania;
+      const spell_data_t* monomania_tickrate;
+      // Row 6
+      player_talent_t psychic_link;
+      player_talent_t auspicious_spirits;
+      player_talent_t hungering_void;
+      const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
+      player_talent_t surrender_to_madness;
+      player_talent_t damnation;
+      player_talent_t void_touched;
+      // Row 7
+      player_talent_t shadow_crash;
+      player_talent_t ancient_madness;
+      player_talent_t malediction;
+      player_talent_t void_torrent;
+      // Row 8
+      player_talent_t mental_fortitude;
+      player_talent_t insidious_ire;
+      player_talent_t mind_devourer;
+      // Row 9
+      player_talent_t sanguine_teachings;
+      player_talent_t unleash_the_shadows;
+      player_talent_t rot_and_wither;
+      player_talent_t abyssal_knowledge;
+      // Row 10
+      player_talent_t idol_of_yshaarj;
+      player_talent_t idol_of_nzoth;
+      player_talent_t idol_of_cthun;
+      player_talent_t idol_of_yoggsaron;
+
+    } shadow;
+
     // Shared
-    const spell_data_t* mindbender;
-    const spell_data_t* twist_of_fate;
     const spell_data_t* angelic_feather;
     const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
@@ -173,43 +273,19 @@ public:
     const spell_data_t* apotheosis;
 
     // Shadow
-    // T15
-    const spell_data_t* fortress_of_the_mind;
-    const spell_data_t* death_and_madness;
-    const spell_data_t* death_and_madness_insanity;
-    const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;
     const spell_data_t* intangibility;  // CDR implemented, healing NYI
-    // T30
-    const spell_data_t* searing_nightmare;
-    const spell_data_t* misery;
     // T35
-    const spell_data_t* last_word;
     const spell_data_t* mind_bomb;
     const spell_data_t* psychic_horror;
-    // T40
-    const spell_data_t* auspicious_spirits;
-    const spell_data_t* psychic_link;
-    const spell_data_t* shadow_crash;
-    // T45
-    const spell_data_t* damnation;
-    const spell_data_t* void_torrent;
-    // T50
-    const spell_data_t* hungering_void;
-    const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
-    const spell_data_t* ancient_madness;
-    const spell_data_t* surrender_to_madness;
   } talents;
 
   // Specialization Spells
   struct
   {
     const spell_data_t* mind_blast;
-    const spell_data_t* mind_sear;
-    const spell_data_t* mind_sear_insanity;
     const spell_data_t* priest;  // General priest data
-    const spell_data_t* shadow_word_death;
     const spell_data_t* shadow_word_death_self_damage;
 
     // Discipline
@@ -225,17 +301,11 @@ public:
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
-    const spell_data_t* mind_flay;
-    const spell_data_t* shadow_priest;        // General shadow data
-    const spell_data_t* shadowy_apparition;   // Damage event
-    const spell_data_t* shadowy_apparitions;  // Passive effect
+    const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
-    const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
-    const spell_data_t* void_eruption;
-    const spell_data_t* void_eruption_damage;
 
     // Legendary Effects
     const spell_data_t* cauterizing_shadows_health;
@@ -325,6 +395,12 @@ public:
     propagate_const<proc_t*> dark_thoughts_searing_nightmare;
     propagate_const<proc_t*> dark_thoughts_missed;
     propagate_const<proc_t*> living_shadow;
+    propagate_const<proc_t*> vampiric_insight;
+    propagate_const<proc_t*> vampiric_insight_overflow;
+    propagate_const<proc_t*> vampiric_insight_missed;
+    propagate_const<proc_t*> void_touched;
+    propagate_const<proc_t*> thing_from_beyond;
+
   } procs;
 
   // Special
@@ -340,6 +416,7 @@ public:
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
+    propagate_const<actions::spells::echoing_void_t*> echoing_void;
   } background_actions;
 
   // Items
@@ -357,6 +434,7 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
     spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
+    spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -555,11 +633,14 @@ public:
   void trigger_shadow_weaving( action_state_t* );
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
-  void refresh_talbadars_buff( action_state_t* s );
+  void refresh_insidious_ire_buff( action_state_t* s );
+  bool is_monomania_up( player_t* target ) const;
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
+  void spawn_thing_from_beyond();
   void remove_wrathful_faerie_fermata();
+  void trigger_idol_of_nzoth( player_t* target );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
@@ -717,11 +798,16 @@ public:
     }
     if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
     {
+      // TODO: use percent() based data on the talent when spelldata is fixed
       m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
     }
     if ( affected_by.shadow_covenant_da && priest().buffs.shadow_covenant->check() )
     {
       m *= 1 + priest().buffs.shadow_covenant->data().effectN( 2 ).percent();
+    }
+    if ( priest().buffs.yshaarj_pride->check() )
+    {
+      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
     }
     return m;
   }
@@ -740,11 +826,16 @@ public:
     }
     if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
     {
+      // TODO: use percent() based data on the talent when spelldata is fixed
       m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 2 ).percent();
     }
     if ( affected_by.shadow_covenant_ta && priest().buffs.shadow_covenant->check() )
     {
       m *= 1 + priest().buffs.shadow_covenant->data().effectN( 3 ).percent();
+    }
+    if ( priest().buffs.yshaarj_pride->check() )
+    {
+      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
     }
     return m;
   }
@@ -806,8 +897,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     if ( s->result_amount > 0 )
     {
-      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
-           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
+      // TODO: Use proper base_value() from talent struct when fixed
+      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -842,7 +934,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.surrender_to_madness->ok() )
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.surrender_to_madness.enabled() )
     {
       if ( priest().buffs.surrender_to_madness_death->check() )
       {
@@ -869,8 +961,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
-           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
+      // TODO: Use proper base_value() from talent struct when fixed
+      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -929,7 +1022,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      tdm *= ( 1 + priest().talents.hungering_void_buff->effectN( 1 ).percent() );
+      tdm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
     }
 
     return tdm;
@@ -946,7 +1039,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      ttm *= ( 1 + priest().talents.hungering_void_buff->effectN( 1 ).percent() );
+      ttm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
     }
 
     return ttm;

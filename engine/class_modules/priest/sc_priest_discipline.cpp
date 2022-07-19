@@ -305,14 +305,12 @@ void priest_t::init_spells_discipline()
 {
   // Talents
   // T15
-  talents.castigation   = find_talent_spell( "Castigation" );
-  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
-  talents.schism        = find_talent_spell( "Schism" );
+  talents.castigation = find_talent_spell( "Castigation" );
+  talents.schism      = find_talent_spell( "Schism" );
   // T25
   talents.body_and_soul   = find_talent_spell( "Body and Soul" );
   talents.angelic_feather = find_talent_spell( "Angelic Feather" );
   // T30
-  talents.mindbender        = find_talent_spell( "Mindbender" );
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   // T35
   talents.psychic_voice = find_talent_spell( "Psychic Voice" );
