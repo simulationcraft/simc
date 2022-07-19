@@ -164,6 +164,7 @@ public:
     // Row 9
     player_talent_t rabid_shadows;
     // Row 10
+    player_talent_t mindgames;
     player_talent_t shadowflame_prism;
 
     struct

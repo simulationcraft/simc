@@ -641,7 +641,7 @@ struct mindgames_t final : public priest_spell_t
   timespan_t shattered_perceptions_increase;
 
   mindgames_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "mindgames", p, p.covenant.mindgames ),
+    : priest_spell_t( "mindgames", p, p.talents.mindgames.spell() ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
       insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
@@ -2271,6 +2271,7 @@ void priest_t::init_spells()
   // Row 9
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
   // Row 10
+  talents.mindgames = find_talent_spell( talent_tree::CLASS, "Mindgames" );
   talents.shadowflame_prism = find_talent_spell( talent_tree::CLASS, "Shadowflame Prism" );
 }
 
