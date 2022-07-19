@@ -9997,7 +9997,8 @@ static player_talent_t create_talent_obj(
   bool is_starter = range::find( trait->id_spec_starter,
       spec == SPEC_NONE ? player->_spec : spec ) != trait->id_spec_starter.end();
 
-  if ( std::get<2>( *it ) == 0U || ( it == player->player_traits.end() && !is_starter ) )
+  if ( ( it != player->player_traits.end() && std::get<2>( *it ) == 0U ) ||
+      ( it == player->player_traits.end() && !is_starter ) )
   {
     return { player };
   }
@@ -11704,6 +11705,8 @@ void player_t::copy_from( player_t* source )
   professions_str = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
+  class_talents_str = source->class_talents_str;
+  spec_talents_str =  source->spec_talents_str;
 
   if ( azerite )
   {

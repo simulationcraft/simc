@@ -4327,7 +4327,10 @@ class TraitGenerator(DataGenerator):
             fields += entry['definition'].field('id')
             fields += entry['spell'].field('id')
             fields += entry['definition'].field('id_override_spell')
-            fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
+            if entry['definition'].override_name:
+                fields.append("{:>35s}".format(f'"{entry["definition"].override_name}"'))
+            else:
+                fields.append("{:>35s}".format(f'"{entry["spell"].name}"'))
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["specs"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["specs"]))])} }}')
             fields.append(f'{{ {", ".join(["{:4d}".format(x) for x in sorted(entry["starter"]) + [0] * (constants.MAX_SPECIALIZATION - len(entry["starter"]))])} }}')
 
