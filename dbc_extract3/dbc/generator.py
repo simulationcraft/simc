@@ -1528,6 +1528,9 @@ class SpellDataGenerator(DataGenerator):
             ( 357028, 0 ),          # Shadow Word: Manipulation Critical Strike Buff
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
+            ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
+            # Shadow Priest
+            ( 373204, 0 ),          # Mind Devourer Talent buff
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
