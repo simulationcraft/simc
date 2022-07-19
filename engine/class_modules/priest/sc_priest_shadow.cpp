@@ -327,15 +327,42 @@ struct vampiric_embrace_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Void Apparition
+// ==========================================================================
+struct void_apparition_damage_t final : public priest_spell_t
+{
+  void_apparition_damage_t( priest_t& p )
+    : priest_spell_t( "void_apparition", p, p.talents.shadow.void_apparitions.spell() )
+  {
+    background = true;
+    proc       = false;
+    callbacks  = false;
+    may_miss   = false;
+    may_crit   = false;
+  }
+
+  void trigger( double original_amount )
+  {
+    if ( !priest().talents.shadow.void_apparitions.enabled() )
+      return;
+
+    base_dd_min = base_dd_max = ( original_amount * data().effectN( 2 ).percent() );
+    execute();
+  }
+};
+
+// ==========================================================================
 // Shadowy Apparition
 // ==========================================================================
 struct shadowy_apparition_damage_t final : public priest_spell_t
 {
   double insanity_gain;
+  propagate_const<void_apparition_damage_t*> void_apparition_damage;
 
   shadowy_apparition_damage_t( priest_t& p )
     : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
-      insanity_gain( priest().talents.shadow.auspicious_spirits.spell()->effectN( 2 ).percent() )
+      insanity_gain( priest().talents.shadow.auspicious_spirits.spell()->effectN( 2 ).percent() ),
+      void_apparition_damage( nullptr )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -349,6 +376,12 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().conduits.haunting_apparitions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.haunting_apparitions.percent() );
+    }
+
+    if ( priest().talents.shadow.void_apparitions.enabled() )
+    {
+      void_apparition_damage = new void_apparition_damage_t( priest() );
+      add_child( void_apparition_damage );
     }
   }
 
@@ -364,6 +397,14 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().talents.shadow.idol_of_yoggsaron.enabled() )
     {
       priest().buffs.idol_of_yoggsaron->trigger();
+    }
+
+    if ( result_is_hit( s->result ) && priest().talents.shadow.void_apparitions.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.void_apparitions->effectN( 1 ).percent() ) )
+      {
+        void_apparition_damage->trigger( s->result_amount );
+      }
     }
   }
 };
@@ -1319,8 +1360,7 @@ struct eternal_call_to_the_void_t final : public priest_spell_t
 // ==========================================================================
 struct idol_of_cthun_t final : public priest_spell_t
 {
-  idol_of_cthun_t( priest_t& p )
-    : priest_spell_t( "idol_of_cthun", p, p.talents.shadow.idol_of_cthun.spell() )
+  idol_of_cthun_t( priest_t& p ) : priest_spell_t( "idol_of_cthun", p, p.talents.shadow.idol_of_cthun.spell() )
   {
     background = true;
   }
@@ -1389,7 +1429,7 @@ struct psychic_link_t final : public priest_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * priest().talents.shadow.psychic_link->effectN( 1 ).percent() );
+    base_dd_min = base_dd_max = ( original_amount * data().effectN( 1 ).percent() );
     player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
 
     set_target( target );
@@ -1925,7 +1965,7 @@ void priest_t::create_buffs_shadow()
 void priest_t::init_rng_shadow()
 {
   rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
-  rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun.spell() );
+  rppm.idol_of_cthun            = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun.spell() );
 }
 
 void priest_t::init_spells_shadow()
@@ -1978,6 +2018,7 @@ void priest_t::init_spells_shadow()
 
   talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
   talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
+  talents.shadow.void_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Void Apparitions" );
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
   talents.shadow.idol_of_cthun     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
 

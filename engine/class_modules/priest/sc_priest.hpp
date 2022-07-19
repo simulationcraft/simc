@@ -242,6 +242,7 @@ public:
       // Row 10
       player_talent_t idol_of_yshaarj;
       player_talent_t idol_of_nzoth;
+      player_talent_t void_apparitions;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_yoggsaron;
     } shadow;
