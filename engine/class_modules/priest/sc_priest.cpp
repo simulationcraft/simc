@@ -114,6 +114,14 @@ public:
     return priest().buffs.talbadars_stratagem->check();
   }
 
+  bool insidious_ire_active() const
+  {
+    if ( !priest().talents.shadow.insidious_ire.enabled() )
+      return false;
+
+    return priest().buffs.insidious_ire->check();
+  }
+
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = priest_spell_t::composite_da_multiplier( s );
@@ -121,6 +129,11 @@ public:
     if ( talbadars_stratagem_active() )
     {
       m *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
+    }
+
+    if ( insidious_ire_active() )
+    {
+      m *= 1 + priest().talents.shadow.insidious_ire.percent( 1 );
     }
 
     return m;
@@ -1338,7 +1351,7 @@ struct painbreaker_psalm_t final : public priest_spell_t
     swp->adjust_duration( -consume_time );
     vt->adjust_duration( -consume_time );
 
-    priest().refresh_talbadars_buff( s );
+    priest().refresh_insidious_ire_buff( s );
   }
 };
 

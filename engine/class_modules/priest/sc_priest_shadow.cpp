@@ -445,7 +445,7 @@ struct shadow_word_pain_t final : public priest_spell_t
         }
       }
 
-      priest().refresh_talbadars_buff( s );
+      priest().refresh_insidious_ire_buff( s );
     }
   }
 
@@ -662,7 +662,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     priest_spell_t::impact( s );
 
-    priest().refresh_talbadars_buff( s );
+    priest().refresh_insidious_ire_buff( s );
   }
 
   timespan_t execute_time() const override
@@ -849,7 +849,7 @@ struct devouring_plague_t final : public priest_spell_t
     {
       devouring_plague_heal->trigger( s->result_amount );
 
-      priest().refresh_talbadars_buff( s );
+      priest().refresh_insidious_ire_buff( s );
     }
   }
 
@@ -975,7 +975,7 @@ struct void_bolt_t final : public priest_spell_t
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
 
-      priest().refresh_talbadars_buff( s );
+      priest().refresh_insidious_ire_buff( s );
     }
   };
 
@@ -1811,6 +1811,10 @@ void priest_t::create_buffs_shadow()
 
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
 
+  buffs.insidious_ire = make_buff( this, "insidious_ire", talents.shadow.insidious_ire.spell() )
+                            ->set_duration( timespan_t::zero() )
+                            ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1830,7 +1834,7 @@ void priest_t::init_rng_shadow()
 
 void priest_t::init_spells_shadow()
 {
-  talents.shadow.mind_flay     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
+  talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
   talents.shadow.mind_sear          = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
   talents.shadow.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
@@ -1868,7 +1872,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_torrent    = find_talent_spell( talent_tree::SPECIALIZATION, "Void Torrent" );
 
   talents.shadow.mental_fortitude = find_talent_spell( talent_tree::SPECIALIZATION, "Mental Fortitude" );
-  talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
+  talents.shadow.insidious_ire    = find_talent_spell( talent_tree::SPECIALIZATION, "Insidious Ire" );
+  talents.shadow.mind_devourer    = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
@@ -2113,9 +2118,9 @@ bool priest_t::is_monomania_up( player_t* target ) const
 }
 
 // Helper function to refresh talbadars buff
-void priest_t::refresh_talbadars_buff( action_state_t* s )
+void priest_t::refresh_insidious_ire_buff( action_state_t* s )
 {
-  if ( !legendary.talbadars_stratagem->ok() )
+  if ( !legendary.talbadars_stratagem->ok() && !talents.shadow.insidious_ire.enabled() )
     return;
 
   const priest_td_t* td = find_target_data( s->target );
@@ -2129,10 +2134,13 @@ void priest_t::refresh_talbadars_buff( action_state_t* s )
     timespan_t min_length = std::min( { td->dots.shadow_word_pain->remains(), td->dots.vampiric_touch->remains(),
                                         td->dots.devouring_plague->remains() } );
 
-    if ( buffs.talbadars_stratagem->up() && min_length <= buffs.talbadars_stratagem->remains() )
-      return;
-
-    buffs.talbadars_stratagem->trigger( min_length );
+    if ( min_length >= buffs.insidious_ire->remains() )
+    {
+      if ( legendary.talbadars_stratagem->ok() )
+        buffs.talbadars_stratagem->trigger( min_length );
+      if ( talents.shadow.insidious_ire.enabled() )
+        buffs.insidious_ire->trigger( min_length );
+    }
   }
 }
 
