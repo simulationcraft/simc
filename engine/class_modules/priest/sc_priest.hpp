@@ -91,6 +91,7 @@ public:
     propagate_const<buff_t*> desperate_prayer;
 
     // Talents
+    propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
 
     // Discipline
@@ -146,6 +147,13 @@ public:
     const spell_data_t* shadow_word_death;
     // Row 2
     player_talent_t improved_shadow_word_death;
+    player_talent_t shadow_mend;
+    const spell_data_t* shadow_mend_self_damage;
+    // Row 3
+    player_talent_t masochism;
+    const spell_data_t* masochism_buff;
+    // Row 4
+    player_talent_t taming_the_shadows;
     // Row 5
     player_talent_t shadowfiend;
     // Row 6
