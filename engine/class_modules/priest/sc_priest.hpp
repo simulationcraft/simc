@@ -169,6 +169,7 @@ public:
       player_talent_t misery;
       const spell_data_t* death_and_madness_insanity;
       player_talent_t silence;
+      player_talent_t fortress_of_the_mind;
       // Row 4
       player_talent_t last_word;
       
@@ -208,7 +209,6 @@ public:
 
     // Shadow
     // T15
-    const spell_data_t* fortress_of_the_mind;
     const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;

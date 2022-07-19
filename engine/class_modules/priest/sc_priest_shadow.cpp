@@ -34,7 +34,7 @@ private:
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
-      mind_blast_insanity( priest().specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( p.talents.shadow.mind_flay.spell() ),
       mind_sear_spell( p.talents.shadow.mind_sear.spell() ),
       void_torrent_spell( p.talents.void_torrent ),
@@ -47,9 +47,9 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-    energize_amount *= 1 + priest().talents.fortress_of_the_mind->effectN( 2 ).percent();
+    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind.percent( 2 );
 
-    spell_power_mod.direct *= 1.0 + p.talents.fortress_of_the_mind->effectN( 4 ).percent();
+    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind.percent( 4 );
 
     if ( priest().conduits.mind_devourer->ok() )
     {
@@ -285,9 +285,9 @@ struct mind_flay_t final : public priest_spell_t
     channeled                  = true;
     use_off_gcd                = true;
 
-    energize_amount *= 1 + p.talents.fortress_of_the_mind->effectN( 1 ).percent();
+    energize_amount *= 1 + p.talents.shadow.fortress_of_the_mind.percent( 1 );
 
-    spell_power_mod.tick *= 1.0 + p.talents.fortress_of_the_mind->effectN( 3 ).percent();
+    spell_power_mod.tick *= 1.0 + p.talents.shadow.fortress_of_the_mind.percent( 3 );
   }
 
   void trigger_mind_flay_dissonant_echoes()
@@ -1996,16 +1996,16 @@ void priest_t::init_spells_shadow()
   talents.shadow.death_and_madness          = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
   talents.shadow.death_and_madness_insanity = find_spell( 321973 );
 
-  talents.shadow.misery            = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
-  talents.shadow.searing_nightmare = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
-  talents.shadow.silence           = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
+  talents.shadow.misery               = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
+  talents.shadow.searing_nightmare    = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
+  talents.shadow.silence              = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
+  talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
   talents.shadow.last_word = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
 
   // Talents
   // T15
-  talents.fortress_of_the_mind = find_talent_spell( "Fortress of the Mind" );
-  talents.unfurling_darkness   = find_talent_spell( "Unfurling Darkness" );
+  talents.unfurling_darkness = find_talent_spell( "Unfurling Darkness" );
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );
