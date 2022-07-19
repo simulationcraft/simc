@@ -70,7 +70,7 @@ public:
     if ( p.talents.improved_mind_blast.enabled() )
     {
       cooldown->duration += timespan_t::from_millis( p.talents.improved_mind_blast.base_value( 1 ) );
-    }    
+    }
 
     your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
     T28_4PC              = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
@@ -496,7 +496,7 @@ struct smite_t final : public priest_spell_t
 struct power_infusion_t final : public priest_spell_t
 {
   power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
-    : priest_spell_t( name, p, p.find_class_spell( "Power Infusion" ) )
+    : priest_spell_t( name, p, p.talents.power_infusion )
   {
     parse_options( options_str );
     harmful = false;
@@ -2469,8 +2469,12 @@ void priest_t::init_spells()
   talents.masochism      = find_talent_spell( talent_tree::CLASS, "Masochism" );
   talents.masochism_buff = find_spell( 193065 );
   // Row 4
+  // TODO: this is not working when trying to get spell() out of it
+  // talents.power_infusion      = find_talent_spell( talent_tree::CLASS, "Power Infusion" );
+  talents.power_infusion      = find_spell( 10060 );
   talents.improved_mind_blast = find_talent_spell( talent_tree::CLASS, "Improved Mind Blast" );
-  talents.taming_the_shadows = find_talent_spell( talent_tree::CLASS, "Taming the Shadows" );
+  talents.twist_of_fate       = find_talent_spell( talent_tree::CLASS, "Twist of Fate" );
+  talents.taming_the_shadows  = find_talent_spell( talent_tree::CLASS, "Taming the Shadows" );
   // Row 5
   talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
   // Row 6
@@ -2492,8 +2496,8 @@ void priest_t::create_buffs()
   buffs.desperate_prayer = make_buff<buffs::desperate_prayer_t>( *this );
 
   // Shared talent buffs
-  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate->effectN( 1 ).trigger() )
-                            ->set_trigger_spell( talents.twist_of_fate )
+  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate.spell()->effectN( 1 ).trigger() )
+                            ->set_trigger_spell( talents.twist_of_fate.spell() )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.masochism = make_buff<buffs::masochism_t>( *this );

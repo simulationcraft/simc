@@ -1764,8 +1764,6 @@ void priest_t::init_spells_shadow()
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );
   talents.intangibility = find_talent_spell( "intangibility" );
-  // T30
-  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
   // T35
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
