@@ -222,7 +222,8 @@ struct mind_sear_tick_t final : public priest_spell_t
   double insanity_gain;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
-    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.talents.shadow.mind_sear_insanity->effectN( 1 ).percent() )
+    : priest_spell_t( "mind_sear_tick", p, s ),
+      insanity_gain( p.talents.shadow.mind_sear_insanity->effectN( 1 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -250,7 +251,8 @@ struct mind_sear_tick_t final : public priest_spell_t
 
 struct mind_sear_t final : public priest_spell_t
 {
-  mind_sear_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_sear", p, p.talents.shadow.mind_sear.spell() )
+  mind_sear_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_sear", p, p.talents.shadow.mind_sear.spell() )
   {
     parse_options( options_str );
     channeled           = true;
@@ -273,7 +275,8 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 struct mind_flay_t final : public priest_spell_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_flay", p, p.talents.shadow.mind_flay.spell() )
+  mind_flay_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_flay", p, p.talents.shadow.mind_flay.spell() )
   {
     parse_options( options_str );
 
@@ -740,6 +743,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       dot_duration += rank2->effectN( 1 ).time_value();
     }
+
+    if ( priest().talents.shadow.misery.enabled() )
+    {
+      dot_duration += priest().talents.shadow.misery.spell()->effectN( 2 ).time_value();
+    }
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -874,7 +882,7 @@ struct vampiric_touch_t final : public priest_spell_t
     // Disable initial hit damage, only Unfurling Darkness uses it
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
 
-    if ( priest().talents.misery->ok() && casted )
+    if ( priest().talents.shadow.misery.enabled() && casted )
     {
       child_swp             = new shadow_word_pain_t( priest(), false );
       child_swp->background = true;
@@ -1602,7 +1610,7 @@ struct searing_nightmare_t final : public priest_spell_t
   const spell_data_t* mind_sear_spell;
 
   searing_nightmare_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "searing_nightmare", p, p.talents.searing_nightmare ),
+    : priest_spell_t( "searing_nightmare", p, p.talents.shadow.searing_nightmare.spell() ),
       child_swp( new shadow_word_pain_t( priest(), false ) ),
       mind_sear_spell( p.talents.shadow.mind_sear.spell() )
   {
@@ -1979,26 +1987,27 @@ void priest_t::init_rng_shadow()
 void priest_t::init_spells_shadow()
 {
   talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
-  talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
+  talents.shadow.mind_flay     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
-  talents.shadow.mind_sear = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
+  talents.shadow.mind_sear          = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
   talents.shadow.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
 
-  talents.shadow.death_and_madness   = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
+  talents.shadow.death_and_madness          = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
   talents.shadow.death_and_madness_insanity = find_spell( 321973 );
+
+  talents.shadow.misery            = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
+  talents.shadow.searing_nightmare = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
 
   // Talents
   // T15
-  talents.fortress_of_the_mind       = find_talent_spell( "Fortress of the Mind" );
-  talents.unfurling_darkness         = find_talent_spell( "Unfurling Darkness" );
+  talents.fortress_of_the_mind = find_talent_spell( "Fortress of the Mind" );
+  talents.unfurling_darkness   = find_talent_spell( "Unfurling Darkness" );
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
   talents.sanlayn       = find_talent_spell( "San'layn" );
   talents.intangibility = find_talent_spell( "intangibility" );
   // T30
-  talents.twist_of_fate     = find_talent_spell( "Twist of Fate" );
-  talents.misery            = find_talent_spell( "Misery" );
-  talents.searing_nightmare = find_talent_spell( "Searing Nightmare" );
+  talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
   // T35
   talents.last_word      = find_talent_spell( "Last Word" );
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );

@@ -165,6 +165,8 @@ public:
       const spell_data_t* mind_sear_insanity;
       // Row 3
       player_talent_t death_and_madness;
+      player_talent_t searing_nightmare;
+      player_talent_t misery;
       const spell_data_t* death_and_madness_insanity;
       // Row 8
       player_talent_t mind_devourer;
@@ -207,9 +209,6 @@ public:
     // T25
     const spell_data_t* sanlayn;
     const spell_data_t* intangibility;  // CDR implemented, healing NYI
-    // T30
-    const spell_data_t* searing_nightmare;
-    const spell_data_t* misery;
     // T35
     const spell_data_t* last_word;
     const spell_data_t* mind_bomb;
