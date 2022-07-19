@@ -95,7 +95,6 @@ public:
     // Talents
     propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
-    propagate_const<buff_t*> vampiric_insight;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -123,6 +122,8 @@ public:
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
+    propagate_const<buff_t*> vampiric_insight;
+    propagate_const<buff_t*> void_touched;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -207,6 +208,7 @@ public:
       const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
       player_talent_t surrender_to_madness;
       player_talent_t damnation;
+      player_talent_t void_touched;
       // Row 7
       player_talent_t ancient_madness;
       // Row 8
@@ -376,6 +378,7 @@ public:
     propagate_const<proc_t*> vampiric_insight;
     propagate_const<proc_t*> vampiric_insight_overflow;
     propagate_const<proc_t*> vampiric_insight_missed;
+    propagate_const<proc_t*> void_touched;
   } procs;
 
   // Special

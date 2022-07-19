@@ -107,6 +107,20 @@ struct mind_flay_t final : public priest_spell_t
     }
   }
 
+  void trigger_mind_flay_void_touched()
+  {
+    if ( !priest().talents.shadow.void_touched.enabled() || priest().buffs.voidform->check() )
+    {
+      return;
+    }
+
+    if ( rng().roll( priest().talents.shadow.void_touched.percent( 1 ) ) )
+    {
+      priest().buffs.void_touched->trigger();
+      priest().procs.void_touched->occur();
+    }
+  }
+
   void tick( dot_t* d ) override
   {
     priest_spell_t::tick( d );
@@ -114,6 +128,7 @@ struct mind_flay_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( d->state );
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
     trigger_mind_flay_dissonant_echoes();
+    trigger_mind_flay_void_touched();
   }
 
   bool ready() override
@@ -943,6 +958,12 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
+    // TODO: See prepatch how stacks
+    if ( priest().buffs.void_touched->check() )
+    {
+      priest().buffs.void_touched->expire();
+    }
+
     if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -955,7 +976,8 @@ struct void_bolt_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() &&
+         !priest().buffs.void_touched->check() )
     {
       return false;
     }
@@ -1703,6 +1725,9 @@ void priest_t::create_buffs_shadow()
   // TODO: UNHARDCODE AND CHECK WITH DEVS.
   buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this )->set_rppm( RPPM_HASTE, 3.0 );
 
+  buffs.void_touched = make_buff( this, "void_touched" )->set_duration( timespan_t::from_seconds( 10.0 ) );
+  // buffs.void_touched = make_buff( this, "void_touched", find_spell( 373375 ) );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1753,6 +1778,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.hungering_void_buff  = find_spell( 345219 );
   talents.shadow.surrender_to_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Surrender to Madness" );
   talents.shadow.damnation            = find_talent_spell( talent_tree::SPECIALIZATION, "Damnation" );
+  talents.shadow.void_touched         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Touched" );
 
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
 

@@ -1669,7 +1669,8 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_debuff_t( priest_td_t& actor_pair )
-    : base_t( actor_pair, "surrender_to_madness_death_check", actor_pair.priest().talents.shadow.surrender_to_madness.spell() )
+    : base_t( actor_pair, "surrender_to_madness_death_check",
+              actor_pair.priest().talents.shadow.surrender_to_madness.spell() )
   {
   }
 
@@ -1972,6 +1973,7 @@ void priest_t::create_procs()
   procs.vampiric_insight                = get_proc( "Vampiric Insight procs" );
   procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
   procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
+  procs.void_touched                    = get_proc( "Void Bolt procs from Void Touched" );
 }
 
 /** Construct priest benefits */
