@@ -486,7 +486,7 @@ struct shadow_word_death_t final : public priest_spell_t
         shadow_word_death_self_damage->trigger( s->result_amount );
       }
 
-      if ( priest().talents.death_and_madness->ok() )
+      if ( priest().talents.shadow.death_and_madness.enabled() )
       {
         priest_td_t& td = get_td( s->target );
         td.buffs.death_and_madness_debuff->trigger();
@@ -1823,7 +1823,7 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
   double insanity_gain;
 
   death_and_madness_buff_t( priest_t& p )
-    : base_t( p, "death_and_madness_insanity_gain", p.talents.death_and_madness_insanity ),
+    : base_t( p, "death_and_madness_insanity_gain", p.talents.shadow.death_and_madness_insanity ),
       insanity_gain( data().effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
@@ -1984,11 +1984,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_sear = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
   specs.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
 
+  talents.shadow.death_and_madness   = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
+  talents.shadow.death_and_madness_insanity = find_spell( 321973 );
+
   // Talents
   // T15
   talents.fortress_of_the_mind       = find_talent_spell( "Fortress of the Mind" );
-  talents.death_and_madness          = find_talent_spell( "Death and Madness" );
-  talents.death_and_madness_insanity = find_spell( 321973 );
   talents.unfurling_darkness         = find_talent_spell( "Unfurling Darkness" );
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );

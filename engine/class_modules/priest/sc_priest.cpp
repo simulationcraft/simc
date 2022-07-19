@@ -1259,7 +1259,7 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
   propagate_const<cooldown_t*> swd_cooldown;
   death_and_madness_debuff_t( priest_td_t& actor_pair )
     : base_t( actor_pair, "death_and_madness_death_check",
-              actor_pair.priest().talents.death_and_madness->effectN( 3 ).trigger() ),
+              actor_pair.priest().talents.shadow.death_and_madness.spell()->effectN( 3 ).trigger() ),
       swd_cooldown( actor_pair.priest().get_cooldown( "shadow_word_death" ) )
   {
   }

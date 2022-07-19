@@ -162,6 +162,9 @@ public:
       player_talent_t vampiric_touch;
       player_talent_t devouring_plague;
       player_talent_t mind_sear;
+      // Row 3
+      player_talent_t death_and_madness;
+      const spell_data_t* death_and_madness_insanity;
       // Row 8
       player_talent_t mind_devourer;
     } shadow;
@@ -199,8 +202,6 @@ public:
     // Shadow
     // T15
     const spell_data_t* fortress_of_the_mind;
-    const spell_data_t* death_and_madness;
-    const spell_data_t* death_and_madness_insanity;
     const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;
