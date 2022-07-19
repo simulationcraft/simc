@@ -217,7 +217,7 @@ namespace actions
 {
 struct shadowflame_prism_t;
 struct shadowflame_prism_legendary_t;
-}
+}  // namespace actions
 
 /**
  * Abstract base class for Shadowfiend and Mindbender
@@ -1005,6 +1005,68 @@ action_t* void_lasher_t::create_action( util::string_view name, util::string_vie
   return priest_pet_t::create_action( name, options_str );
 }
 
+// ==========================================================================
+// Thing From Beyond (Idol of Yoggsaron)
+// ==========================================================================
+struct thing_from_beyond_t final : public priest_pet_t
+{
+  thing_from_beyond_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "thing_from_beyond", true )
+  {
+  }
+
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+    def->add_action( "void_spike" );
+  }
+
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.thing_from_beyond->increment();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.thing_from_beyond->decrement();
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+};
+
+struct void_spike_t final : public priest_pet_spell_t
+{
+  void_spike_t( thing_from_beyond_t& p, util::string_view options )
+    : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
+  {
+    parse_options( options );
+    affected_by_shadow_weaving = false;
+  }
+
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    merge_pet_stats( p().o(), p(), *this );
+  }
+};
+
+action_t* thing_from_beyond_t::create_action( util::string_view name, util::string_view options_str )
+{
+  if ( name == "void_spike" )
+  {
+    return new void_spike_t( *this, options_str );
+  }
+
+  return priest_pet_t::create_action( name, options_str );
+}
+
 // Returns mindbender or shadowfiend, depending on talent choice. The returned pointer can be null if no fiend is
 // summoned through the action list, so please check for null.
 fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
@@ -1141,7 +1203,8 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } )
+    your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } ),
+    thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
@@ -1160,6 +1223,9 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   auto your_shadow_spell = p.find_spell( 363469 );
   your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
                                     timespan_t::from_millis( 1 ) );
+
+  auto thing_from_beyond_spell = p.find_spell( 373277 );
+  thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }
 
 }  // namespace priestspace

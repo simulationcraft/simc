@@ -127,6 +127,8 @@ public:
     propagate_const<buff_t*> void_touched;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
+    propagate_const<buff_t*> thing_from_beyond;
+    propagate_const<buff_t*> idol_of_yoggsaron;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -229,6 +231,12 @@ public:
       player_talent_t unleash_the_shadows;
       player_talent_t rot_and_wither;
       player_talent_t abyssal_knowledge;
+      // Row 10
+      player_talent_t idol_of_yshaarj;
+      player_talent_t idol_of_nzoth;
+      player_talent_t idol_of_cthun;
+      player_talent_t idol_of_yoggsaron;
+
 
     } shadow;
 
@@ -388,6 +396,8 @@ public:
     propagate_const<proc_t*> vampiric_insight_overflow;
     propagate_const<proc_t*> vampiric_insight_missed;
     propagate_const<proc_t*> void_touched;
+    propagate_const<proc_t*> thing_from_beyond;
+
   } procs;
 
   // Special
@@ -420,6 +430,7 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
     spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
+    spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
   } pets;
@@ -623,6 +634,7 @@ public:
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
+  void spawn_thing_from_beyond();
   void remove_wrathful_faerie_fermata();
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;

@@ -1992,6 +1992,7 @@ void priest_t::create_procs()
   procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
   procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
   procs.void_touched                    = get_proc( "Void Bolt procs from Void Touched" );
+  procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
 }
 
 /** Construct priest benefits */

@@ -356,6 +356,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
+
+    if ( priest().talents.shadow.idol_of_yoggsaron.enabled() )
+    {
+      priest().buffs.idol_of_yoggsaron->trigger();
+    }
   }
 };
 
@@ -538,7 +543,8 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 struct mental_fortitude_t : public priest_absorb_t
 {
-  mental_fortitude_t( priest_t& p ) : priest_absorb_t( "mental_fortitude", p, p.talents.shadow.mental_fortitude.spell() )
+  mental_fortitude_t( priest_t& p )
+    : priest_absorb_t( "mental_fortitude", p, p.talents.shadow.mental_fortitude.spell() )
   {
     may_miss = may_crit = callbacks = false;
     background = proc = true;
@@ -1680,7 +1686,8 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct mental_fortitude_buff_t final : public absorb_buff_t
 {
-  mental_fortitude_buff_t( priest_t* player ) : absorb_buff_t( player, "mental_fortitude", player->talents.shadow.mental_fortitude.spell() )
+  mental_fortitude_buff_t( priest_t* player )
+    : absorb_buff_t( player, "mental_fortitude", player->talents.shadow.mental_fortitude.spell() )
   {
     set_absorb_source( player->get_stats( "mental_fortitude" ) );
   }
@@ -1865,6 +1872,20 @@ void priest_t::create_buffs_shadow()
                             ->set_duration( timespan_t::zero() )
                             ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
+  buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
+
+  buffs.idol_of_yoggsaron = make_buff( this, "idol_of_yogg-saron", talents.shadow.idol_of_yoggsaron.spell() )
+                                ->set_duration( timespan_t::zero() )
+                                ->set_max_stack( 50 )
+                                ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
+                                  if ( cur == b->max_stack() )
+                                  {
+                                    b->expire();
+                                    procs.thing_from_beyond->occur();
+                                    spawn_thing_from_beyond();
+                                  }
+                                } ) );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1929,6 +1950,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.unleash_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Unleash the Shadows" );
   talents.shadow.rot_and_wither      = find_talent_spell( talent_tree::SPECIALIZATION, "Rot and Wither" );
   talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
+
+  talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
 
   // Talents
   // T15
@@ -2195,6 +2218,11 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
         buffs.insidious_ire->trigger( min_length );
     }
   }
+}
+
+void priest_t::spawn_thing_from_beyond()
+{
+  pets.thing_from_beyond.spawn();
 }
 
 }  // namespace priestspace
