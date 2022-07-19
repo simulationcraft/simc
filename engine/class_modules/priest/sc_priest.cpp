@@ -1669,7 +1669,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_debuff_t( priest_td_t& actor_pair )
-    : base_t( actor_pair, "surrender_to_madness_death_check", actor_pair.priest().talents.surrender_to_madness )
+    : base_t( actor_pair, "surrender_to_madness_death_check", actor_pair.priest().talents.shadow.surrender_to_madness.spell() )
   {
   }
 
@@ -2088,7 +2088,7 @@ double priest_t::composite_spell_crit_chance() const
 {
   double sc = player_t::composite_spell_crit_chance();
 
-  if ( talents.ancient_madness->ok() )
+  if ( talents.shadow.ancient_madness.enabled() )
   {
     if ( buffs.ancient_madness->check() )
     {
@@ -2148,7 +2148,7 @@ double priest_t::composite_player_target_pet_damage_multiplier( player_t* target
 
   if ( hungering_void_active( target ) )
   {
-    m *= ( 1 + talents.hungering_void_buff->effectN( 1 ).percent() );
+    m *= ( 1 + talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
   }
 
   return m;
