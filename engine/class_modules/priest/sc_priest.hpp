@@ -162,6 +162,7 @@ public:
       player_talent_t vampiric_touch;
       player_talent_t devouring_plague;
       player_talent_t mind_sear;
+      const spell_data_t* mind_sear_insanity;
       // Row 3
       player_talent_t death_and_madness;
       const spell_data_t* death_and_madness_insanity;
@@ -231,7 +232,6 @@ public:
   struct
   {
     const spell_data_t* mind_blast;
-    const spell_data_t* mind_sear_insanity;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death;
     const spell_data_t* shadow_word_death_self_damage;

@@ -222,7 +222,7 @@ struct mind_sear_tick_t final : public priest_spell_t
   double insanity_gain;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
-    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.specs.mind_sear_insanity->effectN( 1 ).percent() )
+    : priest_spell_t( "mind_sear_tick", p, s ), insanity_gain( p.talents.shadow.mind_sear_insanity->effectN( 1 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -1982,7 +1982,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
   talents.shadow.mind_sear = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
-  specs.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
+  talents.shadow.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
 
   talents.shadow.death_and_madness   = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
   talents.shadow.death_and_madness_insanity = find_spell( 321973 );
