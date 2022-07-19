@@ -156,7 +156,9 @@ public:
     player_talent_t masochism;
     const spell_data_t* masochism_buff;
     // Row 4
+    const spell_data_t* power_infusion;
     player_talent_t improved_mind_blast;
+    player_talent_t twist_of_fate;
     player_talent_t taming_the_shadows;
     // Row 5
     player_talent_t shadowfiend;
@@ -210,7 +212,6 @@ public:
     } shadow;
 
     // Shared
-    const spell_data_t* twist_of_fate;
     const spell_data_t* angelic_feather;
     const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
@@ -768,6 +769,7 @@ public:
     }
     if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
     {
+      // TODO: use percent() based data on the talent when spelldata is fixed
       m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
     }
     if ( affected_by.shadow_covenant_da && priest().buffs.shadow_covenant->check() )
@@ -791,6 +793,7 @@ public:
     }
     if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
     {
+      // TODO: use percent() based data on the talent when spelldata is fixed
       m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 2 ).percent();
     }
     if ( affected_by.shadow_covenant_ta && priest().buffs.shadow_covenant->check() )
@@ -857,8 +860,9 @@ struct priest_heal_t : public priest_action_t<heal_t>
 
     if ( s->result_amount > 0 )
     {
-      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
-           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
+      // TODO: Use proper base_value() from talent struct when fixed
+      if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -920,8 +924,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate->ok() &&
-           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
+      // TODO: Use proper base_value() from talent struct when fixed
+      if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
+           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
