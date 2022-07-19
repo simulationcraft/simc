@@ -566,7 +566,8 @@ struct shadowform_t final : public priest_spell_t
 // ==========================================================================
 struct silence_t final : public priest_spell_t
 {
-  silence_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "silence", p, p.specs.silence )
+  silence_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "silence", p, p.talents.shadow.silence.spell() )
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
@@ -578,10 +579,10 @@ struct silence_t final : public priest_spell_t
       range += rank2->effectN( 1 ).base_value();
     }
 
-    if ( priest().talents.last_word->ok() )
+    if ( priest().talents.shadow.last_word.enabled() )
     {
       // Spell data has a negative value
-      cooldown->duration += priest().talents.last_word->effectN( 1 ).time_value();
+      cooldown->duration += priest().talents.shadow.last_word.spell()->effectN( 1 ).time_value();
     }
   }
 
@@ -1997,6 +1998,9 @@ void priest_t::init_spells_shadow()
 
   talents.shadow.misery            = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
   talents.shadow.searing_nightmare = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
+  talents.shadow.silence           = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
+
+  talents.shadow.last_word = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
 
   // Talents
   // T15
@@ -2009,7 +2013,6 @@ void priest_t::init_spells_shadow()
   // T30
   talents.twist_of_fate = find_talent_spell( "Twist of Fate" );
   // T35
-  talents.last_word      = find_talent_spell( "Last Word" );
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
   // T40
@@ -2032,7 +2035,6 @@ void priest_t::init_spells_shadow()
   specs.shadowy_apparition   = find_spell( 148859 );
   specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadowform           = find_specialization_spell( "Shadowform" );
-  specs.silence              = find_specialization_spell( "Silence" );
   specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
   specs.void_bolt            = find_spell( 205448 );
   specs.voidform             = find_spell( 194249 );
