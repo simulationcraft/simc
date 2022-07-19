@@ -1,4 +1,4 @@
-// 619 talents, wow build 10.0.0.44649
+// 619 talents, wow build 10.0.0.44707
 static std::array<talent_data_t, 619> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -128,7 +128,7 @@ static std::array<talent_data_t, 619> __talent_data { {
   { "Power Siphon"                      , 21694, 0x00, 0x0100,  266,   1,   1,  264130,       0,  0 },
   { "Internal Combustion"               , 21695, 0x00, 0x0100,  267,   1,   1,  266134,       0,  0 },
   { "Incarnation: Chosen of Elune"      , 21702, 0x00, 0x0400,    0,   2,   4,  102560,  194223,  0 },
-  { "Incarnation: King of the Jungle"   , 21704, 0x00, 0x0400,  103,   2,   4,  102543,  106951,  0 },
+  { "Incarnation: Avatar of Ashamane"   , 21704, 0x00, 0x0400,  103,   2,   4,  102543,  106951,  0 },
   { "Cultivation"                       , 21705, 0x00, 0x0400,  105,   1,   4,  200390,       0,  0 },
   { "Starlord"                          , 21706, 0x00, 0x0400,  102,   1,   4,  202345,       0,  0 },
   { "Galactic Guardian"                 , 21707, 0x00, 0x0400,  104,   1,   4,  203964,       0,  0 },
