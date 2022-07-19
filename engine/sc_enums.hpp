@@ -1417,7 +1417,7 @@ enum fight_style_e
 // Dragonflight player talent tree indices
 enum class talent_tree : unsigned
 {
-  ANY = 0,
+  INVALID = 0,
   CLASS,
   SPECIALIZATION
 };

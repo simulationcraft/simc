@@ -475,15 +475,6 @@ class TraitSet(DataSet):
                 continue
 
             entry = data.ref('id_trait_node_entry')
-
-            trait_def = entry.ref('id_trait_definition')
-            if trait_def.id_spell == 0:
-                continue
-
-            spell = trait_def.ref('id_spell')
-            if spell.id == 0:
-                continue
-
             _trait_nodes[node_id]['entries'].add(entry)
 
         # A map of trait_node_entry_id, trait_data

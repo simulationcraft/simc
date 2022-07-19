@@ -73,7 +73,6 @@
 #include <stdexcept>
 #include <utility>
 
-
 namespace
 {
 
@@ -10124,45 +10123,17 @@ player_talent_t player_t::find_talent_spell(
   unsigned         spell_id,
   specialization_e s ) const
 {
-  const trait_data_t *generic_trait = nullptr, *spec_trait = nullptr;
   uint32_t class_idx, spec_idx;
 
   dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
 
-  auto traits = trait_data_t::data( class_idx, tree, dbc->ptr );
-  for ( const auto& trait : traits )
+  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
+  if ( traits.size() == 0 )
   {
-    if ( trait.id_spell != spell_id )
-    {
-      continue;
-    }
-
-    if ( trait.id_spec[ 0 ] == 0 )
-    {
-      generic_trait = &( trait );
-    }
-    else
-    {
-      auto it = range::find( trait.id_spec, s == SPEC_NONE ? _spec : s );
-      if ( it != trait.id_spec.end() )
-      {
-        spec_trait = &( trait );
-      }
-    }
+    return { this };
   }
 
-  if ( spec_trait )
-  {
-    return create_talent_obj( this, s, spec_trait );
-  }
-  else if ( generic_trait )
-  {
-    return create_talent_obj( this, s, generic_trait );
-  }
-  else
-  {
-    return create_talent_obj( this, s, &( trait_data_t::nil() ) );
-  }
+  return create_talent_obj( this, s, traits[ 0 ] );
 }
 
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const
