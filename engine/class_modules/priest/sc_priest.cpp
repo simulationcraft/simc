@@ -1003,17 +1003,77 @@ struct summon_mindbender_t final : public summon_pet_t
 };
 
 // ==========================================================================
-// Shadow Mend (Discipline and Shadow)
+// Shadow Mend
+// TODO: remove DoT once you have taken ${$s1/2} total damage from all sources (186263)
 // ==========================================================================
+struct shadow_mend_self_damage_t final : public priest_spell_t
+{
+  shadow_mend_self_damage_t( priest_t& p )
+    : priest_spell_t( "shadow_mend_self_damage", p, p.talents.shadow_mend_self_damage )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+    target     = player;
+  }
+
+  void trigger( double original_amount )
+  {
+    base_td = original_amount / 20;
+    execute();
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    // We don't want this counted towards our dps
+    stats->type = stats_e::STATS_NEUTRAL;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
+  }
+};
+
 struct shadow_mend_t final : public priest_heal_t
 {
+  propagate_const<shadow_mend_self_damage_t*> shadow_mend_self_damage;
+
   shadow_mend_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "shadow_mend", p, p.find_class_spell( "Shadow Mend" ) )
+    : priest_heal_t( "shadow_mend", p, p.talents.shadow_mend.spell() ),
+      shadow_mend_self_damage( new shadow_mend_self_damage_t( p ) )
   {
     parse_options( options_str );
     harmful = false;
+  }
 
-    // TODO: add harmful ticking effect 187464
+  void execute() override
+  {
+    if ( priest().talents.masochism.enabled() )
+    {
+      priest().buffs.masochism->trigger();
+    }
+
+    priest_heal_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    if ( !priest().talents.masochism.enabled() && result_is_hit( s->result ) )
+    {
+      if ( priest().talents.taming_the_shadows.enabled() &&
+           rng().roll( priest().talents.taming_the_shadows.spell()->effectN( 1 ).percent() ) )
+      {
+        sim->print_debug( "{} procs Taming the Shadows, skipping Shadow Mend DoT.", player->name() );
+        priest_heal_t::impact( s );
+        return;
+      }
+      shadow_mend_self_damage->trigger( s->result_amount );
+    }
+
+    priest_heal_t::impact( s );
   }
 };
 
@@ -1320,6 +1380,17 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
     sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
                       player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
                       old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
+  }
+};
+
+// ==========================================================================
+// Masochism
+// ==========================================================================
+struct masochism_t final : public priest_buff_t<buff_t>
+{
+  masochism_t( priest_t& p ) : base_t( p, "masochism", p.talents.masochism_buff )
+  {
+    set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 };
 
@@ -2121,7 +2192,6 @@ void priest_t::init_spells()
   specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
-
   // TODO replace DoT Spells with these.
   talents.shadow.vampiric_touch   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Touch" );
   talents.shadow.devouring_plague = find_talent_spell( talent_tree::SPECIALIZATION, "Devouring Plague" );
@@ -2130,7 +2200,6 @@ void priest_t::init_spells()
   dot_spells.devouring_plague = talents.shadow.devouring_plague.spell();
   dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
   dot_spells.vampiric_touch   = talents.shadow.vampiric_touch.spell();
-
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -2188,6 +2257,13 @@ void priest_t::init_spells()
   talents.shadow_word_death = find_spell( 32379 );
   // Row 2
   talents.improved_shadow_word_death = find_talent_spell( talent_tree::CLASS, 322107 );
+  talents.shadow_mend                = find_talent_spell( talent_tree::CLASS, "Shadow Mend" );
+  talents.shadow_mend_self_damage    = find_spell( 187464 );
+  // Row 3
+  talents.masochism      = find_talent_spell( talent_tree::CLASS, "Masochism" );
+  talents.masochism_buff = find_spell( 193065 );
+  // Row 4
+  talents.taming_the_shadows = find_talent_spell( talent_tree::CLASS, "Taming the Shadows" );
   // Row 5
   talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
   // Row 6
@@ -2212,6 +2288,7 @@ void priest_t::create_buffs()
                             ->set_trigger_spell( talents.twist_of_fate )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
+  buffs.masochism = make_buff<buffs::masochism_t>( *this );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
