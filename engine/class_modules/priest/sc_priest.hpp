@@ -95,6 +95,7 @@ public:
     // Talents
     propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
+    propagate_const<buff_t*> puppet_master;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -164,7 +165,10 @@ public:
     // Row 5
     player_talent_t shadowfiend;
     // Row 6
+    player_talent_t throes_of_pain;
     player_talent_t improved_shadowfiend;
+    // Row 7
+    player_talent_t puppet_master;    
     // Row 8
     player_talent_t mindbender;
     // Row 9

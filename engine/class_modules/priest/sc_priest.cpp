@@ -1881,6 +1881,11 @@ void priest_td_t::target_demise()
 {
   priest().sim->print_debug( "{} demised. Priest {} resets targetdata for him.", *target, priest() );
 
+  if ( priest().talents.throes_of_pain.enabled() && dots.shadow_word_pain->is_ticking() )
+  {
+    // TODO:: Energise
+  }
+
   reset();
 }
 
@@ -2480,7 +2485,11 @@ void priest_t::init_spells()
   // Row 5
   talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
   // Row 6
+  talents.throes_of_pain       = find_talent_spell( talent_tree::CLASS, "Throes of Pain" );
   talents.improved_shadowfiend = find_talent_spell( talent_tree::CLASS, "Improved Shadowfiend" );
+  // Row 7
+  talents.puppet_master = find_talent_spell( talent_tree::CLASS, "Puppet Master" );
+
   // Row 8
   talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9

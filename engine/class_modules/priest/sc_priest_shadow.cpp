@@ -395,6 +395,11 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       dot_duration += priest().talents.shadow.misery.spell()->effectN( 2 ).time_value();
     }
+
+    if ( priest().talents.throes_of_pain.enabled() )
+    {
+      base_td_multiplier *= ( 1 + priest().talents.throes_of_pain.percent( 1 ) );
+    }
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
