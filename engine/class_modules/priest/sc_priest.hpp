@@ -144,8 +144,12 @@ public:
     // Priest Tree
     // Row 5
     player_talent_t shadowfiend;
+    // Row 6
+    player_talent_t improved_shadowfiend;
     // Row 8
     player_talent_t mindbender;
+    // Row 9
+    player_talent_t rabid_shadows;
 
     struct
     {
