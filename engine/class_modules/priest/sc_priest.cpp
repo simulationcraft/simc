@@ -1976,8 +1976,7 @@ void priest_td_t::target_demise()
 
   if ( priest().talents.throes_of_pain.enabled() && dots.shadow_word_pain->is_ticking() )
   {
-    // TODO: determine if this scales with rank or not
-    priest().generate_insanity( priest().talents.throes_of_pain->effectN( 2 ).base_value() / 100,
+    priest().generate_insanity( priest().talents.throes_of_pain->effectN( 1 ).base_value(),
                                 priest().gains.insanity_throes_of_pain, nullptr );
   }
 
