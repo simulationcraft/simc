@@ -11704,6 +11704,8 @@ void player_t::copy_from( player_t* source )
   professions_str = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
+  parse_traits( talent_tree::CLASS, source->class_talents_str, this );
+  parse_traits( talent_tree::SPECIALIZATION, source->spec_talents_str, this );
 
   if ( azerite )
   {
