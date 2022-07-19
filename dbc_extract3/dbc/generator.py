@@ -4374,6 +4374,13 @@ class TraitGenerator(DataGenerator):
 
         self.output_footer()
 
+        # Collect spell IDs for indices
+        trait_spell_index = list((v['spell'].id, index) for index, v in enumerate(sorted_data))
+
+        self.output_id_index(
+            index = [ index for _, index in sorted(trait_spell_index) ],
+            array = 'trait_spell')
+
         """
         print(
             f'cls={entry["class_"]} specs={entry["specs"]} starter={entry["starter"]} '

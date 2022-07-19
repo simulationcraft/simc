@@ -83,6 +83,9 @@ const char* buff_tick_behavior_string   ( buff_tick_behavior );
 const char* buff_tick_time_behavior_string   ( buff_tick_time_behavior );
 const char* action_energize_type_string( action_energize energize_type );
 const char* action_type_string( action_e type );
+const char* talent_tree_string( talent_tree type );
+const char* trait_definition_op_string( trait_definition_op op );
+
 std::string rppm_scaling_string       ( unsigned );
 std::string profile_source_string( profile_source );
 

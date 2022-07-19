@@ -12,6 +12,8 @@
 #include "sc_enums.hpp"
 #include "specialization.hpp"
 
+#include <vector>
+
 struct trait_data_t
 {
   unsigned    tree_index;
@@ -29,11 +31,11 @@ struct trait_data_t
   static const trait_data_t* find( unsigned trait_node_entry_id, bool ptr = false );
   static const trait_data_t* find( talent_tree tree, util::string_view name, unsigned class_id, specialization_e spec, bool ptr = false );
   static const trait_data_t* find_tokenized( talent_tree tree, util::string_view name, unsigned class_id, specialization_e spec, bool ptr = false );
-  static const trait_data_t* find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id, specialization_e spec, bool ptr = false );
+  static std::vector<const trait_data_t*> find_by_spell( talent_tree tree, unsigned spell_id, unsigned class_id = 0, specialization_e spec = SPEC_NONE, bool ptr = false );
 
   static util::span<const trait_data_t> data( bool ptr = false );
   static util::span<const trait_data_t> data( talent_tree tree, bool ptr = false );
-  static util::span<const trait_data_t> data( unsigned class_id, talent_tree tree = talent_tree::ANY, bool ptr = false );
+  static util::span<const trait_data_t> data( unsigned class_id, talent_tree tree, bool ptr = false );
 
   static const trait_data_t& nil()
   { return dbc::nil<trait_data_t>; }

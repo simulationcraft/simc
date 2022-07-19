@@ -2537,6 +2537,29 @@ const char* util::action_type_string( action_e type )
   }
 }
 
+const char* util::talent_tree_string( talent_tree tree )
+{
+  switch ( tree )
+  {
+    case talent_tree::CLASS:
+      return "class";
+    case talent_tree::SPECIALIZATION:
+      return "spec";
+    default:
+      return "unknown";
+  }
+}
+
+const char* util::trait_definition_op_string( trait_definition_op op )
+{
+  switch ( op )
+  {
+    case trait_definition_op::TRAIT_OP_SET:
+      return "set";
+    case trait_definition_op::TRAIT_OP_MUL:
+      return "mul";
+  }
+}
 /// Textual representation of rppm scaling bitfield
 std::string util::rppm_scaling_string( unsigned s )
 {

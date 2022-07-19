@@ -5,6 +5,7 @@
 
 #include "dbc.hpp"
 #include "dbc/item_runeforge.hpp"
+#include "dbc/trait_data.hpp"
 #include "specialization_spell.hpp"
 #include "active_spells.hpp"
 #include "covenant_data.hpp"
@@ -17,6 +18,8 @@
 #include "player/covenant.hpp"
 #include "player/runeforge_data.hpp"
 #include "util/util.hpp"
+
+#include <unordered_set>
 
 namespace { // anonymous namespace ==========================================
 
@@ -430,12 +433,17 @@ struct spell_list_expr_t : public spell_data_expr_t
       }
       case DATA_TALENT_SPELL:
       {
-        for ( const talent_data_t& talent : talent_data_t::data( dbc.ptr ) )
+        std::unordered_set<unsigned> talent_spells;
+        for ( const auto& entry : trait_data_t::data( dbc.ptr ) )
         {
-          if ( ! talent.spell_id() )
-            continue;
-          result_spell_list.push_back( talent.spell_id() );
+          if ( entry.id_spell != 0 )
+          {
+            talent_spells.emplace( entry.id_spell );
+          }
         }
+
+        result_spell_list.insert( result_spell_list.begin(),
+            talent_spells.begin(), talent_spells.end() );
         break;
       }
       case DATA_CLASS_SPELL:
