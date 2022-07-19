@@ -1707,6 +1707,8 @@ struct vampiric_insight_t final : public priest_buff_t<buff_t>
 {
   vampiric_insight_t( priest_t& p ) : base_t( p, "vampiric_insight", p.find_spell( 375981 ) )
   {
+    // TODO: determine what this value actually is, mostly a guess right now
+    set_rppm( RPPM_HASTE, 3.0 );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
@@ -1867,11 +1869,9 @@ void priest_t::create_buffs_shadow()
                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   }
 
-  // TODO: UNHARDCODE AND CHECK WITH DEVS.
-  buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this )->set_rppm( RPPM_HASTE, 3.0 );
+  buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this );
 
-  buffs.void_touched = make_buff( this, "void_touched" )->set_duration( timespan_t::from_seconds( 10.0 ) );
-  // buffs.void_touched = make_buff( this, "void_touched", find_spell( 373375 ) );
+  buffs.void_touched = make_buff( this, "void_touched", find_spell( 373375 ) );
 
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
 
