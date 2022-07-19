@@ -1039,6 +1039,178 @@ struct fade_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Shadow Word: Death
+// ==========================================================================
+struct painbreaker_psalm_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+
+  painbreaker_psalm_t( priest_t& p )
+    : priest_spell_t( "painbreaker_psalm", p, p.legendary.painbreaker_psalm ),
+      consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
+  {
+    background = true;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_td_t& td = get_td( s->target );
+    dot_t* swp      = td.dots.shadow_word_pain;
+    dot_t* vt       = td.dots.vampiric_touch;
+
+    auto swp_damage = priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
+    auto vt_damage  = priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
+    base_dd_min = base_dd_max = swp_damage + vt_damage;
+
+    sim->print_debug( "{} {} calculated dot damage sw:p={} vt={} total={}", *player, *this, swp_damage, vt_damage,
+                      swp_damage + vt_damage );
+
+    priest_spell_t::impact( s );
+
+    swp->adjust_duration( -consume_time );
+    vt->adjust_duration( -consume_time );
+
+    priest().refresh_talbadars_buff( s );
+  }
+};
+
+struct shadow_word_death_self_damage_t final : public priest_spell_t
+{
+  shadow_word_death_self_damage_t( priest_t& p )
+    : priest_spell_t( "shadow_word_death_self_damage", p, p.specs.shadow_word_death_self_damage )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+    target     = player;
+  }
+
+  void trigger( double original_amount )
+  {
+    base_td = original_amount;
+    execute();
+  }
+
+  void init() override
+  {
+    base_t::init();
+
+    // We don't want this counted towards our dps
+    stats->type = stats_e::STATS_NEUTRAL;
+  }
+
+  proc_types proc_type() const override
+  {
+    return PROC1_ANY_DAMAGE_TAKEN;
+  }
+};
+
+struct shadow_word_death_t final : public priest_spell_t
+{
+  double execute_percent;
+  double execute_modifier;
+  double insanity_per_dot;
+  propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
+
+  shadow_word_death_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
+      execute_percent( data().effectN( 2 ).base_value() ),
+      execute_modifier( data().effectN( 3 ).percent() ),
+      insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
+                        10 ),  // Spell Data stores this as 100 not 1000 or 10
+      shadow_word_death_self_damage( new shadow_word_death_self_damage_t( p ) )
+  {
+    parse_options( options_str );
+
+    affected_by_shadow_weaving = true;
+
+    if ( p.talents.improved_shadow_word_death.enabled() )
+    {
+      cooldown->duration += p.talents.improved_shadow_word_death.spell()->effectN( 1 ).time_value();
+    }
+
+    if ( priest().legendary.painbreaker_psalm->ok() )
+    {
+      impact_action = new painbreaker_psalm_t( p );
+      add_child( impact_action );
+    }
+
+    if ( priest().legendary.kiss_of_death->ok() )
+    {
+      cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
+    }
+
+    cooldown->hasted = true;
+  }
+
+  double composite_target_da_multiplier( player_t* t ) const override
+  {
+    double tdm = priest_spell_t::composite_target_da_multiplier( t );
+
+    if ( t->health_percentage() < execute_percent )
+    {
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} below {}% HP. Increasing {} damage by {}", t->name_str, execute_percent, *this,
+                          execute_modifier );
+      }
+      tdm *= 1 + execute_modifier;
+    }
+
+    return tdm;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadowflame_prism.enabled() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
+
+    if ( result_is_hit( s->result ) )
+    {
+      if ( priest().legendary.painbreaker_psalm->ok() )
+      {
+        int dots = 0;
+
+        if ( const priest_td_t* td = priest().find_target_data( target ) )
+        {
+          bool swp_ticking = td->dots.shadow_word_pain->is_ticking();
+          bool vt_ticking  = td->dots.vampiric_touch->is_ticking();
+
+          dots = swp_ticking + vt_ticking;
+        }
+
+        double insanity_gain = dots * insanity_per_dot;
+
+        priest().generate_insanity( insanity_gain, priest().gains.painbreaker_psalm, s->action );
+      }
+
+      double save_health_percentage = s->target->health_percentage();
+
+      // TODO: Add in a custom buff that checks after 1 second to see if the target SWD was cast on is now dead.
+      if ( !( ( save_health_percentage > 0.0 ) && ( s->target->health_percentage() <= 0.0 ) ) )
+      {
+        // target is not killed
+        shadow_word_death_self_damage->trigger( s->result_amount );
+      }
+
+      if ( priest().talents.shadow.death_and_madness.enabled() )
+      {
+        priest_td_t& td = get_td( s->target );
+        td.buffs.death_and_madness_debuff->trigger();
+      }
+    }
+  }
+};
+
 }  // namespace spells
 
 namespace heals
@@ -1830,6 +2002,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new ascended_blast_t( *this, options_str );
   }
+  if ( name == "shadow_word_death" )
+  {
+    return new shadow_word_death_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -1935,7 +2111,6 @@ void priest_t::init_spells()
 
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
-  specs.shadow_word_death             = find_class_spell( "Shadow Word: Death" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
 
   // Class passives
@@ -2005,6 +2180,12 @@ void priest_t::init_spells()
   covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 
   // Priest Tree Talents
+  // Row 1
+  // TODO: for some reason this does not work correctly
+  // talents.shadow_word_death = find_talent_spell( talent_tree::CLASS, 32379 );
+  talents.shadow_word_death = find_spell( 32379 );
+  // Row 2
+  talents.improved_shadow_word_death = find_talent_spell( talent_tree::CLASS, 322107 );
   // Row 5
   talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
   // Row 6
