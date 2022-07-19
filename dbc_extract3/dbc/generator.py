@@ -1529,6 +1529,8 @@ class SpellDataGenerator(DataGenerator):
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
             ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
+            ( 373375, 0 ),          # Void Touched talent buff
+            ( 375981, 0 ),          # Vampiric Insight talent buff
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
             # Holy Priest
