@@ -307,6 +307,8 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::demise();
     if ( o().talents.puppet_master.enabled() )
       o().buffs.puppet_master->cancel();
+
+    o().buffs.yshaarj_pride->cancel();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;

@@ -1192,12 +1192,35 @@ public:
 // ==========================================================================
 struct summon_shadowfiend_t final : public summon_pet_t
 {
+  timespan_t default_duration;
+
   summon_shadowfiend_t( priest_t& p, util::string_view options_str )
     : summon_pet_t( "shadowfiend", p, p.talents.shadowfiend.spell() )
   {
     parse_options( options_str );
-    harmful            = false;
-    summoning_duration = data().duration();
+    harmful          = false;
+    default_duration = summoning_duration = data().duration();
+  }
+
+  void execute() override
+  {
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+      if ( target->health_percentage() >= 80.0 )
+      {
+        priest().buffs.yshaarj_pride->trigger();
+      }
+      else
+      {
+        // Current ingame extension 19/07/2022
+        summoning_duration += timespan_t::from_seconds( 5.0 );
+      }
+    }
+
+    summon_pet_t::execute();
+
+    summoning_duration = default_duration;
   }
 };
 
@@ -1209,12 +1232,35 @@ struct summon_shadowfiend_t final : public summon_pet_t
 // ==========================================================================
 struct summon_mindbender_t final : public summon_pet_t
 {
+  timespan_t default_duration;
+
   summon_mindbender_t( priest_t& p, util::string_view options_str, int version )
     : summon_pet_t( "mindbender", p, p.find_spell( p.talents.mindbender.spell()->effectN( version ).base_value() ) )
   {
     parse_options( options_str );
-    harmful            = false;
-    summoning_duration = data().duration();
+    harmful          = false;
+    default_duration = summoning_duration = data().duration();
+  }
+
+  void execute() override
+  {
+    if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
+    {
+      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+      if ( target->health_percentage() >= 80.0 )
+      {
+        priest().buffs.yshaarj_pride->trigger();
+      }
+      else
+      {
+        // Current ingame extension 19/07/2022
+        summoning_duration += timespan_t::from_seconds( 5.0 );
+      }
+    }
+
+    summon_pet_t::execute();
+
+    summoning_duration = default_duration;
   }
 };
 
@@ -2158,6 +2204,10 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
+  if ( buffs.yshaarj_pride->check() )
+  {
+    m *= ( 1.0 + buffs.yshaarj_pride->check_value() );
+  }
   return m;
 }
 

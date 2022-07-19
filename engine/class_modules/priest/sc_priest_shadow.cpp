@@ -1889,6 +1889,10 @@ void priest_t::create_buffs_shadow()
                                   }
                                 } ) );
 
+  // TODOL Get real damage amplifier and spell data when blizzard implements this.
+  buffs.yshaarj_pride =
+      make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1954,8 +1958,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.rot_and_wither      = find_talent_spell( talent_tree::SPECIALIZATION, "Rot and Wither" );
   talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
+  talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
+  talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
-  talents.shadow.idol_of_nzoth = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
 
   // Talents
   // T15

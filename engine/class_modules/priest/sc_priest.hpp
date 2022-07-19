@@ -132,6 +132,7 @@ public:
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
+    propagate_const<buff_t*> yshaarj_pride;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -175,7 +176,7 @@ public:
     player_talent_t throes_of_pain;
     player_talent_t improved_shadowfiend;
     // Row 7
-    player_talent_t puppet_master;    
+    player_talent_t puppet_master;
     // Row 8
     player_talent_t mindbender;
     // Row 9
@@ -239,7 +240,6 @@ public:
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_yoggsaron;
-
 
     } shadow;
 
@@ -805,6 +805,10 @@ public:
     {
       m *= 1 + priest().buffs.shadow_covenant->data().effectN( 2 ).percent();
     }
+    if ( priest().buffs.yshaarj_pride->check() )
+    {
+      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
+    }
     return m;
   }
 
@@ -828,6 +832,10 @@ public:
     if ( affected_by.shadow_covenant_ta && priest().buffs.shadow_covenant->check() )
     {
       m *= 1 + priest().buffs.shadow_covenant->data().effectN( 3 ).percent();
+    }
+    if ( priest().buffs.yshaarj_pride->check() )
+    {
+      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
     }
     return m;
   }
