@@ -150,6 +150,8 @@ public:
     player_talent_t mindbender;
     // Row 9
     player_talent_t rabid_shadows;
+    // Row 10
+    player_talent_t shadowflame_prism;
 
     struct
     {

@@ -2009,6 +2009,8 @@ void priest_t::init_spells()
   talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
+  // Row 10
+  talents.shadowflame_prism = find_talent_spell( talent_tree::CLASS, "Shadowflame Prism" );
 }
 
 void priest_t::create_buffs()
