@@ -204,6 +204,7 @@ public:
       player_talent_t hungering_void;
       const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
       player_talent_t surrender_to_madness;
+      player_talent_t damnation;
       // Row 7
       player_talent_t ancient_madness;
       // Row 8
@@ -253,7 +254,6 @@ public:
     // T40
     const spell_data_t* shadow_crash;
     // T45
-    const spell_data_t* damnation;
     const spell_data_t* void_torrent;
     // T50
   } talents;

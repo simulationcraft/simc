@@ -1369,7 +1369,7 @@ struct damnation_t final : public priest_spell_t
   propagate_const<devouring_plague_t*> child_dp;
 
   damnation_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "damnation", p, p.talents.damnation ),
+    : priest_spell_t( "damnation", p, p.talents.shadow.damnation.spell() ),
       child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
       child_vt( new vampiric_touch_t( priest(), false ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
@@ -1752,6 +1752,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.hungering_void       = find_talent_spell( talent_tree::SPECIALIZATION, "Hungering Void" );
   talents.shadow.hungering_void_buff  = find_spell( 345219 );
   talents.shadow.surrender_to_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Surrender to Madness" );
+  talents.shadow.damnation            = find_talent_spell( talent_tree::SPECIALIZATION, "Damnation" );
 
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
 
@@ -1771,7 +1772,6 @@ void priest_t::init_spells_shadow()
   // T40
   talents.shadow_crash = find_talent_spell( "Shadow Crash" );
   // T45
-  talents.damnation    = find_talent_spell( "Damnation" );
   talents.void_torrent = find_talent_spell( "Void Torrent" );
   // T50
 
