@@ -1764,6 +1764,10 @@ void priest_t::create_procs()
   procs.dark_thoughts_searing_nightmare = get_proc( "Dark Thoughts proc from T28 2-set Searing Nightmare" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
   procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
+  procs.vampiric_insight                = get_proc( "Vampiric Insight procs" );
+  procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
+  procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
+  
 }
 
 /** Construct priest benefits */

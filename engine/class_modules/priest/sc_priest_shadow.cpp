@@ -63,6 +63,7 @@ public:
 
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting = only_cwc;
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
 
     // Cooldown reduction
     apply_affecting_aura( p.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
@@ -77,7 +78,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges();
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
   }
 
   bool ready() override
@@ -145,7 +146,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.dark_thought->check() )
+    if ( priest().buffs.dark_thought->check() || priest().buffs.vampiric_insight->check() )
     {
       return timespan_t::zero();
     }
@@ -206,6 +207,10 @@ public:
           } );
         }
       }
+    }
+    else if ( priest().buffs.vampiric_insight->up() )
+    {
+      priest().buffs.vampiric_insight->decrement();
     }
     else
     {
@@ -488,7 +493,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   double insanity_gain;
 
   shadowy_apparition_damage_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparition", p, p.specs.shadowy_apparition ),
+    : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
       insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
   {
     affected_by_shadow_weaving = true;
@@ -519,7 +524,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
-  shadowy_apparition_spell_t( priest_t& p ) : priest_spell_t( "shadowy_apparitions", p, p.specs.shadowy_apparitions )
+  shadowy_apparition_spell_t( priest_t& p ) : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions.spell() )
   {
     background   = true;
     proc         = false;
@@ -772,8 +777,21 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( result_is_hit( d->state->result ) )
+    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
+      int stack = priest().buffs.vampiric_insight->check();
+      if ( priest().buffs.vampiric_insight->trigger() )
+      {
+        if ( priest().buffs.vampiric_insight->check() == stack )
+        {
+          priest().procs.vampiric_insight_overflow->occur();
+        }
+        else
+        {
+          priest().procs.vampiric_insight->occur();
+        }
+      }
+
       vampiric_touch_heal->trigger( d->state->result_amount );
     }
   }
@@ -1138,7 +1156,7 @@ struct void_eruption_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
   {
     may_miss                   = false;
     background                 = true;
@@ -1161,7 +1179,7 @@ struct void_eruption_damage_t final : public priest_spell_t
 struct void_eruption_t final : public priest_spell_t
 {
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.specs.void_eruption )
+    : priest_spell_t( "void_eruption", p, p.talents.shadow.void_eruption.spell() )
   {
     parse_options( options_str );
 
@@ -1203,7 +1221,7 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_stm_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_stm_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_stm_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
   {
     // This Void Eruption only hits a single target
     may_miss                   = false;
@@ -1669,6 +1687,44 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 };
 
 // ==========================================================================
+// Vampiric Insight
+// ==========================================================================
+struct vampiric_insight_t final : public priest_buff_t<buff_t>
+{
+  vampiric_insight_t( priest_t& p ) : base_t( p, "vampiric_insight", p.find_spell( 375981 ) )
+  {
+    // Allow player to react to the buff being applied so they can cast Mind Blast.
+    this->reactable = true;
+
+    // Create a stack change callback to adjust the number of mindblast charges.
+
+    set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      for ( int i = 0; i < expiration_stacks; i++ )
+      {
+        priest().procs.vampiric_insight_missed->occur();
+      }
+    }
+
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( !priest().talents.shadow.vampiric_insight.enabled() )
+      return false;
+
+    return priest_buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
+// ==========================================================================
 // Ancient Madness
 // ==========================================================================
 struct ancient_madness_t final : public priest_buff_t<buff_t>
@@ -1796,6 +1852,9 @@ void priest_t::create_buffs_shadow()
                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   }
 
+  // TODO: UNHARDCODE AND CHECK WITH DEVS.
+  buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this )->set_rppm( RPPM_HASTE, 3.0 );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1830,7 +1889,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
   talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
-  talents.shadow.last_word = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+  talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+  talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
+  talents.shadow.shadowy_apparition = find_spell( 148859 );
+  talents.shadow.shadowy_apparitions = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
+  talents.shadow.void_eruption                = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
+  talents.shadow.void_eruption_damage         = find_spell( 228360 );
 
   // Talents
   // T15
@@ -1860,14 +1924,10 @@ void priest_t::init_spells_shadow()
   specs.dark_thought         = find_spell( 341207 );
   specs.dark_thoughts        = find_specialization_spell( "Dark Thoughts" );
   specs.dispersion           = find_specialization_spell( "Dispersion" );
-  specs.shadowy_apparition   = find_spell( 148859 );
-  specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadowform           = find_specialization_spell( "Shadowform" );
   specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
   specs.void_bolt            = find_spell( 205448 );
   specs.voidform             = find_spell( 194249 );
-  specs.void_eruption        = find_specialization_spell( "Void Eruption" );
-  specs.void_eruption_damage = find_spell( 228360 );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
@@ -1978,7 +2038,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 
 void priest_t::init_background_actions_shadow()
 {
-  if ( specs.shadowy_apparitions->ok() )
+  if ( talents.shadow.shadowy_apparitions.enabled() )
   {
     background_actions.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
   }
@@ -2001,7 +2061,7 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 void priest_t::trigger_shadowy_apparitions( action_state_t* s )
 {
-  if ( !specs.shadowy_apparitions->ok() )
+  if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
     return;
   }

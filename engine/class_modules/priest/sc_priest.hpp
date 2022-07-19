@@ -93,6 +93,7 @@ public:
     // Talents
     propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
+    propagate_const<buff_t*> vampiric_insight;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -184,8 +185,14 @@ public:
       player_talent_t fortress_of_the_mind;
       // Row 4
       player_talent_t unfurling_darkness;
+      player_talent_t vampiric_insight;
       player_talent_t last_word;
-      
+      // Row 5
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
+
       // Row 8
       player_talent_t mind_devourer;
     } shadow;
@@ -261,15 +268,11 @@ public:
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
-    const spell_data_t* shadow_priest;        // General shadow data
-    const spell_data_t* shadowy_apparition;   // Damage event
-    const spell_data_t* shadowy_apparitions;  // Passive effect
+    const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
-    const spell_data_t* void_eruption;
-    const spell_data_t* void_eruption_damage;
 
     // Legendary Effects
     const spell_data_t* cauterizing_shadows_health;
@@ -359,6 +362,9 @@ public:
     propagate_const<proc_t*> dark_thoughts_searing_nightmare;
     propagate_const<proc_t*> dark_thoughts_missed;
     propagate_const<proc_t*> living_shadow;
+    propagate_const<proc_t*> vampiric_insight;
+    propagate_const<proc_t*> vampiric_insight_overflow;
+    propagate_const<proc_t*> vampiric_insight_missed;
   } procs;
 
   // Special
