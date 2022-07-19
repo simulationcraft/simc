@@ -512,6 +512,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
+      priest().trigger_idol_of_nzoth( d->state->target );
     }
   }
 };
@@ -764,6 +765,7 @@ struct vampiric_touch_t final : public priest_spell_t
         }
       }
 
+      priest().trigger_idol_of_nzoth( d->state->target );
       vampiric_touch_heal->trigger( d->state->result_amount );
     }
   }
@@ -913,9 +915,10 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( result_is_hit( d->state->result ) )
+    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       devouring_plague_heal->trigger( d->state->result_amount );
+      priest().trigger_idol_of_nzoth( d->state->target );
     }
   }
 
@@ -1952,6 +1955,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
+  talents.shadow.idol_of_nzoth = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
 
   // Talents
   // T15
@@ -2216,6 +2220,23 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
         buffs.talbadars_stratagem->trigger( min_length );
       if ( talents.shadow.insidious_ire.enabled() )
         buffs.insidious_ire->trigger( min_length );
+    }
+  }
+}
+
+void priest_t::trigger_idol_of_nzoth( player_t* target )
+{
+  if ( !talents.shadow.idol_of_nzoth.enabled() )
+    return;
+
+  if ( rng().roll( talents.shadow.idol_of_nzoth.spell()->effectN( 1 ).percent() ) )
+  {
+    auto td = get_target_data( target );
+    td->buffs.echoing_void->trigger();
+    if ( !td->buffs.echoing_void_collapse->check() &&
+         rng().roll( talents.shadow.idol_of_nzoth.spell()->proc_chance() ) )
+    {
+      td->buffs.echoing_void_collapse->trigger();
     }
   }
 }

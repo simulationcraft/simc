@@ -1294,6 +1294,23 @@ struct shadow_mend_t final : public priest_heal_t
 };
 
 // ==========================================================================
+// Echoing Void
+// ==========================================================================
+struct echoing_void_t final : public priest_spell_t
+{
+  echoing_void_t( priest_t& p ) : priest_spell_t( "echoing_void", p, p.find_spell( 373304 ) )
+  {
+    affected_by_shadow_weaving = false;
+    background                 = true;
+    proc                       = false;
+    callbacks                  = true;
+    may_miss                   = false;
+    aoe                        = -1;
+    range                      = 10.0;
+  }
+};
+
+// ==========================================================================
 // Fade
 // ==========================================================================
 struct fade_t final : public priest_spell_t
@@ -1882,6 +1899,23 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
+
+  buffs.echoing_void =
+      make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth.spell()->effectN( 1 ).trigger() );
+
+  buffs.echoing_void_collapse =
+      make_buff( *this, "echoing_void_collapse" )
+          ->set_tick_behavior( buff_tick_behavior::REFRESH )
+          ->set_period( timespan_t::from_seconds( 1.0 ) )
+          ->set_tick_callback( [ this, &p, target ]( buff_t* b, int, timespan_t ) {
+            if ( buffs.echoing_void->check() )
+              p.background_actions.echoing_void->execute_on_target( target );
+            buffs.echoing_void->decrement();
+            if ( !buffs.echoing_void->check() )
+            {
+              make_event( b->sim, timespan_t::from_millis( 1 ), [ this ] { buffs.echoing_void_collapse->cancel(); } );
+            }
+          } );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -2576,6 +2610,8 @@ void priest_t::init_background_actions()
   background_actions.wrathful_faerie_fermata = new actions::spells::wrathful_faerie_fermata_t( *this );
 
   background_actions.unholy_transfusion_healing = new actions::spells::unholy_transfusion_healing_t( *this );
+
+  background_actions.echoing_void = new actions::spells::echoing_void_t( *this );
 
   init_background_actions_shadow();
 }

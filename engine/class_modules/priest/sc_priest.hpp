@@ -34,6 +34,7 @@ struct psychic_link_t;
 struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
+struct echoing_void_t;
 }  // namespace actions::spells
 
 /**
@@ -61,6 +62,8 @@ public:
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
     propagate_const<buff_t*> hungering_void;
+    propagate_const<buff_t*> echoing_void;
+    propagate_const<buff_t*> echoing_void_collapse;
   } buffs;
 
   priest_t& priest()
@@ -413,6 +416,7 @@ public:
     propagate_const<actions::spells::unholy_transfusion_healing_t*> unholy_transfusion_healing;
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
+    propagate_const<actions::spells::echoing_void_t*> echoing_void;
   } background_actions;
 
   // Items
@@ -636,6 +640,7 @@ public:
   void remove_wrathful_faerie();
   void spawn_thing_from_beyond();
   void remove_wrathful_faerie_fermata();
+  void trigger_idol_of_nzoth( player_t* target );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
