@@ -54,7 +54,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     {
       if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
       {
-        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither.base_value( 1 ) );
+        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
         priest_td_t& td          = get_td( s->target );
 
         td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
@@ -100,9 +100,9 @@ struct mind_flay_t final : public priest_spell_t
     channeled                  = true;
     use_off_gcd                = true;
 
-    energize_amount *= 1 + p.talents.shadow.fortress_of_the_mind.percent( 1 );
+    energize_amount *= 1 + p.talents.shadow.fortress_of_the_mind->effectN( 1 ).percent();
 
-    spell_power_mod.tick *= 1.0 + p.talents.shadow.fortress_of_the_mind.percent( 3 );
+    spell_power_mod.tick *= 1.0 + p.talents.shadow.fortress_of_the_mind->effectN( 3 ).percent();
   }
 
   void trigger_mind_flay_dissonant_echoes()
@@ -126,7 +126,7 @@ struct mind_flay_t final : public priest_spell_t
       return;
     }
 
-    if ( rng().roll( priest().talents.shadow.void_touched.percent( 1 ) ) )
+    if ( rng().roll( priest().talents.shadow.void_touched->effectN( 1 ).percent() ) )
     {
       priest().buffs.void_touched->trigger();
       priest().procs.void_touched->occur();
@@ -146,7 +146,7 @@ struct mind_flay_t final : public priest_spell_t
     {
       if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
       {
-        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither.base_value( 1 ) );
+        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
         priest_td_t& td          = get_td( d->state->target );
 
         td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
@@ -427,7 +427,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest().talents.throes_of_pain.enabled() )
     {
-      base_td_multiplier *= ( 1 + priest().talents.throes_of_pain.percent( 1 ) );
+      base_td_multiplier *= ( 1 + priest().talents.throes_of_pain->effectN( 1 ).percent() );
     }
   }
 
@@ -484,7 +484,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
     {
-      crit += priest().talents.shadow.abyssal_knowledge.percent( 1 );
+      crit += priest().talents.shadow.abyssal_knowledge->effectN( 1 ).percent();
     }
 
     return crit;
@@ -711,7 +711,7 @@ struct vampiric_touch_t final : public priest_spell_t
     double m = priest_spell_t::action_multiplier();
 
     if ( priest().talents.shadow.sanguine_teachings.enabled() && !player->absorb_buff_list.empty() )
-      m *= ( 1 + priest().talents.shadow.sanguine_teachings.percent( 1 ) );
+      m *= ( 1 + priest().talents.shadow.sanguine_teachings->effectN( 1 ).percent() );
 
     return m;
   }
@@ -722,7 +722,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
     {
-      crit += priest().talents.shadow.abyssal_knowledge.percent( 1 );
+      crit += priest().talents.shadow.abyssal_knowledge->effectN( 1 ).percent();
     }
 
     return crit;
@@ -759,7 +759,7 @@ struct vampiric_touch_t final : public priest_spell_t
         }
 
         if ( d->state->result == RESULT_CRIT && priest().talents.shadow.unleash_the_shadows.enabled() &&
-             rng().roll( priest().talents.shadow.unleash_the_shadows.percent( 1 ) ) )
+             rng().roll( priest().talents.shadow.unleash_the_shadows->effectN( 1 ).percent() ) )
         {
           priest().background_actions.shadowy_apparitions->trigger( d->state->target );
         }
@@ -888,7 +888,7 @@ struct devouring_plague_t final : public priest_spell_t
     double m = priest_spell_t::action_multiplier();
 
     if ( priest().talents.shadow.sanguine_teachings.enabled() && !player->absorb_buff_list.empty() )
-      m *= ( 1 + priest().talents.shadow.sanguine_teachings.percent( 1 ) );
+      m *= ( 1 + priest().talents.shadow.sanguine_teachings->effectN( 1 ).percent() );
 
     return m;
   }
@@ -1371,7 +1371,7 @@ struct psychic_link_t final : public priest_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * priest().talents.shadow.psychic_link.percent( 1 ) );
+    base_dd_min = base_dd_max = ( original_amount * priest().talents.shadow.psychic_link->effectN( 1 ).percent() );
     player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
 
     set_target( target );
@@ -1854,7 +1854,7 @@ void priest_t::create_buffs_shadow()
   {
     buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( talents.shadow.mind_devourer.spell() )
-                              ->set_chance( talents.shadow.mind_devourer.percent( 2 ) );
+                              ->set_chance( talents.shadow.mind_devourer->effectN( 2 ).percent() );
   }
   else
   {

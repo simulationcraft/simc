@@ -49,9 +49,9 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind.percent( 2 );
+    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind->effectN( 2 ).percent();
 
-    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind.percent( 4 );
+    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind->effectN( 4 ).percent();
 
     if ( priest().conduits.mind_devourer->ok() )
     {
@@ -60,7 +60,7 @@ public:
 
     if ( priest().talents.shadow.mind_devourer.enabled() )
     {
-      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer.percent( 1 ) );
+      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer->effectN( 1 ).percent() );
     }
 
     cooldown->hasted     = true;
@@ -69,7 +69,7 @@ public:
 
     if ( p.talents.improved_mind_blast.enabled() )
     {
-      cooldown->duration += timespan_t::from_millis( p.talents.improved_mind_blast.base_value( 1 ) );
+      cooldown->duration += p.talents.improved_mind_blast->effectN( 1 ).time_value();
     }
 
     your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
@@ -133,7 +133,7 @@ public:
 
     if ( insidious_ire_active() )
     {
-      m *= 1 + priest().talents.shadow.insidious_ire.percent( 1 );
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
 
     return m;
@@ -2611,7 +2611,7 @@ void priest_t::create_buffs()
   buffs.masochism = make_buff<buffs::masochism_t>( *this );
 
   buffs.puppet_master = make_buff<stat_buff_t>( this, "puppet_master", talents.puppet_master.spell() )
-                            ->add_stat( STAT_MASTERY_RATING, talents.puppet_master.base_value( 1 ) )
+                            ->add_stat( STAT_MASTERY_RATING, talents.puppet_master->effectN( 1 ).base_value() )
                             ->add_invalidate( CACHE_MASTERY )
                             ->set_max_stack( 5 );
 
