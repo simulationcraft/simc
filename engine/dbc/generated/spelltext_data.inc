@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44649
-static const std::array<spelltext_data_t, 16977> __spelltext_data { {
+static const std::array<spelltext_data_t, 16979> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16352,6 +16352,7 @@ static const std::array<spelltext_data_t, 16977> __spelltext_data { {
   { 373180, "When Atonement has healed a total of $s1 times, your next Penance is free and fires $s2 additional bolts.", 0, 0 },
   { 373188, "Power Word: Radiance has a $s1% chance to grant Power of the Dark Side.", 0, 0 },
   { 373202, "Mind Blast deals $s1% increased damage and has a $s2% chance to make your next Devouring Plague cost no insanity.", 0, 0 },
+  { 373204, "$@spelldesc373202", "Your next Devouring Plague costs 0 insanity.", 0 },
   { 373212, "While you have Shadow Word: Pain, Devouring Plague, and Vampiric Touch active on the same target, your Mind Blast deals $s1% more damage.\r\n", 0, 0 },
   { 373221, "Reduces the cooldown of Damnation by ${$abs($s1/1000)} sec.", 0, 0 },
   { 373223, "Shadow Word: Death deals $s1% less damage to the caster.", 0, 0 },
@@ -16375,6 +16376,7 @@ static const std::array<spelltext_data_t, 16977> __spelltext_data { {
   { 373384, "$@spelldesc373381", "Your shadow is animated.", 0 },
   { 373426, "Your $?s382109[Mindbender][Shadowfiend]'s attack speed is increased by $s1%.", 0, 0 },
   { 373427, "Mind Blast and Shadow Word: Death cause your $?s123040|s200174[Mindbender][Shadowfiend] to teleport behind your target, slashing up to $s2 nearby enemies for $?s200174[${.442*$344748s1}][${.408*$344748s1}] Shadowflame damage. Each time a rift is triggered, the duration of $?s123040|s200174[Mindbender][Shadowfiend] is increased by ${$s3}.1 sec.", 0, 0 },
+  { 373442, "$@spelldesc373427", 0, 0 },
   { 373445, "Dispel Magic, Purify, Purify Disease, and Mass Dispel cost ${$s1*-1}% less mana.", 0, 0 },
   { 373446, "For the first $373447d of Fade, you take $373447s1% reduced damage.", 0, 0 },
   { 373447, "Damage taken reduced.", "Damage taken reduced by $w%.", 0 },

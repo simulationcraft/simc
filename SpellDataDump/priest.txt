@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44649 dragonflight-BETA (hotfix 2022-07-15/44649)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44649 dragonflight-BETA (hotfix 2022-07-19/44649)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -9845,7 +9845,7 @@ GCD              : 1.5 seconds
 Duration         : 6 seconds
 Category         : 691
 Stance Mask      : 0x08000000
-Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1), Inner Shadow (355898 effects: #1, #4)
+Affecting spells : Mastery: Madness (77486 effects: #1, #2), Spirit Shell (109964 effect#2), Holy Priest (137031 effects: #3, #4), Discipline Priest (137032 effects: #12, #13), Shadow Priest (137033 effects: #1, #2), Surrender to Madness (193223 effect#2), Voidform (194249 effects: #1, #2), Schism (214621 effect#2), Shadowform (232698 effects: #1, #4), Twist of Fate (265258 effects: #1, #2), Sins of the Many (280398 effects: #1, #2), Surrender to Madness (319952 effect#7), Hungering Void (345219 effect#1), Inner Shadow (355898 effects: #1, #4), Mind Devourer (373204 effect#1)
 Family Flags     : 72, 87
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13468,6 +13468,29 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Mind Blast deals $s1% increased damage and has a $s2% chance to make your next Devouring Plague cost no insanity.
 
+Name             : Mind Devourer (id=373204) [Spell Family (6)] 
+Class            : Priest
+School           : Shadow
+Spell Type       : None
+Spell Level      : 60
+Duration         : 15 seconds
+Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   .......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Aura Points On Client (268), Not In Spellbook Until Learned (269), Scales with Casting Item's Level (354), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=998262)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Devouring Plague (335467)
+                   Family Flags: 87
+Description      : $@spelldesc373202
+Tooltip          : Your next Devouring Plague costs 0 insanity.
+
 Name             : Insidious Ire (id=373212) [Spell Family (6), Passive] 
 Class            : Priest
 School           : Shadow
@@ -13822,6 +13845,28 @@ Effects          :
 #3 (id=998636)   : Dummy (3)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : Mind Blast and Shadow Word: Death cause your $?s123040|s200174[Mindbender][Shadowfiend] to teleport behind your target, slashing up to $s2 nearby enemies for $?s200174[${.442*$344748s1}][${.408*$344748s1}] Shadowflame damage. Each time a rift is triggered, the duration of $?s123040|s200174[Mindbender][Shadowfiend] is increased by ${$s3}.1 sec.
+
+Name             : Shadowflame Fissure (id=373442) [Spell Family (6)] 
+Class            : Priest
+School           : Shadowflame
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 100 yards
+Max Targets      : 5
+GCD              : 1 seconds
+Attributes       : ....x... ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   .....x.. ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Initiates Combat (Enables Auto-Attack) (41), Do Not Display Range (126), Limit N (165), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=998660)   : School Damage (2): shadowflame
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.90000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
+Description      : $@spelldesc373427
 
 Name             : Clear Mind (id=373445) [Spell Family (6), Passive, Hidden] 
 Class            : Priest
