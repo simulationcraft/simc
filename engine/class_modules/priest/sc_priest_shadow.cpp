@@ -1194,7 +1194,8 @@ struct void_torrent_t final : public priest_spell_t
 
   void_torrent_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_torrent", p, p.talents.shadow.void_torrent.spell() ),
-      insanity_gain( p.talents.shadow.void_torrent.spell()->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain(
+          p.talents.shadow.void_torrent.spell()->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -1402,6 +1403,11 @@ struct damnation_t final : public priest_spell_t
     child_dp->background  = true;
 
     may_miss = false;
+
+    if ( p.talents.shadow.malediction.enabled() )
+    {
+      cooldown->duration += p.talents.shadow.malediction.spell()->effectN( 1 ).time_value();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1782,6 +1788,7 @@ void priest_t::init_spells_shadow()
 
   talents.shadow.shadow_crash    = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Crash" );
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
+  talents.shadow.malediction     = find_talent_spell( talent_tree::SPECIALIZATION, "Malediction" );
   talents.shadow.void_torrent    = find_talent_spell( talent_tree::SPECIALIZATION, "Void Torrent" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
