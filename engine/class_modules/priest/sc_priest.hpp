@@ -142,6 +142,10 @@ public:
   struct
   {
     // Priest Tree
+    // Row 1
+    const spell_data_t* shadow_word_death;
+    // Row 2
+    player_talent_t improved_shadow_word_death;
     // Row 5
     player_talent_t shadowfiend;
     // Row 6
@@ -233,7 +237,6 @@ public:
   {
     const spell_data_t* mind_blast;
     const spell_data_t* priest;  // General priest data
-    const spell_data_t* shadow_word_death;
     const spell_data_t* shadow_word_death_self_damage;
 
     // Discipline
