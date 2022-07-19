@@ -2276,7 +2276,7 @@ void priest_t::arise()
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
   auto mind_sear_id = specs.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id = specs.mind_flay->id();
+  auto mind_flay_id = talents.shadow.mind_flay.spell()->id();
   auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
