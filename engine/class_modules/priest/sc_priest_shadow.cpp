@@ -675,6 +675,16 @@ struct vampiric_touch_t final : public priest_spell_t
     return priest_spell_t::execute_time();
   }
 
+  double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest().talents.shadow.sanguine_teachings.enabled() && !player->absorb_buff_list.empty() )
+      m *= ( 1 + priest().talents.shadow.sanguine_teachings.percent( 1 ) );
+
+    return m;
+  }
+
   double composite_target_crit_chance( player_t* target ) const override
   {
     double crit = priest_spell_t::composite_target_crit_chance( target );
@@ -833,6 +843,17 @@ struct devouring_plague_t final : public priest_spell_t
     }
 
     return priest_spell_t::cost();
+  }
+
+  
+  double action_multiplier() const override
+  {
+    double m = priest_spell_t::action_multiplier();
+
+    if ( priest().talents.shadow.sanguine_teachings.enabled() && !player->absorb_buff_list.empty() )
+      m *= ( 1 + priest().talents.shadow.sanguine_teachings.percent( 1 ) );
+
+    return m;
   }
 
   void impact( action_state_t* s ) override
@@ -1875,6 +1896,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.insidious_ire    = find_talent_spell( talent_tree::SPECIALIZATION, "Insidious Ire" );
   talents.shadow.mind_devourer    = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
 
+  talents.shadow.sanguine_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Teachings" );
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
   // Talents

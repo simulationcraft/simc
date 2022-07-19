@@ -225,6 +225,7 @@ public:
       player_talent_t insidious_ire;
       player_talent_t mind_devourer;
       // Row 9
+      player_talent_t sanguine_teachings;
       player_talent_t abyssal_knowledge;
 
     } shadow;
