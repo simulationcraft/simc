@@ -294,6 +294,21 @@ struct base_fiend_pet_t : public priest_pet_t
     resources.current = resources.max = resources.initial;
   }
 
+  void arise() override
+  {
+    priest_pet_t::arise();
+
+    if ( o().talents.puppet_master.enabled() )
+      o().buffs.puppet_master->trigger();
+  }
+
+  void demise() override
+  {
+    priest_pet_t::demise();
+    if ( o().talents.puppet_master.enabled() )
+      o().buffs.puppet_master->cancel();
+  }
+
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
 };
 

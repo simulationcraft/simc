@@ -2513,6 +2513,11 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.masochism = make_buff<buffs::masochism_t>( *this );
 
+  buffs.puppet_master = make_buff<stat_buff_t>( this, "puppet_master", talents.puppet_master.spell() )
+                            ->add_stat( STAT_MASTERY_RATING, talents.puppet_master.base_value( 1 ) )
+                            ->add_invalidate( CACHE_MASTERY )
+                            ->set_max_stack( 5 );
+
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
