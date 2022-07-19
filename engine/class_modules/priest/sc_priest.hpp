@@ -169,7 +169,15 @@ public:
       const spell_data_t* mind_sear_insanity;
       // Row 3
       player_talent_t death_and_madness;
+      player_talent_t searing_nightmare;
+      player_talent_t misery;
       const spell_data_t* death_and_madness_insanity;
+      player_talent_t silence;
+      player_talent_t fortress_of_the_mind;
+      // Row 4
+      player_talent_t unfurling_darkness;
+      player_talent_t last_word;
+      
       // Row 8
       player_talent_t mind_devourer;
     } shadow;
@@ -205,17 +213,10 @@ public:
     const spell_data_t* apotheosis;
 
     // Shadow
-    // T15
-    const spell_data_t* fortress_of_the_mind;
-    const spell_data_t* unfurling_darkness;
     // T25
     const spell_data_t* sanlayn;
     const spell_data_t* intangibility;  // CDR implemented, healing NYI
-    // T30
-    const spell_data_t* searing_nightmare;
-    const spell_data_t* misery;
     // T35
-    const spell_data_t* last_word;
     const spell_data_t* mind_bomb;
     const spell_data_t* psychic_horror;
     // T40
@@ -256,7 +257,6 @@ public:
     const spell_data_t* shadowy_apparition;   // Damage event
     const spell_data_t* shadowy_apparitions;  // Passive effect
     const spell_data_t* shadowform;
-    const spell_data_t* silence;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
