@@ -496,7 +496,7 @@ struct smite_t final : public priest_spell_t
 struct power_infusion_t final : public priest_spell_t
 {
   power_infusion_t( priest_t& p, util::string_view options_str, util::string_view name )
-    : priest_spell_t( name, p, p.talents.power_infusion )
+    : priest_spell_t( name, p, p.talents.power_infusion.spell() )
   {
     parse_options( options_str );
     harmful = false;
@@ -2477,8 +2477,7 @@ void priest_t::init_spells()
   talents.masochism_buff = find_spell( 193065 );
   // Row 4
   // TODO: this is not working when trying to get spell() out of it
-  // talents.power_infusion      = find_talent_spell( talent_tree::CLASS, "Power Infusion" );
-  talents.power_infusion      = find_spell( 10060 );
+  talents.power_infusion      = find_talent_spell( talent_tree::CLASS, "Power Infusion" );
   talents.improved_mind_blast = find_talent_spell( talent_tree::CLASS, "Improved Mind Blast" );
   talents.twist_of_fate       = find_talent_spell( talent_tree::CLASS, "Twist of Fate" );
   talents.taming_the_shadows  = find_talent_spell( talent_tree::CLASS, "Taming the Shadows" );

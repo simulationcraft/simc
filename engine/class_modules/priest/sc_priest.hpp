@@ -158,7 +158,7 @@ public:
     player_talent_t masochism;
     const spell_data_t* masochism_buff;
     // Row 4
-    const spell_data_t* power_infusion;
+    player_talent_t power_infusion;
     player_talent_t improved_mind_blast;
     player_talent_t twist_of_fate;
     player_talent_t taming_the_shadows;
