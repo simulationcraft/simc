@@ -292,7 +292,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
   shadowy_apparition_damage_t( priest_t& p )
     : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
-      insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
+      insanity_gain( priest().talents.shadow.auspicious_spirits.spell()->effectN( 2 ).percent() )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -301,7 +301,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     may_miss                   = false;
     may_crit                   = false;
 
-    base_dd_multiplier *= 1 + priest().talents.auspicious_spirits->effectN( 1 ).percent();
+    base_dd_multiplier *= 1 + priest().talents.shadow.auspicious_spirits.spell()->effectN( 1 ).percent();
 
     if ( priest().conduits.haunting_apparitions->ok() )
     {
@@ -313,7 +313,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().talents.auspicious_spirits->ok() )
+    if ( priest().talents.shadow.auspicious_spirits.enabled() )
     {
       priest().generate_insanity( insanity_gain, priest().gains.insanity_auspicious_spirits, s->action );
     }
@@ -1215,7 +1215,7 @@ struct void_torrent_t final : public priest_spell_t
 // ==========================================================================
 struct psychic_link_t final : public priest_spell_t
 {
-  psychic_link_t( priest_t& p ) : priest_spell_t( "psychic_link", p, p.talents.psychic_link )
+  psychic_link_t( priest_t& p ) : priest_spell_t( "psychic_link", p, p.talents.shadow.psychic_link.spell() )
   {
     background = true;
     may_crit   = false;
@@ -1225,7 +1225,7 @@ struct psychic_link_t final : public priest_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * priest().talents.psychic_link->effectN( 1 ).percent() );
+    base_dd_min = base_dd_max = ( original_amount * priest().talents.shadow.psychic_link.percent( 1 ) );
     player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
 
     set_target( target );
@@ -1735,16 +1735,19 @@ void priest_t::init_spells_shadow()
   talents.shadow.silence              = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
   talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
-  talents.shadow.unfurling_darkness   = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
-  talents.shadow.last_word            = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
-  talents.shadow.vampiric_insight     = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
+  talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
+  talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
+  talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+
   talents.shadow.shadowy_apparition   = find_spell( 148859 );
   talents.shadow.shadowy_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
   talents.shadow.void_eruption        = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
   talents.shadow.void_eruption_damage = find_spell( 228360 );
+  talents.shadow.monomania            = find_talent_spell( talent_tree::SPECIALIZATION, "Monomania" );
+  talents.shadow.monomania_tickrate   = find_spell( 375408 );
 
-  talents.shadow.monomania          = find_talent_spell( talent_tree::SPECIALIZATION, "Monomania" );
-  talents.shadow.monomania_tickrate = find_spell( 375408 );
+  talents.shadow.psychic_link       = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Link" );
+  talents.shadow.auspicious_spirits = find_talent_spell( talent_tree::SPECIALIZATION, "Auspicious Spirits" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
@@ -1760,9 +1763,7 @@ void priest_t::init_spells_shadow()
   talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
   talents.psychic_horror = find_talent_spell( "Psychic Horror" );
   // T40
-  talents.auspicious_spirits = find_talent_spell( "Auspicious Spirits" );
-  talents.psychic_link       = find_talent_spell( "Psychic Link" );
-  talents.shadow_crash       = find_talent_spell( "Shadow Crash" );
+  talents.shadow_crash = find_talent_spell( "Shadow Crash" );
   // T45
   talents.damnation    = find_talent_spell( "Damnation" );
   talents.void_torrent = find_talent_spell( "Void Torrent" );
@@ -1891,7 +1892,7 @@ void priest_t::init_background_actions_shadow()
     background_actions.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
   }
 
-  if ( talents.psychic_link->ok() )
+  if ( talents.shadow.psychic_link.enabled() )
   {
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
@@ -1933,7 +1934,7 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s )
 // ==========================================================================
 void priest_t::trigger_psychic_link( action_state_t* s )
 {
-  if ( !talents.psychic_link->ok() )
+  if ( !talents.shadow.psychic_link.enabled() )
   {
     return;
   }

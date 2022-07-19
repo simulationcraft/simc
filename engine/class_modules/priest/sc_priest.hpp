@@ -199,6 +199,8 @@ public:
       player_talent_t monomania;
       const spell_data_t* monomania_tickrate;
       // Row 6
+      player_talent_t psychic_link;
+      player_talent_t auspicious_spirits;
       // Row 7
       // Row 8
       player_talent_t mind_devourer;
@@ -245,8 +247,6 @@ public:
     const spell_data_t* mind_bomb;
     const spell_data_t* psychic_horror;
     // T40
-    const spell_data_t* auspicious_spirits;
-    const spell_data_t* psychic_link;
     const spell_data_t* shadow_crash;
     // T45
     const spell_data_t* damnation;

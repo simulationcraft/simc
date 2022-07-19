@@ -142,7 +142,7 @@ public:
 
     priest().trigger_shadowy_apparitions( s );
 
-    if ( priest().talents.psychic_link->ok() )
+    if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( s );
     }
