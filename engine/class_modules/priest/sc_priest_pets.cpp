@@ -854,7 +854,7 @@ action_t* your_shadow_t::create_action( util::string_view name, util::string_vie
 }
 
 // ==========================================================================
-// Eternal Call to the Void
+// Eternal Call to the Void and Idol of C'Thun
 // ==========================================================================
 struct void_tendril_t final : public priest_pet_t
 {
@@ -891,7 +891,15 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::init();
 
-    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+    }
+    else
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    }
   }
 
   timespan_t composite_dot_duration( const action_state_t* ) const override
@@ -910,8 +918,17 @@ struct void_tendril_mind_flay_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::tick( d );
 
-    p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
-                               d->state->action );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_flay,
+                                 d->state->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_tendril_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_flay,
+                                 d->state->action );
+    }
   }
 };
 
@@ -973,8 +990,15 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::impact( s );
 
-    p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
-                               s->action );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_idol_of_cthun_mind_sear, s->action );
+    }
+    else
+    {
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear, s->action );
+    }
   }
 };
 
@@ -993,7 +1017,15 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
   {
     priest_pet_spell_t::init();
 
-    merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+    }
+    else
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    }
   }
 };
 
@@ -1208,6 +1240,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
+  // TODO: consider changing duration over to 377355
   auto void_tendril_spell = p.find_spell( 193473 );
   // Add 1ms to ensure pet is dismissed after last dot tick.
   void_tendril.set_default_duration( void_tendril_spell->duration() + timespan_t::from_millis( 1 ) );

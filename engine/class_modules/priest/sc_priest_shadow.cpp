@@ -47,6 +47,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().trigger_eternal_call_to_the_void( s );
+    priest().trigger_idol_of_cthun( s );
 
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear, s );
 
@@ -139,6 +140,7 @@ struct mind_flay_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
+    priest().trigger_idol_of_cthun( d->state );
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
     trigger_mind_flay_dissonant_echoes();
     trigger_mind_flay_void_touched();
@@ -1313,7 +1315,19 @@ struct eternal_call_to_the_void_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Void Torrent
+// Idol of C'Thun (Talent)
+// ==========================================================================
+struct idol_of_cthun_t final : public priest_spell_t
+{
+  idol_of_cthun_t( priest_t& p )
+    : priest_spell_t( "idol_of_cthun", p, p.talents.shadow.idol_of_cthun.spell() )
+  {
+    background = true;
+  }
+};
+
+// ==========================================================================
+// Void Torrent (Talent)
 // ==========================================================================
 struct void_torrent_t final : public priest_spell_t
 {
@@ -1911,6 +1925,7 @@ void priest_t::create_buffs_shadow()
 void priest_t::init_rng_shadow()
 {
   rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
+  rppm.idol_of_cthun = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun.spell() );
 }
 
 void priest_t::init_spells_shadow()
@@ -1964,6 +1979,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
   talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
+  talents.shadow.idol_of_cthun     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
 
   // Talents
   // T15
@@ -1989,7 +2005,6 @@ void priest_t::init_spells_shadow()
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
-  specs.painbreaker_psalm_insanity = find_spell( 336167 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2102,9 +2117,15 @@ void priest_t::init_background_actions_shadow()
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
 
+  // TODO: does this stack in pre-patch?
   if ( legendary.eternal_call_to_the_void->ok() )
   {
     background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
+  }
+
+  if ( talents.shadow.idol_of_cthun.enabled() )
+  {
+    background_actions.idol_of_cthun = new actions::spells::idol_of_cthun_t( *this );
   }
 
   background_actions.shadow_weaving = new actions::spells::shadow_weaving_t( *this );

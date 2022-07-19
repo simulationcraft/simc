@@ -2048,15 +2048,16 @@ void priest_t::create_gains()
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
-  gains.insanity_mindgames = get_gain( "Insanity Gained from Mindgames" );
-
-  gains.insanity_mind_sear            = get_gain( "Insanity Gained from Mind Sear" );
-  gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
-  gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
-  gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_throes_of_pain       = get_gain( "Insanity Gained from Throes of Pain" );
+  gains.insanity_mindgames               = get_gain( "Insanity Gained from Mindgames" );
+  gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
+  gains.insanity_pet                     = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness    = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.mindbender                       = get_gain( "Mana Gained from Mindbender" );
+  gains.painbreaker_psalm                = get_gain( "Insanity Gained from Painbreaker Psalm" );
+  gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_throes_of_pain          = get_gain( "Insanity Gained from Throes of Pain" );
+  gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
+  gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
 }
 
 /** Construct priest procs */
@@ -2072,8 +2073,10 @@ void priest_t::create_procs()
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
   procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher                     = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.void_tendril_ecttv              = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher_ecttv               = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
@@ -2508,6 +2511,7 @@ void priest_t::init_spells()
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
+  specs.painbreaker_psalm_insanity    = find_spell( 336167 );
 
   // Class passives
   specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
@@ -2903,7 +2907,35 @@ void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
+  // To prevent conflict dont spawn ECttV tendrils when also using the talent
+  if ( talents.shadow.idol_of_cthun.enabled() )
+    return;
+
   if ( rppm.eternal_call_to_the_void->trigger() )
+  {
+    if ( action_id == mind_flay_id )
+    {
+      procs.void_tendril_ecttv->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher_ecttv->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
+    }
+  }
+}
+
+// Idol of C'Thun Talent Trigger
+void priest_t::trigger_idol_of_cthun( action_state_t* s )
+{
+  auto mind_sear_id = talents.shadow.mind_sear.spell()->effectN( 1 ).trigger()->id();
+  auto mind_flay_id = talents.shadow.mind_flay.spell()->id();
+  auto action_id    = s->action->id;
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
+  if ( rppm.idol_of_cthun->trigger() )
   {
     if ( action_id == mind_flay_id )
     {
