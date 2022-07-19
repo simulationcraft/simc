@@ -31,6 +31,9 @@ public:
   unsigned rank() const
   { return m_rank; }
 
+  const trait_data_t* trait() const
+  { return m_trait; }
+
   const spell_data_t* spell() const
   { return m_spell; }
 
