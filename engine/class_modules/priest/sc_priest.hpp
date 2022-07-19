@@ -182,6 +182,8 @@ public:
       // Row 5
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
 
       // Row 8
       player_talent_t mind_devourer;
@@ -263,8 +265,6 @@ public:
     const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
-    const spell_data_t* void_eruption;
-    const spell_data_t* void_eruption_damage;
 
     // Legendary Effects
     const spell_data_t* cauterizing_shadows_health;

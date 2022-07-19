@@ -1156,7 +1156,7 @@ struct void_eruption_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
   {
     may_miss                   = false;
     background                 = true;
@@ -1179,7 +1179,7 @@ struct void_eruption_damage_t final : public priest_spell_t
 struct void_eruption_t final : public priest_spell_t
 {
   void_eruption_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_eruption", p, p.specs.void_eruption )
+    : priest_spell_t( "void_eruption", p, p.talents.shadow.void_eruption.spell() )
   {
     parse_options( options_str );
 
@@ -1221,7 +1221,7 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
   propagate_const<action_t*> void_bolt;
 
   void_eruption_stm_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_stm_damage", p, p.specs.void_eruption_damage ), void_bolt( nullptr )
+    : priest_spell_t( "void_eruption_stm_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
   {
     // This Void Eruption only hits a single target
     may_miss                   = false;
@@ -1893,6 +1893,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
   talents.shadow.shadowy_apparition = find_spell( 148859 );
   talents.shadow.shadowy_apparitions = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
+  talents.shadow.void_eruption                = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
+  talents.shadow.void_eruption_damage         = find_spell( 228360 );
 
   // Talents
   // T15
@@ -1926,8 +1928,6 @@ void priest_t::init_spells_shadow()
   specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
   specs.void_bolt            = find_spell( 205448 );
   specs.voidform             = find_spell( 194249 );
-  specs.void_eruption        = find_specialization_spell( "Void Eruption" );
-  specs.void_eruption_damage = find_spell( 228360 );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
