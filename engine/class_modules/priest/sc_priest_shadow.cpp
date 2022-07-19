@@ -54,8 +54,9 @@ struct mind_sear_tick_t final : public priest_spell_t
     {
       if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
       {
-        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
-        priest_td_t& td          = get_td( s->target );
+        timespan_t dot_extension =
+            timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
+        priest_td_t& td = get_td( s->target );
 
         td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
         td.dots.vampiric_touch->adjust_duration( dot_extension, true );
@@ -146,8 +147,9 @@ struct mind_flay_t final : public priest_spell_t
     {
       if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
       {
-        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
-        priest_td_t& td          = get_td( d->state->target );
+        timespan_t dot_extension =
+            timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
+        priest_td_t& td = get_td( d->state->target );
 
         td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
         td.dots.vampiric_touch->adjust_duration( dot_extension, true );
@@ -593,7 +595,7 @@ struct vampiric_touch_t final : public priest_spell_t
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
 
-      // Todo: change back to ->percent(1)
+      // TODO: determine why we need to multiply by rank
       mental_fortitude_percentage = priest().talents.shadow.mental_fortitude.spell()->effectN( 1 ).percent() *
                                     priest().talents.shadow.mental_fortitude.rank();
     }
@@ -621,6 +623,8 @@ struct vampiric_touch_t final : public priest_spell_t
 
       double amount = current_value;
       amount += state->result_total;
+
+      sim->print_debug( "mental_fortitude_percentage: {}", mental_fortitude_percentage );
 
       amount = std::min( amount, state->target->max_health() * mental_fortitude_percentage );
 
@@ -1081,7 +1085,7 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
-    // TODO: See prepatch how stacks
+    // TODO: Determine how this stacks in Dissonant Echoes in pre-patch
     if ( priest().buffs.void_touched->check() )
     {
       priest().buffs.void_touched->expire();
@@ -1894,7 +1898,6 @@ void priest_t::create_buffs_shadow()
       make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
 
   // Conduits (Shadowlands)
-
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 
   buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )

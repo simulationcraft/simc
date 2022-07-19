@@ -1226,7 +1226,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
 
 // ==========================================================================
 // Summon Mindbender
-// TODO: wire up a non-shadow one
+// TODO: confirm Holy/Disc versions work as expected
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
@@ -1457,7 +1457,7 @@ struct shadow_word_death_t final : public priest_spell_t
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
+    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death.spell() ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
@@ -1976,7 +1976,9 @@ void priest_td_t::target_demise()
 
   if ( priest().talents.throes_of_pain.enabled() && dots.shadow_word_pain->is_ticking() )
   {
-    // TODO:: Energise
+    // TODO: determine if this scales with rank or not
+    priest().generate_insanity( priest().talents.throes_of_pain->effectN( 2 ).base_value() / 100,
+                                priest().gains.insanity_throes_of_pain, nullptr );
   }
 
   reset();
@@ -2045,6 +2047,7 @@ void priest_t::create_gains()
   gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_throes_of_pain       = get_gain( "Insanity Gained from Throes of Pain" );
 }
 
 /** Construct priest procs */
@@ -2398,13 +2401,13 @@ void priest_t::create_pets()
 {
   base_t::create_pets();
 
-  // TODO: add find_action back
+  // TODO: add find_action back when it supports new talents
   if ( talents.shadowfiend.enabled() && !talents.mindbender.enabled() )
   {
     pets.shadowfiend = create_pet( "shadowfiend" );
   }
 
-  // TODO: add find_action back
+  // TODO: add find_action back when it supports new talents
   if ( talents.mindbender.enabled() )
   {
     pets.mindbender = create_pet( "mindbender" );
@@ -2563,10 +2566,9 @@ void priest_t::init_spells()
 
   // Priest Tree Talents
   // Row 1
-  // TODO: for some reason this does not work correctly
-  // talents.shadow_word_death = find_talent_spell( talent_tree::CLASS, 32379 );
-  talents.shadow_word_death = find_spell( 32379 );
+  talents.shadow_word_death = find_talent_spell( talent_tree::CLASS, 32379 );
   // Row 2
+  // TODO: this is being given by default since it shares a name with SW:D which we get for free
   talents.improved_shadow_word_death = find_talent_spell( talent_tree::CLASS, 322107 );
   talents.shadow_mend                = find_talent_spell( talent_tree::CLASS, "Shadow Mend" );
   talents.shadow_mend_self_damage    = find_spell( 187464 );
@@ -2574,7 +2576,6 @@ void priest_t::init_spells()
   talents.masochism      = find_talent_spell( talent_tree::CLASS, "Masochism" );
   talents.masochism_buff = find_spell( 193065 );
   // Row 4
-  // TODO: this is not working when trying to get spell() out of it
   talents.power_infusion      = find_talent_spell( talent_tree::CLASS, "Power Infusion" );
   talents.improved_mind_blast = find_talent_spell( talent_tree::CLASS, "Improved Mind Blast" );
   talents.twist_of_fate       = find_talent_spell( talent_tree::CLASS, "Twist of Fate" );
@@ -2586,7 +2587,6 @@ void priest_t::init_spells()
   talents.improved_shadowfiend = find_talent_spell( talent_tree::CLASS, "Improved Shadowfiend" );
   // Row 7
   talents.puppet_master = find_talent_spell( talent_tree::CLASS, "Puppet Master" );
-
   // Row 8
   talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
