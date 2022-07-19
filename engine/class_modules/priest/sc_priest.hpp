@@ -92,6 +92,7 @@ public:
 
     // Talents
     propagate_const<buff_t*> twist_of_fate;
+    propagate_const<buff_t*> vampiric_insight;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -172,6 +173,7 @@ public:
       player_talent_t fortress_of_the_mind;
       // Row 4
       player_talent_t unfurling_darkness;
+      player_talent_t vampiric_insight;
       player_talent_t last_word;
       
       // Row 8
@@ -348,6 +350,9 @@ public:
     propagate_const<proc_t*> dark_thoughts_searing_nightmare;
     propagate_const<proc_t*> dark_thoughts_missed;
     propagate_const<proc_t*> living_shadow;
+    propagate_const<proc_t*> vampiric_insight;
+    propagate_const<proc_t*> vampiric_insight_overflow;
+    propagate_const<proc_t*> vampiric_insight_missed;
   } procs;
 
   // Special

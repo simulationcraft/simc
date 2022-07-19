@@ -63,6 +63,7 @@ public:
 
     cooldown->hasted     = true;
     usable_while_casting = use_while_casting = only_cwc;
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
 
     // Cooldown reduction
     apply_affecting_aura( p.find_rank_spell( "Mind Blast", "Rank 2", PRIEST_SHADOW ) );
@@ -77,7 +78,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges();
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
   }
 
   bool ready() override
@@ -145,7 +146,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    if ( priest().buffs.dark_thought->check() )
+    if ( priest().buffs.dark_thought->check() || priest().buffs.vampiric_insight->check() )
     {
       return timespan_t::zero();
     }
@@ -206,6 +207,10 @@ public:
           } );
         }
       }
+    }
+    else if ( priest().buffs.vampiric_insight->up() )
+    {
+      priest().buffs.vampiric_insight->decrement();
     }
     else
     {
@@ -945,8 +950,21 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( result_is_hit( d->state->result ) )
+    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
+      int stack = priest().buffs.vampiric_insight->check();
+      if ( priest().buffs.vampiric_insight->trigger() )
+      {
+        if ( priest().buffs.vampiric_insight->check() == stack )
+        {
+          priest().procs.vampiric_insight_overflow->occur();
+        }
+        else
+        {
+          priest().procs.vampiric_insight->occur();
+        }
+      }
+
       vampiric_touch_heal->trigger( d->state->result_amount );
     }
   }
@@ -1842,6 +1860,44 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 };
 
 // ==========================================================================
+// Vampiric Insight
+// ==========================================================================
+struct vampiric_insight_t final : public priest_buff_t<buff_t>
+{
+  vampiric_insight_t( priest_t& p ) : base_t( p, "vampiric_insight", p.find_spell( 375981 ) )
+  {
+    // Allow player to react to the buff being applied so they can cast Mind Blast.
+    this->reactable = true;
+
+    // Create a stack change callback to adjust the number of mindblast charges.
+
+    set_stack_change_callback(
+        [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    if ( remaining_duration == timespan_t::zero() )
+    {
+      for ( int i = 0; i < expiration_stacks; i++ )
+      {
+        priest().procs.vampiric_insight_missed->occur();
+      }
+    }
+
+    base_t::expire_override( expiration_stacks, remaining_duration );
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    if ( !priest().talents.shadow.vampiric_insight.enabled() )
+      return false;
+
+    return priest_buff_t::trigger( stacks, value, chance, duration );
+  }
+};
+
+// ==========================================================================
 // Ancient Madness
 // ==========================================================================
 struct ancient_madness_t final : public priest_buff_t<buff_t>
@@ -1969,6 +2025,9 @@ void priest_t::create_buffs_shadow()
                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   }
 
+  // TODO: UNHARDCODE AND CHECK WITH DEVS.
+  buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this )->set_rppm( RPPM_HASTE, 3.0 );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -2003,7 +2062,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
   talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
-  talents.shadow.last_word = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+  talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+  talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
 
   // Talents
   // T15
