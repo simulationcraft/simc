@@ -226,6 +226,8 @@ public:
       player_talent_t mind_devourer;
       // Row 9
       player_talent_t sanguine_teachings;
+      player_talent_t unleash_the_shadows;
+      player_talent_t rot_and_wither;
       player_talent_t abyssal_knowledge;
 
     } shadow;

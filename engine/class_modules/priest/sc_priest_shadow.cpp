@@ -49,6 +49,18 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( s );
 
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear, s );
+
+    if ( priest().talents.shadow.rot_and_wither.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
+      {
+        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither.base_value( 1 ) );
+        priest_td_t& td          = get_td( s->target );
+
+        td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+        td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+      }
+    }
   }
 };
 
@@ -129,6 +141,18 @@ struct mind_flay_t final : public priest_spell_t
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
     trigger_mind_flay_dissonant_echoes();
     trigger_mind_flay_void_touched();
+
+    if ( priest().talents.shadow.rot_and_wither.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.rot_and_wither.spell()->proc_chance() ) )
+      {
+        timespan_t dot_extension = timespan_t::from_seconds( priest().talents.shadow.rot_and_wither.base_value( 1 ) );
+        priest_td_t& td          = get_td( d->state->target );
+
+        td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+        td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+      }
+    }
   }
 
   bool ready() override
@@ -726,6 +750,12 @@ struct vampiric_touch_t final : public priest_spell_t
         {
           priest().procs.vampiric_insight->occur();
         }
+
+        if ( d->state->result == RESULT_CRIT && priest().talents.shadow.unleash_the_shadows.enabled() &&
+             rng().roll( priest().talents.shadow.unleash_the_shadows.percent( 1 ) ) )
+        {
+          priest().background_actions.shadowy_apparitions->trigger( d->state->target );
+        }
       }
 
       vampiric_touch_heal->trigger( d->state->result_amount );
@@ -845,7 +875,6 @@ struct devouring_plague_t final : public priest_spell_t
     return priest_spell_t::cost();
   }
 
-  
   double action_multiplier() const override
   {
     double m = priest_spell_t::action_multiplier();
@@ -1896,8 +1925,10 @@ void priest_t::init_spells_shadow()
   talents.shadow.insidious_ire    = find_talent_spell( talent_tree::SPECIALIZATION, "Insidious Ire" );
   talents.shadow.mind_devourer    = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
 
-  talents.shadow.sanguine_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Teachings" );
-  talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
+  talents.shadow.sanguine_teachings  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Teachings" );
+  talents.shadow.unleash_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Unleash the Shadows" );
+  talents.shadow.rot_and_wither      = find_talent_spell( talent_tree::SPECIALIZATION, "Rot and Wither" );
+  talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
   // Talents
   // T15
