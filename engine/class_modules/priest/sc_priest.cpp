@@ -1369,7 +1369,13 @@ struct fade_t final : public priest_spell_t
 
   void execute() override
   {
+    // TODO: determine how these stack in pre-patch
     if ( priest().conduits.translucent_image->ok() )
+    {
+      priest().buffs.translucent_image_conduit->trigger();
+    }
+
+    if ( priest().talents.translucent_image.enabled() )
     {
       priest().buffs.translucent_image->trigger();
     }
@@ -2590,7 +2596,8 @@ void priest_t::init_spells()
   // Row 7
   talents.puppet_master = find_talent_spell( talent_tree::CLASS, "Puppet Master" );
   // Row 8
-  talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
+  talents.translucent_image = find_talent_spell( talent_tree::CLASS, "Translucent Image" );
+  talents.mindbender        = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
   talents.tithe_evasion = find_talent_spell( talent_tree::CLASS, "Tithe Evasion" );
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
@@ -2611,12 +2618,14 @@ void priest_t::create_buffs()
                             ->set_trigger_spell( talents.twist_of_fate.spell() )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  buffs.masochism = make_buff<buffs::masochism_t>( *this );
-
+  buffs.masochism     = make_buff<buffs::masochism_t>( *this );
   buffs.puppet_master = make_buff<stat_buff_t>( this, "puppet_master", talents.puppet_master.spell() )
                             ->add_stat( STAT_MASTERY_RATING, talents.puppet_master->effectN( 1 ).base_value() )
                             ->add_invalidate( CACHE_MASTERY )
                             ->set_max_stack( 5 );
+  // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
+  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
+                                ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
@@ -2633,8 +2642,8 @@ void priest_t::create_buffs()
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   // Conduit Buffs
-  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 337661 ) )
-                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+  buffs.translucent_image_conduit = make_buff( this, "translucent_image_conduit", find_spell( 337661 ) )
+                                        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   create_buffs_shadow();
   create_buffs_discipline();
