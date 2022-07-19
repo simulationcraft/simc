@@ -35,7 +35,7 @@ public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( priest().specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
-      mind_flay_spell( p.specs.mind_flay ),
+      mind_flay_spell( p.talents.shadow.mind_flay.spell() ),
       mind_sear_spell( p.specs.mind_sear ),
       void_torrent_spell( p.talents.void_torrent ),
       only_cwc( false )
@@ -56,9 +56,9 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
-    if ( priest().talents.mind_devourer.enabled() )
+    if ( priest().talents.shadow.mind_devourer.enabled() )
     {
-      base_dd_multiplier *= ( 1.0 + priest().talents.mind_devourer.percent( 1 ) );
+      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer.percent( 1 ) );
     }
 
     cooldown->hasted     = true;
@@ -273,7 +273,7 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 struct mind_flay_t final : public priest_spell_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_flay", p, p.specs.mind_flay )
+  mind_flay_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_flay", p, p.talents.shadow.mind_flay.spell() )
   {
     parse_options( options_str );
 
@@ -1946,15 +1946,15 @@ void priest_t::create_buffs_shadow()
   buffs.void_torrent          = make_buff( this, "void_torrent", talents.void_torrent );
 
   // TODO: Check Buff ID(s) for Mind Devourer
-  if ( talents.mind_devourer.enabled() )
+  if ( talents.shadow.mind_devourer.enabled() )
   {
-    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
-                              ->set_trigger_spell( talents.mind_devourer.spell() )
-                              ->set_chance( talents.mind_devourer.percent( 2 ) );
+    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
+                              ->set_trigger_spell( talents.shadow.mind_devourer.spell() )
+                              ->set_chance( talents.shadow.mind_devourer.percent( 2 ) );
   }
   else
   {
-    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 338333 ) )
+    buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( conduits.mind_devourer )
                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   }
@@ -1978,7 +1978,10 @@ void priest_t::init_rng_shadow()
 
 void priest_t::init_spells_shadow()
 {
-  talents.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
+  talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
+  talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
+
+  talents.shadow.mind_sear     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
 
   // Talents
   // T15
@@ -2015,7 +2018,6 @@ void priest_t::init_spells_shadow()
   specs.dark_thought         = find_spell( 341207 );
   specs.dark_thoughts        = find_specialization_spell( "Dark Thoughts" );
   specs.dispersion           = find_specialization_spell( "Dispersion" );
-  specs.mind_flay            = find_specialization_spell( "Mind Flay" );
   specs.shadowy_apparition   = find_spell( 148859 );
   specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadowform           = find_specialization_spell( "Shadowform" );

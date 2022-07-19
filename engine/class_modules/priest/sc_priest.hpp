@@ -153,9 +153,18 @@ public:
     // Row 10
     player_talent_t shadowflame_prism;
 
-    // Shadow Tree
-    // Row 8
-    player_talent_t mind_devourer;
+    struct
+    {
+      // Shadow Tree
+      // Row 1
+      player_talent_t mind_flay;
+      // Row 2
+      player_talent_t vampiric_touch;
+      player_talent_t devouring_plague;
+      player_talent_t mind_sear;
+      // Row 8
+      player_talent_t mind_devourer;
+    } shadow;
 
     // Shared
     const spell_data_t* twist_of_fate;
@@ -240,7 +249,6 @@ public:
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
-    const spell_data_t* mind_flay;
     const spell_data_t* shadow_priest;        // General shadow data
     const spell_data_t* shadowy_apparition;   // Damage event
     const spell_data_t* shadowy_apparitions;  // Passive effect

@@ -1942,10 +1942,16 @@ void priest_t::init_spells()
   specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
+
+  // TODO replace DoT Spells with these.
+  talents.shadow.vampiric_touch   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Touch" );
+  talents.shadow.devouring_plague = find_talent_spell( talent_tree::SPECIALIZATION, "Devouring Plague" );
+
   // DoT Spells
-  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
+  dot_spells.devouring_plague = talents.shadow.devouring_plague.spell();
   dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
-  dot_spells.vampiric_touch   = find_class_spell( "Vampiric Touch" );
+  dot_spells.vampiric_touch   = talents.shadow.vampiric_touch.spell();
+
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );
@@ -2291,7 +2297,7 @@ void priest_t::arise()
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
   auto mind_sear_id = specs.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id = specs.mind_flay->id();
+  auto mind_flay_id = talents.shadow.mind_flay.spell()->id();
   auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
