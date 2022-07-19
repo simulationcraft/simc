@@ -324,6 +324,10 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
     {
       return power_leech_insanity;
     }
+    else
+    {
+      return 0;
+    }
   }
 };
 
@@ -1056,7 +1060,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       pet_t* pet = get_current_main_pet( *this );
       if ( !pet )
       {
-        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet ." );
+        return expr_t::create_constant( "no_fiend", 0.0 );
       }
       if ( splits.size() == 2 )
       {
@@ -1102,7 +1106,7 @@ std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expre
       pet_t* pet = get_current_main_pet( *this );
       if ( !pet )
       {
-        throw std::invalid_argument( "Cannot find any summoned fiend (shadowfiend/mindbender) pet." );
+        return expr_t::create_constant( "no_fiend", 0.0 );
       }
       if ( cooldown_t* cooldown = get_cooldown( pet->name_str ) )
       {
