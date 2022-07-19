@@ -200,7 +200,11 @@ public:
       // Row 6
       player_talent_t psychic_link;
       player_talent_t auspicious_spirits;
+      player_talent_t hungering_void;
+      const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
+      player_talent_t surrender_to_madness;
       // Row 7
+      player_talent_t ancient_madness;
       // Row 8
       player_talent_t mind_devourer;
       // Row 9
@@ -251,10 +255,6 @@ public:
     const spell_data_t* damnation;
     const spell_data_t* void_torrent;
     // T50
-    const spell_data_t* hungering_void;
-    const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
-    const spell_data_t* ancient_madness;
-    const spell_data_t* surrender_to_madness;
   } talents;
 
   // Specialization Spells
@@ -892,7 +892,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.surrender_to_madness->ok() )
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.surrender_to_madness.enabled() )
     {
       if ( priest().buffs.surrender_to_madness_death->check() )
       {
@@ -979,7 +979,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      tdm *= ( 1 + priest().talents.hungering_void_buff->effectN( 1 ).percent() );
+      tdm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
     }
 
     return tdm;
@@ -996,7 +996,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     if ( priest().hungering_void_active( t ) )
     {
-      ttm *= ( 1 + priest().talents.hungering_void_buff->effectN( 1 ).percent() );
+      ttm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
     }
 
     return ttm;

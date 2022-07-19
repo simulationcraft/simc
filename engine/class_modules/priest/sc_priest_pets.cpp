@@ -442,7 +442,7 @@ struct fiend_melee_t : public priest_pet_melee_t
           if ( p().o().buffs.surrender_to_madness->check() )
           {
             p().o().resource_gain( RESOURCE_INSANITY,
-                                   amount * p().o().talents.surrender_to_madness->effectN( 2 ).percent(),
+                                   amount * p().o().talents.shadow.surrender_to_madness.spell()->effectN( 2 ).percent(),
                                    p().o().gains.insanity_surrender_to_madness );
           }
           p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );

@@ -1114,9 +1114,9 @@ struct void_bolt_t final : public priest_spell_t
       shadowfiend_cooldown( p.get_cooldown( "mindbender" ) ),
       mindbender_cooldown( p.get_cooldown( "shadowfiend" ) ),
       hungering_void_base_duration(
-          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 3 ).base_value() ) ),
+          timespan_t::from_seconds( priest().talents.shadow.hungering_void.spell()->effectN( 3 ).base_value() ) ),
       hungering_void_crit_duration(
-          timespan_t::from_seconds( priest().talents.hungering_void->effectN( 4 ).base_value() ) )
+          timespan_t::from_seconds( priest().talents.shadow.hungering_void.spell()->effectN( 4 ).base_value() ) )
   {
     parse_options( options_str );
     use_off_gcd                = true;
@@ -1177,7 +1177,7 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->schedule_execute();
     }
 
-    if ( priest().talents.hungering_void->ok() )
+    if ( priest().talents.shadow.hungering_void.enabled() )
     {
       priest_td_t& td = get_td( s->target );
       // Check if this buff is active, every Void Bolt after the first should get this
@@ -1294,7 +1294,7 @@ struct void_eruption_stm_damage_t final : public priest_spell_t
 struct surrender_to_madness_t final : public priest_spell_t
 {
   surrender_to_madness_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "surrender_to_madness", p, p.talents.surrender_to_madness )
+    : priest_spell_t( "surrender_to_madness", p, p.talents.shadow.surrender_to_madness.spell() )
   {
     parse_options( options_str );
 
@@ -1643,7 +1643,7 @@ struct voidform_t final : public priest_buff_t<buff_t>
   {
     bool r = base_t::trigger( stacks, value, chance, duration );
 
-    if ( priest().talents.ancient_madness->ok() )
+    if ( priest().talents.shadow.ancient_madness.enabled() )
     {
       priest().buffs.ancient_madness->trigger();
     }
@@ -1778,7 +1778,7 @@ struct vampiric_insight_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct ancient_madness_t final : public priest_buff_t<buff_t>
 {
-  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.talents.ancient_madness )
+  ancient_madness_t( priest_t& p ) : base_t( p, "ancient_madness", p.talents.shadow.ancient_madness.spell() )
   {
     if ( !data().ok() )
       return;
@@ -1845,9 +1845,9 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 
     if ( buffs.surrender_to_madness->check() )
     {
-      double total_amount = amount * ( 1.0 + talents.surrender_to_madness->effectN( 2 ).percent() );
+      double total_amount = amount * ( 1.0 + talents.shadow.surrender_to_madness.spell()->effectN( 2 ).percent() );
 
-      amount_from_surrender_to_madness = amount * talents.surrender_to_madness->effectN( 2 ).percent();
+      amount_from_surrender_to_madness = amount * talents.shadow.surrender_to_madness.spell()->effectN( 2 ).percent();
 
       // Make sure the maths line up.
       assert( total_amount == amount + amount_from_surrender_to_madness );
@@ -1873,13 +1873,14 @@ void priest_t::create_buffs_shadow()
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
   // Talents
-  buffs.ancient_madness            = make_buff<buffs::ancient_madness_t>( *this );
-  buffs.death_and_madness_buff     = make_buff<buffs::death_and_madness_buff_t>( *this );
-  buffs.surrender_to_madness       = make_buff( this, "surrender_to_madness", talents.surrender_to_madness );
-  buffs.surrender_to_madness_death = make_buff( this, "surrender_to_madness_death", talents.surrender_to_madness )
-                                         ->set_duration( timespan_t::zero() )
-                                         ->set_default_value( 0.0 )
-                                         ->set_chance( 1.0 );
+  buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
+  buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
+  buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", talents.shadow.surrender_to_madness.spell() );
+  buffs.surrender_to_madness_death =
+      make_buff( this, "surrender_to_madness_death", talents.shadow.surrender_to_madness.spell() )
+          ->set_duration( timespan_t::zero() )
+          ->set_default_value( 0.0 )
+          ->set_chance( 1.0 );
   buffs.unfurling_darkness =
       make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness.spell()->effectN( 1 ).trigger() );
   buffs.unfurling_darkness_cd =
@@ -1948,8 +1949,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.monomania            = find_talent_spell( talent_tree::SPECIALIZATION, "Monomania" );
   talents.shadow.monomania_tickrate   = find_spell( 375408 );
 
-  talents.shadow.psychic_link       = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Link" );
-  talents.shadow.auspicious_spirits = find_talent_spell( talent_tree::SPECIALIZATION, "Auspicious Spirits" );
+  talents.shadow.psychic_link         = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Link" );
+  talents.shadow.auspicious_spirits   = find_talent_spell( talent_tree::SPECIALIZATION, "Auspicious Spirits" );
+  talents.shadow.hungering_void       = find_talent_spell( talent_tree::SPECIALIZATION, "Hungering Void" );
+  talents.shadow.hungering_void_buff  = find_spell( 345219 );
+  talents.shadow.surrender_to_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Surrender to Madness" );
+
+  talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
@@ -1970,10 +1976,6 @@ void priest_t::init_spells_shadow()
   talents.damnation    = find_talent_spell( "Damnation" );
   talents.void_torrent = find_talent_spell( "Void Torrent" );
   // T50
-  talents.ancient_madness      = find_talent_spell( "Ancient Madness" );
-  talents.hungering_void       = find_talent_spell( "Hungering Void" );
-  talents.hungering_void_buff  = find_spell( 345219 );
-  talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
   specs.dark_thought     = find_spell( 341207 );
@@ -2167,7 +2169,7 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
 // ==========================================================================
 bool priest_t::hungering_void_active( player_t* target ) const
 {
-  if ( !talents.hungering_void->ok() )
+  if ( !talents.shadow.hungering_void.enabled() )
     return false;
   const priest_td_t* td = find_target_data( target );
   if ( !td )
@@ -2181,7 +2183,7 @@ bool priest_t::hungering_void_active( player_t* target ) const
 // ==========================================================================
 void priest_t::remove_hungering_void( player_t* target )
 {
-  if ( !talents.hungering_void->ok() )
+  if ( !talents.shadow.hungering_void.enabled() )
     return;
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
