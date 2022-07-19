@@ -125,6 +125,7 @@ public:
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> vampiric_insight;
     propagate_const<buff_t*> void_touched;
+    propagate_const<absorb_buff_t*> mental_fortitude;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -219,6 +220,7 @@ public:
       player_talent_t malediction;
       player_talent_t void_torrent;
       // Row 8
+      player_talent_t mental_fortitude;
       player_talent_t mind_devourer;
       // Row 9
       player_talent_t abyssal_knowledge;

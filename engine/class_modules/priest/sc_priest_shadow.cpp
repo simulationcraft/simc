@@ -510,13 +510,43 @@ struct unfurling_darkness_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Mental Fortitude
+// ==========================================================================
+struct mental_fortitude_t : public priest_absorb_t
+{
+  mental_fortitude_t( priest_t& p ) : priest_absorb_t( "mental_fortitude_t", p )
+  {
+    may_miss = may_crit = callbacks = false;
+    background = proc = true;
+  }
+
+  // Self only so we can do this in a simple way
+  absorb_buff_t* create_buff( const action_state_t* ) override
+  {
+    return debug_cast<priest_t*>( player )->buffs.mental_fortitude;
+  }
+
+  void init() override
+  {
+    absorb_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
+// ==========================================================================
 // Vampiric Touch
 // ==========================================================================
 struct vampiric_touch_t final : public priest_spell_t
 {
   struct vampiric_touch_heal_t final : public priest_heal_t
   {
-    vampiric_touch_heal_t( priest_t& p ) : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch )
+    mental_fortitude_t* mental_fortitude;
+    double mental_fortitude_percentage;
+
+    vampiric_touch_heal_t( priest_t& p )
+      : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch ),
+        mental_fortitude( new mental_fortitude_t( p ) )
     {
       background         = true;
       may_crit           = false;
@@ -531,12 +561,41 @@ struct vampiric_touch_t final : public priest_spell_t
       // Turn off all damage parts of the spell
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
+
+      // Todo: change back to ->percent(1)
+      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude.spell()->effectN( 1 ).percent() *
+                                    priest().talents.shadow.mental_fortitude.rank();
     }
 
     void trigger( double original_amount )
     {
       base_dd_min = base_dd_max = original_amount * data().effectN( 2 ).m_value();
       execute();
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_heal_t::impact( state );
+
+      if ( priest().talents.shadow.mental_fortitude.enabled() &&
+           state->target->current_health() == state->target->max_health() )
+        trigger_mental_fortitude( state );
+    }
+
+    void trigger_mental_fortitude( action_state_t* state )
+    {
+      double current_value = 0;
+      if ( mental_fortitude->target_specific[ state->target ] )
+        current_value = mental_fortitude->target_specific[ state->target ]->current_value;
+
+      double amount = current_value;
+      amount += state->result_total;
+
+      amount = std::min( amount, state->target->max_health() * mental_fortitude_percentage );
+
+      mental_fortitude->base_dd_min = mental_fortitude->base_dd_max = amount;
+
+      mental_fortitude->execute();
     }
   };
 
@@ -1567,6 +1626,17 @@ struct death_and_madness_buff_t final : public priest_buff_t<buff_t>
 };
 
 // ==========================================================================
+// Mental Fortitude
+// ==========================================================================
+struct mental_fortitude_buff_t final : public absorb_buff_t
+{
+  mental_fortitude_buff_t( priest_t* player ) : absorb_buff_t( player, "mental_fortitude" )
+  {
+    set_absorb_source( player->get_stats( "mental_fortitude" ) );
+  }
+};
+
+// ==========================================================================
 // Vampiric Insight
 // ==========================================================================
 struct vampiric_insight_t final : public priest_buff_t<buff_t>
@@ -1739,6 +1809,8 @@ void priest_t::create_buffs_shadow()
   buffs.void_touched = make_buff( this, "void_touched" )->set_duration( timespan_t::from_seconds( 10.0 ) );
   // buffs.void_touched = make_buff( this, "void_touched", find_spell( 373375 ) );
 
+  buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
+
   // Conduits (Shadowlands)
 
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -1758,7 +1830,6 @@ void priest_t::init_rng_shadow()
 
 void priest_t::init_spells_shadow()
 {
-  talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
   talents.shadow.mind_flay     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
   talents.shadow.mind_sear          = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
@@ -1795,6 +1866,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
   talents.shadow.malediction     = find_talent_spell( talent_tree::SPECIALIZATION, "Malediction" );
   talents.shadow.void_torrent    = find_talent_spell( talent_tree::SPECIALIZATION, "Void Torrent" );
+
+  talents.shadow.mental_fortitude = find_talent_spell( talent_tree::SPECIALIZATION, "Mental Fortitude" );
+  talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
 
   talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
