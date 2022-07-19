@@ -549,6 +549,10 @@ public:
   void register_spell( const dbc_t&, unsigned, util::string_view, double );
   void register_power( const dbc_t&, unsigned, util::string_view, double );
 
+  bool is_overridden_spell( const dbc_t&, unsigned, util::string_view ) const;
+  bool is_overridden_effect( const dbc_t&, unsigned, util::string_view ) const;
+  bool is_overridden_power( const dbc_t&, unsigned, util::string_view ) const;
+
   void parse( const dbc_t&, util::string_view );
 
   // Creates a "deep" copy of the current override database
