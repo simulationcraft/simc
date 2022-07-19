@@ -228,7 +228,6 @@ public:
   struct
   {
     const spell_data_t* mind_blast;
-    const spell_data_t* mind_sear;
     const spell_data_t* mind_sear_insanity;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death;

@@ -36,7 +36,7 @@ public:
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( priest().specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
       mind_flay_spell( p.talents.shadow.mind_flay.spell() ),
-      mind_sear_spell( p.specs.mind_sear ),
+      mind_sear_spell( p.talents.shadow.mind_sear.spell() ),
       void_torrent_spell( p.talents.void_torrent ),
       only_cwc( false )
   {
@@ -250,7 +250,7 @@ struct mind_sear_tick_t final : public priest_spell_t
 
 struct mind_sear_t final : public priest_spell_t
 {
-  mind_sear_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_sear", p, p.specs.mind_sear )
+  mind_sear_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_sear", p, p.talents.shadow.mind_sear.spell() )
   {
     parse_options( options_str );
     channeled           = true;
@@ -1604,7 +1604,7 @@ struct searing_nightmare_t final : public priest_spell_t
   searing_nightmare_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "searing_nightmare", p, p.talents.searing_nightmare ),
       child_swp( new shadow_word_pain_t( priest(), false ) ),
-      mind_sear_spell( p.specs.mind_sear )
+      mind_sear_spell( p.talents.shadow.mind_sear.spell() )
   {
     parse_options( options_str );
     child_swp->background = true;
@@ -1981,7 +1981,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
   talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
-  talents.shadow.mind_sear     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
+  talents.shadow.mind_sear = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
+  specs.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
 
   // Talents
   // T15

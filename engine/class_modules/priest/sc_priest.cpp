@@ -1931,8 +1931,6 @@ void priest_t::init_spells()
 
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
-  specs.mind_sear                     = find_class_spell( "Mind Sear" );
-  specs.mind_sear_insanity            = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
   specs.shadow_word_death             = find_class_spell( "Shadow Word: Death" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
 
@@ -2294,7 +2292,7 @@ void priest_t::arise()
 // Legendary Eternal Call to the Void trigger
 void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 {
-  auto mind_sear_id = specs.mind_sear->effectN( 1 ).trigger()->id();
+  auto mind_sear_id = talents.shadow.mind_sear.spell()->effectN( 1 ).trigger()->id();
   auto mind_flay_id = talents.shadow.mind_flay.spell()->id();
   auto action_id    = s->action->id;
   if ( !legendary.eternal_call_to_the_void->ok() )
