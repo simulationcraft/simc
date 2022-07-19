@@ -493,7 +493,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
   double insanity_gain;
 
   shadowy_apparition_damage_t( priest_t& p )
-    : priest_spell_t( "shadowy_apparition", p, p.specs.shadowy_apparition ),
+    : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
       insanity_gain( priest().talents.auspicious_spirits->effectN( 2 ).percent() )
   {
     affected_by_shadow_weaving = true;
@@ -524,7 +524,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
-  shadowy_apparition_spell_t( priest_t& p ) : priest_spell_t( "shadowy_apparitions", p, p.specs.shadowy_apparitions )
+  shadowy_apparition_spell_t( priest_t& p ) : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions.spell() )
   {
     background   = true;
     proc         = false;
@@ -1891,6 +1891,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
   talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
   talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
+  talents.shadow.shadowy_apparition = find_spell( 148859 );
+  talents.shadow.shadowy_apparitions = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
 
   // Talents
   // T15
@@ -1920,8 +1922,6 @@ void priest_t::init_spells_shadow()
   specs.dark_thought         = find_spell( 341207 );
   specs.dark_thoughts        = find_specialization_spell( "Dark Thoughts" );
   specs.dispersion           = find_specialization_spell( "Dispersion" );
-  specs.shadowy_apparition   = find_spell( 148859 );
-  specs.shadowy_apparitions  = find_specialization_spell( "Shadowy Apparitions" );
   specs.shadowform           = find_specialization_spell( "Shadowform" );
   specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
   specs.void_bolt            = find_spell( 205448 );
@@ -2038,7 +2038,7 @@ std::unique_ptr<expr_t> priest_t::create_expression_shadow( util::string_view na
 
 void priest_t::init_background_actions_shadow()
 {
-  if ( specs.shadowy_apparitions->ok() )
+  if ( talents.shadow.shadowy_apparitions.enabled() )
   {
     background_actions.shadowy_apparitions = new actions::spells::shadowy_apparition_spell_t( *this );
   }
@@ -2061,7 +2061,7 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 void priest_t::trigger_shadowy_apparitions( action_state_t* s )
 {
-  if ( !specs.shadowy_apparitions->ok() )
+  if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
     return;
   }

@@ -179,7 +179,10 @@ public:
       player_talent_t unfurling_darkness;
       player_talent_t vampiric_insight;
       player_talent_t last_word;
-      
+      // Row 5
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
+
       // Row 8
       player_talent_t mind_devourer;
     } shadow;
@@ -255,9 +258,7 @@ public:
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* dispersion;
-    const spell_data_t* shadow_priest;        // General shadow data
-    const spell_data_t* shadowy_apparition;   // Damage event
-    const spell_data_t* shadowy_apparitions;  // Passive effect
+    const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
     const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
