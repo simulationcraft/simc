@@ -798,6 +798,20 @@ void dbc_override_t::register_spell( const dbc_t& dbc, unsigned spell_id, util::
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_SPELL, field, spell_id, v );
 }
 
+bool dbc_override_t::is_overridden_spell( const dbc_t& dbc, unsigned spell_id, util::string_view field ) const
+{
+  if ( parent_ && parent_->is_overridden_spell( dbc, spell_id, field ) )
+  {
+    return true;
+  }
+
+  auto it = range::find_if( override_entries_[ dbc.ptr ], [spell_id, field]( const auto& entry ) {
+    return entry.type_ == OVERRIDE_SPELL && entry.id_ == spell_id && entry.field_ == field;
+  } );
+
+  return it != override_entries_[ dbc.ptr ].end();
+}
+
 void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util::string_view field, double v )
 {
   spelleffect_data_t* effect = override_db_[ dbc.ptr ].get_mutable_effect( effect_id );
@@ -819,6 +833,20 @@ void dbc_override_t::register_effect( const dbc_t& dbc, unsigned effect_id, util
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_EFFECT, field, effect_id, v );
+}
+
+bool dbc_override_t::is_overridden_effect( const dbc_t& dbc, unsigned effect_id, util::string_view field ) const
+{
+  if ( parent_ && parent_->is_overridden_effect( dbc, effect_id, field ) )
+  {
+    return true;
+  }
+
+  auto it = range::find_if( override_entries_[ dbc.ptr ], [effect_id, field]( const auto& entry ) {
+    return entry.type_ == OVERRIDE_EFFECT && entry.id_ == effect_id && entry.field_ == field;
+  } );
+
+  return it != override_entries_[ dbc.ptr ].end();
 }
 
 void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::string_view field, double v )
@@ -849,6 +877,20 @@ void dbc_override_t::register_power( const dbc_t& dbc, unsigned power_id, util::
     throw std::invalid_argument(fmt::format("Invalid field '{}'.", field));
 
   override_entries_[ dbc.ptr ].emplace_back( OVERRIDE_POWER, field, power_id, v );
+}
+
+bool dbc_override_t::is_overridden_power( const dbc_t& dbc, unsigned power_id, util::string_view field ) const
+{
+  if ( parent_ && parent_->is_overridden_power( dbc, power_id, field ) )
+  {
+    return true;
+  }
+
+  auto it = range::find_if( override_entries_[ dbc.ptr ], [power_id, field]( const auto& entry ) {
+    return entry.type_ == OVERRIDE_POWER && entry.id_ == power_id && entry.field_ == field;
+  } );
+
+  return it != override_entries_[ dbc.ptr ].end();
 }
 
 void dbc_override_t::parse( const dbc_t& dbc, util::string_view string )

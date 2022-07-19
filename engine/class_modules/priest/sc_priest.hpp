@@ -157,7 +157,7 @@ public:
   {
     // Priest Tree
     // Row 1
-    const spell_data_t* shadow_word_death;
+    player_talent_t shadow_word_death;
     // Row 2
     player_talent_t improved_shadow_word_death;
     player_talent_t shadow_mend;
@@ -180,6 +180,7 @@ public:
     // Row 8
     player_talent_t mindbender;
     // Row 9
+    player_talent_t tithe_evasion;
     player_talent_t rabid_shadows;
     // Row 10
     player_talent_t mindgames;
@@ -366,6 +367,7 @@ public:
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
+    propagate_const<gain_t*> insanity_throes_of_pain;
   } gains;
 
   // Benefits

@@ -120,38 +120,72 @@ const trait_data_t* trait_data_t::find_tokenized(
   return &( nil() );
 }
 
-const trait_data_t* trait_data_t::find_by_spell(
+std::vector<const trait_data_t*> trait_data_t::find_by_spell(
     talent_tree      tree,
     unsigned         spell_id,
     unsigned         class_id,
     specialization_e spec,
     bool             ptr )
 {
-  auto _data = data( class_id, tree, ptr );
-  auto _it = range::find_if( _data, [spell_id, spec]( const trait_data_t& entry ) {
-    if ( entry.id_spell == spell_id )
-    {
-      if ( entry.id_spec[ 0 ] == 0 )
+  const auto _data = data( ptr );
+  const auto _index = SC_DBC_GET_DATA( __trait_spell_id_index, __ptr_trait_spell_id_index, ptr );
+  auto span = std::equal_range( _index.begin(), _index.end(), spell_id,
+    [spell_id, _data]( const auto& first, const auto& second  ) {
+      if ( first == spell_id )
       {
-        return true;
+        return first < _data[second].id_spell;
       }
-
-      auto _spec_it = range::find( entry.id_spec, static_cast<unsigned>( spec ) );
-      if ( _spec_it != entry.id_spec.end() )
+      else
       {
-        return true;
+        return _data[first].id_spell < second;
       }
-    }
-
-    return false;
   } );
 
-  if ( _it != _data.end() )
+  if ( span.first == _index.end() )
   {
-    return _it;
+    return {};
   }
 
-  return &( nil() );
+  std::vector<const trait_data_t*> generic_entries, spec_entries;
+
+  for ( auto i = span.first; i < span.second; ++i )
+  {
+    const auto& entry = _data[ *i ];
+    if ( tree != talent_tree::INVALID &&
+         entry.tree_index != static_cast<unsigned>( tree ) )
+    {
+      continue;
+    }
+
+    if ( class_id != 0 && entry.id_class != class_id )
+    {
+      continue;
+    }
+
+    // If no spec filter, store everything as "generic entry"
+    if ( entry.id_spec[ 0U ] == 0U || spec == SPEC_NONE )
+    {
+      generic_entries.push_back( &( entry ) );
+    }
+
+    if ( spec != SPEC_NONE )
+    {
+      auto it = range::find( entry.id_spec, static_cast<unsigned>( spec ) );
+      if ( it != entry.id_spec.end() )
+      {
+        spec_entries.push_back( &( entry ) );
+      }
+    }
+  }
+
+  if ( spec != SPEC_NONE && !spec_entries.empty() )
+  {
+    return spec_entries;
+  }
+  else
+  {
+    return generic_entries;
+  }
 }
 
 util::span<const trait_definition_effect_entry_t> trait_definition_effect_entry_t::data( bool ptr )

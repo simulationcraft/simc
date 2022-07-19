@@ -1,5 +1,5 @@
 // Item effects, wow build 10.0.0.44649
-static const std::array<item_effect_t, 7969> __item_effect_data { {
+static const std::array<item_effect_t, 7970> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -7959,6 +7959,7 @@ static const std::array<item_effect_t, 7969> __item_effect_data { {
   { 169821, 381996, 197846,   0,   1,    0,      -1,      -1 }, // Winds of Ohn'ahra
   { 169764, 381734, 197934,   0,   1,    0,      -1,      -1 }, // Ancestral Protector's Stone
   { 169816, 381902, 197960,   0,   0,    0,      -1,      -1 }, // Bakar Biscuit Giver
+  { 169870, 382307, 198037,   0,   1,    0,      -1,      -1 }, // Arcanocrystalized
   { 169866, 382161, 198081,   0,   0,    0,      -1,      -1 }, // Caregiver's Watch
   { 170010, 382958, 198086,   1,   1,    0,      -1,      -1 }, // Dragonflight Darkmoon Deck Shuffler (DNT)
   { 170042, 382958, 198087,   0,   1,    0,      -1,      -1 }, // Dragonflight Darkmoon Deck Shuffler (DNT)
@@ -7971,7 +7972,7 @@ static const std::array<item_effect_t, 7969> __item_effect_data { {
   { 170041, 382455, 198435,   1,   0,    0,      -1,      -1 }, // Smoldering Inferno
 } };
 
-static const std::array<uint16_t, 7969> __item_effect_id_index { {
+static const std::array<uint16_t, 7970> __item_effect_id_index { {
     402,   403,   404,   405,   406,   407,   408,   411,
     412,   413,   414,   415,   416,   417,   418,   419,
     420,   421,   422,   423,   426,   427,   428,   429,
@@ -8965,9 +8966,9 @@ static const std::array<uint16_t, 7969> __item_effect_id_index { {
    7956,  7895,  7937,  7938,  7939,  7940,  7941,  7942,
    7943,  7944,  7945,  7946,  7947,  7948,  7949,  7950,
    7951,  7952,  7953,  7954,  7955,  7893,  7894,  7896,
-   7897,  7898,  7904,  7906,  7905,  7959,  7960,  7962,
-   7891,  7936,   323,   324,   325,   326,   327,   328,
-   7927,  7928,  7963,  7964,  7965,  7966,  7967,  7968,
-   7961,
+   7897,  7898,  7904,  7906,  7905,  7960,  7959,  7961,
+   7963,  7891,  7936,   323,   324,   325,   326,   327,
+    328,  7927,  7928,  7964,  7965,  7966,  7967,  7968,
+   7969,  7962,
 } };
 

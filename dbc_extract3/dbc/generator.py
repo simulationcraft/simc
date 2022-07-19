@@ -1529,6 +1529,8 @@ class SpellDataGenerator(DataGenerator):
             (  32409, 0 ),          # Shadow Word: Death self-damage id
             ( 356968, 0 ),          # Haunted Mask from Bwonsamdi's Pact Legendary
             ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
+            ( 373375, 0 ),          # Void Touched talent buff
+            ( 375981, 0 ),          # Vampiric Insight talent buff
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
             # Holy Priest
@@ -4371,6 +4373,13 @@ class TraitGenerator(DataGenerator):
             self.output_record(e.field('id_trait_definition', 'effect_index', 'operation', 'id_curve'))
 
         self.output_footer()
+
+        # Collect spell IDs for indices
+        trait_spell_index = list((v['spell'].id, index) for index, v in enumerate(sorted_data))
+
+        self.output_id_index(
+            index = [ index for _, index in sorted(trait_spell_index) ],
+            array = 'trait_spell')
 
         """
         print(

@@ -73,7 +73,6 @@
 #include <stdexcept>
 #include <utility>
 
-
 namespace
 {
 
@@ -2427,6 +2426,96 @@ void player_t::init_talents()
 
   parse_traits( talent_tree::CLASS, class_talents_str, this );
   parse_traits( talent_tree::SPECIALIZATION, spec_talents_str, this );
+
+  // Generate talent effect overrides based on parsed trait information
+  for ( const auto& player_trait : player_traits )
+  {
+    auto trait_node_entry_id = std::get<1>( player_trait );
+    auto rank = std::get<2>( player_trait );
+    if ( rank == 0U )
+    {
+      continue;
+    }
+
+    const auto trait = trait_data_t::find( trait_node_entry_id, dbc->ptr );
+    assert( trait );
+    const auto effect_points = trait_definition_effect_entry_t::find( trait->id_trait_definition,
+        dbc->ptr );
+    auto spell = dbc::find_spell( this, trait->id_spell );
+
+    if ( spell->id() != trait->id_spell )
+    {
+      sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                            "trait spell not found",
+        name(), trait->name, spell->id(), trait->id_trait_node_entry, rank );
+      continue;
+    }
+
+    for ( const auto& effect_point : effect_points )
+    {
+      auto effect_id = spell->effectN( effect_point.effect_index + 1U ).id();
+      // Don't adjust already overridden effects, as those are defined by player options from the
+      // command line (i.e., using override.spell_data or override.player.spell_data options).
+      if ( dbc_override_->is_overridden_effect( *dbc, effect_id, "base_value" ) )
+      {
+          sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                                "effect id {} (index={}) manually overridden, ignoring",
+            name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+            effect_point.effect_index + 1U );
+        continue;
+      }
+
+      if ( effect_point.effect_index + 1U > spell->effect_count() )
+      {
+        sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                              "effect id {} (index={}) effect index out of bounds, max effects {}",
+          name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+          effect_point.effect_index + 1U , spell->effect_count() );
+        continue;
+      }
+
+      auto curve_data = curve_point_t::find( effect_point.id_curve, dbc->ptr );
+      auto value = 0.0f;
+      auto it = range::find_if( curve_data, [rank]( const auto& point ) {
+        return point.primary1 == as<float>( rank );
+      } );
+
+      if ( it == curve_data.end() )
+      {
+        sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                              "effect id {} (index={}) curve data for rank not found for curve {}",
+          name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+          effect_point.effect_index + 1U, effect_point.id_curve );
+        continue;
+      }
+
+      value = it->primary2;
+
+      switch ( effect_point.operation )
+      {
+        case TRAIT_OP_SET:
+          sim->out_debug.print( "{} setting talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                                "effect id {} (index={}) value, old={}, new={}",
+            name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+            effect_point.effect_index + 1U,
+            spell->effectN( effect_point.effect_index + 1U ).base_value(), value );
+          dbc_override_->register_effect( *dbc, effect_id, "base_value", value );
+          break;
+        case TRAIT_OP_MUL:
+          sim->out_debug.print( "{} multiplying talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                                "effect id {} (index={}) value, multiplier={}, old={}, new={}",
+            name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+            effect_point.effect_index + 1U, value,
+            spell->effectN( effect_point.effect_index + 1U ).base_value(),
+            spell->effectN( effect_point.effect_index + 1U ).base_value() * value );
+          dbc_override_->register_effect( *dbc, effect_id, "base_value",
+              spell->effectN( effect_point.effect_index + 1U ).base_value() * value );
+          break;
+        default:
+          assert( 0 );
+      }
+    }
+  }
 }
 
 void player_t::init_spells()
@@ -10034,45 +10123,17 @@ player_talent_t player_t::find_talent_spell(
   unsigned         spell_id,
   specialization_e s ) const
 {
-  const trait_data_t *generic_trait = nullptr, *spec_trait = nullptr;
   uint32_t class_idx, spec_idx;
 
   dbc->spec_idx( s == SPEC_NONE ? _spec : s, class_idx, spec_idx );
 
-  auto traits = trait_data_t::data( class_idx, tree, dbc->ptr );
-  for ( const auto& trait : traits )
+  auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
+  if ( traits.size() == 0 )
   {
-    if ( trait.id_spell != spell_id )
-    {
-      continue;
-    }
-
-    if ( trait.id_spec[ 0 ] == 0 )
-    {
-      generic_trait = &( trait );
-    }
-    else
-    {
-      auto it = range::find( trait.id_spec, s == SPEC_NONE ? _spec : s );
-      if ( it != trait.id_spec.end() )
-      {
-        spec_trait = &( trait );
-      }
-    }
+    return { this };
   }
 
-  if ( spec_trait )
-  {
-    return create_talent_obj( this, s, spec_trait );
-  }
-  else if ( generic_trait )
-  {
-    return create_talent_obj( this, s, generic_trait );
-  }
-  else
-  {
-    return create_talent_obj( this, s, &( trait_data_t::nil() ) );
-  }
+  return create_talent_obj( this, s, traits[ 0 ] );
 }
 
 player_talent_t player_t::find_talent_spell( unsigned trait_node_entry_id, specialization_e s ) const

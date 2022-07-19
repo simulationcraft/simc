@@ -93,6 +93,7 @@ Effects          :
 Tooltip          : Damage increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
+Talent Entry     : Generic [tree=class, entry_id=21481, max_rank=1]
 Class            : Hunter, Monk
 School           : Nature
 Spell Type       : None

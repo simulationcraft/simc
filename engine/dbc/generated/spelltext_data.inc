@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44649
-static const std::array<spelltext_data_t, 16979> __spelltext_data { {
+static const std::array<spelltext_data_t, 16983> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16372,6 +16372,7 @@ static const std::array<spelltext_data_t, 16979> __spelltext_data { {
   { 373304, "$@spelldesc373280", 0, 0 },
   { 373310, "Shadowfiend causes you to gain a benefit based on your target's current emotional state.", 0, 0 },
   { 373372, "While not in Void Form, Mind Flay has a $s1% chance to allow you to cast Void Bolt.", 0, 0 },
+  { 373375, "$@spelldesc373372", "You may cast Void Bolt.", 0 },
   { 373381, "Consuming Vampiric Insight causes your shadow to animate after a moment. For $373384d, whenever you cast a spell, your shadow will cast a similar spell.", 0, 0 },
   { 373384, "$@spelldesc373381", "Your shadow is animated.", 0 },
   { 373426, "Your $?s382109[Mindbender][Shadowfiend]'s attack speed is increased by $s1%.", 0, 0 },
@@ -16491,6 +16492,7 @@ static const std::array<spelltext_data_t, 16979> __spelltext_data { {
   { 375902, "$@spelldesc375901", 0, 0 },
   { 375903, "$@spelldesc375901", 0, 0 },
   { 375935, "Open a bottle of pheromones, drawing all unoccupied, skinnable beats and dragonkin within $A1 yards to you.", 0, 0 },
+  { 375981, "$@spelldesc375888", "Maximum number of charges of Mind Blast increased by $w1.\r\n\r\nMind Blast no longer has a cooldown and can be cast instantly.", 0 },
   { 375994, "Mind Flay and Mind Sear damage has a $h% chance to extend Vampiric Touch and Shadow Word: Pain by $s1 sec.", 0, 0 },
   { 376020, "Place a glorious draconic statue on the ground nearby where it will heal you for a short time before its power fades.\r\n\r\nCan only be used on the Dragon Isles.", 0, 0 },
   { 376138, "Spiritbloom increases your Essence regeneration rate by $370840s1% for $370840d.", 0, 0 },
@@ -16910,6 +16912,7 @@ static const std::array<spelltext_data_t, 16979> __spelltext_data { {
   { 382250, "$@spelldesc369156  If you spend at least 10 seconds eating you will become well fed and gain $382246s1 Stamina for $382246d.", 0, 0 },
   { 382252, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382247s1 Stamina for $382247d.", 0, 0 },
   { 382266, "Inhale, stoking your inner flame. Release to exhale, burning enemies in a cone in front of you for $<sOneDmg> Fire damage. Deals reduced damage beyond 5 targets.\r\n\r\n|cFFFFFFFFI:|r   Deals $<sOneDoT> damage over 4 sec.\r\n\r\n|cFFFFFFFFII:|r  Deals $<sTwoDoT> damage over 8 sec.\r\n\r\n|cFFFFFFFFIII:|r Deals $<sThreeDoT> damage over 12 sec.\r\n\r\n|cFFFFFFFFIV:|r Deals $<sFourDoT> damage over 16 sec.", 0, "Red" },
+  { 382307, "Your spells and abilities have a chance to Arcanocrystalize the energies around you, granting a fluctuating secondary stat for $382963d.", 0, 0 },
   { 382312, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 of your highest secondary stat for $382145d.\r\n\r\nGood fortune to you!", 0, 0 },
   { 382411, "Focus your energies to release a salvo of pure magic, dealing $<dmg> Spellfrost damage to an enemy.\r\n\r\n|cFFFFFFFFI:|r   Damages $?s375757[2 enemies][1 enemy].\r\n\r\n|cFFFFFFFFII:|r  Damages $?s375757[4 enemies][2 enemies].\r\n\r\n|cFFFFFFFFIII:|r Damages $?s375757[6 enemies][3 enemies].\r\n\r\n|cFFFFFFFFIV:|r Damages $?s375757[8 enemies][4 enemies].", 0, "Blue" },
   { 382414, "Combine the Ace through Eight of Frost to complete the set.", 0, 0 },
@@ -16950,6 +16953,7 @@ static const std::array<spelltext_data_t, 16979> __spelltext_data { {
   { 382913, "Bronzescale shuffling logic.", "Bronzescale shuffling logic.", 0 },
   { 382957, "Deal damage!", 0, 0 },
   { 382958, 0, "Shuffles cards. (DNT)", 0 },
+  { 382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
   { 383016, "Purify Spirit additionally removes all Curse effects.", 0, 0 },
   { 383058, "Tear open for some Darkmoon Cards! Contains cards only native to the Dragon Isles. ", 0, 0 },
   { 383061, "$@spelldesc192222", 0, 0 },

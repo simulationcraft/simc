@@ -433,7 +433,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 
     if ( p().o().talents.rabid_shadows.enabled() )
     {
-      hasted_time /= 1.0 + p().o().talents.rabid_shadows.percent( 1 );
+      hasted_time /= 1.0 + p().o().talents.rabid_shadows->effectN( 1 ).percent();
     }
 
     return hasted_time;

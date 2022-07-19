@@ -8,6 +8,7 @@
 #include "dbc.hpp"
 #include "dbc/item_set_bonus.hpp"
 #include "dbc/covenant_data.hpp"
+#include "dbc/trait_data.hpp"
 #include "player/covenant.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
@@ -1605,6 +1606,101 @@ std::ostringstream& spell_info::effect_to_str( const dbc_t& dbc,
   return s;
 }
 
+static std::string trait_data_to_str( const dbc_t&                            dbc,
+                                      const spell_data_t*                     spell,
+                                      const std::vector<const trait_data_t*>& traits )
+{
+  std::vector<std::string> strings;
+
+  for ( const auto trait : traits )
+  {
+    std::vector<std::string> nibbles;
+
+    talent_tree tree = static_cast<talent_tree>( trait->tree_index );
+
+    std::vector<std::string> starters;
+    auto spec_idx = 0U;
+    while ( trait->id_spec_starter[ spec_idx ] != 0 && spec_idx < trait->id_spec_starter.size() )
+    {
+      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
+            static_cast<specialization_e>( trait->id_spec_starter[ spec_idx ] ) ) );
+      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      {
+        starters.emplace_back( fmt::format( "{} ({})", specialization_str,
+          trait->id_spec_starter[ spec_idx ] ) );
+      }
+      else
+      {
+        starters.emplace_back( fmt::format( "{}", specialization_str ) );
+      }
+      ++spec_idx;
+    }
+
+    if ( !starters.empty() )
+    {
+      nibbles.emplace_back( fmt::format( "free=({})", util::string_join( starters, ", " ) ) );
+    }
+
+    nibbles.emplace_back( fmt::format( "tree={}", util::talent_tree_string( tree ) ) );
+    nibbles.emplace_back( fmt::format( "entry_id={}", trait->id_trait_node_entry ) );
+    nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
+    if ( !util::str_compare_ci( spell->name_cstr(), trait->name ) )
+    {
+      nibbles.emplace_back( fmt::format( "name=\"{}\"", trait->name ) );
+    }
+
+    spec_idx = 0U;
+    std::vector<std::string> spec_strs;
+    while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )
+    {
+      auto specialization_str = util::inverse_tokenize( dbc::specialization_string(
+            static_cast<specialization_e>( trait->id_spec[ spec_idx ] ) ) );
+      if ( util::str_compare_ci( specialization_str, "Unknown" ) )
+      {
+        spec_strs.emplace_back( fmt::format( "{} ({})", specialization_str,
+          trait->id_spec[ spec_idx ] ) );
+      }
+      else
+      {
+        spec_strs.emplace_back( fmt::format( "{}", specialization_str ) );
+      }
+      ++spec_idx;
+    }
+
+    strings.emplace_back( fmt::format( "{} [{}]",
+      !spec_strs.empty() ? util::string_join( spec_strs, ", " ) : "Generic",
+      util::string_join( nibbles, ", " ) ) );
+
+    const auto trait_effects = trait_definition_effect_entry_t::find( trait->id_trait_definition,
+        dbc.ptr );
+
+    for ( const auto trait_effect : trait_effects )
+    {
+      std::vector<std::string> trait_effect_nibbles;
+
+      trait_effect_nibbles.emplace_back( fmt::format( "op={}", util::trait_definition_op_string(
+              static_cast<trait_definition_op>( trait_effect.operation ) ) ) );
+
+      auto curve_data = curve_point_t::find( trait_effect.id_curve, dbc.ptr );
+      if ( !curve_data.empty() )
+      {
+        std::vector<std::string> value_strs;
+        for ( const auto& point : curve_data )
+        {
+          value_strs.emplace_back( fmt::format( "{}", point.primary2 ) );
+        }
+
+        trait_effect_nibbles.emplace_back( fmt::format( "values=({})", util::string_join( value_strs, ", " ) ) );
+      }
+
+      strings.emplace_back( fmt::format( "Effect#{} [{}]", trait_effect.effect_index + 1,
+            util::string_join( trait_effect_nibbles, ", " ) ) );
+    }
+  }
+
+  return util::string_join( strings, "\n                 : " );
+}
+
 std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int level )
 {
   std::ostringstream s;
@@ -1644,6 +1740,12 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   {
     fmt::print( s, "Replaces         : {} (id={})\n",
                 dbc.spell( replace_spell_id ) -> name_cstr(), replace_spell_id );
+  }
+
+  const auto talents = trait_data_t::find_by_spell( talent_tree::INVALID, spell->id() );
+  if ( !talents.empty() )
+  {
+    s << "Talent Entry     : " << trait_data_to_str( dbc, spell, talents ) << std::endl;
   }
 
   if ( spell -> class_mask() )

@@ -49,9 +49,9 @@ public:
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
-    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind.percent( 2 );
+    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind->effectN( 2 ).percent();
 
-    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind.percent( 4 );
+    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind->effectN( 4 ).percent();
 
     if ( priest().conduits.mind_devourer->ok() )
     {
@@ -60,7 +60,7 @@ public:
 
     if ( priest().talents.shadow.mind_devourer.enabled() )
     {
-      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer.percent( 1 ) );
+      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer->effectN( 1 ).percent() );
     }
 
     cooldown->hasted     = true;
@@ -69,7 +69,7 @@ public:
 
     if ( p.talents.improved_mind_blast.enabled() )
     {
-      cooldown->duration += timespan_t::from_millis( p.talents.improved_mind_blast.base_value( 1 ) );
+      cooldown->duration += p.talents.improved_mind_blast->effectN( 1 ).time_value();
     }
 
     your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
@@ -133,7 +133,7 @@ public:
 
     if ( insidious_ire_active() )
     {
-      m *= 1 + priest().talents.shadow.insidious_ire.percent( 1 );
+      m *= 1 + priest().talents.shadow.insidious_ire->effectN( 1 ).percent();
     }
 
     return m;
@@ -1226,7 +1226,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
 
 // ==========================================================================
 // Summon Mindbender
-// TODO: wire up a non-shadow one
+// TODO: confirm Holy/Disc versions work as expected
 // Shadow - 200174 (base effect 2 value)
 // Holy/Discipline - 123040 (base effect 3 value)
 // ==========================================================================
@@ -1431,6 +1431,10 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   void trigger( double original_amount )
   {
+    if ( priest().talents.tithe_evasion.enabled() )
+    {
+      original_amount /= ( 1.0 + priest().talents.tithe_evasion->effectN( 1 ).percent() );
+    }
     base_td = original_amount;
     execute();
   }
@@ -1457,7 +1461,7 @@ struct shadow_word_death_t final : public priest_spell_t
   propagate_const<shadow_word_death_self_damage_t*> shadow_word_death_self_damage;
 
   shadow_word_death_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death ),
+    : priest_spell_t( "shadow_word_death", p, p.talents.shadow_word_death.spell() ),
       execute_percent( data().effectN( 2 ).base_value() ),
       execute_modifier( data().effectN( 3 ).percent() ),
       insanity_per_dot( p.specs.painbreaker_psalm_insanity->effectN( 2 ).base_value() /
@@ -1976,7 +1980,8 @@ void priest_td_t::target_demise()
 
   if ( priest().talents.throes_of_pain.enabled() && dots.shadow_word_pain->is_ticking() )
   {
-    // TODO:: Energise
+    priest().generate_insanity( priest().talents.throes_of_pain->effectN( 1 ).base_value(),
+                                priest().gains.insanity_throes_of_pain, nullptr );
   }
 
   reset();
@@ -2045,6 +2050,7 @@ void priest_t::create_gains()
   gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
   gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
   gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_throes_of_pain       = get_gain( "Insanity Gained from Throes of Pain" );
 }
 
 /** Construct priest procs */
@@ -2398,13 +2404,13 @@ void priest_t::create_pets()
 {
   base_t::create_pets();
 
-  // TODO: add find_action back
+  // TODO: add find_action back when it supports new talents
   if ( talents.shadowfiend.enabled() && !talents.mindbender.enabled() )
   {
     pets.shadowfiend = create_pet( "shadowfiend" );
   }
 
-  // TODO: add find_action back
+  // TODO: add find_action back when it supports new talents
   if ( talents.mindbender.enabled() )
   {
     pets.mindbender = create_pet( "mindbender" );
@@ -2563,18 +2569,15 @@ void priest_t::init_spells()
 
   // Priest Tree Talents
   // Row 1
-  // TODO: for some reason this does not work correctly
-  // talents.shadow_word_death = find_talent_spell( talent_tree::CLASS, 32379 );
-  talents.shadow_word_death = find_spell( 32379 );
+  talents.shadow_word_death = find_talent_spell( 19979 );
   // Row 2
-  talents.improved_shadow_word_death = find_talent_spell( talent_tree::CLASS, 322107 );
+  talents.improved_shadow_word_death = find_talent_spell( 20024 );
   talents.shadow_mend                = find_talent_spell( talent_tree::CLASS, "Shadow Mend" );
   talents.shadow_mend_self_damage    = find_spell( 187464 );
   // Row 3
   talents.masochism      = find_talent_spell( talent_tree::CLASS, "Masochism" );
   talents.masochism_buff = find_spell( 193065 );
   // Row 4
-  // TODO: this is not working when trying to get spell() out of it
   talents.power_infusion      = find_talent_spell( talent_tree::CLASS, "Power Infusion" );
   talents.improved_mind_blast = find_talent_spell( talent_tree::CLASS, "Improved Mind Blast" );
   talents.twist_of_fate       = find_talent_spell( talent_tree::CLASS, "Twist of Fate" );
@@ -2586,10 +2589,10 @@ void priest_t::init_spells()
   talents.improved_shadowfiend = find_talent_spell( talent_tree::CLASS, "Improved Shadowfiend" );
   // Row 7
   talents.puppet_master = find_talent_spell( talent_tree::CLASS, "Puppet Master" );
-
   // Row 8
   talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
+  talents.tithe_evasion = find_talent_spell( talent_tree::CLASS, "Tithe Evasion" );
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
   // Row 10
   talents.mindgames         = find_talent_spell( talent_tree::CLASS, "Mindgames" );
@@ -2611,7 +2614,7 @@ void priest_t::create_buffs()
   buffs.masochism = make_buff<buffs::masochism_t>( *this );
 
   buffs.puppet_master = make_buff<stat_buff_t>( this, "puppet_master", talents.puppet_master.spell() )
-                            ->add_stat( STAT_MASTERY_RATING, talents.puppet_master.base_value( 1 ) )
+                            ->add_stat( STAT_MASTERY_RATING, talents.puppet_master->effectN( 1 ).base_value() )
                             ->add_invalidate( CACHE_MASTERY )
                             ->set_max_stack( 5 );
 
