@@ -216,6 +216,7 @@ namespace fiend
 namespace actions
 {
 struct shadowflame_prism_t;
+struct shadowflame_prism_legendary_t;
 }
 
 /**
@@ -224,6 +225,7 @@ struct shadowflame_prism_t;
 struct base_fiend_pet_t : public priest_pet_t
 {
   propagate_const<actions::shadowflame_prism_t*> shadowflame_prism;
+  propagate_const<actions::shadowflame_prism_legendary_t*> shadowflame_prism_legendary;
 
   struct gains_t
   {
@@ -241,6 +243,7 @@ struct base_fiend_pet_t : public priest_pet_t
   base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
     : priest_pet_t( sim, owner, name ),
       shadowflame_prism( nullptr ),
+      shadowflame_prism_legendary( nullptr ),
       gains(),
       fiend_type( type ),
       direct_power_mod( 0.0 )
@@ -455,7 +458,7 @@ struct fiend_melee_t : public priest_pet_melee_t
 };
 
 // ==========================================================================
-// Shadowflame Rift
+// Shadowflame Rift (Shadowlands Legendary)
 // ==========================================================================
 struct shadowflame_rift_t final : public priest_pet_spell_t
 {
@@ -481,6 +484,67 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 };
 
 // ==========================================================================
+// Shadowflame Fissure
+// ==========================================================================
+struct shadowflame_fissure_t final : public priest_pet_spell_t
+{
+  shadowflame_fissure_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_fissure", p, p.o().find_spell( 373442 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+
+    // This is hard coded in the spell
+    // Depending on Mindbender or Shadowfiend this hits differently
+    switch ( p.fiend_type )
+    {
+      case base_fiend_pet_t::fiend_type::Mindbender:
+      {
+        spell_power_mod.direct *= 0.442;
+      }
+      break;
+      default:
+        spell_power_mod.direct *= 0.408;
+        break;
+    }
+  }
+};
+
+// ==========================================================================
+// Shadowflame Prism (Shadowlands Legendary)
+// ==========================================================================
+struct shadowflame_prism_legendary_t final : public priest_pet_spell_t
+{
+  timespan_t duration;
+
+  shadowflame_prism_legendary_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "shadowflame_prism_legendary", p, p.o().find_spell( 336143 ) ),
+      duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
+  {
+    background = true;
+
+    impact_action = new shadowflame_rift_t( p );
+    add_child( impact_action );
+  }
+
+  void execute() override
+  {
+    priest_pet_spell_t::execute();
+
+    auto& current_pet = p();
+
+    if ( !current_pet.is_sleeping() )
+    {
+      auto remaining_duration = current_pet.expiration->remains();
+      auto new_duration       = remaining_duration + duration;
+      sim->print_debug( "Increasing {} duration by {}, new duration is {} up from {}.", current_pet.full_name_str,
+                        duration, new_duration, remaining_duration );
+      current_pet.expiration->reschedule( new_duration );
+    }
+  }
+};
+
+// ==========================================================================
 // Shadowflame Prism
 // ==========================================================================
 struct shadowflame_prism_t final : public priest_pet_spell_t
@@ -488,12 +552,12 @@ struct shadowflame_prism_t final : public priest_pet_spell_t
   timespan_t duration;
 
   shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", p, p.o().find_spell( 336143 ) ),
+    : priest_pet_spell_t( "shadowflame_prism", p, p.o().find_spell( 373427 ) ),
       duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
-    impact_action = new shadowflame_rift_t( p );
+    impact_action = new shadowflame_fissure_t( p );
     add_child( impact_action );
   }
 
@@ -537,7 +601,8 @@ void base_fiend_pet_t::init_background_actions()
 {
   priest_pet_t::init_background_actions();
 
-  shadowflame_prism = new fiend::actions::shadowflame_prism_t( *this );
+  shadowflame_prism           = new fiend::actions::shadowflame_prism_t( *this );
+  shadowflame_prism_legendary = new fiend::actions::shadowflame_prism_legendary_t( *this );
 }
 
 action_t* base_fiend_pet_t::create_action( util::string_view name, util::string_view options_str )
@@ -960,9 +1025,18 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   auto current_pet = get_current_main_pet( *this );
   if ( current_pet && !current_pet->is_sleeping() )
   {
-    assert( current_pet->shadowflame_prism );
-    current_pet->shadowflame_prism->set_target( target );
-    current_pet->shadowflame_prism->execute();
+    if ( current_pet->o().talents.shadowflame_prism.enabled() )
+    {
+      assert( current_pet->shadowflame_prism );
+      current_pet->shadowflame_prism->set_target( target );
+      current_pet->shadowflame_prism->execute();
+    }
+    else
+    {
+      assert( current_pet->shadowflame_prism_legendary );
+      current_pet->shadowflame_prism_legendary->set_target( target );
+      current_pet->shadowflame_prism_legendary->execute();
+    }
   }
 }
 

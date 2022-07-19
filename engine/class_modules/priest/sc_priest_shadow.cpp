@@ -125,7 +125,7 @@ public:
   {
     priest_spell_t::impact( s );
 
-    if ( priest().legendary.shadowflame_prism->ok() )
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadowflame_prism.enabled() )
     {
       priest().trigger_shadowflame_prism( s->target );
     }
@@ -453,7 +453,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().legendary.shadowflame_prism->ok() )
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadowflame_prism.enabled() )
     {
       priest().trigger_shadowflame_prism( s->target );
     }
