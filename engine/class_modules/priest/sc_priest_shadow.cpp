@@ -524,7 +524,8 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
 
 struct shadowy_apparition_spell_t final : public priest_spell_t
 {
-  shadowy_apparition_spell_t( priest_t& p ) : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions.spell() )
+  shadowy_apparition_spell_t( priest_t& p )
+    : priest_spell_t( "shadowy_apparitions", p, p.talents.shadow.shadowy_apparitions.spell() )
   {
     background   = true;
     proc         = false;
@@ -628,6 +629,30 @@ struct shadow_word_pain_t final : public priest_spell_t
 
       priest().refresh_talbadars_buff( s );
     }
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double crit = priest_spell_t::composite_target_crit_chance( target );
+
+    if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
+    {
+      crit += priest().talents.shadow.abyssal_knowledge.percent( 1 );
+    }
+
+    return crit;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t t = priest_spell_t::tick_time( state );
+
+    if ( priest().is_monomania_up( state->target ) )
+    {
+      t /= ( 1 + priest().talents.shadow.monomania_tickrate->effectN( 1 ).percent() );
+    }
+
+    return t;
   }
 
   void tick( dot_t* d ) override
@@ -771,6 +796,30 @@ struct vampiric_touch_t final : public priest_spell_t
     }
 
     return priest_spell_t::execute_time();
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double crit = priest_spell_t::composite_target_crit_chance( target );
+
+    if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
+    {
+      crit += priest().talents.shadow.abyssal_knowledge.percent( 1 );
+    }
+
+    return crit;
+  }
+
+  timespan_t tick_time( const action_state_t* state ) const override
+  {
+    timespan_t t = priest_spell_t::tick_time( state );
+
+    if ( priest().is_monomania_up( state->target ) )
+    {
+      t /= ( 1 + priest().talents.shadow.monomania_tickrate->effectN( 1 ).percent() );
+    }
+
+    return t;
   }
 
   void tick( dot_t* d ) override
@@ -1888,13 +1937,18 @@ void priest_t::init_spells_shadow()
   talents.shadow.silence              = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
   talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
 
-  talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
-  talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
-  talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
-  talents.shadow.shadowy_apparition = find_spell( 148859 );
-  talents.shadow.shadowy_apparitions = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
-  talents.shadow.void_eruption                = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
-  talents.shadow.void_eruption_damage         = find_spell( 228360 );
+  talents.shadow.unfurling_darkness   = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
+  talents.shadow.last_word            = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
+  talents.shadow.vampiric_insight     = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
+  talents.shadow.shadowy_apparition   = find_spell( 148859 );
+  talents.shadow.shadowy_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
+  talents.shadow.void_eruption        = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
+  talents.shadow.void_eruption_damage = find_spell( 228360 );
+
+  talents.shadow.monomania          = find_talent_spell( talent_tree::SPECIALIZATION, "Monomania" );
+  talents.shadow.monomania_tickrate = find_spell( 375408 );
+
+  talents.shadow.abyssal_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
 
   // Talents
   // T15
@@ -1921,13 +1975,13 @@ void priest_t::init_spells_shadow()
   talents.surrender_to_madness = find_talent_spell( "Surrender to Madness" );
 
   // General Spells
-  specs.dark_thought         = find_spell( 341207 );
-  specs.dark_thoughts        = find_specialization_spell( "Dark Thoughts" );
-  specs.dispersion           = find_specialization_spell( "Dispersion" );
-  specs.shadowform           = find_specialization_spell( "Shadowform" );
-  specs.vampiric_embrace     = find_specialization_spell( "Vampiric Embrace" );
-  specs.void_bolt            = find_spell( 205448 );
-  specs.voidform             = find_spell( 194249 );
+  specs.dark_thought     = find_spell( 341207 );
+  specs.dark_thoughts    = find_specialization_spell( "Dark Thoughts" );
+  specs.dispersion       = find_specialization_spell( "Dispersion" );
+  specs.shadowform       = find_specialization_spell( "Shadowform" );
+  specs.vampiric_embrace = find_specialization_spell( "Vampiric Embrace" );
+  specs.void_bolt        = find_spell( 205448 );
+  specs.voidform         = find_spell( 194249 );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
@@ -2136,6 +2190,19 @@ void priest_t::remove_hungering_void( player_t* target )
       priest_td->buffs.hungering_void->expire();
     }
   }
+}
+
+bool priest_t::is_monomania_up( player_t* target ) const
+{
+  if ( talents.shadow.monomania.enabled() )
+  {
+    priest_td_t* td = get_target_data( target );
+    if ( td->dots.mind_flay->is_ticking() || td->dots.mind_sear->is_ticking() )
+    {
+      return true;
+    }
+  }
+  return false;
 }
 
 // Helper function to refresh talbadars buff
