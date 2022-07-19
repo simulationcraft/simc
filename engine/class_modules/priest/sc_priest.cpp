@@ -2569,10 +2569,9 @@ void priest_t::init_spells()
 
   // Priest Tree Talents
   // Row 1
-  talents.shadow_word_death = find_talent_spell( talent_tree::CLASS, 32379 );
+  talents.shadow_word_death = find_talent_spell( 19979 );
   // Row 2
-  // TODO: this is being given by default since it shares a name with SW:D which we get for free
-  talents.improved_shadow_word_death = find_talent_spell( talent_tree::CLASS, 322107 );
+  talents.improved_shadow_word_death = find_talent_spell( 20024 );
   talents.shadow_mend                = find_talent_spell( talent_tree::CLASS, "Shadow Mend" );
   talents.shadow_mend_self_damage    = find_spell( 187464 );
   // Row 3
