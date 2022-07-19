@@ -20,6 +20,209 @@ namespace actions
 namespace spells
 {
 // ==========================================================================
+// Mind Blast
+// ==========================================================================
+struct mind_blast_t final : public priest_spell_t
+{
+private:
+  double mind_blast_insanity;
+  const spell_data_t* mind_flay_spell;
+  const spell_data_t* mind_sear_spell;
+  const spell_data_t* void_torrent_spell;
+  timespan_t your_shadow_duration;
+  bool only_cwc;
+  bool T28_4PC;
+
+public:
+  mind_blast_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
+      mind_flay_spell( p.talents.shadow.mind_flay.spell() ),
+      mind_sear_spell( p.talents.shadow.mind_sear.spell() ),
+      void_torrent_spell( p.talents.void_torrent ),
+      only_cwc( false )
+  {
+    add_option( opt_bool( "only_cwc", only_cwc ) );
+    parse_options( options_str );
+
+    affected_by_shadow_weaving = true;
+
+    // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
+    energize_amount = mind_blast_insanity;
+    energize_amount *= 1 + priest().talents.shadow.fortress_of_the_mind.percent( 2 );
+
+    spell_power_mod.direct *= 1.0 + priest().talents.shadow.fortress_of_the_mind.percent( 4 );
+
+    if ( priest().conduits.mind_devourer->ok() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
+    }
+
+    if ( priest().talents.shadow.mind_devourer.enabled() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer.percent( 1 ) );
+    }
+
+    cooldown->hasted     = true;
+    usable_while_casting = use_while_casting = only_cwc;
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
+
+    if ( p.talents.improved_mind_blast.enabled() )
+    {
+      cooldown->duration += timespan_t::from_millis( p.talents.improved_mind_blast.base_value( 1 ) );
+    }    
+
+    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
+    T28_4PC              = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
+  }
+
+  void reset() override
+  {
+    priest_spell_t::reset();
+
+    // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
+    // buffs up.
+    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight.spell()->effectN( 1 ).base_value();
+  }
+
+  bool ready() override
+  {
+    if ( only_cwc )
+    {
+      if ( !priest().buffs.dark_thought->check() )
+        return false;
+      if ( player->channeling == nullptr )
+        return false;
+      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/761
+      if ( player->channeling->data().id() == mind_flay_spell->id() ||
+           player->channeling->data().id() == mind_sear_spell->id() ||
+           player->channeling->data().id() == void_torrent_spell->id() )
+        return priest_spell_t::ready();
+      return false;
+    }
+    else
+    {
+      return priest_spell_t::ready();
+    }
+  }
+
+  bool talbadars_stratagem_active() const
+  {
+    if ( !priest().legendary.talbadars_stratagem->ok() )
+      return false;
+
+    return priest().buffs.talbadars_stratagem->check();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( talbadars_stratagem_active() )
+    {
+      m *= 1 + priest().legendary.talbadars_stratagem->effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadowflame_prism.enabled() )
+    {
+      priest().trigger_shadowflame_prism( s->target );
+    }
+
+    if ( priest().buffs.mind_devourer->trigger() )
+    {
+      priest().procs.mind_devourer->occur();
+    }
+
+    priest().trigger_shadowy_apparitions( s );
+
+    if ( priest().talents.shadow.psychic_link.enabled() )
+    {
+      priest().trigger_psychic_link( s );
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    if ( priest().buffs.dark_thought->check() || priest().buffs.vampiric_insight->check() )
+    {
+      return timespan_t::zero();
+    }
+
+    return priest_spell_t::execute_time();
+  }
+
+  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
+  {
+    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
+    if ( priest().buffs.voidform->check() )
+    {
+      cd += priest().buffs.voidform->data().effectN( 6 ).time_value();
+    }
+    return cd;
+  }
+
+  // Called as a part of action execute
+  void update_ready( timespan_t cd_duration ) override
+  {
+    priest().buffs.voidform->up();  // Benefit tracking
+    // Decrementing a stack of dark thoughts will consume a max charge. Consuming a max charge loses you a current
+    // charge. Therefore update_ready needs to not be called in that case.
+    if ( priest().buffs.dark_thought->up() )
+    {
+      priest().buffs.dark_thought->decrement();
+      if ( T28_4PC )
+      {
+        priest().procs.living_shadow->occur();
+
+        auto pet = priest().pets.your_shadow.active_pet();
+
+        if ( pet )
+        {
+          pet->adjust_duration( your_shadow_duration );
+        }
+        else if ( priest().t28_4pc_summon_event )
+        {
+          timespan_t new_duration = priest().t28_4pc_summon_duration + your_shadow_duration;
+          sim->print_debug( "{} extends future your_shadow by {} seconds for a new total of {}. Spawns in {} seconds.",
+                            priest(), your_shadow_duration, new_duration, priest().t28_4pc_summon_event->remains() );
+          priest().t28_4pc_summon_duration = new_duration;
+        }
+        else
+        {
+          // There is a ~1.5s delay between consuming the Dark Thought, and the Shadow Spawning
+          // There is an additional .5s delay between the spawn and the first tick, that is also matched between
+          // channels This is intentional due to the way the pet spawns attached to the player
+          double spawn_delay = 1.5;
+          sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by {} seconds.", priest(),
+                            spawn_delay );
+          // Add 1ms to ensure pet is dismissed after last dot tick.
+          priest().t28_4pc_summon_duration = your_shadow_duration + timespan_t::from_millis( 1 );
+          priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( spawn_delay ), [ this ] {
+            priest().pets.your_shadow.spawn( priest().t28_4pc_summon_duration );
+            priest().t28_4pc_summon_event    = nullptr;
+            priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
+          } );
+        }
+      }
+    }
+    else if ( priest().buffs.vampiric_insight->up() )
+    {
+      priest().buffs.vampiric_insight->decrement();
+    }
+    else
+    {
+      priest_spell_t::update_ready( cd_duration );
+    }
+  }
+};
+// ==========================================================================
 // Angelic Feather
 // ==========================================================================
 struct angelic_feather_t final : public priest_spell_t
@@ -1769,7 +1972,6 @@ void priest_t::create_procs()
   procs.vampiric_insight                = get_proc( "Vampiric Insight procs" );
   procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
   procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
-  
 }
 
 /** Construct priest benefits */
@@ -2031,6 +2233,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
       return new summon_shadowfiend_t( *this, options_str );
     }
   }
+  if ( name == "mind_blast" )
+  {
+    return new mind_blast_t( *this, options_str );
+  }
   if ( name == "fade" )
   {
     return new fade_t( *this, options_str );
@@ -2263,6 +2469,7 @@ void priest_t::init_spells()
   talents.masochism      = find_talent_spell( talent_tree::CLASS, "Masochism" );
   talents.masochism_buff = find_spell( 193065 );
   // Row 4
+  talents.improved_mind_blast = find_talent_spell( talent_tree::CLASS, "Improved Mind Blast" );
   talents.taming_the_shadows = find_talent_spell( talent_tree::CLASS, "Taming the Shadows" );
   // Row 5
   talents.shadowfiend = find_talent_spell( talent_tree::CLASS, "Shadowfiend" );
@@ -2273,7 +2480,7 @@ void priest_t::init_spells()
   // Row 9
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
   // Row 10
-  talents.mindgames = find_talent_spell( talent_tree::CLASS, "Mindgames" );
+  talents.mindgames         = find_talent_spell( talent_tree::CLASS, "Mindgames" );
   talents.shadowflame_prism = find_talent_spell( talent_tree::CLASS, "Shadowflame Prism" );
 }
 
