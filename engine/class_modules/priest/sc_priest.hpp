@@ -156,6 +156,10 @@ public:
       // Shadow Tree
       // Row 1
       player_talent_t mind_flay;
+      // Row 2
+      player_talent_t vampiric_touch;
+      player_talent_t devouring_plague;
+      player_talent_t mind_sear;
       // Row 8
       player_talent_t mind_devourer;
     } shadow;

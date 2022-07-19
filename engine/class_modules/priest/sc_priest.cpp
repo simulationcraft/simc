@@ -1942,10 +1942,16 @@ void priest_t::init_spells()
   specs.discipline_priest = dbc::get_class_passive( *this, PRIEST_DISCIPLINE );
   specs.shadow_priest     = dbc::get_class_passive( *this, PRIEST_SHADOW );
 
+
+  // TODO replace DoT Spells with these.
+  talents.shadow.vampiric_touch   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Touch" );
+  talents.shadow.devouring_plague = find_talent_spell( talent_tree::SPECIALIZATION, "Devouring Plague" );
+
   // DoT Spells
-  dot_spells.devouring_plague = find_class_spell( "Devouring Plague" );
+  dot_spells.devouring_plague = talents.shadow.devouring_plague.spell();
   dot_spells.shadow_word_pain = find_class_spell( "Shadow Word: Pain" );
-  dot_spells.vampiric_touch   = find_class_spell( "Vampiric Touch" );
+  dot_spells.vampiric_touch   = talents.shadow.vampiric_touch.spell();
+
 
   // Mastery Spells
   mastery_spells.grace          = find_mastery_spell( PRIEST_DISCIPLINE );

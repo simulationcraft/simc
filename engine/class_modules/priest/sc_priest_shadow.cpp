@@ -1981,6 +1981,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_devourer = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
   talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
 
+  talents.shadow.mind_sear     = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
+
   // Talents
   // T15
   talents.fortress_of_the_mind       = find_talent_spell( "Fortress of the Mind" );
