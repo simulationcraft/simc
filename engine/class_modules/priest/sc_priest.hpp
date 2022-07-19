@@ -180,6 +180,7 @@ public:
     // Row 8
     player_talent_t mindbender;
     // Row 9
+    player_talent_t tithe_evasion;
     player_talent_t rabid_shadows;
     // Row 10
     player_talent_t mindgames;

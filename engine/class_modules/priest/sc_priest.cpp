@@ -1431,6 +1431,10 @@ struct shadow_word_death_self_damage_t final : public priest_spell_t
 
   void trigger( double original_amount )
   {
+    if ( priest().talents.tithe_evasion.enabled() )
+    {
+      original_amount /= ( 1.0 + priest().talents.tithe_evasion->effectN( 1 ).percent() );
+    }
     base_td = original_amount;
     execute();
   }
@@ -2589,6 +2593,7 @@ void priest_t::init_spells()
   // Row 8
   talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
+  talents.tithe_evasion = find_talent_spell( talent_tree::CLASS, "Tithe Evasion" );
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
   // Row 10
   talents.mindgames         = find_talent_spell( talent_tree::CLASS, "Mindgames" );
