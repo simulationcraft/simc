@@ -983,15 +983,17 @@ public:
 
     // Killing machine triggered by
     proc_t* km_from_crit_aa;
-    proc_t* km_from_obliteration_fs; // Frost Strike during Obliteration
-    proc_t* km_from_obliteration_hb; // Howling Blast during Obliteration
-    proc_t* km_from_obliteration_ga; // Glacial Advance during Obliteration
+    proc_t* km_from_cold_blooded_rage; // Frost strike with talent
+    proc_t* km_from_obliteration_fs;   // Frost Strike during Obliteration
+    proc_t* km_from_obliteration_hb;   // Howling Blast during Obliteration
+    proc_t* km_from_obliteration_ga;   // Glacial Advance during Obliteration
 
     // Killing machine refreshed by
     proc_t* km_from_crit_aa_wasted;
-    proc_t* km_from_obliteration_fs_wasted; // Frost Strike during Obliteration
-    proc_t* km_from_obliteration_hb_wasted; // Howling Blast during Obliteration
-    proc_t* km_from_obliteration_ga_wasted; // Glacial Advance during Obliteration
+    proc_t* km_from_cold_blooded_rage_wasted; // Frost strike with talent
+    proc_t* km_from_obliteration_fs_wasted;   // Frost Strike during Obliteration
+    proc_t* km_from_obliteration_hb_wasted;   // Howling Blast during Obliteration
+    proc_t* km_from_obliteration_ga_wasted;   // Glacial Advance during Obliteration
 
     // Runic corruption triggered by
     proc_t* pp_runic_corruption; // from pestilent pustules
@@ -5604,6 +5606,20 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     triggers_icecap = true;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talent.frost.cold_blooded_rage.ok() && s -> result == RESULT_CRIT )
+      {
+        p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
+                                          p() -> procs.km_from_cold_blooded_rage_wasted );
+      }
+    }
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -9003,7 +9019,7 @@ void death_knight_t::init_spells()
   talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   talent.frost.frostscythe = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   // Row 9
-  talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, 377083 );  // Lookup function is failing for this one, falling back to spellid
+  talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, "Cold-Blooded Rage" );
   talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrms Fury" );
   talent.frost.invigorating_freeze = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Freeze" );
   // Row 10
@@ -9539,15 +9555,17 @@ void death_knight_t::init_procs()
   procs.killing_machine_oblit = get_proc( "Killing Machine spent on Obliterate" );
   procs.killing_machine_fsc   = get_proc( "Killing Machine spent on Frostscythe" );
 
-  procs.km_from_crit_aa         = get_proc( "Killing Machine: Critical auto attacks" );
-  procs.km_from_obliteration_fs = get_proc( "Killing Machine: Frost Strike" );
-  procs.km_from_obliteration_hb = get_proc( "Killing Machine: Howling Blast" );
-  procs.km_from_obliteration_ga = get_proc( "Killing Machine: Glacial Advance" );
+  procs.km_from_crit_aa           = get_proc( "Killing Machine: Critical auto attacks" );
+  procs.km_from_cold_blooded_rage = get_proc( "Killing Machine: Cold-Blooded Rage");
+  procs.km_from_obliteration_fs   = get_proc( "Killing Machine: Frost Strike" );
+  procs.km_from_obliteration_hb   = get_proc( "Killing Machine: Howling Blast" );
+  procs.km_from_obliteration_ga   = get_proc( "Killing Machine: Glacial Advance" );
 
-  procs.km_from_crit_aa_wasted         = get_proc( "Killing Machine wasted: Critical auto attacks" );
-  procs.km_from_obliteration_fs_wasted = get_proc( "Killing Machine wasted: Frost Strike" );
-  procs.km_from_obliteration_hb_wasted = get_proc( "Killing Machine wasted: Howling Blast" );
-  procs.km_from_obliteration_ga_wasted = get_proc( "Killing Machine wasted: Glacial Advance" );
+  procs.km_from_crit_aa_wasted           = get_proc( "Killing Machine wasted: Critical auto attacks" );
+  procs.km_from_cold_blooded_rage_wasted = get_proc( "Killing Machine wasted: Cold-Blooded Rage" );
+  procs.km_from_obliteration_fs_wasted   = get_proc( "Killing Machine wasted: Frost Strike" );
+  procs.km_from_obliteration_hb_wasted   = get_proc( "Killing Machine wasted: Howling Blast" );
+  procs.km_from_obliteration_ga_wasted   = get_proc( "Killing Machine wasted: Glacial Advance" );
 
   procs.ready_rune            = get_proc( "Rune ready" );
 
