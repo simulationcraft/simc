@@ -2500,7 +2500,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       // DRW is still using an old spell called "Blood Strike" for the 5 additional RP generation on Heart Strike
       blood_strike_rp_generation( p -> find_spell( 220890 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
     {
-      this -> base_multiplier *= 1.0 + dk() -> talent.blood.improved_heart_strike.percent( 1 );
+      this -> base_multiplier *= 1.0 + dk() -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     }
 
     int n_targets() const override
@@ -4335,10 +4335,10 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( ! p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon.base_value( 4 ) ) );
+      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
       {
-        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon.base_value( 4 ) ) );
+        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
       }
     }
   }
@@ -4938,7 +4938,7 @@ struct death_coil_t : public death_knight_spell_t
 
     // Rank 2 Reduces the cooldown Dark Transformation by 1s
     if ( p() -> talent.unholy.unholy_command.ok() )
-      p() -> cooldown.dark_transformation -> adjust( -1.0 * timespan_t::from_millis( p() -> talent.unholy.unholy_command.base_value( 1 ) ) );
+      p() -> cooldown.dark_transformation -> adjust( -1.0 * p() -> talent.unholy.unholy_command ->effectN( 1 ).time_value() );
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
@@ -5409,9 +5409,9 @@ struct festering_wound_t : public death_knight_spell_t
   {
     background = true;
 
-    base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores.spell() -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
 
-    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
 
     if ( p -> conduits.convocation_of_the_dead.ok() )
     {
@@ -5437,7 +5437,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
 
-    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
   }
 
   void init() override
@@ -5568,7 +5568,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     background = special = true;
     weapon = w;
-    base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.frost.improved_frost_strike -> effectN( 1 ).percent();
     triggers_icecap = true;
   }
 
@@ -5778,7 +5778,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     // TODO July 19 2022 Heart Strike is missing rank 2 for the extra rp gain
     //energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     is_t28_counterattack = false;
   }
 
@@ -5794,7 +5794,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     weapon = &( p -> main_hand_weapon );
     // T28 reads the amount of RP gain directly from t28 spell data, it does not use the resources section in heart strike
     energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
-    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     is_t28_counterattack = true;
   }
 
@@ -5971,7 +5971,7 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> buffs.rime -> up() )
     {
-      m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime.percent( 1 );
+      m *= 1.0 + p()->buffs.rime->data().effectN( 2 ).percent() + p() -> talent.frost.improved_rime -> effectN( 1 ).percent();
     }
 
     return m;
@@ -6165,7 +6165,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
                                 as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() );
 
-    base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
     if ( p -> talent.frost.might_of_the_frozen_wastes.ok() && p -> main_hand_weapon.group() == WEAPON_2H )
     {
       base_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes.spell() -> effectN( 1 ).percent();
@@ -6766,7 +6766,7 @@ struct clawing_shadows_t : public scourge_strike_base_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2 -> effectN( 1 ).percent();
   }
 };
 
@@ -6778,7 +6778,7 @@ struct scourge_strike_shadow_t : public death_knight_melee_attack_t
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
-    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2 -> effectN( 1 ).percent();
   }
 };
 
@@ -6789,7 +6789,7 @@ struct scourge_strike_t : public scourge_strike_base_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2.percent( 1 );
+    base_multiplier *= 1.0 + p -> talent.unholy.scourge_strike_r2 -> effectN( 1 ).percent();
 
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
@@ -7402,7 +7402,7 @@ struct vampiric_blood_buff_t : public buff_t
   {
     // Cooldown handled by the action
     cooldown -> duration = 0_ms;
-    base_buff_duration += timespan_t::from_millis( player -> talent.blood.improved_vampiric_blood.base_value( 3 ) );
+    base_buff_duration += player -> talent.blood.improved_vampiric_blood -> effectN( 3 ).time_value();
     set_default_value_from_effect( 5 );
     if ( player -> legendary.vampiric_aura.ok() )
     {
@@ -9297,7 +9297,7 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> set_default_value( 1.0 / ( 1.0 + talent.blood.improved_boneshield.percent( 1 ) ) ) // Haste buff
+        -> set_default_value( 1.0 / ( 1.0 + talent.blood.improved_boneshield -> effectN( 1 ).percent() ) ) // Haste buff
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
@@ -9369,7 +9369,7 @@ void death_knight_t::create_buffs()
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons.spell() -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> set_default_value( talent.icy_talons.base_value( 1 ) )
+        -> set_default_value( talent.icy_talons -> effectN( 1 ).base_value() )
         -> set_cooldown( talent.icy_talons.spell()->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons.spell() );
 
@@ -9642,7 +9642,7 @@ void death_knight_t::reset()
 void death_knight_t::assess_heal( school_e school, result_amount_type t, action_state_t* s )
 {
   if ( buffs.vampiric_blood -> up() )
-    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + talent.blood.improved_vampiric_blood.percent( 1 );
+    s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + talent.blood.improved_vampiric_blood -> effectN( 1 ).percent();
 
   player_t::assess_heal( school, t, s );
 }
@@ -9793,8 +9793,8 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
 
   else if ( attr == ATTR_STAMINA )
   {
-    m *= 1.0 + talent.veteran_of_the_third_war.percent( 1 )
-      + talent.blood.blood_fortification.percent( 1 )
+    m *= 1.0 + talent.veteran_of_the_third_war -> effectN( 1 ).percent()
+      + talent.blood.blood_fortification -> effectN( 1 ).percent()
       + spec.blood_death_knight -> effectN( 13 ).percent();
   }
 
