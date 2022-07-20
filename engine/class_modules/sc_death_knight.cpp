@@ -4252,6 +4252,59 @@ struct chains_of_ice_t : public death_knight_spell_t
   }
 };
 
+// Chill Streak =============================================================
+
+struct chill_streak_damage_t : public death_knight_spell_t
+{
+  int hit_count;
+
+  chill_streak_damage_t( death_knight_t* p ) :
+    death_knight_spell_t( "chill_streak_damage", p, p -> find_spell( 204167 ) )
+  {
+    background = proc = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    hit_count++;
+
+    for ( const auto target : sim -> target_non_sleeping_list )
+    {
+      if ( target != state -> target )
+      {
+        if ( hit_count < p() -> talent.frost.chill_streak -> effectN( 1 ).base_value() )
+        {
+          this -> set_target( target );
+          this -> schedule_execute();
+          return;
+        }
+      }
+    }
+  }
+};
+
+struct chill_streak_t : public death_knight_spell_t
+{
+  chill_streak_damage_t* damage;
+
+  chill_streak_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "chill_streak", p, p -> talent.frost.chill_streak.spell() ),
+    damage( new chill_streak_damage_t( p ) )
+  {
+    parse_options( options_str );
+    add_child( damage );
+    impact_action = damage;
+    aoe = 0;
+  }
+
+  void execute() override
+  {
+    damage -> hit_count = 0;
+    death_knight_spell_t::execute();
+  }
+};
+
 // Consumption ==============================================================
 
 struct consumption_t : public death_knight_melee_attack_t
@@ -8339,6 +8392,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
 
   // Frost Actions
   if ( name == "breath_of_sindragosa"     ) return new breath_of_sindragosa_t     ( this, options_str );
+  if ( name == "chill_streak"             ) return new chill_streak_t             ( this, options_str );
   if ( name == "empower_rune_weapon"      ) return new empower_rune_weapon_t      ( this, options_str );
   if ( name == "frost_strike"             ) return new frost_strike_t             ( this, options_str );
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
