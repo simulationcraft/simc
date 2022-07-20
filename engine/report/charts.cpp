@@ -1046,7 +1046,7 @@ bool chart::generate_heal_stats_sources( highchart::pie_chart_t& chart, const pl
       return false;
     if ( stat->actual_amount.mean() <= 0 )
       return false;
-    if ( stat->type == STATS_DMG )
+    if ( stat->type == STATS_DMG || stat->type == STATS_NEUTRAL )
       return false;
     return true;
   };
