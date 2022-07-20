@@ -23,6 +23,8 @@ struct trait_data_t
   unsigned    id_trait_definition;
   unsigned    id_spell;
   unsigned    id_override_spell;
+  short       row;
+  short       col;
   const char* name;
   std::array<unsigned, 5> id_spec;
   std::array<unsigned, 5> id_spec_starter;

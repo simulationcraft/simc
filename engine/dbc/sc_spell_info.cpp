@@ -1642,6 +1642,8 @@ static std::string trait_data_to_str( const dbc_t&                            db
     }
 
     nibbles.emplace_back( fmt::format( "tree={}", util::talent_tree_string( tree ) ) );
+    nibbles.emplace_back( fmt::format( "row={}", trait->row ) );
+    nibbles.emplace_back( fmt::format( "col={}", trait->col ) );
     nibbles.emplace_back( fmt::format( "entry_id={}", trait->id_trait_node_entry ) );
     nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
     if ( !util::str_compare_ci( spell->name_cstr(), trait->name ) )
