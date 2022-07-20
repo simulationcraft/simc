@@ -168,7 +168,7 @@ void print_spell_query(std::ostream& out, const sim_t& sim, const spell_data_exp
     switch (data_type)
     {
     case DATA_TALENT:
-      out << spell_info::talent_to_str(*sim.dbc, sim.dbc->talent(id), level);
+      out << spell_info::talent_to_str( *sim.dbc, trait_data_t::find( id, sim.dbc->ptr ), level );
       break;
     case DATA_EFFECT:
     {
@@ -203,7 +203,7 @@ void print_spell_query( xml_node_t* out, FILE* file, const sim_t& sim, const spe
     switch (data_type)
     {
     case DATA_TALENT:
-      spell_info::talent_to_xml( *sim.dbc, sim.dbc->talent( id ), out, level );
+      spell_info::talent_to_xml( *sim.dbc, trait_data_t::find( id, sim.dbc->ptr ), out, level );
       break;
     case DATA_EFFECT:
     {

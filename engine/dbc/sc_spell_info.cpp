@@ -2344,31 +2344,22 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   return s.str();
 }
 
-std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const talent_data_t* talent, int /* level */ )
+std::string spell_info::talent_to_str( const dbc_t& /* dbc */, const trait_data_t* talent, int /* level */ )
 {
   std::ostringstream s;
 
-  s <<   "Name         : " << talent -> name_cstr() << " (id=" << talent -> id() << ") " << std::endl;
-
-  if ( talent -> mask_class() )
+  s << "Name         : " << talent->name << " (id=" << talent->id_trait_node_entry << ") " << std::endl;
+  s << "Tree         : " << util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) << std::endl;
+  s << "Class        : " << util::player_type_string( util::translate_class_id( talent->id_class ) ) << std::endl;
+  s << "Column       : " << talent->col << std::endl;
+  s << "Row          : " << talent->row << std::endl;
+  s << "Max Rank     : " << talent->max_ranks << std::endl;
+  s << "Spell        : " << talent->id_spell << std::endl;
+  if ( talent->id_override_spell > 0 )
   {
-    s << "Class        : ";
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
-    {
-      if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
-        s << _class_map[ i ].name << ", ";
-    }
-
-    s.seekp( -2, std::ios_base::cur );
-    s << std::endl;
+    s << "Replaces     : " << talent->id_override_spell << std::endl;
   }
-
-  s << "Column       : " << talent -> col() + 1    << std::endl;
-  s << "Row          : " << talent -> row() + 1    << std::endl;
-  s << "Spell        : "        << talent -> spell_id()   << std::endl;
-  if ( talent -> replace_id() > 0 )
-    s << "Replaces     : "   << talent -> replace_id() << std::endl;
-  s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
+  //s << "Spec         : " << util::specialization_string( talent -> specialization() ) << std::endl;
   s << std::endl;
 
   return s.str();
@@ -2759,27 +2750,24 @@ void spell_info::to_xml( const dbc_t& dbc, const spell_data_t* spell, xml_node_t
     node -> add_child( "variables" ) -> add_parm( ".", spelldesc_vars.desc_vars() );
 }
 
-void spell_info::talent_to_xml( const dbc_t& /* dbc */, const talent_data_t* talent, xml_node_t* parent, int /* level */ )
+void spell_info::talent_to_xml( const dbc_t& /* dbc */, const trait_data_t* talent, xml_node_t* parent, int /* level */ )
 {
-  xml_node_t* node = parent -> add_child( "talent" );
+  xml_node_t* node = parent->add_child( "talent" );
 
-  node -> add_parm( "name", talent -> name_cstr() );
-  node -> add_parm( "id", talent -> id() );
+  node->add_parm( "name", talent->name );
+  node->add_parm( "id", talent->id_trait_node_entry );
+  node->add_parm( "tree", util::talent_tree_string( static_cast<talent_tree>( talent->tree_index ) ) );
+  node->add_child( "class" )
+    ->add_parm( ".", util::player_type_string( util::translate_class_id( talent->id_class ) ) );
 
-  if ( talent -> mask_class() )
+  node->add_parm( "column", talent->col );
+  node->add_parm( "row", talent->row );
+  node->add_parm( "max_rank", talent->max_ranks );
+  node->add_parm( "spell", talent->id_spell );
+  if ( talent->id_override_spell > 0 )
   {
-    for ( unsigned int i = 1; i < std::size( _class_map ); i++ )
-    {
-      if ( ( talent -> mask_class() & ( 1 << ( i - 1 ) ) ) && _class_map[ i ].name )
-        node -> add_child( "class" ) -> add_parm( ".",  _class_map[ i ].name );
-    }
+    node->add_parm( "replaces", talent->id_override_spell );
   }
-
-  node -> add_parm( "column", talent -> col() + 1 );
-  node -> add_parm( "row", talent -> row() + 1 );
-  node -> add_parm( "spell", talent -> spell_id() );
-  if ( talent -> replace_id() > 0 )
-    node -> add_parm( "replaces", talent -> replace_id() );
 }
 
 void spell_info::set_bonus_to_xml( const dbc_t& /* dbc */, const item_set_bonus_t* set_bonus, xml_node_t* parent, int /* level */ )
