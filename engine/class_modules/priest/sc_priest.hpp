@@ -195,8 +195,6 @@ public:
       // Row 1
       player_talent_t mind_flay;
       // Row 2
-      player_talent_t vampiric_touch;
-      player_talent_t devouring_plague;
       player_talent_t mind_sear;
       const spell_data_t* mind_sear_insanity;
       // Row 3
@@ -320,8 +318,8 @@ public:
   struct
   {
     const spell_data_t* shadow_word_pain;
-    const spell_data_t* vampiric_touch;
-    const spell_data_t* devouring_plague;
+    player_talent_t vampiric_touch;
+    player_talent_t devouring_plague;
   } dot_spells;
 
   // Mastery Spells
@@ -911,7 +909,7 @@ struct priest_heal_t : public priest_action_t<heal_t>
     {
       // TODO: Use proper base_value() from talent struct when fixed
       if ( priest().specialization() != PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
-           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
+           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -923,13 +921,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  unsigned int mind_sear_id;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false ),
-      mind_sear_id( priest().find_class_spell( "Mind Sear" )->effectN( 1 ).trigger()->id() )
+      ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -975,7 +971,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       // TODO: Use proper base_value() from talent struct when fixed
       if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
-           ( save_health_percentage < priest().talents.twist_of_fate.spell()->effectN( 1 ).base_value() ) )
+           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -1055,43 +1051,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return ttm;
-  }
-
-  void trigger_dark_thoughts( const player_t* target, proc_t* proc, action_state_t* s )
-  {
-    auto action_id = s->action->id;
-
-    if ( !priest().specs.dark_thoughts->ok() )
-      return;
-    const priest_td_t* td = find_td( target );
-    if ( !td )
-      return;
-    const dot_t* swp = td->dots.shadow_word_pain;
-    const dot_t* vt  = td->dots.vampiric_touch;
-    const dot_t* dp  = td->dots.devouring_plague;
-
-    int dots                          = swp->is_ticking() + vt->is_ticking() + dp->is_ticking();
-    double dark_thoughts_proc_percent = priest().specs.dark_thoughts->effectN( 1 ).percent();
-
-    // Currently Mind-Sear has 1/3 the proc rate of Mind Flay 3% -> 1%
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/699
-    if ( priest().bugs && action_id == mind_sear_id )
-    {
-      dark_thoughts_proc_percent /= 3;
-    }
-
-    if ( rng().roll( dark_thoughts_proc_percent * swp->is_ticking() ) ||
-         rng().roll( dark_thoughts_proc_percent * vt->is_ticking() ) ||
-         rng().roll( dark_thoughts_proc_percent * dp->is_ticking() ) )
-    {
-      if ( sim->debug )
-      {
-        sim->print_debug( "{} activated Dark Thoughts using {} with {} chance with {} dots", *player, *this,
-                          dark_thoughts_proc_percent * dots, dots );
-      }
-      priest().buffs.dark_thought->trigger();
-      proc->occur();
-    }
   }
 
   void assess_damage( result_amount_type type, action_state_t* s ) override
