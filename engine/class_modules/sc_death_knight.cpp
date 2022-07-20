@@ -5571,26 +5571,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     triggers_icecap = true;
   }
 
-  double action_multiplier() const override
-  {
-    double m = death_knight_melee_attack_t::action_multiplier();
-
-    if ( p() -> buffs.eradicating_blow -> check() )
-    {
-      m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
-      // Arma - May 5 2022 - On 9.2.0 live and 9.2.5.43741 eradicating blow applies the stack value twice to the off hand only.
-      if( p() -> bugs && weapon->slot == SLOT_OFF_HAND )
-        m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
-    }
-
-    return m;
-  }
-
   void execute() override
   {
     death_knight_melee_attack_t::execute();
 
-    if ( p() -> conduits.unleashed_frenzy->ok() )
+    if ( p() -> talent.frost.unleashed_frenzy.ok() )
     {
       p() -> buffs.unleashed_frenzy->trigger();
     }
@@ -9427,9 +9412,9 @@ void death_knight_t::create_buffs()
             recalculate_resource_max( RESOURCE_HEALTH );
           } );
 
-  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
+  buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
-      -> set_default_value( conduits.unleashed_frenzy.percent() );
+      -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   // Legendaries
 
