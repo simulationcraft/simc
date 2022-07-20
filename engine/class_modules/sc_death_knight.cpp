@@ -9020,7 +9020,7 @@ void death_knight_t::init_spells()
   talent.frost.frostscythe = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   // Row 9
   talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, "Cold-Blooded Rage" );
-  talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrms Fury" );
+  talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   talent.frost.invigorating_freeze = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Freeze" );
   // Row 10
   talent.frost.icecap = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
