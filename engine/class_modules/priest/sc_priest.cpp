@@ -1369,7 +1369,13 @@ struct fade_t final : public priest_spell_t
 
   void execute() override
   {
+    // TODO: determine how these stack in pre-patch
     if ( priest().conduits.translucent_image->ok() )
+    {
+      priest().buffs.translucent_image_conduit->trigger();
+    }
+
+    if ( priest().talents.translucent_image.enabled() )
     {
       priest().buffs.translucent_image->trigger();
     }
@@ -2042,15 +2048,16 @@ void priest_t::create_gains()
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
-  gains.insanity_mindgames = get_gain( "Insanity Gained from Mindgames" );
-
-  gains.insanity_mind_sear            = get_gain( "Insanity Gained from Mind Sear" );
-  gains.insanity_pet                  = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.mindbender                    = get_gain( "Mana Gained from Mindbender" );
-  gains.painbreaker_psalm             = get_gain( "Insanity Gained from Painbreaker Psalm" );
-  gains.power_word_solace             = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_throes_of_pain       = get_gain( "Insanity Gained from Throes of Pain" );
+  gains.insanity_mindgames               = get_gain( "Insanity Gained from Mindgames" );
+  gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
+  gains.insanity_pet                     = get_gain( "Insanity Gained from Shadowfiend" );
+  gains.insanity_surrender_to_madness    = get_gain( "Insanity Gained from Surrender to Madness" );
+  gains.mindbender                       = get_gain( "Mana Gained from Mindbender" );
+  gains.painbreaker_psalm                = get_gain( "Insanity Gained from Painbreaker Psalm" );
+  gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
+  gains.insanity_throes_of_pain          = get_gain( "Insanity Gained from Throes of Pain" );
+  gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
+  gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
 }
 
 /** Construct priest procs */
@@ -2066,8 +2073,10 @@ void priest_t::create_procs()
   procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
   procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher                     = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.void_tendril_ecttv              = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher_ecttv               = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
   procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
   procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
   procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
@@ -2502,6 +2511,7 @@ void priest_t::init_spells()
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
+  specs.painbreaker_psalm_insanity    = find_spell( 336167 );
 
   // Class passives
   specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
@@ -2590,7 +2600,8 @@ void priest_t::init_spells()
   // Row 7
   talents.puppet_master = find_talent_spell( talent_tree::CLASS, "Puppet Master" );
   // Row 8
-  talents.mindbender = find_talent_spell( talent_tree::CLASS, "Mindbender" );
+  talents.translucent_image = find_talent_spell( talent_tree::CLASS, "Translucent Image" );
+  talents.mindbender        = find_talent_spell( talent_tree::CLASS, "Mindbender" );
   // Row 9
   talents.tithe_evasion = find_talent_spell( talent_tree::CLASS, "Tithe Evasion" );
   talents.rabid_shadows = find_talent_spell( talent_tree::CLASS, "Rabid Shadows" );
@@ -2611,12 +2622,14 @@ void priest_t::create_buffs()
                             ->set_trigger_spell( talents.twist_of_fate.spell() )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  buffs.masochism = make_buff<buffs::masochism_t>( *this );
-
+  buffs.masochism     = make_buff<buffs::masochism_t>( *this );
   buffs.puppet_master = make_buff<stat_buff_t>( this, "puppet_master", talents.puppet_master.spell() )
                             ->add_stat( STAT_MASTERY_RATING, talents.puppet_master->effectN( 1 ).base_value() )
                             ->add_invalidate( CACHE_MASTERY )
                             ->set_max_stack( 5 );
+  // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
+  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
+                                ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
@@ -2633,8 +2646,8 @@ void priest_t::create_buffs()
   buffs.boon_of_the_ascended = make_buff<buffs::boon_of_the_ascended_t>( *this );
 
   // Conduit Buffs
-  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 337661 ) )
-                                ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
+  buffs.translucent_image_conduit = make_buff( this, "translucent_image_conduit", find_spell( 337661 ) )
+                                        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
 
   create_buffs_shadow();
   create_buffs_discipline();
@@ -2894,7 +2907,35 @@ void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
   if ( !legendary.eternal_call_to_the_void->ok() )
     return;
 
+  // To prevent conflict dont spawn ECttV tendrils when also using the talent
+  if ( talents.shadow.idol_of_cthun.enabled() )
+    return;
+
   if ( rppm.eternal_call_to_the_void->trigger() )
+  {
+    if ( action_id == mind_flay_id )
+    {
+      procs.void_tendril_ecttv->occur();
+      auto spawned_pets = pets.void_tendril.spawn();
+    }
+    else if ( action_id == mind_sear_id )
+    {
+      procs.void_lasher_ecttv->occur();
+      auto spawned_pets = pets.void_lasher.spawn();
+    }
+  }
+}
+
+// Idol of C'Thun Talent Trigger
+void priest_t::trigger_idol_of_cthun( action_state_t* s )
+{
+  auto mind_sear_id = talents.shadow.mind_sear.spell()->effectN( 1 ).trigger()->id();
+  auto mind_flay_id = talents.shadow.mind_flay.spell()->id();
+  auto action_id    = s->action->id;
+  if ( !talents.shadow.idol_of_cthun.enabled() )
+    return;
+
+  if ( rppm.idol_of_cthun->trigger() )
   {
     if ( action_id == mind_flay_id )
     {

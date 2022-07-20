@@ -1649,6 +1649,13 @@ static std::string trait_data_to_str( const dbc_t&                            db
       nibbles.emplace_back( fmt::format( "name=\"{}\"", trait->name ) );
     }
 
+    if ( trait->id_override_spell > 0 )
+    {
+      const auto override_spell = dbc.spell( trait->id_override_spell );
+      nibbles.emplace_back( fmt::format( "override=\"{}\" (id={})",
+            override_spell->name_cstr(), trait->id_override_spell ) );
+    }
+
     spec_idx = 0U;
     std::vector<std::string> spec_strs;
     while ( trait->id_spec[ spec_idx ] != 0 && spec_idx < trait->id_spec.size() )

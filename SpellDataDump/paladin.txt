@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44649 dragonflight-BETA (hotfix 2022-07-19/44649)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-20/44707)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -912,7 +912,6 @@ Name             : Crusader Aura (id=32223) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 21
 GCD              : 1.5 seconds
 Duration         : Aura (infinite)
 Affecting spells : Aura Mastery (31821 effect#2)

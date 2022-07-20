@@ -10020,6 +10020,26 @@ void player_t::replace_spells()
         }
     } );
   }
+
+  for ( const auto& talent : player_traits )
+  {
+    if ( std::get<2>( talent ) == 0U )
+    {
+      continue;
+    }
+
+    auto talent_obj = find_talent_spell( std::get<1>( talent ) );
+    if ( !talent_obj.ok() )
+    {
+      continue;
+    }
+
+    if ( talent_obj.trait()->id_override_spell )
+    {
+      dbc->replace_id( talent_obj.trait()->id_override_spell,
+          talent_obj.trait()->id_spell );
+    }
+  }
 }
 
 /**

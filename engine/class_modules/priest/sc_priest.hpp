@@ -35,6 +35,7 @@ struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
 struct echoing_void_t;
+struct idol_of_cthun_t;
 }  // namespace actions::spells
 
 /**
@@ -124,6 +125,7 @@ public:
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
+    propagate_const<buff_t*> translucent_image_conduit;
     propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> vampiric_insight;
@@ -178,6 +180,7 @@ public:
     // Row 7
     player_talent_t puppet_master;
     // Row 8
+    player_talent_t translucent_image;
     player_talent_t mindbender;
     // Row 9
     player_talent_t tithe_evasion;
@@ -239,9 +242,9 @@ public:
       // Row 10
       player_talent_t idol_of_yshaarj;
       player_talent_t idol_of_nzoth;
+      player_talent_t void_apparitions;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_yoggsaron;
-
     } shadow;
 
     // Shared
@@ -349,6 +352,7 @@ public:
   struct realppm_t
   {
     propagate_const<real_ppm_t*> eternal_call_to_the_void;
+    propagate_const<real_ppm_t*> idol_of_cthun;
   } rppm;
 
   // Gains
@@ -368,6 +372,8 @@ public:
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> insanity_throes_of_pain;
+    propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
+    propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
   } gains;
 
   // Benefits
@@ -391,6 +397,8 @@ public:
     propagate_const<proc_t*> mind_devourer;
     propagate_const<proc_t*> void_tendril;
     propagate_const<proc_t*> void_lasher;
+    propagate_const<proc_t*> void_tendril_ecttv;
+    propagate_const<proc_t*> void_lasher_ecttv;
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
     propagate_const<proc_t*> dark_thoughts_devouring_plague;
@@ -419,6 +427,7 @@ public:
     propagate_const<actions::spells::wrathful_faerie_t*> wrathful_faerie;
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
+    propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
   } background_actions;
 
   // Items
@@ -630,6 +639,7 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
+  void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );

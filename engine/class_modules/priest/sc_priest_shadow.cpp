@@ -47,6 +47,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().trigger_eternal_call_to_the_void( s );
+    priest().trigger_idol_of_cthun( s );
 
     trigger_dark_thoughts( s->target, priest().procs.dark_thoughts_sear, s );
 
@@ -139,6 +140,7 @@ struct mind_flay_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
+    priest().trigger_idol_of_cthun( d->state );
     trigger_dark_thoughts( d->target, priest().procs.dark_thoughts_flay, d->state );
     trigger_mind_flay_dissonant_echoes();
     trigger_mind_flay_void_touched();
@@ -325,15 +327,42 @@ struct vampiric_embrace_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Void Apparition
+// ==========================================================================
+struct void_apparition_damage_t final : public priest_spell_t
+{
+  void_apparition_damage_t( priest_t& p )
+    : priest_spell_t( "void_apparition", p, p.talents.shadow.void_apparitions.spell() )
+  {
+    background = true;
+    proc       = false;
+    callbacks  = false;
+    may_miss   = false;
+    may_crit   = false;
+  }
+
+  void trigger( double original_amount )
+  {
+    if ( !priest().talents.shadow.void_apparitions.enabled() )
+      return;
+
+    base_dd_min = base_dd_max = ( original_amount * data().effectN( 2 ).percent() );
+    execute();
+  }
+};
+
+// ==========================================================================
 // Shadowy Apparition
 // ==========================================================================
 struct shadowy_apparition_damage_t final : public priest_spell_t
 {
   double insanity_gain;
+  propagate_const<void_apparition_damage_t*> void_apparition_damage;
 
   shadowy_apparition_damage_t( priest_t& p )
     : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
-      insanity_gain( priest().talents.shadow.auspicious_spirits.spell()->effectN( 2 ).percent() )
+      insanity_gain( priest().talents.shadow.auspicious_spirits.spell()->effectN( 2 ).percent() ),
+      void_apparition_damage( nullptr )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -347,6 +376,12 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().conduits.haunting_apparitions->ok() )
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.haunting_apparitions.percent() );
+    }
+
+    if ( priest().talents.shadow.void_apparitions.enabled() )
+    {
+      void_apparition_damage = new void_apparition_damage_t( priest() );
+      add_child( void_apparition_damage );
     }
   }
 
@@ -362,6 +397,14 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().talents.shadow.idol_of_yoggsaron.enabled() )
     {
       priest().buffs.idol_of_yoggsaron->trigger();
+    }
+
+    if ( result_is_hit( s->result ) && priest().talents.shadow.void_apparitions.enabled() )
+    {
+      if ( rng().roll( priest().talents.shadow.void_apparitions->effectN( 1 ).percent() ) )
+      {
+        void_apparition_damage->trigger( s->result_amount );
+      }
     }
   }
 };
@@ -1313,7 +1356,18 @@ struct eternal_call_to_the_void_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Void Torrent
+// Idol of C'Thun (Talent)
+// ==========================================================================
+struct idol_of_cthun_t final : public priest_spell_t
+{
+  idol_of_cthun_t( priest_t& p ) : priest_spell_t( "idol_of_cthun", p, p.talents.shadow.idol_of_cthun.spell() )
+  {
+    background = true;
+  }
+};
+
+// ==========================================================================
+// Void Torrent (Talent)
 // ==========================================================================
 struct void_torrent_t final : public priest_spell_t
 {
@@ -1375,7 +1429,7 @@ struct psychic_link_t final : public priest_spell_t
 
   void trigger( player_t* target, double original_amount )
   {
-    base_dd_min = base_dd_max = ( original_amount * priest().talents.shadow.psychic_link->effectN( 1 ).percent() );
+    base_dd_min = base_dd_max = ( original_amount * data().effectN( 1 ).percent() );
     player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
 
     set_target( target );
@@ -1911,6 +1965,7 @@ void priest_t::create_buffs_shadow()
 void priest_t::init_rng_shadow()
 {
   rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
+  rppm.idol_of_cthun            = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun.spell() );
 }
 
 void priest_t::init_spells_shadow()
@@ -1963,7 +2018,9 @@ void priest_t::init_spells_shadow()
 
   talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
   talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
+  talents.shadow.void_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Void Apparitions" );
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
+  talents.shadow.idol_of_cthun     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
 
   // Talents
   // T15
@@ -1989,7 +2046,6 @@ void priest_t::init_spells_shadow()
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
-  specs.painbreaker_psalm_insanity = find_spell( 336167 );
 }
 
 action_t* priest_t::create_action_shadow( util::string_view name, util::string_view options_str )
@@ -2102,9 +2158,15 @@ void priest_t::init_background_actions_shadow()
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
 
+  // TODO: does this stack in pre-patch?
   if ( legendary.eternal_call_to_the_void->ok() )
   {
     background_actions.eternal_call_to_the_void = new actions::spells::eternal_call_to_the_void_t( *this );
+  }
+
+  if ( talents.shadow.idol_of_cthun.enabled() )
+  {
+    background_actions.idol_of_cthun = new actions::spells::idol_of_cthun_t( *this );
   }
 
   background_actions.shadow_weaving = new actions::spells::shadow_weaving_t( *this );
