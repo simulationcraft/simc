@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-20/44707)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -3064,7 +3064,7 @@ Description      : Your Earth, Fire, and Storm Elementals are drawn from primal 
 
 Name             : Elemental Blast (id=117014) [Spell Family (11)] 
 Talent Entry     : Enhancement [tree=spec, entry_id=32511, max_rank=1]
-                 : Elemental [tree=spec, entry_id=32535, max_rank=1]
+                 : Elemental [tree=spec, entry_id=32535, max_rank=1, override="Earth Shock" (id=8042)]
 Class            : Shaman
 School           : Elemental
 Spell Type       : Magic
