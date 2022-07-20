@@ -1063,7 +1063,6 @@ public:
 
     // Frost
     item_runeforge_t absolute_zero;               // 6946
-    item_runeforge_t biting_cold;                 // 6945
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
@@ -3315,7 +3314,7 @@ void death_knight_melee_attack_t::execute()
        p() -> cooldown.icecap_icd -> is_ready() && execute_state -> result == RESULT_CRIT )
   {
     p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
-      - p() -> talent.frost.icecap.spell() -> effectN( 1 ).base_value() / 10.0 ) );
+      - p() -> talent.frost.icecap -> effectN( 1 ).base_value() / 10.0 ) );
 
     p() -> cooldown.icecap_icd -> start();
   }
@@ -6250,7 +6249,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     death_knight_melee_attack_t::execute();
 
-    // KM Rank 2 - revert school after the hit
+    // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
   }
 };
@@ -6423,7 +6422,7 @@ struct pillar_of_frost_buff_t : public buff_t
     buff_t( p, "pillar_of_frost", p -> talent.frost.pillar_of_frost.spell() )
   {
     cooldown -> duration = 0_ms;
-    set_default_value( p -> talent.frost.pillar_of_frost.spell() -> effectN( 1 ).percent() );
+    set_default_value( p -> talent.frost.pillar_of_frost -> effectN( 1 ).percent() );
     add_invalidate( CACHE_STRENGTH );
   }
 
@@ -6534,10 +6533,10 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       base_multiplier *= 0.98;
     }
 
-    if ( p -> legendary.biting_cold.ok() )
+    if ( p -> talent.frost.biting_cold.ok() )
     {
-      biting_cold_target_threshold = p -> legendary.biting_cold->effectN ( 1 ).base_value();
-      base_multiplier *= 1.0 + p -> legendary.biting_cold->effectN( 2 ).percent();
+      biting_cold_target_threshold = p -> talent.frost.biting_cold -> effectN ( 1 ).base_value();
+      base_multiplier *= 1.0 + p -> talent.frost.biting_cold -> effectN( 2 ).percent();
     }
   }
 
@@ -6564,7 +6563,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! triggered_biting_cold )
+    if ( state -> n_targets >= biting_cold_target_threshold && p() -> talent.frost.biting_cold.ok() && ! triggered_biting_cold )
     {
       p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       triggered_biting_cold = true;
@@ -8295,11 +8294,11 @@ void death_knight_t::start_cold_heart()
   // Cold Heart keeps ticking out of combat and when it's at max stacks
   // We solve that by picking a random point at which the buff starts ticking
   timespan_t first = timespan_t::from_millis(
-    rng().range( 0, as<int>( talent.frost.cold_heart.spell() -> effectN( 1 ).period().total_millis() ) ) );
+    rng().range( 0, as<int>( talent.frost.cold_heart -> effectN( 1 ).period().total_millis() ) ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.cold_heart -> trigger();
-    make_repeating_event( *sim, talent.frost.cold_heart.spell() -> effectN( 1 ).period(), [ this ]() {
+    make_repeating_event( *sim, talent.frost.cold_heart -> effectN( 1 ).period(), [ this ]() {
       buffs.cold_heart -> trigger();
     } );
   } );
@@ -9004,7 +9003,7 @@ void death_knight_t::init_spells()
   talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
   talent.frost.frostscythe = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   // Row 9
-  talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Blooded Rage" );
+  talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, 377083 );  // Lookup function is failing for this one, falling back to spellid
   talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrms Fury" );
   talent.frost.invigorating_freeze = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Freeze" );
   // Row 10
@@ -9171,7 +9170,6 @@ void death_knight_t::init_spells()
 
   // Frost
   legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
-  legendary.biting_cold                 = find_runeforge_legendary( "Biting Cold" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
 
@@ -9360,7 +9358,7 @@ void death_knight_t::create_buffs()
   // Frost
   buffs.breath_of_sindragosa = new breath_of_sindragosa_buff_t( this );
 
-  buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart.spell() -> effectN( 1 ).trigger() );
+  buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart -> effectN( 1 ).trigger() );
 
   buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
 
@@ -9378,7 +9376,7 @@ void death_knight_t::create_buffs()
 
   buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) );
 
-  buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine.spell() -> effectN( 1 ).trigger() )
+  buffs.killing_machine = make_buff( this, "killing_machine", talent.frost.killing_machine -> effectN( 1 ).trigger() )
         -> set_chance( 1.0 )
         -> set_default_value_from_effect( 1 );
 
@@ -9387,7 +9385,7 @@ void death_knight_t::create_buffs()
 
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
-  buffs.rime = make_buff( this, "rime", talent.frost.rime.spell() -> effectN( 1 ).trigger() )
+  buffs.rime = make_buff( this, "rime", talent.frost.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.frost.rime.spell() )
         -> set_chance( talent.frost.rime.spell() -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
 
