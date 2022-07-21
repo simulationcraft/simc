@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-20/44707)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-21/44707)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane

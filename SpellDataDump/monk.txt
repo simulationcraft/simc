@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-20/44707)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-21/44707)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -93,7 +93,7 @@ Effects          :
 Tooltip          : Damage increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, entry_id=33406, max_rank=1]
+Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=33406, max_rank=1]
 Class            : Hunter, Monk
 School           : Nature
 Spell Type       : None
