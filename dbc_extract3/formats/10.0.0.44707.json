@@ -512,6 +512,17 @@
       { "data_type": "B", "field": "index",   "formats": { "cpp": "%2u" } }
     ]
   },
+  "ItemBonusListGroupEntry": {
+    "fields": [
+      { "data_type": "B", "field": "id_item_bonus_list_group"  },
+      { "data_type": "H", "field": "id_item_bonus_list"        },
+      { "data_type": "H", "field": "id_item_level_selector"    },
+      { "data_type": "H", "field": "sequence_value"            },
+      { "data_type": "i", "field": "id_item_extended_cost"     },
+      { "data_type": "i", "field": "id_player_condition"       },
+      { "data_type": "B", "field": "flags"                     }
+    ]
+  },
   "ItemBonusTreeNode": {
     "fields": [
       { "data_type": "B", "field": "index",    "formats": { "cpp": "%2u" } },
@@ -578,6 +589,13 @@
       { "data_type": "H", "field": "item_count", "elements": 5 },
       { "data_type": "H", "field": "id_currency", "elements": 5 },
       { "data_type": "i", "field": "currency_count", "elements": 5 }
+    ]
+  },
+  "ItemLevelSelector": {
+    "fields": [
+      { "data_type": "i", "field": "min_item_level" },
+      { "data_type": "i", "field": "id_item_level_selector_quality_set" },
+      { "data_type": "i", "field": "id_azerite_unlock_mapping_set" }
     ]
   },
   "ItemLimitCategory": {
