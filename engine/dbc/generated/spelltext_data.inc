@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44707
-static const std::array<spelltext_data_t, 17176> __spelltext_data { {
+static const std::array<spelltext_data_t, 17178> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16159,6 +16159,7 @@ static const std::array<spelltext_data_t, 17176> __spelltext_data { {
   { 370553, "Compress time to make your next empowered spell cast instantly at its maximum empower level.", "Your next empowered spell casts instantly at its maximum empower level.", "Bronze" },
   { 370586, "While in Bear From, you deal $370588s1% increased Arcane damage, and are healed for $s1% of all Arcane damage done.", 0, 0 },
   { 370588, "$@spelldesc370586", 0, 0 },
+  { 370602, "$@spelldesc370586", 0, 0 },
   { 370607, "Restores $s1 mana.", 0, 0 },
   { 370626, "$@spelldesc28880", "Healing $/5;s2% every $t1 seconds.", "Racial" },
   { 370652, "Remaining stationary will increase your $pri up to $s1 over 5 sec. Movement consumes the effect, granting up to $s2 Speed for $370773d.\r\n\r\nLasts $d and through death. Consuming a second will add another $d.", "$pri is increased by up to $w1 while stationary. Movement consumes the effect, granting up to $w2 Speed for $370773d.", 0 },
@@ -16302,6 +16303,7 @@ static const std::array<spelltext_data_t, 17176> __spelltext_data { {
   { 372362, "$@spelldesc372358", 0, 0 },
   { 372370, "Divine Hymn heals for $s1% more. Stacks of Divine Hymn increase healing received by an additional $s2%.", 0, 0 },
   { 372469, "Store $s1% of your effective healing, up to $<cap>. Your next damaging Living Flame consumes all stored healing to increase its damage dealt.", 0, 0 },
+  { 372505, "Thrash and Maul grant you an absorb shield for 75% of all damage they deal.", "Absorbing $w1 damage.", 0 },
   { 372527, "Echo replicates $s1% additional healing.", 0, 0 },
   { 372528, "Has a very low chance to cause $378994s1 physical damage upon being struck by a melee attack. Additional pieces of gear with this optional reagent increase the proc chance. Can only be applied to crafted armor.", 0, 0 },
   { 372530, "Your cooldowns are refreshed and movement speed increased by $s1% after defeating a dungeon or raid boss that would grant experience or honor.", 0, 0 },
