@@ -30,6 +30,7 @@ private:
   const spell_data_t* mind_sear_spell;
   const spell_data_t* void_torrent_spell;
   timespan_t your_shadow_duration;
+  timespan_t your_shadow_duration_tier;
   bool only_cwc;
   bool T28_4PC;
 
@@ -46,6 +47,7 @@ public:
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
+    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
@@ -72,8 +74,9 @@ public:
       cooldown->duration += p.talents.improved_mind_blast->effectN( 1 ).time_value();
     }
 
-    your_shadow_duration = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
-    T28_4PC              = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
+    your_shadow_duration_tier = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
+    T28_4PC                   = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
+    your_shadow_duration      = p.talents.shadow.living_shadow_duration->duration();
   }
 
   void reset() override
@@ -192,19 +195,20 @@ public:
       priest().buffs.dark_thought->decrement();
       if ( T28_4PC )
       {
-        priest().procs.living_shadow->occur();
+        priest().procs.living_shadow_tier->occur();
 
-        auto pet = priest().pets.your_shadow.active_pet();
+        auto pet = priest().pets.your_shadow_tier.active_pet();
 
         if ( pet )
         {
-          pet->adjust_duration( your_shadow_duration );
+          pet->adjust_duration( your_shadow_duration_tier );
         }
         else if ( priest().t28_4pc_summon_event )
         {
-          timespan_t new_duration = priest().t28_4pc_summon_duration + your_shadow_duration;
+          timespan_t new_duration = priest().t28_4pc_summon_duration + your_shadow_duration_tier;
           sim->print_debug( "{} extends future your_shadow by {} seconds for a new total of {}. Spawns in {} seconds.",
-                            priest(), your_shadow_duration, new_duration, priest().t28_4pc_summon_event->remains() );
+                            priest(), your_shadow_duration_tier, new_duration,
+                            priest().t28_4pc_summon_event->remains() );
           priest().t28_4pc_summon_duration = new_duration;
         }
         else
@@ -216,7 +220,7 @@ public:
           sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by {} seconds.", priest(),
                             spawn_delay );
           // Add 1ms to ensure pet is dismissed after last dot tick.
-          priest().t28_4pc_summon_duration = your_shadow_duration + timespan_t::from_millis( 1 );
+          priest().t28_4pc_summon_duration = your_shadow_duration_tier + timespan_t::from_millis( 1 );
           priest().t28_4pc_summon_event    = make_event( *sim, timespan_t::from_seconds( spawn_delay ), [ this ] {
             priest().pets.your_shadow.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
@@ -228,6 +232,42 @@ public:
     else if ( priest().buffs.vampiric_insight->up() )
     {
       priest().buffs.vampiric_insight->decrement();
+
+      if ( priest().talents.shadow.living_shadow.enabled() )
+      {
+        priest().procs.living_shadow->occur();
+
+        auto pet = priest().pets.your_shadow.active_pet();
+
+        if ( pet )
+        {
+          pet->adjust_duration( your_shadow_duration );
+        }
+        else if ( priest().living_shadow_summon_event )
+        {
+          timespan_t new_duration = priest().living_shadow_summon_duration + your_shadow_duration;
+          sim->print_debug( "{} extends future your_shadow by {} seconds for a new total of {}. Spawns in {} seconds.",
+                            priest(), your_shadow_duration, new_duration,
+                            priest().living_shadow_summon_event->remains() );
+          priest().living_shadow_summon_duration = new_duration;
+        }
+        else
+        {
+          // There is a ~1.5s delay between consuming the Dark Thought, and the Shadow Spawning
+          // There is an additional .5s delay between the spawn and the first tick, that is also matched between
+          // channels This is intentional due to the way the pet spawns attached to the player
+          double spawn_delay = 1.5;
+          sim->print_debug( "{} consumes Dark Thought, delaying your_shadow spawn by {} seconds.", priest(),
+                            spawn_delay );
+          // Add 1ms to ensure pet is dismissed after last dot tick.
+          priest().living_shadow_summon_duration = your_shadow_duration + timespan_t::from_millis( 1 );
+          priest().living_shadow_summon_event    = make_event( *sim, timespan_t::from_seconds( spawn_delay ), [ this ] {
+            priest().pets.your_shadow.spawn( priest().living_shadow_summon_duration );
+            priest().living_shadow_summon_event    = nullptr;
+            priest().living_shadow_summon_duration = timespan_t::from_seconds( 0 );
+          } );
+        }
+      }
     }
     else
     {
@@ -2097,12 +2137,13 @@ void priest_t::create_procs()
   procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
   procs.dark_thoughts_searing_nightmare = get_proc( "Dark Thoughts proc from T28 2-set Searing Nightmare" );
   procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
-  procs.living_shadow                   = get_proc( "Living Shadow T28 4-set procs" );
+  procs.living_shadow_tier              = get_proc( "Living Shadow T28 4-set procs" );
   procs.vampiric_insight                = get_proc( "Vampiric Insight procs" );
   procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
   procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
   procs.void_touched                    = get_proc( "Void Bolt procs from Void Touched" );
   procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
+  procs.living_shadow                   = get_proc( "Living Shadow procs" );
 }
 
 /** Construct priest benefits */

@@ -135,6 +135,7 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> yshaarj_pride;
+    propagate_const<buff_t*> living_shadow;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -151,7 +152,7 @@ public:
     propagate_const<buff_t*> boon_of_the_ascended;
 
     // Tier Sets
-    propagate_const<buff_t*> living_shadow;
+    propagate_const<buff_t*> living_shadow_tier;
   } buffs;
 
   // Talents
@@ -250,6 +251,7 @@ public:
       player_talent_t idol_of_nzoth;
       player_talent_t void_apparitions;
       player_talent_t living_shadow;
+      const spell_data_t* living_shadow_duration;
       player_talent_t eidolic_intuition;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_yoggsaron;
@@ -403,13 +405,13 @@ public:
     propagate_const<proc_t*> dark_thoughts_devouring_plague;
     propagate_const<proc_t*> dark_thoughts_searing_nightmare;
     propagate_const<proc_t*> dark_thoughts_missed;
-    propagate_const<proc_t*> living_shadow;
+    propagate_const<proc_t*> living_shadow_tier;
     propagate_const<proc_t*> vampiric_insight;
     propagate_const<proc_t*> vampiric_insight_overflow;
     propagate_const<proc_t*> vampiric_insight_missed;
     propagate_const<proc_t*> void_touched;
     propagate_const<proc_t*> thing_from_beyond;
-
+    propagate_const<proc_t*> living_shadow;
   } procs;
 
   // Special
@@ -444,6 +446,7 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
     spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
+    spawner::pet_spawner_t<pet_t, priest_t> your_shadow_tier;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
     priest_pets_t( priest_t& p );
@@ -558,6 +561,15 @@ public:
     const spell_data_t* boon_of_the_ascended;
   } covenant;
 
+  enum living_shadow_action
+  {
+    SHADOW_SPIKE,         // Single Target
+    SHADOW_SPIKE_VOLLEY,  // Single Target Channel
+    SHADOW_SEAR,          // AoE Channel
+    SHADOW_NOVA,          // AoE
+    NONE                  // Does Nothing
+  };
+
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
   // player_t overrides
@@ -637,6 +649,7 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
+  void trigger_living_shadow_action( player_t* target, living_shadow_action action );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
@@ -657,6 +670,8 @@ public:
   void trigger_unholy_transfusion_healing();
   event_t* t28_4pc_summon_event;
   timespan_t t28_4pc_summon_duration;
+  event_t* living_shadow_summon_event;
+  timespan_t living_shadow_summon_duration;
 
   std::string default_potion() const override;
   std::string default_flask() const override;
@@ -922,9 +937,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
+  priestspace::priest_t::living_shadow_action living_shadow_action;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
+    : base_t( name, player, s ),
+      affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
+      living_shadow_action( priestspace::priest_t::living_shadow_action::NONE )
   {
     weapon_multiplier = 0.0;
   }
@@ -965,6 +984,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double save_health_percentage = s->target->health_percentage();
 
     base_t::impact( s );
+
+    // TODO: maybe better in execute?
+    if ( living_shadow_action != priest_t::living_shadow_action::NONE )
+    {
+      priest().trigger_living_shadow_action( s->target, living_shadow_action );
+    }
+    else
+    {
+      sim->print_debug( "{} casts action not replicated by Living Shadow: {}.", priest(), s->action->name_str );
+    }
+    
 
     if ( result_is_hit( s->result ) )
     {

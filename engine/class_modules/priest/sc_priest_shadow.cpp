@@ -77,6 +77,7 @@ struct mind_sear_t final : public priest_spell_t
     tick_zero           = false;
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
+    living_shadow_action = priest_t::living_shadow_action::SHADOW_SEAR;
 
     if ( priest().specialization() == PRIEST_SHADOW )
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
@@ -103,6 +104,8 @@ struct mind_flay_t final : public priest_spell_t
     energize_amount *= 1 + p.talents.shadow.fortress_of_the_mind->effectN( 1 ).percent();
 
     spell_power_mod.tick *= 1.0 + p.talents.shadow.fortress_of_the_mind->effectN( 3 ).percent();
+
+    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE_VOLLEY;
   }
 
   void trigger_mind_flay_dissonant_echoes()
@@ -476,6 +479,12 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       base_td_multiplier *= ( 1 + priest().talents.throes_of_pain->effectN( 1 ).percent() );
     }
+
+    // Only get this when casting, Misery does not proc an extra hit
+    if ( casted )
+    {
+      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+    }
   }
 
   shadow_word_pain_t( priest_t& p, util::string_view options_str ) : shadow_word_pain_t( p, true )
@@ -707,6 +716,13 @@ struct vampiric_touch_t final : public priest_spell_t
       child_ud = new unfurling_darkness_t( priest() );
       add_child( child_ud );
     }
+
+    // BUG: Damnation casted Vampiric Touch does not generate a Living Shadow action
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/908
+    if ( casted )
+    {
+      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+    }
   }
 
   vampiric_touch_t( priest_t& p, util::string_view options_str ) : vampiric_touch_t( p, true )
@@ -894,6 +910,13 @@ struct devouring_plague_t final : public priest_spell_t
     casted                     = _casted;
     may_crit                   = true;
     affected_by_shadow_weaving = true;
+
+    // BUG: Damnation casted Devouring Plague does not generate a Living Shadow action
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/908
+    if ( casted )
+    {
+      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+    }
   }
 
   devouring_plague_t( priest_t& p, util::string_view options_str ) : devouring_plague_t( p, true )
@@ -1107,6 +1130,8 @@ struct void_bolt_t final : public priest_spell_t
     energize_type              = action_energize::ON_CAST;
     cooldown->hasted           = true;
     affected_by_shadow_weaving = true;
+
+    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
 
     auto rank2 = p.find_rank_spell( "Void Bolt", "Rank 2" );
     if ( rank2->ok() )
@@ -1520,6 +1545,8 @@ struct searing_nightmare_t final : public priest_spell_t
     radius                     = data().effectN( 2 ).radius_max();
     usable_while_casting       = use_while_casting;
     affected_by_shadow_weaving = true;
+    
+    living_shadow_action = priest_t::living_shadow_action::SHADOW_NOVA;
   }
 
   bool ready() override
@@ -1958,6 +1985,8 @@ void priest_t::create_buffs_shadow()
   buffs.yshaarj_pride =
       make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
 
+  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 373384 ) )->set_duration( timespan_t::zero() );
+
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 
@@ -1966,7 +1995,7 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow = make_buff( this, "living_shadow", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
+  buffs.living_shadow_tier = make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
 }
 
 void priest_t::init_rng_shadow()
@@ -2031,13 +2060,14 @@ void priest_t::init_spells_shadow()
   talents.shadow.rot_and_wither      = find_talent_spell( talent_tree::SPECIALIZATION, "Rot and Wither" );
   talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
   // Row 10
-  talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
-  talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
-  talents.shadow.void_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Void Apparitions" );
-  talents.shadow.living_shadow     = find_talent_spell( talent_tree::SPECIALIZATION, "Living Shadow" );
-  talents.shadow.eidolic_intuition = find_talent_spell( talent_tree::SPECIALIZATION, "Eidolic Intuition" );
-  talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
-  talents.shadow.idol_of_cthun     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
+  talents.shadow.idol_of_yshaarj        = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
+  talents.shadow.idol_of_nzoth          = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
+  talents.shadow.void_apparitions       = find_talent_spell( talent_tree::SPECIALIZATION, "Void Apparitions" );
+  talents.shadow.living_shadow          = find_talent_spell( talent_tree::SPECIALIZATION, "Living Shadow" );
+  talents.shadow.living_shadow_duration = find_spell( 373384 );
+  talents.shadow.eidolic_intuition      = find_talent_spell( talent_tree::SPECIALIZATION, "Eidolic Intuition" );
+  talents.shadow.idol_of_yoggsaron      = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
+  talents.shadow.idol_of_cthun          = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
 
   // Talents
   // T25

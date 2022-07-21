@@ -753,9 +753,9 @@ action_t* priest_pallid_command_t::create_action( util::string_view name, util::
 // ==========================================================================
 // Living Shadow T28 4-set (Your Shadow)
 // ==========================================================================
-struct your_shadow_t final : public priest_pet_t
+struct your_shadow_tier_t final : public priest_pet_t
 {
-  your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
+  your_shadow_tier_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow_tier", true )
   {
   }
 
@@ -772,14 +772,14 @@ struct your_shadow_t final : public priest_pet_t
   {
     pet_t::arise();
 
-    o().buffs.living_shadow->trigger();
+    o().buffs.living_shadow_tier->trigger();
   }
 
   virtual void demise() override
   {
     pet_t::demise();
 
-    o().buffs.living_shadow->expire();
+    o().buffs.living_shadow_tier->expire();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -787,7 +787,7 @@ struct your_shadow_t final : public priest_pet_t
 
 struct your_shadow_torment_mind_tick_t final : public priest_pet_spell_t
 {
-  your_shadow_torment_mind_tick_t( your_shadow_t& p, const spell_data_t* s )
+  your_shadow_torment_mind_tick_t( your_shadow_tier_t& p, const spell_data_t* s )
     : priest_pet_spell_t( "torment_mind_tick", p, s )
   {
     background                 = true;
@@ -810,7 +810,7 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
 {
   const spell_data_t* torment_mind_tick_spell;
 
-  your_shadow_torment_mind_t( your_shadow_t& p, util::string_view options )
+  your_shadow_torment_mind_t( your_shadow_tier_t& p, util::string_view options )
     : priest_pet_spell_t( "torment_mind", p, p.o().find_spell( 363656 ) ),
       torment_mind_tick_spell( p.o().find_spell( 366971 ) )
   {
@@ -843,13 +843,101 @@ struct your_shadow_torment_mind_t final : public priest_pet_spell_t
   }
 };
 
-action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
+action_t* your_shadow_tier_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "torment_mind" )
   {
     return new your_shadow_torment_mind_t( *this, options_str );
   }
 
+  return priest_pet_t::create_action( name, options_str );
+}
+
+// ==========================================================================
+// Living Shadow Actions
+// ==========================================================================
+struct shadow_spike_t final : public priest_pet_spell_t
+{
+  shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+  }
+};
+
+struct shadow_spike_volley_t final : public priest_pet_spell_t
+{
+  shadow_spike_volley_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike_volley", p, p.o().find_spell( 376891 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+  }
+};
+
+struct shadow_sear_t final : public priest_pet_spell_t
+{
+  shadow_sear_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_sear", p, p.o().find_spell( 373387 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+  }
+};
+
+struct shadow_nova_t final : public priest_pet_spell_t
+{
+  shadow_nova_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_nova", p, p.o().find_spell( 376915 ) )
+  {
+    background                 = true;
+    affected_by_shadow_weaving = true;
+  }
+};
+
+// ==========================================================================
+// Living Shadow (Your Shadow)
+// ==========================================================================
+struct your_shadow_t final : public priest_pet_t
+{
+  your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
+  {
+  }
+
+  // Your Shadow should sit there and do nothing until you cast a spell for it to mimic
+  void init_action_list() override
+  {
+    priest_pet_t::init_action_list();
+
+    action_priority_list_t* def = get_action_priority_list( "default" );
+  }
+
+  // void init_background_actions()
+  // {
+  //   priest_pet_t::init_background_actions();
+
+  //   shadow_spike        = new actions::shadow_spike_t( *this );
+  //   shadow_spike_volley = new actions::shadow_spike_volley_t( *this );
+  //   shadow_sear         = new actions::shadow_sear_t( *this );
+  // }
+
+  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
+  virtual void arise() override
+  {
+    pet_t::arise();
+
+    o().buffs.living_shadow->trigger();
+  }
+
+  virtual void demise() override
+  {
+    pet_t::demise();
+
+    o().buffs.living_shadow->expire();
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override;
+};
+
+action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
+{
   return priest_pet_t::create_action( name, options_str );
 }
 
@@ -997,7 +1085,8 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     }
     else
     {
-      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear, s->action );
+      p().o().generate_insanity( void_lasher_insanity_gain, p().o().gains.insanity_eternal_call_to_the_void_mind_sear,
+                                 s->action );
     }
   }
 };
@@ -1155,6 +1244,43 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   }
 }
 
+void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_action action )
+{
+  auto pet = pets.your_shadow.active_pet();
+
+  // if ( pet )
+  // {
+  //   switch ( action )
+  //   {
+  //     case living_shadow_action::SHADOW_SPIKE:
+  //       assert( pet->shadow_spike );
+  //       pet->shadow_spike->set_target( target );
+  //       pet->shadow_spike->execute();
+  //       break;
+  //     case living_shadow_action::SHADOW_SPIKE_VOLLEY:
+  //       assert( pet->shadow_spike_volley );
+  //       pet->shadow_spike_volley->set_target( target );
+  //       pets.your_shadow.shadow_spike_volley->execute();
+  //       break;
+  //     case living_shadow_action::SHADOW_SEAR:
+  //       assert( pet->shadow_sear );
+  //       pet->shadow_sear->set_target( target );
+  //       pets.your_shadow.shadow_sear->execute();
+  //       break;
+  //     case living_shadow_action::SHADOW_NOVA:
+  //       assert( pet->shadow_nova );
+  //       pet->shadow_nova->set_target( target );
+  //       pets.your_shadow.shadow_nova->execute();
+  //       break;
+  //     case living_shadow_action::NONE:
+  //     default:
+  //       break;
+  //   }
+  // }
+
+  return;
+}
+
 std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expression_str,
                                                          util::span<util::string_view> splits )
 {
@@ -1237,6 +1363,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
+    your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
@@ -1256,7 +1383,12 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   // Add 1ms to ensure pet is dismissed after last dot tick.
   // Note: this is overriden in mind_blast_t when spawning the pet
   auto your_shadow_spell = p.find_spell( 363469 );
-  your_shadow.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
+  your_shadow_tier.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
+                                         timespan_t::from_millis( 1 ) );
+
+  // Add 1ms to ensure pet is dismissed after last dot tick.
+  // Note: this is overriden in mind_blast_t when spawning the pet
+  your_shadow.set_default_duration( p.talents.shadow.living_shadow_duration->duration() +
                                     timespan_t::from_millis( 1 ) );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
