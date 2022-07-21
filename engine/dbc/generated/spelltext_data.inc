@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44707
-static const std::array<spelltext_data_t, 17171> __spelltext_data { {
+static const std::array<spelltext_data_t, 17176> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16371,6 +16371,8 @@ static const std::array<spelltext_data_t, 17171> __spelltext_data { {
   { 373375, "$@spelldesc373372", "You may cast Void Bolt.", 0 },
   { 373381, "Consuming Vampiric Insight causes your shadow to animate after a moment. For $373384d, whenever you cast a spell, your shadow will cast a similar spell.", 0, 0 },
   { 373384, "$@spelldesc373381", "Your shadow is animated.", 0 },
+  { 373386, "Sear the target and nearby enemies, dealing $373387s2 Shadow damage every $t1 sec.", "Taking Shadow damage every $t1 sec.", 0 },
+  { 373387, "$@spelldesc373386", "Causing shadow damage to all targets within $a2 yards.", 0 },
   { 373426, "Your $?s382109[Mindbender][Shadowfiend]'s attack speed is increased by $s1%.", 0, 0 },
   { 373427, "Mind Blast and Shadow Word: Death cause your $?s123040|s200174[Mindbender][Shadowfiend] to teleport behind your target, slashing up to $s2 nearby enemies for $?s200174[${.442*$344748s1}][${.408*$344748s1}] Shadowflame damage. Each time a rift is triggered, the duration of $?s123040|s200174[Mindbender][Shadowfiend] is increased by ${$s3}.1 sec.", 0, 0 },
   { 373442, "$@spelldesc373427", 0, 0 },
@@ -16544,8 +16546,11 @@ static const std::array<spelltext_data_t, 17171> __spelltext_data { {
   { 376888, "During Deep Breath and Dragonrage you gain the maximum benefit of Mastery: Giantkiller regardless of targets' health.", 0, 0 },
   { 376889, "Red spells deal $s1% more damage and healing.", 0, 0 },
   { 376890, "Blue spells deal $s1% more damage.", 0, 0 },
+  { 376891, "$@spelldesc373386", "Causing shadow damage to all targets within $a2 yards.", 0 },
   { 376905, "Frost Strike increases your Strength by $s1% for $376907d, stacks up to $338501u times.", 0, 0 },
   { 376907, "$@spelldesc376905", "Strength increased by $w1%.", 0 },
+  { 376914, "Blast the target with a spike of shadow magic, dealing $s1 Shadow damage.", 0, 0 },
+  { 376915, "The target's position erupts with shadow magic, dealing $s1 Shadow damage to it and nearby enemies.", 0, 0 },
   { 376930, "Your healing done and healing received are increased by $s1%.", 0, 0 },
   { 376938, "Remorseless Winter deals $s1% increased damage to enemies it hits, stacking up to $376974u times.", 0, 0 },
   { 376953, "Place an intimidating statue of a decapitated dragon onto the battlefield nearby which can be attacked by players of either faction. Once destroyed, it will drop a random battleground buff that anyone can claim.\r\n\r\nCan only be used in War Mode on the Dragon Isles and in unrated battlegrounds.", 0, 0 },

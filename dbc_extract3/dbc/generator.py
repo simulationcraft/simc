@@ -1533,6 +1533,10 @@ class SpellDataGenerator(DataGenerator):
             ( 375981, 0 ),          # Vampiric Insight talent buff
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
+            ( 376914, 5 ),          # Living Shadow Shadow Spike
+            ( 376891, 5 ),          # Living Shadow Shadow Spike Volley
+            ( 373387, 5 ),          # Living Shadow Shadow Sear
+            ( 376915, 5 ),          # Living Shadow Shadow Nova
             # Holy Priest
             ( 196809, 5 ),          # Healing Light (Divine Image legendary pet spell)
             ( 196810, 5 ),          # Dazzling Light (Divine Image legendary pet spell)
