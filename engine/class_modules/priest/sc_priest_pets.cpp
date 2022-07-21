@@ -872,6 +872,7 @@ action_t* your_shadow_tier_t::create_action( util::string_view name, util::strin
 
 // ==========================================================================
 // Living Shadow Actions
+// TODO: most of these spells need to be tweaked with proper attributes
 // ==========================================================================
 namespace actions
 {
@@ -879,7 +880,6 @@ struct shadow_spike_t final : public priest_pet_spell_t
 {
   shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
   {
-    background                 = true;
     affected_by_shadow_weaving = true;
   }
 };
@@ -888,8 +888,8 @@ struct shadow_spike_volley_t final : public priest_pet_spell_t
 {
   shadow_spike_volley_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike_volley", p, p.o().find_spell( 376891 ) )
   {
-    background                 = true;
     affected_by_shadow_weaving = true;
+    channeled                  = true;
   }
 };
 
@@ -897,8 +897,8 @@ struct shadow_sear_t final : public priest_pet_spell_t
 {
   shadow_sear_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_sear", p, p.o().find_spell( 373387 ) )
   {
-    background                 = true;
     affected_by_shadow_weaving = true;
+    channeled                  = true;
   }
 };
 
@@ -906,7 +906,6 @@ struct shadow_nova_t final : public priest_pet_spell_t
 {
   shadow_nova_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_nova", p, p.o().find_spell( 376915 ) )
   {
-    background                 = true;
     affected_by_shadow_weaving = true;
   }
 };
@@ -1410,8 +1409,7 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   // Add 1ms to ensure pet is dismissed after last dot tick.
   // Note: this is overriden in mind_blast_t when spawning the pet
   auto living_shadow_duration_spell = p.find_spell( 373384 );
-  your_shadow.set_default_duration( living_shadow_duration_spell->duration() +
-                                    timespan_t::from_millis( 1 ) );
+  your_shadow.set_default_duration( living_shadow_duration_spell->duration() + timespan_t::from_millis( 1 ) );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
