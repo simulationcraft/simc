@@ -199,22 +199,30 @@ public:
       const spell_data_t* mind_sear_insanity;
       // Row 3
       player_talent_t death_and_madness;
+      player_talent_t mind_bomb;
+      player_talent_t psychic_voice;
       player_talent_t searing_nightmare;
       player_talent_t misery;
       const spell_data_t* death_and_madness_insanity;
       player_talent_t silence;
       player_talent_t fortress_of_the_mind;
       // Row 4
+      player_talent_t vampiric_embrace;
       player_talent_t unfurling_darkness;
       player_talent_t vampiric_insight;
       player_talent_t last_word;
+      player_talent_t dispersion;
       // Row 5
+      player_talent_t sanlayn;
+      player_talent_t hallucinations;
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
       player_talent_t monomania;
       const spell_data_t* monomania_tickrate;
+      player_talent_t psychic_horror;
+      player_talent_t intangibility;
       // Row 6
       player_talent_t psychic_link;
       player_talent_t auspicious_spirits;
@@ -241,6 +249,8 @@ public:
       player_talent_t idol_of_yshaarj;
       player_talent_t idol_of_nzoth;
       player_talent_t void_apparitions;
+      player_talent_t living_shadow;
+      player_talent_t eidolic_intuition;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_yoggsaron;
     } shadow;
@@ -249,7 +259,6 @@ public:
     const spell_data_t* angelic_feather;
     const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
-    const spell_data_t* psychic_voice;
     const spell_data_t* divine_star;
     const spell_data_t* halo;
 
@@ -273,14 +282,6 @@ public:
     // // T50
     const spell_data_t* light_of_the_naaru;
     const spell_data_t* apotheosis;
-
-    // Shadow
-    // T25
-    const spell_data_t* sanlayn;
-    const spell_data_t* intangibility;  // CDR implemented, healing NYI
-    // T35
-    const spell_data_t* mind_bomb;
-    const spell_data_t* psychic_horror;
   } talents;
 
   // Specialization Spells
@@ -302,10 +303,8 @@ public:
     // Shadow
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
-    const spell_data_t* dispersion;
     const spell_data_t* shadow_priest;  // General shadow data
     const spell_data_t* shadowform;
-    const spell_data_t* vampiric_embrace;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
 
@@ -372,6 +371,8 @@ public:
     propagate_const<gain_t*> insanity_throes_of_pain;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
+    propagate_const<gain_t*> hallucinations_power_word_shield;
+    propagate_const<gain_t*> hallucinations_vampiric_embrace;
   } gains;
 
   // Benefits
@@ -923,9 +924,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
   bool ignores_automatic_mastery;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -1067,8 +1066,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
    */
   void trigger_vampiric_embrace( action_state_t* s )
   {
+    // TODO: is this additive or multiplicative?
     double amount = s->result_amount;
-    amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();  // FIXME additive or multiplicative?
+    amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();
+
+    if ( priest().talents.shadow.sanlayn.enabled() )
+    {
+      amount *= priest().talents.shadow.sanlayn->effectN( 2 ).percent();
+    }
 
     for ( player_t* ally : sim->player_no_pet_list )
     {

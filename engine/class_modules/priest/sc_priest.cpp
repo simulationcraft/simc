@@ -1576,7 +1576,7 @@ struct desperate_prayer_t final : public priest_heal_t
     harmful  = false;
     may_crit = false;
 
-    // does not seem to proc anyting other than heal specific actions
+    // does not seem to proc anything other than heal specific actions
     callbacks = false;
 
     // This is parsed as a HoT, disabling that manually
@@ -1605,7 +1605,22 @@ struct power_word_shield_t final : public priest_absorb_t
     add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
     parse_options( options_str );
 
+    // TODO: this is for sure wrong
+    // new formula in tooltip: $SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>
+    // $shadow=$?a137033[${1.00}][${1}]
+    // $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
     spell_power_mod.direct = 5.5;  // hardcoded into tooltip, last checked 2017-03-18
+  }
+
+  void execute() override
+  {
+    if ( priest().talents.shadow.hallucinations.enabled() )
+    {
+      priest().generate_insanity( priest().talents.shadow.hallucinations->effectN( 1 ).base_value() / 100,
+                                  priest().gains.hallucinations_power_word_shield, nullptr );
+    }
+
+    priest_absorb_t::execute();
   }
 
   void impact( action_state_t* s ) override
@@ -1755,8 +1770,7 @@ struct boon_of_the_ascended_t final : public priest_buff_t<buff_t>
 struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
 {
   surrender_to_madness_debuff_t( priest_td_t& actor_pair )
-    : base_t( actor_pair, "surrender_to_madness_death_check",
-              actor_pair.priest().talents.shadow.surrender_to_madness )
+    : base_t( actor_pair, "surrender_to_madness_death_check", actor_pair.priest().talents.shadow.surrender_to_madness )
   {
   }
 
@@ -1956,8 +1970,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
 
-  buffs.echoing_void =
-      make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
+  buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
 
   buffs.echoing_void_collapse =
       make_buff( *this, "echoing_void_collapse" )
@@ -2058,6 +2071,8 @@ void priest_t::create_gains()
   gains.insanity_throes_of_pain          = get_gain( "Insanity Gained from Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
+  gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
+  gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
 }
 
 /** Construct priest procs */
