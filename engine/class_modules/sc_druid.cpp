@@ -922,12 +922,6 @@ public:
     const spell_data_t* natures_swiftness;
     const spell_data_t* omen_of_clarity_tree;
     const spell_data_t* tranquility;
-
-    // Affinities
-    const spell_data_t* astral_influence;  // Balance Affinity
-    const spell_data_t* feline_swiftness;  // Feral Affinity
-    const spell_data_t* thick_hide;      // Guardian Affinity
-    const spell_data_t* yseras_gift;  // Restoration Affinity
   } spec;
 
   struct uptimes_t
@@ -5511,7 +5505,7 @@ struct yseras_gift_t : public druid_heal_t
   yseras_gift_t( druid_t* p ) : druid_heal_t( "yseras_gift", p, p->find_spell( 145109 ) )
   {
     background = dual = true;
-    base_pct_heal = p->spec.yseras_gift->effectN( 1 ).percent();
+    base_pct_heal = p->talent.yseras_gift->effectN( 1 ).percent();
   }
 
   void init() override
@@ -9660,9 +9654,9 @@ void druid_t::create_buffs()
   buff.soul_of_the_forest_tree = make_buff( this, "soul_of_the_forest_tree", find_spell( 114108 ) );
   buff.soul_of_the_forest_tree->name_str_reporting = "soul_of_the_forest";
 
-  if ( spec.yseras_gift->ok() )
+  if ( talent.yseras_gift->ok() )
   {
-    buff.yseras_gift = make_buff( this, "yseras_gift_driver", spec.yseras_gift )
+    buff.yseras_gift = make_buff( this, "yseras_gift_driver", talent.yseras_gift )
       ->set_quiet( true )
       ->set_tick_zero( true )
       ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
@@ -9858,7 +9852,7 @@ void druid_t::create_actions()
   }
 
   // Restoration
-  if ( spec.yseras_gift->ok() )
+  if ( talent.yseras_gift->ok() )
     active.yseras_gift = new heals::yseras_gift_t( this );
 
   player_t::create_actions();
@@ -10655,7 +10649,7 @@ double druid_t::passive_movement_modifier() const
   if ( buff.cat_form->up() )
     ms += spec.cat_form_speed->effectN( 1 ).percent();
 
-  ms += spec.feline_swiftness->effectN( 1 ).percent();
+  ms += talent.feline_swiftness->effectN( 1 ).percent();
 
   return ms;
 }
@@ -11351,8 +11345,8 @@ void druid_t::target_mitigation( school_e school, result_amount_type type, actio
 
   s->result_amount *= 1.0 + buff.survival_instincts->value();
 
-  if ( spec.thick_hide->ok() )
-    s->result_amount *= 1.0 + spec.thick_hide->effectN( 1 ).percent();
+  if ( talent.thick_hide.ok() )
+    s->result_amount *= 1.0 + talent.thick_hide->effectN( 1 ).percent();
 
   if ( talent.rend_and_tear->ok() )
   {
