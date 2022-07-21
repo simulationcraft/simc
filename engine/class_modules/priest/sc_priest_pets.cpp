@@ -61,6 +61,14 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
   }
 }
 
+namespace actions
+{
+struct shadow_spike_t;
+struct shadow_spike_volley_t;
+struct shadow_sear_t;
+struct shadow_nova_t;
+}  // namespace actions
+
 /**
  * Pet base class
  *
@@ -68,8 +76,17 @@ void merge_pet_stats( player_t& owner, pet_t& pet, action_t& action )
  */
 struct priest_pet_t : public pet_t
 {
+  propagate_const<actions::shadow_spike_t*> shadow_spike;
+  propagate_const<actions::shadow_spike_volley_t*> shadow_spike_volley;
+  propagate_const<actions::shadow_sear_t*> shadow_sear;
+  propagate_const<actions::shadow_nova_t*> shadow_nova;
+
   priest_pet_t( sim_t* sim, priest_t& owner, util::string_view pet_name, bool guardian = false )
-    : pet_t( sim, &owner, pet_name, PET_NONE, guardian )
+    : pet_t( sim, &owner, pet_name, PET_NONE, guardian ),
+      shadow_spike( nullptr ),
+      shadow_spike_volley( nullptr ),
+      shadow_sear( nullptr ),
+      shadow_nova( nullptr )
   {
   }
 
@@ -856,6 +873,8 @@ action_t* your_shadow_tier_t::create_action( util::string_view name, util::strin
 // ==========================================================================
 // Living Shadow Actions
 // ==========================================================================
+namespace actions
+{
 struct shadow_spike_t final : public priest_pet_spell_t
 {
   shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
@@ -891,6 +910,7 @@ struct shadow_nova_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
   }
 };
+}  // namespace actions
 
 // ==========================================================================
 // Living Shadow (Your Shadow)
@@ -909,14 +929,15 @@ struct your_shadow_t final : public priest_pet_t
     action_priority_list_t* def = get_action_priority_list( "default" );
   }
 
-  // void init_background_actions()
-  // {
-  //   priest_pet_t::init_background_actions();
+  void init_background_actions()
+  {
+    priest_pet_t::init_background_actions();
 
-  //   shadow_spike        = new actions::shadow_spike_t( *this );
-  //   shadow_spike_volley = new actions::shadow_spike_volley_t( *this );
-  //   shadow_sear         = new actions::shadow_sear_t( *this );
-  // }
+    shadow_spike        = new actions::shadow_spike_t( *this );
+    shadow_spike_volley = new actions::shadow_spike_volley_t( *this );
+    shadow_sear         = new actions::shadow_sear_t( *this );
+    shadow_nova         = new actions::shadow_nova_t( *this );
+  }
 
   // Tracking buff to easily get pet uptime (especially in AoE this is easier)
   virtual void arise() override
@@ -1246,37 +1267,37 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
 
 void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_action action )
 {
-  auto pet = pets.your_shadow.active_pet();
+  priest_pet_t* pet = debug_cast<priest_pet_t*>( pets.your_shadow.active_pet() );
 
-  // if ( pet )
-  // {
-  //   switch ( action )
-  //   {
-  //     case living_shadow_action::SHADOW_SPIKE:
-  //       assert( pet->shadow_spike );
-  //       pet->shadow_spike->set_target( target );
-  //       pet->shadow_spike->execute();
-  //       break;
-  //     case living_shadow_action::SHADOW_SPIKE_VOLLEY:
-  //       assert( pet->shadow_spike_volley );
-  //       pet->shadow_spike_volley->set_target( target );
-  //       pets.your_shadow.shadow_spike_volley->execute();
-  //       break;
-  //     case living_shadow_action::SHADOW_SEAR:
-  //       assert( pet->shadow_sear );
-  //       pet->shadow_sear->set_target( target );
-  //       pets.your_shadow.shadow_sear->execute();
-  //       break;
-  //     case living_shadow_action::SHADOW_NOVA:
-  //       assert( pet->shadow_nova );
-  //       pet->shadow_nova->set_target( target );
-  //       pets.your_shadow.shadow_nova->execute();
-  //       break;
-  //     case living_shadow_action::NONE:
-  //     default:
-  //       break;
-  //   }
-  // }
+  if ( pet )
+  {
+    switch ( action )
+    {
+      case living_shadow_action::SHADOW_SPIKE:
+        assert( pet->shadow_spike );
+        pet->shadow_spike->set_target( target );
+        pet->shadow_spike->execute();
+        break;
+      case living_shadow_action::SHADOW_SPIKE_VOLLEY:
+        assert( pet->shadow_spike_volley );
+        pet->shadow_spike_volley->set_target( target );
+        pet->shadow_spike_volley->execute();
+        break;
+      case living_shadow_action::SHADOW_SEAR:
+        assert( pet->shadow_sear );
+        pet->shadow_sear->set_target( target );
+        pet->shadow_sear->execute();
+        break;
+      case living_shadow_action::SHADOW_NOVA:
+        assert( pet->shadow_nova );
+        pet->shadow_nova->set_target( target );
+        pet->shadow_nova->execute();
+        break;
+      case living_shadow_action::NONE:
+      default:
+        break;
+    }
+  }
 
   return;
 }
@@ -1388,7 +1409,8 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
 
   // Add 1ms to ensure pet is dismissed after last dot tick.
   // Note: this is overriden in mind_blast_t when spawning the pet
-  your_shadow.set_default_duration( p.talents.shadow.living_shadow_duration->duration() +
+  auto living_shadow_duration_spell = p.find_spell( 373384 );
+  your_shadow.set_default_duration( living_shadow_duration_spell->duration() +
                                     timespan_t::from_millis( 1 ) );
 
   auto thing_from_beyond_spell = p.find_spell( 373277 );
