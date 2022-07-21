@@ -39,6 +39,9 @@ public:
 
   const spell_data_t* operator->() const
   { return m_spell; }
+
+  operator const spell_data_t*() const
+  { return m_spell; }
 };
 
 #endif /* TALENT_HPP */

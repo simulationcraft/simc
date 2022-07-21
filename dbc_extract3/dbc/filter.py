@@ -487,7 +487,9 @@ class TraitSet(DataSet):
             'definition': None,
             'entry': None,
             'groups': set(),
-            'tree': 0
+            'tree': 0,
+            'row': -1,
+            'col': -1
         })
 
         for group in _trait_node_groups.values():
@@ -526,6 +528,66 @@ class TraitSet(DataSet):
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index
+
+        _coords = {}
+        for entry in _traits.values():
+            if entry['tree'] == 0:
+                continue
+
+            for spec in entry['specs'] | set((0,)):
+                if entry['tree'] == 2 and spec == 0:
+                    continue
+
+                if entry['tree'] == 1 and spec != 0:
+                    continue
+
+                key = (entry['tree'], entry['class_'], spec)
+
+                if key not in _coords:
+                    _coords[key] = {
+                        0: set()
+                    }
+
+                pos_x = round(entry['node'].pos_x, -2)
+                pos_y = round(entry['node'].pos_y, -2)
+
+                _coords[key][0].add(pos_y)
+                if pos_y not in _coords[key]:
+                    _coords[key][pos_y] = set()
+
+                _coords[key][pos_y].add(pos_x)
+
+        for v in _coords.values():
+            for key, data in v.items():
+                v[key] = sorted(list(data))
+
+        """
+        for tree in sorted(_coords.keys()):
+            print(tree)
+            treedata = _coords[tree]
+            for row in sorted(treedata.keys()):
+                rowdata = treedata[row]
+                print(f'  {row}: {rowdata}')
+        """
+
+        for entry in _traits.values():
+            for spec in entry['specs'] | set((0,)):
+                if entry['tree'] == 2 and spec == 0:
+                    continue
+
+                if entry['tree'] == 1 and spec != 0:
+                    continue
+
+                key = (entry['tree'], entry['class_'], spec)
+
+                if key not in _coords:
+                    continue
+
+                pos_x = round(entry['node'].pos_x, -2)
+                pos_y = round(entry['node'].pos_y, -2)
+
+                entry['row'] = _coords[key][0].index(pos_y) + 1
+                entry['col'] = _coords[key][pos_y].index(pos_x) + 1
 
         return _traits
 
