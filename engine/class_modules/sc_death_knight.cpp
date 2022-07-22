@@ -8950,6 +8950,9 @@ void death_knight_t::init_base_stats()
   if ( talent.blood.ossuary.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
+  if ( talent.frost.runic_command.ok() )
+	resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
 
