@@ -313,7 +313,6 @@ void priest_t::init_spells_discipline()
   // T30
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   // T35
-  talents.psychic_voice = find_talent_spell( "Psychic Voice" );
   talents.shining_force = find_talent_spell( "Shining Force" );
   // T40
   talents.sins_of_the_many = find_talent_spell( "Sins of the Many" );

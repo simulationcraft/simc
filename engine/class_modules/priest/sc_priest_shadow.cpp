@@ -173,7 +173,8 @@ struct mind_flay_t final : public priest_spell_t
 // ==========================================================================
 struct dispersion_t final : public priest_spell_t
 {
-  dispersion_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "dispersion", p, p.specs.dispersion )
+  dispersion_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "dispersion", p, p.talents.shadow.dispersion )
   {
     parse_options( options_str );
 
@@ -184,9 +185,9 @@ struct dispersion_t final : public priest_spell_t
     hasted_ticks          = false;
     may_miss              = false;
 
-    if ( priest().talents.intangibility->ok() )
+    if ( priest().talents.shadow.intangibility.enabled() )
     {
-      cooldown->duration += priest().talents.intangibility->effectN( 1 ).time_value();
+      cooldown->duration += priest().talents.shadow.intangibility->effectN( 1 ).time_value();
     }
   }
 
@@ -236,8 +237,7 @@ struct shadowform_t final : public priest_spell_t
 // ==========================================================================
 struct silence_t final : public priest_spell_t
 {
-  silence_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "silence", p, p.talents.shadow.silence )
+  silence_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "silence", p, p.talents.shadow.silence )
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
@@ -294,15 +294,15 @@ struct silence_t final : public priest_spell_t
 struct vampiric_embrace_t final : public priest_spell_t
 {
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "vampiric_embrace", p, p.specs.vampiric_embrace )
+    : priest_spell_t( "vampiric_embrace", p, p.talents.shadow.vampiric_embrace )
   {
     parse_options( options_str );
 
     harmful = false;
 
-    if ( priest().talents.sanlayn->ok() )
+    if ( priest().talents.shadow.sanlayn->ok() )
     {
-      cooldown->duration += priest().talents.sanlayn->effectN( 1 ).time_value();
+      cooldown->duration += priest().talents.shadow.sanlayn->effectN( 1 ).time_value();
     }
   }
 
@@ -310,6 +310,12 @@ struct vampiric_embrace_t final : public priest_spell_t
   {
     priest_spell_t::execute();
     priest().buffs.vampiric_embrace->trigger();
+
+    if ( priest().talents.shadow.hallucinations.enabled() )
+    {
+      priest().generate_insanity( priest().talents.shadow.hallucinations->effectN( 1 ).base_value() / 100,
+                                  priest().gains.hallucinations_vampiric_embrace, nullptr );
+    }
   }
 
   bool ready() override
@@ -328,8 +334,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 // ==========================================================================
 struct void_apparition_damage_t final : public priest_spell_t
 {
-  void_apparition_damage_t( priest_t& p )
-    : priest_spell_t( "void_apparition", p, p.talents.shadow.void_apparitions )
+  void_apparition_damage_t( priest_t& p ) : priest_spell_t( "void_apparition", p, p.talents.shadow.void_apparitions )
   {
     background = true;
     proc       = false;
@@ -586,8 +591,7 @@ struct unfurling_darkness_t final : public priest_spell_t
 // ==========================================================================
 struct mental_fortitude_t : public priest_absorb_t
 {
-  mental_fortitude_t( priest_t& p )
-    : priest_absorb_t( "mental_fortitude", p, p.talents.shadow.mental_fortitude )
+  mental_fortitude_t( priest_t& p ) : priest_absorb_t( "mental_fortitude", p, p.talents.shadow.mental_fortitude )
   {
     may_miss = may_crit = callbacks = false;
     background = proc = true;
@@ -1315,14 +1319,15 @@ struct surrender_to_madness_t final : public priest_spell_t
 // ==========================================================================
 struct mind_bomb_t final : public priest_spell_t
 {
-  mind_bomb_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_bomb", p, p.talents.mind_bomb )
+  mind_bomb_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_bomb", p, p.talents.shadow.mind_bomb )
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
     ignore_false_positive = true;
 
     // Add 2 seconds to emulate the setup time, simplifying the spell
-    cooldown->duration += timespan_t::from_seconds( 2 );
+    cooldown->duration += data().duration();
   }
 };
 
@@ -1332,7 +1337,7 @@ struct mind_bomb_t final : public priest_spell_t
 struct psychic_horror_t final : public priest_spell_t
 {
   psychic_horror_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "psychic_horror", p, p.talents.psychic_horror )
+    : priest_spell_t( "psychic_horror", p, p.talents.shadow.psychic_horror )
   {
     parse_options( options_str );
     may_miss = may_crit   = false;
@@ -1372,8 +1377,7 @@ struct void_torrent_t final : public priest_spell_t
 
   void_torrent_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_torrent", p, p.talents.shadow.void_torrent ),
-      insanity_gain(
-          p.talents.shadow.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( p.talents.shadow.void_torrent->effectN( 3 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -1703,7 +1707,7 @@ struct dark_thought_t final : public priest_buff_t<buff_t>
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
-    // Create a stack change callback to adjust the number of mindblast charges.
+    // Create a stack change callback to adjust the number of Mind Blast charges.
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
   }
@@ -1758,12 +1762,18 @@ struct vampiric_insight_t final : public priest_buff_t<buff_t>
 {
   vampiric_insight_t( priest_t& p ) : base_t( p, "vampiric_insight", p.find_spell( 375981 ) )
   {
-    // TODO: determine what this value actually is, mostly a guess right now
-    set_rppm( RPPM_HASTE, 3.0 );
+    // TODO: determine what these values actually are, mostly guesses right now
+    // These values are not found in spell data
+    double proc_rate = 3.0;
+    if ( priest().talents.shadow.eidolic_intuition.enabled() )
+    {
+      proc_rate = 4.0;
+    }
+    set_rppm( RPPM_HASTE, proc_rate );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
-    // Create a stack change callback to adjust the number of mindblast charges.
+    // Create a stack change callback to adjust the number of Mind Blast charges.
 
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
@@ -1886,7 +1896,7 @@ void priest_t::create_buffs_shadow()
   buffs.dark_thought     = make_buff<buffs::dark_thought_t>( *this );
   buffs.shadowform       = make_buff<buffs::shadowform_t>( *this );
   buffs.shadowform_state = make_buff<buffs::shadowform_state_t>( *this );
-  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", specs.vampiric_embrace );
+  buffs.vampiric_embrace = make_buff( this, "vampiric_embrace", talents.shadow.vampiric_embrace );
   buffs.voidform         = make_buff<buffs::voidform_t>( *this );
   buffs.dispersion       = make_buff<buffs::dispersion_t>( *this );
 
@@ -1944,7 +1954,7 @@ void priest_t::create_buffs_shadow()
                                   }
                                 } ) );
 
-  // TODOL Get real damage amplifier and spell data when blizzard implements this.
+  // TODO: Get real damage amplifier and spell data when blizzard implements this.
   buffs.yshaarj_pride =
       make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
 
@@ -1967,30 +1977,38 @@ void priest_t::init_rng_shadow()
 
 void priest_t::init_spells_shadow()
 {
+  // Row 1
   talents.shadow.mind_flay = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Flay" );
-
+  // Row 2
   talents.shadow.mind_sear          = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Sear" );
   talents.shadow.mind_sear_insanity = find_spell( 208232 );  // Insanity is stored here, not in any spell triggers
-
+  // Row 3
   talents.shadow.death_and_madness          = find_talent_spell( talent_tree::SPECIALIZATION, "Death and Madness" );
   talents.shadow.death_and_madness_insanity = find_spell( 321973 );
-
-  talents.shadow.misery               = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
-  talents.shadow.searing_nightmare    = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
-  talents.shadow.silence              = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
-  talents.shadow.fortress_of_the_mind = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
-
+  talents.shadow.mind_bomb                  = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Bomb" );
+  talents.shadow.psychic_voice              = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Voice" );
+  talents.shadow.misery                     = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
+  talents.shadow.searing_nightmare          = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
+  talents.shadow.silence                    = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
+  talents.shadow.fortress_of_the_mind       = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
+  // Row 4
+  talents.shadow.vampiric_embrace   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Embrace" );
   talents.shadow.unfurling_darkness = find_talent_spell( talent_tree::SPECIALIZATION, "Unfurling Darkness" );
   talents.shadow.vampiric_insight   = find_talent_spell( talent_tree::SPECIALIZATION, "Vampiric Insight" );
   talents.shadow.last_word          = find_talent_spell( talent_tree::SPECIALIZATION, "Last Word" );
-
+  talents.shadow.dispersion         = find_talent_spell( talent_tree::SPECIALIZATION, "Dispersion" );
+  // Row 5
+  talents.shadow.sanlayn              = find_talent_spell( talent_tree::SPECIALIZATION, "San'layn" );
+  talents.shadow.hallucinations       = find_talent_spell( talent_tree::SPECIALIZATION, "Hallucinations" );
   talents.shadow.shadowy_apparition   = find_spell( 148859 );
   talents.shadow.shadowy_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Shadowy Apparitions" );
   talents.shadow.void_eruption        = find_talent_spell( talent_tree::SPECIALIZATION, "Void Eruption" );
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   talents.shadow.monomania            = find_talent_spell( talent_tree::SPECIALIZATION, "Monomania" );
   talents.shadow.monomania_tickrate   = find_spell( 375408 );
-
+  talents.shadow.psychic_horror       = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Horror" );
+  talents.shadow.intangibility        = find_talent_spell( talent_tree::SPECIALIZATION, "Intangibility" );
+  // Row 6
   talents.shadow.psychic_link         = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Link" );
   talents.shadow.auspicious_spirits   = find_talent_spell( talent_tree::SPECIALIZATION, "Auspicious Spirits" );
   talents.shadow.hungering_void       = find_talent_spell( talent_tree::SPECIALIZATION, "Hungering Void" );
@@ -1998,48 +2016,39 @@ void priest_t::init_spells_shadow()
   talents.shadow.surrender_to_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Surrender to Madness" );
   talents.shadow.damnation            = find_talent_spell( talent_tree::SPECIALIZATION, "Damnation" );
   talents.shadow.void_touched         = find_talent_spell( talent_tree::SPECIALIZATION, "Void Touched" );
-
+  // Row 7
   talents.shadow.shadow_crash    = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Crash" );
   talents.shadow.ancient_madness = find_talent_spell( talent_tree::SPECIALIZATION, "Ancient Madness" );
   talents.shadow.malediction     = find_talent_spell( talent_tree::SPECIALIZATION, "Malediction" );
   talents.shadow.void_torrent    = find_talent_spell( talent_tree::SPECIALIZATION, "Void Torrent" );
-
+  // Row 8
   talents.shadow.mental_fortitude = find_talent_spell( talent_tree::SPECIALIZATION, "Mental Fortitude" );
   talents.shadow.insidious_ire    = find_talent_spell( talent_tree::SPECIALIZATION, "Insidious Ire" );
   talents.shadow.mind_devourer    = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Devourer" );
-
+  // Row 9
   talents.shadow.sanguine_teachings  = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Teachings" );
   talents.shadow.unleash_the_shadows = find_talent_spell( talent_tree::SPECIALIZATION, "Unleash the Shadows" );
   talents.shadow.rot_and_wither      = find_talent_spell( talent_tree::SPECIALIZATION, "Rot and Wither" );
   talents.shadow.abyssal_knowledge   = find_talent_spell( talent_tree::SPECIALIZATION, "Abyssal Knowledge" );
-
+  // Row 10
   talents.shadow.idol_of_yshaarj   = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Y'Shaarj" );
   talents.shadow.idol_of_nzoth     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of N'Zoth" );
   talents.shadow.void_apparitions  = find_talent_spell( talent_tree::SPECIALIZATION, "Void Apparitions" );
+  talents.shadow.living_shadow     = find_talent_spell( talent_tree::SPECIALIZATION, "Living Shadow" );
+  talents.shadow.eidolic_intuition = find_talent_spell( talent_tree::SPECIALIZATION, "Eidolic Intuition" );
   talents.shadow.idol_of_yoggsaron = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of Yogg-Saron" );
   talents.shadow.idol_of_cthun     = find_talent_spell( talent_tree::SPECIALIZATION, "Idol of C'Thun" );
 
   // Talents
-  // T15
   // T25
   talents.body_and_soul = find_talent_spell( "Body and Soul" );
-  talents.sanlayn       = find_talent_spell( "San'layn" );
-  talents.intangibility = find_talent_spell( "intangibility" );
-  // T35
-  talents.mind_bomb      = find_talent_spell( "Mind Bomb" );
-  talents.psychic_horror = find_talent_spell( "Psychic Horror" );
-  // T40
-  // T45
-  // T50
 
   // General Spells
-  specs.dark_thought     = find_spell( 341207 );
-  specs.dark_thoughts    = find_specialization_spell( "Dark Thoughts" );
-  specs.dispersion       = find_specialization_spell( "Dispersion" );
-  specs.shadowform       = find_specialization_spell( "Shadowform" );
-  specs.vampiric_embrace = find_specialization_spell( "Vampiric Embrace" );
-  specs.void_bolt        = find_spell( 205448 );
-  specs.voidform         = find_spell( 194249 );
+  specs.dark_thought  = find_spell( 341207 );
+  specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );
+  specs.shadowform    = find_specialization_spell( "Shadowform" );
+  specs.void_bolt     = find_spell( 205448 );
+  specs.voidform      = find_spell( 194249 );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
@@ -2300,8 +2309,7 @@ void priest_t::trigger_idol_of_nzoth( player_t* target )
   {
     auto td = get_target_data( target );
     td->buffs.echoing_void->trigger();
-    if ( !td->buffs.echoing_void_collapse->check() &&
-         rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
+    if ( !td->buffs.echoing_void_collapse->check() && rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )
     {
       td->buffs.echoing_void_collapse->trigger();
     }
