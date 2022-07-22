@@ -6522,8 +6522,6 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
     }
 
-
-
     p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
   }
 
@@ -9426,7 +9424,7 @@ void death_knight_t::init_spells()
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
   if ( talent.frost.enduring_strength.ok() )
-	cooldown.enduring_strength_icd -> duration = talent.frost.enduring_strength -> internal_cooldown();
+	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
 
   if ( talent.frost.inexorable_assault.ok() )
     cooldown.inexorable_assault_icd -> duration = find_spell( 253595 ) -> internal_cooldown();  // Inexorable Assault buff spell id
@@ -9644,8 +9642,9 @@ void death_knight_t::create_buffs()
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", find_spell( 377192 ), talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377190 ) )
-        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-        ->set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
+        -> add_invalidate( CACHE_STRENGTH )
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
