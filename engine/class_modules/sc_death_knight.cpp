@@ -565,6 +565,7 @@ public:
     cooldown_t* vampiric_blood;
     // Frost
     cooldown_t* icecap_icd; // internal cooldown that prevents several procs on the same dual-wield attack
+    cooldown_t* inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield sttack
     cooldown_t* pillar_of_frost;
     // Unholy
@@ -654,8 +655,10 @@ public:
     const spell_data_t* death_grip;
     const spell_data_t* dark_command;
     const spell_data_t* death_and_decay;
-    const spell_data_t* festering_wound;
     const spell_data_t* rune_strike;
+
+    // Unholy
+    const spell_data_t* festering_wound;
   } spec;
 
   // Mastery
@@ -1136,6 +1139,7 @@ public:
     cooldown.dark_transformation      = get_cooldown( "dark_transformation" );
     cooldown.death_and_decay_dynamic  = get_cooldown( "death_and_decay" ); // Default value, changed during action construction
     cooldown.icecap_icd               = get_cooldown( "icecap" );
+    cooldown.inexorable_assault_icd   = get_cooldown( "inexorable_assault_icd" );
     cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
@@ -3326,15 +3330,6 @@ struct virulent_plague_t : public death_knight_disease_t
 void death_knight_melee_attack_t::execute()
 {
   base_t::execute();
-
-  if ( triggers_icecap && p() -> talent.frost.icecap.ok() && hit_any_target &&
-       p() -> cooldown.icecap_icd -> is_ready() && execute_state -> result == RESULT_CRIT )
-  {
-    p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
-      - p() -> talent.frost.icecap -> effectN( 1 ).base_value() / 10.0 ) );
-
-    p() -> cooldown.icecap_icd -> start();
-  }
 }
 
 // death_knight_melee_attack_t::impact() ====================================
@@ -3350,6 +3345,15 @@ void death_knight_melee_attack_t::impact( action_state_t* state )
     // Razorice is executed after the attack that triggers it
     p() -> active_spells.runeforge_razorice -> set_target( state -> target );
     p() -> active_spells.runeforge_razorice -> schedule_execute();
+  }
+
+  if ( triggers_icecap && p() -> talent.frost.icecap.ok() &&
+       p() -> cooldown.icecap_icd -> is_ready() && state -> result == RESULT_CRIT )
+  {
+    p() -> cooldown.pillar_of_frost -> adjust( timespan_t::from_seconds(
+      - p() -> talent.frost.icecap -> effectN( 1 ).base_value() / 10.0 ) );
+
+    p() -> cooldown.icecap_icd -> start();
   }
 }
 
@@ -5550,6 +5554,19 @@ struct frostscythe_t : public death_knight_melee_attack_t
     may_proc_bron = true;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    death_knight_melee_attack_t::impact( s );
+
+    if ( p() -> buffs.inexorable_assault -> up() && p() -> cooldown.inexorable_assault_icd -> is_ready() )
+    {
+      inexorable_assault -> set_target( target );
+      inexorable_assault -> schedule_execute();
+      p() -> buffs.inexorable_assault -> decrement();
+      p() -> cooldown.inexorable_assault_icd -> start();
+    }
+  }
+
   void execute() override
   {
     death_knight_melee_attack_t::execute();
@@ -5565,13 +5582,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
 
     p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-
-    if ( p() -> buffs.inexorable_assault -> up() )
-    {
-      inexorable_assault -> set_target( target );
-      inexorable_assault -> schedule_execute();
-      p() -> buffs.inexorable_assault -> decrement();
-    }
 
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
@@ -6231,6 +6241,7 @@ struct mind_freeze_t : public death_knight_spell_t
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
   int deaths_due_cleave_targets;
+  action_t* inexorable_assault;
   obliterate_strike_t( death_knight_t* p, util::string_view name,
                        weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s )
@@ -6257,6 +6268,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
+
+    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
   }
 
   int n_targets() const override
@@ -6308,6 +6321,14 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.deaths_due->trigger();
     }
+
+    if ( p() -> buffs.inexorable_assault -> up() && p() -> cooldown.inexorable_assault_icd -> is_ready() )
+    {
+      inexorable_assault -> set_target( target );
+      inexorable_assault -> schedule_execute();
+      p() -> buffs.inexorable_assault -> decrement();
+      p() -> cooldown.inexorable_assault_icd -> start();
+    }
   }
 
   void execute() override
@@ -6334,7 +6355,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 struct obliterate_t : public death_knight_melee_attack_t
 {
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
-  action_t* inexorable_assault;
 
   obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
     death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate ),
@@ -6343,8 +6363,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     parse_options( options_str );
     dual = true;
     triggers_shackle_the_unworthy = true;
-
-    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
@@ -6416,13 +6434,6 @@ struct obliterate_t : public death_knight_melee_attack_t
           oh -> set_target( target );
           oh -> execute();
         }
-      }
-
-      if ( p() -> buffs.inexorable_assault -> up() )
-      {
-        inexorable_assault -> set_target( target );
-        inexorable_assault -> schedule_execute();
-        p() -> buffs.inexorable_assault -> decrement();
       }
 
       p() -> buffs.rime -> trigger();
@@ -8939,7 +8950,6 @@ void death_knight_t::init_spells()
   spec.death_grip           = find_class_spell( "Death Grip" );
   spec.dark_command         = find_class_spell( "Dark Command" );
   spec.death_and_decay      = find_class_spell( "Death and Decay" );
-  spec.festering_wound      = find_class_spell( "Festering Wound" );
   spec.rune_strike          = find_class_spell( "Rune Strike" );
 
   // Blood Baselines
@@ -8951,6 +8961,7 @@ void death_knight_t::init_spells()
 
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
+  spec.festering_wound      = find_class_spell( "Festering Wound" );
 
   //////// Class Talent Tree
   // Row 1
@@ -9307,6 +9318,10 @@ void death_knight_t::init_spells()
 
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
+
+  if ( talent.frost.inexorable_assault.ok() )
+    cooldown.inexorable_assault_icd -> duration = find_spell( 253595 ) -> internal_cooldown();  // Inexorable Assault buff spell id
+
   if ( covenant.abomination_limb )
   {
     cooldown.abomination_limb -> duration = timespan_t::from_seconds( covenant.abomination_limb -> effectN ( 4 ).base_value() );
@@ -9485,7 +9500,7 @@ void death_knight_t::create_buffs()
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> set_default_value( talent.icy_talons -> effectN( 1 ).base_value() )
+        -> set_default_value( talent.icy_talons -> effectN( 1 ).percent() )
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
