@@ -6241,6 +6241,7 @@ struct mind_freeze_t : public death_knight_spell_t
 struct obliterate_strike_t : public death_knight_melee_attack_t
 {
   int deaths_due_cleave_targets;
+  action_t* inexorable_assault;
   obliterate_strike_t( death_knight_t* p, util::string_view name,
                        weapon_t* w, const spell_data_t* s ) :
     death_knight_melee_attack_t( name, p, s )
@@ -6267,6 +6268,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
+
+    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
   }
 
   int n_targets() const override
@@ -6318,6 +6321,14 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.deaths_due->trigger();
     }
+
+    if ( p() -> buffs.inexorable_assault -> up() && p() -> cooldown.inexorable_assault_icd -> is_ready() )
+    {
+      inexorable_assault -> set_target( target );
+      inexorable_assault -> schedule_execute();
+      p() -> buffs.inexorable_assault -> decrement();
+      p() -> cooldown.inexorable_assault_icd -> start();
+    }
   }
 
   void execute() override
@@ -6344,7 +6355,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 struct obliterate_t : public death_knight_melee_attack_t
 {
   obliterate_strike_t *mh, *oh, *km_mh, *km_oh;
-  action_t* inexorable_assault;
 
   obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
     death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate ),
@@ -6353,8 +6363,6 @@ struct obliterate_t : public death_knight_melee_attack_t
     parse_options( options_str );
     dual = true;
     triggers_shackle_the_unworthy = true;
-
-    inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
 
     const spell_data_t* mh_data = p -> main_hand_weapon.group() == WEAPON_2H ? data().effectN( 4 ).trigger() : data().effectN( 2 ).trigger();
 
@@ -6426,13 +6434,6 @@ struct obliterate_t : public death_knight_melee_attack_t
           oh -> set_target( target );
           oh -> execute();
         }
-      }
-
-      if ( p() -> buffs.inexorable_assault -> up() )
-      {
-        inexorable_assault -> set_target( target );
-        inexorable_assault -> schedule_execute();
-        p() -> buffs.inexorable_assault -> decrement();
       }
 
       p() -> buffs.rime -> trigger();
