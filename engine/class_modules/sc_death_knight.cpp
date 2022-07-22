@@ -9641,7 +9641,7 @@ void death_knight_t::create_buffs()
 		
   buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
-  buffs.enduring_strength = make_buff( this, "enduring_strength", talent.frost.enduring_strength )
+  buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377195 ) )
         -> add_invalidate( CACHE_STRENGTH )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
