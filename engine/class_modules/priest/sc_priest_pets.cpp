@@ -1272,7 +1272,7 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   }
 }
 
-void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_action action )
+action_t* priest_t::get_living_shadow_action( living_shadow_action action )
 {
   priest_pet_t* pet = debug_cast<priest_pet_t*>( pets.your_shadow.active_pet() );
 
@@ -1281,53 +1281,40 @@ void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_act
     switch ( action )
     {
       case living_shadow_action::SHADOW_SPIKE:
-        assert( pet->shadow_spike );
-        pet->shadow_spike->set_target( target );
-        pet->shadow_spike->execute();
-        break;
+        return pet->shadow_spike;
       case living_shadow_action::SHADOW_SPIKE_VOLLEY:
-        assert( pet->shadow_spike_volley );
-        pet->shadow_spike_volley->set_target( target );
-        pet->shadow_spike_volley->execute();
-        break;
+        return pet->shadow_spike_volley;
       case living_shadow_action::SHADOW_SEAR:
-        assert( pet->shadow_sear );
-        pet->shadow_sear->set_target( target );
-        pet->shadow_sear->execute();
-        break;
+        return pet->shadow_sear;
       case living_shadow_action::SHADOW_NOVA:
-        assert( pet->shadow_nova );
-        pet->shadow_nova->set_target( target );
-        pet->shadow_nova->execute();
-        break;
-      case living_shadow_action::NONE:
-      default:
-        break;
+        return pet->shadow_nova;
     }
   }
 
-  return;
+  return nullptr;
+}
+
+void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_action action )
+{
+  auto pet_action = get_living_shadow_action( action );
+
+  if ( pet_action )
+  {
+    pet_action->set_target( target );
+    pet_action->execute();
+  }
 }
 
 void priest_t::cancel_living_shadow_action( living_shadow_action action )
 {
-  priest_pet_t* pet = debug_cast<priest_pet_t*>( pets.your_shadow.active_pet() );
+  if ( action != living_shadow_action::SHADOW_SPIKE_VOLLEY && action != living_shadow_action::SHADOW_SEAR )
+    return;
 
-  if ( pet )
+  auto pet_action = get_living_shadow_action( action );
+  if ( pet_action )
   {
-    switch ( action )
-    {
-      case living_shadow_action::SHADOW_SPIKE_VOLLEY:
-        assert( pet->shadow_spike_volley );
-        pet->shadow_spike_volley->cancel();
-        break;
-      case living_shadow_action::SHADOW_SEAR:
-        assert( pet->shadow_sear );
-        pet->shadow_sear->cancel();
-        break;
-    }
+    pet_action->cancel();
   }
-  return;
 }
 
 std::unique_ptr<expr_t> priest_t::create_pet_expression( util::string_view expression_str,

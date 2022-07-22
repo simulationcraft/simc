@@ -649,6 +649,7 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
+  action_t* get_living_shadow_action( living_shadow_action action );
   void trigger_living_shadow_action( player_t* target, living_shadow_action action );
   void cancel_living_shadow_action( living_shadow_action action );
   void trigger_eternal_call_to_the_void( action_state_t* );
@@ -982,7 +983,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void last_tick( dot_t* d ) override
   {
-    if (priest().channeling && living_shadow_action != priest_t::living_shadow_action::NONE )
+    if ( priest().channeling && living_shadow_action != priest_t::living_shadow_action::NONE )
       priest().cancel_living_shadow_action( living_shadow_action );
 
     base_t::last_tick( d );
@@ -1003,7 +1004,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     {
       sim->print_debug( "{} casts action not replicated by Living Shadow: {}.", priest(), s->action->name_str );
     }
-    
 
     if ( result_is_hit( s->result ) )
     {
