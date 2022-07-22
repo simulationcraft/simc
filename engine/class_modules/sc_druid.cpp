@@ -8858,6 +8858,7 @@ void druid_t::init_spells()
   auto STS = [ this ]( std::string_view n, specialization_e s ) { return find_talent_spell( talent_tree::SPECIALIZATION, n, s ); };
 
   // Class tree
+  sim->print_debug( "Initializing class talents..." );
   talent.rake                           = CT( "Rake" );
   talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
   talent.rejuvenation                   = CT( "Rejuvenation" );
@@ -8885,10 +8886,10 @@ void druid_t::init_spells()
   talent.astral_influence               = CT( "Astral Influence" );
   talent.tireless_pursuit               = CT( "Tireless Pursuit" );
   talent.soothe                         = CT( "Soothe" );
-  talent.sunfire                        = CT( "Sunfire" );
+  talent.sunfire                        = CT( "Sunfire (no AOE)" );
   talent.typhoon                        = CT( "Typhoon" );
   talent.primal_fury                    = CT( "Primal Fury" );
-  talent.ursocs_endurance_druid         = CT( "Ursoc's Endurance" );
+  talent.ursocs_endurance_druid         = CT( "Ursoc's Endurance (NNF)" );
   talent.stampeding_roar                = CT( "Stampeding Roar" );
   talent.wild_growth                    = CT( "Wild Growth" );
   talent.improved_sunfire               = CT( "Improved Sunfire" );
@@ -8908,6 +8909,7 @@ void druid_t::init_spells()
   talent.natures_vigil                  = CT( "Nature's Vigil" );
 
   // Multi-Spec
+  sim->print_debug( "Initializing multi-spec talents..." );
   talent.adaptive_swarm                 = ST( "Adaptive Swarm" );
   talent.unbridled_swarm                = ST( "Unbridled Swarm" );
   talent.circle_of_life_and_death       = ST( "Circle of Life and Death" );
@@ -8916,19 +8918,20 @@ void druid_t::init_spells()
   talent.survival_instincts             = ST( "Survival Instincts" );
 
   // Balance
+  sim->print_debug( "Initializing balance talents..." );
   talent.eclipse                        = ST( "Eclipse" );
   talent.improved_eclipse               = ST( "Improved Eclipse" );
-  talent.improved_moonfire              = ST( "Improved Moonfire" );
+  talent.improved_moonfire              = ST( "Moonfire/Sunfire + 3/6s" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.natures_balance                = ST( "Nature's Balance" );
   talent.warrior_of_elune               = ST( "Warrior of Elune" );
   talent.starfall                       = ST( "Starfall" );
   talent.improved_moonkin_form          = find_talent_spell( talent_tree::SPECIALIZATION, 231042 );  // NNF
-  talent.celestial_alignment            = ST( "Celestial Alignment" );
+  talent.celestial_alignment            = ST( "Celestial Alignment [SL version, No initial damage]" );
   talent.improved_starsurge             = ST( "Improved Starsurge" );
   talent.solar_beam                     = ST( "Solar Beam" );
   talent.shooting_stars                 = ST( "Shooting Stars" );
-  talent.improved_starfall              = ST( "Improved Starfall" );
+  talent.improved_starfall              = find_talent_spell( talent_tree::SPECIALIZATION, 327541 );  /// NNF
   talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
   talent.starlord                       = ST( "Starlord" );
   talent.stellar_drift                  = ST( "Stellar Drift" );
@@ -8939,13 +8942,13 @@ void druid_t::init_spells()
   talent.blessing_of_anshe              = ST( "Blessing of An'she" );
   talent.blessing_of_elune              = ST( "Blessing of Elune" );
   talent.soul_of_the_forest_moonkin     = STS( "Soul of the Forest", DRUID_BALANCE );
-  talent.fury_of_the_skies              = ST( "Fury of the Skies" );
+  talent.fury_of_the_skies              = ST( "Fury of the Skies (1/2%)" );
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.solstice                       = ST( "Solstice" );
-  talent.timeworn_dreambinder           = ST( "Timeworn Dreambinder" );
-  talent.oneths_clear_vision            = ST( "Oneth's Clear Vision" );
-  talent.umbral_infusion                = ST( "Umbral Infusion" );
+  talent.timeworn_dreambinder           = ST( "Timeworn Dreambinder [NNF]" );  // NNF
+  talent.oneths_clear_vision            = ST( "Oneth's Clear Vision [NNF]" );  // NNF
+  talent.umbral_infusion                = ST( "Umbral Infusion [NNF]" );  // NNF
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
   talent.syzygy                         = ST( "Syzygy" );  // NNF
@@ -8955,16 +8958,17 @@ void druid_t::init_spells()
   talent.orbit_breaker                  = ST( "Orbit Breaker" );
 
   // Feral
+  sim->print_debug( "Initializing feral talents..." );
   talent.tigers_fury                    = ST( "Tiger's Fury" );
-  talent.max_energy                     = ST( "Max Energy" );    // NNF
+  talent.max_energy                     = ST( "[Max Energy]" );  // NNF
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
   talent.improved_tigers_fury           = ST( "Improved Tiger's Fury" );
   talent.improved_shred                 = ST( "Improved Shred" );
   talent.scent_of_blood                 = ST( "Scent of Blood" );
   talent.sabertooth                     = ST( "Sabertooth" );
   talent.predator                       = ST( "Predator" );
-  talent.improved_prowl                 = ST( "Improved Prowl" );   // NNF
-  talent.improved_bleeds                = ST( "Improved Bleeds" );  // NNF
+  talent.improved_prowl                 = ST( "Rake Stealth bonus (also Shred)" );   // NNF
+  talent.improved_bleeds                = ST( "Shred Bleed bonus (also Swipe)" );  // NNF
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.berserk_relentlessness         = ST( "Berserk: Relentlessness" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
@@ -8978,7 +8982,7 @@ void druid_t::init_spells()
   talent.berserk_jungle_stalker         = ST( "Berserk: Jungle Stalker" );
   talent.carnivorious_instinct          = ST( "Carnivorous Instinct" );
   talent.eye_of_fearful_symmetry        = ST( "Eye of Fearful Symmetry" );
-  talent.cateye_curio                   = ST( "Cat-Eye Curio" );
+  talent.cateye_curio                   = ST( "Cat-Eye Curio (no max E)" );
   talent.berserk_frenzy                 = ST( "Berserk: Frenzy" );
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
@@ -8988,6 +8992,7 @@ void druid_t::init_spells()
   talent.draught_of_deep_focus          = ST( "Draught of Deep Focus" );
 
   // Guardian
+  sim->print_debug( "Initializing guardian talents..." );
   talent.maul                           = ST( "Maul" );
   talent.gore                           = ST( "Gore" );
   talent.brambles                       = ST( "Brambles" );
@@ -8996,7 +9001,7 @@ void druid_t::init_spells()
   talent.improved_survival_instincts    = find_talent_spell( talent_tree::SPECIALIZATION, 328767 );  // NNF
   talent.improved_mangle                = find_talent_spell( talent_tree::SPECIALIZATION, 231064 );  // NNF
   talent.innate_resolve                 = ST( "Innate Resolve" );
-  talent.infected_wounds_bear           = STS( "Infected Wound", DRUID_GUARDIAN );
+  talent.infected_wounds_bear           = STS( "Infected Wounds", DRUID_GUARDIAN );
   talent.berserk_ravage                 = ST( "Berserk: Ravage" );
   talent.ursocs_endurance               = ST( "Ursoc's Endurance" );
   talent.gory_fur                       = ST( "Gory Fur" );
@@ -9030,6 +9035,7 @@ void druid_t::init_spells()
   talent.rage_of_the_sleeper            = ST( "Rage of the Sleeper" );
 
   // Restoration
+  sim->print_debug( "Initializing restoration talents..." );
   talent.lifebloom                      = ST( "Lifebloom" );
   talent.efflorescence                  = ST( "Efflorescence" );
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
@@ -9054,7 +9060,7 @@ void druid_t::init_spells()
   talent.overgrowth                     = ST( "Overgrowth" );
   talent.spring_blossoms                = ST( "Spring Blossoms" );
   talent.rampant_growth                 = ST( "Rampant Growth" );
-  talent.autumn_leaves                  = ST( "Autumn Leaves" );
+  talent.autumn_leaves                  = ST( "Autumn Leaves [no extension]" );
   talent.grove_tending                  = ST( "Grove Tending" );
   talent.memory_of_the_mother_tree      = ST( "Memory of the Mother Tree" );
   talent.invigorate                     = ST( "Invigorate" );  // NNF
