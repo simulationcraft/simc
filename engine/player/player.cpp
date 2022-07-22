@@ -10138,10 +10138,7 @@ player_talent_t player_t::find_talent_spell(
   if ( trait == &trait_data_t::nil() )
   {
     sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
-                      tree == talent_tree::CLASS            ? "class"
-                      : tree == talent_tree::SPECIALIZATION ? "spec"
-                                                            : "invalid",
-                      name );
+        util::talent_tree_string( tree ), name );
   }
 
   return create_talent_obj( this, s, trait );
@@ -10160,10 +10157,7 @@ player_talent_t player_t::find_talent_spell(
   if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
-                      tree == talent_tree::CLASS            ? "class"
-                      : tree == talent_tree::SPECIALIZATION ? "spec"
-                                                            : "invalid",
-                      spell_id );
+        util::talent_tree_string( tree ), spell_id );
     return { this };
   }
 
