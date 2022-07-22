@@ -6135,6 +6135,13 @@ struct howling_blast_t : public death_knight_spell_t
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.rage_of_the_frozen_champion );
     }
+	
+	if ( p() -> buffs.rime -> check() && p() -> talent.frost.rage_of_the_frozen_champion.ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER,
+                            p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> gains.rage_of_the_frozen_champion );
+    }
 
     p() -> buffs.rime -> decrement();
   }
@@ -9517,7 +9524,7 @@ void death_knight_t::create_buffs()
 
   buffs.rime = make_buff( this, "rime", talent.frost.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.frost.rime )
-        -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
+        -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + ( legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() || talent.frost.rage_of_the_frozen_champion -> effectN( 1 ).percent() ) );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
