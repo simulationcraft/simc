@@ -1254,7 +1254,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
 
   // Blood
-  debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood.spell() )
+  debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
                            -> set_cooldown( 0_ms );  // Handled by the action
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
@@ -1272,7 +1272,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                              else if ( new_ == 0 )
                                p -> festering_wounds_target_count--;
                            } );
-  debuff.unholy_blight    = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy.unholy_blight.spell() -> effectN( 1 ).trigger() )
+  debuff.unholy_blight    = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
 
   // Apocalypse Death Knight Runeforge Debuffs
@@ -1385,7 +1385,7 @@ inline void runes_t::consume( unsigned runes )
   {
     auto full_runes = static_cast<int>( dk -> resources.current[ RESOURCE_RUNE ] );
     if ( ! dk -> buffs.frozen_pulse -> check() &&
-         full_runes < dk -> talent.frost.frozen_pulse.spell() -> effectN( 2 ).base_value() )
+         full_runes < dk -> talent.frost.frozen_pulse -> effectN( 2 ).base_value() )
     {
       dk -> buffs.frozen_pulse -> trigger();
     }
@@ -1637,7 +1637,7 @@ inline void rune_t::fill_rune( gain_t* gain )
   {
     auto full_runes = static_cast<int>( runes -> dk -> resources.current[ RESOURCE_RUNE ] );
     if ( runes -> dk -> buffs.frozen_pulse -> check() &&
-         full_runes >= runes -> dk -> talent.frost.frozen_pulse.spell() -> effectN( 2 ).base_value() )
+         full_runes >= runes -> dk -> talent.frost.frozen_pulse -> effectN( 2 ).base_value() )
     {
       runes -> dk -> buffs.frozen_pulse -> expire();
     }
@@ -2048,7 +2048,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       pet_melee_attack_t::impact( state );
 
       if ( triggers_infected_claws && dk() -> talent.unholy.infected_claws.ok() &&
-           rng().roll( dk() -> talent.unholy.infected_claws.spell() -> effectN( 1 ).percent() ) )
+           rng().roll( dk() -> talent.unholy.infected_claws -> effectN( 1 ).percent() ) )
       {
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
       }
@@ -2334,7 +2334,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
       return;
     }
 
-    double increase = rp_spent * dark_empowerment -> data().effectN( 1 ).percent() / dk() -> talent.unholy.summon_gargoyle.spell() -> effectN( 4 ).base_value();
+    double increase = rp_spent * dark_empowerment -> data().effectN( 1 ).percent() / dk() -> talent.unholy.summon_gargoyle -> effectN( 4 ).base_value();
 
     if ( ! dark_empowerment -> check() )
     {
@@ -2443,14 +2443,14 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       drw_action_t<spell_t>( p, "blood_plague", p -> dk() -> spell.blood_plague )
     {
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
-      this -> base_tick_time *= 1.0 + dk() -> talent.blood.rapid_decomposition.spell() -> effectN( 1 ).percent();
+      this -> base_tick_time *= 1.0 + dk() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     }
   };
 
   struct blood_boil_t: public drw_action_t<spell_t>
   {
     blood_boil_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<spell_t>( p, "blood_boil", p -> dk() -> talent.blood.blood_boil.spell() )
+      drw_action_t<spell_t>( p, "blood_boil", p -> dk() -> talent.blood.blood_boil )
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
@@ -2461,7 +2461,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct deaths_caress_t : public drw_action_t<spell_t>
   {
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t( p, "deaths_caress", p -> dk() -> talent.blood.deaths_caress.spell() )
+      drw_action_t( p, "deaths_caress", p -> dk() -> talent.blood.deaths_caress )
     {
       this -> impact_action = p -> ability.blood_plague;
     }
@@ -2470,7 +2470,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct death_strike_t : public drw_action_t<melee_attack_t>
   {
     death_strike_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<melee_attack_t>( p, "death_strike", p -> dk() -> talent.death_strike.spell() )
+      drw_action_t<melee_attack_t>( p, "death_strike", p -> dk() -> talent.death_strike )
     { }
 
     double action_multiplier() const override
@@ -2498,7 +2498,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     }
 
     int n_targets() const override
-    { return dk() -> in_death_and_decay() ? aoe + as<int>( dk() -> talent.cleaving_strikes.spell() -> effectN( 2 ).base_value() ) : aoe; }
+    { return dk() -> in_death_and_decay() ? aoe + as<int>( dk() -> talent.cleaving_strikes -> effectN( 2 ).base_value() ) : aoe; }
 
     double composite_target_multiplier( player_t* t ) const override
     {
@@ -2540,7 +2540,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct marrowrend_t : public drw_action_t<melee_attack_t>
   {
     marrowrend_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t<melee_attack_t>( p, "marrowrend", p -> dk() -> talent.blood.marrowrend.spell() )
+      drw_action_t<melee_attack_t>( p, "marrowrend", p -> dk() -> talent.blood.marrowrend )
     { }
 
     void impact( action_state_t* state ) override
@@ -3164,7 +3164,7 @@ struct blood_plague_t : public death_knight_disease_t
 
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
-    base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition.spell() -> effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
 
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
@@ -3198,7 +3198,7 @@ struct blood_plague_t : public death_knight_disease_t
     {
       // Healing is based off damage done, increased by Rapid Decomposition if talented
       heal -> base_dd_min = heal -> base_dd_max =
-        d -> state -> result_amount * ( 1.0 + p() -> talent.blood.rapid_decomposition.spell() -> effectN( 3 ).percent() );
+        d -> state -> result_amount * ( 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 3 ).percent() );
       heal -> execute();
     }
   }
@@ -3270,16 +3270,16 @@ struct virulent_plague_t : public death_knight_disease_t
     // TODO: Does VP also apply in aoe with superstrain? Keep at one target for now
     aoe = superstrain ? 0 : -1;
 
-    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever.spell() -> effectN( 1 ).percent();
+    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
 
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
     // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
     // Tested Oct 21 2020 in beta build 36294
     dot_duration += p -> conduits.lingering_plague -> effectN( 2 ).time_value();
-    dot_duration *= 1.0 + p -> talent.unholy.ebon_fever.spell() -> effectN( 2 ).percent();
+    dot_duration *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 2 ).percent();
 
     base_multiplier *= 1.0 + p -> conduits.lingering_plague.percent();
-    base_multiplier *= 1.0 + p -> talent.unholy.ebon_fever.spell() -> effectN( 3 ).percent();
+    base_multiplier *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 3 ).percent();
 
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -3371,7 +3371,7 @@ struct razorice_attack_t : public death_knight_melee_attack_t
 struct frozen_pulse_t : public death_knight_spell_t
 {
   frozen_pulse_t( death_knight_t* player ) :
-    death_knight_spell_t( "frozen_pulse", player, player -> talent.frost.frozen_pulse.spell() -> effectN( 1 ).trigger() )
+    death_knight_spell_t( "frozen_pulse", player, player -> talent.frost.frozen_pulse -> effectN( 1 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -3450,7 +3450,7 @@ struct melee_t : public death_knight_melee_attack_t
     if ( p() -> talent.runic_attenuation.ok() && p() -> rppm.runic_attenuation -> trigger()  )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                            p() -> talent.runic_attenuation.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+                            p() -> talent.runic_attenuation -> effectN( 1 ).trigger() -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
                             p() -> gains.runic_attenuation, this );
     }
 
@@ -3497,7 +3497,7 @@ struct melee_t : public death_knight_melee_attack_t
 
     // TODO: check whether spelldata is wrong or tooltip is using the wrong spelldata
     // Spelldata used in the tooltip: 15s
-    p() -> pets.bloodworms.spawn( p() -> talent.blood.bloodworms.spell() -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() -> duration(), 1 );
+    p() -> pets.bloodworms.spawn( p() -> talent.blood.bloodworms -> effectN( 2 ).trigger() -> effectN( 1 ).trigger() -> duration(), 1 );
     // Pet spawn spelldata: 16s
     // p() -> pets.bloodworms.spawn( p() -> talent.bloodworms -> effectN( 1 ).trigger() -> duration(), 1 );
   }
@@ -3671,7 +3671,7 @@ struct apocalypse_t : public death_knight_melee_attack_t
   int rune_generation;
 
   apocalypse_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "apocalypse", p, p -> talent.unholy.apocalypse.spell() ),
+    death_knight_melee_attack_t( "apocalypse", p, p -> talent.unholy.apocalypse ),
     summon_duration( p -> find_spell( 221180 ) -> duration() ),
     rune_generation( as<int>( p -> find_spell( 343758 ) -> effectN( 1 ).base_value() ) )
   {
@@ -3754,9 +3754,9 @@ struct army_of_the_dead_t : public death_knight_spell_t
   };
 
   army_of_the_dead_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "army_of_the_dead", p, p -> talent.unholy.army_of_the_dead.spell() ),
+    death_knight_spell_t( "army_of_the_dead", p, p -> talent.unholy.army_of_the_dead ),
     precombat_time( 6.0 ),
-    summon_duration( p -> talent.unholy.army_of_the_dead.spell() -> effectN( 1 ).trigger() -> duration() )
+    summon_duration( p -> talent.unholy.army_of_the_dead -> effectN( 1 ).trigger() -> duration() )
   {
     // disable_aotd=1 can be added to the profile to disable aotd usage, for example for specific dungeon simming
 
@@ -3859,13 +3859,13 @@ struct army_of_the_dead_t : public death_knight_spell_t
 struct blood_boil_t : public death_knight_spell_t
 {
   blood_boil_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "blood_boil", p, p -> talent.blood.blood_boil.spell() )
+    death_knight_spell_t( "blood_boil", p, p -> talent.blood.blood_boil )
   {
     parse_options( options_str );
 
     aoe = -1;
     cooldown -> hasted = true;
-    cooldown -> charges += as<int>( p -> talent.blood.blood_boil_r2.spell() -> effectN( 1 ).base_value() );
+    cooldown -> charges += as<int>( p -> talent.blood.blood_boil_r2 -> effectN( 1 ).base_value() );
     impact_action = get_action<blood_plague_t>( "blood_plague", p );
   }
 
@@ -3907,7 +3907,7 @@ struct blood_boil_t : public death_knight_spell_t
 struct blood_tap_t : public death_knight_spell_t
 {
   blood_tap_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "blood_tap", p, p -> talent.blood.blood_tap.spell() )
+    death_knight_spell_t( "blood_tap", p, p -> talent.blood.blood_tap )
   {
     parse_options( options_str );
   }
@@ -3916,7 +3916,7 @@ struct blood_tap_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> replenish_rune( as<int>( p() -> talent.blood.blood_tap.spell() -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
+    p() -> replenish_rune( as<int>( p() -> talent.blood.blood_tap -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
   }
 };
 
@@ -3925,7 +3925,7 @@ struct blood_tap_t : public death_knight_spell_t
 struct blooddrinker_heal_t : public death_knight_heal_t
 {
   blooddrinker_heal_t( util::string_view name, death_knight_t* p ) :
-    death_knight_heal_t( name, p, p -> talent.blood.blooddrinker.spell() )
+    death_knight_heal_t( name, p, p -> talent.blood.blooddrinker )
   {
     background = true;
     callbacks = may_crit = may_miss = false;
@@ -3944,7 +3944,7 @@ struct blooddrinker_t : public death_knight_spell_t
   action_t* heal;
 
   blooddrinker_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "blooddrinker", p, p -> talent.blood.blooddrinker.spell() ),
+    death_knight_spell_t( "blooddrinker", p, p -> talent.blood.blooddrinker ),
     heal( get_action<blooddrinker_heal_t>( "blooddrinker_heal", p ) )
   {
     parse_options( options_str );
@@ -3989,7 +3989,7 @@ struct bonestorm_damage_t : public death_knight_spell_t
   int heal_count;
 
   bonestorm_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> talent.blood.bonestorm.spell() -> effectN( 3 ).trigger() ),
+    death_knight_spell_t( name, p, p -> talent.blood.bonestorm -> effectN( 3 ).trigger() ),
     heal( get_action<bonestorm_heal_t>( "bonestorm_heal", p ) ), heal_count( 0 )
   {
     background = true;
@@ -4010,7 +4010,7 @@ struct bonestorm_damage_t : public death_knight_spell_t
     if ( result_is_hit( state -> result ) )
     {
       // Healing is limited at 5 occurnces per tick, regardless of enemies hit
-      if ( heal_count < p() -> talent.blood.bonestorm.spell() -> effectN( 4 ).base_value() )
+      if ( heal_count < p() -> talent.blood.bonestorm -> effectN( 4 ).base_value() )
       {
         heal -> execute();
         heal_count++;
@@ -4022,7 +4022,7 @@ struct bonestorm_damage_t : public death_knight_spell_t
 struct bonestorm_t : public death_knight_spell_t
 {
   bonestorm_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "bonestorm", p, p -> talent.blood.bonestorm.spell() )
+    death_knight_spell_t( "bonestorm", p, p -> talent.blood.bonestorm )
   {
     parse_options( options_str );
     hasted_ticks = false;
@@ -4044,7 +4044,7 @@ struct bonestorm_t : public death_knight_spell_t
 struct breath_of_sindragosa_tick_t: public death_knight_spell_t
 {
   breath_of_sindragosa_tick_t( util::string_view name, death_knight_t* p ):
-    death_knight_spell_t( name, p, p -> talent.frost.breath_of_sindragosa.spell() -> effectN( 1 ).trigger() )
+    death_knight_spell_t( name, p, p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).trigger() )
   {
     aoe = -1;
     background = true;
@@ -4076,8 +4076,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
   action_t* bos_damage;
 
   breath_of_sindragosa_buff_t( death_knight_t* p ) :
-    buff_t( p, "breath_of_sindragosa", p -> talent.frost.breath_of_sindragosa.spell() ),
-    ticking_cost( 0.0 ), tick_period( p -> talent.frost.breath_of_sindragosa.spell() -> effectN( 1 ).period() ),
+    buff_t( p, "breath_of_sindragosa", p -> talent.frost.breath_of_sindragosa ),
+    ticking_cost( 0.0 ), tick_period( p -> talent.frost.breath_of_sindragosa -> effectN( 1 ).period() ),
     rune_gen( as<int>( p -> find_spell( 303753 ) -> effectN( 1 ).base_value() ) )
   {
     tick_zero = true;
@@ -4173,7 +4173,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
 struct breath_of_sindragosa_t : public death_knight_spell_t
 {
   breath_of_sindragosa_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "breath_of_sindragosa", p, p -> talent.frost.breath_of_sindragosa.spell() )
+    death_knight_spell_t( "breath_of_sindragosa", p, p -> talent.frost.breath_of_sindragosa )
   {
     parse_options( options_str );
     base_tick_time = 0_ms; // Handled by the buff
@@ -4229,7 +4229,7 @@ struct chains_of_ice_t : public death_knight_spell_t
   action_t* cold_heart;
 
   chains_of_ice_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "chains_of_ice", p, p -> talent.chains_of_ice.spell() )
+    death_knight_spell_t( "chains_of_ice", p, p -> talent.chains_of_ice )
   {
     parse_options( options_str );
     cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
@@ -4291,7 +4291,7 @@ struct chill_streak_t : public death_knight_spell_t
   chill_streak_damage_t* damage;
 
   chill_streak_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "chill_streak", p, p -> talent.frost.chill_streak.spell() ),
+    death_knight_spell_t( "chill_streak", p, p -> talent.frost.chill_streak ),
     damage( new chill_streak_damage_t( p ) )
   {
     parse_options( options_str );
@@ -4312,7 +4312,7 @@ struct chill_streak_t : public death_knight_spell_t
 struct consumption_t : public death_knight_melee_attack_t
 {
   consumption_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_melee_attack_t( "consumption", p, p -> talent.blood.consumption.spell() )
+    : death_knight_melee_attack_t( "consumption", p, p -> talent.blood.consumption )
   {
     // TODO: Healing from damage done
 
@@ -4362,7 +4362,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
 {
   int bone_shield_stack_gain;
   dancing_rune_weapon_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "dancing_rune_weapon", p, p -> talent.blood.dancing_rune_weapon.spell() ),
+    death_knight_spell_t( "dancing_rune_weapon", p, p -> talent.blood.dancing_rune_weapon ),
     bone_shield_stack_gain( 0 )
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
@@ -4437,7 +4437,7 @@ struct unholy_pact_buff_t : public buff_t
 
   unholy_pact_buff_t( death_knight_t* p ) :
     buff_t( p, "unholy_pact",
-      p -> talent.unholy.unholy_pact.spell() -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
+      p -> talent.unholy.unholy_pact -> effectN( 1 ).trigger() -> effectN( 1 ).trigger() ),
     damage( get_action<unholy_pact_damage_t>( "unholy_pact", p ) )
   {
     set_default_value( data().effectN( 4 ).trigger() -> effectN( 1 ).percent() );
@@ -4475,7 +4475,7 @@ struct dark_transformation_damage_t : public death_knight_spell_t
 struct dark_transformation_buff_t : public buff_t
 {
   dark_transformation_buff_t( death_knight_t* p ) :
-    buff_t( p, "dark_transformation", p -> talent.unholy.dark_transformation.spell() )
+    buff_t( p, "dark_transformation", p -> talent.unholy.dark_transformation )
   {
     base_buff_duration += p -> conduits.eternal_hunger -> effectN( 2 ).time_value();
     set_default_value_from_effect( 1 );
@@ -4505,7 +4505,7 @@ struct dark_transformation_t : public death_knight_spell_t
   bool precombat_frenzy;
 
   dark_transformation_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "dark_transformation", p, p -> talent.unholy.dark_transformation.spell() ),
+    death_knight_spell_t( "dark_transformation", p, p -> talent.unholy.dark_transformation ),
     precombat_frenzy( false )
   {
     add_option( opt_bool( "precombat_frenzy", precombat_frenzy ) );
@@ -4629,7 +4629,7 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
          pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
          pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
     {
-      if ( rng().roll( p() -> talent.unholy.pestilence.spell() -> effectN( 1 ).percent() ) )
+      if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
       {
         p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
         pestilence_procs_per_tick++;
@@ -4819,7 +4819,7 @@ private:
   timespan_t compute_tick_time() const
   {
     auto base = data().effectN( 3 ).period();
-    base *= 1.0 + p() -> talent.blood.rapid_decomposition.spell() -> effectN( 1 ).percent();
+    base *= 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
 
     return base;
   }
@@ -4851,7 +4851,7 @@ struct death_and_decay_t : public death_and_decay_base_t
 struct defile_t : public death_and_decay_base_t
 {
   defile_t( death_knight_t* p, util::string_view options_str ) :
-    death_and_decay_base_t( p, "defile", p -> talent.unholy.defile.spell() )
+    death_and_decay_base_t( p, "defile", p -> talent.unholy.defile )
   {
     damage = get_action<defile_damage_t>( "defile_damage", p );
 
@@ -4894,7 +4894,7 @@ struct deaths_due_t : public death_and_decay_base_t
 struct deaths_caress_t : public death_knight_spell_t
 {
   deaths_caress_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "deaths_caress", p, p -> talent.blood.deaths_caress.spell() )
+    death_knight_spell_t( "deaths_caress", p, p -> talent.blood.deaths_caress )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -4989,10 +4989,10 @@ struct death_coil_t : public death_knight_spell_t
 
     // Reduce the cooldown on Apocalypse and Army of the Dead if Army of the Damned is talented
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-      p() -> talent.unholy.army_of_the_damned.spell() -> effectN( 1 ).base_value() / 10 ) );
+      p() -> talent.unholy.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
-      p() -> talent.unholy.army_of_the_damned.spell() -> effectN( 2 ).base_value() / 10 ) );
+      p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
     p() -> cooldown.death_and_decay_dynamic -> adjust( -timespan_t::from_seconds(
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
@@ -5050,8 +5050,8 @@ struct death_strike_heal_t : public death_knight_heal_t
   death_strike_heal_t( util::string_view name, death_knight_t* p ) :
     death_knight_heal_t( name, p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
-    interval( timespan_t::from_seconds( p -> talent.death_strike.spell() -> effectN( 4 ).base_value() ) ),
-    minimum_healing( p -> talent.death_strike.spell() -> effectN( 3 ).percent() ),
+    interval( timespan_t::from_seconds( p -> talent.death_strike -> effectN( 4 ).base_value() ) ),
+    minimum_healing( p -> talent.death_strike -> effectN( 3 ).percent() ),
     last_death_strike_cost( 0 )
   {
     may_crit = callbacks = false;
@@ -5064,7 +5064,7 @@ struct death_strike_heal_t : public death_knight_heal_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/627
     if ( p -> bugs && p -> talent.blood.voracious.ok() )
     {
-      minimum_healing = std::floor( (minimum_healing * (1.0 + p -> talent.blood.voracious.spell() -> effectN( 3 ).percent())) * 100 ) / 100;
+      minimum_healing = std::floor( (minimum_healing * (1.0 + p -> talent.blood.voracious -> effectN( 3 ).percent())) * 100 ) / 100;
     }
 
     // TODO: Implement Death Strike rank 2 healing increase for dps specs
@@ -5080,13 +5080,13 @@ struct death_strike_heal_t : public death_knight_heal_t
   double base_da_min( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
-                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike.spell() -> effectN( 2 ).percent() );
+                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike -> effectN( 2 ).percent() );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
     return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
-                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike.spell() -> effectN( 2 ).percent() );
+                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike -> effectN( 2 ).percent() );
   }
 
   double action_multiplier() const override
@@ -5097,7 +5097,7 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     // see Voracious bug in constructor
     if ( ! p() -> bugs )
-      m *= 1.0 + p() -> talent.blood.voracious.spell() -> effectN( 2 ).percent();
+      m *= 1.0 + p() -> talent.blood.voracious -> effectN( 2 ).percent();
 
     return m;
   }
@@ -5155,7 +5155,7 @@ struct death_strike_t : public death_knight_melee_attack_t
   action_t* heal;
 
   death_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "death_strike", p, p -> talent.death_strike.spell() ),
+    death_knight_melee_attack_t( "death_strike", p, p -> talent.death_strike ),
     oh_attack( nullptr ),
     heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) )
   {
@@ -5262,7 +5262,7 @@ struct empower_rune_weapon_buff_t : public buff_t
 {
   empower_rune_weapon_buff_t( death_knight_t* p ) :
 
-    buff_t( p, "empower_rune_weapon", p -> talent.empower_rune_weapon.spell() )
+    buff_t( p, "empower_rune_weapon", p -> talent.empower_rune_weapon )
   {
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled in the action
@@ -5286,7 +5286,7 @@ struct empower_rune_weapon_buff_t : public buff_t
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "empower_rune_weapon", p, p -> talent.empower_rune_weapon.spell() )
+    death_knight_spell_t( "empower_rune_weapon", p, p -> talent.empower_rune_weapon )
   {
     parse_options( options_str );
 
@@ -5349,7 +5349,7 @@ struct epidemic_damage_aoe_t : public death_knight_spell_t
 struct epidemic_t : public death_knight_spell_t
 {
   epidemic_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic.spell() )
+    death_knight_spell_t( "epidemic", p, p -> talent.unholy.epidemic )
   {
     parse_options( options_str );
 
@@ -5394,10 +5394,10 @@ struct epidemic_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-      p() -> talent.unholy.army_of_the_damned.spell() -> effectN( 1 ).base_value() / 10 ) );
+      p() -> talent.unholy.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
-      p() -> talent.unholy.army_of_the_damned.spell() -> effectN( 2 ).base_value() / 10 ) );
+      p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -5467,7 +5467,7 @@ struct festering_wound_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_melee_attack_t
 {
   festering_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike.spell() )
+    death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -5504,7 +5504,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
   action_t* inexorable_assault;
 
   frostscythe_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frost.frostscythe.spell() )
+    death_knight_melee_attack_t( "frostscythe", p, p -> talent.frost.frostscythe )
   {
     parse_options( options_str );
 
@@ -5575,7 +5575,7 @@ struct frostwyrms_fury_damage_t : public death_knight_spell_t
 struct frostwyrms_fury_t : public death_knight_spell_t
 {
   frostwyrms_fury_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frost.frostwyrms_fury.spell() )
+    death_knight_spell_t( "frostwyrms_fury_driver", p, p -> talent.frost.frostwyrms_fury )
   {
     parse_options( options_str );
     execute_action = get_action<frostwyrms_fury_damage_t>( "frostwyrms_fury", p );
@@ -5638,7 +5638,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
   frost_strike_strike_t *mh, *oh;
 
   frost_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike.spell() ),
+    death_knight_melee_attack_t( "frost_strike", p, p -> talent.frost.frost_strike ),
     mh( nullptr ), oh( nullptr )
   {
     parse_options( options_str );
@@ -5683,7 +5683,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
                                            p() -> procs.km_from_obliteration_fs_wasted );
 
       // Obliteration's rune generation
-      if ( rng().roll( p() -> talent.frost.obliteration.spell() -> effectN( 2 ).percent() ) )
+      if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -5740,7 +5740,7 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
     glacial_advance_damage_t::execute();
 
     // Obliteration's rune generation
-    if ( rng().roll( p() -> talent.frost.obliteration.spell() -> effectN( 2 ).percent() ) )
+    if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
     {
       // WTB spelldata for the rune gain
       p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -5761,7 +5761,7 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
 struct glacial_advance_t : public death_knight_spell_t
 {
   glacial_advance_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "glacial_advance", p, p -> talent.frost.glacial_advance.spell() )
+    death_knight_spell_t( "glacial_advance", p, p -> talent.frost.glacial_advance )
   {
     parse_options( options_str );
 
@@ -5781,7 +5781,7 @@ struct glacial_advance_t : public death_knight_spell_t
                                            p() -> procs.km_from_obliteration_ga_wasted );
 
       // Obliteration's rune generation
-      if ( rng().roll( p() -> talent.frost.obliteration.spell() -> effectN( 2 ).percent() ) )
+      if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -5798,7 +5798,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   bool is_t28_counterattack;
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike.spell() ),
+    death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike ),
     heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     parse_options( options_str );
@@ -5813,7 +5813,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
   heart_strike_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> talent.blood.heart_strike.spell() ),
+    death_knight_melee_attack_t( name, p, p -> talent.blood.heart_strike ),
     heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     background = proc = may_crit = true;
@@ -5845,7 +5845,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   }
 
   int n_targets() const override
-  { return p() -> in_death_and_decay() ? aoe + as<int>( p() -> talent.cleaving_strikes.spell() -> effectN( 3 ).base_value() ) : aoe; }
+  { return p() -> in_death_and_decay() ? aoe + as<int>( p() -> talent.cleaving_strikes -> effectN( 3 ).base_value() ) : aoe; }
 
   double composite_target_multiplier( player_t* t ) const override
   {
@@ -5916,7 +5916,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 struct horn_of_winter_t : public death_knight_spell_t
 {
   horn_of_winter_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "horn_of_winter", p, p -> talent.horn_of_winter.spell() )
+    death_knight_spell_t( "horn_of_winter", p, p -> talent.horn_of_winter )
   {
     parse_options( options_str );
     harmful = false;
@@ -5950,7 +5950,7 @@ struct howling_blast_t : public death_knight_spell_t
   action_t* avalanche;
 
   howling_blast_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "howling_blast", p, p -> talent.frost.howling_blast.spell() )
+    death_knight_spell_t( "howling_blast", p, p -> talent.frost.howling_blast )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6052,7 +6052,7 @@ struct howling_blast_t : public death_knight_spell_t
                                            p() -> procs.km_from_obliteration_hb_wasted );
 
       // Obliteration's rune generation
-      if ( rng().roll( p() -> talent.frost.obliteration.spell() -> effectN( 2 ).percent() ) )
+      if ( rng().roll( p() -> talent.frost.obliteration -> effectN( 2 ).percent() ) )
       {
         // WTB spelldata for the rune gain
         p() -> replenish_rune( 1, p() -> gains.obliteration );
@@ -6102,7 +6102,7 @@ struct insatiable_hunger_damage_t : public death_knight_spell_t
 struct marrowrend_t : public death_knight_melee_attack_t
 {
   marrowrend_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "marrowrend", p, p -> talent.blood.marrowrend.spell() )
+    death_knight_melee_attack_t( "marrowrend", p, p -> talent.blood.marrowrend )
   {
     parse_options( options_str );
     weapon = &( p -> main_hand_weapon );
@@ -6197,7 +6197,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
     if ( p -> talent.frost.might_of_the_frozen_wastes.ok() && p -> main_hand_weapon.group() == WEAPON_2H )
     {
-      base_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes.spell() -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes -> effectN( 1 ).percent();
     }
     if ( p -> legendary.koltiras_favor.ok() )
     {
@@ -6277,7 +6277,7 @@ struct obliterate_t : public death_knight_melee_attack_t
   action_t* inexorable_assault;
 
   obliterate_t( death_knight_t* p, util::string_view options_str = {} ) :
-    death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate.spell() ),
+    death_knight_melee_attack_t( "obliterate", p, p -> talent.frost.obliterate ),
     mh( nullptr ), oh( nullptr ), km_mh( nullptr ), km_oh( nullptr )
   {
     parse_options( options_str );
@@ -6403,7 +6403,7 @@ struct virulent_eruption_t : public death_knight_spell_t
 struct outbreak_t : public death_knight_spell_t
 {
   outbreak_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak.spell() )
+    death_knight_spell_t( "outbreak" ,p , p -> talent.unholy.outbreak )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6426,8 +6426,8 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
     buff_t( p, "pillar_of_frost_bonus" )
   {
     set_max_stack( 99 );
-    set_duration( p -> talent.frost.pillar_of_frost.spell() -> duration() );
-    set_default_value( p -> talent.frost.pillar_of_frost.spell() -> effectN( 2 ).percent() );
+    set_duration( p -> talent.frost.pillar_of_frost -> duration() );
+    set_default_value( p -> talent.frost.pillar_of_frost -> effectN( 2 ).percent() );
 
     add_invalidate( CACHE_STRENGTH );
   }
@@ -6436,7 +6436,7 @@ struct pillar_of_frost_bonus_buff_t : public buff_t
 struct pillar_of_frost_buff_t : public buff_t
 {
   pillar_of_frost_buff_t( death_knight_t* p ) :
-    buff_t( p, "pillar_of_frost", p -> talent.frost.pillar_of_frost.spell() )
+    buff_t( p, "pillar_of_frost", p -> talent.frost.pillar_of_frost )
   {
     cooldown -> duration = 0_ms;
     set_default_value( p -> talent.frost.pillar_of_frost -> effectN( 1 ).percent() );
@@ -6466,7 +6466,7 @@ struct pillar_of_frost_buff_t : public buff_t
 struct pillar_of_frost_t : public death_knight_spell_t
 {
   pillar_of_frost_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "pillar_of_frost", p, p -> talent.frost.pillar_of_frost.spell() )
+    death_knight_spell_t( "pillar_of_frost", p, p -> talent.frost.pillar_of_frost )
   {
     parse_options( options_str );
 
@@ -6487,11 +6487,11 @@ struct raise_dead_t : public death_knight_spell_t
 {
   raise_dead_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "raise_dead", p, p -> talent.unholy.raise_dead.ok() ?
-                          p -> talent.unholy.raise_dead.spell() : p -> talent.raise_dead.spell() )
+                          p -> talent.unholy.raise_dead : p -> talent.raise_dead )
   {
     parse_options( options_str );
 
-    cooldown -> duration += p -> talent.unholy.all_will_serve.spell() -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> talent.unholy.all_will_serve -> effectN( 1 ).time_value();
 
     harmful = false;
   }
@@ -6535,7 +6535,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   bool triggered_biting_cold;
 
   remorseless_winter_damage_t( death_knight_t* p ) :
-    death_knight_spell_t( "remorseless_winter_damage", p, p -> talent.frost.remorseless_winter.spell() -> effectN( 2 ).trigger() ),
+    death_knight_spell_t( "remorseless_winter_damage", p, p -> talent.frost.remorseless_winter -> effectN( 2 ).trigger() ),
     biting_cold_target_threshold( 0 ), triggered_biting_cold( false )
   {
     background = true;
@@ -6596,7 +6596,7 @@ struct remorseless_winter_buff_t : public buff_t
   remorseless_winter_damage_t* damage; // (AOE) damage that ticks every second
 
   remorseless_winter_buff_t( death_knight_t* p ) :
-    buff_t( p, "remorseless_winter", p -> talent.frost.remorseless_winter.spell() ),
+    buff_t( p, "remorseless_winter", p -> talent.frost.remorseless_winter ),
     damage( new remorseless_winter_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
@@ -6628,7 +6628,7 @@ struct remorseless_winter_buff_t : public buff_t
 struct remorseless_winter_t : public death_knight_spell_t
 {
   remorseless_winter_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "remorseless_winter", p, p -> talent.frost.remorseless_winter.spell() )
+    death_knight_spell_t( "remorseless_winter", p, p -> talent.frost.remorseless_winter )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
 
@@ -6679,7 +6679,7 @@ struct sacrificial_pact_t : public death_knight_heal_t
 {
   action_t* damage;
   sacrificial_pact_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_heal_t( "sacrificial_pact", p, p -> talent.sacrificial_pact.spell() )
+    death_knight_heal_t( "sacrificial_pact", p, p -> talent.sacrificial_pact )
   {
     target = p;
     base_pct_heal = data().effectN( 1 ).percent();
@@ -6786,7 +6786,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 struct clawing_shadows_t : public scourge_strike_base_t
 {
   clawing_shadows_t( death_knight_t* p, util::string_view options_str ) :
-    scourge_strike_base_t( "clawing_shadows", p, p -> talent.unholy.clawing_shadows.spell() )
+    scourge_strike_base_t( "clawing_shadows", p, p -> talent.unholy.clawing_shadows )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6797,7 +6797,7 @@ struct clawing_shadows_t : public scourge_strike_base_t
 struct scourge_strike_shadow_t : public death_knight_melee_attack_t
 {
   scourge_strike_shadow_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> talent.unholy.scourge_strike.spell() -> effectN( 3 ).trigger() )
+    death_knight_melee_attack_t( name, p, p -> talent.unholy.scourge_strike -> effectN( 3 ).trigger() )
   {
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
@@ -6809,7 +6809,7 @@ struct scourge_strike_shadow_t : public death_knight_melee_attack_t
 struct scourge_strike_t : public scourge_strike_base_t
 {
   scourge_strike_t( death_knight_t* p, util::string_view options_str ) :
-    scourge_strike_base_t( "scourge_strike", p, p -> talent.unholy.scourge_strike.spell() )
+    scourge_strike_base_t( "scourge_strike", p, p -> talent.unholy.scourge_strike )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6878,7 +6878,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   action_t* soul_reaper_execute;
 
   soul_reaper_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "soul_reaper", p, p -> talent.soul_reaper.spell() ),
+    death_knight_melee_attack_t( "soul_reaper", p, p -> talent.soul_reaper ),
     soul_reaper_execute( get_action<soul_reaper_execute_t>( "soul_reaper_execute", p ) )
   {
     parse_options( options_str );
@@ -6958,7 +6958,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
 struct summon_gargoyle_t : public death_knight_spell_t
 {
   summon_gargoyle_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "summon_gargoyle", p, p -> talent.unholy.summon_gargoyle.spell() )
+    death_knight_spell_t( "summon_gargoyle", p, p -> talent.unholy.summon_gargoyle )
   {
     parse_options( options_str );
     harmful = false;
@@ -7080,7 +7080,7 @@ struct swarming_mist_t : public death_knight_spell_t
 struct tombstone_t : public death_knight_spell_t
 {
   tombstone_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "tombstone", p, p -> talent.blood.tombstone.spell() )
+    death_knight_spell_t( "tombstone", p, p -> talent.blood.tombstone )
   {
     parse_options( options_str );
 
@@ -7108,7 +7108,7 @@ struct tombstone_t : public death_knight_spell_t
     p() -> cooldown.dancing_rune_weapon -> adjust( p() -> legendary.crimson_rune_weapon -> effectN( 1 ).time_value() * charges );
     if ( p() -> talent.blood.blood_tap.ok() )
     {
-      p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap.spell() -> effectN( 2 ).base_value() ) * charges );
+      p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap -> effectN( 2 ).base_value() ) * charges );
     }
   }
 };
@@ -7118,7 +7118,7 @@ struct tombstone_t : public death_knight_spell_t
 struct unholy_blight_dot_t : public death_knight_spell_t
 {
   unholy_blight_dot_t( death_knight_t* p ) :
-    death_knight_spell_t( "unholy_blight_dot", p, p -> talent.unholy.unholy_blight.spell() -> effectN( 1 ).trigger() )
+    death_knight_spell_t( "unholy_blight_dot", p, p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
   {
     tick_may_crit = background = true;
     may_miss = may_crit = hasted_ticks = false;
@@ -7139,7 +7139,7 @@ struct unholy_blight_buff_t : public buff_t
   unholy_blight_dot_t* dot;
 
   unholy_blight_buff_t( death_knight_t* p ) :
-    buff_t( p, "unholy_blight", p -> talent.unholy.unholy_blight.spell() ),
+    buff_t( p, "unholy_blight", p -> talent.unholy.unholy_blight ),
     dot( new unholy_blight_dot_t( p ) )
   {
     cooldown -> duration = 0_ms;
@@ -7153,7 +7153,7 @@ struct unholy_blight_buff_t : public buff_t
 struct unholy_blight_t : public death_knight_spell_t
 {
   unholy_blight_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight.spell() )
+    death_knight_spell_t( "unholy_blight", p, p -> talent.unholy.unholy_blight )
   {
     may_crit = may_miss = may_dodge = may_parry = hasted_ticks = false;
     tick_zero = true;
@@ -7186,7 +7186,7 @@ struct unholy_blight_t : public death_knight_spell_t
 struct unholy_assault_t : public death_knight_melee_attack_t
 {
   unholy_assault_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "unholy_assault", p, p -> talent.unholy.unholy_assault.spell() )
+    death_knight_melee_attack_t( "unholy_assault", p, p -> talent.unholy.unholy_assault )
   {
     parse_options( options_str );
   }
@@ -7201,7 +7201,7 @@ struct unholy_assault_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    p()->trigger_festering_wound( s, as<int>( p() -> talent.unholy.unholy_assault.spell() -> effectN( 3 ).base_value() ),
+    p()->trigger_festering_wound( s, as<int>( p() -> talent.unholy.unholy_assault -> effectN( 3 ).base_value() ),
                                   p() -> procs.fw_unholy_assault );
   }
 };
@@ -7217,14 +7217,14 @@ struct antimagic_shell_buff_t : public buff_t
   double remaining_absorb;
 
   antimagic_shell_buff_t( death_knight_t* p ) :
-    buff_t( p, "antimagic_shell", p -> talent.antimagic_shell.spell() ),
+    buff_t( p, "antimagic_shell", p -> talent.antimagic_shell ),
     remaining_absorb( 0.0 )
   {
     cooldown -> duration = 0_ms;
 
 
     // Assuming AMB's 30% increase is applied after Runic Barrier
-    base_buff_duration *= 1.0 + p -> talent.antimagic_barrier.spell() -> effectN( 2 ).percent();
+    base_buff_duration *= 1.0 + p -> talent.antimagic_barrier -> effectN( 2 ).percent();
   }
 
   void execute( int stacks, double value, timespan_t duration ) override
@@ -7244,9 +7244,9 @@ struct antimagic_shell_buff_t : public buff_t
   double calc_absorb()
   {
     death_knight_t* dk = debug_cast< death_knight_t* >( player );
-    double max_absorb = dk -> resources.max[ RESOURCE_HEALTH ] * dk -> talent.antimagic_shell.spell() -> effectN( 2 ).percent();
+    double max_absorb = dk -> resources.max[ RESOURCE_HEALTH ] * dk -> talent.antimagic_shell -> effectN( 2 ).percent();
 
-    max_absorb *= 1.0 + dk -> talent.antimagic_barrier.spell() -> effectN( 2 ).percent();
+    max_absorb *= 1.0 + dk -> talent.antimagic_barrier -> effectN( 2 ).percent();
 
     max_absorb *= 1.0 + dk -> cache.heal_versatility();
 
@@ -7277,10 +7277,10 @@ struct antimagic_shell_t : public death_knight_spell_t
   double damage;
 
   antimagic_shell_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "antimagic_shell", p, p -> talent.antimagic_shell.spell() ),
+    death_knight_spell_t( "antimagic_shell", p, p -> talent.antimagic_shell ),
     min_interval( 60 ), interval( 60 ), interval_stddev( 0.05 ), interval_stddev_opt( 0 ), damage( 0 )
   {
-    cooldown -> duration += p -> talent.antimagic_barrier.spell() -> effectN( 1 ).time_value();
+    cooldown -> duration += p -> talent.antimagic_barrier -> effectN( 1 ).time_value();
     harmful = may_crit = may_miss = false;
     base_dd_min = base_dd_max = 0;
     target = player;
@@ -7290,7 +7290,7 @@ struct antimagic_shell_t : public death_knight_spell_t
     add_option( opt_float( "damage", damage ) );
     parse_options( options_str );
 
-    min_interval += p -> talent.antimagic_barrier.spell() -> effectN( 1 ).base_value();
+    min_interval += p -> talent.antimagic_barrier -> effectN( 1 ).base_value();
 
     // Don't allow lower than AMS cd intervals
     if ( interval < min_interval )
@@ -7348,7 +7348,7 @@ struct antimagic_shell_t : public death_knight_spell_t
 struct icebound_fortitude_t : public death_knight_spell_t
 {
   icebound_fortitude_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "icebound_fortitude", p, p -> talent.icebound_fortitude.spell() )
+    death_knight_spell_t( "icebound_fortitude", p, p -> talent.icebound_fortitude )
   {
     parse_options( options_str );
     harmful = false;
@@ -7368,7 +7368,7 @@ struct icebound_fortitude_t : public death_knight_spell_t
 struct mark_of_blood_heal_t : public death_knight_heal_t
 {
   mark_of_blood_heal_t( death_knight_t* p ) : // The data is removed and switched to the talent spell on PTR 8.3.0.32805
-    death_knight_heal_t( "mark_of_blood_heal", p, p -> talent.blood.mark_of_blood.spell() )
+    death_knight_heal_t( "mark_of_blood_heal", p, p -> talent.blood.mark_of_blood )
   {
     may_crit = callbacks = false;
     background = dual = true;
@@ -7380,7 +7380,7 @@ struct mark_of_blood_heal_t : public death_knight_heal_t
 struct mark_of_blood_t : public death_knight_spell_t
 {
   mark_of_blood_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "mark_of_blood", p, p -> talent.blood.mark_of_blood.spell() )
+    death_knight_spell_t( "mark_of_blood", p, p -> talent.blood.mark_of_blood )
   {
     parse_options( options_str );
   }
@@ -7398,7 +7398,7 @@ struct mark_of_blood_t : public death_knight_spell_t
 struct rune_tap_t : public death_knight_spell_t
 {
   rune_tap_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "rune_tap", p, p -> talent.blood.rune_tap.spell() )
+    death_knight_spell_t( "rune_tap", p, p -> talent.blood.rune_tap )
   {
     parse_options( options_str );
     use_off_gcd = true;
@@ -7421,7 +7421,7 @@ struct vampiric_blood_buff_t : public buff_t
   double health_change;
 
   vampiric_blood_buff_t( death_knight_t* player ) :
-    buff_t( player, "vampiric_blood", player -> talent.blood.vampiric_blood.spell() ),
+    buff_t( player, "vampiric_blood", player -> talent.blood.vampiric_blood ),
     health_change( data().effectN( 4 ).percent() )
   {
     // Cooldown handled by the action
@@ -7472,7 +7472,7 @@ struct vampiric_blood_t : public death_knight_spell_t
 {
   int gorefiends_domination_energize_amount;
   vampiric_blood_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "vampiric_blood", p, p -> talent.blood.vampiric_blood.spell() ),
+    death_knight_spell_t( "vampiric_blood", p, p -> talent.blood.vampiric_blood ),
     gorefiends_domination_energize_amount( 0 )
   {
     parse_options( options_str );
@@ -7853,11 +7853,11 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     // for each spell cast that normally consumes a rune (even if it ended up free)
     // But it doesn't count the original Relentless Winter cast
     if ( talent.frost.gathering_storm.ok() && buffs.remorseless_winter -> check() &&
-         action -> data().id() != talent.frost.remorseless_winter.spell() -> id() )
+         action -> data().id() != talent.frost.remorseless_winter -> id() )
     {
       unsigned consumed = static_cast<unsigned>( action -> base_costs[ RESOURCE_RUNE ] );
       buffs.gathering_storm -> trigger( consumed );
-      timespan_t base_extension = timespan_t::from_seconds( talent.frost.gathering_storm.spell() -> effectN( 1 ).base_value() / 10.0 );
+      timespan_t base_extension = timespan_t::from_seconds( talent.frost.gathering_storm -> effectN( 1 ).base_value() / 10.0 );
       buffs.remorseless_winter -> extend_duration( this, base_extension * consumed );
     }
 
@@ -7919,8 +7919,8 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     {
       if ( talent.blood.red_thirst.ok() )
       {
-        timespan_t sec = timespan_t::from_seconds( talent.blood.red_thirst.spell() -> effectN( 1 ).base_value() / 100 ) *
-          actual_amount / talent.blood.red_thirst.spell() -> effectN( 2 ).base_value();
+        timespan_t sec = timespan_t::from_seconds( talent.blood.red_thirst -> effectN( 1 ).base_value() / 100 ) *
+          actual_amount / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
     }
@@ -8016,7 +8016,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( talent.unholy.pestilent_pustules.ok() )
   {
-    trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules.spell() -> effectN( 1 ).percent() * n_wounds );
+    trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds );
   }
 
   // Triggers a bursting sores explosion for each wound on the target
@@ -8165,7 +8165,7 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
 
   buffs.killing_machine -> decrement();
 
-  if ( rng().roll( talent.frost.murderous_efficiency.spell() -> effectN( 1 ).percent() ) )
+  if ( rng().roll( talent.frost.murderous_efficiency -> effectN( 1 ).percent() ) )
   {
     replenish_rune( as<int>( spell.murderous_efficiency_gain -> effectN( 1 ).base_value() ), gains.murderous_efficiency );
   }
@@ -8176,7 +8176,7 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   if ( ! talent.runic_empowerment.ok() )
     return;
 
-  double base_chance = talent.runic_empowerment.spell() -> effectN( 1 ).percent() / 10.0;
+  double base_chance = talent.runic_empowerment -> effectN( 1 ).percent() / 10.0;
 
   if ( ! rng().roll( base_chance * rpcost ) )
     return;
@@ -8196,7 +8196,7 @@ void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, doub
   // Use the overriden chance if there's one and RP cost is 0
   proc_chance = ( !rpcost && override_chance != -1.0 ) ? override_chance :
     // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
-    talent.runic_corruption.spell() -> effectN( 1 ).percent() * rpcost / 100.0;
+    talent.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0;
 
   // Buff duration and refresh behavior handled in runic_corruption_buff_t
   if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
@@ -8262,7 +8262,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
       if ( dk -> talent.unholy.pestilent_pustules.ok() )
       {
-        dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules.spell() -> effectN( 1 ).percent() * n );
+        dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n );
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
@@ -8293,11 +8293,11 @@ void death_knight_t::start_inexorable_assault()
   // Inexorable assault keeps ticking out of combat and when it's at max stacks
   // We solve that by picking a random point at which the buff starts ticking
   timespan_t first = timespan_t::from_millis(
-    rng().range( 0, as<int>( talent.frost.inexorable_assault.spell() -> effectN( 1 ).period().total_millis() ) ) );
+    rng().range( 0, as<int>( talent.frost.inexorable_assault -> effectN( 1 ).period().total_millis() ) ) );
 
   make_event( *sim, first, [ this ]() {
     buffs.inexorable_assault -> trigger();
-    make_repeating_event( *sim, talent.frost.inexorable_assault.spell() -> effectN( 1 ).period(), [ this ]() {
+    make_repeating_event( *sim, talent.frost.inexorable_assault -> effectN( 1 ).period(), [ this ]() {
       buffs.inexorable_assault -> trigger();
     } );
   } );
@@ -8732,8 +8732,8 @@ void death_knight_t::init_rng()
 {
   player_t::init_rng();
 
-  rppm.bloodworms = get_rppm( "bloodworms", talent.blood.bloodworms.spell() );
-  rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation.spell() );
+  rppm.bloodworms = get_rppm( "bloodworms", talent.blood.bloodworms );
+  rppm.runic_attenuation = get_rppm( "runic_attenuation", talent.runic_attenuation );
 }
 
 // death_knight_t::init_special_effects =====================================
@@ -8834,7 +8834,7 @@ void death_knight_t::init_base_stats()
   resources.base[ RESOURCE_RUNIC_POWER ] += spec.blood_death_knight -> effectN( 12 ).resource( RESOURCE_RUNIC_POWER );
 
   if ( talent.blood.ossuary.ok() )
-    resources.base [ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary.spell() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
+    resources.base [ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -9219,7 +9219,7 @@ void death_knight_t::init_spells()
   cooldown.bone_shield_icd -> duration = spell.bone_shield -> internal_cooldown();
 
   if ( talent.frost.icecap.ok() )
-    cooldown.icecap_icd -> duration = talent.frost.icecap.spell() -> internal_cooldown();
+    cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
   if ( covenant.abomination_limb )
   {
     cooldown.abomination_limb -> duration = timespan_t::from_seconds( covenant.abomination_limb -> effectN ( 4 ).base_value() );
@@ -9307,8 +9307,8 @@ void death_knight_t::create_buffs()
   // Shared
   buffs.antimagic_shell = new antimagic_shell_buff_t( this );
 
-  buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude.spell() )
-        -> set_duration( talent.icebound_fortitude.spell() -> duration() )
+  buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude )
+        -> set_duration( talent.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.rune_mastery = make_buff( this, "rune_mastery", find_spell( 374585 ) )
@@ -9331,7 +9331,7 @@ void death_knight_t::create_buffs()
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
             {
-              double fb_health = talent.blood.foul_bulwark.spell() -> effectN( 1 ).percent();
+              double fb_health = talent.blood.foul_bulwark -> effectN( 1 ).percent();
               double health_change = ( 1.0 + new_stacks * fb_health ) / ( 1.0 + old_stacks * fb_health );
 
               resources.initial_multiplier[ RESOURCE_HEALTH ] *= health_change;
@@ -9342,10 +9342,10 @@ void death_knight_t::create_buffs()
             // Trigger/cancel ossuary
             // Trigger is done regardless of current stacks to feed the 'refresh' data, but requires a stack gain
             if ( talent.blood.ossuary.ok() && new_stacks > old_stacks &&
-                 new_stacks >= talent.blood.ossuary.spell() -> effectN( 1 ).base_value() )
+                 new_stacks >= talent.blood.ossuary -> effectN( 1 ).base_value() )
               buffs.ossuary -> trigger();
             // Only expire if the buff is already up
-            else if ( buffs.ossuary -> up() && new_stacks < talent.blood.ossuary.spell() -> effectN( 1 ).base_value() )
+            else if ( buffs.ossuary -> up() && new_stacks < talent.blood.ossuary -> effectN( 1 ).base_value() )
               buffs.ossuary -> expire();
 
             // If the buff starts or expires, invalidate relevant caches
@@ -9363,24 +9363,24 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1, 0.1 );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
-    -> set_trigger_spell( talent.blood.crimson_scourge.spell() );
+    -> set_trigger_spell( talent.blood.crimson_scourge );
 
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
 
-  buffs.hemostasis = make_buff( this, "hemostasis", talent.blood.hemostasis.spell() -> effectN( 1 ).trigger() )
-        -> set_trigger_spell( talent.blood.hemostasis.spell() )
+  buffs.hemostasis = make_buff( this, "hemostasis", talent.blood.hemostasis -> effectN( 1 ).trigger() )
+        -> set_trigger_spell( talent.blood.hemostasis )
         -> set_default_value_from_effect( 1 );
 
-  buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap.spell() )
+  buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
 
-  buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone.spell() )
+  buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
         -> set_cooldown( 0_ms ); // Handled by the action
 
   buffs.vampiric_blood = new vampiric_blood_buff_t( this );
 
   buffs.voracious = make_buff( this, "voracious", find_spell( 274009 ) )
-        -> set_trigger_spell( talent.blood.voracious.spell() )
+        -> set_trigger_spell( talent.blood.voracious )
         -> add_invalidate( CACHE_LEECH );
 
   // Frost
@@ -9390,17 +9390,17 @@ void death_knight_t::create_buffs()
 
   buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
 
-  buffs.frozen_pulse = make_buff( this, "frozen_pulse", talent.frost.frozen_pulse.spell() );
+  buffs.frozen_pulse = make_buff( this, "frozen_pulse", talent.frost.frozen_pulse );
 
   buffs.gathering_storm = make_buff( this, "gathering_storm", find_spell( 211805 ) )
-        -> set_trigger_spell( talent.frost.gathering_storm.spell() )
+        -> set_trigger_spell( talent.frost.gathering_storm )
         -> set_default_value_from_effect( 1 );
 
-  buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons.spell() -> effectN( 1 ).trigger() )
+  buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> set_default_value( talent.icy_talons -> effectN( 1 ).base_value() )
-        -> set_cooldown( talent.icy_talons.spell()->internal_cooldown() )
-        -> set_trigger_spell( talent.icy_talons.spell() );
+        -> set_cooldown( talent.icy_talons->internal_cooldown() )
+        -> set_trigger_spell( talent.icy_talons );
 
   buffs.inexorable_assault = make_buff( this, "inexorable_assault", find_spell( 253595 ) );
 
@@ -9414,22 +9414,22 @@ void death_knight_t::create_buffs()
   buffs.remorseless_winter = new remorseless_winter_buff_t( this );
 
   buffs.rime = make_buff( this, "rime", talent.frost.rime -> effectN( 1 ).trigger() )
-        -> set_trigger_spell( talent.frost.rime.spell() )
-        -> set_chance( talent.frost.rime.spell() -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
+        -> set_trigger_spell( talent.frost.rime )
+        -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
 
   buffs.runic_corruption = new runic_corruption_buff_t( this );
 
-  buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom.spell() -> effectN( 1 ).trigger() )
-        -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", talent.unholy.sudden_doom.spell() ) -> get_frequency(), 1.0 + talent.unholy.harbinger_of_doom.spell() -> effectN( 2 ).percent())
-        -> set_trigger_spell( talent.unholy.sudden_doom.spell() )
+  buffs.sudden_doom = make_buff( this, "sudden_doom", talent.unholy.sudden_doom -> effectN( 1 ).trigger() )
+        -> set_rppm( RPPM_ATTACK_SPEED, get_rppm( "sudden_doom", talent.unholy.sudden_doom ) -> get_frequency(), 1.0 + talent.unholy.harbinger_of_doom -> effectN( 2 ).percent())
+        -> set_trigger_spell( talent.unholy.sudden_doom )
         -> set_max_stack( talent.unholy.sudden_doom.ok() ?
-                   as<unsigned int>( talent.unholy.sudden_doom.spell() -> effectN( 1 ).trigger() -> max_stacks() + talent.unholy.harbinger_of_doom.spell() -> effectN( 1 ).base_value() ):
+                   as<unsigned int>( talent.unholy.sudden_doom -> effectN( 1 ).trigger() -> max_stacks() + talent.unholy.harbinger_of_doom -> effectN( 1 ).base_value() ):
                    1 );
 
-  buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault.spell() )
+  buffs.unholy_assault = make_buff( this, "unholy_assault", talent.unholy.unholy_assault )
         -> set_default_value_from_effect( 1 )
         -> set_cooldown( 0_ms ) // Handled by the action
         -> add_invalidate( CACHE_HASTE );
@@ -9701,7 +9701,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   // Blood tap spelldata is a bit weird, it's not in milliseconds like other time values, and is positive even though it reduces a cooldown
   if ( talent.blood.blood_tap.ok() )
   {
-    cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( talent.blood.blood_tap.spell() -> effectN( 2 ).base_value() ) );
+    cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( talent.blood.blood_tap -> effectN( 2 ).base_value() ) );
   }
 
   cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
