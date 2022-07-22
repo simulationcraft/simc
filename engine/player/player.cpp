@@ -10135,6 +10135,15 @@ player_talent_t player_t::find_talent_spell(
     trait = trait_data_t::find( tree, name, class_idx, s == SPEC_NONE ? _spec : s );
   }
 
+  if ( trait == &trait_data_t::nil() )
+  {
+    sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
+                      tree == talent_tree::CLASS            ? "class"
+                      : tree == talent_tree::SPECIALIZATION ? "spec"
+                                                            : "invalid",
+                      name );
+  }
+
   return create_talent_obj( this, s, trait );
 }
 
@@ -10150,6 +10159,11 @@ player_talent_t player_t::find_talent_spell(
   auto traits = trait_data_t::find_by_spell( tree, spell_id, class_idx, s == SPEC_NONE ? _spec : s );
   if ( traits.size() == 0 )
   {
+    sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
+                      tree == talent_tree::CLASS            ? "class"
+                      : tree == talent_tree::SPECIALIZATION ? "spec"
+                                                            : "invalid",
+                      spell_id );
     return { this };
   }
 
