@@ -430,8 +430,11 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Blood
     buff_t* mark_of_blood;
+	
     // Frost
     buff_t* everfrost_conduit;
+	buff_t* piercing_chill;
+	
     // Unholy
     buff_t* festering_wound;
     buff_t* unholy_blight;
@@ -912,6 +915,7 @@ public:
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion; // RP generation spell
     const spell_data_t* runic_empowerment_gain;
+	const spell_data_t* piercing_chill_debuff;
 
     // Unholy
     const spell_data_t* festering_wound_debuff;
@@ -1281,6 +1285,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_default_value_from_effect( 1 )
                            -> set_period( 0_ms )
                            -> apply_affecting_aura( p -> spell.exacting_preparation );
+  debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
+                           -> set_default_value_from_effect( 1 )
+						   -> set_period( 0_ms )
+						   -> set_cooldown( 0_ms );
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
@@ -4299,6 +4307,13 @@ struct chill_streak_damage_t : public death_knight_spell_t
     {
       hit_count--;
     }
+	
+	if ( ! state -> action -> result_is_hit( state -> result ) )
+    {
+    return;
+    }
+
+    get_td( state -> target ) -> debuff.piercing_chill_debuff -> trigger();
 
     for ( const auto target : sim -> target_non_sleeping_list )
     {
@@ -9252,6 +9267,7 @@ void death_knight_t::init_spells()
   spell.murderous_efficiency_gain = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
   spell.runic_empowerment_gain = find_spell( 193486 );
+  spell.piercing_chill_debuff = find_spell( 377359 );
 
   // Unholy
   spell.festering_wound_debuff = find_spell( 194310 );
