@@ -9639,7 +9639,7 @@ void death_knight_t::create_buffs()
         -> set_schools_from_effect( 1 )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 		
-  buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", find_spell( 377192 ), talent.frost.enduring_strength -> effectN( 1 ).trigger() );
+  buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", find_spell( 377192 ) -> effectN( 1 ).trigger() );
   
   buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377190 ) )
         -> add_invalidate( CACHE_STRENGTH )
