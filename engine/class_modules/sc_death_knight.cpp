@@ -642,6 +642,7 @@ public:
     gain_t* murderous_efficiency;
     gain_t* obliteration;
     gain_t* rage_of_the_frozen_champion;
+    gain_t* rage_of_the_frozen_champion_legendary;
     gain_t* runic_attenuation;
     gain_t* runic_empowerment;
 
@@ -4321,9 +4322,9 @@ struct chill_streak_damage_t : public death_knight_spell_t
       hit_count--;
     }
 	
-	if ( ! state -> action -> result_is_hit( state -> result ) )
+    if ( ! state -> action -> result_is_hit( state -> result ) )
     {
-    return;
+      return;
     }
 
     get_td( state -> target ) -> debuff.piercing_chill -> trigger();
@@ -6179,7 +6180,7 @@ struct howling_blast_t : public death_knight_spell_t
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
-                            p() -> gains.rage_of_the_frozen_champion );
+                            p() -> gains.rage_of_the_frozen_champion_legendary );
     }
 	
     if ( p() -> buffs.rime -> check() && p() -> talent.frost.rage_of_the_frozen_champion.ok() )
@@ -6379,7 +6380,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.deaths_due->trigger();
     }
-
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
          p()->cooldown.enduring_strength_icd->is_ready() && state->result == RESULT_CRIT )
@@ -6601,13 +6601,13 @@ struct pillar_of_frost_buff_t : public buff_t
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    // Refreshing Pillar of Frost resets the ramping strength bonus and triggers Icy Citadel
+    // Refreshing Pillar of Frost resets the ramping strength bonus and triggers Enduring Strength
     death_knight_t* p = debug_cast<death_knight_t*>( player );
     if ( p -> buffs.pillar_of_frost -> up() )
     {
       p -> buffs.pillar_of_frost_bonus -> expire();
 	  
-      if ( p -> talent.frost.enduring_strength.enabled() )
+      if ( p -> talent.frost.enduring_strength.ok() )
       {
         p -> buffs.enduring_strength -> trigger();
         p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
@@ -6625,14 +6625,13 @@ struct pillar_of_frost_buff_t : public buff_t
 
     p -> buffs.pillar_of_frost_bonus -> expire();
 	
-	
-      if ( p -> talent.frost.enduring_strength.enabled() )
-      {
-        p -> buffs.enduring_strength -> trigger();
-        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
-                                                   p -> buffs.enduring_strength_builder -> stack() );
-        p -> buffs.enduring_strength_builder -> expire();
-      }
+    if ( p -> talent.frost.enduring_strength.ok() )
+    {
+      p -> buffs.enduring_strength -> trigger();
+      p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
+                                                  p -> buffs.enduring_strength_builder -> stack() );
+      p -> buffs.enduring_strength_builder -> expire();
+    }
   }
 };
 
@@ -9629,7 +9628,7 @@ void death_knight_t::create_buffs()
 
   buffs.rime = make_buff( this, "rime", talent.frost.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.frost.rime )
-        -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + ( legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() || talent.frost.rage_of_the_frozen_champion -> effectN( 1 ).percent() ) );
+        -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() + talent.frost.rage_of_the_frozen_champion -> effectN( 1 ).percent() );
 		
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
@@ -9785,6 +9784,7 @@ void death_knight_t::init_gains()
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency" );
   gains.obliteration                     = get_gain( "Obliteration" );
   gains.rage_of_the_frozen_champion      = get_gain( "Rage of the Frozen Champion" );
+  gains.rage_of_the_frozen_champion_legendary = get_gain( "Rage of the Frozen Champion Legendary" );
   gains.runic_attenuation                = get_gain( "Runic Attenuation" );
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
