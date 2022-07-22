@@ -881,15 +881,21 @@ struct shadow_spike_t final : public priest_pet_spell_t
   shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
   {
     affected_by_shadow_weaving = true;
+    background                 = true;
   }
 };
 
 struct shadow_spike_volley_t final : public priest_pet_spell_t
 {
-  shadow_spike_volley_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike_volley", p, p.o().find_spell( 376891 ) )
+  shadow_spike_volley_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike_volley", p, p.o().find_spell( 376914 ) )
   {
     affected_by_shadow_weaving = true;
     channeled                  = true;
+    background                 = true;
+    hasted_ticks               = true;
+    base_tick_time             = timespan_t::from_seconds( 0.5 );
+    dot_duration               = timespan_t::from_seconds( 6 );
+    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
   }
 };
 
@@ -899,6 +905,7 @@ struct shadow_sear_t final : public priest_pet_spell_t
   {
     affected_by_shadow_weaving = true;
     channeled                  = true;
+    background                 = true;
   }
 };
 
@@ -907,6 +914,7 @@ struct shadow_nova_t final : public priest_pet_spell_t
   shadow_nova_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_nova", p, p.o().find_spell( 376915 ) )
   {
     affected_by_shadow_weaving = true;
+    background                 = true;
   }
 };
 }  // namespace actions
@@ -1298,6 +1306,27 @@ void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_act
     }
   }
 
+  return;
+}
+
+void priest_t::cancel_living_shadow_action( living_shadow_action action )
+{
+  priest_pet_t* pet = debug_cast<priest_pet_t*>( pets.your_shadow.active_pet() );
+
+  if ( pet )
+  {
+    switch ( action )
+    {
+      case living_shadow_action::SHADOW_SPIKE_VOLLEY:
+        assert( pet->shadow_spike_volley );
+        pet->shadow_spike_volley->cancel();
+        break;
+      case living_shadow_action::SHADOW_SEAR:
+        assert( pet->shadow_sear );
+        pet->shadow_sear->cancel();
+        break;
+    }
+  }
   return;
 }
 

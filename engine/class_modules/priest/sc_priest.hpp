@@ -650,6 +650,7 @@ public:
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
   void trigger_living_shadow_action( player_t* target, living_shadow_action action );
+  void cancel_living_shadow_action( living_shadow_action action );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
@@ -977,6 +978,14 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return action_t::ready();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    if (priest().channeling && living_shadow_action != priest_t::living_shadow_action::NONE )
+      priest().cancel_living_shadow_action( living_shadow_action );
+
+    base_t::last_tick( d );
   }
 
   void impact( action_state_t* s ) override
