@@ -5281,7 +5281,7 @@ struct empower_rune_weapon_buff_t : public buff_t
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled in the action
     set_period( p -> talent.empower_rune_weapon -> effectN( 1 ).period() );
-    set_default_value( p -> talent.empower_rune_weapon -> effectN( 3 ).percent());
+    set_default_value( p -> talent.empower_rune_weapon -> effectN( 3 ).percent() + p -> conduits.accelerated_cold.percent());
     add_invalidate( CACHE_HASTE );
     set_refresh_behavior( buff_refresh_behavior::EXTEND);
     set_tick_behavior( buff_tick_behavior::REFRESH );
