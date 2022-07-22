@@ -9500,7 +9500,7 @@ void death_knight_t::create_buffs()
 
   buffs.icy_talons = make_buff( this, "icy_talons", talent.icy_talons -> effectN( 1 ).trigger() )
         -> add_invalidate( CACHE_ATTACK_SPEED )
-        -> set_default_value( talent.icy_talons -> effectN( 1 ).base_value() )
+        -> set_default_value( talent.icy_talons -> effectN( 1 ).percent() )
         -> set_cooldown( talent.icy_talons->internal_cooldown() )
         -> set_trigger_spell( talent.icy_talons );
 
