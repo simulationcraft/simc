@@ -6363,9 +6363,17 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.eradicating_blow -> trigger();
     }
 	
-	if ( p() -> talent.frost.bonegrinder.ok() && p() -> buffs.killing_machine -> up() )
+	if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() &&
+         p()->buffs.bonegrinder_crit->stack() <= 6 )
     {
 	  p() -> buffs.bonegrinder_crit -> trigger();
+	}
+	
+	if ( p() -> talent.frost.bonegrinder.ok() && p() -> buffs.killing_machine -> up() &&
+             p() -> buffs.bonegrinder_crit -> stack() == 6 )
+	{
+		p() -> buffs.bonegrinder_frost -> trigger();
+		p() -> buffs.bonegrinder_crit -> expire();
 	}
 
     // Improved Killing Machine - revert school after the hit
@@ -9557,14 +9565,6 @@ void death_knight_t::create_buffs()
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value_from_effect( 1 )
-		-> set_max_stack( 5 )
-        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
-          {
-            // Trigger bonegrinder frost damage, and cancel bonegrinder crit
-            if ( talent.frost.bonegrinder.ok() && new_stacks > old_stacks &&
-                 new_stacks >= 5 ) // Hard Code stack count until Arma fixes it, im too stupid
-              buffs.bonegrinder_frost -> trigger();
-          } )
 		-> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
 			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
