@@ -503,6 +503,8 @@ public:
     buff_t* remorseless_winter;
     buff_t* rime;
     buff_t* unleashed_frenzy;
+	buff_t* bonegrinder_crit;
+	buff_t* bonegrinder_frost;
 
     // Unholy
     buff_t* dark_transformation;
@@ -6360,6 +6362,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.eradicating_blow -> trigger();
     }
+	
+	if ( p() -> buffs.killing_machine -> up() )
+    {
+	  p() -> buffs.bonegrinder_crit -> trigger();
+	}
 
     // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
@@ -9546,6 +9553,17 @@ void death_knight_t::create_buffs()
   buffs.rime = make_buff( this, "rime", talent.frost.rime -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.frost.rime )
         -> set_chance( talent.frost.rime -> effectN( 2 ).percent() + ( legendary.rage_of_the_frozen_champion ->effectN( 1 ).percent() || talent.frost.rage_of_the_frozen_champion -> effectN( 1 ).percent() ) );
+		
+  buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
+        -> add_invalidate ( CACHE_CRIT_CHANCE )
+        -> set_default_value_from_effect( 1 )
+        -> set_trigger_spell( talent.frost.bonegrinder )
+        -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
+		
+  buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
+        -> add_invalidate ( CACHE_CRIT_CHANCE )
+        -> set_default_value_from_effect( 1 )
+        -> set_trigger_spell( talent.frost.bonegrinder );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
