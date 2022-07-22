@@ -47,7 +47,7 @@ public:
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
-    living_shadow_action       = priest_t::living_shadow_action::SHADOW_SPIKE;
+    living_shadow_action       = living_shadow_action::SHADOW_SPIKE;
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
@@ -1518,7 +1518,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     affected_by_shadow_weaving = true;
 
-    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+    living_shadow_action = living_shadow_action::SHADOW_SPIKE;
 
     if ( p.talents.improved_shadow_word_death.enabled() )
     {
@@ -2872,7 +2872,7 @@ void priest_t::reset()
   // Reset T28 pet delay variables
   t28_4pc_summon_event    = nullptr;
   t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-    
+
   living_shadow_summon_event    = nullptr;
   living_shadow_summon_duration = timespan_t::from_seconds( 0 );
 }

@@ -77,7 +77,7 @@ struct mind_sear_t final : public priest_spell_t
     tick_zero           = false;
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
-    living_shadow_action = priest_t::living_shadow_action::SHADOW_SEAR;
+    living_shadow_action = living_shadow_action::SHADOW_SEAR;
 
     if ( priest().specialization() == PRIEST_SHADOW )
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
@@ -105,7 +105,7 @@ struct mind_flay_t final : public priest_spell_t
 
     spell_power_mod.tick *= 1.0 + p.talents.shadow.fortress_of_the_mind->effectN( 3 ).percent();
 
-    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE_VOLLEY;
+    living_shadow_action = living_shadow_action::SHADOW_SPIKE_VOLLEY;
   }
 
   void trigger_mind_flay_dissonant_echoes()
@@ -483,7 +483,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     // Only get this when casting, Misery does not proc an extra hit
     if ( casted )
     {
-      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+      living_shadow_action = living_shadow_action::SHADOW_SPIKE;
     }
   }
 
@@ -721,7 +721,7 @@ struct vampiric_touch_t final : public priest_spell_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/908
     if ( casted )
     {
-      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+      living_shadow_action = living_shadow_action::SHADOW_SPIKE;
     }
   }
 
@@ -915,7 +915,7 @@ struct devouring_plague_t final : public priest_spell_t
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/908
     if ( casted )
     {
-      living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+      living_shadow_action = living_shadow_action::SHADOW_SPIKE;
     }
   }
 
@@ -1131,7 +1131,7 @@ struct void_bolt_t final : public priest_spell_t
     cooldown->hasted           = true;
     affected_by_shadow_weaving = true;
 
-    living_shadow_action = priest_t::living_shadow_action::SHADOW_SPIKE;
+    living_shadow_action = living_shadow_action::SHADOW_SPIKE;
 
     auto rank2 = p.find_rank_spell( "Void Bolt", "Rank 2" );
     if ( rank2->ok() )
@@ -1545,8 +1545,8 @@ struct searing_nightmare_t final : public priest_spell_t
     radius                     = data().effectN( 2 ).radius_max();
     usable_while_casting       = use_while_casting;
     affected_by_shadow_weaving = true;
-    
-    living_shadow_action = priest_t::living_shadow_action::SHADOW_NOVA;
+
+    living_shadow_action = living_shadow_action::SHADOW_NOVA;
   }
 
   bool ready() override
@@ -1995,7 +1995,8 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   // Tier Sets
-  buffs.living_shadow_tier = make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
+  buffs.living_shadow_tier =
+      make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
 }
 
 void priest_t::init_rng_shadow()

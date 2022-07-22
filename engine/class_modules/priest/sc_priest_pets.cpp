@@ -896,6 +896,8 @@ struct shadow_spike_volley_t final : public priest_pet_spell_t
     base_tick_time             = timespan_t::from_seconds( 0.5 );
     dot_duration               = timespan_t::from_seconds( 6 );
     spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct     = 0.0;
+    tick_may_crit              = true;
   }
 };
 
@@ -906,6 +908,13 @@ struct shadow_sear_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
     channeled                  = true;
     background                 = true;
+    hasted_ticks               = true;
+    base_tick_time             = timespan_t::from_seconds( 0.5 );
+    dot_duration               = timespan_t::from_seconds( 6 );
+    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
+    spell_power_mod.direct     = 0.0;
+    tick_may_crit              = true;
+    aoe                        = -1;
   }
 };
 

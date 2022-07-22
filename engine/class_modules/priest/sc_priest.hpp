@@ -81,6 +81,15 @@ public:
   void target_demise();
 };
 
+enum class living_shadow_action
+{
+  SHADOW_SPIKE,         // Single Target
+  SHADOW_SPIKE_VOLLEY,  // Single Target Channel
+  SHADOW_SEAR,          // AoE Channel
+  SHADOW_NOVA,          // AoE
+  NONE                  // Does Nothing
+};
+
 /**
  * Priest class definition
  * Derived from player_t. Contains everything that defines the priest class.
@@ -561,15 +570,6 @@ public:
     const spell_data_t* boon_of_the_ascended;
   } covenant;
 
-  enum living_shadow_action
-  {
-    SHADOW_SPIKE,         // Single Target
-    SHADOW_SPIKE_VOLLEY,  // Single Target Channel
-    SHADOW_SEAR,          // AoE Channel
-    SHADOW_NOVA,          // AoE
-    NONE                  // Does Nothing
-  };
-
   priest_t( sim_t* sim, util::string_view name, race_e r );
 
   // player_t overrides
@@ -939,13 +939,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  priestspace::priest_t::living_shadow_action living_shadow_action;
+  priestspace::living_shadow_action living_shadow_action;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ),
       affected_by_shadow_weaving( false ),
       ignores_automatic_mastery( false ),
-      living_shadow_action( priestspace::priest_t::living_shadow_action::NONE )
+      living_shadow_action( priestspace::living_shadow_action::NONE )
   {
     weapon_multiplier = 0.0;
   }
@@ -983,7 +983,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void last_tick( dot_t* d ) override
   {
-    if ( priest().channeling && living_shadow_action != priest_t::living_shadow_action::NONE )
+    if ( priest().channeling && living_shadow_action != living_shadow_action::NONE )
       priest().cancel_living_shadow_action( living_shadow_action );
 
     base_t::last_tick( d );
@@ -996,7 +996,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     base_t::impact( s );
 
     // TODO: maybe better in execute?
-    if ( living_shadow_action != priest_t::living_shadow_action::NONE )
+    if ( living_shadow_action != living_shadow_action::NONE )
     {
       priest().trigger_living_shadow_action( s->target, living_shadow_action );
     }
