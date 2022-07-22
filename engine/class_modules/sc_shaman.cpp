@@ -2505,6 +2505,26 @@ struct base_wolf_t : public shaman_pet_t
 
     main_hand_weapon.swing_time = timespan_t::from_seconds( 1.5 );
   }
+
+  void create_buffs() override
+  {
+    shaman_pet_t::create_buffs();
+
+    alpha_wolf_buff = make_buff( this, "alpha_wolf", o()->find_spell( 198486 ) )
+                      ->set_tick_behavior( buff_tick_behavior::REFRESH )
+                      ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+                        alpha_wolf->set_target( o() -> target );
+                        alpha_wolf->schedule_execute();
+                      } );
+  }
+
+  void trigger_alpha_wolf() const
+  {
+    if ( o()->talent.alpha_wolf.ok() )
+    {
+      alpha_wolf_buff->trigger();
+    }
+  }
 };
 
 template <typename T>
@@ -2555,11 +2575,34 @@ struct spirit_wolf_t : public base_wolf_t
     dynamic = true;
   }
 
+  void create_actions() override;
+
   attack_t* create_auto_attack() override
   {
     return new fs_melee_t( this );
   }
 };
+
+template <typename T>
+struct spirit_bomb_t : public pet_melee_attack_t<T>
+{
+  spirit_bomb_t( T* player ) :
+    pet_melee_attack_t<T>( player, "spirit_bomb", player -> find_spell( 198455 ) )
+  {
+    this -> background = true;
+    this -> aoe = -1;
+  }
+};
+
+void spirit_wolf_t::create_actions()
+{
+  shaman_pet_t::create_actions();
+
+  if ( o()->talent.alpha_wolf.ok() )
+  {
+    alpha_wolf = new spirit_bomb_t<spirit_wolf_t>( this );
+  }
+}
 
 // ==========================================================================
 // DOOM WOLVES OF NOT REALLY DOOM ANYMORE
@@ -4163,6 +4206,11 @@ struct crash_lightning_t : public shaman_attack_t
     }
 
     p()->buff.cl_crash_lightning->expire();
+
+    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    {
+      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+    }
   }
 };
 
