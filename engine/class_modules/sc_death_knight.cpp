@@ -9558,12 +9558,21 @@ void death_knight_t::create_buffs()
         -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value_from_effect( 1 )
         -> set_trigger_spell( talent.frost.bonegrinder )
-        -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
-		
+		-> set_max_stack( 5 )
+        -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
+          {
+            // Trigger bonegrinder frost damage, and cancel bonegrinder crit
+            if ( talent.frost.bonegrinder.ok() && new_stacks > old_stacks &&
+                 new_stacks >= 5 ) // Hard Code stack count until Arma fixes it, im too stupid
+              buffs.bonegrinder_frost -> trigger();
+          } )
+		-> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
+			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
-        -> set_default_value_from_effect( 1 )
-        -> set_trigger_spell( talent.frost.bonegrinder );
+        -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
+        -> set_trigger_spell( talent.frost.bonegrinder )
+		-> set_max_stack( 1 );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
