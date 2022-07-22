@@ -6363,7 +6363,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.eradicating_blow -> trigger();
     }
 	
-	if ( p() -> buffs.killing_machine -> up() )
+	if ( p() -> talent.frost.bonegrinder.ok() && p() -> buffs.killing_machine -> up() )
     {
 	  p() -> buffs.bonegrinder_crit -> trigger();
 	}
@@ -9557,7 +9557,6 @@ void death_knight_t::create_buffs()
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value_from_effect( 1 )
-        -> set_trigger_spell( talent.frost.bonegrinder )
 		-> set_max_stack( 5 )
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
@@ -9571,7 +9570,6 @@ void death_knight_t::create_buffs()
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
-        -> set_trigger_spell( talent.frost.bonegrinder )
 		-> set_max_stack( 1 );
 
   // Unholy
