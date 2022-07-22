@@ -430,6 +430,8 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Blood
     buff_t* mark_of_blood;
+    // Frost
+    buff_t* everfrost_conduit;
     // Unholy
     buff_t* festering_wound;
     buff_t* unholy_blight;
@@ -512,6 +514,8 @@ public:
 
     // Conduits
     buff_t* meat_shield;
+    buff_t* eradicating_blow;
+    buff_t* unleashed_frenzy_conduit;
 
     // Legendaries
     buff_t* crimson_rune_weapon;
@@ -1026,6 +1030,12 @@ public:
     conduit_data_t meat_shield;             // Endurance trait, 121
     conduit_data_t withering_plague;        // 80
 
+    // Frost
+    conduit_data_t accelerated_cold;        // 79
+    conduit_data_t everfrost;               // 91
+    conduit_data_t eradicating_blow;        // 83
+    conduit_data_t unleashed_frenzy;        // 122
+
     // Unholy
     conduit_data_t convocation_of_the_dead; // 124
     conduit_data_t embrace_death;           // 89
@@ -1066,6 +1076,7 @@ public:
 
     // Frost
     item_runeforge_t absolute_zero;               // 6946
+    item_runeforge_t biting_cold;                 // 6945
     item_runeforge_t koltiras_favor;              // 6944
     item_runeforge_t rage_of_the_frozen_champion; // 7160
 
@@ -1288,6 +1299,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
 
   debuff.everfrost = make_buff( *this, "everfrost", p -> talent.frost.everfrost -> effectN( 1 ).trigger() )
                     -> set_default_value( p -> talent.frost.everfrost -> effectN( 1 ).percent() );
+
+  debuff.everfrost_conduit = make_buff( *this, "everfrost_conduit", p -> conduits.everfrost -> effectN( 1 ).trigger() )
+                    -> set_default_value( p -> conduits.everfrost -> effectN( 1 ).percent() );
 
   // Legendary
   debuff.abominations_frenzy = make_buff( *this, "abominations_frenzy", p -> find_spell( 353546 ) )
@@ -5299,6 +5313,19 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     //cooldown -> duration += p -> spec.empower_rune_weapon_2->effectN( 1 ).time_value();
   }
 
+  // TODO Remove with conduits
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double m = death_knight_spell_t::recharge_multiplier( cd );
+
+    if ( p() -> conduits.accelerated_cold->ok() )
+    {
+      m *= 1.0 + p()->conduits.accelerated_cold->effectN( 2 ).percent();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
@@ -5607,6 +5634,22 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     triggers_icecap = true;
   }
 
+  // TODO remove with conduit support
+  double action_multiplier() const override
+  {
+    double m = death_knight_melee_attack_t::action_multiplier();
+
+    if ( p() -> buffs.eradicating_blow -> check() )
+    {
+      m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
+      // Arma - May 5 2022 - On 9.2.0 live and 9.2.5.43741 eradicating blow applies the stack value twice to the off hand only.
+      if( p() -> bugs && weapon->slot == SLOT_OFF_HAND )
+        m *= 1.0 + ( p() -> buffs.eradicating_blow -> stack_value() );
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
@@ -5628,6 +5671,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     if ( p() -> talent.frost.unleashed_frenzy.ok() )
     {
       p() -> buffs.unleashed_frenzy->trigger();
+    }
+
+    if ( p() -> conduits.unleashed_frenzy.ok() )
+    {
+      p() -> buffs.unleashed_frenzy_conduit->trigger();
     }
 
   }
@@ -5675,6 +5723,12 @@ struct frost_strike_t : public death_knight_melee_attack_t
         oh -> set_target( target );
         oh -> execute();
       }
+    }
+
+    // TODO remove with conduits
+    if ( p() -> buffs.eradicating_blow -> up() )
+    {
+      p() -> buffs.eradicating_blow -> expire();
     }
 
     if ( p() -> buffs.pillar_of_frost -> up() && p() -> talent.frost.obliteration.ok() )
@@ -5813,7 +5867,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
   heart_strike_t( util::string_view name, death_knight_t* p ) :
-    death_knight_melee_attack_t( name, p, p -> talent.blood.heart_strike ),
+    death_knight_melee_attack_t( name, p, p -> find_spell( 206930 ) ),
     heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     background = proc = may_crit = true;
@@ -6266,6 +6320,12 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     death_knight_melee_attack_t::execute();
 
+    // TODO remove with conduits
+    if ( p() -> conduits.eradicating_blow->ok() )
+    {
+      p() -> buffs.eradicating_blow -> trigger();
+    }
+
     // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
   }
@@ -6534,6 +6594,10 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
   double biting_cold_target_threshold;
   bool triggered_biting_cold;
 
+  // TODO remove legendary
+  double biting_cold_target_threshold_legendary;
+  bool triggered_biting_cold_legendary;
+
   remorseless_winter_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "remorseless_winter_damage", p, p -> talent.frost.remorseless_winter -> effectN( 2 ).trigger() ),
     biting_cold_target_threshold( 0 ), triggered_biting_cold( false )
@@ -6554,6 +6618,12 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     {
       biting_cold_target_threshold = p -> talent.frost.biting_cold -> effectN ( 1 ).base_value();
       base_multiplier *= 1.0 + p -> talent.frost.biting_cold -> effectN( 2 ).percent();
+    }
+    // TODO remove legendary
+    if ( p -> legendary.biting_cold.ok() )
+    {
+      biting_cold_target_threshold_legendary = p -> legendary.biting_cold -> effectN ( 1 ).base_value();
+      base_multiplier *= 1.0 + p -> legendary.biting_cold -> effectN( 2 ).percent();
     }
   }
 
@@ -6586,8 +6656,18 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
       triggered_biting_cold = true;
     }
 
+    // TODO remove the legendary code
+    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! triggered_biting_cold_legendary )
+    {
+      p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+      triggered_biting_cold_legendary = true;
+    }
+
     if ( p() -> talent.frost.everfrost.ok() )
       get_td( state -> target ) -> debuff.everfrost -> trigger();
+
+    if ( p() -> conduits.everfrost.ok() )
+      get_td( state -> target ) -> debuff.everfrost_conduit -> trigger();
   }
 };
 
@@ -9161,6 +9241,12 @@ void death_knight_t::init_spells()
   conduits.meat_shield = find_conduit_spell( "Meat Shield" );
   conduits.withering_plague = find_conduit_spell( "Withering Plague" );
 
+  // Frost
+  conduits.accelerated_cold      = find_conduit_spell( "Accelerated Cold" );
+  conduits.everfrost             = find_conduit_spell( "Everfrost" );
+  conduits.eradicating_blow      = find_conduit_spell( "Eradicating Blow" );
+  conduits.unleashed_frenzy      = find_conduit_spell( "Unleashed Frenzy" );
+
   // Unholy
   conduits.convocation_of_the_dead = find_conduit_spell( "Convocation of the Dead" );
   conduits.embrace_death = find_conduit_spell( "Embrace Death" );
@@ -9192,6 +9278,7 @@ void death_knight_t::init_spells()
 
   // Frost
   legendary.absolute_zero               = find_runeforge_legendary( "Absolute Zero" );
+  legendary.biting_cold                 = find_runeforge_legendary( "Biting Cold" );
   legendary.koltiras_favor              = find_runeforge_legendary( "Koltira's Favor" );
   legendary.rage_of_the_frozen_champion = find_runeforge_legendary( "Rage of the Frozen Champion" );
 
@@ -9439,6 +9526,11 @@ void death_knight_t::create_buffs()
   buffs.unholy_blight = new unholy_blight_buff_t( this );
 
   // Conduits
+  buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
+        -> set_default_value( conduits.eradicating_blow.percent() )
+        -> set_trigger_spell( conduits.eradicating_blow )
+        -> set_cooldown( conduits.eradicating_blow -> internal_cooldown() );
+
   buffs.meat_shield = make_buff( this, "meat_shield", find_spell( 338438 ) )
         -> set_default_value( conduits.meat_shield.percent() )
         -> set_trigger_spell( conduits.meat_shield )
@@ -9455,6 +9547,11 @@ void death_knight_t::create_buffs()
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
+
+  // TODO remove with conduits
+  buffs.unleashed_frenzy_conduit = make_buff( this, "unleashed_frenzy_conduit", conduits.unleashed_frenzy->effectN( 1 ).trigger() )
+      -> add_invalidate( CACHE_STRENGTH )
+      -> set_default_value( conduits.unleashed_frenzy -> effectN( 1 ).percent() );
 
   // Legendaries
 
