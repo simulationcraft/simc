@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44707
-static const std::array<spelltext_data_t, 17178> __spelltext_data { {
+static const std::array<spelltext_data_t, 17179> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -7607,6 +7607,7 @@ static const std::array<spelltext_data_t, 17178> __spelltext_data { {
   { 222197, "$@spelldesc222187", 0, 0 },
   { 222207, "Grants a chance for enemies that attack you to have their souls Darkened, reducing the damage they deal to you by ${-$222209s1}.2% for $222209d. Additional applications increase the effectiveness of Darkening Soul but do not refresh its duration.", 0, 0 },
   { 222209, "$@spelldesc222207", "Damage dealt to the caster decreased by ${$w1}.2%.", 0 },
+  { 222251, "Inflicts $s1 Nature damage to all enemies within $A1 yds.", 0, 0 },
   { 222266, "Charge and Intercept generate $s1% more Rage.", 0, 0 },
   { 222267, "Increase run speed by $222278s1% when below $s1% health.", 0, 0 },
   { 222268, "Chance on being hit to blind your enemy, reducing their damage dealt to you by $222277s1% for $222277d. This effect may occur once every $proccooldown sec.", 0, 0 },

@@ -2445,8 +2445,8 @@ void player_t::init_talents()
 
     if ( spell->id() != trait->id_spell )
     {
-      sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                            "trait spell not found",
+      sim->print_debug( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                        "trait spell not found",
         name(), trait->name, spell->id(), trait->id_trait_node_entry, rank );
       continue;
     }
@@ -2458,8 +2458,8 @@ void player_t::init_talents()
       // command line (i.e., using override.spell_data or override.player.spell_data options).
       if ( dbc_override_->is_overridden_effect( *dbc, effect_id, "base_value" ) )
       {
-          sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                                "effect id {} (index={}) manually overridden, ignoring",
+          sim->print_debug( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                            "effect id {} (index={}) manually overridden, ignoring",
             name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
             effect_point.effect_index + 1U );
         continue;
@@ -2467,8 +2467,8 @@ void player_t::init_talents()
 
       if ( effect_point.effect_index + 1U > spell->effect_count() )
       {
-        sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                              "effect id {} (index={}) effect index out of bounds, max effects {}",
+        sim->print_debug( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                          "effect id {} (index={}) effect index out of bounds, max effects {}",
           name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
           effect_point.effect_index + 1U , spell->effect_count() );
         continue;
@@ -2482,8 +2482,8 @@ void player_t::init_talents()
 
       if ( it == curve_data.end() )
       {
-        sim->out_debug.print( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                              "effect id {} (index={}) curve data for rank not found for curve {}",
+        sim->print_debug( "{} talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                          "effect id {} (index={}) curve data for rank not found for curve {}",
           name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
           effect_point.effect_index + 1U, effect_point.id_curve );
         continue;
@@ -2494,16 +2494,16 @@ void player_t::init_talents()
       switch ( effect_point.operation )
       {
         case TRAIT_OP_SET:
-          sim->out_debug.print( "{} setting talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                                "effect id {} (index={}) value, old={}, new={}",
+          sim->print_debug( "{} setting talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                            "effect id {} (index={}) value, old={}, new={}",
             name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
             effect_point.effect_index + 1U,
             spell->effectN( effect_point.effect_index + 1U ).base_value(), value );
           dbc_override_->register_effect( *dbc, effect_id, "base_value", value );
           break;
         case TRAIT_OP_MUL:
-          sim->out_debug.print( "{} multiplying talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
-                                "effect id {} (index={}) value, multiplier={}, old={}, new={}",
+          sim->print_debug( "{} multiplying talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                            "effect id {} (index={}) value, multiplier={}, old={}, new={}",
             name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
             effect_point.effect_index + 1U, value,
             spell->effectN( effect_point.effect_index + 1U ).base_value(),
@@ -10138,10 +10138,7 @@ player_talent_t player_t::find_talent_spell(
   if ( trait == &trait_data_t::nil() )
   {
     sim->print_debug( "Player {}: Can't find {} talent with name '{}'.", this->name(),
-                      tree == talent_tree::CLASS            ? "class"
-                      : tree == talent_tree::SPECIALIZATION ? "spec"
-                                                            : "invalid",
-                      name );
+        util::talent_tree_string( tree ), name );
   }
 
   return create_talent_obj( this, s, trait );
@@ -10160,10 +10157,7 @@ player_talent_t player_t::find_talent_spell(
   if ( traits.size() == 0 )
   {
     sim->print_debug( "Player {}: Can't find {} talent with spell_id '{}'.", this->name(),
-                      tree == talent_tree::CLASS            ? "class"
-                      : tree == talent_tree::SPECIALIZATION ? "spec"
-                                                            : "invalid",
-                      spell_id );
+        util::talent_tree_string( tree ), spell_id );
     return { this };
   }
 

@@ -573,9 +573,10 @@ public:
     // Frost
     cooldown_t* icecap_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     cooldown_t* inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
+
     cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield attack
-	cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
-	cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
+	  cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
+	  cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     cooldown_t* pillar_of_frost;
     // Unholy
     cooldown_t* apocalypse;
@@ -5605,6 +5606,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
     }
+
     if ( p() -> talent.frost.enduring_strength.ok() && p() -> buffs.pillar_of_frost -> up() &&
       p() -> cooldown.enduring_strength_icd -> is_ready() && s -> result == RESULT_CRIT )
     {
@@ -6321,13 +6323,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
+
 	if ( p -> talent.frost.frigid_executioner.ok() )
     {
       base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
     }
 
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
-	
   }
 
   int n_targets() const override
@@ -6379,6 +6381,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.deaths_due->trigger();
     }
+
 
     if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
          p()->cooldown.enduring_strength_icd->is_ready() && state->result == RESULT_CRIT )
@@ -6512,6 +6515,7 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       p() -> buffs.rime -> trigger();
     }
+    
     if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() )
     {
       p() -> buffs.bonegrinder_crit -> trigger();
@@ -9422,6 +9426,7 @@ void death_knight_t::init_spells()
 
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
+
 
   if ( talent.frost.enduring_strength.ok() )
 	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
