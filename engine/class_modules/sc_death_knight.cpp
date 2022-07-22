@@ -4296,6 +4296,16 @@ struct chill_streak_damage_t : public death_knight_spell_t
   {
     background = proc = true;
   }
+  
+  double composite_target_multiplier( player_t* t ) const override
+  {
+  double m = death_knight_spell_t::composite_target_multiplier( t );
+
+  if ( auto td = find_td( t ) )
+    m *= 1.0 + td -> debuff.piercing_chill -> stack_value();
+
+  return m;
+  }
 
   void impact( action_state_t* state ) override
   {
