@@ -503,8 +503,8 @@ public:
     buff_t* remorseless_winter;
     buff_t* rime;
     buff_t* unleashed_frenzy;
-	buff_t* bonegrinder_crit;
-	buff_t* bonegrinder_frost;
+    buff_t* bonegrinder_crit;
+    buff_t* bonegrinder_frost;
 
     // Unholy
     buff_t* dark_transformation;
@@ -6368,19 +6368,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.eradicating_blow -> trigger();
     }
-	
-	if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() &&
-         p()->buffs.bonegrinder_crit->stack() <= 6 )
-    {
-	  p() -> buffs.bonegrinder_crit -> trigger();
-	}
-	
-	if ( p() -> talent.frost.bonegrinder.ok() && p() -> buffs.killing_machine -> up() &&
-             p() -> buffs.bonegrinder_crit -> stack() == 6 )
-	{
-		p() -> buffs.bonegrinder_frost -> trigger();
-		p() -> buffs.bonegrinder_crit -> expire();
-	}
 
     // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
@@ -6481,6 +6468,16 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
 
       p() -> buffs.rime -> trigger();
+    }
+
+    if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() )
+    {
+      p() -> buffs.bonegrinder_crit -> trigger();
+      if ( p() -> buffs.bonegrinder_crit -> at_max_stacks() )
+      {
+        p() -> buffs.bonegrinder_frost -> trigger();
+        p() -> buffs.bonegrinder_crit -> expire();
+      }
     }
 
     p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
@@ -9570,13 +9567,14 @@ void death_knight_t::create_buffs()
 		
   buffs.bonegrinder_crit = make_buff( this, "bonegrinder_crit", find_spell( 377101 ) )
         -> add_invalidate ( CACHE_CRIT_CHANCE )
-        -> set_default_value_from_effect( 1 )
-		-> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
+        -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+        -> set_cooldown( talent.frost.bonegrinder -> internal_cooldown() );
 			  
   buffs.bonegrinder_frost = make_buff( this, "bonegrinder_frost", find_spell( 377103 ) )
-        -> add_invalidate ( CACHE_CRIT_CHANCE )
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
-		-> set_max_stack( 1 );
+        -> set_schools_from_effect( 1 )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
@@ -10129,6 +10127,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
         ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) ) )
   {
     m *= 1.0 + buffs.final_sentence->stack_value();
+  }
+
+  if ( buffs.bonegrinder_frost->up() && dbc::is_school( school, SCHOOL_FROST ) )
+  {
+    m *= 1.0 + buffs.bonegrinder_frost->value();
   }
 
   return m;
