@@ -469,6 +469,7 @@ public:
     // Shared
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
+    buff_t* rune_mastery;
     // Runeforges
     buff_t* rune_of_hysteria;
     buff_t* stoneskin_gargoyle;
@@ -7860,6 +7861,11 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
       buffs.remorseless_winter -> extend_duration( this, base_extension * consumed );
     }
 
+    if ( talent.rune_mastery.ok() )
+    {
+      buffs.rune_mastery -> trigger();
+    }
+
     // Effects that require the player to actually spend runes
     if ( actual_amount > 0 )
     {
@@ -9304,6 +9310,12 @@ void death_knight_t::create_buffs()
   buffs.icebound_fortitude = make_buff( this, "icebound_fortitude", talent.icebound_fortitude.spell() )
         -> set_duration( talent.icebound_fortitude.spell() -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
+
+  buffs.rune_mastery = make_buff( this, "rune_mastery", find_spell( 374585 ) )
+        -> set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
+        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        -> add_invalidate( CACHE_STRENGTH );
 
   buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
