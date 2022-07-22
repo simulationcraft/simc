@@ -1287,13 +1287,11 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
                            -> set_cooldown( 0_ms );  // Handled by the action
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
-                           -> set_default_value_from_effect( 1 )
-                           -> set_period( 0_ms )
-                           -> apply_affecting_aura( p -> spell.exacting_preparation );
+                            -> set_default_value_from_effect( 1 )
+                            -> set_period( 0_ms )
+                            -> apply_affecting_aura( p -> spell.exacting_preparation );
   debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
-                           -> set_default_value_from_effect( 1 )
-						   -> set_period( 0_ms )
-						   -> set_cooldown( 0_ms );
+                            -> set_default_value_from_effect( 1 );
   // Unholy
   debuff.festering_wound  = make_buff( *this, "festering_wound", p -> spell.festering_wound_debuff )
                            -> set_cooldown( 0_ms )  // Handled by death_knight_t::trigger_festering_wound()
