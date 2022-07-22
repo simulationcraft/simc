@@ -6657,7 +6657,7 @@ struct remorseless_winter_damage_t : public death_knight_spell_t
     }
 
     // TODO remove the legendary code
-    if ( state -> n_targets >= biting_cold_target_threshold && p() -> legendary.biting_cold.ok() && ! triggered_biting_cold_legendary )
+    if ( state -> n_targets >= biting_cold_target_threshold_legendary && p() -> legendary.biting_cold.ok() && ! triggered_biting_cold_legendary )
     {
       p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
       triggered_biting_cold_legendary = true;
