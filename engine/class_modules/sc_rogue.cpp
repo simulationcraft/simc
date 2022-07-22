@@ -1515,6 +1515,10 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
+  // Generic rules for proccing Banshee's Blight, used by rogue_t::spend_combo_points()
+  virtual bool procs_banshees_blight() const
+  { return ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
+
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
@@ -2526,7 +2530,7 @@ struct backstab_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
-    if ( p() -> position() == POSITION_BACK )
+    if ( p()->position() == POSITION_BACK )
     {
       m *= 1.0 + data().effectN( 4 ).percent();
     }
@@ -2621,6 +2625,10 @@ struct between_the_eyes_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
+
+  // 2022-07-12 -- Logs currently show this is bugged with BtE and does not trigger
+  bool procs_banshees_blight() const override
+  { return !p()->bugs; }
 };
 
 // Blade Flurry =============================================================
@@ -6442,8 +6450,7 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
   }
 
   // Sylvanas Dagger
-  // This only appears to trigger from damaging finishers, as SnD does not do anything
-  if ( p()->legendary.banshees_blight && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ) )
+  if ( p()->legendary.banshees_blight && procs_banshees_blight() )
   {
     int stack_count = td( rs->target )->debuffs.banshees_blight->check();
     if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
@@ -7214,6 +7221,7 @@ void rogue_t::init_action_list()
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
 
     // Vanish
@@ -7325,6 +7333,7 @@ void rogue_t::init_action_list()
 
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up|fight_remains<25" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=debuff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
     cds->add_action( "use_items,slots=trinket2,if=debuff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
@@ -7410,6 +7419,7 @@ void rogue_t::init_action_list()
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,if=buff.symbols_of_death.up|fight_remains<20", "Default fallback for usable items: Use with Symbols of Death." );
 
