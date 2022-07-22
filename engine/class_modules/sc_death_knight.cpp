@@ -4294,6 +4294,12 @@ struct chill_streak_damage_t : public death_knight_spell_t
     death_knight_spell_t::impact( state );
     hit_count++;
 
+    if ( p()->talent.frost.enduring_chill.ok() &&
+         rng().roll( p()->talent.frost.enduring_chill->effectN( 1 ).percent() ) )
+    {
+      hit_count--;
+    }
+
     for ( const auto target : sim -> target_non_sleeping_list )
     {
       if ( target != state -> target )
