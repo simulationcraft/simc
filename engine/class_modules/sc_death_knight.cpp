@@ -6607,8 +6607,8 @@ struct pillar_of_frost_buff_t : public buff_t
 	  
       if ( p -> talent.frost.enduring_strength.enabled() )
       {
-        p -> buffs.enduring_strength_builder -> trigger();
-        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength.spell() -> effectN( 2 ).time_value() *
+        p -> buffs.enduring_strength -> trigger();
+        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
                                                    p -> buffs.enduring_strength_builder -> stack() );
         p -> buffs.enduring_strength_builder -> expire();
       }
@@ -6626,8 +6626,8 @@ struct pillar_of_frost_buff_t : public buff_t
 	
       if ( p -> talent.frost.enduring_strength.enabled() )
       {
-        p -> buffs.enduring_strength_builder -> trigger();
-        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength.spell() -> effectN( 2 ).time_value() *
+        p -> buffs.enduring_strength -> trigger();
+        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
                                                    p -> buffs.enduring_strength_builder -> stack() );
         p -> buffs.enduring_strength_builder -> expire();
       }
@@ -9639,9 +9639,9 @@ void death_knight_t::create_buffs()
         -> set_schools_from_effect( 1 )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 		
-  buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", find_spell( 377192 ) -> effectN( 1 ).trigger() );
+  buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", talent.frost.enduring_strength -> effectN( 1 ).trigger() );
   
-  buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377190 ) )
+  buffs.enduring_strength = make_buff( this, "enduring_strength", talent.frost.enduring_strength )
         -> add_invalidate( CACHE_STRENGTH )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
