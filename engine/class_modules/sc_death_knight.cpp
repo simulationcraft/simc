@@ -433,7 +433,7 @@ struct death_knight_td_t : public actor_target_data_t {
 	
     // Frost
     buff_t* everfrost_conduit;
-	buff_t* piercing_chill;
+    buff_t* piercing_chill;
 	
     // Unholy
     buff_t* festering_wound;
@@ -575,8 +575,8 @@ public:
     cooldown_t* inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
 
     cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield attack
-	  cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
-	  cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
+    cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
+    cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     cooldown_t* pillar_of_frost;
     // Unholy
     cooldown_t* apocalypse;
@@ -638,7 +638,7 @@ public:
     gain_t* frost_fever; // RP generation per tick
     gain_t* horn_of_winter;
     gain_t* koltiras_favor;
-	gain_t* frigid_executioner; // Rune refund chance
+    gain_t* frigid_executioner; // Rune refund chance
     gain_t* murderous_efficiency;
     gain_t* obliteration;
     gain_t* rage_of_the_frozen_champion;
@@ -919,7 +919,7 @@ public:
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion; // RP generation spell
     const spell_data_t* runic_empowerment_gain;
-	const spell_data_t* piercing_chill_debuff;
+    const spell_data_t* piercing_chill_debuff;
 
     // Unholy
     const spell_data_t* festering_wound_debuff;
@@ -1153,12 +1153,12 @@ public:
     cooldown.icecap_icd               = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd   = get_cooldown( "inexorable_assault_icd" );
     cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
-	cooldown.frigid_executioner_icd   = get_cooldown( "frigid_executioner_icd" );
+    cooldown.frigid_executioner_icd   = get_cooldown( "frigid_executioner_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
-	cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
+    cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -5608,7 +5608,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
 
     if ( p() -> talent.frost.enduring_strength.ok() && p() -> buffs.pillar_of_frost -> up() &&
-      p() -> cooldown.enduring_strength_icd -> is_ready() && s -> result == RESULT_CRIT )
+          p() -> cooldown.enduring_strength_icd -> is_ready() && s -> result == RESULT_CRIT )
     {
       p() -> buffs.enduring_strength_builder -> trigger();
       p() -> cooldown.enduring_strength_icd -> start();
@@ -6184,7 +6184,7 @@ struct howling_blast_t : public death_knight_spell_t
                             p() -> gains.rage_of_the_frozen_champion );
     }
 	
-	if ( p() -> buffs.rime -> check() && p() -> talent.frost.rage_of_the_frozen_champion.ok() )
+    if ( p() -> buffs.rime -> check() && p() -> talent.frost.rage_of_the_frozen_champion.ok() )
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
                             p() -> spell.rage_of_the_frozen_champion -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
@@ -6324,7 +6324,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
 
-	if ( p -> talent.frost.frigid_executioner.ok() )
+    if ( p -> talent.frost.frigid_executioner.ok() )
     {
       base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
     }
@@ -6477,7 +6477,7 @@ struct obliterate_t : public death_knight_melee_attack_t
           p() -> cooldown.koltiras_favor_icd -> start();
         }
       }
-	  if ( p() -> talent.frost.frigid_executioner.ok() && p() -> cooldown.frigid_executioner_icd->is_ready() )
+      if ( p() -> talent.frost.frigid_executioner.ok() && p() -> cooldown.frigid_executioner_icd->is_ready() )
       {
         if ( p() -> rng().roll(p() -> talent.frost.frigid_executioner->proc_chance()))
         {
@@ -6613,7 +6613,7 @@ struct pillar_of_frost_buff_t : public buff_t
       {
         p -> buffs.enduring_strength -> trigger();
         p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength -> effectN( 2 ).time_value() *
-                                                   p -> buffs.enduring_strength_builder -> stack() );
+                                                    p -> buffs.enduring_strength_builder -> stack() );
         p -> buffs.enduring_strength_builder -> expire();
       }
     }
@@ -9032,7 +9032,7 @@ void death_knight_t::init_base_stats()
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.blood.ossuary -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER );
 
   if ( talent.frost.runic_command.ok() )
-	resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+    resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -10231,8 +10231,6 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     m *= 1.0 + buffs.final_sentence->stack_value();
   }
   
-
-
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
   m *= 1.0 + spec.unholy_death_knight -> effectN( 3 ).percent();
