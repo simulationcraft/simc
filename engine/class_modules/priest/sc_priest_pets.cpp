@@ -872,7 +872,8 @@ action_t* your_shadow_tier_t::create_action( util::string_view name, util::strin
 
 // ==========================================================================
 // Living Shadow Actions
-// TODO: most of these spells need to be tweaked with proper attributes
+// BUG: These actions do not scale with Mastery
+// https://github.com/SimCMinMax/WoW-BugTracker/issues/926
 // ==========================================================================
 namespace actions
 {
@@ -880,6 +881,8 @@ struct shadow_spike_t final : public priest_pet_spell_t
 {
   shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
   {
+    // BUG: This also hits the player for damage
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/925
     affected_by_shadow_weaving = true;
     background                 = true;
   }
