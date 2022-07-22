@@ -654,8 +654,10 @@ public:
     const spell_data_t* death_grip;
     const spell_data_t* dark_command;
     const spell_data_t* death_and_decay;
-    const spell_data_t* festering_wound;
     const spell_data_t* rune_strike;
+
+    // Unholy
+    const spell_data_t* festering_wound;
   } spec;
 
   // Mastery
@@ -8939,7 +8941,6 @@ void death_knight_t::init_spells()
   spec.death_grip           = find_class_spell( "Death Grip" );
   spec.dark_command         = find_class_spell( "Dark Command" );
   spec.death_and_decay      = find_class_spell( "Death and Decay" );
-  spec.festering_wound      = find_class_spell( "Festering Wound" );
   spec.rune_strike          = find_class_spell( "Rune Strike" );
 
   // Blood Baselines
@@ -8951,6 +8952,7 @@ void death_knight_t::init_spells()
 
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
+  spec.festering_wound      = find_class_spell( "Festering Wound" );
 
   //////// Class Talent Tree
   // Row 1
