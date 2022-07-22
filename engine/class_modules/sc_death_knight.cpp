@@ -508,6 +508,8 @@ public:
     buff_t* unleashed_frenzy;
     buff_t* bonegrinder_crit;
     buff_t* bonegrinder_frost;
+    buff_t* enduring_strength_builder;
+    buff_t* enduring_strength;
 
     // Unholy
     buff_t* dark_transformation;
@@ -572,7 +574,8 @@ public:
     cooldown_t* icecap_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     cooldown_t* inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
     cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield attack
-	cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wirld attack
+	cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wield attack
+	cooldown_t* enduring_strength_icd; // internal cooldown that prevents several procs on the same dual-wield attacl
     cooldown_t* pillar_of_frost;
     // Unholy
     cooldown_t* apocalypse;
@@ -1154,6 +1157,7 @@ public:
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
+	cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -5601,6 +5605,12 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
     }
+    if ( p() -> talent.frost.enduring_strength.ok() && p() -> buffs.pillar_of_frost -> up() &&
+      p() -> cooldown.enduring_strength_icd -> is_ready() && s -> result == RESULT_CRIT )
+    {
+      p() -> buffs.enduring_strength_builder -> trigger();
+      p() -> cooldown.enduring_strength_icd -> start();
+    }
   }
 
   void execute() override
@@ -6317,6 +6327,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     }
 
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
+	
   }
 
   int n_targets() const override
@@ -6367,6 +6378,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() && weapon -> slot == SLOT_MAIN_HAND )
     {
       p() -> buffs.deaths_due->trigger();
+    }
+
+    if ( p()->talent.frost.enduring_strength.ok() && p()->buffs.pillar_of_frost->up() &&
+         p()->cooldown.enduring_strength_icd->is_ready() && state->result == RESULT_CRIT )
+    {
+      p()->buffs.enduring_strength_builder->trigger();
+      p()->cooldown.enduring_strength_icd->start();
     }
 
     if ( p() -> buffs.inexorable_assault -> up() && p() -> cooldown.inexorable_assault_icd -> is_ready() )
@@ -6494,7 +6512,6 @@ struct obliterate_t : public death_knight_melee_attack_t
 
       p() -> buffs.rime -> trigger();
     }
-
     if ( p()->talent.frost.bonegrinder.ok() && p()->buffs.killing_machine->up() )
     {
       p() -> buffs.bonegrinder_crit -> trigger();
@@ -6504,6 +6521,8 @@ struct obliterate_t : public death_knight_melee_attack_t
         p() -> buffs.bonegrinder_crit -> expire();
       }
     }
+
+
 
     p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
   }
@@ -6587,6 +6606,14 @@ struct pillar_of_frost_buff_t : public buff_t
     if ( p -> buffs.pillar_of_frost -> up() )
     {
       p -> buffs.pillar_of_frost_bonus -> expire();
+	  
+      if ( p -> talent.frost.enduring_strength.enabled() )
+      {
+        p -> buffs.enduring_strength_builder -> trigger();
+        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength.spell() -> effectN( 2 ).time_value() *
+                                                   p -> buffs.enduring_strength_builder -> stack() );
+        p -> buffs.enduring_strength_builder -> expire();
+      }
     }
 
     return buff_t::trigger( stacks, value, chance, duration );
@@ -6597,6 +6624,15 @@ struct pillar_of_frost_buff_t : public buff_t
     death_knight_t* p = debug_cast<death_knight_t*>( player );
 
     p -> buffs.pillar_of_frost_bonus -> expire();
+	
+	
+      if ( p -> talent.frost.enduring_strength.enabled() )
+      {
+        p -> buffs.enduring_strength_builder -> trigger();
+        p -> buffs.enduring_strength -> extend_duration( p, p -> talent.frost.enduring_strength.spell() -> effectN( 2 ).time_value() *
+                                                   p -> buffs.enduring_strength_builder -> stack() );
+        p -> buffs.enduring_strength_builder -> expire();
+      }
   }
 };
 
@@ -9389,6 +9425,9 @@ void death_knight_t::init_spells()
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
+  if ( talent.frost.enduring_strength.ok() )
+	cooldown.enduring_strength_icd -> duration = talent.frost.enduring_strength -> internal_cooldown();
+
   if ( talent.frost.inexorable_assault.ok() )
     cooldown.inexorable_assault_icd -> duration = find_spell( 253595 ) -> internal_cooldown();  // Inexorable Assault buff spell id
 
@@ -9601,6 +9640,12 @@ void death_knight_t::create_buffs()
         -> set_default_value( talent.frost.bonegrinder -> effectN( 1 ).percent() )
         -> set_schools_from_effect( 1 )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+		
+  buffs.enduring_strength_builder = make_buff( this, "enduring_strength_builder", find_spell( 377192 ), talent.frost.enduring_strength -> effectN( 1 ).trigger() );
+  
+  buffs.enduring_strength = make_buff( this, "enduring_strength", find_spell( 377190 ) )
+        ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+        ->set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
@@ -10154,7 +10199,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   {
     m *= 1.0 + buffs.final_sentence->stack_value();
   }
-
+  
   if ( buffs.bonegrinder_frost->up() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.bonegrinder_frost->value();
@@ -10181,6 +10226,8 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
   {
     m *= 1.0 + buffs.final_sentence->stack_value();
   }
+  
+
 
   m *= 1.0 + spec.blood_death_knight -> effectN( 14 ).percent();
   m *= 1.0 + spec.frost_death_knight -> effectN( 3 ).percent();
