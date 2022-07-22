@@ -4313,7 +4313,7 @@ struct chill_streak_damage_t : public death_knight_spell_t
     return;
     }
 
-    get_td( state -> target ) -> debuff.piercing_chill_debuff -> trigger();
+    get_td( state -> target ) -> debuff.piercing_chill -> trigger();
 
     for ( const auto target : sim -> target_non_sleeping_list )
     {
