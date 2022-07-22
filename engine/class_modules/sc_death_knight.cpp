@@ -566,7 +566,8 @@ public:
     // Frost
     cooldown_t* icecap_icd; // internal cooldown that prevents several procs on the same dual-wield attack
     cooldown_t* inexorable_assault_icd;  // internal cooldown to prevent multiple procs during aoe
-    cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield sttack
+    cooldown_t* koltiras_favor_icd; // internal cooldown that prevents several procs on the same dual-wield attack
+	cooldown_t* frigid_executioner_icd; // internal cooldown that prevents several procs on the same dual-wirld attack
     cooldown_t* pillar_of_frost;
     // Unholy
     cooldown_t* apocalypse;
@@ -628,6 +629,7 @@ public:
     gain_t* frost_fever; // RP generation per tick
     gain_t* horn_of_winter;
     gain_t* koltiras_favor;
+	gain_t* frigid_executioner; // Rune refund chance
     gain_t* murderous_efficiency;
     gain_t* obliteration;
     gain_t* rage_of_the_frozen_champion;
@@ -1141,6 +1143,7 @@ public:
     cooldown.icecap_icd               = get_cooldown( "icecap" );
     cooldown.inexorable_assault_icd   = get_cooldown( "inexorable_assault_icd" );
     cooldown.koltiras_favor_icd       = get_cooldown( "koltiras_favor_icd" );
+	cooldown.frigid_executioner_icd   = get_cooldown( "frigid_executioner_icd" );
     cooldown.pillar_of_frost          = get_cooldown( "pillar_of_frost" );
     cooldown.shackle_the_unworthy_icd = get_cooldown( "shackle_the_unworthy_icd" );
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
@@ -6275,6 +6278,10 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     {
       base_multiplier *= 1.0 + p -> legendary.koltiras_favor -> effectN ( 2 ).percent();
     }
+	if ( p -> talent.frost.frigid_executioner.ok() )
+    {
+      base_multiplier *= 1.0 + p -> talent.frost.frigid_executioner -> effectN ( 2 ).percent();
+    }
 
     inexorable_assault = get_action<inexorable_assault_damage_t>( "inexorable_assault", p );
   }
@@ -6414,6 +6421,15 @@ struct obliterate_t : public death_knight_melee_attack_t
           // # of runes to restore was stored in a secondary affect
           p() -> replenish_rune( as<unsigned int>( p() -> legendary.koltiras_favor->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.koltiras_favor );
           p() -> cooldown.koltiras_favor_icd -> start();
+        }
+      }
+	  if ( p() -> talent.frost.frigid_executioner.ok() && p() -> cooldown.frigid_executioner_icd->is_ready() )
+      {
+        if ( p() -> rng().roll(p() -> talent.frost.frigid_executioner->proc_chance()))
+        {
+          // # of runes to restore was stored in a secondary affect
+          p() -> replenish_rune( as<unsigned int>( p() -> talent.frost.frigid_executioner->effectN( 1 ).trigger()->effectN( 1 ).base_value() ), p() -> gains.frigid_executioner );
+          p() -> cooldown.frigid_executioner_icd -> start();
         }
       }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
@@ -9341,6 +9357,8 @@ void death_knight_t::init_spells()
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
     cooldown.koltiras_favor_icd -> duration = legendary.koltiras_favor -> internal_cooldown();
+  if ( talent.frost.frigid_executioner )
+    cooldown.frigid_executioner_icd -> duration = talent.frost.frigid_executioner -> internal_cooldown();
 
   if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
   {
@@ -9665,6 +9683,7 @@ void death_knight_t::init_gains()
   gains.runic_attenuation                = get_gain( "Runic Attenuation" );
   gains.runic_empowerment                = get_gain( "Runic Empowerment" );
   gains.koltiras_favor                   = get_gain( "Koltira's Favor" );
+  gains.frigid_executioner               = get_gain( "Frigid Executioner" );
 
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
