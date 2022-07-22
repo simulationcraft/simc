@@ -129,17 +129,8 @@ std::vector<const trait_data_t*> trait_data_t::find_by_spell(
 {
   const auto _data = data( ptr );
   const auto _index = SC_DBC_GET_DATA( __trait_spell_id_index, __ptr_trait_spell_id_index, ptr );
-  auto span = std::equal_range( _index.begin(), _index.end(), spell_id,
-    [spell_id, _data]( const auto& first, const auto& second  ) {
-      if ( first == spell_id )
-      {
-        return first < _data[second].id_spell;
-      }
-      else
-      {
-        return _data[first].id_spell < second;
-      }
-  } );
+  auto span = range::equal_range( _index, spell_id, {},
+      [ _data ]( uint16_t index ) { return _data[ index ].id_spell; } );
 
   if ( span.first == _index.end() )
   {
