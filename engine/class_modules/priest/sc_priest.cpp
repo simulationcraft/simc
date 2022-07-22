@@ -2872,6 +2872,9 @@ void priest_t::reset()
   // Reset T28 pet delay variables
   t28_4pc_summon_event    = nullptr;
   t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
+    
+  living_shadow_summon_event    = nullptr;
+  living_shadow_summon_duration = timespan_t::from_seconds( 0 );
 }
 
 void priest_t::target_mitigation( school_e school, result_amount_type dt, action_state_t* s )
