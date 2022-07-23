@@ -6682,7 +6682,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.pillar_of_frost -> trigger();	
+    p() -> buffs.pillar_of_frost -> trigger();
   }
 };
 
