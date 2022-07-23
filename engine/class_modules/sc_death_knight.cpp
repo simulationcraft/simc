@@ -6663,7 +6663,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     parse_options( options_str );
 	
-	if ( p -> talent.frost.frostwhelps_aid.enabled() )
+	if ( p -> talent.frost.frostwhelps_aid.ok() )
     {
       whelp = new frostwhelps_aid_t( p );
     }
