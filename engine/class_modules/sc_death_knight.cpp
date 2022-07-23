@@ -4937,6 +4937,8 @@ struct death_and_decay_t : public death_and_decay_base_t
 
     parse_options( options_str );
 
+    if ( p->talent.deaths_echo.ok() )
+      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
     // Disable when Defile or Death's Due are taken
     if ( p -> talent.unholy.defile.ok() || p -> covenant.deaths_due -> ok() )
       background = true;
@@ -4959,6 +4961,8 @@ struct defile_t : public death_and_decay_base_t
     damage = get_action<defile_damage_t>( "defile_damage", p );
 
     parse_options( options_str );
+    if ( p->talent.deaths_echo.ok() )
+      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -4981,6 +4985,8 @@ struct deaths_due_t : public death_and_decay_base_t
 
     // Disable when Defile is taken
     if ( p -> talent.unholy.defile.ok() )
+    if ( p -> talent.deaths_echo.ok() )
+        cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
       background = true;
   }
 
