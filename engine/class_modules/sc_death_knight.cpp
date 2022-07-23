@@ -6577,13 +6577,20 @@ struct outbreak_t : public death_knight_spell_t
 
 struct frostwhelps_aid_t : public death_knight_spell_t
 {
-  frostwhelps_aid_t( death_knight_t* p ) :
-    death_knight_spell_t( "frostwhelps_aid", p , p -> talent.frost.frostwhelps_aid )
+  frostwhelps_aid_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p , p -> talent.frost.frostwhelps_aid )
   {
     aoe = -1;
     background = true;
+    frostwhelps_aid_t* whelp;
 
     base_dd_min = base_dd_max = p -> find_spell( 377245 ) -> effectN( 1 ).percent();
+
+    if ( p->talent.frost.frostwhelps_aid.ok() )
+    {
+      whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
+      execute_action = whelp;
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -6656,17 +6663,11 @@ struct pillar_of_frost_buff_t : public buff_t
 
 struct pillar_of_frost_t : public death_knight_spell_t
 {
-  frostwhelps_aid_t* whelp;
 	
   pillar_of_frost_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "pillar_of_frost", p, p -> talent.frost.pillar_of_frost )
   {
     parse_options( options_str );
-	
-	if ( p -> talent.frost.frostwhelps_aid.ok() )
-    {
-      whelp = new frostwhelps_aid_t( p );
-    }
 
     harmful = false;
   }
@@ -6677,11 +6678,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
 
     p() -> buffs.pillar_of_frost -> trigger();
 	
-	if ( p() -> talent.frost.frostwhelps_aid.ok() )
-	{
-	  whelp -> set_target( p() -> target );
-	  whelp -> execute();
-	}
   }
 };
 
@@ -9683,7 +9679,7 @@ void death_knight_t::create_buffs()
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", find_spell( 377253 ) )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
 		-> add_invalidate ( CACHE_MASTERY )
-		-> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() );
+		-> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
