@@ -510,7 +510,7 @@ public:
     buff_t* bonegrinder_frost;
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
-	buff_t* frostwhelps_aid;
+    buff_t* frostwhelps_aid;
 
     // Unholy
     buff_t* dark_transformation;
@@ -6578,19 +6578,10 @@ struct outbreak_t : public death_knight_spell_t
 struct frostwhelps_aid_t : public death_knight_spell_t
 {
   frostwhelps_aid_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p , p -> talent.frost.frostwhelps_aid )
+    death_knight_spell_t( name, p , p -> find_spell( 377245 ) )
   {
     aoe = -1;
     background = true;
-    frostwhelps_aid_t* whelp;
-
-    base_dd_min = base_dd_max = p -> find_spell( 377245 ) -> effectN( 1 ).percent();
-
-    if ( p->talent.frost.frostwhelps_aid.ok() )
-    {
-      whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
-      execute_action = whelp;
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -6663,13 +6654,19 @@ struct pillar_of_frost_buff_t : public buff_t
 
 struct pillar_of_frost_t : public death_knight_spell_t
 {
-	
+  action_t* whelp;
   pillar_of_frost_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "pillar_of_frost", p, p -> talent.frost.pillar_of_frost )
   {
     parse_options( options_str );
 
     harmful = false;
+
+    if ( p->talent.frost.frostwhelps_aid.ok() )
+    {
+      whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
+      execute_action = whelp;
+    }
   }
 
   void execute() override
@@ -9678,8 +9675,8 @@ void death_knight_t::create_buffs()
 		
   buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", find_spell( 377253 ) )
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-		-> add_invalidate ( CACHE_MASTERY )
-		-> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
+        -> add_invalidate ( CACHE_MASTERY )
+        -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
