@@ -10261,6 +10261,10 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   {
     m *= 1.0 + td -> debuff.abominations_frenzy -> value();
   }
+  if ( td && td->debuff.brittle->up() )
+  {
+    m *= 1.0 + td->debuff.brittle->value();
+  }
 
   return m;
 }
@@ -10339,6 +10343,11 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
     if( td -> debuff.abominations_frenzy -> up() )
     {
       m *= 1.0 + td -> debuff.abominations_frenzy -> value();
+    }
+
+    if ( td -> debuff.brittle -> up() )
+    {
+      m *= 1.0 + td -> debuff.brittle -> value();
     }
   }
 
