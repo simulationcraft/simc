@@ -5668,6 +5668,11 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     {
       cooldown -> duration *= 1.0 + p -> legendary.absolute_zero->effectN( 1 ).percent();
     }
+
+    if ( p -> talent.frost.absolute_zero -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> talent.frost.absolute_zero->effectN( 1 ).percent();
+    }
     // Stun is NYI
   }
 
