@@ -478,6 +478,8 @@ public:
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
     buff_t* rune_mastery;
+    buff_t* merciless_strikes;
+
     // Runeforges
     buff_t* rune_of_hysteria;
     buff_t* stoneskin_gargoyle;
@@ -9597,6 +9599,11 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> apply_affecting_aura( spell.exacting_preparation );
 
+  buffs.merciless_strikes = make_buff( this, "merciless_strikes", talent.merciless_strikes )
+        -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
+        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+        -> add_invalidate( CACHE_CRIT_CHANCE );
+
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -10526,6 +10533,8 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
+  if ( talent.merciless_strikes )
+    buffs.merciless_strikes -> trigger();
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
@@ -10539,10 +10548,15 @@ void death_knight_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  // Spec and Class Auras
   action.apply_affecting_aura( spec.death_knight );
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
+
+  // Talents
+  // action.apply_affecting_aura( talent.merciless_strikes );
+  // This doesnt work for some god forsaken reason, going to do it through a buff for now
 }
 
 /* Report Extension Class
