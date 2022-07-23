@@ -571,6 +571,7 @@ public:
     cooldown_t* abomination_limb;
     cooldown_t* death_and_decay_dynamic; // Shared cooldown object for death and decay, defile and death's due
     cooldown_t* shackle_the_unworthy_icd; // internal cooldown between shackle the unworthy's spreading effect
+	cooldown_t* blood_draw;
 
     // Blood
     cooldown_t* bone_shield_icd; // internal cooldown between bone shield stack consumption
@@ -1168,6 +1169,7 @@ public:
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
+	cooldown.blood_draw               = get_cooldown( "blood_draw" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -3991,6 +3993,41 @@ struct blood_tap_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> replenish_rune( as<int>( p() -> talent.blood.blood_tap -> effectN( 1 ).resource( RESOURCE_RUNE ) ), p() -> gains.blood_tap );
+  }
+};
+
+// Blood Draw =========================================================
+
+struct blood_draw_damage_t : public death_knight_spell_t
+{
+  blood_draw_damage_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->find_spell( 374606 ) )
+  {
+    aoe        = -1;
+    background = true;
+  }
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+  }
+};
+
+struct blood_draw_t : public death_knight_spell_t
+{
+  action_t* blood_draw;
+  blood_draw_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "blood_draw", p, p->talent.blood_draw )
+  {
+    parse_options( options_str );
+
+    harmful = false;
+
+    if ( p -> cooldown.blood_draw -> is_ready() )
+    {
+      blood_draw     = get_action<blood_draw_damage_t>( "blood_draw", p );
+      execute_action = blood_draw;
+      p -> cooldown.blood_draw -> start();
+    }
   }
 };
 
@@ -9510,6 +9547,8 @@ void death_knight_t::init_spells()
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
+  if ( talent.blood_draw.ok() )
+    cooldown.blood_draw->duration = find_spell( 374609 )->duration();
 
   if ( talent.frost.enduring_strength.ok() )
 	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
