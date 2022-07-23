@@ -3262,7 +3262,7 @@ struct frost_fever_t : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-	
+
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
@@ -6682,8 +6682,7 @@ struct pillar_of_frost_t : public death_knight_spell_t
   {
     death_knight_spell_t::execute();
 
-    p() -> buffs.pillar_of_frost -> trigger();
-	
+    p() -> buffs.pillar_of_frost -> trigger();	
   }
 };
 
