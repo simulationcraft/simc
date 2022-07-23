@@ -9241,7 +9241,7 @@ void death_knight_t::init_spells()
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
   talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelps Aid" );
+  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
   talent.frost.gathering_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
   talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
   talent.frost.enduring_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
