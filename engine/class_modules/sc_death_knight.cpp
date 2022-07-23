@@ -3262,7 +3262,7 @@ struct frost_fever_t : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-
+	
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
@@ -3287,7 +3287,11 @@ struct frost_fever_t : public death_knight_disease_t
 
     // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
     unsigned ff_count = p() -> get_active_dots( internal_id );
-    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
+    double chance = 0.30;
+    if ( ( d -> state -> result == RESULT_CRIT ) && p() -> talent.frost.invigorating_freeze.ok() )
+      chance += p() -> talent.frost.invigorating_freeze -> effectN( 1 ).percent();
+
+    chance *= std::sqrt( ff_count ) / ff_count;
 
     if ( rng().roll( chance ) )
     {
