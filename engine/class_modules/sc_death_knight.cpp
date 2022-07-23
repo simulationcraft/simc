@@ -912,7 +912,7 @@ public:
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
     const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
-	const spell_data_t* enfeeble;
+    const spell_data_t* unholy_bond;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1301,7 +1301,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
                             -> set_period( 0_ms )
-                            -> apply_affecting_aura( p -> spell.exacting_preparation );
+                            -> apply_affecting_aura( p -> spell.exacting_preparation )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
                             -> set_default_value_from_effect( 1 );
   // Unholy
@@ -3428,6 +3429,7 @@ struct razorice_attack_t : public death_knight_melee_attack_t
     // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
     weapon = &( player -> main_hand_weapon );
     base_dd_multiplier *= 1.0 + player ->spell.exacting_preparation->effectN( 4 ).percent();
+    base_dd_multiplier *= 1.0 + player -> talent.unholy_bond -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -7815,6 +7817,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
       callbacks = may_crit = false;
       base_pct_heal = data -> effectN( 2 ).percent();
       base_pct_heal *= 1.0 + p -> spell.exacting_preparation -> effectN ( 5 ).percent();
+      base_pct_heal *= 1.0 + p -> talent.unholy_bond -> effectN( 2 ).percent();
     }
 
     // Procs by default target the target of the action that procced them.
@@ -7882,11 +7885,13 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
     -> set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
     -> set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-    -> apply_affecting_aura( p -> spell.exacting_preparation );
+    -> apply_affecting_aura( p -> spell.exacting_preparation )
+    -> apply_affecting_aura( p -> talent.unholy_bond );
 
   // Change the player's base armor multiplier
   double am = effect.driver() -> effectN( 1 ).percent();
   am *= 1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent();
+  am *= 1.0 + p -> talent.unholy_bond -> effectN( 2 ).percent();
   p -> base.armor_multiplier *= 1.0 + am;
 
   // This buff can only be applied on a 2H weapon, stacking mechanic is unknown territory
@@ -7929,11 +7934,14 @@ void runeforge::hysteria( special_effect_t& effect )
     p -> runeforge.rune_of_hysteria = true;
     p -> buffs.rune_of_hysteria = make_buff( p, "rune_of_hysteria", effect.driver() -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> apply_affecting_aura( p -> spell.exacting_preparation );
+      -> apply_affecting_aura( p -> spell.exacting_preparation )
+      -> apply_affecting_aura( p -> talent.unholy_bond );
   }
 
   // The RP cap increase stacks
-  p -> resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * (1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent());
+  p->resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) *
+                                               ( 1.0 + p->spell.exacting_preparation->effectN( 5 ).percent() ) *
+                                               ( 1.0 + p->spell.unholy_bond->effectN( 2 ).percent() );
 
   // The buff doesn't stack and doesn't have an increased effect
   // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
@@ -7966,6 +7974,7 @@ void runeforge::sanguination( special_effect_t& effect )
       background = true;
       tick_pct_heal = data().effectN( 1 ).percent();
       tick_pct_heal *= 1.0 + p() -> spell.exacting_preparation -> effectN( 4 ).percent();
+      tick_pct_heal *= 1.0 + p() -> talent.unholy_bond -> effectN( 1 ).percent();
       // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
       cooldown -> duration = effect.player -> find_spell( 326809 ) -> duration();
     }
@@ -9597,7 +9606,8 @@ void death_knight_t::create_buffs()
   buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-        -> apply_affecting_aura( spell.exacting_preparation );
+        -> apply_affecting_aura( spell.exacting_preparation )
+        -> apply_affecting_aura( talent.unholy_bond );
 
   buffs.merciless_strikes = make_buff( this, "merciless_strikes", talent.merciless_strikes )
         -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
