@@ -510,6 +510,7 @@ public:
     buff_t* bonegrinder_frost;
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
+    buff_t* frostwhelps_aid;
 
     // Unholy
     buff_t* dark_transformation;
@@ -3286,7 +3287,11 @@ struct frost_fever_t : public death_knight_disease_t
 
     // 2020-05-05: It would seem that the proc chance is 0.30 * sqrt(FeverCount) / FeverCount
     unsigned ff_count = p() -> get_active_dots( internal_id );
-    double chance = 0.30 * std::sqrt( ff_count ) / ff_count;
+    double chance = 0.30;
+    if ( ( d -> state -> result == RESULT_CRIT ) && p() -> talent.frost.invigorating_freeze.ok() )
+      chance += p() -> talent.frost.invigorating_freeze -> effectN( 1 ).percent();
+
+    chance *= std::sqrt( ff_count ) / ff_count;
 
     if ( rng().roll( chance ) )
     {
@@ -5668,6 +5673,11 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     {
       cooldown -> duration *= 1.0 + p -> legendary.absolute_zero->effectN( 1 ).percent();
     }
+
+    if ( p -> talent.frost.absolute_zero -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> talent.frost.absolute_zero->effectN( 1 ).percent();
+    }
     // Stun is NYI
   }
 
@@ -6574,6 +6584,22 @@ struct outbreak_t : public death_knight_spell_t
 
 // Pillar of Frost ==========================================================
 
+struct frostwhelps_aid_t : public death_knight_spell_t
+{
+  frostwhelps_aid_t( util::string_view name, death_knight_t* p ) :
+    death_knight_spell_t( name, p , p -> find_spell( 377245 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+    p() -> buffs.frostwhelps_aid -> trigger();
+  }
+};
+
 // Ingame it seems to only change Pillar of frost's strength bonus
 // The simc implementation creates a dummy buff to better track the strength increase through stack count
 struct pillar_of_frost_bonus_buff_t : public buff_t
@@ -6637,12 +6663,19 @@ struct pillar_of_frost_buff_t : public buff_t
 
 struct pillar_of_frost_t : public death_knight_spell_t
 {
+  action_t* whelp;
   pillar_of_frost_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "pillar_of_frost", p, p -> talent.frost.pillar_of_frost )
   {
     parse_options( options_str );
 
     harmful = false;
+
+    if ( p->talent.frost.frostwhelps_aid.ok() )
+    {
+      whelp = get_action<frostwhelps_aid_t>( "frostwhelps_aid", p );
+      execute_action = whelp;
+    }
   }
 
   void execute() override
@@ -9209,7 +9242,7 @@ void death_knight_t::init_spells()
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
   talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
   talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelps Aid" );
+  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
   talent.frost.gathering_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
   talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
   talent.frost.enduring_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
@@ -9647,6 +9680,11 @@ void death_knight_t::create_buffs()
         -> add_invalidate( CACHE_STRENGTH )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> set_default_value( talent.frost.enduring_strength -> effectN( 3 ).percent() ); 
+		
+  buffs.frostwhelps_aid = make_buff( this, "frostwhelps_aid", find_spell( 377253 ) )
+        -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+        -> add_invalidate ( CACHE_MASTERY )
+        -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
