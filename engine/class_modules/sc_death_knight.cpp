@@ -1289,7 +1289,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
   
   // General Talents
-  debuff.brittle          = make_buff( *this, "brittle", p -> talent.brittle )
+  debuff.brittle          = make_buff( *this, "brittle", p -> find_spell( 374557 ) )
                             -> set_default_value( p -> find_spell( 374557 ) -> effectN ( 1 ).percent() );
 
   // Blood
@@ -3165,12 +3165,6 @@ struct death_knight_disease_t : public death_knight_spell_t
       disease -> set_target( s -> target );
       disease -> execute();
     }
-
-    if ( s -> result == RESULT_HIT && p()->talent.brittle.ok() &&
-         rng().roll( p()->talent.brittle->proc_chance() ) )
-    {
-      get_td( s -> target ) -> debuff.brittle -> trigger();
-    }
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -3251,6 +3245,11 @@ struct blood_plague_t : public death_knight_disease_t
         d -> state -> result_amount * ( 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 3 ).percent() );
       heal -> execute();
     }
+
+    if ( p() -> talent.brittle.ok() && rng().roll( p() -> find_spell( 374504 )->proc_chance() ) )
+    {
+      get_td( d ->target )->debuff.brittle->trigger();
+    }
   }
 };
 
@@ -3311,6 +3310,12 @@ struct frost_fever_t : public death_knight_disease_t
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p() -> gains.frost_fever, this );
     }
+
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p()->find_spell( 374504 )->proc_chance() ) )
+    {
+      get_td( d->target )->debuff.brittle->trigger();
+    }
   }
 };
 
@@ -3349,6 +3354,16 @@ struct virulent_plague_t : public death_knight_disease_t
         "blood_plague_superstrain", p, true ) );
       superstrain_diseases.push_back( get_action<frost_fever_t>(
         "frost_fever_superstrain", p, true ) );
+    }
+  }
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p()->find_spell( 374504 )->proc_chance() ) )
+    {
+      get_td( d->target )->debuff.brittle->trigger();
     }
   }
 };
