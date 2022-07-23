@@ -516,6 +516,7 @@ public:
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
     buff_t* frostwhelps_aid;
+    buff_t* unholy_ground;
 
     // Unholy
     buff_t* dark_transformation;
@@ -4888,6 +4889,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> buffs.death_turf -> trigger();
       p() -> buffs.death_turf -> set_duration(data().duration() + 500_ms);
     }
+	
+	if ( p() -> talent.unholy_ground.ok() )
+	{
+	  p() -> buffs.unholy_ground -> trigger();
+	  p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
+	}
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( target )
@@ -9613,6 +9620,10 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
         -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
         -> add_invalidate( CACHE_CRIT_CHANCE );
+		
+  buffs.unholy_ground = make_buff( this, "unholy_ground", talent.unholy_ground )
+        -> set_default_value( find_spell( 374271 ) -> effectN( 1 ).percent() )
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
