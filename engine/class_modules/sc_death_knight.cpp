@@ -427,6 +427,9 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
     buff_t* razorice;
+	
+	// General Talents
+	buff_t* brittle;
 
     // Blood
     buff_t* mark_of_blood;
@@ -907,6 +910,7 @@ public:
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
     const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
+	const spell_data_t* enfeeble;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1283,6 +1287,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Other dots
   dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
+  
+  // General Talents
+  debuff.brittle          = make_buff( *this, "brittle", p -> talent.brittle )
+                            -> set_default_value( p -> find_spell( 374557 ) -> effectN ( 1 ).percent() );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
@@ -3157,6 +3165,12 @@ struct death_knight_disease_t : public death_knight_spell_t
       disease -> set_target( s -> target );
       disease -> execute();
     }
+
+    if ( s -> result == RESULT_HIT && p()->talent.brittle.ok() &&
+         rng().roll( p()->talent.brittle->proc_chance() ) )
+    {
+      get_td( s -> target ) -> debuff.brittle -> trigger();
+    }
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -3262,7 +3276,7 @@ struct frost_fever_t : public death_knight_disease_t
       // There's a 0.98 modifier hardcoded in the tooltip if a 2H weapon is equipped, probably server side magic
       base_multiplier *= 0.98;
     }
-	
+
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
@@ -5673,6 +5687,11 @@ struct frostwyrms_fury_t : public death_knight_spell_t
     {
       cooldown -> duration *= 1.0 + p -> legendary.absolute_zero->effectN( 1 ).percent();
     }
+
+    if ( p -> talent.frost.absolute_zero -> ok() )
+    {
+      cooldown -> duration *= 1.0 + p -> talent.frost.absolute_zero->effectN( 1 ).percent();
+    }
     // Stun is NYI
   }
 
@@ -6678,7 +6697,6 @@ struct pillar_of_frost_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> buffs.pillar_of_frost -> trigger();
-	
   }
 };
 
@@ -10092,6 +10110,11 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
 
     m *= 1.0 + buffs.unholy_pact -> value();
+
+    if ( talent.might_of_thassarian.ok() )
+    {
+      m *= 1.0 + talent.might_of_thassarian->effectN( 1 ).percent();
+    }
   }
 
   else if ( attr == ATTR_STAMINA )
@@ -10141,6 +10164,12 @@ double death_knight_t::composite_leech() const
   {
     m += buffs.vampiric_blood -> check_value();
   }
+  
+  if ( talent.blood_scent.ok() )
+  {
+    m += talent.blood_scent->effectN( 1 ).percent();
+  }
+		  
 
   return m;
 }
