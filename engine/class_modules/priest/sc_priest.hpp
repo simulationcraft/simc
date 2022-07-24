@@ -995,7 +995,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::impact( s );
 
-    // TODO: maybe better in execute?
     if ( living_shadow_action != living_shadow_action::NONE )
     {
       priest().trigger_living_shadow_action( s->target, living_shadow_action );
