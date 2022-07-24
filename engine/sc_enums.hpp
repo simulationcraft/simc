@@ -258,6 +258,7 @@ enum player_e
   DEATH_KNIGHT,
   DEMON_HUNTER,
   DRUID,
+  EVOKER,
   HUNTER,
   MAGE,
   MONK,

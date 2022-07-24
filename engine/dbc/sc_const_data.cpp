@@ -679,6 +679,8 @@ const char* dbc::specialization_string( specialization_e spec )
     case DRUID_RESTORATION: return "restoration";
     case DEMON_HUNTER_HAVOC: return "havoc";
     case DEMON_HUNTER_VENGEANCE: return "vengeance";
+    case EVOKER_DEVASTATION: return "devastation";
+    case EVOKER_PRESERVATION: return "preservation";
     case PET_FEROCITY: return "ferocity";
     case PET_TENACITY: return "tenacity";
     case PET_CUNNING: return "cunning";

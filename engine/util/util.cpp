@@ -70,6 +70,8 @@ const spec_map_t spec_map[] =
   { DEMON_HUNTER_HAVOC,   "Havoc DemonHunter"    },
   { DEMON_HUNTER_VENGEANCE, "Vengeance Demon Hunter" },
   { DEMON_HUNTER_VENGEANCE, "Vengeance DemonHunter"  },
+  { EVOKER_DEVASTATION,   "Devastation Evoker" },
+  { EVOKER_PRESERVATION,   "Preservation Evoker" },
 };
 
 struct html_named_character_t
@@ -597,6 +599,7 @@ const char* util::player_type_string( player_e type )
     case DEATH_KNIGHT:    return "deathknight";
     case DEMON_HUNTER:    return "demonhunter";
     case DRUID:           return "druid";
+    case EVOKER:          return "evoker";
     case HUNTER:          return "hunter";
     case MAGE:            return "mage";
     case MONK:            return "monk";

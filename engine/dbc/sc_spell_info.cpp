@@ -232,7 +232,7 @@ struct class_map_entry_t {
   const char* name;
   player_e pt;
 };
-static constexpr std::array<class_map_entry_t, 14> _class_map { {
+static constexpr std::array<class_map_entry_t, 15> _class_map { {
   { nullptr, PLAYER_NONE },
   { "Warrior", WARRIOR },
   { "Paladin", PALADIN },
@@ -246,6 +246,7 @@ static constexpr std::array<class_map_entry_t, 14> _class_map { {
   { "Monk", MONK },
   { "Druid", DRUID },
   { "Demon Hunter", DEMON_HUNTER },
+  { "Evoker", EVOKER },
   { nullptr, PLAYER_NONE },
 } };
 
