@@ -792,21 +792,21 @@ public:
     // Row 3
     player_talent_t inundate; // TODO: NYI
     // Row 4
-    player_talent_t call_of_thunder; // TODO: NYI
+    player_talent_t call_of_thunder;
     player_talent_t master_of_the_elements;
     player_talent_t lava_surge;
     // Row 5
-    player_talent_t high_voltage; // TODO: NYI
+    player_talent_t high_voltage;
     player_talent_t icefury;
-    player_talent_t swelling_maelstrom; // TODO: NYI
+    player_talent_t swelling_maelstrom;
     player_talent_t echo_of_the_elements;
-    player_talent_t call_of_fire; // TODO: NYI
+    player_talent_t call_of_fire;
     // Row 6
     player_talent_t stormkeeper;
     player_talent_t electrified_shocks; // TODO: NYI
     player_talent_t flux_melting;
     player_talent_t aftershock;
-    player_talent_t flames_of_the_cauldron; // TODO: NYI
+    player_talent_t flames_of_the_cauldron;
     player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 7
     player_talent_t flash_of_lightning; // TODO: NYI
