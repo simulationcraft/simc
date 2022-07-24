@@ -4363,6 +4363,10 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     parse_options( options_str );
     cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
+    if ( p -> talent.proliferating_chill.ok() )
+    {
+      aoe = p -> talent.chains_of_ice -> effectN( 1 ).chain_target() + as<int>( p -> talent.proliferating_chill -> effectN( 1 ).base_value() );
+    }
   }
 
   void init() override
@@ -4371,16 +4375,22 @@ struct chains_of_ice_t : public death_knight_spell_t
     may_proc_bron = true;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( p() -> buffs.cold_heart -> check() > 0 )
+    {
+      cold_heart -> set_target( target );
+      cold_heart -> execute();
+    }
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
 
     if ( p() -> buffs.cold_heart -> check() > 0 )
-    {
-      cold_heart -> set_target( target );
-      cold_heart -> execute();
       p() -> buffs.cold_heart -> expire();
-    }
   }
 };
 
