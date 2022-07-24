@@ -5591,6 +5591,8 @@ struct elemental_blast_t : public shaman_spell_t
       affected_by_master_of_the_elements = true;
 
       overload = new elemental_blast_overload_t( player, this );
+
+      resource_current = RESOURCE_MAELSTROM;
     }
   }
 
@@ -6000,6 +6002,16 @@ struct earth_shock_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+  }
+
+  bool ready() override
+  {
+    bool r = shaman_spell_t::ready();
+    if ( p()->talent.elemental_blast.enabled() )
+    {
+      r = false;
+    }
+    return r;
   }
 };
 
