@@ -608,7 +608,7 @@ public:
     proc_t* wasted_lava_surge_fireheart;
 
     proc_t* aftershock; // NYI Ele
-    proc_t* flash_of_lightning; // NYI Ele
+    proc_t* flash_of_lightning;
     proc_t* further_beyond; // NYI Ele
     proc_t* lightning_rod; // NYI Ele
     proc_t* tumbling_waves; // NYI Ele
@@ -809,7 +809,7 @@ public:
     player_talent_t flames_of_the_cauldron;
     player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 7
-    player_talent_t flash_of_lightning; // TODO: NYI
+    player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm; // TODO: NYI
     player_talent_t power_of_the_maelstrom; // TODO: NYI
     player_talent_t flames_of_the_firelord; // TODO: NYI
@@ -912,6 +912,7 @@ public:
     cooldown.primordial_wave    = get_cooldown( "primordial_wave" );
     cooldown.shock              = get_cooldown( "shock" );
     cooldown.storm_elemental    = get_cooldown( "storm_elemental" );
+    cooldown.stormkeeper        = get_cooldown( "stormkeeper" );
     cooldown.strike             = get_cooldown( "strike" );
 
     melee_mh      = nullptr;
@@ -955,6 +956,7 @@ public:
   void trigger_vesper_totem( const action_state_t* state );
   void trigger_lava_surge( bool fireheart = false );
   void trigger_splintered_elements( action_t* secondary );
+  void trigger_flash_of_lightning();
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -4609,6 +4611,8 @@ struct chain_lightning_t : public chained_base_t
             p()->cooldown.crash_lightning->remains() );
       }
     }
+
+    p()->trigger_flash_of_lightning();
   }
 };
 
@@ -5478,7 +5482,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p()->buff.power_of_the_maelstrom->decrement();
 
-    // NYI Ele: Flash of Lightning
+    p()->trigger_flash_of_lightning();
     // NYI Ele: Lightning Rod
   }
 
@@ -9329,6 +9333,27 @@ void shaman_t::trigger_splintered_elements( action_t* secondary )
 
   buff.splintered_elements->trigger( count_duplicates, value );
 }
+
+void shaman_t::trigger_flash_of_lightning()
+{
+  if ( !talent.stormkeeper.enabled() && !talent.stormkeeper2.enabled() &&
+       !talent.storm_elemental.enabled() )
+  {
+    return;
+  }
+
+  if ( talent.storm_elemental.enabled() )
+  {
+    cooldown.storm_elemental->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
+  if ( talent.stormkeeper.enabled() || talent.stormkeeper2.enabled() )
+  {
+    cooldown.stormkeeper->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
+
+  proc.flash_of_lightning->occur();
+}
+
 
 // shaman_t::init_buffs =====================================================
 
