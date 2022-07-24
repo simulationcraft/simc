@@ -810,7 +810,7 @@ public:
     player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 7
     player_talent_t flash_of_lightning;
-    player_talent_t eye_of_the_storm; // TODO: NYI
+    player_talent_t eye_of_the_storm;
     player_talent_t power_of_the_maelstrom; // TODO: NYI
     player_talent_t flames_of_the_firelord; // TODO: NYI
     player_talent_t storm_elemental;
@@ -1489,7 +1489,14 @@ public:
       c *= 1.0 + p()->talent.natures_swiftness->effectN( 1 ).percent();
     }
 
-    // NYI Ele: Eye of the Storm
+    // check all effectN entries and apply them if appropriate
+    for ( int i = 1; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
+    {
+        if ( this->data().affected_by( p()->talent.eye_of_the_storm->effectN( i ) ) )
+        {
+          c += p()->talent.eye_of_the_storm->effectN( i ).base_value();
+        }
+    }
 
     return c;
   }
