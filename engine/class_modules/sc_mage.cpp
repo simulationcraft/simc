@@ -1870,7 +1870,8 @@ struct fire_mage_spell_t : public mage_spell_t
         && p()->cooldowns.from_the_ashes->up() )
       {
         p()->cooldowns.from_the_ashes->start( p()->talents.from_the_ashes->internal_cooldown() );
-        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() );
+        // From the Ashes does not properly factor out the recharge rate from Fiery Rush.
+        p()->cooldowns.phoenix_flames->adjust( p()->talents.from_the_ashes->effectN( 2 ).time_value() * ( 1.0 + p()->buffs.fiery_rush->check_value() ) );
       }
     }
   }
