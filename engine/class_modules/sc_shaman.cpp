@@ -449,7 +449,7 @@ public:
     buff_t* magma_chamber; // NYI Ele
     buff_t* master_of_the_elements;
     buff_t* oath_of_the_far_seer; // NYI Ele
-    buff_t* power_of_the_maelstrom; // NYI Ele
+    buff_t* power_of_the_maelstrom;
     buff_t* splintered_elements;
     buff_t* stormkeeper;
     buff_t* wind_gust;  // Storm Elemental passive 263806
@@ -811,7 +811,7 @@ public:
     // Row 7
     player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm;
-    player_talent_t power_of_the_maelstrom; // TODO: NYI
+    player_talent_t power_of_the_maelstrom;
     player_talent_t flames_of_the_firelord; // TODO: NYI
     player_talent_t storm_elemental;
     // Row 8
@@ -4620,6 +4620,20 @@ struct chain_lightning_t : public chained_base_t
     }
 
     p()->trigger_flash_of_lightning();
+    p()->buff.power_of_the_maelstrom->decrement();
+  }
+
+  /* Number of guaranteed overloads */
+  unsigned n_overloads( const action_state_t* t ) const override
+  {
+    auto n = chained_base_t::n_overloads( t );
+
+    if ( p()->buff.power_of_the_maelstrom->up() )
+    {
+      n += p()->buff.power_of_the_maelstrom->value();
+    }
+
+    return n;
   }
 };
 
@@ -5280,6 +5294,12 @@ struct lava_burst_t : public shaman_spell_t
     if ( type == spell_type::NORMAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
+    }
+
+    // TODO Elemental: double check if this can indeed trigger from all Lava Bursts, or only from NORMAL ones.
+    if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
+    {
+      p()->buff.power_of_the_maelstrom->trigger();
     }
   }
 
@@ -9464,8 +9484,8 @@ void shaman_t::create_buffs()
                                   ->set_default_value( talent.oath_of_the_far_seer.spell()->effectN(1).percent());
 
   buff.power_of_the_maelstrom =
-      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom.spell()->effectN( 1 ).trigger() )
-          ->set_default_value( talent.power_of_the_maelstrom.spell()->effectN( 1 ).trigger() ->effectN(1).base_value() );
+      make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )
+          ->set_default_value( talent.power_of_the_maelstrom->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
   buff.chains_of_devastation_chain_lightning =
