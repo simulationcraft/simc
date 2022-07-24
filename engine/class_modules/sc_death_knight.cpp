@@ -478,7 +478,6 @@ public:
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
     buff_t* rune_mastery;
-    buff_t* merciless_strikes;
 
     // Runeforges
     buff_t* rune_of_hysteria;
@@ -2961,6 +2960,16 @@ struct death_knight_action_t : public Base
   virtual double runic_power_generation_multiplier( const action_state_t* /* s */ ) const
   {
     return 1.0;
+  }
+
+  double composite_crit_chance() const override
+  {
+    double cc = Base::composite_crit_chance();
+
+    if ( p() -> talent.merciless_strikes.ok() )
+      cc += p() -> talent.merciless_strikes->effectN( 1 ).percent();
+
+    return cc;
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -9668,11 +9677,6 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> apply_affecting_aura( spell.exacting_preparation )
         -> apply_affecting_aura( talent.unholy_bond );
-
-  buffs.merciless_strikes = make_buff( this, "merciless_strikes", talent.merciless_strikes )
-        -> set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
-        -> set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-        -> add_invalidate( CACHE_CRIT_CHANCE );
 		
   buffs.unholy_ground = make_buff( this, "unholy_ground", talent.unholy_ground )
         -> set_default_value( find_spell( 374271 ) -> effectN( 1 ).percent() )
@@ -10602,8 +10606,6 @@ void death_knight_t::arise()
     buffs.stoneskin_gargoyle -> trigger();
   start_inexorable_assault();
   start_cold_heart();
-  if ( talent.merciless_strikes )
-    buffs.merciless_strikes -> trigger();
 }
 
 void death_knight_t::adjust_dynamic_cooldowns()
@@ -10622,10 +10624,6 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
-
-  // Talents
-  // action.apply_affecting_aura( talent.merciless_strikes );
-  // This doesnt work for some god forsaken reason, going to do it through a buff for now
 }
 
 /* Report Extension Class
