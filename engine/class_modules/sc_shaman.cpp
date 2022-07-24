@@ -444,7 +444,7 @@ public:
     buff_t* elemental_equilibrium_frost;
     buff_t* elemental_equilibrium_nature;
     buff_t* fire_elemental;
-    buff_t* flux_melting; // NYI Ele
+    buff_t* flux_melting;
     buff_t* icefury;
     buff_t* magma_chamber; // NYI Ele
     buff_t* master_of_the_elements;
@@ -804,7 +804,7 @@ public:
     // Row 6
     player_talent_t stormkeeper;
     player_talent_t electrified_shocks; // TODO: NYI
-    player_talent_t flux_melting; // TODO: NYI
+    player_talent_t flux_melting;
     player_talent_t aftershock;
     player_talent_t flames_of_the_cauldron; // TODO: NYI
     player_talent_t improved_flametongue_weapon; // TODO: NYI
@@ -4757,7 +4757,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
           m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
     }
 
-    // NYI add Flux Melting here
+    m *= 1.0 + p()->buff.flux_melting->value();
 
     return m;
   }
@@ -5132,7 +5132,8 @@ struct lava_burst_t : public shaman_spell_t
       if ( p()->buff.windspeakers_lava_resurgence->up() ) {
         p()->buff.windspeakers_lava_resurgence->expire();
       }
-      // NYI Ele add Flux melting expiration
+
+      p()->buff.flux_melting->expire();
     }
   }
 
@@ -5163,6 +5164,8 @@ struct lava_burst_t : public shaman_spell_t
     {
         m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
     }
+
+    m *= 1.0 + p()->buff.flux_melting->value();
 
     return m;
   }
@@ -6248,7 +6251,7 @@ struct frost_shock_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
-    // NYI Ele: Flux Melting
+    p()->buff.flux_melting->trigger();
 
     p()->buff.icefury->decrement();
 
