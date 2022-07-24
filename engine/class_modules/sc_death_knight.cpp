@@ -570,7 +570,6 @@ public:
     cooldown_t* abomination_limb;
     cooldown_t* death_and_decay_dynamic; // Shared cooldown object for death and decay, defile and death's due
     cooldown_t* shackle_the_unworthy_icd; // internal cooldown between shackle the unworthy's spreading effect
-	cooldown_t* blood_draw;
 
     // Blood
     cooldown_t* bone_shield_icd; // internal cooldown between bone shield stack consumption
@@ -600,6 +599,9 @@ public:
     action_t* runeforge_pestilence;
     action_t* runeforge_razorice;
     action_t* runeforge_sanguination;
+
+    // Class Tree
+    action_t* blood_draw;
 
     // Blood
     action_t* mark_of_blood_heal;
@@ -1168,7 +1170,6 @@ public:
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
-	cooldown.blood_draw               = get_cooldown( "blood_draw" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -3115,6 +3116,15 @@ struct death_knight_action_t : public Base
       }
     }
   }
+
+  void execute() override
+  {
+    Base::execute();
+
+    // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
+    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() )
+      p() -> active_spells.blood_draw -> execute();
+  }
 };
 
 // ==========================================================================
@@ -4014,36 +4024,29 @@ struct blood_tap_t : public death_knight_spell_t
 
 // Blood Draw =========================================================
 
-struct blood_draw_damage_t : public death_knight_spell_t
+struct blood_draw_t : public death_knight_spell_t
 {
-  blood_draw_damage_t( util::string_view name, death_knight_t* p )
+  double health_threshold;
+  blood_draw_t( util::string_view name, death_knight_t* p )
     : death_knight_spell_t( name, p, p->find_spell( 374606 ) )
   {
     aoe        = -1;
     background = true;
+    cooldown -> duration = p -> find_spell( 374609 ) -> duration();
+    // Force set threshold to 100% health, to make the spell proc on cooldown
+    health_threshold = 100;
+    // TODO make health_threshold configurable
+    // If role is set to tank, we can use the proper health % value
+    if ( p -> primary_role() == ROLE_TANK )
+      health_threshold = p -> talent.blood_draw -> effectN( 1 ).base_value();
   }
-  void impact( action_state_t* s ) override
+
+  bool ready() override
   {
-    death_knight_spell_t::impact( s );
-  }
-};
+    if ( p() -> health_percentage() > health_threshold )
+      return false;
 
-struct blood_draw_t : public death_knight_spell_t
-{
-  action_t* blood_draw;
-  blood_draw_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "blood_draw", p, p->talent.blood_draw )
-  {
-    parse_options( options_str );
-
-    harmful = false;
-
-    if ( p -> cooldown.blood_draw -> is_ready() )
-    {
-      blood_draw     = get_action<blood_draw_damage_t>( "blood_draw", p );
-      execute_action = blood_draw;
-      p -> cooldown.blood_draw -> start();
-    }
+    return death_knight_spell_t::ready();
   }
 };
 
@@ -8666,6 +8669,10 @@ void death_knight_t::start_cold_heart()
 
 void death_knight_t::create_actions()
 {
+  // Class talents
+  if ( talent.blood_draw.ok() )
+    active_spells.blood_draw = new blood_draw_t( "blood_draw", this );
+
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -9565,9 +9572,6 @@ void death_knight_t::init_spells()
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
-  if ( talent.blood_draw.ok() )
-    cooldown.blood_draw->duration = find_spell( 374609 )->duration();
-
   if ( talent.frost.enduring_strength.ok() )
 	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
 
@@ -10161,6 +10165,11 @@ void death_knight_t::do_damage( action_state_t* state )
     // Health threshold and internal cooldown are both handled in ready()
     if ( active_spells.runeforge_sanguination -> ready() )
       active_spells.runeforge_sanguination -> execute();
+  }
+
+  if ( talent.blood_draw.ok() && specialization() == DEATH_KNIGHT_BLOOD && active_spells.blood_draw -> ready() )
+  {
+    active_spells.blood_draw -> execute();
   }
 }
 
