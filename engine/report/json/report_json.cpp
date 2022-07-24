@@ -1162,12 +1162,12 @@ void to_json( const ::report::json::report_configuration_t& report_configuration
   options_root[ "enemy_death_pct" ] = sim.enemy_death_pct;
   options_root[ "challenge_mode" ] = sim.challenge_mode;
   options_root[ "timewalk" ] = sim.timewalk;
-  options_root[ "pvp_crit" ] = sim.pvp_crit;
+  options_root[ "pvp_mode" ] = sim.pvp_mode;
   options_root[ "rng" ] = sim.rng();
   options_root[ "deterministic" ] = sim.deterministic;
   options_root[ "average_range" ] = sim.average_range;
   options_root[ "average_gauss" ] = sim.average_gauss;
-  options_root[ "fight_style" ] = sim.fight_style;
+  options_root[ "fight_style" ] = util::fight_style_string( sim.fight_style );
   options_root[ "desired_targets" ] = sim.desired_targets;
   options_root[ "default_aura_delay" ] = sim.default_aura_delay;
   options_root[ "default_aura_delay_stddev" ] = sim.default_aura_delay_stddev;

@@ -2005,7 +2005,7 @@ void player_t::create_special_effects()
     }
   }
 
-  if ( sim->fight_style == "DungeonRoute" )
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     special_effect_t effect( this );
 
@@ -7785,13 +7785,9 @@ struct shadowmeld_t : public racial_spell_t
     racial_spell_t::execute();
 
     player->buffs.shadowmeld->trigger();
-
+    
     // Shadowmeld stops autoattacks
-    if ( player->main_hand_attack && player->main_hand_attack->execute_event )
-      event_t::cancel( player->main_hand_attack->execute_event );
-
-    if ( player->off_hand_attack && player->off_hand_attack->execute_event )
-      event_t::cancel( player->off_hand_attack->execute_event );
+    player->cancel_auto_attacks();
   }
 };
 
@@ -13246,6 +13242,27 @@ bool player_t::verify_use_items() const
   } );
 
   return missing_actions.empty();
+}
+
+/**
+ * Cancel the main hand (and off hand, if applicable) swing timer
+ */
+void player_t::cancel_auto_attacks()
+{
+  if ( main_hand_attack || off_hand_attack )
+  {
+    sim->print_debug( "Cancelling auto attack swings" );
+  }
+
+  if ( main_hand_attack && main_hand_attack->execute_event )
+  {
+    event_t::cancel( main_hand_attack->execute_event );
+  }
+
+  if ( off_hand_attack && off_hand_attack->execute_event )
+  {
+    event_t::cancel( off_hand_attack->execute_event );
+  }
 }
 
 /**

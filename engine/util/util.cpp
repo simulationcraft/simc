@@ -509,6 +509,34 @@ position_e util::parse_position_type( util::string_view name )
   return parse_enum<position_e, POSITION_NONE, POSITION_MAX, position_type_string>( name );
 }
 
+// fight_style_string =======================================================
+
+const char* util::fight_style_string( fight_style_e name )
+{
+  switch ( name )
+  {
+    case FIGHT_STYLE_PATCHWERK:          return "Patchwerk";
+    case FIGHT_STYLE_CASTING_PATCHWERK:  return "CastingPatchwerk";
+    case FIGHT_STYLE_HECTIC_ADD_CLEAVE:  return "HecticAddCleave";
+    case FIGHT_STYLE_DUNGEON_SLICE:      return "DungeonSlice";
+    case FIGHT_STYLE_DUNGEON_ROUTE:      return "DungeonRoute";
+    case FIGHT_STYLE_CLEAVE_ADD:         return "CleaveAdd";
+    case FIGHT_STYLE_LIGHT_MOVEMENT:     return "LightMovement";
+    case FIGHT_STYLE_HEAVY_MOVEMENT:     return "HeavyMovement";
+    case FIGHT_STYLE_BEASTLORD:          return "beastlord";
+    case FIGHT_STYLE_HELTER_SKELTER:     return "HelterSkelter";
+    case FIGHT_STYLE_ULTRAXION:          return "Ultraxion";
+    default:                             return "None";
+  }
+}
+
+// parse_fight_style ========================================================
+
+fight_style_e util::parse_fight_style( util::string_view name )
+{
+  return parse_enum<fight_style_e, FIGHT_STYLE_NONE, FIGHT_STYLE_MAX, fight_style_string>( name );
+}
+
 // profession_type_string ===================================================
 
 const char* util::profession_type_string( profession_e type )

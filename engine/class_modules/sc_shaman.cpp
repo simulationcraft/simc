@@ -2001,7 +2001,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t::execute();
 
     // BfA Elemental talent - Master of the Elements
-    if ( affected_by_master_of_the_elements && !background )
+    if ( affected_by_master_of_the_elements && !background &&
+         p()->buff.master_of_the_elements->check() )
     {
       p()->buff.master_of_the_elements->decrement();
       proc_moe->occur();
@@ -9818,7 +9819,6 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
     def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
-    def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
     def->add_action( "vesper_totem,if=covenant.kyrian" );
     def->add_action(
         "fae_transfusion,if=covenant.night_fae&!runeforge.seeds_of_rampant_growth.equipped&"
@@ -9969,6 +9969,7 @@ void shaman_t::init_action_list_elemental()
                                "if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury."
                                "stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)" );
     single_target->add_action( this, "Lava Burst" );
+    single_target->add_action( "bag_of_tricks" );
     single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
     single_target->add_action( this, "Frost Shock",
                                "if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!"
@@ -10038,6 +10039,7 @@ void shaman_t::init_action_list_elemental()
     se_single_target->add_action( this, "Chain Lightning",
                                   "if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)" );
     se_single_target->add_action( this, "Lightning Bolt" );
+    se_single_target->add_action( "bag_of_tricks" );
     se_single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
     se_single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
     se_single_target->add_action( this, "Frost Shock", "moving=1" );

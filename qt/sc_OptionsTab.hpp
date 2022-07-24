@@ -69,7 +69,7 @@ public:
     QComboBox* threads;
     QComboBox* process_priority;
     QComboBox* auto_save;
-    QComboBox* pvp_crit;
+    QComboBox* pvp_mode;
     QComboBox* armory_region;
     QComboBox* armory_spec;
     QComboBox* default_role;

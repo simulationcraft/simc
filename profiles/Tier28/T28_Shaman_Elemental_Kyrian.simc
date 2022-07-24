@@ -50,7 +50,6 @@ actions+=/blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.a
 actions+=/berserking,if=!talent.ascendance.enabled|buff.ascendance.up
 actions+=/fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
 actions+=/ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50
-actions+=/bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up
 actions+=/vesper_totem,if=covenant.kyrian
 actions+=/fae_transfusion,if=covenant.night_fae&!runeforge.seeds_of_rampant_growth.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up)&spell_targets.chain_lightning<3
 actions+=/fae_transfusion,if=covenant.night_fae&runeforge.seeds_of_rampant_growth.equipped&(!talent.master_of_the_elements.enabled|buff.master_of_the_elements.up|spell_targets.chain_lightning>=3)&(cooldown.fire_elemental.remains>20|cooldown.storm_elemental.remains>20)
@@ -116,6 +115,7 @@ actions.se_single_target+=/static_discharge,if=talent.static_discharge.enabled
 actions.se_single_target+=/earth_elemental,if=!talent.primal_elementalist.enabled|talent.primal_elementalist.enabled&(!pet.storm_elemental.active)
 actions.se_single_target+=/chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)
 actions.se_single_target+=/lightning_bolt
+actions.se_single_target+=/bag_of_tricks
 actions.se_single_target+=/flame_shock,moving=1,target_if=refreshable
 actions.se_single_target+=/flame_shock,moving=1,if=movement.distance>6
 actions.se_single_target+=/frost_shock,moving=1
@@ -146,6 +146,7 @@ actions.single_target+=/lava_burst,if=cooldown_react&!talent.master_of_the_eleme
 actions.single_target+=/icefury,if=talent.icefury.enabled&!(maelstrom>35&cooldown.lava_burst.remains<=0)
 actions.single_target+=/frost_shock,if=talent.icefury.enabled&buff.icefury.up&(buff.icefury.remains<gcd*4*buff.icefury.stack|buff.stormkeeper.up|!talent.master_of_the_elements.enabled)
 actions.single_target+=/lava_burst
+actions.single_target+=/bag_of_tricks
 actions.single_target+=/flame_shock,target_if=refreshable
 actions.single_target+=/frost_shock,if=runeforge.elemental_equilibrium.equipped&!buff.elemental_equilibrium_debuff.up&!talent.elemental_blast.enabled&!talent.echoing_shock.enabled
 actions.single_target+=/chain_harvest

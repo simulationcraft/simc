@@ -31,31 +31,33 @@ save=T28_Rogue_Assassination.simc
 rogue="T28_Rogue_Outlaw"
 spec="outlaw"
 level="60"
-race="blood_elf"
+race="dwarf"
 role="attack"
 position="back"
 professions="engineering=80/enchanting=125"
-talents="3020033"
+talents="1020022"
 covenant="venthyr"
-soulbind="nadjia_the_mistblade:8,thrill_seeker/count_the_odds:11:1/lashing_scars:11:1/dauntless_duelist/fatal_flaw"
+soulbind="theotar_the_mad_duke:9,soothing_shade/lashing_scars:11:1/triple_threat:11:1/count_the_odds:11:1/party_favors"
+
 renown="80"
 
-head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173129
-neck=shadowghast_necklace,id=178927,bonus_id=6716/7114/6649/6650/1808/1588/6935,gem_id=173127
+head=soulblade_guise,id=188901,bonus_id=1498/7187/6935,gem_id=173127
+neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173127
 shoulders=soulblade_nightwings,id=188905,bonus_id=1505/7187
 back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
 chest=soulblade_leathers,id=188903,bonus_id=1505/7187,enchant=eternal_skirmish
-wrists=umbrahide_armguards,id=172321,bonus_id=6716/8127/6647/6650/1808/1588/6935,gem_id=173127
-hands=grasps_of_abducted_fate,id=189843,bonus_id=1524/7187
-waist=soulblade_baldric,id=188906,bonus_id=1505/7187/6935,gem_id=173129
+wrists=umbrahide_armguards,id=172321,bonus_id=6716/7122/6647/6650/1808/1588/6935,gem_id=173127
+hands=umbrahide_gauntlets,id=172316,bonus_id=6716/8127/6647/6650/1808/1588/6935
+waist=soulblade_baldric,id=188906,bonus_id=1505/7187/6935,gem_id=173127
 legs=soulblade_leggings,id=188902,bonus_id=1498/7187
 feet=soulblade_footpads,id=188908,bonus_id=1505/7187,enchant=eternal_agility
-finger1=signet_of_collapsing_stars,id=185813,bonus_id=1595/6536/6646/6935,gem_id=173127,enchant=tenet_of_versatility
-finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/7579/7749/7798/3151/6646/6935,gem_id=173129,enchant=tenet_of_critical_strike
+finger1=ritual_commanders_ring,id=178781,bonus_id=1592/6536/6646/6935,gem_id=173127,enchant=tenet_of_versatility
+finger2=jeweled_signet_of_melandrus,id=134542,bonus_id=6652/7579/7749/7798/3151/6646/6935,gem_id=173127,enchant=tenet_of_critical_strike
 trinket1=cache_of_acquired_treasures,id=188265,bonus_id=1524/7187
-trinket2=faulty_countermeasure,id=137539,bonus_id=6652/7579/7749/7798/3151/6646
+trinket2=phial_of_putrefaction,id=178771,bonus_id=1592/6536/6646
 main_hand=dominations_deliverance,id=189818,bonus_id=1524/7187,enchant=celestial_guidance
 off_hand=edge_of_night,id=186398,bonus_id=7187/6652/1498/6646,enchant=sinful_revelation
+
 
 save=T28_Rogue_Outlaw.simc
 

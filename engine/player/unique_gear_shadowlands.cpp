@@ -4388,6 +4388,11 @@ struct singularity_supreme_t : public stat_buff_t
 
 void singularity_supreme( special_effect_t& effect )
 {
+
+  if ( unique_gear::create_fallback_buffs(
+           effect, { "singularity_supreme_counter", "singularity_supreme_lockout", "singularity_supreme", "swap_stat_compensation" } ) )
+      return;
+
   // logs seem to show it only procs on damage spell casts
   effect.proc_flags2_ = PF2_CAST_DAMAGE;
 
@@ -6203,7 +6208,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 359168, items::cruciform_veinripper );
 
     // 9.2 Weapons
-    unique_gear::register_special_effect( 367952, items::singularity_supreme );
+    unique_gear::register_special_effect( 367952, items::singularity_supreme, true );
     unique_gear::register_special_effect( 367953, items::gavel_of_the_first_arbiter );
 
     // Armor

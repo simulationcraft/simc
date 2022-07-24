@@ -365,6 +365,13 @@ bool item_database::apply_item_bonus( item_t& item, const item_bonus_entry_t& en
       }
       break;
     }
+    // Adjust ilevel if we're using PvP mode
+    case ITEM_BONUS_ILEVEL_IN_PVP:
+      if ( item.sim->pvp_mode )
+      {
+        item.parsed.data.level += entry.value_1;
+      }
+      break;
     default:
       break;
   }

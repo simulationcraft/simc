@@ -2131,9 +2131,31 @@ public:
     double val      = eff.percent();
     bool mastery    = p()->find_mastery_spell( p()->specialization() ) == s_data;
 
+    auto debug_message = [ & ]( std::string_view type ) {
+      if ( buff )
+      {
+        p()->sim->print_debug( "buff-effects: {} ({}) {} modified by {}%{} with buff {} ({})", ab::name(), ab::id, type,
+                               val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
+      }
+      else if ( mastery && !f )
+      {
+        p()->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}%+mastery from {} ({})", ab::name(), ab::id,
+                               type, val * 100.0, s_data->name_cstr(), s_data->id() );
+      }
+      else if ( f )
+      {
+        p()->sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({})",
+                               ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id() );
+      }
+      else
+      {
+        p()->sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({})", ab::name(), ab::id, type,
+                               val * 100.0, s_data->name_cstr(), s_data->id() );
+      }
+    };
+
     // TODO: more robust logic around 'party' buffs with radius
-    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
-      return;
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() ) return;
 
     if ( i <= 5 )
       parse_spell_effects_mods( val, mastery, s_data, i, mods... );
@@ -2141,6 +2163,7 @@ public:
     if ( is_auto_attack && eff.subtype() == A_MOD_AUTO_ATTACK_PCT )
     {
       da_multiplier_buffeffects.emplace_back( buff, val );
+      debug_message( "auto attack" );
       return;
     }
 
@@ -2150,31 +2173,29 @@ public:
     if ( !mastery && !val )
       return;
 
-    std::string_view buffeffect_name;
-
     if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
     {
       switch ( eff.misc_value1() )
       {
         case P_GENERIC:
           da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery, f );
-          buffeffect_name = "direct damage";
+          debug_message( "direct damage" );
           break;
         case P_TICK_DAMAGE:
           ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, mastery, f );
-          buffeffect_name = "tick damage";
+          debug_message( "tick damage" );
           break;
         case P_CAST_TIME:
           execute_time_buffeffects.emplace_back( buff, val, use_stacks, false, f );
-          buffeffect_name = "cast time";
+          debug_message( "cast time" );
           break;
         case P_COOLDOWN:
           recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, false, f );
-          buffeffect_name = "cooldown";
+          debug_message( "cooldown" );
           break;
         case P_RESOURCE_COST:
           cost_buffeffects.emplace_back( buff, val, use_stacks, false, f );
-          buffeffect_name = "cost";
+          debug_message( "cost" );
           break;
         default:
           return;
@@ -2183,27 +2204,11 @@ public:
     else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
     {
       crit_chance_buffeffects.emplace_back( buff, val, use_stacks, false, f );
-      buffeffect_name = "crit chance";
+      debug_message( "crit chance" );
     }
     else
     {
       return;
-    }
-
-    if ( buff )
-    {
-      p()->sim->print_debug( "buff-effects: {} ({}) {} modified by {}%{} with buff {} ({})", ab::name(), ab::id,
-                             buffeffect_name, val * 100.0, mastery ? "+mastery" : "", buff->name(), buff->data().id() );
-    }
-    else if ( mastery && !f )
-    {
-      p()->sim->print_debug( "mastery-effects: {} ({}) {} modified by {}%+mastery from {} ({})", ab::name(), ab::id,
-                             buffeffect_name, val * 100.0, s_data->name_cstr(), s_data->id() );
-    }
-    else
-    {
-      p()->sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({})", ab::name(),
-                             ab::id, buffeffect_name, val * 100.0, s_data->name_cstr(), s_data->id() );
     }
   }
 
@@ -2248,18 +2253,23 @@ public:
     parse_buff_effects<Ts...>( buff, 0U, 0U, true, mods... );
   }
 
-  void parse_conditional_effects( const spell_data_t* spell, bfun f )
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_start = 0U, unsigned ignore_end = 0U )
   {
     if ( !spell || !spell->ok() )
       return;
 
     for ( size_t i = 1 ; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_start && i >= as<size_t>( ignore_start ) && ( i <= as<size_t>( ignore_end ) || !ignore_end ) )
+        continue;
+
       parse_buff_effect( nullptr, f, spell, i, false );
+    }
   }
 
-  void parse_passive_effects( const spell_data_t* spell )
+  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_start = 0U, unsigned ignore_end = 0U )
   {
-    parse_conditional_effects( spell, nullptr );
+    parse_conditional_effects( spell, nullptr, ignore_start, ignore_end );
   }
 
   double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
@@ -2369,6 +2379,8 @@ public:
     }
     parse_buff_effects( p()->buff.tooth_and_claw, false );
     parse_buff_effects<C>( p()->buff.savage_combatant, p()->conduit.savage_combatant );
+    // Auto attack bonus
+    parse_passive_effects( p()->spec.guardian, 1U, 10U );
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
@@ -6252,7 +6264,7 @@ struct prowl_t : public druid_spell_t
       if ( p()->buff.jungle_stalker->check() )
         return druid_spell_t::ready();
 
-      if ( p()->sim->fight_style == "DungeonSlice" && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
+      if ( p()->sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE && p()->player_t::buffs.shadowmeld->check() && target->type == ENEMY_ADD )
         return druid_spell_t::ready();
 
       if ( p()->sim->target_non_sleeping_list.empty() )
@@ -9828,8 +9840,7 @@ void druid_t::init()
       break;
   }
 
-  if ( util::str_compare_ci( sim->fight_style, "DungeonSlice" ) ||
-       util::str_compare_ci( sim->fight_style, "DungeonRoute" ) )
+  if ( sim->fight_style == FIGHT_STYLE_DUNGEON_SLICE || sim->fight_style == FIGHT_STYLE_DUNGEON_ROUTE )
   {
     options.adaptive_swarm_friendly_targets = 5;
   }

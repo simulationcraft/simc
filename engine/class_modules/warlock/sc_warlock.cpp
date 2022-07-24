@@ -670,7 +670,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                           p.havoc_target = nullptr;
                         }
                         else
+                        {
+                          if ( p.havoc_target && p.havoc_target != b->player )
+                            p.get_target_data( p.havoc_target )->debuffs_havoc->expire();
                           p.havoc_target = b->player;
+                        }
 
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );

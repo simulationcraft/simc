@@ -179,7 +179,7 @@ struct sim_t : private sc_thread_t
   unsigned int enable_2_set;// Enables all 2 set bonuses for the tier/integer that this is set as
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
-  bool pvp_crit; // Enables crit damage reduction in PvP
+  bool pvp_mode; // Enables PvP mode - reduces crit damage, adjusts PvP gear iLvl
   bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
@@ -202,7 +202,7 @@ struct sim_t : private sc_thread_t
   // Raid Events
   std::vector<std::unique_ptr<raid_event_t>> raid_events;
   std::string raid_events_str;
-  std::string fight_style;
+  fight_style_e fight_style;
   size_t add_waves;
 
   // Buffs and Debuffs Overrides
