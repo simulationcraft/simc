@@ -332,17 +332,6 @@ public:
   /// Legacy of the Frost Witch maelstrom stack counter
   unsigned lotfw_counter;
 
-  /// Vesper totem ground aoe events
-  ground_aoe_event_t* ev_vesper_totem_dmg, *ev_vesper_totem_heal;
-  /// Vesper totem damage charges left, heal charges left, charges used
-  unsigned vesper_totem_dmg_charges, vesper_totem_heal_charges, vesper_totem_used_charges;
-  /// Vesper totem placement target, needed for Raging Vesper Vortex proper targeting
-  player_t* vesper_totem_target;
-  /// Vesper totem damage action
-  action_t* vesper_totem_damage, *vesper_totem_heal;
-  /// Raging Vesper Vortex
-  action_t* raging_vesper_vortex;
-
   // Options
   bool raptor_glyph;
 
@@ -360,8 +349,6 @@ public:
 
   struct
   {
-    /// Number of allies hit by Chain Harvest heals, range 0..5
-    int chain_harvest_allies = 5;
   } opt_sl; // Shadowlands Shaman-specific options
 
   // Cached actions
@@ -396,8 +383,6 @@ public:
     spawner::pet_spawner_t<pet_t, shaman_t> frost_wolves;
     spawner::pet_spawner_t<pet_t, shaman_t> lightning_wolves;
 
-    pet_t* bron;
-
     pets_t( shaman_t* );
   } pet;
 
@@ -418,15 +403,12 @@ public:
 
     // Covenant Class Ability Buffs
     buff_t* primordial_wave;
-    buff_t* vesper_totem;
 
     //Covenant Legendaries
     buff_t* splintered_elements;
     buff_t* seeds_of_rampant_growth;
 
     // Legendaries
-    buff_t* chains_of_devastation_chain_heal;
-    buff_t* chains_of_devastation_chain_lightning;
     buff_t* echoes_of_great_sundering;
     buff_t* windspeakers_lava_resurgence;
     buff_t* doom_winds_buff;
@@ -517,30 +499,13 @@ public:
     // Necrolord
     const spell_data_t* necrolord;  // Primordial Wave
 
-    // Night Fae
-    const spell_data_t* night_fae;  // Fae Transfusion
-
-    // Venthyr
-    const spell_data_t* venthyr;  // Chain Harvest
-
-    // Kyrian
-    const spell_data_t* kyrian;  // Vesper Totem
   } covenant;
 
   // Conduits
   struct conduit_t
   {
     // Covenant-specific
-    conduit_data_t essential_extraction;  // Night Fae
-    conduit_data_t lavish_harvest;        // Venthyr
     conduit_data_t tumbling_waves;        // Necrolord
-    conduit_data_t elysian_dirge;         // Kyrian
-
-    // Elemental
-    conduit_data_t call_of_flame;
-    conduit_data_t high_voltage;
-    conduit_data_t pyroclastic_shock;
-    conduit_data_t shake_the_foundations;
 
     // Enhancement
     conduit_data_t chilled_to_the_core;
@@ -553,16 +518,10 @@ public:
   struct legendary_t
   {
     // Shared
-    item_runeforge_t ancestral_reminder;
-    item_runeforge_t chains_of_devastation;
-    item_runeforge_t deeptremor_stone;
     item_runeforge_t deeply_rooted_elements;
 
     //Covenant
     item_runeforge_t splintered_elements;
-    item_runeforge_t seeds_of_rampant_growth;
-    item_runeforge_t elemental_conduit;
-    item_runeforge_t raging_vesper_vortex;
 
     // Elemental
     item_runeforge_t skybreakers_fiery_demise;
@@ -581,13 +540,11 @@ public:
   struct
   {
     gain_t* aftershock;
-    gain_t* high_voltage;
     gain_t* ascendance;
     gain_t* resurgence;
     gain_t* feral_spirit;
     gain_t* fire_elemental;
     gain_t* spirit_of_the_maelstrom;
-    gain_t* chain_harvest_heal;
   } gain;
 
   // Tracked Procs
@@ -600,10 +557,6 @@ public:
     proc_t* wasted_lava_surge;
     proc_t* wasted_lava_surge_fireheart;
     proc_t* surge_during_lvb;
-    proc_t* t28_4pc_ele_cd_extension;
-    proc_t* t28_4pc_ele_cd_reduction;
-
-    proc_t* pyroclastic_shock;
 
 
     // Enhancement
@@ -834,8 +787,6 @@ public:
     const spell_data_t* windfury_weapon;
     const spell_data_t* t28_2pc_enh;
     const spell_data_t* t28_4pc_enh;
-    const spell_data_t* t28_2pc_ele;
-    const spell_data_t* t28_4pc_ele;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -857,11 +808,6 @@ public:
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
       lotfw_counter( 0U ),
-      ev_vesper_totem_dmg( nullptr ), ev_vesper_totem_heal( nullptr ),
-      vesper_totem_dmg_charges( 0 ), vesper_totem_heal_charges( 0 ),
-      vesper_totem_used_charges( 0 ), vesper_totem_target( nullptr ),
-      vesper_totem_damage( nullptr ), vesper_totem_heal( nullptr ),
-      raging_vesper_vortex( nullptr ),
       raptor_glyph( false ),
       action(),
       pet( this ),
@@ -936,7 +882,6 @@ public:
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
-  void trigger_vesper_totem( const action_state_t* state );
   void trigger_lava_surge( bool fireheart = false );
   void trigger_splintered_elements( action_t* secondary );
 
@@ -1259,9 +1204,6 @@ public:
   bool affected_by_ns_cost;
   bool affected_by_ns_cast_time;
 
-  bool may_proc_bron;
-  proc_t* bron_proc;
-
   shaman_action_t( util::string_view n, shaman_t* player, const spell_data_t* s = spell_data_t::nil() )
     : ab( n, player, s ),
       track_cd_waste( s->cooldown() > timespan_t::zero() || s->charge_cooldown() > timespan_t::zero() ),
@@ -1276,8 +1218,7 @@ public:
       affected_by_molten_weapon( false ),
       affected_by_natures_fury( false ),
       affected_by_ns_cost( false ),
-      affected_by_ns_cast_time( false ),
-      may_proc_bron( false ), bron_proc( nullptr )
+      affected_by_ns_cast_time( false )
   {
     ab::may_crit = true;
 
@@ -1337,11 +1278,6 @@ public:
     {
       ab::gcd_type = gcd_haste_type::ATTACK_HASTE;
     }
-
-    may_proc_bron = !this->background &&
-      ( this->spell_power_mod.direct || this->spell_power_mod.tick ||
-        this->attack_power_mod.direct || this->attack_power_mod.tick ||
-        this->base_dd_min || this->base_dd_max || this->base_td );
   }
 
   void init_finished() override
@@ -1351,11 +1287,6 @@ public:
     if ( this->cooldown->duration > timespan_t::zero() )
     {
       p()->ability_cooldowns.push_back( this->cooldown );
-    }
-
-    if ( may_proc_bron )
-    {
-      bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
     }
   }
 
@@ -2703,8 +2634,7 @@ struct earth_elemental_t : public primal_elemental_t
   buff_t* deeptremor_stone;
 
   earth_elemental_t( shaman_t* owner, bool guardian )
-    : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian ),
-    deeptremor_eq( nullptr ), deeptremor_stone( nullptr )
+    : primal_elemental_t( owner, ( !guardian ) ? "primal_earth_elemental" : "greater_earth_elemental", guardian )
   {
     main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
     owner_coeff.ap_from_sp      = 0.25;
@@ -2717,17 +2647,6 @@ struct earth_elemental_t : public primal_elemental_t
   void create_buffs() override
   {
     primal_elemental_t::create_buffs();
-
-    if ( o()->legendary.deeptremor_stone.ok() )
-    {
-      deeptremor_stone = make_buff<buff_t>( this, "deeptremor_stone", o()->legendary.deeptremor_stone )
-        ->set_period( 1_s )
-        ->set_tick_time_behavior( buff_tick_time_behavior::UNHASTED )
-        ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-          deeptremor_eq->set_target( target );
-          deeptremor_eq->execute();
-        } );
-    }
   }
 };
 
@@ -3374,11 +3293,6 @@ struct melee_t : public shaman_attack_t
 
     shaman_attack_t::execute();
   }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_attack_t::impact( state );
-  }
 };
 
 // Auto Attack ==============================================================
@@ -3764,8 +3678,6 @@ struct stormstrike_base_t : public shaman_attack_t
   {
     shaman_attack_t::init();
     may_proc_flametongue = may_proc_windfury = may_proc_stormbringer = false;
-
-    may_proc_bron = true;
   }
 
   void update_ready( timespan_t cd_duration = timespan_t::min() ) override
@@ -4177,13 +4089,6 @@ struct earth_elemental_t : public shaman_spell_t
         player->find_spell( 198103 )->cooldown();  // earth ele cd and durations are on different spells.. go figure.
   }
 
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    may_proc_bron = true;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -4229,19 +4134,8 @@ struct fire_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    timespan_t fire_elemental_duration = p()->spell.fire_elemental->duration();
-
-    if ( p()->conduit.call_of_flame->ok() )
-    {
-      fire_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
-    }
-
-    p()->summon_fire_elemental( fire_elemental_duration );
+    p()->summon_fire_elemental( p()->spell.fire_elemental->duration() );
     p()->buff.fire_elemental->trigger();
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
-    {
-      p()->buff.fireheart->trigger();
-    }
   }
 
   bool ready() override
@@ -4270,24 +4164,7 @@ struct storm_elemental_t : public shaman_spell_t
   {
     shaman_spell_t::execute();
 
-    timespan_t storm_elemental_duration = p()->spell.storm_elemental->duration();
-
-    if ( p()->conduit.call_of_flame->ok() )
-    {
-      storm_elemental_duration *= ( 1.0 + p()->conduit.call_of_flame.percent() );
-    }
-
-    // 2022-03-04 hotfix: if you cast Storm Elemental again while having a Storm Elemental active, the Wind Gust buff
-    // will be reset.
-    // https://us.forums.blizzard.com/en/wow/t/elemental-shaman-class-tuning-march-8/1195446
-    p()->buff.wind_gust->expire();
-
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) )
-    {
-      p()->buff.fireheart->trigger();
-    }
-
-    p()->summon_storm_elemental( storm_elemental_duration );
+    p()->summon_storm_elemental( p()->spell.storm_elemental->duration() );
   }
 };
 
@@ -4333,9 +4210,6 @@ struct earth_shield_t : public shaman_heal_t
   void execute() override
   {
     shaman_heal_t::execute();
-
-    // Earth Shield application consumes a Vesper Totem healing charge
-    p()->trigger_vesper_totem( execute_state );
 
     p()->buff.lightning_shield->expire();
   }
@@ -4483,18 +4357,6 @@ struct chain_lightning_t : public chained_base_t
     affected_by_master_of_the_elements = true;
   }
 
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    if (p()->buff.chains_of_devastation_chain_lightning->up())
-    {
-      m *= 1.0 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 2 ).percent();
-    }
-
-    return m;
-  }
-
   bool benefit_from_maelstrom_weapon() const override
   {
     if ( p()->buff.stormkeeper->check() )
@@ -4523,11 +4385,6 @@ struct chain_lightning_t : public chained_base_t
 
     t *= 1.0 + p()->buff.wind_gust->stack_value();
 
-    if ( p()->buff.chains_of_devastation_chain_lightning->up() )
-    {
-      t *= 1 + p()->buff.chains_of_devastation_chain_lightning->data().effectN( 1 ).percent();
-    }
-
     return t;
   }
 
@@ -4555,12 +4412,6 @@ struct chain_lightning_t : public chained_base_t
   void execute() override
   {
     chained_base_t::execute();
-
-    if ( p()->legendary.chains_of_devastation->ok() )
-    {
-      p()->buff.chains_of_devastation_chain_heal->trigger();
-      p()->buff.chains_of_devastation_chain_lightning->expire();
-    }
 
     // Storm Elemental Wind Gust passive buff trigger
     if ( p()->talent.storm_elemental->ok() )
@@ -4738,11 +4589,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
-    {
-          m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
-    }
-
     return m;
   }
 
@@ -4757,44 +4603,6 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
     }
 
     return m;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    // TODO: check if this needs a guard against background effects (echoing shock, ascendance)
-    // For now background effects trigger the bonus
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
-    {
-      // duration extension
-      pet_t* pet = p()->get_active_elemental_pet();
-      if ( pet )
-      {
-        // yes, this is not a proper time value and has a different schema than effectN 3. Here 1 second has a value of
-        // 10
-        timespan_t extension = timespan_t::from_millis( p()->spell.t28_4pc_ele->effectN( 1 ).base_value() * 100.0 );
-
-        p()->buff.fireheart->extend_duration( p(), extension );
-        pet->adjust_duration( extension );
-        p()->buff.fire_elemental->extend_duration( p(), extension );
-
-        p()->proc.t28_4pc_ele_cd_extension->occur();
-      }
-
-      // CD reduction
-      if ( !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
-      {
-        // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value
-        // of 1
-        timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
-
-        p()->cooldown.storm_elemental->adjust( -1.0 * extension );
-        p()->cooldown.fire_elemental->adjust( -1.0 * extension );
-
-        p()->proc.t28_4pc_ele_cd_reduction->occur();
-      }
-    }
   }
  };
 
@@ -5143,11 +4951,6 @@ struct lava_burst_t : public shaman_spell_t
       m *= 1.0 + p()->buff.windspeakers_lava_resurgence->data().effectN( 1 ).percent();
     }
 
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B2 ) && p()->buff.fireheart->check() )
-    {
-        m *= 1.0 + p()->spell.t28_2pc_ele->effectN( 2 ).percent();
-    }
-
     return m;
   }
 
@@ -5187,38 +4990,6 @@ struct lava_burst_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
-    // TODO: check if this needs a guard against background effects (echoing shock, ascendance)
-    // For now background effects trigger the bonus
-    if ( p()->sets->has_set_bonus( SHAMAN_ELEMENTAL, T28, B4 ) )
-    {
-      // duration extension
-      pet_t* pet = p()->get_active_elemental_pet();
-      if ( pet )
-      {
-        // yes, this is not a proper time value and has a different schema than effectN 3. Here 1 second has a value of 10
-        timespan_t extension = timespan_t::from_millis( p()->spell.t28_4pc_ele->effectN( 1 ).base_value() * 100.0 );
-
-        p()->buff.fireheart->extend_duration( p(), extension );
-        pet->adjust_duration( extension );
-        p()->buff.fire_elemental->extend_duration( p(), extension );
-
-        p()->proc.t28_4pc_ele_cd_extension->occur();
-      }
-
-      // CD reduction
-      if ( !p()->is_elemental_pet_active() && rng().roll( p()->spell.t28_4pc_ele->effectN( 2 ).percent() ) )
-      {
-        // yes this is not a proper time value, and a different schema for it than effectN 1. Here 1 second has a value
-        // of 1
-        timespan_t extension = timespan_t::from_seconds( p()->spell.t28_4pc_ele->effectN( 3 ).base_value() );
-
-        p()->cooldown.storm_elemental->adjust( -1.0 * extension );
-        p()->cooldown.fire_elemental->adjust( -1.0 * extension );
-
-        p()->proc.t28_4pc_ele_cd_reduction->occur();
-      }
-    }
 
     // Echoed Lava Burst does not generate Master of the Elements
     if ( !is_echoed_spell() && p()->talent.master_of_the_elements->ok() )
@@ -5323,6 +5094,7 @@ struct lightning_bolt_t : public shaman_spell_t
         {
           asc_action->add_child( this );
         }
+        break;
       }
       default:
         break;
@@ -5349,14 +5121,6 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     return mw_stacks;
-  }
-
-  double composite_maelstrom_gain_coefficient( const action_state_t* state ) const override
-  {
-    double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
-    if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
-      coeff *= 2.0;
-    return coeff;
   }
 
   /* Number of guaranteed overloads */
@@ -5592,13 +5356,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
     cooldown->duration += player->talent.elemental_spirits->effectN( 1 ).time_value();
   }
 
-  void init() override
-  {
-    shaman_spell_t::init();
-
-    may_proc_bron = true;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5695,21 +5452,6 @@ struct earthquake_t : public shaman_spell_t
     parse_options( options_str );
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
     add_child( rumble );
-
-    if ( p()->conduit.shake_the_foundations.ok() )
-    {
-      shake_the_foundations_cl = new chain_lightning_t( player, "", "stf" );
-      shake_the_foundations_cl->background = true;
-      shake_the_foundations_cl->base_costs[ RESOURCE_MANA ] = 0;
-
-      add_child( shake_the_foundations_cl );
-
-      shake_the_foundations_lb = new lava_beam_t( player, "", "stf" );
-      shake_the_foundations_lb->background = true;
-      shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
-
-      add_child( shake_the_foundations_lb );
-    }
   }
 
   void execute() override
@@ -5722,24 +5464,6 @@ struct earthquake_t : public shaman_spell_t
           .target( execute_state->target )
           .duration( data().duration() )
           .action( rumble ) );
-
-    if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
-         !rumble->target_list().empty() )
-    {
-      auto t = rumble->target_list()[ static_cast<unsigned>( rng().range( 0,
-            as<double>( rumble->target_list().size() ) ) ) ];
-
-      if ( p()->buff.ascendance->check() )
-      {
-        shake_the_foundations_lb->set_target( t );
-        shake_the_foundations_lb->execute();
-      }
-      else
-      {
-        shake_the_foundations_cl->set_target( t );
-        shake_the_foundations_cl->execute();
-      }
-    }
 
     // Note, needs to be decremented after ground_aoe_event_t is created so that the rumble gets the
     // buff multiplier as persistent.
@@ -5822,11 +5546,6 @@ struct feral_lunge_t : public shaman_spell_t
     impact_action = new feral_lunge_attack_t( player );
   }
 
-  void init() override
-  {
-    shaman_spell_t::init();
-  }
-
   bool ready() override
   {
     if ( !p()->buff.ghost_wolf->check() )
@@ -5874,27 +5593,6 @@ struct earth_shock_t : public shaman_spell_t
     affected_by_master_of_the_elements = true;
   }
 
-  double cost() const override
-  {
-    double d = shaman_spell_t::cost();
-
-    return d;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_spell_t::bonus_da( s );
-
-    return b;
-  }
-
-  double action_multiplier() const override
-  {
-    auto m = shaman_spell_t::action_multiplier();
-
-    return m;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5921,17 +5619,6 @@ struct earth_shock_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
-    }
-
-    if ( p()->conduit.pyroclastic_shock->ok() && rng().roll( p()->conduit.pyroclastic_shock.percent() ) )
-    {
-      dot_t* fs = this->td(target)->dot.flame_shock;
-      timespan_t extend_time = p()->conduit.pyroclastic_shock->effectN( 2 ).time_value();
-      if ( fs->is_ticking() )
-      {
-        fs->adjust_duration( extend_time );
-        p()->proc.pyroclastic_shock->occur();
-      }
     }
   }
 
@@ -6080,13 +5767,6 @@ public:
     return m;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    auto d = shaman_spell_t::composite_dot_duration( s );
-
-    return d;
-  }
-
   timespan_t tick_time( const action_state_t* state ) const override
   {
     auto tt = shaman_spell_t::tick_time( state );
@@ -6120,11 +5800,6 @@ public:
       p()->cooldown.fire_elemental->adjust( -1.0 * skybreakers_effect->effectN( 2 ).time_value() );
     }
 
-    if ( d->state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
-    {
-      p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
-    }
-
     if ( ( p()->talent.primal_lava_actuators->ok() || p()->legendary.primal_lava_actuators.ok() ) &&
           d->state->result_amount > 0 )
     {
@@ -6146,16 +5821,6 @@ public:
 
     untrack_flame_shock( d );
     invalidate_dependant_targets();
-  }
-
-  void impact( action_state_t* state ) override
-  {
-    shaman_spell_t::impact( state );
-
-    if ( state->result == RESULT_CRIT && p()->legendary.elemental_conduit->ok() )
-    {
-      p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
-    }
   }
 };
 
@@ -6327,8 +5992,6 @@ struct ascendance_t : public shaman_spell_t
         add_child( ascendance_damage );
       }
     }
-
-    may_proc_bron = true;
   }
 
   void execute() override
@@ -6491,20 +6154,6 @@ struct ancestral_guidance_t : public shaman_heal_t
   {
     parse_options( options_str );
   }
-
-  void init() override
-  {
-    shaman_heal_t::init();
-
-    may_proc_bron = true;
-  }
-
-  void execute() override
-  {
-    shaman_heal_t::execute();
-
-    p()->trigger_vesper_totem( execute_state );
-  }
 };
 
 // Healing Surge Spell ======================================================
@@ -6610,40 +6259,6 @@ struct chain_heal_t : public shaman_heal_t
       m *= 1.0 + p()->spec.riptide->effectN( 3 ).percent();
 
     return m;
-  }
-
-  timespan_t execute_time() const override
-  {
-    timespan_t t = shaman_heal_t::execute_time();
-
-    if ( p()->buff.chains_of_devastation_chain_heal->up() )
-    {
-      t *= 1 + p()->buff.chains_of_devastation_chain_heal->data().effectN( 1 ).percent();
-    }
-
-    return t;
-  }
-
-  void execute() override
-  {
-    shaman_heal_t::execute();
-
-    if ( p()->legendary.chains_of_devastation->ok() )
-    {
-      p()->buff.chains_of_devastation_chain_lightning->trigger();
-      p()->buff.chains_of_devastation_chain_heal->expire();
-    }
-  }
-
-  double cost() const override
-  {
-    if ( p()->buff.chains_of_devastation_chain_heal->up() &&
-         ( p()->specialization() == SHAMAN_ENHANCEMENT || p()->specialization() == SHAMAN_ELEMENTAL ) )
-    {
-      return 0.0;
-    }
-
-    return shaman_heal_t::cost();
   }
 };
 
@@ -7114,16 +6729,6 @@ struct healing_stream_totem_pulse_t : public heal_totem_action_t
     : heal_totem_action_t( "healing_stream_totem_heal", totem, totem->find_spell( 52042 ) )
   { }
 
-  void execute() override
-  {
-    heal_totem_action_t::execute();
-
-    // Trigger Vesper Totem on the first pulse instead of totem summon
-    if ( pulse == 1U )
-    {
-      o()->trigger_vesper_totem( execute_state );
-    }
-  }
 };
 
 struct healing_stream_totem_t : public heal_totem_pet_t
@@ -7185,83 +6790,6 @@ struct thundercharge_t : public shaman_spell_t
   }
 };
 
-// ==========================================================================
-// Fae Transfusion - Night Fae Covenant
-// ==========================================================================
-
-struct fae_transfusion_tick_t : public shaman_spell_t
-{
-  const spell_data_t* seeds_effect;
-
-  fae_transfusion_tick_t( util::string_view n, shaman_t* player )
-    : shaman_spell_t( n, player, player->find_spell( 328928 ) ),
-      seeds_effect( player->find_spell( 356218 ) )
-  {
-    affected_by_master_of_the_elements = true;
-    allow_class_ability_procs = true;
-    not_a_proc = true;
-
-    aoe        = 4;
-    background = split_aoe_damage = true;
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-    if ( p()->legendary.seeds_of_rampant_growth->ok() )
-    {
-      if ( p()->specialization() == SHAMAN_ELEMENTAL )
-      {
-        p()->cooldown.fire_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
-        p()->cooldown.storm_elemental->adjust( -1.0 * seeds_effect->effectN( 2 ).time_value() );
-      }
-      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-      {
-        p()->cooldown.feral_spirits->adjust( -1.0 * seeds_effect->effectN( 3 ).time_value() );
-      }
-      // shared effect
-      p()->buff.seeds_of_rampant_growth->increment();
-    }
-  }
-};
-
-struct fae_transfusion_t : public shaman_spell_t
-{
-  fae_transfusion_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "fae_transfusion", player, player->find_covenant_spell( "Fae Transfusion" ) )
-  {
-    parse_options( options_str );
-    if ( !player->covenant.night_fae->ok() )
-      return;
-
-    affected_by_master_of_the_elements = false;
-
-    channeled   = true;
-    tick_action = new fae_transfusion_tick_t( "fae_transfusion_tick", player );
-    cooldown->duration += p()->conduit.essential_extraction.time_value();
-  }
-
-  result_amount_type amount_type( const action_state_t*, bool ) const override
-  { return result_amount_type::DMG_DIRECT; }
-
-  void last_tick( dot_t* d ) override
-  {
-    shaman_spell_t::last_tick( d );
-
-    if ( d->current_tick == d->num_ticks() )
-    {
-      if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-      {
-        p()->buff.maelstrom_weapon->trigger( p()->covenant.night_fae->effectN( 4 ).base_value() );
-        for ( int i = 0; i < p()->covenant.night_fae->effectN( 4 ).base_value(); ++i )
-        {
-          p()->proc.maelstrom_weapon_ft->occur();
-        }
-      }
-      p()->buff.master_of_the_elements->decrement();
-    }
-  }
-};
 
 // ==========================================================================
 // Primordial Wave - Necrolord Covenant
@@ -7319,292 +6847,6 @@ struct primordial_wave_t : public shaman_spell_t
     shaman_spell_t::impact( s );
 
     p()->trigger_secondary_flame_shock( s );
-  }
-};
-
-// ==========================================================================
-// Chain Harvest - Venthyr Covenant
-// ==========================================================================
-
-struct chain_harvest_t : public shaman_spell_t
-{
-  int critical_hits = 0;
-  chain_harvest_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "chain_harvest", player, player->covenant.venthyr )
-  {
-    parse_options( options_str );
-    aoe = 5;
-    spell_power_mod.direct = player->find_spell( 320752 )->effectN( 1 ).sp_coeff();
-
-    if ( player->specialization() == SHAMAN_ELEMENTAL )
-    {
-      maelstrom_gain   = player->find_spell( 368583 )->effectN( 1 ).base_value();
-      resource_current = resource_e::RESOURCE_MAELSTROM;
-    }
-
-    base_multiplier *= 1.0 + player->spec.elemental_shaman->effectN( 7 ).percent();
-
-    base_crit += p()->conduit.lavish_harvest.percent();
-  }
-
-  void schedule_travel( action_state_t* s ) override
-  {
-    if ( s->result == RESULT_CRIT )
-    {
-      critical_hits++;
-    }
-
-    shaman_spell_t::schedule_travel( s );
-  }
-
-  void impact(action_state_t* s ) override
-  {
-    shaman_spell_t::impact( s );
-    if ( p()->legendary.elemental_conduit->ok() )
-    {
-      p()->trigger_secondary_flame_shock( s );
-    }
-  }
-
-  void update_ready( timespan_t ) override
-  {
-    auto cd = cooldown_duration();
-
-    for ( int i = 0; i < p()->opt_sl.chain_harvest_allies; ++i )
-    {
-      critical_hits += as<int>( rng().roll( composite_crit_chance() ) );
-    }
-
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} n_crit={}, cooldown={}",
-        player->name(), name(), critical_hits,
-        cd - critical_hits * timespan_t::from_seconds( 5 ) );
-    }
-
-    cd -= critical_hits * timespan_t::from_seconds( 5 );
-
-    shaman_spell_t::update_ready( cd );
-
-    critical_hits = 0;
-  }
-
-  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
-  {
-    return __check_distance_targeting( this, tl );
-  }
-
-  void trigger_maelstrom_gain( const action_state_t* state ) override
-  {
-    shaman_spell_t::trigger_maelstrom_gain( state );
-    if ( maelstrom_gain == 0 )
-    {
-      return;
-    }
-
-    // Generate Maelstrom for friendly targets hit.
-    double g = maelstrom_gain;
-    g *= composite_maelstrom_gain_coefficient( state );
-    g *= p()->opt_sl.chain_harvest_allies;
-    p()->resource_gain( RESOURCE_MAELSTROM, g, p()->gain.chain_harvest_heal, this );
-  }
-};
-
-// ==========================================================================
-// Vesper Totem - Kyrian Covenant
-// ==========================================================================
-
-struct raging_vesper_vortex_t : public shaman_spell_t
-{
-  raging_vesper_vortex_t( shaman_t* player )
-    : shaman_spell_t( "raging_vesper_vortex", player, player->find_spell( 356790 ) )
-  {
-    ground_aoe = background = true;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = shaman_spell_t::composite_target_multiplier( t );
-
-    if ( t == target )
-    {
-      m *= 1.0 + p()->conduit.elysian_dirge.percent();
-    }
-
-    return m;
-  }
-};
-
-struct vesper_totem_damage_t : public shaman_spell_t
-{
-  // Cache closest target so we don't need to compute it for all hit targets
-  player_t* closest_target;
-
-  vesper_totem_damage_t( shaman_t* player )
-    : shaman_spell_t( "vesper_totem_damage", player, player->find_spell( 324520 ) )
-  {
-    background = true;
-  }
-
-  void find_closest_target()
-  {
-    if ( sim->distance_targeting_enabled == 0 )
-    {
-      closest_target = target_list().front();
-    }
-    else
-    {
-      closest_target = nullptr;
-      auto min_distance = std::numeric_limits<double>::max();
-
-      range::for_each( target_list(), [this, &min_distance] ( player_t* t ) {
-        if ( sim->debug )
-        {
-          sim->print_debug( "{} {} candidate={} (x={}, y={}, distance={}",
-            player->name(), name(), t->name(), t->x_position, t->y_position,
-            player->get_player_distance( *t ) );
-
-        }
-
-        double dt = p()->get_player_distance( *t );
-        if ( dt < min_distance )
-        {
-          dt = min_distance;
-          closest_target = t;
-        }
-      } );
-    }
-
-    if ( sim->debug )
-    {
-      sim->print_debug( "{} {} closest_target={} (x={}, y={}, distance={})",
-          player->name(), name(), closest_target ? closest_target->name() : "none",
-          closest_target ? closest_target->x_position : 0.0,
-          closest_target ? closest_target->y_position : 0.0,
-          closest_target ? player->get_player_distance( *closest_target ) : 0.0 );
-
-    }
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = shaman_spell_t::composite_target_multiplier( t );
-
-    if ( closest_target && t == closest_target )
-    {
-      m *= 1.0 + p()->conduit.elysian_dirge.percent();
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    find_closest_target();
-
-    shaman_spell_t::execute();
-  }
-};
-
-struct vesper_totem_heal_t : public shaman_heal_t
-{
-  vesper_totem_heal_t( shaman_t* player )
-    : shaman_heal_t( "vesper_totem_heal", player, player->find_spell( 324522 ) )
-  {
-    background = true;
-    aoe = 6;
-  }
-};
-
-struct vesper_totem_cb_t : public dbc_proc_callback_t
-{
-  shaman_t* shaman;
-
-  vesper_totem_cb_t( const special_effect_t& e, shaman_t* s ) :
-    dbc_proc_callback_t( e.player, e ), shaman( s )
-  { }
-
-  void execute( action_t* /* a */, action_state_t* s ) override
-  {
-    shaman->trigger_vesper_totem( s );
-  }
-};
-
-struct vesper_totem_t : public shaman_spell_t
-{
-  vesper_totem_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "vesper_totem", player, player->covenant.kyrian )
-  {
-    parse_options( options_str );
-
-    if ( !player->vesper_totem_heal )
-    {
-      player->vesper_totem_heal = new vesper_totem_heal_t( player );
-    }
-
-    if ( !player->vesper_totem_damage )
-    {
-      player->vesper_totem_damage = new vesper_totem_damage_t( player );
-    }
-
-    add_child( player->vesper_totem_damage );
-    add_child( player->vesper_totem_heal );
-
-    if ( player->raging_vesper_vortex )
-    {
-      add_child( player->raging_vesper_vortex );
-    }
-  }
-
-  // Snapshot totem position by the use of a ground action that is never triggered
-  // automatically. Instead, shaman_t::trigger_vesper_totem will handle Vesper Totem
-  // pulsing by using a generic proc callback and some special magic to handle other
-  // totems (e.g., HST) proccing it.
-  void trigger_vesper_totem_ground_aoe( action_t*            action,
-                                        ground_aoe_event_t*& event_ptr,
-                                        player_t*            totem_target,
-                                        unsigned             charges )
-  {
-    make_event<ground_aoe_event_t>(
-        *player->sim, player,
-        ground_aoe_params_t()
-            .target( totem_target )
-            .pulse_time( sim->max_time * 2 )
-            .n_pulses( charges )
-            .action( action )
-            // Automatically keep track of aoe event state in a shaman_t cached pointers
-            .state_callback( [ &event_ptr ]( ground_aoe_params_t::state_type event_type,
-                                             ground_aoe_event_t* ptr ) {
-              switch ( event_type )
-              {
-                case ground_aoe_params_t::state_type::EVENT_CREATED:
-                  assert( event_ptr == nullptr );
-                  event_ptr = ptr;
-                  break;
-                case ground_aoe_params_t::state_type::EVENT_DESTRUCTED:
-                  assert( event_ptr == ptr );
-                  event_ptr = nullptr;
-                  break;
-                default:
-                  break;
-              }
-            } ) );
-  }
-
-  void execute() override
-  {
-    shaman_spell_t::execute();
-
-    p()->vesper_totem_dmg_charges = data().effectN( 2 ).base_value();
-    p()->vesper_totem_heal_charges = data().effectN( 4 ).base_value();
-    p()->vesper_totem_used_charges = 0;
-    p()->vesper_totem_target = execute_state->target;
-
-    p()->buff.vesper_totem->trigger();
-    trigger_vesper_totem_ground_aoe( p()->vesper_totem_damage, p()->ev_vesper_totem_dmg,
-        execute_state->target, p()->vesper_totem_dmg_charges );
-    trigger_vesper_totem_ground_aoe( p()->vesper_totem_heal, p()->ev_vesper_totem_heal,
-        player, p()->vesper_totem_heal_charges );
   }
 };
 
@@ -7798,14 +7040,6 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   // covenants
   if ( name == "primordial_wave" )
     return new primordial_wave_t( this, options_str );
-  if ( name == "fae_transfusion" )
-    return new fae_transfusion_t( this, options_str );
-  if ( name == "chain_harvest" )
-    return new chain_harvest_t( this, options_str );
-  if ( name == "vesper_totem" )
-  {
-    return new vesper_totem_t( this, options_str );
-  }
 
   // elemental
 
@@ -8115,21 +7349,6 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     }
   }
 
-  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_dmg_charges" ) )
-  {
-    return make_ref_expr( name, vesper_totem_dmg_charges );
-  }
-
-  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_heal_charges" ) )
-  {
-    return make_ref_expr( name, vesper_totem_heal_charges );
-  }
-
-  if ( util::str_compare_ci( splits[ 0 ], "vesper_totem_used_charges" ) )
-  {
-    return make_ref_expr( name, vesper_totem_used_charges );
-  }
-
   return player_t::create_expression( name );
 }
 
@@ -8189,7 +7408,6 @@ void shaman_t::create_options()
       return false;
     return true;
   } ) );
-  add_option( opt_int( "shaman.chain_harvest_allies", opt_sl.chain_harvest_allies, 0, 5 ) );
 }
 
 // shaman_t::create_profile ================================================
@@ -8420,21 +7638,9 @@ void shaman_t::init_spells()
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
-  covenant.night_fae = find_covenant_spell( "Fae Transfusion" );
-  covenant.venthyr   = find_covenant_spell( "Chain Harvest" );
-  covenant.kyrian    = find_covenant_spell( "Vesper Totem" );
 
   // Covenant-specific conduits
-  conduit.essential_extraction = find_conduit_spell( "Essential Extraction" );
-  conduit.lavish_harvest       = find_conduit_spell( "Lavish Harvest" );
   conduit.tumbling_waves       = find_conduit_spell( "Tumbling Waves" );
-  conduit.elysian_dirge        = find_conduit_spell( "Elysian Dirge" );
-
-  // Elemental Conduits
-  conduit.call_of_flame = find_conduit_spell( "Call of Flame" );
-  conduit.high_voltage  = find_conduit_spell( "High Voltage" );
-  conduit.pyroclastic_shock = find_conduit_spell( "Pyroclastic Shock" );
-  conduit.shake_the_foundations = find_conduit_spell( "Shake the Foundations" );
 
   // Enhancement Conduits
   conduit.chilled_to_the_core = find_conduit_spell( "Chilled to the Core" );
@@ -8443,16 +7649,10 @@ void shaman_t::init_spells()
   conduit.unruly_winds = find_conduit_spell( "Unruly Winds" );
 
   // Shared Legendaries
-  legendary.ancestral_reminder     = find_runeforge_legendary( "Ancestral Reminder" );
-  legendary.chains_of_devastation  = find_runeforge_legendary( "Chains of Devastation" );
-  legendary.deeptremor_stone       = find_runeforge_legendary( "Deeptremor Stone" );
   legendary.deeply_rooted_elements = find_runeforge_legendary( "Deeply Rooted Elements" );
 
   // Covenant Legendaries
   legendary.splintered_elements = find_runeforge_legendary( "Splintered Elements" );
-  legendary.raging_vesper_vortex = find_runeforge_legendary( "Raging Vesper Vortex" );
-  legendary.seeds_of_rampant_growth = find_runeforge_legendary( "Seeds of Rampant Growth" );
-  legendary.elemental_conduit      = find_runeforge_legendary( "Elemental Conduit" );
 
   // Elemental Legendaries
   legendary.skybreakers_fiery_demise     = find_runeforge_legendary( "Skybreaker's Fiery Demise" );
@@ -8479,11 +7679,6 @@ void shaman_t::init_spells()
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
-
-  //spell.t28_2pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B2 );
-  // this is the actually useful spell
-  spell.t28_2pc_ele        = find_spell( 364523 );
-  spell.t28_4pc_ele        = sets->set( SHAMAN_ELEMENTAL, T28, B4 );
 
   // Misc spell-related init
   max_active_flame_shock   = as<unsigned>( find_class_spell( "Flame Shock" )->max_targets() );
@@ -8808,81 +8003,6 @@ void shaman_t::trigger_hot_hand( const action_state_t* state )
   {
     attack->proc_hh->occur();
     cooldown.lava_lash->reset(true);
-  }
-}
-
-void shaman_t::trigger_vesper_totem( const action_state_t* state )
-{
-  if ( !buff.vesper_totem->up() )
-  {
-    return;
-  }
-
-  // TODO: Whitelist?
-
-  ground_aoe_event_t* current_event = nullptr;
-  unsigned* charges = nullptr;
-  switch ( state->action->type )
-  {
-    case ACTION_ATTACK:
-    case ACTION_SPELL:
-    {
-      current_event = ev_vesper_totem_dmg;
-      charges = &( vesper_totem_dmg_charges );
-      break;
-    }
-    case ACTION_HEAL:
-    {
-      current_event = ev_vesper_totem_heal;
-      charges = &( vesper_totem_heal_charges );
-      break;
-    }
-    default:
-      break;
-  }
-
-  if ( charges == nullptr || *charges == 0 )
-  {
-    return;
-  }
-
-  if ( sim->debug )
-  {
-    sim->out_debug.print(
-      "{} vesper_totem state, type={}, trigger={}, dmg_charges={}, heal_charges={}, "
-      "used_charges={}",
-      name(), state->action->type, state->action->name(), vesper_totem_dmg_charges,
-      vesper_totem_heal_charges, vesper_totem_used_charges );
-  }
-
-  // Pulse the ground aoe event manually
-  current_event->execute();
-
-  // Aand cancel the event .. shaman_t::vesper_totem_*_event will have the new event pointer,
-  // so we cancel the cached pointer here
-  event_t::cancel( current_event );
-  (*charges)--;
-  vesper_totem_used_charges++;
-
-  if ( legendary.raging_vesper_vortex->ok() &&
-      vesper_totem_used_charges == legendary.raging_vesper_vortex->effectN( 1 ).base_value() &&
-      !vesper_totem_damage->target_list().empty() )
-  {
-    if ( sim-> debug )
-    {
-      sim->out_debug.print(
-        "{} raging_vesper_vortex trigger, target={}, dmg_charges={}, heal_charges={}",
-        name(), vesper_totem_target->name(), vesper_totem_dmg_charges,
-        vesper_totem_heal_charges );
-    }
-    raging_vesper_vortex->set_target( vesper_totem_damage->target );
-    raging_vesper_vortex->execute();
-    vesper_totem_used_charges = 0;
-  }
-
-  if ( !vesper_totem_dmg_charges && !vesper_totem_heal_charges )
-  {
-    buff.vesper_totem->expire();
   }
 }
 
@@ -9319,35 +8439,13 @@ void shaman_t::create_buffs()
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_max_stack( talent.stormkeeper->max_stacks() | talent.stormkeeper2->max_stacks() | 1 );
 
-  if ( legendary.ancestral_reminder->ok() )
-  {
-    auto legendary_spell = find_spell( 336741 );
-    auto buff            = buffs.bloodlust;
-    buff->modify_duration( legendary_spell->effectN( 1 ).time_value() );
-    buff->modify_default_value( legendary_spell->effectN( 2 ).percent() );
-  }
-
   // Covenants
   buff.primordial_wave = make_buff( this, "primordial_wave", find_spell( 327164 ) )
     ->set_trigger_spell( talent.primordial_wave );
-  buff.vesper_totem = make_buff( this, "vesper_totem", covenant.kyrian )
-                          ->set_cooldown( 0_s ) // Handled by the action
-                          ->set_stack_change_callback( [ this ]( buff_t*, int, int new_ ) {
-                            if ( new_ == 0 )
-                            {
-                              event_t::cancel( ev_vesper_totem_dmg );
-                              event_t::cancel( ev_vesper_totem_heal );
-                              vesper_totem_used_charges = 0;
-                              vesper_totem_dmg_charges = 0;
-                              vesper_totem_heal_charges = 0;
-                            }
-                          } );
+  
   // Covenant Legendaries
   buff.splintered_elements = new splintered_elements_buff_t( this );
 
-  buff.seeds_of_rampant_growth = make_buff( this, "seeds_of_rampant_growth", find_spell( 358945 ) )
-                                  ->set_default_value_from_effect_type(A_MOD_ALL_CRIT_CHANCE)
-                                  ->set_pct_buff_type(STAT_PCT_BUFF_CRIT);
 
   //
   // Elemental
@@ -9370,10 +8468,6 @@ void shaman_t::create_buffs()
                                            ? legendary.echoes_of_great_sundering
                                            : talent.echoes_of_great_sundering );
 
-  buff.chains_of_devastation_chain_heal = make_buff( this, "chains_of_devastation_chain_heal", find_spell( 336737 ) );
-  buff.chains_of_devastation_chain_lightning =
-      make_buff( this, "chains_of_devastation_chain_lightning", find_spell( 336736 ) );
-
   buff.windspeakers_lava_resurgence = make_buff( this, "windspeakers_lava_resurgence", find_spell( 336065 ) )
                             ->set_default_value( find_spell( 336065 )->effectN( 1 ).percent() );
 
@@ -9391,15 +8485,7 @@ void shaman_t::create_buffs()
                            } );
 
   buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
-                            ->apply_affecting_conduit( conduit.call_of_flame );
-
-  buff.fireheart = make_buff( this, "fireheart", spell.t28_2pc_ele )
-                       ->set_duration( buff.fire_elemental->buff_duration() )
-                       ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) {
-                         trigger_lava_surge( true );
-                       } )
-                       ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME );
 
   //
   // Enhancement
@@ -9507,13 +8593,11 @@ void shaman_t::init_gains()
   player_t::init_gains();
 
   gain.aftershock              = get_gain( "Aftershock" );
-  gain.high_voltage            = get_gain( "High Voltage" );
   gain.ascendance              = get_gain( "Ascendance" );
   gain.resurgence              = get_gain( "resurgence" );
   gain.feral_spirit            = get_gain( "Feral Spirit" );
   gain.fire_elemental          = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
-  gain.chain_harvest_heal      = get_gain( "Chain Harvest Heal" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -9529,8 +8613,6 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge_fireheart              = get_proc( "Lava Surge: Wasted Fireheart" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
 
-  proc.pyroclastic_shock                      = get_proc( "Pyroclastic Shock" );
-
   proc.windfury_uw            = get_proc( "Windfury: Unruly Winds" );
   proc.maelstrom_weapon_fs    = get_proc( "Maelstrom Weapon: Feral Spirit" );
   proc.maelstrom_weapon_ea    = get_proc( "Maelstrom Weapon: Elemental Assault" );
@@ -9542,8 +8624,6 @@ void shaman_t::init_procs()
   proc.stormflurry            = get_proc( "Stormflurry" );
 
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
-  proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
-  proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
 }
 
 // shaman_t::init_uptimes ====================================================
@@ -9578,23 +8658,6 @@ void shaman_t::init_assessors()
 void shaman_t::create_special_effects()
 {
   player_t::create_special_effects();
-
-  // Create a base-bones special effect for vesper totem, handle actual init in
-  // shaman_t::init_special_effect
-  if ( covenant.kyrian->ok() )
-  {
-    special_effect_t* effect = new special_effect_t( this );
-    effect->type = SPECIAL_EFFECT_EQUIP;
-    effect->source = SPECIAL_EFFECT_SOURCE_COVENANT;
-    effect->spell_id = covenant.kyrian->id();
-    effect->cooldown_ = 0_s;
-    effect->proc_flags2_ = PF2_CAST_DAMAGE | PF2_CAST_HEAL;
-    effect->custom_init = [ this ]( special_effect_t& effect ) {
-      new vesper_totem_cb_t( effect, this );
-    };
-
-    special_effects.push_back( effect );
-  }
 }
 
 // shaman_t::init_special_effects ===========================================
@@ -9603,86 +8666,13 @@ void shaman_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  // Custom trigger condition for Bron's Call to Arms. Completely overrides the trigger
-  // behavior of the generic proc to get control back to the Shaman class module in terms
-  // of what triggers it.
-  //
-  // 2021-07-04 Eligible spells that can proc Bron's Call to Arms:
-  // - Any foreground amount spell / attack
-  // - Ascendance
-  // - Stormstrike/Windstrike "base" (or might be strike itself + icd handling)
-  //
-  // Note, also has to handle the ICD and pet-related trigger conditions.
-  callbacks.register_callback_trigger_function( 333950,
-      dbc_proc_callback_t::trigger_fn_type::TRIGGER,
-      [this]( const dbc_proc_callback_t* cb, action_t* a, action_state_t* ) {
-      if ( cb->cooldown->down() )
-      {
-        return false;
-      }
-
-      // Defer finding the bron pet until the first proc attempt
-      if ( !pet.bron )
-      {
-        pet.bron = find_pet( "bron" );
-        assert( pet.bron );
-      }
-
-      if ( pet.bron->is_active() )
-      {
-        return false;
-      }
-
-      if ( a->type == ACTION_ATTACK )
-      {
-        auto attack = dynamic_cast<shaman_attack_t*>( a );
-        if ( attack && attack->may_proc_bron )
-        {
-          attack->bron_proc->occur();
-          return true;
-        }
-      }
-      else if ( a->type == ACTION_HEAL )
-      {
-        auto heal = dynamic_cast<shaman_heal_t*>( a );
-        if ( heal && heal->may_proc_bron )
-        {
-          heal->bron_proc->occur();
-          return true;
-        }
-      }
-      else if ( a->type == ACTION_SPELL )
-      {
-        auto spell = dynamic_cast<shaman_spell_t*>( a );
-        if ( spell && spell->may_proc_bron )
-        {
-          spell->bron_proc->occur();
-          return true;
-        }
-      }
-
-      return false;
-  } );
 }
 
 // shaman_t::init_special_effect ============================================
 
 void shaman_t::init_special_effect( special_effect_t& effect )
 {
-  switch ( effect.driver()->id() )
-  {
-    // Bron's Call to Arms
-    //
-    // Shaman module has custom triggering logic (defined above) so override the initial
-    // proc flags so we get wider trigger attempts than the core implementation. The
-    // overridden proc condition above will take care of filtering out actions that are
-    // not allowed to proc it.
-    case 333950:
-      effect.proc_flags2_ |= PF2_CAST;
-      break;
-    default:
-      break;
-  }
+  
 }
 
 // shaman_t::apply_affecting_auras ==========================================
@@ -10401,11 +9391,6 @@ void shaman_t::init_action_list()
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
   }
 
-  if ( legendary.raging_vesper_vortex.ok() )
-  {
-    raging_vesper_vortex = new raging_vesper_vortex_t( this );
-  }
-
   if ( !action_list_str.empty() )
   {
     player_t::init_action_list();
@@ -10752,8 +9737,6 @@ void shaman_t::reset()
   for ( auto& elem : counters )
     elem->reset();
 
-  ev_vesper_totem_dmg = ev_vesper_totem_heal = nullptr;
-  vesper_totem_used_charges = vesper_totem_heal_charges = vesper_totem_dmg_charges = 0;
   lotfw_counter = 0U;
 
   assert( active_flame_shock.empty() );
@@ -10865,16 +9848,6 @@ stat_e shaman_t::convert_hybrid_stat( stat_e s ) const
 void pet::earth_elemental_t::create_actions()
 {
   primal_elemental_t::create_actions();
-
-  if ( o()->legendary.deeptremor_stone.ok() )
-  {
-    deeptremor_eq = new earthquake_damage_t( o() );
-    // Create a separate stats object bound to the Earth Elemental instead of the shaman
-    // for this
-    deeptremor_eq->stats = get_stats( "earthquake_rumble", deeptremor_eq );
-    deeptremor_eq->stats->school = deeptremor_eq->get_school();
-    deeptremor_eq->init();
-  }
 }
 
 void pet::earth_elemental_t::arise()
@@ -11252,10 +10225,8 @@ shaman_t::pets_t::pets_t( shaman_t* s )
     spirit_wolves( "spirit_wolf", s, []( shaman_t* s ) { return new pet::spirit_wolf_t( s ); } ),
     fire_wolves( "fiery_wolf", s, []( shaman_t* s ) { return new pet::fire_wolf_t( s ); } ),
     frost_wolves( "frost_wolf", s, []( shaman_t* s ) { return new pet::frost_wolf_t( s ); } ),
-    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } ),
+    lightning_wolves( "lightning_wolf", s, []( shaman_t* s ) { return new pet::lightning_wolf_t( s ); } )
 
-    /// Bron's Call to Arms trigger logic is completely overridden by the Shaman module
-    bron( nullptr )
 {
   spirit_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
   fire_wolves.set_replacement_strategy( spawner::pet_replacement_strategy::REPLACE_OLDEST );
