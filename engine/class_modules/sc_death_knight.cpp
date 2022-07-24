@@ -4942,12 +4942,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> buffs.death_turf -> trigger();
       p() -> buffs.death_turf -> set_duration(data().duration() + 500_ms);
     }
-	
-	if ( p() -> talent.unholy_ground.ok() )
-	{
-	  p() -> buffs.unholy_ground -> trigger();
-	  p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
-	}
+
+    if ( p() -> talent.unholy_ground.ok() )
+    {
+      p() -> buffs.unholy_ground -> trigger();
+      p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
+    }
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( target )
