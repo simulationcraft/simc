@@ -9677,9 +9677,9 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> apply_affecting_aura( spell.exacting_preparation )
         -> apply_affecting_aura( talent.unholy_bond );
-		
-  buffs.unholy_ground = make_buff( this, "unholy_ground", talent.unholy_ground )
-        -> set_default_value( find_spell( 374271 ) -> effectN( 1 ).percent() )
+
+  buffs.unholy_ground = make_buff( this, "unholy_ground", find_spell( 374271 ) )
+        -> set_default_value_from_effect( 1 )
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Blood
