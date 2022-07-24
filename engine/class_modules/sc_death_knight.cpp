@@ -6424,7 +6424,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     // - death's due increases the aforementionned death and decay buff effect by 1
     deaths_due_cleave_targets = data().effectN ( 1 ).chain_target() +
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
-                                as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() );
+                                as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() ) +
+                                as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
 
     base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
     if ( p -> talent.frost.might_of_the_frozen_wastes.ok() && p -> main_hand_weapon.group() == WEAPON_2H )
@@ -6448,6 +6449,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
       if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
         return deaths_due_cleave_targets;
+
+      if ( p() -> in_death_and_decay() )
+      {
+        if( p() -> covenant.deaths_due -> ok() || p() -> talent.cleaving_strikes.ok() )
+          return deaths_due_cleave_targets;
+      }
+
       return death_knight_melee_attack_t::n_targets();
   }
 
