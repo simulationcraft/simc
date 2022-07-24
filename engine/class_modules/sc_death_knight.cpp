@@ -5015,7 +5015,7 @@ struct defile_t : public death_and_decay_base_t
 
     parse_options( options_str );
     if ( p->talent.deaths_echo.ok() )
-      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
+      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -5038,9 +5038,10 @@ struct deaths_due_t : public death_and_decay_base_t
 
     // Disable when Defile is taken
     if ( p -> talent.unholy.defile.ok() )
+      background = true;
+
     if ( p -> talent.deaths_echo.ok() )
         cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
-      background = true;
   }
 
   void execute() override
