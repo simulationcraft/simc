@@ -9638,7 +9638,7 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
   buff.elemental_equilibrium = make_buff<buff_t>( this, "elemental_equilibrium",
       find_spell( 347348 ) )
-    ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+    ->set_default_value( talent.elemental_equilibrium->effectN( 4 ).percent() )
     ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   buff.elemental_equilibrium_debuff = make_buff<buff_t>( this, "elemental_equilibrium_debuff",
       find_spell( 347349 ) );
@@ -10811,7 +10811,7 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  m *= 1.0 + buff.elemental_equilibrium->stack_value();
+  m *= 1.0 + buff.elemental_equilibrium->value();
 
   if ( talent.fire_and_ice.ok() &&
        ( dbc::is_school( school, SCHOOL_FROST ) || dbc::is_school( school, SCHOOL_FIRE ) ) )
@@ -10850,7 +10850,7 @@ double shaman_t::composite_player_pet_damage_multiplier( const action_state_t* s
   // Enhancement
   m *= 1.0 + spec.enhancement_shaman->effectN( 3 ).percent();
 
-  m *= 1.0 + buff.elemental_equilibrium->stack_value();
+  m *= 1.0 + buff.elemental_equilibrium->value();
 
   return m;
 }
