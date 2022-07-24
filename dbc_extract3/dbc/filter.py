@@ -489,7 +489,8 @@ class TraitSet(DataSet):
             'groups': set(),
             'tree': 0,
             'row': -1,
-            'col': -1
+            'col': -1,
+            'req_points': 0
         })
 
         for group in _trait_node_groups.values():
@@ -528,6 +529,8 @@ class TraitSet(DataSet):
 
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index
+
+                    _traits[key]['req_points'] = max([0] + [ cond.req_points for cond in (node['cond'] | group['cond'])])
 
         _coords = {}
         for entry in _traits.values():
