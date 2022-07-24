@@ -427,6 +427,9 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* apocalypse_war;
     buff_t* apocalypse_famine;
     buff_t* razorice;
+	
+    // General Talents
+    buff_t* brittle;
 
     // Blood
     buff_t* mark_of_blood;
@@ -475,6 +478,7 @@ public:
     buff_t* antimagic_shell;
     buff_t* icebound_fortitude;
     buff_t* rune_mastery;
+
     // Runeforges
     buff_t* rune_of_hysteria;
     buff_t* stoneskin_gargoyle;
@@ -511,6 +515,7 @@ public:
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
     buff_t* frostwhelps_aid;
+    buff_t* unholy_ground;
 
     // Unholy
     buff_t* dark_transformation;
@@ -594,6 +599,9 @@ public:
     action_t* runeforge_pestilence;
     action_t* runeforge_razorice;
     action_t* runeforge_sanguination;
+
+    // Class Tree
+    action_t* blood_draw;
 
     // Blood
     action_t* mark_of_blood_heal;
@@ -902,6 +910,7 @@ public:
   // Spells
   struct spells_t {
     // Shared
+    const spell_data_t* brittle_debuff;
     const spell_data_t* deaths_due; // spell.deaths_due and spell.dnd_buff contain the data affecting
     const spell_data_t* dnd_buff; // obliterate aoe increase while in death's due (nf covenant ability)
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
@@ -1283,6 +1292,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Other dots
   dot.shackle_the_unworthy = target -> get_dot( "shackle_the_unworthy", p );
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
+  
+  // General Talents
+  debuff.brittle          = make_buff( *this, "brittle", p -> spell.brittle_debuff )
+                            -> set_default_value_from_effect( 1 );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
@@ -1291,7 +1304,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
                             -> set_period( 0_ms )
-                            -> apply_affecting_aura( p -> spell.exacting_preparation );
+                            -> apply_affecting_aura( p -> spell.exacting_preparation )
+                            -> apply_affecting_aura( p -> talent.unholy_bond );
   debuff.piercing_chill   = make_buff( *this, "piercing_chill", p -> spell.piercing_chill_debuff )
                             -> set_default_value_from_effect( 1 );
   // Unholy
@@ -2872,6 +2886,7 @@ struct death_knight_action_t : public Base
     bool frozen_heart, dreadblade;
     // Other whitelists
     bool razorice;
+    bool brittle;
   } affected_by;
 
   bool may_proc_bron;
@@ -2912,6 +2927,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
+    this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.  Commenting out this section until we have better data
@@ -2947,6 +2963,16 @@ struct death_knight_action_t : public Base
     return 1.0;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = Base::composite_crit_chance();
+
+    if ( p() -> talent.merciless_strikes.ok() )
+      cc += p() -> talent.merciless_strikes->effectN( 1 ).percent();
+
+    return cc;
+  }
+
   double composite_da_multiplier( const action_state_t* state ) const override
   {
     double m = Base::composite_da_multiplier( state );
@@ -2980,6 +3006,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.razorice )
     {
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
+    }
+
+    if ( td && this -> affected_by.brittle )
+    {
+      m *= 1.0 + td -> debuff.brittle -> check_stack_value();
     }
 
     return m;
@@ -3084,6 +3115,15 @@ struct death_knight_action_t : public Base
         return;
       }
     }
+  }
+
+  void execute() override
+  {
+    Base::execute();
+
+    // For non tank DK's, we proc the ability on CD, attached to thier own executes, to simulate it
+    if ( p() -> talent.blood_draw.ok() && p() -> specialization() != DEATH_KNIGHT_BLOOD && p() -> active_spells.blood_draw -> ready() )
+      p() -> active_spells.blood_draw -> execute();
   }
 };
 
@@ -3237,6 +3277,11 @@ struct blood_plague_t : public death_knight_disease_t
         d -> state -> result_amount * ( 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 3 ).percent() );
       heal -> execute();
     }
+
+    if ( p() -> talent.brittle.ok() && rng().roll( p() -> talent.brittle -> proc_chance() ) )
+    {
+      get_td( d ->target )->debuff.brittle->trigger();
+    }
   }
 };
 
@@ -3297,6 +3342,12 @@ struct frost_fever_t : public death_knight_disease_t
     {
       p() -> resource_gain( RESOURCE_RUNIC_POWER, rp_generation, p() -> gains.frost_fever, this );
     }
+
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
+    {
+      get_td( d->target ) -> debuff.brittle -> trigger();
+    }
   }
 };
 
@@ -3335,6 +3386,16 @@ struct virulent_plague_t : public death_knight_disease_t
         "blood_plague_superstrain", p, true ) );
       superstrain_diseases.push_back( get_action<frost_fever_t>(
         "frost_fever_superstrain", p, true ) );
+    }
+  }
+  void tick( dot_t* d ) override
+  {
+    death_knight_spell_t::tick( d );
+
+    if ( p()->talent.brittle.ok() &&
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
+    {
+      get_td( d->target ) -> debuff.brittle -> trigger();
     }
   }
 };
@@ -3397,6 +3458,7 @@ struct razorice_attack_t : public death_knight_melee_attack_t
     // Note, razorice always attacks with the main hand weapon, regardless of which hand triggers it
     weapon = &( player -> main_hand_weapon );
     base_dd_multiplier *= 1.0 + player ->spell.exacting_preparation->effectN( 4 ).percent();
+    base_dd_multiplier *= 1.0 + player -> talent.unholy_bond -> effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -3960,6 +4022,34 @@ struct blood_tap_t : public death_knight_spell_t
   }
 };
 
+// Blood Draw =========================================================
+
+struct blood_draw_t : public death_knight_spell_t
+{
+  double health_threshold;
+  blood_draw_t( util::string_view name, death_knight_t* p )
+    : death_knight_spell_t( name, p, p->find_spell( 374606 ) )
+  {
+    aoe        = -1;
+    background = true;
+    cooldown -> duration = p -> find_spell( 374609 ) -> duration();
+    // Force set threshold to 100% health, to make the spell proc on cooldown
+    health_threshold = 100;
+    // TODO make health_threshold configurable
+    // If role is set to tank, we can use the proper health % value
+    if ( p -> primary_role() == ROLE_TANK )
+      health_threshold = p -> talent.blood_draw -> effectN( 1 ).base_value();
+  }
+
+  bool ready() override
+  {
+    if ( p() -> health_percentage() > health_threshold )
+      return false;
+
+    return death_knight_spell_t::ready();
+  }
+};
+
 // Blooddrinker =============================================================
 
 struct blooddrinker_heal_t : public death_knight_heal_t
@@ -4273,6 +4363,10 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     parse_options( options_str );
     cold_heart = get_action<cold_heart_damage_t>( "cold_heart", p );
+    if ( p -> talent.proliferating_chill.ok() )
+    {
+      aoe = p -> talent.chains_of_ice -> effectN( 1 ).chain_target() + as<int>( p -> talent.proliferating_chill -> effectN( 1 ).base_value() );
+    }
   }
 
   void init() override
@@ -4281,16 +4375,22 @@ struct chains_of_ice_t : public death_knight_spell_t
     may_proc_bron = true;
   }
 
+  void impact( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+    if ( p() -> buffs.cold_heart -> check() > 0 )
+    {
+      cold_heart -> set_target( target );
+      cold_heart -> execute();
+    }
+  }
+
   void execute() override
   {
     death_knight_spell_t::execute();
 
     if ( p() -> buffs.cold_heart -> check() > 0 )
-    {
-      cold_heart -> set_target( target );
-      cold_heart -> execute();
       p() -> buffs.cold_heart -> expire();
-    }
   }
 };
 
@@ -4856,6 +4956,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> buffs.death_turf -> set_duration(data().duration() + 500_ms);
     }
 
+    if ( p() -> talent.unholy_ground.ok() )
+    {
+      p() -> buffs.unholy_ground -> trigger();
+      p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
+    }
+
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
       .target( target )
       // Dnd is supposed to last 10s, but a total of 11 ticks (13 with rapid decomposition) are observed so we're adding a duration of 0.5s to make it work properly
@@ -4897,6 +5003,8 @@ struct death_and_decay_t : public death_and_decay_base_t
 
     parse_options( options_str );
 
+    if ( p->talent.deaths_echo.ok() )
+      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
     // Disable when Defile or Death's Due are taken
     if ( p -> talent.unholy.defile.ok() || p -> covenant.deaths_due -> ok() )
       background = true;
@@ -4919,6 +5027,8 @@ struct defile_t : public death_and_decay_base_t
     damage = get_action<defile_damage_t>( "defile_damage", p );
 
     parse_options( options_str );
+    if ( p->talent.deaths_echo.ok() )
+      cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 4 ).base_value() );
   }
 
   void execute() override
@@ -4942,6 +5052,9 @@ struct deaths_due_t : public death_and_decay_base_t
     // Disable when Defile is taken
     if ( p -> talent.unholy.defile.ok() )
       background = true;
+
+    if ( p -> talent.deaths_echo.ok() )
+        cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -6321,7 +6434,8 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     // - death's due increases the aforementionned death and decay buff effect by 1
     deaths_due_cleave_targets = data().effectN ( 1 ).chain_target() +
                                 as<int>( p -> spell.dnd_buff -> effectN ( 4 ).base_value() ) +
-                                as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() );
+                                as<int>( p -> spell.deaths_due -> effectN( 2 ).base_value() ) +
+                                as<int>( p -> talent.cleaving_strikes -> effectN( 2 ).base_value() );
 
     base_multiplier *= 1.0 + p -> talent.frost.improved_obliterate -> effectN( 1 ).percent();
     if ( p -> talent.frost.might_of_the_frozen_wastes.ok() && p -> main_hand_weapon.group() == WEAPON_2H )
@@ -6345,6 +6459,13 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
       if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
         return deaths_due_cleave_targets;
+
+      if ( p() -> in_death_and_decay() )
+      {
+        if( p() -> covenant.deaths_due -> ok() || p() -> talent.cleaving_strikes.ok() )
+          return deaths_due_cleave_targets;
+      }
+
       return death_knight_melee_attack_t::n_targets();
   }
 
@@ -7784,6 +7905,7 @@ void runeforge::fallen_crusader( special_effect_t& effect )
       callbacks = may_crit = false;
       base_pct_heal = data -> effectN( 2 ).percent();
       base_pct_heal *= 1.0 + p -> spell.exacting_preparation -> effectN ( 5 ).percent();
+      base_pct_heal *= 1.0 + p -> talent.unholy_bond -> effectN( 2 ).percent();
     }
 
     // Procs by default target the target of the action that procced them.
@@ -7851,11 +7973,13 @@ void runeforge::stoneskin_gargoyle( special_effect_t& effect )
     // Stoneskin Gargoyle increases all primary stats, even the irrelevant ones
     -> set_pct_buff_type( STAT_PCT_BUFF_AGILITY )
     -> set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-    -> apply_affecting_aura( p -> spell.exacting_preparation );
+    -> apply_affecting_aura( p -> spell.exacting_preparation )
+    -> apply_affecting_aura( p -> talent.unholy_bond );
 
   // Change the player's base armor multiplier
   double am = effect.driver() -> effectN( 1 ).percent();
   am *= 1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent();
+  am *= 1.0 + p -> talent.unholy_bond -> effectN( 2 ).percent();
   p -> base.armor_multiplier *= 1.0 + am;
 
   // This buff can only be applied on a 2H weapon, stacking mechanic is unknown territory
@@ -7898,11 +8022,14 @@ void runeforge::hysteria( special_effect_t& effect )
     p -> runeforge.rune_of_hysteria = true;
     p -> buffs.rune_of_hysteria = make_buff( p, "rune_of_hysteria", effect.driver() -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> apply_affecting_aura( p -> spell.exacting_preparation );
+      -> apply_affecting_aura( p -> spell.exacting_preparation )
+      -> apply_affecting_aura( p -> talent.unholy_bond );
   }
 
   // The RP cap increase stacks
-  p -> resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * (1.0 + p -> spell.exacting_preparation -> effectN( 5 ).percent());
+  p->resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) *
+                                               ( 1.0 + p->spell.exacting_preparation->effectN( 5 ).percent() ) *
+                                               ( 1.0 + p->talent.unholy_bond->effectN( 2 ).percent() );
 
   // The buff doesn't stack and doesn't have an increased effect
   // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
@@ -7935,6 +8062,7 @@ void runeforge::sanguination( special_effect_t& effect )
       background = true;
       tick_pct_heal = data().effectN( 1 ).percent();
       tick_pct_heal *= 1.0 + p() -> spell.exacting_preparation -> effectN( 4 ).percent();
+      tick_pct_heal *= 1.0 + p() -> talent.unholy_bond -> effectN( 1 ).percent();
       // Sated-type debuff, for simplicity the debuff's duration is used as a simple cooldown in simc
       cooldown -> duration = effect.player -> find_spell( 326809 ) -> duration();
     }
@@ -8559,6 +8687,10 @@ void death_knight_t::start_cold_heart()
 
 void death_knight_t::create_actions()
 {
+  // Class talents
+  if ( talent.blood_draw.ok() )
+    active_spells.blood_draw = new blood_draw_t( "blood_draw", this );
+
   // Blood
   if ( specialization() == DEATH_KNIGHT_BLOOD )
   {
@@ -9320,6 +9452,7 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
+  spell.brittle_debuff  = find_spell( 374557 );
   spell.dnd_buff        = find_spell( 188290 );
   spell.exacting_preparation = find_soulbind_spell( "Exacting Preparation" );
   spell.final_sentence = find_spell( 353823 );
@@ -9457,7 +9590,6 @@ void death_knight_t::init_spells()
   if ( talent.frost.icecap.ok() )
     cooldown.icecap_icd -> duration = talent.frost.icecap -> internal_cooldown();
 
-
   if ( talent.frost.enduring_strength.ok() )
 	cooldown.enduring_strength_icd -> duration = find_spell( 377192 ) -> internal_cooldown();
 
@@ -9566,7 +9698,12 @@ void death_knight_t::create_buffs()
   buffs.unholy_strength = make_buff( this, "unholy_strength", find_spell( 53365 ) )
         -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
-        -> apply_affecting_aura( spell.exacting_preparation );
+        -> apply_affecting_aura( spell.exacting_preparation )
+        -> apply_affecting_aura( talent.unholy_bond );
+
+  buffs.unholy_ground = make_buff( this, "unholy_ground", find_spell( 374271 ) )
+        -> set_default_value_from_effect( 1 )
+        -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
@@ -10047,6 +10184,11 @@ void death_knight_t::do_damage( action_state_t* state )
     if ( active_spells.runeforge_sanguination -> ready() )
       active_spells.runeforge_sanguination -> execute();
   }
+
+  if ( talent.blood_draw.ok() && specialization() == DEATH_KNIGHT_BLOOD && active_spells.blood_draw -> ready() )
+  {
+    active_spells.blood_draw -> execute();
+  }
 }
 
 // death_knight_t::target_mitigation ========================================
@@ -10096,6 +10238,11 @@ double death_knight_t::composite_attribute_multiplier( attribute_e attr ) const
     m *= 1.0 + buffs.unleashed_frenzy -> stack_value();
 
     m *= 1.0 + buffs.unholy_pact -> value();
+
+    if ( talent.might_of_thassarian.ok() )
+    {
+      m *= 1.0 + talent.might_of_thassarian->effectN( 1 ).percent();
+    }
   }
 
   else if ( attr == ATTR_STAMINA )
@@ -10144,6 +10291,11 @@ double death_knight_t::composite_leech() const
   if ( legendary.vampiric_aura.ok() && buffs.vampiric_blood -> check() )
   {
     m += buffs.vampiric_blood -> check_value();
+  }
+
+  if ( talent.blood_scent.ok() )
+  {
+    m += talent.blood_scent->effectN( 1 ).percent();
   }
 
   return m;
@@ -10299,6 +10451,11 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
     if( td -> debuff.abominations_frenzy -> up() )
     {
       m *= 1.0 + td -> debuff.abominations_frenzy -> value();
+    }
+
+    if ( td -> debuff.brittle -> up() )
+    {
+      m *= 1.0 + td -> debuff.brittle -> value();
     }
   }
 
@@ -10490,6 +10647,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
+  // Spec and Class Auras
   action.apply_affecting_aura( spec.death_knight );
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
