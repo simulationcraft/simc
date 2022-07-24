@@ -211,6 +211,7 @@ struct sim_t : private sc_thread_t
     // Buff overrides
     int arcane_intellect;
     int battle_shout;
+    int mark_of_the_wild;
     int power_word_fortitude;
     int windfury_totem;
 
@@ -229,6 +230,7 @@ struct sim_t : private sc_thread_t
   {
     buff_t* arcane_intellect;
     buff_t* battle_shout;
+    buff_t* mark_of_the_wild;
     buff_t* power_word_fortitude;
   } auras;
 
