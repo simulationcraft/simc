@@ -6511,7 +6511,7 @@ struct ascendance_dre_t : public ascendance_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), spell_type::DRE_ASCENDANCE, "dre" );
+        lvb = new lava_burst_t( p(), spell_type::DRE_ASCENDANCE );
         add_child( lvb );
       }
     }
