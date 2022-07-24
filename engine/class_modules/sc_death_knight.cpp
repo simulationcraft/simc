@@ -428,8 +428,8 @@ struct death_knight_td_t : public actor_target_data_t {
     buff_t* apocalypse_famine;
     buff_t* razorice;
 	
-	// General Talents
-	buff_t* brittle;
+    // General Talents
+    buff_t* brittle;
 
     // Blood
     buff_t* mark_of_blood;
@@ -909,12 +909,12 @@ public:
   // Spells
   struct spells_t {
     // Shared
+    const spell_data_t* brittle_debuff;
     const spell_data_t* deaths_due; // spell.deaths_due and spell.dnd_buff contain the data affecting
     const spell_data_t* dnd_buff; // obliterate aoe increase while in death's due (nf covenant ability)
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
     const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
-    const spell_data_t* unholy_bond;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1294,8 +1294,8 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   dot.soul_reaper          = target -> get_dot( "soul_reaper", p );
   
   // General Talents
-  debuff.brittle          = make_buff( *this, "brittle", p -> find_spell( 374557 ) )
-                            -> set_default_value( p -> find_spell( 374557 ) -> effectN ( 1 ).percent() );
+  debuff.brittle          = make_buff( *this, "brittle", p -> spell.brittle_debuff )
+                            -> set_default_value_from_effect( 1 );
 
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
@@ -2886,6 +2886,7 @@ struct death_knight_action_t : public Base
     bool frozen_heart, dreadblade;
     // Other whitelists
     bool razorice;
+    bool brittle;
   } affected_by;
 
   bool may_proc_bron;
@@ -2926,6 +2927,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.dreadblade = this -> data().affected_by( p -> mastery.dreadblade -> effectN( 1 ) );
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
+    this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.  Commenting out this section until we have better data
@@ -2994,6 +2996,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.razorice )
     {
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
+    }
+
+    if ( td && this -> affected_by.brittle )
+    {
+      m *= 1.0 + td -> debuff.brittle -> check_stack_value();
     }
 
     return m;
@@ -3252,7 +3259,7 @@ struct blood_plague_t : public death_knight_disease_t
       heal -> execute();
     }
 
-    if ( p() -> talent.brittle.ok() && rng().roll( p() -> find_spell( 374504 )->proc_chance() ) )
+    if ( p() -> talent.brittle.ok() && rng().roll( p() -> talent.brittle -> proc_chance() ) )
     {
       get_td( d ->target )->debuff.brittle->trigger();
     }
@@ -3318,9 +3325,9 @@ struct frost_fever_t : public death_knight_disease_t
     }
 
     if ( p()->talent.brittle.ok() &&
-         rng().roll( p()->find_spell( 374504 )->proc_chance() ) )
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
     {
-      get_td( d->target )->debuff.brittle->trigger();
+      get_td( d->target ) -> debuff.brittle -> trigger();
     }
   }
 };
@@ -3367,9 +3374,9 @@ struct virulent_plague_t : public death_knight_disease_t
     death_knight_spell_t::tick( d );
 
     if ( p()->talent.brittle.ok() &&
-         rng().roll( p()->find_spell( 374504 )->proc_chance() ) )
+         rng().roll( p() -> talent.brittle -> proc_chance() ) )
     {
-      get_td( d->target )->debuff.brittle->trigger();
+      get_td( d->target ) -> debuff.brittle -> trigger();
     }
   }
 };
@@ -7991,7 +7998,7 @@ void runeforge::hysteria( special_effect_t& effect )
   // The RP cap increase stacks
   p->resources.base[ RESOURCE_RUNIC_POWER ] += effect.driver()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) *
                                                ( 1.0 + p->spell.exacting_preparation->effectN( 5 ).percent() ) *
-                                               ( 1.0 + p->spell.unholy_bond->effectN( 2 ).percent() );
+                                               ( 1.0 + p->talent.unholy_bond->effectN( 2 ).percent() );
 
   // The buff doesn't stack and doesn't have an increased effect
   // but the proc rate is increased and it has been observed to proc twice on the same damage event (2020-08-23)
@@ -9410,6 +9417,7 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
+  spell.brittle_debuff  = find_spell( 374557 );
   spell.dnd_buff        = find_spell( 188290 );
   spell.exacting_preparation = find_soulbind_spell( "Exacting Preparation" );
   spell.final_sentence = find_spell( 353823 );
@@ -10252,12 +10260,11 @@ double death_knight_t::composite_leech() const
   {
     m += buffs.vampiric_blood -> check_value();
   }
-  
+
   if ( talent.blood_scent.ok() )
   {
     m += talent.blood_scent->effectN( 1 ).percent();
   }
-		  
 
   return m;
 }
@@ -10333,10 +10340,6 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   if( td && td -> debuff.abominations_frenzy -> up() )
   {
     m *= 1.0 + td -> debuff.abominations_frenzy -> value();
-  }
-  if ( td && td->debuff.brittle->up() )
-  {
-    m *= 1.0 + td->debuff.brittle->value();
   }
 
   return m;
