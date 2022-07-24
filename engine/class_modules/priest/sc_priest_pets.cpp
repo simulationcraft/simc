@@ -927,6 +927,11 @@ struct shadow_nova_t final : public priest_pet_spell_t
   {
     affected_by_shadow_weaving = true;
     background                 = true;
+
+    // TODO: not sure if this is a bug or not, kind of feels like it
+    // Each target hit by Searing Nightmare triggers a Shadow Nova at that target,
+    // which then AoE's to targets around it hit.
+    aoe = -1;
   }
 };
 }  // namespace actions
