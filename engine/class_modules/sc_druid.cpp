@@ -6004,6 +6004,28 @@ struct ironfur_t : public druid_spell_t
   }
 };
 
+// Mark of the Wild =========================================================
+struct mark_of_the_wild_t : public druid_spell_t
+{
+  mark_of_the_wild_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "mark_of_the_wild", p, p->find_class_spell( "Mark of the Wild" ) )
+  {
+    harmful = false;
+    ignore_false_positive = true;
+
+    if ( sim->overrides.mark_of_the_wild )
+      background = true;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( !sim->overrides.mark_of_the_wild )
+      sim->auras.mark_of_the_wild->trigger();
+  }
+};
+
 // Moon Spells ==============================================================
 struct moon_base_t : public druid_spell_t
 {
@@ -8707,7 +8729,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   using namespace heals;
   using namespace spells;
 
-  // Generic
+  // Baseline
   if ( name == "auto_attack"           ) return new           auto_attack_t( this, options_str );
   if ( name == "bear_form"             ) return new             bear_form_t( this, options_str );
   if ( name == "cat_form"              ) return new              cat_form_t( this, options_str );
@@ -8717,6 +8739,7 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
        name == "tiger_dash"            ) return new                  dash_t( this, options_str );
   if ( name == "entangling_roots"      ) return new      entangling_roots_t( this, options_str );
   if ( name == "heart_of_the_wild"     ) return new     heart_of_the_wild_t( this, options_str );
+  if ( name == "mark_of_the_wild"      ) return new      mark_of_the_wild_t( this, options_str );
   if ( name == "moonfire"              ) return new              moonfire_t( this, options_str );
   if ( name == "prowl"                 ) return new                 prowl_t( this, options_str );
   if ( name == "renewal"               ) return new               renewal_t( this, options_str );

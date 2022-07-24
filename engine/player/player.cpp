@@ -3912,6 +3912,8 @@ double player_t::composite_melee_crit_chance() const
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
+  ac += sim->auras.mark_of_the_wild->check_value();
+
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
@@ -4213,6 +4215,8 @@ double player_t::composite_spell_crit_chance() const
   {
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
+
+  sc += sim->auras.mark_of_the_wild->check_value();
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
