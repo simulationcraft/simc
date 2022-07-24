@@ -812,7 +812,7 @@ public:
     player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm;
     player_talent_t power_of_the_maelstrom;
-    player_talent_t flames_of_the_firelord; // TODO: NYI
+    player_talent_t flames_of_the_firelord;
     player_talent_t storm_elemental;
     // Row 8
     player_talent_t windspeakers_lava_resurgence;
@@ -6106,6 +6106,10 @@ public:
     {
       cooldown->duration = data().cooldown();
       cooldown->hasted   = data().affected_by( p()->spec.enhancement_shaman->effectN( 8 ) );
+    }
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_firelord->effectN( 1 ).time_value();
     }
   }
 
