@@ -5590,7 +5590,10 @@ struct elemental_blast_t : public shaman_spell_t
     {
       affected_by_master_of_the_elements = true;
 
-      overload = new elemental_blast_overload_t( player, this );
+      if ( p()->talent.mountains_will_fall.enabled() )
+      {
+        overload = new elemental_blast_overload_t( player, this );
+      }
 
       resource_current = RESOURCE_MAELSTROM;
     }
