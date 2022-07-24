@@ -5171,9 +5171,11 @@ struct lava_burst_t : public shaman_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
+    // TODO Elemental: confirm is this effect needs to be hardcoded
+    /* if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() ) */
+    if ( td( target )->dot.flame_shock->is_ticking() )
     {
-      // hardcoded because I didn't find it in spell data yet
+      // hardcoded because I didn't find it in spell data
       m = 1.0;
     }
 
@@ -5286,6 +5288,7 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain                     = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
+    // TODO Elemental: clarify if High Voltage does affect LB Overloads too?
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = ( p->talent.stormkeeper.ok() || p->talent.stormkeeper2.ok() ) &&
@@ -8540,7 +8543,9 @@ void shaman_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 
   if ( specialization() == SHAMAN_ELEMENTAL )
-    resources.base[ RESOURCE_MAELSTROM ] = 100;
+  {
+    resources.base[ RESOURCE_MAELSTROM ] = 100 + talent.swelling_maelstrom.spell()->effectN( 1 ).base_value();
+  }
 
   if ( specialization() == SHAMAN_RESTORATION )
   {
