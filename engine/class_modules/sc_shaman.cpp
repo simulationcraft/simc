@@ -9454,34 +9454,34 @@ void shaman_t::create_buffs()
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 2 ).percent() );
 
-  buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements.spell()->effectN(1).trigger() )
-          ->set_default_value( talent.master_of_the_elements.spell()->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+  buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
+          ->set_default_value( talent.master_of_the_elements->effectN( 1 ).trigger()->effectN( 1 ).percent() );
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
   buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", 
                                     legendary.echoes_of_great_sundering.ok() 
                                           ? find_spell( 336217 ) 
-                                          : talent.echoes_of_great_sundering.spell() ->effectN(1).trigger()
+                                          : talent.echoes_of_great_sundering->effectN(1).trigger()
                                   )
                                   ->set_default_value( 
                                     legendary.echoes_of_great_sundering.ok() 
                                         ? find_spell( 336217 )->effectN( 2 ).percent()
-                                        : talent.echoes_of_great_sundering.spell()->effectN( 1 ).trigger()->effectN(2).percent()
+                                        : talent.echoes_of_great_sundering->effectN( 1 ).trigger()->effectN(2).percent()
                                   )
                                   ->set_trigger_spell( 
                                     legendary.echoes_of_great_sundering.ok()
                                         ? legendary.echoes_of_great_sundering
-                                        : talent.echoes_of_great_sundering 
+                                        : talent.echoes_of_great_sundering
                                   );
-  buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting.spell()->effectN( 1 ).trigger() )
-                            ->set_default_value( talent.flux_melting.spell()->effectN( 1 ).trigger()->effectN(1).percent() );
+  buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting->effectN( 1 ).trigger() )
+                            ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
-                            ->set_default_value( talent.magma_chamber.spell()->effectN( 2 ).percent() );
+                            ->set_default_value( talent.magma_chamber->effectN( 2 ).percent() );
 
-  buff.oath_of_the_far_seer = make_buff( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer.spell() )
-                                  ->set_default_value( talent.oath_of_the_far_seer.spell()->effectN(1).percent());
+  buff.oath_of_the_far_seer = make_buff( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer )
+                                  ->set_default_value( talent.oath_of_the_far_seer->effectN(1).percent());
 
   buff.power_of_the_maelstrom =
       make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )
@@ -9496,12 +9496,12 @@ void shaman_t::create_buffs()
                                         "windspeakers_lava_resurgence", 
                                         legendary.windspeakers_lava_resurgence.ok() 
                                               ? find_spell( 336065 ) 
-                                              : talent.windspeakers_lava_resurgence.spell()->effectN(1).trigger() 
+                                              : talent.windspeakers_lava_resurgence->effectN(1).trigger() 
                                       )
                                       ->set_default_value(
                                         legendary.windspeakers_lava_resurgence.ok()
                                               ? find_spell( 336065 )->effectN( 1 ).percent()
-                                              : talent.windspeakers_lava_resurgence.spell()->effectN( 1 ).trigger()->effectN( 1 ).percent() 
+                                              : talent.windspeakers_lava_resurgence->effectN( 1 ).trigger()->effectN( 1 ).percent() 
                                       );
 
   // PvP
