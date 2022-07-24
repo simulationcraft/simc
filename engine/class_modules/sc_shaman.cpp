@@ -320,6 +320,7 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
+  std::vector<player_t*> lightning_rods;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
@@ -371,6 +372,8 @@ public:
     action_t* lightning_bolt_ti;
     action_t* lava_burst_pw;
     action_t* flame_shock;
+
+    action_t* lightning_rod;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -957,6 +960,7 @@ public:
   void trigger_lava_surge( bool fireheart = false );
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
+  void trigger_lightning_rod_damage(const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -5611,7 +5615,13 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.echoes_of_great_sundering->trigger();
     }
 
-    // NYI Ele: Further Beyond
+    if ( p()->talent.further_beyond->ok() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
+      }
+    }
   }
 };
 
@@ -5817,7 +5827,15 @@ struct earthquake_t : public shaman_spell_t
     // buff multiplier as persistent.
     p()->buff.master_of_the_elements->expire();
     p()->buff.echoes_of_great_sundering->expire();
-    // NYI Ele: Further Beyond
+    
+
+    if ( p()->talent.further_beyond->ok() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      }
+    }
   }
 };
 
@@ -6006,7 +6024,13 @@ struct earth_shock_t : public shaman_spell_t
         p()->proc.pyroclastic_shock->occur();
       }
     }
-    // NYI Ele: Further Beyond
+    if ( p()->talent.further_beyond->ok() )
+    {
+      if ( p()->buff.ascendance->up() )
+      {
+        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      }
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6227,6 +6251,19 @@ public:
 
       p()->cooldown.lava_lash->adjust( timespan_t::from_seconds( -reduction ) );
       p()->buff.primal_lava_actuators->trigger();
+    }
+
+    if ( p()->talent.searing_flames->ok() )
+    {
+      if ( rng().roll( p()->talent.searing_flames->effectN(1).percent()) )
+      {
+        p()->trigger_maelstrom_gain( p()->talent.searing_flames->effectN( 2 ).base_value(), p()->gain.searing_flames );
+      }
+    }
+
+    if ( p() ->talent.magma_chamber->ok())
+    {
+      p()->buff.magma_chamber->trigger();
     }
 
     // NYI Ele: Searing Flames
@@ -9405,6 +9442,32 @@ void shaman_t::trigger_flash_of_lightning()
   }
 
   proc.flash_of_lightning->occur();
+}
+
+void shaman_t::trigger_lightning_rod_damage(const action_state_t* state)
+{
+  if ( !talent.lightning_rod->ok() )
+  {
+    return;
+  }
+
+  if ( state->action->result_is_miss( state->result ) )
+  {
+    return;
+  }
+
+  if ( lightning_rods.size() == 0 )
+  {
+    return;
+  }
+
+  double amount = state->result_amount * talent.lightning_rod->effectN( 2 ).percent();
+  action.lightning_rod->base_dd_min = action.lightning_rod->base_dd_max = amount;
+
+  range::for_each( lightning_rods, [ this ]( player_t* t ) {
+    action.lightning_rod->set_target( t );
+    action.lightning_rod->execute();
+  } );
 }
 
 
