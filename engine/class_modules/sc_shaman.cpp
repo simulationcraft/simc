@@ -5172,7 +5172,7 @@ struct lava_burst_t : public shaman_spell_t
     if ( type == spell_type::PRIMORDIAL_WAVE )
     {
       m *= p()->covenant.necrolord->effectN( 3 ).percent();
-      // NYI Ele move to new spell data
+      m *= p()->talent.primordial_wave->effectN( 3 ).percent();
     }
 
     if ( p()->buff.ascendance->up() )
@@ -8244,7 +8244,7 @@ void shaman_t::create_actions()
 
   if ( specialization() == SHAMAN_ELEMENTAL && ( talent.primordial_wave.ok() || covenant.necrolord->ok() ) )
   {
-    action.lava_burst_pw = new lava_burst_t( this, spell_type::PRIMORDIAL_WAVE, "pw" );
+    action.lava_burst_pw = new lava_burst_t( this, spell_type::PRIMORDIAL_WAVE );
   }
 
   if ( talent.thorims_invocation.ok() )
