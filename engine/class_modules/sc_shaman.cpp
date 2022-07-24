@@ -5605,6 +5605,12 @@ struct elemental_blast_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     trigger_elemental_blast_proc( p() );
+
+    if ( p()->legendary.echoes_of_great_sundering.ok() || p()->talent.echoes_of_great_sundering.ok() )
+    {
+      p()->buff.echoes_of_great_sundering->trigger();
+    }
+
     // NYI Ele: Further Beyond
   }
 };
@@ -9479,21 +9485,18 @@ void shaman_t::create_buffs()
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
-  buff.echoes_of_great_sundering = make_buff( this, "echoes_of_great_sundering", 
-                                    legendary.echoes_of_great_sundering.ok() 
-                                          ? find_spell( 336217 ) 
-                                          : talent.echoes_of_great_sundering->effectN(1).trigger()
-                                  )
-                                  ->set_default_value( 
-                                    legendary.echoes_of_great_sundering.ok() 
-                                        ? find_spell( 336217 )->effectN( 2 ).percent()
-                                        : talent.echoes_of_great_sundering->effectN( 1 ).trigger()->effectN(2).percent()
-                                  )
-                                  ->set_trigger_spell( 
-                                    legendary.echoes_of_great_sundering.ok()
-                                        ? legendary.echoes_of_great_sundering
-                                        : talent.echoes_of_great_sundering
-                                  );
+  buff.echoes_of_great_sundering =
+      make_buff( this, "echoes_of_great_sundering", find_spell( 336217 ) )
+        ->set_default_value( legendary.echoes_of_great_sundering.ok() 
+            ? find_spell( 336217 )->effectN( 2 ).percent() 
+            : talent.elemental_blast.ok()
+                ? talent.echoes_of_great_sundering->effectN( 2 ).percent()
+                : talent.echoes_of_great_sundering->effectN( 1 ).percent() )
+        ->set_trigger_spell( 
+            legendary.echoes_of_great_sundering.ok()
+                ? legendary.echoes_of_great_sundering
+                : talent.echoes_of_great_sundering
+        );
   buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting->effectN( 1 ).trigger() )
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
