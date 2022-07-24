@@ -3261,7 +3261,8 @@ struct elemental_overload_spell_t : public shaman_spell_t
     background        = true;
     callbacks         = false;
 
-    base_multiplier *= p->mastery.elemental_overload->effectN( 2 ).percent();
+    base_multiplier *=
+        p->mastery.elemental_overload->effectN( 2 ).percent() + p->talent.echo_chamber->effectN( 1 ).percent();
   }
 
   void init_finished() override
