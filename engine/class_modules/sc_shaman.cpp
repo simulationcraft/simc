@@ -17,7 +17,16 @@
 // Dragonflight TODO
 //
 // Elemental
-// - implement talents, all of them
+// - Lightning Rod application
+// - fix Ascendance action error
+// - Electrified Shocks
+// - Mountains Will Fall: Earth Shock Overload
+// - Mountains Will Fall: Earthquake Overload
+// - Liquid Magma Totem: Flame Shock spread
+// - Improved Flametongue Weapon
+// - Oath of the Far Seer
+// - Inundate
+// - Totemic Surge (for Liquid Magma Totem)
 //
 // Enhancement
 // - Review target caps
@@ -449,7 +458,7 @@ public:
     buff_t* fire_elemental;
     buff_t* flux_melting;
     buff_t* icefury;
-    buff_t* magma_chamber; // NYI Ele
+    buff_t* magma_chamber;
     buff_t* master_of_the_elements;
     buff_t* oath_of_the_far_seer; // NYI Ele
     buff_t* power_of_the_maelstrom;
