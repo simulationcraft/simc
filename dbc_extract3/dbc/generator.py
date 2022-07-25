@@ -1635,6 +1635,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336737, 0 ),                                # Runeforged Legendary: Chains of Devastation
           ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
           ( 222251, 0 ),                                # Improved Stormbringer damage
+          ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
         ),
 
         # Mage:
