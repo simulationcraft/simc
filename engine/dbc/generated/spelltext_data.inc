@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44707
-static const std::array<spelltext_data_t, 17180> __spelltext_data { {
+static const std::array<spelltext_data_t, 17183> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -11933,6 +11933,8 @@ static const std::array<spelltext_data_t, 17180> __spelltext_data { {
   { 298719, "Increase the Versatility of all party members within $a1 yards by $s1 for $d.\r\n", "Versatility increased by $w1.", "Rank 1" },
   { 298721, "Throw the powder, reducing the threat you generate by $s1% for $d.", "Threat generation reduced.", "Rank 1" },
   { 298722, "Increase the critical strike of all party members within $a1 yards by $s1 for $d.", "Critical strike increased by $w1.", "Rank 1" },
+  { 298762, "Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d.", 0, 0 },
+  { 298765, "$@spelldesc298762", 0, 0 },
   { 298823, "Falling for more than 2 sec will engage the Emergency Anti-Gravity Device.", "Emergency parachute primed and ready.", 0 },
   { 298836, "Increases Agility by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Agility increased by $w1.", 0 },
   { 298837, "Increases Intellect by $s1 for $d. Counts as both a Battle and Guardian elixir.  This effect persists through death.", "Intellect increased by $w1.", 0 },
@@ -16844,6 +16846,7 @@ static const std::array<spelltext_data_t, 17180> __spelltext_data { {
   { 381705, "Your attacks have a chance to incite the scale, causing tentacles to grow from your body. The tentacles lash out, dealing $s1 Fire damage split between enemies in front of you.\r\n\r\nDamage is increased for each enemy struck, up to $s2 enemies.", 0, 0 },
   { 381707, "Increases your maximum Maelstrom by $s1.", 0, 0 },
   { 381708, "$?s117014[Reduces the Maelstrom cost Earthquake by $s1 and Elemental Blast by $s3][Reduces the Maelstrom cost of Earth Shock and Earthquake by $s1].", 0, 0 },
+  { 381725, "$@spelldesc8042", 0, 0 },
   { 381726, "$?s117014[Elemental Blast][Earth Shock] and Earthquake can trigger your Mastery: Elemental Overload at $s1% effectiveness.\r\n\r\nOverloaded Earthquakes do not knock enemies down.", 0, 0 },
   { 381727, "$@spelldesc381705", "A mutated tentacle has emerged from your body, lashing out to enemies in front of you.", 0 },
   { 381732, "$@spelldesc364342", "Cooldown of Death's Advance reduced by $s1%.", "Bronze" },
@@ -17187,7 +17190,7 @@ static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix
 } };
 
 // Spell description variables, wow build 10.0.0.44707
-static const std::array<spelldesc_vars_data_t, 325> __spelldesc_vars_data { {
+static const std::array<spelldesc_vars_data_t, 326> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -17402,6 +17405,7 @@ static const std::array<spelldesc_vars_data_t, 325> __spelldesc_vars_data { {
   {  296320, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  298441, "$points=${$298461s2}" },
   {  298442, "$points=${$298461s2}" },
+  {  298762, "$mawPower=$?a329580[${1+($329580m5/100)}][${1}]\r\n$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>*($168534s2/100)*($381726s1/100)}" },
   {  299367, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299369, "$cooldownValue=${($m1+3320)/-100}.1\r\n$cooldown=${$clamp($<cooldownValue>,10,25)}.1" },
   {  299958, "$transfer=${$303448s1*(1+$303463s1/100)*(1+$@versadmg)}" },
