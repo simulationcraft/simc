@@ -24,7 +24,6 @@
 // - Mountains Will Fall: Earthquake Overload
 // - Liquid Magma Totem: Flame Shock spread
 // - Improved Flametongue Weapon
-// - Oath of the Far Seer
 // - Inundate
 // - Totemic Surge (for Liquid Magma Totem)
 //
@@ -460,7 +459,7 @@ public:
     buff_t* icefury;
     buff_t* magma_chamber;
     buff_t* master_of_the_elements;
-    buff_t* oath_of_the_far_seer; // NYI Ele
+    buff_t* oath_of_the_far_seer;
     buff_t* power_of_the_maelstrom;
     buff_t* splintered_elements;
     buff_t* stormkeeper;
@@ -838,7 +837,7 @@ public:
     player_talent_t elemental_equilibrium;
     player_talent_t tumbling_waves;
     player_talent_t echo_chamber;
-    player_talent_t oath_of_the_far_seer; // TODO: NYI
+    player_talent_t oath_of_the_far_seer;
     player_talent_t searing_flames;
     player_talent_t magma_chamber;
     // Row 10
@@ -6556,6 +6555,22 @@ struct ascendance_t : public shaman_spell_t
           fs_dot->adjust_duration( new_duration, -1 );
         }
       } );
+
+      if ( p()->talent.oath_of_the_far_seer.ok() )
+      {
+        if ( background )
+        {
+            p()->buff.oath_of_the_far_seer->extend_duration_or_trigger(
+                p()->legendary.deeply_rooted_elements.ok()
+                    ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
+                    : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(),
+                player );
+        }
+        else
+        {
+            p()->buff.oath_of_the_far_seer->trigger();
+        }
+      }
     }
 
     if ( p()->talent.static_accumulation.ok() )
@@ -9614,8 +9629,10 @@ void shaman_t::create_buffs()
                             // TODO Elemental: confirm 5% vs 0.5% as default value
                             ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
 
-  buff.oath_of_the_far_seer = make_buff( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer )
-                                  ->set_default_value( talent.oath_of_the_far_seer->effectN(1).percent());
+  buff.oath_of_the_far_seer = make_buff<buff_t>( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer )
+                                ->set_default_value( talent.oath_of_the_far_seer->effectN( 1 ).percent() )
+                                ->set_duration( buff.ascendance->buff_duration() )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   buff.power_of_the_maelstrom =
       make_buff( this, "power_of_the_maelstrom", talent.power_of_the_maelstrom->effectN( 1 ).trigger() )

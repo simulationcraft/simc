@@ -1,6 +1,6 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-21/44707)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-25/44707, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=28610, max_rank=1]
+Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=28610, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -63,7 +63,7 @@ Description      : Roots the target in place for $d. Damage may cancel the effec
 Tooltip          : Rooted.$?<$w2>0>[ Suffering $w2 Nature damage every $t2 sec.][]
 
 Name             : Tranquility (id=740) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=unknown, row=-1, col=-1, entry_id=28691, max_rank=1]
+Talent Entry     : Restoration [tree=unknown, row=-1, col=-1, entry_id=28691, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -150,7 +150,7 @@ Immune to Polymorph effects.
 Movement speed increased by $113636s1% and falling damage reduced.
 
 Name             : Rejuvenation (id=774) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=3, entry_id=28626, max_rank=1]
+Talent Entry     : Generic [free=(Restoration), tree=class, row=1, col=3, entry_id=28626, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -216,7 +216,7 @@ Land speed increased when used out of combat. This effect is disabled in battleg
 Tooltip          : Immune to Polymorph effects.  Movement speed increased.
 
 Name             : Rip (id=1079) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=3, col=1, entry_id=28613, max_rank=1]
+Talent Entry     : Generic [tree=class, row=3, col=1, entry_id=28613, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -323,7 +323,7 @@ Effects          :
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Rake (id=1822) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Feral), tree=class, row=1, col=1, entry_id=28622, max_rank=1]
+Talent Entry     : Generic [free=(Feral), tree=class, row=1, col=1, entry_id=28622, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -388,7 +388,7 @@ Description      : Shift into Cat Form and increase your movement speed by $s1% 
 Tooltip          : Increased movement speed by $s1% while in Cat Form.
 
 Name             : Hibernate (id=2637) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=4, col=5, entry_id=28617, max_rank=1]
+Talent Entry     : Generic [tree=class, row=4, col=5, entry_id=28617, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -419,7 +419,7 @@ Description      : Forces the enemy target to sleep for up to $d.  Any damage wi
 Tooltip          : Asleep.
 
 Name             : Remove Corruption (id=2782) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, entry_id=28628, max_rank=1]
+Talent Entry     : Generic [tree=class, row=3, col=4, entry_id=28628, max_rank=1, req_points=0]
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -447,7 +447,7 @@ Effects          :
 Description      : Nullifies corrupting effects on the friendly target, removing all Curse and Poison effects.
 
 Name             : Soothe (id=2908) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=28637, max_rank=1]
+Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=28637, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -534,7 +534,7 @@ Description      : Hurl a ball of energy at the target, dealing $s1 Nature damag
 
 Name             : Mighty Bash (id=5211) [Spell Family (7)] 
 Replaces         :  (id=175682)
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=28609, max_rank=1]
+Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=28609, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -599,7 +599,7 @@ Description      : Shift into Cat Form and enter stealth.
 Tooltip          : Stealthed.
 
 Name             : Tiger's Fury (id=5217) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=1, col=1, entry_id=28723, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=1, col=1, entry_id=28723, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -843,7 +843,7 @@ Description      : Taunts the target to attack you.
 Tooltip          : Taunted.
 
 Name             : Maul (id=6807) [Spell Family (7)] 
-Talent Entry     : Guardian [tree=spec, row=1, col=1, entry_id=28549, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=1, col=1, entry_id=28549, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -939,7 +939,7 @@ $CCmult=$?a16870[${1+$16870s2/100}][${1}]
 $mult=${$<NSmult>*$<CCmult>}
 
 Name             : Omen of Clarity (id=16864) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=2, col=2, entry_id=28724, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=2, col=2, entry_id=28724, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -999,7 +999,7 @@ Description      : $@spelldesc113043
 Tooltip          : Your next Regrowth is free$?s155577[ and heals for an additonal $w2%][].
 
 Name             : Thick Hide (id=16931) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=28607, max_rank=2]
+Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=28607, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(3, 6)]
                  : Effect#2 [op=set, values=(-3, -6)]
 Class            : Druid
@@ -1068,7 +1068,7 @@ Effects          :
 Description      : Every time you critically strike with a combo generating ability you gain an additional combo point.
 
 Name             : Predatory Swiftness (id=16974) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=7, col=1, entry_id=28720, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=7, col=1, entry_id=28720, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -1146,7 +1146,7 @@ Effects          :
 Description      : You gain ${$m1/10} Rage upon shapeshifting into Bear Form.
 
 Name             : Swiftmend (id=18562) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Restoration), tree=class, row=2, col=3, entry_id=28627, max_rank=1]
+Talent Entry     : Generic [free=(Restoration), tree=class, row=2, col=3, entry_id=28627, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1263,7 +1263,7 @@ Effects          :
                    Family Flags: 68
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
 School           : Physical
 Spell Type       : None
@@ -1318,7 +1318,7 @@ $?s202031[Ferocious Bite will also refresh the duration of your Rip on your targ
    5 points: ${$m1*5/5} damage
 
 Name             : Maim (id=22570) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=4, col=1, entry_id=28612, max_rank=1]
+Talent Entry     : Generic [tree=class, row=4, col=1, entry_id=28612, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -1393,7 +1393,7 @@ Usable while stunned, frozen, incapacitated, feared, or asleep, and in all shape
 Tooltip          : All damage taken reduced by $w1%.
 
 Name             : Frenzied Regeneration (id=22842) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Guardian), tree=class, row=1, col=2, entry_id=28624, max_rank=1]
+Talent Entry     : Generic [free=(Guardian), tree=class, row=1, col=2, entry_id=28624, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -1425,7 +1425,7 @@ Description      : Heals you for $o1% health over $d$?s301768[, and increases he
 Tooltip          : Healing $w1% health every $t1 sec.
 
 Name             : Moonkin Form (id=24858) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=3, col=5, entry_id=28619, max_rank=1]
+Talent Entry     : Generic [tree=class, row=3, col=5, entry_id=28619, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -1482,7 +1482,7 @@ Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Innervate (id=29166) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=9, col=4, entry_id=28633, max_rank=1]
+Talent Entry     : Generic [tree=class, row=9, col=4, entry_id=28633, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1511,7 +1511,7 @@ If cast on somebody else, you gain the effect at $326228s1% effectiveness.][]
 Tooltip          : Mana costs reduced $w1%.
 
 Name             : Lifebloom (id=33763) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=1, col=1, entry_id=28704, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=1, col=1, entry_id=28704, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1569,7 +1569,7 @@ Effects          :
 Description      : $@spelldesc33763
 
 Name             : Cyclone (id=33786) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=6, entry_id=28615, max_rank=1]
+Talent Entry     : Generic [tree=class, row=5, col=6, entry_id=28615, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1605,7 +1605,7 @@ Description      : Tosses the enemy target into the air, disorienting them but m
 Tooltip          : Disoriented and invulnerable.
 
 Name             : Nurturing Instinct (id=33873) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=4, entry_id=28616, max_rank=3]
+Talent Entry     : Generic [tree=class, row=4, col=4, entry_id=28616, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(2, 4, 6)]
                  : Effect#2 [op=set, values=(2, 4, 6)]
 Class            : Druid
@@ -1632,7 +1632,7 @@ Effects          :
 Description      : Magical damage and healing increased by $s1%.
 
 Name             : Incarnation: Tree of Life (desc=Talent, Shapeshift) (id=33891) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=9, col=3, entry_id=28675, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=9, col=3, entry_id=28675, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -1815,7 +1815,7 @@ Description      : Charge to an enemy, immobilizing them for $45334d.
 Tooltip          : Immobilized.
 
 Name             : Wild Growth (id=48438) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=7, col=4, entry_id=28630, max_rank=1]
+Talent Entry     : Generic [tree=class, row=7, col=4, entry_id=28630, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -1850,7 +1850,7 @@ Description      : Heals up to $s2 injured allies within $A1 yards of the target
 Tooltip          : Heals $w1 damage every $t1 sec.
 
 Name             : Infected Wounds (id=48484) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=7, col=2, entry_id=28730, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=7, col=2, entry_id=28730, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2123,7 +2123,7 @@ Tooltip          : Berserk. $?a377623[Haste increased by $s4%. ][]$?a343240|(a34
 Immune to effects that cause loss of control of your character.][]
 
 Name             : Nourish (id=50464) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=6, col=1, entry_id=28670, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=6, col=1, entry_id=28670, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -2148,7 +2148,7 @@ Effects          :
 Description      : Heals a friendly target for $s1.  Receives triple bonus from $@spellname77495.
 
 Name             : Savage Roar (id=52610) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=6, col=5, entry_id=28590, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=6, col=5, entry_id=28590, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2278,8 +2278,8 @@ Effects          :
 Description      : Increases the damage done by Maim by $s1%.
 
 Name             : Survival Instincts (id=61336) [Spell Family (7)] 
-Talent Entry     : Guardian [tree=spec, row=2, col=2, entry_id=28548, max_rank=1]
-                 : Feral [tree=spec, row=7, col=3, entry_id=28649, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=2, col=2, entry_id=28548, max_rank=1, req_points=0]
+                 : Feral [tree=spec, row=7, col=3, entry_id=28649, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2577,7 +2577,7 @@ Description      : Let loose a wild roar, increasing the movement speed of all f
 Tooltip          : Movement speed increased by $s1%.
 
 Name             : Starsurge (id=78674) [Spell Family (7)] 
-Talent Entry     : Balance [free=(Balance), tree=class, row=2, col=4, entry_id=28618, max_rank=1]
+Talent Entry     : Balance [free=(Balance), tree=class, row=2, col=4, entry_id=28618, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -2608,7 +2608,7 @@ Effects          :
 Description      : Launch a surge of stellar energies at the target, dealing $s1 Astral damage, and empowering the damage bonus of any active Eclipse for its duration.
 
 Name             : Solar Beam (id=78675) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=5, col=2, entry_id=28738, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=5, col=2, entry_id=28738, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -2642,7 +2642,7 @@ Description      : Summons a beam of solar light over an enemy target's location
 Tooltip          : Silenced.
 
 Name             : Eclipse (id=79577) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=1, col=1, entry_id=28751, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=1, col=1, entry_id=28751, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -2673,7 +2673,7 @@ $@spellicon48518 $@spellname48518
 Starfire cast time reduced $48518s1% and critical strike chance increased $48518s2%.
 
 Name             : Pulverize (id=80313) [Spell Family (7)] 
-Talent Entry     : Guardian [tree=spec, row=9, col=2, entry_id=28554, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=2, entry_id=28554, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -2973,7 +2973,7 @@ Effects          :
 Description      : Your harmful spells have a chance to grant $92320s1 mastery for $92320d.
 
 Name             : Sunfire (id=93402) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=28596, max_rank=1, name="Sunfire (no AOE)"]
+Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=28596, max_rank=1, req_points=0, name="Sunfire (no AOE)"]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3104,7 +3104,7 @@ Description      : You summon a beam of solar light over the enemy target's loca
 Tooltip          : Interrupted.
 
 Name             : Ironbark (id=102342) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=3, col=3, entry_id=28694, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=3, col=3, entry_id=28694, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3138,7 +3138,7 @@ Description      : The target's skin becomes as tough as Ironwood, reducing dama
 Tooltip          : All damage taken is reduced by $w1%$?<$w2>0>[ and healing over time from $@auracaster increased by $w2%][].
 
 Name             : Cenarion Ward (id=102351) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=7, col=2, entry_id=28710, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=7, col=2, entry_id=28710, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -3195,7 +3195,7 @@ Tooltip          : Heals $w1 damage every $t1 seconds.
 
 Name             : Mass Entanglement (id=102359) [Spell Family (7)] 
 Replaces         :  (id=175682)
-Talent Entry     : Generic [tree=class, row=8, col=5, entry_id=28632, max_rank=1]
+Talent Entry     : Generic [tree=class, row=8, col=5, entry_id=28632, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3256,7 +3256,7 @@ Effects          :
 Description      : Bound backward away from your enemies.
 
 Name             : Wild Charge (id=102401) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=28636, max_rank=1]
+Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=28636, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3315,7 +3315,7 @@ Description      : Leap forward $s2 yards.
 
 Name             : Incarnation: Avatar of Ashamane (desc=Shapeshift) (id=102543) [Spell Family (7)] 
 Replaces         : Berserk (id=106951)
-Talent Entry     : Feral [tree=spec, row=9, col=3, entry_id=28653, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=3, entry_id=28653, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -3401,7 +3401,7 @@ Tooltip          : Stealthed.
 
 Name             : Incarnation: Guardian of Ursoc (desc=Talent, Shapeshift) (id=102558) [Spell Family (7)] 
 Replaces         : Berserk (id=50334)
-Talent Entry     : Guardian [tree=spec, row=9, col=3, entry_id=28557, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=3, entry_id=28557, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3475,7 +3475,7 @@ Immune to effects that cause loss of control of your character.][]
 
 Name             : Incarnation: Chosen of Elune (desc=Talent, Shapeshift) (id=102560) [Spell Family (7)] 
 Replaces         : Celestial Alignment (id=194223)
-Talent Entry     : Balance [tree=spec, row=9, col=3, entry_id=28658, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=9, col=3, entry_id=28658, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3510,7 +3510,7 @@ Lasts $d. You may shapeshift in and out of this improved Moonkin Form for its du
 Tooltip          : Both Eclipses active. Haste increased by $w1% and critical strike chance by $w2%.
 
 Name             : Ursol's Vortex (id=102793) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=8, col=5, entry_id=28631, max_rank=1]
+Talent Entry     : Generic [tree=class, row=8, col=5, entry_id=28631, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3622,7 +3622,7 @@ Description      : Strikes all nearby enemies, dealing $m1 Bleed damage and an a
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Thrash (id=106832) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Feral, Guardian), tree=class, row=2, col=1, entry_id=28623, max_rank=1]
+Talent Entry     : Generic [free=(Feral, Guardian), tree=class, row=2, col=1, entry_id=28623, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -3646,7 +3646,7 @@ Effects          :
 Description      : Thrash all nearby enemies, dealing immediate physical damage and periodic bleed damage. Damage varies by shapeshift form.
 
 Name             : Skull Bash (id=106839) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=28603, max_rank=1]
+Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=28603, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -3673,7 +3673,7 @@ Effects          :
 Description      : You charge and bash the target's skull, interrupting spellcasting and preventing any spell in that school from being cast for $93985d.
 
 Name             : Stampeding Roar (id=106898) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=7, col=3, entry_id=28638, max_rank=1]
+Talent Entry     : Generic [tree=class, row=7, col=3, entry_id=28638, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -3767,7 +3767,7 @@ Effects          :
 Description      : Each time you shapeshift into Bear Form, your shapeshifted form will be randomly selected.
 
 Name             : Renewal (id=108238) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=28593, max_rank=1]
+Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=28593, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -3927,7 +3927,7 @@ Description      : $@spelldesc319454
 Tooltip          : Healing of your Restoration spells increased by $s1%, and mana costs reduced by $s3%.
 
 Name             : Killer Instinct (id=108299) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=2, entry_id=28604, max_rank=3]
+Talent Entry     : Generic [tree=class, row=4, col=2, entry_id=28604, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(2, 4, 6)]
                  : Effect#2 [op=set, values=(2, 4, 6)]
                  : Effect#3 [op=set, values=(2, 4, 6)]
@@ -3959,7 +3959,7 @@ Effects          :
 Description      : Physical damage and Armor increased by $s1%.
 
 Name             : Omen of Clarity (id=113043) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=2, col=3, entry_id=28693, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=2, col=3, entry_id=28693, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -4000,7 +4000,7 @@ Effects          :
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
 
 Name             : Soul of the Forest (id=114107) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=8, col=2, entry_id=28741, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=8, col=2, entry_id=28741, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4132,7 +4132,7 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 72 | Target: Self (1)
 
 Name             : Nature's Vigil (id=124974) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=28634, max_rank=1]
+Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=28634, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -4249,7 +4249,7 @@ Description      : Allows the Druid to befriend an ambient creature, which will 
 Tooltip          : Charmed.
 
 Name             : Feline Swiftness (id=131768) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=28614, max_rank=2]
+Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=28614, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(8, 15)]
 Class            : Druid
 School           : Physical
@@ -4272,7 +4272,7 @@ Effects          :
 Description      : Increases your movement speed by $s1%.
 
 Name             : Nature's Swiftness (id=132158) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=2, col=2, entry_id=28703, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=2, col=2, entry_id=28703, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Magic
@@ -4333,7 +4333,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Typhoon (id=132469) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=28597, max_rank=1]
+Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=28597, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -4391,7 +4391,7 @@ Description      : $@spelldesc135288
 Tooltip          : Your next Maul deals $s1% more damage and reduces the target's damage to you by $135601s1%~ for $135601d.
 
 Name             : Tooth and Claw (id=135288) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=5, col=2, entry_id=28576, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=5, col=2, entry_id=28576, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4753,7 +4753,7 @@ Effects          :
 Description      : Swiftmend's ground effect can now heal up to $s1 targets each time it heals.
 
 Name             : Ysera's Gift (id=145108) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=5, col=2, entry_id=28687, max_rank=3]
+Talent Entry     : Restoration [tree=spec, row=5, col=2, entry_id=28687, max_rank=3, req_points=8]
                  : Effect#1 [op=set, values=(2, 3, 4)]
 Class            : Druid
 School           : Nature
@@ -4851,7 +4851,7 @@ Description      : $@spelldesc155672
 Tooltip          : Your next Rip or Ferocious Bite deals $s1% increased damage.
 
 Name             : Efflorescence (id=145205) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=2, col=1, entry_id=28705, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=2, col=1, entry_id=28705, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -4882,7 +4882,7 @@ Effects          :
 Description      : Grows a healing blossom at the target location, restoring $81269s1 health to $?p138284[four][three] injured allies within $81269A1 yards every $81262t1 sec for $81262d. Limit 1.
 
 Name             : Guardian of Elune (id=155578) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=5, entry_id=28568, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=5, entry_id=28568, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4904,7 +4904,7 @@ Effects          :
 Description      : Mangle increases the duration of your next Ironfur by ${$213680m1/1000} sec, or the healing of your next Frenzied Regeneration by $213680s2%.
 
 Name             : Lunar Inspiration (id=155580) [Passive] 
-Talent Entry     : Feral [tree=spec, row=6, col=1, entry_id=28713, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=6, col=1, entry_id=28713, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -4977,7 +4977,7 @@ Effects          :
 Description      : $@spelldesc155580
 
 Name             : Germination (id=155675) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=9, col=1, entry_id=28700, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=9, col=1, entry_id=28700, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5084,7 +5084,7 @@ Description      : Increases your maximum health and healing received by ${$s1}.
 Also increases your attack power by ${$159195s1}.1%.
 
 Name             : Bristling Fur (id=155835) 
-Talent Entry     : Guardian [tree=spec, row=3, col=1, entry_id=28574, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=3, col=1, entry_id=28574, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Melee
@@ -5191,7 +5191,7 @@ Description      : $@spelldesc740
 Tooltip          : Heals $w2 damage every $t2 sec.
 
 Name             : Soul of the Forest (id=158476) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=9, col=4, entry_id=28732, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=4, entry_id=28732, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5218,7 +5218,7 @@ Effects          :
 Description      : Your finishing moves grant $s1 Energy per combo point spent and deal $s2% increased damage.
 
 Name             : Soul of the Forest (id=158477) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=4, entry_id=28583, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=4, entry_id=28583, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5243,7 +5243,7 @@ Effects          :
 Description      : Mangle generates ${$m1/10} more Rage and deals $s2% more damage.
 
 Name             : Soul of the Forest (id=158478) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=2, entry_id=28708, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=6, col=2, entry_id=28708, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5280,7 +5280,7 @@ Effects          :
 Description      : $@spelldesc155783
 
 Name             : Primal Fury (id=159286) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=28611, max_rank=1]
+Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=28611, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -5688,7 +5688,7 @@ Description      : Hurl a ball of energy at the target, dealing $s1 Nature damag
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r][]
 
 Name             : Starfall (id=191034) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=4, col=1, entry_id=28748, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=4, col=1, entry_id=28748, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -5751,7 +5751,7 @@ Effects          :
 Description      : $@spelldesc191034
 
 Name             : Ironfur (id=192081) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, entry_id=28606, max_rank=1]
+Talent Entry     : Generic [tree=class, row=4, col=3, entry_id=28606, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -5851,7 +5851,7 @@ Description      : Teleports the caster to the Emerald Dreamway.
 Casting Dreamwalk again while in the Emerald Dreamway will return you back to near your departure point.
 
 Name             : Starfire (id=194153) [Spell Family (7)] 
-Talent Entry     : Generic [free=(Balance), tree=class, row=1, col=4, entry_id=28621, max_rank=1]
+Talent Entry     : Generic [free=(Balance), tree=class, row=1, col=4, entry_id=28621, max_rank=1, req_points=0]
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -5885,7 +5885,7 @@ Description      : Call down a burst of energy, causing $s1 Arcane damage to the
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Celestial Alignment (id=194223) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=4, col=3, entry_id=28754, max_rank=1, name="Celestial Alignment [SL version, No initial damage]"]
+Talent Entry     : Balance [tree=spec, row=4, col=3, entry_id=28754, max_rank=1, req_points=0, name="Celestial Alignment [SL version, No initial damage]"]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -5912,7 +5912,7 @@ Description      : Celestial bodies align, maintaining both Eclipses and grantin
 Tooltip          : Both Eclipses active. Haste increased by $w1%.
 
 Name             : Stonebark (id=197061) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=7, col=3, entry_id=28685, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=7, col=3, entry_id=28685, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
@@ -5935,7 +5935,7 @@ Effects          :
 Description      : Ironbark increases healing from your heal over time effects by $s1%.
 
 Name             : Inner Peace (id=197073) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=6, col=3, entry_id=28689, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=6, col=3, entry_id=28689, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-30000, -60000)]
 Class            : Druid
 School           : Physical
@@ -6127,7 +6127,7 @@ $@spellicon48438 $@spellname48438
 $@spellicon102793$@spellname102793
 
 Name             : Astral Influence (id=197524) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=7, entry_id=28598, max_rank=2]
+Talent Entry     : Generic [tree=class, row=5, col=7, entry_id=28598, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(3, 5)]
                  : Effect#2 [op=set, values=(3, 5)]
                  : Effect#3 [op=set, values=(3, 5)]
@@ -6207,7 +6207,7 @@ Tooltip          : Immune to Polymorph effects.$?$w3>0[
 Armor increased by $w3%.][]
 
 Name             : Starsurge (id=197626) [Spell Family (7)] 
-Talent Entry     : Feral, Guardian, Restoration [tree=class, row=2, col=4, entry_id=28620, max_rank=1]
+Talent Entry     : Feral, Guardian, Restoration [tree=class, row=2, col=4, entry_id=28620, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -6344,7 +6344,7 @@ Effects          :
                    Family Flags: 92
 
 Name             : Flourish (id=197721) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=10, col=6, entry_id=28680, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=6, entry_id=28680, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -6430,7 +6430,7 @@ Description      : $@spelldesc200390
 Tooltip          : Heals $w1 damage every $t1 seconds.
 
 Name             : Cultivation (id=200390) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=6, col=4, entry_id=28686, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=6, col=4, entry_id=28686, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6450,7 +6450,7 @@ Effects          :
 Description      : When Rejuvenation heals a target below $s1% health, it applies Cultivation to the target, healing them for $200389o1 over $200389d.
 
 Name             : Reinforced Fur (id=200395) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=5, entry_id=28551, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=5, entry_id=28551, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6471,7 +6471,7 @@ Effects          :
 Description      : Ironfur increases armor by an additional $s1%.
 
 Name             : Ursoc's Endurance (id=200399) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=4, col=4, entry_id=28541, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=4, col=4, entry_id=28541, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(1000, 2000)]
 Class            : Druid
 School           : Physical
@@ -6493,7 +6493,7 @@ Effects          :
 Description      : Increases the duration of Barkskin and Ironfur by ${$m1/1000}.1 sec.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -6517,7 +6517,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Rage of the Sleeper (desc=Artifact) (id=200851) [Spell Family (7)] 
-Talent Entry     : Guardian [tree=spec, row=10, col=3, entry_id=28578, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=10, col=3, entry_id=28578, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6551,7 +6551,7 @@ Description      : Unleashes the rage of Ursoc for $d, preventing $s4% of all da
 Tooltip          : Prevents $s4% of all damage you take and reflects $219432s1 Nature damage back at your attackers.
 
 Name             : Gory Fur (id=200854) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=4, col=5, entry_id=28575, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=4, col=5, entry_id=28575, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6602,7 +6602,7 @@ Description      : Reduces the Rage cost of your next Ironfur by $s1%.
 Tooltip          : Reduces the Rage cost of your next Ironfur by $s1%.
 
 Name             : Predator (id=202021) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=3, col=3, entry_id=28726, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=3, col=3, entry_id=28726, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6624,7 +6624,7 @@ Description      : The cooldown on Tiger's Fury resets when a target dies with o
 
 Name             : Brutal Slash (id=202028) [Spell Family (7)] 
 Replaces         : Swipe (id=213764)
-Talent Entry     : Feral [tree=spec, row=6, col=4, entry_id=28729, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=6, col=4, entry_id=28729, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -6658,7 +6658,7 @@ Description      : Strikes all nearby enemies with a massive slash, inflicting $
 |cFFFFFFFFAwards $s1 combo $lpoint:points;.|r
 
 Name             : Sabertooth (id=202031) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=3, col=3, entry_id=28725, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=3, col=3, entry_id=28725, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6790,7 +6790,7 @@ $@spellicon22570 $@spellname22570
 Your energy regeneration is increased by $s2%.
 
 Name             : Shooting Stars (id=202342) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=5, col=3, entry_id=28733, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=5, col=3, entry_id=28733, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6812,7 +6812,7 @@ Effects          :
 Description      : Moonfire and Sunfire damage over time has a chance to call down a falling star, dealing $202497s1 Astral damage and generating ${$202497m2/10} Astral Power.
 
 Name             : Starlord (id=202345) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=6, col=3, entry_id=28734, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=6, col=3, entry_id=28734, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Physical
@@ -6837,7 +6837,7 @@ Description      : Starsurge and Starfall grant you $s1% Haste for $279709d.
 Stacks up to $279709u times. Gaining a stack does not refresh the duration.
 
 Name             : Stellar Flare (id=202347) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=8, col=4, entry_id=28736, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=8, col=4, entry_id=28736, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -6869,7 +6869,7 @@ Description      : Burns the target for $s1 Astral damage, and then an additiona
 Tooltip          : Suffering $w2 Astral damage every $t2 sec.
 
 Name             : Stellar Drift (id=202354) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=7, col=1, entry_id=28745, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=7, col=1, entry_id=28745, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -6894,7 +6894,7 @@ Effects          :
 Description      : Starfall deals $s2% additional damage and allows you to cast while moving while it is active, but now has a ${$s1/1000} sec cooldown.
 
 Name             : Warrior of Elune (id=202425) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=3, col=3, entry_id=28585, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=3, col=3, entry_id=28585, max_rank=1, req_points=0]
 Class            : Druid
 School           : Arcane
 Spell Type       : Magic
@@ -6927,7 +6927,7 @@ Description      : Your next $n Starfires are instant cast and generate $s2% inc
 Tooltip          : Starfire is instant cast and generates $s2% increased Astral Power.
 
 Name             : Nature's Balance (id=202430) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=3, col=2, entry_id=28753, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=3, col=2, entry_id=28753, max_rank=2, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7002,7 +7002,7 @@ Effects          :
 Description      : $@spelldesc202342
 
 Name             : Blessing of Elune (id=202737) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=8, col=1, entry_id=28744, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=8, col=1, entry_id=28744, max_rank=1, req_points=0]
 Class            : Druid
 School           : Arcane
 Spell Type       : None
@@ -7025,7 +7025,7 @@ Description      : Increases Astral Power generated by Solar Wrath and Lunar Str
 Tooltip          : Astral Power generated by Solar Wrath and Lunar Strike increased by $s1%.
 
 Name             : Blessing of An'she (id=202739) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=8, col=1, entry_id=28743, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=8, col=1, entry_id=28743, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -7076,7 +7076,7 @@ Description      : Deals $m1 Arcane damage to the target and empowers Half Moon 
 |cFFFFFFFFGenerates ${$m3/10} Astral Power.|r
 
 Name             : Fury of Elune (id=202770) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=10, col=1, entry_id=28654, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=10, col=1, entry_id=28654, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -7144,7 +7144,7 @@ Description      : Deals $m1 Arcane damage to the target and reduced damage to a
 |cFFFFFFFFGenerates ${$m2/10} Astral Power.|r
 
 Name             : Light of the Sun (id=202918) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=7, col=3, entry_id=28587, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=7, col=3, entry_id=28587, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7166,7 +7166,7 @@ Effects          :
 Description      : Reduces the remaining cooldown on Solar Beam by $m1 sec when it interrupts the primary target.
 
 Name             : Power of Goldrinn (id=202996) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=6, col=2, entry_id=28739, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=6, col=2, entry_id=28739, max_rank=2, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7210,7 +7210,7 @@ Description      : Deals $m1 Arcane damage.
 Tooltip          : Deals $m1 Arcane damage.
 
 Name             : Overgrowth (id=203651) [Spell Family (7)] 
-Talent Entry     : Restoration [tree=spec, row=8, col=1, entry_id=28698, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=8, col=1, entry_id=28698, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -7235,7 +7235,7 @@ Effects          :
 Description      : Apply Lifebloom, Rejuvenation, Wild Growth, and Regrowth's heal over time effect to an ally.
 
 Name             : Brambles (id=203953) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=3, col=1, entry_id=28573, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=3, col=1, entry_id=28573, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7297,7 +7297,7 @@ Effects          :
 Description      : $@spelldesc203962
 
 Name             : Blood Frenzy (id=203962) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=4, entry_id=28584, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=4, entry_id=28584, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7316,7 +7316,7 @@ Effects          :
 Description      : Thrash also generates ${$203961s1/10} Rage each time it deals damage.
 
 Name             : Galactic Guardian (id=203964) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=6, entry_id=28566, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=6, entry_id=28566, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7341,7 +7341,7 @@ Description      : Your damage has a $h% chance to trigger a free automatic Moon
 When this occurs, the next Moonfire you cast generates ${$213708m1/10} Rage, and deals $213708s3% increased direct damage.
 
 Name             : Survival of the Fittest (id=203965) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=4, entry_id=28561, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=8, col=4, entry_id=28561, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Druid
 School           : Physical
@@ -7366,7 +7366,7 @@ Effects          :
 Description      : Reduces the cooldowns of Barkskin and Survival Instincts by $s1%.
 
 Name             : Earthwarden (id=203974) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=1, entry_id=28563, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=1, entry_id=28563, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7411,7 +7411,7 @@ Description      : $@spelldesc203974
 Tooltip          : Damage of the next autoattack you take will be reduced by $203974s1~%.
 
 Name             : Rend and Tear (id=204053) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=10, col=1, entry_id=28559, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=10, col=1, entry_id=28559, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7440,7 +7440,7 @@ Effects          :
 Description      : Each stack of Thrash reduces the target's damage to you by $s3% and increases your damage to them by $s1%.
 
 Name             : Force of Nature (desc=Talent) (id=205636) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=3, col=1, entry_id=28749, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=3, col=1, entry_id=28749, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -7476,7 +7476,7 @@ Description      : Summons a stand of $s1 Treants for $248280d which immediately
 Tooltip          : Granting ${$s5/10*$d} Astral Power over $d.
 
 Name             : Abundance (id=207383) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=7, col=2, entry_id=28709, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=7, col=2, entry_id=28709, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7496,7 +7496,7 @@ Effects          :
 Description      : For each Rejuvenation you have active, Regrowth's cost is reduced by $207640s1% and critical effect chance is increased by $207640s2%.
 
 Name             : Spring Blossoms (id=207385) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=8, col=1, entry_id=28699, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=8, col=1, entry_id=28699, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -7842,7 +7842,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 Variables        : $rip=${$s1}
 
 Name             : Gore (id=210706) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=2, col=1, entry_id=28581, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=2, col=1, entry_id=28581, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -8119,7 +8119,7 @@ Effects          :
 Description      : $@spelldesc203953
 
 Name             : Swipe (id=213764) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=3, col=2, entry_id=28605, max_rank=1]
+Talent Entry     : Generic [tree=class, row=3, col=2, entry_id=28605, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -8295,7 +8295,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Improved Regrowth (id=231032) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=4, col=2, entry_id=28692, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=4, col=2, entry_id=28692, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(20, 40)]
 Class            : Druid
 School           : Nature
@@ -8316,7 +8316,7 @@ Effects          :
 Description      : Regrowth's initial heal has a $s1% increased chance for a critical effect if the target is already affected by Regrowth.
 
 Name             : Improved Rejuvenation (id=231040) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=4, entry_id=28592, max_rank=1]
+Talent Entry     : Generic [tree=class, row=8, col=4, entry_id=28592, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8338,7 +8338,7 @@ Effects          :
 Description      : Rejuvenation's duration is increased by ${$m1/1000} sec.
 
 Name             : Moonkin Form (desc=Rank 2) (id=231042) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=4, col=2, entry_id=28586, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=4, col=2, entry_id=28586, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8361,7 +8361,7 @@ Description      : While in Moonkin Form, single-target attacks against you have
 
 
 Name             : Improved Sunfire (id=231050) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=5, entry_id=28595, max_rank=1]
+Talent Entry     : Generic [tree=class, row=7, col=5, entry_id=28595, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8381,7 +8381,7 @@ Effects          :
 Description      : Sunfire now applies its damage over time effect to all enemies within $164815A2 yards.
 
 Name             : Improved Prowl (id=231052) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=4, col=1, entry_id=28717, max_rank=2, name="Rake Stealth bonus (also Shred)"]
+Talent Entry     : Feral [tree=spec, row=4, col=1, entry_id=28717, max_rank=2, req_points=0, name="Rake Stealth bonus (also Shred)"]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8403,7 +8403,7 @@ Description      : While stealthed, Rake will also stun the target for $163505d,
 While stealthed, Shred deals $5221s3% increased damage, and has double the chance to critically strike.
 
 Name             : Improved Tiger's Fury (id=231055) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=2, col=3, entry_id=28588, max_rank=3]
+Talent Entry     : Feral [tree=spec, row=2, col=3, entry_id=28588, max_rank=3, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2, 3)]
 Class            : Druid
 School           : Nature
@@ -8426,7 +8426,7 @@ Effects          :
 Description      : Tiger's Fury generates an additional $s1 energy.
 
 Name             : Improved Bleeds (id=231063) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=4, col=2, entry_id=28727, max_rank=2, name="Shred Bleed bonus (also Swipe)"]
+Talent Entry     : Feral [tree=spec, row=4, col=2, entry_id=28727, max_rank=2, req_points=0, name="Shred Bleed bonus (also Swipe)"]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8446,7 +8446,7 @@ Effects          :
 Description      : Shred and Swipe deal $5221s4% increased damage against bleeding targets.
 
 Name             : Mangle (desc=Rank 2) (id=231064) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=3, col=4, entry_id=28577, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=3, col=4, entry_id=28577, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -8548,7 +8548,7 @@ Description      : $@spelldesc203727
 Tooltip          : Movement speed reduced by $232559s1%.
 
 Name             : Moment of Clarity (id=236068) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=6, col=3, entry_id=28714, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=6, col=3, entry_id=28714, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -8609,7 +8609,7 @@ Effects          :
 Description      : Maul the target for $s2% of the target's maximum health in Physical damage.
 
 Name             : Scintillating Moonlight (id=238049) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=5, col=4, entry_id=28570, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=5, col=4, entry_id=28570, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-2, -4)]
 Class            : Druid
 School           : Physical
@@ -8631,7 +8631,7 @@ Effects          :
 Description      : Moonfire reduces damage dealt to you by ${$s1/-1}%.
 
 Name             : Pawsitive Outlook (id=238121) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=5, col=1, entry_id=28546, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=5, col=1, entry_id=28546, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
@@ -8675,7 +8675,7 @@ Effects          :
 Description      : Summons a stand of $s2 Treants for $d which immediately taunt and attack enemies in the targeted area.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -8724,8 +8724,8 @@ Tooltip          : Allows the use of Prowl even while in combat.
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
 Replaces         : Dash (id=1850)
-Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=28635, max_rank=1]
-Class            : Druid
+Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=28635, max_rank=1, req_points=0]
+Class            : Druid, Evoker
 School           : Physical
 Spell Type       : Magic
 GCD              : 1.5 seconds
@@ -8754,7 +8754,7 @@ Description      : Shift into Cat Form and increase your movement speed by $s1%,
 Tooltip          : Increased movement speed by $s1% while in Cat Form, reducing gradually over time.
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -8776,7 +8776,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Light's Judgment (desc=Racial) (id=255647) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -8800,7 +8800,7 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : None
@@ -8820,7 +8820,7 @@ Effects          :
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Spell Type       : None
@@ -8839,7 +8839,7 @@ Effects          :
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Spell Type       : None
@@ -8858,7 +8858,7 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (desc=Racial) (id=256893) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -8881,7 +8881,7 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=256896) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -9886,7 +9886,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : New Moon (id=274281) [Spell Family (7)] 
-Talent Entry     : Balance [tree=spec, row=10, col=1, entry_id=28655, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=10, col=1, entry_id=28655, max_rank=1, req_points=0]
 Class            : Druid
 School           : Astral
 Spell Type       : Magic
@@ -10011,7 +10011,7 @@ Effects          :
 Description      : Tiger's Fury increases your Critical Strike by $s1 and lasts $?s202021[${$s3+$274425s2/1000}][${$s2+$274425s2/1000}] sec.
 
 Name             : Autumn Leaves (id=274432) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=8, col=3, entry_id=28673, max_rank=2, name="Autumn Leaves [no extension]"]
+Talent Entry     : Restoration [tree=spec, row=8, col=3, entry_id=28673, max_rank=2, req_points=8, name="Autumn Leaves [no extension]"]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -10050,7 +10050,7 @@ Effects          :
 Description      : When you resurrect an ally with Rebirth, they absorb $s1 damage for $274814d and gain Well Fed, increasing their Agility, Intellect, or Strength by $285719s1 for $285719d.
 
 Name             : Feral Frenzy (id=274837) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=9, col=1, entry_id=28645, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=1, entry_id=28645, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -10110,7 +10110,7 @@ Description      : $@spelldesc274837
 Tooltip          : Bleeding for $w2 damage every $t2 sec.
 
 Name             : Photosynthesis (id=274902) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=10, col=2, entry_id=28696, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=2, entry_id=28696, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -10401,7 +10401,7 @@ Effects          :
 Description      : Ysera's Gift now heals every ${$s2/1000} sec, and heals for an additional $s1 for each of your active Rejuvenations.
 
 Name             : Rampant Growth (id=278515) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=8, col=2, entry_id=28711, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=8, col=2, entry_id=28711, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -10491,7 +10491,7 @@ Effects          :
 Description      : Ironfur increases your Agility by $s1, and has a $s2% chance to grant $s3 applications.
 
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=8, col=4, entry_id=28737, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=8, col=4, entry_id=28737, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -10604,7 +10604,7 @@ Effects          :
 Description      : Solar Empowerment causes Wrath to explode on impact for $164545s1% additional damage to all nearby enemies.
 
 Name             : Grove Tending (id=279778) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=8, col=4, entry_id=28681, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=8, col=4, entry_id=28681, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -10714,7 +10714,7 @@ Effects          :
 Description      : Azerite energy courses through you, reaching ${$s1*6} $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat] and then diminishing down to $s1 $?a162700[Agility]?a162702[Strength]?a162697[Agility]?a162698[Strength]?a162699[Intellect]?a162701[Intellect][primary stat], cycling every 12 sec.
 
 Name             : Ursoc's Endurance (id=280013) [Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=28608, max_rank=1, name="Ursoc's Endurance (NNF)"]
+Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=28608, max_rank=1, req_points=0, name="Ursoc's Endurance (NNF)"]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -11468,7 +11468,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to grant you $s1 Mastery for $281843d. When this effect expires it jumps once to a nearby ally, granting them $s2 Mastery for $281844d.
 
 Name             : Primal Wrath (id=285381) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=6, col=2, entry_id=28719, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=6, col=2, entry_id=28719, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -11502,7 +11502,7 @@ Description      : Finishing move that deals instant damage and applies Rip to a
    5 points: ${$s1*6} plus Rip for ${$s2*6} sec
 
 Name             : Scent of Blood (id=285564) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=3, col=2, entry_id=28589, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=3, col=2, entry_id=28589, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -11791,7 +11791,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to trigger a Soulbond for $288841d. During Soulbond, every $288841t1 sec you and your nearest ally are both healed for $s2 and gain $s1 Haste for $288839d.
 
 Name             : Stampeding Roar (desc=Rank 2) (id=288826) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=28640, max_rank=1]
+Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=28640, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -11956,7 +11956,7 @@ Effects          :
 Description      : Once per minute while in combat, gain $s1 Haste, Critical Strike, Mastery, and Versatility for $300174d.
 
 Name             : Ursine Adept (id=300346) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=3, col=2, entry_id=28550, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=3, col=2, entry_id=28550, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -12005,7 +12005,7 @@ Effects          :
 Description      : Soothe and Remove Corruption are usable in Cat Form.
 
 Name             : Improved Frenzied Regeneration (NNF) (id=301768) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=3, entry_id=28591, max_rank=1]
+Talent Entry     : Generic [tree=class, row=3, col=3, entry_id=28591, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -12186,7 +12186,7 @@ Effects          :
 Description      : Your secondary stats are all increased by $s1.
 
 Name             : Bloodtalons (id=319439) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=9, col=1, entry_id=28644, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=1, entry_id=28644, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -12208,7 +12208,7 @@ Effects          :
 Description      : When you use $s2 different combo point-generating abilities within $s1 sec, the damage of your next $145152n Rips or Ferocious Bites is increased by $145152s1%.
 
 Name             : Heart of the Wild (id=319454) [Spell Family (7)] 
-Talent Entry     : Generic [tree=class, row=10, col=2, entry_id=28594, max_rank=1]
+Talent Entry     : Generic [tree=class, row=10, col=2, entry_id=28594, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : Magic
@@ -12360,9 +12360,9 @@ Description      : $@spelldesc323546
 Tooltip          : Stunned.
 
 Name             : Convoke the Spirits (desc=Night Fae) (id=323764) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=9, col=3, entry_id=28652, max_rank=1]
-                 : Balance [tree=spec, row=9, col=3, entry_id=28657, max_rank=1]
-                 : Restoration [tree=spec, row=9, col=3, entry_id=28674, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=3, entry_id=28652, max_rank=1, req_points=8]
+                 : Balance [tree=spec, row=9, col=3, entry_id=28657, max_rank=1, req_points=0]
+                 : Restoration [tree=spec, row=9, col=3, entry_id=28674, max_rank=1, req_points=8]
 Class            : Druid
 Covenant         : Night Fae
 School           : Nature
@@ -12410,9 +12410,9 @@ You will cast $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred,
 Tooltip          : Every ${$t1}.2 sec, casting $?a24858|a197625[Starsurge, Starfall,]?a768[Ferocious Bite, Shred, Tiger's Fury,]?a5487[Mangle, Ironfur,][Wild Growth, Swiftmend,] Moonfire, Wrath, Regrowth, Rejuvenation, Rake or Thrash on appropriate nearby targets.
 
 Name             : Adaptive Swarm (desc=Necrolord) (id=325727) [Spell Family (7)] 
-Talent Entry     : Feral [tree=spec, row=9, col=2, entry_id=28642, max_rank=1]
-                 : Balance [tree=spec, row=10, col=3, entry_id=28663, max_rank=1]
-                 : Restoration [tree=spec, row=9, col=2, entry_id=28671, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=2, entry_id=28642, max_rank=1, req_points=8]
+                 : Balance [tree=spec, row=10, col=3, entry_id=28663, max_rank=1, req_points=0]
+                 : Restoration [tree=spec, row=9, col=2, entry_id=28671, max_rank=1, req_points=8]
 Class            : Druid
 Covenant         : Necrolord
 School           : Shadow
@@ -12531,7 +12531,7 @@ Effects          :
 Description      : Solar Eclipse increases Nature spell damage by $s1%, and Lunar Eclipse increases Arcane spell damage by $s1%.
 
 Name             : Improved Innervate (id=326228) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=9, col=4, entry_id=28682, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=9, col=4, entry_id=28682, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -12883,7 +12883,7 @@ Description      : $@spelldesc327071
 Tooltip          : Replicating $w1% of healing dealt onto $@auracaster.
 
 Name             : Starfall (desc=Rank 2) (id=327541) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=6, col=1, entry_id=28746, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=6, col=1, entry_id=28746, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Nature
@@ -12904,7 +12904,7 @@ Effects          :
 Description      : Casting Starfall extends the duration of active Moonfires and Sunfires by $s1 sec.
 
 Name             : Improved Barkskin (id=327993) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=2, entry_id=28625, max_rank=1]
+Talent Entry     : Generic [tree=class, row=2, col=2, entry_id=28625, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -12926,7 +12926,7 @@ Effects          :
 Description      : Duration increased by ${$s1/1000} sec.
 
 Name             : Improved Eclipse (id=328021) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=2, col=1, entry_id=28750, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=2, col=1, entry_id=28750, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-4, -7)]
 Class            : Druid
 School           : Nature
@@ -12949,7 +12949,7 @@ Effects          :
 Description      : Eclipse now reduces the cast time of affected spells by an additional $s1%.
 
 Name             : Improved Starsurge (id=328022) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=5, col=1, entry_id=28747, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=5, col=1, entry_id=28747, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -12974,7 +12974,7 @@ Effects          :
 Description      : Starsurge further empowers the damage bonus of any active Eclipse.
 
 Name             : Improved Moonfire (id=328023) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=2, col=2, entry_id=28752, max_rank=2, name="Moonfire/Sunfire + 3/6s"]
+Talent Entry     : Balance [tree=spec, row=2, col=2, entry_id=28752, max_rank=2, req_points=0, name="Moonfire/Sunfire + 3/6s"]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -12996,7 +12996,7 @@ Effects          :
 Description      : Moonfire and Sunfire duration increased by ${$s1/1000} sec.
 
 Name             : Improved Wild Growth (id=328025) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=4, col=1, entry_id=28690, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=4, col=1, entry_id=28690, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -13018,7 +13018,7 @@ Effects          :
 Description      : Wild Growth heals $s1 additional $ltarget:targets;.
 
 Name             : Survival Instincts (desc=Rank 2) (id=328767) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=3, col=3, entry_id=28547, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=3, col=3, entry_id=28547, max_rank=1, req_points=0]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -13040,7 +13040,7 @@ Description      : Survival Instincts now has ${$s1+1} charges.
 
 
 Name             : Convoke the Spirits (desc=Night Fae) (id=337433) [Hidden] 
-Talent Entry     : Guardian [tree=spec, row=9, col=3, entry_id=28556, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=3, entry_id=28556, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13136,10 +13136,10 @@ Description      : Effects of Thick Hide, Astral Influence, Feline Swiftness, an
 When you shift into your Affinity's form, you gain Heart of the Wild for $s2 sec, once every $338643d.
 
 Name             : Circle of Life and Death (id=338657) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=2, entry_id=28544, max_rank=2]
-                 : Feral [tree=spec, row=10, col=3, entry_id=28641, max_rank=1]
-                 : Balance [tree=spec, row=9, col=4, entry_id=28669, max_rank=2]
-                 : Restoration [tree=spec, row=10, col=1, entry_id=28701, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=8, col=2, entry_id=28544, max_rank=2, req_points=8]
+                 : Feral [tree=spec, row=10, col=3, entry_id=28641, max_rank=1, req_points=8]
+                 : Balance [tree=spec, row=9, col=4, entry_id=28669, max_rank=2, req_points=0]
+                 : Restoration [tree=spec, row=10, col=1, entry_id=28701, max_rank=2, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13176,7 +13176,7 @@ Effects          :
 Description      : Your damage over time effects deal their damage in $s1% less time, and your healing over time effects in $s2% less time.
 
 Name             : Draught of Deep Focus (id=338658) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=9, col=5, entry_id=28647, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=5, entry_id=28647, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13195,7 +13195,7 @@ Effects          :
 Description      : When Moonfire, Rake, Rip, or Rejuvenation are active on a single target, their effects are increased $s1%.
 
 Name             : Oneth's Clear Vision (id=338661) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=9, col=1, entry_id=28661, max_rank=1, name="Oneth's Clear Vision [NNF]"]
+Talent Entry     : Balance [tree=spec, row=9, col=1, entry_id=28661, max_rank=1, req_points=0, name="Oneth's Clear Vision [NNF]"]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13219,7 +13219,7 @@ Effects          :
 Description      : Starsurge has a $s1% chance to make Starfall free. Starfall has a $s2% chance to make Starsurge free.
 
 Name             : Primordial Arcanic Pulsar (id=338668) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=9, col=5, entry_id=28665, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=9, col=5, entry_id=28665, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13265,7 +13265,7 @@ Description      : $@spelldesc338668
 Tooltip          : ${$w1~} Arcane Power collected by Primordial Arcanic Pulsar.
 
 Name             : Verdant Infusion (id=338829) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=10, col=6, entry_id=28679, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=6, entry_id=28679, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13287,7 +13287,7 @@ Effects          :
 Description      : Swiftmend no longer consumes a heal over time effect, and extends the duration of your heal over time effects on the target by $s1 sec.
 
 Name             : The Dark Titan's Lesson (id=338831) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=10, col=2, entry_id=28695, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=2, entry_id=28695, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13314,7 +13314,7 @@ Effects          :
 Description      : You may Lifebloom two targets at once, but Lifebloom's healing is reduced by $s1%.
 
 Name             : Vision of Unending Growth (id=338832) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=10, col=7, entry_id=28677, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=7, entry_id=28677, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13439,7 +13439,7 @@ Effects          :
 Description      : Barkskin reduces damage by an additional $s1%. When it begins or ends in Bear Form, you gain Ironfur and Frenzied Regeneration.
 
 Name             : Memory of the Mother Tree (id=339064) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=8, col=5, entry_id=28683, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=8, col=5, entry_id=28683, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13461,7 +13461,7 @@ Effects          :
 Description      : Wild Growth has a $h% chance to cause your next Rejuvenation or Regrowth to apply to $s1 additional allies within $189877s1 yards of the target.
 
 Name             : Apex Predator's Craving (id=339139) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=9, col=5, entry_id=28646, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=9, col=5, entry_id=28646, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13518,7 +13518,7 @@ Description      : $@spelldesc339139
 Tooltip          : Your next Ferocious Bite costs no Energy or combo points and deals the maximum damage.
 
 Name             : Eye of Fearful Symmetry (id=339141) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=8, col=3, entry_id=28731, max_rank=2]
+Talent Entry     : Feral [tree=spec, row=8, col=3, entry_id=28731, max_rank=2, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13582,7 +13582,7 @@ Effects          :
 Description      : $@spelldesc339141
 
 Name             : Cat-Eye Curio (id=339144) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=8, col=4, entry_id=28650, max_rank=2, name="Cat-Eye Curio (no max E)"]
+Talent Entry     : Feral [tree=spec, row=8, col=4, entry_id=28650, max_rank=2, req_points=8, name="Cat-Eye Curio (no max E)"]
                  : Effect#2 [op=set, values=(0, 0)]
 Class            : Druid
 School           : Physical
@@ -13663,7 +13663,7 @@ Description      : $@spelldesc338661
 Tooltip          : Your next Starfall costs no Astral Power.
 
 Name             : Balance of All Things (id=339942) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=10, col=3, entry_id=28662, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=10, col=3, entry_id=28662, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13734,7 +13734,7 @@ Description      : $@spelldesc339942
 Tooltip          : Critical strike chance with Arcane spells increased $w1%.
 
 Name             : Timeworn Dreambinder (id=339949) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=9, col=1, entry_id=28660, max_rank=1, name="Timeworn Dreambinder [NNF]"]
+Talent Entry     : Balance [tree=spec, row=9, col=1, entry_id=28660, max_rank=1, req_points=0, name="Timeworn Dreambinder [NNF]"]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -13989,7 +13989,7 @@ Effects          :
 Description      : For |cFFFFFFFF${$s1/1000}.1 sec|r after leaving Cat Form or Travel Form, you retain up to $s2% movement speed.
 
 Name             : Unstoppable Growth (id=340549) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=5, col=1, entry_id=28707, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=5, col=1, entry_id=28707, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Druid
 School           : Physical
@@ -14204,7 +14204,7 @@ Effects          :
 Description      : Swiftmend's healing is increased by |cFFFFFFFF$s1%|r of the consumed heal over time effect.
 
 Name             : Taste for Blood (id=340682) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Feral [tree=spec, row=5, col=3, entry_id=28728, max_rank=3]
+Talent Entry     : Feral [tree=spec, row=5, col=3, entry_id=28728, max_rank=3, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14269,7 +14269,7 @@ Effects          :
 Description      : $@spelldesc340686
 
 Name             : Sudden Ambush (id=340694) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Feral [tree=spec, row=5, col=1, entry_id=28718, max_rank=3]
+Talent Entry     : Feral [tree=spec, row=5, col=1, entry_id=28718, max_rank=3, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14317,7 +14317,7 @@ Description      : $@spelldesc340694
 Tooltip          : Your next Rake or Shred will deal damage as though you were stealthed.
 
 Name             : Carnivorous Instinct (id=340705) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Feral [tree=spec, row=8, col=2, entry_id=28721, max_rank=2]
+Talent Entry     : Feral [tree=spec, row=8, col=2, entry_id=28721, max_rank=2, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14348,7 +14348,7 @@ Effects          :
 Description      : Tiger's Fury's damage bonus is increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Precise Alignment (id=340706) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=7, col=5, entry_id=28667, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=7, col=5, entry_id=28667, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14371,7 +14371,7 @@ Effects          :
 Description      : The duration of $?a102560[Incarnation: Chosen of Elune][Celestial Alignment] is increased by |cFFFFFFFF${$s1/1000}.1 sec|r.
 
 Name             : Fury of the Skies (id=340708) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=8, col=3, entry_id=28659, max_rank=2, name="Fury of the Skies (1/2%)"]
+Talent Entry     : Balance [tree=spec, row=8, col=3, entry_id=28659, max_rank=2, req_points=0, name="Fury of the Skies (1/2%)"]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14618,7 +14618,7 @@ Effects          :
 Description      : $@spelldesc106951
 
 Name             : Berserk: Relentlessness (id=343223) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=5, col=2, entry_id=28715, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=5, col=2, entry_id=28715, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14642,7 +14642,7 @@ Description      : Go berserk for $106951d, giving finishing moves a $s1% chance
 |cFFFFFFFFCombines with other Berserk abilities, granting all known Berserk effects while active.|r
 
 Name             : Improved Shred (id=343232) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=3, col=1, entry_id=28716, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=3, col=1, entry_id=28716, max_rank=1, req_points=0]
 Class            : Feral Druid
 School           : Nature
 Spell Type       : None
@@ -14681,7 +14681,7 @@ Effects          :
 Description      : Entangling Roots can withstand $s1% more damage before breaking.
 
 Name             : Berserk: Ravage (id=343240) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=4, col=3, entry_id=28545, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=4, col=3, entry_id=28545, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14705,7 +14705,7 @@ Description      : Go berserk for $50334d, reducing the cooldowns of Mangle, Thr
 Combines with other Berserk abilities, granting all known Berserk effects while active.
 
 Name             : Solstice (id=343647) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=8, col=5, entry_id=28668, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=8, col=5, entry_id=28668, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Physical
@@ -14770,7 +14770,7 @@ Description      : $@spelldesc339056
 Tooltip          : Absorbing $w1 damage.
 
 Name             : Infected Wounds (id=345208) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=4, col=2, entry_id=28579, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=4, col=2, entry_id=28579, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -14875,8 +14875,8 @@ Effects          :
 Description      : Convoke the Spirits' cooldown is reduced by ${($abs($s1)/120000)*100}% and its duration is reduced by $s2%. Convoke the Spirits has an increased chance to use an exceptional spell or ability.
 
 Name             : Unbridled Swarm (id=354123) [Hidden] 
-Talent Entry     : Feral [tree=spec, row=10, col=1, entry_id=28643, max_rank=2]
-                 : Restoration [tree=spec, row=10, col=3, entry_id=28672, max_rank=2]
+Talent Entry     : Feral [tree=spec, row=10, col=1, entry_id=28643, max_rank=2, req_points=8]
+                 : Restoration [tree=spec, row=10, col=3, entry_id=28672, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(30, 60)]
 Class            : Druid
 School           : Nature
@@ -14928,7 +14928,7 @@ Description      : Owlkin Frenzy can stack up to $<stacks> times and reduces the
 Variables        : $stacks=${2}
 
 Name             : Ephemeral Incarnation (id=363495) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Restoration [tree=spec, row=10, col=5, entry_id=28678, max_rank=1]
+Talent Entry     : Restoration [tree=spec, row=10, col=5, entry_id=28678, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15314,7 +15314,7 @@ Description      : $@spelldesc364423
 Tooltip          : Generating ${$o1/10} Astral Power over $d.
 
 Name             : Elune's Favored (id=370586) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=8, col=3, entry_id=28564, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=8, col=3, entry_id=28564, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15357,8 +15357,26 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc370586
 
+Name             : Elune's Favored (id=370602) [Spell Family (7)] 
+Class            : Druid
+School           : Nature
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72), Ignore Caster Healing Modifiers (312), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=982019)   : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Self (1)
+Description      : $@spelldesc370586
+
 Name             : Fury of Nature (id=370695) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=7, col=2, entry_id=28560, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=7, col=2, entry_id=28560, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
@@ -15378,7 +15396,7 @@ Effects          :
 Description      : While in Bear From, you deal $s1% increased Arcane damage.
 
 Name             : After the Wildfire (id=371905) [Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=5, entry_id=28569, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=5, entry_id=28569, max_rank=1, req_points=8]
 Class            : Druid
 School           : Nature
 Spell Type       : None
@@ -15420,7 +15438,7 @@ Effects          :
 Description      : $@spelldesc371905
 
 Name             : Vicious Cycle (id=371999) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=2, entry_id=28571, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=2, entry_id=28571, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15466,7 +15484,7 @@ Description      : $@spelldesc371999
 Tooltip          : Your next Maul deals $w1% increased damage.
 
 Name             : Dream of Cenarius (id=372119) [Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=1, entry_id=28542, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=1, entry_id=28542, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15520,6 +15538,30 @@ Effects          :
 Description      : Your next Regrowth is free, instant, and castable in all forms.
 Tooltip          : Your next Regrowth is free, instant, and castable in all forms.
 
+Name             : Ursoc's Fury (id=372505) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : Melee
+Duration         : 15 seconds
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=997176)   : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : Thrash and Maul grant you an absorb shield for 75% of all damage they deal.
+Tooltip          : Absorbing $w1 damage.
+
 Name             : Dream of Cenarius (id=372523) [Hidden] 
 Class            : Druid
 School           : Physical
@@ -15540,7 +15582,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Twin Moonfire (id=372567) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=7, entry_id=28580, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=7, entry_id=28580, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15565,7 +15607,7 @@ Effects          :
 Description      : Moonfire deals $s2% increased damage and also hits another nearby enemy within $279620s1 yds of the target.
 
 Name             : Vulnerable Flesh (id=372618) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=6, col=3, entry_id=28567, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=6, col=3, entry_id=28567, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Druid
 School           : Physical
@@ -15587,7 +15629,7 @@ Effects          :
 Description      : Maul has an additional $s1% chance to critically strike.
 
 Name             : Untamed Savagery (id=372943) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=10, col=1, entry_id=28558, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=10, col=1, entry_id=28558, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15620,7 +15662,7 @@ Effects          :
 Description      : Increases the damage and radius of Thrash by $s1%.
 
 Name             : Reinvigoration (id=372945) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=8, col=1, entry_id=28552, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=8, col=1, entry_id=28552, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-15, -30)]
 Class            : Druid
 School           : Nature
@@ -15645,7 +15687,7 @@ Effects          :
 Description      : Frenzied Regeneration's cooldown is reduced by |cFFFFFFFF${-$s1}.1%|r.
 
 Name             : Ursoc's Fury (id=377210) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=9, col=1, entry_id=28543, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=9, col=1, entry_id=28543, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : Melee
@@ -15667,7 +15709,7 @@ Effects          :
 Description      : Thrash and Maul grant you an absorb shield for 75% of all damage they deal.
 
 Name             : Berserk: Unchecked Aggression (id=377623) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=7, col=1, entry_id=28555, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=7, col=1, entry_id=28555, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15695,7 +15737,7 @@ Description      : Go berserk for $50334d, increasing haste by $s1%, and reducin
 Combines with other Berserk abilities, granting all known Berserk effects while active.
 
 Name             : Berserk: Persistence (id=377779) [Spell Family (7), Passive] 
-Talent Entry     : Guardian [tree=spec, row=7, col=3, entry_id=28582, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=7, col=3, entry_id=28582, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15717,7 +15759,7 @@ Description      : Go berserk for $50334d, reducing the cooldown of Frenzied Reg
 Combines with other Berserk abilities, granting all known Berserk effects while active.
 
 Name             : New Resto Passive (NNF) (id=377796) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=5, entry_id=28629, max_rank=2]
+Talent Entry     : Generic [tree=class, row=5, col=5, entry_id=28629, max_rank=2, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15744,7 +15786,7 @@ Effects          :
 Description      : Healing done and healing taken increased by $s1%.
 
 Name             : Tireless Pursuit (id=377801) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=28599, max_rank=1]
+Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=28599, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15766,7 +15808,7 @@ Effects          :
 Description      : For ${$s1/1000} sec after leaving Cat Form or Travel Form, you retain up to $s2% movement speed.
 
 Name             : Innate Resolve (id=377811) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=4, col=1, entry_id=28572, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=4, col=1, entry_id=28572, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15792,7 +15834,7 @@ Description      : Regrowth and Frenzied Regeneration healing is increased by |c
 Frenzied Regeneration has ${$s2} additional charge.
 
 Name             : Front of the Pack (id=377835) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=6, col=4, entry_id=28565, max_rank=1]
+Talent Entry     : Guardian [tree=spec, row=6, col=4, entry_id=28565, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15822,7 +15864,7 @@ Description      : Stampeding Roar's radius and duration are increased by |cFFFF
 Your movement speed is increased by $s3%.
 
 Name             : Ursine Vigor (id=377842) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=28602, max_rank=2]
+Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=28602, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
@@ -15844,7 +15886,7 @@ Effects          :
 Description      : For $340541d after shifting into Bear Form, your health and armor are increased by $s1%.
 
 Name             : Well-Honed Instincts (id=377847) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=28601, max_rank=2]
+Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=28601, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(120, 90)]
 Class            : Druid
 School           : Physical
@@ -15867,7 +15909,7 @@ Effects          :
 Description      : When you fall below $s2% health, you cast Frenzied Regeneration, up to once every $s1 sec.
 
 Name             : Furor (id=378986) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=28600, max_rank=1]
+Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=28600, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -15908,7 +15950,7 @@ Description      : $@spelldesc378986
 Tooltip          : Spells costs no Mana, Energy, Rage, or Astral Power.
 
 Name             : Lycara's Teachings (id=378988) [Spell Family (7), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=28639, max_rank=3]
+Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=28639, max_rank=3, req_points=0]
                  : Effect#1 [op=set, values=(2, 4, 6)]
 Class            : Druid
 School           : Physical
@@ -15933,7 +15975,7 @@ Bear Form: Versatility
 Moonkin Form: Mastery
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -15951,7 +15993,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Ready For Anything (id=382550) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=3, col=2, entry_id=28702, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=3, col=2, entry_id=28702, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-10000, -20000)]
 Class            : Druid
 School           : Physical
@@ -15974,7 +16016,7 @@ Effects          :
 Description      : Nature's Swiftness's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Improved Ironbark (id=382552) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=4, col=3, entry_id=28688, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=4, col=3, entry_id=28688, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-10000, -20000)]
 Class            : Druid
 School           : Physical
@@ -15997,7 +16039,7 @@ Effects          :
 Description      : Ironbark's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Deep Roots (id=383191) [Spell Family (7), Passive] 
-Talent Entry     : Restoration [tree=spec, row=7, col=1, entry_id=28697, max_rank=2]
+Talent Entry     : Restoration [tree=spec, row=7, col=1, entry_id=28697, max_rank=2, req_points=8]
                  : Effect#1 [op=mul, values=(1, 2)]
                  : Effect#2 [op=mul, values=(1, 2)]
 Class            : Druid
@@ -16024,7 +16066,7 @@ Effects          :
 Description      : Rejuvenation healing is increased by up to $s1%, and Tranquility healing is increased by up to $s2%, healing for more on low-health targets.
 
 Name             : Stellar Inspiration (id=383194) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=7, col=2, entry_id=28740, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=7, col=2, entry_id=28740, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Physical
@@ -16045,7 +16087,7 @@ Effects          :
 Description      : Starsurge and Starfall have a $s1% chance to empower Eclipse or extend Moonfire and Sunfire by double the amount.
 
 Name             : Umbral Intensity (id=383195) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=7, col=4, entry_id=28735, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=7, col=4, entry_id=28735, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Physical
@@ -16067,7 +16109,7 @@ Effects          :
 Description      : Eclipse's damage bonus to Wrath and Starfire starts $s1% stronger.
 
 Name             : Umbral Infusion [NNF] (id=383196) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Balance [tree=spec, row=9, col=2, entry_id=28742, max_rank=2]
+Talent Entry     : Balance [tree=spec, row=9, col=2, entry_id=28742, max_rank=2, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2)]
 Class            : Druid
 School           : Astral
@@ -16092,7 +16134,7 @@ Effects          :
 Description      : While in an Eclipse, the cost of Starsurge and Starfall is reduced by $s2%.
 
 Name             : Orbit Breaker (id=383197) [Spell Family (7), Passive] 
-Talent Entry     : Balance [tree=spec, row=10, col=4, entry_id=28664, max_rank=1]
+Talent Entry     : Balance [tree=spec, row=10, col=4, entry_id=28664, max_rank=1, req_points=0]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16114,7 +16156,7 @@ Effects          :
 Description      : Every $s1th Shooting Star calls down a Full Moon upon its target.
 
 Name             : [Max Energy] (id=383352) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=2, col=1, entry_id=28722, max_rank=3]
+Talent Entry     : Feral [tree=spec, row=2, col=1, entry_id=28722, max_rank=3, req_points=0]
                  : Effect#1 [op=mul, values=(1, 2, 3)]
 Class            : Druid
 School           : Physical
@@ -16134,7 +16176,7 @@ Effects          :
 Description      : Your maximum Energy is increased by $s1.
 
 Name             : Berserk: Frenzy (id=384668) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=8, col=5, entry_id=28648, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=8, col=5, entry_id=28648, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16162,7 +16204,7 @@ Description      : Go Berserk for $106951d, causing your combo point-generating 
 Passive:|r Combo-point generating abilities reduce the cooldown of Berserk by ${$s1/1000}.1 sec.
 
 Name             : Berserk: Jungle Stalker (id=384671) [Spell Family (7), Passive] 
-Talent Entry     : Feral [tree=spec, row=8, col=1, entry_id=28712, max_rank=1]
+Talent Entry     : Feral [tree=spec, row=8, col=1, entry_id=28712, max_rank=1, req_points=8]
 Class            : Druid
 School           : Physical
 Spell Type       : None
@@ -16186,7 +16228,7 @@ Description      : Go Berserk for $106951d, causing Rake and Shred to deal damag
 |cFFFFFFFFCombines with other Berserk abilities, granting all known Berserk effects while active.|r 
 
 Name             : Layered Mane (id=384721) [Spell Family (7), Passive, Hidden] 
-Talent Entry     : Guardian [tree=spec, row=5, col=3, entry_id=28553, max_rank=2]
+Talent Entry     : Guardian [tree=spec, row=5, col=3, entry_id=28553, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Druid
 School           : Physical
