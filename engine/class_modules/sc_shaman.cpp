@@ -1435,7 +1435,7 @@ public:
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
 
-    if ( td( this->target )->debuff.electrified_shocks->check() && dbc::is_school( this->school, SCHOOL_NATURE )) //fix this
+    if ( td( this->target )->debuff.electrified_shocks->check() && dbc::is_school( this->school, SCHOOL_NATURE ))
     {
       m *= 1.0 + td( this->target )->debuff.electrified_shocks->value();
     }
