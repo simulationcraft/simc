@@ -510,6 +510,7 @@ public:
     cooldown_t* lava_burst;
     cooldown_t* lava_lash;
     cooldown_t* liquid_magma_totem;
+    cooldown_t* natures_swiftness;
     cooldown_t* primordial_wave;
     cooldown_t* shock;  // shared CD of flame shock/frost shock for enhance
     cooldown_t* storm_elemental;
@@ -593,7 +594,7 @@ public:
     gain_t* feral_spirit;
     gain_t* fire_elemental;
     gain_t* spirit_of_the_maelstrom;
-    gain_t* searing_flames; // NYI Ele
+    gain_t* searing_flames;
     gain_t* chain_harvest_heal;
   } gain;
 
@@ -610,11 +611,12 @@ public:
     proc_t* lava_surge_windspeakers_lava_resurgence;
     proc_t* wasted_lava_surge_fireheart;
 
-    proc_t* aftershock; // NYI Ele
+    proc_t* aftershock;
     proc_t* flash_of_lightning;
-    proc_t* further_beyond; // NYI Ele
+    proc_t* further_beyond;
     proc_t* lightning_rod; // NYI Ele
-    proc_t* tumbling_waves; // NYI Ele
+    proc_t* searing_flames;
+    proc_t* tumbling_waves;
 
     proc_t* t28_4pc_ele_cd_extension;
     proc_t* t28_4pc_ele_cd_reduction;
@@ -826,15 +828,15 @@ public:
     player_talent_t echoes_of_great_sundering;
     player_talent_t elemental_equilibrium;
     player_talent_t tumbling_waves;
-    player_talent_t echo_chamber; // TODO: NYI
+    player_talent_t echo_chamber;
     player_talent_t oath_of_the_far_seer; // TODO: NYI
-    player_talent_t searing_flames; // TODO: NYI
-    player_talent_t magma_chamber; // TODO: NYI
+    player_talent_t searing_flames;
+    player_talent_t magma_chamber;
     // Row 10
     player_talent_t stormkeeper2;
     player_talent_t lightning_rod; // TODO: NYI
     player_talent_t mountains_will_fall; // TODO: NYI
-    player_talent_t further_beyond; // TODO: NYI
+    player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
   } talent;
 
@@ -912,6 +914,7 @@ public:
     cooldown.lava_burst         = get_cooldown( "lava_burst" );
     cooldown.lava_lash          = get_cooldown( "lava_lash" );
     cooldown.liquid_magma_totem = get_cooldown( "liquid_magma_totem" );
+    cooldown.natures_swiftness  = get_cooldown( "natures_swiftness" );
     cooldown.primordial_wave    = get_cooldown( "primordial_wave" );
     cooldown.shock              = get_cooldown( "shock" );
     cooldown.storm_elemental    = get_cooldown( "storm_elemental" );
@@ -1891,6 +1894,7 @@ public:
     {
       this->p()->trigger_maelstrom_gain( this->last_resource_cost,
           this->p()->gain.aftershock );
+      this->p()->proc.aftershock->occur();
     }
 
     auto stacks = maelstrom_weapon_stacks();
@@ -4768,7 +4772,14 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
     if ( type == spell_type::PRIMORDIAL_WAVE )
     {
-      m *= p()->covenant.necrolord->effectN( 3 ).percent();
+      if ( p()->covenant.necrolord->ok() )
+      {
+        m *= p()->covenant.necrolord->effectN( 3 ).percent();
+      }
+      if ( p()->talent.primordial_wave->ok() )
+      {
+        m *= p()->talent.primordial_wave->effectN( 3 ).percent();
+      }
     }
 
     if ( p()->buff.ascendance->up() )
@@ -4796,9 +4807,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::composite_target_crit_chance( t );
 
-    if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() )
+    // TODO Elemental: confirm is this effect needs to be hardcoded
+    /* if ( p()->spec.lava_burst_2->ok() && td( target )->dot.flame_shock->is_ticking() ) */
+    if ( td( target )->dot.flame_shock->is_ticking() )
     {
-      // hardcoded because I didn't find it in spelldata yet
+      // hardcoded because I didn't find it in spell data
       m = 1.0;
     }
 
@@ -5175,8 +5188,14 @@ struct lava_burst_t : public shaman_spell_t
     // separate specialization checks here
     if ( type == spell_type::PRIMORDIAL_WAVE )
     {
-      m *= p()->covenant.necrolord->effectN( 3 ).percent();
-      m *= p()->talent.primordial_wave->effectN( 3 ).percent();
+      if ( p()->covenant.necrolord->ok() )
+      {
+        m *= p()->covenant.necrolord->effectN( 3 ).percent();
+      }
+      if ( p()->talent.primordial_wave->ok() )
+      {
+        m *= p()->talent.primordial_wave->effectN( 3 ).percent();
+      }
     }
 
     if ( p()->buff.ascendance->up() )
@@ -5615,12 +5634,10 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.echoes_of_great_sundering->trigger();
     }
 
-    if ( p()->talent.further_beyond->ok() )
+    if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      if ( p()->buff.ascendance->up() )
-      {
-        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
-      }
+      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
+      p()->proc.further_beyond->occur();
     }
   }
 };
@@ -5829,12 +5846,10 @@ struct earthquake_t : public shaman_spell_t
     p()->buff.echoes_of_great_sundering->expire();
     
 
-    if ( p()->talent.further_beyond->ok() )
+    if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      if ( p()->buff.ascendance->up() )
-      {
-        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
-      }
+      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      p()->proc.further_beyond->occur();
     }
   }
 };
@@ -6024,12 +6039,10 @@ struct earth_shock_t : public shaman_spell_t
         p()->proc.pyroclastic_shock->occur();
       }
     }
-    if ( p()->talent.further_beyond->ok() )
+    if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
-      if ( p()->buff.ascendance->up() )
-      {
-        p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
-      }
+      p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      p()->proc.further_beyond->occur();
     }
   }
 
@@ -6253,21 +6266,17 @@ public:
       p()->buff.primal_lava_actuators->trigger();
     }
 
-    if ( p()->talent.searing_flames->ok() )
+    if ( p()->talent.searing_flames->ok() && rng().roll( p()->talent.searing_flames->effectN( 2 ).percent() ) )
     {
-      if ( rng().roll( p()->talent.searing_flames->effectN(1).percent()) )
-      {
-        p()->trigger_maelstrom_gain( p()->talent.searing_flames->effectN( 2 ).base_value(), p()->gain.searing_flames );
-      }
+      p()->trigger_maelstrom_gain( p()->talent.searing_flames->effectN( 1 ).base_value(), p()->gain.searing_flames );
+      p()->proc.searing_flames->occur();
     }
 
-    if ( p() ->talent.magma_chamber->ok())
+    if ( p()->talent.magma_chamber->ok() )
     {
       p()->buff.magma_chamber->trigger();
     }
 
-    // NYI Ele: Searing Flames
-    // NYI Ele: Magma Chamber
   }
 
   void last_tick( dot_t* d ) override
@@ -9440,6 +9449,10 @@ void shaman_t::trigger_flash_of_lightning()
   {
     cooldown.stormkeeper->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
   }
+  if ( talent.natures_swiftness.enabled() )
+  {
+    cooldown.natures_swiftness->adjust( talent.flash_of_lightning.spell()->effectN( 1 ).time_value(), false );
+  }
 
   proc.flash_of_lightning->occur();
 }
@@ -9564,7 +9577,8 @@ void shaman_t::create_buffs()
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
-                            ->set_default_value( talent.magma_chamber->effectN( 2 ).percent() );
+                            // TODO Elemental: confirm 5% vs 0.5% as default value
+                            ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
 
   buff.oath_of_the_far_seer = make_buff( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer )
                                   ->set_default_value( talent.oath_of_the_far_seer->effectN(1).percent());
@@ -9746,7 +9760,8 @@ void shaman_t::init_procs()
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
   proc.further_beyond       = get_proc( "Further Beyond" );
-  proc.lightning_rod        = get_proc("Lightning Rod");
+  proc.lightning_rod        = get_proc( "Lightning Rod" );
+  proc.searing_flames       = get_proc( "Searing Flames" );
 
   proc.pyroclastic_shock    = get_proc( "Pyroclastic Shock" );
 
