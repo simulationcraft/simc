@@ -530,7 +530,7 @@ class TraitSet(DataSet):
                     if tree_index != 0 and _traits[key]['tree'] == 0:
                         _traits[key]['tree'] = tree_index
 
-                    _traits[key]['req_points'] = max([0] + [ cond.req_points for cond in (node['cond'] | group['cond'])])
+                    _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
 
         _coords = {}
         for entry in _traits.values():
