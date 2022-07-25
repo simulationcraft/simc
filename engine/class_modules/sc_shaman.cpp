@@ -250,7 +250,7 @@ struct shaman_td_t : public actor_target_data_t
   struct debuffs
   {
     // Elemental
-    buff_t* electrified_shocks; // NYI Ele
+    buff_t* electrified_shocks;
     buff_t* lightning_rod; // NYI Ele
 
     // Enhancement
@@ -1252,7 +1252,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Elemental
   debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_talent_spell( "Lightning Rod", SHAMAN_ELEMENTAL ) ); // NYI Ele
-  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_talent_spell( "Electrified Shocks", SHAMAN_ELEMENTAL ) ); // NYI Ele
+  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", 382089 );
 
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
@@ -1434,6 +1434,11 @@ public:
     {
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
+
+    //if ( td( p()->target )->debuff.electrified_shocks->check() )
+    //{
+    //  m *= td( p()->target )->debuff.electrified_shocks->value();
+    //}
 
     return m;
   }
@@ -5978,6 +5983,15 @@ struct natures_swiftness_t : public shaman_spell_t
 // ==========================================================================
 
 // Earth Shock Spell ========================================================
+struct earth_shock_overload_t : public elemental_overload_spell_t
+{
+  earth_shock_overload_t( shaman_t* p, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, "earth_shock_overload", p->find_spell( 381725 ), parent_ )
+  {
+    affected_by_master_of_the_elements = true;
+  }
+};
+
 struct earth_shock_t : public shaman_spell_t
 {
   earth_shock_t( shaman_t* player, util::string_view options_str ) :
@@ -5987,6 +6001,12 @@ struct earth_shock_t : public shaman_spell_t
     // hardcoded because spelldata doesn't provide the resource type
     resource_current                   = RESOURCE_MAELSTROM;
     affected_by_master_of_the_elements = true;
+
+    
+    if ( p()->talent.mountains_will_fall.enabled() )
+    {
+      overload = new earth_shock_overload_t( player, this );
+    }
   }
 
   double cost() const override
@@ -6070,7 +6090,6 @@ struct earth_shock_t : public shaman_spell_t
     return r;
   }
 };
-
 // Flame Shock Spell ========================================================
 
 struct flame_shock_t : public shaman_spell_t
@@ -6348,7 +6367,10 @@ struct frost_shock_t : public shaman_spell_t
       return 1 + p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
     }
 
-    // NYI Ele: Electrified Shocks
+    if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
+    {
+      return 1 + p()->talent.electrified_shocks->effectN( 1 ).base_value();
+    }
 
     return shaman_spell_t::n_targets();
   }
@@ -6384,7 +6406,10 @@ struct frost_shock_t : public shaman_spell_t
       p()->proc.maelstrom_weapon_cttc->occur();
     }
 
-    // NYI Ele: Electrified Shocks
+    if ( p()->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
+    {
+      td( execute_state->target )->debuff.electrified_shocks->trigger();
+    }
   }
 };
 
