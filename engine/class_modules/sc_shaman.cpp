@@ -1252,7 +1252,7 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Elemental
   debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_talent_spell( "Lightning Rod", SHAMAN_ELEMENTAL ) ); // NYI Ele
-  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", 382089 );
+  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell(382089) );
 
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
@@ -1435,10 +1435,10 @@ public:
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
 
-    //if ( td( p()->target )->debuff.electrified_shocks->check() )
-    //{
-    //  m *= td( p()->target )->debuff.electrified_shocks->value();
-    //}
+    if ( td( this->target )->debuff.electrified_shocks->check() && dbc::is_school( this->school, SCHOOL_NATURE )) //fix this
+    {
+      m *= 1.0 + td( this->target )->debuff.electrified_shocks->value();
+    }
 
     return m;
   }
