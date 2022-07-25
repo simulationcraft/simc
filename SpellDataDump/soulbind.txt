@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-21/44707)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-25/44707, no-networking)
 Name             : Field of Blossoms (id=319191) [Passive, Hidden] 
 Covenant         : Night Fae
 School           : Physical

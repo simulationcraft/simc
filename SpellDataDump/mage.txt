@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-21/44707)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-25/44707, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -798,7 +798,7 @@ Effects          :
 Description      : Maximum mana increased by $s1%.
 
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
 School           : Physical
 Spell Type       : None
@@ -4120,7 +4120,7 @@ Requires 5 Icicles to cast.
 Tooltip          : Frozen in place.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -4852,7 +4852,7 @@ Description      : Deals $s1 Arcane damage to enemies within $A1 yds.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Replaces         : Blink (id=1953)
-Class            : Mage
+Class            : Mage, Evoker
 School           : Arcane
 Spell Type       : Magic
 Resource         : 2% Base Mana (0) (id=11162)
@@ -6115,7 +6115,7 @@ Description      : $@spelldesc248100
 Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet Storm on the target.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -6136,7 +6136,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
@@ -6158,7 +6158,7 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Light's Judgment (desc=Racial) (id=255647) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -6182,7 +6182,7 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Holy Resistance (desc=Racial Passive) (id=255651) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : None
@@ -6202,7 +6202,7 @@ Effects          :
 Description      : Reduces Holy damage taken by ${$s1/-1}%.
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=255652) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Spell Type       : None
@@ -6221,7 +6221,7 @@ Effects          :
 Description      : Erupt with Light upon death. Deals $256896s1 Holy damage to enemies within 8 yards and heals allies for $256896s2.
 
 Name             : Demonbane (desc=Racial Passive) (id=255653) [Passive] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Physical
 Spell Type       : None
@@ -6240,7 +6240,7 @@ Effects          :
 Description      : Experience gains from killing Demons increased by $s1%.
 
 Name             : Light's Judgment (desc=Racial) (id=256893) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -6263,7 +6263,7 @@ Description      : Call down a strike of Holy energy, dealing $<damage> Holy dam
 Variables        : $damage=${$cond($gt($SP,$AP),$SP*3,$AP*3)*$pctD*(1+$@versadmg)}
 
 Name             : Light's Reckoning (desc=Racial Passive) (id=256896) 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Lightforged Draenei (0x20000000)
 School           : Holy
 Spell Type       : Magic
@@ -12212,7 +12212,7 @@ Description      : $@spelldesc365350
 Tooltip          : Spell damage increased by $w1% and Mana Regeneration increase $w3%.
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
+Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None

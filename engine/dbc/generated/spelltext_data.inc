@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44707
-static const std::array<spelltext_data_t, 17179> __spelltext_data { {
+static const std::array<spelltext_data_t, 17180> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -14714,6 +14714,7 @@ static const std::array<spelltext_data_t, 17179> __spelltext_data { {
   { 341997, "Your healing is increased by $s1% on targets with your Renew.", 0, 0 },
   { 342032, "Allows you to see what is hidden, but what's hidden will sometimes gaze back.", "Detecting stealthed creatures.", 0 },
   { 342049, "A two-headed shot that hits your primary target for $344120sw1 Nature damage and another nearby target for ${$344121sw1*($s1/100)} Frost damage.\r\n\r\nReplaces Arcane Shot.", 0, 0 },
+  { 342076, "$@spelldesc260367", "Aimed Shot cast time reduced by $s1%.", 0 },
   { 342132, "$@spelldesc327661\r\n", "Direct damage on this target restores ${$327703s1/100}.1% Mana or ${$327703s2/100} Insanity to $@auracaster.\r\n\r\nFollows $@auracaster's Shadow Word: Pain.", "Night Fae" },
   { 342156, "$?a137005[Abomination Limb]?a212611[Fodder to the Flame]?a137009[Adaptive Swarm]?a137014[Death Chakram]?a137018[Deathborne]?a137022[Bonedust Brew]?a137026[Vanquisher's Hammer]?a137030[Unholy Nova]?a137034[Serrated Bone Spike]?a137038[Primordial Wave]?a137042[Decimating Bolt]?a137047[Conqueror's Banner][Activating your Necrolord class ability] increases your $pri by $342181s1% and up to $342181s3 nearby allies' primary stat by $342181s2% for ${$s3*$<mod>}.1 sec. You gain $342181s2% additional $pri for each ally affected.", 0, 0 },
   { 342181, "$@spelldesc342156", "$pri increased by $w1%.", 0 },
