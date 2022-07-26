@@ -1887,7 +1887,8 @@ class SpellDataGenerator(DataGenerator):
           ( 210649, 2 ),       # Feral Instinct (Fangs of Ashamane artifact trait)
           ( 213557, 2 ),       # Protection of Ashamane ICD (Fangs of Ashamane artifact trait)
           ( 211547, 1 ),       # Fury of Elune move spell
-          ( 213771, 3 ),       # Swipe (Bear)
+          ( 106829, 0 ), ( 48629, 0 ), # Bear/Cat form swipe/thrash replacement
+          ( 106899, 0 ), ( 106840, 0 ), # Bear/Cat form stampeding roar replacement
           ( 209406, 1 ),       # Oneth's Intuition buff
           ( 209407, 1 ),       # Oneth's Overconfidence buff
           ( 213666, 1 ),       # Echoing Stars artifact spell
@@ -1932,6 +1933,9 @@ class SpellDataGenerator(DataGenerator):
           # Dragonflight
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
+          ( 372019, 3 ), # Vicious Cycle mangle buff
+          ( 340546, 0 ), # Tireless Pursuit buff
+          ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
         ),
         # Demon Hunter:
         (
