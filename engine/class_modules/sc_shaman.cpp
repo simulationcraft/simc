@@ -5650,6 +5650,7 @@ struct elemental_blast_t : public shaman_spell_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
       p()->proc.further_beyond->occur();
     }
   }
@@ -5862,6 +5863,7 @@ struct earthquake_t : public shaman_spell_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->proc.further_beyond->occur();
     }
   }
@@ -6070,6 +6072,7 @@ struct earth_shock_t : public shaman_spell_t
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
+      p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->proc.further_beyond->occur();
     }
   }
