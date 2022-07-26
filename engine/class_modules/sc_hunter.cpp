@@ -541,7 +541,7 @@ public:
     spell_data_ptr_t stampede;
     spell_data_ptr_t nesingwarys_trapping_apparatus;
     spell_data_ptr_t master_marksman;
-    spell_data_ptr_t latent_poison_injectors; // TODO: Aimed Shot, Barbed Shot, Raptor Strike consumption
+    spell_data_ptr_t latent_poison_injectors;
 
     spell_data_ptr_t alpha_predator;
     spell_data_ptr_t killer_instinct;
@@ -742,6 +742,7 @@ public:
     action_t* master_marksman = nullptr;
     action_t* barbed_shot = nullptr;
     action_t* wild_spirits = nullptr;
+    action_t* latent_poison_injectors = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
   } actions;
@@ -892,6 +893,7 @@ public:
   void trigger_lethal_shots();
   void trigger_calling_the_shots();
   bool trigger_focused_trickery( action_t* action, double cost );
+  void trigger_latent_poison_injectors( const action_state_t* s );
   void consume_trick_shots();
 };
 
@@ -2658,6 +2660,24 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
   return triggered;
 }
 
+void hunter_t::trigger_latent_poison_injectors( const action_state_t* s )
+{
+  if ( !actions.latent_poison_injectors )
+    return;
+
+  auto td = find_target_data( s -> target );
+  if ( !td )
+    return;
+
+  auto debuff = td -> debuffs.latent_poison_injectors;
+  if ( ! debuff -> check() )
+    return;
+
+  actions.latent_poison_injectors -> execute_on_target( s -> target );
+
+  debuff -> expire();
+}
+
 namespace attacks
 {
 
@@ -3061,6 +3081,27 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     }
 
     return tl.size();
+  }
+};
+
+// Latent Poison Injectors ==================================================
+
+struct latent_poison_injectors_t final : hunter_spell_t
+{
+  latent_poison_injectors_t( hunter_t* p ):
+    hunter_spell_t( "latent_poison_injectors", p, p -> find_spell( 378016 ) )
+  {
+    background = true;
+    triggers_wild_spirits = false;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_spell_t::composite_da_multiplier( s );
+
+    m *= td( target ) -> debuffs.latent_poison_injectors -> check();
+
+    return m;
   }
 };
 
@@ -3615,6 +3656,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
         pet -> buffs.frenzy -> trigger();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    p() -> trigger_latent_poison_injectors( s );
+  }
 };
 
 //==============================
@@ -4004,6 +4052,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     // the exception of Vigil buffs that were applied by a Focused Trickery Trick Shots.
     if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
+
+    // TODO: check exact trigger conditions (TrS AiSes etc)
+    p() -> trigger_latent_poison_injectors( s );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4451,6 +4502,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( latent_poison_injection )
       latent_poison_injection -> trigger( s -> target );
+
+    p() -> trigger_latent_poison_injectors( s );
   }
 
   double action_multiplier() const override
@@ -6570,6 +6623,9 @@ void hunter_t::create_actions()
 
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
+
+  if ( talents.latent_poison_injectors.ok() )
+    actions.latent_poison_injectors = new attacks::latent_poison_injectors_t( this );
 }
 
 void hunter_t::create_buffs()
