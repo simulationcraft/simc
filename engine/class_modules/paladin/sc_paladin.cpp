@@ -2388,14 +2388,62 @@ void paladin_t::init_spells()
   init_spells_holy();
 
   // Shared talents
-  talents.fist_of_justice    = find_talent_spell( "Fist of Justice" );
-  talents.repentance         = find_talent_spell( "Repentance" );
-  talents.blinding_light     = find_talent_spell( "Blinding Light" );
-  talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
-  talents.cavalier           = find_talent_spell( "Cavalier" );
-  talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
-  talents.seraphim           = find_talent_spell( "Seraphim" );
-  talents.divine_purpose     = find_talent_spell( "Divine Purpose" );
+  //new stuff - how do i add double points? and choice talents?
+  talents.lay_on_hands                    = find_ta lent_spell( "Lay on Hands" );
+  talents.blessing_of_freedom             = find_ta lent_spell( "Blessing of Freedom" ); 
+  talents.hammer_of_wrath                 = find_t alent_spell( "Hammer of Wrath" );
+  talents.concentration_aura              = find_t alent_spell( "Concentration Aura" );
+  talents.devotion_aura                   = find _talent_spell( "Devotion Aura" );
+  talents.retribution_aura                = fin d_talent_spell( "Retribution Aura" );
+  talents.blinding_light                  = fin d_talent_spell( "Blinding Light" );
+  talents.repentance                      = find _talent_spell( "Repentance" );
+  talents.divine_steed                    = fin d_talent_spell( "Divine Steed" );
+  talents.fist_of_justice                 = fin d_talent_spell( "Fist of Justice" );
+  talents.holy_aegis                      = fin d_talent_spell( "Holy Aegis" );
+  talents.cavalier                        = find_talent_s pell( "Cavalier" );
+  talents.seasoned_warhorse               = find_ talent_spell( "Seasoned Warhorse" );
+  talents.seal_of_alacrity                = find_talent_spell( "Seal of Alacrity" );
+  talents.golden_path                     = find_talent_spell( "Golden Path" );
+  talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
+  //Avenging Wrath spell
+  talents.avenging_wrath                  = find_talent_s pell( "Avenging Wrath" );
+  talents.seal_of_the_templar             = find_ talent_spell( "Seal of the Templar" );
+  talents.turn_evil                       = find_talent_spell( "Turn Evil" );
+  talents.rebuke                          = find_talent_spell( "Rebuke" );
+  talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
+  talents.cleanse_toxins                  = find_talent_spell( "Cleanse Toxins" );
+  talents.blessing_of_sacrifice           = find_talent_spell( "Blessing of Sacrifice" );
+  //Judgment Generates 1 Holy Power
+  talents.judgment                        = find_talent_spell( "Judgment" );
+  //Judgment causes the target to take 25% more damage from your next holy power spending ability
+  talents.judgment                        = find_talent_spell( "Judgment" );
+  talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
+  talents.afterimage                      = find_talent_spell( "Afterimage" );
+  talents.recompense                      = find_talent_spell( "Recompense" );
+  talents.sacrfice_of_the_just            = find_talent_spell( "Sacrifice of the Just" );
+  talents.blessing_of_protection          = find_talent_spell( "Blessing of Protection" );
+  talents.holy_avenger                    = find_talent_spell( "Holy Avenger" );
+  talents.divine_purpose                  = find_talent_spell( "Divine Purpose" );
+  talents.obduracy                        = find_talent_spell( "Obduracy" );
+  talents.seal_of_clarity                 = find_talent_spell( "Seal of Clarity" );
+  talents.aspirations_of_divinity         = find_talent_spell( "Aspirations of Divinity" );
+  //Avenging Wrath CDR
+  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.touch_of_light                  = find_talent_spell( "Touch of Light" );
+  talents.incandescence                   = find_talent_spell( "Incandescence" );
+  talents.hallowed_ground                 = find_talent_spell( "Hallowed Ground" );
+  talents.of_dusk_and_dawn                = find_talent_spell( "Of Dusk and Dawn" );
+  talents.unbreakable_spirit              = find_talent_spell( "Unbreakable Spirit" );
+  talents.seal_of_might                   = find_talent_spell( "Seal of Might" );
+  talents.blessing_of_spellwarding        = find_talent_spell( "Blessing of Spellwarding" );
+  talents.improved_blessing_of_protection = find_talent_spell( "Improved Blessing of Protection" );
+  talents.seal_of_the_crusader            = find_talent_spell( "Seal of the Crusader" );
+  talents.seal_of_order                   = find_talent_spell( "Seal of Order" );
+  talents.sanctified_wrath                = find_talent_spell( "Sanctified Wrath" );
+  talents.seraphim                        = find_talent_spell( "Seraphim" );
+  talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
+
+
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
