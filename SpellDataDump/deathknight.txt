@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-25/44707, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-27/44795, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -577,7 +577,7 @@ $damage=${(0.80*1.1*$AP)*$<mastery>*$<blood>}
 $healing=${(0.80*1.1*$AP)*5}
 
 Name             : Empower Rune Weapon (id=47568) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=23805, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=23805, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -908,7 +908,7 @@ Description      : Summons a rune weapon for $81256d that mirrors your melee att
 While active, you gain $81256s1% parry chance.
 
 Name             : Lichborne (id=49039) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=6, col=6, entry_id=23799, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=6, entry_id=23799, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -1260,7 +1260,7 @@ Description      : Opens a gate which you can use to return to Ebon Hold.
 Using a Death Gate while in Ebon Hold will return you back to near your departure point.
 
 Name             : Anti-Magic Zone (id=51052) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=23840, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=23840, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -1409,7 +1409,7 @@ Description      : Increases your rune regeneration rate for $51460d.
 Tooltip          : Rune regeneration rate increased by $w1%.
 
 Name             : Runic Corruption (id=51462) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=23818, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=23818, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -1783,7 +1783,7 @@ Description      : Command the target to attack you.
 Tooltip          : Taunted.
 
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=23807, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=23807, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -2509,7 +2509,7 @@ Description      : $@spelldesc81136
 Tooltip          : Your next Death and Decay costs no Runes and generates no Runic Power.
 
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=23819, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=23819, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -3901,7 +3901,7 @@ Description      : $@spelldesc190778
 Tooltip          : Movement speed slowed by $s2%.
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, entry_id=33446, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, entry_id=42029, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(15, 30)]
                  : Effect#3 [op=set, values=(25, 50)]
@@ -4163,7 +4163,7 @@ Description      : A whirl of bone and gore batters all nearby enemies, dealing 
 Tooltip          : Dealing $196528s1 Shadow damage to nearby enemies every $t3 sec, and healing for $196545s1% of maximum health for each target hit (up to ${$s1*$s4}%).
 
 Name             : Icy Talons (id=194878) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=23821, max_rank=3, req_points=0]
+Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=23821, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(2, 4, 6)]
 Class            : Death Knight
 School           : Frost
@@ -5137,7 +5137,7 @@ Description      : Places a Mark of Blood on an enemy for $d. The enemy's damagi
 Tooltip          : Auto attacks will heal the victim for $206940s1% of their maximum health.
 
 Name             : Will of the Necropolis (desc=Passive Talent) (id=206967) [Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=23803, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=23803, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5255,7 +5255,7 @@ Effects          :
 Description      : Grants the Death Knight $s1 rune.
 
 Name             : Runic Attenuation (id=207104) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=23822, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=23822, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5945,7 +5945,7 @@ Effects          :
 Description      : A ranged shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=23798, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=23798, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6249,7 +6249,7 @@ Effects          :
 Description      : Heart Strike generates ${$210738s1/10} additional Runic Power per target hit.
 
 Name             : Asphyxiate (id=221562) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=23839, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=23839, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -7671,7 +7671,7 @@ Description      : $@spelldesc273946
 Tooltip          : Damage and healing done by your next Death Strike increased by $s1%.
 
 Name             : Grip of the Dead (id=273952) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=23833, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=23833, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -7978,7 +7978,7 @@ Effects          :
 Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=23834, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=23834, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -10191,6 +10191,7 @@ Class            : Death Knight
 School           : Nature
 Spell Type       : None
 Spell Level      : 48
+Labels           : 976
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -11029,6 +11030,7 @@ Spell Type       : Melee
 Spell Level      : 48
 Range            : 50000 yards
 Duration         : 12 seconds
+Labels           : 976
 Stacks           : 4 maximum
 Proc Chance      : 100%
 Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
@@ -11066,6 +11068,7 @@ Spell Level      : 48
 Range            : 50000 yards
 Duration         : 12 seconds
 Labels           : 1277: Rampant Transference (353882 effect#1), Rampant Transference (353882 effect#2)
+976
 Stacks           : 4 maximum
 Proc Chance      : 101%
 Affecting spells : Crimson Scourge (81141 effects: #1, #2), Rapid Decomposition (194662 effect#1), Toxic Accumulator (333388 effect#1)
@@ -12698,7 +12701,7 @@ Effects          :
 Description      : Wielding a two-handed weapon increases Obliterate damage by $81333s1%, and your auto attack critical strikes always grant Killing Machine.
 
 Name             : Soul Reaper (id=343294) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=10, col=5, entry_id=23800, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=10, col=5, entry_id=23800, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Melee
@@ -12921,7 +12924,7 @@ Description      : The Strength gained from Death's Due is increased by $s1% and
 
 
 Name             : Death's Echo (desc=PvP Talent) (id=356367) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=4, entry_id=23823, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=8, col=4, entry_id=23823, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13411,7 +13414,7 @@ Effects          :
 Description      : $@spelldesc206930
 
 Name             : Merciless Strikes (id=373923) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=23817, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=23817, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Death Knight
 School           : Physical
@@ -13431,7 +13434,7 @@ Effects          :
 Description      : Increases Critical Strike chance by $s1%.
 
 Name             : Acclimation (id=373926) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=23820, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=23820, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13452,7 +13455,7 @@ Effects          :
 Description      : Icebound Fortitude's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Proliferating Chill (id=373930) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=23809, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=23809, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Magic
@@ -13514,7 +13517,7 @@ Effects          :
 Description      : Increases Avoidance by $s2%.
 
 Name             : Might of Thassarian (id=374111) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=23832, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=23832, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Death Knight
 School           : Physical
@@ -13534,7 +13537,7 @@ Effects          :
 Description      : Increases Strength by $s1%.
 
 Name             : Unholy Bond (id=374261) [Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=23836, max_rank=3, req_points=0]
+Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=23836, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(10, 20, 30)]
                  : Effect#2 [op=set, values=(10, 20, 30)]
                  : Effect#3 [op=set, values=(10, 20, 30)]
@@ -13563,7 +13566,7 @@ Effects          :
 Description      : Increases the effectiveness of your Runeforge effects by $s1%.
 
 Name             : Unholy Ground (id=374265) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=3, entry_id=23835, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=7, col=3, entry_id=23835, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13603,7 +13606,7 @@ Description      : $@spelldesc374265
 Tooltip          : Haste increased by $w1%.
 
 Name             : Improved Death Strike (id=374277) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=23801, max_rank=3, req_points=0]
+Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=23801, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(20, 40, 60)]
                  : Effect#2 [op=set, values=(20, 40, 60)]
                  : Effect#4 [op=set, values=(3, 6, 9)]
@@ -13633,13 +13636,13 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #4 (id=1000063)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1012454)  : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Death Strike's cost is reduced by $?a137008[${$s5/-10}][${$s3/-10}], and its healing is increased by $?a137008[$s4%][$s1%].
 
 Name             : Assimilation (id=374383) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=23838, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=23838, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13710,7 +13713,7 @@ Description      : $@spelldesc374504
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
 
 Name             : Rune Mastery (id=374574) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, entry_id=23806, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=10, col=2, entry_id=23806, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13752,7 +13755,7 @@ Description      : $@spelldesc374574
 Tooltip          : Strength increased by $w1%
 
 Name             : Blood Draw (id=374598) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=4, entry_id=23804, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=10, col=4, entry_id=23804, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13975,7 +13978,7 @@ Tooltip          : Damage taken from $@auracaster increased by $s1%.
 
 Name             : Runic Command (id=376251) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=4, col=2, entry_id=23902, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#1 [op=set, values=(50, 50)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15070,7 +15073,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Abomination Limb (id=383269) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=23802, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=23802, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None

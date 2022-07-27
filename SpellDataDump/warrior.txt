@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44707 dragonflight-BETA (hotfix 2022-07-25/44707, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-27/44795, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -317,7 +317,7 @@ Resource         : 30 Rage (1) (id=135)
 Spell Level      : 9
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
-Affecting spells : Warrior (137047 effect#2), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#3), Meat Cleaver (280392 effect#1), Whirlwind (316435 effect#1), Collateral Damage (334783 effect#1)
+Affecting spells : Improved Whirlwind (12950 effect#2), Warrior (137047 effect#2), Deadly Calm (262228 effect#1), Crushing Assault (278826 effect#3), Meat Cleaver (280392 effect#1), Collateral Damage (334783 effect#1)
 Family Flags     : 8, 34, 54
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -597,7 +597,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -615,9 +615,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 100 | Trigger Spell: 163558 | Target: Enemy (6)
 #3 (id=738697)   : Energize Power (30)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 20% health.$?s316403[
+Description      : Attempt to finish off a wounded foe, causing ${$280849s1+$163558s1} Physical damage. Only usable on enemies that have less than 20% health.$?s316402[
 
-|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
+|cFFFFFFFFGenerates ${$m3/10} Rage.|r][]
+
 
 Name             : Thunder Clap (id=6343) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -781,7 +782,7 @@ Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Overpower (316440 effect#2), Overpower (316441 effect#1), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effect#1), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Avatar (107574 effects: #1, #8), Warrior (137047 effect#2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Sweeping Strikes (260708 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Martial Prowess (316440 effect#2), Overpower (316441 effect#1), Crash the Ramparts (335242 effect#1), Will of the Berserker (335597 effect#1)
 Family Flags     : 2, 8, 9, 52
 Attributes       : ....x... ........ x.x..x.. ........   ........ .x...... ........ ........ 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ..x..... 
@@ -859,11 +860,10 @@ Effects          :
 Description      : Snares all enemies within $A1 yards, reducing their movement speed by $s1% for $d.
 Tooltip          : Movement slowed by $s1%.
 
-Name             : Whirlwind (desc=Rank 3) (id=12950) [Spell Family (4), Passive] 
+Name             : Improved Whirlwind (id=12950) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 37
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -876,7 +876,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=5764)     : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Whirlwind causes your next $85739u single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.
+#2 (id=1018784)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Affected Spells: Whirlwind (1680), Whirlwind (190411)
+                   Family Flags: 54
+Description      : Whirlwind causes your next $85739u single-target $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.
+
+Whirlwind no longer costs Rage. Instead it generates $190411s1 Rage, plus an additional $190411s2 per target hit. Maximum $<maxRage> Rage.
 
 Name             : Last Stand (id=12975) [Spell Family (4)] 
 Class            : Protection Warrior
@@ -1012,12 +1018,16 @@ Name             : Bloodthirst (id=23881) [Spell Family (4)]
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : Melee
-Spell Level      : 10
 Range            : 5 yards
 GCD              : 1.5 seconds
+Duration         : 15 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3)
+Stacks           : 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Bloodcraze (385735 effect#2)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -1033,16 +1043,22 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.65000 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=134421)   : Energize Power (30)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
-Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.
+#3 (id=1019208)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
+                   Family Flags: 42
+Description      : Assault the target in a bloodthirsty craze, dealing $s1 Physical damage and restoring $117313s1% of your health.?s385735[
+
+Increases the critical chance of your next Bloodthirst by $s3%][]$?(s385735)[.][] Stacking up to $u times.
 
 |cFFFFFFFFGenerates ${$s2/10} Rage.|r
+Tooltip          : Your Bloodthirst critical strike chance is increased by $w3%.
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+137)/217}
 
 Name             : Spell Reflection (id=23920) [Spell Family (4)] 
 Class            : Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 47
 Duration         : 5 seconds
 Cooldown         : 1 seconds
 Charges          : 1 (25 seconds cooldown)
@@ -1065,12 +1081,12 @@ Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... .....
 Effects          :
 #1 (id=14130)    : Apply Aura (6) | Spell Reflection (28)
                    Base Value: 100 | Scaled Value: 100 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=280400)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Target: Self (1)
-                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
-Description      : Raise your $?c3[shield][weapon], reflecting spells cast on you and reducing magical damage you take by $s2%. $?a188672[Lasts $d.][Lasts $d or until a spell is reflected.]
-Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
-Magical damage taken reduced by $s2%.
+#2 (id=280400)   : Trigger Spell (64): Spell Reflection
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 385391
+Description      : Reduce magical damage you take by $385391s1% for $d.
+
+Also raise your $?c3[shield][weapon], reflecting the first spell cast on you.
+Tooltip          : $?a188672[Reflecting all spells cast on you.][Reflects a spell cast on you.]
 
 Name             : Shield Slam (id=23922) [Spell Family (4)] 
 Class            : Warrior
@@ -1355,7 +1371,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1733 | Target: Self (1)
 #3 (id=39084)    : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Defensive Stance (197690), Defensive Stance (212520)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Defensive Stance (197690), Defensive Stance (212520), Spell Reflection (385391)
                    Family Flags: 11
 #4 (id=738383)   : Apply Aura (6) | Periodic Energize Power (24): every 1 seconds
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -3263,7 +3279,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59, 78
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3279,7 +3295,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 300 | Trigger Spell: 260798 | Target: Enemy (6)
 #2 (id=714082)   : Dummy (3)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s231830[
+Description      : Attempts to finish off a foe, causing up to $<damage> Physical damage based on Rage spent. Only usable on enemies that have less than 20% health.$?s316405[
 
 If your foe survives, $s2% of the Rage spent is refunded.][]
 Variables        : $damage=${2.0*$260798s1}
@@ -3562,7 +3578,7 @@ Spell Level      : 9
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Category         : 891
-Affecting spells : Recklessness (1719 effects: #5, #6), Warrior (137047 effect#2), Crushing Assault (278826 effect#3), Whirlwind (316435 effect#1), Unnerving Focus (337155 effects: #2, #3)
+Affecting spells : Recklessness (1719 effects: #5, #6), Improved Whirlwind (12950 effect#2), Warrior (137047 effect#2), Crushing Assault (278826 effect#3), Unnerving Focus (337155 effects: #2, #3)
 Family Flags     : 8, 54, 55
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -3594,7 +3610,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 400 | Trigger Spell: 199851 | Target: Self (1)
 Description      : Unleashes a whirlwind of steel, striking all nearby enemies for $<damage> Physical damage. Deals reduced damage beyond $s3 targets.$?s12950[
 
-Causes your next $85739u single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]$?s316435[
+Causes your next $85739u single-target melee $lattack:attacks; to strike up to $85739s1 additional targets for $85739s3% damage.][]$?s12950[
 
 |cFFFFFFFFGenerates $s1 Rage, plus an additional $s2 per target hit.|r][]
 Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
@@ -4390,7 +4406,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=312629)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Dragon Roar (118000), Ignore Pain (190456), Spell Reflection (335255)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Shield Block (2565), Last Stand (12975), Spell Reflection (23920), Dragon Roar (118000), Ignore Pain (190456), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 12, 13, 15, 17, 33, 49, 51, 109
 Description      : Enter a defensive posture, critically blocking all attacks while a stream of shadowflame erupts from |cFFFFCC99Scale of the Earth-Warder|r, dealing ${6*$203526s1} Shadowflame over $d to all enemies in front of you. You can use defensive abilities while this is active.
 Tooltip          : Critically blocking all incoming attacks, and dealing $203526s1 Shadowflame damage to all enemies in a $203526A1 yard cone every $t2 sec.
@@ -4786,7 +4802,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=317491)   : Apply Aura (6) | Add Percent Modifier (108): Spell Damage Taken (27)
                    Base Value: 33 | Scaled Value: 33 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Misc Value: 27 | Target: Self (1)
-                   Affected Spells: Spell Reflection (23920), Spell Reflection (335255)
+                   Affected Spells: Spell Reflection (23920), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 33
 Description      : Reflecting spells causes them to deal $s1% extra damage back to the attacker.
 Tooltip          : Reflecting spells causes them to deal $s1% extra damage back to the attacker.
@@ -5081,7 +5097,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1733 | Target: Self (1)
 #3 (id=342671)   : Apply Aura (6) | Disable Abilities (263)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Defensive Stance (197690), Defensive Stance (212520)
+                   Affected Spells: Taunt (355), Shield Wall (871), Demoralizing Shout (1160), Challenging Shout (1161), Shield Block (2565), Last Stand (12975), Berserker Rage (18499), Spell Reflection (23920), Rallying Cry (97462), Rallying Cry (97463), Die by the Sword (118038), Enraged Regeneration (184364), Ignore Pain (190456), Defensive Stance (197690), Defensive Stance (212520), Spell Reflection (385391)
                    Family Flags: 11
 Description      : Become an unstoppable storm of destructive force, striking all nearby enemies for ${(1+$d)*$50622s1} Physical damage over $d. Deals reduced damage beyond $s1 targets.
 
@@ -8010,7 +8026,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -8123,7 +8139,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 59, 82
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -8783,7 +8799,8 @@ Effects          :
                    Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Misc Value: rage | Target: Self (1)
 Description      : Brutally attack an enemy for $s1 Physical damage. Requires Enrage.
 
-|cFFFFFFFFGenerates ${$m2/10} Rage.|r
+|cFFFFFFFFGenerates ${$m2/10} Rage.|r
+
 
 Name             : Dreadnaught (id=315961) [Spell Family (4)] 
 Class            : Warrior
@@ -8808,11 +8825,10 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Unknown(87)
 Description      : $@spelldesc262150
 
-Name             : Execute (desc=Rank 2) (id=316402) [Spell Family (4), Passive] 
+Name             : Improved Execute (id=316402) [Spell Family (4), Passive] 
 Class            : Fury Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8831,10 +8847,14 @@ Effects          :
                    Base Value: -200 | Scaled Value: -200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute (280735), Execute (281000), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334)
                    Family Flags: 59
-Description      : Execute no longer costs Rage.
+#3 (id=1018721)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Execute (5308), Execute (163201), Execute (280735), Execute (281000), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334)
+                   Family Flags: 59
+Description      : Execute no longer costs Rage and now generates ${$s3/10} Rage.
 
 Name             : Execute (desc=Rank 3) (id=316403) [Spell Family (4), Passive] 
-Class            : Fury Warrior
+Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 18
@@ -8854,11 +8874,10 @@ Effects          :
                    Family Flags: 59
 Description      : Execute generates ${$s1/10} Rage.
 
-Name             : Execute (desc=Rank 2) (id=316405) [Spell Family (4), Passive] 
+Name             : Execute (id=316405) [Spell Family (4), Passive] 
 Class            : Arms Protection Warrior
 School           : Physical
 Spell Type       : None
-Spell Level      : 13
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -8873,7 +8892,9 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Execute (5308), Execute (163201), Execute (280735), Execute (281000), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334)
                    Family Flags: 59
-Description      : Execute no longer has a cooldown.
+#2 (id=1018643)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Execute no longer has a cooldown and if your foe survives, $163201s2% of the Rage spent is refunded.
 
 Name             : Colossus Smash (desc=Rank 2) (id=316411) [Spell Family (4), Passive] 
 Class            : Arms Warrior
@@ -9039,29 +9060,6 @@ Effects          :
                    Family Flags: 63
 Description      : Duration increased by ${$s1/1000} sec.
 
-Name             : Whirlwind (desc=Rank 2) (id=316435) [Spell Family (4), Passive] 
-Class            : Fury Warrior
-School           : Physical
-Spell Type       : None
-Spell Level      : 22
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x.x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Allow Class Ability Procs (416), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=800941)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Whirlwind (1680), Whirlwind (190411)
-                   Family Flags: 54
-Description      : Whirlwind no longer costs Rage. Instead it generates $190411s1 Rage, plus an additional $190411s2 per target hit. Maximum $<maxRage> Rage.
-Variables        : $damage=${$199667s1+$44949s1+(2*($199852s1+$199851s1))}
-$maxRage=${$190411s1+($190411s2*$190411s3)}
-
 Name             : Avatar (desc=Rank 2) (id=316438) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -9083,7 +9081,7 @@ Effects          :
                    Family Flags: 32
 Description      : Generates ${$s1/10} more Rage.
 
-Name             : Overpower (id=316440) [Spell Family (4), Passive] 
+Name             : Martial Prowess (id=316440) [Spell Family (4), Passive] 
 Class            : Arms Warrior
 School           : Physical
 Spell Type       : None
@@ -9481,6 +9479,7 @@ School           : Physical
 Spell Type       : None
 Spell Level      : 48
 Labels           : 861: Protection Warrior (137048 effect#13)
+976
 Attributes       : ......xx x....... .......x x..x...x   .....x.. ........ ........ ........ 
                  : x....... ......x. ........ ........   ........ ........ ....x... ........ 
                  : .......x .......x .....x.. ........   ...x.... ........ .xx..... ........ 
@@ -9522,7 +9521,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 56, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -9581,7 +9580,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 56, 59
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -9934,7 +9933,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 4.5 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 56, 59, 84
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -9971,7 +9970,7 @@ GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 6 seconds
 Labels           : 976
-Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Execute (316402 effects: #1, #2), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
+Affecting spells : Recklessness (1719 effect#7), Warrior (137047 effects: #1, #2), Precise Strikes (209493 effects: #1, #2), Bladestorm (222634 effect#3), Stone Heart (225947 effects: #1, #2), Execute (231827 effect#1), Deadly Calm (262228 effects: #1, #2), Improved Execute (316402 effects: #1, #2, #3), Execute (316403 effect#1), Execute (316405 effect#1), Ashen Juggernaut (335234 effect#1), Unnerving Focus (337155 effect#4)
 Family Flags     : 8, 18, 29, 56, 59, 84
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -10347,7 +10346,7 @@ Range            : 5 yards
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Cooldown         : 3 seconds
-Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3)
+Affecting spells : Demoralizing Shout (1160 effect#3), Recklessness (1719 effects: #1, #6), Bloodthirst (23881 effect#3), Mastery: Unshackled Fury (76856 effects: #1, #2), Single-Minded Fury (81099 effects: #1, #2), Whirlwind (85739 effect#1), Avatar (107574 effects: #1, #8), Warrior (137047 effects: #1, #2), Protection Warrior (137048 effects: #1, #2), Arms Warrior (137049 effects: #2, #3), Fury Warrior (137050 effects: #1, #2), Colossus Smash (208086 effect#1), Bloody Rage (242952 effect#1), Bloody Rage (242953 effect#1), Deep Wounds (262115 effect#2), Siegebreaker (280773 effect#1), Bloodthirst (316537 effect#1), Seethe (335091 effect#1), Will of the Berserker (335597 effect#1), Unnerving Focus (337155 effect#3), Bloodcraze (385735 effect#2)
 Family Flags     : 8, 9, 18, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ..xx.... 
                  : ........ ....x... ........ ........   ........ ..x..... ........ ........ 
@@ -10662,7 +10661,7 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
 Effects          :
 #1 (id=831737)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Spell Reflection (23920), Spell Reflection (335255)
+                   Affected Spells: Spell Reflection (23920), Spell Reflection (335255), Spell Reflection (385391)
                    Family Flags: 33
 #2 (id=831738)   : Apply Aura (6) | Proc Trigger Spell (42): Spell Reflection
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 335255 | Target: Self (1)
@@ -12049,5 +12048,50 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=1011987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Spell Reflection (id=385391) [Spell Family (4)] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Duration         : 5 seconds
+Affecting spells : Bladestorm (46924 effect#3), Neltharion's Fury (203524 effect#4), Rebound (213915 effect#1), Bladestorm (227847 effect#3), Misshapen Mirror (335253 effect#1)
+Triggered by     : Spell Reflection (23920)
+Family Flags     : 11, 33
+Attributes       : ....x... ........ x.x..... ...x....   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   .x...... ........ ........ ..x..... 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Allow While Sitting (27), No Threat (42), No Proc Equip Requirement (97), Can Proc From Procs (122), Allow Proc While Sitting (147), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1018566)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Tooltip          : Magical damage taken reduced by $s1%.
+
+Name             : Bloodcraze (id=385735) [Spell Family (4), Passive] 
+Class            : Warrior
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+Effects          :
+#1 (id=1019204)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1019205)  : Apply Aura (6) | Add Flat Modifier (107): Spell Max Stacks (37)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 37 | Target: Self (1)
+                   Affected Spells: Bloodthirst (23881), Bloodbath (335096)
+                   Family Flags: 42
+Description      : Bloodthirst increases the critical strike chance of your next Bloodthirst by $23881s3%. Stacking up to $s2 times.
 
 
