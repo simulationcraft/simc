@@ -2389,25 +2389,25 @@ void paladin_t::init_spells()
 
   // Shared talents
   //new stuff - how do i add double points? and choice talents?
-  talents.lay_on_hands                    = find_ta lent_spell( "Lay on Hands" );
-  talents.blessing_of_freedom             = find_ta lent_spell( "Blessing of Freedom" ); 
-  talents.hammer_of_wrath                 = find_t alent_spell( "Hammer of Wrath" );
-  talents.concentration_aura              = find_t alent_spell( "Concentration Aura" );
-  talents.devotion_aura                   = find _talent_spell( "Devotion Aura" );
-  talents.retribution_aura                = fin d_talent_spell( "Retribution Aura" );
-  talents.blinding_light                  = fin d_talent_spell( "Blinding Light" );
-  talents.repentance                      = find _talent_spell( "Repentance" );
-  talents.divine_steed                    = fin d_talent_spell( "Divine Steed" );
-  talents.fist_of_justice                 = fin d_talent_spell( "Fist of Justice" );
-  talents.holy_aegis                      = fin d_talent_spell( "Holy Aegis" );
-  talents.cavalier                        = find_talent_s pell( "Cavalier" );
-  talents.seasoned_warhorse               = find_ talent_spell( "Seasoned Warhorse" );
+  talents.lay_on_hands                    = find_talent_spell( "Lay on Hands" );
+  talents.blessing_of_freedom             = find_talent_spell( "Blessing of Freedom" ); 
+  talents.hammer_of_wrath                 = find_talent_spell( "Hammer of Wrath" );
+  talents.concentration_aura              = find_talent_spell( "Concentration Aura" );
+  talents.devotion_aura                   = find_talent_spell( "Devotion Aura" );
+  talents.retribution_aura                = find_talent_spell( "Retribution Aura" );
+  talents.blinding_light                  = find_talent_spell( "Blinding Light" );
+  talents.repentance                      = find_talent_spell( "Repentance" );
+  talents.divine_steed                    = find_talent_spell( "Divine Steed" );
+  talents.fist_of_justice                 = find_talent_spell( "Fist of Justice" );
+  talents.holy_aegis                      = find_talent_spell( "Holy Aegis" );
+  talents.cavalier                        = find_talent_spell( "Cavalier" );
+  talents.seasoned_warhorse               = find_talent_spell( "Seasoned Warhorse" );
   talents.seal_of_alacrity                = find_talent_spell( "Seal of Alacrity" );
   talents.golden_path                     = find_talent_spell( "Golden Path" );
   talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
   //Avenging Wrath spell
-  talents.avenging_wrath                  = find_talent_s pell( "Avenging Wrath" );
-  talents.seal_of_the_templar             = find_ talent_spell( "Seal of the Templar" );
+  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
   talents.turn_evil                       = find_talent_spell( "Turn Evil" );
   talents.rebuke                          = find_talent_spell( "Rebuke" );
   talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
@@ -2420,7 +2420,7 @@ void paladin_t::init_spells()
   talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
   talents.afterimage                      = find_talent_spell( "Afterimage" );
   talents.recompense                      = find_talent_spell( "Recompense" );
-  talents.sacrfice_of_the_just            = find_talent_spell( "Sacrifice of the Just" );
+  talents.sacrifice_of_the_just           = find_talent_spell( "Sacrifice of the Just" );
   talents.blessing_of_protection          = find_talent_spell( "Blessing of Protection" );
   talents.holy_avenger                    = find_talent_spell( "Holy Avenger" );
   talents.divine_purpose                  = find_talent_spell( "Divine Purpose" );

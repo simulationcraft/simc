@@ -294,6 +294,62 @@ public:
   {
     // Duplicate names are commented out
 
+    // Class
+
+   // 0
+    const spell_data_t* lay_on_hands;
+    const spell_data_t* blessing_of_freedom;
+    const spell_data_t* hammer_of_wrath;
+    const spell_data_t* concentration_aura;
+    const spell_data_t* devotion_aura;
+    const spell_data_t* retribution_aura;
+    const spell_data_t* blinding_light;
+    const spell_data_t* repentance;
+    const spell_data_t* divine_steed;
+    const spell_data_t* fist_of_justice;
+    const spell_data_t* holy_aegis;
+    const spell_data_t* cavalier;
+    const spell_data_t* seasoned_warhorse;
+    const spell_data_t* seal_of_alacrity;
+
+    // 8
+    const spell_data_t* golden_path;
+    const spell_data_t* judgment_of_light;
+    const spell_data_t* avenging_wrath; // Spell
+    const spell_data_t* seal_of_the_templar;
+    const spell_data_t* turn_evil;
+    const spell_data_t* rebuke;
+    const spell_data_t* seal_of_mercy;
+    const spell_data_t* cleanse_toxins;
+    const spell_data_t* blessing_of_sacrifice;
+    const spell_data_t* judgment;  // 1 Holy Power
+    const spell_data_t* seal_of_reprisal;
+    const spell_data_t* afterimage;
+    const spell_data_t* recompense;
+    const spell_data_t* sacrifice_of_the_just;
+    const spell_data_t* blessing_of_protection;
+    const spell_data_t* holy_avenger;
+    const spell_data_t* divine_purpose;
+    const spell_data_t* obduracy;
+    
+    // 20
+    const spell_data_t* seal_of_clarity;
+    const spell_data_t* aspirations_of_divinity;
+    //const spell_data_t* avenging_wrath; //Cdr
+    const spell_data_t* touch_of_light;
+    const spell_data_t* incandescence;
+    const spell_data_t* hallowed_ground;
+    const spell_data_t* of_dusk_and_dawn;
+    const spell_data_t* unbreakable_spirit;
+    const spell_data_t* seal_of_might;
+    const spell_data_t* blessing_of_spellwarding;
+    const spell_data_t* improved_blessing_of_protection;
+    const spell_data_t* seal_of_the_crusader;
+    const spell_data_t* seal_of_order;
+    const spell_data_t* sanctified_wrath;
+    const spell_data_t* seraphim;
+    const spell_data_t* the_mad_paragon;
+
     // Holy
     // T15
     const spell_data_t* crusaders_might;
@@ -301,20 +357,20 @@ public:
     const spell_data_t* lights_hammer;
     // T25
     const spell_data_t* saved_by_the_light;
-    const spell_data_t* judgment_of_light;
+    //const spell_data_t* judgment_of_light;
     const spell_data_t* holy_prism;
     // T30
-    const spell_data_t* fist_of_justice;
-    const spell_data_t* repentance;
-    const spell_data_t* blinding_light;
+    //const spell_data_t* fist_of_justice;
+    //const spell_data_t* repentance;
+    //const spell_data_t* blinding_light;
     // T35
-    const spell_data_t* unbreakable_spirit;
-    const spell_data_t* cavalier;
+    //const spell_data_t* unbreakable_spirit;
+    //const spell_data_t* cavalier;
     const spell_data_t* rule_of_law;
     // T40
-    const spell_data_t* divine_purpose;
-    const spell_data_t* holy_avenger;
-    const spell_data_t* seraphim;
+    //const spell_data_t* divine_purpose;
+    //const spell_data_t* holy_avenger;
+    //const spell_data_t* seraphim;
     // T45
     const spell_data_t* holy_sanctified_wrath;
     const spell_data_t* avenging_crusader;
@@ -336,7 +392,7 @@ public:
     // skip T30, see Holy
     // T35
     // unbreakable spirit + cavalier in holy
-    const spell_data_t* blessing_of_spellwarding;
+    //const spell_data_t* blessing_of_spellwarding;
     // skip T40, see Holy
     // T45
     // const spell_data_t* hand_of_the_protector;
