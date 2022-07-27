@@ -409,9 +409,10 @@ class TraitSet(DataSet):
 
             cost_definition = currency.child_ref('TraitCostDefinition')
             if cost_definition.id == 0:
-                continue
+                cost = currency.child_ref('TraitCost')
+            else:
+                cost = cost_definition.parent_record()
 
-            cost = cost_definition.parent_record()
             if cost.id == 0:
                 continue
 

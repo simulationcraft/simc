@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.0.0.44707
-static const std::array<temporary_enchant_entry_t, 65> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.0.0.44795
+static const std::array<temporary_enchant_entry_t, 71> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
   {  3265,  45395, "blessed_weapon_coating"       },
@@ -7,6 +7,9 @@ static const std::array<temporary_enchant_entry_t, 65> __temporary_enchant_data 
   {  3102,  38615, "bloodboil_poison"             },
   {  2629,  25123, "brilliant_mana_oil"           },
   {  2628,  25122, "brilliant_wizard_oil"         },
+  {  6512, 385325, "buzzing_rune"                 },
+  {  6513, 385326, "buzzing_rune"                 },
+  {  6514, 385327, "buzzing_rune"                 },
   {    13,   2829, "coarse_sharpening_stone"      },
   {    20,   3113, "coarse_weightstone"           },
   {  2795,  32426, "comfortable_insoles"          },
@@ -43,6 +46,9 @@ static const std::array<temporary_enchant_entry_t, 65> __temporary_enchant_data 
   {  6225, 324068, "heavy_desolate_armor_kit"     },
   {    14,   2830, "heavy_sharpening_stone"       },
   {    21,   3114, "heavy_weightstone"            },
+  {  6516, 385575, "howling_rune"                 },
+  {  6517, 385576, "howling_rune"                 },
+  {  6518, 385577, "howling_rune"                 },
   {  2625,  25120, "lesser_mana_oil"              },
   {  2718,  32274, "lesser_rune_of_warding"       },
   {  2626,  25119, "lesser_wizard_oil"            },
@@ -63,7 +69,7 @@ static const std::array<temporary_enchant_entry_t, 65> __temporary_enchant_data 
   {  2677,  28013, "superior_mana_oil"            },
   {  2678,  28017, "superior_wizard_oil"          },
   {  6252, 334456, "tempered_armor_patch"         },
-  {  6200, 322762, "wildercloth_weapon_upholstery" },
+  {  6511, 384964, "wildercloth_weapon_upholstery" },
   {  2627,  25121, "wizard_oil"                   },
 } };
 

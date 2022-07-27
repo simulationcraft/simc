@@ -1,4 +1,4 @@
-// 619 talents, wow build 10.0.0.44707
+// 619 talents, wow build 10.0.0.44795
 static std::array<talent_data_t, 619> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -59,7 +59,7 @@ static std::array<talent_data_t, 619> __talent_data { {
   { "Primal Elementalist"               , 19266, 0x00, 0x0040,  262,   1,   5,  117013,       0,  0 },
   { "Graceful Spirit"                   , 19269, 0x00, 0x0040,  264,   1,   4,  192088,       0,  0 },
   { "Master of the Elements"            , 19271, 0x00, 0x0040,  262,   0,   3,   16166,       0,  0 },
-  { "Storm Elemental"                   , 19272, 0x00, 0x0040,  262,   1,   3,  192249,  198067,  0 },
+  { "Storm Elemental"                   , 19272, 0x00, 0x0040,  262,   1,   3,  192249,       0,  0 },
   { "Liquid Magma Totem"                , 19273, 0x00, 0x0040,  262,   2,   3,  192222,       0,  0 },
   { "Spirit Wolf"                       , 19275, 0x00, 0x0040,    0,   0,   2,  260878,       0,  0 },
   { "Sow the Seeds"                     , 19279, 0x00, 0x0100,  265,   0,   3,  196226,       0,  0 },
@@ -159,7 +159,7 @@ static std::array<talent_data_t, 619> __talent_data { {
   { "Bulk Extraction"                   , 21902, 0x00, 0x0800,  581,   2,   6,  320341,       0,  0 },
   { "Surge of Earth"                    , 21963, 0x00, 0x0040,  264,   2,   1,  320746,       0,  0 },
   { "Wind Rush Totem"                   , 21966, 0x00, 0x0040,    0,   2,   4,  192077,       0,  0 },
-  { "Cloudburst Totem"                  , 21968, 0x00, 0x0040,    0,   2,   5,  157153,    5394,  0 },
+  { "Cloudburst Totem"                  , 21968, 0x00, 0x0040,    0,   2,   5,  157153,       0,  0 },
   { "High Tide"                         , 21969, 0x00, 0x0040,  264,   0,   6,  157154,       0,  0 },
   { "Elemental Spirits"                 , 21970, 0x00, 0x0040,  263,   0,   6,  262624,       0,  0 },
   { "Downpour"                          , 21971, 0x00, 0x0040,  264,   1,   5,  207778,       0,  0 },
@@ -576,7 +576,7 @@ static std::array<talent_data_t, 619> __talent_data { {
   { "Empyrean Power"                    , 23466, 0x00, 0x0002,   70,   2,   1,  326732,       0,  0 },
   { "Execution Sentence"                , 23467, 0x00, 0x0002,   70,   2,   0,  343527,       0,  0 },
   { "Moment of Glory"                   , 23468, 0x00, 0x0002,   66,   2,   1,  327193,       0,  0 },
-  { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   53595,  0 },
+  { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   35395,  0 },
   { "Acrobatic Strikes"                 , 23470, 0x00, 0x0008,  260,   0,   1,  196924,       0,  0 },
   { "Dream Flight"                      , 23626, 0x00, 0x1000, 1468,   2,   6,  359816,       0,  0 },
   { "Aerial Mastery"                    , 23628, 0x00, 0x1000, 1468,   1,   4,  365933,       0,  0 },
