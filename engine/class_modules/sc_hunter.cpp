@@ -754,6 +754,7 @@ public:
   void      init_scaling() override;
   void      init_assessors() override;
   void      init_action_list() override;
+  void      init_special_effects() override;
   void      reset() override;
   void      merge( player_t& other ) override;
   void      arise() override;
@@ -6416,9 +6417,9 @@ void hunter_t::create_buffs()
       -> set_chance( talents.streamline.ok() );
 
   buffs.bullseye =
-    make_buff( this, "bullseye", find_spell( 204090 ) )
+    make_buff( this, "bullseye", talents.bullseye -> effectN( 1 ).trigger() )
       -> set_default_value_from_effect( 1 )
-      -> set_max_stack( as<int>( talents.bullseye -> effectN( 2 ).base_value() ) )
+      -> set_max_stack( std::max( as<int>( talents.bullseye -> effectN( 2 ).base_value() ), 1 ) )
       -> set_chance( talents.bullseye.ok() );
 
   buffs.volley =
@@ -6852,6 +6853,42 @@ void hunter_t::init_action_list()
   }
 
   player_t::init_action_list();
+}
+
+void hunter_t::init_special_effects()
+{
+  player_t::init_special_effects();
+
+  if ( talents.bullseye.ok() )
+  {
+    struct bullseye_cb_t : public dbc_proc_callback_t
+    {
+      double threshold;
+
+      bullseye_cb_t( const special_effect_t& e, double threshold ) : dbc_proc_callback_t( e.player, e ),
+        threshold( threshold )
+      {
+      }
+
+      void trigger( action_t* a, action_state_t* state ) override
+      {
+        if ( state -> target -> health_percentage() >= threshold )
+          return;
+
+        dbc_proc_callback_t::trigger( a, state );
+      }
+    };
+
+    auto const effect = new special_effect_t( this );
+    effect -> name_str = "bullseye";
+    effect -> spell_id = talents.bullseye -> id();
+    effect -> custom_buff = buffs.bullseye;
+    effect -> proc_flags2_ = PF2_ALL_HIT;
+    special_effects.push_back( effect );
+
+    auto cb = new bullseye_cb_t( *effect, talents.bullseye -> effectN( 1 ).base_value() );
+    cb -> initialize();
+  }
 }
 
 // hunter_t::reset ==========================================================
