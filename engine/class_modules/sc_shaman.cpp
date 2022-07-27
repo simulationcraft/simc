@@ -6488,7 +6488,7 @@ struct ascendance_t : public shaman_spell_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), spell_type::ASCENDANCE, "ascendance" );
+        lvb = new lava_burst_t( p(), spell_type::ASCENDANCE );
         add_child( lvb );
       }
     }
