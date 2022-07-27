@@ -3865,6 +3865,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     proc_t* proc;
   } double_tap;
   struct {
+    double chance = 0;
     serpent_sting_sst_t* action = nullptr;
   } serpentstalkers_trickery;
   struct {
@@ -3884,8 +3885,16 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc = p -> get_proc( "Double Tap Aimed" );
     }
 
-    if ( p -> legendary.serpentstalkers_trickery.ok() || p -> talents.serpentstalkers_trickery.ok() )
+    if ( p -> legendary.serpentstalkers_trickery.ok() )
+    {
       serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery.chance = 1;
+    }
+    else if ( p -> talents.serpentstalkers_trickery.ok() )
+    {
+      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery.chance = p -> talents.serpentstalkers_trickery -> effectN( 1 ).percent();
+    }
 
     if ( p -> talents.surging_shots.ok() )
     {
@@ -3938,7 +3947,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc -> occur();
     }
 
-    if ( p() -> legendary.serpentstalkers_trickery.ok() || p() -> talents.serpentstalkers_trickery.ok() && rng().roll( p() -> talents.serpentstalkers_trickery->effectN( 1 ).percent() ) )
+    if ( rng().roll( serpentstalkers_trickery.chance ) )
       serpentstalkers_trickery.action -> execute_on_target( target );
 
     secrets_of_the_vigil_up = false;
