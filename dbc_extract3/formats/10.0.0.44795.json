@@ -1016,18 +1016,18 @@
   "SkillLine": {
     "fields": [
       { "data_type": "S", "field": "name" },
-      { "data_type": "S", "field": "unk_2" },
-      { "data_type": "S", "field": "unk_3" },
-      { "data_type": "S", "field": "unk_4" },
-      { "data_type": "S", "field": "unk_5" },
+      { "data_type": "S", "field": "alternate_verb" },
+      { "data_type": "S", "field": "description" },
+      { "data_type": "S", "field": "horde_display_name" },
+      { "data_type": "S", "field": "neutral_display_name" },
       { "data_type": "i", "field": "id" },
-      { "data_type": "b", "field": "unk_8" },
-      { "data_type": "i", "field": "unk_9" },
-      { "data_type": "b", "field": "unk_10" },
-      { "data_type": "I", "field": "unk_11" },
-      { "data_type": "I", "field": "unk_12" },
-      { "data_type": "H", "field": "unk_7" },
-      { "data_type": "i", "field": "unk_13" }
+      { "data_type": "b", "field": "category" },
+      { "data_type": "i", "field": "id_spell_icon_file" },
+      { "data_type": "b", "field": "can_link" },
+      { "data_type": "I", "field": "id_parent_skill_line" },
+      { "data_type": "I", "field": "parent_tier_index" },
+      { "data_type": "H", "field": "flags" },
+      { "data_type": "i", "field": "id_spell_book_spell" }
     ]
   },
   "SkillLineAbility": {
@@ -1536,6 +1536,15 @@
       { "data_type": "i", "field": "effect_index", "format": { "cpp": "%2d" } },
       { "data_type": "i", "field": "operation" },
       { "data_type": "i", "field": "id_curve", "ref": "Curve", "format": { "cpp": "%5d" } }
+    ]
+  },
+  "TraitEdge": {
+    "fields": [
+      { "data_type": "i", "field": "id" },
+      { "data_type": "B", "field": "visual_style" },
+      { "data_type": "i", "field": "id_left_trait_node", "ref": "TraitNode" },
+      { "data_type": "i", "field": "id_right_trait_node", "ref": "TraitNode" },
+      { "data_type": "B", "field": "type" }
     ]
   },
   "TraitNode": {
