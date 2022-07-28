@@ -215,7 +215,7 @@ struct moment_of_glory_t : public paladin_spell_t
   }
 };
 // Tyrs Enforcer damage proc =================================================
-
+// TODO Could not verify if this worked, think spelldata is empty?
 struct tyrs_enforcer_damage_t : public paladin_spell_t
 {
   tyrs_enforcer_damage_t( paladin_t* p )
@@ -504,7 +504,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
   auto* p = debug_cast<paladin_t*>( player );
 
-  if ( p -> azerite.inner_light.enabled() )
+  if ( p -> talents.inner_light -> ok() )
   {
     p -> buffs.inner_light -> trigger();
   }
