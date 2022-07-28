@@ -39,7 +39,7 @@ struct ardent_defender_t : public paladin_spell_t
 struct avengers_shield_base_t : public paladin_spell_t
 {
   avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( n, p, p -> find_specialization_spell( "Avenger's Shield" ) )
+    paladin_spell_t( n, p, p -> find_spell( 31935 ) )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -75,10 +75,10 @@ struct avengers_shield_base_t : public paladin_spell_t
       double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
 
       double new_absorb = s -> result_amount * p() -> talents.bulwark_of_order -> effectN( 1 ).percent();
-      if( p() -> buffs.first_avenger_absorb -> value() + new_absorb < max_absorb )
-        p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
+      if( p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb < max_absorb )
+        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb );
       else
-        p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
+        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, max_absorb );
     }
 
     if ( p() -> conduit.vengeful_shock -> ok() )
@@ -851,7 +851,7 @@ void paladin_t::create_buffs_protection()
           if ( curr == 1 && conduit.royal_decree -> ok() )
             this -> buffs.royal_decree -> trigger();
         } );
-
+  //TODO: Replace BoO spell id with real id
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
@@ -860,8 +860,8 @@ void paladin_t::create_buffs_protection()
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
-  buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
-        -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
+  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 327225 ) )
+        -> set_absorb_source( get_stats( "bulwark_of_order_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
         -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_STRENGTH )
@@ -948,7 +948,6 @@ void paladin_t::init_spells_protection()
   talents.divine_resonance               = find_talent_spell( "Divine Resonance");
 
 
-  //talents.first_avenger              = find_talent_spell( "First Avenger" );
   talents.crusaders_judgment             = find_talent_spell( "Crusader's Judgment" );
   talents.moment_of_glory                = find_talent_spell( "Moment of Glory" );
 
