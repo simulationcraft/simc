@@ -171,6 +171,10 @@ struct avengers_shield_t : public avengers_shield_base_t
     double m = avengers_shield_base_t::action_multiplier();
     if( p() -> buffs.moment_of_glory -> up() )
       m *= 1.0 + p() -> buffs.moment_of_glory -> value();
+    if ( p() -> talents.focused_enmity->ok() )
+    {
+      m *= 1.0 + p() -> talents.focused_enmity->effectN( 1 ).percent();
+    } 
 
     return m;
   }
@@ -453,7 +457,6 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// TODO: Woli
 // T28 4P damage proc ==================================================
 
 struct t28_4p_prot_t : public judgment_prot_t
@@ -904,48 +907,48 @@ void paladin_t::init_spells_protection()
 {
   // Talents
 //0
-  talents.avengers_shield                = find_talent_spell( "Avenger's Shield" );
-  talents.blessed_hammer                 = find_talent_spell( "Blessed Hammer" );
-  talents.hammer_of_the_righteous        = find_talent_spell( "Hammer of the Righteous" );
-  talents.redoubt                        = find_talent_spell( "Redoubt" );
-  talents.inner_light                    = find_talent_spell( "Inner Light" );
-  talents.holy_shield                    = find_talent_spell( "Holy Shield" );
-  talents.grand_crusader                 = find_talent_spell( "Grand Crusader" );
-  talents.shining_light                  = find_talent_spell( "Shining Light" );
-  talents.consecrated_ground             = find_talent_spell( "Consecrated Ground" );
-  talents.inspiring_vanguard             = find_talent_spell( "Inspiring Vanguard" );
-  talents.ardent_defender                = find_talent_spell( "Ardent Defender" );
-  talents.crusaders_judgment             = find_talent_spell( "Crusaders Judgement" );
-  talents.consecration_in_flame          = find_talent_spell( "Consecration in Flame" );
-  talents.bastion_of_light               = find_talent_spell( "Bastion of Light" );
-  talents.bulwark_of_order               = find_talent_spell( "Bulwark of Order" );
-  talents.light_of_the_titans            = find_talent_spell( "Light of the Titans" );
-  talents.uthers_guard                   = find_talent_spell( "Uthers Guard" );
-  talents.hand_of_the_protector          = find_talent_spell( "Hand of the Protector" );
-  talents.resolute_defender              = find_talent_spell( "Resolute Defender" );
-  talents.sentinel                       = find_talent_spell( "Sentinel" );
-  talents.avenging_wrath_might           = find_talent_spell( "Avenging Wrath Might" );
-  talents.strength_in_conviction         = find_talent_spell( "Strength in Conviction" );
-  talents.relentless_inquisitor          = find_talent_spell( "Relentless Inquisitor" );
-  talents.ferren_marcuss_strength        = find_talent_spell( "Ferren Marcuss Strength" );
-  talents.tyrs_enforcer                  = find_talent_spell( "Tyrs Enforcer" );
-  talents.guardian_of_ancient_kings      = find_talent_spell( "Guardian of Ancient Kings" );
-  talents.sanctuary                      = find_talent_spell( "Sanctuary" );
-  talents.faith_barricade                = find_talent_spell( "Faith Barricade" );
-  talents.soaring_shield                 = find_talent_spell( "Soaring Shield" );
-  talents.focused_enmity                 = find_talent_spell( "Focused Enmity" );
-  talents.faiths_armor                   = find_talent_spell( "Faiths Armor" );
-  talents.faith_in_the_light             = find_talent_spell( "Faith in the Light" );
-  talents.crusaders_resolve              = find_talent_spell( "Crusaders Resolve" );
-  talents.gift_of_the_golden_valkyr      = find_talent_spell( "Gift of the Golden Valkyr" );
-  talents.final_stand                    = find_talent_spell( "Final Stand" );
-  talents.righteous_protector            = find_talent_spell( "Righteous Protector" );
-  talents.divine_toll                    = find_talent_spell( "Divine Toll" );
-  talents.bulwark_of_righteous_fury      = find_talent_spell( "Bulwark of Righteous Fury" );
-  talents.moment_of_glory                = find_talent_spell( "Moment of Glory" );
-  talents.eye_for_an_eye                 = find_talent_spell( "Eye of Tyr" );
-  talents.improved_sera_and_dt           = find_talent_spell( "Improved Sera and DT" );
-  talents.divine_resonance               = find_talent_spell( "Divine Resonance");
+  talents.avengers_shield                = find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" );
+  talents.blessed_hammer                 = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Hammer" );
+  talents.hammer_of_the_righteous        = find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" );
+  talents.redoubt                        = find_talent_spell( talent_tree::SPECIALIZATION, "Redoubt" );
+  talents.inner_light                    = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Light" );
+  talents.holy_shield                    = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Shield" );
+  talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
+  talents.shining_light                  = find_talent_spell( talent_tree::SPECIALIZATION, "Shining Light" );
+  talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
+  talents.inspiring_vanguard             = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Vanguard" );
+  talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
+  talents.crusaders_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Judgement" );
+  talents.consecration_in_flame          = find_talent_spell( talent_tree::SPECIALIZATION, "Consecration in Flame" );
+  talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
+  talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
+  talents.light_of_the_titans            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of the Titans" );
+  talents.uthers_guard                   = find_talent_spell( talent_tree::SPECIALIZATION, "Uthers Guard" );
+  talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
+  talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
+  talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
+  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath Might" );
+  talents.strength_in_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength in Conviction" );
+  talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
+  talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcuss Strength" );
+  talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyrs Enforcer" );
+  talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
+  talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
+  talents.faith_barricade                = find_talent_spell( talent_tree::SPECIALIZATION, "Faith Barricade" );
+  talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
+  talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
+  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faiths Armor" );
+  talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
+  talents.crusaders_resolve              = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Resolve" );
+  talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Valkyr" );
+  talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
+  talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
+  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+  talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
+  talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
+  talents.eye_for_an_eye                 = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
+  talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera and DT" );
+  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
 
 
   talents.crusaders_judgment             = find_talent_spell( "Crusader's Judgment" );
