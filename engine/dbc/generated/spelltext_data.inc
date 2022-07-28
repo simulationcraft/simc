@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44795
-static const std::array<spelltext_data_t, 17443> __spelltext_data { {
+static const std::array<spelltext_data_t, 17444> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -6015,6 +6015,7 @@ static const std::array<spelltext_data_t, 17443> __spelltext_data { {
   { 191025, "Permanently enchants a necklace to sometimes summon a satyr that will fire a nightmare bolt at your enemy, dealing damage. Cannot be applied to items above level $ecix. Greatly reduced materials.", 0, 0 },
   { 191034, "Calls down waves of falling stars upon enemies within $50286A1 yds, dealing $<damage> Astral damage over $191034d.$?s327541[\r\n\r\nExtends the duration of active Moonfires and Sunfires by $327541s1 sec.][]", "Calling down falling stars on nearby enemies.", 0 },
   { 191037, "$@spelldesc191034", 0, 0 },
+  { 191043, "$@spelldesc190852", 0, 0 },
   { 191074, "Craft an Enchanted Cauldron.", 0, 0 },
   { 191076, "Craft an Enchanted Pen.", 0, 0 },
   { 191078, "Craft a Leylight Brazier.", 0, 0 },

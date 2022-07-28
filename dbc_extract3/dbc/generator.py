@@ -1418,6 +1418,7 @@ class SpellDataGenerator(DataGenerator):
           ( 257622, 2 ), # Trick Shots buff
           ( 260395, 2 ), # Lethal Shots buff
           ( 342076, 2 ), # Streamline buff
+          ( 191043, 2 ), # Legacy of the Windrunners
           ( 259516, 3 ), # Flanking Strike
           ( 267666, 3 ), # Chakrams
           ( 265888, 3 ), # Mongoose Bite (AotE version)

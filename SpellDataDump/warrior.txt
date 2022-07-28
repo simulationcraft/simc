@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-27/44795, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-28/44795, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical

@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-27/44795, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-28/44795, no-networking)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -4256,6 +4256,29 @@ Effects          :
 Description      : $@spelldesc190925
 Tooltip          : Rooted.
 
+Name             : Aimed Shot (id=191043) [Spell Family (9)] 
+Class            : Hunter
+School           : Physical
+Spell Type       : Ranged
+Range            : 100 yards
+Velocity         : 20 yards/sec
+Requires weapon  : Bow, Gun, Crossbow
+Affecting spells : Mastery: Sniper Training (193468 effect#2), Windrunner's Guidance (378905 effects: #1, #2)
+Family Flags     : 93
+Attributes       : .x...... ........ x....... ........   ........ ........ ........ ...x.... 
+                 : ........ ........ .x...... ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Uses Ranged Slot (1), Not Shapeshifted (16), Discount Power On Miss (59), Do Not Reset Combat Timers (81), Do Not Display Range (126), Force Display Castbar (155), Do Not Auto Select Target with Initiates Combat (220), Next modal spell requires same unit target (304), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=280170)   : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.15000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc190852
+
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
 Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, entry_id=42029, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(15, 30)]
@@ -4377,7 +4400,7 @@ Effects          :
                    Family Flags: 121
 #2 (id=283906)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Death Chakram (361756)
+                   Affected Spells: Multi-Shot (2643), Aimed Shot (19434), Kill Shot (53351), Steady Shot (56641), Barrage (120361), A Murder of Crows (131894), A Murder of Crows (131900), Arcane Shot (185358), Bursting Shot (186387), Aimed Shot (191043), Explosive Shot (212680), Scatter Shot (213691), Bursting Shot (224729), Rapid Fire (257045), Multi-Shot (257620), Volley (260247), Serpent Sting (271788), Resonating Arrow (308495), Kill Shot (320976), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (344120), Chimaera Shot (344121), Wailing Arrow (354831), Death Chakram (361756)
                    Family Flags: 3, 5, 11, 12, 17, 32, 34, 70, 73, 74, 76, 79, 93, 99, 105, 119
 #3 (id=316221)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.62500 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -15280,9 +15303,11 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
 Effects          :
 #1 (id=1007401)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Chance (7)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+                   Affected Spells: Aimed Shot (191043)
                    Family Flags: 93
 #2 (id=1007402)  : Apply Aura (6) | Add Percent Modifier (108): Spell Critical Damage (15)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Affected Spells: Aimed Shot (191043)
                    Family Flags: 93
 Description      : Bonus Wind Arrows from Aimed Shot have a $s1% increased critical strike chance and deal $s2% increased critical strike damage.
 
