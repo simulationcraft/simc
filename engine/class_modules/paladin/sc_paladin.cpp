@@ -2439,7 +2439,9 @@ void paladin_t::init_spells()
   talents.improved_blessing_of_protection = find_talent_spell( "Improved Blessing of Protection" );
   talents.seal_of_the_crusader            = find_talent_spell( "Seal of the Crusader" );
   talents.seal_of_order                   = find_talent_spell( "Seal of Order" );
-  talents.sanctified_wrath                = find_talent_spell( "Sanctified Wrath" );
+  talents.holy_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
+  talents.prot_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
+  talents.ret_sanctified_wrath            = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION  );
   talents.seraphim                        = find_talent_spell( "Seraphim" );
   talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
 

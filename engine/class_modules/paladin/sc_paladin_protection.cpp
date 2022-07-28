@@ -55,8 +55,8 @@ struct avengers_shield_base_t : public paladin_spell_t
       aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
     }
 
-    // First Avenger hits +2 targets
-    aoe += as<int>( p -> talents.first_avenger -> effectN( 1 ).base_value() );
+    // Soaring Shield hits +2 targets
+    aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
@@ -68,13 +68,13 @@ struct avengers_shield_base_t : public paladin_spell_t
       p() -> buffs.soaring_shield -> trigger();
     }
 
-    // First Avenger absorb shield. Amount is additive per hit.
-    if ( p() -> talents.first_avenger -> ok() )
+    //Bulwark of Order absorb shield. Amount is additive per hit.
+    if ( p() -> talents.bulwark_of_order -> ok() )
     {
-      //First Avenger is capped at 30% of max hp. Hardcoded here.
+      //Bulwark of Order is capped at 30% of max hp. Hardcoded here.
       double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
 
-      double new_absorb = s -> result_amount * p() -> talents.first_avenger -> effectN( 2 ).percent();
+      double new_absorb = s -> result_amount * p() -> talents.bulwark_of_order -> effectN( 1 ).percent();
       if( p() -> buffs.first_avenger_absorb -> value() + new_absorb < max_absorb )
         p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
       else
@@ -903,13 +903,54 @@ void paladin_t::create_buffs_protection()
 void paladin_t::init_spells_protection()
 {
   // Talents
-  talents.holy_shield                = find_talent_spell( "Holy Shield" );
-  talents.redoubt                    = find_talent_spell( "Redoubt" );
-  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
+//0
+  talents.avengers_shield                = find_talent_spell( "Avengers Shield" );
+  talents.blessed_hammer                 = find_talent_spell( "Blessed Hammer" );
+  talents.hammer_of_the_righteous        = find_talent_spell( "Hammer of the Righteous" );
+  talents.redoubt                        = find_talent_spell( "Redoubt" );
+  talents.inner_light                    = find_talent_spell( "Inner Light" );
+  talents.holy_shield                    = find_talent_spell( "Holy Shield" );
+  talents.grand_crusader                 = find_talent_spell( "Grand Crusader" );
+  talents.shining_light                  = find_talent_spell( "Shining Light" );
+  talents.consecrated_ground             = find_talent_spell( "Consecrated Ground" );
+  talents.inspiring_vanguard             = find_talent_spell( "Inspiring Vanguard" );
+  talents.ardent_defender                = find_talent_spell( "Ardent Defender" );
+  talents.crusaders_judgment             = find_talent_spell( "Crusaders Judgement" );
+  talents.consecration_in_flame          = find_talent_spell( "Consecration in Flame" );
+  talents.bastion_of_light               = find_talent_spell( "Bastion of Light" );
+  talents.bulwark_of_order               = find_talent_spell( "Bulwark of Order" );
+  talents.light_of_the_titans            = find_talent_spell( "Light of the Titans" );
+  talents.uthers_guard                   = find_talent_spell( "Uthers Guard" );
+  talents.hand_of_the_protector          = find_talent_spell( "Hand of the Protector" );
+  talents.resolute_defender              = find_talent_spell( "Resolute Defender" );
+  talents.sentinel                       = find_talent_spell( "Sentinel" );
+  talents.avenging_wrath_might           = find_talent_spell( "Avenging Wrath Might" );
+  talents.strength_in_conviction         = find_talent_spell( "Strength in Conviction" );
+  talents.relentless_inquisitor          = find_talent_spell( "Relentless Inquisitor" );
+  talents.ferren_marcuss_strength        = find_talent_spell( "Ferren Marcuss Strength" );
+  talents.tyrs_enforcer                  = find_talent_spell( "Tyrs Enforcer" );
+  talents.guardian_of_ancient_kings      = find_talent_spell( "Guardian of Ancient Kings" );
+  talents.sanctuary                      = find_talent_spell( "Sanctuary" );
+  talents.faith_barricade                = find_talent_spell( "Faith Barricade" );
+  talents.soaring_shield                 = find_talent_spell( "Soaring Shield" );
+  talents.focused_enmity                 = find_talent_spell( "Focused Enmity" );
+  talents.faiths_armor                   = find_talent_spell( "Faiths Armor" );
+  talents.faith_in_the_light             = find_talent_spell( "Faith in the Light" );
+  talents.crusaders_resolve              = find_talent_spell( "Crusaders Resolve" );
+  talents.gift_of_the_golden_valkyr      = find_talent_spell( "Gift of the Golden Valkyr" );
+  talents.final_stand                    = find_talent_spell( "Final Stand" );
+  talents.righteous_protector            = find_talent_spell( "Righteous Protector" );
+  talents.divine_toll                    = find_talent_spell( "Divine Toll" );
+  talents.bulwark_of_righteous_fury      = find_talent_spell( "Bulwark of Righteous Fury" );
+  talents.moment_of_glory                = find_talent_spell( "Moment of Glory" );
+  talents.eye_for_an_eye                 = find_talent_spell( "Eye of Tyr" );
+  talents.improved_sera_and_dt           = find_talent_spell( "Improved Sera and DT" );
+  talents.divine_resonance               = find_talent_spell( "Divine Resonance");
 
-  talents.first_avenger              = find_talent_spell( "First Avenger" );
-  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
-  talents.moment_of_glory            = find_talent_spell( "Moment of Glory" );
+
+  //talents.first_avenger              = find_talent_spell( "First Avenger" );
+  talents.crusaders_judgment             = find_talent_spell( "Crusader's Judgment" );
+  talents.moment_of_glory                = find_talent_spell( "Moment of Glory" );
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 

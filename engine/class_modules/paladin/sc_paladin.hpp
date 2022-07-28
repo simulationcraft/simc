@@ -346,33 +346,22 @@ public:
     const spell_data_t* improved_blessing_of_protection;
     const spell_data_t* seal_of_the_crusader;
     const spell_data_t* seal_of_order;
-    const spell_data_t* sanctified_wrath;
+    const spell_data_t* holy_sanctified_wrath;
+    const spell_data_t* prot_sanctified_wrath;
+    const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* seraphim;
     const spell_data_t* the_mad_paragon;
 
-    // Holy
+    // Holy -- NYI, Not touching for now
     // T15
     const spell_data_t* crusaders_might;
     const spell_data_t* bestow_faith;
     const spell_data_t* lights_hammer;
     // T25
     const spell_data_t* saved_by_the_light;
-    //const spell_data_t* judgment_of_light;
     const spell_data_t* holy_prism;
-    // T30
-    //const spell_data_t* fist_of_justice;
-    //const spell_data_t* repentance;
-    //const spell_data_t* blinding_light;
-    // T35
-    //const spell_data_t* unbreakable_spirit;
-    //const spell_data_t* cavalier;
+
     const spell_data_t* rule_of_law;
-    // T40
-    //const spell_data_t* divine_purpose;
-    //const spell_data_t* holy_avenger;
-    //const spell_data_t* seraphim;
-    // T45
-    const spell_data_t* holy_sanctified_wrath;
     const spell_data_t* avenging_crusader;
     const spell_data_t* awakening;
     // T50
@@ -381,27 +370,53 @@ public:
     const spell_data_t* beacon_of_virtue;
 
     // Protection
-    // T15
-    const spell_data_t* holy_shield;
-    const spell_data_t* redoubt;
+   //0
+    const spell_data_t* avengers_shield;
     const spell_data_t* blessed_hammer;
-    // T25
-    const spell_data_t* first_avenger;
-    const spell_data_t* crusaders_judgment;
-    const spell_data_t* moment_of_glory;
-    // skip T30, see Holy
-    // T35
-    // unbreakable spirit + cavalier in holy
-    //const spell_data_t* blessing_of_spellwarding;
-    // skip T40, see Holy
-    // T45
-    // const spell_data_t* hand_of_the_protector;
+    const spell_data_t* hammer_of_the_righteous;
+    const spell_data_t* redoubt;
+    const spell_data_t* inner_light;
+    const spell_data_t* holy_shield;
+    const spell_data_t* grand_crusader;
+    const spell_data_t* shining_light;
     const spell_data_t* consecrated_ground;
-    // const spell_data_t* judgment_of_light;
-    // T50
-    const spell_data_t* prot_sanctified_wrath;
-    const spell_data_t* righteous_protector;
+    const spell_data_t* inspiring_vanguard;
+    const spell_data_t* ardent_defender;
+    const spell_data_t* crusaders_judgment;
+    const spell_data_t* consecration_in_flame;
+    
+    //8
+    const spell_data_t* bastion_of_light;
+    const spell_data_t* bulwark_of_order;
+    const spell_data_t* light_of_the_titans;
+    const spell_data_t* uthers_guard;
+    const spell_data_t* hand_of_the_protector;
+    const spell_data_t* resolute_defender;
+    const spell_data_t* sentinel;
+    const spell_data_t* avenging_wrath_might;
+    const spell_data_t* strength_in_conviction;
+    const spell_data_t* relentless_inquisitor;
+    const spell_data_t* ferren_marcuss_strength;
+    const spell_data_t* tyrs_enforcer;
+    const spell_data_t* guardian_of_ancient_kings;
+    const spell_data_t* sanctuary;
+    const spell_data_t* faith_barricade;
+    
+    //20
+    const spell_data_t* soaring_shield;
+    const spell_data_t* focused_enmity;
+    const spell_data_t* faiths_armor;
+    const spell_data_t* faith_in_the_light;
+    const spell_data_t* crusaders_resolve;
+    const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* final_stand;
+    const spell_data_t* righteous_protector;
+    const spell_data_t* divine_toll;
+    const spell_data_t* bulwark_of_righteous_fury;
+    const spell_data_t* moment_of_glory;
+    const spell_data_t* eye_of_tyr;
+    const spell_data_t* improved_sera_and_dt;
+    const spell_data_t* divine_resonance;
 
     // Retribution
     // T15
@@ -412,9 +427,7 @@ public:
     const spell_data_t* fires_of_justice;
     const spell_data_t* blade_of_wrath;
     const spell_data_t* empyrean_power;
-    // Skip T30, see Holy
-    // T35
-    // unbreakable spirit + cavalier in holy
+
     const spell_data_t* eye_for_an_eye;
     // Skip T40, see Holy
     // T45
@@ -422,7 +435,6 @@ public:
     const spell_data_t* justicars_vengeance;
     const spell_data_t* healing_hands;
     // T50
-    const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* crusade;
     const spell_data_t* final_reckoning;
   } talents;
