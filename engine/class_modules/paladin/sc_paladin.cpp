@@ -292,6 +292,15 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
       heal_tick->execute();
   }
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    if ( p()->talents.consecration_in_flame->ok() )
+    {
+      m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
+    }
+    return m;
+  }
 };
 
 struct consecration_t : public paladin_spell_t
@@ -389,6 +398,12 @@ struct consecration_t : public paladin_spell_t
     if ( sim->distance_targeting_enabled )
       cons_params.x( p()->x_position ).y( p()->y_position );
 
+    auto duration = data().duration();
+    if ( p()->talents.consecration_in_flame->ok() )
+    {
+      duration +=  p()->talents.consecration_in_flame->effectN( 1 ).time_value();
+    }
+
     if ( !player->in_combat && precombat_time > 0 )
     {
       // Adjust cooldown if consecration is used in precombat
@@ -407,6 +422,8 @@ struct consecration_t : public paladin_spell_t
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
   }
+
+
 };
 
 // Divine Shield ==============================================================

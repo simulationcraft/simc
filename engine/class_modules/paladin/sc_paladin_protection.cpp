@@ -740,13 +740,13 @@ void paladin_t::target_mitigation( school_e school,
 void paladin_t::trigger_grand_crusader()
 {
   // escape if we don't have Grand Crusader
-  if ( ! passives.grand_crusader -> ok() )
+  if ( ! talents.grand_crusader -> ok() )
     return;
 
-  double gc_proc_chance = passives.grand_crusader -> proc_chance();
-  if ( azerite.inspiring_vanguard.enabled() )
+  double gc_proc_chance = talents.grand_crusader -> proc_chance();
+  if ( talents.inspiring_vanguard -> ok() )
   {
-    gc_proc_chance = azerite.inspiring_vanguard.spell() -> effectN( 2 ).percent();
+    gc_proc_chance = talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
