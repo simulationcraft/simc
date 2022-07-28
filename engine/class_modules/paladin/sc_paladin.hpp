@@ -157,7 +157,7 @@ public:
   {
     // Healing/absorbs
     gain_t* holy_shield;
-    gain_t* first_avenger;
+    gain_t* bulwark_of_order;
     gain_t* blessed_hammer;
 
     // Mana
