@@ -5376,9 +5376,6 @@ struct call_of_the_wild_t: public hunter_spell_t
     parse_options( options_str );
 
     harmful = false;
-    dot_duration = 0_ms;
-
-    p -> actions.aspect_of_the_wild = this;
   }
 
   void execute() override
