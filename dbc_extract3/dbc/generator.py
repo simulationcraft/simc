@@ -1438,6 +1438,8 @@ class SpellDataGenerator(DataGenerator):
           ( 339061, 0 ), # Empowered Release (Conduit)
           ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
           ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
+          ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
+          ( 378885, 2 ), # Salvo (MM Bombardment talent buff)
         ),
 
         # Rogue:
