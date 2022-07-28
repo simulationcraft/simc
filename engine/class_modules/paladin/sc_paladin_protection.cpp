@@ -49,6 +49,8 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
     may_crit = true;
 
+
+    //Turn off chaining if focused enmity
     aoe = data().effectN( 1 ).chain_target();
     if ( p -> azerite.soaring_shield.enabled() )
     {
@@ -88,6 +90,9 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     if ( p() -> legendary.bulwark_of_righteous_fury -> ok() )
       p() -> buffs.bulwark_of_righteous_fury -> trigger();
+
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+      p()->buffs.bulwark_of_righteous_fury->trigger();
   }
 };
 
@@ -169,15 +174,21 @@ struct avengers_shield_t : public avengers_shield_base_t
   double action_multiplier() const override
   {
     double m = avengers_shield_base_t::action_multiplier();
-    if( p() -> buffs.moment_of_glory -> up() )
-      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
-    if ( p() -> talents.focused_enmity->ok() )
+    if ( p()->buffs.moment_of_glory->up() )
     {
-      m *= 1.0 + p() -> talents.focused_enmity->effectN( 1 ).percent();
-    } 
-
+      m *= 1.0 + p()->buffs.moment_of_glory->value();
+    }
+      if ( p() -> talents.focused_enmity->ok() )
+       {
+        m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
+      } 
+    //TODO Actually implement this properly, right now its a flat damage increase and will return bad values for aoe.
+    if ( p()->talents.ferren_marcuss_strength->ok() )
+        {
+          m *= 1.0 + p()->talents.ferren_marcuss_strength->effectN( 1 ).percent();
+        } 
     return m;
-  }
+  } 
 };
 
 // Moment of Glory ============================================================
@@ -930,7 +941,7 @@ void paladin_t::init_spells_protection()
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath Might" );
   talents.strength_in_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength in Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
-  talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcuss Strength" );
+  talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
   talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyrs Enforcer" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
