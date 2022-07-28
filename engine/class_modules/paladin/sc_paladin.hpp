@@ -395,7 +395,7 @@ public:
     const spell_data_t* resolute_defender;
     const spell_data_t* sentinel;
     const spell_data_t* avenging_wrath_might;
-    const spell_data_t* strength_in_conviction;
+    const spell_data_t* strength_of_conviction;
     const spell_data_t* relentless_inquisitor;
     const spell_data_t* ferren_marcuss_strength;
     const spell_data_t* tyrs_enforcer;

@@ -613,7 +613,15 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   {
     double am = holy_power_consumer_t::action_multiplier();
     // Range increase on bulwark of righteous fury not implemented.
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+    {
     am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+    }
+    if ( p()->talents.strength_of_conviction->ok() )
+    {
+      if ( p()->standing_in_consecration() )
+        am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
+    }
     return am;
   }
 };
@@ -953,7 +961,7 @@ void paladin_t::init_spells_protection()
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
   talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath Might" );
-  talents.strength_in_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength in Conviction" );
+  talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
   talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
   talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyrs Enforcer" );
