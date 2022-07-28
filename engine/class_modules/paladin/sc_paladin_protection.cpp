@@ -64,6 +64,10 @@ struct avengers_shield_base_t : public paladin_spell_t
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
+    if ( p()->talents.tyrs_enforcer->ok() )
+    {
+      p()->trigger_tyrs_enforcer(s);
+    }
 
     if ( p() -> azerite.soaring_shield.enabled() )
     {
@@ -191,8 +195,9 @@ struct avengers_shield_t : public avengers_shield_base_t
   } 
 };
 
-// Moment of Glory ============================================================
 
+// Moment of Glory ============================================================
+//TODO Add a visible buff
 struct moment_of_glory_t : public paladin_spell_t
 {
   moment_of_glory_t( paladin_t* p, util::string_view options_str ) :
@@ -209,7 +214,17 @@ struct moment_of_glory_t : public paladin_spell_t
     p()->buffs.moment_of_glory->trigger();
   }
 };
+// Tyrs Enforcer damage proc =================================================
 
+struct tyrs_enforcer_damage_t : public paladin_spell_t
+{
+  tyrs_enforcer_damage_t( paladin_t* p )
+    : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
+  {
+    background = proc = may_crit = true;
+     may_miss = false;
+  }
+};
 // Blessed Hammer (Protection) ================================================
 
 struct blessed_hammer_tick_t : public paladin_spell_t
@@ -787,6 +802,15 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
 
   active.t28_4p_prot->schedule_execute();
   cooldowns.t28_4p_prot_icd->start();
+}
+
+void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
+{
+  // escape if we don't have Tyrs Enforcer
+  if ( !talents.tyrs_enforcer->ok() )
+    return;
+  active.tyrs_enforcer_damage->set_target( s->action->player );
+  active.tyrs_enforcer_damage->schedule_execute();
 }
 
 bool paladin_t::standing_in_consecration() const
