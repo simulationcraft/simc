@@ -38,8 +38,7 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( n, p, p -> find_spell( 31935 ) )
+  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str ) : paladin_spell_t( n, p, p->find_specialization_spell( "Avenger's Shield" ) )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -904,7 +903,7 @@ void paladin_t::init_spells_protection()
 {
   // Talents
 //0
-  talents.avengers_shield                = find_talent_spell( "Avengers Shield" );
+  talents.avengers_shield                = find_talent_spell( "Avenger's Shield" );
   talents.blessed_hammer                 = find_talent_spell( "Blessed Hammer" );
   talents.hammer_of_the_righteous        = find_talent_spell( "Hammer of the Righteous" );
   talents.redoubt                        = find_talent_spell( "Redoubt" );
