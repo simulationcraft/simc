@@ -130,6 +130,8 @@ struct avengers_shield_t : public avengers_shield_base_t
     avengers_shield_base_t( "avengers_shield", p, options_str )
   {
     cooldown = p -> cooldowns.avengers_shield;
+    if ( p->buffs.moment_of_glory->up() )
+      cooldown->duration *= 1.0 + p->talents.moment_of_glory->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -152,8 +154,6 @@ struct avengers_shield_t : public avengers_shield_base_t
       }
       else
         p() -> procs.as_moment_of_glory_wasted -> occur();
-
-      p() -> buffs.moment_of_glory -> decrement( 1 );
     }
 
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
@@ -196,7 +196,7 @@ struct avengers_shield_t : public avengers_shield_base_t
 struct moment_of_glory_t : public paladin_spell_t
 {
   moment_of_glory_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
+    paladin_spell_t( "moment_of_glory", p, p -> find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" ))
   {
     parse_options( options_str );
     harmful = false;
@@ -205,18 +205,8 @@ struct moment_of_glory_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
-    // then when you use the last stack you get another (4th) AS without a cooldown
-    // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
-    if ( ! p() -> cooldowns.avengers_shield -> is_ready() )
-    {
-      p() -> procs.as_moment_of_glory -> occur();
-      p() -> cooldowns.avengers_shield -> reset( false );
-    }
-    else
-      p() -> procs.as_moment_of_glory_wasted -> occur();
 
-    p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
+    p()->buffs.moment_of_glory->trigger();
   }
 };
 
