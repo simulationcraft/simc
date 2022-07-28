@@ -422,6 +422,7 @@ public:
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
     buff_t* eagletalons_true_focus;
+    buff_t* bombardment;
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -581,11 +582,11 @@ public:
     spell_data_ptr_t double_tap;
     spell_data_ptr_t dead_eye;
 
-    // TODO Bombardment
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t lone_wolf;
     spell_data_ptr_t legacy_of_the_windrunners; // TODO: implement
 
+    spell_data_ptr_t bombardment;
     spell_data_ptr_t sharpshooter;
     spell_data_ptr_t trueshot;
     spell_data_ptr_t lock_and_load;
@@ -2945,6 +2946,8 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
+    p() -> buffs.bombardment -> trigger();
+
     p() -> trigger_lethal_shots();
     p() -> trigger_calling_the_shots();
 
@@ -4351,11 +4354,23 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
+    p() -> buffs.bombardment -> up(); // benefit tracking
+    p() -> buffs.bombardment -> expire();
+
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
 
     if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    m *= p() -> buffs.bombardment -> check_stack_value();
+
+    return m;
   }
 };
 
@@ -6378,6 +6393,7 @@ void hunter_t::init_spells()
     talents.lone_wolf                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lone Wolf", HUNTER_MARKSMANSHIP );
     talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
 
+    talents.bombardment                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardment", HUNTER_MARKSMANSHIP );
     talents.sharpshooter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpshooter", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
@@ -6640,6 +6656,11 @@ void hunter_t::create_buffs()
       -> set_chance( talents.nesingwarys_trapping_apparatus.ok() );
 
   // Marksmanship Tree
+
+  buffs.bombardment =
+    make_buff( this, "bombardment", find_spell( 378885 ) )
+      -> set_default_value( talents.bombardment -> effectN( 1 ).percent() )
+      -> set_chance( talents.bombardment.ok() );
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
