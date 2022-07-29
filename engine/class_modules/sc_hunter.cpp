@@ -583,7 +583,7 @@ public:
 
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t lone_wolf;
-    spell_data_ptr_t legacy_of_the_windrunners; // TODO: implement
+    spell_data_ptr_t legacy_of_the_windrunners;
 
     spell_data_ptr_t bombardment;
     spell_data_ptr_t sharpshooter;
@@ -3909,6 +3909,21 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
+  struct legacy_of_the_windrunners_t final : public hunter_ranged_attack_t
+  {
+    legacy_of_the_windrunners_t( util::string_view n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
+    {
+      dual = true;
+      proc = true;
+      // LotW arrows behave more like AiS re cast time/speed
+      // TODO: RETEST for DL & test its behavior on lnl AiSes
+      base_execute_time = p -> talents.aimed_shot -> cast_time();
+      travel_speed = p -> talents.aimed_shot -> missile_speed();
+    }
+  };
+
+
   bool lock_and_loaded = false;
   bool secrets_of_the_vigil_up = false;
   struct {
@@ -3923,6 +3938,11 @@ struct aimed_shot_t : public aimed_shot_base_t
     double chance = 0;
     proc_t* proc;
   } surging_shots;
+  struct {
+    double chance = 0;
+    int count = 0;
+    legacy_of_the_windrunners_t* action = nullptr;
+  } legacy_of_the_windrunners;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
     aimed_shot_base_t( "aimed_shot", p )
@@ -3952,6 +3972,14 @@ struct aimed_shot_t : public aimed_shot_base_t
       surging_shots.chance = p -> talents.surging_shots -> proc_chance();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
     }
+
+    if ( p -> talents.legacy_of_the_windrunners.ok() )
+    {
+      legacy_of_the_windrunners.chance = p -> talents.legacy_of_the_windrunners -> proc_chance();
+      legacy_of_the_windrunners.count = p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value();
+      legacy_of_the_windrunners.action = p -> get_background_action<legacy_of_the_windrunners_t>( "legacy_of_the_windrunners" );
+      add_child( legacy_of_the_windrunners.action );
+    }
   }
 
   double cost() const override
@@ -3973,6 +4001,12 @@ struct aimed_shot_t : public aimed_shot_base_t
     lock_and_loaded = p() -> buffs.lock_and_load -> up();
 
     aimed_shot_base_t::schedule_execute( s );
+
+    if ( rng().roll( legacy_of_the_windrunners.chance ) )
+    {
+      for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
+        legacy_of_the_windrunners.action -> schedule_execute();
+    }
   }
 
   void execute() override
