@@ -221,8 +221,8 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   tyrs_enforcer_damage_t( paladin_t* p )
     : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
   {
-    proc = may_crit = true;
-    background = may_miss = false;
+    background = proc = may_crit = true;
+     may_miss = false;
   }
 };
 // Blessed Hammer (Protection) ================================================
@@ -815,10 +815,11 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
 void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 {
   // escape if we don't have Tyrs Enforcer
-  //if ( !talents.tyrs_enforcer->ok() )
+  if ( !talents.tyrs_enforcer->ok() )
     return;
+
   active.tyrs_enforcer_damage->set_target( s -> target);
-  active.tyrs_enforcer_damage->schedule_execute();
+  active.tyrs_enforcer_damage->execute();
 }
 
 bool paladin_t::standing_in_consecration() const
@@ -854,6 +855,7 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.t28_4p_prot = new t28_4p_prot_t( this );
+    active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
   }
 }
 
