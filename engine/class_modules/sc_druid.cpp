@@ -2263,8 +2263,8 @@ public:
     if ( p()->buff.ravenous_frenzy->elapsed( p()->sim->current_time() ) < 50_ms )
       return;
 
-    // trigger on non-free_cast or free_cast that requires you to actually cast
-    if ( !f || f == free_cast_e::APEX || f == free_cast_e::ONETHS )
+    // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
+    if ( !f || f == free_cast_e::APEX || f == free_cast_e::ONETHS || f == free_cast_e::URSOCS )
       p()->buff.ravenous_frenzy->trigger();
   }
 
