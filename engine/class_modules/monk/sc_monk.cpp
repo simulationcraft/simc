@@ -551,12 +551,6 @@ public:
   {
     double rm = ab::recharge_multiplier( cd );
 
-    // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->check() && current_resource() == RESOURCE_CHI && ab::cost() > 0 )
-    {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-    }
-
     return rm;
   }
 
@@ -5746,9 +5740,9 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
         if ( a->data().affected_by_label( label ) && a->cooldown->duration != 0_ms )
         {
           if ( new_ > 0 )
-            a->base_recharge_multiplier *= recharge_mult;
+            a->base_recharge_rate_multiplier *= recharge_mult;
           else
-            a->base_recharge_multiplier /= recharge_mult;
+            a->base_recharge_rate_multiplier /= recharge_mult;
 
           a->cooldown->adjust_recharge_multiplier();
         }
