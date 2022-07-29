@@ -758,7 +758,7 @@ public:
     // player_talent_t survival_instincts_cat;
 
     player_talent_t berserk_jungle_stalker;  // Row 8
-    player_talent_t carnivorious_instinct;
+    player_talent_t carnivorous_instinct;
     player_talent_t eye_of_fearful_symmetry;
     player_talent_t cateye_curio;
     player_talent_t berserk_frenzy;
@@ -924,10 +924,6 @@ public:
     const spell_data_t* feral;
     const spell_data_t* feral_overrides;
     const spell_data_t* berserk_cat;  // berserk cast/buff spell
-    const spell_data_t* bloodtalons_buff;
-    const spell_data_t* predatory_swiftness_buff;
-    const spell_data_t* savage_roar_buff;
-    const spell_data_t* scent_of_blood_buff;
 
     // Guardian
     const spell_data_t* guardian;
@@ -1532,9 +1528,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
       name_str_reporting = "berserk";
 
     if ( inc )
-    {
       set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
-    }
 
     if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
     {
@@ -1549,7 +1543,7 @@ struct berserk_cat_buff_t : public druid_buff_t<buff_t>
   {
     bool ret = base_t::trigger( s, v, c, d );
 
-    if ( ret && inc )
+    if ( ret && p().talent.berserk_jungle_stalker.ok() )  // TODO: convert to stack change callback
       p().buff.jungle_stalker->trigger();
 
     return ret;
@@ -1629,7 +1623,7 @@ struct bt_dummy_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n ), count( as<int>( p.talent.bloodtalons->effectN( 2 ).base_value() ) )
   {
     // The counting starts from the end of the triggering ability gcd.
-    set_duration( timespan_t::from_seconds( p.talent.bloodtalons->effectN( 1 ).base_value() ) + timespan_t::from_seconds(1.0) );
+    set_duration( timespan_t::from_seconds( p.talent.bloodtalons->effectN( 1 ).base_value() ) + 1_s );
     set_quiet( true );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
   }
@@ -2313,7 +2307,7 @@ public:
 
   void update_draught_uptime()
   {
-    if ( draught_uptime && p()->legendary.draught_of_deep_focus->ok() )
+    if ( draught_uptime && p()->talent.draught_of_deep_focus.ok() )
     {
       if ( get_dot_count() <= 1 )
         draught_uptime->update( true, ab::sim->current_time() );
@@ -2725,8 +2719,8 @@ public:
   {
     double am = ab::action_multiplier();
 
-    if ( draught_uptime && p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
-      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
+    if ( draught_uptime && p()->talent.draught_of_deep_focus.ok() && get_dot_count() <= 1 )
+      am *= 1.0 + p()->talent.draught_of_deep_focus->effectN( 1 ).percent();
 
     return am;
   }
@@ -3295,7 +3289,7 @@ public:
           parse_persistent_buff_effects( p->buff.bloodtalons, 0U, false );
 
       snapshots.tigers_fury =
-          parse_persistent_buff_effects<C>( p->buff.tigers_fury, 0U, true, p->conduit.carnivorous_instinct );
+          parse_persistent_buff_effects<S>( p->buff.tigers_fury, 0U, true, p->talent.carnivorous_instinct );
 
       snapshots.clearcasting =
           parse_persistent_buff_effects<S>( p->buff.clearcasting_cat, 0U, false, p->talent.moment_of_clarity );
@@ -3327,9 +3321,9 @@ public:
       p()->buff.clearcasting_cat->decrement();
 
       // cat-eye curio refunds energy based on base_cost
-      if ( p()->legendary.cateye_curio->ok() )
+      if ( p()->talent.cateye_curio.ok() )
       {
-        p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->legendary.cateye_curio->effectN( 1 ).percent(),
+        p()->resource_gain( RESOURCE_ENERGY, eff_cost * p()->talent.cateye_curio->effectN( 1 ).percent(),
                             p()->gain.cateye_curio );
       }
 
@@ -3362,34 +3356,39 @@ public:
           p()->cooldown.berserk_cat->adjust( dur_ );
       }
 
-      // Only if CPs are actually consumed
-      if ( !free_cast )
+      if ( free_cast == free_cast_e::CONVOKE )  // further effects are not processed for convoke fb
+        return;
+
+      if ( p()->buff.eye_of_fearful_symmetry->check() )
       {
-        p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
+        p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.eye_of_fearful_symmetry->value(),
+                            p()->gain.eye_of_fearful_symmetry );
+        p()->buff.eye_of_fearful_symmetry->decrement();
+      }
 
-        sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
-                        util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
+      if ( free_cast )  // rest requires actual CP consumption
+        return;
 
-        stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
+      p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
 
-        if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-             rng().roll( consumed * p()->talent.berserk_relentlessness->effectN( 1 ).percent() ) )
-        {
-          p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
-        }
+      sim->print_log( "{} consumes {} {} for {} (0)", player->name(), consumed,
+                      util::resource_type_string( RESOURCE_COMBO_POINT ), name() );
 
-        if ( p()->buff.eye_of_fearful_symmetry->up() )
-        {
-          p()->resource_gain( RESOURCE_COMBO_POINT, p()->buff.eye_of_fearful_symmetry->check_value(),
-                              p()->gain.eye_of_fearful_symmetry );
-          p()->buff.eye_of_fearful_symmetry->decrement();
-        }
+      stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
 
-        if ( p()->talent.predatory_swiftness.ok() )
-          p()->buff.predatory_swiftness->trigger( 1, 1.0, consumed * p()->buff.predatory_swiftness->default_value );
+      if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
+           rng().roll( consumed * p()->talent.berserk_relentlessness->effectN( 1 ).percent() ) )
+      {
+        p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
+      }
 
-        if ( p()->conduit.sudden_ambush->ok() && rng().roll( p()->conduit.sudden_ambush.percent() * consumed ) )
-          p()->buff.sudden_ambush->trigger();
+      if ( p()->talent.predatory_swiftness.ok() )
+        p()->buff.predatory_swiftness->trigger( 1, 1.0, consumed * p()->buff.predatory_swiftness->default_value );
+
+      if ( p()->talent.sudden_ambush.ok() &&
+           rng().roll( p()->talent.sudden_ambush->effectN( 1 ).percent() * consumed ) )
+      {
+        p()->buff.sudden_ambush->trigger();
       }
     }
   }
@@ -3492,10 +3491,10 @@ public:
       if ( s->result == RESULT_CRIT )
         attack_critical = true;
 
-      if ( p()->legendary.frenzyband->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
+      if ( p()->talent.berserk_frenzy->ok() && energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 &&
            ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) )
       {
-        trigger_frenzyband( s->target, s->result_amount );
+        trigger_berserk_frenzy( s->target, s->result_amount );
       }
     }
   }
@@ -3521,10 +3520,12 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      if ( p()->legendary.frenzyband->ok() )
+      if ( p()->talent.berserk_frenzy.ok() )
       {
-        p()->cooldown.berserk_cat->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
-        p()->cooldown.incarnation->adjust( -p()->legendary.frenzyband->effectN( 1 ).time_value(), false );
+        auto dur = p()->talent.berserk_frenzy->effectN( 1 ).time_value();  // spell data has this as a positive value
+
+        p()->cooldown.berserk_cat->adjust( -dur, false );
+        p()->cooldown.incarnation->adjust( -dur, false );
       }
 
       trigger_primal_fury();
@@ -3595,12 +3596,12 @@ public:
     p()->proc.predator->occur();
   }
 
-  void trigger_frenzyband( player_t* t, double d )
+  void trigger_berserk_frenzy( player_t* t, double d )
   {
     if ( !special || !harmful || !d )
       return;
 
-    residual_action::trigger( p()->active.frenzied_assault, t, p()->legendary.frenzyband->effectN( 2 ).percent() * d );
+    residual_action::trigger( p()->active.frenzied_assault, t, p()->talent.berserk_frenzy->effectN( 2 ).percent() * d );
   }
 };  // end druid_cat_attack_t
 
@@ -3647,7 +3648,8 @@ struct brutal_slash_t : public cat_attack_t
   {
     double c = cat_attack_t::cost();
 
-    c -= p()->buff.scent_of_blood->check_stack_value();
+    if ( p()->buff.scent_of_blood->check() )
+      c -= p()->buff.scent_of_blood->check_stack_value();
 
     return c;
   }
@@ -3921,7 +3923,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     double tm = cat_attack_t::composite_target_multiplier( t );
 
-    if ( p()->conduit.taste_for_blood->ok() )
+    if ( p()->talent.taste_for_blood.ok() )
     {
       auto t_td  = td( t );
       int bleeds = t_td->dots.rake->is_ticking() +
@@ -3932,7 +3934,7 @@ struct ferocious_bite_t : public cat_attack_t
                    t_td->dots.feral_frenzy->is_ticking() +
                    t_td->dots.sickle_of_the_lion->is_ticking();
 
-      tm *= 1.0 + p()->conduit.taste_for_blood.percent() * bleeds;
+      tm *= 1.0 + p()->talent.taste_for_blood->effectN( 1 ).percent() * bleeds;
     }
 
     return tm;
@@ -3986,8 +3988,8 @@ struct lunar_inspiration_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
-    if ( p()->legendary.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
-      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN( 1 ).percent();
+    if ( p()->talent.draught_of_deep_focus->ok() && get_dot_count() <= 1 )
+      am *= 1.0 + p()->talent.draught_of_deep_focus->effectN( 1 ).percent();
 
     return am;
   }
@@ -4073,7 +4075,7 @@ struct rake_t : public cat_attack_t
   bool stealthed() const override
   {
     return ( p()->talent.berserk_jungle_stalker.ok() &&
-             ( p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() ) ) ||
+             ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) ) ||
            cat_attack_t::stealthed();
   }
 
@@ -4081,7 +4083,7 @@ struct rake_t : public cat_attack_t
   {
     double pm = cat_attack_t::composite_persistent_multiplier( s );
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
       pm *= 1.0 + stealth_mul;
 
     return pm;
@@ -4091,8 +4093,8 @@ struct rake_t : public cat_attack_t
   {
     double am = cat_attack_t::action_multiplier();
 
-    if ( p()->legendary.draught_of_deep_focus->ok() && bleed->get_dot_count() <= 1 )
-      am *= 1.0 + p()->legendary.draught_of_deep_focus->effectN(1).percent();
+    if ( p()->talent.draught_of_deep_focus->ok() && bleed->get_dot_count() <= 1 )
+      am *= 1.0 + p()->talent.draught_of_deep_focus->effectN(1).percent();
 
     return am;
   }
@@ -4120,7 +4122,7 @@ struct rake_t : public cat_attack_t
       p()->buff.bt_rake->trigger();
       
       if ( p()->buff.sudden_ambush->up() && !stealthed() )
-      	p()->buff.sudden_ambush->decrement();
+      	p()->buff.sudden_ambush->expire();
     }
   }
 };
@@ -4201,7 +4203,7 @@ struct primal_wrath_t : public cat_attack_t
   int combo_points;
 
   primal_wrath_t( druid_t* p, std::string_view opt ) : primal_wrath_t( p, "primal_wrath", p->talent.primal_wrath, opt )
-  {}
+  {} // TODO: remove ctor overload when no longer needed
 
   primal_wrath_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : cat_attack_t( n, p, s, opt ),
@@ -4291,7 +4293,7 @@ struct savage_roar_t : public cat_attack_t
   savage_roar_t( druid_t* p, std::string_view opt ) : cat_attack_t( "savage_roar", p, p->talent.savage_roar, opt )
   {
     may_crit = may_miss = harmful = false;
-    dot_duration = base_tick_time = timespan_t::zero();
+    dot_duration = base_tick_time = 0_ms;
   }
 
   // We need a custom implementation of Pandemic refresh mechanics since our ready() method relies on having the correct
@@ -4341,19 +4343,20 @@ struct shred_t : public cat_attack_t
   shred_t( druid_t* p, std::string_view n, std::string_view opt )
     : cat_attack_t( n, p, p->find_class_spell( "Shred" ), opt ), stealth_mul( 0.0 ), stealth_cp( 0.0 )
   {
-    if ( p->talent.improved_prowl.ok() )
-      stealth_mul = data().effectN( 3 ).percent();
-
     if ( p->talent.improved_bleeds.ok() )
       bleed_mul = data().effectN( 4 ).percent();
 
-    stealth_cp = p->talent.improved_shred->effectN( 1 ).base_value();
+    if ( p->talent.improved_prowl.ok() )
+      stealth_mul = data().effectN( 3 ).percent();
+
+    if ( p->talent.improved_shred.ok() )
+      stealth_cp = p->talent.improved_shred->effectN( 1 ).base_value();
   }
 
   bool stealthed() const override
   {
     return ( p()->talent.berserk_jungle_stalker.ok() &&
-             ( p()->buff.berserk_cat->up() || p()->buff.incarnation_cat->up() ) ) ||
+             ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) ) ||
            cat_attack_t::stealthed();
   }
 
@@ -4361,7 +4364,7 @@ struct shred_t : public cat_attack_t
   {
     double e = cat_attack_t::composite_energize_amount( s );
 
-    if ( stealth_cp && ( stealthed() || p()->buff.sudden_ambush->up() ) )
+    if ( stealthed() || p()->buff.sudden_ambush->check() )
       e += stealth_cp;
 
     return e;
@@ -4376,7 +4379,7 @@ struct shred_t : public cat_attack_t
       p()->buff.bt_shred->trigger();
 
       if ( p()->buff.sudden_ambush->up() && !stealthed() )
-        p()->buff.sudden_ambush->decrement();
+        p()->buff.sudden_ambush->expire();
     }
   }
 
@@ -4384,7 +4387,7 @@ struct shred_t : public cat_attack_t
   {
     double cm = cat_attack_t::composite_crit_chance_multiplier();
 
-    if ( stealth_mul && stealthed() || p()->buff.sudden_ambush->up() )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
       cm *= 2.0;
 
     return cm;
@@ -4394,7 +4397,7 @@ struct shred_t : public cat_attack_t
   {
     double m = cat_attack_t::action_multiplier();
 
-    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->up() ) )
+    if ( stealth_mul && ( stealthed() || p()->buff.sudden_ambush->check() ) )
       m *= 1.0 + stealth_mul;
 
     return m;
@@ -4421,7 +4424,8 @@ struct swipe_cat_t : public cat_attack_t
   {
     double c = cat_attack_t::cost();
 
-    c -= p()->buff.scent_of_blood->check_stack_value();
+    if ( p()->buff.scent_of_blood->check() )
+      c -= p()->buff.scent_of_blood->check_stack_value();
 
     return c;
   }
@@ -4445,12 +4449,10 @@ struct swipe_cat_t : public cat_attack_t
 // Tiger's Fury =============================================================
 struct tigers_fury_t : public cat_attack_t
 {
-  timespan_t duration;
-
   tigers_fury_t( druid_t* p, std::string_view opt ) : tigers_fury_t( p, "tigers_fury", p->talent.tigers_fury, opt ) {}
 
   tigers_fury_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : cat_attack_t( n, p, s, opt ), duration( p->buff.tigers_fury->buff_duration() )
+    : cat_attack_t( n, p, s, opt )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     energize_type = action_energize::ON_CAST;
@@ -4464,7 +4466,7 @@ struct tigers_fury_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.tigers_fury->trigger( duration );
+    p()->buff.tigers_fury->trigger();
 
     if ( !free_cast && p()->legendary.eye_of_fearful_symmetry->ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
@@ -6003,6 +6005,14 @@ struct entangling_roots_t : public druid_spell_t
       return true;
 
     return druid_spell_t::check_form_restriction();
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( p()->buff.predatory_swiftness->up() )
+      p()->buff.predatory_swiftness->expire();
   }
 };
 
@@ -8721,8 +8731,8 @@ struct cat_melee_t : public druid_melee_t<cat_attacks::cat_attack_t>
     base_t::form_mask = form_e::CAT_FORM;
 
     // parse this here so AA modifier gets applied after is_auto_attack is set true
-    base_t::snapshots.tigers_fury = base_t::parse_persistent_buff_effects<const conduit_data_t&>(
-        p->buff.tigers_fury, 0U, true, p->conduit.carnivorous_instinct );
+    base_t::snapshots.tigers_fury = base_t::parse_persistent_buff_effects<const spell_data_t*>(
+        p->buff.tigers_fury, 0U, true, p->talent.carnivorous_instinct );
   }
 };
 }  // namespace auto_attacks
@@ -9291,7 +9301,7 @@ void druid_t::init_spells()
   talent.predatory_swiftness            = ST( "Predatory Swiftness" );
   talent.infected_wounds_cat            = STS( "Infected Wounds", DRUID_FERAL );
   talent.berserk_jungle_stalker         = ST( "Berserk: Jungle Stalker" );
-  talent.carnivorious_instinct          = ST( "Carnivorous Instinct" );
+  talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
   talent.eye_of_fearful_symmetry        = ST( "Eye of Fearful Symmetry" );
   talent.cateye_curio                   = ST( "Cat-Eye Curio (no max E)" );
   talent.berserk_frenzy                 = ST( "Berserk: Frenzy" );
@@ -9505,10 +9515,6 @@ void druid_t::init_spells()
   spec.berserk_cat              = check( talent.berserk_relentlessness.ok() ||
                                          talent.berserk_jungle_stalker.ok() ||
                                          talent.berserk_frenzy.ok(), 106951 );
-  spec.bloodtalons_buff         = check( talent.bloodtalons.ok(), 145152 );
-  spec.predatory_swiftness_buff = check( talent.predatory_swiftness.ok(), 69369 );
-  spec.savage_roar_buff         = check( talent.savage_roar.ok(), 62071 );
-  spec.scent_of_blood_buff      = find_spell( 285646 );
 
   // Guardian Abilities
   spec.guardian                 = find_specialization_spell( "Guardian Druid" );
@@ -9547,8 +9553,8 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE ]         = 100;
   resources.base[ RESOURCE_COMBO_POINT ]  = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
-  resources.base[ RESOURCE_ENERGY ]       = 100 + talent.moment_of_clarity->effectN( 3 ).resource( RESOURCE_ENERGY ) +
-                                      legendary.cateye_curio->effectN( 2 ).base_value();
+  resources.base[ RESOURCE_ENERGY ]       = 100 + talent.max_energy->effectN( 1 ).base_value() +
+                                            talent.cateye_curio->effectN( 2 ).base_value();
 
   // only activate other resources if you have the affinity and affinity_resources = true
   resources.active_resource[ RESOURCE_HEALTH ]       = specialization() == DRUID_GUARDIAN;
@@ -9881,13 +9887,17 @@ void druid_t::create_buffs()
     } );
 
   // Feral buffs
+  buff.apex_predators_craving =
+      make_buff( this, "apex_predators_craving", talent.apex_predators_craving->effectN( 1 ).trigger() )
+          ->set_chance( talent.apex_predators_craving->effectN( 1 ).percent() );
+
   buff.berserk_cat =
       make_buff<berserk_cat_buff_t>( *this, "berserk_cat", spec.berserk_cat );
 
   buff.incarnation_cat =
       make_buff<berserk_cat_buff_t>( *this, "incarnation_king_of_the_jungle", talent.incarnation_cat, true );
 
-  buff.bloodtalons     = make_buff( this, "bloodtalons", spec.bloodtalons_buff );
+  buff.bloodtalons     = make_buff( this, "bloodtalons", find_spell( 145152 ) );
   buff.bt_rake         = make_buff<bt_dummy_buff_t>( *this, "bt_rake" );
   buff.bt_shred        = make_buff<bt_dummy_buff_t>( *this, "bt_shred" );
   buff.bt_swipe        = make_buff<bt_dummy_buff_t>( *this, "bt_swipe" );
@@ -9898,39 +9908,33 @@ void druid_t::create_buffs()
   // 1.05s ICD per https://github.com/simulationcraft/simc/commit/b06d0685895adecc94e294f4e3fcdd57ac909a10
   buff.clearcasting_cat = make_buff( this, "clearcasting_cat", talent.omen_of_clarity_cat->effectN( 1 ).trigger() )
     ->set_cooldown( 1.05_s )
-    ->modify_max_stack( as<int>( talent.moment_of_clarity->effectN( 1 ).base_value() ) );
+    ->apply_affecting_aura( talent.moment_of_clarity );
   buff.clearcasting_cat->name_str_reporting = "clearcasting";
+
+  buff.eye_of_fearful_symmetry =
+      make_buff( this, "eye_of_fearful_symmetry", talent.eye_of_fearful_symmetry->effectN( 1 ).trigger() );
+  buff.eye_of_fearful_symmetry->set_default_value(
+      buff.eye_of_fearful_symmetry->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   buff.jungle_stalker = make_buff( this, "jungle_stalker", spec.berserk_cat->effectN( 2 ).trigger() );
 
-  buff.predatory_swiftness = make_buff( this, "predatory_swiftness", spec.predatory_swiftness_buff )
+  buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_default_value( talent.predatory_swiftness->effectN( 3 ).percent() );  // % chance per CP
 
   buff.prowl = make_buff( this, "prowl", find_class_spell( "Prowl" ) );
 
-  buff.savage_roar = make_buff( this, "savage_roar", talent.savage_roar )
-    ->set_refresh_behavior( buff_refresh_behavior::DURATION )  // Pandemic refresh is done by the action
-    ->set_tick_behavior( buff_tick_behavior::NONE );
+  buff.savage_roar = make_buff( this, "savage_roar", find_spell( 62071 ) )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );  // Pandemic refresh is done by the action
 
-  buff.scent_of_blood = make_buff( this, "scent_of_blood", spec.scent_of_blood_buff )
+  buff.scent_of_blood = make_buff( this, "scent_of_blood", find_spell( 285646 ) )
     ->set_default_value( talent.scent_of_blood->effectN( 1 ).base_value() )
     ->set_max_stack( 10 );
+
+  buff.sudden_ambush = make_buff( this, "sudden_ambush", talent.sudden_ambush->effectN( 1 ).trigger() );
 
   buff.tigers_fury = make_buff( this, "tigers_fury", talent.tigers_fury )
     ->set_cooldown( 0_ms )
     ->apply_affecting_aura( talent.predator );
-
-  // Feral Legendaries & Conduits
-  buff.apex_predators_craving =
-      make_buff( this, "apex_predators_craving", legendary.apex_predators_craving->effectN( 1 ).trigger() )
-          ->set_chance( legendary.apex_predators_craving->effectN( 1 ).percent() );
-
-  buff.eye_of_fearful_symmetry =
-      make_buff( this, "eye_of_fearful_symmetry", legendary.eye_of_fearful_symmetry->effectN( 1 ).trigger() );
-  buff.eye_of_fearful_symmetry->set_default_value(
-      buff.eye_of_fearful_symmetry->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
-
-  buff.sudden_ambush = make_buff( this, "sudden_ambush", conduit.sudden_ambush->effectN( 1 ).trigger() );
 
   // Guardian buffs
   buff.berserk_bear =
@@ -10181,15 +10185,15 @@ void druid_t::create_actions()
   }
 
   // Feral
-  if ( legendary.apex_predators_craving->ok() )
+  if ( talent.apex_predators_craving.ok() )
   {
     auto apex = get_secondary_action_n<ferocious_bite_t>( "apex_predators_craving", "" );
-    apex->s_data_reporting = legendary.apex_predators_craving;
+    apex->s_data_reporting = talent.apex_predators_craving;
     apex->set_free_cast( free_cast_e::APEX );
     active.ferocious_bite_apex = apex;
   }
 
-  if ( legendary.frenzyband->ok() )
+  if ( talent.berserk_frenzy.ok() )
     active.frenzied_assault = get_secondary_action<frenzied_assault_t>( "frenzied_assault" );
 
   if ( sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
@@ -12414,6 +12418,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.stellar_drift );
   action.apply_affecting_aura( talent.twin_moons );
   
+  // Feral
+
   // Guardian
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
