@@ -305,6 +305,13 @@ public:
     timespan_t thorns_attack_period = 2_s;
     double thorns_hit_chance = 0.75;
 
+    // Multi-Spec
+    double adaptive_swarm_jump_distance_min = 5.0;
+    double adaptive_swarm_jump_distance_max = 40.0;
+    unsigned adaptive_swarm_friendly_targets = 20;
+    std::string adaptive_swarm_prepull_setup = "";
+    int convoke_the_spirits_deck = 5;
+
     // Balance
     timespan_t eclipse_snapshot_period = 3_s;  // how often to re-snapshot mastery onto eclipse
     double initial_astral_power = 0.0;
@@ -324,12 +331,7 @@ public:
     double time_spend_healing = 0.0;
 
     // Covenant options
-    double adaptive_swarm_jump_distance_min = 5.0;
-    double adaptive_swarm_jump_distance_max = 40.0;
-    unsigned adaptive_swarm_friendly_targets = 20;
-    std::string adaptive_swarm_prepull_setup = "";
     double celestial_spirits_exceptional_chance = 0.85;
-    int convoke_the_spirits_deck = 5;
     std::string kindred_affinity_covenant = "night_fae";
     double kindred_spirits_absorbed = 0.15;
     double kindred_spirits_dps_pool_multiplier = 0.85;
@@ -407,9 +409,9 @@ public:
   struct buffs_t
   {
     // General
+    buff_t* barkskin;
     buff_t* bear_form;
     buff_t* cat_form;
-    buff_t* barkskin;
     buff_t* prowl;
     buff_t* thorns;
     buff_t* oath_of_the_elder_druid;
@@ -441,28 +443,27 @@ public:
     buff_t* balance_of_all_things_arcane;
     buff_t* balance_of_all_things_nature;
     buff_t* celestial_alignment;
-    buff_t* incarnation_moonkin;
     buff_t* eclipse_lunar;
     buff_t* eclipse_solar;
     buff_t* fury_of_elune;  // AP ticks
     buff_t* celestial_infusion;  // AP ticks for 2T28
+    buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* oneths_free_starfall;
     buff_t* oneths_free_starsurge;
     buff_t* owlkin_frenzy;
+    buff_t* primordial_arcanic_pulsar;
     buff_t* solstice;
     buff_t* starfall;
     buff_t* starlord;  // talent
     buff_t* starsurge_lunar;  // stacking eclipse empowerment for each eclipse
     buff_t* starsurge_solar;
-    buff_t* warrior_of_elune;
-    // Balance Legendaries
-    buff_t* primordial_arcanic_pulsar;
     buff_t* timeworn_dreambinder;
+    buff_t* warrior_of_elune;
 
     // Feral
+    buff_t* apex_predators_craving;
     buff_t* berserk_cat;
-    buff_t* incarnation_cat;
     buff_t* bloodtalons;
     buff_t* bt_rake;          // dummy buff
     buff_t* bt_shred;         // dummy buff
@@ -471,19 +472,17 @@ public:
     buff_t* bt_moonfire;      // dummy buff
     buff_t* bt_brutal_slash;  // dummy buff
     buff_t* clearcasting_cat;
+    buff_t* eye_of_fearful_symmetry;
+    buff_t* incarnation_cat;
     buff_t* jungle_stalker;
     buff_t* predatory_swiftness;
     buff_t* savage_roar;
     buff_t* scent_of_blood;
-    buff_t* tigers_fury;
-    // Feral Legendaries & Conduits
-    buff_t* eye_of_fearful_symmetry;
-    buff_t* apex_predators_craving;
     buff_t* sudden_ambush;
+    buff_t* tigers_fury;
 
     // Guardian
     buff_t* berserk_bear;
-    buff_t* incarnation_bear;
     buff_t* architects_aligner;
     buff_t* bristling_fur;
     buff_t* dream_of_cenarius;
@@ -492,6 +491,7 @@ public:
     buff_t* gore;
     buff_t* gory_fur;
     buff_t* guardian_of_elune;
+    buff_t* incarnation_bear;
     buff_t* rage_of_the_sleeper;
     buff_t* tooth_and_claw;
     buff_t* ursocs_fury;
@@ -558,12 +558,12 @@ public:
     gain_t* natures_balance;  // talent
 
     // Feral (Cat)
-    gain_t* energy_refund;
-    gain_t* primal_fury;
     gain_t* berserk;
     gain_t* cateye_curio;
+    gain_t* energy_refund;
     gain_t* eye_of_fearful_symmetry;
     gain_t* incessant_hunter;
+    gain_t* primal_fury;
 
     // Guardian (Bear)
     gain_t* bear_form;
@@ -571,7 +571,6 @@ public:
     gain_t* brambles;
     gain_t* bristling_fur;
     gain_t* gore;
-    gain_t* rage_refund;
     gain_t* rage_from_melees;
   } gain;
 
@@ -592,11 +591,9 @@ public:
     proc_t* pulsar;
     proc_t* bugged_umbral_infusion;
 
-    // Feral & Resto
+    // Feral
     proc_t* clearcasting;
     proc_t* clearcasting_wasted;
-
-    // Feral
     proc_t* predator;
     proc_t* predator_wasted;
     proc_t* primal_fury;
@@ -908,7 +905,8 @@ public:
     const spell_data_t* thrash_bear_dot;
 
     // Multi-Spec
-    const spell_data_t* survival_instincts_buff;
+    const spell_data_t* adaptive_swarm_damage;
+    const spell_data_t* adaptive_swarm_heal;
 
     // Balance
     const spell_data_t* balance;
@@ -938,11 +936,11 @@ public:
 
   struct uptimes_t
   {
-    uptime_t* primordial_arcanic_pulsar;
     uptime_t* combined_ca_inc;
     uptime_t* eclipse_solar;
     uptime_t* eclipse_lunar;
     uptime_t* eclipse_none;
+    uptime_t* primordial_arcanic_pulsar;
   } uptime;
 
   // Covenant
@@ -963,8 +961,6 @@ public:
 
     // Necrolord
     const spell_data_t* necrolord;  // adaptive swarm
-    const spell_data_t* adaptive_swarm_damage;
-    const spell_data_t* adaptive_swarm_heal;
   } cov;
 
   // Conduits
@@ -1515,41 +1511,6 @@ struct architects_aligner_buff_t : public druid_buff_t<buff_t>
   }
 };
 
-// Berserk (Feral) / Incarn Buff ============================================
-struct berserk_cat_buff_t : public druid_buff_t<buff_t>
-{
-  bool inc;
-
-  berserk_cat_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b )
-  {
-    set_cooldown( 0_ms );
-    if ( !inc && p.specialization() == DRUID_FERAL )
-      name_str_reporting = "berserk";
-
-    if ( inc )
-      set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
-
-    if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
-    {
-      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          p.active.sickle_of_the_lion->execute_on_target( p.target );
-      } );
-    }
-  }
-
-  bool trigger( int s, double v, double c, timespan_t d ) override
-  {
-    bool ret = base_t::trigger( s, v, c, d );
-
-    if ( ret && p().talent.berserk_jungle_stalker.ok() )  // TODO: convert to stack change callback
-      p().buff.jungle_stalker->trigger();
-
-    return ret;
-  }
-};
-
 // Berserk (Guardian) / Incarn Buff =========================================
 struct berserk_bear_buff_t : public druid_buff_t<buff_t>
 {
@@ -1611,6 +1572,41 @@ struct berserk_bear_buff_t : public druid_buff_t<buff_t>
     }
 
     base_t::expire_override( s, d );
+  }
+};
+
+// Berserk (Feral) / Incarn Buff ============================================
+struct berserk_cat_buff_t : public druid_buff_t<buff_t>
+{
+  bool inc;
+
+  berserk_cat_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, bool b = false )
+    : base_t( p, n, s ), inc( b )
+  {
+    set_cooldown( 0_ms );
+    if ( !inc && p.specialization() == DRUID_FERAL )
+      name_str_reporting = "berserk";
+
+    if ( inc )
+      set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_RESOURCE_COST );
+
+    if ( p.sets->has_set_bonus( DRUID_FERAL, T28, B4 ) )
+    {
+      set_stack_change_callback( [ &p ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          p.active.sickle_of_the_lion->execute_on_target( p.target );
+      } );
+    }
+  }
+
+  bool trigger( int s, double v, double c, timespan_t d ) override
+  {
+    bool ret = base_t::trigger( s, v, c, d );
+
+    if ( ret && p().talent.berserk_jungle_stalker.ok() )  // TODO: convert to stack change callback
+      p().buff.jungle_stalker->trigger();
+
+    return ret;
   }
 };
 
@@ -2705,8 +2701,8 @@ public:
     using S = const spell_data_t*;
     using C = const conduit_data_t&;
 
-    parse_dot_debuffs<C>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
-                          p()->cov.adaptive_swarm_damage, p()->conduit.evolved_swarm, p()->spec.balance );
+    parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
+                          p()->spec.adaptive_swarm_damage, p()->spec.balance );
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
                           p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
@@ -4196,6 +4192,7 @@ struct rip_t : public cat_attack_t
 };
 
 // Primal Wrath =============================================================
+// NOTE: must be defined AFTER rip_T
 struct primal_wrath_t : public cat_attack_t
 {
   rip_t* rip;
@@ -4221,10 +4218,10 @@ struct primal_wrath_t : public cat_attack_t
     // Manually set true so bloodtalons is decremented and we get proper snapshot reporting
     snapshots.bloodtalons = true;
 
-    if ( p->legendary.circle_of_life_and_death->ok() )
+    if ( p->talent.circle_of_life_and_death.ok() )
     {
       base_dur *=
-          1.0 + p->query_aura_effect( p->legendary.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )
+          1.0 + p->query_aura_effect( p->talent.circle_of_life_and_death, A_ADD_PCT_MODIFIER, P_EFFECT_2, &data() )
                     ->percent();
     }
   }
@@ -4538,7 +4535,7 @@ struct sickle_of_the_lion_t : public cat_attack_t
 
   sickle_of_the_lion_t( druid_t* p )
     : cat_attack_t( "sickle_of_the_lion", p, p->sets->set( DRUID_FERAL, T28, B4 )->effectN( 1 ).trigger() ),
-      as_mul( p->cov.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent() )
+      as_mul( p->spec.adaptive_swarm_damage->effectN( 2 ).percent() + p->conduit.evolved_swarm.percent() )
   {
     background = true;
     may_miss = may_glance = may_dodge = may_block = may_parry = false;
@@ -4635,6 +4632,44 @@ struct berserk_bear_t : public bear_attack_t
   }
 };
 
+// Brambles =================================================================
+struct brambles_t : public bear_attack_t
+{
+  brambles_t( druid_t* p ) : bear_attack_t( "brambles", p, p->find_spell( 203958 ) )
+  {
+    // Ensure reflect scales with damage multipliers
+    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
+    background = may_crit = proc = may_miss = true;
+  }
+};
+
+struct brambles_pulse_t : public bear_attack_t
+{
+  brambles_pulse_t( druid_t* p, std::string_view n ) : bear_attack_t( n, p, p->find_spell( 213709 ) )
+  {
+    background = dual = true;
+    aoe               = -1;
+  }
+};
+
+// Bristling Fur Spell ======================================================
+struct bristling_fur_t : public bear_attack_t
+{
+  bristling_fur_t( druid_t* player, std::string_view opt )
+    : bear_attack_t( "bristling_fur", player, player->talent.bristling_fur, opt )
+  {
+    harmful     = false;
+    use_off_gcd = true;
+  }
+
+  void execute() override
+  {
+    bear_attack_t::execute();
+
+    p()->buff.bristling_fur->trigger();
+  }
+};
+
 // Growl ====================================================================
 struct growl_t : public bear_attack_t
 {
@@ -4651,6 +4686,19 @@ struct growl_t : public bear_attack_t
       target->taunt( player );
 
     bear_attack_t::impact( s );
+  }
+};
+
+// Incapacitating Roar ======================================================
+struct incapacitating_roar_t : public bear_attack_t
+{
+  incapacitating_roar_t( druid_t* p, std::string_view opt )
+    : bear_attack_t( "incapacitating_roar", p, p->talent.incapacitating_roar, opt )
+  {
+    harmful = false;
+
+    form_mask = BEAR_FORM;
+    autoshift = p->active.shift_to_bear;
   }
 };
 
@@ -5812,23 +5860,417 @@ namespace spells
 // Druid Spells
 // ==========================================================================
 
-// Brambles =================================================================
-struct brambles_t : public druid_spell_t
+// Adaptive Swarm ===========================================================
+struct adaptive_swarm_t : public druid_spell_t
 {
-  brambles_t( druid_t* p ) : druid_spell_t( "brambles", p, p->find_spell( 203958 ) )
+  struct swarm_target_t
   {
-    // Ensure reflect scales with damage multipliers
-    snapshot_flags |= STATE_VERSATILITY | STATE_TGT_MUL_DA | STATE_MUL_DA;
-    background = may_crit = proc = may_miss = true;
-  }
-};
+    player_t* player;
+    event_t* event;
 
-struct brambles_pulse_t : public druid_spell_t
-{
-  brambles_pulse_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 213709 ) )
+    swarm_target_t( player_t* p, event_t* e = nullptr ) : player( p ), event( e ) {}
+    swarm_target_t() : player(), event() {}
+
+    operator player_t*() { return player; }
+    operator event_t*() { return event; }
+    bool operator !() { return !player && !event; }
+  };
+
+  struct adaptive_swarm_state_t : public action_state_t
   {
-    background = dual = true;
-    aoe               = -1;
+  private:
+    int default_stacks;
+
+  public:
+    swarm_target_t swarm_target;
+    int stacks;
+    bool jump;
+
+    adaptive_swarm_state_t( action_t* a, player_t* t )
+      : action_state_t( a, t ),
+        default_stacks( as<int>( debug_cast<druid_t*>( a->player )->talent.adaptive_swarm->effectN( 1 ).base_value() ) ),
+        stacks( 0 ),
+        jump( false )
+    {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+
+      swarm_target = {};
+      stacks = default_stacks;
+      jump = false;
+    }
+
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+      auto swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
+
+      swarm_target = swarm_s->swarm_target;
+      stacks = swarm_s->stacks;
+      jump = swarm_s->jump;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+
+      s << " swarm_stacks=" << stacks;
+
+      if ( jump )
+        s << " (jumped)";
+
+      return s;
+    }
+  };
+
+  struct adaptive_swarm_base_t : public druid_spell_t
+  {
+    adaptive_swarm_base_t* other;
+    double tf_mul;
+    bool heal;
+
+    adaptive_swarm_base_t( druid_t* p, std::string_view n, const spell_data_t* s )
+      : druid_spell_t( n, p, s ),
+        other( nullptr ),
+        tf_mul( p->query_aura_effect( p->talent.tigers_fury, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent() ),
+        heal( false )
+    {
+      dual = background = true;
+      dot_behavior = dot_behavior_e::DOT_CLIP;
+    }
+
+    action_state_t* new_state() override
+    {
+      return new adaptive_swarm_state_t( this, target );
+    }
+
+    adaptive_swarm_state_t* state( action_state_t* s )
+    {
+      return debug_cast<adaptive_swarm_state_t*>( s );
+    }
+
+    const adaptive_swarm_state_t* state( const action_state_t* s ) const
+    {
+      return debug_cast<const adaptive_swarm_state_t*>( s );
+    }
+
+    timespan_t travel_time() const override
+    {
+      if ( debug_cast<adaptive_swarm_state_t*>( execute_state )->jump )
+      {
+        auto dist =
+            rng().range( p()->options.adaptive_swarm_jump_distance_min, p()->options.adaptive_swarm_jump_distance_max );
+
+        return timespan_t::from_seconds( dist / travel_speed );
+      }
+
+      if ( target == player )
+        return 0_ms;
+
+      return druid_spell_t::travel_time();
+    }
+
+    virtual swarm_target_t new_swarm_target( swarm_target_t = {} ) = 0;
+
+    void send_swarm( swarm_target_t swarm_target, int stack )
+    {
+      sim->print_debug( "ADAPTIVE_SWARM: jumping {} {} stacks to {}", stack, heal ? "heal" : "damage",
+                        heal ? swarm_target.event ? "existing target" : "new target" : swarm_target.player->name() );
+
+      auto new_state = state( get_state() );
+
+      new_state->stacks = stack;
+      new_state->jump = true;
+      new_state->swarm_target = swarm_target;
+      new_state->target = swarm_target;
+
+      schedule_execute( new_state );
+    }
+
+    void jump_swarm( int s )
+    {
+      auto stacks = s - 1;
+
+      if ( stacks <= 0 )
+      {
+        sim->print_debug( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
+        return;
+      }
+
+      auto new_target = other->new_swarm_target();
+      if ( !new_target )
+      {
+        new_target = new_swarm_target();
+        assert( !new_target == false );
+        send_swarm( new_target, stacks );
+      }
+      else
+      {
+        other->send_swarm( new_target, stacks );
+      }
+
+      if ( p()->talent.unbridled_swarm.ok() && rng().roll( p()->talent.unbridled_swarm->effectN( 1 ).percent() ) )
+      {
+        auto second_target = other->new_swarm_target( new_target );
+        if ( !second_target )
+        {
+          second_target = new_swarm_target();
+          assert( !second_target == false );
+          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
+          send_swarm( second_target, stacks );
+        }
+        else
+        {
+          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
+          other->send_swarm( second_target, stacks );
+        }
+      }
+    }
+  };
+
+  struct adaptive_swarm_damage_t : public adaptive_swarm_base_t
+  {
+    adaptive_swarm_damage_t( druid_t* p )
+      : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->spec.adaptive_swarm_damage )
+    {}
+
+    bool dots_ticking( druid_td_t* td )
+    {
+      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
+             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
+             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
+    }
+
+    swarm_target_t new_swarm_target( swarm_target_t exclude ) override
+    {
+      auto tl = target_list();
+
+      if ( exclude.player )
+        tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
+
+      if ( tl.empty() )
+        return {};
+
+      // Target priority
+      std::vector<player_t*> tl_1;  // 1: has a dot, but no swarm
+      std::vector<player_t*> tl_2;  // 2: has no dot and not swarm
+      std::vector<player_t*> tl_3;  // 3: has a dot, but also swarm
+      std::vector<player_t*> tl_4;  // 4: rest
+
+      for ( const auto& t : tl )
+      {
+        auto t_td = other->td( t );
+
+        if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
+        {
+          if ( dots_ticking( t_td ) )
+            tl_1.push_back( t );
+          else
+            tl_2.push_back( t );
+        }
+        else
+        {
+          if ( dots_ticking( t_td ) )
+            tl_3.push_back( t );
+          else
+            tl_4.push_back( t );
+        }
+      }
+
+      if ( !tl_1.empty() )
+        return tl_1[ rng().range( tl_1.size() ) ];
+      if ( !tl_2.empty() )
+        return tl_2[ rng().range( tl_2.size() ) ];
+      if ( !tl_3.empty() )
+        return tl_3[ rng().range( tl_3.size() ) ];
+      return tl_4[ rng().range( tl_4.size() ) ];
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      auto incoming = state( s )->stacks;
+      auto existing = get_dot( s->target )->current_stack();
+
+      adaptive_swarm_base_t::impact( s );
+
+      auto d = get_dot( s->target );
+      d->increment( incoming + existing - 1 );
+
+      sim->print_debug( "ADAPTIVE_SWARM: damage incoming:{} existing:{} final:{}", incoming, existing,
+                        d->current_stack() );
+    }
+
+    void last_tick( dot_t* d ) override
+    {
+      adaptive_swarm_base_t::last_tick( d );
+
+      // last_tick() is called via dot_t::cancel() when a new swarm CLIPs an existing swarm. As dot_t::last_tick() is
+      // called before dot_t::reset(), check the remaining time on the dot to see if we're dealing with a true last_tick
+      // (and thus need to check for a new jump) or just a refresh.
+
+      // NOTE: if demise() is called on the target d->remains() has time left, so assume that a target that is sleeping
+      // with time remaining has been demised()'d and jump to a new target
+      if ( d->remains() > 0_ms && !d->target->is_sleeping() )
+        return;
+
+      jump_swarm( d->current_stack() );
+    }
+
+    double composite_persistent_multiplier( const action_state_t* s ) const override
+    {
+      double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
+
+      // inherits from druid_spell_t so does not get automatic persistent multiplier parsing
+      if ( !state( s )->jump && p()->buff.tigers_fury->check() )
+        pm *= 1.0 + tf_mul;
+
+      return pm;
+    }
+
+    double calculate_tick_amount( action_state_t* s, double m ) const override
+    {
+      auto stack = find_dot( s->target )->current_stack();
+      assert( stack );
+
+      return adaptive_swarm_base_t::calculate_tick_amount( s, m / stack );
+    }
+  };
+
+  struct adaptive_swarm_heal_t : public adaptive_swarm_base_t
+  {
+    struct adaptive_swarm_heal_event_t : public event_t
+    {
+      adaptive_swarm_heal_t* swarm;
+      druid_t* druid;
+      int stacks;
+
+      adaptive_swarm_heal_event_t( druid_t* p, adaptive_swarm_heal_t* a, int s, timespan_t d )
+        : event_t( *p, d ), swarm( a ), druid( p ), stacks( s )
+      {}
+
+      const char* name() const override
+      {
+        return "adaptive swarm heal event";
+      }
+
+      void execute() override
+      {
+        auto& tracker = druid->swarm_tracker;
+        tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
+
+        swarm->jump_swarm( stacks );
+      }
+    };
+
+    adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->spec.adaptive_swarm_heal )
+    {
+      quiet = heal = true;
+      harmful = may_miss = may_crit = false;
+      base_td = base_td_multiplier = 0.0;
+
+      parse_effect_period( data().effectN( 1 ) );
+    }
+
+    // TODO: add exclude functionality
+    swarm_target_t new_swarm_target( swarm_target_t /* exclude */) override
+    {
+      if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
+        return target;
+
+      return { target, p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ] };
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      auto incoming = state( s )->stacks;
+      int existing = 0;
+      int final = incoming;
+      auto swarm_target = state( s )->swarm_target;
+
+      adaptive_swarm_base_t::impact( s );
+
+      adaptive_swarm_heal_event_t* swarm_event = nullptr;
+
+      if ( swarm_target.event && swarm_target.event->remains() > 0_ms )
+        swarm_event = dynamic_cast<adaptive_swarm_heal_event_t*>( swarm_target.event );
+
+      if ( swarm_event )
+      {
+        existing = swarm_event->stacks;
+        final = std::min( dot_max_stack, final + existing );
+        swarm_event->stacks = final;
+        swarm_event->reschedule( dot_duration );
+      }
+      else
+      {
+        // TODO: fix edge case where a healing swarm will be sent out while another is in-flight allowing you to end up
+        // with swarm_tracker.size() > adaptive_swarm_friendly_targets
+        p()->swarm_tracker.push_back( make_event<adaptive_swarm_heal_event_t>( *sim, p(), this, final, dot_duration ) );
+      }
+
+      final = std::min( dot_max_stack, final );
+      sim->print_debug( "ADAPTIVE_SWARM: heal incoming:{} existing:{} final:{} # of heal swarms:{}", incoming, existing,
+                        final, p()->swarm_tracker.size() );
+    }
+  };
+
+  adaptive_swarm_base_t* damage;
+  adaptive_swarm_base_t* heal;
+  timespan_t gcd_add;
+  bool target_self;
+
+  adaptive_swarm_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "adaptive_swarm", p, p->talent.adaptive_swarm ),
+      gcd_add( p->query_aura_effect( p->spec.cat_form_passive, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
+      target_self( false )
+  {
+    add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
+    add_option( opt_deprecated( "precombat_stacks", "druid.adaptive_swarm_prepull_setup" ) );
+    add_option( opt_bool( "target_self", target_self ) );
+    parse_options( opt );
+
+    // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
+    damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
+    heal = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
+
+    if ( !p->talent.adaptive_swarm.ok() )
+      return;
+
+    may_miss = may_crit = harmful = false;
+    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
+
+    damage->other = heal;
+    damage->stats = stats;
+    heal->other = damage;
+    add_child( damage );
+  }
+
+  timespan_t gcd() const override
+  {
+    timespan_t g = druid_spell_t::gcd();
+
+    if ( p()->buff.cat_form->check() )
+      g += gcd_add;
+
+    return g;
+  }
+
+  void execute() override
+  {
+    druid_spell_t::execute();
+
+    if ( target_self )
+    {
+      heal->set_target( player );
+      heal->schedule_execute();
+    }
+    else
+    {
+      damage->set_target( target );
+      damage->schedule_execute();
+    }
   }
 };
 
@@ -5848,7 +6290,7 @@ struct barkskin_t : public druid_spell_t
 
     if ( p->talent.brambles.ok() )
     {
-      brambles = p->get_secondary_action_n<brambles_pulse_t>( name_str + "brambles" );
+      brambles = p->get_secondary_action_n<bear_attacks::brambles_pulse_t>( name_str + "brambles" );
       name_str += "+brambles";
       brambles->stats = stats;
     }
@@ -5890,24 +6332,6 @@ struct barkskin_t : public druid_spell_t
 
       p()->buff.b_inc_bear->extend_duration_or_trigger( dur_ );
     }
-  }
-};
-
-// Bristling Fur Spell ======================================================
-struct bristling_fur_t : public druid_spell_t
-{
-  bristling_fur_t( druid_t* player, std::string_view opt )
-    : druid_spell_t( "bristling_fur", player, player->talent.bristling_fur, opt )
-  {
-    harmful     = false;
-    use_off_gcd = true;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    p()->buff.bristling_fur->trigger();
   }
 };
 
@@ -6144,19 +6568,6 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.heart_of_the_wild->trigger();
-  }
-};
-
-// Incapacitating Roar ======================================================
-struct incapacitating_roar_t : public druid_spell_t
-{
-  incapacitating_roar_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "incapacitating_roar", p, p->talent.incapacitating_roar, opt )
-  {
-    harmful = false;
-
-    form_mask = BEAR_FORM;
-    autoshift = p->active.shift_to_bear;
   }
 };
 
@@ -7623,424 +8034,8 @@ struct wrath_t : public druid_spell_t
   }
 };
 
-// Covenant Spells ==========================================================
-
-// Adaptive Swarm ===========================================================
-struct adaptive_swarm_t : public druid_spell_t
-{
-  struct swarm_target_t
-  {
-    player_t* player;
-    event_t* event;
-
-    swarm_target_t( player_t* p, event_t* e = nullptr ) : player( p ), event( e ) {}
-    swarm_target_t() : player(), event() {}
-
-    operator player_t*() { return player; }
-    operator event_t*() { return event; }
-    bool operator !() { return !player && !event; }
-  };
-
-  struct adaptive_swarm_state_t : public action_state_t
-  {
-  private:
-    int default_stacks;
-
-  public:
-    swarm_target_t swarm_target;
-    int stacks;
-    bool jump;
-
-    adaptive_swarm_state_t( action_t* a, player_t* t )
-      : action_state_t( a, t ),
-        default_stacks( as<int>( debug_cast<druid_t*>( a->player )->cov.necrolord->effectN( 1 ).base_value() ) ),
-        stacks( 0 ),
-        jump( false )
-    {}
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-
-      swarm_target = {};
-      stacks = default_stacks;
-      jump = false;
-    }
-
-    void copy_state( const action_state_t* s ) override
-    {
-      action_state_t::copy_state( s );
-      auto swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
-
-      swarm_target = swarm_s->swarm_target;
-      stacks = swarm_s->stacks;
-      jump = swarm_s->jump;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s );
-
-      s << " swarm_stacks=" << stacks;
-
-      if ( jump )
-        s << " (jumped)";
-
-      return s;
-    }
-  };
-
-  struct adaptive_swarm_base_t : public druid_spell_t
-  {
-    adaptive_swarm_base_t* other;
-    double tf_mul;
-    bool heal;
-
-    adaptive_swarm_base_t( druid_t* p, std::string_view n, const spell_data_t* s )
-      : druid_spell_t( n, p, s ),
-        other( nullptr ),
-        tf_mul( p->query_aura_effect( p->talent.tigers_fury, A_ADD_PCT_MODIFIER, P_TICK_DAMAGE, &data() )->percent() ),
-        heal( false )
-    {
-      dual = background = true;
-      dot_behavior = dot_behavior_e::DOT_CLIP;
-    }
-
-    action_state_t* new_state() override
-    {
-      return new adaptive_swarm_state_t( this, target );
-    }
-
-    adaptive_swarm_state_t* state( action_state_t* s )
-    {
-      return debug_cast<adaptive_swarm_state_t*>( s );
-    }
-
-    const adaptive_swarm_state_t* state( const action_state_t* s ) const
-    {
-      return debug_cast<const adaptive_swarm_state_t*>( s );
-    }
-
-    timespan_t travel_time() const override
-    {
-      if ( debug_cast<adaptive_swarm_state_t*>( execute_state )->jump )
-      {
-        auto dist =
-            rng().range( p()->options.adaptive_swarm_jump_distance_min, p()->options.adaptive_swarm_jump_distance_max );
-
-        return timespan_t::from_seconds( dist / travel_speed );
-      }
-
-      if ( target == player )
-        return 0_ms;
-
-      return druid_spell_t::travel_time();
-    }
-
-    virtual swarm_target_t new_swarm_target( swarm_target_t = {} ) = 0;
-
-    void send_swarm( swarm_target_t swarm_target, int stack )
-    {
-      sim->print_debug( "ADAPTIVE_SWARM: jumping {} {} stacks to {}", stack, heal ? "heal" : "damage",
-                        heal ? swarm_target.event ? "existing target" : "new target" : swarm_target.player->name() );
-
-      auto new_state = state( get_state() );
-
-      new_state->stacks = stack;
-      new_state->jump = true;
-      new_state->swarm_target = swarm_target;
-      new_state->target = swarm_target;
-
-      schedule_execute( new_state );
-    }
-
-    void jump_swarm( int s )
-    {
-      auto stacks = s - 1;
-
-      if ( stacks <= 0 )
-      {
-        sim->print_debug( "ADAPTIVE_SWARM: {} expiring on final stack", heal ? "heal" : "damage" );
-        return;
-      }
-
-      auto new_target = other->new_swarm_target();
-      if ( !new_target )
-      {
-        new_target = new_swarm_target();
-        assert( !new_target == false );
-        send_swarm( new_target, stacks );
-      }
-      else
-      {
-        other->send_swarm( new_target, stacks );
-      }
-
-      if ( p()->legendary.unbridled_swarm->ok() &&
-           rng().roll( p()->legendary.unbridled_swarm->effectN( 1 ).percent() ) )
-      {
-        auto second_target = other->new_swarm_target( new_target );
-        if ( !second_target )
-        {
-          second_target = new_swarm_target();
-          assert( !second_target == false );
-          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
-          send_swarm( second_target, stacks );
-        }
-        else
-        {
-          sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
-          other->send_swarm( second_target, stacks );
-        }
-      }
-    }
-  };
-
-  struct adaptive_swarm_damage_t : public adaptive_swarm_base_t
-  {
-    adaptive_swarm_damage_t( druid_t* p )
-      : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->cov.adaptive_swarm_damage )
-    {}
-
-    bool dots_ticking( druid_td_t* td )
-    {
-      return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
-             td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
-             td->dots.thrash_bear->is_ticking() || td->dots.thrash_cat->is_ticking();
-    }
-
-    swarm_target_t new_swarm_target( swarm_target_t exclude ) override
-    {
-      auto tl = target_list();
-
-      if ( exclude.player )
-        tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
-
-      if ( tl.empty() )
-        return {};
-
-      // Target priority
-      std::vector<player_t*> tl_1;  // 1: has a dot, but no swarm
-      std::vector<player_t*> tl_2;  // 2: has no dot and not swarm
-      std::vector<player_t*> tl_3;  // 3: has a dot, but also swarm
-      std::vector<player_t*> tl_4;  // 4: rest
-
-      for ( const auto& t : tl )
-      {
-        auto t_td = other->td( t );
-
-        if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
-        {
-          if ( dots_ticking( t_td ) )
-            tl_1.push_back( t );
-          else
-            tl_2.push_back( t );
-        }
-        else
-        {
-          if ( dots_ticking( t_td ) )
-            tl_3.push_back( t );
-          else
-            tl_4.push_back( t );
-        }
-      }
-
-      if ( !tl_1.empty() )
-        return tl_1[ rng().range( tl_1.size() ) ];
-      if ( !tl_2.empty() )
-        return tl_2[ rng().range( tl_2.size() ) ];
-      if ( !tl_3.empty() )
-        return tl_3[ rng().range( tl_3.size() ) ];
-      return tl_4[ rng().range( tl_4.size() ) ];
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      auto incoming = state( s )->stacks;
-      auto existing = get_dot( s->target )->current_stack();
-
-      adaptive_swarm_base_t::impact( s );
-
-      auto d = get_dot( s->target );
-      d->increment( incoming + existing - 1 );
-
-      sim->print_debug( "ADAPTIVE_SWARM: damage incoming:{} existing:{} final:{}", incoming, existing,
-                        d->current_stack() );
-    }
-
-    void last_tick( dot_t* d ) override
-    {
-      adaptive_swarm_base_t::last_tick( d );
-
-      // last_tick() is called via dot_t::cancel() when a new swarm CLIPs an existing swarm. As dot_t::last_tick() is
-      // called before dot_t::reset(), check the remaining time on the dot to see if we're dealing with a true last_tick
-      // (and thus need to check for a new jump) or just a refresh.
-
-      // NOTE: if demise() is called on the target d->remains() has time left, so assume that a target that is sleeping
-      // with time remaining has been demised()'d and jump to a new target
-      if ( d->remains() > 0_ms && !d->target->is_sleeping() )
-        return;
-
-      jump_swarm( d->current_stack() );
-    }
-
-    double composite_persistent_multiplier( const action_state_t* s ) const override
-    {
-      double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
-
-      // inherits from druid_spell_t so does not get automatic persistent multiplier parsing
-      if ( !state( s )->jump && p()->buff.tigers_fury->check() )
-        pm *= 1.0 + tf_mul;
-
-      return pm;
-    }
-
-    double calculate_tick_amount( action_state_t* s, double m ) const override
-    {
-      auto stack = find_dot( s->target )->current_stack();
-      assert( stack );
-
-      return adaptive_swarm_base_t::calculate_tick_amount( s, m / stack );
-    }
-  };
-
-  struct adaptive_swarm_heal_t : public adaptive_swarm_base_t
-  {
-    struct adaptive_swarm_heal_event_t : public event_t
-    {
-      adaptive_swarm_heal_t* swarm;
-      druid_t* druid;
-      int stacks;
-
-      adaptive_swarm_heal_event_t( druid_t* p, adaptive_swarm_heal_t* a, int s, timespan_t d )
-        : event_t( *p, d ), swarm( a ), druid( p ), stacks( s )
-      {}
-
-      const char* name() const override
-      {
-        return "adaptive swarm heal event";
-      }
-
-      void execute() override
-      {
-        auto& tracker = druid->swarm_tracker;
-        tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
-
-        swarm->jump_swarm( stacks );
-      }
-    };
-
-    adaptive_swarm_heal_t( druid_t* p ) : adaptive_swarm_base_t( p, "adaptive_swarm_heal", p->cov.adaptive_swarm_heal )
-    {
-      quiet = heal = true;
-      harmful = may_miss = may_crit = false;
-      base_td = base_td_multiplier = 0.0;
-
-      parse_effect_period( data().effectN( 1 ) );
-    }
-
-    // TODO: add exclude functionality
-    swarm_target_t new_swarm_target( swarm_target_t /* exclude */) override
-    {
-      if ( p()->swarm_tracker.size() < p()->options.adaptive_swarm_friendly_targets )
-        return target;
-
-      return { target, p()->swarm_tracker[ rng().range( p()->swarm_tracker.size() ) ] };
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      auto incoming = state( s )->stacks;
-      int existing = 0;
-      int final = incoming;
-      auto swarm_target = state( s )->swarm_target;
-
-      adaptive_swarm_base_t::impact( s );
-
-      adaptive_swarm_heal_event_t* swarm_event = nullptr;
-
-      if ( swarm_target.event && swarm_target.event->remains() > 0_ms )
-        swarm_event = dynamic_cast<adaptive_swarm_heal_event_t*>( swarm_target.event );
-
-      if ( swarm_event )
-      {
-        existing = swarm_event->stacks;
-        final = std::min( dot_max_stack, final + existing );
-        swarm_event->stacks = final;
-        swarm_event->reschedule( dot_duration );
-      }
-      else
-      {
-        // TODO: fix edge case where a healing swarm will be sent out while another is in-flight allowing you to end up
-        // with swarm_tracker.size() > adaptive_swarm_friendly_targets
-        p()->swarm_tracker.push_back( make_event<adaptive_swarm_heal_event_t>( *sim, p(), this, final, dot_duration ) );
-      }
-
-      final = std::min( dot_max_stack, final );
-      sim->print_debug( "ADAPTIVE_SWARM: heal incoming:{} existing:{} final:{} # of heal swarms:{}", incoming, existing,
-                        final, p()->swarm_tracker.size() );
-    }
-  };
-
-  adaptive_swarm_base_t* damage;
-  adaptive_swarm_base_t* heal;
-  timespan_t gcd_add;
-  bool target_self;
-
-  adaptive_swarm_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "adaptive_swarm", p, p->cov.necrolord ),
-      gcd_add( p->query_aura_effect( p->spec.cat_form_passive, A_ADD_FLAT_LABEL_MODIFIER, P_GCD, &data() )->time_value() ),
-      target_self( false )
-  {
-    add_option( opt_deprecated( "precombat_seconds", "druid.adaptive_swarm_prepull_setup" ) );
-    add_option( opt_deprecated( "precombat_stacks", "druid.adaptive_swarm_prepull_setup" ) );
-    add_option( opt_bool( "target_self", target_self ) );
-    parse_options( opt );
-
-    // These are always necessary to allow APL parsing of dot.adaptive_swarm expressions
-    damage = p->get_secondary_action<adaptive_swarm_damage_t>( "adaptive_swarm_damage" );
-    heal = p->get_secondary_action<adaptive_swarm_heal_t>( "adaptive_swarm_heal" );
-
-    if ( !p->cov.necrolord->ok() )
-      return;
-
-    may_miss = may_crit = harmful = false;
-    base_costs[ RESOURCE_MANA ] = 0.0;  // remove mana cost so we don't need to enable mana regen
-
-    damage->other = heal;
-    damage->stats = stats;
-    heal->other = damage;
-    add_child( damage );
-  }
-
-  timespan_t gcd() const override
-  {
-    timespan_t g = druid_spell_t::gcd();
-
-    if ( p()->buff.cat_form->check() )
-      g += gcd_add;
-
-    return g;
-  }
-
-  void execute() override
-  {
-    druid_spell_t::execute();
-
-    if ( target_self )
-    {
-      heal->set_target( player );
-      heal->schedule_execute();
-    }
-    else
-    {
-      damage->set_target( target );
-      damage->schedule_execute();
-    }
-  }
-};
-
 // Convoke the Spirits ======================================================
+// NOTE must be defined after all other spells
 struct convoke_the_spirits_t : public druid_spell_t
 {
   enum convoke_cast_e
@@ -8105,7 +8100,7 @@ struct convoke_the_spirits_t : public druid_spell_t
   bool celestial_spirits;
 
   convoke_the_spirits_t( druid_t* p, std::string_view options_str ) :
-    druid_spell_t( "convoke_the_spirits", p, p->cov.night_fae, options_str ),
+    druid_spell_t( "convoke_the_spirits", p, p->talent.convoke_the_spirits, options_str ),
     actions(),
     deck( nullptr ),
     max_ticks( 0 ),
@@ -8115,7 +8110,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     off_count( 0 ),
     celestial_spirits( p->legendary.celestial_spirits->ok() )
   {
-    if ( !p->cov.night_fae->ok() )
+    if ( !p->talent.convoke_the_spirits.ok() )
       return;
 
     channeled = true;
@@ -8516,6 +8511,8 @@ struct convoke_the_spirits_t : public druid_spell_t
 
   bool usable_moving() const override { return true; }
 };
+
+// Covenant Spells ==========================================================
 
 // Kindred Spirits ==========================================================
 struct kindred_empowerment_t : public druid_spell_t
@@ -9043,12 +9040,14 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "frenzied_regeneration" ) return new frenzied_regeneration_t( this, options_str );
   if ( name == "heart_of_the_wild"     ) return new     heart_of_the_wild_t( this, options_str );
   if ( name == "incapacitating_roar"   ) return new   incapacitating_roar_t( this, options_str );
+  if ( name == "innervate"             ) return new             innervate_t( this, options_str );
   if ( name == "ironfur"               ) return new               ironfur_t( this, options_str );
   if ( name == "maim"                  ) return new                  maim_t( this, options_str );
   if ( name == "moonkin_form"          ) return new          moonkin_form_t( this, options_str );
   if ( name == "natures_vigil"         ) return new          natures_vigil_t( this, options_str );
   if ( name == "rake"                  ) return new                  rake_t( this, options_str );
   if ( name == "rejuvenation"          ) return new          rejuvenation_t( this, options_str );
+  if ( name == "remove_corruption"     ) return new     remove_corruption_t( this, options_str );
   if ( name == "renewal"               ) return new               renewal_t( this, options_str );
   if ( name == "rip"                   ) return new                   rip_t( this, options_str );
   if ( name == "skull_bash"            ) return new            skull_bash_t( this, options_str );
@@ -9060,23 +9059,23 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
     else                                     return new starsurge_offspec_t( this, options_str );
   }
   if ( name == "sunfire"               ) return new               sunfire_t( this, options_str );
-  if ( name == "remove_corruption"     ) return new     remove_corruption_t( this, options_str );
-  if ( name == "wild_charge"           ) return new           wild_charge_t( this, options_str );
-  if ( name == "innervate"             ) return new             innervate_t( this, options_str );
   if ( name == "swipe"                 ) return new           swipe_proxy_t( this, options_str );
   if ( name == "swipe_bear"            ) return new            swipe_bear_t( this, options_str );
   if ( name == "swipe_cat"             ) return new             swipe_cat_t( this, options_str );
   if ( name == "thrash"                ) return new          thrash_proxy_t( this, options_str );
   if ( name == "thrash_bear"           ) return new           thrash_bear_t( this, options_str );
   if ( name == "thrash_cat"            ) return new            thrash_cat_t( this, options_str );
+  if ( name == "wild_charge"           ) return new           wild_charge_t( this, options_str );
   if ( name == "wild_growth"           ) return new           wild_growth_t( this, options_str );
 
   // Multispec Talents
+  if ( name == "adaptive_swarm"        ) return new        adaptive_swarm_t( this, options_str );
   if ( name == "berserk" )
   {
     if ( specialization() == DRUID_GUARDIAN )   return new   berserk_bear_t( this, options_str );
     else if ( specialization() == DRUID_FERAL ) return new    berserk_cat_t( this, options_str );
   }
+  if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
   if ( name == "incarnation"           ) return new           incarnation_t( this, options_str );
   if ( name == "survival_instincts"    ) return new    survival_instincts_t( this, options_str );
 
@@ -9122,8 +9121,6 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
   if ( name == "tranquility"           ) return new           tranquility_t( this, options_str );
 
   // Covenant
-  if ( name == "adaptive_swarm"        ) return new        adaptive_swarm_t( this, options_str );
-  if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
   if ( name == "kindred_spirits" ||
        name == "empower_bond"          ) return new       kindred_spirits_t( this, options_str );
   if ( name == "ravenous_frenzy"       ) return new       ravenous_frenzy_t( this, options_str );
@@ -9176,7 +9173,9 @@ void druid_t::init_spells()
 
   auto CT  = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
   auto ST  = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
-  auto STS = [ this ]( std::string_view n, specialization_e s ) { return find_talent_spell( talent_tree::SPECIALIZATION, n, s ); };
+  auto STS = [ this ]( std::string_view n, specialization_e s ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, n, s );
+  };
 
   // Class tree
   sim->print_debug( "Initializing class talents..." );
@@ -9404,8 +9403,6 @@ void druid_t::init_spells()
   cov.night_fae                    = find_covenant_spell( "Convoke the Spirits" );
   cov.venthyr                      = find_covenant_spell( "Ravenous Frenzy" );
   cov.necrolord                    = find_covenant_spell( "Adaptive Swarm" );
-  cov.adaptive_swarm_damage        = check( cov.necrolord->ok(), 325733 );
-  cov.adaptive_swarm_heal          = check( cov.necrolord->ok(), 325748 );
 
   // Conduits
 
@@ -9497,7 +9494,8 @@ void druid_t::init_spells()
   spec.thrash_bear_dot          = check( talent.thrash.ok(), find_spell( 192090 ) );
 
   // Multi-Spec Abilities
-  spec.survival_instincts_buff  = check( talent.survival_instincts.ok(), find_spell( 50322 ) );
+  spec.adaptive_swarm_damage    = check( talent.adaptive_swarm.ok(), 325733 );
+  spec.adaptive_swarm_heal      = check( talent.adaptive_swarm.ok(), 325748 );
 
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
@@ -9714,7 +9712,6 @@ void druid_t::create_buffs()
     ->apply_affecting_aura( talent.ursocs_endurance_bear );
   if ( talent.brambles.ok() )
     buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
-
   if ( legendary.the_natural_orders_will->ok() )
   {
     buff.barkskin->apply_affecting_aura( legendary.the_natural_orders_will )
@@ -9802,6 +9799,12 @@ void druid_t::create_buffs()
           ->set_default_value( talent.ursocs_endurance->effectN( 1 ).average( this ) );
 
   buff.ursine_vigor = make_buff<ursine_vigor_buff_t>( *this );
+
+  // Multi-spec
+  // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
+  buff.survival_instincts = make_buff( this, "survival_instincts", talent.survival_instincts )
+    ->set_cooldown( 0_ms )
+    ->set_default_value( query_aura_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN )->percent() );
 
   // Balance buffs
   // Default value is ONLY used for APL expression, so set via base_value() and not percent()
@@ -9970,11 +9973,6 @@ void druid_t::create_buffs()
   buff.rage_of_the_sleeper = make_buff( this, "rage_of_the_sleeper", talent.rage_of_the_sleeper )
     ->set_default_value_from_effect( 4, 0.01 );
 
-  // The buff ID in-game is same as the talent, 61336, but the buff effects (as well as tooltip reference) is in 50322
-  buff.survival_instincts = make_buff( this, "survival_instincts", talent.survival_instincts )
-    ->set_cooldown( 0_ms )
-    ->set_default_value( query_aura_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN )->percent() );
-
   buff.tooth_and_claw = make_buff( this, "tooth_and_claw", talent.tooth_and_claw->effectN( 1 ).trigger() )
     ->set_chance( talent.tooth_and_claw->effectN( 1 ).percent() );
 
@@ -10029,7 +10027,7 @@ void druid_t::create_buffs()
   }
 
   // Covenant
-  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", cov.night_fae )
+  buff.convoke_the_spirits = make_buff( this, "convoke_the_spirits", talent.convoke_the_spirits )
     ->set_cooldown( 0_ms )
     ->set_period( 0_ms );
   if ( conduit.conflux_of_elements->ok() )
@@ -10536,7 +10534,6 @@ void druid_t::init_gains()
     gain.brambles          = get_gain( "Brambles" );
     gain.bristling_fur     = get_gain( "Bristling Fur" );
     gain.gore              = get_gain( "Gore" );
-    gain.rage_refund       = get_gain( "Rage Refund" );
     gain.rage_from_melees  = get_gain( "Rage from Melees" );
   }
 
@@ -10792,7 +10789,7 @@ void druid_t::combat_begin()
     }
   }
 
-  if ( cov.necrolord->ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
+  if ( talent.adaptive_swarm.ok() && !prepull_swarm.empty() && find_action( "adaptive_swarm" ) )
   {
     using swarm_t = spells::adaptive_swarm_t::adaptive_swarm_heal_t;
 
@@ -11603,6 +11600,11 @@ void druid_t::create_options()
   add_option( opt_timespan( "druid.thorns_attack_period", options.thorns_attack_period ) );
   add_option( opt_float( "druid.thorns_hit_chance", options.thorns_hit_chance ) );
 
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
+  add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
+  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
+
   // Balance
   add_option( opt_timespan( "druid.eclipse_snapshot_period", options.eclipse_snapshot_period ) );
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
@@ -11622,16 +11624,6 @@ void druid_t::create_options()
   add_option( opt_float( "druid.time_spend_healing", options.time_spend_healing ) );
 
   // Covenant
-  add_option( opt_deprecated( "druid.adaptive_swarm_jump_distance",
-    "druid.adaptive_swarm_jump_distance_min / druid.adaptive_swarm_jump_distance_max" ) );
-  add_option( opt_deprecated( "druid.kindred_spirits_partner_dps",
-    "druid.kindred_spirits_dps_pool_multiplier or druid.kindred_spirits_non_dps_pool_multiplier" ) );
-  add_option( opt_deprecated( "druid.kindred_spirits_hide_partner", "this option has been removed" ) );
-
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
-  add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
-  add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", options.celestial_spirits_exceptional_chance ) );
   add_option( opt_int( "druid.convoke_the_spirits_deck", options.convoke_the_spirits_deck ) );
   add_option( opt_string( "druid.kindred_affinity_covenant", options.kindred_affinity_covenant ) );
@@ -12078,7 +12070,7 @@ void eclipse_handler_t::init()
   bool foe = p->talent.fury_of_elune.ok() || p->sets->has_set_bonus( DRUID_BALANCE, T28, B2 );
   bool nm = p->talent.new_moon.ok();
   bool hm = nm;
-  bool fm = nm || p->cov.night_fae->ok();
+  bool fm = nm || p->talent.convoke_the_spirits.ok();
 
   data.arrays.reserve( res + foe + nm + hm + fm );
   data.wrath = &data.arrays.emplace_back( data_array() );
@@ -12411,7 +12403,11 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.astral_influence );
   action.apply_affecting_aura( talent.improved_rejuvenation );
   action.apply_affecting_aura( talent.improved_stampeding_roar );
+  action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.nurturing_instinct );
+
+  // Multi-spec
+  action.apply_affecting_aura( talent.circle_of_life_and_death );
 
   // Balance
   action.apply_affecting_aura( talent.improved_moonfire );
@@ -12430,16 +12426,15 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.untamed_savagery );
   action.apply_affecting_aura( talent.vulnerable_flesh );
 
+  // Restoration
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.inner_peace );
-  action.apply_affecting_aura( talent.killer_instinct );
   action.apply_affecting_aura( talent.new_resto_passive );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
   // Legendaries
   action.apply_affecting_aura( legendary.celestial_spirits );
-  action.apply_affecting_aura( legendary.circle_of_life_and_death );
   action.apply_affecting_aura( legendary.legacy_of_the_sleeper );
   action.apply_affecting_aura( legendary.luffainfused_embrace );
 
