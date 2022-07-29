@@ -221,8 +221,8 @@ struct tyrs_enforcer_damage_t : public paladin_spell_t
   tyrs_enforcer_damage_t( paladin_t* p )
     : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
   {
-    background = proc = may_crit = true;
-     may_miss = false;
+    proc = may_crit = true;
+    background = may_miss = false;
   }
 };
 // Blessed Hammer (Protection) ================================================
@@ -815,9 +815,9 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
 void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
 {
   // escape if we don't have Tyrs Enforcer
-  if ( !talents.tyrs_enforcer->ok() )
+  //if ( !talents.tyrs_enforcer->ok() )
     return;
-  active.tyrs_enforcer_damage->set_target( s->action->player );
+  active.tyrs_enforcer_damage->set_target( s -> target);
   active.tyrs_enforcer_damage->schedule_execute();
 }
 
@@ -896,7 +896,7 @@ void paladin_t::create_buffs_protection()
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
-  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 327225 ) )
+  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) )
         -> set_absorb_source( get_stats( "bulwark_of_order_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
         -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
@@ -964,7 +964,7 @@ void paladin_t::init_spells_protection()
   talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
   talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
-  talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyrs Enforcer" );
+  talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyr's Enforcer" );
   talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
   talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
   talents.faith_barricade                = find_talent_spell( talent_tree::SPECIALIZATION, "Faith Barricade" );
@@ -982,10 +982,6 @@ void paladin_t::init_spells_protection()
   talents.eye_for_an_eye                 = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
   talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera and DT" );
   talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
-
-
-  talents.crusaders_judgment             = find_talent_spell( "Crusader's Judgment" );
-  talents.moment_of_glory                = find_talent_spell( "Moment of Glory" );
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
