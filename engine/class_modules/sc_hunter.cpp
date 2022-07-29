@@ -587,6 +587,7 @@ public:
     spell_data_ptr_t legacy_of_the_windrunners;
 
     spell_data_ptr_t bombardment;
+    spell_data_ptr_t razor_fragments;
     spell_data_ptr_t sharpshooter;
     spell_data_ptr_t trueshot;
     spell_data_ptr_t lock_and_load;
@@ -599,7 +600,6 @@ public:
     spell_data_ptr_t deathblow;
 
     // TODO Salvo
-    // TODO Razor Fragments
     spell_data_ptr_t unerring_vision; // TODO: crit buff broken in game
     spell_data_ptr_t eagletalons_true_focus;
 
@@ -2531,6 +2531,15 @@ struct trick_shots_t : public buff_t
       p -> procs.secrets_of_the_vigil_ais_reset -> occur();
     }
   }
+
+  void expire_override( int remaining_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( remaining_stacks, remaining_duration );
+
+    hunter_t* p = debug_cast<hunter_t*>( player );
+    if ( p -> talents.razor_fragments.ok() )
+      p -> buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+  }
 };
 
 } // namespace buffs
@@ -2831,10 +2840,20 @@ struct barrage_t: public hunter_spell_t
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    bool flayers_mark_up = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "flayers_mark_up={:d}", data.flayers_mark_up );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
   {
     razor_fragments_t( util::string_view n, hunter_t* p )
-      : residual_periodic_action_t( n, p, p->find_spell( 356620 ) )
+      : residual_periodic_action_t( n, p, p -> find_spell( 356620 ) )
     {
     }
 
@@ -2847,9 +2866,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     }
   };
 
-  bool trigger_razor_fragments = false;
   double health_threshold_pct;
-  razor_fragments_t* bleed = nullptr;
+  razor_fragments_t* razor_fragments = nullptr;
 
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
@@ -2857,10 +2875,11 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> legendary.pouch_of_razor_fragments.ok() )
+    if ( p -> legendary.pouch_of_razor_fragments.ok() ||
+         p -> talents.razor_fragments.ok() )
     {
-      bleed = p -> get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
-      add_child( bleed );
+      razor_fragments = p -> get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
+      add_child( razor_fragments );
     }
   }
 
@@ -2869,15 +2888,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
-    if ( p() -> legendary.pouch_of_razor_fragments.ok() && p() -> buffs.flayers_mark -> up() )
-    {
-      trigger_razor_fragments = true; // Schedule Razor Fragments Dot
-    }
-    else
-      trigger_razor_fragments = false;
 
     p() -> buffs.deathblow -> decrement();
-
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
 
@@ -2888,17 +2900,14 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( trigger_razor_fragments && bleed )
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> flayers_mark_up )
     {
       double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
       if ( amount > 0 )
       {
         std::vector<player_t*>& tl = target_list();
-        const int max_targets = as<int>( tl.size() );
-        int num_targets = std::min( max_targets, bleed->aoe );
-
-        for ( int t = 0; t < num_targets; t++ )
-          residual_action::trigger( bleed, tl[t], amount );
+        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
+          residual_action::trigger( razor_fragments, t, amount );
       }
     }
   }
@@ -2926,6 +2935,17 @@ struct kill_shot_t : hunter_ranged_attack_t
     am *= 1 + p() -> buffs.empowered_release -> check_value();
 
     return am;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    hunter_ranged_attack_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check();
   }
 };
 
@@ -6428,6 +6448,7 @@ void hunter_t::init_spells()
     talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
 
     talents.bombardment                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardment", HUNTER_MARKSMANSHIP );
+    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
     talents.sharpshooter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpshooter", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
