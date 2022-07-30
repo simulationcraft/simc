@@ -491,6 +491,7 @@ class TraitSet(DataSet):
             'tree': 0,
             'row': -1,
             'col': -1,
+            'selection_index': -1,
             'req_points': 0
         })
 
@@ -521,7 +522,7 @@ class TraitSet(DataSet):
 
                     _traits[key]['groups'].add(group['group'])
                     _traits[key]['node'] = node['node']
-                    _traits[key]['entry']= entry
+                    _traits[key]['entry'] = entry
                     _traits[key]['definition'] = definition
                     _traits[key]['spell'] = definition.ref('id_spell')
                     _traits[key]['class_'] = class_id
@@ -532,6 +533,9 @@ class TraitSet(DataSet):
                         _traits[key]['tree'] = tree_index
 
                     _traits[key]['req_points'] = max([_traits[key]['req_points']] + [cond.req_points for cond in (node['cond'] | group['cond'])])
+
+                    if node['node'].type == 2:
+                        _traits[key]['selection_index'] = entry.child_ref('TraitNodeXTraitNodeEntry').index
 
         _coords = {}
         for entry in _traits.values():
