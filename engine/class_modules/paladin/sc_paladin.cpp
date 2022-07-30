@@ -292,6 +292,15 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
       heal_tick->execute();
   }
+  double action_multiplier() const override
+  {
+    double m = paladin_spell_t::action_multiplier();
+    if ( p()->talents.consecration_in_flame->ok() )
+    {
+      m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
+    }
+    return m;
+  }
 };
 
 struct consecration_t : public paladin_spell_t
@@ -389,6 +398,12 @@ struct consecration_t : public paladin_spell_t
     if ( sim->distance_targeting_enabled )
       cons_params.x( p()->x_position ).y( p()->y_position );
 
+    auto duration = data().duration();
+    if ( p()->talents.consecration_in_flame->ok() )
+    {
+      duration +=  p()->talents.consecration_in_flame->effectN( 1 ).time_value();
+    }
+
     if ( !player->in_combat && precombat_time > 0 )
     {
       // Adjust cooldown if consecration is used in precombat
@@ -407,6 +422,8 @@ struct consecration_t : public paladin_spell_t
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
   }
+
+
 };
 
 // Divine Shield ==============================================================
@@ -977,7 +994,7 @@ struct holy_shield_damage_t : public paladin_spell_t
 
 
 // Inner light damage proc ==================================================
-
+//TODO Check new spell id
 struct inner_light_damage_t : public paladin_spell_t
 {
   inner_light_damage_t( paladin_t* p ) : paladin_spell_t( "inner_light", p, p->find_spell( 275483 ) )
@@ -1834,8 +1851,8 @@ void paladin_t::create_actions()
     {
       active.holy_shield_damage = new holy_shield_damage_t( this );
     }
-
-    if ( azerite.inner_light.enabled() )
+    //TODO Find new spell id
+    if ( talents.inner_light -> ok() )
     {
       active.inner_light_damage           = new inner_light_damage_t( this );
       cooldowns.inner_light_icd->duration = find_spell( 275481 )->internal_cooldown();
@@ -2102,7 +2119,7 @@ void paladin_t::init_gains()
 
   // Health
   gains.holy_shield   = get_gain( "holy_shield_absorb" );
-  gains.first_avenger = get_gain( "first_avenger_absorb" );
+  gains.bulwark_of_order = get_gain( "bulwark_of_order_absorb" );
 
   // Holy Power
   gains.hp_templars_verdict_refund = get_gain( "templars_verdict_refund" );
@@ -2388,14 +2405,64 @@ void paladin_t::init_spells()
   init_spells_holy();
 
   // Shared talents
-  talents.fist_of_justice    = find_talent_spell( "Fist of Justice" );
-  talents.repentance         = find_talent_spell( "Repentance" );
-  talents.blinding_light     = find_talent_spell( "Blinding Light" );
-  talents.unbreakable_spirit = find_talent_spell( "Unbreakable Spirit" );
-  talents.cavalier           = find_talent_spell( "Cavalier" );
-  talents.holy_avenger       = find_talent_spell( "Holy Avenger" );
-  talents.seraphim           = find_talent_spell( "Seraphim" );
-  talents.divine_purpose     = find_talent_spell( "Divine Purpose" );
+  //new stuff - how do i add double points? and choice talents?
+  talents.lay_on_hands                    = find_talent_spell( "Lay on Hands" );
+  talents.blessing_of_freedom             = find_talent_spell( "Blessing of Freedom" ); 
+  talents.hammer_of_wrath                 = find_talent_spell( "Hammer of Wrath" );
+  talents.concentration_aura              = find_talent_spell( "Concentration Aura" );
+  talents.devotion_aura                   = find_talent_spell( "Devotion Aura" );
+  talents.retribution_aura                = find_talent_spell( "Retribution Aura" );
+  talents.blinding_light                  = find_talent_spell( "Blinding Light" );
+  talents.repentance                      = find_talent_spell( "Repentance" );
+  talents.divine_steed                    = find_talent_spell( "Divine Steed" );
+  talents.fist_of_justice                 = find_talent_spell( "Fist of Justice" );
+  talents.holy_aegis                      = find_talent_spell( "Holy Aegis" );
+  talents.cavalier                        = find_talent_spell( "Cavalier" );
+  talents.seasoned_warhorse               = find_talent_spell( "Seasoned Warhorse" );
+  talents.seal_of_alacrity                = find_talent_spell( "Seal of Alacrity" );
+  talents.golden_path                     = find_talent_spell( "Golden Path" );
+  talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
+  //Avenging Wrath spell
+  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
+  talents.turn_evil                       = find_talent_spell( "Turn Evil" );
+  talents.rebuke                          = find_talent_spell( "Rebuke" );
+  talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
+  talents.cleanse_toxins                  = find_talent_spell( "Cleanse Toxins" );
+  talents.blessing_of_sacrifice           = find_talent_spell( "Blessing of Sacrifice" );
+  //Judgment Generates 1 Holy Power
+  talents.judgment                        = find_talent_spell( "Judgment" );
+  //Judgment causes the target to take 25% more damage from your next holy power spending ability
+  talents.judgment                        = find_talent_spell( "Judgment" );
+  talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
+  talents.afterimage                      = find_talent_spell( "Afterimage" );
+  talents.recompense                      = find_talent_spell( "Recompense" );
+  talents.sacrifice_of_the_just           = find_talent_spell( "Sacrifice of the Just" );
+  talents.blessing_of_protection          = find_talent_spell( "Blessing of Protection" );
+  talents.holy_avenger                    = find_talent_spell( "Holy Avenger" );
+  talents.divine_purpose                  = find_talent_spell( "Divine Purpose" );
+  talents.obduracy                        = find_talent_spell( "Obduracy" );
+  talents.seal_of_clarity                 = find_talent_spell( "Seal of Clarity" );
+  talents.aspirations_of_divinity         = find_talent_spell( "Aspirations of Divinity" );
+  //Avenging Wrath CDR
+  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.touch_of_light                  = find_talent_spell( "Touch of Light" );
+  talents.incandescence                   = find_talent_spell( "Incandescence" );
+  talents.hallowed_ground                 = find_talent_spell( "Hallowed Ground" );
+  talents.of_dusk_and_dawn                = find_talent_spell( "Of Dusk and Dawn" );
+  talents.unbreakable_spirit              = find_talent_spell( "Unbreakable Spirit" );
+  talents.seal_of_might                   = find_talent_spell( "Seal of Might" );
+  talents.blessing_of_spellwarding        = find_talent_spell( "Blessing of Spellwarding" );
+  talents.improved_blessing_of_protection = find_talent_spell( "Improved Blessing of Protection" );
+  talents.seal_of_the_crusader            = find_talent_spell( "Seal of the Crusader" );
+  talents.seal_of_order                   = find_talent_spell( "Seal of Order" );
+  talents.holy_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
+  talents.prot_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
+  talents.ret_sanctified_wrath            = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION  );
+  talents.seraphim                        = find_talent_spell( "Seraphim" );
+  talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
+
+
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );

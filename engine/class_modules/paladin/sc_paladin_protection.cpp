@@ -38,8 +38,8 @@ struct ardent_defender_t : public paladin_spell_t
 
 struct avengers_shield_base_t : public paladin_spell_t
 {
-  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( n, p, p -> find_specialization_spell( "Avenger's Shield" ) )
+  avengers_shield_base_t( util::string_view n, paladin_t* p, util::string_view options_str )
+    : paladin_spell_t( n, p, p->find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" ) )
   {
     parse_options( options_str );
     if ( ! p -> has_shield_equipped() )
@@ -49,36 +49,42 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
     may_crit = true;
 
+
+    //Turn off chaining if focused enmity
     aoe = data().effectN( 1 ).chain_target();
     if ( p -> azerite.soaring_shield.enabled() )
     {
       aoe = as<int>( p -> azerite.soaring_shield.spell() -> effectN( 2 ).base_value() );
     }
 
-    // First Avenger hits +2 targets
-    aoe += as<int>( p -> talents.first_avenger -> effectN( 1 ).base_value() );
+    // Soaring Shield hits +2 targets
+    aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
   }
 
   void impact( action_state_t* s ) override
   {
     paladin_spell_t::impact( s );
+    if ( p()->talents.tyrs_enforcer->ok() )
+    {
+      p()->trigger_tyrs_enforcer(s);
+    }
 
     if ( p() -> azerite.soaring_shield.enabled() )
     {
       p() -> buffs.soaring_shield -> trigger();
     }
 
-    // First Avenger absorb shield. Amount is additive per hit.
-    if ( p() -> talents.first_avenger -> ok() )
+    //Bulwark of Order absorb shield. Amount is additive per hit.
+    if ( p() -> talents.bulwark_of_order -> ok() )
     {
-      //First Avenger is capped at 30% of max hp. Hardcoded here.
+      //Bulwark of Order is capped at 30% of max hp. Hardcoded here.
       double max_absorb = 0.3 * p() -> resources.max[ RESOURCE_HEALTH ];
 
-      double new_absorb = s -> result_amount * p() -> talents.first_avenger -> effectN( 2 ).percent();
-      if( p() -> buffs.first_avenger_absorb -> value() + new_absorb < max_absorb )
-        p() -> buffs.first_avenger_absorb -> trigger( 1, p() -> buffs.first_avenger_absorb -> value() + new_absorb );
+      double new_absorb = s -> result_amount * p() -> talents.bulwark_of_order -> effectN( 1 ).percent();
+      if( p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb < max_absorb )
+        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, p() -> buffs.bulwark_of_order_absorb -> value() + new_absorb );
       else
-        p() -> buffs.first_avenger_absorb -> trigger( 1, max_absorb );
+        p() -> buffs.bulwark_of_order_absorb -> trigger( 1, max_absorb );
     }
 
     if ( p() -> conduit.vengeful_shock -> ok() )
@@ -88,6 +94,9 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     if ( p() -> legendary.bulwark_of_righteous_fury -> ok() )
       p() -> buffs.bulwark_of_righteous_fury -> trigger();
+
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+      p()->buffs.bulwark_of_righteous_fury->trigger();
   }
 };
 
@@ -125,6 +134,8 @@ struct avengers_shield_t : public avengers_shield_base_t
     avengers_shield_base_t( "avengers_shield", p, options_str )
   {
     cooldown = p -> cooldowns.avengers_shield;
+    if ( p->buffs.moment_of_glory->up() )
+      cooldown->duration *= 1.0 + p->talents.moment_of_glory->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -147,8 +158,6 @@ struct avengers_shield_t : public avengers_shield_base_t
       }
       else
         p() -> procs.as_moment_of_glory_wasted -> occur();
-
-      p() -> buffs.moment_of_glory -> decrement( 1 );
     }
 
     if ( p() -> legendary.holy_avengers_engraved_sigil -> ok() &&
@@ -169,19 +178,30 @@ struct avengers_shield_t : public avengers_shield_base_t
   double action_multiplier() const override
   {
     double m = avengers_shield_base_t::action_multiplier();
-    if( p() -> buffs.moment_of_glory -> up() )
-      m *= 1.0 + p() -> buffs.moment_of_glory -> value();
-
+    if ( p()->buffs.moment_of_glory->up() )
+    {
+      m *= 1.0 + p()->buffs.moment_of_glory->value();
+    }
+      if ( p() -> talents.focused_enmity->ok() )
+       {
+        m *= 1.0 + p() -> talents.focused_enmity->effectN( 2 ).percent();
+      } 
+    //TODO Actually implement this properly, right now its a flat damage increase and will return bad values for aoe.
+    if ( p()->talents.ferren_marcuss_strength->ok() )
+        {
+          m *= 1.0 + p()->talents.ferren_marcuss_strength->effectN( 1 ).percent();
+        } 
     return m;
-  }
+  } 
 };
 
-// Moment of Glory ============================================================
 
+// Moment of Glory ============================================================
+//TODO Add a visible buff
 struct moment_of_glory_t : public paladin_spell_t
 {
   moment_of_glory_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "moment_of_glory", p, p -> talents.moment_of_glory )
+    paladin_spell_t( "moment_of_glory", p, p -> find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" ))
   {
     parse_options( options_str );
     harmful = false;
@@ -190,21 +210,21 @@ struct moment_of_glory_t : public paladin_spell_t
   void execute() override
   {
     paladin_spell_t::execute();
-    // You reset the cooldown of AS, get 3 no cooldown 20% damage increase ASs,
-    // then when you use the last stack you get another (4th) AS without a cooldown
-    // but it doesn't get the damage increase. Doesn't interact with Divine Toll.
-    if ( ! p() -> cooldowns.avengers_shield -> is_ready() )
-    {
-      p() -> procs.as_moment_of_glory -> occur();
-      p() -> cooldowns.avengers_shield -> reset( false );
-    }
-    else
-      p() -> procs.as_moment_of_glory_wasted -> occur();
 
-    p() -> buffs.moment_of_glory -> trigger( data().initial_stacks() );
+    p()->buffs.moment_of_glory->trigger();
   }
 };
-
+// Tyrs Enforcer damage proc =================================================
+// TODO Could not verify if this worked, think spelldata is empty?
+struct tyrs_enforcer_damage_t : public paladin_spell_t
+{
+  tyrs_enforcer_damage_t( paladin_t* p )
+    : paladin_spell_t( "tyrs_enforcer", p, p->talents.tyrs_enforcer->effectN( 1 ).trigger() )
+  {
+    background = proc = may_crit = true;
+     may_miss = false;
+  }
+};
 // Blessed Hammer (Protection) ================================================
 
 struct blessed_hammer_tick_t : public paladin_spell_t
@@ -453,7 +473,6 @@ struct judgment_prot_t : public judgment_t
   }
 };
 
-// TODO: Woli
 // T28 4P damage proc ==================================================
 
 struct t28_4p_prot_t : public judgment_prot_t
@@ -485,7 +504,7 @@ void shield_of_the_righteous_buff_t::expire_override( int expiration_stacks, tim
 
   auto* p = debug_cast<paladin_t*>( player );
 
-  if ( p -> azerite.inner_light.enabled() )
+  if ( p -> talents.inner_light -> ok() )
   {
     p -> buffs.inner_light -> trigger();
   }
@@ -594,7 +613,15 @@ struct shield_of_the_righteous_t : public holy_power_consumer_t<paladin_melee_at
   {
     double am = holy_power_consumer_t::action_multiplier();
     // Range increase on bulwark of righteous fury not implemented.
+    if ( p()->talents.bulwark_of_righteous_fury->ok() )
+    {
     am *= 1.0 + p() -> buffs.bulwark_of_righteous_fury -> stack_value();
+    }
+    if ( p()->talents.strength_of_conviction->ok() )
+    {
+      if ( p()->standing_in_consecration() )
+        am *= 1.0 + p()->talents.strength_of_conviction->effectN( 1 ).percent();
+    }
     return am;
   }
 };
@@ -726,13 +753,13 @@ void paladin_t::target_mitigation( school_e school,
 void paladin_t::trigger_grand_crusader()
 {
   // escape if we don't have Grand Crusader
-  if ( ! passives.grand_crusader -> ok() )
+  if ( ! talents.grand_crusader -> ok() )
     return;
 
-  double gc_proc_chance = passives.grand_crusader -> proc_chance();
-  if ( azerite.inspiring_vanguard.enabled() )
+  double gc_proc_chance = talents.grand_crusader -> proc_chance();
+  if ( talents.inspiring_vanguard -> ok() )
   {
-    gc_proc_chance = azerite.inspiring_vanguard.spell() -> effectN( 2 ).percent();
+    gc_proc_chance = talents.inspiring_vanguard->effectN( 2 ).percent();
   }
 
   // The bonus from First Avenger is added after Inspiring Vanguard
@@ -785,6 +812,16 @@ void paladin_t::trigger_t28_4p_prot( action_state_t* s )
   cooldowns.t28_4p_prot_icd->start();
 }
 
+void paladin_t::trigger_tyrs_enforcer( action_state_t* s )
+{
+  // escape if we don't have Tyrs Enforcer
+  if ( !talents.tyrs_enforcer->ok() )
+    return;
+
+  active.tyrs_enforcer_damage->set_target( s -> target);
+  active.tyrs_enforcer_damage->execute();
+}
+
 bool paladin_t::standing_in_consecration() const
 {
   if ( ! sim -> distance_targeting_enabled )
@@ -818,6 +855,7 @@ void paladin_t::create_prot_actions()
   if ( specialization() == PALADIN_PROTECTION )
   {
     active.t28_4p_prot = new t28_4p_prot_t( this );
+    active.tyrs_enforcer_damage = new tyrs_enforcer_damage_t( this );
   }
 }
 
@@ -851,7 +889,7 @@ void paladin_t::create_buffs_protection()
           if ( curr == 1 && conduit.royal_decree -> ok() )
             this -> buffs.royal_decree -> trigger();
         } );
-
+  //TODO: Replace BoO spell id with real id
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )
@@ -860,8 +898,8 @@ void paladin_t::create_buffs_protection()
   buffs.blessed_hammer_absorb = make_buff<absorb_buff_t>( this, "blessed_hammer_absorb", find_spell( 204301 ) );
   buffs.blessed_hammer_absorb -> set_absorb_source( get_stats( "blessed_hammer_absorb" ) )
         -> set_absorb_gain( get_gain( "blessed_hammer_absorb" ) );
-  buffs.first_avenger_absorb = make_buff<absorb_buff_t>( this, "first_avenger", find_spell( 327225 ) )
-        -> set_absorb_source( get_stats( "first_avenger_absorb" ) );
+  buffs.bulwark_of_order_absorb = make_buff<absorb_buff_t>( this, "bulwark_of_order", find_spell( 209388 ) )
+        -> set_absorb_source( get_stats( "bulwark_of_order_absorb" ) );
   buffs.redoubt = make_buff( this, "redoubt", talents.redoubt -> effectN( 1 ).trigger() )
         -> set_default_value( talents.redoubt -> effectN( 1 ).trigger() -> effectN( 1 ).percent() )
         -> add_invalidate( CACHE_STRENGTH )
@@ -903,13 +941,49 @@ void paladin_t::create_buffs_protection()
 void paladin_t::init_spells_protection()
 {
   // Talents
-  talents.holy_shield                = find_talent_spell( "Holy Shield" );
-  talents.redoubt                    = find_talent_spell( "Redoubt" );
-  talents.blessed_hammer             = find_talent_spell( "Blessed Hammer" );
-
-  talents.first_avenger              = find_talent_spell( "First Avenger" );
-  talents.crusaders_judgment         = find_talent_spell( "Crusader's Judgment" );
-  talents.moment_of_glory            = find_talent_spell( "Moment of Glory" );
+//0
+  talents.avengers_shield                = find_talent_spell( talent_tree::SPECIALIZATION, "Avenger's Shield" );
+  talents.blessed_hammer                 = find_talent_spell( talent_tree::SPECIALIZATION, "Blessed Hammer" );
+  talents.hammer_of_the_righteous        = find_talent_spell( talent_tree::SPECIALIZATION, "Hammer of the Righteous" );
+  talents.redoubt                        = find_talent_spell( talent_tree::SPECIALIZATION, "Redoubt" );
+  talents.inner_light                    = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Light" );
+  talents.holy_shield                    = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Shield" );
+  talents.grand_crusader                 = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Crusader" );
+  talents.shining_light                  = find_talent_spell( talent_tree::SPECIALIZATION, "Shining Light" );
+  talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
+  talents.inspiring_vanguard             = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Vanguard" );
+  talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
+  talents.crusaders_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Judgement" );
+  talents.consecration_in_flame          = find_talent_spell( talent_tree::SPECIALIZATION, "Consecration in Flame" );
+  talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
+  talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
+  talents.light_of_the_titans            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of the Titans" );
+  talents.uthers_guard                   = find_talent_spell( talent_tree::SPECIALIZATION, "Uthers Guard" );
+  talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
+  talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
+  talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
+  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath Might" );
+  talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
+  talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
+  talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
+  talents.tyrs_enforcer                  = find_talent_spell( talent_tree::SPECIALIZATION, "Tyr's Enforcer" );
+  talents.guardian_of_ancient_kings      = find_talent_spell( talent_tree::SPECIALIZATION, "Guardian of Ancient Kings" );
+  talents.sanctuary                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctuary" );
+  talents.faith_barricade                = find_talent_spell( talent_tree::SPECIALIZATION, "Faith Barricade" );
+  talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
+  talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
+  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faiths Armor" );
+  talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
+  talents.crusaders_resolve              = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Resolve" );
+  talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Valkyr" );
+  talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
+  talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
+  talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
+  talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
+  talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
+  talents.eye_for_an_eye                 = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
+  talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera and DT" );
+  talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
