@@ -272,28 +272,23 @@ struct druid_t : public player_t
 private:
   form_e form;  // Active druid form
 public:
-  moon_stage_e moon_stage;
-  unsigned orbit_breaker_count;
   eclipse_handler_t eclipse_handler;
   // counters for snapshot tracking
   std::vector<std::unique_ptr<snapshot_counter_t>> counters;
-
-  double after_the_wildfire_counter;
   double expected_max_health;  // For Bristling Fur calculations.
+  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
 
-  // spec-based spell/attack power overrides
-  struct spec_override_t
-  {
-    double attack_power;
-    double spell_power;
-  } spec_override;
-
-  // RPPM objects
-  struct rppms_t
-  {
-    // Feral
-    real_ppm_t* predator;    // Optional RPPM approximation
-  } rppm;
+  // !!!==========================================================================!!!
+  // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
+  // !!!==========================================================================!!!
+  moon_stage_e moon_stage;
+  unsigned orbit_breaker_count;
+  double after_the_wildfire_counter;
+  std::vector<event_t*> persistent_event_delay;
+  event_t* lycaras_event;
+  timespan_t lycaras_event_remains;
+  std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
+  // !!!==========================================================================!!!
 
   // Options
   struct options_t
@@ -340,6 +335,20 @@ public:
     player_t* kindred_spirits_target;
     bool lone_empowerment = false;
   } options;
+
+  // spec-based spell/attack power overrides
+  struct spec_override_t
+  {
+    double attack_power;
+    double spell_power;
+  } spec_override;
+
+  // RPPM objects
+  struct rppms_t
+  {
+    // Feral
+    real_ppm_t* predator;    // Optional RPPM approximation
+  } rppm;
 
   struct active_actions_t
   {
@@ -397,13 +406,6 @@ public:
   melee_attack_t* caster_melee_attack;
   melee_attack_t* cat_melee_attack;
   melee_attack_t* bear_melee_attack;
-
-  // Druid Events
-  std::vector<event_t*> persistent_event_delay;
-  event_t* lycaras_event;
-  timespan_t lycaras_event_remains;
-  std::vector<event_t*> swarm_tracker;  // 'friendly' targets for healing swarm
-  std::vector<std::tuple<unsigned, unsigned, timespan_t, timespan_t, double>> prepull_swarm;
 
   // Buffs
   struct buffs_t
@@ -1030,8 +1032,8 @@ public:
     : player_t( sim, DRUID, name, r ),
       form( form_e::NO_FORM ),
       eclipse_handler( this ),
-      spec_override( spec_override_t() ),
       options(),
+      spec_override( spec_override_t() ),
       active( active_actions_t() ),
       force_of_nature(),
       caster_form_weapon(),
@@ -10644,26 +10646,25 @@ void druid_t::reset()
 
   // Reset druid_t variables to their original state.
   form = NO_FORM;
-  moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  orbit_breaker_count = 0U;
-  after_the_wildfire_counter = 0.0;
+  base_gcd = 1.5_s;
   eclipse_handler.reset_stacks();
   eclipse_handler.reset_state();
-
-  base_gcd = 1.5_s;
 
   // Restore main hand attack / weapon to normal state
   main_hand_attack = caster_melee_attack;
   main_hand_weapon = caster_form_weapon;
 
-  // Reset any custom events to be safe.
+  if ( mastery.natures_guardian->ok() )
+    recalculate_resource_max( RESOURCE_HEALTH );
+
+  // Reset runtime variables
+  moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
+  orbit_breaker_count = 0U;
+  after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
   lycaras_event = nullptr;
   lycaras_event_remains = 0_ms;
   swarm_tracker.clear();
-
-  if ( mastery.natures_guardian->ok() )
-    recalculate_resource_max( RESOURCE_HEALTH );
 }
 
 // druid_t::merge ===========================================================
