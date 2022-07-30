@@ -1586,7 +1586,7 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_class_spell( "Hammer of Wrath" ) )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS,"Hammer of Wrath" ) )
   {
     parse_options( options_str );
 
@@ -2405,7 +2405,6 @@ void paladin_t::init_spells()
   init_spells_holy();
 
   // Shared talents
-  //new stuff - how do i add double points? and choice talents?
   talents.lay_on_hands                    = find_talent_spell( "Lay on Hands" );
   talents.blessing_of_freedom             = find_talent_spell( "Blessing of Freedom" ); 
   talents.hammer_of_wrath                 = find_talent_spell( "Hammer of Wrath" );
@@ -3239,7 +3238,7 @@ bool paladin_t::standing_in_hallow() const
 bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
-  bool buffs_ok = spells.hammer_of_wrath_2->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
+  bool buffs_ok = talents.hammer_of_wrath->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
   buffs_ok      = buffs_ok || buffs.final_verdict->up();
   return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 );
 }
