@@ -938,3 +938,11 @@
 4623413, DBFilesClient\ProfessionRating.db2
 4492239, GameTables\ProfessionRatings.txt
 4494528, GameTables\BaseProfessionRatings.txt
+4659576, DBFilesClient\ContentTuningXLabel.db2
+4668112, DBFilesClient\ContentRestrictionRule.db2
+4659601, DBFilesClient\CraftingDataEnchantQuality.db2
+4501047, DBFilesClient\FlightCapability.db2
+4644249, DBFilesClient\FlightCapabilityXGlideEvent.db2
+4644012, DBFilesClient\GlideEvent.db2
+4633656, DBFilesClient\MapRenderScale.db2
+4635649, DBFilesClient\TraitSystem.db2
