@@ -251,7 +251,6 @@ public:
   struct events_t
   {
     event_t* enlightened;
-    event_t* focus_magic;
     event_t* icicle;
     event_t* from_the_ashes;
     event_t* time_anomaly;
@@ -308,18 +307,15 @@ public:
   {
     // Arcane
     buff_t* arcane_charge;
-    buff_t* arcane_power;
-    buff_t* clearcasting;
-    buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
-    buff_t* evocation;
-    buff_t* presence_of_mind;
-
     buff_t* arcane_familiar;
     buff_t* chrono_shift;
+    buff_t* clearcasting;
+    buff_t* clearcasting_channel; // Hidden buff which governs tick and channel time
     buff_t* enlightened_damage;
     buff_t* enlightened_mana;
+    buff_t* evocation;
+    buff_t* presence_of_mind;
     buff_t* rule_of_threes;
-    buff_t* time_warp;
 
 
     // Fire
@@ -327,29 +323,25 @@ public:
     buff_t* fireball;
     buff_t* heating_up;
     buff_t* hot_streak;
-
-    buff_t* alexstraszas_fury;
-    buff_t* frenetic_speed;
     buff_t* pyroclasm;
 
 
     // Frost
+    buff_t* bone_chilling;
     buff_t* brain_freeze;
+    buff_t* chain_reaction;
     buff_t* fingers_of_frost;
+    buff_t* freezing_rain;
     buff_t* icicles;
     buff_t* icy_veins;
-
-    buff_t* bone_chilling;
-    buff_t* chain_reaction;
-    buff_t* freezing_rain;
-    buff_t* ice_floes;
     buff_t* ray_of_frost;
 
 
     // Shared
+    buff_t* ice_floes;
     buff_t* incanters_flow;
     buff_t* rune_of_power;
-    buff_t* focus_magic;
+    buff_t* time_warp;
 
 
     // Runeforge Legendaries
@@ -399,7 +391,6 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
-    cooldown_t* arcane_power;
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fire_blast;
@@ -428,10 +419,6 @@ public:
     double searing_touch_duration_multiplier = 1.0;
     timespan_t frozen_duration = 1.0_s;
     timespan_t scorch_delay = 15_ms;
-    timespan_t focus_magic_interval = 1.5_s;
-    double focus_magic_relstddev = 0.1;
-    double focus_magic_crit_chance = 0.85;
-    bool focus_magic_trade = false;
     timespan_t mirrors_of_torment_interval = 1.5_s;
     timespan_t arcane_missiles_chain_delay = 200_ms;
     double arcane_missiles_chain_relstddev = 0.1;
@@ -901,7 +888,6 @@ public:
   void arise() override;
   void combat_begin() override;
   void combat_end() override;
-  std::string create_profile( save_e ) override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
   void analyze( sim_t& ) override;
@@ -1505,7 +1491,6 @@ struct mage_spell_t : public spell_t
     bool frost_mage = true;
 
     // Temporary damage increase
-    bool arcane_power = true;
     bool bone_chilling = true;
     bool incanters_flow = true;
     bool rune_of_power = true;
@@ -1638,9 +1623,6 @@ public:
   double action_multiplier() const override
   {
     double m = spell_t::action_multiplier();
-
-    if ( affected_by.arcane_power )
-      m *= 1.0 + p()->buffs.arcane_power->check_value();
 
     if ( affected_by.bone_chilling )
       m *= 1.0 + p()->buffs.bone_chilling->check_stack_value();
@@ -2254,24 +2236,6 @@ struct hot_streak_spell_t : public fire_mage_spell_t
       }
     }
   }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    // The buff expiration is slightly delayed, allowing two spells cast at the same time to benefit from this effect.
-    if ( result_is_hit( s->result ) )
-      p()->buffs.alexstraszas_fury->expire( p()->bugs ? 30_ms : 0_ms );
-  }
-
-  double action_multiplier() const override
-  {
-    double am = fire_mage_spell_t::action_multiplier();
-
-    am *= 1.0 + p()->buffs.alexstraszas_fury->check_value();
-
-    return am;
-  }
 };
 
 
@@ -2794,15 +2758,6 @@ struct arcane_missiles_tick_t final : public arcane_mage_spell_t
   {
     background = true;
     affected_by.savant = triggers.radiant_spark = true;
-  }
-
-  void execute() override
-  {
-    arcane_mage_spell_t::execute();
-
-    if ( p()->buffs.clearcasting_channel->check() )
-      // Multiply by 100 because for this data a value of 1 represents 0.1 seconds.
-      p()->cooldowns.arcane_power->adjust( -100 * p()->conduits.arcane_prodigy.time_value(), false );
   }
 
   void impact( action_state_t* s ) override
@@ -4933,14 +4888,6 @@ struct scorch_t final : public fire_mage_spell_t
     return c;
   }
 
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-      p()->buffs.frenetic_speed->trigger();
-  }
-
   bool usable_moving() const override
   { return true; }
 };
@@ -5502,34 +5449,6 @@ struct enlightened_event_t final : public event_t
   }
 };
 
-struct focus_magic_event_t final : public event_t
-{
-  mage_t* mage;
-
-  focus_magic_event_t( mage_t& m, timespan_t delta_time ) :
-    event_t( m, delta_time ),
-    mage( &m )
-  { }
-
-  const char* name() const override
-  { return "focus_magic_event"; }
-
-  void execute() override
-  {
-    mage->events.focus_magic = nullptr;
-
-    if ( rng().roll( mage->options.focus_magic_crit_chance ) )
-      mage->buffs.focus_magic->trigger();
-
-    if ( mage->options.focus_magic_interval > 0_ms )
-    {
-      timespan_t period = mage->options.focus_magic_interval;
-      period = std::max( 1_ms, mage->rng().gauss( period, period * mage->options.focus_magic_relstddev ) );
-      mage->events.focus_magic = make_event<focus_magic_event_t>( sim(), *mage, period );
-    }
-  }
-};
-
 struct icicle_event_t final : public event_t
 {
   mage_t* mage;
@@ -5597,7 +5516,7 @@ struct time_anomaly_tick_event_t final : public event_t
 
   enum ta_proc_type_e
   {
-    TA_ARCANE_POWER,
+    // TA_ARCANE_POWER,
     TA_EVOCATION,
     TA_TIME_WARP
   };
@@ -5621,8 +5540,8 @@ struct time_anomaly_tick_event_t final : public event_t
 
       std::vector<ta_proc_type_e> possible_procs;
 
-      if ( !mage->buffs.arcane_power->check() )
-        possible_procs.push_back( TA_ARCANE_POWER );
+      // if ( !mage->buffs.arcane_power->check() )
+      //   possible_procs.push_back( TA_ARCANE_POWER );
       if ( !mage->buffs.evocation->check() )
         possible_procs.push_back( TA_EVOCATION );
       if ( !mage->buffs.time_warp->check() )
@@ -5633,9 +5552,9 @@ struct time_anomaly_tick_event_t final : public event_t
         auto proc = possible_procs[ rng().range( possible_procs.size() ) ];
         switch ( proc )
         {
-          case TA_ARCANE_POWER:
-            mage->buffs.arcane_power->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
-            break;
+          // case TA_ARCANE_POWER:
+          //   mage->buffs.arcane_power->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
+          //   break;
           case TA_EVOCATION:
             mage->trigger_evocation( 1000 * mage->talents.time_anomaly->effectN( 2 ).time_value(), false );
             break;
@@ -5718,7 +5637,6 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   uptime()
 {
   // Cooldowns
-  cooldowns.arcane_power       = get_cooldown( "arcane_power"       );
   cooldowns.combustion         = get_cooldown( "combustion"         );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
@@ -5923,28 +5841,11 @@ void mage_t::create_options()
   add_option( opt_float( "mage.searing_touch_duration_multiplier", options.searing_touch_duration_multiplier ) );
   add_option( opt_timespan( "mage.frozen_duration", options.frozen_duration ) );
   add_option( opt_timespan( "mage.scorch_delay", options.scorch_delay ) );
-  add_option( opt_timespan( "mage.focus_magic_interval", options.focus_magic_interval, 0_ms, timespan_t::max() ) );
-  add_option( opt_float( "mage.focus_magic_relstddev", options.focus_magic_relstddev, 0.0, std::numeric_limits<double>::max() ) );
-  add_option( opt_float( "mage.focus_magic_crit_chance", options.focus_magic_crit_chance, 0.0, 1.0 ) );
-  add_option( opt_bool( "mage.focus_magic_trade", options.focus_magic_trade ) );
   add_option( opt_timespan( "mage.mirrors_of_torment_interval", options.mirrors_of_torment_interval, 1_ms, timespan_t::max() ) );
   add_option( opt_timespan( "mage.arcane_missiles_chain_delay", options.arcane_missiles_chain_delay, 0_ms, timespan_t::max() ) );
   add_option( opt_float( "mage.arcane_missiles_chain_relstddev", options.arcane_missiles_chain_relstddev, 0.0, std::numeric_limits<double>::max() ) );
 
   player_t::create_options();
-}
-
-std::string mage_t::create_profile( save_e save_type )
-{
-  std::string profile = player_t::create_profile( save_type );
-
-  if ( save_type & SAVE_PLAYER )
-  {
-    if ( options.focus_magic_trade )
-      profile += "mage.focus_magic_trade=1\n";
-  }
-
-  return profile;
 }
 
 void mage_t::copy_from( player_t* source )
@@ -6878,7 +6779,6 @@ double mage_t::composite_spell_crit_chance() const
   double c = player_t::composite_spell_crit_chance();
 
   c += talents.critical_mass->effectN( 1 ).percent();
-  c += buffs.focus_magic->check() * buffs.focus_magic->data().effectN( 1 ).percent();
 
   return c;
 }
@@ -6920,7 +6820,6 @@ double mage_t::passive_movement_modifier() const
   double pmm = player_t::passive_movement_modifier();
 
   pmm += buffs.chrono_shift->check_value();
-  pmm += buffs.frenetic_speed->check_value();
 
   return pmm;
 }
