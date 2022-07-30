@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-28/44795, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-30/44795)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=1, col=4, entry_id=36873, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -5489,7 +5489,7 @@ Effects          :
 Description      : Fire Blast always deals a critical strike.
 
 Name             : Shatter (desc=Rank 2) (id=231582) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=spec, row=1, col=1, entry_id=36827, max_rank=1, req_points=0, name="Shatter Rank 2 [NYI]"]
+Talent Entry     : Generic [tree=spec, row=3, col=2, entry_id=36827, max_rank=1, req_points=0, name="Shatter Rank 2 [NYI]"]
 Class            : Mage
 School           : Frost
 Spell Type       : None
