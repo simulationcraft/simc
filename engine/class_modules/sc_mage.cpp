@@ -6402,9 +6402,6 @@ void mage_t::create_buffs()
   buffs.rule_of_threes       = make_buff( this, "rule_of_threes", find_spell( 264774 ) )
                                  ->set_default_value_from_effect( 1 )
                                  ->set_chance( talents.rule_of_threes->ok() );
-  buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
 
   // Fire
@@ -6443,19 +6440,18 @@ void mage_t::create_buffs()
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                              ->set_default_value_from_effect( 2 )
                              ->set_chance( talents.freezing_rain->ok() );
-  buffs.ice_floes        = make_buff<buffs::ice_floes_t>( this );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                              ->set_default_value_from_effect( 1 );
 
 
   // Shared
+  buffs.ice_floes        = make_buff<buffs::ice_floes_t>( this );
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
-  buffs.focus_magic    = make_buff( this, "focus_magic_proc", find_spell( 321363 ) )
-                           ->set_default_value_from_effect( 2 )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                           ->add_invalidate( CACHE_SPELL_CRIT_CHANCE );
+  buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
