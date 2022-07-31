@@ -2367,12 +2367,46 @@ static void parse_traits(
       return;
     }
 
-    auto entry_id = util::to_unsigned_ignore_error( talent_split[0], 0 );
+    bool is_spell_id = false;
+    auto entry_id = 0U;
+    if ( !talent_split[ 0 ].empty() &&
+         ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
+      is_spell_id = true;
+    }
+    else
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
+    }
+
     auto ranks = util::to_unsigned( talent_split[1] );
     const trait_data_t* trait_obj = nullptr;
     if ( entry_id != 0 )
     {
-      trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+      if ( is_spell_id )
+      {
+        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
+            player->specialization(), player->dbc->ptr );
+        if ( objs.empty() )
+        {
+          trait_obj = &( trait_data_t::nil() );
+        }
+        else if ( objs.size() > 1U )
+        {
+          player->sim->error( "Multiple talents for spell id {} found",
+              talent_split[ 0 ].substr( 1 ) );
+          player->sim->cancel();
+        }
+        else
+        {
+          trait_obj = objs[ 0 ];
+        }
+      }
+      else
+      {
+        trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+      }
     }
     else
     {
