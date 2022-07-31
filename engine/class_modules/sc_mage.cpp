@@ -2502,6 +2502,41 @@ struct ignite_t final : public residual_action_t
     if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
       p()->action.conflagration_flare_up->execute_on_target( d->target );
   }
+
+  void impact( action_state_t* s ) override
+  {
+    // Residual periodic actions + tick_zero does not work
+    assert( !mage_spell_t::tick_zero );
+
+    dot_t* dot = mage_spell_t::get_dot( s->target );
+    double current_amount = 0, old_amount = 0;
+    double ticks_left = 0;
+    residual_action::residual_periodic_state_t* dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
+
+    // If dot is ticking get current residual pool before we overwrite it
+    if (dot->is_ticking())
+    {
+      old_amount = dot_state->tick_amount;
+      ticks_left = dot->ticks_left_fractional();
+      current_amount = old_amount * dot->ticks_left_fractional();
+    }
+
+    // Add new amount to residual pool
+    current_amount += s->result_amount;
+
+    // Trigger the dot, refreshing it's duration or starting it
+    mage_spell_t::trigger_dot( s );
+
+    if ( !dot_state )
+      dot_state = debug_cast<residual_action::residual_periodic_state_t*>( dot->state );
+
+    // After a refresh the number of ticks should always be an integer, but Ignite uses the fractional value here too for consistency.
+    dot_state->tick_amount = current_amount / dot->ticks_left_fractional();
+
+    sim->print_debug( "{} {} impact amount={} old_total={} old_ticks={} old_tick={} current_total={} current_ticks={} current_tick={}",
+      player->name(), name(), s->result_amount, old_amount * ticks_left, ticks_left, ticks_left > 0 ? old_amount : 0,
+      current_amount, dot->ticks_left_fractional(), dot_state->tick_amount );
+  }
 };
 
 // Arcane Barrage Spell =====================================================
@@ -4273,6 +4308,8 @@ struct icy_veins_t final : public frost_mage_spell_t
 
 struct fire_blast_t final : public fire_mage_spell_t
 {
+  int max_spread_targets;
+
   fire_blast_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     fire_mage_spell_t( n, p, p->talents.fire_blast->ok() ? p->talents.fire_blast : p->find_class_spell( "Fire Blast" ) )
   {
@@ -4286,6 +4323,74 @@ struct fire_blast_t final : public fire_mage_spell_t
     cooldown->hasted = true;
 
     base_crit += p->talents.fire_blast_2->effectN( 1 ).percent();
+
+    // Ignite is bugged and spreads to one fewer target than it should.
+    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() ) - ( p->bugs ? 1 : 0 );
+  }
+
+  // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
+  static double ignite_bank( dot_t* ignite )
+  {
+    if ( !ignite->is_ticking() )
+      return 0.0;
+
+    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
+    return ignite_state->tick_amount * ignite->ticks_left_fractional();
+  }
+
+  void spread_ignite( player_t* primary )
+  {
+    auto source = primary->get_dot( "ignite", player );
+    if ( source->is_ticking() )
+    {
+      std::vector<dot_t*> ignites;
+
+      // Collect the Ignite DoT objects of all targets that are in range.
+      for ( auto t : target_list() )
+        ignites.push_back( t->get_dot( "ignite", player ) );
+
+      // Sort candidate Ignites by descending bank size.
+      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
+      { return ignite_bank( a ) > ignite_bank( b ); } );
+
+      auto source_bank = ignite_bank( source );
+      auto targets_remaining = max_spread_targets;
+      auto source_tick_amount = debug_cast<residual_action::residual_periodic_state_t*>( source->state )->tick_amount;
+      for ( auto destination : ignites )
+      {
+        // The original spread source doesn't count towards the spread target limit.
+        if ( source == destination )
+          continue;
+
+        // Target cap was reached, stop.
+        if ( targets_remaining-- <= 0 )
+          break;
+
+        // Source Ignite cannot spread to targets with higher Ignite bank. It will
+        // still count towards the spread target cap, though.
+        if ( ignite_bank( destination ) >= source_bank )
+          continue;
+
+        if ( destination->is_ticking() )
+        {
+          p()->procs.ignite_overwrite->occur();
+
+          // If Ignite is already active on the target, the copied Ignite is applied as if it were refreshing the active one.
+          source->copy( destination->target, DOT_COPY_CLONE );
+        }
+        else
+        {
+          p()->procs.ignite_new_spread->occur();
+
+          // If Ignite is not active, we need to apply a new Ignite, but the full state is not copied (i.e., time to tick).
+          source->copy( destination->target, DOT_COPY_START );
+        }
+
+        // Regardless of existing Ignites, the tick amount is directly copied when spreading an Ignite.
+        // This can sometimes result in the newly spread Ignites having a larger than expected bank.
+        debug_cast<residual_action::residual_periodic_state_t*>( destination->state )->tick_amount = source_tick_amount;
+      }
+    }
   }
 
   void execute() override
@@ -4296,6 +4401,8 @@ struct fire_blast_t final : public fire_mage_spell_t
 
   void impact( action_state_t* s ) override
   {
+    spread_ignite( s->target );
+
     fire_mage_spell_t::impact( s );
 
     if ( result_is_hit( s->result ) && p()->buffs.combustion->check() )
@@ -4615,10 +4722,9 @@ struct nether_tempest_t final : public arcane_mage_spell_t
 
 // Phoenix Flames Spell =====================================================
 
+// TODO: Phoenix Flames is currently bugged and spreads Ignite, check later in beta to make sure this was fixed.
 struct phoenix_flames_splash_t final : public fire_mage_spell_t
 {
-  int max_spread_targets;
-
   phoenix_flames_splash_t( std::string_view n, mage_t* p ) :
     fire_mage_spell_t( n, p, p->find_spell( 257542 ) )
   {
@@ -4629,74 +4735,6 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     callbacks = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
-    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() );
-  }
-
-  static double ignite_bank( dot_t* ignite )
-  {
-    if ( !ignite->is_ticking() )
-      return 0.0;
-
-    auto ignite_state = debug_cast<residual_action::residual_periodic_state_t*>( ignite->state );
-    return ignite_state->tick_amount * ignite->ticks_left();
-  }
-
-  void spread_ignite( player_t* primary )
-  {
-    auto source = primary->get_dot( "ignite", player );
-    if ( source->is_ticking() )
-    {
-      std::vector<dot_t*> ignites;
-
-      // Collect the Ignite DoT objects of all targets that are in range.
-      for ( auto t : target_list() )
-        ignites.push_back( t->get_dot( "ignite", player ) );
-
-      // Sort candidate Ignites by descending bank size.
-      std::stable_sort( ignites.begin(), ignites.end(), [] ( dot_t* a, dot_t* b )
-      { return ignite_bank( a ) > ignite_bank( b ); } );
-
-      auto source_bank = ignite_bank( source );
-      auto targets_remaining = max_spread_targets;
-      for ( auto destination : ignites )
-      {
-        // The original spread source doesn't count towards the spread target limit.
-        if ( source == destination )
-          continue;
-
-        // Target cap was reached, stop.
-        if ( targets_remaining-- <= 0 )
-          break;
-
-        // Source Ignite cannot spread to targets with higher Ignite bank. It will
-        // still count towards the spread target cap, though.
-        if ( ignite_bank( destination ) >= source_bank )
-          continue;
-
-        if ( destination->is_ticking() )
-          p()->procs.ignite_overwrite->occur();
-        else
-          p()->procs.ignite_new_spread->occur();
-
-        // TODO: Exact copies of the Ignite are not spread. Instead, the Ignites can
-        // sometimes have partial ticks, but the conditions for this are not known.
-        destination->cancel();
-        source->copy( destination->target, DOT_COPY_CLONE );
-      }
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    fire_mage_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) && s->chain_target == 0 )
-    {
-      // Delay sperading Ignite by double the delay of Ignite's residual action
-      // so that it occurs after the Ignite from Phoenix Flames has been applied.
-      timespan_t delay = 2 * rng().gauss( p()->sim->default_aura_delay, p()->sim->default_aura_delay_stddev );
-      make_event( *sim, delay, [ this, t = s->target ] { spread_ignite( t ); } );
-    }
   }
 };
 
