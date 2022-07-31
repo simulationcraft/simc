@@ -2487,7 +2487,12 @@ void player_t::init_talents()
 
     for ( const auto& effect_point : effect_points )
     {
-      auto effect_id = spell->effectN( effect_point.effect_index + 1U ).id();
+      auto eff_idx = effect_point.effect_index + 1U;
+      // Skip if more effect point entries exist than there are effects
+      if ( spell->effect_count() < eff_idx )
+        continue;
+
+      auto effect_id = spell->effectN( eff_idx ).id();
       // Don't adjust already overridden effects, as those are defined by player options from the
       // command line (i.e., using override.spell_data or override.player.spell_data options).
       if ( dbc_override_->is_overridden_effect( *dbc, effect_id, "base_value" ) )
