@@ -53,14 +53,14 @@ bear->add_action( "moonfire,if=buff.galactic_guardian.up&active_enemies<3" );
 bear->add_action( "thrash_bear,target_if=refreshable|dot.thrash_bear.stack<3|(dot.thrash_bear.stack<4&runeforge.luffainfused_embrace.equipped)|active_enemies>=4|buff.berserk_bear.up&buff.berserk_bear.remains<=gcd+0.5" );
 bear->add_action( "fleshcraft,if=soulbind.pustule_eruption.enabled&((cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0)&(dot.moonfire.remains>=3)&(buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&buff.galactic_guardian.down))|soulbind.volatile_solvent.enabled,interrupt_immediate=1,interrupt_global=1,interrupt_if=soulbind.volatile_solvent&(cooldown.thrash_bear.remains>0&cooldown.mangle.remains>0)" );
 bear->add_action( "swipe,if=buff.incarnation_guardian_of_ursoc.down&buff.berserk_bear.down&active_enemies>=4" );
-bear->add_action( "maul,if=(buff.incarnation.up)&active_enemies<3&(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)|(buff.berserk_bear.up|buff.incarnation.up)&(buff.savage_combatant.stack>=3)&active_enemies<3|!conduit.savage_combatant.enabled&(buff.berserk_bear.up|buff.incarnation.up)&active_enemies<3" );
+bear->add_action( "maul,if=(buff.incarnation.up)&active_enemies<3&(buff.tooth_and_claw.stack>=2)|(buff.tooth_and_claw.up&buff.tooth_and_claw.remains<1.5)&active_enemies<3|(buff.berserk_bear.up|buff.incarnation.up)&(buff.savage_combatant.stack>=3)&active_enemies<3|!conduit.savage_combatant.enabled&(buff.berserk_bear.up|buff.incarnation.up)&active_enemies<3|(buff.savage_combatant.stack>=3)&active_enemies<3|!conduit.savage_combatant.enabled&active_enemies<3" );
 bear->add_action( "mangle,if=buff.incarnation.up&active_enemies<=3" );
 bear->add_action( "thrash_bear,if=active_enemies>1" );
-bear->add_action( "mangle,if=((rage<90)&active_enemies<3)|((rage<85)&active_enemies<3&talent.soul_of_the_forest.enabled)" );
+bear->add_action( "mangle" );
 bear->add_action( "pulverize,target_if=dot.thrash_bear.stack>2" );
 bear->add_action( "thrash_bear" );
 bear->add_action( "swipe_bear" );
-bear->add_action( "ironfur,if=!buff.ironfur.up" );
+bear->add_action( "ironfur,if=rage>=60&buff.ironfur.stack<2&conduit.savage_combatant.enabled&active_enemies<3|!conduit.savage_combatant.enabled&rage>=42&buff.ironfur.down&active_enemies<3|active_enemies>=3&rage>80&buff.ironfur.stack<7" );
 
 catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!buff.heart_of_the_wild.up&!buff.cat_form.up" );
 catweave->add_action( "cat_form,if=!buff.cat_form.up" );
