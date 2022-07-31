@@ -6306,24 +6306,24 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion        = make_buff<buffs::combustion_t>( this );
-  buffs.fireball          = make_buff( this, "fireball", find_spell( 157644 ) )
-                              ->set_chance( talents.fireball_2->ok() )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                                {
-                                  if ( cur > old )
-                                    buffs.flame_accretion->trigger( cur - old );
-                                  else
-                                    buffs.flame_accretion->decrement( old - cur );
-                                } );
-  buffs.heating_up        = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak        = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
-                              ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                                { if ( old == 0 ) buffs.firestorm->trigger(); } );
-  buffs.pyroclasm         = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                              ->set_default_value_from_effect( 1 )
-                              ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
+  buffs.combustion = make_buff<buffs::combustion_t>( this );
+  buffs.fireball   = make_buff( this, "fireball", find_spell( 157644 ) )
+                       ->set_chance( talents.fireball_2->ok() )
+                       ->set_default_value_from_effect( 1 )
+                       ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+                         {
+                           if ( cur > old )
+                             buffs.flame_accretion->trigger( cur - old );
+                           else
+                             buffs.flame_accretion->decrement( old - cur );
+                         } );
+  buffs.heating_up = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                       ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                         { if ( old == 0 ) buffs.firestorm->trigger(); } );
+  buffs.pyroclasm  = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                       ->set_default_value_from_effect( 1 )
+                       ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
 
   // Frost
@@ -6346,13 +6346,13 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.ice_floes        = make_buff<buffs::ice_floes_t>( this );
+  buffs.ice_floes      = make_buff<buffs::ice_floes_t>( this );
   buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this )
                            ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
   buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
-  buffs.time_warp            = make_buff( this, "time_warp", find_spell( 342242 ) )
-                                 ->set_default_value_from_effect( 1 )
-                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buffs.time_warp      = make_buff( this, "time_warp", find_spell( 342242 ) )
+                           ->set_default_value_from_effect( 1 )
+                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
