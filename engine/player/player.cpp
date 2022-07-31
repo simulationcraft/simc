@@ -9802,14 +9802,15 @@ namespace
 // Generate sorted list of traits by node position, starting with upper left and ascending by column then row
 // Generate list of selection traits mapped to node position.
 // There is no need to strictly sort this list other than to ensure the lower selection_index comes before the higher.
-void generate_trait_map( player_t* player, talent_tree tree,
+bool generate_trait_map( player_t* player, talent_tree tree,
                          std::vector<std::pair<int, const trait_data_t*>>& trait_map,
                          std::vector<std::pair<int, const trait_data_t*>>& selection_map )
 {
   specialization_e spec = player->specialization();
 
   uint32_t class_idx, spec_idx;
-  player->dbc->spec_idx( spec, class_idx, spec_idx );
+  if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
+    return false;
 
   auto trait_data = trait_data_t::data( class_idx, tree, maybe_ptr( player->dbc->ptr ) );
   range::for_each( trait_data, [ spec, &trait_map, &selection_map ]( const trait_data_t& entry ) {
@@ -9844,6 +9845,8 @@ void generate_trait_map( player_t* player, talent_tree tree,
   range::sort( trait_map, []( std::pair<int, const trait_data_t*> a, std::pair<int, const trait_data_t*> b ) {
     return a.first < b.first;
   } );
+
+  return true;
 }
 }  // namespace
 
@@ -9862,6 +9865,18 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
   if ( hash.find_first_not_of( char_array ) != std::string::npos || hash.length() < 6 )
     do_error();
 
+  std::vector<std::pair<int, const trait_data_t*>> class_map;
+  std::vector<std::pair<int, const trait_data_t*>> spec_map;
+  std::vector<std::pair<int, const trait_data_t*>> class_selections;
+  std::vector<std::pair<int, const trait_data_t*>> spec_selections;
+
+  if ( !generate_trait_map( this, talent_tree::CLASS, class_map, class_selections ) ||
+       !generate_trait_map( this, talent_tree::SPECIALIZATION, spec_map, spec_selections ) )
+  {
+    sim->error( "Player {} trying to parse wowhead talent url without previously defined specialization", name() );
+    return false;
+  }
+
   // hash[ 0 ] is always 'B'  TODO: confirm
   auto class_trait_offset  = 1;
   auto class_trait_bytes   = char_array.find( hash[ class_trait_offset ] );
@@ -9871,14 +9886,6 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
   auto spec_trait_bytes    = char_array.find( hash[ spec_trait_offset ] );
   auto spec_select_offset  = spec_trait_offset + 1 + spec_trait_bytes;
   auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
-
-  std::vector<std::pair<int, const trait_data_t*>> class_map;
-  std::vector<std::pair<int, const trait_data_t*>> spec_map;
-  std::vector<std::pair<int, const trait_data_t*>> class_selections;
-  std::vector<std::pair<int, const trait_data_t*>> spec_selections;
-
-  generate_trait_map( this, talent_tree::CLASS, class_map, class_selections );
-  generate_trait_map( this, talent_tree::SPECIALIZATION, spec_map, spec_selections );
 
   auto get_next_bit = [ hash ]( size_t idx, size_t offset ) -> size_t {
     size_t byte = char_array.find( hash[ offset + 1 + idx / 3 ] );
@@ -9894,7 +9901,7 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
     return 0;
   };
 
-  auto get_select_trait = [ &do_error ]( auto begin, auto end, int key ) {
+  auto get_select_trait = [ &do_error ]( auto begin, auto end, int key ) -> const trait_data_t* {
     auto it = std::find_if( begin, end, [ key ]( std::pair<int, const trait_data_t*> entry ) {
       return entry.first == key;
     } );
