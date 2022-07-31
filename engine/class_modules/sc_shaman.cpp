@@ -3871,12 +3871,14 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->buff.gathering_storms->decrement();
 
-    if ( p()->talent.elemental_assault->ok() && !stormflurry )
-    {
-      p()->buff.maelstrom_weapon->trigger(
-        p()->talent.elemental_assault->effectN( 2 ).base_value() );
-      p()->proc.maelstrom_weapon_ea->occur();
-    }
+    make_event( sim, 0_s, [ this ]() {
+      if ( p()->talent.elemental_assault->ok() && !stormflurry )
+      {
+        p()->buff.maelstrom_weapon->trigger(
+          p()->talent.elemental_assault->effectN( 2 ).base_value() );
+        p()->proc.maelstrom_weapon_ea->occur();
+      }
+    } );
 
     p()->buff.legacy_of_the_frost_witch->expire();
   }
@@ -6879,7 +6881,7 @@ struct windfury_totem_t : public shaman_spell_t
     // Windfury Totem buff for the shaman is proper duration (to force the shaman to
     // re-cast it periodically).
     auto wft_buff = buff_t::find( player, "windfury_totem" );
-    if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() || p()->talent.doom_winds.ok() )
+    if ( !sim->overrides.windfury_totem || p()->legendary.doom_winds.ok() )
     {
       wft_buff->set_duration( data().duration() );
 
@@ -9290,9 +9292,7 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
 
   if ( buff.doom_winds_talent->up() )
   {
-    // In-game you
-    proc_chance = spell.windfury_weapon->proc_chance() *
-                  talent.windfury_weapon.ok() *
+    proc_chance *= talent.windfury_weapon.ok() *
                   talent.doom_winds->effectN( 1 ).base_value();
   }
 

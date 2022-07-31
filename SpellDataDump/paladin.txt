@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-28/44795, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-30/44795)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature

@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44795
-static const std::array<spelltext_data_t, 17444> __spelltext_data { {
+static const std::array<spelltext_data_t, 17446> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16668,6 +16668,7 @@ static const std::array<spelltext_data_t, 17444> __spelltext_data { {
   { 378010, "Kill Command damage increased by $s1%.", 0, 0 },
   { 378014, "Serpent Sting's damage applies Latent Poison to the target, stacking up to $378015u times. $?s137015[Barbed Shot]?s137016[Aimed Shot]?s137017&!s259387[Raptor Strike][Mongoose Bite] consumes all stacks of Latent Poison, dealing $336904s1 Nature damage to the target per stack consumed.", 0, 0 },
   { 378015, "$@spelldesc378014", "Injected with Latent Poison. $?s137015[Barbed Shot]?s137016[Aimed Shot]?s137017&!s259387[Raptor Strike][Mongoose Bite]  consumes all stacks of Latent Poison, dealing ${$336904s1/$s1} Nature damage per stack consumed", 0 },
+  { 378016, "$@spelldesc378014", 0, 0 },
   { 378019, "When Obtained: Imbues yourself in an arcane barrier that reduces damage taken and lashes out when struck.", "Reduces all damage taken by $s1 and lashes out for $s2 Arcane damage when struck.", 0 },
   { 378023, "Barbed Shot has $s1 additional charge.", 0, 0 },
   { 378075, "Ghost Wolf removes snares and increases your movement speed by an additional $s1% for the first $338036d. May only occur once every $proccooldown sec.", 0, 0 },
@@ -16768,6 +16769,7 @@ static const std::array<spelltext_data_t, 17444> __spelltext_data { {
   { 378848, "Successfully interrupting an enemy with Mind Freeze grants ${$378849s1/10} Runic Power and reduces its cooldown by ${$378849s2/-1000} sec.", 0, 0 },
   { 378849, "$@spelldesc378848", 0, 0 },
   { 378880, "Each Arcane Shot cast increases the damage of your next Multi-Shot by $s1%, stacking up to $u times.", 0, 0 },
+  { 378885, "$@spelldesc378880", "Multi-Shot damage increased by $s1%.", 0 },
   { 378888, "Aimed Shot has a $s1% chance to also fire a Serpent Sting at the primary target.", 0, 0 },
   { 378901, "Icy Veins grants a charge of Brain Freeze and Fingers of Frost.", 0, 0 },
   { 378905, "Bonus Wind Arrows from Aimed Shot have a $s1% increased critical strike chance and deal $s2% increased critical strike damage.", 0, 0 },
