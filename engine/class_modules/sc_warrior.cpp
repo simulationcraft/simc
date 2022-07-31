@@ -3294,47 +3294,6 @@ struct iron_fortress_t : public warrior_attack_t
   }
 };
 
-// Walk Charge ==============================================================
-struct walk_charge_t : public warrior_attack_t
-{
-  charge_t* charge;
-  walk_charge_t( warrior_t* p, util::string_view options_str ) : 
-    warrior_attack_t( "walk_charge", p, spell_data_t::nil() ), 
-    charge( new charge_t( p, "") )
-  {
-    parse_options( options_str );
-    callbacks = false;
-  }
-
-  timespan_t execute_time() const override
-  {
-    //Execute time is equal to the time it take the player to move charge->min_range from their target
-    //plus charge's time to travel back.
-    return timespan_t::from_seconds((charge->min_range - p()->current.distance) / (p()->base_movement_speed * (1 + p() -> composite_movement_speed())))
-        + charge ->calc_charge_time(charge->min_range);
-  }
-
-  void execute() override
-  {
-    warrior_attack_t::execute();
-
-    //After execute, adjust cooldown for execute time.
-    charge->cooldown->start( charge->cooldown_duration() - charge->calc_charge_time( charge->min_range ) );
-
-    // Execute charge damage and whatever else it's supposed to proc
-    charge->impact_action->execute();
-  }
-
-  bool ready() override
-  {
-    if ( !charge->cooldown->is_ready() || p()->buffs.movement->check() || p()->buff.charge_movement->check() )
-    {
-      return false;
-    }
-    return warrior_attack_t::ready();
-  }
-};
-
 // Heroic Charge ============================================================
 
 struct heroic_charge_t : public warrior_attack_t
@@ -6349,8 +6308,6 @@ action_t* warrior_t::create_action( util::string_view name, util::string_view op
     return new ignore_pain_t( this, options_str );
   if ( name == "intercept" )
     return new intercept_t( this, options_str );
-  if ( name == "walk_charge" )
-    return new walk_charge_t( this, options_str );
   if ( name == "whirlwind" )
   {
     if ( specialization() == WARRIOR_FURY )
@@ -7157,7 +7114,6 @@ void warrior_t::apl_prot()
   default_list -> add_action( "auto_attack" );
   default_list -> add_action( "charge,if=time=0" );
   default_list -> add_action( "heroic_charge,if=buff.revenge.down&(rage<60|rage<44&buff.last_stand.up)" );
-  default_list -> add_action( "walk_charge,if=buff.revenge.down&(rage<60|rage<44&buff.last_stand.up)&!cooldown.heroic_leap.ready&cooldown.charge.charges_fractional>1.5" );
   default_list -> add_action( "intervene,if=buff.revenge.down&(rage<80|rage<77&buff.last_stand.up)&runeforge.reprisal" );
   default_list -> add_action( "use_items,if=cooldown.avatar.remains<=gcd|buff.avatar.up" );
   //use off GCD racial buffs with avatar.
