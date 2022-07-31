@@ -4912,8 +4912,8 @@ void soulwarped_seal_of_menethil( special_effect_t& effect )
       assert( rppm );
       assert( s->target );
 
-      // Below 70% HP, proc rate appears to be 2rppm
-      double mod = 0.150;
+      // Below 70% HP, proc rate appears to be 4rppm
+      double mod = 0.2;
 	  
       // Above 70% HP, proc rate appears to be the full 20rppm.
       if ( s -> target -> health_percentage() >= 70 )

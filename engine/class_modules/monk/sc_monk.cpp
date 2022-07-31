@@ -551,12 +551,6 @@ public:
   {
     double rm = ab::recharge_multiplier( cd );
 
-    // Update the cooldown while Serenity is active
-    if ( p()->buff.serenity->check() && current_resource() == RESOURCE_CHI && ab::cost() > 0 )
-    {
-      rm *= 1.0 / ( 1 + p()->talent.serenity->effectN( 4 ).percent() );
-    }
-
     return rm;
   }
 
@@ -5738,8 +5732,21 @@ struct serenity_buff_t : public monk_buff_t<buff_t>
     set_duration( s->duration() );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
     add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-    set_stack_change_callback( [ this ]( buff_t*, int, int ) {
-      range::for_each( m.serenity_cooldowns, []( cooldown_t* cd ) { cd->adjust_recharge_multiplier(); } );
+    set_stack_change_callback( [ this ]( buff_t* /* b */, int /* old */, int new_ ) {
+      double recharge_mult = 1.0 / ( 1 + m.talent.serenity->effectN( 4 ).percent() );
+      int label            = data().effectN( 4 ).misc_value1();
+      for ( auto a : m.action_list )
+      {
+        if ( a->data().affected_by_label( label ) && a->cooldown->duration != 0_ms )
+        {
+          if ( new_ > 0 )
+            a->dynamic_recharge_rate_multiplier *= recharge_mult;
+          else
+            a->dynamic_recharge_rate_multiplier /= recharge_mult;
+
+          a->cooldown->adjust_recharge_multiplier();
+        }
+      }
     } );
   }
 };
