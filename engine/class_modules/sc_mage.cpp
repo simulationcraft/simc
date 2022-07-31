@@ -2430,6 +2430,7 @@ struct icicle_t final : public frost_mage_spell_t
   {
     background = track_shatter = true;
     callbacks = false;
+    // TODO: This base damage may have been removed, but this should be verified not just using tooltip values.
     base_dd_min = base_dd_max = 1.0;
 
     if ( p->talents.splitting_ice->ok() )
