@@ -6927,9 +6927,9 @@ struct soul_reaper_gavel_t : public death_knight_melee_attack_t
     may_proc_bron = true;
   }
   
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    death_knight_melee_attack_t::impact( s );
+    death_knight_melee_attack_t::execute();
     if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
     p() -> buffs.harvest_time -> trigger();
   }
