@@ -775,6 +775,7 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_url );
+  bool parse_talents_wowhead( std::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
