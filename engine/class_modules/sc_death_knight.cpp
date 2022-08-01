@@ -6932,6 +6932,8 @@ struct soul_reaper_gavel_t : public death_knight_melee_attack_t
     death_knight_melee_attack_t::execute();
     if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
     p() -> buffs.harvest_time -> trigger();
+    
+    p() -> buffs.runic_corruption -> trigger();
   }
 };
 
