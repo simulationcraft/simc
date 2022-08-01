@@ -1397,6 +1397,13 @@ void player_t::init()
 {
   sim->print_debug( "Initializing {}.", *this );
 
+  // Validate current fight style is supported by the actor's module.
+  if ( !validate_fight_style( sim->fight_style ) )
+  {
+    sim->error( "Player {} does not support fight style {}, results may be unreliable.", *this,
+                util::fight_style_string( sim->fight_style ) );
+  }
+
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
   pre_combat->used = true;

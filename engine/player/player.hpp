@@ -895,6 +895,8 @@ public:
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
   virtual void init();
+  virtual bool validate_fight_style( fight_style_e )
+  { return true; }
   virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );
