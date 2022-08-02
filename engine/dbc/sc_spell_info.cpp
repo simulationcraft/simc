@@ -2112,7 +2112,13 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
   if ( spell->real_ppm() != 0 )
   {
     s << "Real PPM         : " << spell->real_ppm();
-    auto modifiers = rppm_modifier_t::find( spell->id(), dbc.ptr );
+    auto mod_span = rppm_modifier_t::find( spell->id(), dbc.ptr );
+
+    std::vector<rppm_modifier_t> modifiers( mod_span.begin(), mod_span.end() );
+    range::sort( modifiers, []( rppm_modifier_t a, rppm_modifier_t b ) {
+      return a.modifier_type < b.modifier_type;
+    } );
+
     std::vector<std::string> mods;
     for ( const auto& modifier : modifiers )
     {
