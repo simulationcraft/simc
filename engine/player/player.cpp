@@ -11617,7 +11617,7 @@ std::unique_ptr<expr_t> player_t::create_expression( util::string_view expressio
     return covenant->create_expression( splits );
   }
 
-  if ( splits[ 0 ] == "rune_word" )
+  if ( splits[ 0 ] == "rune_word" || splits[ 0 ] == "hyperthread_wristwraps" )
   {
     return unique_gear::create_expression( *this, expression_str );
   }

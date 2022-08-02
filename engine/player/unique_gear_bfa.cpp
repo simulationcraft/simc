@@ -5493,6 +5493,27 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
         a->cooldown->adjust( -reduction );
       }
     }
+
+    std::unique_ptr<expr_t> create_expression( std::string_view name ) override
+    {
+      if ( action_t* a = player->find_action( name ) )
+      {
+        return make_fn_expr( name, [ this, a ]
+        {
+          size_t count = 0;
+          for ( auto tracked_action : tracker->last_used )
+          {
+            if ( tracked_action->id == a->id )
+            {
+              count++;
+            }
+          }
+          return count;
+        } );
+      }
+
+      return proc_spell_t::create_expression( name );
+    }
   };
 
   auto cb = new spell_tracker_cb_t( *spell_tracker, as<size_t>( effect.driver()->effectN( 1 ).base_value() ) );
