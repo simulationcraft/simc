@@ -262,8 +262,8 @@ class CSVDataGenerator(object):
         return True
 
 class DataGenerator(object):
-    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',       'Druid', 'Demon Hunter'  ]
-    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20, 0x40,     0x80,    0x100,     0x200,        0x400, 0x800   ]
+    _class_names = [ None, 'Warrior', 'Paladin', 'Hunter', 'Rogue',     'Priest', 'Death Knight', 'Shaman', 'Mage',  'Warlock', 'Monk',      'Druid',  'Demon Hunter',     'Evoker' ]
+    _class_masks = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000 ]
     _race_names  = [ None, 'Human',   'Orc',     'Dwarf',  'Night Elf', 'Undead', 'Tauren',       'Gnome',  'Troll', 'Goblin',  'Blood Elf', 'Draenei', 'Dark Iron Dwarf', 'Vulpera', 'Mag\'har Orc', 'Mechagnome' ] + [ None ] * 6 + [ 'Worgen', None, None, 'Pandaren', None, 'Nightborne', 'Highmountain Tauren', 'Void Elf', 'Lightforged Draenei', 'Zandalari Troll', 'Kul Tiran' ]
     _race_masks  = [ None, 0x1,       0x2,       0x4,      0x8,         0x10,     0x20,           0x40,     0x80,    0x100,     0x200,       0x400,     0x800,             0x1000, 0x2000, 0x4000       ] + [ None ] * 6 + [ 0x200000, None, None, 0x1000000,  None, 0x4000000,    0x8000000,             0x10000000, 0x20000000,            0x40000000,        0x80000000 ]
     _pet_names   = [ None, 'Ferocity', 'Tenacity', None, 'Cunning' ]
