@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 9.2.5.44730
-static const std::array<item_name_description_t, 661> __item_name_description_data { {
+// Item name descriptions, wow build 9.2.5.44908
+static const std::array<item_name_description_t, 662> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -661,5 +661,6 @@ static const std::array<item_name_description_t, 661> __item_name_description_da
   { 13924, "Fated Mythic"                                },
   { 13932, "Fated Raid Finder"                           },
   { 13958, "Shadowlands Season 3"                        },
+  { 13963, "Shadowlands Season 4"                        },
 } };
 
