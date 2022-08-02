@@ -189,7 +189,7 @@ Description      : Shows the location of all nearby beasts on the minimap.
 Tooltip          : Tracking Beasts.
 
 Name             : Scare Beast (id=1513) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=49712, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : Magic
@@ -324,7 +324,7 @@ Effects          :
 Description      : Temporarily sends this pet away. You can call it back later.
 
 Name             : Multi-Shot (id=2643) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=2, col=2, entry_id=49702, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -386,7 +386,7 @@ Description      : $@spelldesc187650
 Tooltip          : Incapacitated.
 
 Name             : Concussive Shot (id=5116) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=1, col=2, entry_id=49686, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -667,7 +667,7 @@ $blink=$?s130392[${1.5}][${1.0}]
 $damage=${$<aotb>*$<ce>*$<spiked>*$<blink>*($RAP*0.333)*(1+$@versadmg)}
 
 Name             : Aimed Shot (id=19434) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=1, col=1, entry_id=49648, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -702,7 +702,7 @@ Description      : A powerful aimed shot that deals $s1 Physical damage.
 Variables        : $mult=${($max(0,$min($pl-10,10))*8+130)/210}
 
 Name             : Bestial Wrath (id=19574) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=6, col=2, entry_id=49742, max_rank=1, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -744,7 +744,7 @@ Variables        : $bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]
 $damage=${$ap*($344572s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=49692, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter, Monk
 School           : Nature
 Spell Type       : None
@@ -770,7 +770,7 @@ Description      : Commands your pet to intimidate the target, stunning it for $
 Tooltip          : Stuns the target for $24394d.
 
 Name             : Tranquilizing Shot (id=19801) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, entry_id=49688, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -1112,8 +1112,8 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Kill Command (id=34026) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=class, row=1, col=1, entry_id=49611, max_rank=1, req_points=0]
-                 : Beast Mastery [free=(Beast Mastery), tree=class, row=1, col=1, entry_id=49720, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=class, row=1, col=1, max_rank=1, req_points=0]
+                 : Beast Mastery [free=(Beast Mastery), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -1145,7 +1145,7 @@ $lowNerf=${0.5+$min($pl,20)*0.025}
 $damage=${$ap*($s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}
 
 Name             : Misdirection (id=34477) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=4, col=2, entry_id=49709, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -1464,8 +1464,8 @@ Effects          :
 Description      : Your pet removes all root and movement impairing effects from itself and a friendly target, and grants immunity to all such effects for $54216d.
 
 Name             : Kill Shot (id=53351) [Spell Family (9)] 
-Talent Entry     : Marksmanship [free=(Marksmanship), tree=class, row=1, col=3, entry_id=49608, max_rank=1, req_points=0]
-                 : Beast Mastery [tree=class, row=1, col=3, entry_id=49609, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [free=(Marksmanship), tree=class, row=1, col=3, max_rank=1, req_points=0]
+                 : Beast Mastery [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -1619,7 +1619,7 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Kindred Spirits (id=56315) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=3, entry_id=49744, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Hunter
@@ -2297,7 +2297,7 @@ Effects          :
 Description      : $@spelldesc92380
 
 Name             : Posthaste (id=109215) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=2, entry_id=49706, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(25, 50)]
 Class            : Hunter
 School           : Physical
@@ -2319,7 +2319,7 @@ Effects          :
 Description      : Disengage also frees you from all movement impairing effects and increases your movement speed by $s2% for $118922d.
 
 Name             : Binding Shot (id=109248) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=49722, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -2433,7 +2433,7 @@ Description      : $@spelldesc109298
 Tooltip          : Webbed.
 
 Name             : Beast Cleave (id=115939) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=4, col=2, entry_id=49743, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(35, 75)]
                  : Effect#2 [op=set, values=(3000, 6000)]
 Class            : Hunter
@@ -2532,7 +2532,7 @@ Description      : $@spelldesc109215
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Barrage (id=120360) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=49596, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -2588,7 +2588,7 @@ Effects          :
 Description      : $@spelldesc120360
 
 Name             : Dire Beast (id=120679) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=6, col=1, entry_id=49746, max_rank=1, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -2701,7 +2701,7 @@ Effects          :
 Description      : $@spelldesc109304
 
 Name             : A Murder of Crows (id=131894) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=4, entry_id=49729, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3037,8 +3037,8 @@ Effects          :
 Description      : Learn the ancient Zandalari secrets of taming Direhorns.
 
 Name             : Counter Shot (id=147362) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=class, row=3, col=2, entry_id=49610, max_rank=1, req_points=0]
-                 : Beast Mastery [tree=class, row=3, col=2, entry_id=49696, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=class, row=3, col=2, max_rank=1, req_points=0]
+                 : Beast Mastery [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -3091,7 +3091,7 @@ Blood of the Rhino
 Great Stamina|r
 
 Name             : Lone Wolf (id=155228) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=4, col=2, entry_id=49646, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3493,7 +3493,7 @@ Description      : $@spelldesc162488
 Tooltip          : Bleeding for $w1 damage every $t1 seconds.
 
 Name             : Steel Trap (id=162488) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=10, col=2, entry_id=49689, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3685,7 +3685,7 @@ Description      : A quick shot that causes $sw2 Arcane damage.
 Variables        : $mult=${($max(0,$min($pl-10,10))*5+80)/130}
 
 Name             : Wild Call (id=185789) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=6, col=3, entry_id=49754, max_rank=2, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -3882,7 +3882,7 @@ Tooltip          : Deflecting all attacks.
 Damage taken reduced by $w4%.
 
 Name             : Raptor Strike (id=186270) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=1, col=1, entry_id=49621, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -3910,7 +3910,7 @@ Effects          :
 Description      : A vicious slash dealing $s1 Physical damage.
 
 Name             : Aspect of the Eagle (id=186289) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=4, col=3, entry_id=49632, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -3940,7 +3940,7 @@ Description      : Increases the range of your $?s259387[Mongoose Bite][Raptor S
 Tooltip          : The range of $?s259387[Mongoose Bite][Raptor Strike] is increased to $265189r yds.
 
 Name             : Bursting Shot (id=186387) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=5, entry_id=49647, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4024,7 +4024,7 @@ Effects          :
 Description      : $@spelldesc187650
 
 Name             : Tar Trap (id=187698) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=4, col=1, entry_id=49713, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4076,7 +4076,7 @@ Effects          :
 Description      : $@spelldesc187698
 
 Name             : Muzzle (id=187707) [Spell Family (9)] 
-Talent Entry     : Survival [tree=class, row=3, col=2, entry_id=49613, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -4102,7 +4102,7 @@ Effects          :
 Description      : Interrupts spellcasting, preventing any spell in that school from being cast for $d.
 
 Name             : Carve (id=187708) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=5, col=3, entry_id=49623, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Survival [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -4136,7 +4136,7 @@ Reduces the remaining cooldown on Wildfire Bomb by $<cdr> sec for each target hi
 Variables        : $cdr=${$s2/1000}
 
 Name             : Legacy of the Windrunners (id=190852) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=4, entry_id=49675, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=4, max_rank=1, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Hunter
 School           : Physical
@@ -4180,7 +4180,7 @@ Description      : $@spelldesc190852
 Tooltip          : $s1 Aimed Shots cast.
 
 Name             : Harpoon (id=190925) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=3, col=3, entry_id=49616, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4261,7 +4261,7 @@ Effects          :
 Description      : $@spelldesc190852
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, entry_id=49730, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(15, 30)]
                  : Effect#2 [op=set, values=(15, 30)]
                  : Effect#3 [op=set, values=(25, 50)]
@@ -4326,7 +4326,7 @@ Effects          :
 Description      : Hurls a fire trap to the target location  that explodes when an enemy approaches, causing $13812s1 Fire damage and burning all enemies within $13812A1 yards for $13812o2 additional Fire damage over $13812d. Trap will exist for $13813d.
 
 Name             : Cobra Shot (id=193455) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=2, col=3, entry_id=49736, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4395,7 +4395,7 @@ Tooltip          : Range increased by $w1%.
 Focus spending abilites deal $s2% increased damage.
 
 Name             : Aspect of the Wild (id=193530) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=7, col=3, entry_id=49737, max_rank=1, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -4435,7 +4435,7 @@ Tooltip          : Gaining $s2 Focus per sec.
 Critical Strike chance increased by $s1%.
 
 Name             : Scent of Blood (id=193532) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=2, entry_id=49753, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Hunter
 School           : Physical
@@ -4460,7 +4460,7 @@ Effects          :
 Description      : Activating Bestial Wrath grants $s1 $Lcharge:charges; of Barbed Shot.
 
 Name             : Steady Focus (id=193533) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=2, entry_id=49666, max_rank=2, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(4, 8)]
 Class            : Hunter
 School           : Physical
@@ -4565,7 +4565,7 @@ Description      : $@spelldesc194595
 Tooltip          : Aimed Shot costs no Focus and is instant.
 
 Name             : Lock and Load (id=194595) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=4, entry_id=49659, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4616,7 +4616,7 @@ Description      : Maims the target, reducing movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $s1%.
 
 Name             : Camouflage (id=199483) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=5, col=5, entry_id=49719, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4653,7 +4653,7 @@ Description      : You and your pet blend into the surroundings and gain stealth
 Tooltip          : Stealthed.
 
 Name             : One with the Pack (id=199528) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=7, col=4, entry_id=49747, max_rank=2, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -4675,7 +4675,7 @@ Effects          :
 Description      : Wild Call has a $s1% increased chance to reset the cooldown of Barbed Shot.
 
 Name             : Stomp (id=199530) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=7, col=2, entry_id=49728, max_rank=2, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Hunter
 School           : Physical
@@ -4698,7 +4698,7 @@ Description      : When you cast Barbed Shot, your pet stomps the ground, dealin
 Variables        : $damage=${($201754m1)*(1+$@versadmg)}*$s1
 
 Name             : Killer Cobra (id=199532) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=2, entry_id=49749, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4740,7 +4740,7 @@ Effects          :
 Tooltip          : Increased movement speed by $s1%.
 
 Name             : Trailblazer (id=199921) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=1, entry_id=49716, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=2, req_points=0]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Hunter
 School           : Physical
@@ -4790,7 +4790,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Stampede (id=201430) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=49701, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : Magic
@@ -4876,7 +4876,7 @@ Effects          :
 Description      : $@spelldesc203415
 
 Name             : Fury of the Eagle (id=203415) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=9, col=1, entry_id=49627, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -4905,7 +4905,7 @@ Description      : Furiously strikes all enemies in front of you, dealing ${$203
 Kill Command cooldown resets reduce the cooldown of Fury of the Eagle by ${$m2/1000}.1 sec.
 
 Name             : Bullseye (id=204089) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=5, entry_id=49651, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(15, 30)]
 Class            : Hunter
 School           : Physical
@@ -5228,7 +5228,7 @@ Effects          :
 Description      : Tell your pet to wake up.
 
 Name             : Explosive Shot (id=212431) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=49698, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Fire
 Spell Type       : Ranged
@@ -5261,7 +5261,7 @@ Tooltip          : Exploding for $212680s1 Fire damage after $t1 sec.
 
 Name             : Butchery (id=212436) [Spell Family (9)] 
 Replaces         : Carve (id=187708)
-Talent Entry     : Survival [tree=spec, row=5, col=3, entry_id=49622, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Survival [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -5318,7 +5318,7 @@ Effects          :
 Description      : $@spelldesc212431
 
 Name             : Scatter Shot (id=213691) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=49723, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5354,7 +5354,7 @@ Description      : A short-range shot that deals $s1 damage, removes all harmful
 Tooltip          : Disoriented.
 
 Name             : Barbed Shot (id=217200) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=1, col=1, entry_id=49756, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5459,7 +5459,7 @@ Effects          :
 Description      : Maximum focus increased by $s1%.
 
 Name             : Barbed Wrath (id=231548) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=3, entry_id=49750, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(6000, 12000)]
                  : Effect#2 [op=set, values=(4000, 8000)]
 Class            : Hunter
@@ -5505,7 +5505,7 @@ Effects          :
 Description      : $@spelldesc191433
 
 Name             : Hi-Explosive Trap (id=236776) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=49691, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Fire
 Spell Type       : None
@@ -5790,7 +5790,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Rapid Fire (id=257044) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=3, col=1, entry_id=49655, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5882,7 +5882,7 @@ Only one Hunter's Mark can be applied at a time.
 Tooltip          : Can always be seen and tracked by the Hunter.
 
 Name             : Multi-Shot (id=257620) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=2, entry_id=49614, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -5910,7 +5910,7 @@ Effects          :
 Description      : Fires several missiles, hitting your current target and all enemies within $A1 yards for $s1 Physical damage. Deals reduced damage beyond $2643s1 targets.
 
 Name             : Trick Shots (id=257621) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=2, entry_id=49650, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -5987,7 +5987,7 @@ Effects          :
 Description      : When Bestial Wrath ends, summon a Spitting Cobra to aid you in combat for $194407d. Each Cobra Shot used during Bestial Wrath increases the damage this Spitting Cobra deals by $s1%.
 
 Name             : Thrill of the Hunt (id=257944) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=2, entry_id=49752, max_rank=3, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=2, max_rank=3, req_points=8]
                  : Effect#2 [op=set, values=(1, 2, 3)]
 Class            : Hunter
 School           : Physical
@@ -6085,7 +6085,7 @@ Effects          :
 
 Name             : Mongoose Bite (id=259387) [Spell Family (9)] 
 Replaces         : Raptor Strike (id=186270)
-Talent Entry     : Survival [tree=spec, row=5, col=4, entry_id=49636, max_rank=1, req_points=8, override="Raptor Strike" (id=186270)]
+Talent Entry     : Survival [tree=spec, row=5, col=4, max_rank=1, req_points=8, override="Raptor Strike" (id=186270)]
 Class            : Hunter
 School           : Physical
 Spell Type       : Melee
@@ -6214,7 +6214,7 @@ Effects          :
 Description      : $@spelldesc259381
 
 Name             : Kill Command (id=259489) [Spell Family (9)] 
-Talent Entry     : Survival [free=(Survival), tree=class, row=1, col=1, entry_id=49612, max_rank=1, req_points=0]
+Talent Entry     : Survival [free=(Survival), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6252,7 +6252,7 @@ Variables        : $damage=${$ap*($s1/100)*(1+$@versadmg)*(1+($137017s1/100))}
 
 
 Name             : Wildfire Bomb (id=259495) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=2, col=1, entry_id=49638, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -6306,7 +6306,7 @@ Effects          :
 Description      : $@spelldesc269751
 
 Name             : Careful Aim (id=260228) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=4, col=4, entry_id=49654, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=4, col=4, max_rank=2, req_points=0]
                  : Effect#3 [op=set, values=(25, 50)]
 Class            : Hunter
 School           : Physical
@@ -6355,7 +6355,7 @@ Effects          :
 Description      : $@spelldesc271045
 
 Name             : Precise Shots (id=260240) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=2, col=3, entry_id=49652, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=2, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(35, 75)]
                  : Effect#2 [op=set, values=(35, 75)]
 Class            : Hunter
@@ -6386,7 +6386,7 @@ Effects          :
 Description      : Aimed Shot causes your next 1-$260242u $?s342049[Chimaera Shots][Arcane Shots] or Multi-Shots to deal $260242s1% more damage.
 
 Name             : Hydra's Bite (id=260241) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=4, entry_id=49693, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -6453,7 +6453,7 @@ Description      : $@spelldesc260240
 Tooltip          : Damage of $?s342049[Chimaera Shot][Arcane Shot] or Multi-Shot increased by $s1%.
 
 Name             : Volley (id=260243) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=1, entry_id=49665, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6503,7 +6503,7 @@ Effects          :
 Description      : $@spelldesc260243
 
 Name             : Bloodseeker (id=260248) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=4, col=2, entry_id=49634, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6549,7 +6549,7 @@ Description      : $@spelldesc260248
 Tooltip          : Attack speed increased by $s1%.
 
 Name             : Tip of the Spear (id=260285) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=2, col=2, entry_id=49624, max_rank=2, req_points=0]
+Talent Entry     : Survival [tree=spec, row=2, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(12, 25)]
 Class            : Hunter
 School           : Physical
@@ -6601,7 +6601,7 @@ Description      : $@spelldesc260285
 Tooltip          : Your next $?s259387[Mongoose Bite][Raptor Strike] deals $s1% increased damage.
 
 Name             : Master Marksman (id=260309) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=49697, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(7, 15)]
 Class            : Hunter
 School           : Physical
@@ -6625,7 +6625,7 @@ Effects          :
 Description      : Your ranged special attack critical strikes cause the target to bleed for an additional $s1% of the damage dealt over $269576d.
 
 Name             : Birds of Prey (id=260331) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=10, col=2, entry_id=49639, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6649,7 +6649,7 @@ Description      : Attacking your pet's target with $?s259387[Mongoose Bite][Rap
 Variables        : $duration= ${$s1/1000}.1
 
 Name             : Streamline (id=260367) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=4, col=1, entry_id=49668, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=4, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(7, 15)]
                  : Effect#2 [op=set, values=(7, 15)]
                  : Effect#3 [op=set, values=(-15, -30)]
@@ -6682,7 +6682,7 @@ Effects          :
 Description      : Rapid Fire's damage is increased by $s1%, and Rapid Fire also causes your next Aimed Shot to cast $s3% faster.
 
 Name             : Lethal Shots (id=260393) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=1, entry_id=49673, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Marksmanship [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6736,7 +6736,7 @@ Description      : $@spelldesc260393
 Tooltip          : Your next Aimed Shot will have $s1% increased critical strike chance, or your next Rapid Fire will deal a critical strike with each shot.
 
 Name             : Double Tap (id=260402) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=3, entry_id=49649, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -6771,7 +6771,7 @@ Description      : Your next Aimed Shot will fire a second time instantly at $s4
 Tooltip          : Your next Aimed Shot will fire a second time instantly at $s4% power and consume no Focus, or your next Rapid Fire will shoot $s3% additional shots during its channel.
 
 Name             : Calling the Shots (id=260404) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=3, entry_id=49677, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1500, 3000)]
 Class            : Hunter
 School           : Physical
@@ -6876,7 +6876,7 @@ Effects          :
 Description      : $@spelldesc263135
 
 Name             : Predator (id=263186) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=3, col=2, entry_id=49635, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=3, col=2, max_rank=1, req_points=0]
                  : Effect#1 [op=set, values=(12, 25)]
 Class            : Hunter
 School           : Nature
@@ -7637,7 +7637,7 @@ Description      : Increases the damage of Hatchet Toss  by $s1 and causes it to
 Tooltip          : Increases the damage of Hatchet Toss  by $s1 and causes it to return to you, dealing $s2 damage to enemies it strikes.
 
 Name             : Guerrilla Tactics (id=264332) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=5, col=1, entry_id=49642, max_rank=1, req_points=8]
+Talent Entry     : Survival [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -7914,7 +7914,7 @@ Description      : A brutal attack that deals $sw1 Physical damage and grants yo
 Increases the damage of Mongoose Bite by $259388s1% for $259388d, stacking up to $259388u times. Successive attacks do not increase duration.
 
 Name             : Terms of Engagement (id=265895) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=4, col=4, entry_id=49637, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -7998,7 +7998,7 @@ Description      : Your damaging abilities have a chance to grant you 25 applica
 Tooltip          : Your damaging abilities have a chance to grant you 25 applications of Overwhelming Power. Each stack of Overwhelming Power grants $s1 Haste. An application of Overwhelming Power is removed every 3 sec or whenever you take damage.
 
 Name             : Born To Be Wild (id=266921) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=6, entry_id=49718, max_rank=3, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=3, req_points=8]
                  : Effect#1 [op=set, values=(-8, -16, -25)]
 Class            : Hunter
 School           : Nature
@@ -8066,7 +8066,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to deal $s1 Physical damage to the target. Gutripper occurs much more often against targets below $s2% health. 
 
 Name             : Animal Companion (id=267116) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=4, col=1, entry_id=49734, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -8409,7 +8409,7 @@ Description      : When you take damage, heal for $s1. Cannot occur more than on
 Tooltip          : When you take damage, heal for $s1. Cannot occur more than once every $270654proccooldown sec.
 
 Name             : Viper's Venom (id=268501) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=7, col=1, entry_id=49600, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Hunter
 School           : Physical
@@ -8569,7 +8569,7 @@ Description      : $@spelldesc260309
 Tooltip          : Bleeding for $w1 damage every $t1 sec.
 
 Name             : Alpha Predator (id=269737) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=49683, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -8617,7 +8617,7 @@ Description      : $@spelldesc259495
 Tooltip          : Suffering $w1 Fire damage every $t1 sec.
 
 Name             : Flanking Strike (id=269751) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=6, col=4, entry_id=49615, max_rank=1, req_points=8]
+Talent Entry     : Survival [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -8893,7 +8893,7 @@ Description      : $@spelldesc270335
 Tooltip          : Suffering $w1 Bleed damage every $t1 sec.
 
 Name             : Natural Mending (id=270581) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=3, col=3, entry_id=49710, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(25, 12)]
 Class            : Hunter
 School           : Physical
@@ -8918,7 +8918,7 @@ Effects          :
 Description      : Every $s1 Focus you spend reduces the remaining cooldown on Exhilaration by ${$m2/1000}.1 sec.
 
 Name             : Wildfire Infusion (id=271014) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Survival [tree=spec, row=8, col=1, entry_id=49645, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -9227,7 +9227,7 @@ Effects          :
 Description      : $@spelldesc190925
 
 Name             : Serpent Sting (id=271788) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=9, col=4, entry_id=49685, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -9671,7 +9671,7 @@ Effects          :
 Description      : Your damaging abilities have a chance to invoke a tainted swamp beneath the target, siphoning ${$s1*6} health from them over $273836d.
 
 Name             : Killer Instinct (id=273887) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=1, entry_id=49684, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -10961,7 +10961,7 @@ Description      : Your maximum Focus is increased to $<focus>, and $?s259387[Mo
 Variables        : $focus=${100+$288571s2}
 
 Name             : Trueshot (id=288613) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=3, entry_id=49657, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -11075,7 +11075,7 @@ Effects          :
 Description      : Your primary stat is increased by $s1 while you are above $s2% health. You take $s3% increased damage while below $s4% health.
 
 Name             : Frenzy Strikes (id=294029) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=6, col=3, entry_id=49618, max_rank=1, req_points=8]
+Talent Entry     : Survival [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11356,7 +11356,7 @@ Effects          :
 Description      : Your secondary stats are all increased by $s1.
 
 Name             : Kill Shot (id=320976) [Spell Family (9)] 
-Talent Entry     : Survival [tree=class, row=1, col=3, entry_id=49607, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : Ranged
@@ -11387,7 +11387,7 @@ Effects          :
 Description      : You attempt to finish off a wounded target, dealing $s1 Physical damage. Only usable on enemies with less than $s2% health.
 
 Name             : Pack Tactics (id=321014) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=2, col=1, entry_id=49745, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11407,7 +11407,7 @@ Effects          :
 Description      : Passive Focus generation increased by $s1%.
 
 Name             : Improved Steady Shot (id=321018) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=2, col=2, entry_id=49674, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11429,7 +11429,7 @@ Effects          :
 Description      : Steady Shot now generates $s1 Focus.
 
 Name             : True Aim (id=321287) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=3, entry_id=49661, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -11451,7 +11451,7 @@ Effects          :
 Description      : $?s342049[Chimaera Shot][Arcane Shot] and Multi-Shot damage increased by $s1%.
 
 Name             : Improved Wildfire Bomb (id=321290) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=6, col=2, entry_id=49625, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(12, 25)]
                  : Effect#2 [op=set, values=(8, 16, 25)]
 Class            : Hunter
@@ -11479,7 +11479,7 @@ Effects          :
 Description      : Wildfire Bomb deals $s1% additional damage.
 
 Name             : Improved Arcane Shot (id=321293) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=2, col=1, entry_id=49670, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=2, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-10, -20)]
 Class            : Hunter
 School           : Nature
@@ -11528,7 +11528,7 @@ Description      : Take direct control of your pet and see through its eyes for 
 Tooltip          : Directly controlling pet.
 
 Name             : Dead Eye (id=321460) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=6, col=4, entry_id=49667, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -11549,7 +11549,7 @@ Effects          :
 Description      : Kill Shot now has ${$m1+1} charges.
 
 Name             : Binding Shackles (id=321468) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=49705, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -11593,7 +11593,7 @@ Description      : $@spelldesc321468
 Tooltip          : Dealing $s1% less damage to the Hunter.
 
 Name             : Bloodshed (id=321530) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=4, entry_id=49595, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -11814,7 +11814,7 @@ Description      : $@spelldesc324149
 Tooltip          : Your next Kill Shot can be used on any target, regardless of their current health, deals $s3% increased damage, and will not consume any Focus.
 
 Name             : Death Chakram (desc=Necrolord) (id=325028) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=10, col=3, entry_id=49700, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 Covenant         : Necrolord
 School           : Shadow
@@ -11998,7 +11998,7 @@ Effects          :
 Description      : $@spelldesc328231
 
 Name             : Fogged Crystal (id=331463) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=49695, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=2, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -12260,7 +12260,7 @@ Description      : $@spelldesc336822
 Tooltip          : Your next Kill Command will consume $s1% less Focus.
 
 Name             : Qa'pla, Eredun War Order (id=336830) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=4, entry_id=49739, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(5, 10)]
                  : Effect#3 [op=set, values=(50, 100)]
 Class            : Hunter
@@ -12292,7 +12292,7 @@ Effects          :
 Description      : Barbed Shot deals $s2% increased damage, and applying Barbed Shot has a $s3% chance to the cooldown of Kill Command.
 
 Name             : Rylakstalker's Piercing Fangs (id=336844) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=2, entry_id=49748, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -12333,7 +12333,7 @@ Description      : $@spelldesc336844
 Tooltip          : Critical damage dealt increased by $s1%.
 
 Name             : Eagletalon's True Focus (id=336849) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=2, entry_id=49679, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Marksmanship [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -12393,7 +12393,7 @@ Description      : $@spelldesc336849
 Tooltip          : Focus cost of all abilities reduced by $s1%.
 
 Name             : Surging Shots (id=336867) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=1, entry_id=49672, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Marksmanship [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -13263,7 +13263,7 @@ Description      : Barbed Shot's recharge time is reduced by ${-$s2/1000} sec, a
 
 Name             : Chimaera Shot (id=342049) [Spell Family (9)] 
 Replaces         : Arcane Shot (id=185358)
-Talent Entry     : Marksmanship [tree=spec, row=3, col=3, entry_id=49699, max_rank=1, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : Ranged
@@ -13340,7 +13340,7 @@ Effects          :
 Description      : Aspect of the Cheetah's initial movement speed burst duration is increased by ${$m1/1000}.1 sec.
 
 Name             : Improved Mend Pet (id=343242) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=49721, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(25, 50)]
 Class            : Hunter
@@ -13366,7 +13366,7 @@ Effects          :
 Description      : Mend Pet heals for an additional ${$m1*$136d/$136t1}% of your pet's health over its duration, and has a $s2% chance to dispel a magic effect each time it heals your pet.
 
 Name             : Improved Tranquilizing Shot (id=343244) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=49704, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Nature
@@ -13388,7 +13388,7 @@ Effects          :
 Description      : When Tranquilizing Shot successfully dispels an effect, gain $s1 Focus.
 
 Name             : Improved Traps (id=343247) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=49708, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-2500, -5000)]
 Class            : Hunter
 School           : Nature
@@ -13411,7 +13411,7 @@ Effects          :
 Description      : The cooldown of Tar Trap and Freezing Trap is reduced by ${$m1/-1000}.1 sec.
 
 Name             : Improved Kill Shot (id=343248) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=2, col=3, entry_id=49715, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -13771,8 +13771,8 @@ Description      : $@spelldesc355589
 Tooltip          : Silenced.
 
 Name             : Wailing Arrow (id=355589) [Spell Family (9)] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=5, entry_id=49660, max_rank=1, req_points=20]
-                 : Beast Mastery [tree=spec, row=9, col=2, entry_id=49724, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=5, max_rank=1, req_points=20]
+                 : Beast Mastery [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Shadow
 Spell Type       : Ranged
@@ -13914,7 +13914,7 @@ Effects          :
 Description      : Bonus Kill Shots from Flayed Shot cause $356620I targets within $356620A1 yds to bleed for $s1% of the damage dealt by Kill Shot over $356620d.
 
 Name             : Call of the Wild (id=359844) [Spell Family (9)] 
-Talent Entry     : Beast Mastery [tree=spec, row=9, col=4, entry_id=49755, max_rank=1, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -13943,7 +13943,7 @@ Description      : You sound the call of the wild, summoning $s1 of your active 
 Tooltip          : Summoning 1 of your active pets every $t2 sec. Each pet summoned lasts for $361582d.
 
 Name             : Coordinated Assault (NYI) (id=360952) [Spell Family (9)] 
-Talent Entry     : Survival [tree=spec, row=8, col=3, entry_id=49640, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -13977,7 +13977,7 @@ $@spellname320976: Applies Bleeding Gash to your target.
 Tooltip          : You and your pet's bond is strengthened, empowering your Carve or Kill Shot when your pet uses their main attack.
 
 Name             : Spearhead (NYI) (id=360966) [Spell Family (9), Hidden] 
-Talent Entry     : Survival [tree=spec, row=9, col=5, entry_id=49641, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : Magic
@@ -14378,7 +14378,7 @@ Effects          :
 Description      : $@spelldesc356264
 
 Name             : Thick Hides (id=377525) [Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=1, entry_id=49687, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -14400,7 +14400,7 @@ Effects          :
 Description      : Increases your pet's total health by $s2%.
 
 Name             : Agile Movement (id=378002) [Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=49703, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Hunter
 School           : Physical
@@ -14420,7 +14420,7 @@ Effects          :
 Description      : Movement speed increased by $s1%.
 
 Name             : Keen Eyesight (id=378004) [Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=49707, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
@@ -14440,7 +14440,7 @@ Effects          :
 Description      : Critical strike chance increased by $s1%.
 
 Name             : Beast Master (id=378007) [Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=49711, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Hunter
 School           : Physical
@@ -14460,7 +14460,7 @@ Effects          :
 Description      : Pet damage increased by $s1%.
 
 Name             : Improved Kill Command (id=378010) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=49717, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -14482,7 +14482,7 @@ Effects          :
 Description      : Kill Command damage increased by $s1%.
 
 Name             : Latent Poison Injectors (id=378014) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=10, col=4, entry_id=49694, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14546,7 +14546,7 @@ Effects          :
 Description      : $@spelldesc378014
 
 Name             : Loaded Quiver (id=378023) [Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=2, entry_id=49732, max_rank=1, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14566,7 +14566,7 @@ Effects          :
 Description      : Barbed Shot has $s1 additional charge.
 
 Name             : Sharp Barbs (id=378205) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=1, entry_id=49731, max_rank=2, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Hunter
@@ -14593,7 +14593,7 @@ Effects          :
 Description      : Barbed shot damage increased by $s1%.
 
 Name             : Kill Cleave (id=378207) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=3, entry_id=49741, max_rank=1, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14614,7 +14614,7 @@ Effects          :
 Description      : While Beast Cleave is active, Kill Command now also strikes nearby enemies for $s1% of damage dealt.
 
 Name             : Training Expert (id=378209) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=4, entry_id=49735, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -14634,7 +14634,7 @@ Effects          :
 Description      : All pet damage dealt increased by $s1%.
 
 Name             : In for the Kill (id=378210) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=7, col=1, entry_id=49738, max_rank=2, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=7, col=1, max_rank=2, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14683,7 +14683,7 @@ Description      : $@spelldesc378210
 Tooltip          : Your next Kill Shot is usable on any target, regardless of your target's current health.
 
 Name             : Cobra Senses (id=378244) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=5, col=5, entry_id=49751, max_rank=1, req_points=8]
+Talent Entry     : Beast Mastery [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14725,7 +14725,7 @@ Effects          :
 Description      : $@spelldesc378244
 
 Name             : Wild Instincts (id=378442) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, entry_id=49733, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -14751,7 +14751,7 @@ Description      : While Call of the Wild is active, Barbed Shot has a $h% chanc
 
 
 Name             : Bloody Frenzy (id=378739) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, entry_id=49682, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Nature
 Spell Type       : None
@@ -14777,7 +14777,7 @@ Description      : While Call of the Wild is active, Barbed Shot affects all of 
 
 
 Name             : Killer Command (id=378740) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, entry_id=49725, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -14797,7 +14797,7 @@ Effects          :
 Description      : Kill Command damage increased by $s1%.
 
 Name             : Dire Command (id=378743) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=8, col=1, entry_id=49740, max_rank=3, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=8, col=1, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(10, 20, 30)]
 Class            : Hunter
 School           : Physical
@@ -14817,7 +14817,7 @@ Effects          :
 Description      : Kill Command has a $s1% chance to also summon a Dire Beast to attack your target for $120679d.
 
 Name             : Dire Pack (id=378745) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=10, col=1, entry_id=49726, max_rank=1, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -14864,7 +14864,7 @@ Description      : $@spelldesc378745
 Tooltip          : Damage of your $?s193455[Cobra Shot][Steady Shot] and Multi-shot by $s1% for $d.
 
 Name             : Flamewaker's Cobra Sting (id=378750) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=4, col=4, entry_id=49727, max_rank=2, req_points=0]
+Talent Entry     : Beast Mastery [tree=spec, row=4, col=4, max_rank=2, req_points=0]
                  : Effect#2 [op=set, values=(25, 50)]
 Class            : Hunter
 School           : Physical
@@ -14889,7 +14889,7 @@ Effects          :
 Description      : Cobra Shot has a $s1% chance to make your next Kill Command consume no Focus.
 
 Name             : Nesingwary's Trapping Apparatus (id=378759) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=49714, max_rank=2, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(20, 40)]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Hunter
@@ -14940,7 +14940,7 @@ Description      : $@spelldesc336743
 Tooltip          : Focus Generation increased by $s2%.
 
 Name             : Killing Blow (id=378765) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=3, col=2, entry_id=49676, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=3, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -14962,7 +14962,7 @@ Effects          :
 Description      : Kill Shot critical strike chance increased by $s1%.
 
 Name             : Hunter's Knowledge (id=378766) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=4, col=3, entry_id=49663, max_rank=2, req_points=0]
+Talent Entry     : Marksmanship [tree=spec, row=4, col=3, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -14984,7 +14984,7 @@ Effects          :
 Description      : Aimed Shot and Rapid Fire critical strike chance increased by $s1%.
 
 Name             : Focused Aim (id=378767) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=5, col=4, entry_id=49671, max_rank=2, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -15006,7 +15006,7 @@ Effects          :
 Description      : Aimed Shot and Rapid Fire damage increased by $s1%.
 
 Name             : Deathblow (id=378769) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=1, entry_id=49658, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=7, col=1, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -15055,7 +15055,7 @@ Effects          :
 Description      : $@spelldesc378769
 
 Name             : Quick Load (id=378771) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=4, entry_id=49653, max_rank=1, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15095,7 +15095,7 @@ Effects          :
 Description      : $@spelldesc378771
 
 Name             : Bombardment (id=378880) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=1, entry_id=49664, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(6, 4)]
 Class            : Hunter
 School           : Physical
@@ -15143,7 +15143,7 @@ Description      : $@spelldesc378880
 Tooltip          : Multi-Shot damage increased by $s1%.
 
 Name             : Serpentstalker's Trickery (id=378888) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=7, col=3, entry_id=49656, max_rank=2, req_points=8]
+Talent Entry     : Marksmanship [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(50, 100)]
 Class            : Hunter
 School           : Physical
@@ -15163,7 +15163,7 @@ Effects          :
 Description      : Aimed Shot has a $s1% chance to also fire a Serpent Sting at the primary target.
 
 Name             : Windrunner's Guidance (id=378905) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=3, entry_id=49669, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=10, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Hunter
@@ -15190,7 +15190,7 @@ Effects          :
 Description      : Bonus Wind Arrows from Aimed Shot have a $s1% increased critical strike chance and deal $s2% increased critical strike damage.
 
 Name             : Sharpshooter (id=378907) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=2, entry_id=49662, max_rank=2, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
@@ -15211,7 +15211,7 @@ Effects          :
 Description      : Critical strike damage increased by $s1%.
 
 Name             : Heavy Ammo (id=378910) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=1, entry_id=49681, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15244,7 +15244,7 @@ Effects          :
 Description      : Trick Shots now ricochets to $s1 fewer targets, but each ricochet deals an additional $s3% damage.
 
 Name             : Light Ammo (id=378913) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=9, col=1, entry_id=49680, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Marksmanship [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15269,7 +15269,7 @@ Effects          :
 Description      : Trick Shots now causes Aimed Shot and Rapid Fire to ricochet to $s1 additional $Ltarget:targets;.
 
 Name             : Ferocity (id=378916) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=3, col=1, entry_id=49619, max_rank=2, req_points=0]
+Talent Entry     : Survival [tree=spec, row=3, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -15289,7 +15289,7 @@ Effects          :
 Description      : All damage done by your pet is increased by $s1%.
 
 Name             : Lunge (id=378934) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=5, col=2, entry_id=49620, max_rank=1, req_points=8]
+Talent Entry     : Survival [tree=spec, row=5, col=2, max_rank=1, req_points=8]
                  : Effect#1 [op=set, values=(1, 2, 3)]
                  : Effect#2 [op=set, values=(1, 2, 3)]
 Class            : Hunter
@@ -15314,7 +15314,7 @@ Effects          :
 Description      : Range of your melee attacks and abilities increased by $s1 yd.
 
 Name             : Explosives Expert (id=378937) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=9, col=4, entry_id=49633, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3000, 6000)]
 Class            : Hunter
 School           : Physical
@@ -15337,7 +15337,7 @@ Effects          :
 Description      : Kill Shot reduces the cooldown of Wildfire Bomb by ${$m1/1000}.1 sec.
 
 Name             : Quick Shot (id=378940) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=8, col=2, entry_id=49643, max_rank=1, req_points=20]
+Talent Entry     : Survival [tree=spec, row=8, col=2, max_rank=1, req_points=20]
                  : Effect#1 [op=set, values=(5, 10, 15)]
 Class            : Hunter
 School           : Physical
@@ -15357,7 +15357,7 @@ Effects          :
 Description      : When Kill Command's cooldown is reset, you have a $s1% chance to fire an Arcane Shot at your target.
 
 Name             : Sharp Edges (id=378948) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=7, col=2, entry_id=49617, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
@@ -15378,7 +15378,7 @@ Effects          :
 Description      : Critical damage dealt increased by $s1%.
 
 Name             : Sweeping Spear (id=378950) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=7, col=3, entry_id=49631, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -15400,7 +15400,7 @@ Effects          :
 Description      : Raptor Strike, Mongoose Bite, Butchery, and Carve damage increased by $s1%.
 
 Name             : Tactical Advantage (id=378951) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=7, col=4, entry_id=49626, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -15422,7 +15422,7 @@ Effects          :
 Description      : Damage of Flanking Strike and Wildfire Bomb increased by $s1%.
 
 Name             : Spear Focus (id=378953) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=6, col=5, entry_id=49628, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10, 15)]
 Class            : Hunter
 School           : Physical
@@ -15444,7 +15444,7 @@ Effects          :
 Description      : Mongoose Bite damage increased by $s1%.
 
 Name             : Killer Companion (id=378955) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=8, col=4, entry_id=49629, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Hunter
 School           : Physical
@@ -15486,7 +15486,7 @@ Effects          :
 Description      : $@spelldesc360966
 
 Name             : Energetic Ally (id=378961) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=4, col=1, entry_id=49630, max_rank=1, req_points=0]
+Talent Entry     : Survival [tree=spec, row=4, col=1, max_rank=1, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -15506,7 +15506,7 @@ Effects          :
 Description      : You and your pets maximum Focus is increased by $s1.
 
 Name             : Coordinated Kill (NYI) (id=378962) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=10, col=3, entry_id=49644, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=10, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(25, 50)]
                  : Effect#2 [op=set, values=(1000, 2000)]
                  : Effect#3 [op=set, values=(5, 10)]
@@ -15548,7 +15548,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Razor Fragments (id=384790) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=8, col=2, entry_id=49605, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15571,7 +15571,7 @@ Effects          :
 Description      : When the Trick Shots effect fades or is consumed, or after gaining Deathblow, your next Kill Shot will deal $s3% increased damage, and shred up to $s2 targets near your Kill Shot target for $s1% of the damage dealt by Kill Shot over $385638d.
 
 Name             : Salvo (id=384791) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=1, entry_id=49604, max_rank=1, req_points=20]
+Talent Entry     : Marksmanship [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Hunter
 School           : Physical
 Spell Type       : None
@@ -15592,7 +15592,7 @@ Effects          :
 Description      : Every $t1 sec, your next Multi-Shot will also cast Explosive Shot at up to $s1 targets hit.
 
 Name             : Hunter's Agility (id=384799) [Spell Family (9), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=49606, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
@@ -15612,7 +15612,7 @@ Effects          :
 Description      : Avoidance increased by $s1%.
 
 Name             : Rejuvenating Wind (id=385539) [Spell Family (9), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=49690, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Hunter
 School           : Physical
@@ -15696,7 +15696,7 @@ Effects          :
 Description      : $@spelldesc378771
 
 Name             : Ranger (id=385695) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=9, col=2, entry_id=49599, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(20, 40)]
 Class            : Hunter
 School           : Physical
@@ -15722,7 +15722,7 @@ Effects          :
 Description      : Kill Shot, Serpent Sting, Steady Shot, and Explosive Shot deal $s1% increased damage.
 
 Name             : Intense Focus (id=385709) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=6, col=1, entry_id=49601, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=6, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Hunter
 School           : Physical
@@ -15744,7 +15744,7 @@ Effects          :
 Description      : Kill Command generates $s1 additional Focus.
 
 Name             : Ruthless Marauder (id=385718) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=10, col=1, entry_id=49603, max_rank=3, req_points=20]
+Talent Entry     : Survival [tree=spec, row=10, col=1, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(15, 30, 45)]
                  : Effect#3 [op=set, values=(500, 1000, 1500)]
 Class            : Hunter
@@ -15770,7 +15770,7 @@ Effects          :
 Description      : Fury of the Eagle has a $s1% increased critical strike chance against targets below $s2% health, and Fury of the Eagle critical strikes reduce the cooldown of Wildfire Bomb and Flanking Strike by ${$m3/1000}.1 sec.
 
 Name             : Bloody Claws (id=385737) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=7, col=5, entry_id=49602, max_rank=2, req_points=8]
+Talent Entry     : Survival [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Hunter
 School           : Physical
@@ -15790,7 +15790,7 @@ Effects          :
 Description      : Each stack of Mongoose Bite increases the chance for Kill Command to reset by $s1%.
 
 Name             : Deadly Duo (NYI) (id=385739) [Spell Family (9), Passive] 
-Talent Entry     : Survival [tree=spec, row=9, col=3, entry_id=49598, max_rank=2, req_points=20]
+Talent Entry     : Survival [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-30000, -60000)]
 Class            : Hunter
 School           : Physical
@@ -15814,7 +15814,7 @@ Effects          :
 Description      : While Coordinated Assault is active, the cooldown of Wildfire Bomb is reduced by $s1%, Wildifre Bomb generates $s2 Focus when thrown, and Kill Shot can be used against any target, regardless of their current health.
 
 Name             : Pack Resilience (id=385810) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=9, col=1, entry_id=49597, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1000, 2000)]
                  : Effect#2 [op=set, values=(20, 40)]
 Class            : Hunter
@@ -15840,7 +15840,7 @@ Effects          :
 Description      : Dire Beast lasts an additional ${$m1/1000} sec and deal $s2% increased damage.
 
 Name             : Bloody Frenzy (id=386870) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=9, col=3, entry_id=49594, max_rank=2, req_points=20]
+Talent Entry     : Beast Mastery [tree=spec, row=9, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Hunter
 School           : Physical
@@ -15904,7 +15904,7 @@ Description      : $@spelldesc386876
 Tooltip          : Critical strike chance increased by $s1%. Critical damage dealt increased by $s2%.
 
 Name             : Unerring Vision (id=386878) [Spell Family (9), Passive] 
-Talent Entry     : Marksmanship [tree=spec, row=10, col=2, entry_id=49678, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Marksmanship [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Hunter
 School           : Physical
 Spell Type       : None

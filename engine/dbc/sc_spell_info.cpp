@@ -1660,7 +1660,8 @@ static std::string trait_data_to_str( const dbc_t&                            db
     nibbles.emplace_back( fmt::format( "tree={}", util::talent_tree_string( tree ) ) );
     nibbles.emplace_back( fmt::format( "row={}", trait->row ) );
     nibbles.emplace_back( fmt::format( "col={}", trait->col ) );
-    nibbles.emplace_back( fmt::format( "entry_id={}", trait->id_trait_node_entry ) );
+    // Disabled for now as tree changes results in entirely new trees making NodeEntryID an unstable identifier
+    // nibbles.emplace_back( fmt::format( "entry_id={}", trait->id_trait_node_entry ) );
     nibbles.emplace_back( fmt::format( "max_rank={}", trait->max_ranks ) );
     nibbles.emplace_back( fmt::format( "req_points={}", trait->req_points ) );
 
