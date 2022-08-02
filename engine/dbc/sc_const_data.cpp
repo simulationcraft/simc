@@ -1430,6 +1430,11 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     {
       modifier *= 1.0 + rppm_modifier.coefficient;
     }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_RACE &&
+        util::race_mask( player->race ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
+    }
   }
 
   return modifier;

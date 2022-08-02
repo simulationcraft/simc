@@ -2158,6 +2158,22 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
                 ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
           break;
         }
+        case RPPM_MODIFIER_RACE:
+        {
+          std::vector<std::string> race_str;
+          for ( race_e r = RACE_NONE; r < RACE_MAX; ++r )
+          {
+            if ( util::race_mask( r ) & modifier.type )
+            {
+              race_str.emplace_back( util::inverse_tokenize( util::race_type_string( r ) ) );
+            }
+          }
+
+          s.precision( real_ppm_decimals( spell, modifier ) );
+          mods.emplace_back( fmt::format( "{}: {}", util::string_join( race_str, ", "),
+            ( spell->real_ppm() * ( 1.0 + modifier.coefficient ) ) ) );
+          break;
+        }
         default:
           break;
       }
