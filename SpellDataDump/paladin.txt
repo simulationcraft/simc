@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-07-13/44325)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44730 Live (hotfix 2022-08-02/44730)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -3486,7 +3486,6 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=267724)   : School Damage (2): holy
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 0.60000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Hotfixed         : PvP Coefficient (1 -> 0.6)
 Description      : $@spelldesc184662
 
 Name             : Divine Steed (id=190784) [Spell Family (10)] 
@@ -10170,7 +10169,6 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
 Effects          :
 #1 (id=838886)   : School Damage (2): holy
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 0.50000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=838887)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : A powerful weapon strike that deals $s1 Holy damage.

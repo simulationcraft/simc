@@ -1411,6 +1411,11 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     {
       modifier *= 1.0 + rppm_modifier.coefficient;
     }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_CLASS_MASK &&
+         util::class_id_mask( player -> type ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
+    }
     // TODO: How does coefficient play into this?
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {

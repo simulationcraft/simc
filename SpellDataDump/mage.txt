@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-07-13/44325)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44730 Live (hotfix 2022-08-02/44730)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Class            : Paladin, Mage
 School           : Arcane
@@ -10755,11 +10755,9 @@ Effects          :
 #1 (id=834151)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.50000 | Misc Value: 1446 | Target: Self (1)
                    Affected Spells (Category): Blink (1953)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=835882)   : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 0.50000 | Misc Value: 1632 | Target: Self (1)
                    Affected Spells (Category): Shimmer (212653)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : The cooldown of Blink is reduced by |cFFFFFFFF${$s1/-1000}.1 sec|r.
 
 Name             : Grounding Surge (id=336777) [Spell Family (3), Passive, Hidden] 

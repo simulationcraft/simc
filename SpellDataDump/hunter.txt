@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-07-13/44325)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44730 Live (hotfix 2022-08-02/44730)
 Name             : Auto Shot (id=75) [Spell Family (9)] 
 Class            : Hunter
 School           : Physical
@@ -11871,7 +11871,6 @@ Effects          :
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 0.33333 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Feign Death (5384)
                    Family Flags: 8
-Hotfixed         : PvP Coefficient (1 -> 0.333333)
 #2 (id=834327)   : Apply Aura (6) | Proc Trigger Spell (42): Craven Strategem
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 336748 | Target: Self (1)
 Description      : Feign Death cooldown reduced by ${$m1/-1000}.1 sec, and Feign Death now removes most negative status effects from yourself.
