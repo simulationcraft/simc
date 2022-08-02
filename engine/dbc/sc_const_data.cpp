@@ -1413,11 +1413,22 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     {
       modifier *= 1.0 + rppm_modifier.coefficient;
     }
-    // TODO: How does coefficient play into this?
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
-      modifier *= item_database::approx_scale_coefficient( rppm_modifier.type, item_level );
+      auto base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
+      auto ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
+      auto base_points = base_record.p_rare[ 0 ];
+      auto ilevel_points = ilevel_record.p_rare[ 0 ];
+      if ( base_points != ilevel_points )
+      {
+        modifier *= 1.0 + ( ( ilevel_points / base_points ) - 1.0 ) * rppm_modifier.coefficient;
+      }
+    }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_CLASS &&
+              util::class_id_mask( player->type ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
     }
   }
 

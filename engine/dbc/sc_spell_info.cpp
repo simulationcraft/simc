@@ -2127,6 +2127,27 @@ std::string spell_info::to_str( const dbc_t& dbc, const spell_data_t* spell, int
           s << "Itemlevel multiplier [base=" << modifier.type << "], ";
           has_modifiers = true;
           break;
+        case RPPM_MODIFIER_CLASS:
+        {
+          std::vector<std::string> class_str;
+          for ( player_e p = PLAYER_NONE; p < PLAYER_MAX; ++p )
+          {
+            if ( util::class_id_mask( p ) & modifier.type )
+            {
+              class_str.emplace_back( util::inverse_tokenize( util::player_type_string( p ) ) );
+            }
+          }
+
+          if ( !has_modifiers )
+          {
+            s << " (";
+            has_modifiers = true;
+          }
+
+          s << util::string_join( class_str, ", ") << ": " <<
+            modifier.coefficient << ", ";
+          break;
+        }
         case RPPM_MODIFIER_SPEC:
         {
           if ( !has_modifiers )
