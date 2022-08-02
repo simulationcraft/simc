@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.0.44795
-static const std::array<item_name_description_t, 696> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.0.44895
+static const std::array<item_name_description_t, 697> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -696,5 +696,6 @@ static const std::array<item_name_description_t, 696> __item_name_description_da
   { 13959, "[PH] Radiant"                                },
   { 13960, "[PH] Radiant (2)"                            },
   { 13961, "Cobalt Assembly Arcane Essences"             },
+  { 13962, "Tuskarr Feast Reagent"                       },
 } };
 
