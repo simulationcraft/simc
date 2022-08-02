@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44730 Live (hotfix 2022-08-02/44730)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-02/44908, git build shadowlands 8d75da75e7)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -548,6 +548,7 @@ Effects          :
 Description      : Damage dealt by pets increased by $s1%.
 
 Name             : Hammer of Wrath (id=24275) [Spell Family (10)] 
+Hotfixed         : Description
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
@@ -573,9 +574,12 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=714232)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
-Description      : Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].
+Description      : Hurls a divine hammer that strikes an enemy for $<damage> Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].
 
 |cFFFFFFFFGenerates $s2 Holy Power.
+Variables        : $pvp=$?a134735[${1.15}][${1}]}
+$retribution=$?a137027[${1.00*$<pvp>}][${1}]
+$damage=${$s1*$<retribution>}
 
 Name             : Forbearance (id=25771) [Spell Family (10)] 
 Class            : Paladin
@@ -825,6 +829,7 @@ Tooltip          : Damage taken reduced by $w1%.
 The next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.
 
 Name             : Avenging Wrath (id=31884) [Spell Family (10)] 
+Hotfixed         : Description
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -872,8 +877,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Judgment (220637)
                    Family Flags: 98
-Description      : Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $s1% for $d.
+Description      : Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $<wings>% for $d.
 Tooltip          : Damage, healing, and critical strike chance increased by $w1%.
+Variables        : $pvp=$?a134735[${0.75}][${1}]}
+$retribution=$?a137027[${1.00*$<pvp>}][${1}]
+$wings=${$s1*$<retribution>}
 
 Name             : Avenger's Shield (id=31935) [Spell Family (10)] 
 Class            : Protection Paladin
@@ -966,6 +974,7 @@ Description      : $@spelldesc66
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Crusader Strike (id=35395) [Spell Family (10)] 
+Hotfixed         : Description, Variables
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -993,10 +1002,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.76500 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=25580)    : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
-Description      : Strike the target for $s1 Physical damage.
+Description      : Strike the target for $<damage> Physical damage.
 
 |cFFFFFFFFGenerates $s2 Holy Power.
-Variables        : $mult=${($min($pl-1,19)*6+96)/210}
+Variables        : $mult=${($min($pl-1,19)*6+96)/210}
+$pvp=$?a134735[${1.3}][${1}]}
+$retribution=$?a137027[${1.00*$<pvp>}][${1}]
+$damage=${$s1*$<retribution>}
 
 Name             : Agility 20 (id=41695) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -2895,7 +2907,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=210812)   : Apply Aura (6) | Modify Block% (51)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+Hotfixed         : Base Value (15 -> 20)
 #2 (id=218981)   : Apply Aura (6) | Proc Trigger Spell (42): Holy Shield
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 157122 | Target: Self (1)
 #3 (id=232078)   : Apply Aura (6) | Absorb Damage (69)
@@ -3428,7 +3441,8 @@ Attributes       : ........ ........ x.x..x.. ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Active Defense (21), Initiates Combat (Enables Auto-Attack) (41), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=267535)   : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.45000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 1.45000 | PvP Coefficient: 1.20000 | Target: Enemy (6)
+Hotfixed         : PvP Coefficient (1 -> 1.2)
 #2 (id=267536)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 Description      : Pierces an enemy with a blade of light, dealing $s1 Physical damage.
@@ -4956,6 +4970,7 @@ Effects          :
 Description      : Art of War resets the cooldown of Blade of Justice $s1% more often and increases its damage by $281178s1%.
 
 Name             : Crusade (id=231895) [Spell Family (10)] 
+Hotfixed         : Variables
 Replaces         : Avenging Wrath (id=31884)
 Class            : Paladin
 School           : Holy
@@ -5004,8 +5019,9 @@ Each Holy Power spent during Crusade increases damage done and haste by an addit
 Maximum $u stacks.
 Tooltip          : $?a206338[Damage done increased by ${$w1}%.
 Haste increased by ${$w3}%.][Damage done and haste increased by $<damage>%.]
-Variables        : $damage=${$s1/10}
-$haste=${$s3/10}
+Variables        : $haste=${$s3/10}
+$pvp=$?a134735[${0.75}][${1}]
+$damage=${$s1/10*$<pvp>}
 
 Name             : Fist of Justice (id=234299) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -10960,7 +10976,8 @@ Effects          :
 #1 (id=885104)   : Apply Aura (6) | Modify Total Stat% (137)
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Misc Value 2: 0x4 | Target: Self (1)
 #2 (id=894604)   : Apply Aura (6) | Modify Base Resistance (142)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+Hotfixed         : Base Value (10 -> 15)
 #3 (id=894606)   : Apply Aura (6) | Modify Damage Taken% (87)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
