@@ -463,7 +463,11 @@ struct sim_t : private sc_thread_t
     /// Percentage of default duration for Soothing Shade.
     double soothing_shade_duration_multiplier = 1.0;
     // Time in seconds before prepull to use Jotungeirr
-    timespan_t jotungeirr_prepull_seconds = 0_s;    
+    timespan_t jotungeirr_prepull_seconds = 0_s;
+    // Enable weapon swapping Jotungeirr to Zovastrum after buff ends
+    bool jotungeirr_swapto_zovastrum = false;
+    // Zovastrum iLevel when swapping from Jotungeirr 
+    unsigned int jotungeirr_swapto_ilevel = 311;
   } shadowlands_opts;
 
   // Auras and De-Buffs
