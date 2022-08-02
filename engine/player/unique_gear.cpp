@@ -4232,6 +4232,15 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
     return shadowlands::items::shards_of_domination::create_expression( player, name_str );
   }
 
+  // Hyperthread Wristwraps
+  if ( splits[ 0 ] == "hyperthread_wristwraps" && splits.size() == 2 )
+  {
+    if ( auto a = player.find_action( "hyperthread_wristwraps" ) )
+    {
+      return a->create_expression( splits[ 1 ] );
+    }
+  }
+
   if ( splits.size() < 2 )
   {
     return nullptr;
