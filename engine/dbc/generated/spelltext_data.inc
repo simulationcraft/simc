@@ -1,4 +1,4 @@
-// Spell text, wow build 9.2.5.44325
+// Spell text, wow build 9.2.5.44730
 static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16095,11 +16095,11 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   { 376808, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 3.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.44325
+// spelltext hotfix entries, wow build 9.2.5.44730
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.5.44325
+// Spell description variables, wow build 9.2.5.44730
 static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16411,7 +16411,7 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.44325
+// spelldesc_vars hotfix entries, wow build 9.2.5.44730
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
