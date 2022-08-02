@@ -393,7 +393,7 @@ void windwalker( player_t* p )
   pre->add_action( "variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures" );
   
   // Append this line if the value is set
-  auto precombat_seconds = effect.player->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+  auto precombat_seconds = p->sim->shadowlands_opts.jotungeirr_prepull_seconds;
   if (precombat_seconds > 0_s)
     pre->add_action( "use_item,name=jotungeirr_destinys_call,if=equipped.jotungeirr_destinys_call", "Use Jotun Prepull" );
   
