@@ -4386,8 +4386,6 @@ void jotungeirr_destinys_call(special_effect_t& effect)
                         p->stat_loss(i, b->item->stats.get_stat(i)); // "Unequip" Jotungeirr stats
                         p->stat_gain(i, Zovastrum->stats.get_stat(i)); // "Equip" Zovastrum stats
                     }
-
-                    p->sim->print_debug("272 agi: {}", scale_factor * 179);
                 }
             });
         }
