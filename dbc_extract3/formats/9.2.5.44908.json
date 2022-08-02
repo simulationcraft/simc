@@ -591,8 +591,8 @@
   "ItemLevelSelector": {
     "fields": [
       { "data_type": "i", "field": "min_item_level" },
-      { "data_type": "i", "field": "id_item_level_selector_quality_set" },
-      { "data_type": "i", "field": "id_azerite_unlock_mapping_set" }
+      { "data_type": "b", "field": "id_item_level_selector_quality_set" },
+      { "data_type": "b", "field": "id_azerite_unlock_mapping_set" }
     ]
   },
   "ItemLimitCategory": {
