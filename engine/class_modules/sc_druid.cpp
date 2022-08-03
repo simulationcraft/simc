@@ -7372,6 +7372,12 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       auto tl = target_list();
 
+      // because action_t::available_targets() explicitly adds the current action_t::target to the target_cache, we need
+      // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
+      // enabled.
+      if ( sim->ignore_invulnerable_targets && target->debuffs.invulnerable->check() )
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
       if ( exclude.player )
         tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
 
