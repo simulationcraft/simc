@@ -687,7 +687,7 @@ public:
     spell_data_ptr_t deadly_duo; // TODO: pending changes (now Quick Shot)
     spell_data_ptr_t coordinated_assault; // TODO: pending changes
     spell_data_ptr_t killer_companion;
-    
+
     spell_data_ptr_t fury_of_the_eagle; // TODO: implement
     spell_data_ptr_t ranger;
     spell_data_ptr_t bonded_companion; // TODO: pending changes (now Deadly Duo)
@@ -722,7 +722,7 @@ public:
     spell_data_ptr_t beast_mastery_hunter;
     spell_data_ptr_t marksmanship_hunter;
     spell_data_ptr_t survival_hunter;
-    
+
     // Hunter Tree
     spell_data_ptr_t freezing_trap;
     spell_data_ptr_t arcane_shot;
@@ -2523,7 +2523,7 @@ struct trick_shots_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
-    
+
     hunter_t* p = debug_cast<hunter_t*>( player );
     if ( p -> buffs.secrets_of_the_vigil -> trigger() )
     {
@@ -2759,7 +2759,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
   auto_shot_t( hunter_t* p ) : auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    wild_call_chance = 
+    wild_call_chance =
       p -> talents.wild_call -> effectN( 1 ).percent() +
       p -> talents.one_with_the_pack -> effectN( 1 ).percent() +
       p -> conduits.echoing_call.percent();
@@ -2922,7 +2922,7 @@ struct kill_shot_t : hunter_ranged_attack_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    return hunter_ranged_attack_t::target_ready( candidate_target ) && 
+    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check() );
   }
@@ -2995,7 +2995,7 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   };
 
   wailing_arrow_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "wailing_arrow", p, 
+    hunter_ranged_attack_t( "wailing_arrow", p,
       p -> specs.wailing_arrow.ok() || p -> talents.wailing_arrow.ok() ? p -> find_spell( 355589 ) : spell_data_t::not_found() )
   {
     parse_options( options_str );
@@ -5325,7 +5325,7 @@ struct kill_command_t: public hunter_spell_t
 
       chance += p() -> talents.bloody_claws -> effectN( 1 ).percent()
         * p() -> buffs.mongoose_fury -> check();
-      
+
       if ( rng().roll( chance ) )
       {
         predator.proc -> occur();
@@ -6143,7 +6143,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
-  debuffs.death_chakram = 
+  debuffs.death_chakram =
     make_buff( *this, "death_chakram", p -> find_spell( 325037 ) )
       -> set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
       -> set_cooldown( 0_s );
@@ -6396,7 +6396,7 @@ void hunter_t::init_spells()
   talents.kill_shot                         = find_talent_spell( talent_tree::CLASS, "Kill Shot" );
 
   talents.improved_kill_shot                = find_talent_spell( talent_tree::CLASS, "Improved Kill Shot" );
-  
+
   talents.hiexplosive_trap                  = find_talent_spell( talent_tree::CLASS, "Hi-Explosive Trap" );
 
   talents.beast_master                      = find_talent_spell( talent_tree::CLASS, "Beast Master" );
@@ -6687,7 +6687,7 @@ void hunter_t::init_base_stats()
   }
 
   resources.base[RESOURCE_FOCUS] = 100
-    + talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) 
+    + talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS )
     + talents.energetic_ally -> effectN( 1 ).resource( RESOURCE_FOCUS );
 }
 
@@ -6766,12 +6766,11 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_default_value_from_effect( 4 )
       -> set_affects_regen( true )
-      -> set_stack_change_callback( 
+      -> set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) {
-          
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
-          
+
           if ( cur == 0 )
             buffs.eagletalons_true_focus -> expire();
           else if ( old == 0 && talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() )
@@ -6794,7 +6793,7 @@ void hunter_t::create_buffs()
     make_buff( this, "deathblow", talents.deathblow -> effectN( 1 ).trigger() )
       -> set_trigger_spell( talents.deathblow );
 
-  buffs.unerring_vision_hidden = 
+  buffs.unerring_vision_hidden =
     make_buff( this, "unerring_vision_hidden", find_spell( 274446 ) )
       -> set_quiet( true )
       -> set_tick_zero( true )
@@ -6803,7 +6802,7 @@ void hunter_t::create_buffs()
           // buffs.unerring_vision -> trigger();
         } );
 
-  buffs.unerring_vision = 
+  buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", talents.unerring_vision );
 
   buffs.eagletalons_true_focus =
@@ -6819,7 +6818,7 @@ void hunter_t::create_buffs()
     buffs.barbed_shot[ i ] =
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
-        -> set_tick_callback( 
+        -> set_tick_callback(
           [ this ]( buff_t* b, int, timespan_t ) {
             resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
           } );
@@ -6880,7 +6879,7 @@ void hunter_t::create_buffs()
         } );
 
   // Survival
-  
+
   buffs.predator =
     make_buff( this, "predator", find_spell( 260249 ) )
       -> set_default_value_from_effect( 1 )
@@ -6937,7 +6936,7 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 2 )
       -> apply_affecting_aura( talents.aspect_of_the_beast )
       -> add_invalidate( CACHE_LEECH );
-  
+
   // Tier Set Bonuses
 
   buffs.killing_frenzy =
@@ -7087,7 +7086,7 @@ void hunter_t::init_procs()
 
   if ( tier_set.focused_trickery_4pc.ok() )
     procs.focused_trickery_trick_shots = get_proc( "Focused Trickery Trick Shots" );
-  
+
   if ( legendary.secrets_of_the_vigil.ok() )
     procs.secrets_of_the_vigil_ais_reset = get_proc( "Secrets of the Unblinking Vigil AiS reset" );
 }
@@ -7297,7 +7296,7 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += specs.critical_strikes->effectN( 1 ).percent();
-  
+
   crit += talents.keen_eyesight->effectN( 1 ).percent();
 
   return crit;
