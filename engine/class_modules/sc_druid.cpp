@@ -2615,7 +2615,9 @@ public:
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
-    parse_buff_effects( p()->buff.savage_roar );
+    parse_conditional_effects( &p()->buff.savage_roar->data(), [ this ]() {
+      return p()->get_form() == form_e::CAT_FORM && p()->buff.savage_roar->check();
+    } );
     parse_buff_effects( p()->buff.apex_predators_craving );
 
     // Guardian
