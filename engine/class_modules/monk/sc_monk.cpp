@@ -388,10 +388,11 @@ public:
                                        ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
   
     // SCK
-    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 2 ).ap_coeff() *
+    auto SCK_AP_ratio_by_aura = p()->find_spell(107270)->effectN(1).ap_coeff() *
                                 // 4 ticks
                                 4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
-                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() );
+                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
+                                ( 1 + p()->spec.windwalker_monk->effectN(22).percent() );
 
     // SQRT Scaling
     if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
