@@ -5497,8 +5497,9 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
 
       for ( auto a : tracker->last_used )
       {
-        sim->print_debug( "Reducing cooldown of action {} by {} s.", a->name_str, reduction.total_seconds() );
-        a->cooldown->adjust( -reduction );
+        timespan_t adjusted_reduction = reduction / a->recharge_rate_multiplier( *a->cooldown );
+        sim->print_debug( "Reducing cooldown of action {} by {} s.", a->name_str, adjusted_reduction.total_seconds() );
+        a->cooldown->adjust( -adjusted_reduction );
       }
     }
 
