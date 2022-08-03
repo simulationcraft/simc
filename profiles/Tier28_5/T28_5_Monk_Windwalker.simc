@@ -1,0 +1,223 @@
+monk="T28_5_Monk_Windwalker"
+source=default
+spec=windwalker
+level=60
+race=mechagnome
+role=hybrid
+position=back
+talents=1020012
+covenant=kyrian
+soulbind=forgelite_prime_mikanikos:18,333950/22:11:1/331609/331726/24:11:1/331611/16:11:1/352186/352188
+renown=80
+
+# Default consumables
+potion=potion_of_spectral_agility
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shaded_weightstone/off_hand:shaded_weightstone
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/variable,name=xuen_on_use_trinket,op=set,value=equipped.inscrutable_quantum_device|equipped.gladiators_badge|equipped.wrathstone|equipped.overcharged_anima_battery|equipped.shadowgrasp_totem|equipped.the_first_sigil|equipped.cache_of_acquired_treasures
+actions.precombat+=/fleshcraft
+actions.precombat+=/expel_harm,if=chi<chi.max
+actions.precombat+=/chi_burst,if=!covenant.night_fae
+actions.precombat+=/chi_wave,if=!talent.energizing_elixir.enabled
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/spear_hand_strike,if=target.debuff.casting.react
+actions+=/variable,name=hold_xuen,op=set,value=cooldown.invoke_xuen_the_white_tiger.remains>fight_remains|fight_remains-cooldown.invoke_xuen_the_white_tiger.remains<120&((talent.serenity&fight_remains>cooldown.serenity.remains&cooldown.serenity.remains>10)|(cooldown.storm_earth_and_fire.full_recharge_time<fight_remains&cooldown.storm_earth_and_fire.full_recharge_time>15)|(cooldown.storm_earth_and_fire.charges=0&cooldown.storm_earth_and_fire.remains<fight_remains))
+actions+=/variable,name=hold_sef,op=set,value=cooldown.bonedust_brew.up&cooldown.storm_earth_and_fire.charges<2&chi<3|buff.bonedust_brew.remains<8
+actions+=/variable,name=max_stacks,op=set,value=active_enemies<3|spinning_crane_kick.count>=active_enemies|spinning_crane_kick.count=5
+actions+=/variable,name=skip_setup,value=soulbind.carvers_eye|!conduit.calculated_strikes|!talent.whirling_dragon_punch|fight_remains<20
+actions+=/variable,name=badge_ready,value=cooldown.cosmic_gladiators_badge_of_ferocity.up|cooldown.cosmic_gladiators_badge_of_ferocity.remains>5|!equipped.cosmic_gladiators_badge_of_ferocity
+actions+=/storm_earth_and_fire_fixate,if=conduit.coordinated_offensive.enabled&variable.max_stacks
+actions+=/potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60
+actions+=/call_action_list,name=serenity,if=buff.serenity.up
+actions+=/call_action_list,name=weapons_of_order,if=buff.weapons_of_order.up
+actions+=/call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active
+actions+=/faeline_stomp,if=combo_strike
+actions+=/call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up
+actions+=/chi_burst,if=covenant.night_fae&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up
+actions+=/energizing_elixir,if=prev_gcd.1.tiger_palm&chi<4
+actions+=/call_action_list,name=cd_sef,if=!talent.serenity
+actions+=/call_action_list,name=cd_serenity,if=talent.serenity
+actions+=/call_action_list,name=bonedust,if=buff.bonedust_brew.up
+actions+=/call_action_list,name=st,if=active_enemies<3
+actions+=/call_action_list,name=aoe,if=active_enemies>=3
+
+actions.aoe=whirling_dragon_punch,if=(buff.primordial_potential.stack<9|cooldown.rising_sun_kick.remains<2*gcd)&(!covenant.necrolord|!buff.bonedust_brew.up&cooldown.bonedust_brew.remains>cooldown.fists_of_fury.remains)
+actions.aoe+=/fists_of_fury,target_if=max:target.time_to_die,if=buff.first_strike.up&!buff.dance_of_chiji.up
+actions.aoe+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(!covenant.necrolord|cooldown.bonedust_brew.remains>buff.dance_of_chiji.remains&cooldown.bonedust_brew.remains>6|fight_remains<10)
+actions.aoe+=/fists_of_fury,target_if=max:target.time_to_die,if=energy.time_to_max>execute_time|chi.max-chi<=1|buff.primordial_power.up
+actions.aoe+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)
+actions.aoe+=/rushing_jade_wind,if=buff.rushing_jade_wind.down
+actions.aoe+=/expel_harm,if=chi.max-chi>=1
+actions.aoe+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3
+actions.aoe+=/chi_burst,if=chi.max-chi>=2&!buff.bonedust_brew.up
+actions.aoe+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.fists_of_fury.remains>execute_time
+actions.aoe+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=2&(!talent.hit_combo|combo_strike)
+actions.aoe+=/arcane_torrent,if=chi.max-chi>=1
+actions.aoe+=/spinning_crane_kick,if=combo_strike&(cooldown.bonedust_brew.remains>2|!covenant.necrolord)&(chi>=5|cooldown.fists_of_fury.remains>6|cooldown.fists_of_fury.remains>3&chi>=3&energy.time_to_50<1|energy.time_to_max<=(3+3*cooldown.fists_of_fury.remains<5)|buff.storm_earth_and_fire.up)
+actions.aoe+=/chi_wave,if=combo_strike
+actions.aoe+=/flying_serpent_kick,if=buff.bok_proc.down,interrupt=1
+actions.aoe+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo&prev_gcd.1.tiger_palm&chi=2&cooldown.fists_of_fury.remains<3|chi.max-chi<=1&prev_gcd.1.spinning_crane_kick&energy.time_to_max<3)
+
+actions.bdb_setup=bonedust_brew,if=active_enemies<3&chi>=3&variable.max_stacks|active_enemies>=3&(variable.skip_setup&variable.max_stacks|cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains>=2)&chi>=4
+actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5&variable.skip_setup
+actions.bdb_setup+=/fists_of_fury,target_if=max:target.time_to_die,if=chi>=5&active_enemies>=3&!variable.skip_setup
+actions.bdb_setup+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&active_enemies>=2
+actions.bdb_setup+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.fists_of_fury.remains&active_enemies>=2
+
+actions.bonedust=whirling_dragon_punch,if=cooldown.rising_sun_kick.remains<2*gcd
+actions.bonedust+=/call_action_list,name=spend_energy,if=active_enemies>=3&prev_gcd.1.spinning_crane_kick&!buff.whirling_dragon_punch.up
+actions.bonedust+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
+actions.bonedust+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=chi>=5&buff.bonedust_brew.remains>gcd*2&spinning_crane_kick.count<4&cooldown.rising_sun_kick.duration>gcd+1&cooldown.fists_of_fury.remains>gcd+1&cooldown.whirling_dragon_punch.remains<1&talent.whirling_dragon_punch&active_enemies<5
+actions.bonedust+=/fists_of_fury,target_if=max:target.time_to_die,if=active_enemies>=3&(set_bonus.tier28_2pc&debuff.carvers_eye_debuff.up|spinning_crane_kick.count<4|!conduit.calculated_strikes)
+actions.bonedust+=/spinning_crane_kick,if=active_enemies>=3&(combo_strike|buff.bonedust_brew.remains<2*gcd|(!tp_fill|chi.max-chi<2&conduit.calculated_strikes.enabled&spinning_crane_kick.count>3)&variable.max_stacks)
+actions.bonedust+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies>=3&chi.max-chi>=3
+actions.bonedust+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=active_enemies>=3&chi.max-chi>=2
+actions.bonedust+=/spinning_crane_kick,if=active_enemies>=3|(combo_strike|!tp_fill|chi.max-chi<2|buff.bonedust_brew.remains<2*gcd)&conduit.calculated_strikes.enabled&spinning_crane_kick.count=5
+
+actions.cd_sef=invoke_xuen_the_white_tiger,if=!variable.hold_xuen&covenant.necrolord&cooldown.bonedust_brew.remains<=5&(active_enemies<3&chi>=3|active_enemies>=3&chi>=2&(variable.skip_setup|cooldown.fists_of_fury.remains|cooldown.fists_of_fury.up))|fight_remains<25
+actions.cd_sef+=/storm_earth_and_fire,if=covenant.necrolord&(fight_remains<30&variable.badge_ready&cooldown.bonedust_brew.remains<4&chi>=4|buff.bonedust_brew.up&!variable.hold_sef|!variable.max_stacks&active_enemies>=3&cooldown.bonedust_brew.remains<=2&variable.badge_ready&(variable.skip_setup|cooldown.fists_of_fury.remains&(cooldown.rising_sun_kick.up|cooldown.rising_sun_kick.remains))&chi>=2)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)
+actions.cd_sef+=/bonedust_brew,if=(!buff.bonedust_brew.up&buff.storm_earth_and_fire.up&buff.storm_earth_and_fire.remains<11&variable.max_stacks)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&variable.max_stacks&chi>=4)|fight_remains<10&soulbind.lead_by_example
+actions.cd_sef+=/call_action_list,name=bdb_setup,if=!buff.bonedust_brew.up&covenant.necrolord&variable.badge_ready&cooldown.bonedust_brew.remains<=2&(fight_remains>60&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>10)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)|((pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>13)&(cooldown.storm_earth_and_fire.charges>0|cooldown.storm_earth_and_fire.remains>13|buff.storm_earth_and_fire.up)))
+actions.cd_sef+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!covenant.necrolord&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&chi>=3
+actions.cd_sef+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10
+actions.cd_sef+=/weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*runeforge.invokers_delight)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)|fight_remains<35
+actions.cd_sef+=/fallen_order,if=raid_event.adds.in>30|raid_event.adds.up
+actions.cd_sef+=/storm_earth_and_fire,if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12
+actions.cd_sef+=/use_item,name=inscrutable_quantum_device,if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20
+actions.cd_sef+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20&pet.xuen_the_white_tiger.remains<20|variable.hold_xuen
+actions.cd_sef+=/touch_of_karma,target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16
+actions.cd_sef+=/blood_fury,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
+actions.cd_sef+=/berserking,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<15
+actions.cd_sef+=/lights_judgment
+actions.cd_sef+=/fireblood,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<10
+actions.cd_sef+=/ancestral_call,if=cooldown.invoke_xuen_the_white_tiger.remains>30|variable.hold_xuen|fight_remains<20
+actions.cd_sef+=/bag_of_tricks,if=buff.storm_earth_and_fire.down
+actions.cd_sef+=/fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.down&buff.bonedust_brew.down
+
+actions.cd_serenity=variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20
+actions.cd_serenity+=/invoke_xuen_the_white_tiger,if=!variable.hold_xuen|fight_remains<25
+actions.cd_serenity+=/blood_fury,if=variable.serenity_burst
+actions.cd_serenity+=/berserking,if=variable.serenity_burst
+actions.cd_serenity+=/lights_judgment
+actions.cd_serenity+=/fireblood,if=variable.serenity_burst
+actions.cd_serenity+=/ancestral_call,if=variable.serenity_burst
+actions.cd_serenity+=/bag_of_tricks,if=variable.serenity_burst
+actions.cd_serenity+=/touch_of_death,if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10
+actions.cd_serenity+=/touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10
+actions.cd_serenity+=/weapons_of_order,if=cooldown.rising_sun_kick.remains<execute_time
+actions.cd_serenity+=/use_item,name=inscrutable_quantum_device,if=variable.serenity_burst|fight_remains<20
+actions.cd_serenity+=/use_item,name=earthbreakers_impact,if=!variable.xuen_on_use_trinket|cooldown.invoke_xuen_the_white_tiger.remains>20|variable.hold_xuen
+actions.cd_serenity+=/faeline_stomp
+actions.cd_serenity+=/fallen_order
+actions.cd_serenity+=/bonedust_brew,if=fight_remains<15|(chi>=2&(fight_remains>60&((cooldown.serenity.remains>10|buff.serenity.up|cooldown.serenity.up)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10|variable.hold_xuen)))|(fight_remains<=60&(pet.xuen_the_White_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)))
+actions.cd_serenity+=/serenity,if=cooldown.rising_sun_kick.remains<2|fight_remains<15
+actions.cd_serenity+=/bag_of_tricks
+actions.cd_serenity+=/fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.serenity.down&buff.bonedust_brew.down
+
+actions.opener=fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3
+actions.opener+=/expel_harm,if=talent.chi_burst.enabled&chi.max-chi>=3
+actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2
+actions.opener+=/chi_wave,if=chi.max-chi=2
+actions.opener+=/expel_harm
+actions.opener+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=2
+
+actions.serenity=fists_of_fury,if=buff.serenity.remains<1
+actions.serenity+=/spinning_crane_kick,if=combo_strike&(active_enemies>=3|active_enemies>1&!cooldown.rising_sun_kick.up)
+actions.serenity+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike
+actions.serenity+=/fists_of_fury,if=active_enemies>=3
+actions.serenity+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up&cooldown.rising_sun_kick.remains>2
+actions.serenity+=/fists_of_fury,interrupt_if=!cooldown.rising_sun_kick.up
+actions.serenity+=/spinning_crane_kick,if=combo_strike&debuff.bonedust_brew_debuff.up
+actions.serenity+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi<3
+actions.serenity+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo
+actions.serenity+=/spinning_crane_kick
+
+actions.spend_energy=fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy
+actions.spend_energy+=/expel_harm,if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&(!buff.bonedust_brew.up|buff.bloodlust.up|buff.invokers_delight.up)&!cap_energy
+actions.spend_energy+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy
+
+actions.st=whirling_dragon_punch,if=buff.primordial_potential.stack<9&(raid_event.adds.in>cooldown.whirling_dragon_punch.duration*0.8|active_enemies>1)
+actions.st+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up&(raid_event.adds.in>buff.dance_of_chiji.remains-2|raid_event.adds.up)
+actions.st+=/fleshcraft,interrupt_immediate=1,interrupt_if=buff.volatile_solvent_humanoid.up|energy.time_to_max<3|cooldown.rising_sun_kick.remains<2|cooldown.fists_of_fury.remains<2,if=soulbind.volatile_solvent&buff.storm_earth_and_fire.down&debuff.bonedust_brew_debuff.down
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&spinning_crane_kick.count<3&active_enemies=2&buff.bonedust_brew.down&buff.bok_proc.up
+actions.st+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=cooldown.serenity.remains>1|!talent.serenity&(cooldown.weapons_of_order.remains>4|!covenant.kyrian)&(!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)
+actions.st+=/fists_of_fury,target_if=max:target.time_to_die,if=(raid_event.adds.in>cooldown.fists_of_fury.duration*0.8|raid_event.adds.up)&(energy.time_to_max>execute_time-1|chi.max-chi<=1|buff.storm_earth_and_fire.remains<execute_time+1)|fight_remains<execute_time+1|debuff.bonedust_brew_debuff.up|buff.primordial_power.up
+actions.st+=/spinning_crane_kick,if=combo_strike&buff.bonedust_brew.up&conduit.calculated_strikes.enabled&spell_targets>1&spinning_crane_kick.count>1
+actions.st+=/crackling_jade_lightning,if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|cooldown.weapons_of_order.remains<5&covenant.kyrian|fight_remains<5)
+actions.st+=/rushing_jade_wind,if=buff.rushing_jade_wind.down&active_enemies>1
+actions.st+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi<3
+actions.st+=/expel_harm,if=chi.max-chi>=1
+actions.st+=/chi_burst,if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2
+actions.st+=/chi_wave,if=!buff.primordial_power.up
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&buff.storm_earth_and_fire.down
+actions.st+=/spinning_crane_kick,if=buff.chi_energy.stack>30-5*active_enemies&buff.storm_earth_and_fire.down&(cooldown.rising_sun_kick.remains>2&cooldown.fists_of_fury.remains>2|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>3|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>4|chi.max-chi<=1&energy.time_to_max<2)|buff.chi_energy.stack>10&fight_remains<7
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(talent.serenity&cooldown.serenity.remains<3|cooldown.rising_sun_kick.remains>1&cooldown.fists_of_fury.remains>1|cooldown.rising_sun_kick.remains<3&cooldown.fists_of_fury.remains>3&chi>2|cooldown.rising_sun_kick.remains>3&cooldown.fists_of_fury.remains<3&chi>3|chi>5|buff.bok_proc.up)
+actions.st+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2
+actions.st+=/arcane_torrent,if=chi.max-chi>=1
+actions.st+=/flying_serpent_kick,interrupt=1,if=!covenant.necrolord|buff.primordial_potential.up
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains<3&chi=2&prev_gcd.1.tiger_palm&energy.time_to_50<1
+actions.st+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&energy.time_to_max<2&(chi.max-chi<=1|prev_gcd.1.tiger_palm)
+
+actions.weapons_of_order=call_action_list,name=cd_sef,if=!talent.serenity
+actions.weapons_of_order+=/call_action_list,name=cd_serenity,if=talent.serenity
+actions.weapons_of_order+=/rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains
+actions.weapons_of_order+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&cooldown.fists_of_fury.remains&cooldown.rising_sun_kick.remains&buff.weapons_of_order_ww.up&active_enemies<4
+actions.weapons_of_order+=/spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up
+actions.weapons_of_order+=/fists_of_fury,if=buff.weapons_of_order_ww.up
+actions.weapons_of_order+=/whirling_dragon_punch
+actions.weapons_of_order+=/spinning_crane_kick,if=combo_strike&active_enemies>=3&buff.weapons_of_order_ww.up
+actions.weapons_of_order+=/fist_of_the_white_tiger,target_if=min:debuff.mark_of_the_crane.remains,if=chi<3
+actions.weapons_of_order+=/expel_harm,if=chi.max-chi>=1
+actions.weapons_of_order+=/chi_burst,if=chi.max-chi>=(1+active_enemies>1)
+actions.weapons_of_order+=/tiger_palm,target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi=0&buff.weapons_of_order_ww.remains<4|(!talent.hit_combo|combo_strike)&chi.max-chi>=2
+actions.weapons_of_order+=/spinning_crane_kick,if=buff.chi_energy.stack>30-5*active_enemies
+actions.weapons_of_order+=/blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&active_enemies<=3&chi>=3|buff.weapons_of_order_ww.up
+actions.weapons_of_order+=/chi_wave
+actions.weapons_of_order+=/flying_serpent_kick,interrupt=1
+
+head=umbrahide_helm,id=172317,bonus_id=7082/1588/6650/6647/6935,gem_id=173129
+neck=azurevenom_choker,id=180115,bonus_id=1592/6536/6646/6935,gem_id=173129
+shoulders=tassels_of_the_grand_upwelling,id=188914,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187,enchant_id=6208
+chest=cuirass_of_the_grand_upwelling,id=188912,bonus_id=1505/7187,enchant_id=6230
+wrists=demigaunts_of_the_grand_upwelling,id=188913,bonus_id=1498/7187/6935,gem_id=173129
+hands=grips_of_the_grand_upwelling,id=188916,bonus_id=1498/7187
+waist=umbrahide_waistguard,id=172320,bonus_id=8124/1588/6650/6647/6935,gem_id=173129
+legs=legguards_of_the_grand_upwelling,id=188911,bonus_id=1498/7187
+feet=treads_of_titanic_curiosity,id=189848,bonus_id=1524/7187,enchant_id=6211
+finger1=rygelons_heraldric_ring,id=189854,bonus_id=1524/7187/6935,gem_id=173129,enchant_id=6164
+finger2=entwined_gorger_tendril,id=178848,bonus_id=1592/6536/6646/6935,gem_id=173129,enchant_id=6164
+trinket1=inscrutable_quantum_device,id=179350,bonus_id=1592/6536/6646
+trinket2=earthbreakers_impact,id=188264,bonus_id=1524/7187
+main_hand=zovastrum_the_unmaking,id=189861,bonus_id=1524/7187,enchant_id=6228
+
+# Gear Summary
+# gear_ilvl=282.53
+# gear_agility=1434
+# gear_stamina=2958
+# gear_attack_power=20
+# gear_crit_rating=938
+# gear_haste_rating=204
+# gear_mastery_rating=394
+# gear_versatility_rating=993
+# gear_armor=865
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

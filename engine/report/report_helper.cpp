@@ -395,6 +395,14 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     max_conduit_rank    = 13;
     max_legendary_items = 2;
   }
+  else if ( p.report_information.save_str.find( "T28_5" ) != std::string::npos )
+  {
+    tier_name           = "T28_5";
+    max_ilevel_allowed  = 311;
+    legendary_ilevel    = 291;
+    max_conduit_rank    = 13;
+    max_legendary_items = 2;
+  }
   else
   {
     return true;
@@ -579,7 +587,7 @@ bool report_helper::check_gear( player_t& p, sim_t& sim )
     }
 
     // T28 wants you to use gems on legendaries in the corect slot
-    if ( tier_name == "T28" && !gem_count ) {
+    if ( ( tier_name == "T28" || tier_name == "T28_5" ) && !gem_count ) {
       bool valid_gem_slot = false;
       for ( auto& gem_slot : SLOT_GEMS )
       {

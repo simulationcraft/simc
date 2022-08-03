@@ -1,0 +1,125 @@
+warrior="T28_5_Warrior_Fury_Kyrian"
+source=default
+spec=fury
+level=60
+race=mechagnome
+role=attack
+position=back
+talents=2122322
+covenant=kyrian
+soulbind=kleia,valiant_strikes/depths_of_insanity:11:1/pointed_courage/hack_and_slash:11:1/spear_of_the_archon/light_the_path
+renown=80
+
+# Default consumables
+potion=spectral_strength
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled
+temporary_enchant=main_hand:shaded_sharpening_stone/off_hand:shaded_sharpening_stone
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/recklessness,if=!runeforge.signet_of_tormented_kings.equipped
+actions.precombat+=/fleshcraft
+
+# Executed every time the actor is available.
+actions=auto_attack
+actions+=/charge
+actions+=/variable,name=execute_phase,value=talent.massacre&target.health.pct<35|target.health.pct<20|target.health.pct>80&covenant.venthyr
+actions+=/variable,name=unique_legendaries,value=runeforge.signet_of_tormented_kings|runeforge.sinful_surge|runeforge.elysian_might
+# This is mostly to prevent cooldowns from being accidentally used during movement.
+actions+=/run_action_list,name=movement,if=movement.distance>5
+actions+=/heroic_leap,if=(raid_event.movement.distance>25&raid_event.movement.in>45)
+actions+=/sequence,if=active_enemies=1&covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Reck:bloodthirst:recklessness
+actions+=/sequence,if=active_enemies=1&!covenant.venthyr.enabled&runeforge.signet_of_tormented_kings.equipped,name=BT&Charge:bloodthirst:heroic_charge
+actions+=/potion
+actions+=/pummel,if=target.debuff.casting.react
+actions+=/spear_of_bastion,if=buff.enrage.up&rage<70
+actions+=/rampage,if=cooldown.recklessness.remains<3&talent.reckless_abandon.enabled
+actions+=/recklessness,if=runeforge.sinful_surge&gcd.remains=0&(variable.execute_phase|(target.time_to_pct_35>40&talent.anger_management|target.time_to_pct_35>70&!talent.anger_management))&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/recklessness,if=runeforge.elysian_might&gcd.remains=0&(cooldown.spear_of_bastion.remains<5|cooldown.spear_of_bastion.remains>20)&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/recklessness,if=!variable.unique_legendaries&gcd.remains=0&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)&(!covenant.necrolord|cooldown.conquerors_banner.remains>20)
+actions+=/recklessness,use_off_gcd=1,if=runeforge.signet_of_tormented_kings.equipped&gcd.remains&prev_gcd.1.rampage&((buff.bloodlust.up|talent.anger_management.enabled|raid_event.adds.in>10)|target.time_to_die>100|variable.execute_phase|target.time_to_die<15&raid_event.adds.in>10)&(spell_targets.whirlwind=1|buff.meat_cleaver.up)
+actions+=/whirlwind,if=spell_targets.whirlwind>1&!buff.meat_cleaver.up|raid_event.adds.in<gcd&!buff.meat_cleaver.up
+actions+=/use_item,name=scars_of_fraternal_strife
+actions+=/use_item,name=gavel_of_the_first_arbiter
+actions+=/blood_fury
+actions+=/berserking,if=buff.recklessness.up
+actions+=/lights_judgment,if=buff.recklessness.down&debuff.siegebreaker.down
+actions+=/fireblood
+actions+=/ancestral_call
+actions+=/bag_of_tricks,if=buff.recklessness.down&debuff.siegebreaker.down&buff.enrage.up
+actions+=/call_action_list,name=aoe
+actions+=/call_action_list,name=single_target
+
+actions.aoe=cancel_buff,name=bladestorm,if=spell_targets.whirlwind>1&gcd.remains=0&soulbind.first_strike&buff.first_strike.remains&buff.enrage.remains<gcd
+actions.aoe+=/spear_of_bastion,if=buff.enrage.up&rage<40&spell_targets.whirlwind>1
+actions.aoe+=/bladestorm,if=buff.enrage.up&spell_targets.whirlwind>2
+actions.aoe+=/siegebreaker,if=spell_targets.whirlwind>1
+actions.aoe+=/rampage,if=spell_targets.whirlwind>1
+actions.aoe+=/spear_of_bastion,if=buff.enrage.up&cooldown.recklessness.remains>5&spell_targets.whirlwind>1
+actions.aoe+=/bladestorm,if=buff.enrage.remains>gcd*2.5&spell_targets.whirlwind>1
+
+actions.movement=heroic_leap
+
+actions.single_target=raging_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/crushing_blow,if=runeforge.will_of_the_berserker.equipped&buff.will_of_the_berserker.remains<gcd
+actions.single_target+=/cancel_buff,name=bladestorm,if=spell_targets.whirlwind=1&gcd.remains=0&(talent.massacre.enabled|covenant.venthyr.enabled)&variable.execute_phase&(rage>90|!cooldown.condemn.remains)
+actions.single_target+=/siegebreaker,if=spell_targets.whirlwind>1|raid_event.adds.in>15
+actions.single_target+=/rampage,if=buff.recklessness.up|(buff.enrage.remains<gcd|rage>80)|buff.frenzy.remains<1.5
+actions.single_target+=/crushing_blow,if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)
+actions.single_target+=/execute
+actions.single_target+=/spear_of_bastion,if=runeforge.elysian_might&buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
+actions.single_target+=/bladestorm,if=buff.enrage.up&(!buff.recklessness.remains|rage<50)&(spell_targets.whirlwind=1&raid_event.adds.in>45|spell_targets.whirlwind=2)
+actions.single_target+=/spear_of_bastion,if=buff.enrage.up&cooldown.recklessness.remains>5&(buff.recklessness.up|target.time_to_die<20|debuff.siegebreaker.up|!talent.siegebreaker&target.time_to_die>68)&raid_event.adds.in>55
+actions.single_target+=/raging_blow,if=set_bonus.tier28_2pc|charges=2|(buff.recklessness.up&variable.execute_phase&talent.massacre.enabled)
+actions.single_target+=/bloodthirst,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35
+actions.single_target+=/bloodbath,if=buff.enrage.down|conduit.vicious_contempt.rank>5&target.health.pct<35&!talent.cruelty.enabled
+actions.single_target+=/dragon_roar,if=buff.enrage.up&(spell_targets.whirlwind>1|raid_event.adds.in>15)
+actions.single_target+=/whirlwind,if=buff.merciless_bonegrinder.up&spell_targets.whirlwind>3
+actions.single_target+=/onslaught,if=buff.enrage.up
+actions.single_target+=/bloodthirst
+actions.single_target+=/bloodbath
+actions.single_target+=/raging_blow
+actions.single_target+=/crushing_blow
+actions.single_target+=/whirlwind
+
+head=gaze_of_the_infinite_infantry,id=188942,bonus_id=7187/1498
+neck=worldkiller_iris,id=189859,bonus_id=7187/1524
+shoulders=pauldrons_of_the_infinite_infantry,id=188941,bonus_id=1505/7187
+back=grimveiled_cape,id=173242,bonus_id=6648/6649/6964/7451/1588
+chest=breastplate_of_the_infinite_infantry,id=188938,bonus_id=1505/7187,enchant=eternal_stats
+wrists=veiled_auctioneers_vambraces,id=189825,bonus_id=7187/1524
+hands=handguards_of_hidden_realms,id=189850,bonus_id=7187/1524,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6648/6649/7451/8130/1588,gem_id=173128
+legs=legplates_of_the_infinite_infantry,id=188940,bonus_id=7187/1498
+feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=7187/1524
+finger1=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524,enchant=tenet_of_haste
+finger2=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=7187/1524
+trinket2=old_warriors_soul,id=186438,bonus_id=7187/1498
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=sinful_revelation
+off_hand=riftscarred_solcrusher,id=189817,bonus_id=7187/1524,enchant=celestial_guidance
+
+# Gear Summary
+# gear_ilvl=281.50
+# gear_strength=1409
+# gear_stamina=3187
+# gear_attack_power=40
+# gear_crit_rating=415
+# gear_haste_rating=1073
+# gear_mastery_rating=643
+# gear_versatility_rating=319
+# gear_armor=1826
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

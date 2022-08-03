@@ -1,0 +1,152 @@
+# Disabled in stacked sims until https://github.com/simulationcraft/simc/issues/5640 is resolved
+# priest="T28_5_Priest_Discipline"
+# level=60
+# race=mechagnome
+# spec=discipline
+# role=spell
+# position=ranged_back
+# talents=3020310
+# covenant=kyrian
+# soulbind=pelagos,combat_meditation/swift_penitence:7/courageous_ascension:7
+# renown=80
+
+# head=cocoonsilk_cowl,id=178693,bonus_id=6536/1540/6646/6935,gem_id=173127
+# neck=azurevenom_choker,id=180115,bonus_id=6536/1540/6646/6935,gem_id=173127
+# shoulders=shawl_of_the_penitent,id=183020,bonus_id=7187/1498
+# back=crest_of_the_legionnaire_general,id=183032,bonus_id=7187/1498
+# chest=sinister_requiem_vestments,id=180098,bonus_id=6536/1540/6646,enchant=eternal_insight
+# wrists=grim_pursuants_maille,id=182996,bonus_id=7187/1498/6935,gem_id=173127,enchant=eternal_intellect
+# hands=stonefiend_shapers_mitts,id=178833,bonus_id=6536/1540/6646
+# waist=cinch_of_infinite_tightness,id=183028,bonus_id=7187/1498/6935,gem_id=173127
+# legs=leggings_of_lethal_reverberations,id=182981,bonus_id=7187/1498
+# feet=grimveiled_sandals,id=173243,bonus_id=6647/6649/6758/6976/1532
+# finger1=ritual_commanders_ring,id=178781,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
+# finger2=entwined_gorger_tendril,id=178848,bonus_id=6536/1540/6646/6935,gem_id=173127,enchant=tenet_of_haste
+# trinket1=macabre_sheet_music,id=184024,bonus_id=7187/1498
+# trinket2=cabalists_hymnal,id=184028,bonus_id=7187/1498
+# main_hand=torch_of_fiery_atonement,id=182418,bonus_id=7187/1524,enchant=sinful_revelation
+
+# save=T28_5_Priest_Discipline.simc
+
+priest="T28_5_Priest_Shadow"
+level=60
+race=human
+spec=shadow
+role=spell
+position=ranged_back
+talents=1010122
+covenant=necrolord
+
+soulbind=plague_deviser_marileth,volatile_solvent/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/kevins_oozeling
+renown=80
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6982/7451/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7729/1588,gem_id=173130
+legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery,gem_id=173130
+finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery,gem_id=173130
+trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
+trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+
+save=T28_5_Priest_Shadow.simc
+
+priest="T28_5_Priest_Shadow_Night_Fae"
+level=60
+race=human
+role="spell"
+position=ranged_back
+spec="shadow"
+talents=1010122
+renown=80
+
+covenant=night_fae
+soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/dream_delver
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6982/7451/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7703/7451/1588,gem_id=173130
+legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery,gem_id=173130
+finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery,gem_id=173130
+trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
+trinket2=unbound_changeling,id=178708,bonus_id=1592/6536/6646/6918
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+
+save=T28_5_Priest_Shadow_Night_Fae.simc
+
+priest="T28_5_Priest_Shadow_Kyrian"
+level=60
+race=human
+role="spell"
+position=ranged_back
+spec="shadow"
+talents=1010112
+renown=80
+
+covenant=kyrian
+soulbind=pelagos,combat_meditation/dissonant_echoes:11:1/haunting_apparitions:11:1/courageous_ascension:11:1/better_together/newfound_resolve
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/7728/7451/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7162/7451/1588,gem_id=173130
+legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery,gem_id=173130
+finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery,gem_id=173130
+trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
+trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+
+save=T28_5_Priest_Shadow_Kyrian.simc
+
+priest="T28_5_Priest_Shadow_Venthyr"
+level=60
+race=human
+spec=shadow
+role=spell
+position=ranged_back
+talents=1010122
+covenant=venthyr
+soulbind=theotar,soothing_shade/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/party_favors
+renown=80
+
+head=grimveiled_hood,id=173245,bonus_id=6648/6649/6982/7451/1588,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1524/7187,gem_id=173130
+shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1505/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1524/7187
+chest=habit_of_the_empyrean,id=188875,bonus_id=1505/7187,enchant=eternal_stats
+wrists=cuffs_of_the_covert_commander,id=189842,bonus_id=1524/7187,enchant=eternal_intellect,gem_id=173130
+hands=caress_of_the_empyrean,id=188881,bonus_id=1498/7187
+waist=grimveiled_belt,id=173248,bonus_id=6648/6649/7704/7451/1588,gem_id=173130
+legs=leggings_of_the_empyrean,id=188878,bonus_id=1498/7187
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1524/7187
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1524/7187,enchant=tenet_of_mastery,gem_id=173130
+finger2=death_gods_signet,id=179355,bonus_id=1592/6536/6646,enchant=tenet_of_mastery,gem_id=173130
+trinket1=soulletting_ruby,id=178809,bonus_id=1592/6536/6646
+trinket2=unbound_changeling,id=178708,bonus_id=1592/7187
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1524/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1524/7187
+
+save=T28_5_Priest_Shadow_Venthyr.simc
