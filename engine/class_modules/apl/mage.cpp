@@ -491,7 +491,7 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "use_item,name=the_first_sigil" );
   combustion_cooldowns->add_action( "use_item,name=fleshrenders_meathook" );
   combustion_cooldowns->add_action( "use_item,name=neural_synapse_enhancer" );
-  combustion_cooldowns->add_action( "use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2" );
+  combustion_cooldowns->add_action( "use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2&action.fire_blast.charges=0" );
 
   combustion_phase->add_action( "lights_judgment,if=buff.combustion.down" );
   combustion_phase->add_action( "bag_of_tricks,if=buff.combustion.down" );
