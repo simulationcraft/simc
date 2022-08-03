@@ -4316,6 +4316,7 @@ struct revenge_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
+    bool free_revenge_should_trigger_outburst = p()->buff.revenge->up() && p()->buff.seeing_red->stack() >= 7;
     p()->buff.revenge->expire();
     p()->buff.vengeance_revenge->expire();
     p()->buff.vengeance_ignore_pain->trigger();
@@ -4325,6 +4326,12 @@ struct revenge_t : public warrior_attack_t
     {
       seismic_action->set_target( target );
       seismic_action->schedule_execute();
+    }
+
+    if ( free_revenge_should_trigger_outburst )
+    {
+      p()->buff.seeing_red->expire();
+      p()->buff.outburst->trigger();
     }
 
     if ( rng().roll( shield_slam_reset ) )
@@ -6032,12 +6039,12 @@ struct ignore_pain_t : public warrior_spell_t
 
     double previous_ip = p() -> buff.ignore_pain -> current_value;
 
-    // IP is capped at 1.3 times the amount of the current IP
-    double ip_cap_ratio = 1.3;
+    // IP is capped to 30% of max health
+    double ip_max_health_cap = p() -> max_health() * 0.3;
 
-    if ( previous_ip + new_ip > new_ip * ip_cap_ratio )
+    if ( previous_ip + new_ip > ip_max_health_cap )
     {
-      new_ip *= ip_cap_ratio;
+      new_ip = ip_max_health_cap;
     }
 
     if ( new_ip > 0.0 )
