@@ -1,5 +1,5 @@
-// Spell text, wow build 9.2.5.44325
-static const std::array<spelltext_data_t, 16093> __spelltext_data { {
+// Spell text, wow build 9.2.5.44908
+static const std::array<spelltext_data_t, 16090> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -800,7 +800,7 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   {  24254, "Blasts the enemy with poison for $s1 Nature damage.", 0, 0 },
   {  24257, "Wounds the target for $s1 damage.", 0, 0 },
   {  24268, "Restores $s1 mana every $t1 sec for $d.", "Restores $s1 mana every $t1 sec.", 0 },
-  {  24275, "Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
+  {  24275, "Hurls a divine hammer that strikes an enemy for $<damage> Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   {  24291, "Increases attack power by $s1 when fighting Dragonkin.", 0, 0 },
   {  24292, "Increases attack power by $s1 when fighting Dragonkin.", 0, 0 },
   {  24346, "Increases your Mojo.", 0, 0 },
@@ -1091,7 +1091,7 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   {  31794, "Reduces the cost of your next spell cast within $d by up to $s1 mana.", "Cost of your next spell cast reduced by up to $w1 mana.", 0 },
   {  31821, "Empowers your chosen aura for $d.$?a344218[\r\n\r\n$@spellname465: Damage reduction increased to ${-$s1-$465s2}%.][]$?a344219[\r\n\r\n$@spellname32223: Mount speed bonus increased to ${$s2+$32223s4}%.][]$?a344217[\r\n\r\n$@spellname183435: Avenging Wrath duration increased by $s3%.][]$?a344220[\r\n\r\n$@spellname317920: Affected allies immune to interrupts and silences.][]", "Aura effectiveness increased.", 0 },
   {  31850, "Reduces all damage you take by $s1% for $d.\r\n\r\nWhile Ardent Defender is active, the next attack that would otherwise kill you will instead bring you to $s2% of your maximum health.", "Damage taken reduced by $w1%.\r\nThe next attack that would otherwise kill you will instead bring you to $w2% of your maximum health.", 0 },
-  {  31884, "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $s1% for $d.", "Damage, healing, and critical strike chance increased by $w1%.", 0 },
+  {  31884, "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $<wings>% for $d.", "Damage, healing, and critical strike chance increased by $w1%.", 0 },
   {  31935, "Hurls your shield at an enemy target, dealing $s1 Holy damage$?a231665[, interrupting and silencing the non-Player target for $d][], and then jumping to ${$x1-1} additional nearby enemies.\r\n\r\n|cFFFFFFFFGenerates $s4 Holy Power$?s337261[, and $337270s1 additional when it damages a target for the first time][].", "Silenced.", 0 },
   {  32112, "Restores ${$s1*$d/5} health over $d.  Must remain seated while eating.  If you spend at least 10 seconds eating you will become well fed and gain $18193s1 Versatility for $18193d.", "Restores $/5;s1 health per second.", 0 },
   {  32140, "Heal self for $s1 damage.", 0, 0 },
@@ -1263,7 +1263,7 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   {  35346, "The Warp Stalker slows time around the enemy, reducing their movement speed by $s1% for $d.", "Movement slowed by $s1%.", "Special Ability" },
   {  35352, "Reduces your threat to enemy targets within $A1 yards, making them less likely to attack you.", 0, 0 },
   {  35353, "Encloses enemy in a temporal rift, increasing the time between their attacks by $s2% for $d.", "Time between attacks increased by $s2%.", 0 },
-  {  35395, "Strike the target for $s1 Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
+  {  35395, "Strike the target for $<damage> Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", 0, 0 },
   {  35442, "+$s1 All Resistances.", 0, 0 },
   {  35546, "$@spelldesc35551", 0, 0 },
   {  35551, "Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.", 0, "Rank 2" },
@@ -15496,9 +15496,6 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   { 357165, "$@spelldesc356390", "Healing and damage is increased by $s1%.", 0 },
   { 357168, "$@spelldesc353692", 0, 0 },
   { 357185, "$@spelldesc355319", "$?e1[Critical Strike]?e2[Haste]?e3[Mastery]?e4[Versatility][Highest secondary stat] increased by $w1.", 0 },
-  { 357347, "$?pc92426[|CFF808080Bonus: Socket 2 more Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc92425[|CFF808080Bonus: Socket 1 more Blood Shard to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]?pc91768[|CFF20ff20Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies. Increases in effectiveness with more powerful Blood Shards.|R][|CFF808080Bonus: Socket 3 Blood Shards to gain Blood Link while in the Maw.\r\n\r\nBlood Link drains health from your enemies and redistributes it to you and your allies.|R]", 0, 0 },
-  { 357348, "$?pc92424[|CFF808080Bonus: Socket 2 more Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc92423[|CFF808080Bonus: Socket 1 more Frost Shard to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]?pc91769[|CFF20ff20Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes. Increases in effectiveness with more powerful Frost Shards.|R][|CFF808080Bonus: Socket 3 Frost Shards to gain Winds of Winter while in the Maw.\r\n\r\nWinds of Winter periodically unleashes to shield you and damage your enemies based on your critical strikes.|R]", 0, 0 },
-  { 357349, "$?pc92422[|CFF808080Bonus: Socket 2 more Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc92421[|CFF808080Bonus: Socket 1 more Unholy Shard to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]?pc91770[|CFF20ff20Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them. Increases in effectiveness with more powerful Unholy Shards.|R][|CFF808080Bonus: Socket 3 Unholy Shards to gain Chaos Bane while in the Maw.\r\n\r\nChaos Bane rips soul fragments from enemies, increasing your primary stat and dealing Shadow damage to them.|R]", 0, 0 },
   { 357363, "Enter your own personal cage.", "A cage just for you.", 0 },
   { 357381, "Enter the Jailer's Deluxe cell.", "The Jailer's finest accommodations just for you.", 0 },
   { 357409, "$@spelldesc355303", 0, 0 },
@@ -16084,7 +16081,6 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   { 369439, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", "$?e1[Critical Strike]?e2[Haste]?e3[Versatiliy]?e4[Mastery][Highest secondary stat] increased by $w1.", 0 },
   { 369544, "Weep before the Eternals, dedicating yourself to their service.\r\n\r\nGain $s1 of your highest secondary stat, and grant $s2% of this bonus to any party members who also serve your covenant.", 0, 0 },
   { 369786, "$@spelldesc366436", 0, 0 },
-  { 370353, "Add a socket to a Shadowlands Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.", 0, 0 },
   { 370359, "Increase the Renown of your currently active Covenant by $s1.", 0, 0 },
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
   { 371525, "Combine $s2 Confounding Antique Cyphers to create the |cFFE6CC80Cosmic Creation Impetus|r, which can be used to improve Fated raid items to Heroic quality.", 0, 0 },
@@ -16093,14 +16089,18 @@ static const std::array<spelltext_data_t, 16093> __spelltext_data { {
   { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
   { 376635, "Create a piece of Cosmic Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 376808, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 3.", 0, 0 },
+  { 386528, "Add a socket to a Shadowlands Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.\r\n", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.44325
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
+// spelltext hotfix entries, wow build 9.2.5.44908
+static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
+  {   24275,  0, "Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", "Hurls a divine hammer that strikes an enemy for $<damage> Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power." },
+  {   31884,  0, "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $s1% for $d.", "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $<wings>% for $d." },
+  {   35395,  0, "Strike the target for $s1 Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", "Strike the target for $<damage> Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power." },
 } };
 
-// Spell description variables, wow build 9.2.5.44325
-static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
+// Spell description variables, wow build 9.2.5.44908
+static const std::array<spelldesc_vars_data_t, 310> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
   {     120, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
@@ -16129,12 +16129,14 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {   20243, "$mult=${($max(0,$min($pl-12,8))*8.5+241)/309}" },
   {   22570, "$mult=$?p61252[${4}][${2}]" },
   {   23881, "$mult=${($max(0,$min($pl-10,10))*8+137)/217}" },
+  {   24275, "$pvp=$?a134735[${1.15}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {   30151, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${0.1326*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}" },
   {   30213, "$demoMastery=$?s77219[${1+0.01*$77219m1}][${1}]\r\n$damage=${0.816*($SP*0.5)*$<demoMastery>*(1+$@versadmg)}" },
   {   30455, "$masteryMod=${$cond($gt($pl,79),1,0)}\r\n$masteryPoints=${$44544m4/100}\r\n$masteryMult=${(1+$<masteryMod>*$<masteryPoints>)}\r\n$fingersMult=${(2.00*$<masteryMult>)}\r\n\r\n" },
+  {   31884, "$pvp=$?a134735[${0.75}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$wings=${$s1*$<retribution>}" },
   {   33076, "$mult1=$?s87336[${1.25}][${1.0}]\r\n$mult2=$?s122098[${1.25*$<mult1>}][${$<mult1>}]\r\n$mending=${(1+($SP*0.666))*$pctH*$<mult2>}\r\n\r\n" },
   {   34026, "$bmMastery=$?s76657[${1+0.01*$76657m1}][${1}]\r\n$lowNerf=${0.5+$min($pl,20)*0.025}\r\n$damage=${$ap*($s2/100)*$<bmMastery>*(1+$@versadmg)*(1+($137015s1/100))}" },
-  {   35395, "$mult=${($min($pl-1,19)*6+96)/210}" },
+  {   35395, "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
   {   46924, "$dmg=${(1+$d)*($50622sw1+$95738sw1)}" },
   {   47468, "$sweepingclaw= ${0.6*($AP*0.15)*(1+$@versadmg)*3}\r\n$damage=${0.6*($AP*0.3)*(1+$@versadmg)}" },
   {   47481, "$monstrousblow= ${0.6*($AP*0.111384)*(1+$@versadmg)*3}" },
@@ -16249,7 +16251,7 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {  228649, "$stnc=$?a103985[${1.05*(1+$@versadmg)}][${1.0*(1+$@versadmg)}]\r\n$dwm=$?a108561|a115697[${1}][${0.857143}]\r\n$offm=$?a108561|a115697[${0}][${1}]\r\n\r\n$offlow=$?s121278[${$mwb/2/$mws}][${$owb/2/$ows}]\r\n$offhigh=$?s121278[${$MWB/2/$mws}][${$OWB/2/$ows}]\r\n\r\n$low=${$<stnc>*($<dwm>*(($mwb)/($MWS)+$<offm>*$<offlow>)+$AP/3.5-1)}\r\n$high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}\r\n" },
   {  228920, "$damage=${6*$156287s1}" },
   {  231682, "$shield=${($SPS*$231682s1/100)*(1+$@versadmg)}" },
-  {  231895, "$damage=${$s1/10}\r\n$haste=${$s3/10}" },
+  {  231895, "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
   {  234299, "$reduction=${$m1/10}" },
   {  235235, "$arctic1=$?s31674[${1.01}][${1}]\r\n$arctic2=$?s31675[${1.02}][${$<arctic1>}]\r\n$arctic3=$?s31676[${1.03}][${$<arctic2>}]\r\n$arctic4=$?s31677[${1.04}][${$<arctic3>}]\r\n$arctic5=$?s31678[${1.05}][${$<arctic4>}]\r\n$piercing1=$?s11151[${1.02}][${1}]\r\n$piercing2=$?s12952[${1.04}][${$<piercing1>}]\r\n$piercing3=$?s12953[${1.06}][${$<piercing2>}]\r\n$mult=${$<arctic5>*$<piercing3>}" },
   {  235313, "$shield=${$s2/100*$MHP*(1+$@versadmg)}" },
@@ -16411,7 +16413,9 @@ static const std::array<spelldesc_vars_data_t, 308> __spelldesc_vars_data { {
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.44325
-static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
+// spelldesc_vars hotfix entries, wow build 9.2.5.44908
+static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
+  {   35395,  0, "$mult=${($min($pl-1,19)*6+96)/210}", "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
+  {  231895,  0, "$damage=${$s1/10}\r\n$haste=${$s3/10}", "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
 } };
 

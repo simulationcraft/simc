@@ -4324,6 +4324,30 @@ void cruciform_veinripper(special_effect_t& effect)
 
   new dbc_proc_callback_t(effect.player, effect);
 }
+	
+void jotungeirr_destinys_call(special_effect_t& effect)
+{
+    for (auto a : effect.player->action_list)
+    {
+        if (a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + effect.item->name_str)
+        {
+            a->harmful = false;  // pass down harmful to allow action_t::init() precombat check bypass
+            break;
+        }
+    }
+
+    effect.player->register_combat_begin([effect](player_t*) {
+        auto precombat_seconds = effect.player->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+        if (precombat_seconds > 0_s)
+        {
+            auto buff = static_cast<stat_buff_t*>(buff_t::find(effect.player, "burden_of_divinity"));
+            buff->extend_duration(effect.player, -1 * precombat_seconds);
+            effect.player->get_cooldown("item_cd_1141")->adjust(-1 * precombat_seconds, false);
+        }
+    });
+
+}
+	
 
 struct singularity_supreme_t : public stat_buff_t
 {
@@ -6206,7 +6230,8 @@ void register_special_effects()
     unique_gear::register_special_effect( 358571, items::jaithys_the_prison_blade_5 );
     unique_gear::register_special_effect( 351527, items::yasahm_the_riftbreaker );
     unique_gear::register_special_effect( 359168, items::cruciform_veinripper );
-
+    unique_gear::register_special_effect(357773, items::jotungeirr_destinys_call);
+	
     // 9.2 Weapons
     unique_gear::register_special_effect( 367952, items::singularity_supreme, true );
     unique_gear::register_special_effect( 367953, items::gavel_of_the_first_arbiter );

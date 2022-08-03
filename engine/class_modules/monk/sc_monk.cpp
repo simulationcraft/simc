@@ -388,10 +388,11 @@ public:
                                        ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
   
     // SCK
-    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 2 ).ap_coeff() *
+    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN(1).trigger()->effectN(1).ap_coeff() *
                                 // 4 ticks
                                 4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
-                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() );
+                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
+                                ( 1 + p()->spec.windwalker_monk->effectN(22).percent() );
 
     // SQRT Scaling
     if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
@@ -722,7 +723,14 @@ public:
     if ( p()->bugs && get_td( s->target )->debuff.bonedust_brew->up() )
       p()->bonedust_brew_assessor( s );
   }
-
+  
+  void tick(dot_t* dot) override
+  {
+        ab::tick(dot);
+        if ( !p()->bugs && get_td(dot->state->target)->debuff.bonedust_brew->up() )
+             p()->bonedust_brew_assessor(dot->state);
+  }
+  
   void last_tick( dot_t* dot ) override
   {
     ab::last_tick( dot );
@@ -7693,18 +7701,50 @@ std::vector<player_t*> monk_t::create_storm_earth_and_fire_target_list() const
 
 void monk_t::bonedust_brew_assessor( action_state_t* s )
 {
-  if ( !s->action->harmful )
+  // Ignore events with 0 amount
+  if ( s->result_amount <= 0 )
     return;
 
-  // Don't trigger from Bonedust Brew damage
-  // Don't trigger from Bonedust Brew heal
-  if ( s->result_amount <= 0 || s->action->id == 325217 || s->action->id == 325218 )
-    return;
+  switch (s->action->id)
+  {
 
-  // Don't trigger from Empowered Tiger Lightning
-  // Don't trigger from Call to Arms Empowered Tiger Lightning
-  if ( s->action->id == 335913 || s->action->id == 360829 )
-    return;
+    // Whitelisted spells 
+    // verified with logs on 08/03/2022
+
+    case 0: // auto attack
+    case 123996: // crackling_tiger_lightning_tick
+    case 185099: // rising_sun_kick_dmg
+    case 117418: // fists_of_fury_tick
+    case 158221: // whirling_dragon_punch_tick
+    case 100780: // tiger_palm
+    case 100784: // blackout_kick
+    case 101545: // flying_serpent_kick
+    case 115129: // expel_harm_damage
+    case 322109: // touch_of_death
+    case 122470: // touch_of_karma
+    case 107270: // spinning_crane_kick_tick
+    case 261947: // fist_of_the_white_tiger_offhand
+    case 261977: // fist_of_the_white_tiger_mainhand
+    case 132467: // chi_wave_damage 
+    case 148187: // rushing_jade_wind_tick
+    case 148135: // chi_burst_damage
+    case 117952: // crackling_jade_lightning
+    case 196608: // eye_of_the_tiger_damage
+        break;
+
+   // Known blacklist
+   // we don't need to log these
+  
+    case 325217: // bonedust_brew_dmg
+    case 325218: // bonedust_brew_heal
+    case 335913: // empowered_tiger_lightning
+    case 360829: // empowered_tiger_lightning_call_to_arms
+        return;
+
+    default:
+        sim->print_debug("Bad spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);     
+        return;
+  }
 
   if ( rng().roll( covenant.necrolord->proc_chance() ) )
   {

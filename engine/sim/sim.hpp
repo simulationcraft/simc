@@ -462,6 +462,8 @@ struct sim_t : private sc_thread_t
     double adaptive_armor_fragment_uptime = 0.5;
     /// Percentage of default duration for Soothing Shade.
     double soothing_shade_duration_multiplier = 1.0;
+    // Time in seconds before prepull to use Jotungeirr
+    timespan_t jotungeirr_prepull_seconds = 0_s;    
   } shadowlands_opts;
 
   // Auras and De-Buffs

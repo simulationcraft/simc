@@ -1407,10 +1407,18 @@ std::string enemy_t::generate_tank_action_list( tank_dummy_e tank_dummy )
   // Defaulted to 20-man damage
   // Damage is normally increased from 10-man to 30-man by an average of 10% for every 5 players added.
   // 10-man -> 20-man = 20% increase; 20-man -> 30-man = 20% increase
-  // Raid values using Soulrender Dormazain as a baseline
-  std::array<int, numTankDummies> aa_damage               = { 0, 6415, 12300, 24597, 43081, 73742 };  // Base auto attack damage
-  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 11000, 21450, 42932, 68189, 123500 };  // Base melee nuke damage (currently set to Soulrender's Ruinblade)
-  std::array<int, numTankDummies> background_spell_damage = { 0, 257, 1831, 2396, 3298, 5491 };  // Base background dot damage (currently set to 0.04x auto damage)
+  //
+  // Auto Attack is calculated by multiplying each of the CreatureAutoAttackDPSMod in the ContentTuningXExpected table for the ContentTuningID
+  // Then divide by the mob's attack speed over 1.5 seconds (ie: Mob's auto attack is 2.5; then divide Auto Attack base by (2.5/1.5))
+  // Finally multiply by 83 to get the closest to current content tuning
+  // IE: Season 4 Shadowland Mythic Fated is ContentTuningID of 2422
+  // CreatureAutoAttackDPSMod includes
+  // 489.4525 (Base 60 value) * 1.04 * 1.05 * 1.05 * 1.166 * 1.467 * 2.905 = 2788.671
+  // Multiply by 83 = 231,459.693 for a 2.5 attack
+  // Divide by 2.5/1.5 = 138,875.8158 for a 1.5 attack
+  std::array<int, numTankDummies> aa_damage               = { 0, 19598, 44684, 58904, 81664, 138876 };  // Base auto attack damage
+  std::array<int, numTankDummies> dummy_strike_damage     = { 0, 32532, 74175, 97780, 135562, 230534 };  // Base melee nuke damage (1.66x of Base auto attack)
+  std::array<int, numTankDummies> background_spell_damage = { 0, 784, 1787, 2356, 3266, 5555 };  // Base background dot damage (currently set to 0.04x auto damage)
 
   size_t tank_dummy_index = static_cast<size_t>( tank_dummy );
   als += "/auto_attack,damage=" + util::to_string( aa_damage[ tank_dummy_index ] ) +
@@ -1951,17 +1959,18 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
     Castle Nathria Mythic: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
     Level 60 M0/M+ Season 2: 2785.0 (ExpectedStatModID: 192; ArmorConstMod: 1.114)
     Tazavesh Mega Dungeon: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
-    Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
     Sanctum of Domination LFR: 2845.0 (ExpectedStatModID: 178; ArmorConstMod: 1.138)
     Sanctum of Domination Normal: 3050.0 (ExpectedStatModID: 179; ArmorConstMod: 1.220)
     Sanctum of Domination Heroic: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
     Sanctum of Domination Mythic: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+    Level 60 M0/M+ Season 3: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
     Sepulcher of the First Ones LFR: 3282.5 (ExpectedStatModID: 189; ArmorConstMod: 1.313)
     Sepulcher of the First Ones Normal: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
     Sepulcher of the First Ones Heroic: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
     Sepulcher of the First Ones Mythic: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
-    Fated Season 4 Raids LFR: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
-    Fated Season 4 Raids Normal: 4175.0 (ExpectedStatModID: 199; ArmorConstMod: 1.670)
+    Level 60 M0/M+ Season 4: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
+    Fated Season 4 Raids LFR: 3545.0 (ExpectedStatModID: 190; ArmorConstMod: 1.418)
+    Fated Season 4 Raids Normal: 3842.5 (ExpectedStatModID: 198; ArmorConstMod: 1.537)
     Fated Season 4 Raids Heroic: 4552.5 (ExpectedStatModID: 206; ArmorConstMod: 1.821)
     Fated Season 4 Raids Mythic: 4980.0 (ExpectedStatModID: 207; ArmorConstMod: 1.992)
   */
@@ -1970,16 +1979,16 @@ double enemy_t::armor_coefficient( int level, tank_dummy_e dungeon_content )
   switch ( dungeon_content )
   {
     case tank_dummy_e::DUNGEON:
-      return k * ( is_ptr() ? 1.537 : 1.313 );  // M0/M+
+      return k * 1.537;  // M0/M+
       break;
     case tank_dummy_e::RAID:
-      return k * ( is_ptr() ? 1.670 : 1.418 );  // Normal Raid
+      return k * 1.537;  // Normal Raid
       break;
     case tank_dummy_e::HEROIC:
-      return k * ( is_ptr() ? 1.821 : 1.537 );  // Heroic Raid
+      return k * 1.821;  // Heroic Raid
       break;
     case tank_dummy_e::MYTHIC:
-      return k * ( is_ptr() ? 1.992 : 1.670 );  // Mythic Raid
+      return k * 1.992;  // Mythic Raid
       break;
     default:
       break;  // tank_dummy_e::NONE

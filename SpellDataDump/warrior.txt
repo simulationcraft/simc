@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44325 Live (hotfix 2022-07-13/44325)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-02/44908, git build shadowlands 8d75da75e7)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -3632,8 +3632,9 @@ Attributes       : ....x... ........ x.x..... ........   ........ ........ .....
                  : Is Ability (4), Not Shapeshifted (16), Do Not Sheath (18), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=279107)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 3.50000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 4.55000 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
+Hotfixed         : AP Coefficient (3.5 -> 4.55)
 #2 (id=299580)   : Dummy (3)
                    Base Value: 55 | Scaled Value: 55 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=342429)   : Apply Aura (6) | Modify Base Resistance (142)
@@ -9864,7 +9865,6 @@ Attributes       : ....x... ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=813547)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
                    Base Value: 0 | Scaled Value: 399.9899 (coefficient=0.017155) | PvP Coefficient: 0.66666 | Misc Value: 33554432 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.66666)
 #2 (id=845745)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=880295)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -9957,7 +9957,6 @@ Attributes       : ........ ........ ........ x..x.x..   ...x.x.x ..x..... ...x.
 Effects          :
 #1 (id=816612)   : Apply Aura (6) | Modify Rating (189) | Scaling Class: -6
                    Base Value: 0 | Scaled Value: 399.9899 (coefficient=0.017155) | PvP Coefficient: 0.66667 | Misc Value: 33554432 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
-Hotfixed         : PvP Coefficient (1 -> 0.666667)
 #2 (id=816613)   : Apply Aura (6) | Increase Movement Speed% (Stacking) (129)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 30 yards | Target: Custom (18) -> AOE friendly (31)
 #3 (id=880301)   : Apply Aura (6) | Modify Min Speed% (305)
@@ -10591,7 +10590,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
 Effects          :
 #1 (id=831441)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.94000 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc335097
 
 Name             : Crushing Blow (id=335100) [Spell Family (4)] 
@@ -10616,7 +10614,6 @@ Attributes       : ....x... ........ x.x..... ........   ....x... ........ .....
 Effects          :
 #1 (id=831443)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.94000 | PvP Coefficient: 0.80000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.8)
 Description      : $@spelldesc335097
 
 Name             : Reckless Abandon (id=335101) [Spell Family (4)] 

@@ -317,7 +317,7 @@ public:
     buff_t* sepsis;
 
     // Conduits
-    buff_t* deeper_daggers;
+    damage_buff_t* deeper_daggers;
     damage_buff_t* perforated_veins;
 
     // Set Bonuses
@@ -469,12 +469,9 @@ public:
     const spell_data_t* killing_spree_mh;
     const spell_data_t* killing_spree_oh;
     const spell_data_t* master_of_shadows;
-    const spell_data_t* memory_of_lucid_dreams;
     const spell_data_t* nightstalker_dmg_amp;
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* relentless_strikes_energize;
-    const spell_data_t* ruthlessness_cp_driver;
-    const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* slice_and_dice;
@@ -1169,6 +1166,7 @@ public:
     bool sepsis = false;
     bool t28_assassination_2pc = false;
     bool t28_assassination_4pc = false;
+    bool deeper_daggers = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1291,6 +1289,7 @@ public:
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.perforated_veins );
+    register_damage_buff( p()->buffs.deeper_daggers );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.elaborate_planning );
@@ -1517,7 +1516,7 @@ public:
 
   // Generic rules for proccing Banshee's Blight, used by rogue_t::spend_combo_points()
   virtual bool procs_banshees_blight() const
-  { return ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
+  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
@@ -1580,6 +1579,7 @@ public:
   void trigger_count_the_odds( const action_state_t* state );
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
+  void trigger_banshees_blight( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -1848,6 +1848,7 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
+      trigger_banshees_blight( ab::execute_state );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -2625,10 +2626,6 @@ struct between_the_eyes_t : public rogue_attack_t
 
   bool procs_blade_flurry() const override
   { return true; }
-
-  // 2022-07-12 -- Logs currently show this is bugged with BtE and does not trigger
-  bool procs_banshees_blight() const override
-  { return !p()->bugs; }
 };
 
 // Blade Flurry =============================================================
@@ -4695,12 +4692,12 @@ struct echoing_reprimand_t : public rogue_attack_t
 
 // Flagellation =============================================================
 
-struct flagellation_damage_t : public rogue_spell_t
+struct flagellation_damage_t : public rogue_attack_t
 {
   buff_t* debuff;
 
   flagellation_damage_t( util::string_view name, rogue_t* p ) :
-    rogue_spell_t( name, p, p->find_spell( 345316 ) ),
+    rogue_attack_t( name, p, p->find_spell( 345316 ) ),
     debuff( nullptr )
   {
     dual = true;
@@ -6449,25 +6446,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     }
   }
 
-  // Sylvanas Dagger
-  if ( p()->legendary.banshees_blight && procs_banshees_blight() )
-  {
-    int stack_count = td( rs->target )->debuffs.banshees_blight->check();
-    if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
-    {
-      // Only executes on the "primary" target of AoE finishers
-      player_t* proc_target = rs->target;
-      for ( int i = 0; i < stack_count; ++i )
-      {
-        make_event( *ab::sim, i * 150_ms, [ this, proc_target ]
-        {
-          p()->active.banshees_blight->set_target( proc_target );
-          p()->active.banshees_blight->execute();
-        } );
-      }
-    }
-  }
-
   // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
   if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
   {
@@ -6500,6 +6478,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
+  // TOCHECK: Re-test after S4 hotfix
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
     amount *= 1.0 + p()->buffs.deeper_daggers->value();
 
@@ -6694,6 +6673,29 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 
   tcd->start();
   p()->buffs.perforated_veins->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_t* state )
+{
+  if ( !p()->legendary.banshees_blight || !procs_banshees_blight() )
+    return;
+
+  const auto rs = cast_state( state );
+  int stack_count = td( rs->target )->debuffs.banshees_blight->check();
+  if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
+  {
+    // Only executes on the "primary" target of AoE finishers
+    player_t* proc_target = rs->target;
+    for ( int i = 0; i < stack_count; ++i )
+    {
+      make_event( *ab::sim, i * 150_ms, [this, proc_target]
+      {
+        p()->active.banshees_blight->set_target( proc_target );
+        p()->active.banshees_blight->execute();
+      } );
+    }
+  }
 }
 
 // ==========================================================================
@@ -7002,9 +7004,6 @@ double rogue_t::matching_gear_multiplier( attribute_e attr ) const
 double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
-
-  if ( buffs.deeper_daggers->up() && buffs.deeper_daggers->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.deeper_daggers->check_value();
 
   if ( legendary.guile_charm.ok() )
   {
@@ -8119,7 +8118,6 @@ void rogue_t::init_spells()
   spell.master_of_shadows             = find_spell( 196980 );
   spell.nightstalker_dmg_amp          = find_spell( 130493 );
   spell.poison_bomb_driver            = find_spell( 255545 );
-  spell.ruthlessness_driver           = find_spell( 14161 );
   spell.ruthlessness_cp               = spec.ruthlessness->effectN( 1 ).trigger();
   spell.shadow_focus                  = find_spell( 112942 );
   spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
@@ -8725,10 +8723,9 @@ void rogue_t::create_buffs()
 
   // Conduits ===============================================================
 
-  buffs.deeper_daggers = make_buff( this, "deeper_daggers", conduit.deeper_daggers->effectN( 1 ).trigger() )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_trigger_spell( conduit.deeper_daggers )
-    ->set_default_value( conduit.deeper_daggers.percent() );
+  buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers",
+                                                   conduit.deeper_daggers->effectN( 1 ).trigger(),
+                                                   conduit.deeper_daggers );
 
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
                                                      conduit.perforated_veins->effectN( 1 ).trigger(),
