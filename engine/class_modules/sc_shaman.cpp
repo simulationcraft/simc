@@ -5794,29 +5794,21 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
 // Earthquake ===============================================================
 
-struct earthquake_damage_t : public shaman_spell_t
+struct earthquake_damage_base_t : public shaman_spell_t
 {
-  double kb_chance;
   // Deeptremor Totem needs special handling to enable persistent MoTE buff. Normal
   // Earthquake can use the persistent multiplier below
   bool mote_buffed;
 
-  earthquake_damage_t( shaman_t* player ) :
-    shaman_spell_t( "earthquake_", player, player->find_spell( 77478 ) ),
-    kb_chance( data().effectN( 2 ).percent() ), mote_buffed( false )
+  earthquake_damage_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell ) :
+    shaman_spell_t( name, player, spell ), mote_buffed( false )
   {
     aoe        = -1;
     ground_aoe = background = true;
-    school                  = SCHOOL_PHYSICAL;
-
-    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.391;
   }
 
   double composite_target_armor( player_t* ) const override
-  {
-    return 0;
-  }
+  { return 0; }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
@@ -5836,20 +5828,19 @@ struct earthquake_damage_t : public shaman_spell_t
   }
 };
 
-struct earthquake_t : public shaman_spell_t
+struct earthquake_base_t : public shaman_spell_t
 {
-  earthquake_damage_t* rumble;
+  earthquake_damage_base_t* rumble;
+
   action_t* shake_the_foundations_cl;
   action_t* shake_the_foundations_lb;
 
-  earthquake_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "earthquake", player, player->talent.earthquake ),
-    rumble( new earthquake_damage_t( player ) ), shake_the_foundations_cl( nullptr ),
+  earthquake_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell ) :
+    shaman_spell_t( name, player, spell ),
+    rumble( nullptr ), shake_the_foundations_cl( nullptr ),
     shake_the_foundations_lb( nullptr )
   {
-    parse_options( options_str );
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-    add_child( rumble );
 
     if ( p()->conduit.shake_the_foundations.ok() )
     {
@@ -5864,41 +5855,6 @@ struct earthquake_t : public shaman_spell_t
       shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
 
       add_child( shake_the_foundations_lb );
-    }
-  }
-
-  // Earthquake uses a "smart" Lightning Rod targeting system
-  // 1) Current target, if Lightning Rod is not enabled on it
-  // 2) A close-by target without Lightning Rod
-  //
-  // Note that Earthquake does not refresh existing Lightning Rod debuffs
-  void trigger_lightning_rod( const action_state_t* state )
-  {
-    if ( !p()->talent.lightning_rod.ok() )
-    {
-      return;
-    }
-
-    auto tdata = td( state->target );
-    if ( !tdata->debuff.lightning_rod->check() )
-    {
-      tdata->debuff.lightning_rod->trigger();
-    }
-    else
-    {
-      std::vector<player_t*> eligible_targets;
-      range::for_each( target_list(), [ this, &eligible_targets ]( player_t* t ) {
-        if ( !td( t )->debuff.lightning_rod->check() )
-        {
-          eligible_targets.emplace_back( t );
-        }
-      } );
-
-      if ( !eligible_targets.empty() )
-      {
-        auto idx = static_cast<unsigned>( rng().range( 0, eligible_targets.size() ) );
-        td( eligible_targets[ idx ] )->debuff.lightning_rod->trigger();
-      }
     }
   }
 
@@ -5942,6 +5898,108 @@ struct earthquake_t : public shaman_spell_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->proc.further_beyond->occur();
     }
+  }
+};
+
+struct earthquake_overload_damage_t : public earthquake_damage_base_t
+{
+  earthquake_overload_damage_t( shaman_t* player ) :
+    earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ) )
+  {
+    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
+    spell_power_mod.direct = 0.391 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+  }
+};
+
+struct earthquake_overload_t : public earthquake_base_t
+{
+  earthquake_base_t* parent;
+
+  earthquake_overload_t( shaman_t* player, earthquake_base_t* p ) :
+    earthquake_base_t( player, "earthquake_overload", player->find_spell( 298762 ) ),
+    parent( p )
+  {
+    background = true;
+    callbacks = false;
+    base_execute_time = 0_s;
+
+    rumble = new earthquake_overload_damage_t( player );
+    add_child( rumble );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    earthquake_base_t::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->exec_type = parent->exec_type;
+  }
+};
+
+struct earthquake_damage_t : public earthquake_damage_base_t
+{
+  earthquake_damage_t( shaman_t* player ) :
+    earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ) )
+  {
+    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
+    spell_power_mod.direct = 0.391;
+  }
+};
+
+struct earthquake_t : public earthquake_base_t
+{
+  earthquake_t( shaman_t* player, util::string_view options_str ) :
+    earthquake_base_t( player, "earthquake", player->talent.earthquake )
+  {
+    parse_options( options_str );
+
+    rumble = new earthquake_damage_t( player );
+    add_child( rumble );
+
+    if ( player->talent.mountains_will_fall.ok() )
+    {
+      overload = new earthquake_overload_t( player, this );
+      add_child( overload );
+    }
+  }
+
+  // Earthquake uses a "smart" Lightning Rod targeting system
+  // 1) Current target, if Lightning Rod is not enabled on it
+  // 2) A close-by target without Lightning Rod
+  //
+  // Note that Earthquake does not refresh existing Lightning Rod debuffs
+  void trigger_lightning_rod( const action_state_t* state )
+  {
+    if ( !p()->talent.lightning_rod.ok() )
+    {
+      return;
+    }
+
+    auto tdata = td( state->target );
+    if ( !tdata->debuff.lightning_rod->check() )
+    {
+      tdata->debuff.lightning_rod->trigger();
+    }
+    else
+    {
+      std::vector<player_t*> eligible_targets;
+      range::for_each( target_list(), [ this, &eligible_targets ]( player_t* t ) {
+        if ( !td( t )->debuff.lightning_rod->check() )
+        {
+          eligible_targets.emplace_back( t );
+        }
+      } );
+
+      if ( !eligible_targets.empty() )
+      {
+        auto idx = static_cast<unsigned>( rng().range( 0, eligible_targets.size() ) );
+        td( eligible_targets[ idx ] )->debuff.lightning_rod->trigger();
+      }
+    }
+  }
+
+  void execute() override
+  {
+    earthquake_base_t::execute();
 
     trigger_lightning_rod( execute_state );
   }
