@@ -757,6 +757,7 @@ public:
     // Focus used for Focused Trickery (363666)
     double focus_used_FT = 0;
     unsigned dire_pack_counter = 0;
+    unsigned bombardment_counter = 0;
   } state;
 
   struct options_t {
@@ -895,6 +896,7 @@ public:
   void trigger_calling_the_shots();
   bool trigger_focused_trickery( action_t* action, double cost );
   void trigger_latent_poison_injectors( const action_state_t* s );
+  void trigger_bombardment();
   void consume_trick_shots();
 };
 
@@ -2688,6 +2690,18 @@ void hunter_t::trigger_latent_poison_injectors( const action_state_t* s )
   debuff -> expire();
 }
 
+void hunter_t::trigger_bombardment()
+{
+  if ( !talents.bombardment.ok() )
+    return;
+
+  if ( ++state.bombardment_counter == talents.bombardment -> effectN( 1 ).base_value() )
+  {
+    state.bombardment_counter = 0;
+    buffs.bombardment -> trigger();
+  }
+}
+
 namespace attacks
 {
 
@@ -2966,10 +2980,9 @@ struct arcane_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> buffs.bombardment -> trigger();
-
     p() -> trigger_lethal_shots();
     p() -> trigger_calling_the_shots();
+    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -3741,6 +3754,7 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
 
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
+    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
