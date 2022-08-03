@@ -166,6 +166,11 @@ void brewmaster( player_t* p )
 
   pre->add_action( "potion" );
 
+  // Append this line if the value is set
+  auto precombat_seconds = p->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+  if (precombat_seconds > 0_s)
+    pre->add_action( "use_item,name=jotungeirr_destinys_call,if=equipped.jotungeirr_destinys_call", "Use Jotun Prepull" );
+
   pre->add_action( "fleshcraft" );
 
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
