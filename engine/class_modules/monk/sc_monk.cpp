@@ -726,7 +726,7 @@ public:
   void tick(dot_t* dot) override
   {
         ab::tick(dot);
-        if ( !p()->bugs && get_td(s->target)->debuff.bonedust_brew->up() )
+        if ( !p()->bugs && get_td(dot->state->target)->debuff.bonedust_brew->up() )
              p()->bonedust_brew_assessor(dot->state);
   }
   
