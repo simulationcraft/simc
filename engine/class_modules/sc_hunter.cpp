@@ -4077,6 +4077,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     secrets_of_the_vigil_up = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
+    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 2 ).percent() );
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
@@ -4094,9 +4095,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       surging_shots.proc -> occur();
       p() -> cooldowns.rapid_fire -> reset( true );
     }
-
-    if ( p() -> buffs.deathblow -> trigger() )
-      p() -> cooldowns.kill_shot -> reset( true );
   }
 
   timespan_t execute_time() const override
@@ -4327,6 +4325,8 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
+    // XXX: check trigger behaviour re channel start/finish
+    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
   }
 
   void tick( dot_t* d ) override
@@ -6804,8 +6804,16 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( talents.lock_and_load );
 
   buffs.deathblow =
-    make_buff( this, "deathblow", talents.deathblow -> effectN( 1 ).trigger() )
-      -> set_trigger_spell( talents.deathblow );
+    make_buff( this, "deathblow", find_spell( 378770 ) )
+      -> set_stack_change_callback(
+        [ this ]( buff_t*, int old, int ) {
+          // XXX: check refreshes
+          if ( old == 0 ) {
+            cooldowns.kill_shot -> reset( true );
+            if ( talents.razor_fragments.ok() )
+              buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+          }
+        } );
 
   buffs.unerring_vision_hidden =
     make_buff( this, "unerring_vision_hidden", find_spell( 274446 ) )
