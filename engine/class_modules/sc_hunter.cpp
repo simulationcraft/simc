@@ -4209,6 +4209,9 @@ struct rapid_fire_t: public hunter_spell_t
       base_aoe_multiplier = p -> talents.trick_shots -> effectN( 5 ).percent()
         + p -> conduits.deadly_chain.percent()
         + p -> talents.heavy_ammo -> effectN( 4 ).percent();
+
+      // energize
+      parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
     }
 
     int n_targets() const override
