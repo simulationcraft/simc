@@ -3289,15 +3289,23 @@ struct elemental_overload_spell_t : public shaman_spell_t
 {
   shaman_spell_t* parent;
 
-  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s, shaman_spell_t* parent_ )
+  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s, shaman_spell_t* parent_, double multiplier = -1.0 )
     : shaman_spell_t( name, p, s ), parent( parent_ )
   {
     base_execute_time = timespan_t::zero();
     background        = true;
     callbacks         = false;
 
-    base_multiplier *=
-        p->mastery.elemental_overload->effectN( 2 ).percent() + p->talent.echo_chamber->effectN( 1 ).percent();
+    if ( multiplier == -1.0 )
+    {
+      base_multiplier *=
+          p->mastery.elemental_overload->effectN( 2 ).percent() +
+          p->talent.echo_chamber->effectN( 1 ).percent();
+    }
+    else
+    {
+      base_multiplier *= multiplier;
+    }
   }
 
   void init_finished() override
@@ -5626,7 +5634,8 @@ void trigger_elemental_blast_proc( shaman_t* p )
 struct elemental_blast_overload_t : public elemental_overload_spell_t
 {
   elemental_blast_overload_t( shaman_t* p, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ), parent_ )
+    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ), parent_,
+        p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -6056,7 +6065,8 @@ struct natures_swiftness_t : public shaman_spell_t
 struct earth_shock_overload_t : public elemental_overload_spell_t
 {
   earth_shock_overload_t( shaman_t* p, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, "earth_shock_overload", p->find_spell( 381725 ), parent_ )
+    : elemental_overload_spell_t( p, "earth_shock_overload", p->find_spell( 381725 ), parent_,
+        p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -6081,7 +6091,6 @@ struct earth_shock_t : public shaman_spell_t
   void execute() override
   {
     shaman_spell_t::execute();
-
 
     if ( p()->legendary.echoes_of_great_sundering.ok() ||
         p()->talent.echoes_of_great_sundering.ok() )
