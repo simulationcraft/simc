@@ -4327,7 +4327,9 @@ void cruciform_veinripper(special_effect_t& effect)
 	
 void jotungeirr_destinys_call(special_effect_t& effect)
 {
-    for (auto a : effect.player->action_list)
+    player_t* p = effect.player;
+
+    for (auto a : p->action_list)
     {
         if (a->action_list && a->action_list->name_str == "precombat" && a->name_str == "use_item_" + effect.item->name_str)
         {
@@ -4336,19 +4338,60 @@ void jotungeirr_destinys_call(special_effect_t& effect)
         }
     }
 
-    effect.player->register_combat_begin([effect](player_t*) {
-        auto precombat_seconds = effect.player->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+    p->register_combat_begin([](player_t* p) {
+
+        auto buff = static_cast<stat_buff_t*>(buff_t::find(p, "burden_of_divinity"));
+
+        auto precombat_seconds = p->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+
         if (precombat_seconds > 0_s)
+        {                  
+            // Hack for prepull... reduce duration of buff by prepull seconds
+            buff->extend_duration(p, -1 * precombat_seconds);
+            // ..and the shared trinket CD
+            p->get_cooldown("item_cd_1141")->adjust(-1 * precombat_seconds, false);
+            
+        }
+
+        auto swap = p->sim->shadowlands_opts.jotungeirr_swapto_zovastrum; 
+
+        if (swap)
         {
-            auto buff = static_cast<stat_buff_t*>(buff_t::find(effect.player, "burden_of_divinity"));
-            buff->extend_duration(effect.player, -1 * precombat_seconds);
-            effect.player->get_cooldown("item_cd_1141")->adjust(-1 * precombat_seconds, false);
+            buff->set_stack_change_callback([p](buff_t* b, int /* old */, int new_) {
+
+                // After buff falls off
+                if (!new_)
+                {
+                    auto swap_ilevel = p->sim->shadowlands_opts.jotungeirr_swapto_ilevel;
+                    auto scale_factor = item_database::approx_scale_coefficient(311, swap_ilevel);
+
+                    // Hack to prevent Jotun from being used again
+                    for (auto a : p->action_list)
+                    {
+                        if (a->action_list && a->name_str == "use_item_" + b->item->name_str)
+                        {
+                            a->cooldown->adjust(p->sim->expected_iteration_time, false);
+                            break;
+                        }
+                    }
+
+                    // Zovastrum level 311
+                    item_t* Zovastrum = new item_t;               
+                    Zovastrum->stats.set_stat(STAT_AGILITY, scale_factor * 179);
+                    Zovastrum->stats.set_stat(STAT_STAMINA, scale_factor * 411);
+                    Zovastrum->stats.set_stat(STAT_CRIT_RATING, scale_factor * 61);
+                    Zovastrum->stats.set_stat(STAT_VERSATILITY_RATING, scale_factor * 142);
+                   
+                    for (stat_e i = STAT_NONE; p->in_combat && i < STAT_MAX; i++) {
+                        p->stat_loss(i, b->item->stats.get_stat(i)); // "Unequip" Jotungeirr stats
+                        p->stat_gain(i, Zovastrum->stats.get_stat(i)); // "Equip" Zovastrum stats
+                    }
+                }
+            });
         }
     });
-
 }
 	
-
 struct singularity_supreme_t : public stat_buff_t
 {
   stat_buff_t* supremacy_buff;
