@@ -83,7 +83,7 @@ void arcane( player_t* p )
   precombat->add_action( "variable,name=totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=aoe_totm_max_charges,op=reset,default=2" );
   precombat->add_action( "variable,name=fishing_opener,default=-1,op=set,if=variable.fishing_opener=-1,value=1*(equipped.empyreal_ordnance|(talent.rune_of_power&(talent.arcane_echo|!covenant.kyrian)&(!covenant.necrolord|active_enemies=1|runeforge.siphon_storm)&!covenant.venthyr))|(covenant.venthyr&equipped.moonlit_prism)" );
-  precombat->add_action( "variable,name=ap_on_use,op=set,value=equipped.macabre_sheet_music|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.darkmoon_deck_putrescence|equipped.inscrutable_quantum_device|equipped.soulletting_ruby|equipped.sunblood_amethyst|equipped.wakeners_frond|equipped.flame_of_battle" );
+  precombat->add_action( "variable,name=ap_on_use,op=set,value=equipped.macabre_sheet_music|equipped.gladiators_badge|equipped.gladiators_medallion|equipped.darkmoon_deck_putrescence|equipped.inscrutable_quantum_device|equipped.soulletting_ruby|equipped.sunblood_amethyst|equipped.wakeners_frond|equipped.flame_of_battle|equipped.neural_synapse_enhancer" );
   precombat->add_action( "variable,name=aoe_spark_target_count,op=reset,default=8+(2*runeforge.harmonic_echo)" );
   precombat->add_action( "variable,name=aoe_spark_target_count,op=max,value=variable.aoe_target_count" );
   precombat->add_action( "snapshot_stats" );
@@ -111,13 +111,16 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=moonlit_prism,if=covenant.kyrian&cooldown.arcane_power.remains<=10&cooldown.touch_of_the_magi.remains<=10&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
   default_->add_action( "use_item,name=moonlit_prism,if=!covenant.kyrian&cooldown.arcane_power.remains<=6&cooldown.touch_of_the_magi.remains<=6&time>30&(!covenant.venthyr|active_enemies<variable.aoe_target_count)&(!equipped.the_first_sigil|trinket.the_first_sigil.cooldown.remains)" );
   default_->add_action( "use_item,name=empyreal_ordnance,if=cooldown.arcane_power.remains<=15&cooldown.touch_of_the_magi.remains<=15" );
+  default_->add_action( "use_item,name=grim_eclipse,if=cooldown.arcane_power.remains<=7&cooldown.touch_of_the_magi.remains<=7" );
   default_->add_action( "use_item,name=dreadfire_vessel,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
+  default_->add_action( "use_item,name=mrrgrias_favor,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use" );
   default_->add_action( "use_item,name=soul_igniter,if=cooldown.arcane_power.remains>=30|!variable.ap_on_use=1" );
   default_->add_action( "use_item,name=glyph_of_assimilation,if=cooldown.arcane_power.remains>=20|!variable.ap_on_use=1|(time=0&variable.fishing_opener=1&runeforge.siphon_storm)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&(!variable.fishing_opener=1|time>30)" );
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
   default_->add_action( "use_item,name=shadowed_orb_of_torment,if=time=0|(variable.outside_of_cooldowns&((covenant.kyrian&cooldown.radiant_spark.remains<=2&cooldown.arcane_power.remains<=5&cooldown.touch_of_the_magi.remains<=5)|cooldown.arcane_power.remains<=2|fight_remains<cooldown.arcane_power.remains))" );
   default_->add_action( "use_item,name=soulletting_ruby,if=(variable.time_until_ap+(action.radiant_spark.execute_time*covenant.kyrian)+(action.deathborne.execute_time*covenant.necrolord)+action.touch_of_the_magi.execute_time<target.distance%5.6)&(variable.have_opened|(covenant.kyrian&runeforge.arcane_infinity))&target.distance>25", "5.6 is the speed of the Soulletting Ruby projectile" );
+  default_->add_action( "use_item,name=neural_synapse_enhancer,if=buff.arcane_power.up|(cooldown.arcane_power.remains>=20&debuff.touch_of_the_magi.up)" );
   default_->add_action( "newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking" );
   default_->add_action( "call_action_list,name=calculations" );
   default_->add_action( "call_action_list,name=vaoe,if=covenant.venthyr&runeforge.siphon_storm&talent.arcane_echo&active_enemies>=variable.aoe_target_count" );
@@ -373,6 +376,7 @@ void arcane( player_t* p )
   harmony->add_action( "arcane_missiles,if=buff.clearcasting.react&active_enemies>=variable.aoe_target_count,chain=1", "In AoE situations, CC AM is prioritized over other filler actions" );
   harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&active_enemies>=variable.aoe_target_count", "In AoE situations, barrage at four charges regardless of harmony stacks" );
   harmony->add_action( "arcane_explosion,if=buff.arcane_charge.stack<buff.arcane_charge.max_stack&active_enemies>=variable.aoe_target_count", "Use Arcane Explosion as the filler in AoE situations instead of building harmony stacks with Missiles" );
+  harmony->add_action( "nether_tempest,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&(refreshable|!ticking)" );
   harmony->add_action( "arcane_missiles,if=buff.arcane_harmony.stack<16,chain=1,interrupt=1,interrupt_global=1", "We want to stack harmony fully. The use of 16 stacks here is to account for the tick left on the channel and the missile in flight." );
   harmony->add_action( "arcane_barrage,if=buff.arcane_charge.stack=buff.arcane_charge.max_stack&variable.empowered_barrage" );
   harmony->add_action( "evocation,if=mana.pct<15" );
