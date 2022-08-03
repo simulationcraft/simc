@@ -6773,7 +6773,7 @@ void hunter_t::create_buffs()
 
           if ( cur == 0 )
             buffs.eagletalons_true_focus -> expire();
-          else if ( old == 0 && talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() )
+          else if ( old == 0 && ( talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() ) )
             buffs.eagletalons_true_focus -> trigger();
 
           if ( cur == 0 )
@@ -6865,7 +6865,7 @@ void hunter_t::create_buffs()
     make_buff( this, "call_of_the_wild", talents.call_of_the_wild )
       -> set_cooldown( 0_ms )
       -> set_tick_callback(
-        [ this ]( buff_t *b, int, timespan_t ) {
+        [ this ]( buff_t*, int, timespan_t ) {
           pets.cotw_stable_pet.spawn( talents.call_of_the_wild -> effectN( 2 ).trigger() -> duration(), 1 );
         } );
 
@@ -6874,7 +6874,7 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_chance( talents.dire_pack.ok() )
       -> set_stack_change_callback(
-        [ this ]( buff_t* b, int old, int cur ) {
+        [ this ]( buff_t*, int, int ) {
           cooldowns.kill_command -> adjust_recharge_multiplier();
         } );
 
