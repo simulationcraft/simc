@@ -1,4 +1,5 @@
 from collections import defaultdict
+import logging
 
 from dbc import db, util, constants
 
@@ -407,20 +408,27 @@ class TraitSet(DataSet):
             if currency.id == 0:
                 continue
 
-            cost_definition = currency.child_ref('TraitCostDefinition')
-            if cost_definition.id == 0:
-                cost = currency.child_ref('TraitCost')
+            cost_definitions = currency.child_refs('TraitCostDefinition')
+            costs = []
+            if len(cost_definitions) == 0:
+                costs = currency.child_refs('TraitCost')
             else:
-                cost = cost_definition.parent_record()
+                costs = [ e.parent_record() for e in cost_definitions ]
 
-            if cost.id == 0:
+            if len(costs) == 0:
                 continue
 
-            node_group = cost.child_ref('TraitNodeGroupXTraitCost')
-            if node_group.id == 0:
+            node_groups = [ c.child_ref('TraitNodeGroupXTraitCost')
+                for c in costs if c.child_ref('TraitNodeGroupXTraitCost').id != 0
+            ]
+
+            if len(node_groups) == 0:
                 continue
 
-            _trait_node_group_map[node_group.id_trait_node_group] = entry.index
+            if len(node_groups) > 1:
+                logging.warn("Multiple node groups defined for trait tree currency")
+
+            _trait_node_group_map[node_groups[0].id_trait_node_group] = entry.index
 
         # Map of trait_node_id, node_data
         _trait_nodes = dict()
