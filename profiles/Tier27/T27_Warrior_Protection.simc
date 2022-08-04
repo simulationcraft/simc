@@ -11,11 +11,11 @@ soulbind=grove_invigoration/niyas_tools_burrs/bonded_hearts/ashen_juggernaut:9:1
 renown=80
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -93,6 +93,7 @@ off_hand=guard_of_the_sundered_defender,id=186417,bonus_id=7187/1498
 # gear_strength=1129
 # gear_stamina=2155
 # gear_intellect=170
+# gear_attack_power=20
 # gear_crit_rating=606
 # gear_haste_rating=866
 # gear_mastery_rating=417

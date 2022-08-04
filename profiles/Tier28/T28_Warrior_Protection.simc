@@ -11,11 +11,11 @@ soulbind=volatile_solvent/oozs_frictionless_coating/kevins_oozeling/ashen_jugger
 renown=80
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -94,6 +94,7 @@ off_hand=ruined_crest_of_lordaeron,id=189845,bonus_id=7187/1524
 # gear_strength=1317
 # gear_stamina=2951
 # gear_intellect=216
+# gear_attack_power=20
 # gear_crit_rating=841
 # gear_haste_rating=996
 # gear_mastery_rating=485
