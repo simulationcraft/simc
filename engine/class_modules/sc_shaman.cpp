@@ -7159,6 +7159,11 @@ struct shaman_totem_pet_t : public pet_t
 
     return pet_t::create_expression( name );
   }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    o()->apply_affecting_auras( action );
+  }
 };
 
 template <typename T, typename V>
@@ -7230,8 +7235,6 @@ struct totem_pulse_action_t : public T
   {
     this->may_crit = this->background = true;
     this->callbacks             = false;
-
-    this->crit_bonus_multiplier *= 1.0 + totem->o()->talent.elemental_fury->effectN( 1 ).percent();
 
     if ( this->type == ACTION_HEAL )
     {
@@ -7387,11 +7390,6 @@ struct liquid_magma_globule_t : public spell_t
     aoe        = -1;
     background = may_crit = true;
     callbacks             = false;
-
-    if ( p->o()->talent.elemental_fury->ok() )
-    {
-      crit_bonus_multiplier *= 1.0 + p->o()->talent.elemental_fury->effectN( 1 ).percent();
-    }
   }
 };
 
