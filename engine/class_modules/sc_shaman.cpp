@@ -601,6 +601,7 @@ public:
     gain_t* spirit_of_the_maelstrom;
     gain_t* searing_flames;
     gain_t* chain_harvest_heal;
+    gain_t* inundate;
   } gain;
 
   // Tracked Procs
@@ -800,7 +801,7 @@ public:
     player_talent_t elemental_fury;
     player_talent_t fire_elemental;
     // Row 3
-    player_talent_t inundate; // TODO: NYI
+    player_talent_t inundate;
     // Row 4
     player_talent_t call_of_thunder;
     player_talent_t master_of_the_elements;
@@ -859,6 +860,7 @@ public:
     const spell_data_t* t28_4pc_enh;
     const spell_data_t* t28_2pc_ele;
     const spell_data_t* t28_4pc_ele;
+    const spell_data_t* inundate;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -6575,14 +6577,21 @@ struct wind_shear_t : public shaman_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target->debuffs.casting && !candidate_target->debuffs.casting->check() )
+    {
       return false;
+    }
+
     return shaman_spell_t::target_ready( candidate_target );
   }
 
   void execute() override
   {
-    // NYI Ele: Inundate
     shaman_spell_t::execute();
+
+    if ( p()->talent.inundate.ok() )
+    {
+      p()->trigger_maelstrom_gain( p()->spell.inundate->effectN( 1 ).base_value(), p()->gain.inundate );
+    }
   }
 };
 
@@ -7524,6 +7533,23 @@ struct healing_stream_totem_t : public heal_totem_pet_t
   }
 };
 
+struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_t>
+{
+  healing_stream_totem_spell_t( shaman_t* p, util::string_view options_str ) :
+    shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", p, options_str,
+        p->talent.healing_stream_totem )
+  { }
+
+  void execute() override
+  {
+    shaman_totem_t<heal_t, shaman_heal_t>::execute();
+
+    if ( p()->talent.inundate.ok() )
+    {
+      p()->trigger_maelstrom_gain( p()->spell.inundate->effectN( 1 ).base_value(), p()->gain.inundate );
+    }
+  }
+};
 
 // ==========================================================================
 // PvP talents/abilities
@@ -8171,7 +8197,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "windfury_totem" )
     return new windfury_totem_t( this, options_str );
   if ( name == "healing_stream_totem" )
-    return new shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", this, options_str, talent.healing_stream_totem );
+    return new healing_stream_totem_spell_t( this, options_str );
   if ( name == "earth_shield" )
     return new earth_shield_t( this, options_str );
   if ( name == "natures_swiftness" )
@@ -8863,6 +8889,7 @@ void shaman_t::init_spells()
   spell.storm_elemental     = find_spell( 157299 );
   spell.flametongue_weapon  = find_spell( 318038 );
   spell.windfury_weapon     = find_spell( 319773 );
+  spell.inundate            = find_spell( 378777 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
@@ -9984,6 +10011,7 @@ void shaman_t::init_gains()
   gain.fire_elemental          = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.chain_harvest_heal      = get_gain( "Chain Harvest Heal" );
+  gain.inundate                = get_gain( "Inundate" );
 }
 
 // shaman_t::init_procs =====================================================
