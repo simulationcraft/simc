@@ -654,7 +654,7 @@ void windwalker( player_t* p )
                             ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
       else if ( item.name_str == "scars_of_fraternal_strife" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-                            ",if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35" );
+                            ",if=!buff.scars_of_fraternal_strife_4.up|((active_enemies>1|raid_event.adds.in<20)&buff.scars_of_fraternal_strife_4.up&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
