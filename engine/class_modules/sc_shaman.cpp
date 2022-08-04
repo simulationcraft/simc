@@ -800,14 +800,15 @@ public:
     player_talent_t earthquake;
     player_talent_t elemental_fury;
     player_talent_t fire_elemental;
+    player_talent_t storm_elemental;
     // Row 3
     player_talent_t inundate;
     // Row 4
     player_talent_t call_of_thunder;
-    player_talent_t master_of_the_elements;
+    player_talent_t flow_of_power;
     player_talent_t lava_surge;
     // Row 5
-    player_talent_t high_voltage;
+    player_talent_t unrelenting_calamity; // TODO: NYI
     player_talent_t icefury;
     player_talent_t swelling_maelstrom;
     player_talent_t echo_of_the_elements;
@@ -817,33 +818,33 @@ public:
     player_talent_t electrified_shocks;
     player_talent_t flux_melting;
     player_talent_t aftershock;
+    player_talent_t surge_of_power; // TODO: NYI
     player_talent_t flames_of_the_cauldron;
-    player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 7
     player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm;
     player_talent_t power_of_the_maelstrom;
-    player_talent_t flames_of_the_firelord;
-    player_talent_t storm_elemental;
+    player_talent_t master_of_the_elements;
+    player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 8
-    player_talent_t windspeakers_lava_resurgence;
     player_talent_t deeply_rooted_elements;
     player_talent_t liquid_magma_totem;
     player_talent_t primal_elementalist;
     // Row 9
     player_talent_t echoes_of_great_sundering;
     player_talent_t elemental_equilibrium;
-    player_talent_t tumbling_waves;
+    player_talent_t rolling_magma; // TODO: NYI
     player_talent_t echo_chamber;
     player_talent_t oath_of_the_far_seer;
-    player_talent_t searing_flames;
     player_talent_t magma_chamber;
+    player_talent_t searing_flames;
     // Row 10
     player_talent_t stormkeeper2;
     player_talent_t lightning_rod;
     player_talent_t mountains_will_fall;
     player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
+    player_talent_t windspeakers_lava_resurgence;
   } talent;
 
   // Misc Spells
@@ -1883,6 +1884,12 @@ public:
                            this->p()->conduit.focused_lightning.percent();
 
       m *= 1.0 + stack_value * mw_stacks;
+    }
+
+    if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE && this->p()->talent.improved_flametongue_weapon.ok() && dbc::is_school(this->school, SCHOOL_FIRE) )
+    {
+      // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
+      m *= 1.0 + 0.05;
     }
 
     return m;
@@ -4789,6 +4796,10 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
+    if ( player->talent.flow_of_power.enabled() )
+    {
+      maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
+    }
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
   }
@@ -5123,6 +5134,10 @@ struct lava_burst_t : public shaman_spell_t
     {
       base_costs[ RESOURCE_MANA ] = 0;
       maelstrom_gain = player->spec.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
+      if ( player->talent.flow_of_power.enabled() )
+      {
+        maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
+      }
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5417,7 +5432,11 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain                     = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
-    // TODO Elemental: clarify if High Voltage does affect LB Overloads too?
+    if ( p->talent.flow_of_power.enabled() )
+    {
+      maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
+    }
+
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = ( p->talent.stormkeeper.ok() || p->talent.stormkeeper2.ok() ) &&
@@ -5439,9 +5458,9 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       affected_by_master_of_the_elements = true;
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-      if (player->talent.high_voltage.enabled())
+      if (player->talent.flow_of_power.enabled())
       {
-        maelstrom_gain += player->talent.high_voltage->effectN( 1 ).base_value();
+        maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
       }
     }
 
@@ -6344,7 +6363,7 @@ public:
     }
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
-      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_firelord->effectN( 1 ).time_value();
+      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
     }
   }
 
@@ -6527,8 +6546,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     if ( p()->buff.icefury->up() )
     {
-      // TODO: Where is this defined?
-      // maelstrom_gain = p()->spell.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain = p()->spec.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     }
 
     shaman_spell_t::execute();
@@ -7709,11 +7727,6 @@ struct primordial_wave_t : public shaman_spell_t
     }
 
     double proc_chance = p()->conduit.tumbling_waves.value() / 1000.0;
-    if ( proc_chance == 0 )
-    {
-      proc_chance = p()->talent.tumbling_waves->effectN( 1 ).base_value() / 1000.0;
-    }
-
     if ( proc_chance && rng().roll( proc_chance ) )
     {
       cooldown->reset( true );
@@ -8784,14 +8797,15 @@ void shaman_t::init_spells()
   talent.earthquake = _ST( "Earthquake" );
   talent.elemental_fury = _ST( "Elemental Fury" );
   talent.fire_elemental = _ST( "Fire Elemental" );
+  talent.storm_elemental = _ST( "Storm Elemental" );
   // Row 3
   talent.inundate = _ST( "Inundate" );
   // Row 4
-  talent.call_of_thunder = _ST( "Call of Thunder" );
-  talent.master_of_the_elements = _ST( "Master of the Elements" );
-  talent.lava_surge = _ST( "Lava Surge" );
+  talent.call_of_thunder    = _ST( "Call of Thunder" );
+  talent.flow_of_power      = _ST( "Flow of Power" );
+  talent.lava_surge         = _ST( "Lava Surge" );
   // Row 5
-  talent.high_voltage = _ST( "High Voltage" );
+  talent.unrelenting_calamity = _ST( "Unrelenting Calamity" );
   talent.icefury = _ST( "Icefury" );
   talent.swelling_maelstrom = _ST( "Swelling Maelstrom" );
   talent.echo_of_the_elements = _ST( "Echo of the Elements" );
@@ -8802,32 +8816,32 @@ void shaman_t::init_spells()
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
   talent.flames_of_the_cauldron = _ST( "Flames of the Cauldron" );
-  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   // Row 7
   talent.flash_of_lightning = _ST( "Flash of Lightning" );
   talent.eye_of_the_storm = _ST( "Eye of the Storm" );
   talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
-  talent.flames_of_the_firelord = _ST( "Flames of the Firelord" );
-  talent.storm_elemental = _ST( "Storm Elemental" );
+  talent.master_of_the_elements = _ST( "Master of the Elements" );
+  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   // Row 8
-  talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
   talent.deeply_rooted_elements = _ST( "Deeply Rooted Elements" );
   talent.liquid_magma_totem = _ST( "Liquid Magma Totem" );
   talent.primal_elementalist = _ST( "Primal Elementalist" );
   // Row 9
   talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
   talent.elemental_equilibrium = _ST( "Elemental Equilibrium" );
-  talent.tumbling_waves = _ST( "Tumbling Waves" );
+  talent.rolling_magma = _ST( "Rolling Magma" );
   talent.echo_chamber = _ST( "Echo Chamber" );
   talent.oath_of_the_far_seer = _ST( "Oath of the Far Seer" );
-  talent.searing_flames = _ST( "Searing Flames" );
   talent.magma_chamber = _ST( "Magma Chamber" );
+  talent.searing_flames = _ST( "Searing Flames" );
   // Row 10
   talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 383009 );
   talent.lightning_rod = _ST( "Lightning Rod" );
+  //talent.heat_wave_NYI                = _ST( "Heat Wave" ); // TODO: NYI (ingame)
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
   talent.further_beyond = _ST( "Further Beyond" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
+  talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
