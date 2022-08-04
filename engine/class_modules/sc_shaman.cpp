@@ -17,12 +17,7 @@
 // Dragonflight TODO
 //
 // Elemental
-// - Lightning Rod application
-// - fix Ascendance action error
-// - Electrified Shocks
-// - Mountains Will Fall: Earth Shock Overload
-// - Mountains Will Fall: Earthquake Overload
-// - Liquid Magma Totem: Flame Shock spread
+// - Liquid Magma Totem: Randomize target
 // - Improved Flametongue Weapon
 // - Inundate
 // - Totemic Surge (for Liquid Magma Totem)
@@ -844,8 +839,8 @@ public:
     player_talent_t magma_chamber;
     // Row 10
     player_talent_t stormkeeper2;
-    player_talent_t lightning_rod; // TODO: NYI
-    player_talent_t mountains_will_fall; // TODO: NYI
+    player_talent_t lightning_rod;
+    player_talent_t mountains_will_fall;
     player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
   } talent;
@@ -7353,6 +7348,29 @@ void shaman_totem_pet_t<T>::dismiss( bool expired )
 
 // Liquid Magma totem =======================================================
 
+struct magma_eruption_t : public shaman_spell_t
+{
+  magma_eruption_t( shaman_t* p ) :
+    shaman_spell_t( "magma_eruption", p, p->find_spell( 383061 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    for ( size_t i = 0;
+        i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) );
+        ++i )
+    {
+      p()->trigger_secondary_flame_shock( target_list()[ i ] );
+    }
+  }
+
+};
+
 struct liquid_magma_globule_t : public spell_t
 {
   liquid_magma_globule_t( spell_totem_pet_t* p ) : spell_t( "liquid_magma", p, p->find_spell( 192231 ) )
@@ -7393,6 +7411,8 @@ struct liquid_magma_totem_pulse_t : public spell_totem_action_t
 
 struct liquid_magma_totem_t : public spell_totem_pet_t
 {
+  action_t* magma_eruption;
+
   liquid_magma_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "liquid_magma_totem" )
   {
     pulse_amplitude = owner->find_spell( 192226 )->effectN( 1 ).period();
@@ -7404,8 +7424,25 @@ struct liquid_magma_totem_t : public spell_totem_pet_t
 
     pulse_action = new liquid_magma_totem_pulse_t( this );
   }
+};
 
-  // NYI Ele: Liquid Magma Totem (Flame Shock application)
+struct liquid_magma_totem_spell_t : public shaman_totem_t<spell_t, shaman_spell_t>
+{
+  magma_eruption_t* eruption;
+
+  liquid_magma_totem_spell_t( shaman_t* p, util::string_view options_str ) :
+    shaman_totem_t<spell_t, shaman_spell_t>( "liquid_magma_totem", p, options_str,
+        p->talent.liquid_magma_totem ),
+    eruption( new magma_eruption_t( p ) )
+  { }
+
+  void execute() override
+  {
+    shaman_totem_t<spell_t, shaman_spell_t>::execute();
+
+    eruption->set_target( execute_state->target );
+    eruption->execute();
+  }
 };
 
 // Capacitor Totem =========================================================
@@ -8169,7 +8206,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "lava_burst" )
     return new lava_burst_t( this, spell_type::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
-    return new shaman_totem_t<spell_t, shaman_heal_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
+    return new liquid_magma_totem_spell_t( this, options_str );
   if ( name == "ancestral_guidance" )
     return new ancestral_guidance_t( this, options_str );
   if ( name == "storm_elemental" )
