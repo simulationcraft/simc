@@ -1407,6 +1407,39 @@ struct damage_done_buff_event_t final : public raid_event_t
   }
 };
 
+// Buff Raid Event ==========================================================
+
+struct buff_raid_event_t final : public raid_event_t
+{
+  std::unordered_map<size_t, buff_t*> buff_list;
+  std::string buff_str;
+  unsigned stacks;
+
+  buff_raid_event_t( sim_t* s, std::string_view options_str ) : raid_event_t( s, "buff" ), stacks( 1 )
+  {
+    add_option( opt_string( "buff_name", buff_str ) );
+    add_option( opt_uint( "stacks", stacks ) );
+    parse_options( options_str );
+  }
+
+  void _start() override
+  {
+    for ( auto p : affected_players )
+    {
+      auto& b = buff_list[ p->actor_index ];
+      if ( !b )
+        b = buff_t::find( p, buff_str );
+
+      if ( b )
+        b->trigger( stacks, duration > 0_ms ? duration : timespan_t::min() );
+      else
+        sim->error( "Warning: Invalid buff raid event, buff '{}' not found on player '{}'.", buff_str, p->name() );
+    }
+  }
+
+  void _finish() override {}
+};
+
 // Vulnerable ===============================================================
 
 struct vulnerable_event_t final : public raid_event_t
@@ -2034,6 +2067,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new damage_taken_debuff_event_t( sim, options_str ) );
   if ( name == "damage_done_buff" )
     return std::unique_ptr<raid_event_t>( new damage_done_buff_event_t( sim, options_str ) );
+  if ( name == "buff" )
+    return std::unique_ptr<raid_event_t>( new buff_raid_event_t( sim, options_str ) );
 
   throw std::invalid_argument( fmt::format( "Invalid raid event type '{}'.", name ) );
 }
