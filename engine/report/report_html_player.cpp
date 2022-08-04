@@ -2612,8 +2612,8 @@ std::string find_matching_decorator( const player_t& p, std::string_view n )
   if ( buff )
     return report_decorators::decorated_buff( *buff );
 
-  auto spell                = p.find_talent_spell( n );
-  if ( !spell->ok() ) spell = p.find_talent_spell( n_token );
+  auto spell                = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::CLASS, n_token, p.specialization(), true ) );
+  if ( !spell->ok() ) spell = static_cast<const spell_data_t*>( p.find_talent_spell( talent_tree::SPECIALIZATION, n_token, p.specialization(), true ) );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n );
   if ( !spell->ok() ) spell = p.find_specialization_spell( n_token );
   if ( !spell->ok() ) spell = p.find_class_spell( n );
