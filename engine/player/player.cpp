@@ -580,7 +580,7 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
       return p->parse_talents_armory2( url );
     }
   }
-  else if ( url.find( "wowhead.com/beta/talent-calc" ) )  // TODO: remove /beta/ when DF goes live
+  else if ( url.find( "wowhead.com/beta/talent-calc" ) != url.npos )  // TODO: remove /beta/ when DF goes live
   {
     if ( sim->talent_input_format == talent_format::UNCHANGED )
       sim->talent_input_format = talent_format::WOWHEAD;
