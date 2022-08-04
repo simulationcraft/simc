@@ -1420,6 +1420,9 @@ struct buff_raid_event_t final : public raid_event_t
     add_option( opt_string( "buff_name", buff_str ) );
     add_option( opt_uint( "stacks", stacks ) );
     parse_options( options_str );
+
+    if ( buff_str.empty() )
+      throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
   }
 
   void _start() override
@@ -1431,9 +1434,14 @@ struct buff_raid_event_t final : public raid_event_t
         b = buff_t::find( p, buff_str );
 
       if ( b )
+      {
         b->trigger( stacks, duration > 0_ms ? duration : timespan_t::min() );
+      }
       else
-        sim->error( "Warning: Invalid buff raid event, buff '{}' not found on player '{}'.", buff_str, p->name() );
+      {
+        sim->error( "Error: Invalid buff raid event, buff_name '{}' not found on player '{}'.", buff_str, p->name() );
+        sim->cancel();
+      }
     }
   }
 
