@@ -8773,7 +8773,7 @@ void shaman_t::init_spells()
   talent.echo_of_the_elements = _ST( "Echo of the Elements" );
   talent.call_of_fire = _ST( "Call of Fire" );
   // Row 6
-  talent.stormkeeper = find_talent_spell( 32560 ); // TODO: Better solution
+  talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 191634 );
   talent.electrified_shocks = _ST( "Electrified Shocks" );
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
@@ -8799,7 +8799,7 @@ void shaman_t::init_spells()
   talent.searing_flames = _ST( "Searing Flames" );
   talent.magma_chamber = _ST( "Magma Chamber" );
   // Row 10
-  talent.stormkeeper2 = find_talent_spell( 32538 ); // TODO: Better solution
+  talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 383009 );
   talent.lightning_rod = _ST( "Lightning Rod" );
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
   talent.further_beyond = _ST( "Further Beyond" );
