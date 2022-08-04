@@ -103,6 +103,9 @@ enum rotation_type_e
   code below randomly cycles through targets until it finds said path, or hits the maximum amount
   of attempts, in which it gives up and just returns the current best path.  I wouldn't be
   terribly surprised if Blizz did something like this in game.
+
+
+  TODO: Electrified Shocks?
 **/
 static std::vector<player_t*>& __check_distance_targeting( const action_t* action, std::vector<player_t*>& tl )
 {
@@ -250,7 +253,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     // Elemental
     buff_t* electrified_shocks;
-    buff_t* lightning_rod; // NYI Ele
+    buff_t* lightning_rod;
 
     // Enhancement
     buff_t* lashing_flames;
@@ -815,7 +818,7 @@ public:
     player_talent_t call_of_fire;
     // Row 6
     player_talent_t stormkeeper;
-    player_talent_t electrified_shocks; // TODO: NYI
+    player_talent_t electrified_shocks;
     player_talent_t flux_melting;
     player_talent_t aftershock;
     player_talent_t flames_of_the_cauldron;
@@ -1249,8 +1252,9 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   // Elemental
-  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) ); // NYI Ele
-  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) );
+  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
+  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) )
+    ->set_default_value_from_effect( 1 );
 
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
@@ -1431,11 +1435,6 @@ public:
     if ( affected_by_molten_weapon && p()->buff.molten_weapon->check() )
     {
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
-    }
-
-    if ( td( this->target )->debuff.electrified_shocks->check() && dbc::is_school( this->school, SCHOOL_NATURE ))
-    {
-      m *= 1.0 + td( this->target )->debuff.electrified_shocks->value();
     }
 
     return m;
@@ -4552,6 +4551,37 @@ struct chain_lightning_t : public chained_base_t
     affected_by_master_of_the_elements = true;
   }
 
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    tl.clear();
+
+    if ( !target->is_sleeping() )
+    {
+      tl.push_back( target );
+    }
+
+    // Collect debuffed targets first
+    if ( p()->talent.electrified_shocks.ok() )
+    {
+      range::for_each( sim->target_non_sleeping_list, [this, &tl]( player_t* t ) {
+        if ( td( t )->debuff.electrified_shocks->check() && t->is_enemy() && t != target )
+        {
+          tl.emplace_back( t );
+        }
+      } );
+    }
+
+    // The rest
+    range::for_each( sim->target_non_sleeping_list, [&tl]( player_t* t ) {
+      if ( t->is_enemy() && !range::contains( tl, t ) )
+      {
+        tl.emplace_back( t );
+      }
+    } );
+
+    return tl.size();
+  }
+
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
@@ -6529,7 +6559,7 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
     {
-      td( execute_state->target )->debuff.electrified_shocks->trigger();
+      td( s->target )->debuff.electrified_shocks->trigger();
     }
   }
 };
@@ -11087,6 +11117,12 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( get_target_data( target )->debuff.electrified_shocks->check() &&
+       dbc::is_school( school, SCHOOL_NATURE ))
+  {
+    m *= 1.0 + get_target_data( target )->debuff.electrified_shocks->value();
+  }
 
   return m;
 }
