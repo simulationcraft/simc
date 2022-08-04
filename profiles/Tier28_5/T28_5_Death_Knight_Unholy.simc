@@ -171,31 +171,31 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&((trink
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)
 
-head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1498/6935,gem_id=173127
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173127
-shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-back=grimveiled_cape,id=173242,bonus_id=6716/6952/6649/6647/1588,enchant=soul_vitality
-chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=unstable_giants_cuffs,id=189777,bonus_id=7187/1524/6935,gem_id=173128
-hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6649/6647/1588,gem_id=173128
-legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1524
-feet=greatboots_of_the_roaming_goliath,id=189832,bonus_id=4800/4786/1524
-finger1=rygelons_heraldric_ring,id=189854,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_critical_strike
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6536/1592/6646
-trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=visage_of_the_first_eidolon,id=188868,bonus_id=7187/1531/6935,gem_id=173130
+neck=shadowghast_necklace,id=178927,bonus_id=6647/6648/6716/8119/1588,gem_id=173130
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1531
+back=grimveiled_cape,id=173242,bonus_id=6716/6950/6648/6647/1588,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1531,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=1550/8761,gem_id=173130
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1531,enchant=eternal_strength
+waist=enforcers_containment_cinch,id=189826,bonus_id=7187/1550,gem_id=173130
+legs=legguards_of_the_ultimate_threat,id=189858,bonus_id=7187/1550
+feet=greaves_of_the_first_eidolon,id=188865,bonus_id=7187/1531
+finger1=overclocking_bit_band,id=169159,bonus_id=3154/4779/1473,gem_id=173130,enchant=tenet_of_mastery
+finger2=logic_loop_of_division,id=169157,bonus_id=3154/4779/1473,gem_id=173130,enchant=tenet_of_mastery
+trinket1=the_first_sigil,id=188271,bonus_id=1550/8759
+trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1550/6807
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1550,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=281.73
-# gear_strength=1411
-# gear_stamina=2962
+# gear_ilvl=306.47
+# gear_strength=1637
+# gear_stamina=3905
 # gear_attack_power=20
-# gear_crit_rating=660
-# gear_haste_rating=627
-# gear_mastery_rating=868
-# gear_versatility_rating=203
-# gear_armor=1839
+# gear_crit_rating=857
+# gear_haste_rating=617
+# gear_mastery_rating=903
+# gear_versatility_rating=187
+# gear_armor=2214
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1

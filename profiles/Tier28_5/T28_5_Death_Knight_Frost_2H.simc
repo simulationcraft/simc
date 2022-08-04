@@ -5,7 +5,7 @@ level=60
 race=void_elf
 role=attack
 position=back
-talents=1201012
+talents=2201012
 covenant=night_fae
 soulbind=dreamweaver,podtender/accelerated_cold:11:1/everfrost:11:1/unleashed_frenzy:11:1/field_of_blossoms/dream_delver
 renown=80
@@ -210,31 +210,31 @@ actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&buff.pi
 actions.trinkets+=/use_item,slot=trinket1,if=!variable.specified_trinket&(!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 actions.trinkets+=/use_item,slot=trinket2,if=!variable.specified_trinket&(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|cooldown.pillar_of_frost.remains>20)
 
-head=shadowghast_helm,id=171415,bonus_id=6647/6648/6954/7451/1588,gem_id=173130
-neck=worldkiller_iris,id=189859,bonus_id=7187/1524/6935,gem_id=173130
-shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-back=drape_of_mournful_melodies,id=189791,bonus_id=7187/1524,enchant=soul_vitality
-chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=vambraces_of_verification,id=185815,bonus_id=6935/1595/6646,gem_id=173127
-hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
-waist=enforcers_containment_cinch,id=189826,bonus_id=7187/1524/6935,gem_id=173127
-legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
-feet=shadowghast_sabatons,id=171413,bonus_id=6647/6648/8119/7451/1588
-finger1=modified_defense_grid,id=189772,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-finger2=soulwarped_seal_of_menethil,id=189841,bonus_id=7187/1524/6935,gem_id=173127,enchant=tenet_of_critical_strike
-trinket1=the_first_sigil,id=188271,bonus_id=7187/1524
-trinket2=old_warriors_soul,id=186438,bonus_id=1498/6807
-main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+head=valorous_visage_of_krexus,id=186350,bonus_id=7187/1550,gem_id=173127
+neck=shadowghast_necklace,id=178927,bonus_id=6647/6648/6716/6954/1588,gem_id=173127
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1531
+back=cloak_of_the_first_eidolon,id=188873,bonus_id=7187/1531,enchant=soul_vitality
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1531,enchant=eternal_stats
+wrists=vyrazs_parade_cuffs,id=186351,bonus_id=1550/8761,gem_id=173127
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1531,enchant=eternal_strength
+waist=shadowghast_waistguard,id=171418,bonus_id=6716/8119/6648/6647/1588,gem_id=173130
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1531
+feet=greaves_of_the_first_eidolon,id=188865,bonus_id=7187/1531
+finger1=overclocking_bit_band,id=169159,bonus_id=3154/4779/1473,gem_id=173130,enchant=tenet_of_mastery
+finger2=logic_loop_of_division,id=169157,bonus_id=3154/4779/1473,gem_id=173130,enchant=tenet_of_critical_strike
+trinket1=the_first_sigil,id=188271,bonus_id=7187/1550
+trinket2=scars_of_fraternal_strife,id=188253,bonus_id=1550/6807
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1550,enchant=rune_of_the_fallen_crusader
 
 # Gear Summary
-# gear_ilvl=281.27
-# gear_strength=1418
-# gear_stamina=2969
+# gear_ilvl=306.93
+# gear_strength=1640
+# gear_stamina=3913
 # gear_attack_power=20
-# gear_crit_rating=774
-# gear_haste_rating=400
-# gear_mastery_rating=1049
-# gear_versatility_rating=125
-# gear_armor=1857
+# gear_crit_rating=888
+# gear_haste_rating=633
+# gear_mastery_rating=944
+# gear_versatility_rating=100
+# gear_armor=2205
 # set_bonus=tier28_2pc=1
 # set_bonus=tier28_4pc=1
