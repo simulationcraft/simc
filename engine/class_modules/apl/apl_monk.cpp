@@ -655,6 +655,12 @@ void windwalker( player_t* p )
       else if ( item.name_str == "scars_of_fraternal_strife" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=!buff.scars_of_fraternal_strife_4.up|((active_enemies>1|raid_event.adds.in<20)&buff.scars_of_fraternal_strife_4.up&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
+      else if ( item.name_str == "enforcers_stun_grenade" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
+                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" ); 
+      else if ( item.name_str == "kihras_adrenaline_injector" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
+                            ",if=pet.xuen_the_white_tiger.active|fight_remains<20" ); 
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
