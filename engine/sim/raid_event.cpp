@@ -1748,7 +1748,15 @@ void raid_event_t::start()
     auto& expr_uptr = player_expressions[ p->actor_index ];
     if ( !expr_uptr )
     {
-      expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      try
+      {
+        expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      }
+      catch ( const std::exception& e )
+      {
+        sim->error( fmt::format( "{} player_if expression error '{}': {}", *this, player_if_expr_str, e.what() ) );
+        sim->cancel();
+      }
     }
 
     if ( expr_uptr && !expr_uptr->success() )
