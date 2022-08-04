@@ -1421,6 +1421,8 @@ struct buff_raid_event_t final : public raid_event_t
     add_option( opt_uint( "stacks", stacks ) );
     parse_options( options_str );
 
+    players_only = true;
+
     if ( buff_str.empty() )
       throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
   }
