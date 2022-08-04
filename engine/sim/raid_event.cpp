@@ -1756,7 +1756,7 @@ void raid_event_t::start()
       }
       catch ( const std::exception& e )
       {
-        sim->error( fmt::format( "Player_if expression error '{}': {}", player_if_expr_str, e.what() ) );
+        sim->error( fmt::format( "{} error in player_if expression '{}'.", *this, player_if_expr_str ) );
         sim->cancel();
       }
     }
