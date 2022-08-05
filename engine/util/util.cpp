@@ -2562,6 +2562,8 @@ const char* util::trait_definition_op_string( trait_definition_op op )
       return "set";
     case trait_definition_op::TRAIT_OP_MUL:
       return "mul";
+    default:
+      return "unk";
   }
 }
 /// Textual representation of rppm scaling bitfield
