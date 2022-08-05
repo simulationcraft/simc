@@ -6420,6 +6420,11 @@ public:
   {
     auto d = shaman_spell_t::composite_dot_duration( s );
 
+    if ( p()->buff.fire_elemental->check() && p()->spell.fire_elemental->ok() )
+    {
+      d *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
+    }
+
     return d;
   }
 
@@ -9915,7 +9920,7 @@ void shaman_t::create_buffs()
                              } );
                            } );
 
-  buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
+  buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
                             ->apply_affecting_conduit( conduit.call_of_flame );
 
