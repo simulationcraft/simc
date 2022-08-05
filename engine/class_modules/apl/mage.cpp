@@ -120,7 +120,7 @@ void arcane( player_t* p )
   default_->add_action( "use_item,name=macabre_sheet_music,if=cooldown.arcane_power.remains<=5&variable.fishing_opener=1&buff.rune_of_power.up&buff.rune_of_power.remains<=(10-5*runeforge.siphon_storm)&time<30" );
   default_->add_action( "use_item,name=shadowed_orb_of_torment,if=time=0|(variable.outside_of_cooldowns&((covenant.kyrian&cooldown.radiant_spark.remains<=2&cooldown.arcane_power.remains<=5&cooldown.touch_of_the_magi.remains<=5)|cooldown.arcane_power.remains<=2|fight_remains<cooldown.arcane_power.remains))" );
   default_->add_action( "use_item,name=soulletting_ruby,if=(variable.time_until_ap+(action.radiant_spark.execute_time*covenant.kyrian)+(action.deathborne.execute_time*covenant.necrolord)+action.touch_of_the_magi.execute_time<target.distance%5.6)&(variable.have_opened|(covenant.kyrian&runeforge.arcane_infinity))&target.distance>25", "5.6 is the speed of the Soulletting Ruby projectile" );
-  default_->add_action( "use_item,name=neural_synapse_enhancer,if=buff.arcane_power.up|(cooldown.arcane_power.remains>=20&debuff.touch_of_the_magi.up)" );
+  default_->add_action( "use_item,name=neural_synapse_enhancer,if=(buff.arcane_power.up&cooldown.touch_of_the_magi.remains>40)|(cooldown.arcane_power.remains>=20&debuff.touch_of_the_magi.up)" );
   default_->add_action( "newfound_resolve,use_while_casting=1,if=buff.arcane_power.up|debuff.touch_of_the_magi.up|dot.radiant_spark.ticking" );
   default_->add_action( "call_action_list,name=calculations" );
   default_->add_action( "call_action_list,name=vaoe,if=covenant.venthyr&runeforge.siphon_storm&talent.arcane_echo&active_enemies>=variable.aoe_target_count" );
