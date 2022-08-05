@@ -8012,6 +8012,16 @@ struct wrath_t : public druid_spell_t
     return g;
   }
 
+  // return false on invulnerable targets as this action is !harmful to allow for self-healing, thus will pass the
+  // invulnerable check in action_t::target_ready()
+  bool target_ready( player_t* t ) override
+  {
+    if ( t->debuffs.invulnerable->check() && sim->ignore_invulnerable_targets )
+      return false;
+
+    return druid_spell_t::target_ready( t );
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
