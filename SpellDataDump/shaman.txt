@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-02/44908, git build shadowlands 8d75da75e7)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-04/44908, git build  , no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
