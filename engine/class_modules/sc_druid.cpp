@@ -2189,15 +2189,7 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-    if ( !check_form_restriction() )
-    {
-      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
-        p()->active.shift_to_caster->execute();
-      else if ( autoshift )
-        autoshift->execute();
-      else
-        assert( false && "Action executed in wrong form with no valid form to shift to!" );
-    }
+    check_autoshift();
 
     ab::schedule_execute( s );
   }
@@ -2787,6 +2779,19 @@ public:
     return !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() ||
            ( p()->talent.ursine_adept.ok() && p()->buff.bear_form->check() &&
              ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) );
+  }
+
+  void check_autoshift()
+  {
+    if ( !check_form_restriction() )
+    {
+      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
+        p()->active.shift_to_caster->execute();
+      else if ( autoshift )
+        autoshift->execute();
+      else
+        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -7113,6 +7118,9 @@ struct prowl_t : public druid_spell_t
   void execute() override
   {
     sim->print_log( "{} performs {}", player->name(), name() );
+
+    // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
+    check_autoshift();
 
     p()->buff.jungle_stalker->expire();
     p()->buff.prowl->trigger();
