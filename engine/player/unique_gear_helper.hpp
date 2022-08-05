@@ -316,7 +316,12 @@ struct proc_action_t : public T_ACTION
     this->may_crit      = !this->data().flags( spell_attribute::SX_CANNOT_CRIT );
 
     if ( this->radius > 0 )
-      this->aoe = -1;
+    {
+      if ( this->data().max_targets() )
+        this->aoe = this->data().max_targets();
+      else
+        this->aoe = -1;
+    }
 
     // Reparse effect data for any item-dependent variables.
     for ( const auto& effect : this->data().effects() )
