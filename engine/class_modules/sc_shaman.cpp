@@ -653,6 +653,7 @@ public:
 
     // Elemental
     const spell_data_t* elemental_shaman;   // general spec multiplier
+    const spell_data_t* lightning_bolt_2;   // casttime reduction
     const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* maelstrom;
 
@@ -808,7 +809,7 @@ public:
     player_talent_t flow_of_power;
     player_talent_t lava_surge;
     // Row 5
-    player_talent_t unrelenting_calamity; // TODO: NYI
+    player_talent_t unrelenting_calamity;
     player_talent_t icefury;
     player_talent_t swelling_maelstrom;
     player_talent_t echo_of_the_elements;
@@ -4552,7 +4553,13 @@ struct chain_lightning_t : public chained_base_t
       overload = new chain_lightning_overload_t( player, suffix, this );
       //add_child( overload );
     }
+    
     affected_by_master_of_the_elements = true;
+    
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
+    }
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -5133,11 +5140,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       base_costs[ RESOURCE_MANA ] = 0;
+
       maelstrom_gain = player->spec.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
-      if ( player->talent.flow_of_power.enabled() )
-      {
-        maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
-      }
+      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5457,11 +5462,12 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
+
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-      if (player->talent.flow_of_power.enabled())
-      {
-        maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
-      }
+      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
+
+      base_execute_time += player->spec.lightning_bolt_2->effectN( 1 ).time_value();
+      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5912,7 +5918,7 @@ struct earthquake_base_t : public shaman_spell_t
         *sim, p(),
         ground_aoe_params_t()
           .target( execute_state->target )
-          .duration( data().duration() )
+          .duration( data().duration() + p()->talent.unrelenting_calamity->effectN(2).time_value() )
           .action( rumble ) );
 
     if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
@@ -8657,6 +8663,7 @@ void shaman_t::init_spells()
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
   spec.maelstrom         = find_specialization_spell( 343725 );
 
+  spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
 
   // Enhancement
@@ -8806,10 +8813,10 @@ void shaman_t::init_spells()
   talent.lava_surge         = _ST( "Lava Surge" );
   // Row 5
   talent.unrelenting_calamity = _ST( "Unrelenting Calamity" );
-  talent.icefury = _ST( "Icefury" );
-  talent.swelling_maelstrom = _ST( "Swelling Maelstrom" );
+  talent.icefury              = _ST( "Icefury" );
+  talent.swelling_maelstrom   = _ST( "Swelling Maelstrom" );
   talent.echo_of_the_elements = _ST( "Echo of the Elements" );
-  talent.call_of_fire = _ST( "Call of Fire" );
+  talent.call_of_fire         = _ST( "Call of Fire" );
   // Row 6
   talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 191634 );
   talent.electrified_shocks = _ST( "Electrified Shocks" );
