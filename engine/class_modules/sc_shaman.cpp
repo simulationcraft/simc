@@ -834,7 +834,7 @@ public:
     // Row 9
     player_talent_t echoes_of_great_sundering;
     player_talent_t elemental_equilibrium;
-    player_talent_t rolling_magma; // TODO: NYI
+    player_talent_t rolling_magma;
     player_talent_t echo_chamber;
     player_talent_t oath_of_the_far_seer;
     player_talent_t magma_chamber;
@@ -4941,6 +4941,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
         p()->proc.t28_4pc_ele_cd_reduction->occur();
       }
     }
+
+    if ( p()->talent.primordial_wave.ok() && p()->talent.rolling_magma.ok() )
+    {
+      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
+    }
   }
  };
 
@@ -5415,6 +5420,11 @@ struct lava_burst_t : public shaman_spell_t
     if ( rng().roll( p()->talent.power_of_the_maelstrom->effectN( 2 ).percent() ) )
     {
       p()->buff.power_of_the_maelstrom->trigger();
+    }
+
+    if ( p()->talent.primordial_wave.ok() && p()->talent.rolling_magma.ok() )
+    {
+      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
   }
 
