@@ -1289,13 +1289,20 @@ public:
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.perforated_veins );
-    register_damage_buff( p()->buffs.deeper_daggers );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
     register_damage_buff( p()->buffs.the_rotten );
+
+    // 2022-08-04 -- S4 hotfixed whitelist data is incomplete, manually add R2 spells
+    //               Shadow Blades also works but this is handled elsewhere
+    register_damage_buff( p()->buffs.deeper_daggers );
+    if ( ab::data().id() == 328082 || ab::data().id() == 319190 )
+    {
+      direct_damage_buffs.push_back( p()->buffs.deeper_daggers );
+    }
 
     if ( p()->talent.nightstalker->ok() )
     {
@@ -1514,7 +1521,7 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
-  // Generic rules for proccing Banshee's Blight, used by rogue_t::spend_combo_points()
+  // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
   virtual bool procs_banshees_blight() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
@@ -6478,9 +6485,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
-  // TOCHECK: Re-test after S4 hotfix
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
-    amount *= 1.0 + p()->buffs.deeper_daggers->value();
+    amount *= p()->buffs.deeper_daggers->value_direct();
 
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
@@ -9097,7 +9103,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 
   // Damage trigger spell from 358126
   // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
-  // This attack triggers multiple times based on target stack count, handled in spend_combo_points
+  // This attack triggers multiple times based on target stack count, handled in trigger_banshees_blight
   // When dual-wielding, the item damage amounts from both weapons are added together
   struct banshees_blight_damage_t : public unique_gear::proc_spell_t
   {
@@ -9137,7 +9143,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
   {
     rogue->legendary.banshees_blight = e.driver();
 
-    // Create damage action triggered by actions::rogue_action_t<Base>::spend_combo_points
+    // Create damage action triggered by actions::rogue_action_t<Base>::trigger_banshees_blight
     auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
     if ( !banshees_blight_damage )
       rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );
