@@ -221,7 +221,7 @@ public:
 
     // Preliminary testing shows this is linear with target hp %.
     // TODO: confirm this applies only to all evoker offensive spells
-    tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() );
+    tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() / 100 );
 
     return tm;
   }
