@@ -3710,16 +3710,20 @@ void player_t::create_buffs()
 
       // 9.2.5 M+ S4 Shrouded Affix Buffs
       buffs.bounty_crit = make_buff( this, "bounty_crit", find_spell( 373108 ) )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
         ->set_default_value_from_effect_type( A_MOD_ALL_CRIT_CHANCE )
         ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
         ->set_period( 0_ms );
       buffs.bounty_haste = make_buff( this, "bounty_haste", find_spell( 373113 ) )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
         ->set_default_value_from_effect_type( A_HASTE_ALL )
         ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
         ->set_period( 0_ms );
       buffs.bounty_mastery = make_buff<stat_buff_t>( this, "bounty_mastery", find_spell( 373116 ) )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
         ->set_period( 0_ms );
       buffs.bounty_vers = make_buff( this, "bounty_vers", find_spell( 373121 ) )
+        ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT )
         ->set_default_value_from_effect_type( A_MOD_VERSATILITY_PCT )
         ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
         ->set_period( 0_ms );
