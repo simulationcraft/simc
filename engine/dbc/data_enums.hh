@@ -808,6 +808,7 @@ enum effect_type_t : unsigned {
     E_254 = 254,
     E_255 = 255,
     E_256 = 256,
+    E_REDUCE_REMAINING_COOLDOWN = 290,
     E_MAX
 };
 
