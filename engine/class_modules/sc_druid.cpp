@@ -8461,6 +8461,9 @@ struct lycaras_fleeting_glimpse_t : public action_t
 
   void execute() override
   {
+    if ( sim->target_non_sleeping_list.empty() )
+      return;
+
     action_t* a;
 
     if ( druid->buff.moonkin_form->check() )
