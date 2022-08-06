@@ -44,6 +44,7 @@ struct module_t
   static const module_t* death_knight();
   static const module_t* demon_hunter();
   static const module_t* druid();
+  static const module_t* evoker();
   static const module_t* hunter();
   static const module_t* mage();
   static const module_t* monk();
@@ -67,6 +68,8 @@ struct module_t
         return demon_hunter();
       case DRUID:
         return druid();
+      case EVOKER:
+        return evoker();
       case HUNTER:
         return hunter();
       case MAGE:

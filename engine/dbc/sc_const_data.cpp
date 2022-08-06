@@ -87,7 +87,7 @@ struct class_passives_entry_t
     specialization_e spec;
     unsigned         spell_id;
   };
-static constexpr std::array<class_passives_entry_t, 48> _class_passives { {
+static constexpr std::array<class_passives_entry_t, 50> _class_passives { {
   { DEATH_KNIGHT, SPEC_NONE,              137005 },
   { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
   { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
@@ -100,6 +100,8 @@ static constexpr std::array<class_passives_entry_t, 48> _class_passives { {
   { DRUID,        DRUID_FERAL,            137011 },
   { DRUID,        DRUID_BALANCE,          137013 },
   { DRUID,        DRUID_GUARDIAN,         137010 },
+  { EVOKER,       EVOKER_DEVASTATION,     356809 },
+  { EVOKER,       EVOKER_PRESERVATION,    356810 },
   { HUNTER,       SPEC_NONE,              137014 },
   { HUNTER,       HUNTER_SURVIVAL,        137017 },
   { HUNTER,       HUNTER_MARKSMANSHIP,    137016 },
@@ -469,7 +471,14 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
         return DRUID_RESTORATION;
       else if ( str_compare_ci( spec_str, "tree" ) )
         return DRUID_RESTORATION;
-
+      break;
+    }
+    case EVOKER:
+    {
+      if ( str_compare_ci( spec_str, "devastation" ) )
+        return EVOKER_DEVASTATION;
+      else if ( str_compare_ci( spec_str, "preversation" ) )
+        return EVOKER_PRESERVATION;
       break;
     }
     case HUNTER:

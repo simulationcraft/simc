@@ -12736,8 +12736,8 @@ struct druid_module_t : public module_t
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p              = new druid_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
+    auto p = new druid_t( sim, name, r );
+    p->report_extension = std::make_unique<druid_report_t>( *p );
     return p;
   }
   bool valid() const override { return true; }

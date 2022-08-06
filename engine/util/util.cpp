@@ -454,6 +454,8 @@ const char* util::race_type_string( race_e type )
     case RACE_KUL_TIRAN:           return "kul_tiran";
     case RACE_VULPERA:             return "vulpera";
     case RACE_MECHAGNOME:          return "mechagnome";
+    case RACE_DRACTHYR_ALLIANCE:   return "dracthyr_alliance";
+    case RACE_DRACTHYR_HORDE:      return "dracthyr_horde";
     case RACE_MAX:                 return "unknown";
     case RACE_UNKNOWN:             return "unknown";
     // no default statement so we get warnings if something is missing.
@@ -480,11 +482,7 @@ const char* util::stats_type_string( stats_e type )
 race_e util::parse_race_type( util::string_view name )
 {
   if ( name == "forsaken" )           return RACE_UNDEAD;
-
-  // TODO: Remove these once people had time to update their simc addons.
-  if ( name == "voidelf" )            return RACE_VOID_ELF;
-  if ( name == "lightforgeddraenei" ) return RACE_LIGHTFORGED_DRAENEI;
-  if ( name == "highmountaintauren" ) return RACE_HIGHMOUNTAIN_TAUREN;
+  if ( name == "dracthyr" )           return RACE_DRACTHYR_ALLIANCE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
@@ -1183,6 +1181,7 @@ item_subclass_armor util::matching_armor_type( player_e ptype )
       return ITEM_SUBCLASS_ARMOR_PLATE;
     case HUNTER:
     case SHAMAN:
+    case EVOKER:
       return ITEM_SUBCLASS_ARMOR_MAIL;
     case DRUID:
     case ROGUE:
@@ -1932,6 +1931,8 @@ unsigned util::race_id( race_e race )
     case RACE_KUL_TIRAN: return 32;
     case RACE_VULPERA: return 13;
     case RACE_MECHAGNOME: return 15;
+    case RACE_DRACTHYR_ALLIANCE: return 17;
+    case RACE_DRACTHYR_HORDE: return 16;
     default: return 0;
   }
 }
@@ -2022,6 +2023,7 @@ player_e util::translate_class_id( int cid )
     case 10: return MONK;
     case 11: return DRUID;
     case 12: return DEMON_HUNTER;
+    case 13: return EVOKER;
     default: return PLAYER_NONE;
   }
 }
@@ -2059,6 +2061,8 @@ race_e util::translate_race_id( int rid )
     case 35: return RACE_VULPERA;
     case 36: return RACE_MAGHAR_ORC;
     case 37: return RACE_MECHAGNOME;
+    case 52: return RACE_DRACTHYR_ALLIANCE;
+    case 70: return RACE_DRACTHYR_HORDE;
   }
 
   return RACE_NONE;
@@ -3404,6 +3408,7 @@ bool is_alliance( race_e race )
     case RACE_DARK_IRON_DWARF:
     case RACE_KUL_TIRAN:
     case RACE_MECHAGNOME:
+    case RACE_DRACTHYR_ALLIANCE:
       return true;
     default:
       return false;
@@ -3426,6 +3431,7 @@ bool is_horde( race_e race )
     case RACE_MAGHAR_ORC:
     case RACE_ZANDALARI_TROLL:
     case RACE_VULPERA:
+    case RACE_DRACTHYR_HORDE:
       return true;
     default:
       return false;

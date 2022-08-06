@@ -3597,6 +3597,7 @@ void sim_t::create_options()
   add_option( opt_func( "deathknight", parse_player ) );
   add_option( opt_func( "demonhunter", parse_player ) );
   add_option( opt_func( "druid", parse_player ) );
+  add_option( opt_func( "evoker", parse_player ) );
   add_option( opt_func( "hunter", parse_player ) );
   add_option( opt_func( "mage", parse_player ) );
   add_option( opt_func( "monk", parse_player ) );

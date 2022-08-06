@@ -176,8 +176,8 @@ void simulate_profileset( sim_t* parent, profileset::profile_set_t& set, sim_t*&
 // Figure out if the option is the beginning of a player-scope option
 bool in_player_scope( const option_tuple_t& opt )
 {
-  static constexpr std::array<util::string_view, 14> player_scope_opts { {
-    "demonhunter", "deathknight", "druid", "hunter", "mage", "monk",
+  static constexpr std::array<util::string_view, 15> player_scope_opts { {
+    "demonhunter", "deathknight", "druid", "evoker", "hunter", "mage", "monk",
     "paladin", "priest", "rogue", "shaman", "warrior", "warlock",
     "armory", "local_json"
   } };
