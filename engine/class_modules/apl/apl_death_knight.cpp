@@ -308,8 +308,8 @@ void frost( player_t* p )
   racials->add_action( "berserking,if=buff.pillar_of_frost.up" );
   racials->add_action( "arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up&(rune.deficit>=5&runic_power.deficit>=60)" );
   racials->add_action( "lights_judgment,if=buff.pillar_of_frost.up" );
-  racials->add_action( "ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
-  racials->add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.pillar_of_frost.up&buff.empower_rune_weapon.up" );
+  racials->add_action( "ancestral_call,if=buff.pillar_of_frost.up&(talent.obliteration&buff.empower_rune_weapon.up|!talent.obliteration)" );
+  racials->add_action( "fireblood,if=buff.pillar_of_frost.remains<=8&buff.pillar_of_frost.up&(talent.obliteration&buff.empower_rune_weapon.up|!talent.obliteration)" );
   racials->add_action( "bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)" );
 
   standard->add_action( "remorseless_winter,if=variable.rw_buffs", "Standard single-target rotation" );
