@@ -7,21 +7,138 @@
 #include "simulationcraft.hpp"
 
 namespace
-{  // UNNAMED NAMESPACE
+{
 // ==========================================================================
 // Evoker
 // ==========================================================================
 
-struct evoker_t : public player_t
+// Forward declarations
+struct evoker_t;
+
+struct evoker_td_t : public actor_target_data_t
 {
-  evoker_t( sim_t * sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE ) : player_t( sim, EVOKER, name, r )
+  struct dots_t
   {
 
-  }
+  } dots;
 
+  struct debuffs_t
+  {
+
+  } debuffs;
+
+  evoker_td_t( player_t* target, evoker_t* source );
+};
+
+struct evoker_t : public player_t
+{
+  // Options
+  struct options_t
+  {
+
+  } option;
+
+  // Action pointers
+  struct actions_t
+  {
+
+  } action;
+
+  // Buffs
+  struct buffs_t
+  {
+    // Baseline Abilities
+    // Class Traits
+    // Devastation Traits
+    // Preservation Traits
+  } buff;
+
+  // Specialization Spell Data
+  struct specializations_t
+  {
+    // Baseline
+    const spell_data_t* evoker;        // evoker class aura
+    const spell_data_t* devastation;   // devastation class aura
+    const spell_data_t* preservation;  // preservation class aura
+    // Devastation
+    // Preservation
+  } spec;
+
+  // Talents
+  struct talents_t
+  {
+    // Class Traits
+    // Devastation Traits
+    // Preservation Traits
+  } talent;
+
+  // Benefits
+  struct benefits_t
+  {
+
+  } benefit;
+
+  // Cooldowns
+  struct cooldowns_t
+  {
+
+  } cooldown;
+
+  // Gains
+  struct gains_t
+  {
+
+  } gain;
+
+  // Procs
+  struct procs_t
+  {
+
+  } proc;
+
+  // RPPMs
+  struct rppms_t
+  {
+
+  } rppm;
+
+  // Uptimes
+  struct uptimes_t
+  {
+
+  } uptime;
+
+  evoker_t( sim_t * sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
+
+  // Character Definitions
+  //void init_action_list() override;
   void init_base_stats() override;
+  //void init_resources( bool ) override;
+  //void init_benefits() override;
+  //void init_gains() override;
+  //void init_procs() override;
+  //void init_rng() override;
+  //void init_uptimes() override;
+  void init_spells() override;
+  //void init_finished() override;
+  void create_actions() override;
+  void create_buffs() override;
+  void create_options() override;
+  //void arise() override;
+  //void combat_begin() override;
+  //void combat_end() override;
+  //void reset() override;
+  stat_e convert_hybrid_stat( stat_e ) const override;
+  void copy_from( player_t* ) override;
+  void merge( player_t& ) override;
+
+  void apply_affecting_auras( action_t& ) override;
 
   action_t* create_action( std::string_view name, std::string_view options ) override;
+  const evoker_td_t* find_target_data( const player_t* target ) const override;
+  evoker_td_t* get_target_data( player_t* target ) const override;
+
+  target_specific_t<evoker_td_t> target_data;
 };
 
 // Template for base evoker action code.
@@ -39,14 +156,16 @@ public:
   }
 
   evoker_t* p()
-  {
-    return static_cast<evoker_t*>( ab::player );
-  }
+  { return static_cast<evoker_t*>( ab::player ); }
 
   const evoker_t* p() const
-  {
-    return static_cast<evoker_t*>( ab::player );
-  }
+  { return static_cast<evoker_t*>( ab::player ); }
+
+  evoker_td_t* td( player_t* t ) const
+  { return p()->get_target_data( t ); }
+
+  const evoker_td_t* find_td( const player_t* t ) const
+  { return p()->find_target_data( t ); }
 };
 
 namespace spells
@@ -75,7 +194,35 @@ struct disintegrate_t : public evoker_spell_t
 };
 }  // end namespace spells
 
-// Initialize Base Stats ====================================================
+// ==========================================================================
+// Evoker Character Definitions
+// ==========================================================================
+
+evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
+  : actor_target_data_t( target, evoker ),
+    dots(),
+    debuffs()
+{
+
+}
+
+evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
+  : player_t( sim, EVOKER, name, r ),
+    option(),
+    action(),
+    buff(),
+    spec(),
+    talent(),
+    benefit(),
+    cooldown(),
+    gain(),
+    proc(),
+    rppm(),
+    uptime()
+{
+
+}
+
 void evoker_t::init_base_stats()
 {
   player_t::init_base_stats();
@@ -83,7 +230,58 @@ void evoker_t::init_base_stats()
   base.spell_power_per_intellect = 1.0;
 }
 
-// Create Action ============================================================
+void evoker_t::init_spells()
+{
+  player_t::init_spells();
+
+  // Evoker Talents
+  // Class Traits
+  // Devastation Traits
+  // Preservation Traits
+
+  // Evoker Specialization Spells
+  // Baseline
+  spec.evoker = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation = find_specialization_spell( "Devastation Evoker" );
+  spec.preservation = find_specialization_spell( "Preservation Evoker" );
+  // Devastation
+  // Preservation
+}
+
+void evoker_t::create_actions()
+{
+  player_t::create_actions();
+}
+
+void evoker_t::create_buffs()
+{
+  player_t::create_buffs();
+
+  // Baseline Abilities
+  // Class Traits
+  // Devastation Traits
+  // Preservation Traits
+}
+
+void evoker_t::create_options()
+{
+  player_t::create_options();
+}
+
+void evoker_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  // Baseline Auras
+  action.apply_affecting_aura( spec.evoker );
+  action.apply_affecting_aura( spec.devastation );
+  action.apply_affecting_aura( spec.preservation );
+
+  // Class Traits
+  // Devastaion Traits
+  // Preservation Traits
+}
+
 action_t* evoker_t::create_action( std::string_view name, std::string_view options_str )
 {
   using namespace spells;
@@ -91,6 +289,48 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
+{
+  return target_data[ target ];
+}
+
+evoker_td_t* evoker_t::get_target_data( player_t* target ) const
+{
+  evoker_td_t*& td = target_data[ target ];
+  if ( !td )
+    td = new evoker_td_t( target, const_cast<evoker_t*>( this ) );
+  return td;
+}
+
+stat_e evoker_t::convert_hybrid_stat( stat_e s ) const
+{
+  switch ( s )
+  {
+    case STAT_STR_AGI_INT:
+    case STAT_AGI_INT:
+    case STAT_STR_INT:
+      return STAT_INTELLECT;
+    case STAT_STR_AGI:
+    case STAT_SPIRIT:
+    case STAT_BONUS_ARMOR:
+      return STAT_NONE;
+    default:
+      return s;
+  }
+}
+
+void evoker_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  option = debug_cast<evoker_t*>( source )->option;
+}
+
+void evoker_t::merge( player_t& other )
+{
+  player_t::merge( other );
 }
 
 
