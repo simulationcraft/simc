@@ -214,6 +214,17 @@ public:
   {
     parse_options( options_str );
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    // Preliminary testing shows this is linear with target hp %.
+    // TODO: confirm this applies only to all evoker offensive spells
+    tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() );
+
+    return tm;
+  }
 };
 
 struct disintegrate_t : public evoker_spell_t
@@ -344,9 +355,9 @@ evoker_td_t* evoker_t::get_target_data( player_t* target ) const
   return td;
 }
 
-stat_e evoker_t::convert_hybrid_stat( stat_e s ) const
+stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
 {
-  switch ( s )
+  switch ( stat )
   {
     case STAT_STR_AGI_INT:
     case STAT_AGI_INT:
@@ -357,13 +368,13 @@ stat_e evoker_t::convert_hybrid_stat( stat_e s ) const
     case STAT_BONUS_ARMOR:
       return STAT_NONE;
     default:
-      return s;
+      return stat;
   }
 }
 
-double evoker_t::resource_regen_per_second( resource_e r ) const
+double evoker_t::resource_regen_per_second( resource_e resource ) const
 {
-  auto rrps = player_t::resource_regen_per_second( r );
+  auto rrps = player_t::resource_regen_per_second( resource );
 
   return rrps;
 }
