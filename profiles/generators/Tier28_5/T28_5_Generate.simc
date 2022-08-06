@@ -2,9 +2,11 @@
 # Tier 28_5 Season 4
 # RULES IN PROGRESS
 # * Using ilevel= is permitted as long as itemlevels and bonus ids aren't stable on test server.
-# * Set pieces are permitted up to the item level cap (278/285). ["bonus_id=1498/7187" or "bonus_id=1505/7187"]
-# * Raid gear is permitted up to the Mythic item level cap (278/285). ["bonus_id=1524/7187"]
-# * Mythic+ gear is permitted up to the Mythic+ item level cap (278). ["bonus_id=1592/6536/6646" or Tazavesh: "bonus_id=1595/6536/6646"]
+# * Set pieces are permitted up to the item level cap (304/311). ["bonus_id=1524/7187" or "bonus_id=1531/7187"]
+# * Raid gear is permitted up to the Mythic item level cap (304/311). 
+#   * [Castle Nathria: "bonus_id=1576/6646", Sanctum: "bonus_id=1550/7187", Sepulcher: "bonus_id=1550/7187"]
+# * Mythic+ gear is permitted up to the Mythic+ item level cap (298). 
+#   * [Tazavesh: "bonus_id=1621/6536/6646", Operation: Mechagon: "bonus_id=3155/6536/6646", Return to Karazhan: "bonus_id=3183/6536/6646", Grimrail Depot: "bonus_id=3189/6536/6646", Iron Docks: "bonus_id=3189/6536/6646"]
 # * Legion timewalking gear is permitted up to the Mythic+ item level cap (272, they are upgradeable with valor).
 # * Honor PvP gear is permitted up to the item level cap (242). ["bonus_id=1556"]
 # * Conquest PvP gear is permitted up to the item level cap (Duelist, 272). ["bonus_id=1544/6646"]

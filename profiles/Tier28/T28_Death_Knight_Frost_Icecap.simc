@@ -179,8 +179,8 @@ actions.racials=blood_fury,if=buff.pillar_of_frost.up
 actions.racials+=/berserking,if=buff.pillar_of_frost.up
 actions.racials+=/arcane_pulse,if=(!buff.pillar_of_frost.up&active_enemies>=2)|!buff.pillar_of_frost.up&(rune.deficit>=5&runic_power.deficit>=60)
 actions.racials+=/lights_judgment,if=buff.pillar_of_frost.up
-actions.racials+=/ancestral_call,if=buff.pillar_of_frost.up&buff.empower_rune_weapon.up
-actions.racials+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.pillar_of_frost.up&buff.empower_rune_weapon.up
+actions.racials+=/ancestral_call,if=buff.pillar_of_frost.up&(talent.obliteration&buff.empower_rune_weapon.up|!talent.obliteration)
+actions.racials+=/fireblood,if=buff.pillar_of_frost.remains<=8&buff.pillar_of_frost.up&(talent.obliteration&buff.empower_rune_weapon.up|!talent.obliteration)
 actions.racials+=/bag_of_tricks,if=buff.pillar_of_frost.up&active_enemies=1&(buff.pillar_of_frost.remains<5&talent.cold_heart.enabled|!talent.cold_heart.enabled&buff.pillar_of_frost.remains<3)
 
 # Standard single-target rotation
