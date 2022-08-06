@@ -15,6 +15,15 @@ namespace
 // Forward declarations
 struct evoker_t;
 
+enum empower_e
+{
+  EMPOWER_1 = 1,
+  EMPOWER_2,
+  EMPOWER_3,
+  EMPOWER_4,
+  EMPOWER_MAX
+};
+
 struct evoker_td_t : public actor_target_data_t
 {
   struct dots_t
@@ -69,6 +78,7 @@ struct evoker_t : public player_t
   {
     // Class Traits
     // Devastation Traits
+    player_talent_t font_of_magic;  // row 8 col 3
     // Preservation Traits
   } talent;
 
@@ -140,6 +150,14 @@ struct evoker_t : public player_t
   const evoker_td_t* find_target_data( const player_t* target ) const override;
   evoker_td_t* get_target_data( player_t* target ) const override;
 
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
+                                              effect_subtype_t subtype,
+                                              const spell_data_t* affected = spell_data_t::nil(),
+                                              effect_type_t type = E_APPLY_AURA,
+                                              int misc_value = P_GENERIC );
+  const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
+
+
   target_specific_t<evoker_td_t> target_data;
 };
 
@@ -156,14 +174,14 @@ protected:
   using base_t = evoker_buff_t<buff_t>;  // shorthand
 
 public:
-  evoker_buff_t( evoker_t* player, std::string_view name, const spell_data_t* s_data = spell_data_t::nil(),
+  evoker_buff_t( evoker_t* player, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                  const item_t* item = nullptr )
-    : bb( player, name, s_data, item )
+    : bb( player, name, spell, item )
   {}
 
-  evoker_buff_t( evoker_td_t& td, std::string_view name, const spell_data_t* s_data = spell_data_t::nil(),
+  evoker_buff_t( evoker_td_t& td, std::string_view name, const spell_data_t* spell = spell_data_t::nil(),
                  const item_t* item = nullptr )
-    : bb( td, name, s_data, item )
+    : bb( td, name, spell, item )
   {}
 
   evoker_t* p()
@@ -182,8 +200,8 @@ private:
   using ab = Base;  // action base, spell_t/heal_t/etc.
 
 public:
-  evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* s_data = spell_data_t::nil() )
-    : ab( name, player, s_data )
+  evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
+    : ab( name, player, spell )
   {
 
   }
@@ -209,9 +227,9 @@ private:
   using ab = evoker_action_t<spell_t>;
 
 public:
-  evoker_spell_t( std::string_view name, evoker_t* player, const spell_data_t* s_data = spell_data_t::nil(),
+  evoker_spell_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
                   std::string_view options_str = {} )
-    : ab( name, player, s_data )
+    : ab( name, player, spell )
   {
     parse_options( options_str );
   }
@@ -225,6 +243,37 @@ public:
     tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() / 100 );
 
     return tm;
+  }
+};
+
+struct empowered_spell_t : public evoker_spell_t
+{
+  std::string empower_to_str;
+  empower_e max_empower;
+
+  empowered_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
+    : evoker_spell_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
+  {
+    // TODO: convert to full empower expression support
+    add_option( opt_string( "empower_to", empower_to_str ) );
+    parse_options( options_str );
+  }
+
+  timespan_t time_to_empower( empower_e empower ) const
+  {
+    // TODO: confirm these values and determine if they're set values or adjust based on a formula
+    // Currently all empowered spells are 2.5s base and 3.25s with empower 4
+    switch ( empower )
+    {
+      case EMPOWER_1: return 1000_ms;
+      case EMPOWER_2: return 1750_ms;
+      case EMPOWER_3: return 2500_ms;
+      case EMPOWER_4: return p()->talent.font_of_magic.ok() ? 3250_ms : 2500_ms;
+      default: break;
+    }
+
+    return 0_ms;
   }
 };
 
@@ -284,9 +333,12 @@ void evoker_t::init_spells()
 {
   player_t::init_spells();
 
+  auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
+  auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   // Evoker Talents
   // Class Traits
   // Devastation Traits
+  talent.font_of_magic = ST( "Font of Magic" );
   // Preservation Traits
 
   // Evoker Specialization Spells
@@ -402,6 +454,41 @@ void evoker_t::merge( player_t& other )
   player_t::merge( other );
 }
 
+// Utility function to search spell data for matching effect.
+// NOTE: This will return the FIRST effect that matches parameters.
+const spelleffect_data_t* evoker_t::find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
+                                                      const spell_data_t* affected, effect_type_t type, int misc_value )
+{
+  for ( size_t i = 1; i <= spell->effect_count(); i++ )
+  {
+    const auto& eff = spell->effectN( i );
+
+    if ( affected->ok() && !affected->affected_by_all( eff ) )
+      continue;
+
+    if ( eff.type() == type && eff.subtype() == subtype )
+    {
+      if ( misc_value != 0 )
+      {
+        if ( eff.misc_value1() == misc_value )
+          return &eff;
+      }
+      else
+        return &eff;
+    }
+  }
+
+  return &spelleffect_data_t::nil();
+}
+
+// Return the appropriate spell when `base` is overriden to another spell by `passive`
+const spell_data_t* evoker_t::find_spell_override( const spell_data_t* base, const spell_data_t* passive )
+{
+  if ( !passive->ok() )
+    return base;
+
+  return find_spell( as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base )->base_value() ) );
+}
 
 /* Report Extension Class
  * Here you can define class specific report extensions/overrides
