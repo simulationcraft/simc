@@ -3583,7 +3583,7 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
-  add_option( opt_int( "keystone_level", keystone_level, 10, 50 ) );
+  add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
   add_option( opt_string( "keystone_bounty", keystone_bounty ) );
 
