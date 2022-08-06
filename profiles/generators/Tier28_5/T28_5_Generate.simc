@@ -69,7 +69,7 @@ T28_5_Generate_Death_Knight.simc
 #T28_5_Generate_Paladin.simc
 
 # Priest
-#T28_5_Generate_Priest.simc
+T28_5_Generate_Priest.simc
 
 # Rogue
 #T28_5_Generate_Rogue.simc
