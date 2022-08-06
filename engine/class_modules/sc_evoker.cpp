@@ -17,6 +17,7 @@ struct evoker_t;
 
 enum empower_e
 {
+  EMPOWER_NONE = 0,
   EMPOWER_1 = 1,
   EMPOWER_2,
   EMPOWER_3,
@@ -138,18 +139,22 @@ struct evoker_t : public player_t
   //void combat_begin() override;
   //void combat_end() override;
   //void reset() override;
-  stat_e convert_hybrid_stat( stat_e ) const override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
 
-  double resource_regen_per_second( resource_e ) const override;
+  target_specific_t<evoker_td_t> target_data;
+  const evoker_td_t* find_target_data( const player_t* target ) const override;
+  evoker_td_t* get_target_data( player_t* target ) const override;
 
   void apply_affecting_auras( action_t& action ) override;
   action_t* create_action( std::string_view name, std::string_view options_str ) override;
   std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
-  const evoker_td_t* find_target_data( const player_t* target ) const override;
-  evoker_td_t* get_target_data( player_t* target ) const override;
 
+  // Stat & Multiplier overrides
+  stat_e convert_hybrid_stat( stat_e ) const override;
+  double resource_regen_per_second( resource_e ) const override;
+
+  // Utility functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
                                               effect_subtype_t subtype,
                                               const spell_data_t* affected = spell_data_t::nil(),
@@ -157,8 +162,20 @@ struct evoker_t : public player_t
                                               int misc_value = P_GENERIC );
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
 
+  std::vector<action_t*> secondary_action_list;
 
-  target_specific_t<evoker_td_t> target_data;
+  template <typename T, typename... Ts>
+  T* get_secondary_action( std::string_view n, Ts&&... args )
+  {
+    auto it = range::find( secondary_action_list, n, &action_t::name_str );
+    if ( it != secondary_action_list.cend() )
+      return dynamic_cast<T*>( *it );
+
+    auto a = new T( this, std::forward<Ts>( args )... );
+    a->background = true;
+    secondary_action_list.push_back( a );
+    return a;
+  }
 };
 
 namespace buffs
@@ -248,6 +265,31 @@ public:
 
 struct empowered_spell_t : public evoker_spell_t
 {
+  struct empowered_state_t : public action_state_t
+  {
+    empower_e empower;
+
+    empowered_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), empower( empower_e::EMPOWER_NONE ) {}
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      empower = empower_e::EMPOWER_NONE;
+    }
+
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+      empower = debug_cast<const empowered_state_t*>( s )->empower;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s ) << " empower_level=" << static_cast<unsigned>( empower );
+      return s;
+    }
+  };
+
   std::string empower_to_str;
   empower_e max_empower;
 
@@ -260,20 +302,41 @@ struct empowered_spell_t : public evoker_spell_t
     parse_options( options_str );
   }
 
+  action_state_t* new_state() override
+  { return new empowered_state_t( this, target ); }
+
+  empower_e empower_level( const action_state_t* s ) const
+  { return debug_cast<const empowered_state_t*>( s )->empower; }
+
+  int empower_value( const action_state_t* s ) const
+  { return static_cast<int>( debug_cast<const empowered_state_t*>( s )->empower ); }
+
+  empower_e empower_level() const
+  {
+    // TODO: return the current empowerment level based on elapsed cast/channel time
+    return empower_e::EMPOWER_3;
+  }
+
   timespan_t time_to_empower( empower_e empower ) const
   {
     // TODO: confirm these values and determine if they're set values or adjust based on a formula
     // Currently all empowered spells are 2.5s base and 3.25s with empower 4
     switch ( empower )
     {
-      case EMPOWER_1: return 1000_ms;
-      case EMPOWER_2: return 1750_ms;
-      case EMPOWER_3: return 2500_ms;
-      case EMPOWER_4: return p()->talent.font_of_magic.ok() ? 3250_ms : 2500_ms;
+      case empower_e::EMPOWER_1: return 1000_ms;
+      case empower_e::EMPOWER_2: return 1750_ms;
+      case empower_e::EMPOWER_3: return 2500_ms;
+      case empower_e::EMPOWER_4: return p()->talent.font_of_magic.ok() ? 3250_ms : 2500_ms;
       default: break;
     }
 
     return 0_ms;
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    evoker_spell_t::snapshot_internal( s, flags, rt );
+    debug_cast<empowered_state_t*>( s )->empower = empower_level();
   }
 };
 
@@ -283,6 +346,37 @@ struct disintegrate_t : public evoker_spell_t
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ) )
   {
     channeled = true;
+  }
+};
+
+struct fire_breath_t : public empowered_spell_t
+{
+  struct fire_breath_damage_t : public empowered_spell_t
+  {
+    fire_breath_damage_t( evoker_t* p ) : empowered_spell_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
+    {
+      dual = true;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return empowered_spell_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+    }
+  };
+
+  empowered_spell_t* damage;
+
+  fire_breath_t( evoker_t* p, std::string_view options_str )
+    : empowered_spell_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ) )
+  {
+    damage = p->get_secondary_action<fire_breath_damage_t>( "fire_breath_damage" );
+    damage->stats = stats;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+    damage->schedule_execute( s );
   }
 };
 }  // end namespace spells
@@ -372,6 +466,31 @@ void evoker_t::create_options()
   player_t::create_options();
 }
 
+void evoker_t::copy_from( player_t* source )
+{
+  player_t::copy_from( source );
+
+  option = debug_cast<evoker_t*>( source )->option;
+}
+
+void evoker_t::merge( player_t& other )
+{
+  player_t::merge( other );
+}
+
+const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
+{
+  return target_data[ target ];
+}
+
+evoker_td_t* evoker_t::get_target_data( player_t* target ) const
+{
+  evoker_td_t*& td = target_data[ target ];
+  if ( !td )
+    td = new evoker_td_t( target, const_cast<evoker_t*>( this ) );
+  return td;
+}
+
 void evoker_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
@@ -391,6 +510,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   using namespace spells;
 
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
+  if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -405,18 +525,7 @@ std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
   return player_t::create_expression( expr_str );
 }
 
-const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
-{
-  return target_data[ target ];
-}
-
-evoker_td_t* evoker_t::get_target_data( player_t* target ) const
-{
-  evoker_td_t*& td = target_data[ target ];
-  if ( !td )
-    td = new evoker_td_t( target, const_cast<evoker_t*>( this ) );
-  return td;
-}
+// Stat & Multiplier overrides ==============================================
 
 stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
 {
@@ -442,17 +551,7 @@ double evoker_t::resource_regen_per_second( resource_e resource ) const
   return rrps;
 }
 
-void evoker_t::copy_from( player_t* source )
-{
-  player_t::copy_from( source );
-
-  option = debug_cast<evoker_t*>( source )->option;
-}
-
-void evoker_t::merge( player_t& other )
-{
-  player_t::merge( other );
-}
+// Utility functions ========================================================
 
 // Utility function to search spell data for matching effect.
 // NOTE: This will return the FIRST effect that matches parameters.
