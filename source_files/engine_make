@@ -38,6 +38,7 @@ SRC += \
     class_modules$(PATHSEP)sc_demon_hunter.cpp \
     class_modules$(PATHSEP)sc_druid.cpp \
     class_modules$(PATHSEP)sc_enemy.cpp \
+    class_modules$(PATHSEP)sc_evoker.cpp \
     class_modules$(PATHSEP)sc_hunter.cpp \
     class_modules$(PATHSEP)sc_mage.cpp \
     class_modules$(PATHSEP)sc_rogue.cpp \
