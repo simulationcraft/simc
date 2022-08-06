@@ -257,7 +257,7 @@ static constexpr std::array<util::string_view, 33> _race_strings { {
   "vulpera",
   "maghar_orc",
   "mechagnome",
-  "",
+  "dracthyr",
   "",
   "",
   "",

@@ -1,6 +1,6 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-30/44795)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44895 dragonflight-BETA (hotfix 2022-08-06/44895, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=1, col=4, entry_id=36873, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin, Mage
 School           : Arcane
 Spell Type       : Magic
@@ -59,7 +59,7 @@ Effects          :
 Description      : Launches a bolt of frost at the enemy, causing $228597s1 Frost damage and slowing movement speed by $205708s1% for $205708d.
 
 Name             : Cone of Cold (id=120) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=1, col=2, entry_id=36869, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -164,7 +164,7 @@ Description      : Throws a fiery ball that causes $s1 Fire damage.$?a157642[
 Each time your Fireball fails to critically strike a target, it gains a stacking $157644s1% increased critical strike chance. Effect ends when Fireball critically strikes.][]
 
 Name             : Remove Curse (id=475) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=2, col=3, entry_id=36868, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -190,7 +190,7 @@ Effects          :
 Description      : Removes all Curses from a friendly target. $?s115700[If any Curses are successfully removed, you deal $115701s1% additional damage for $115701d.][]
 
 Name             : Conjure Mana Gem (id=759) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=8, col=6, entry_id=36753, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -275,7 +275,7 @@ If the target is in your party or raid, all party and raid members will be affec
 Tooltip          : Intellect increased by $w1%.
 
 Name             : Incanter's Flow (id=1463) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=4, col=3, entry_id=36866, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -327,7 +327,7 @@ Description      : Teleports you forward $A1 yds or until reaching an obstacle, 
 Tooltip          : Blinking.
 
 Name             : Flamestrike (id=2120) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=2, col=2, entry_id=36792, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -385,7 +385,7 @@ Effects          :
 Description      : Counters the enemy's spellcast, preventing any spell from that school of magic from being cast for $d$?s12598[ and silencing the target for $55021d][].
 
 Name             : Scorch (id=2948) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=3, col=1, entry_id=36795, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -434,7 +434,7 @@ Effects          :
 Description      : Attack with an equipped wand.
 
 Name             : Arcane Missiles (id=5143) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=2, col=1, entry_id=36731, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -513,11 +513,11 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Ignore Line of Sight (66), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=2716)     : School Damage (2): arcane
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43740 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.43740 | PvP Coefficient: 1.15000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Unknown(77)
 Description      : $@spelldesc5143
 
 Name             : Pyroblast (id=11366) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=1, col=1, entry_id=36793, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -545,7 +545,7 @@ Effects          :
 Description      : Hurls an immense fiery boulder that causes $s1 Fire damage$?a321711[ and an additional $321712o2 Fire damage over $321712d][].
 
 Name             : Evocation (id=12051) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=8, col=1, entry_id=36726, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -574,7 +574,7 @@ Description      : Increases your mana regeneration by $s1% for $d.
 Tooltip          : Mana regeneration increased by $s1%.
 
 Name             : Icy Veins (id=12472) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=7, col=2, entry_id=36835, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -687,7 +687,7 @@ Description      : Your target burns for an additional ${$s1}.1% over $12654d of
 Fire Blast causes your Ignites to spread to $s4 nearby enemies.
 
 Name             : Shatter (id=12982) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=1, col=3, entry_id=36871, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -818,7 +818,7 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Spellsteal (id=30449) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=3, col=3, entry_id=36867, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -874,7 +874,7 @@ Each Arcane Charge increases damage by $36032s1% and mana cost by $36032s5%, and
 |cFFFFFFFFGenerates 1 Arcane Charge.|r
 
 Name             : Ice Lance (id=30455) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=1, col=1, entry_id=36829, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -909,7 +909,7 @@ $fingersMult=${(2.00*$<masteryMult>)}
 
 
 Name             : Slow (id=31589) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=3, col=2, entry_id=36864, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -937,7 +937,7 @@ Description      : Reduces the target's movement speed by $s1% for $d.
 Tooltip          : Movement speed reduced by $w1%.
 
 Name             : Dragon's Breath (id=31661) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=8, col=3, entry_id=36843, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -972,7 +972,7 @@ Description      : Enemies in a cone in front of you take $s2 Fire damage and ar
 Tooltip          : Disoriented.
 
 Name             : Summon Water Elemental (id=31687) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=5, col=2, entry_id=36818, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -984,18 +984,20 @@ Duration         : Aura (infinite)
 Cooldown         : 30 seconds
 Affecting spells : Icy Veins (12472 effect#2), Ice Floes (108839 effect#1), Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
 Family Flags     : 43
-Attributes       : ........ ........ x....... ........   x....... ..x..... .x...... ........ 
+Attributes       : ........ ........ x....... .......x   x....... ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Dismiss Pet First (32), No Threat (42), No AutoCast (AI) (49), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), No Aura Cancel (31), Dismiss Pet First (32), No Threat (42), No AutoCast (AI) (49), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=21314)    : Summon Pet (56)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 78116 | Radius: 2 yards | Target: Unknown(50)
+#2 (id=1020296)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons a Water Elemental to follow and fight for you.
 
 Name             : Waterbolt (id=31707) [Spell Family (3)] 
@@ -1193,7 +1195,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Arcane Barrage (id=44425) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=1, col=1, entry_id=36751, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=1, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -1248,7 +1250,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Living Bomb (id=44457) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=7, col=7, entry_id=36771, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=7, max_rank=1, req_points=8]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -1336,7 +1338,7 @@ Description      : $@spelldesc112965
 Tooltip          : Your next Ice Lance deals damage as if the target were frozen.
 
 Name             : Flurry (id=44614) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=3, col=1, entry_id=36810, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1369,7 +1371,7 @@ Description      : Unleash a flurry of ice, striking the target $s1 times for a 
 Winter's Chill causes the target to take damage from your spells as if it were frozen][].
 
 Name             : Ice Block (id=45438) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=1, col=1, entry_id=36875, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1463,7 +1465,7 @@ Description      : $@spelldesc195283
 Tooltip          : Your next Pyroblast or Flamestrike spell is instant cast, and causes double the normal Ignite damage.
 
 Name             : Mirror Image (id=55342) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=3, col=1, entry_id=36877, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -1523,7 +1525,7 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Splitting Ice (id=56377) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=5, entry_id=36822, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -1816,7 +1818,7 @@ Up to $s2 Icicles can be stored. Any excess Icicles gained will be automatically
 Increases the damage of Frozen Orb by $321684s1%][]
 
 Name             : Clearcasting (id=79684) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=3, col=2, entry_id=36716, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -1931,7 +1933,7 @@ Description      : $@spelldesc113724
 Tooltip          : Incapacitated.
 
 Name             : Frozen Orb (id=84714) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=2, col=1, entry_id=36809, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -1980,14 +1982,14 @@ Attributes       : ........ ........ x......x x..x....   .....x.x ........ .....
                  : Not Shapeshifted (16), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Active Threat (94), Not a Proc (105), Do Not Display Range (126), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Always AOE Line of Sight (186), No Cooldown On Tooltip (192), Allow While Riding Vehicle (204), Show Mechanic as Combat Text (213), Allow While Charmed (261), Aura Points On Client (268), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Don't Cancel When All Effects are Disabled (353), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=85629)    : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14318 | PvP Coefficient: 1.00000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.14318 | PvP Coefficient: 1.20000 | Radius: 8.5 yards | Target: AOE enemy (instant) (16)
 #2 (id=818474)   : Dummy (3)
                    Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000
 Description      : $@spelldesc84714
 Tooltip          : Movement slowed by $s1%.
 
 Name             : Cauterize (id=86949) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=5, col=3, entry_id=36777, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -2194,7 +2196,7 @@ Effects          :
 Description      : Enables Worgens to switch between human and Worgan forms
 
 Name             : Ice Floes (id=108839) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=36861, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -2260,7 +2262,7 @@ Description      : Suppresses movement slowing effects and increases your moveme
 Tooltip          : $s1% increased movement speed and unaffected by movement speed slowing effects.
 
 Name             : Fire Blast (id=108853) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=2, col=1, entry_id=36794, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=2, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -2341,17 +2343,15 @@ Description      : $@spelldesc108978
 Tooltip          : Altering Time. Returning to past location and health when duration expires.
 
 Name             : Greater Invisibility (id=110959) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=8, col=2, entry_id=36845, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
 Spell Level      : 47
 GCD              : 1.5 seconds
 Cooldown         : 120 seconds
-Category         : 1162
-Category Cooldown: 120 seconds
 Affecting spells : Norgannon's Foresight (236380 effect#1), Foresight (384865 effect#1)
-Family Flags     : 31, 50
+Family Flags     : 31
 Attributes       : ........ ........ x...x... ........   ........ ..x..... .x...... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -2396,7 +2396,7 @@ Description      : $@spelldesc110959
 Tooltip          : Invisible$?$w3=0[][ and moving $87833s1% faster].
 
 Name             : Fingers of Frost (id=112965) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=2, col=3, entry_id=36828, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=2, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -2428,7 +2428,7 @@ Fingers of Frost causes your next Ice Lance to deal damage as if the target were
 Maximum $44544s1 charges.
 
 Name             : Ring of Frost (id=113724) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=36840, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -2488,7 +2488,7 @@ Description      : $@spelldesc110959
 Tooltip          : Damage taken is reduced by $s1%.
 
 Name             : Nether Tempest (id=114923) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=7, col=1, entry_id=36738, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -2543,7 +2543,7 @@ Effects          :
 Description      : $@spelldesc114923
 
 Name             : Rune of Power (id=116011) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=3, entry_id=36865, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -2630,20 +2630,20 @@ Attributes       : ........ x....... ........ .......x   ........ ........ .....
                  : Do Not Log (8), No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Cannot Be Stolen (134), Allow Cast While Casting (135), Not In Spellbook (143), Do Not Display Duration (170), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131165)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445)
                    Family Flags: 3
 #2 (id=168860)   : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=479798)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 0.75000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445)
                    Family Flags: 3
 Description      : $@spelldesc1463
 Tooltip          : Increases spell damage by $w1%.
 
 Name             : Critical Mass (id=117216) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=5, col=2, entry_id=36785, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7, 15)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Mage
@@ -3123,7 +3123,7 @@ Effects          :
 Description      : $@spelldesc76613
 
 Name             : Meteor (id=153561) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=9, col=3, entry_id=36842, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -3148,7 +3148,7 @@ Effects          :
 Description      : Calls down a meteor which lands at the target location after $177345d, dealing $351140s1 Fire damage, split evenly between all targets within 8 yards, and burns the ground, dealing ${8*$155158s1} Fire damage over $175396d to all enemies in the area. 
 
 Name             : Comet Storm (id=153595) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=8, col=1, entry_id=36815, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -3194,7 +3194,7 @@ Effects          :
 Description      : $@spelldesc153595
 
 Name             : Arcane Orb (id=153626) 
-Talent Entry     : Arcane [tree=spec, row=9, col=2, entry_id=36742, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -3282,7 +3282,7 @@ Effects          :
 Description      : Arcane Power now increases damage by ${$s4+$s1}% and reduces mana costs by ${$s4-$s2}%.
 
 Name             : Kindling (id=155148) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=10, col=2, entry_id=36759, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -3305,7 +3305,7 @@ Description      : Your Fireball, Pyroblast, Fire Blast, and Phoenix Flames crit
 Variables        : $cdr=${$s1/1000}.1
 
 Name             : Thermal Void (id=155149) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=3, entry_id=36798, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -3355,7 +3355,7 @@ Description      : $@spelldesc153561
 Tooltip          : Burning for $w1 Fire damage every $t1 sec.
 
 Name             : Fireball (desc=Rank 2) (id=157642) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=4, col=2, entry_id=36786, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -3494,7 +3494,7 @@ Effects          :
 Description      : $@spelldesc157976
 
 Name             : Supernova (id=157980) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=7, col=4, entry_id=36714, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -3523,7 +3523,7 @@ Effects          :
 Description      : Pulses arcane energy around the target enemy or ally, dealing $s2 Arcane damage to all enemies within $A2 yards, and knocking them upward. A primary enemy target will take $s1% increased damage.
 
 Name             : Blast Wave (id=157981) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=5, entry_id=36854, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -3551,7 +3551,7 @@ Description      : Causes an explosion around yourself, dealing $s1 Fire damage 
 Tooltip          : Movement speed reduced by $s2%.
 
 Name             : Ice Nova (id=157997) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=6, col=1, entry_id=36880, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -3689,7 +3689,7 @@ Effects          :
 Description      : An emanation of mana-fueled Arcane damage.
 
 Name             : Combustion (id=190319) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=6, col=2, entry_id=36778, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -3748,7 +3748,7 @@ Effects          :
 Description      : Conjures mana food for you and your allies. Conjured items disappear if logged out for more than 15 minutes.
 
 Name             : Blizzard (id=190356) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=2, col=2, entry_id=36830, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=2, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -3860,7 +3860,7 @@ Description      : $@spelldesc190447
 Tooltip          : Your next Flurry is instant cast$?a231584[,][ and] deals $s2% increased damage$?a231584[, and will apply Winter's Chill on the target][].
 
 Name             : Brain Freeze (id=190447) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=4, col=1, entry_id=36811, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -3990,7 +3990,7 @@ Effects          :
 Description      : Hurls a Phoenix that causes $s1 Fire damage to the target and splashes $224637s2 Fire damage to other nearby enemies. This damage is always a critical strike.
 
 Name             : Hot Streak (id=195283) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=3, col=2, entry_id=36787, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : Magic
@@ -4147,7 +4147,7 @@ Effects          :
 Description      : Throws a spread of 6 cinders that travel in an arc, each dealing $198928s1 Fire damage to enemies it hits. Damage increased by $s1% if the target is affected by your Ignite.
 
 Name             : Glacial Spike (id=199786) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=10, col=4, entry_id=36796, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -4179,7 +4179,7 @@ Tooltip          : Frozen in place.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -4202,7 +4202,7 @@ Description      : Switch to your Primary Talent Specialization.
 Tooltip          : Switch to your Primary Talent Specialization.
 
 Name             : Tinder (id=203275) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=8, col=2, entry_id=36755, max_rank=2, req_points=20]
+Talent Entry     : Fire [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(-15, -30)]
                  : Effect#4 [op=set, values=(21.5, 43)]
 Class            : Mage
@@ -4264,7 +4264,7 @@ Description      : $@spelldesc203275
 Tooltip          : Cast time of your Fireball reduced by $203275m1%, and damage increased by $203275m2%.
 
 Name             : Pyromaniac (id=205020) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=9, col=2, entry_id=36761, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=9, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -4284,7 +4284,7 @@ Effects          :
 Description      : Casting Pyroblast or Flamestrike while Hot Streak is active has an $s1% chance to instantly reactivate Hot Streak.
 
 Name             : Ray of Frost (id=205021) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=8, col=4, entry_id=36836, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -4321,7 +4321,7 @@ Tooltip          : Movement slowed by $w1%.
 Taking $w2 Frost damage every $t2 sec.
 
 Name             : Arcane Familiar (id=205022) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=4, col=1, entry_id=36734, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4346,7 +4346,7 @@ Effects          :
 Description      : Summon a Familiar that attacks your enemies and increases your maximum mana by $210126s1% for $d.
 
 Name             : Conflagration (id=205023) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=4, col=4, entry_id=36790, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -4372,7 +4372,7 @@ Enemies affected by either Conflagration or Ignite have a $s1% chance to flare u
 
 Name             : Lonely Winter (id=205024) [Spell Family (3), Passive] 
 Replaces         : Summon Water Elemental (id=31687)
-Talent Entry     : Frost [tree=spec, row=5, col=2, entry_id=36819, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -4396,7 +4396,7 @@ Effects          :
 Description      : You can no longer summon your Water Elemental, but Frostbolt, Ice Lance, and Flurry deal $s1% increased damage. 
 
 Name             : Presence of Mind (id=205025) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=6, col=1, entry_id=36743, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4427,7 +4427,7 @@ Description      : Causes your next $n Arcane $LBlast:Blasts; to be instant cast
 Tooltip          : Arcane Blast is instant cast.
 
 Name             : Firestarter (id=205026) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=4, col=1, entry_id=36784, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -4447,7 +4447,7 @@ Effects          :
 Description      : Your Fireball and Pyroblast spells always deal a critical strike when the target is above $s1% health.
 
 Name             : Bone Chilling (id=205027) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=5, col=4, entry_id=36825, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -4470,7 +4470,7 @@ Effects          :
 Description      : Whenever you attempt to chill a target, you gain Bone Chilling, increasing spell damage you deal by ${$m1/10}.1% for $205766d, stacking up to $205766u times.
 
 Name             : Resonance (id=205028) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=5, entry_id=36732, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -4490,7 +4490,7 @@ Effects          :
 Description      : Arcane Barrage deals $s1% increased damage per target it hits.
 
 Name             : Flame On (id=205029) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=5, col=4, entry_id=36789, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Mage
 School           : Fire
@@ -4517,7 +4517,7 @@ Effects          :
 Description      : Reduces the cooldown of Fire Blast by $s3 seconds and increases the maximum number of charges by $s1.
 
 Name             : Frozen Touch (id=205030) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=5, col=1, entry_id=36812, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -4540,7 +4540,7 @@ Effects          :
 Description      : Frostbolt grants you Fingers of Frost and Brain Freeze $s1% more often.
 
 Name             : Ice Ward (id=205036) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=1, entry_id=36839, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=300]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -4563,7 +4563,7 @@ Effects          :
 Description      : Frost Nova now has ${1+$m1} charges.
 
 Name             : Flame Patch (id=205037) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=6, col=3, entry_id=36775, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -4986,7 +4986,7 @@ Description      : Deals $s1 Arcane damage to enemies within $A1 yds.
 
 Name             : Shimmer (id=212653) [Spell Family (3)] 
 Replaces         : Blink (id=1953)
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=36862, max_rank=1, req_points=8, override="Blink" (id=1953)]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100, override="Blink" (id=1953)]
 Class            : Mage, Evoker
 School           : Arcane
 Spell Type       : Magic
@@ -5035,7 +5035,7 @@ Attributes       : ........ ........ ........ ........   ........ ..x..... .....
                  : No Threat (42), Do Not Display Range (126), Aura Points On Client (268), Don't Cancel When All Effects are Disabled (353), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315617)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: -70 | Scaled Value: -70 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Slowed by $s1% for $d.
 Tooltip          : Movement speed reduced by s1%.
 
@@ -5348,7 +5348,7 @@ Attributes       : ........ ........ x.x....x x..x....   .....x.. ........ .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not a Proc (105), Do Not Display Range (126), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Cast While Channeling (308), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
 Effects          :
 #1 (id=344285)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.37800 | PvP Coefficient: 1.00000 | Chain Multiplier: 0.65 | Chain Targets: 1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.37800 | PvP Coefficient: 1.15000 | Chain Multiplier: 0.65 | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=344286)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
 Description      : $@spelldesc30455
@@ -5424,7 +5424,7 @@ Effects          :
 Description      : $@spelldesc153595
 
 Name             : Improved Arcane Barrage (id=231564) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=2, entry_id=36725, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Nature
 Spell Type       : None
@@ -5446,7 +5446,7 @@ Effects          :
 Description      : For each Arcane Charge, Arcane Barrage hits $s1 additional nearby $Ltarget:targets; for $44425s2% damage.
 
 Name             : Improved Evocation (id=231565) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=1, entry_id=36730, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5467,7 +5467,7 @@ Effects          :
 Description      : Evocation's cooldown is reduced by ${$s1/-1000} sec.
 
 Name             : Fire Blast (desc=Rank 2) (id=231568) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=4, col=3, entry_id=36788, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Nature
 Spell Type       : None
@@ -5489,7 +5489,7 @@ Effects          :
 Description      : Fire Blast always deals a critical strike.
 
 Name             : Shatter (desc=Rank 2) (id=231582) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=spec, row=3, col=2, entry_id=36827, max_rank=1, req_points=0, name="Shatter Rank 2 [NYI]"]
+Talent Entry     : Generic [tree=spec, row=3, col=2, max_rank=1, req_points=0, name="Shatter Rank 2 [NYI]"]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -5530,7 +5530,7 @@ Description      : Brain Freeze causes your next Flurry to  apply Winter's Chill
 Winter's Chill causes the target to take damage from your spells as if it were frozen.
 
 Name             : Cold Snap (id=235219) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=4, col=3, entry_id=36831, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -5553,7 +5553,7 @@ Effects          :
 Description      : Resets the cooldown of your Ice Barrier, Frost Nova, Cone of Cold, and Ice Block.
 
 Name             : Frigid Winds (id=235224) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, entry_id=36881, max_rank=3, req_points=20]
+Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(3, 6, 10)]
                  : Effect#2 [op=set, values=(3, 6, 10)]
 Class            : Mage
@@ -5623,7 +5623,7 @@ Effects          :
 Description      : Casting Blink ignites a Blazing Barrier around you.
 
 Name             : Chrono Shift (id=235711) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=2, entry_id=36737, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5648,7 +5648,7 @@ Effects          :
 Description      : Arcane Barrage slows enemies by $236298s% and increases your movement speed by $236299s% for $236299d.
 
 Name             : Alexstrasza's Fury (id=235870) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=2, entry_id=36779, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -5765,7 +5765,7 @@ Description      : $@spelldesc235711
 Tooltip          : Movement speed slowed by $s1%.
 
 Name             : Slipstream (id=236457) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=6, entry_id=36715, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5789,7 +5789,7 @@ Description      : Clearcasting allows Arcane Missiles to be channeled while mov
 Evocation can be channeled while moving.
 
 Name             : Amplification (id=236628) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=6, entry_id=36740, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -5812,7 +5812,7 @@ Effects          :
 Description      : When Clearcast, Arcane Missiles fires $s2 additional $lmissile:missiles;.
 
 Name             : Improved Blizzard (id=236662) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=5, col=3, entry_id=36833, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -6063,7 +6063,7 @@ Tooltip          : Your next Frostbolt or Flurry cast will also release a Comet 
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -6084,7 +6084,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Triggered by     : Activating Specialization (200749)
@@ -6236,7 +6236,7 @@ Description      : Deals $s1 Holy Damage to enemies within $A1.
 Heals $s2 to allies within $A1. 
 
 Name             : Ebonbolt (id=257537) [Spell Family (3)] 
-Talent Entry     : Frost [tree=spec, row=5, col=1, entry_id=36813, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Frost
 Spell Type       : Magic
@@ -6283,7 +6283,7 @@ Effects          :
 Description      : $@spelldesc214634
 
 Name             : Phoenix Flames (id=257541) [Spell Family (3)] 
-Talent Entry     : Fire [tree=spec, row=6, col=1, entry_id=36781, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Fire
 Spell Type       : Magic
@@ -6359,7 +6359,7 @@ Name             : Clearcasting (id=263725) [Spell Family (3)]
 Class            : Mage
 School           : Physical
 Spell Type       : None
-Duration         : 15 seconds
+Duration         : 20 seconds
 Labels           : 895: Improved Clearcasting (321420 effect#1)
                  : 939: Expanded Potential (327495 effect#1), Concentration (384379 effect#1)
 Stacks           : 1 initial, 1 maximum
@@ -6559,7 +6559,7 @@ Description      : $@spelldesc286027
 Tooltip          : Arcane Blast cost reduced by $s1.
 
 Name             : Rule of Threes (id=264354) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=3, col=1, entry_id=36749, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -7056,7 +7056,7 @@ Description      : While no enemies are within $s2 yds, you heal for $s1 every $
 Tooltip          : While no enemies are within $s2 yds, you heal for $w1 every $270661t1 sec.
 
 Name             : Searing Touch (id=269644) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=4, col=1, entry_id=36783, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -7078,7 +7078,7 @@ Effects          :
 Description      : Scorch deals $s2% increased damage and is a guaranteed Critical Strike when the target is below $s1% health.
 
 Name             : Pyroclasm (id=269650) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=9, col=3, entry_id=36769, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -7152,7 +7152,7 @@ Description      : $@spelldesc270233
 Tooltip          : Blizzard is instant cast and deals $s2% increased damage.
 
 Name             : Freezing Rain (id=270233) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=8, col=2, entry_id=36806, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -7598,7 +7598,7 @@ Effects          :
                    Family Flags: 11
 
 Name             : Chain Reaction (id=278309) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=9, col=4, entry_id=36799, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1.5, 3)]
 Class            : Mage
 School           : Physical
@@ -8554,7 +8554,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Reverberate (id=281482) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=7, col=5, entry_id=36719, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9460,7 +9460,7 @@ Description      : $@spelldesc321358
 Tooltip          : Intellect and spell critical strike chance increased by $w1%.
 
 Name             : Enlightened (id=321387) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=3, entry_id=36747, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9524,7 +9524,7 @@ Description      : $@spelldesc321387
 Tooltip          : Mana regen increased by $s1%.
 
 Name             : Improved Clearcasting (id=321420) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=6, col=7, entry_id=36712, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=7, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -9545,7 +9545,7 @@ Effects          :
 Description      : Clearcasting can stack up to $s1 additional times.
 
 Name             : Touch of the Magi (id=321507) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=7, col=3, entry_id=36735, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9576,7 +9576,7 @@ Description      : Applies Touch of the Magi to your current target, accumulatin
 |cFFFFFFFFGenerates $s2 Arcane Charges.|r
 
 Name             : Mana Adept (id=321526) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=4, entry_id=36720, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -9616,7 +9616,7 @@ Effects          :
 Description      : Increases the damage of Frozen Orb by $s76613%.
 
 Name             : Improved Icy Veins (id=321702) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=9, col=2, entry_id=36802, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1500, 3000)]
 Class            : Mage
 School           : Physical
@@ -9638,7 +9638,7 @@ Effects          :
 Description      : Duration increased by ${$s1/1000} sec.
 
 Name             : Improved Blazing Barrier (id=321708) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=5, col=5, entry_id=36774, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=5, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(75, 150)]
 Class            : Mage
 School           : Physical
@@ -9658,7 +9658,7 @@ Effects          :
 Description      : Blazing Barrier's damage is increased by $s1%.
 
 Name             : Combustion (desc=Rank 2) (id=321710) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=4, entry_id=36756, max_rank=1, req_points=8, name="Combustion Duration"]
+Talent Entry     : Fire [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=200, name="Combustion Duration"]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -9724,7 +9724,7 @@ Description      : $@spelldesc321711
 Tooltip          : Suffering $w1 Fire damage every $t2 sec.
 
 Name             : Arcane Power (id=321739) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=4, entry_id=36754, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -9750,7 +9750,7 @@ Effects          :
 Description      : Arcane Surge lasts an additional ${$s1/1000} sec and grants $s2% increased Spell Damage.
 
 Name             : Improved Prismatic Barrier (id=321745) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=5, col=3, entry_id=36744, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -9774,7 +9774,7 @@ Effects          :
 Description      : Prismatic Barrier further reduces magical damage taken by an additional $s1% and duration of harmful Magic effects by $s2%.
 
 Name             : Improved Arcane Explosion (id=321752) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=4, col=4, entry_id=36717, max_rank=2, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=4, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Mage
 School           : Physical
@@ -9847,7 +9847,7 @@ Attributes       : ........ ........ x....... .......x   ........ ........ .....
                  : Not Shapeshifted (16), No Aura Cancel (31), Aura Points On Client (268), Not In Spellbook Until Learned (269), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #2 (id=814109)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66670 | Target: Self (1)
                    Affected Spells: Cone of Cold (120), Frost Nova (122), Fireball (133), Arcane Explosion (1449), Flamestrike (2120), Scorch (2948), Arcane Missiles (7268), Pyroblast (11366), Arcane Blast (30451), Dragon's Breath (31661), Arcane Barrage (44425), Living Bomb (44461), Frozen Orb (84721), Fire Blast (108853), Nether Tempest (114923), Nether Tempest (114954), Icicle (148022), Comet Storm (153596), Arcane Orb (153640), Meteor Burn (155158), Supernova (157980), Blast Wave (157981), Ice Nova (157997), Blizzard (190357), Cinderstorm (198928), Ray of Frost (205021), Conflagration Flare Up (205345), Flame Patch (205472), Living Bomb (217694), Arcane Assault (225119), Conflagration (226757), Flurry (228354), Frostbolt (228597), Ice Lance (228598), Glacial Spike (228600), Frost Nova (235235), Time and Space (240689), Living Bomb (244813), Ebonbolt (257538), Phoenix Flames (257541), Phoenix Flames (257542), Trailing Embers (277703), Glacial Assault (279856), Radiant Spark (307443), Tormenting Backlash (317589), Fire Blast (319836), Agonizing Backlash (320035), Pyroblast (321712), Shifting Power (325130), Glacial Fragments (327498), Arcane Echo (342232), Meteor (351140), Arcane Surge (365350), Radiant Spark (376103), Glacial Assault (379029), Shifting Power (382445)
                    Family Flags: 3
 #3 (id=814395)   : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
@@ -10467,7 +10467,7 @@ Description      : $@spelldesc333167
 Tooltip          : Your next Fireball or Pyroblast will also cast a Meteor at your target.
 
 Name             : Sun King's Blessing (id=333313) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=10, col=1, entry_id=36766, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -11161,7 +11161,7 @@ Effects          :
 Description      : Initial Pyroblast damage increased by |cFFFFFFFF${$s1}.1%|r.
 
 Name             : Arcane Echo (id=342231) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=3, entry_id=36745, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(0, 100)]
 Class            : Mage
 School           : Arcane
@@ -11229,7 +11229,7 @@ Description      : $@spelldesc210805
 Tooltip          : Haste increased by $w1%.
 
 Name             : Alter Time (id=342245) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, entry_id=36858, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -11302,7 +11302,7 @@ Effects          :
 Description      : Returns the caster to their previous location and health.
 
 Name             : Master of Time (id=342249) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, entry_id=36852, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -11324,7 +11324,7 @@ Description      : Reduces the cooldown of Alter Time by ${$s1/-1000} sec.
 Alter Time resets the cooldown of Blink when you return to your original location.
 
 Name             : From the Ashes (id=342344) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=2, entry_id=36780, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -11435,7 +11435,7 @@ Effects          :
 Description      : Creates a portal, teleporting group members that use it to a Major City.
 
 Name             : Improved Frost Nova (id=343183) [Spell Family (3), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=2, entry_id=36863, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(1000, 2000)]
 Class            : Mage
 School           : Frost
@@ -11457,7 +11457,7 @@ Effects          :
 Description      : Frost Nova duration is increased by ${$s1/1000} sec.
 
 Name             : Phoenix Flames (desc=Rank 2) (id=343222) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=1, entry_id=36763, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -11478,7 +11478,7 @@ Effects          :
 Description      : Phoenix Flames gains $s1 additional charge.
 
 Name             : Improved Flamestrike (id=343230) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=3, col=3, entry_id=36791, max_rank=1, req_points=0]
+Talent Entry     : Fire [tree=spec, row=3, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -11936,7 +11936,7 @@ Description      : $@spelldesc363500
 Tooltip          : Burning for $s1% of your maximum health every $t sec. While burning your Fire Blast and Phoenix Flames recharge $363508s1% faster.
 
 Name             : Arcane Surge (id=365350) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=4, col=3, entry_id=36741, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -11999,7 +11999,7 @@ Description      : $@spelldesc365350
 Tooltip          : Spell damage increased by $w1% and Mana Regeneration increase $w3%.
 
 Name             : Radiant Spark (id=376103) [Spell Family (3)] 
-Talent Entry     : Arcane [tree=spec, row=9, col=3, entry_id=36728, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -12070,7 +12070,7 @@ Description      : $@spelldesc376103
 Tooltip          : Damage taken from $@auracaster  increased by $w1%.
 
 Name             : Perpetual Winter (id=378198) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=2, entry_id=36820, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12090,7 +12090,7 @@ Effects          :
 Description      : Flurry now has ${$s1+1} charges. 
 
 Name             : Wintertide (id=378406) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=3, entry_id=36817, max_rank=3, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=3, req_points=8]
                  : Effect#1 [op=set, values=(5, 10, 15)]
                  : Effect#2 [op=set, values=(10, 20, 30)]
 Class            : Mage
@@ -12115,7 +12115,7 @@ Effects          :
 Description      : Increases Frostbolt damage by $s1%. Fingers of Frost empowered Ice Lances deal $s2% increased damage to Frozen targets.
 
 Name             : Icy Propulsion (id=378433) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=8, col=3, entry_id=36801, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1000, 2000)]
 Class            : Mage
 School           : Physical
@@ -12138,7 +12138,7 @@ Effects          :
 Description      : While Icy Veins is active, your damaging single target spell critical hits reduce its cooldown by ${$s1/1000} sec.
 
 Name             : Fractured Frost (id=378448) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=9, col=1, entry_id=36816, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(0.0557, 0.1114)]
                  : Effect#2 [op=set, values=(20, 40)]
 Class            : Mage
@@ -12166,8 +12166,28 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Your Frostbolt has a $s2% chance to hit up to ${$s3-1} additional targets.
 
+Name             : Deep Shatter (id=378749) [Spell Family (3), Passive] 
+Talent Entry     : Frost [tree=spec, row=6, col=1, max_rank=2, req_points=8]
+                 : Effect#1 [op=set, values=(20, 40)]
+Class            : Mage
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1007177)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your Frostbolt deals $m1% additional damage to Frozen targets.
+
 Name             : Frostbite (id=378756) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=4, col=4, entry_id=36797, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12219,7 +12239,7 @@ Description      : $@spelldesc378756
 Tooltip          : Frozen.
 
 Name             : Snap Freeze (id=378901) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=9, col=3, entry_id=36800, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -12260,7 +12280,7 @@ Effects          :
 Description      : $@spelldesc378901
 
 Name             : Arctic Piercing (id=378919) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=4, col=5, entry_id=36826, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12307,7 +12327,7 @@ Description      : Increases the damage of your Ice Lance by $m1%.
 Tooltip          : Increases the damage of your Ice Lance by $m1%.
 
 Name             : Glacial Assault (id=378947) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=1, entry_id=36807, max_rank=2, req_points=8]
+Talent Entry     : Frost [tree=spec, row=7, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Mage
 School           : Frost
@@ -12373,13 +12393,13 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 378947
 Description      : $@spelldesc378947
 
-Name             : Ice Nine (id=379049) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=3, entry_id=36823, max_rank=2, req_points=8]
+Name             : Ice Nine (id=379049) [Spell Family (3), Passive] 
+Talent Entry     : Frost [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(15, 30)]
 Class            : Mage
 School           : Frost
 Spell Type       : None
-Attributes       : ......xx ........ ........ .......x   ........ ........ ........ ....x... 
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   ........ ........ ........ ........ 
@@ -12387,16 +12407,16 @@ Attributes       : ......xx ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1007627)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 8 | Target: Self (1)
 #2 (id=1008209)  : Dummy (3)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
 Description      : Frostbolt and Flurry have a $s2% chance to generate $s1 Icicles.
 
 Name             : Flash Freeze (id=379993) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=5, entry_id=36824, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12442,7 +12462,7 @@ Effects          :
 Description      : $@spelldesc379993
 
 Name             : Frigid Shattering (id=380154) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=6, entry_id=36821, max_rank=2, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Mage
 School           : Frost
@@ -12462,7 +12482,7 @@ Effects          :
 Description      : Your Frost spells deal $s1% more damage to targets that are rooted and frozen.
 
 Name             : Hailstones (id=381244) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=9, col=5, entry_id=36837, max_rank=2, req_points=20]
+Talent Entry     : Frost [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(50, 100)]
 Class            : Mage
 School           : Frost
@@ -12483,7 +12503,7 @@ Description      : Casting Ice Lance on Frozen targets has a $s1% chance to gene
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -12525,7 +12545,7 @@ Description      : $@spelldesc381706
 Tooltip          : The damage of your next Cone of Cold is increased by $381706s2%.
 
 Name             : Snowstorm (id=381706) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=4, entry_id=36834, max_rank=3, req_points=8]
+Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=3, req_points=8]
                  : Effect#2 [op=set, values=(6, 13, 20)]
 Class            : Mage
 School           : Frost
@@ -12551,7 +12571,7 @@ Effects          :
 Description      : Blizzard has an $h% chance to increase the damage of your next Cone of Cold by $s2%, stacking up to $381522u times.
 
 Name             : Freezing Winds (id=382103) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=10, col=2, entry_id=36804, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12593,7 +12613,7 @@ Description      : $@spelldesc382103
 Tooltip          : Gaining Fingers of Frost every $t1 sec.
 
 Name             : Cold Front (id=382110) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=1, entry_id=36805, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12615,7 +12635,7 @@ Effects          :
 Description      : Casting $s1 Frostbolts or Flurries calls down a Frozen Orb toward your target. Hitting an enemy player counts as double.
 
 Name             : Slick Ice (id=382144) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=2, entry_id=36803, max_rank=1, req_points=20]
+Talent Entry     : Frost [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Frost
 Spell Type       : None
@@ -12693,7 +12713,7 @@ Effects          :
 Description      : $@spelldesc382144
 
 Name             : Flow of Time (id=382268) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, entry_id=36849, max_rank=3, req_points=20]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(-500, -1000, -1500)]
                  : Effect#2 [op=set, values=(-500, -1000, -1500)]
 Class            : Mage
@@ -12718,7 +12738,7 @@ Effects          :
 Description      : The cooldown of Blink is reduced by ${$s1/-1000}.1 sec.
 
 Name             : Diverted Energy (id=382270) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=3, entry_id=36851, max_rank=3, req_points=20]
+Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=3, req_points=20]
                  : Effect#1 [op=set, values=(10, 20, 30)]
 Class            : Mage
 School           : Arcane
@@ -12738,7 +12758,7 @@ Effects          :
 Description      : Your Barriers heal you for $s1% of the damage absorbed.
 
 Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=4, entry_id=36859, max_rank=3, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=4, max_rank=3, req_points=8]
                  : Effect#1 [op=set, values=(3, 6, 9)]
 Class            : Mage
 School           : Arcane
@@ -12781,7 +12801,7 @@ Description      : $@spelldesc382289
 Tooltip          : Absorbs $w1 damage.
 
 Name             : Cryo-Freeze (id=382292) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=2, entry_id=36878, max_rank=3, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=3, req_points=8]
                  : Effect#1 [op=set, values=(3, 6, 9)]
 Class            : Mage
 School           : Physical
@@ -12803,7 +12823,7 @@ Effects          :
 Description      : While inside Ice Block, you heal for ${$s1*10}% of your maximum health over the duration.
 
 Name             : Incantation of Swiftness (id=382293) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=5, entry_id=36857, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=5, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(40, 80)]
 Class            : Mage
 School           : Physical
@@ -12824,7 +12844,7 @@ Effects          :
 Description      : $?s110959[Greater ][]Invisibility increases your movement speed by $?a137021[${$s1*0.40}][$s1]% for $337278d.
 
 Name             : Grounding Surge (id=382297) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=4, entry_id=36856, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(2000, 4000)]
 Class            : Mage
 School           : Physical
@@ -12847,7 +12867,7 @@ Effects          :
 Description      : Successfully interrupting an enemy with Counterspell reduces its cooldown by ${$s1/1000} sec.
 
 Name             : Winter's Protection (id=382424) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=2, entry_id=36876, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(-20000, -40000)]
 Class            : Mage
 School           : Physical
@@ -12869,7 +12889,7 @@ Effects          :
 Description      : The cooldown of Ice Block is reduced by ${$s1/-1000} sec.
 
 Name             : Shifting Power (id=382440) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=9, col=1, entry_id=36838, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Nature
 Spell Type       : Magic
@@ -12921,7 +12941,7 @@ Effects          :
 Description      : $@spelldesc382440
 
 Name             : Rigid Ice (id=382481) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=2, col=1, entry_id=36841, max_rank=2, req_points=0]
+Talent Entry     : Generic [tree=class, row=2, col=1, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(40, 80)]
 Class            : Mage
 School           : Frost
@@ -12941,7 +12961,7 @@ Effects          :
 Description      : Frost Nova can withstand $s1% more damage before breaking.
 
 Name             : Tome of Antonidas (id=382490) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=4, entry_id=36853, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Mage
 School           : Physical
@@ -12961,7 +12981,7 @@ Effects          :
 Description      : Increases Haste by $s1%. 
 
 Name             : Tome of Rhonin (id=382493) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=1, entry_id=36879, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Mage
 School           : Physical
@@ -12981,7 +13001,7 @@ Effects          :
 Description      : Increases Critical Strike chance by $s1%.
 
 Name             : Reduplication (id=382569) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=1, entry_id=36847, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13000,7 +13020,7 @@ Effects          :
 Description      : Mirror Image's cooldown is reduced by ${$s1/1000} sec whenever a Mirror Image dissipates due to direct damage.
 
 Name             : Accumulative Shielding (id=382800) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=2, entry_id=36848, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
                  : Effect#3 [op=set, values=(10, 20)]
@@ -13029,7 +13049,7 @@ Effects          :
 Description      : Your barrier's cooldown recharges $s1% faster while the shield persists.
 
 Name             : Reabsorption (id=382820) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=4, col=1, entry_id=36846, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13068,7 +13088,7 @@ Description      : $@spelldesc382826
 Tooltip          : Movement speed increased by $382826s1%.
 
 Name             : Temporal Velocity (id=382826) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=4, entry_id=36850, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(20, 40)]
                  : Effect#2 [op=set, values=(5, 10)]
 Class            : Mage
@@ -13110,7 +13130,7 @@ Description      : $@spelldesc382820
 
 
 Name             : Arcane Warding (id=383092) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=3, entry_id=36860, max_rank=2, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-3, -6)]
 Class            : Mage
 School           : Physical
@@ -13131,7 +13151,7 @@ Effects          :
 Description      : Reduces magic damage taken by $s1%.
 
 Name             : Mass Polymorph (id=383121) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=4, col=5, entry_id=36855, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=4, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : Magic
@@ -13146,7 +13166,7 @@ Proc Chance      : 100%
 Mechanic         : Polymorph
 Proc Flags       : ...x.x.x .x.x.x.x .x.x.... .......x 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Heal Taken, Generic Hostile Spell Taken, Magic Heal Taken, Magic Hostile Spell Taken, Periodic Taken
-Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..... .x...... 
+Attributes       : ........ ........ x...x... ......x.   ...x...x ..x..... ..x..... .x...... 
                  : ......x. ........ ........ ........   x....... ........ ........ ..x..... 
                  : ........ ...x.... ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ......x. 
@@ -13154,7 +13174,7 @@ Attributes       : ........ ........ x...x... ......x.   ........ ..x..... ..x..
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ..x..... ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
+                 : Not Shapeshifted (16), Cancels Auto Attack Combat (20), Heartbeat Resist (30), No Redirection (35), No Reflection (39), No Threat (42), Prevents Anim (50), Aura Stays After Combat (57), Cannot cast on tapped (70), PvP Enabling (96), Can Proc From Procs (122), No Partial Immunity (139), Aura Bounce Fails Spell (157), Taps immediately (215), Can Proc From Suppressed Target Procs (254), Display Large Aura Icon On Unit Frames (Boss Aura) (286), Allow Class Ability Procs (416), Nameplate Enemy Debuffs (426)
 Effects          :
 #1 (id=1014830)  : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: At Caster (22) -> AOE enemy (15)
@@ -13164,7 +13184,7 @@ Description      : Transforms all enemies within $a yards into sheep, wandering 
 Tooltip          : Incapacitated. Cannot attack or cast spells.  Increased health regeneration.
 
 Name             : Time Anomaly (id=383243) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=2, entry_id=36844, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13191,7 +13211,7 @@ Effects          :
 Description      : At any moment, you have a chance to gain $?c1[Arcane Surge for $s1 sec, Clearcasting]?c2[Combustion for $s4 sec, 1 Fire Blast charge]?c3[Icy Veins for $s5 sec, Fingers of Frost][], or Time Warp for 6 sec.
 
 Name             : Blaster Master (id=383391) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=7, col=5, entry_id=36776, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(4, 8)]
 Class            : Mage
 School           : Physical
@@ -13260,7 +13280,7 @@ Description      : $@spelldesc383391
 Tooltip          : Mastery increased by ${$383391s1*$mas}%.
 
 Name             : Phoenix Reborn (id=383476) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=8, col=1, entry_id=36764, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Mage
 School           : Fire
 Spell Type       : None
@@ -13303,7 +13323,7 @@ Description      : Deals $m1 Fire damage and reduces the cooldown of Phoenix's F
 Tooltip          : Deals $m1 Fire damage and reduces the cooldown of Phoenix's Flame by $383476s1 sec.
 
 Name             : Wildfire (id=383489) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=8, col=3, entry_id=36758, max_rank=2, req_points=20]
+Talent Entry     : Fire [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(5, 10)]
                  : Effect#3 [op=set, values=(4, 8)]
                  : Effect#4 [op=set, values=(1, 2)]
@@ -13402,7 +13422,7 @@ Description      : $@spelldesc383489
 Tooltip          : Critical Strike increased by $383489s4%.
 
 Name             : Firemind (id=383499) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=3, entry_id=36762, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=3, max_rank=2, req_points=8]
                  : Effect#3 [op=set, values=(1, 2)]
 Class            : Mage
 School           : Physical
@@ -13451,7 +13471,7 @@ Description      : $@spelldesc383499
 Tooltip          : Increases Intellect by $383499s3%.
 
 Name             : Improved Scorch (id=383604) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=5, col=1, entry_id=36782, max_rank=2, req_points=8]
+Talent Entry     : Fire [tree=spec, row=5, col=1, max_rank=2, req_points=8]
                  : Effect#3 [op=set, values=(2, 4)]
 Class            : Mage
 School           : Fire
@@ -13504,7 +13524,7 @@ Description      : $@spelldesc383604
 Tooltip          : Taking $383604s3% increased damage from $@auracaster's spells and abilities.
 
 Name             : Fiery Rush (id=383634) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=10, col=2, entry_id=36760, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13551,7 +13571,7 @@ Description      : $@spelldesc383634
 Tooltip          : Your Fire Blast and Phoenix Flames recharge $s1% faster.
 
 Name             : Tempered Flames (id=383659) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=7, col=4, entry_id=36757, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13566,7 +13586,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1015715)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -35 | Scaled Value: -35 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
 #2 (id=1015716)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
@@ -13574,13 +13594,13 @@ Effects          :
                    Affected Spells: Pyroblast (11366)
                    Family Flags: 22
 #3 (id=1015717)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Combustion (190319)
                    Family Flags: 58
 Description      : Pyroblast has a $s1% reduced cast time and a $s2% increased critical strike chance. The duration of Combustion is reduced by $s3%. 
 
 Name             : Improved Arcane Missiles (id=383661) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=4, col=2, entry_id=36752, max_rank=2, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Mage
 School           : Physical
@@ -13603,7 +13623,7 @@ Description      : Increases Arcane Missiles damage by $s1%.
 
 
 Name             : Incendiary Eruptions (id=383665) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=7, col=6, entry_id=36773, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13628,7 +13648,7 @@ Effects          :
 Description      : Enemies damaged by Flame Patch have an $h% chance to erupt into a Living Bomb.
 
 Name             : Controlled Destruction (id=383669) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=9, col=1, entry_id=36765, max_rank=2, req_points=20]
+Talent Entry     : Fire [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Mage
 School           : Physical
@@ -13652,7 +13672,7 @@ Effects          :
 Description      : Pyroblast's initial damage is increased by $s1% when the target is above $s3% health or below $s2% health.
 
 Name             : Impetus (id=383676) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=4, col=5, entry_id=36724, max_rank=1, req_points=0]
+Talent Entry     : Arcane [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13674,7 +13694,7 @@ Effects          :
 Description      : Arcane Blast has a $s1% chance to generate an additional Arcane Charge.
 
 Name             : Nether Precision (id=383782) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=5, col=5, entry_id=36748, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13693,7 +13713,7 @@ Effects          :
 Description      : Consuming Clearcasting increases the damage of your next 2 Arcane Blasts by $s1%.
 
 Name             : Fevered Incantation (id=383810) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=9, col=4, entry_id=36768, max_rank=2, req_points=20]
+Talent Entry     : Fire [tree=spec, row=9, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(1, 2)]
 Class            : Mage
 School           : Fire
@@ -13739,7 +13759,7 @@ Description      : $@spelldesc383810
 Tooltip          : Your spells deal an additional $383810m1% critical hit damage.
 
 Name             : Fire Frenzy (id=383860) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=10, col=3, entry_id=36767, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13813,7 +13833,7 @@ Effects          :
 Description      : Combustion grants Mastery equal to $s2% of your Critical Strike stat and lasts ${s1/1000} sec longer. 
 
 Name             : Arcane Tempo (id=383980) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=5, col=1, entry_id=36718, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13858,7 +13878,7 @@ Description      : $@spelldesc383980
 Tooltip          : Haste increased by $w1%.
 
 Name             : Molten Skyfall (id=384033) [Spell Family (3), Passive] 
-Talent Entry     : Fire [tree=spec, row=7, col=6, entry_id=36772, max_rank=1, req_points=8]
+Talent Entry     : Fire [tree=spec, row=7, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13880,7 +13900,7 @@ Effects          :
 Description      : Damaging an enemy with $s1 Fireballs or Pyroblasts causes your next Fireball to call down a Meteor on your target. Hitting an enemy player counts as double.
 
 Name             : Illuminated Thoughts (id=384060) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=8, col=5, entry_id=36739, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=5, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Mage
 School           : Physical
@@ -13900,7 +13920,7 @@ Effects          :
 Description      : Clearcasting has a $s1% increased chance to proc.
 
 Name             : Master of Flame (id=384174) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Fire [tree=spec, row=8, col=4, entry_id=36770, max_rank=1, req_points=20]
+Talent Entry     : Fire [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -13921,7 +13941,7 @@ Effects          :
 Description      : Ignite deals $s1% more damage while Combustion is not active. Fire Blast spreads Ignite to $s2 additional nearby targets during Combustion.
 
 Name             : Siphon Storm (id=384187) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=1, entry_id=36729, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -13980,7 +14000,7 @@ Description      : $@spelldesc384187
 Tooltip          : Intellect increased by $s1%
 
 Name             : Cascading Power (id=384276) [Spell Family (3), Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=9, col=5, entry_id=36733, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14045,7 +14065,7 @@ Description      : $@spelldesc382826
 Tooltip          : Movement speed increased by $382826s2%.
 
 Name             : Concentration (id=384374) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=9, col=4, entry_id=36750, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=9, col=4, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14090,7 +14110,7 @@ Description      : $@spelldesc384374
 Tooltip          : Your next Clearcasting will not be consumed.
 
 Name             : Arcane Harmony (id=384452) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=10, col=3, entry_id=36727, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=3, max_rank=1, req_points=20]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -14141,7 +14161,7 @@ Description      : $@spelldesc384452
 Tooltip          : Increases the damage of your next Arcane Barrage by $s1%.
 
 Name             : Arcane Bombardment (id=384581) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=4, entry_id=36723, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=4, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(50, 100)]
 Class            : Mage
 School           : Arcane
@@ -14163,7 +14183,7 @@ Effects          :
 Description      : Arcane Barrage deals an additional $s2% damage against targets below $s1% health.
 
 Name             : Prodigious Savant (id=384612) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=8, col=2, entry_id=36736, max_rank=2, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
                  : Effect#2 [op=set, values=(10, 20)]
 Class            : Mage
@@ -14188,7 +14208,7 @@ Effects          :
 Description      : Arcane Charges further increase Mastery effectiveness of Arcane Blast and Arcane Barrage by $s1%.
 
 Name             : Charged Orb (id=384651) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=10, col=1, entry_id=36722, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Mage
 School           : Arcane
 Spell Type       : None
@@ -14208,7 +14228,7 @@ Effects          :
 Description      : Arcane Orb gains $s1 additional charge.
 
 Name             : Harmonic Echo (id=384683) [Passive, Hidden] 
-Talent Entry     : Arcane [tree=spec, row=10, col=2, entry_id=36746, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14247,7 +14267,7 @@ Effects          :
 Description      : $@spelldesc384683
 
 Name             : Orb Barrage (id=384858) [Spell Family (3), Passive] 
-Talent Entry     : Arcane [tree=spec, row=10, col=1, entry_id=36721, max_rank=1, req_points=20]
+Talent Entry     : Arcane [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14271,7 +14291,7 @@ Effects          :
 Description      : Casting Arcane Missiles $s1 times fires an Arcane Orb toward your target. Clearcast Arcane Missiles count as $s2.
 
 Name             : Foresight (id=384861) [Passive] 
-Talent Entry     : Arcane [tree=spec, row=6, col=2, entry_id=36713, max_rank=1, req_points=8]
+Talent Entry     : Arcane [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14334,7 +14354,7 @@ Description      : $@spelldesc384861
 Tooltip          : Your spells may be castable while moving.
 
 Name             : Focused Frost [NYI] (id=385167) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=5, col=3, entry_id=36832, max_rank=1, req_points=8]
+Talent Entry     : Frost [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Mage
 School           : Physical
 Spell Type       : None
@@ -14353,7 +14373,7 @@ Effects          :
 Description      : Frozen Orb deals an additional $s1% damage when hitting only one target.
 
 Name             : Winter's Chill (id=385305) [Spell Family (3), Passive] 
-Talent Entry     : Frost [tree=spec, row=4, col=2, entry_id=36808, max_rank=1, req_points=0]
+Talent Entry     : Frost [tree=spec, row=4, col=2, max_rank=1, req_points=0]
 Class            : Mage
 School           : Physical
 Spell Type       : None

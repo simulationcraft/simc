@@ -422,6 +422,7 @@ public:
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
     buff_t* eagletalons_true_focus;
+    buff_t* bombardment;
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -541,7 +542,7 @@ public:
     spell_data_ptr_t stampede;
     spell_data_ptr_t nesingwarys_trapping_apparatus;
     spell_data_ptr_t master_marksman;
-    spell_data_ptr_t latent_poison_injectors; // TODO: Aimed Shot, Barbed Shot, Raptor Strike consumption
+    spell_data_ptr_t latent_poison_injectors;
 
     spell_data_ptr_t alpha_predator;
     spell_data_ptr_t killer_instinct;
@@ -581,11 +582,12 @@ public:
     spell_data_ptr_t double_tap;
     spell_data_ptr_t dead_eye;
 
-    // TODO Bombardment
     spell_data_ptr_t steady_focus;
     spell_data_ptr_t lone_wolf;
-    spell_data_ptr_t legacy_of_the_windrunners; // TODO: implement
+    spell_data_ptr_t legacy_of_the_windrunners;
 
+    spell_data_ptr_t bombardment;
+    spell_data_ptr_t razor_fragments;
     spell_data_ptr_t sharpshooter;
     spell_data_ptr_t trueshot;
     spell_data_ptr_t lock_and_load;
@@ -598,7 +600,6 @@ public:
     spell_data_ptr_t deathblow;
 
     // TODO Salvo
-    // TODO Razor Fragments
     spell_data_ptr_t unerring_vision; // TODO: crit buff broken in game
     spell_data_ptr_t eagletalons_true_focus;
 
@@ -686,7 +687,7 @@ public:
     spell_data_ptr_t deadly_duo; // TODO: pending changes (now Quick Shot)
     spell_data_ptr_t coordinated_assault; // TODO: pending changes
     spell_data_ptr_t killer_companion;
-    
+
     spell_data_ptr_t fury_of_the_eagle; // TODO: implement
     spell_data_ptr_t ranger;
     spell_data_ptr_t bonded_companion; // TODO: pending changes (now Deadly Duo)
@@ -721,7 +722,7 @@ public:
     spell_data_ptr_t beast_mastery_hunter;
     spell_data_ptr_t marksmanship_hunter;
     spell_data_ptr_t survival_hunter;
-    
+
     // Hunter Tree
     spell_data_ptr_t freezing_trap;
     spell_data_ptr_t arcane_shot;
@@ -742,6 +743,7 @@ public:
     action_t* master_marksman = nullptr;
     action_t* barbed_shot = nullptr;
     action_t* wild_spirits = nullptr;
+    action_t* latent_poison_injectors = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
   } actions;
@@ -755,6 +757,7 @@ public:
     // Focus used for Focused Trickery (363666)
     double focus_used_FT = 0;
     unsigned dire_pack_counter = 0;
+    unsigned bombardment_counter = 0;
   } state;
 
   struct options_t {
@@ -892,6 +895,8 @@ public:
   void trigger_lethal_shots();
   void trigger_calling_the_shots();
   bool trigger_focused_trickery( action_t* action, double cost );
+  void trigger_latent_poison_injectors( const action_state_t* s );
+  void trigger_bombardment();
   void consume_trick_shots();
 };
 
@@ -2520,13 +2525,22 @@ struct trick_shots_t : public buff_t
   void execute( int stacks, double value, timespan_t duration ) override
   {
     buff_t::execute( stacks, value, duration );
-    
+
     hunter_t* p = debug_cast<hunter_t*>( player );
     if ( p -> buffs.secrets_of_the_vigil -> trigger() )
     {
       p -> cooldowns.aimed_shot -> reset( true );
       p -> procs.secrets_of_the_vigil_ais_reset -> occur();
     }
+  }
+
+  void expire_override( int remaining_stacks, timespan_t remaining_duration ) override
+  {
+    buff_t::expire_override( remaining_stacks, remaining_duration );
+
+    hunter_t* p = debug_cast<hunter_t*>( player );
+    if ( p -> talents.razor_fragments.ok() )
+      p -> buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
   }
 };
 
@@ -2658,6 +2672,36 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
   return triggered;
 }
 
+void hunter_t::trigger_latent_poison_injectors( const action_state_t* s )
+{
+  if ( !actions.latent_poison_injectors )
+    return;
+
+  auto td = find_target_data( s -> target );
+  if ( !td )
+    return;
+
+  auto debuff = td -> debuffs.latent_poison_injectors;
+  if ( ! debuff -> check() )
+    return;
+
+  actions.latent_poison_injectors -> execute_on_target( s -> target );
+
+  debuff -> expire();
+}
+
+void hunter_t::trigger_bombardment()
+{
+  if ( !talents.bombardment.ok() )
+    return;
+
+  if ( ++state.bombardment_counter == talents.bombardment -> effectN( 1 ).base_value() )
+  {
+    state.bombardment_counter = 0;
+    buffs.bombardment -> trigger();
+  }
+}
+
 namespace attacks
 {
 
@@ -2729,7 +2773,7 @@ struct auto_shot_t : public auto_attack_base_t<ranged_attack_t>
 
   auto_shot_t( hunter_t* p ) : auto_attack_base_t( "auto_shot", p, p -> find_spell( 75 ) )
   {
-    wild_call_chance = 
+    wild_call_chance =
       p -> talents.wild_call -> effectN( 1 ).percent() +
       p -> talents.one_with_the_pack -> effectN( 1 ).percent() +
       p -> conduits.echoing_call.percent();
@@ -2810,10 +2854,20 @@ struct barrage_t: public hunter_spell_t
 
 struct kill_shot_t : hunter_ranged_attack_t
 {
+  struct state_data_t
+  {
+    bool flayers_mark_up = false;
+
+    friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
+      fmt::format_to( out, "flayers_mark_up={:d}", data.flayers_mark_up );
+    }
+  };
+  using state_t = hunter_action_state_t<state_data_t>;
+
   struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
   {
     razor_fragments_t( util::string_view n, hunter_t* p )
-      : residual_periodic_action_t( n, p, p->find_spell( 356620 ) )
+      : residual_periodic_action_t( n, p, p -> find_spell( 356620 ) )
     {
     }
 
@@ -2826,9 +2880,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     }
   };
 
-  bool trigger_razor_fragments = false;
   double health_threshold_pct;
-  razor_fragments_t* bleed = nullptr;
+  razor_fragments_t* razor_fragments = nullptr;
 
   kill_shot_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "kill_shot", p, p -> talents.kill_shot ),
@@ -2836,10 +2889,11 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> legendary.pouch_of_razor_fragments.ok() )
+    if ( p -> legendary.pouch_of_razor_fragments.ok() ||
+         p -> talents.razor_fragments.ok() )
     {
-      bleed = p -> get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
-      add_child( bleed );
+      razor_fragments = p -> get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
+      add_child( razor_fragments );
     }
   }
 
@@ -2848,15 +2902,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> buffs.flayers_mark -> up(); // benefit tracking
-    if ( p() -> legendary.pouch_of_razor_fragments.ok() && p() -> buffs.flayers_mark -> up() )
-    {
-      trigger_razor_fragments = true; // Schedule Razor Fragments Dot
-    }
-    else
-      trigger_razor_fragments = false;
 
     p() -> buffs.deathblow -> decrement();
-
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
 
@@ -2867,17 +2914,14 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( trigger_razor_fragments && bleed )
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> flayers_mark_up )
     {
       double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
       if ( amount > 0 )
       {
         std::vector<player_t*>& tl = target_list();
-        const int max_targets = as<int>( tl.size() );
-        int num_targets = std::min( max_targets, bleed->aoe );
-
-        for ( int t = 0; t < num_targets; t++ )
-          residual_action::trigger( bleed, tl[t], amount );
+        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
+          residual_action::trigger( razor_fragments, t, amount );
       }
     }
   }
@@ -2892,7 +2936,7 @@ struct kill_shot_t : hunter_ranged_attack_t
 
   bool target_ready( player_t* candidate_target ) override
   {
-    return hunter_ranged_attack_t::target_ready( candidate_target ) && 
+    return hunter_ranged_attack_t::target_ready( candidate_target ) &&
       ( candidate_target -> health_percentage() <= health_threshold_pct
         || p() -> buffs.flayers_mark -> check() || p() -> buffs.deathblow -> check() );
   }
@@ -2905,6 +2949,17 @@ struct kill_shot_t : hunter_ranged_attack_t
     am *= 1 + p() -> buffs.empowered_release -> check_value();
 
     return am;
+  }
+
+  action_state_t* new_state() override
+  {
+    return new state_t( this, target );
+  }
+
+  void snapshot_state( action_state_t* s, result_amount_type type ) override
+  {
+    hunter_ranged_attack_t::snapshot_state( s, type );
+    debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check();
   }
 };
 
@@ -2927,6 +2982,7 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
     p() -> trigger_lethal_shots();
     p() -> trigger_calling_the_shots();
+    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -2952,7 +3008,7 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   };
 
   wailing_arrow_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "wailing_arrow", p, 
+    hunter_ranged_attack_t( "wailing_arrow", p,
       p -> specs.wailing_arrow.ok() || p -> talents.wailing_arrow.ok() ? p -> find_spell( 355589 ) : spell_data_t::not_found() )
   {
     parse_options( options_str );
@@ -3061,6 +3117,27 @@ struct serpent_sting_t: public hunter_ranged_attack_t
     }
 
     return tl.size();
+  }
+};
+
+// Latent Poison Injectors ==================================================
+
+struct latent_poison_injectors_t final : hunter_spell_t
+{
+  latent_poison_injectors_t( hunter_t* p ):
+    hunter_spell_t( "latent_poison_injectors", p, p -> find_spell( 378016 ) )
+  {
+    background = true;
+    triggers_wild_spirits = false;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_spell_t::composite_da_multiplier( s );
+
+    m *= td( target ) -> debuffs.latent_poison_injectors -> check();
+
+    return m;
   }
 };
 
@@ -3615,6 +3692,13 @@ struct barbed_shot_t: public hunter_ranged_attack_t
         pet -> buffs.frenzy -> trigger();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    hunter_ranged_attack_t::impact( s );
+
+    p() -> trigger_latent_poison_injectors( s );
+  }
 };
 
 //==============================
@@ -3670,6 +3754,7 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
 
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
+    p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
@@ -3863,6 +3948,21 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
+  struct legacy_of_the_windrunners_t final : public hunter_ranged_attack_t
+  {
+    legacy_of_the_windrunners_t( util::string_view n, hunter_t* p ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
+    {
+      dual = true;
+      proc = true;
+      // LotW arrows behave more like AiS re cast time/speed
+      // TODO: RETEST for DL & test its behavior on lnl AiSes
+      base_execute_time = p -> talents.aimed_shot -> cast_time();
+      travel_speed = p -> talents.aimed_shot -> missile_speed();
+    }
+  };
+
+
   bool lock_and_loaded = false;
   bool secrets_of_the_vigil_up = false;
   struct {
@@ -3870,12 +3970,18 @@ struct aimed_shot_t : public aimed_shot_base_t
     proc_t* proc;
   } double_tap;
   struct {
+    double chance = 0;
     serpent_sting_sst_t* action = nullptr;
   } serpentstalkers_trickery;
   struct {
     double chance = 0;
     proc_t* proc;
   } surging_shots;
+  struct {
+    double chance = 0;
+    int count = 0;
+    legacy_of_the_windrunners_t* action = nullptr;
+  } legacy_of_the_windrunners;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
     aimed_shot_base_t( "aimed_shot", p )
@@ -3889,13 +3995,29 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc = p -> get_proc( "Double Tap Aimed" );
     }
 
-    if ( p -> legendary.serpentstalkers_trickery.ok() || p -> talents.serpentstalkers_trickery.ok() )
+    if ( p -> legendary.serpentstalkers_trickery.ok() )
+    {
       serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery.chance = 1;
+    }
+    else if ( p -> talents.serpentstalkers_trickery.ok() )
+    {
+      serpentstalkers_trickery.action = p -> get_background_action<serpent_sting_sst_t>( "serpent_sting" );
+      serpentstalkers_trickery.chance = p -> talents.serpentstalkers_trickery -> effectN( 1 ).percent();
+    }
 
     if ( p -> talents.surging_shots.ok() )
     {
       surging_shots.chance = p -> talents.surging_shots -> proc_chance();
       surging_shots.proc = p -> get_proc( "Surging Shots Rapid Fire reset" );
+    }
+
+    if ( p -> talents.legacy_of_the_windrunners.ok() )
+    {
+      legacy_of_the_windrunners.chance = p -> talents.legacy_of_the_windrunners -> proc_chance();
+      legacy_of_the_windrunners.count = p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value();
+      legacy_of_the_windrunners.action = p -> get_background_action<legacy_of_the_windrunners_t>( "legacy_of_the_windrunners" );
+      add_child( legacy_of_the_windrunners.action );
     }
   }
 
@@ -3918,6 +4040,12 @@ struct aimed_shot_t : public aimed_shot_base_t
     lock_and_loaded = p() -> buffs.lock_and_load -> up();
 
     aimed_shot_base_t::schedule_execute( s );
+
+    if ( rng().roll( legacy_of_the_windrunners.chance ) )
+    {
+      for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
+        legacy_of_the_windrunners.action -> schedule_execute();
+    }
   }
 
   void execute() override
@@ -3943,12 +4071,13 @@ struct aimed_shot_t : public aimed_shot_base_t
       double_tap.proc -> occur();
     }
 
-    if ( p() -> legendary.serpentstalkers_trickery.ok() || p() -> talents.serpentstalkers_trickery.ok() && rng().roll( p() -> talents.serpentstalkers_trickery->effectN( 1 ).percent() ) )
+    if ( rng().roll( serpentstalkers_trickery.chance ) )
       serpentstalkers_trickery.action -> execute_on_target( target );
 
     secrets_of_the_vigil_up = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
+    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 2 ).percent() );
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
@@ -3966,9 +4095,6 @@ struct aimed_shot_t : public aimed_shot_base_t
       surging_shots.proc -> occur();
       p() -> cooldowns.rapid_fire -> reset( true );
     }
-
-    if ( p() -> buffs.deathblow -> trigger() )
-      p() -> cooldowns.kill_shot -> reset( true );
   }
 
   timespan_t execute_time() const override
@@ -3995,6 +4121,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     // the exception of Vigil buffs that were applied by a Focused Trickery Trick Shots.
     if ( debug_cast<state_t*>( s ) -> secrets_of_the_vigil_up && !debug_cast<state_t*>( s ) -> focused_trickery_vigil )
       p() -> buffs.secrets_of_the_vigil -> decrement();
+
+    // TODO: check exact trigger conditions (TrS AiSes etc)
+    p() -> trigger_latent_poison_injectors( s );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4092,6 +4221,9 @@ struct rapid_fire_t: public hunter_spell_t
       base_aoe_multiplier = p -> talents.trick_shots -> effectN( 5 ).percent()
         + p -> conduits.deadly_chain.percent()
         + p -> talents.heavy_ammo -> effectN( 4 ).percent();
+
+      // energize
+      parse_effect_data( p -> find_spell( 263585 ) -> effectN( 1 ) );
     }
 
     int n_targets() const override
@@ -4193,6 +4325,8 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
+    // XXX: check trigger behaviour re channel start/finish
+    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
   }
 
   void tick( dot_t* d ) override
@@ -4291,11 +4425,23 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
+    p() -> buffs.bombardment -> up(); // benefit tracking
+    p() -> buffs.bombardment -> expire();
+
     p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
 
     if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() )
       p() -> buffs.trick_shots -> trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hunter_ranged_attack_t::composite_da_multiplier( s );
+
+    m *= p() -> buffs.bombardment -> check_stack_value();
+
+    return m;
   }
 };
 
@@ -4442,6 +4588,8 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     if ( latent_poison_injection )
       latent_poison_injection -> trigger( s -> target );
+
+    p() -> trigger_latent_poison_injectors( s );
   }
 
   double action_multiplier() const override
@@ -5191,7 +5339,7 @@ struct kill_command_t: public hunter_spell_t
 
       chance += p() -> talents.bloody_claws -> effectN( 1 ).percent()
         * p() -> buffs.mongoose_fury -> check();
-      
+
       if ( rng().roll( chance ) )
       {
         predator.proc -> occur();
@@ -6009,7 +6157,7 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
     make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
-  debuffs.death_chakram = 
+  debuffs.death_chakram =
     make_buff( *this, "death_chakram", p -> find_spell( 325037 ) )
       -> set_default_value_from_effect_type( A_MOD_DAMAGE_FROM_CASTER )
       -> set_cooldown( 0_s );
@@ -6262,7 +6410,7 @@ void hunter_t::init_spells()
   talents.kill_shot                         = find_talent_spell( talent_tree::CLASS, "Kill Shot" );
 
   talents.improved_kill_shot                = find_talent_spell( talent_tree::CLASS, "Improved Kill Shot" );
-  
+
   talents.hiexplosive_trap                  = find_talent_spell( talent_tree::CLASS, "Hi-Explosive Trap" );
 
   talents.beast_master                      = find_talent_spell( talent_tree::CLASS, "Beast Master" );
@@ -6316,6 +6464,8 @@ void hunter_t::init_spells()
     talents.lone_wolf                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lone Wolf", HUNTER_MARKSMANSHIP );
     talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
 
+    talents.bombardment                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardment", HUNTER_MARKSMANSHIP );
+    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
     talents.sharpshooter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpshooter", HUNTER_MARKSMANSHIP );
     talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
     talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
@@ -6551,7 +6701,7 @@ void hunter_t::init_base_stats()
   }
 
   resources.base[RESOURCE_FOCUS] = 100
-    + talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS ) 
+    + talents.kindred_spirits -> effectN( 1 ).resource( RESOURCE_FOCUS )
     + talents.energetic_ally -> effectN( 1 ).resource( RESOURCE_FOCUS );
 }
 
@@ -6561,6 +6711,9 @@ void hunter_t::create_actions()
 
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
+
+  if ( talents.latent_poison_injectors.ok() )
+    actions.latent_poison_injectors = new attacks::latent_poison_injectors_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -6575,6 +6728,11 @@ void hunter_t::create_buffs()
       -> set_chance( talents.nesingwarys_trapping_apparatus.ok() );
 
   // Marksmanship Tree
+
+  buffs.bombardment =
+    make_buff( this, "bombardment", find_spell( 378885 ) )
+      -> set_default_value( talents.bombardment -> effectN( 1 ).percent() )
+      -> set_chance( talents.bombardment.ok() );
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
@@ -6622,15 +6780,14 @@ void hunter_t::create_buffs()
       -> set_cooldown( 0_ms )
       -> set_default_value_from_effect( 4 )
       -> set_affects_regen( true )
-      -> set_stack_change_callback( 
+      -> set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) {
-          
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
-          
+
           if ( cur == 0 )
             buffs.eagletalons_true_focus -> expire();
-          else if ( old == 0 && talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() )
+          else if ( old == 0 && ( talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() ) )
             buffs.eagletalons_true_focus -> trigger();
 
           if ( cur == 0 )
@@ -6647,10 +6804,18 @@ void hunter_t::create_buffs()
       -> set_trigger_spell( talents.lock_and_load );
 
   buffs.deathblow =
-    make_buff( this, "deathblow", talents.deathblow -> effectN( 1 ).trigger() )
-      -> set_trigger_spell( talents.deathblow );
+    make_buff( this, "deathblow", find_spell( 378770 ) )
+      -> set_stack_change_callback(
+        [ this ]( buff_t*, int old, int ) {
+          // XXX: check refreshes
+          if ( old == 0 ) {
+            cooldowns.kill_shot -> reset( true );
+            if ( talents.razor_fragments.ok() )
+              buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+          }
+        } );
 
-  buffs.unerring_vision_hidden = 
+  buffs.unerring_vision_hidden =
     make_buff( this, "unerring_vision_hidden", find_spell( 274446 ) )
       -> set_quiet( true )
       -> set_tick_zero( true )
@@ -6659,7 +6824,7 @@ void hunter_t::create_buffs()
           // buffs.unerring_vision -> trigger();
         } );
 
-  buffs.unerring_vision = 
+  buffs.unerring_vision =
     make_buff<stat_buff_t>( this, "unerring_vision", talents.unerring_vision );
 
   buffs.eagletalons_true_focus =
@@ -6675,7 +6840,7 @@ void hunter_t::create_buffs()
     buffs.barbed_shot[ i ] =
       make_buff( this, fmt::format( "barbed_shot_{}", i + 1 ), barbed_shot )
         -> set_default_value( barbed_shot -> effectN( 1 ).resource( RESOURCE_FOCUS ) )
-        -> set_tick_callback( 
+        -> set_tick_callback(
           [ this ]( buff_t* b, int, timespan_t ) {
             resource_gain( RESOURCE_FOCUS, b -> default_value, gains.barbed_shot, actions.barbed_shot );
           } );
@@ -6722,7 +6887,7 @@ void hunter_t::create_buffs()
     make_buff( this, "call_of_the_wild", talents.call_of_the_wild )
       -> set_cooldown( 0_ms )
       -> set_tick_callback(
-        [ this ]( buff_t *b, int, timespan_t ) {
+        [ this ]( buff_t*, int, timespan_t ) {
           pets.cotw_stable_pet.spawn( talents.call_of_the_wild -> effectN( 2 ).trigger() -> duration(), 1 );
         } );
 
@@ -6731,12 +6896,12 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_chance( talents.dire_pack.ok() )
       -> set_stack_change_callback(
-        [ this ]( buff_t* b, int old, int cur ) {
+        [ this ]( buff_t*, int, int ) {
           cooldowns.kill_command -> adjust_recharge_multiplier();
         } );
 
   // Survival
-  
+
   buffs.predator =
     make_buff( this, "predator", find_spell( 260249 ) )
       -> set_default_value_from_effect( 1 )
@@ -6793,7 +6958,7 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 2 )
       -> apply_affecting_aura( talents.aspect_of_the_beast )
       -> add_invalidate( CACHE_LEECH );
-  
+
   // Tier Set Bonuses
 
   buffs.killing_frenzy =
@@ -6943,7 +7108,7 @@ void hunter_t::init_procs()
 
   if ( tier_set.focused_trickery_4pc.ok() )
     procs.focused_trickery_trick_shots = get_proc( "Focused Trickery Trick Shots" );
-  
+
   if ( legendary.secrets_of_the_vigil.ok() )
     procs.secrets_of_the_vigil_ais_reset = get_proc( "Secrets of the Unblinking Vigil AiS reset" );
 }
@@ -7153,7 +7318,7 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += specs.critical_strikes->effectN( 1 ).percent();
-  
+
   crit += talents.keen_eyesight->effectN( 1 ).percent();
 
   return crit;

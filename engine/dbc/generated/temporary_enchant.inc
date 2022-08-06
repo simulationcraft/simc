@@ -1,5 +1,5 @@
-// Temporary item enchants, wow build 10.0.0.44795
-static const std::array<temporary_enchant_entry_t, 71> __temporary_enchant_data { {
+// Temporary item enchants, wow build 10.0.0.44895
+static const std::array<temporary_enchant_entry_t, 77> __temporary_enchant_data { {
   {  2713,  29453, "adamantite_sharpening_stone"  },
   {  2955,  34340, "adamantite_weightstone"       },
   {  3265,  45395, "blessed_weapon_coating"       },
@@ -13,6 +13,9 @@ static const std::array<temporary_enchant_entry_t, 71> __temporary_enchant_data 
   {    13,   2829, "coarse_sharpening_stone"      },
   {    20,   3113, "coarse_weightstone"           },
   {  2795,  32426, "comfortable_insoles"          },
+  {  6529, 386243, "completely_safe_rockets"      },
+  {  6530, 386245, "completely_safe_rockets"      },
+  {  6531, 386246, "completely_safe_rockets"      },
   {  3593,  28891, "consecrated_sharpening_stone" },
   {  6382, 371641, "dnt__stonename_razorstone"    },
   {  6383, 371680, "dnt__stonename_razorstone"    },
@@ -37,6 +40,9 @@ static const std::array<temporary_enchant_entry_t, 71> __temporary_enchant_data 
   {  6224, 324064, "desolate_armor_kit"           },
   {  2506,  22756, "elemental_sharpening_stone"   },
   {  6190, 321389, "embalmers_oil"                },
+  {  6532, 386252, "endless_stack_of_needles"     },
+  {  6533, 386254, "endless_stack_of_needles"     },
+  {  6534, 386255, "endless_stack_of_needles"     },
   {  3298,  47904, "exceptional_mana_oil"         },
   {  2712,  29452, "fel_sharpening_stone"         },
   {  2954,  34339, "fel_weightstone"              },

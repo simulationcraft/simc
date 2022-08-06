@@ -663,6 +663,7 @@ struct player_t : public actor_t
     const spell_data_t* magical_affinity;
     const spell_data_t* mountaineer;
     const spell_data_t* brush_it_off;
+    const spell_data_t* awakened;
   } racials;
 
   struct antumbra_t
@@ -775,6 +776,7 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_url );
+  bool parse_talents_wowhead( std::string_view talent_url );
   void parse_temporary_enchants();
 
   bool is_moving() const;
@@ -894,6 +896,8 @@ public:
   // Virtual methods
   virtual void invalidate_cache( cache_e c );
   virtual void init();
+  virtual bool validate_fight_style( fight_style_e )
+  { return true; }
   virtual void override_talent( util::string_view override_str );
   virtual void init_meta_gem();
   virtual void init_resources( bool force = false );

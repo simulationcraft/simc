@@ -3605,6 +3605,8 @@ void grim_eclipse( special_effect_t& effect )
       // Use data().duration() here so that if you alter dot_duration the tick value is not changed
       tick_action->base_dd_min = tick_action->base_dd_max =
           e.driver()->effectN( 1 ).average( e.item ) / data().duration().total_seconds();
+      // damage effect has a radius so we need to override being auto-parsed as an aoe spell
+      tick_action->aoe = 0;
 
       buff->add_stat( STAT_HASTE_RATING, e.driver()->effectN( 2 ).average( e.item ) );
       base_duration = buff->buff_duration();

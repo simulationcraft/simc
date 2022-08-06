@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-30/44795)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44895 dragonflight-BETA (hotfix 2022-08-06/44895, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -93,7 +93,7 @@ Effects          :
 Tooltip          : Damage increased by $s1%.
 
 Name             : Intimidation (id=19577) [Spell Family (9)] 
-Talent Entry     : Generic [tree=class, row=6, col=3, entry_id=41989, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Hunter, Monk
 School           : Nature
 Spell Type       : None
@@ -608,7 +608,7 @@ Name             : Spinning Crane Kick (id=107270) [Spell Family (53)]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2), Mistweaver Monk (137024 effect#14), Windwalker Monk (137025 effects: #1, #2, #8, #22), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Cyclone Strikes (220358 effect#1), The Wind Blows (281452 effects: #1, #2), Dance of Chi-Ji (286587 effect#3), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Triggered by     : Spinning Crane Kick (101546), Spinning Crane Kick (322729)
 Family Flags     : 8, 103
 Attributes       : ....x... ........ ..x..... ........   ........ ........ ........ ........ 
@@ -3703,6 +3703,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.00000 | Target: Self (1)
                    Affected Spells: Fists of Fury (113656), Fists of Fury (117418), Fists of Fury (120086)
                    Family Flags: 20, 55
+#22 (id=1020543)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Spinning Crane Kick (107270)
+                   Family Flags: 8
 
 Name             : Combo Breaker (id=137384) [Spell Family (53), Passive, Hidden] 
 Class            : Windwalker Monk
@@ -4166,7 +4170,7 @@ Tooltip          : Movement speed increased by $s1%.
 
 Name             : Touch of Fatality (id=169340) [Spell Family (53)] 
 Class            : Monk
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : Melee
 Spell Level      : 17
@@ -4968,7 +4972,7 @@ Tooltip          : Disoriented.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -5855,7 +5859,7 @@ Stamina increased by $s3%.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -5876,7 +5880,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Triggered by     : Activating Specialization (200749)
@@ -12821,7 +12825,7 @@ Tooltip          : Increases maximum health by $w1.
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 

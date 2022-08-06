@@ -580,6 +580,12 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
       return p->parse_talents_armory2( url );
     }
   }
+  else if ( url.find( "wowhead.com/beta/talent-calc" ) != url.npos )  // TODO: remove /beta/ when DF goes live
+  {
+    if ( sim->talent_input_format == talent_format::UNCHANGED )
+      sim->talent_input_format = talent_format::WOWHEAD;
+    return p->parse_talents_wowhead( url );
+  }
   else
   {
     bool all_digits = true;
@@ -1390,6 +1396,13 @@ void sc_format_to( const player_t::base_initial_current_t& s, fmt::format_contex
 void player_t::init()
 {
   sim->print_debug( "Initializing {}.", *this );
+
+  // Validate current fight style is supported by the actor's module.
+  if ( !validate_fight_style( sim->fight_style ) )
+  {
+    sim->error( "Player {} does not support fight style {}, results may be unreliable.", *this,
+                util::fight_style_string( sim->fight_style ) );
+  }
 
   // Ensure the precombat and default lists are the first listed
   auto pre_combat = get_action_priority_list( "precombat", "Executed before combat begins. Accepts non-harmful actions only." );
@@ -2367,12 +2380,46 @@ static void parse_traits(
       return;
     }
 
-    auto entry_id = util::to_unsigned_ignore_error( talent_split[0], 0 );
+    bool is_spell_id = false;
+    auto entry_id = 0U;
+    if ( !talent_split[ 0 ].empty() &&
+         ( talent_split[ 0 ][ 0 ] == 's' || talent_split[ 0 ][ 0 ] == 'S' ) )
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ].substr( 1 ), 0 );
+      is_spell_id = true;
+    }
+    else
+    {
+      entry_id = util::to_unsigned_ignore_error( talent_split[ 0 ], 0 );
+    }
+
     auto ranks = util::to_unsigned( talent_split[1] );
     const trait_data_t* trait_obj = nullptr;
     if ( entry_id != 0 )
     {
-      trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+      if ( is_spell_id )
+      {
+        auto objs = trait_data_t::find_by_spell( tree, entry_id, util::class_id( player->type ),
+            player->specialization(), player->dbc->ptr );
+        if ( objs.empty() )
+        {
+          trait_obj = &( trait_data_t::nil() );
+        }
+        else if ( objs.size() > 1U )
+        {
+          player->sim->error( "Multiple talents for spell id {} found",
+              talent_split[ 0 ].substr( 1 ) );
+          player->sim->cancel();
+        }
+        else
+        {
+          trait_obj = objs[ 0 ];
+        }
+      }
+      else
+      {
+        trait_obj = trait_data_t::find( entry_id, player->dbc->ptr );
+      }
     }
     else
     {
@@ -2453,7 +2500,12 @@ void player_t::init_talents()
 
     for ( const auto& effect_point : effect_points )
     {
-      auto effect_id = spell->effectN( effect_point.effect_index + 1U ).id();
+      auto eff_idx = effect_point.effect_index + 1U;
+      // Skip if more effect point entries exist than there are effects
+      if ( spell->effect_count() < eff_idx )
+        continue;
+
+      auto effect_id = spell->effectN( eff_idx ).id();
       // Don't adjust already overridden effects, as those are defined by player options from the
       // command line (i.e., using override.spell_data or override.player.spell_data options).
       if ( dbc_override_->is_overridden_effect( *dbc, effect_id, "base_value" ) )
@@ -2539,6 +2591,7 @@ void player_t::init_spells()
   racials.magical_affinity      = find_racial_spell( "Magical Affinity" );
   racials.mountaineer           = find_racial_spell( "Mountaineer" );
   racials.brush_it_off          = find_racial_spell( "Brush It Off" );
+  racials.awakened              = find_racial_spell( "Awakened" );
 
   if ( !is_enemy() )
   {
@@ -3740,7 +3793,7 @@ double player_t::resource_regen_per_second( resource_e r ) const
 {
   double reg = resources.base_regen_per_second[ r ];
 
-  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY )
+  if ( r == RESOURCE_FOCUS || r == RESOURCE_ENERGY || r == RESOURCE_ESSENCE )
   {
     if ( reg )
     {
@@ -4256,6 +4309,8 @@ double player_t::composite_mastery() const
 {
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
+
+  cm += racials.awakened->effectN( 1 ).base_value();
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
     cm += b->check_stack_value();
@@ -9733,6 +9788,192 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
   }
 
   create_talents_armory();
+
+  return true;
+}
+
+// Wowhead talent calculator link hash
+//
+// Hash uses 6-bit 'bytes' which are used as index values for base64URL encoding
+// Each trait node uses 2 bits to represent ranks spent on node
+// Each selection node uses 2 bits to represent the choice made with 0 = lower index, 1 = higher index
+//
+// 1st byte seems to always be 1
+// * 1 byte for the number of bytes used for class nodes
+// * 0-X bytes for class nodes, with each node using 2 bits, grouped into 6-bit bytes with 0 padding at the end
+// * 1 byte for the number of bytes used for class selection node choices
+// * 0-x bytes for class selections, with each choice using 1 bit, ordered by selection nodes taken as per class node bytes
+// * 1 byte for the number of bytes used for spec nodes
+// * 0-x bytes for spec nodes, with each ndoe using 2 bits, grouped into 6-bit bytes with 0 padding at the end
+// * 1 byte for the number of bytes used for spec selection node choices
+// * 0-x bytes for spec selections, with each choice using 1 bit, ordered by selection nodes taken as per spec node bytes
+namespace
+{
+// Generate sorted list of traits by node position, starting with upper left and ascending by column then row
+// Generate list of selection traits mapped to node position.
+// There is no need to strictly sort this list other than to ensure the lower selection_index comes before the higher.
+bool generate_trait_map( player_t* player, talent_tree tree,
+                         std::vector<std::pair<int, const trait_data_t*>>& trait_map,
+                         std::vector<std::pair<int, const trait_data_t*>>& selection_map )
+{
+  specialization_e spec = player->specialization();
+
+  uint32_t class_idx, spec_idx;
+  if ( !player->dbc->spec_idx( spec, class_idx, spec_idx ) )
+    return false;
+
+  auto trait_data = trait_data_t::data( class_idx, tree, maybe_ptr( player->dbc->ptr ) );
+  range::for_each( trait_data, [ spec, &trait_map, &selection_map ]( const trait_data_t& entry ) {
+    if ( entry.id_spec[ 0 ] == 0 || range::contains( entry.id_spec, spec ) )
+    {
+      int key = entry.row * 10 + entry.col;
+
+      if ( entry.selection_index != -1 )
+      {
+        auto it = range::find_if( selection_map, [ key ]( std::pair<int, const trait_data_t*>& tup ) {
+          return tup.first == key;
+        } );
+
+        if ( it != selection_map.end() )
+        {
+          if ( entry.selection_index < it->second->selection_index )
+            selection_map.emplace( selection_map.begin(), key, &entry );
+          else
+            selection_map.emplace_back( key, &entry );
+        }
+        else
+        {
+          selection_map.emplace_back( key, &entry );
+          trait_map.emplace_back( key, nullptr );
+        }
+      }
+      else
+        trait_map.emplace_back( key, &entry );
+    }
+  } );
+
+  range::sort( trait_map, []( std::pair<int, const trait_data_t*> a, std::pair<int, const trait_data_t*> b ) {
+    return a.first < b.first;
+  } );
+
+  return true;
+}
+}  // namespace
+
+bool player_t::parse_talents_wowhead( std::string_view talent_url )
+{
+  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+  auto split = util::string_split<std::string_view>( talent_url, "/" );
+  auto hash  = split.back();
+
+  auto do_error = [ talent_url, hash, this ]() {
+    sim->error( "Player {} has invalid wowhead talent url {} with hash {}", name(), talent_url, hash );
+    return false;
+  };
+
+  if ( hash.find_first_not_of( char_array ) != std::string::npos || hash.length() < 6 )
+    do_error();
+
+  std::vector<std::pair<int, const trait_data_t*>> class_map;
+  std::vector<std::pair<int, const trait_data_t*>> spec_map;
+  std::vector<std::pair<int, const trait_data_t*>> class_selections;
+  std::vector<std::pair<int, const trait_data_t*>> spec_selections;
+
+  if ( !generate_trait_map( this, talent_tree::CLASS, class_map, class_selections ) ||
+       !generate_trait_map( this, talent_tree::SPECIALIZATION, spec_map, spec_selections ) )
+  {
+    sim->error( "Player {} trying to parse wowhead talent url without previously defined specialization", name() );
+    return false;
+  }
+
+  // hash[ 0 ] is always 'B'  TODO: confirm
+  auto class_trait_offset  = 1;
+  auto class_trait_bytes   = char_array.find( hash[ class_trait_offset ] );
+  auto class_select_offset = class_trait_offset + 1 + class_trait_bytes;
+  auto class_select_bytes  = char_array.find( hash[ class_select_offset ] );
+  auto spec_trait_offset   = class_select_offset + 1 + class_select_bytes;
+  auto spec_trait_bytes    = char_array.find( hash[ spec_trait_offset ] );
+  auto spec_select_offset  = spec_trait_offset + 1 + spec_trait_bytes;
+  auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
+
+  auto get_next_bit = [ hash ]( size_t idx, size_t offset ) -> size_t {
+    size_t byte = char_array.find( hash[ offset + 1 + idx / 3 ] );
+    size_t bit  = idx % 3;
+
+    if ( bit == 0 )
+      return byte >> 4;
+    else if ( bit == 1 )
+      return byte >> 2 & 0b11;
+    else if ( bit == 2 )
+      return byte & 0b11;
+
+    return 0;
+  };
+
+  auto get_select_trait = [ &do_error ]( auto begin, auto end, int key ) -> const trait_data_t* {
+    auto it = std::find_if( begin, end, [ key ]( std::pair<int, const trait_data_t*> entry ) {
+      return entry.first == key;
+    } );
+    if ( it == end )
+      return nullptr;
+
+    return it->second;
+  };
+
+  // Parse class traits
+  for ( size_t i = 0, j = 0; i < class_trait_bytes * 3; i++ )
+  {
+    auto bit = get_next_bit( i, class_trait_offset );
+    if ( bit )
+    {
+      auto key   = class_map[ i ].first;
+      auto trait = class_map[ i ].second;
+
+      if ( !trait )
+      {
+        auto sel_bit = get_next_bit( j++, class_select_offset );
+        if ( sel_bit == 0 )
+          trait = get_select_trait( class_selections.begin(), class_selections.end(), key );
+        else if ( sel_bit == 1 )
+          trait = get_select_trait( class_selections.rbegin(), class_selections.rend(), key );
+        else
+          do_error();
+      }
+
+      if ( !trait )
+        do_error();
+
+      player_traits.emplace_back( talent_tree::CLASS, trait->id_trait_node_entry, as<unsigned>( bit ) );
+    }
+  }
+
+  // Parse spec traits
+  for ( size_t i = 0, j = 0; i < spec_trait_bytes * 3; i++ )
+  {
+    auto bit = get_next_bit( i, spec_trait_offset );
+    if ( bit )
+    {
+      auto key   = spec_map[ i ].first;
+      auto trait = spec_map[ i ].second;
+
+      if ( !trait )
+      {
+        auto sel_bit = get_next_bit( j++, spec_select_offset );
+        if ( sel_bit == 0 )
+          trait = get_select_trait( spec_selections.begin(), spec_selections.end(), key );
+        else if ( sel_bit == 1 )
+          trait = get_select_trait( spec_selections.rbegin(), spec_selections.rend(), key );
+        else
+          do_error();
+      }
+
+      if ( !trait )
+        do_error();
+
+      player_traits.emplace_back( talent_tree::SPECIALIZATION, trait->id_trait_node_entry, as<unsigned>( bit ) );
+    }
+  }
 
   return true;
 }

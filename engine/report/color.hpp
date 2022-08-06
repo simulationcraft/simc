@@ -151,6 +151,7 @@ namespace color
   inline constexpr rgb COLOR_DEATH_KNIGHT( "C41F3B" );
   inline constexpr rgb COLOR_DEMON_HUNTER( "A330C9" );
   inline constexpr rgb COLOR_DRUID( "FF7D0A" );
+  inline constexpr rgb COLOR_EVOKER( "33937F" );
   inline constexpr rgb COLOR_HUNTER( "ABD473" );
   inline constexpr rgb COLOR_MAGE( "69CCF0" );
   inline constexpr rgb COLOR_MONK( "00FF96" );

@@ -224,6 +224,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\class_modules\sc_demon_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_druid.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_enemy.cpp" />
+		<ClCompile Include="..\engine\class_modules\sc_evoker.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_mage.cpp" />
 		<ClCompile Include="..\engine\class_modules\sc_rogue.cpp" />

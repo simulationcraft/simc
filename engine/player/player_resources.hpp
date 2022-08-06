@@ -47,6 +47,7 @@ struct player_resources_t
     start_at[ RESOURCE_FOCUS      ] = std::numeric_limits<double>::max();
     start_at[ RESOURCE_ENERGY     ] = std::numeric_limits<double>::max();
     start_at[ RESOURCE_RUNE       ] = std::numeric_limits<double>::max();
+    start_at[ RESOURCE_ESSENCE    ] = std::numeric_limits<double>::max();
     start_at[ RESOURCE_SOUL_SHARD ] = 3.0;
   }
 

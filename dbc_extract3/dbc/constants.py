@@ -107,7 +107,9 @@ RACE_INFO = [
   { 'id': 34, 'bit': 11, 'name': 'DarkIronDwarf',      'skill': 2773 },
   { 'id': 35, 'bit': 12, 'name': 'Vulpera',            'skill': 2775 },
   { 'id': 36, 'bit': 13, 'name': 'MagharOrc',          'skill': 2598 },
-  { 'id': 37, 'bit': 14, 'name': 'Mechagnome',         'skill': 2774 }
+  { 'id': 37, 'bit': 14, 'name': 'Mechagnome',         'skill': 2774 },
+  { 'id': 52, 'bit': 16, 'name': 'Dracthyr',           'skill': 2808 },
+  { 'id': 70, 'bit': 15, 'name': 'Drachtyr',           'skill': 2808 }
 ]
 
 CLASS_INFO = [

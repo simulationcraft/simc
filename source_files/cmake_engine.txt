@@ -218,6 +218,7 @@ class_modules/sc_death_knight.cpp
 class_modules/sc_demon_hunter.cpp
 class_modules/sc_druid.cpp
 class_modules/sc_enemy.cpp
+class_modules/sc_evoker.cpp
 class_modules/sc_hunter.cpp
 class_modules/sc_mage.cpp
 class_modules/sc_rogue.cpp

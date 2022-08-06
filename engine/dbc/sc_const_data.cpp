@@ -87,7 +87,7 @@ struct class_passives_entry_t
     specialization_e spec;
     unsigned         spell_id;
   };
-static constexpr std::array<class_passives_entry_t, 48> _class_passives { {
+static constexpr std::array<class_passives_entry_t, 50> _class_passives { {
   { DEATH_KNIGHT, SPEC_NONE,              137005 },
   { DEATH_KNIGHT, DEATH_KNIGHT_BLOOD,     137008 },
   { DEATH_KNIGHT, DEATH_KNIGHT_UNHOLY,    137007 },
@@ -100,6 +100,8 @@ static constexpr std::array<class_passives_entry_t, 48> _class_passives { {
   { DRUID,        DRUID_FERAL,            137011 },
   { DRUID,        DRUID_BALANCE,          137013 },
   { DRUID,        DRUID_GUARDIAN,         137010 },
+  { EVOKER,       EVOKER_DEVASTATION,     356809 },
+  { EVOKER,       EVOKER_PRESERVATION,    356810 },
   { HUNTER,       SPEC_NONE,              137014 },
   { HUNTER,       HUNTER_SURVIVAL,        137017 },
   { HUNTER,       HUNTER_MARKSMANSHIP,    137016 },
@@ -469,7 +471,14 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
         return DRUID_RESTORATION;
       else if ( str_compare_ci( spec_str, "tree" ) )
         return DRUID_RESTORATION;
-
+      break;
+    }
+    case EVOKER:
+    {
+      if ( str_compare_ci( spec_str, "devastation" ) )
+        return EVOKER_DEVASTATION;
+      else if ( str_compare_ci( spec_str, "preservation" ) )
+        return EVOKER_PRESERVATION;
       break;
     }
     case HUNTER:
@@ -1413,11 +1422,27 @@ double dbc_t::real_ppm_modifier( unsigned spell_id, player_t* player, unsigned i
     {
       modifier *= 1.0 + rppm_modifier.coefficient;
     }
-    // TODO: How does coefficient play into this?
     else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_ILEVEL )
     {
       assert( item_level > 0 && "Ilevel-based RPPM modifier requires non-zero item level parameter" );
-      modifier *= item_database::approx_scale_coefficient( rppm_modifier.type, item_level );
+      auto base_record = random_prop_data_t::find( rppm_modifier.type, player->dbc->ptr );
+      auto ilevel_record = random_prop_data_t::find( item_level, player->dbc->ptr );
+      auto base_points = base_record.p_rare[ 0 ];
+      auto ilevel_points = ilevel_record.p_rare[ 0 ];
+      if ( base_points != ilevel_points )
+      {
+        modifier *= 1.0 + ( ( ilevel_points / base_points ) - 1.0 ) * rppm_modifier.coefficient;
+      }
+    }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_CLASS &&
+              util::class_id_mask( player->type ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
+    }
+    else if ( rppm_modifier.modifier_type == RPPM_MODIFIER_RACE &&
+        util::race_mask( player->race ) & rppm_modifier.type )
+    {
+      modifier *= 1.0 + rppm_modifier.coefficient;
     }
   }
 

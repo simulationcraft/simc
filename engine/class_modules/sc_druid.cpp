@@ -2189,15 +2189,7 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-    if ( !check_form_restriction() )
-    {
-      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
-        p()->active.shift_to_caster->execute();
-      else if ( autoshift )
-        autoshift->execute();
-      else
-        assert( false && "Action executed in wrong form with no valid form to shift to!" );
-    }
+    check_autoshift();
 
     ab::schedule_execute( s );
   }
@@ -2615,7 +2607,9 @@ public:
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.incarnation_cat );
     parse_buff_effects( p()->buff.predatory_swiftness );
-    parse_buff_effects( p()->buff.savage_roar );
+    parse_conditional_effects( &p()->buff.savage_roar->data(), [ this ]() {
+      return p()->get_form() == form_e::CAT_FORM && p()->buff.savage_roar->check();
+    } );
     parse_buff_effects( p()->buff.apex_predators_craving );
 
     // Guardian
@@ -2785,6 +2779,19 @@ public:
     return !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() ||
            ( p()->talent.ursine_adept.ok() && p()->buff.bear_form->check() &&
              ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) );
+  }
+
+  void check_autoshift()
+  {
+    if ( !check_form_restriction() )
+    {
+      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
+        p()->active.shift_to_caster->execute();
+      else if ( autoshift )
+        autoshift->execute();
+      else
+        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -6049,6 +6056,12 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       auto tl = target_list();
 
+      // because action_t::available_targets() explicitly adds the current action_t::target to the target_cache, we need
+      // to explicitly remove it here as swarm should not pick an invulnerable target whenignore_invulnerable_targets is
+      // enabled.
+      if ( sim->ignore_invulnerable_targets && target->debuffs.invulnerable->check() )
+        tl.erase( std::remove( tl.begin(), tl.end(), target ), tl.end() );
+
       if ( exclude.player )
         tl.erase( std::remove( tl.begin(), tl.end(), exclude.player ), tl.end() );
 
@@ -7106,6 +7119,9 @@ struct prowl_t : public druid_spell_t
   {
     sim->print_log( "{} performs {}", player->name(), name() );
 
+    // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
+    check_autoshift();
+
     p()->buff.jungle_stalker->expire();
     p()->buff.prowl->trigger();
 
@@ -8002,6 +8018,16 @@ struct wrath_t : public druid_spell_t
     g = std::max( min_gcd, g );
 
     return g;
+  }
+
+  // return false on invulnerable targets as this action is !harmful to allow for self-healing, thus will pass the
+  // invulnerable check in action_t::target_ready()
+  bool target_ready( player_t* t ) override
+  {
+    if ( t->debuffs.invulnerable->check() && sim->ignore_invulnerable_targets )
+      return false;
+
+    return druid_spell_t::target_ready( t );
   }
 
   void execute() override
@@ -9208,7 +9234,7 @@ void druid_t::init_spells()
   talent.astral_influence               = CT( "Astral Influence" );
   talent.tireless_pursuit               = CT( "Tireless Pursuit" );
   talent.soothe                         = CT( "Soothe" );
-  talent.sunfire                        = CT( "Sunfire (no AOE)" );
+  talent.sunfire                        = CT( "Sunfire" );
   talent.typhoon                        = CT( "Typhoon" );
   talent.primal_fury                    = CT( "Primal Fury" );
   talent.ursocs_endurance               = CT( "Ursoc's Endurance (NNF)" );
@@ -9223,7 +9249,7 @@ void druid_t::init_spells()
   talent.ursols_vortex                  = CT( "Ursol's Vortex" );
   talent.mass_entanglement              = CT( "Mass Entanglement" );
   talent.wellhoned_instincts            = CT( "Well-Honed Instincts" );
-  talent.improved_stampeding_roar       = find_talent_spell( talent_tree::CLASS, 288826 );  // NNF
+  talent.improved_stampeding_roar       = CT( "Improved Stampeding Roar");
   talent.renewal                        = CT( "Renewal" );
   talent.innervate                      = CT( "Innervate" );
   talent.furor                          = CT( "Furor" );
@@ -9243,13 +9269,13 @@ void druid_t::init_spells()
   sim->print_debug( "Initializing balance talents..." );
   talent.eclipse                        = ST( "Eclipse" );
   talent.improved_eclipse               = ST( "Improved Eclipse" );
-  talent.improved_moonfire              = ST( "Moonfire/Sunfire + 3/6s" );
+  talent.improved_moonfire              = ST( "Improved Moonfire" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.natures_balance                = ST( "Nature's Balance" );
   talent.warrior_of_elune               = ST( "Warrior of Elune" );
   talent.starfall                       = ST( "Starfall" );
-  talent.improved_moonkin_form          = find_talent_spell( talent_tree::SPECIALIZATION, 231042 );  // NNF
-  talent.celestial_alignment            = ST( "Celestial Alignment [SL version, No initial damage]" );
+  talent.improved_moonkin_form          = ST( "Owlkin Frenzy" );
+  talent.celestial_alignment            = ST( "Celestial Alignment" );
   talent.improved_starsurge             = ST( "Improved Starsurge" );
   talent.solar_beam                     = ST( "Solar Beam" );
   talent.shooting_stars                 = ST( "Shooting Stars" );
@@ -9264,7 +9290,7 @@ void druid_t::init_spells()
   talent.blessing_of_anshe              = ST( "Blessing of An'she" );
   talent.blessing_of_elune              = ST( "Blessing of Elune" );
   talent.soul_of_the_forest_moonkin     = STS( "Soul of the Forest", DRUID_BALANCE );
-  talent.fury_of_the_skies              = ST( "Fury of the Skies (1/2%)" );
+  talent.fury_of_the_skies              = ST( "Fury of the Skies" );
   talent.stellar_flare                  = ST( "Stellar Flare" );
   talent.twin_moons                     = ST( "Twin Moons" );
   talent.solstice                       = ST( "Solstice" );
@@ -9289,8 +9315,8 @@ void druid_t::init_spells()
   talent.scent_of_blood                 = ST( "Scent of Blood" );
   talent.sabertooth                     = ST( "Sabertooth" );
   talent.predator                       = ST( "Predator" );
-  talent.improved_prowl                 = ST( "Rake Stealth bonus (also Shred)" );   // NNF
-  talent.improved_bleeds                = ST( "Shred Bleed bonus (also Swipe)" );  // NNF
+  talent.improved_prowl                 = ST( "Improved Prowl [Needs Points Scaling]" );   // NNF
+  talent.improved_bleeds                = ST( "Improved Bleeds (Needs Points Scaling)" );  // NNF
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
   talent.berserk_relentlessness         = ST( "Berserk: Relentlessness" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
@@ -9304,7 +9330,7 @@ void druid_t::init_spells()
   talent.berserk_jungle_stalker         = ST( "Berserk: Jungle Stalker" );
   talent.carnivorous_instinct           = ST( "Carnivorous Instinct" );
   talent.eye_of_fearful_symmetry        = ST( "Eye of Fearful Symmetry" );
-  talent.cateye_curio                   = ST( "Cat-Eye Curio (no max E)" );
+  talent.cateye_curio                   = ST( "Cat's Curiosity" );
   talent.berserk_frenzy                 = ST( "Berserk: Frenzy" );
   talent.bloodtalons                    = ST( "Bloodtalons" );
   talent.feral_frenzy                   = ST( "Feral Frenzy" );
@@ -12710,8 +12736,8 @@ struct druid_module_t : public module_t
 
   player_t* create_player( sim_t* sim, std::string_view name, race_e r = RACE_NONE ) const override
   {
-    auto p              = new druid_t( sim, name, r );
-    p->report_extension = std::unique_ptr<player_report_extension_t>( new druid_report_t( *p ) );
+    auto p = new druid_t( sim, name, r );
+    p->report_extension = std::make_unique<druid_report_t>( *p );
     return p;
   }
   bool valid() const override { return true; }

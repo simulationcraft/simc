@@ -409,7 +409,8 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
                     effect.player -> find_spell( effect.spell_id ),
                     effect.item )
     {
-      base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently.
+      // TODO: confirm if this does or does not scale with ilevel.
+      // base_dd_min = base_dd_max = effect.player ->find_spell( effect.spell_id ) -> effectN( 1 ).base_value(); // Does not scale with ilevel, apparently.
     }
   };
 
@@ -448,7 +449,7 @@ void item::ring_of_collapsing_futures( special_effect_t& effect )
       collapse -> schedule_execute();
       if ( rng().roll( effect_.custom_buff -> stack_value() ) )
       {
-        base_cd -> adjust( timespan_t::from_minutes( 5 ) ); // Ouch.
+        make_event( *sim, [ this ]() { base_cd->adjust( 300_s ); } ); // Ouch.
       }
 
       effect_.custom_buff -> trigger( 1 );

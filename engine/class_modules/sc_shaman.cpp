@@ -17,12 +17,7 @@
 // Dragonflight TODO
 //
 // Elemental
-// - Lightning Rod application
-// - fix Ascendance action error
-// - Electrified Shocks
-// - Mountains Will Fall: Earth Shock Overload
-// - Mountains Will Fall: Earthquake Overload
-// - Liquid Magma Totem: Flame Shock spread
+// - Liquid Magma Totem: Randomize target
 // - Improved Flametongue Weapon
 // - Inundate
 // - Totemic Surge (for Liquid Magma Totem)
@@ -103,6 +98,9 @@ enum rotation_type_e
   code below randomly cycles through targets until it finds said path, or hits the maximum amount
   of attempts, in which it gives up and just returns the current best path.  I wouldn't be
   terribly surprised if Blizz did something like this in game.
+
+
+  TODO: Electrified Shocks?
 **/
 static std::vector<player_t*>& __check_distance_targeting( const action_t* action, std::vector<player_t*>& tl )
 {
@@ -250,7 +248,7 @@ struct shaman_td_t : public actor_target_data_t
   {
     // Elemental
     buff_t* electrified_shocks;
-    buff_t* lightning_rod; // NYI Ele
+    buff_t* lightning_rod;
 
     // Enhancement
     buff_t* lashing_flames;
@@ -328,7 +326,6 @@ public:
   // Misc
   bool lava_surge_during_lvb;
   std::vector<counter_t*> counters;
-  std::vector<player_t*> lightning_rods;
   /// Shaman ability cooldowns
   std::vector<cooldown_t*> ability_cooldowns;
   player_t* recent_target =
@@ -604,6 +601,7 @@ public:
     gain_t* spirit_of_the_maelstrom;
     gain_t* searing_flames;
     gain_t* chain_harvest_heal;
+    gain_t* inundate;
   } gain;
 
   // Tracked Procs
@@ -655,6 +653,7 @@ public:
 
     // Elemental
     const spell_data_t* elemental_shaman;   // general spec multiplier
+    const spell_data_t* lightning_bolt_2;   // casttime reduction
     const spell_data_t* lava_burst_2;       // 7.1 Lava Burst autocrit with FS passive
     const spell_data_t* maelstrom;
 
@@ -802,50 +801,51 @@ public:
     player_talent_t earthquake;
     player_talent_t elemental_fury;
     player_talent_t fire_elemental;
+    player_talent_t storm_elemental;
     // Row 3
-    player_talent_t inundate; // TODO: NYI
+    player_talent_t inundate;
     // Row 4
     player_talent_t call_of_thunder;
-    player_talent_t master_of_the_elements;
+    player_talent_t flow_of_power;
     player_talent_t lava_surge;
     // Row 5
-    player_talent_t high_voltage;
+    player_talent_t unrelenting_calamity;
     player_talent_t icefury;
     player_talent_t swelling_maelstrom;
     player_talent_t echo_of_the_elements;
     player_talent_t call_of_fire;
     // Row 6
     player_talent_t stormkeeper;
-    player_talent_t electrified_shocks; // TODO: NYI
+    player_talent_t electrified_shocks;
     player_talent_t flux_melting;
     player_talent_t aftershock;
+    player_talent_t surge_of_power; // TODO: NYI
     player_talent_t flames_of_the_cauldron;
-    player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 7
     player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm;
     player_talent_t power_of_the_maelstrom;
-    player_talent_t flames_of_the_firelord;
-    player_talent_t storm_elemental;
+    player_talent_t master_of_the_elements;
+    player_talent_t improved_flametongue_weapon; // TODO: NYI
     // Row 8
-    player_talent_t windspeakers_lava_resurgence;
     player_talent_t deeply_rooted_elements;
     player_talent_t liquid_magma_totem;
     player_talent_t primal_elementalist;
     // Row 9
     player_talent_t echoes_of_great_sundering;
     player_talent_t elemental_equilibrium;
-    player_talent_t tumbling_waves;
+    player_talent_t rolling_magma;
     player_talent_t echo_chamber;
     player_talent_t oath_of_the_far_seer;
-    player_talent_t searing_flames;
     player_talent_t magma_chamber;
+    player_talent_t searing_flames;
     // Row 10
     player_talent_t stormkeeper2;
-    player_talent_t lightning_rod; // TODO: NYI
-    player_talent_t mountains_will_fall; // TODO: NYI
+    player_talent_t lightning_rod;
+    player_talent_t mountains_will_fall;
     player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
+    player_talent_t windspeakers_lava_resurgence;
   } talent;
 
   // Misc Spells
@@ -862,6 +862,7 @@ public:
     const spell_data_t* t28_4pc_enh;
     const spell_data_t* t28_2pc_ele;
     const spell_data_t* t28_4pc_ele;
+    const spell_data_t* inundate;
   } spell;
 
   // Cached pointer for ascendance / normal white melee
@@ -971,7 +972,7 @@ public:
   void trigger_lava_surge( bool fireheart = false );
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
-  void trigger_lightning_rod_damage(const action_state_t* state );
+  void trigger_lightning_rod_damage( const action_state_t* state );
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -1250,8 +1251,9 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   dot.flame_shock = target->get_dot( "flame_shock", p );
 
   // Elemental
-  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_talent_spell( "Lightning Rod", SHAMAN_ELEMENTAL ) ); // NYI Ele
-  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell(382089) );
+  debuff.lightning_rod      = make_buff( *this, "lightning_rod", p->find_spell( 197209 ) );
+  debuff.electrified_shocks = make_buff( *this, "electrified_shocks", p->find_spell( 382089 ) )
+    ->set_default_value_from_effect( 1 );
 
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
@@ -1434,11 +1436,6 @@ public:
       m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
     }
 
-    if ( td( this->target )->debuff.electrified_shocks->check() && dbc::is_school( this->school, SCHOOL_NATURE ))
-    {
-      m *= 1.0 + td( this->target )->debuff.electrified_shocks->value();
-    }
-
     return m;
   }
 
@@ -1510,7 +1507,7 @@ public:
     }
 
     // check all effectN entries and apply them if appropriate
-    for ( int i = 1; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
+    for ( auto i = 1U; i <= p()->talent.eye_of_the_storm->effect_count(); i++ )
     {
         if ( this->data().affected_by( p()->talent.eye_of_the_storm->effectN( i ) ) )
         {
@@ -1888,6 +1885,12 @@ public:
                            this->p()->conduit.focused_lightning.percent();
 
       m *= 1.0 + stack_value * mw_stacks;
+    }
+
+    if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE && this->p()->talent.improved_flametongue_weapon.ok() && dbc::is_school(this->school, SCHOOL_FIRE) )
+    {
+      // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
+      m *= 1.0 + 0.05;
     }
 
     return m;
@@ -3000,6 +3003,21 @@ struct storm_elemental_t : public primal_elemental_t
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
+struct lightning_rod_damage_t : public shaman_spell_t
+{
+  lightning_rod_damage_t( shaman_t* p ) :
+    shaman_spell_t( "lightning_rod", p, p->find_spell( 197568 ) )
+  {
+    background = may_crit = false;
+  }
+
+  double composite_da_multiplier( const action_state_t* ) const override
+  { return 1.0; }
+
+  double composite_versatility( const action_state_t* ) const override
+  { return 1.0; }
+};
+
 struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
 {
   flametongue_weapon_spell_t( util::string_view n, shaman_t* player, weapon_t* /* w */ )
@@ -3275,15 +3293,23 @@ struct elemental_overload_spell_t : public shaman_spell_t
 {
   shaman_spell_t* parent;
 
-  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s, shaman_spell_t* parent_ )
+  elemental_overload_spell_t( shaman_t* p, util::string_view name, const spell_data_t* s, shaman_spell_t* parent_, double multiplier = -1.0 )
     : shaman_spell_t( name, p, s ), parent( parent_ )
   {
     base_execute_time = timespan_t::zero();
     background        = true;
     callbacks         = false;
 
-    base_multiplier *=
-        p->mastery.elemental_overload->effectN( 2 ).percent() + p->talent.echo_chamber->effectN( 1 ).percent();
+    if ( multiplier == -1.0 )
+    {
+      base_multiplier *=
+          p->mastery.elemental_overload->effectN( 2 ).percent() +
+          p->talent.echo_chamber->effectN( 1 ).percent();
+    }
+    else
+    {
+      base_multiplier *= multiplier;
+    }
   }
 
   void init_finished() override
@@ -4527,7 +4553,44 @@ struct chain_lightning_t : public chained_base_t
       overload = new chain_lightning_overload_t( player, suffix, this );
       //add_child( overload );
     }
+    
     affected_by_master_of_the_elements = true;
+    
+    if ( player->specialization() == SHAMAN_ELEMENTAL )
+    {
+      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
+    }
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    tl.clear();
+
+    if ( !target->is_sleeping() )
+    {
+      tl.push_back( target );
+    }
+
+    // Collect debuffed targets first
+    if ( p()->talent.electrified_shocks.ok() )
+    {
+      range::for_each( sim->target_non_sleeping_list, [this, &tl]( player_t* t ) {
+        if ( td( t )->debuff.electrified_shocks->check() && t->is_enemy() && t != target )
+        {
+          tl.emplace_back( t );
+        }
+      } );
+    }
+
+    // The rest
+    range::for_each( sim->target_non_sleeping_list, [&tl]( player_t* t ) {
+      if ( t->is_enemy() && !range::contains( tl, t ) )
+      {
+        tl.emplace_back( t );
+      }
+    } );
+
+    return tl.size();
   }
 
   double action_multiplier() const override
@@ -4647,6 +4710,13 @@ struct chain_lightning_t : public chained_base_t
     p()->buff.power_of_the_maelstrom->decrement();
   }
 
+  void impact( action_state_t* state ) override
+  {
+    chained_base_t::impact( state );
+
+    p()->trigger_lightning_rod_damage( state );
+  }
+
   /* Number of guaranteed overloads */
   unsigned n_overloads( const action_state_t* t ) const override
   {
@@ -4733,6 +4803,10 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
     maelstrom_gain         = player->spec.maelstrom->effectN( 4 ).resource( RESOURCE_MAELSTROM );
+    if ( player->talent.flow_of_power.enabled() )
+    {
+      maelstrom_gain += player->talent.flow_of_power->effectN( 4 ).base_value();
+    }
     spell_power_mod.direct = data().effectN( 1 ).sp_coeff();
     travel_speed = player->find_spell( 77451 )->missile_speed();
   }
@@ -4866,6 +4940,11 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
 
         p()->proc.t28_4pc_ele_cd_reduction->occur();
       }
+    }
+
+    if ( p()->talent.primordial_wave.ok() && p()->talent.rolling_magma.ok() )
+    {
+      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
   }
  };
@@ -5066,7 +5145,9 @@ struct lava_burst_t : public shaman_spell_t
     if ( p()->specialization() == SHAMAN_ELEMENTAL )
     {
       base_costs[ RESOURCE_MANA ] = 0;
+
       maelstrom_gain = player->spec.maelstrom->effectN( 3 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5340,6 +5421,11 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->buff.power_of_the_maelstrom->trigger();
     }
+
+    if ( p()->talent.primordial_wave.ok() && p()->talent.rolling_magma.ok() )
+    {
+      p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
+    }
   }
 
   timespan_t execute_time() const override
@@ -5361,7 +5447,11 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
     : elemental_overload_spell_t( p, "lightning_bolt_overload", p->find_spell( 45284 ), parent_ )
   {
     maelstrom_gain                     = p->spec.maelstrom->effectN( 2 ).resource( RESOURCE_MAELSTROM );
-    // TODO Elemental: clarify if High Voltage does affect LB Overloads too?
+    if ( p->talent.flow_of_power.enabled() )
+    {
+      maelstrom_gain += p->talent.flow_of_power->effectN( 4 ).base_value();
+    }
+
     affected_by_master_of_the_elements = true;
     // Stormkeeper affected by flagging is applied to the Energize spell ...
     affected_by_stormkeeper_damage = ( p->talent.stormkeeper.ok() || p->talent.stormkeeper2.ok() ) &&
@@ -5382,11 +5472,12 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
       affected_by_master_of_the_elements = true;
+
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
-      if (player->talent.high_voltage.enabled())
-      {
-        maelstrom_gain += player->talent.high_voltage->effectN( 1 ).base_value();
-      }
+      maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
+
+      base_execute_time += player->spec.lightning_bolt_2->effectN( 1 ).time_value();
+      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5549,7 +5640,7 @@ struct lightning_bolt_t : public shaman_spell_t
     p()->buff.power_of_the_maelstrom->decrement();
 
     p()->trigger_flash_of_lightning();
-    // NYI Ele: Lightning Rod
+    p()->trigger_lightning_rod_damage( execute_state );
   }
 
   //void reset_swing_timers()
@@ -5605,7 +5696,8 @@ void trigger_elemental_blast_proc( shaman_t* p )
 struct elemental_blast_overload_t : public elemental_overload_spell_t
 {
   elemental_blast_overload_t( shaman_t* p, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ), parent_ )
+    : elemental_overload_spell_t( p, "elemental_blast_overload", p->find_spell( 120588 ), parent_,
+        p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -5654,6 +5746,16 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
       p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
       p()->proc.further_beyond->occur();
+    }
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    if ( p()->talent.lightning_rod.ok() )
+    {
+      td( state->target )->debuff.lightning_rod->trigger();
     }
   }
 };
@@ -5754,29 +5856,21 @@ struct spiritwalkers_grace_t : public shaman_spell_t
 
 // Earthquake ===============================================================
 
-struct earthquake_damage_t : public shaman_spell_t
+struct earthquake_damage_base_t : public shaman_spell_t
 {
-  double kb_chance;
   // Deeptremor Totem needs special handling to enable persistent MoTE buff. Normal
   // Earthquake can use the persistent multiplier below
   bool mote_buffed;
 
-  earthquake_damage_t( shaman_t* player ) :
-    shaman_spell_t( "earthquake_", player, player->find_spell( 77478 ) ),
-    kb_chance( data().effectN( 2 ).percent() ), mote_buffed( false )
+  earthquake_damage_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell ) :
+    shaman_spell_t( name, player, spell ), mote_buffed( false )
   {
     aoe        = -1;
     ground_aoe = background = true;
-    school                  = SCHOOL_PHYSICAL;
-
-    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.391;
   }
 
   double composite_target_armor( player_t* ) const override
-  {
-    return 0;
-  }
+  { return 0; }
 
   double composite_persistent_multiplier( const action_state_t* state ) const override
   {
@@ -5796,20 +5890,19 @@ struct earthquake_damage_t : public shaman_spell_t
   }
 };
 
-struct earthquake_t : public shaman_spell_t
+struct earthquake_base_t : public shaman_spell_t
 {
-  earthquake_damage_t* rumble;
+  earthquake_damage_base_t* rumble;
+
   action_t* shake_the_foundations_cl;
   action_t* shake_the_foundations_lb;
 
-  earthquake_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "earthquake", player, player->talent.earthquake ),
-    rumble( new earthquake_damage_t( player ) ), shake_the_foundations_cl( nullptr ),
+  earthquake_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell ) :
+    shaman_spell_t( name, player, spell ),
+    rumble( nullptr ), shake_the_foundations_cl( nullptr ),
     shake_the_foundations_lb( nullptr )
   {
-    parse_options( options_str );
     dot_duration = timespan_t::zero();  // The periodic effect is handled by ground_aoe_event_t
-    add_child( rumble );
 
     if ( p()->conduit.shake_the_foundations.ok() )
     {
@@ -5835,7 +5928,7 @@ struct earthquake_t : public shaman_spell_t
         *sim, p(),
         ground_aoe_params_t()
           .target( execute_state->target )
-          .duration( data().duration() )
+          .duration( data().duration() + p()->talent.unrelenting_calamity->effectN(2).time_value() )
           .action( rumble ) );
 
     if ( rng().roll( p()->conduit.shake_the_foundations.percent() ) &&
@@ -5860,7 +5953,6 @@ struct earthquake_t : public shaman_spell_t
     // buff multiplier as persistent.
     p()->buff.master_of_the_elements->expire();
     p()->buff.echoes_of_great_sundering->expire();
-    
 
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
@@ -5868,6 +5960,110 @@ struct earthquake_t : public shaman_spell_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->proc.further_beyond->occur();
     }
+  }
+};
+
+struct earthquake_overload_damage_t : public earthquake_damage_base_t
+{
+  earthquake_overload_damage_t( shaman_t* player ) :
+    earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ) )
+  {
+    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
+    spell_power_mod.direct = 0.391 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+  }
+};
+
+struct earthquake_overload_t : public earthquake_base_t
+{
+  earthquake_base_t* parent;
+
+  earthquake_overload_t( shaman_t* player, earthquake_base_t* p ) :
+    earthquake_base_t( player, "earthquake_overload", player->find_spell( 298762 ) ),
+    parent( p )
+  {
+    background = true;
+    callbacks = false;
+    base_execute_time = 0_s;
+
+    rumble = new earthquake_overload_damage_t( player );
+    add_child( rumble );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    earthquake_base_t::snapshot_internal( s, flags, rt );
+
+    cast_state( s )->exec_type = parent->exec_type;
+  }
+};
+
+struct earthquake_damage_t : public earthquake_damage_base_t
+{
+  earthquake_damage_t( shaman_t* player ) :
+    earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ) )
+  {
+    // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
+    spell_power_mod.direct = 0.391;
+  }
+};
+
+struct earthquake_t : public earthquake_base_t
+{
+  earthquake_t( shaman_t* player, util::string_view options_str ) :
+    earthquake_base_t( player, "earthquake", player->talent.earthquake )
+  {
+    parse_options( options_str );
+
+    rumble = new earthquake_damage_t( player );
+    add_child( rumble );
+
+    if ( player->talent.mountains_will_fall.ok() )
+    {
+      overload = new earthquake_overload_t( player, this );
+      add_child( overload );
+    }
+  }
+
+  // Earthquake uses a "smart" Lightning Rod targeting system
+  // 1) Current target, if Lightning Rod is not enabled on it
+  // 2) A close-by target without Lightning Rod
+  //
+  // Note that Earthquake does not refresh existing Lightning Rod debuffs
+  void trigger_lightning_rod( const action_state_t* state )
+  {
+    if ( !p()->talent.lightning_rod.ok() )
+    {
+      return;
+    }
+
+    auto tdata = td( state->target );
+    if ( !tdata->debuff.lightning_rod->check() )
+    {
+      tdata->debuff.lightning_rod->trigger();
+    }
+    else
+    {
+      std::vector<player_t*> eligible_targets;
+      range::for_each( target_list(), [ this, &eligible_targets ]( player_t* t ) {
+        if ( !td( t )->debuff.lightning_rod->check() )
+        {
+          eligible_targets.emplace_back( t );
+        }
+      } );
+
+      if ( !eligible_targets.empty() )
+      {
+        auto idx = static_cast<unsigned>( rng().range( 0, eligible_targets.size() ) );
+        td( eligible_targets[ idx ] )->debuff.lightning_rod->trigger();
+      }
+    }
+  }
+
+  void execute() override
+  {
+    earthquake_base_t::execute();
+
+    trigger_lightning_rod( execute_state );
   }
 };
 
@@ -5989,7 +6185,8 @@ struct natures_swiftness_t : public shaman_spell_t
 struct earth_shock_overload_t : public elemental_overload_spell_t
 {
   earth_shock_overload_t( shaman_t* p, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, "earth_shock_overload", p->find_spell( 381725 ), parent_ )
+    : elemental_overload_spell_t( p, "earth_shock_overload", p->find_spell( 381725 ), parent_,
+        p->talent.mountains_will_fall->effectN( 1 ).percent() )
   {
     affected_by_master_of_the_elements = true;
   }
@@ -6005,38 +6202,15 @@ struct earth_shock_t : public shaman_spell_t
     resource_current                   = RESOURCE_MAELSTROM;
     affected_by_master_of_the_elements = true;
 
-    
     if ( p()->talent.mountains_will_fall.enabled() )
     {
       overload = new earth_shock_overload_t( player, this );
     }
   }
 
-  double cost() const override
-  {
-    double d = shaman_spell_t::cost();
-
-    return d;
-  }
-
-  double bonus_da( const action_state_t* s ) const override
-  {
-    double b = shaman_spell_t::bonus_da( s );
-
-    return b;
-  }
-
-  double action_multiplier() const override
-  {
-    auto m = shaman_spell_t::action_multiplier();
-
-    return m;
-  }
-
   void execute() override
   {
     shaman_spell_t::execute();
-
 
     if ( p()->legendary.echoes_of_great_sundering.ok() ||
         p()->talent.echoes_of_great_sundering.ok() )
@@ -6082,6 +6256,11 @@ struct earth_shock_t : public shaman_spell_t
   void impact( action_state_t* state ) override
   {
     shaman_spell_t::impact( state );
+
+    if ( p()->talent.lightning_rod.ok() )
+    {
+      td( state->target )->debuff.lightning_rod->trigger();
+    }
   }
 
   bool ready() override
@@ -6200,7 +6379,7 @@ public:
     }
     if ( player->specialization() == SHAMAN_ELEMENTAL )
     {
-      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_firelord->effectN( 1 ).time_value();
+      cooldown->duration = data().cooldown() + p()->talent.flames_of_the_cauldron->effectN( 2 ).time_value();
     }
   }
 
@@ -6240,6 +6419,11 @@ public:
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
     auto d = shaman_spell_t::composite_dot_duration( s );
+
+    if ( p()->buff.fire_elemental->check() && p()->spell.fire_elemental->ok() )
+    {
+      d *= 1.0 + p()->spell.fire_elemental->effectN( 3 ).percent();
+    }
 
     return d;
   }
@@ -6383,8 +6567,7 @@ struct frost_shock_t : public shaman_spell_t
   {
     if ( p()->buff.icefury->up() )
     {
-      // TODO: Where is this defined?
-      // maelstrom_gain = p()->spell.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
+      maelstrom_gain = p()->spec.maelstrom->effectN( 7 ).resource( RESOURCE_MAELSTROM );
     }
 
     shaman_spell_t::execute();
@@ -6412,7 +6595,7 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
     {
-      td( execute_state->target )->debuff.electrified_shocks->trigger();
+      td( s->target )->debuff.electrified_shocks->trigger();
     }
   }
 };
@@ -6433,14 +6616,21 @@ struct wind_shear_t : public shaman_spell_t
   bool target_ready( player_t* candidate_target ) override
   {
     if ( candidate_target->debuffs.casting && !candidate_target->debuffs.casting->check() )
+    {
       return false;
+    }
+
     return shaman_spell_t::target_ready( candidate_target );
   }
 
   void execute() override
   {
-    // NYI Ele: Inundate
     shaman_spell_t::execute();
+
+    if ( p()->talent.inundate.ok() )
+    {
+      p()->trigger_maelstrom_gain( p()->spell.inundate->effectN( 1 ).base_value(), p()->gain.inundate );
+    }
   }
 };
 
@@ -7008,6 +7198,11 @@ struct shaman_totem_pet_t : public pet_t
 
     return pet_t::create_expression( name );
   }
+
+  void apply_affecting_auras( action_t& action ) override
+  {
+    o()->apply_affecting_auras( action );
+  }
 };
 
 template <typename T, typename V>
@@ -7079,8 +7274,6 @@ struct totem_pulse_action_t : public T
   {
     this->may_crit = this->background = true;
     this->callbacks             = false;
-
-    this->crit_bonus_multiplier *= 1.0 + totem->o()->talent.elemental_fury->effectN( 1 ).percent();
 
     if ( this->type == ACTION_HEAL )
     {
@@ -7206,6 +7399,29 @@ void shaman_totem_pet_t<T>::dismiss( bool expired )
 
 // Liquid Magma totem =======================================================
 
+struct magma_eruption_t : public shaman_spell_t
+{
+  magma_eruption_t( shaman_t* p ) :
+    shaman_spell_t( "magma_eruption", p, p->find_spell( 383061 ) )
+  {
+    aoe = -1;
+    background = true;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_spell_t::impact( state );
+
+    for ( size_t i = 0;
+        i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) );
+        ++i )
+    {
+      p()->trigger_secondary_flame_shock( target_list()[ i ] );
+    }
+  }
+
+};
+
 struct liquid_magma_globule_t : public spell_t
 {
   liquid_magma_globule_t( spell_totem_pet_t* p ) : spell_t( "liquid_magma", p, p->find_spell( 192231 ) )
@@ -7213,11 +7429,6 @@ struct liquid_magma_globule_t : public spell_t
     aoe        = -1;
     background = may_crit = true;
     callbacks             = false;
-
-    if ( p->o()->talent.elemental_fury->ok() )
-    {
-      crit_bonus_multiplier *= 1.0 + p->o()->talent.elemental_fury->effectN( 1 ).percent();
-    }
   }
 };
 
@@ -7246,6 +7457,8 @@ struct liquid_magma_totem_pulse_t : public spell_totem_action_t
 
 struct liquid_magma_totem_t : public spell_totem_pet_t
 {
+  action_t* magma_eruption;
+
   liquid_magma_totem_t( shaman_t* owner ) : spell_totem_pet_t( owner, "liquid_magma_totem" )
   {
     pulse_amplitude = owner->find_spell( 192226 )->effectN( 1 ).period();
@@ -7257,8 +7470,25 @@ struct liquid_magma_totem_t : public spell_totem_pet_t
 
     pulse_action = new liquid_magma_totem_pulse_t( this );
   }
+};
 
-  // NYI Ele: Liquid Magma Totem (Flame Shock application)
+struct liquid_magma_totem_spell_t : public shaman_totem_t<spell_t, shaman_spell_t>
+{
+  magma_eruption_t* eruption;
+
+  liquid_magma_totem_spell_t( shaman_t* p, util::string_view options_str ) :
+    shaman_totem_t<spell_t, shaman_spell_t>( "liquid_magma_totem", p, options_str,
+        p->talent.liquid_magma_totem ),
+    eruption( new magma_eruption_t( p ) )
+  { }
+
+  void execute() override
+  {
+    shaman_totem_t<spell_t, shaman_spell_t>::execute();
+
+    eruption->set_target( execute_state->target );
+    eruption->execute();
+  }
 };
 
 // Capacitor Totem =========================================================
@@ -7340,6 +7570,23 @@ struct healing_stream_totem_t : public heal_totem_pet_t
   }
 };
 
+struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_t>
+{
+  healing_stream_totem_spell_t( shaman_t* p, util::string_view options_str ) :
+    shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", p, options_str,
+        p->talent.healing_stream_totem )
+  { }
+
+  void execute() override
+  {
+    shaman_totem_t<heal_t, shaman_heal_t>::execute();
+
+    if ( p()->talent.inundate.ok() )
+    {
+      p()->trigger_maelstrom_gain( p()->spell.inundate->effectN( 1 ).base_value(), p()->gain.inundate );
+    }
+  }
+};
 
 // ==========================================================================
 // PvP talents/abilities
@@ -7501,11 +7748,6 @@ struct primordial_wave_t : public shaman_spell_t
     }
 
     double proc_chance = p()->conduit.tumbling_waves.value() / 1000.0;
-    if ( proc_chance == 0 )
-    {
-      proc_chance = p()->talent.tumbling_waves->effectN( 1 ).base_value() / 1000.0;
-    }
-
     if ( proc_chance && rng().roll( proc_chance ) )
     {
       cooldown->reset( true );
@@ -7987,7 +8229,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "windfury_totem" )
     return new windfury_totem_t( this, options_str );
   if ( name == "healing_stream_totem" )
-    return new shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", this, options_str, talent.healing_stream_totem );
+    return new healing_stream_totem_spell_t( this, options_str );
   if ( name == "earth_shield" )
     return new earth_shield_t( this, options_str );
   if ( name == "natures_swiftness" )
@@ -8022,7 +8264,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "lava_burst" )
     return new lava_burst_t( this, spell_type::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
-    return new shaman_totem_t<spell_t, shaman_heal_t>( "liquid_magma_totem", this, options_str, talent.liquid_magma_totem );
+    return new liquid_magma_totem_spell_t( this, options_str );
   if ( name == "ancestral_guidance" )
     return new ancestral_guidance_t( this, options_str );
   if ( name == "storm_elemental" )
@@ -8358,6 +8600,11 @@ void shaman_t::create_actions()
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_type::THORIMS_INVOCATION );
   }
 
+  if ( talent.lightning_rod.ok() )
+  {
+    action.lightning_rod = new lightning_rod_damage_t( this );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -8431,6 +8678,7 @@ void shaman_t::init_spells()
   spec.elemental_shaman  = find_specialization_spell( "Elemental Shaman" );
   spec.maelstrom         = find_specialization_spell( 343725 );
 
+  spec.lightning_bolt_2  = find_rank_spell( "Lightning Bolt", "Rank 2" );
   spec.lava_burst_2      = find_rank_spell( "Lava Burst", "Rank 2" );
 
   // Enhancement
@@ -8571,50 +8819,51 @@ void shaman_t::init_spells()
   talent.earthquake = _ST( "Earthquake" );
   talent.elemental_fury = _ST( "Elemental Fury" );
   talent.fire_elemental = _ST( "Fire Elemental" );
+  talent.storm_elemental = _ST( "Storm Elemental" );
   // Row 3
   talent.inundate = _ST( "Inundate" );
   // Row 4
-  talent.call_of_thunder = _ST( "Call of Thunder" );
-  talent.master_of_the_elements = _ST( "Master of the Elements" );
-  talent.lava_surge = _ST( "Lava Surge" );
+  talent.call_of_thunder    = _ST( "Call of Thunder" );
+  talent.flow_of_power      = _ST( "Flow of Power" );
+  talent.lava_surge         = _ST( "Lava Surge" );
   // Row 5
-  talent.high_voltage = _ST( "High Voltage" );
-  talent.icefury = _ST( "Icefury" );
-  talent.swelling_maelstrom = _ST( "Swelling Maelstrom" );
+  talent.unrelenting_calamity = _ST( "Unrelenting Calamity" );
+  talent.icefury              = _ST( "Icefury" );
+  talent.swelling_maelstrom   = _ST( "Swelling Maelstrom" );
   talent.echo_of_the_elements = _ST( "Echo of the Elements" );
-  talent.call_of_fire = _ST( "Call of Fire" );
+  talent.call_of_fire         = _ST( "Call of Fire" );
   // Row 6
-  talent.stormkeeper = find_talent_spell( 32560 ); // TODO: Better solution
+  talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 191634 );
   talent.electrified_shocks = _ST( "Electrified Shocks" );
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
   talent.flames_of_the_cauldron = _ST( "Flames of the Cauldron" );
-  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   // Row 7
   talent.flash_of_lightning = _ST( "Flash of Lightning" );
   talent.eye_of_the_storm = _ST( "Eye of the Storm" );
   talent.power_of_the_maelstrom = _ST( "Power of the Maelstrom" );
-  talent.flames_of_the_firelord = _ST( "Flames of the Firelord" );
-  talent.storm_elemental = _ST( "Storm Elemental" );
+  talent.master_of_the_elements = _ST( "Master of the Elements" );
+  talent.improved_flametongue_weapon = _ST( "Improved Flametongue Weapon" );
   // Row 8
-  talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
   talent.deeply_rooted_elements = _ST( "Deeply Rooted Elements" );
   talent.liquid_magma_totem = _ST( "Liquid Magma Totem" );
   talent.primal_elementalist = _ST( "Primal Elementalist" );
   // Row 9
   talent.echoes_of_great_sundering = _ST( "Echoes of Great Sundering" );
   talent.elemental_equilibrium = _ST( "Elemental Equilibrium" );
-  talent.tumbling_waves = _ST( "Tumbling Waves" );
+  talent.rolling_magma = _ST( "Rolling Magma" );
   talent.echo_chamber = _ST( "Echo Chamber" );
   talent.oath_of_the_far_seer = _ST( "Oath of the Far Seer" );
-  talent.searing_flames = _ST( "Searing Flames" );
   talent.magma_chamber = _ST( "Magma Chamber" );
+  talent.searing_flames = _ST( "Searing Flames" );
   // Row 10
-  talent.stormkeeper2 = find_talent_spell( 32538 ); // TODO: Better solution
+  talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 383009 );
   talent.lightning_rod = _ST( "Lightning Rod" );
+  //talent.heat_wave_NYI                = _ST( "Heat Wave" ); // TODO: NYI (ingame)
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
   talent.further_beyond = _ST( "Further Beyond" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
+  talent.windspeakers_lava_resurgence = _ST( "Windspeaker's Lava Resurgence" );
 
   // Covenants
   covenant.necrolord = find_covenant_spell( "Primordial Wave" );
@@ -8674,6 +8923,7 @@ void shaman_t::init_spells()
   spell.storm_elemental     = find_spell( 157299 );
   spell.flametongue_weapon  = find_spell( 318038 );
   spell.windfury_weapon     = find_spell( 319773 );
+  spell.inundate            = find_spell( 378777 );
 
   spell.t28_2pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B2 );
   spell.t28_4pc_enh        = sets->set( SHAMAN_ENHANCEMENT, T28, B4 );
@@ -9509,9 +9759,9 @@ void shaman_t::trigger_flash_of_lightning()
   proc.flash_of_lightning->occur();
 }
 
-void shaman_t::trigger_lightning_rod_damage(const action_state_t* state)
+void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
 {
-  if ( !talent.lightning_rod->ok() )
+  if ( !talent.lightning_rod.ok() )
   {
     return;
   }
@@ -9521,20 +9771,19 @@ void shaman_t::trigger_lightning_rod_damage(const action_state_t* state)
     return;
   }
 
-  if ( lightning_rods.size() == 0 )
-  {
-    return;
-  }
+  range::for_each( sim->target_non_sleeping_list, [ this, state ]( player_t* target ) {
+    if ( !get_target_data( target )->debuff.lightning_rod->up() )
+    {
+      return;
+    }
 
-  double amount = state->result_amount * talent.lightning_rod->effectN( 2 ).percent();
-  action.lightning_rod->base_dd_min = action.lightning_rod->base_dd_max = amount;
+    double amount = state->result_amount * talent.lightning_rod->effectN( 2 ).percent();
 
-  range::for_each( lightning_rods, [ this ]( player_t* t ) {
-    action.lightning_rod->set_target( t );
+    action.lightning_rod->base_dd_min = action.lightning_rod->base_dd_max = amount;
+    action.lightning_rod->set_target( target );
     action.lightning_rod->execute();
   } );
 }
-
 
 // shaman_t::init_buffs =====================================================
 
@@ -9671,7 +9920,7 @@ void shaman_t::create_buffs()
                              } );
                            } );
 
-  buff.fire_elemental = make_buff( this, "fire_elemental", find_spell( 188592 ) )
+  buff.fire_elemental = make_buff( this, "fire_elemental", spell.fire_elemental )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_TICK_TIME )
                             ->apply_affecting_conduit( conduit.call_of_flame );
 
@@ -9796,6 +10045,7 @@ void shaman_t::init_gains()
   gain.fire_elemental          = get_gain( "Fire Elemental" );
   gain.spirit_of_the_maelstrom = get_gain( "Spirit of the Maelstrom" );
   gain.chain_harvest_heal      = get_gain( "Chain Harvest Heal" );
+  gain.inundate                = get_gain( "Inundate" );
 }
 
 // shaman_t::init_procs =====================================================
@@ -10966,6 +11216,12 @@ double shaman_t::composite_player_multiplier( school_e school ) const
 double shaman_t::composite_player_target_multiplier( player_t* target, school_e school ) const
 {
   double m = player_t::composite_player_target_multiplier( target, school );
+
+  if ( get_target_data( target )->debuff.electrified_shocks->check() &&
+       dbc::is_school( school, SCHOOL_NATURE ))
+  {
+    m *= 1.0 + get_target_data( target )->debuff.electrified_shocks->value();
+  }
 
   return m;
 }

@@ -1407,6 +1407,49 @@ struct damage_done_buff_event_t final : public raid_event_t
   }
 };
 
+// Buff Raid Event ==========================================================
+
+struct buff_raid_event_t final : public raid_event_t
+{
+  std::unordered_map<size_t, buff_t*> buff_list;
+  std::string buff_str;
+  unsigned stacks;
+
+  buff_raid_event_t( sim_t* s, std::string_view options_str ) : raid_event_t( s, "buff" ), stacks( 1 )
+  {
+    add_option( opt_string( "buff_name", buff_str ) );
+    add_option( opt_uint( "stacks", stacks ) );
+    parse_options( options_str );
+
+    players_only = true;
+
+    if ( buff_str.empty() )
+      throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
+  }
+
+  void _start() override
+  {
+    for ( auto p : affected_players )
+    {
+      auto& b = buff_list[ p->actor_index ];
+      if ( !b )
+        b = buff_t::find( p, buff_str );
+
+      if ( b )
+      {
+        b->trigger( stacks, duration > 0_ms ? duration : timespan_t::min() );
+      }
+      else
+      {
+        sim->error( "Error: Invalid buff raid event, buff_name '{}' not found on player '{}'.", buff_str, p->name() );
+        sim->cancel();
+      }
+    }
+  }
+
+  void _finish() override {}
+};
+
 // Vulnerable ===============================================================
 
 struct vulnerable_event_t final : public raid_event_t
@@ -1707,7 +1750,15 @@ void raid_event_t::start()
     auto& expr_uptr = player_expressions[ p->actor_index ];
     if ( !expr_uptr )
     {
-      expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      try
+      {
+        expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      }
+      catch ( const std::exception& e )
+      {
+        sim->error( "{} player_if expression error '{}': {}", *this, player_if_expr_str, e.what() );
+        sim->cancel();
+      }
     }
 
     if ( expr_uptr && !expr_uptr->success() )
@@ -2034,6 +2085,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new damage_taken_debuff_event_t( sim, options_str ) );
   if ( name == "damage_done_buff" )
     return std::unique_ptr<raid_event_t>( new damage_done_buff_event_t( sim, options_str ) );
+  if ( name == "buff" )
+    return std::unique_ptr<raid_event_t>( new buff_raid_event_t( sim, options_str ) );
 
   throw std::invalid_argument( fmt::format( "Invalid raid event type '{}'.", name ) );
 }

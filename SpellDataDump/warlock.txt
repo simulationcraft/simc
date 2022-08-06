@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44795 dragonflight-BETA (hotfix 2022-07-30/44795)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44895 dragonflight-BETA (hotfix 2022-08-06/44895, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -37,7 +37,7 @@ Spell Level      : 2
 Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Corruption (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #5, #6), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Xavian Teachings (317031 effect#1), Sacrolash's Dark Strike (337111 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -292,6 +292,7 @@ GCD              : 1.5 seconds
 Duration         : 30 seconds
 Proc Chance      : 101%
 Mechanic         : Banish
+Affecting spells : Greater Banish (386651 effect#1)
 Family Flags     : 59
 Attributes       : ........ ........ x....... ......x.   ........ ..x..... x....... .x...... 
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
@@ -310,7 +311,7 @@ Effects          :
                    Affected School(s): All
 #3 (id=285)      : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
-Description      : Banishes an enemy Demon, Aberration, or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.
+Description      : Banishes an enemy Demon, Aberration$?s386651[, Undead][], or Elemental, preventing any action for $d. Limit 1. Casting Banish again on the target will cancel the effect.
 Tooltip          : Invulnerable, but unable to act.
 
 Name             : Health Funnel (id=755) [Spell Family (5)] 
@@ -1107,7 +1108,7 @@ Effects          :
 Description      : Purges $19505s1 beneficial magic $19505leffect:effects; from an enemy. If an effect is devoured, the $?s219450[Observer][Felhunter]$?s56249[ and Warlock][] will be healed for $19658m1 and gain 60 Fel Energy.
 
 
-Name             : Spell Lock (desc=Command Demon Ability) (id=19647) [Spell Family (57)] 
+Name             : Spell Lock (id=19647) [Spell Family (57)] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -2143,7 +2144,7 @@ Resource         : 2% Base Mana (0) (id=3377)
 Spell Level      : 27
 Range            : 40 yards
 GCD              : 1.5 seconds
-Duration         : 10 seconds
+Duration         : 12 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 maximum
 Proc Chance      : 101%
@@ -2603,7 +2604,7 @@ Spell Level      : 4
 Duration         : 8 seconds
 Cooldown         : 180 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Unending Resolve (317138 effects: #1, #2)
+Affecting spells : Strength of Will (317138 effect#1)
 Family Flags     : 54, 67
 Attributes       : ....x... ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2618,13 +2619,13 @@ Effects          :
 #1 (id=114369)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 26 | Target: Self (1)
 #2 (id=114370)   : Apply Aura (6) | Modify Casting Pushback (149)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0xf | Target: Self (1)
 #3 (id=114371)   : Apply Aura (6) | Modify Damage Taken% (87)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
                    Affected School(s): All
 #4 (id=162716)   : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt$?s317138[, silence, and pushback][ and silence] effects for $d.
+Description      : Hardens your skin, reducing all damage you take by $s3% and granting immunity to interrupt, silence, and pushback effects for $d.
 Tooltip          : Damage taken reduced by $w3%
 Immune to interrupt and silence effects.
 
@@ -2874,7 +2875,7 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=119700)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Corruption damage has a chance to cause your next $?s198590[Drain Soul to][Shadow Bolt to be instant and] deal $264571s2% increased damage.
+Description      : Corruption damage has a chance to cause your next Shadow Bolt or Drain Soul to deal $264571s2% increased damage. Shadow Bolt is instant cast when affected.
 
 Name             : Burning Rush (id=111400) [Spell Family (5)] 
 Class            : Warlock
@@ -3199,7 +3200,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=126899)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
+                   Base Value: 30 | Scaled Value: 30 | SP Coefficient: 0.25000 | PvP Coefficient: 0.66700 | Misc Value: 15 | Target: Self (1)
 Description      : Infuses your soul with the misery of fallen foes, increasing haste by $s1% for $d.
 Tooltip          : Haste increased by $s1%.
 
@@ -3447,10 +3448,14 @@ Effects          :
 #4 (id=191033)   : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 2 (12)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Misc Value 2: 1166 (Label) | Target: Self (1)
                    Affected Spells (Label): Demon Armor (285933)
-#5 (id=191034)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-#6 (id=261077)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=191034)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831)
+                   Family Flags: 1
+#6 (id=261077)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 0.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831)
+                   Family Flags: 1
 #7 (id=261078)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=261079)   : Apply Aura (6) | Dummy (4)
@@ -3571,7 +3576,7 @@ Spell Type       : Magic
 Spell Level      : 3
 Range            : 40 yards
 Duration         : 14 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Corruption (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1)
 Triggered by     : Corruption (172)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3585,7 +3590,7 @@ Attributes       : ........ ........ ........ ..x.....   ........ ........ .....
                  : Aura Is Debuff (26), Ignore Line of Sight (66), Not a Proc (105), No Cast Log (128), Allow Cast While Casting (135), Not In Spellbook (143), Aura Never Bounces (148), Allow While Stunned (163), Spell Haste Affects Periodic (173), Allow While Fleeing (177), Allow While Confused (178), Taps immediately (215), Allow While Charmed (261), Periodic Can Crit (265), Aura Points On Client (268), Allow While Stunned By Horror Mechanic (342), Allow Harmful on Friendly (373), Allow While Stunned by Stun Mechanic (378), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=198369)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.15000 | Target: Unknown(25)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.13000 | PvP Coefficient: 1.45000 | Target: Unknown(25)
 Description      : $@spelldesc172
 Tooltip          : Suffering $w1 Shadow damage every $t1 sec.
 
@@ -4207,14 +4212,14 @@ Range            : 50000 yards
 Duration         : 4 seconds
 Family Flags     : 43
 Attributes       : ........ ........ x....... ..x.....   ...x...x ........ ........ ........ 
-                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ..x..... ........ ........ .....x..   ........ ........ ........ ......x. 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not Shapeshifted (16), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+                 : Not Shapeshifted (16), Aura Is Debuff (26), No Redirection (35), No Reflection (39), Ignore Line of Sight (66), Can't Crit (93), Do Not Display Range (126), Not In Spellbook (143), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=288215)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
@@ -4535,7 +4540,7 @@ Tooltip          : Suffering $w1 Shadow damage every $t1 seconds.
 
 Name             : Activating Specialization (id=200749) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Range            : 50000 yards
@@ -5016,7 +5021,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=321151)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Every Soul Shard you spend has a $s1% chance to be refunded.
 
 Name             : Grimoire of Service (id=216187) 
@@ -5099,7 +5104,6 @@ Name             : Demon Skin (id=219272) [Spell Family (5), Passive]
 Class            : Warlock
 School           : Physical
 Spell Type       : Magic
-Spell Level      : 20
 Proc Chance      : 101%
 Affecting spells : Improved Rain of Fire/Hellfire (24430 effect#1)
 Family Flags     : 6
@@ -5585,7 +5589,7 @@ While out of combat you regenerate up to 3 Soul Shards.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 GCD              : 1.5 seconds
@@ -5606,7 +5610,7 @@ Description      : Unlock powers at the Vindicaar's Matrix Core to use while on 
 
 Name             : Vindicaar Matrix Crystal (id=255529) [Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Triggered by     : Activating Specialization (200749)
@@ -9728,9 +9732,9 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
                  : Not Shapeshifted (16), Limit N (165), Spell Haste Affects Periodic (173), Taps immediately (215), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Periodic Refresh Extends Duration (436)
 Effects          :
 #1 (id=800325)   : Dummy (3)
-                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 2400 | Scaled Value: 2400 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=800326)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.23000 | PvP Coefficient: 1.15000 | Target: Enemy (6)
 #3 (id=800327)   : Dummy (3)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Afflicts one target with $o2 Shadow damage over $d. 
@@ -9740,7 +9744,7 @@ If dispelled, deals ${$m2*$s1/100} damage to the dispeller and silences them for
 |cFFFFFFFFGenerates $231791m1 Soul $LShard:Shards; if the target dies while afflicted.|r][]
 Tooltip          : Suffering $w2 Shadow damage every $t2 sec. If dispelled, will cause ${$w2*$s1/100} damage to the dispeller and silence them for $196364d.
 
-Name             : Corruption (desc=Rank 2) (id=317031) [Spell Family (5), Passive] 
+Name             : Xavian Teachings (id=317031) [Spell Family (5), Passive] 
 Class            : Affliction Warlock
 School           : Shadow
 Spell Type       : Magic
@@ -9749,19 +9753,18 @@ Range            : 40 yards
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ....x... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Aura Never Bounces (148), Only In Spellbook Until Learned (240), Aura Points On Client (268), Cooldown Shared With AI Group (418)
+                 : Passive (6), Aura Never Bounces (148)
 Effects          :
 #1 (id=801926)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
                    Affected Spells: Corruption (172), Corruption (146739), Deliberate Corruption (367831)
                    Family Flags: 1
-Description      : Corruption is now instant.
-Tooltip          : Corruption is now instant.
+Description      : Corruption is instant cast and instantly deals $172s3 damage.
 
 Name             : Heart of Darkness (id=317137) [Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -9782,7 +9785,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 93.81851 (coefficient=0.174171) | PvP Coefficient: 0.50000 | Trigger Spell: 316101 | Target: Self (1)
 Description      : Your secondary stats are all increased by $s1.
 
-Name             : Unending Resolve (desc=Rank 2) (id=317138) [Spell Family (5), Passive] 
+Name             : Strength of Will (id=317138) [Spell Family (5), Passive] 
 Class            : Warlock
 School           : Shadow
 Spell Type       : None
@@ -9798,14 +9801,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=802123)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Unending Resolve (104773)
                    Family Flags: 54
-#2 (id=802124)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Unending Resolve (104773)
-                   Family Flags: 54
-Description      : Unending Resolve now grants immunity to pushback and also reduces $s1% additional damage.
+Description      : Unending Resolve reduces damage taken by an additional $s1%.
 
 Name             : Impending Catastrophe (desc=Venthyr) (id=321792) [Spell Family (5)] 
 Class            : Warlock
@@ -10121,7 +10120,6 @@ Name             : Fel Domination (id=333889) [Spell Family (5)]
 Class            : Warlock
 School           : Shadowstrike
 Spell Type       : Magic
-Spell Level      : 22
 Duration         : 15 seconds
 Cooldown         : 180 seconds
 Stacks           : 1 initial, 1 maximum
@@ -11610,6 +11608,7 @@ Effects          :
 Description      : Each target affected by Soul Rot increases your haste and critical strike chance by $356369s1% for $356369d.
 
 Name             : Condensed Anima Sphere (id=357888) [Spell Family (5), Passive, Hidden] 
+Class            : Warrior
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -12079,7 +12078,7 @@ School           : Shadow
 Spell Type       : Magic
 Range            : 50000 yards
 Duration         : 0.1 seconds
-Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Corruption (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1)
+Affecting spells : Mastery: Potent Afflictions (77215 effects: #1, #2), Affliction Warlock (137043 effects: #1, #2, #5, #6), Demonology Warlock (137044 effects: #1, #2), Destruction Warlock (137046 effects: #1, #2), Epidemic (184922 effects: #1, #2), Absolute Corruption (196103 effect#2), Sacrolash's Dark Strike (207952 effect#1), Creeping Death (264000 effects: #1, #2), Reap and Sow (281494 effects: #1, #2), Wakener's Loyalty (281495 effects: #1, #2), Lessons of Space-Time (281496 effects: #1, #2), Xavian Teachings (317031 effect#1), Relic of Demonic Synergy (337060 effects: #2, #3), Sacrolash's Dark Strike (337111 effect#1), Wrath of Consumption (337130 effect#1)
 Family Flags     : 1, 49
 Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ....x... 
                  : ..x..... ........ ........ ........   ........ .x...... ........ ........ 
@@ -12097,7 +12096,7 @@ Description      : $@spelldesc172
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
+Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
 Spell Type       : None
 Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
@@ -12112,5 +12111,25 @@ Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... .....
 Effects          :
 #1 (id=1011987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+
+Name             : Greater Banish (id=386651) [Spell Family (5), Passive, Hidden] 
+Class            : Warlock
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1020877)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 30000 | Scaled Value: 30000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Banish (710)
+                   Family Flags: 59
+Description      : Increases the duration of Banish by ${$s1/1000} sec. Banish now affects Undead.
 
 
