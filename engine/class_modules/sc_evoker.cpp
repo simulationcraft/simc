@@ -134,8 +134,9 @@ struct evoker_t : public player_t
 
   double resource_regen_per_second( resource_e ) const override;
 
-  void apply_affecting_auras( action_t& ) override;
-  action_t* create_action( std::string_view name, std::string_view options ) override;
+  void apply_affecting_auras( action_t& action ) override;
+  action_t* create_action( std::string_view name, std::string_view options_str ) override;
+  std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
   const evoker_td_t* find_target_data( const player_t* target ) const override;
   evoker_td_t* get_target_data( player_t* target ) const override;
 
@@ -340,6 +341,16 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
 
   return player_t::create_action( name, options_str );
+}
+
+std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
+{
+  auto splits = util::string_split<std::string_view>( expr_str, "." );
+
+  if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
+    return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
+
+  return player_t::create_expression( expr_str );
 }
 
 const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
