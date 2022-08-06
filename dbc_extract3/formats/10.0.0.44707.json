@@ -514,13 +514,13 @@
   },
   "ItemBonusListGroupEntry": {
     "fields": [
-      { "data_type": "B", "field": "id_item_bonus_list_group"  },
-      { "data_type": "H", "field": "id_item_bonus_list"        },
-      { "data_type": "H", "field": "id_item_level_selector"    },
-      { "data_type": "H", "field": "sequence_value"            },
+      { "data_type": "i", "field": "id_item_bonus_list_group"  },
+      { "data_type": "i", "field": "id_item_bonus_list"        },
+      { "data_type": "i", "field": "id_item_level_selector"    },
+      { "data_type": "i", "field": "sequence_value"            },
       { "data_type": "i", "field": "id_item_extended_cost"     },
       { "data_type": "i", "field": "id_player_condition"       },
-      { "data_type": "B", "field": "flags"                     }
+      { "data_type": "i", "field": "flags"                     }
     ]
   },
   "ItemBonusTreeNode": {
