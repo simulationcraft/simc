@@ -132,14 +132,46 @@ struct evoker_t : public player_t
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
 
-  void apply_affecting_auras( action_t& ) override;
+  double resource_regen_per_second( resource_e ) const override;
 
+  void apply_affecting_auras( action_t& ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
   const evoker_td_t* find_target_data( const player_t* target ) const override;
   evoker_td_t* get_target_data( player_t* target ) const override;
 
   target_specific_t<evoker_td_t> target_data;
 };
+
+namespace buffs
+{
+// Template for base evoker buffs
+template <class Base>
+struct evoker_buff_t : public Base
+{
+private:
+  using bb = Base;  // buff base, buff_t/stat_buff_t/etc.
+
+protected:
+  using base_t = evoker_buff_t<buff_t>;  // shorthand
+
+public:
+  evoker_buff_t( evoker_t* player, std::string_view name, const spell_data_t* s_data = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : bb( player, name, s_data, item )
+  {}
+
+  evoker_buff_t( evoker_td_t& td, std::string_view name, const spell_data_t* s_data = spell_data_t::nil(),
+                 const item_t* item = nullptr )
+    : bb( td, name, s_data, item )
+  {}
+
+  evoker_t* p()
+  { return static_cast<evoker_t*>( bb::source ); }
+
+  const evoker_t* p() const
+  { return static_cast<evoker_t*>( bb::source ); }
+};
+}  // namespace buffs
 
 // Template for base evoker action code.
 template <class Base>
@@ -220,7 +252,9 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     rppm(),
     uptime()
 {
-
+  resource_regeneration = regen_type::DYNAMIC;
+  regen_caches[ CACHE_HASTE ] = true;
+  regen_caches[ CACHE_SPELL_HASTE ] = true;
 }
 
 void evoker_t::init_base_stats()
@@ -228,6 +262,10 @@ void evoker_t::init_base_stats()
   player_t::init_base_stats();
 
   base.spell_power_per_intellect = 1.0;
+
+  resources.base[ RESOURCE_ESSENCE ] = 5;
+  // TODO: confirm base essence regen. currently estimated at 1 per 5s base
+  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2;
 }
 
 void evoker_t::init_spells()
@@ -256,6 +294,8 @@ void evoker_t::create_actions()
 void evoker_t::create_buffs()
 {
   player_t::create_buffs();
+
+  using namespace buffs;
 
   // Baseline Abilities
   // Class Traits
@@ -319,6 +359,13 @@ stat_e evoker_t::convert_hybrid_stat( stat_e s ) const
     default:
       return s;
   }
+}
+
+double evoker_t::resource_regen_per_second( resource_e r ) const
+{
+  auto rrps = player_t::resource_regen_per_second( r );
+
+  return rrps;
 }
 
 void evoker_t::copy_from( player_t* source )

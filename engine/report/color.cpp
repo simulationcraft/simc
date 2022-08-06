@@ -116,6 +116,9 @@ rgb resource_color( resource_e type )
     case RESOURCE_RUNE:
       return class_color( MAGE );
 
+    case RESOURCE_ESSENCE:
+      return class_color( EVOKER );
+
     case RESOURCE_NONE:
     default:
       return GREY2;

@@ -332,6 +332,7 @@ static constexpr auto _resource_strings = util::make_static_map<int, util::strin
   { 15, "Demonic Fury",  },
   { 17, "Fury",          },
   { 18, "Pain",          },
+  { 19, "Essence",       },
 } );
 
 // Mappings from Classic EnumeratedString.db2

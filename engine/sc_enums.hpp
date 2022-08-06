@@ -460,6 +460,7 @@ enum resource_e
   RESOURCE_PAIN,
   RESOURCE_RUNE,
   RESOURCE_COMBO_POINT,
+  RESOURCE_ESSENCE,
   RESOURCE_MAX
 };
 
@@ -1302,6 +1303,7 @@ enum power_e
   // Not yet used?
   POWER_FURY          = 17,
   POWER_PAIN          = 18,
+  POWER_ESSENSE       = 19,
   // Helpers
   POWER_MAX,
   POWER_NONE   = 0xFFFFFFFF,  // None.
