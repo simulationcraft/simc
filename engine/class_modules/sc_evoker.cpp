@@ -14,7 +14,7 @@ namespace
 
 struct evoker_t : public player_t
 {
-  evoker_t( sim_t * sim, std::string_view name, race_e r = RACE_DRACTHYR_ALLIANCE ) : player_t( sim, EVOKER, name, r )
+  evoker_t( sim_t * sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE ) : player_t( sim, EVOKER, name, r )
   {
 
   }

@@ -477,7 +477,7 @@ specialization_e dbc::translate_spec_str( player_e ptype, util::string_view spec
     {
       if ( str_compare_ci( spec_str, "devastation" ) )
         return EVOKER_DEVASTATION;
-      else if ( str_compare_ci( spec_str, "preversation" ) )
+      else if ( str_compare_ci( spec_str, "preservation" ) )
         return EVOKER_PRESERVATION;
       break;
     }

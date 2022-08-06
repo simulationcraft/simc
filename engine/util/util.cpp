@@ -482,7 +482,7 @@ const char* util::stats_type_string( stats_e type )
 race_e util::parse_race_type( util::string_view name )
 {
   if ( name == "forsaken" )           return RACE_UNDEAD;
-  if ( name == "dracthyr" )           return RACE_DRACTHYR_ALLIANCE;
+  if ( name == "dracthyr" )           return RACE_DRACTHYR_HORDE;
 
   return parse_enum_with_default<race_e, RACE_NONE, RACE_MAX, RACE_UNKNOWN, race_type_string>( name );
 }
