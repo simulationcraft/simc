@@ -663,6 +663,7 @@ struct player_t : public actor_t
     const spell_data_t* magical_affinity;
     const spell_data_t* mountaineer;
     const spell_data_t* brush_it_off;
+    const spell_data_t* awakened;
   } racials;
 
   struct antumbra_t
