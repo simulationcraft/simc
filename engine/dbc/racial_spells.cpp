@@ -29,14 +29,16 @@ racial_spell_entry_t::find( util::string_view name, bool ptr, race_e r, player_e
 
   for ( const auto& entry : data( ptr ) )
   {
-    if ( entry.mask_race > race_mask )
-    {
-      break;
-    }
-
     if ( !( entry.mask_race & race_mask ) )
     {
-      continue;
+      if ( entry.mask_race > race_mask )
+      {
+        break;
+      }
+      else
+      {
+        continue;
+      }
     }
 
     if ( !util::str_compare_ci( entry.name, name ) )

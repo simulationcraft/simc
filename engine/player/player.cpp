@@ -4310,7 +4310,7 @@ double player_t::composite_mastery() const
   double cm =
       current.mastery + apply_combat_rating_dr( RATING_MASTERY, composite_mastery_rating() / current.rating.mastery );
 
-  cm += racials.awakened->effectN( 1 ).percent();
+  cm += racials.awakened->effectN( 1 ).base_value();
 
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_MASTERY ] )
     cm += b->check_stack_value();
