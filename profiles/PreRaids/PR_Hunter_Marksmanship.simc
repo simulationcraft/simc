@@ -37,6 +37,7 @@ actions.precombat+=/steady_shot,if=active_enemies>2|(covenant.kyrian|talent.voll
 actions=auto_shot
 actions+=/counter_shot,line_cd=30,if=runeforge.sephuzs_proclamation|soulbind.niyas_tools_poison|(conduit.reversal_of_fortune&!runeforge.sephuzs_proclamation)
 actions+=/call_action_list,name=trinkets,if=covenant.kyrian&cooldown.trueshot.remains&cooldown.resonating_arrow.remains|!covenant.kyrian&cooldown.trueshot.remains
+actions+=/call_action_list,name=other_on_use
 # Delay facing your doubt until you have put Resonating Arrow down, or if the cooldown is too long to delay facing your Doubt. If none of these conditions are able to met within the 10 seconds leeway, the sim faces your Doubt automatically.
 actions+=/newfound_resolve,if=soulbind.newfound_resolve&(buff.resonating_arrow.up|cooldown.resonating_arrow.remains>10|fight_remains<16)
 actions+=/call_action_list,name=cds
@@ -49,6 +50,9 @@ actions.cds+=/ancestral_call,if=buff.trueshot.up|cooldown.trueshot.remains>30|fi
 actions.cds+=/fireblood,if=buff.trueshot.up|cooldown.trueshot.remains>30|fight_remains<9
 actions.cds+=/lights_judgment,if=buff.trueshot.down
 actions.cds+=/potion,if=buff.trueshot.up&(buff.bloodlust.up|target.health.pct<20)|fight_remains<26|(covenant.kyrian&buff.resonating_arrow.up&fight_remains<72)
+
+actions.other_on_use=use_items,slots=finger1
+actions.other_on_use+=/use_items,slots=finger2
 
 actions.st=steady_shot,if=talent.steady_focus&(prev_gcd.1.steady_shot&buff.steady_focus.remains<5|buff.steady_focus.down)&(buff.resonating_arrow.down|!covenant.kyrian)
 actions.st+=/kill_shot
