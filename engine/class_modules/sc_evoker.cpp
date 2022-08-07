@@ -329,7 +329,7 @@ public:
 
 struct empowered_spell_t : public evoker_spell_t
 {
-  std::string empower_to_str;
+  int empower_to = empower_e::EMPOWER_MAX;
   empower_e max_empower;
 
   empowered_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
@@ -337,8 +337,11 @@ struct empowered_spell_t : public evoker_spell_t
       max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
   {
     // TODO: convert to full empower expression support
-    add_option( opt_string( "empower_to", empower_to_str ) );
+    add_option( opt_int( "empower_to", empower_to ) );
     parse_options( options_str );
+
+    base_execute_time = time_to_empower( (empower_e) empower_to );
+    trigger_gcd       = base_execute_time + 1.5_s;
   }
 
   action_state_t* new_state() override
@@ -353,7 +356,7 @@ struct empowered_spell_t : public evoker_spell_t
   virtual empower_e empower_level() const
   {
     // TODO: return the current empowerment level based on elapsed cast/channel time
-    return empower_e::EMPOWER_3;
+    return std::min( (empower_e) empower_to, max_empower );
   }
 
   timespan_t time_to_empower( empower_e empower ) const
@@ -390,6 +393,23 @@ struct disintegrate_t : public evoker_spell_t
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ) )
   {
     channeled = true;
+  }
+
+  double cost() const override
+  {
+    if ( p()->buff.essence_burst->check() )
+      return 0;
+    return evoker_spell_t::cost();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    if ( cost() == 0 && base_cost() > 0 && current_resource() == RESOURCE_ESSENCE )
+    {
+      p()->buff.essence_burst->decrement();
+    }
   }
 };
 
