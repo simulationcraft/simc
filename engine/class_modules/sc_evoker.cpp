@@ -109,26 +109,100 @@ struct evoker_t : public player_t
     const spell_data_t* preservation;  // preservation class aura
     // Devastation
     // Preservation
-    const spell_data_t* essence_attunement;  // free 3 stack essence burst for preservation
   } spec;
 
   // Talents
   struct talents_t
   {
     // Class Traits
-    player_talent_t natural_convergence;  // row 2 col 1
-    player_talent_t innate_magic;         // row 3 col 2
-    player_talent_t enkindled;            // row 3 col 4
-    player_talent_t suffused_with_power;  // row 5 col 2
+    player_talent_t landslide;  // row 1
+    player_talent_t obsidian_scales;
+    player_talent_t expunge;
+    player_talent_t natural_convergence;  // row 2
+    player_talent_t permeating_chill;
+    player_talent_t rescue;
+    player_talent_t forger_of_mountains;  // row 3
+    player_talent_t innate_magic;
+    player_talent_t obsidian_bulwark;
+    player_talent_t enkindled;
+    player_talent_t scarlet_adaptation;
+    player_talent_t quell;  // row 4
+    player_talent_t recall;
+    player_talent_t heavy_wingbeats;
+    player_talent_t clobbering_sweep;
+    player_talent_t tailwind;
+    player_talent_t cauterizing_flame;
+    player_talent_t roar_of_exhilaration;  // row 5
+    player_talent_t suffused_with_power;
+    player_talent_t tip_the_scales;
+    player_talent_t attuned_to_the_dream;
+    player_talent_t sleep_walk;
+    player_talent_t draconic_legacy;  // row 6
+    player_talent_t tempered_scales;
+    player_talent_t extended_flight;
+    player_talent_t bountiful_bloom;
+    player_talent_t blast_furnace;  // row 7
+    player_talent_t exuberance;
+    player_talent_t source_of_magic;
+    player_talent_t ancient_flame;
+    player_talent_t unravel;  // row 8
+    player_talent_t protracted_talons;
+    player_talent_t oppressing_roar;
+    player_talent_t fly_with_me;
+    player_talent_t lush_growth;
+    player_talent_t renewing_blaze;
+    player_talent_t leaping_flames;  // row 9
+    player_talent_t overawe;
+    player_talent_t aerial_mastery;
+    player_talent_t twin_guardian;
+    player_talent_t pyrexia;
+    player_talent_t fire_within;
+    player_talent_t terror_of_the_skies;  // row 10
+    player_talent_t time_spiral;
+    player_talent_t zephyr;
+
     // Devastation Traits
-    player_talent_t ruby_essence_burst;    // row 2 col 1
-    player_talent_t eternity_surge;        // row 3 col 3
-    player_talent_t ruby_embers;           // row 5 col 1 choice 1
-    player_talent_t engulfing_blaze;       // row 5 col 1 choice 2
-    player_talent_t essence_attunement;    // row 5 col 3 2 stack essence burst for devastation
-    player_talent_t might_of_the_aspects;  // row 6 col 3
-    player_talent_t shattering_star;       // row 7 col 4
-    player_talent_t font_of_magic;         // row 8 col 3
+    player_talent_t pyre;  // row 1
+    player_talent_t ruby_essence_burst;  // row 2
+    player_talent_t azure_essence_burst;
+    player_talent_t dense_energy;  // row 3
+    player_talent_t imposing_presence;
+    player_talent_t inner_radiance;
+    player_talent_t eternity_surge;
+    player_talent_t volatility;  // row 4
+    player_talent_t power_nexus;
+    player_talent_t dragonrage;
+    player_talent_t lay_waste;
+    player_talent_t arcane_instability;
+    player_talent_t ruby_embers;  // row 5
+    player_talent_t engulfing_blaze;
+    player_talent_t animosity;
+    player_talent_t essence_attunement;
+    player_talent_t firestorm;  // row 6
+    player_talent_t heat_wave;
+    player_talent_t might_of_the_aspects;
+    player_talent_t honed_aggression;
+    player_talent_t eternitys_span;
+    player_talent_t continuum;
+    player_talent_t casuality;
+    player_talent_t catalyze;  // row 7
+    player_talent_t ruin;
+    player_talent_t charged_blast;
+    player_talent_t shattering_star;
+    player_talent_t snapfire;  // row 8
+    player_talent_t font_of_magic;
+    player_talent_t onyx_legacy;
+    player_talent_t tyranny;
+    player_talent_t focusing_iris;
+    player_talent_t arcane_vigor;
+    player_talent_t burnout;  // row 9
+    player_talent_t imminent_destruction;
+    player_talent_t scintillation;
+    player_talent_t power_swell;
+    player_talent_t feed_the_flames;  // row 10
+    player_talent_t everburning_flame;
+    player_talent_t cascading_power;
+    player_talent_t iridescence;
 
     // Preservation Traits
   } talent;
@@ -313,7 +387,7 @@ public:
     : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
   {
     // TODO: find out if there is a better data source for the spell color
-    /* std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
+    std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
     if ( !desc.empty() )
     {
       if ( util::str_compare_ci( desc, "Black" ) )
@@ -326,7 +400,7 @@ public:
         spell_color = SPELL_GREEN;
       else if ( util::str_compare_ci( desc, "Red" ) )
         spell_color = SPELL_RED;
-    }*/
+    }
 
     apply_buff_effects();
     apply_debuffs_effects();
@@ -621,7 +695,7 @@ public:
   {
     using S = const spell_data_t*;
 
-    parse_debuff_effects( []( evoker_td_t* t ) -> buff_t* {return t->debuffs.shattering_star; },
+    parse_debuff_effects( []( evoker_td_t* t ) -> buff_t* { return t->debuffs.shattering_star; },
         p()->talent.shattering_star );
   }
 
@@ -702,7 +776,7 @@ public:
     
     if ( p()->talent.might_of_the_aspects.ok() && p()->buff.essence_burst->check())
     {
-      mult *= 1 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
+      mult *= 1.0 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
     }
 
     return mult;
@@ -973,7 +1047,7 @@ void evoker_t::init_base_stats()
 
   resources.base[ RESOURCE_ESSENCE ] = 5;
   // TODO: confirm base essence regen. currently estimated at 1 per 5s base
-  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1 + talent.innate_magic->effectN( 1 ).percent() );
+  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1.0 + talent.innate_magic->effectN( 1 ).percent() );
 }
 
 void evoker_t::init_spells()
@@ -1006,7 +1080,6 @@ void evoker_t::init_spells()
   spec.preservation = find_specialization_spell( "Preservation Evoker" );
   // Devastation
   // Preservation
-  spec.essence_attunement = find_specialization_spell( "Essence Attunement" );
 }
 
 void evoker_t::create_actions()
@@ -1025,12 +1098,11 @@ void evoker_t::create_buffs()
   {
     buff.essence_burst = make_buff( this, "essence_burst", find_spell( 359618 ) )
       ->apply_affecting_aura( talent.essence_attunement );
-
   }
   else
   {
     buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) )
-      ->apply_affecting_aura( spec.essence_attunement );
+      ->apply_affecting_aura( find_specialization_spell( "Essence Attunement") );
   }
   // Class Traits
   // Devastation Traits
