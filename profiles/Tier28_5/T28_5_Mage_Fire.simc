@@ -1,13 +1,14 @@
-mage="PR_Mage_Fire"
+mage="T28_5_Mage_Fire"
 source=default
 spec=fire
 level=60
-race=troll
+race=dwarf
 role=spell
 position=ranged_back
 talents=3031021
-covenant=night_fae
-soulbind=niya,grove_invigoration/infernal_cascade:4
+covenant=venthyr
+soulbind=theotar_the_mad_duke,soothing_shade/controlled_destruction:11:1/infernal_cascade:11:1/siphoned_malice:11:1/party_favors
+renown=80
 
 # Default consumables
 potion=spectral_intellect
@@ -293,29 +294,31 @@ actions.standard_rotation+=/arcane_explosion,if=active_enemies>=variable.arcane_
 actions.standard_rotation+=/flamestrike,if=active_enemies>=variable.hard_cast_flamestrike
 actions.standard_rotation+=/fireball
 
-head=cocoonsilk_cowl,id=178693,bonus_id=6807/1498/6646
-neck=sin_stained_pendant,id=178827,bonus_id=6807/1498/6646
-shoulders=grimveiled_spaulders,id=173247,bonus_id=6649/6650/6716/6932/1487
-back=blighted_margraves_cloak,id=178755,bonus_id=6807/1498/6646
-chest=sinister_requiem_vestments,id=180098,bonus_id=6807/1498/6646,enchant=eternal_insight
-wrists=deathshackle_wristwraps,id=178704,bonus_id=6807/1498/6646,enchant=eternal_intellect
-hands=mitts_of_flawless_duplication,id=178930,bonus_id=6807/1498/6646
-waist=kintaras_baleful_cord,id=180109,bonus_id=6807/1498/6646
-legs=muehzalas_hexthread_sarong,id=179351,bonus_id=6807/1498/6646
-feet=slippers_of_leavened_station,id=178831,bonus_id=6807/1498/6646
-finger1=bloodoath_signet,id=178871,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-finger2=fleshfused_circle,id=178869,bonus_id=6807/1498/6646,enchant=tenet_of_haste
-trinket1=inscrutable_quantum_device,id=179350,bonus_id=6807/1498/6646
-trinket2=empyreal_ordnance,id=180117,bonus_id=6807/1498/6646
-main_hand=fleshcrafters_knife,id=178789,bonus_id=6807/1498/6646,enchant=sinful_revelation
-off_hand=deathwalkers_promise,id=178868,bonus_id=6807/1498/6646
+head=erudite_occultists_hood,id=188844,bonus_id=1531/7187/6935,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1550/7187/6935,gem_id=173130
+shoulders=erudite_occultists_mantle,id=188843,bonus_id=1531/7187
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=1576/6646
+chest=erudite_occultists_robes,id=188839,bonus_id=1531/7187,enchant=eternal_insight
+wrists=hyperthread_wristwraps,id=168989,bonus_id=3155/6536/6646/6935,gem_id=173130,enchant=eternal_intellect
+hands=grimveiled_mittens,id=173244,bonus_id=1588/6934/6649/6650
+waist=erudite_occultists_cord,id=188841,bonus_id=1531/7187/6935,gem_id=173130
+legs=erudite_occultists_leggings,id=188842,bonus_id=1524/7187
+feet=grimveiled_sandals,id=173243,bonus_id=1588/8123/6649/6650
+finger1=overclocking_bit_band,id=169159,bonus_id=3155/6536/6646/6935,gem_id=173130,enchant=tenet_of_haste
+finger2=logic_loop_of_division,id=169157,bonus_id=3155/6536/6646/6935,gem_id=173128,enchant=tenet_of_haste
+trinket1=the_first_sigil,id=188271,bonus_id=1550/7187
+trinket2=dreadfire_vessel,id=184030,bonus_id=1576/6646
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1550/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1550/7187
 
 # Gear Summary
-# gear_ilvl=184.38
-# gear_stamina=860
-# gear_intellect=725
-# gear_crit_rating=179
-# gear_haste_rating=701
-# gear_mastery_rating=271
-# gear_versatility_rating=310
-# gear_armor=292
+# gear_ilvl=306.31
+# gear_stamina=3818
+# gear_intellect=2380
+# gear_crit_rating=562
+# gear_haste_rating=1145
+# gear_mastery_rating=551
+# gear_versatility_rating=313
+# gear_armor=615
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1
