@@ -22,9 +22,9 @@ T28_5_Death_Knight_Unholy_DC.simc
 # T28_5_Hunter_Marksmanship.simc
 # T28_5_Hunter_Survival.simc
 
-# T28_5_Mage_Fire.simc
-# T28_5_Mage_Frost.simc
-# T28_5_Mage_Arcane.simc
+T28_5_Mage_Fire.simc
+T28_5_Mage_Frost.simc
+T28_5_Mage_Arcane.simc
 
 # T28_5_Monk_Brewmaster.simc
 # These profiles exist but are not terribly relevant for most situations,

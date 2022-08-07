@@ -62,7 +62,7 @@ T28_5_Generate_Death_Knight.simc
 #T28_5_Generate_Hunter.simc
 
 # Mage
-#T28_5_Generate_Mage.simc
+T28_5_Generate_Mage.simc
 
 # Monk
 #T28_5_Generate_Monk.simc
