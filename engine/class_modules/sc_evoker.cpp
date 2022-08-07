@@ -389,7 +389,7 @@ public:
     : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
   {
     // TODO: find out if there is a better data source for the spell color
-    if ( spell != spell_data_t::nil() )
+    if ( ab::data().ok() )
     {
       std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
       if ( !desc.empty() )
