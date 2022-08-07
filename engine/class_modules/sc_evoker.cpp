@@ -266,6 +266,8 @@ struct evoker_t : public player_t
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
 
+  double composite_player_multiplier( school_e ) const override;
+
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
@@ -1155,6 +1157,16 @@ void evoker_t::apply_affecting_auras( action_t& action )
   // TODO: Coonfirm if this works properly with Scarlet Adaptation
   action.apply_affecting_aura( talent.engulfing_blaze );
   // Preservation Traits
+}
+
+double evoker_t::composite_player_multiplier( school_e s ) const
+{
+  double m = player_t::composite_player_multiplier( s );
+
+  if ( talent.suffused_with_power.ok() && talent.suffused_with_power->effectN( 1 ).has_common_school( s ) )
+    m *= 1 + talent.suffused_with_power->effectN( 1 ).percent();
+
+  return m;
 }
 
 action_t* evoker_t::create_action( std::string_view name, std::string_view options_str )
