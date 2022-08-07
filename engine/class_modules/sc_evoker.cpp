@@ -229,6 +229,7 @@ struct evoker_t : public player_t
   struct procs_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
+    propagate_const<proc_t*> azure_essence_burst;
   } proc;
 
   // RPPMs
@@ -873,6 +874,27 @@ struct disintegrate_t : public evoker_spell_t
   }
 };
 
+struct azure_strike_t : public evoker_spell_t
+{
+  azure_strike_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "azure_strike", p, p->find_class_spell( "Azure Strike" ), options_str )
+  {
+    aoe = data().effectN( 1 ).base_value() + p->talent.protracted_talons->effectN( 1 ).base_value();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    if ( p()->talent.azure_essence_burst.ok() && rng().roll( p()->talent.azure_essence_burst->effectN( 1 ).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.azure_essence_burst->occur();
+    }
+  }
+
+};
+
 struct living_flame_t : public evoker_spell_t
 {
   struct living_flame_damage_t : public evoker_spell_t
@@ -1067,8 +1089,10 @@ void evoker_t::init_spells()
   talent.innate_magic        = CT( "Innate Magic" );
   talent.enkindled           = CT( "Enkindled" );
   talent.suffused_with_power = CT( "Suffused With Power" );
+  talent.protracted_talons   = CT( "Protracted Talons" );
   // Devastation Traits
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
+  talent.azure_essence_burst  = ST( "Azure Essence Burst" );
   talent.eternity_surge       = ST( "Eternity Surge" );
   talent.ruby_embers          = ST( "Ruby Embers" );
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
@@ -1178,6 +1202,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
 
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
+  if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
   if ( name == "living_flame" ) return new living_flame_t( this, options_str );
   if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
   if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
@@ -1280,6 +1305,7 @@ void evoker_t::init_action_list()
 void evoker_t::init_procs()
 {
   proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
+  proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
 
   player_t::init_procs();
 }
