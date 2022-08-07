@@ -440,7 +440,7 @@ public:
                ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
            ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
       {
-        double pct = eff.percent();;
+        double pct = eff.percent();
 
         if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
           val += pct;
@@ -748,6 +748,33 @@ public:
   }
 };
 
+namespace heals
+{
+struct evoker_heal_t : public evoker_action_t<heal_t>
+{
+private:
+  using ab = evoker_action_t<heal_t>;
+
+public:
+  evoker_heal_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
+                 std::string_view options_str = {} )
+    : ab( name, player, spell )
+  {
+    parse_options( options_str );
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double tm = ab::composite_target_multiplier( t );
+
+    if ( p()->specialization() == EVOKER_PRESERVATION && t->health_percentage() < p()->health_percentage() )
+      tm *= 1.0 + p()->cache.mastery_value();
+
+    return tm;
+  }
+};
+}  // namespace heals
+
 namespace spells
 {
 // Base Classes =============================================================
@@ -771,7 +798,8 @@ public:
 
     // Preliminary testing shows this is linear with target hp %.
     // TODO: confirm this applies only to all evoker offensive spells
-    tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() / 100 );
+    if ( p()->specialization() == EVOKER_DEVASTATION )
+      tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() / 100 );
 
     return tm;
   }
