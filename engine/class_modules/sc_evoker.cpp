@@ -389,23 +389,26 @@ public:
     : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
   {
     // TODO: find out if there is a better data source for the spell color
-    std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
-    if ( !desc.empty() )
+    if ( spell != spell_data_t::nil() )
     {
-      if ( util::str_compare_ci( desc, "Black" ) )
-        spell_color = SPELL_BLACK;
-      else if ( util::str_compare_ci( desc, "Blue" ) )
-        spell_color = SPELL_BLUE;
-      else if ( util::str_compare_ci( desc, "Bronze" ) )
-        spell_color = SPELL_BRONZE;
-      else if ( util::str_compare_ci( desc, "Green" ) )
-        spell_color = SPELL_GREEN;
-      else if ( util::str_compare_ci( desc, "Red" ) )
-        spell_color = SPELL_RED;
-    }
+      std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
+      if ( !desc.empty() )
+      {
+        if ( util::str_compare_ci( desc, "Black" ) )
+          spell_color = SPELL_BLACK;
+        else if ( util::str_compare_ci( desc, "Blue" ) )
+          spell_color = SPELL_BLUE;
+        else if ( util::str_compare_ci( desc, "Bronze" ) )
+          spell_color = SPELL_BRONZE;
+        else if ( util::str_compare_ci( desc, "Green" ) )
+          spell_color = SPELL_GREEN;
+        else if ( util::str_compare_ci( desc, "Red" ) )
+          spell_color = SPELL_RED;
+      }
 
-    apply_buff_effects();
-    apply_debuffs_effects();
+      apply_buff_effects();
+      apply_debuffs_effects();
+    }
   }
 
   evoker_t* p()
