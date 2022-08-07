@@ -4255,11 +4255,11 @@ std::unique_ptr<expr_t> unique_gear::create_expression( player_t& player, util::
   }
 
   // Hyperthread Wristwraps
-  if ( splits[ 0 ] == "hyperthread_wristwraps" && splits.size() == 2 )
+  if ( splits[ 0 ] == "hyperthread_wristwraps" )
   {
     if ( auto a = player.find_action( "hyperthread_wristwraps" ) )
     {
-      return a->create_expression( splits[ 1 ] );
+      return a->create_expression( name_str );
     }
   }
 
