@@ -52,7 +52,9 @@ void devastation( player_t* p )
 
   // Potions
   default_list->add_action( "potion" );
+  default_list->add_action( "fire_breath" );
   default_list->add_action( "disintegrate" );
+  default_list->add_action( "living_flame" );
   
 }
 

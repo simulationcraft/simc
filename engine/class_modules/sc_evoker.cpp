@@ -105,6 +105,8 @@ struct evoker_t : public player_t
   {
     // Class Traits
     // Devastation Traits
+    player_talent_t ruby_embers;  // row 5 col 1 choice 1
+    player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
     player_talent_t font_of_magic;  // row 8 col 3
     // Preservation Traits
   } talent;
@@ -363,6 +365,36 @@ struct disintegrate_t : public evoker_spell_t
   }
 };
 
+struct living_flame_t : public evoker_spell_t
+{
+  struct living_flame_damage_t : public evoker_spell_t
+  {
+    living_flame_damage_t( evoker_t* p ) : evoker_spell_t( "living_flame_damage", p, p->find_spell( 361500 ) )
+    {
+      dual = true;
+
+      dot_duration = p->talent.ruby_embers.ok() ? dot_duration : 0_ms;
+    }
+  };
+
+  evoker_spell_t* damage;
+
+  living_flame_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) )
+  {
+
+    damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
+    damage->stats = stats;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+
+    damage->schedule_execute();
+  }
+};
+
 struct fire_breath_t : public empowered_spell_t
 {
   struct fire_breath_damage_t : public empowered_spell_t
@@ -452,6 +484,8 @@ void evoker_t::init_spells()
   // Evoker Talents
   // Class Traits
   // Devastation Traits
+  talent.ruby_embers = ST( "Ruby Embers" );
+  talent.engulfing_blaze = ST( "Engulfing Blaze" );
   talent.font_of_magic = ST( "Font of Magic" );
   // Preservation Traits
 
@@ -522,6 +556,8 @@ void evoker_t::apply_affecting_auras( action_t& action )
 
   // Class Traits
   // Devastaion Traits
+  // TODO: Coonfirm if this works properly with Scarlet Adaptation
+  action.apply_affecting_aura( talent.engulfing_blaze );
   // Preservation Traits
 }
 
@@ -531,6 +567,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
 
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
+  if ( name == "living_flame" ) return new living_flame_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
