@@ -117,6 +117,7 @@ struct evoker_t : public player_t
     // Class Traits
     // Devastation Traits
     player_talent_t ruby_essence_burst;        // row 2 col 1 
+    player_talent_t eternity_surge;        // row 3 col 3 
     player_talent_t ruby_embers;  // row 5 col 1 choice 1
     player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
     player_talent_t font_of_magic;  // row 8 col 3
@@ -269,7 +270,7 @@ public:
     : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
   {
     // TODO: find out if there is a better data source for the spell color
-    std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
+    /* std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
     if ( !desc.empty() )
     {
       if ( util::str_compare_ci( desc, "Black" ) )
@@ -282,7 +283,7 @@ public:
         spell_color = SPELL_GREEN;
       else if ( util::str_compare_ci( desc, "Red" ) )
         spell_color = SPELL_RED;
-    }
+    }*/
   }
 
   evoker_t* p()
@@ -329,12 +330,13 @@ public:
 
 struct empowered_spell_t : public evoker_spell_t
 {
-  int empower_to = empower_e::EMPOWER_MAX;
+  int empower_to;
   empower_e max_empower;
 
   empowered_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
     : evoker_spell_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
-      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 ),
+      empower_to( empower_e::EMPOWER_MAX )
   {
     // TODO: convert to full empower expression support
     add_option( opt_int( "empower_to", empower_to ) );
@@ -472,7 +474,7 @@ struct fire_breath_t : public empowered_spell_t
   empowered_spell_t* damage;
 
   fire_breath_t( evoker_t* p, std::string_view options_str )
-    : empowered_spell_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ) )
+    : empowered_spell_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
   {
     damage = p->get_secondary_action<fire_breath_damage_t>( "fire_breath_damage" );
     damage->stats = stats;
@@ -483,6 +485,49 @@ struct fire_breath_t : public empowered_spell_t
     empowered_spell_t::impact( s );
 
     auto emp_state = damage->get_state();
+    emp_state->target = s->target;
+    damage->snapshot_state( emp_state, damage->amount_type( emp_state ) );
+    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
+
+    damage->schedule_execute( emp_state );
+  }
+};
+
+
+struct eternity_surge_t : public empowered_spell_t
+{
+  struct eternity_surge_damage_t : public empowered_spell_t
+  {
+    eternity_surge_damage_t( evoker_t* p ) : empowered_spell_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
+    {
+      dual = true;
+      background = true;
+      aoe        = 1;
+    }
+
+    int n_targets() const override
+    {
+      if ( pre_execute_state )
+        return empower_level( pre_execute_state );
+      else
+        return empower_e::EMPOWER_MAX;
+    }
+  };
+
+  empowered_spell_t* damage;
+
+  eternity_surge_t( evoker_t* p, std::string_view options_str )
+    : empowered_spell_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
+  {
+    damage        = p->get_secondary_action<eternity_surge_damage_t>( "eternity_surge_damage" );
+    damage->stats = stats;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    empowered_spell_t::impact( s );
+
+    auto emp_state    = damage->get_state();
     emp_state->target = s->target;
     damage->snapshot_state( emp_state, damage->amount_type( emp_state ) );
     debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
@@ -543,7 +588,8 @@ void evoker_t::init_spells()
   // Evoker Talents
   // Class Traits
   // Devastation Traits
-  talent.ruby_essence_burst     = ST( "Ruby Essence Burst" );
+  talent.ruby_essence_burst = ST( "Ruby Essence Burst" );
+  talent.eternity_surge = ST( "Eternity Surge" );
   talent.ruby_embers = ST( "Ruby Embers" );
   talent.engulfing_blaze = ST( "Engulfing Blaze" );
   talent.font_of_magic = ST( "Font of Magic" );
@@ -636,6 +682,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
   if ( name == "living_flame" ) return new living_flame_t( this, options_str );
+  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
