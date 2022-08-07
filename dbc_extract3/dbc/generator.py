@@ -1977,6 +1977,14 @@ class SpellDataGenerator(DataGenerator):
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
        ),
+
+       # Evoker:
+       (
+          # General
+          # Devastation
+          # Preservation
+          ( 369299, 2 ), # Preservation Essence Burst
+       ),
     ]
 
     _profession_enchant_categories = [

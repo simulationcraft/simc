@@ -70,7 +70,7 @@ struct evoker_td_t : public actor_target_data_t
 
   struct debuffs_t
   {
-
+    buff_t* shattering_star;
   } debuffs;
 
   evoker_td_t( player_t* target, evoker_t* source );
@@ -109,6 +109,7 @@ struct evoker_t : public player_t
     const spell_data_t* preservation;  // preservation class aura
     // Devastation
     // Preservation
+    const spell_data_t* essence_attunement;  // free 3 stack essence burst for preservation
   } spec;
 
   // Talents
@@ -120,7 +121,10 @@ struct evoker_t : public player_t
     player_talent_t eternity_surge;        // row 3 col 3 
     player_talent_t ruby_embers;  // row 5 col 1 choice 1
     player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
+    player_talent_t essence_attunement;  // row 5 col 3 paid 3 stack essence burst for devastation
+    player_talent_t shattering_star;  // row 7 col 4
     player_talent_t font_of_magic;  // row 8 col 3
+
     // Preservation Traits
   } talent;
 
@@ -278,14 +282,14 @@ public:
     {}
   };
 
-  using dfun = std::function<dot_t*( evoker_td_t* )>;
-  struct dot_debuff_t
+  using dfun = std::function<buff_t*( evoker_td_t* )>;
+  struct debuff_effect_t
   {
     dfun func;
     double value;
     bool use_stacks;
 
-    dot_debuff_t( dfun f, double v, bool b )
+    debuff_effect_t( dfun f, double v, bool b )
       : func( std::move( f ) ), value( v ), use_stacks( b )
     {}
   };
@@ -296,7 +300,7 @@ public:
   std::vector<buff_effect_t> recharge_multiplier_buffeffects;
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
-  std::vector<dot_debuff_t> target_multiplier_dotdebuffs;
+  std::vector<debuff_effect_t> target_multiplier_debuffeffects;
 
   spell_color_e spell_color;
 
@@ -320,7 +324,7 @@ public:
     }*/
 
     apply_buff_effects();
-    apply_dot_debuffs();
+    apply_debuffs_effects();
   }
 
   evoker_t* p()
@@ -550,11 +554,13 @@ public:
   //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
   void apply_buff_effects()
   {
+    using S = const spell_data_t*;
+
     parse_buff_effects( p()->buff.essence_burst );
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
+  void parse_debuff_effects( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
   {
     if ( !s_data->ok() )
       return;
@@ -576,26 +582,26 @@ public:
       if ( !val )
         continue;
 
-      p()->sim->print_debug( "dot-debuffs: {} ({}) damage modified by {}% on targets with dot {} ({}#{})", ab::name(),
+      p()->sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})", ab::name(),
                              ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
-      target_multiplier_dotdebuffs.emplace_back( func, val, use_stacks  );
+      target_multiplier_debuffeffects.emplace_back( func, val, use_stacks  );
     }
   }
 
   template <typename... Ts>
-  void parse_dot_debuffs( dfun func, const spell_data_t* s_data, Ts... mods )
-  { parse_dot_debuffs( func, true, s_data, mods... ); }
+  void parse_debuff_effects( dfun func, const spell_data_t* s_data, Ts... mods )
+  { parse_debuff_effects( func, true, s_data, mods... ); }
 
-  double get_dot_debuffs_value( evoker_td_t* t ) const
+  double get_debuff_effect_values( evoker_td_t* t ) const
   {
     double return_value = 1.0;
 
-    for ( const auto& i : target_multiplier_dotdebuffs )
+    for ( const auto& i : target_multiplier_debuffeffects )
     {
-      auto dot = i.func( t );
+      auto debuff = i.func( t );
 
-      if ( dot->is_ticking() )
-        return_value *= 1.0 + i.value * ( i.use_stacks ? dot->current_stack() : 1.0 );
+      if ( debuff->check() )
+        return_value *= 1.0 + i.value * ( i.use_stacks ? debuff->check() : 1.0 );
     }
 
     return return_value;
@@ -606,9 +612,12 @@ public:
   //  dot = spell data of the dot
   //  S = optional list of template parameter(s) to indicate spell(s)with redirect effects
   //  spell = optional list of spell(s) with redirect effects that modify the effects on the dot
-  void apply_dot_debuffs()
+  void apply_debuffs_effects()
   {
     using S = const spell_data_t*;
+
+    parse_debuff_effects( []( evoker_td_t* t ) -> buff_t* {return t->debuffs.shattering_star; },
+        p()->talent.shattering_star );
   }
 
   double cost() const override
@@ -619,7 +628,7 @@ public:
 
   double composite_target_multiplier( player_t* t ) const override
   {
-    double tm = ab::composite_target_multiplier( t ) * get_dot_debuffs_value( td( t ) );
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effect_values( td( t ) );
     return tm;
   }
 
@@ -804,6 +813,23 @@ struct living_flame_t : public evoker_spell_t
   }
 };
 
+struct shattering_star_t : public evoker_spell_t
+{
+  shattering_star_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
+  {}
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+      td( s->target )->debuffs.shattering_star->trigger();
+  }
+};
+
+// Empowered Spells =========================================================
+
 struct fire_breath_t : public empowered_spell_t
 {
   struct fire_breath_damage_t : public empowered_spell_t
@@ -894,7 +920,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     dots(),
     debuffs()
 {
-
+  debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
+    ->set_cooldown( 0_ms );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -940,6 +967,8 @@ void evoker_t::init_spells()
   talent.eternity_surge = ST( "Eternity Surge" );
   talent.ruby_embers = ST( "Ruby Embers" );
   talent.engulfing_blaze = ST( "Engulfing Blaze" );
+  talent.essence_attunement = ST( "Essence Attunement" );
+  talent.shattering_star = ST( "Shattering Star" );
   talent.font_of_magic = ST( "Font of Magic" );
   // Preservation Traits
 
@@ -950,6 +979,7 @@ void evoker_t::init_spells()
   spec.preservation = find_specialization_spell( "Preservation Evoker" );
   // Devastation
   // Preservation
+  spec.essence_attunement = find_specialization_spell( "Essence Attunement" );
 }
 
 void evoker_t::create_actions()
@@ -966,11 +996,14 @@ void evoker_t::create_buffs()
   // Baseline Abilities
   if ( specialization() == EVOKER_DEVASTATION)
   {
-    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 359618 ) );
+    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 359618 ) )
+      ->apply_affecting_aura( talent.essence_attunement );
+
   }
   else
   {
-    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) );
+    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) )
+      ->apply_affecting_aura( spec.essence_attunement );
   }
   // Class Traits
   // Devastation Traits
@@ -1030,6 +1063,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
   if ( name == "living_flame" ) return new living_flame_t( this, options_str );
+  if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
   if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
 
   return player_t::create_action( name, options_str );

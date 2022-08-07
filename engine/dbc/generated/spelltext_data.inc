@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44895
-static const std::array<spelltext_data_t, 17643> __spelltext_data { {
+static const std::array<spelltext_data_t, 17644> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16108,6 +16108,7 @@ static const std::array<spelltext_data_t, 17643> __spelltext_data { {
   { 369287, "Manifest a Quasar which orbits your target, blasting it with $s1 Cosmic damage over $d.\r\n\r\nAfter $d, the Quasar stabilizes, creating an Event Horizon for $368645d which grants you $s2 Haste while within its perimeter.", 0, 0 },
   { 369294, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369297, "Living Flame has a $s1% chance to make your next Essence ability free.$?s375722[ Stacks $359618u times.][]", 0, 0 },
+  { 369299, "$@spelldesc369297", "Your next Essence ability is free.", 0 },
   { 369318, "$@spelldesc367924", "Haste increased by $w1.", 0 },
   { 369372, "$@spelldesc368847", 0, "Red" },
   { 369374, "$@spelldesc368847", 0, "Red" },
