@@ -413,9 +413,7 @@ struct pull_event_t final : raid_event_t
 
     void demise() override
     {
-      pet_t::demise();
-
-      if ( bounty > 0 )
+      if ( bounty > 0 && !is_sleeping() )
       {
         if ( !sim->single_actor_batch )
         {
@@ -435,6 +433,8 @@ struct pull_event_t final : raid_event_t
         }
       }
 
+      pet_t::demise();
+      
       if ( pull_event )
         pull_event->on_demise();
     }
@@ -457,6 +457,7 @@ struct pull_event_t final : raid_event_t
   int pull;
   bool bloodlust;
   bool spawned;
+  bool demised;
   event_t* spawn_event;
 
   struct spawn_parameter
@@ -559,6 +560,10 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
+    if ( demised )
+      return;
+
+    demised = true;
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     // find the next pull and spawn it
@@ -700,6 +705,7 @@ struct pull_event_t final : raid_event_t
     raid_event_t::reset();
 
     spawned = false;
+    demised = false;
   }
 };
 
