@@ -26,6 +26,16 @@ enum empower_e
   EMPOWER_MAX
 };
 
+enum spell_color_e
+{
+  SPELL_COLOR_NONE = 0,
+  SPELL_BLACK,
+  SPELL_BLUE,
+  SPELL_BRONZE,
+  SPELL_GREEN,
+  SPELL_RED
+};
+
 struct empowered_state_t : public action_state_t
 {
   empower_e empower;
@@ -253,10 +263,26 @@ private:
   using ab = Base;  // action base, spell_t/heal_t/etc.
 
 public:
-  evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
-    : ab( name, player, spell )
-  {
+  spell_color_e spell_color;
 
+  evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
+    : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
+  {
+    // TODO: find out if there is a better data source for the spell color
+    std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
+    if ( !desc.empty() )
+    {
+      if ( util::str_compare_ci( desc, "Black" ) )
+        spell_color = SPELL_BLACK;
+      else if ( util::str_compare_ci( desc, "Blue" ) )
+        spell_color = SPELL_BLUE;
+      else if ( util::str_compare_ci( desc, "Bronze" ) )
+        spell_color = SPELL_BRONZE;
+      else if ( util::str_compare_ci( desc, "Green" ) )
+        spell_color = SPELL_GREEN;
+      else if ( util::str_compare_ci( desc, "Red" ) )
+        spell_color = SPELL_RED;
+    }
   }
 
   evoker_t* p()
