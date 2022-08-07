@@ -941,7 +941,7 @@ struct shattering_star_t : public evoker_spell_t
   shattering_star_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
   {
-    aoe = ( 1 + p->talent.eternitys_span->effectN( 1 ).percent() );
+    aoe = ( 1 + p->talent.eternitys_span->effectN( 2 ).percent() );
   }
 
   void impact( action_state_t* s ) override
@@ -1007,9 +1007,9 @@ struct eternity_surge_t : public empowered_spell_t
     int n_targets() const override
     {
       if ( pre_execute_state )
-        return empower_level( pre_execute_state ) * ( 1 + p()->talent.eternitys_span->effectN( 1 ).percent() );
+        return empower_level( pre_execute_state ) * ( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
       else
-        return empower_e::EMPOWER_MAX * ( 1 + p()->talent.eternitys_span->effectN( 1 ).percent() );
+        return empower_e::EMPOWER_MAX * ( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
     }
   };
 
