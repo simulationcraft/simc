@@ -1129,7 +1129,7 @@ void evoker_t::init_action_list()
 
 void evoker_t::init_procs()
 {
-  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst Procs" );
+  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
 
   player_t::init_procs();
 }
