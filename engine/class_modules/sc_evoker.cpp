@@ -120,6 +120,7 @@ struct evoker_t : public player_t
     player_talent_t eternity_surge;        // row 3 col 3 
     player_talent_t ruby_embers;  // row 5 col 1 choice 1
     player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
+    player_talent_t might_of_the_aspects;  // row 6 col 3
     player_talent_t font_of_magic;  // row 8 col 3
     // Preservation Traits
   } talent;
@@ -681,6 +682,33 @@ public:
 
     return tm;
   }
+
+  double composite_persistent_multiplier( const action_state_t* s ) const
+  {
+    auto mult = ab::composite_persistent_multiplier( s );
+    
+    if ( p()->talent.might_of_the_aspects.ok() && p()->buff.essence_burst->check())
+    {
+      mult *= 1 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
+    }
+
+    return mult;
+  }
+
+  void consume_resource()
+  {
+    ab::consume_resource();
+
+    resource_e cr = current_resource();
+
+    if ( cr != RESOURCE_ESSENCE || base_cost() == 0 || proc )
+      return;
+
+    if ( p()->buff.essence_burst->up() )
+    {
+      p()->buff.essence_burst->decrement();
+    }
+  }
 };
 
 struct empowered_spell_t : public evoker_spell_t
@@ -750,16 +778,6 @@ struct disintegrate_t : public evoker_spell_t
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
   {
     channeled = true;
-  }
-
-  void execute() override
-  {
-    evoker_spell_t::execute();
-
-    if ( cost() == 0 && base_cost() > 0 && current_resource() == RESOURCE_ESSENCE )
-    {
-      p()->buff.essence_burst->decrement();
-    }
   }
 };
 
@@ -936,17 +954,18 @@ void evoker_t::init_spells()
   // Evoker Talents
   // Class Traits
   // Devastation Traits
-  talent.ruby_essence_burst = ST( "Ruby Essence Burst" );
-  talent.eternity_surge = ST( "Eternity Surge" );
-  talent.ruby_embers = ST( "Ruby Embers" );
-  talent.engulfing_blaze = ST( "Engulfing Blaze" );
-  talent.font_of_magic = ST( "Font of Magic" );
+  talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
+  talent.eternity_surge       = ST( "Eternity Surge" );
+  talent.ruby_embers          = ST( "Ruby Embers" );
+  talent.engulfing_blaze      = ST( "Engulfing Blaze" );
+  talent.might_of_the_aspects = ST( "Might of the Aspects" );
+  talent.font_of_magic        = ST( "Font of Magic" );
   // Preservation Traits
 
   // Evoker Specialization Spells
   // Baseline
-  spec.evoker = find_spell( 353167 );  // TODO: confirm this is the class aura
-  spec.devastation = find_specialization_spell( "Devastation Evoker" );
+  spec.evoker       = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation  = find_specialization_spell( "Devastation Evoker" );
   spec.preservation = find_specialization_spell( "Preservation Evoker" );
   // Devastation
   // Preservation
