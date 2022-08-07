@@ -18,6 +18,7 @@ class_modules/apl/apl_death_knight.hpp
 class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_priest.hpp
+class_modules/apl/apl_evoker.hpp
 class_modules/apl/mage.hpp
 class_modules/apl/warlock.hpp
 class_modules/class_module.hpp
@@ -201,6 +202,7 @@ class_modules/apl/apl_death_knight.cpp
 class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp
 class_modules/apl/apl_priest.cpp
+class_modules/apl/apl_evoker.cpp
 class_modules/apl/mage.cpp
 class_modules/apl/warlock.cpp
 class_modules/monk/sc_monk.cpp

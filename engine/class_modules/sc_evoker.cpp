@@ -5,6 +5,7 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
+#include "class_modules/apl/apl_evoker.hpp"
 
 namespace
 {
@@ -147,7 +148,7 @@ struct evoker_t : public player_t
   evoker_t( sim_t * sim, std::string_view name, race_e r = RACE_DRACTHYR_HORDE );
 
   // Character Definitions
-  //void init_action_list() override;
+  void init_action_list() override;
   void init_base_stats() override;
   //void init_resources( bool ) override;
   //void init_benefits() override;
@@ -166,6 +167,12 @@ struct evoker_t : public player_t
   //void reset() override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
+
+  std::string default_potion() const override;
+  std::string default_flask() const override;
+  std::string default_food() const override;
+  std::string default_rune() const override;
+  std::string default_temporary_enchant() const override;
 
   target_specific_t<evoker_td_t> target_data;
   const evoker_td_t* find_target_data( const player_t* target ) const override;
@@ -555,6 +562,69 @@ stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
     default:
       return stat;
   }
+}
+
+
+std::string evoker_t::default_potion() const
+{
+  return evoker_apl::potion( this );
+}
+
+std::string evoker_t::default_flask() const
+{
+  return evoker_apl::flask( this );
+}
+
+std::string evoker_t::default_food() const
+{
+  return evoker_apl::food( this );
+}
+
+std::string evoker_t::default_rune() const
+{
+  return evoker_apl::rune( this );
+}
+
+std::string evoker_t::default_temporary_enchant() const
+{
+  return evoker_apl::temporary_enchant( this );
+}
+
+void evoker_t::init_action_list()
+{
+  // 2022-08-07: Healing is not supported
+  if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
+  {
+    if ( !quiet )
+      sim->error( "Role heal for evoker '{}' is currently not supported.", name() );
+
+    quiet = true;
+    return;
+  }
+
+  if ( !action_list_str.empty() )
+  {
+    player_t::init_action_list();
+    return;
+  }
+  clear_action_priority_lists();
+
+  switch ( specialization() )
+  {
+    case EVOKER_DEVASTATION:
+      evoker_apl::devastation( this );
+      break;
+    case EVOKER_PRESERVATION:
+      evoker_apl::preservation( this );
+      break;
+    default:
+      evoker_apl::no_spec( this );
+      break;
+  }
+
+  use_default_action_list = true;
+
+  player_t::init_action_list();
 }
 
 double evoker_t::resource_regen_per_second( resource_e resource ) const
