@@ -84,6 +84,7 @@ struct evoker_t : public player_t
   struct buffs_t
   {
     // Baseline Abilities
+    propagate_const<buff_t*> essence_burst;
     // Class Traits
     // Devastation Traits
     // Preservation Traits
@@ -105,6 +106,7 @@ struct evoker_t : public player_t
   {
     // Class Traits
     // Devastation Traits
+    player_talent_t ruby_essence_burst;        // row 2 col 1 
     player_talent_t ruby_embers;  // row 5 col 1 choice 1
     player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
     player_talent_t font_of_magic;  // row 8 col 3
@@ -132,7 +134,7 @@ struct evoker_t : public player_t
   // Procs
   struct procs_t
   {
-
+    propagate_const<proc_t*> ruby_essence_burst;
   } proc;
 
   // RPPMs
@@ -155,7 +157,7 @@ struct evoker_t : public player_t
   //void init_resources( bool ) override;
   //void init_benefits() override;
   //void init_gains() override;
-  //void init_procs() override;
+  void init_procs() override;
   //void init_rng() override;
   //void init_uptimes() override;
   void init_spells() override;
@@ -387,6 +389,17 @@ struct living_flame_t : public evoker_spell_t
     damage->stats = stats;
   }
 
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    if ( p()->talent.ruby_essence_burst.ok() && rng().roll( p()->talent.ruby_essence_burst->effectN(1).percent() ) )
+    {
+      p()->buff.essence_burst->trigger();
+      p()->proc.ruby_essence_burst->occur();
+    }
+  }
+
   void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
@@ -484,6 +497,7 @@ void evoker_t::init_spells()
   // Evoker Talents
   // Class Traits
   // Devastation Traits
+  talent.ruby_essence_burst     = ST( "Ruby Essence Burst" );
   talent.ruby_embers = ST( "Ruby Embers" );
   talent.engulfing_blaze = ST( "Engulfing Blaze" );
   talent.font_of_magic = ST( "Font of Magic" );
@@ -510,6 +524,14 @@ void evoker_t::create_buffs()
   using namespace buffs;
 
   // Baseline Abilities
+  if ( specialization() == EVOKER_DEVASTATION)
+  {
+    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 359618 ) );
+  }
+  else
+  {
+    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) );
+  }
   // Class Traits
   // Devastation Traits
   // Preservation Traits
@@ -662,6 +684,13 @@ void evoker_t::init_action_list()
   use_default_action_list = true;
 
   player_t::init_action_list();
+}
+
+void evoker_t::init_procs()
+{
+  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst Procs" );
+
+  player_t::init_procs();
 }
 
 double evoker_t::resource_regen_per_second( resource_e resource ) const
