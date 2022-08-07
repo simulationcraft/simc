@@ -116,18 +116,19 @@ struct evoker_t : public player_t
   struct talents_t
   {
     // Class Traits
-    player_talent_t natural_convergence;  // row 2 col 1 
-    player_talent_t innate_magic;  // row 3 col 2 
-    player_talent_t enkindled;  // row 3 col 4 
+    player_talent_t natural_convergence;  // row 2 col 1
+    player_talent_t innate_magic;         // row 3 col 2
+    player_talent_t enkindled;            // row 3 col 4
+    player_talent_t suffused_with_power;  // row 5 col 2
     // Devastation Traits
-    player_talent_t ruby_essence_burst;        // row 2 col 1 
-    player_talent_t eternity_surge;        // row 3 col 3 
-    player_talent_t ruby_embers;  // row 5 col 1 choice 1
-    player_talent_t engulfing_blaze;    // row 5 col 1 choice 2
-    player_talent_t essence_attunement;  // row 5 col 3 paid 3 stack essence burst for devastation
-    player_talent_t might_of_the_aspects;           // row 6 col 3
-    player_talent_t shattering_star;  // row 7 col 4
-    player_talent_t font_of_magic;  // row 8 col 3
+    player_talent_t ruby_essence_burst;    // row 2 col 1
+    player_talent_t eternity_surge;        // row 3 col 3
+    player_talent_t ruby_embers;           // row 5 col 1 choice 1
+    player_talent_t engulfing_blaze;       // row 5 col 1 choice 2
+    player_talent_t essence_attunement;    // row 5 col 3 2 stack essence burst for devastation
+    player_talent_t might_of_the_aspects;  // row 6 col 3
+    player_talent_t shattering_star;       // row 7 col 4
+    player_talent_t font_of_magic;         // row 8 col 3
 
     // Preservation Traits
   } talent;
@@ -986,6 +987,7 @@ void evoker_t::init_spells()
   talent.natural_convergence = CT( "Natural Convergence" );
   talent.innate_magic        = CT( "Innate Magic" );
   talent.enkindled           = CT( "Enkindled" );
+  talent.suffused_with_power = CT( "Suffused With Power" );
   // Devastation Traits
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.eternity_surge       = ST( "Eternity Surge" );
