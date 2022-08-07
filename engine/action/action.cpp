@@ -4935,6 +4935,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         }
         break;
 
+      case P_CAST_TIME:
+        base_execute_time += effect.time_value();
+        sim->print_debug( "{} cast time modified by {}", *this, effect.time_value() );
+        break;
+
       case P_RANGE:
         range += effect.base_value();
         sim->print_debug( "{} range modified by {}", *this, effect.base_value() );
