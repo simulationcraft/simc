@@ -116,6 +116,9 @@ struct evoker_t : public player_t
   struct talents_t
   {
     // Class Traits
+    player_talent_t natural_convergence;  // row 2 col 1 
+    player_talent_t innate_magic;  // row 3 col 2 
+    player_talent_t enkindled;  // row 3 col 4 
     // Devastation Traits
     player_talent_t ruby_essence_burst;        // row 2 col 1 
     player_talent_t eternity_surge;        // row 3 col 3 
@@ -969,7 +972,7 @@ void evoker_t::init_base_stats()
 
   resources.base[ RESOURCE_ESSENCE ] = 5;
   // TODO: confirm base essence regen. currently estimated at 1 per 5s base
-  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2;
+  resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1 + talent.innate_magic->effectN( 1 ).percent() );
 }
 
 void evoker_t::init_spells()
@@ -980,6 +983,9 @@ void evoker_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   // Evoker Talents
   // Class Traits
+  talent.natural_convergence = CT( "Natural Convergence" );
+  talent.innate_magic        = CT( "Innate Magic" );
+  talent.enkindled           = CT( "Enkindled" );
   // Devastation Traits
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.eternity_surge       = ST( "Eternity Surge" );
@@ -1069,6 +1075,8 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.preservation );
 
   // Class Traits
+  action.apply_affecting_aura( talent.natural_convergence );
+  action.apply_affecting_aura( talent.enkindled );
   // Devastaion Traits
   // TODO: Coonfirm if this works properly with Scarlet Adaptation
   action.apply_affecting_aura( talent.engulfing_blaze );
