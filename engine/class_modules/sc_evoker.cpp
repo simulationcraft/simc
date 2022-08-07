@@ -25,6 +25,31 @@ enum empower_e
   EMPOWER_MAX
 };
 
+struct empowered_state_t : public action_state_t
+{
+  empower_e empower;
+
+  empowered_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), empower( empower_e::EMPOWER_NONE ) {}
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+    empower = empower_e::EMPOWER_NONE;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+    empower = debug_cast<const empowered_state_t*>( s )->empower;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s ) << " empower_level=" << static_cast<int>( empower );
+    return s;
+  }
+};
+
 struct evoker_td_t : public actor_target_data_t
 {
   struct dots_t
@@ -157,9 +182,9 @@ struct evoker_t : public player_t
   // Utility functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
                                               effect_subtype_t subtype,
+                                              int misc_value = P_GENERIC,
                                               const spell_data_t* affected = spell_data_t::nil(),
-                                              effect_type_t type = E_APPLY_AURA,
-                                              int misc_value = P_GENERIC );
+                                              effect_type_t type = E_APPLY_AURA );
   const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
 
   std::vector<action_t*> secondary_action_list;
@@ -238,6 +263,8 @@ public:
 
 namespace spells
 {
+// Base Classes =============================================================
+
 struct evoker_spell_t : public evoker_action_t<spell_t>
 {
 private:
@@ -265,31 +292,6 @@ public:
 
 struct empowered_spell_t : public evoker_spell_t
 {
-  struct empowered_state_t : public action_state_t
-  {
-    empower_e empower;
-
-    empowered_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), empower( empower_e::EMPOWER_NONE ) {}
-
-    void initialize() override
-    {
-      action_state_t::initialize();
-      empower = empower_e::EMPOWER_NONE;
-    }
-
-    void copy_state( const action_state_t* s ) override
-    {
-      action_state_t::copy_state( s );
-      empower = debug_cast<const empowered_state_t*>( s )->empower;
-    }
-
-    std::ostringstream& debug_str( std::ostringstream& s ) override
-    {
-      action_state_t::debug_str( s ) << " empower_level=" << static_cast<unsigned>( empower );
-      return s;
-    }
-  };
-
   std::string empower_to_str;
   empower_e max_empower;
 
@@ -311,7 +313,7 @@ struct empowered_spell_t : public evoker_spell_t
   int empower_value( const action_state_t* s ) const
   { return static_cast<int>( debug_cast<const empowered_state_t*>( s )->empower ); }
 
-  empower_e empower_level() const
+  virtual empower_e empower_level() const
   {
     // TODO: return the current empowerment level based on elapsed cast/channel time
     return empower_e::EMPOWER_3;
@@ -321,17 +323,20 @@ struct empowered_spell_t : public evoker_spell_t
   {
     // TODO: confirm these values and determine if they're set values or adjust based on a formula
     // Currently all empowered spells are 2.5s base and 3.25s with empower 4
-    switch ( empower )
+    switch ( std::min( empower, max_empower ) )
     {
       case empower_e::EMPOWER_1: return 1000_ms;
       case empower_e::EMPOWER_2: return 1750_ms;
       case empower_e::EMPOWER_3: return 2500_ms;
-      case empower_e::EMPOWER_4: return p()->talent.font_of_magic.ok() ? 3250_ms : 2500_ms;
+      case empower_e::EMPOWER_4: return 3250_ms;
       default: break;
     }
 
     return 0_ms;
   }
+
+  timespan_t max_hold_time() const
+  { return time_to_empower( max_empower ) + 2_s; }
 
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
@@ -339,6 +344,8 @@ struct empowered_spell_t : public evoker_spell_t
     debug_cast<empowered_state_t*>( s )->empower = empower_level();
   }
 };
+
+// Spells ===================================================================
 
 struct disintegrate_t : public evoker_spell_t
 {
@@ -375,8 +382,14 @@ struct fire_breath_t : public empowered_spell_t
 
   void impact( action_state_t* s ) override
   {
-    evoker_spell_t::impact( s );
-    damage->schedule_execute( s );
+    empowered_spell_t::impact( s );
+
+    auto emp_state = damage->get_state();
+    emp_state->target = s->target;
+    damage->snapshot_state( emp_state, damage->amount_type( emp_state ) );
+    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
+
+    damage->schedule_execute( emp_state );
   }
 };
 }  // end namespace spells
@@ -556,7 +569,7 @@ double evoker_t::resource_regen_per_second( resource_e resource ) const
 // Utility function to search spell data for matching effect.
 // NOTE: This will return the FIRST effect that matches parameters.
 const spelleffect_data_t* evoker_t::find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
-                                                      const spell_data_t* affected, effect_type_t type, int misc_value )
+                                                      int misc_value, const spell_data_t* affected, effect_type_t type )
 {
   for ( size_t i = 1; i <= spell->effect_count(); i++ )
   {
@@ -586,7 +599,11 @@ const spell_data_t* evoker_t::find_spell_override( const spell_data_t* base, con
   if ( !passive->ok() )
     return base;
 
-  return find_spell( as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base )->base_value() ) );
+  auto id = as<unsigned>( find_spelleffect( passive, A_OVERRIDE_ACTION_SPELL, base->id() )->base_value() );
+  if ( !id )
+    return base;
+
+  return find_spell( id );
 }
 
 /* Report Extension Class
