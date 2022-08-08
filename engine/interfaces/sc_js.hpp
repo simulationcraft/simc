@@ -8,6 +8,8 @@
 
 #include "config.hpp"
 #include "rapidjson/document.h"
+#include "rapidjson/error/en.h"
+#include "rapidjson/error/error.h"
 #include "util/timespan.hpp"
 #include "util/string_view.hpp"
 #include "util/generic.hpp"
@@ -286,5 +288,10 @@ public:
 };
 
 } /* namespace js */
+
+namespace rapidjson
+{
+void sc_format_to( const rapidjson::ParseErrorCode& errorCode, fmt::format_context::iterator out );
+}
 
 #endif /* SC_JS_HPP */
