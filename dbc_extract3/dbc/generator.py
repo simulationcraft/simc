@@ -1981,6 +1981,7 @@ class SpellDataGenerator(DataGenerator):
        # Evoker:
        (
           # General
+          ( 372470, 0 ), # Scarlet Adaptation buff
           # Devastation
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst

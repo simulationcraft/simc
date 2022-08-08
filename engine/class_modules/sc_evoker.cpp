@@ -78,6 +78,11 @@ struct evoker_td_t : public actor_target_data_t
 
 struct evoker_t : public player_t
 {
+  // !!!===========================================================================!!!
+  // !!! Runtime variables NOTE: these MUST be properly reset in evoker_t::reset() !!!
+  // !!!===========================================================================!!!
+  // !!!===========================================================================!!!
+
   // Options
   struct options_t
   {
@@ -95,8 +100,15 @@ struct evoker_t : public player_t
   {
     // Baseline Abilities
     propagate_const<buff_t*> essence_burst;
+    propagate_const<buff_t*> hover;
+    propagate_const<buff_t*> tailwind;
+
     // Class Traits
+    propagate_const<buff_t*> obsidian_scales;
+    propagate_const<buff_t*> scarlet_adaptation;
+
     // Devastation Traits
+
     // Preservation Traits
   } buff;
 
@@ -107,7 +119,9 @@ struct evoker_t : public player_t
     const spell_data_t* evoker;        // evoker class aura
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
+
     // Devastation
+
     // Preservation
   } spec;
 
@@ -263,12 +277,9 @@ struct evoker_t : public player_t
   //void arise() override;
   //void combat_begin() override;
   //void combat_end() override;
-  //void reset() override;
+  void reset() override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
-
-  double composite_player_multiplier( school_e ) const override;
-
   std::string default_potion() const override;
   std::string default_flask() const override;
   std::string default_food() const override;
@@ -284,8 +295,12 @@ struct evoker_t : public player_t
   std::unique_ptr<expr_t> create_expression( std::string_view expr_str ) override;
 
   // Stat & Multiplier overrides
+  double composite_armor() const override;
+  double composite_player_multiplier( school_e ) const override;
   stat_e convert_hybrid_stat( stat_e ) const override;
   double resource_regen_per_second( resource_e ) const override;
+  void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
+  double temporary_movement_modifier() const override;
 
   // Utility functions
   const spelleffect_data_t* find_spelleffect( const spell_data_t* spell,
@@ -385,9 +400,10 @@ public:
   std::vector<debuff_effect_t> target_multiplier_debuffeffects;
 
   spell_color_e spell_color;
+  bool move_during_hover;
 
   evoker_action_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil() )
-    : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE )
+    : ab( name, player, spell ), spell_color( SPELL_COLOR_NONE ), move_during_hover( false )
   {
     // TODO: find out if there is a better data source for the spell color
     if ( ab::data().ok() )
@@ -409,6 +425,10 @@ public:
 
       apply_buff_effects();
       apply_debuffs_effects();
+
+      move_during_hover =
+          player->find_spelleffect( player->find_class_spell( "Hover" ), A_CAST_WHILE_MOVING_WHITELIST, 0, &ab::data() )
+              ->ok();
     }
   }
 
@@ -423,6 +443,9 @@ public:
 
   const evoker_td_t* find_td( const player_t* t ) const
   { return p()->find_target_data( t ); }
+
+  bool usable_moving() const override
+  { return move_during_hover && p()->buff.hover->check(); }
 
   template <typename T>
   void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
@@ -763,6 +786,24 @@ public:
     parse_options( options_str );
   }
 
+  void assess_damage( result_amount_type rt, action_state_t* s ) override
+  {
+    ab::assess_damage( rt, s );
+
+    if ( p()->talent.scarlet_adaptation.ok() )
+    {
+      if ( !p()->buff.scarlet_adaptation->check() )
+        p()->buff.scarlet_adaptation->trigger();
+
+      auto stored = p()->buff.scarlet_adaptation->check_value();
+      // TODO: raw_amount for used for testing
+      // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
+      stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
+      // TODO: confirm if this changes dynamically
+      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * 2.0 );
+    }
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
@@ -807,8 +848,9 @@ public:
   double composite_persistent_multiplier( const action_state_t* s ) const
   {
     auto mult = ab::composite_persistent_multiplier( s );
-    
-    if ( p()->talent.might_of_the_aspects.ok() && p()->buff.essence_burst->check())
+
+    if ( current_resource() == RESOURCE_ESSENCE && p()->talent.might_of_the_aspects.ok() &&
+         p()->buff.essence_burst->check() )
     {
       mult *= 1.0 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
     }
@@ -862,7 +904,7 @@ struct empowered_spell_t : public evoker_spell_t
   virtual empower_e empower_level() const
   {
     // TODO: return the current empowerment level based on elapsed cast/channel time
-    return std::min( (empower_e) empower_to, max_empower );
+    return std::min( static_cast<empower_e>( empower_to ), max_empower );
   }
 
   timespan_t time_to_empower( empower_e empower ) const
@@ -893,21 +935,12 @@ struct empowered_spell_t : public evoker_spell_t
 
 // Spells ===================================================================
 
-struct disintegrate_t : public evoker_spell_t
-{
-  disintegrate_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
-  {
-    channeled = true;
-  }
-};
-
 struct azure_strike_t : public evoker_spell_t
 {
   azure_strike_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "azure_strike", p, p->find_class_spell( "Azure Strike" ), options_str )
   {
-    aoe = data().effectN( 1 ).base_value() + p->talent.protracted_talons->effectN( 1 ).base_value();
+    aoe = as<int>( data().effectN( 1 ).base_value() + p->talent.protracted_talons->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -920,7 +953,45 @@ struct azure_strike_t : public evoker_spell_t
       p()->proc.azure_essence_burst->occur();
     }
   }
+};
 
+struct disintegrate_t : public evoker_spell_t
+{
+  disintegrate_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
+  {
+    channeled = true;
+  }
+};
+
+struct expunge_t : public evoker_spell_t
+{
+  expunge_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "expunge", p, p->talent.expunge, options_str )
+  {}
+};
+
+struct hover_t : public evoker_spell_t
+{
+  hover_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "hover", p, p->find_class_spell( "Hover" ), options_str )
+  {}
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.hover->trigger();
+  }
+};
+
+struct landslide_t : public evoker_spell_t
+{
+  landslide_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "landslide", p, p->talent.landslide, options_str )
+  {
+    // TODO: root NYI
+  }
 };
 
 struct living_flame_t : public evoker_spell_t
@@ -932,6 +1003,22 @@ struct living_flame_t : public evoker_spell_t
       dual = true;
 
       dot_duration = p->talent.ruby_embers.ok() ? dot_duration : 0_ms;
+    }
+
+    double bonus_da( const action_state_t* s ) const override
+    {
+      auto da = evoker_spell_t::bonus_da( s );
+
+      da += p()->buff.scarlet_adaptation->check_value();
+
+      return da;
+    }
+
+    void execute() override
+    {
+      evoker_spell_t::execute();
+
+      p()->buff.scarlet_adaptation->expire();
     }
   };
 
@@ -964,12 +1051,36 @@ struct living_flame_t : public evoker_spell_t
   }
 };
 
+struct obsidian_scales_t : public evoker_spell_t
+{
+  obsidian_scales_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "obsidian_scales", p, p->talent.obsidian_scales, options_str )
+  {}
+};
+
+struct quell_t : public evoker_spell_t
+{
+  quell_t( evoker_t* p, std::string_view options_str ) : evoker_spell_t( "quell", p, p->talent.quell, options_str )
+  {
+    may_miss = may_glance = may_block = may_dodge = may_parry = may_crit = harmful = false;
+    ignore_false_positive = use_off_gcd = is_interrupt = true;
+  }
+
+  bool target_ready( player_t* t ) override
+  {
+    if ( !t->debuffs.casting->check() )
+      return false;
+
+    return evoker_spell_t::target_ready( t );
+  }
+};
+
 struct shattering_star_t : public evoker_spell_t
 {
   shattering_star_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
   {
-    aoe = ( 1 + p->talent.eternitys_span->effectN( 2 ).percent() );
+    aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
   }
 
   void impact( action_state_t* s ) override
@@ -1034,10 +1145,9 @@ struct eternity_surge_t : public empowered_spell_t
 
     int n_targets() const override
     {
-      if ( pre_execute_state )
-        return empower_level( pre_execute_state ) * ( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
-      else
-        return empower_e::EMPOWER_MAX * ( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+      int n = pre_execute_state ? empower_value( pre_execute_state ) : empower_e::EMPOWER_MAX;
+
+      return as<int>( n * ( 1.0 + p()->talent.eternitys_span->effectN( 2 ).percent() ) );
     }
   };
 
@@ -1096,6 +1206,51 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
   regen_caches[ CACHE_SPELL_HASTE ] = true;
 }
 
+void evoker_t::init_action_list()
+{
+  // 2022-08-07: Healing is not supported
+  if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
+  {
+    if ( !quiet )
+      sim->error( "Role heal for evoker '{}' is currently not supported.", name() );
+
+    quiet = true;
+    return;
+  }
+
+  if ( !action_list_str.empty() )
+  {
+    player_t::init_action_list();
+    return;
+  }
+  clear_action_priority_lists();
+
+  switch ( specialization() )
+  {
+    case EVOKER_DEVASTATION:
+      evoker_apl::devastation( this );
+      break;
+    case EVOKER_PRESERVATION:
+      evoker_apl::preservation( this );
+      break;
+    default:
+      evoker_apl::no_spec( this );
+      break;
+  }
+
+  use_default_action_list = true;
+
+  player_t::init_action_list();
+}
+
+void evoker_t::init_procs()
+{
+  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
+  proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
+
+  player_t::init_procs();
+}
+
 void evoker_t::init_base_stats()
 {
   player_t::init_base_stats();
@@ -1115,9 +1270,17 @@ void evoker_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   // Evoker Talents
   // Class Traits
-  talent.natural_convergence = CT( "Natural Convergence" );
+  talent.landslide = CT( "Landslide" ); // Row 1
+  talent.obsidian_scales = CT( "Obsidian Scales" );
+  talent.expunge = CT( "Expunge" );
+  talent.natural_convergence = CT( "Natural Convergence" ); // Row 2
+  talent.forger_of_mountains = CT( "Forger of Mountains" ); // Row 3
   talent.innate_magic        = CT( "Innate Magic" );
+  talent.obsidian_bulwark    = CT( "Obsidian Bulwark" );
   talent.enkindled           = CT( "Enkindled" );
+  talent.scarlet_adaptation  = CT( "Scarlet Adaptation" );
+  talent.quell               = CT( "Quell" ); // Row 4
+  talent.tailwind            = CT( "Tailwind" );
   talent.suffused_with_power = CT( "Suffused With Power" );
   talent.protracted_talons   = CT( "Protracted Talons" );
   // Devastation Traits
@@ -1164,14 +1327,33 @@ void evoker_t::create_buffs()
     buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) )
       ->apply_affecting_aura( find_specialization_spell( "Essence Attunement") );
   }
+
+  buff.hover = make_buff( this, "hover", find_class_spell( "Hover" ) )
+    ->set_cooldown( 0_ms )
+    ->set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+
+  buff.tailwind = make_buff( this, "tailwind", find_spelleffect( talent.tailwind, A_PROC_TRIGGER_SPELL )->trigger() )
+    ->set_default_value_from_effect( 1 );
+
   // Class Traits
+  buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )
+    ->set_cooldown( 0_ms );
+
+  buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) );
+
   // Devastation Traits
+
   // Preservation Traits
 }
 
 void evoker_t::create_options()
 {
   player_t::create_options();
+}
+
+void evoker_t::reset()
+{
+  player_t::reset();
 }
 
 void evoker_t::copy_from( player_t* source )
@@ -1185,91 +1367,6 @@ void evoker_t::merge( player_t& other )
 {
   player_t::merge( other );
 }
-
-const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
-{
-  return target_data[ target ];
-}
-
-evoker_td_t* evoker_t::get_target_data( player_t* target ) const
-{
-  evoker_td_t*& td = target_data[ target ];
-  if ( !td )
-    td = new evoker_td_t( target, const_cast<evoker_t*>( this ) );
-  return td;
-}
-
-void evoker_t::apply_affecting_auras( action_t& action )
-{
-  player_t::apply_affecting_auras( action );
-
-  // Baseline Auras
-  action.apply_affecting_aura( spec.evoker );
-  action.apply_affecting_aura( spec.devastation );
-  action.apply_affecting_aura( spec.preservation );
-
-  // Class Traits
-  action.apply_affecting_aura( talent.natural_convergence );
-  action.apply_affecting_aura( talent.enkindled );
-  // Devastaion Traits
-  // TODO: Coonfirm if this works properly with Scarlet Adaptation
-  action.apply_affecting_aura( talent.engulfing_blaze );
-  // Preservation Traits
-}
-
-double evoker_t::composite_player_multiplier( school_e s ) const
-{
-  double m = player_t::composite_player_multiplier( s );
-
-  if ( talent.suffused_with_power.ok() && talent.suffused_with_power->effectN( 1 ).has_common_school( s ) )
-    m *= 1 + talent.suffused_with_power->effectN( 1 ).percent();
-
-  return m;
-}
-
-action_t* evoker_t::create_action( std::string_view name, std::string_view options_str )
-{
-  using namespace spells;
-
-  if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
-  if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
-  if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
-  if ( name == "living_flame" ) return new living_flame_t( this, options_str );
-  if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
-  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
-
-  return player_t::create_action( name, options_str );
-}
-
-std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
-{
-  auto splits = util::string_split<std::string_view>( expr_str, "." );
-
-  if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
-    return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
-
-  return player_t::create_expression( expr_str );
-}
-
-// Stat & Multiplier overrides ==============================================
-
-stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
-{
-  switch ( stat )
-  {
-    case STAT_STR_AGI_INT:
-    case STAT_AGI_INT:
-    case STAT_STR_INT:
-      return STAT_INTELLECT;
-    case STAT_STR_AGI:
-    case STAT_SPIRIT:
-    case STAT_BONUS_ARMOR:
-      return STAT_NONE;
-    default:
-      return stat;
-  }
-}
-
 
 std::string evoker_t::default_potion() const
 {
@@ -1296,49 +1393,105 @@ std::string evoker_t::default_temporary_enchant() const
   return evoker_apl::temporary_enchant( this );
 }
 
-void evoker_t::init_action_list()
+const evoker_td_t* evoker_t::find_target_data( const player_t* target ) const
 {
-  // 2022-08-07: Healing is not supported
-  if ( !sim->allow_experimental_specializations && primary_role() == ROLE_HEAL )
-  {
-    if ( !quiet )
-      sim->error( "Role heal for evoker '{}' is currently not supported.", name() );
-
-    quiet = true;
-    return;
-  }
-
-  if ( !action_list_str.empty() )
-  {
-    player_t::init_action_list();
-    return;
-  }
-  clear_action_priority_lists();
-
-  switch ( specialization() )
-  {
-    case EVOKER_DEVASTATION:
-      evoker_apl::devastation( this );
-      break;
-    case EVOKER_PRESERVATION:
-      evoker_apl::preservation( this );
-      break;
-    default:
-      evoker_apl::no_spec( this );
-      break;
-  }
-
-  use_default_action_list = true;
-
-  player_t::init_action_list();
+  return target_data[ target ];
 }
 
-void evoker_t::init_procs()
+evoker_td_t* evoker_t::get_target_data( player_t* target ) const
 {
-  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
-  proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
+  evoker_td_t*& td = target_data[ target ];
+  if ( !td )
+    td = new evoker_td_t( target, const_cast<evoker_t*>( this ) );
+  return td;
+}
 
-  player_t::init_procs();
+void evoker_t::apply_affecting_auras( action_t& action )
+{
+  player_t::apply_affecting_auras( action );
+
+  // Baseline Auras
+  action.apply_affecting_aura( spec.evoker );
+  action.apply_affecting_aura( spec.devastation );
+  action.apply_affecting_aura( spec.preservation );
+
+  // Class Traits
+  action.apply_affecting_aura( talent.enkindled );
+  action.apply_affecting_aura( talent.forger_of_mountains );
+  action.apply_affecting_aura( talent.natural_convergence );
+  action.apply_affecting_aura( talent.obsidian_bulwark );
+  // Devastaion Traits
+  // TODO: Coonfirm if this works properly with Scarlet Adaptation
+  action.apply_affecting_aura( talent.engulfing_blaze );
+  // Preservation Traits
+}
+
+action_t* evoker_t::create_action( std::string_view name, std::string_view options_str )
+{
+  using namespace spells;
+
+  if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
+  if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
+  if ( name == "expunge" ) return new expunge_t( this, options_str );
+  if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
+  if ( name == "hover" ) return new hover_t( this, options_str );
+  if ( name == "landslide" ) return new landslide_t( this, options_str );
+  if ( name == "living_flame" ) return new living_flame_t( this, options_str );
+  if ( name == "obsidian_scales" ) return new obsidian_scales_t( this, options_str );
+  if ( name == "quell" ) return new quell_t( this, options_str );
+  if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
+  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
+
+  return player_t::create_action( name, options_str );
+}
+
+std::unique_ptr<expr_t> evoker_t::create_expression( std::string_view expr_str )
+{
+  auto splits = util::string_split<std::string_view>( expr_str, "." );
+
+  if ( util::str_compare_ci( expr_str, "essense" ) || util::str_compare_ci( expr_str, "essences" ) )
+    return make_ref_expr( expr_str, resources.current[ RESOURCE_ESSENCE ] );
+
+  return player_t::create_expression( expr_str );
+}
+
+// Stat & Multiplier overrides ==============================================
+
+double evoker_t::composite_armor() const
+{
+  double a = player_t::composite_armor();
+
+  if ( buff.obsidian_scales->check() )
+    a *= 1.0 + buff.obsidian_scales->data().effectN( 1 ).percent();
+
+  return a;
+}
+
+double evoker_t::composite_player_multiplier( school_e s ) const
+{
+  double m = player_t::composite_player_multiplier( s );
+
+  if ( talent.suffused_with_power.ok() && talent.suffused_with_power->effectN( 1 ).has_common_school( s ) )
+    m *= 1 + talent.suffused_with_power->effectN( 1 ).percent();
+
+  return m;
+}
+
+stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
+{
+  switch ( stat )
+  {
+    case STAT_STR_AGI_INT:
+    case STAT_AGI_INT:
+    case STAT_STR_INT:
+      return STAT_INTELLECT;
+    case STAT_STR_AGI:
+    case STAT_SPIRIT:
+    case STAT_BONUS_ARMOR:
+      return STAT_NONE;
+    default:
+      return stat;
+  }
 }
 
 double evoker_t::resource_regen_per_second( resource_e resource ) const
@@ -1346,6 +1499,29 @@ double evoker_t::resource_regen_per_second( resource_e resource ) const
   auto rrps = player_t::resource_regen_per_second( resource );
 
   return rrps;
+}
+
+void evoker_t::target_mitigation( school_e school, result_amount_type rt, action_state_t* s )
+{
+  if ( buff.obsidian_scales->check() )
+  {
+    auto eff = buff.obsidian_scales->data().effectN( 2 );
+    if ( eff.has_common_school( school ) )
+      s->result_amount *= 1.0 + eff.percent();
+  }
+
+  player_t::target_mitigation( school, rt, s );
+}
+
+double evoker_t::temporary_movement_modifier() const
+{
+  auto tmm = player_t::temporary_movement_modifier();
+
+  // TODO: confirm hover is a non-stacking temporary movement mod
+  if ( buff.hover->check() )
+    tmm = std::max( tmm, buff.hover->check_value() + buff.tailwind->check_value() );
+
+  return tmm;
 }
 
 // Utility functions ========================================================

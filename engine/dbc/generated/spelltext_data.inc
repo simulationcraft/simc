@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44895
-static const std::array<spelltext_data_t, 17644> __spelltext_data { {
+static const std::array<spelltext_data_t, 17645> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16279,6 +16279,7 @@ static const std::array<spelltext_data_t, 17644> __spelltext_data { {
   { 372362, "$@spelldesc372358", 0, 0 },
   { 372370, "Divine Hymn heals for $s1% more. Stacks of Divine Hymn increase healing received by an additional $s2%.", 0, 0 },
   { 372469, "Store $s1% of your effective healing, up to $<cap>. Your next damaging Living Flame consumes all stored healing to increase its damage dealt.", 0, 0 },
+  { 372470, "$@spelldesc372469", "Your next Living Flame will deal $w1 additional damage.", 0 },
   { 372505, "Thrash and Maul grant you an absorb shield for 75% of all damage they deal.", "Absorbing $w1 damage.", 0 },
   { 372527, "Echo replicates $s1% additional healing.", 0, 0 },
   { 372528, "Has a very low chance to cause $378994s1 physical damage upon being struck by a melee attack. Additional pieces of gear with this optional reagent increase the proc chance. Can only be applied to crafted armor.", 0, 0 },
