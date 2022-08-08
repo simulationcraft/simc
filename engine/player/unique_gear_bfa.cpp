@@ -4457,6 +4457,8 @@ void items::dribbling_inkpod( special_effect_t& effect )
 void items::reclaimed_shock_coil( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
+  // damage spell coefficient is overriden by driver coefficient
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
