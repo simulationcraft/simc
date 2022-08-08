@@ -65,7 +65,7 @@ struct evoker_td_t : public actor_target_data_t
 {
   struct dots_t
   {
-
+    dot_t* fire_breath;
   } dots;
 
   struct debuffs_t
@@ -81,6 +81,7 @@ struct evoker_t : public player_t
   // !!!===========================================================================!!!
   // !!! Runtime variables NOTE: these MUST be properly reset in evoker_t::reset() !!!
   // !!!===========================================================================!!!
+
   // !!!===========================================================================!!!
 
   // Options
@@ -234,7 +235,7 @@ struct evoker_t : public player_t
   // Cooldowns
   struct cooldowns_t
   {
-
+    propagate_const<cooldown_t*> fire_breath;
   } cooldown;
 
   // Gains
@@ -856,25 +857,27 @@ public:
   {
     ab::execute();
 
-    if ( !ab::has_amount_result() )
+    if ( ab::background )
       return;
 
     if ( spell_color == SPELL_BLUE )
+    {
       p()->buff.iridescence_blue->decrement();
+    }
     else if ( spell_color == SPELL_RED )
+    {
       p()->buff.iridescence_red->decrement();
-  }
 
-  double action_multiplier() const override
-  {
-    double am = ab::action_multiplier();
-
-    if ( spell_color == SPELL_BLUE )
-      am *= 1.0 + p()->buff.iridescence_blue->check_value();
-    else if ( spell_color == SPELL_RED )
-      am *= 1.0 + p()->buff.iridescence_red->check_value();
-
-    return am;
+      if ( p()->talent.everburning_flame.ok() )
+      {
+        for ( auto t : sim->target_non_sleeping_list )
+        {
+          td( t )->dots.fire_breath->adjust_duration(
+              timespan_t::from_seconds( as<int>( p()->talent.everburning_flame->effectN( 1 ).base_value() ) ),
+              0_ms, -1, false );
+        }
+      }
+    }
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -889,6 +892,19 @@ public:
     return tm;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    auto da = ab::composite_da_multiplier( s );
+
+    // iridescence red doesn't affect living flame dot, so we account for it here instead of
+    // composite_persistent_multiplier.
+    // TODO: confirm this remains true in each new build
+    if ( spell_color == SPELL_RED )
+      da *= 1.0 + p()->buff.iridescence_red->check_value();
+
+    return da;
+  }
+
   double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     auto mult = ab::composite_persistent_multiplier( s );
@@ -898,6 +914,10 @@ public:
     {
       mult *= 1.0 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
     }
+
+    // iridescence blue affects the entire channel for disintegrate
+    if ( spell_color == SPELL_BLUE )
+      mult *= 1.0 + p()->buff.iridescence_blue->check_value();
 
     return mult;
   }
@@ -911,9 +931,15 @@ public:
     if ( cr != RESOURCE_ESSENCE || base_cost() == 0 || proc )
       return;
 
-    if ( p()->buff.essence_burst->up() )
+    if ( p()->buff.essence_burst->up() && !rng().roll( p()->talent.cascading_power->effectN( 1 ).percent() ) )
     {
       p()->buff.essence_burst->decrement();
+
+      if ( p()->talent.feed_the_flames.ok() )
+      {
+        p()->cooldown.fire_breath->adjust(
+            -timespan_t::from_seconds( p()->talent.feed_the_flames->effectN( 1 ).base_value() ) );
+      }
     }
   }
 };
@@ -980,10 +1006,10 @@ struct empowered_spell_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
-    if ( !has_amount_result() )
-      return;
-
     p()->buff.tip_the_scales->expire();
+
+    if ( background )
+      return;
 
     if ( p()->talent.iridescence.ok() )
     {
@@ -1114,6 +1140,11 @@ struct living_flame_t : public evoker_spell_t
     parse_options( options_str );
   }
 
+  bool has_amount_result() const override
+  {
+    return damage->has_amount_result();
+  }
+
   int n_targets() const override
   {
     return std::min( 1, evoker_spell_t::n_targets() ) + p()->buff.leaping_flames->check();
@@ -1138,7 +1169,7 @@ struct living_flame_t : public evoker_spell_t
   {
     evoker_spell_t::impact( s );
 
-    damage->schedule_execute();
+    damage->execute_on_target( s->target );
   }
 };
 
@@ -1237,6 +1268,11 @@ struct fire_breath_t : public empowered_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override
+  {
+    return damage->has_amount_result();
+  }
+
   void impact( action_state_t* s ) override
   {
     empowered_spell_t::impact( s );
@@ -1287,6 +1323,11 @@ struct eternity_surge_t : public empowered_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override
+  {
+    return damage->has_amount_result();
+  }
+
   void impact( action_state_t* s ) override
   {
     empowered_spell_t::impact( s );
@@ -1310,6 +1351,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     dots(),
     debuffs()
 {
+  dots.fire_breath = target->get_dot( "fire_breath_damage", evoker );
+
   debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
     ->set_cooldown( 0_ms );
 }
@@ -1328,6 +1371,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     rppm(),
     uptime()
 {
+  cooldown.fire_breath = get_cooldown( "fire_breath" );
+
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
   regen_caches[ CACHE_SPELL_HASTE ] = true;
@@ -1441,6 +1486,9 @@ void evoker_t::init_spells()
   talent.might_of_the_aspects = ST( "Might of the Aspects" );
   talent.eternitys_span       = ST( "Eternity's Span" );
   talent.font_of_magic        = ST( "Font of Magic" );
+  talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
+  talent.everburning_flame    = ST( "Everburning Flame" );
+  talent.cascading_power      = ST( "Cascading Power" );
   talent.iridescence          = ST( "Iridescence" );
   // Preservation Traits
 
