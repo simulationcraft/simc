@@ -338,6 +338,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\sim\raid_event.cpp" />
 		<ClCompile Include="..\engine\sim\real_ppm.cpp" />
 		<ClCompile Include="..\engine\sim\reforge_plot.cpp" />
+		<ClCompile Include="..\engine\sim\sc_event.cpp" />
 		<ClCompile Include="..\engine\sim\scale_factor_control.cpp" />
 		<ClCompile Include="..\engine\sim\shuffled_rng.cpp" />
 		<ClCompile Include="..\engine\sim\sim.cpp" />

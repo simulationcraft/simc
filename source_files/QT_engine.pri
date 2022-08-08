@@ -335,6 +335,7 @@ SOURCES += engine/sim/progress_bar.cpp
 SOURCES += engine/sim/raid_event.cpp
 SOURCES += engine/sim/real_ppm.cpp
 SOURCES += engine/sim/reforge_plot.cpp
+SOURCES += engine/sim/sc_event.cpp
 SOURCES += engine/sim/scale_factor_control.cpp
 SOURCES += engine/sim/shuffled_rng.cpp
 SOURCES += engine/sim/sim.cpp

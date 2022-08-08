@@ -104,8 +104,10 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> tailwind;
 
     // Class Traits
+    propagate_const<buff_t*> ancient_flame;
     propagate_const<buff_t*> obsidian_scales;
     propagate_const<buff_t*> scarlet_adaptation;
+    propagate_const<buff_t*> tip_the_scales;
 
     // Devastation Traits
 
@@ -236,7 +238,7 @@ struct evoker_t : public player_t
   // Gains
   struct gains_t
   {
-
+    propagate_const<gain_t*> roar_of_exhilaration;
   } gain;
 
   // Procs
@@ -265,7 +267,7 @@ struct evoker_t : public player_t
   void init_base_stats() override;
   //void init_resources( bool ) override;
   //void init_benefits() override;
-  //void init_gains() override;
+  void init_gains() override;
   void init_procs() override;
   //void init_rng() override;
   //void init_uptimes() override;
@@ -296,8 +298,10 @@ struct evoker_t : public player_t
 
   // Stat & Multiplier overrides
   double composite_armor() const override;
+  double composite_attribute_multiplier( attribute_e ) const override;
   double composite_player_multiplier( school_e ) const override;
   stat_e convert_hybrid_stat( stat_e ) const override;
+  double passive_movement_modifier() const override;
   double resource_regen_per_second( resource_e ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   double temporary_movement_modifier() const override;
@@ -394,6 +398,7 @@ public:
   std::vector<buff_effect_t> ta_multiplier_buffeffects;
   std::vector<buff_effect_t> da_multiplier_buffeffects;
   std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> dot_duration_buffeffects;
   std::vector<buff_effect_t> recharge_multiplier_buffeffects;
   std::vector<buff_effect_t> cost_buffeffects;
   std::vector<buff_effect_t> crit_chance_buffeffects;
@@ -541,6 +546,10 @@ public:
           da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
           debug_message( "direct damage" );
           break;
+        case P_DURATION:
+          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "duration" );
+          break;
         case P_TICK_DAMAGE:
           ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
           debug_message( "tick damage" );
@@ -664,7 +673,9 @@ public:
   {
     using S = const spell_data_t*;
 
+    parse_buff_effects( p()->buff.ancient_flame );
     parse_buff_effects( p()->buff.essence_burst );
+    parse_buff_effects( p()->buff.tip_the_scales );
   }
 
   template <typename... Ts>
@@ -762,6 +773,12 @@ public:
   {
     timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
     return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
@@ -888,7 +905,7 @@ struct empowered_spell_t : public evoker_spell_t
     add_option( opt_int( "empower_to", empower_to ) );
     parse_options( options_str );
 
-    base_execute_time = time_to_empower( (empower_e) empower_to );
+    base_execute_time = time_to_empower( static_cast<empower_e>( empower_to ) );
     trigger_gcd       = base_execute_time + 1.5_s;
   }
 
@@ -930,6 +947,13 @@ struct empowered_spell_t : public evoker_spell_t
   {
     evoker_spell_t::snapshot_internal( s, flags, rt );
     debug_cast<empowered_state_t*>( s )->empower = empower_level();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.tip_the_scales->expire();
   }
 };
 
@@ -1022,14 +1046,41 @@ struct living_flame_t : public evoker_spell_t
     }
   };
 
-  evoker_spell_t* damage;
+  struct living_flame_heal_t : public heals::evoker_heal_t
+  {
+    using base_t = heals::evoker_heal_t;
+
+    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->find_spell( 361509 ) )
+    {
+      dual = true;
+      dot_duration = p->talent.ruby_embers.ok() ? dot_duration : 0_ms;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( p()->talent.ancient_flame.ok() )
+        p()->buff.ancient_flame->trigger();
+    }
+  };
+
+  action_t* damage;
+  action_t* heal;
+  bool cast_heal;
 
   living_flame_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ), options_str )
+    : evoker_spell_t( "living_flame", p, p->find_class_spell( "Living Flame" ) ), cast_heal( false )
   {
 
     damage        = p->get_secondary_action<living_flame_damage_t>( "living_flame_damage" );
     damage->stats = stats;
+
+    // TODO: implement option to cast heal instead
+    heal = p->get_secondary_action<living_flame_heal_t>( "living_flame_heal" );
+
+    add_option( opt_bool( "heal", cast_heal ) );
+    parse_options( options_str );
   }
 
   void execute() override
@@ -1041,6 +1092,8 @@ struct living_flame_t : public evoker_spell_t
       p()->buff.essence_burst->trigger();
       p()->proc.ruby_essence_burst->occur();
     }
+
+    p()->buff.ancient_flame->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1073,6 +1126,20 @@ struct quell_t : public evoker_spell_t
 
     return evoker_spell_t::target_ready( t );
   }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    // always assume succes since action cannot be used unless target is casting
+    if ( p()->talent.roar_of_exhilaration.ok() )
+    {
+      p()->resource_gain(
+          RESOURCE_ESSENCE,
+          p()->talent.roar_of_exhilaration->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ),
+          p()->gain.roar_of_exhilaration );
+    }
+  }
 };
 
 struct shattering_star_t : public evoker_spell_t
@@ -1089,6 +1156,20 @@ struct shattering_star_t : public evoker_spell_t
 
     if ( result_is_hit( s->result ) )
       td( s->target )->debuffs.shattering_star->trigger();
+  }
+};
+
+struct tip_the_scales_t : public evoker_spell_t
+{
+  tip_the_scales_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "tip_the_scales", p, p->talent.tip_the_scales, options_str )
+  {}
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.tip_the_scales->trigger();
   }
 };
 
@@ -1243,12 +1324,19 @@ void evoker_t::init_action_list()
   player_t::init_action_list();
 }
 
+void evoker_t::init_gains()
+{
+  player_t::init_gains();
+
+  gain.roar_of_exhilaration = get_gain( "Roar of Exhilaration" );
+}
+
 void evoker_t::init_procs()
 {
+  player_t::init_procs();
+
   proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
-
-  player_t::init_procs();
 }
 
 void evoker_t::init_base_stats()
@@ -1281,8 +1369,18 @@ void evoker_t::init_spells()
   talent.scarlet_adaptation  = CT( "Scarlet Adaptation" );
   talent.quell               = CT( "Quell" ); // Row 4
   talent.tailwind            = CT( "Tailwind" );
+  talent.roar_of_exhilaration = CT( "Roar of Exhilaration" ); // Row 5
   talent.suffused_with_power = CT( "Suffused With Power" );
-  talent.protracted_talons   = CT( "Protracted Talons" );
+  talent.tip_the_scales = CT( "Tip the Scales" );
+  talent.attuned_to_the_dream = CT("Attuned to the Dream"); // healing received NYI
+  talent.draconic_legacy = CT("Draconic Legacy"); // Row 6
+  talent.tempered_scales = CT("Tempered Scales");
+  talent.extended_flight = CT("Extended Flight");
+  talent.bountiful_bloom = CT("Bountiful Bloom");
+  talent.blast_furnace = CT("Blast Furnace"); // Row 7
+  talent.exuberance = CT("Exuberance");
+  talent.ancient_flame = CT("Ancient Flame");
+  talent.protracted_talons   = CT( "Protracted Talons" ); // Row 8
   // Devastation Traits
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.azure_essence_burst  = ST( "Azure Essence Burst" );
@@ -1336,10 +1434,15 @@ void evoker_t::create_buffs()
     ->set_default_value_from_effect( 1 );
 
   // Class Traits
+  buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) );
+
   buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )
     ->set_cooldown( 0_ms );
 
   buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) );
+
+  buff.tip_the_scales = make_buff( this, "Tip the Scales", talent.tip_the_scales )
+    ->set_cooldown( 0_ms );
 
   // Devastation Traits
 
@@ -1416,7 +1519,11 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.preservation );
 
   // Class Traits
+  action.apply_affecting_aura( talent.attuned_to_the_dream );
+  action.apply_affecting_aura( talent.blast_furnace );
+  action.apply_affecting_aura( talent.bountiful_bloom );
   action.apply_affecting_aura( talent.enkindled );
+  action.apply_affecting_aura( talent.extended_flight );
   action.apply_affecting_aura( talent.forger_of_mountains );
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
@@ -1432,6 +1539,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
 
   if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
+  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
   if ( name == "expunge" ) return new expunge_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
   if ( name == "hover" ) return new hover_t( this, options_str );
@@ -1440,7 +1548,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "obsidian_scales" ) return new obsidian_scales_t( this, options_str );
   if ( name == "quell" ) return new quell_t( this, options_str );
   if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
-  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
+  if ( name == "tip_the_scales" ) return new tip_the_scales_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
@@ -1465,6 +1573,16 @@ double evoker_t::composite_armor() const
     a *= 1.0 + buff.obsidian_scales->data().effectN( 1 ).percent();
 
   return a;
+}
+
+double evoker_t::composite_attribute_multiplier( attribute_e attr ) const
+{
+  double am = player_t::composite_attribute_multiplier( attr );
+
+  if ( attr == ATTR_STAMINA )
+    am *= 1.0 + talent.draconic_legacy->effectN( 1 ).percent();
+
+  return am;
 }
 
 double evoker_t::composite_player_multiplier( school_e s ) const
@@ -1494,6 +1612,17 @@ stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
   }
 }
 
+double evoker_t::passive_movement_modifier() const
+{
+  double pmm = player_t::passive_movement_modifier();
+
+  // hardcode 75% from spell desc; not found in spell data
+  if ( talent.exuberance.ok() && health_percentage() > 75 )
+    pmm += talent.exuberance->effectN( 1 ).percent();
+
+  return pmm;
+}
+
 double evoker_t::resource_regen_per_second( resource_e resource ) const
 {
   auto rrps = player_t::resource_regen_per_second( resource );
@@ -1506,6 +1635,13 @@ void evoker_t::target_mitigation( school_e school, result_amount_type rt, action
   if ( buff.obsidian_scales->check() )
   {
     auto eff = buff.obsidian_scales->data().effectN( 2 );
+    if ( eff.has_common_school( school ) )
+      s->result_amount *= 1.0 + eff.percent();
+  }
+
+  if ( talent.tempered_scales.ok() )
+  {
+    auto eff = talent.tempered_scales->effectN( 1 );
     if ( eff.has_common_school( school ) )
       s->result_amount *= 1.0 + eff.percent();
   }
