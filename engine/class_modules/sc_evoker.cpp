@@ -101,6 +101,7 @@ struct evoker_t : public player_t
     // Baseline Abilities
     propagate_const<buff_t*> essence_burst;
     propagate_const<buff_t*> hover;
+    propagate_const<buff_t*> leaping_flames;
     propagate_const<buff_t*> tailwind;
 
     // Class Traits
@@ -413,8 +414,8 @@ public:
     // TODO: find out if there is a better data source for the spell color
     if ( ab::data().ok() )
     {
-      std::string_view desc = player->dbc->spell_text( ab::data().id() ).rank();
-      if ( !desc.empty() )
+      const auto& desc = player->dbc->spell_text( ab::data().id() ).rank();
+      if ( desc )
       {
         if ( util::str_compare_ci( desc, "Black" ) )
           spell_color = SPELL_BLACK;
@@ -1083,6 +1084,11 @@ struct living_flame_t : public evoker_spell_t
     parse_options( options_str );
   }
 
+  int n_targets() const override
+  {
+    return std::min( 1, evoker_spell_t::n_targets() ) + p()->buff.leaping_flames->check();
+  }
+
   void execute() override
   {
     evoker_spell_t::execute();
@@ -1094,6 +1100,7 @@ struct living_flame_t : public evoker_spell_t
     }
 
     p()->buff.ancient_flame->expire();
+    p()->buff.leaping_flames->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1209,6 +1216,14 @@ struct fire_breath_t : public empowered_spell_t
     debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
 
     damage->schedule_execute( emp_state );
+  }
+
+  void execute() override
+  {
+    empowered_spell_t::execute();
+
+    if ( p()->talent.leaping_flames.ok() )
+      p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
   }
 };
 
@@ -1358,29 +1373,32 @@ void evoker_t::init_spells()
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
   // Evoker Talents
   // Class Traits
-  talent.landslide = CT( "Landslide" ); // Row 1
-  talent.obsidian_scales = CT( "Obsidian Scales" );
-  talent.expunge = CT( "Expunge" );
-  talent.natural_convergence = CT( "Natural Convergence" ); // Row 2
-  talent.forger_of_mountains = CT( "Forger of Mountains" ); // Row 3
-  talent.innate_magic        = CT( "Innate Magic" );
-  talent.obsidian_bulwark    = CT( "Obsidian Bulwark" );
-  talent.enkindled           = CT( "Enkindled" );
-  talent.scarlet_adaptation  = CT( "Scarlet Adaptation" );
-  talent.quell               = CT( "Quell" ); // Row 4
-  talent.tailwind            = CT( "Tailwind" );
-  talent.roar_of_exhilaration = CT( "Roar of Exhilaration" ); // Row 5
-  talent.suffused_with_power = CT( "Suffused With Power" );
-  talent.tip_the_scales = CT( "Tip the Scales" );
-  talent.attuned_to_the_dream = CT("Attuned to the Dream"); // healing received NYI
-  talent.draconic_legacy = CT("Draconic Legacy"); // Row 6
-  talent.tempered_scales = CT("Tempered Scales");
-  talent.extended_flight = CT("Extended Flight");
-  talent.bountiful_bloom = CT("Bountiful Bloom");
-  talent.blast_furnace = CT("Blast Furnace"); // Row 7
-  talent.exuberance = CT("Exuberance");
-  talent.ancient_flame = CT("Ancient Flame");
-  talent.protracted_talons   = CT( "Protracted Talons" ); // Row 8
+  talent.landslide            = CT( "Landslide" );  // Row 1
+  talent.obsidian_scales      = CT( "Obsidian Scales" );
+  talent.expunge              = CT( "Expunge" );
+  talent.natural_convergence  = CT( "Natural Convergence" );  // Row 2
+  talent.forger_of_mountains  = CT( "Forger of Mountains" );  // Row 3
+  talent.innate_magic         = CT( "Innate Magic" );
+  talent.obsidian_bulwark     = CT( "Obsidian Bulwark" );
+  talent.enkindled            = CT( "Enkindled" );
+  talent.scarlet_adaptation   = CT( "Scarlet Adaptation" );
+  talent.quell                = CT( "Quell" );  // Row 4
+  talent.tailwind             = CT( "Tailwind" );
+  talent.roar_of_exhilaration = CT( "Roar of Exhilaration" );  // Row 5
+  talent.suffused_with_power  = CT( "Suffused With Power" );
+  talent.tip_the_scales       = CT( "Tip the Scales" );
+  talent.attuned_to_the_dream = CT( "Attuned to the Dream" );  // healing received NYI
+  talent.draconic_legacy      = CT( "Draconic Legacy" );  // Row 6
+  talent.tempered_scales      = CT( "Tempered Scales" );
+  talent.extended_flight      = CT( "Extended Flight" );
+  talent.bountiful_bloom      = CT( "Bountiful Bloom" );
+  talent.blast_furnace        = CT( "Blast Furnace" );  // Row 7
+  talent.exuberance           = CT( "Exuberance" );
+  talent.ancient_flame        = CT( "Ancient Flame" );
+  talent.protracted_talons    = CT( "Protracted Talons" );  // Row 8
+  talent.lush_growth          = CT( "Lush Growth" );
+  talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
+  talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.azure_essence_burst  = ST( "Azure Essence Burst" );
@@ -1435,6 +1453,8 @@ void evoker_t::create_buffs()
 
   // Class Traits
   buff.ancient_flame = make_buff( this, "ancient_flame", find_spell( 375583 ) );
+
+  buff.leaping_flames = make_buff( this, "leaping_flames", find_spell( 370901 ) );
 
   buff.obsidian_scales = make_buff( this, "obsidian_scales", talent.obsidian_scales )
     ->set_cooldown( 0_ms );
@@ -1519,12 +1539,14 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.preservation );
 
   // Class Traits
+  action.apply_affecting_aura( talent.aerial_mastery );
   action.apply_affecting_aura( talent.attuned_to_the_dream );
   action.apply_affecting_aura( talent.blast_furnace );
   action.apply_affecting_aura( talent.bountiful_bloom );
   action.apply_affecting_aura( talent.enkindled );
   action.apply_affecting_aura( talent.extended_flight );
   action.apply_affecting_aura( talent.forger_of_mountains );
+  action.apply_affecting_aura( talent.lush_growth );
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
   // Devastaion Traits

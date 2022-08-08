@@ -1982,6 +1982,7 @@ class SpellDataGenerator(DataGenerator):
        (
           # General
           ( 372470, 0 ), # Scarlet Adaptation buff
+          ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
           # Devastation
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst

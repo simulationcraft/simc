@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44895
-static const std::array<spelltext_data_t, 17645> __spelltext_data { {
+static const std::array<spelltext_data_t, 17647> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16164,6 +16164,8 @@ static const std::array<spelltext_data_t, 17645> __spelltext_data { {
   { 370889, "$@spelldesc370888", "Absorbing $w1 damage.", 0 },
   { 370897, "Your damaging Blue spells reduce the target's movement speed by $s1% for $370898d.", 0, "Blue" },
   { 370898, "$@spelldesc370897", "Movement speed reduced by $w1%.", "Blue" },
+  { 370901, "$@spelldesc369939", "Your next Living Flame will strike $w1 additional $?$w1=1[target][targets].", 0 },
+  { 370917, "$@spelldesc369939", 0, 0 },
   { 370960, "Commune with the Emerald Dream, restoring $s6% health and $s1% mana every $t1 sec for $d. Overhealing is transferred to a nearby injured ally.\r\n\r\nCastable while stunned, feared, or silenced.", "Healing and restoring mana.", "Green" },
   { 370962, "Pyre's Essence cost is reduced by $s1.", 0, 0 },
   { 371016, "Quell's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
