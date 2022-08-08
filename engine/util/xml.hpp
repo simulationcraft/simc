@@ -79,6 +79,7 @@ private:
   sc_xml_t split_path ( std::string& key, const std::string& path ) const;
 };
 
+template <> struct fmt::formatter<rapidxml::xml_node<char>> : ostream_formatter {};
 
 // XML Reader ==================================================================
 

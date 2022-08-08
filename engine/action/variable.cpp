@@ -283,7 +283,7 @@ void variable_t::execute()
   if (operation != OPERATION_PRINT)
   {
     sim->print_debug("{} variable name={} op={} value={} default={} sig={}", *player, var->name_,
-      operation, var->current_value_, var->default_value_, signature_str);
+      static_cast<int>(operation), var->current_value_, var->default_value_, signature_str);
   }
 
   switch (operation)

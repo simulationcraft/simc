@@ -62,25 +62,24 @@ enum class retarget_source
 };
 
 // Misc Constants
-enum
-{
-  MAX_ARTIFACT_RELIC = 4,
+constexpr auto MAX_ARTIFACT_RELIC = 4;
 
-  // Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the relic's own item level
-  RELIC_ILEVEL_BONUS_CURVE = 1718,
+// Seemingly hard coded CurvePoint identifier for the data that returns the item level increase of a relic, based on the
+// relic's own item level
+constexpr auto RELIC_ILEVEL_BONUS_CURVE = 1718;
 
-  ITEM_TRINKET_BURST_CATEGORY = 1141, /// Trinket On-Use effect default category (for shared CD)
-  MAX_GEM_SLOTS = 4, /// Global maximum number of gem slots in any specific item
+constexpr auto ITEM_TRINKET_BURST_CATEGORY = 1141;  /// Trinket On-Use effect default category (for shared CD)
+constexpr auto MAX_GEM_SLOTS               = 4;     /// Global maximum number of gem slots in any specific item
 
-  MAX_AZERITE_LEVEL = 300, // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
+constexpr auto MAX_AZERITE_LEVEL =
+    300;  // Maximum Azerite level (for Heart of Azeroth) at the start of Battle for Azeroth
 
-  MAX_AZERITE_ESSENCE_RANK = 4u, // Maximum Azerite Essence power rank for patch BfA 8.2.0
+constexpr auto MAX_AZERITE_ESSENCE_RANK = 4u;  // Maximum Azerite Essence power rank for patch BfA 8.2.0
 
-  // Shadowlands: Curves used to apply diminishing returns to Combat Ratings
-  DIMINISHING_RETURN_SECONDARY_CR_CURVE = 21024u,
-  DIMINISHING_RETURN_TERTIARY_CR_CURVE = 21025u,
-  DIMINISHING_RETURN_VERS_MITIG_CR_CURVE  = 21035u,
-};
+// Shadowlands: Curves used to apply diminishing returns to Combat Ratings
+constexpr auto DIMINISHING_RETURN_SECONDARY_CR_CURVE  = 21024u;
+constexpr auto DIMINISHING_RETURN_TERTIARY_CR_CURVE   = 21025u;
+constexpr auto DIMINISHING_RETURN_VERS_MITIG_CR_CURVE = 21035u;
 
 // Enable/Disable azerite effects
 enum class azerite_control

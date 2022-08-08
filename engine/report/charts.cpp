@@ -454,7 +454,7 @@ std::string get_metric_value_name( metric_value_e val )
     case VALUE_BURST_MAX:
       return "Maximum Burst";
     default:
-      return "Unknown " + util::to_string( val );
+      return fmt::format("Unknown {}", static_cast<int>( val ) );
   }
 }
 

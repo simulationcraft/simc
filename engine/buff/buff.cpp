@@ -1123,7 +1123,7 @@ buff_t* buff_t::set_default_value_from_effect_type( effect_subtype_t a_type, pro
   {
     sim->error(
         "ERROR SETTING BUFF DEFAULT VALUE: {} (id={}) has no matching effect with subtype:{} property:{} type:{}",
-        name(), s_data->id(), a_type, p_type, e_type );
+        name(), s_data->id(), static_cast<int>(a_type), static_cast<int>(p_type), static_cast<int>(e_type) );
   }
 
   return this;

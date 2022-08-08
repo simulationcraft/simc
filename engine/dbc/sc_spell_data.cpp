@@ -588,7 +588,7 @@ struct spell_list_expr_t : public spell_data_expr_t
   /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format( "Unsupported right side operand '{}' ({}) for operator {}",
-              op, other.name_str, other.result_tok ) );
+              op, other.name_str, static_cast<int>(other.result_tok) ) );
   }
 };
 
@@ -809,7 +809,7 @@ struct spell_data_filter_expr_t : public spell_list_expr_t
   /* [[noreturn]] */ void throw_invalid_op_arg( util::string_view op, const spell_data_expr_t& other ) const {
     throw std::invalid_argument(
             fmt::format("Unsupported expression operator {} for left='{}' ({}), right='{}' ({})",
-              op, name_str, result_tok, other.name_str, other.result_tok));
+              op, name_str, static_cast<int>(result_tok), other.name_str, static_cast<int>(other.result_tok)));
   }
 };
 
