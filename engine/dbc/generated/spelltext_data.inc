@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44895
-static const std::array<spelltext_data_t, 17647> __spelltext_data { {
+static const std::array<spelltext_data_t, 17648> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17590,6 +17590,7 @@ static const std::array<spelltext_data_t, 17647> __spelltext_data { {
   { 386378, "@spelldesc$386357\r\n", 0, 0 },
   { 386394, "When your health is brought below $s1%, you take $386397s2% less damage for $d and healing you receive is increased by $386397s2%.\r\n\r\nCannot occur more than once every $proccooldown sec.", 0, 0 },
   { 386397, "Damage taken reduced by $s1%.", "Damage taken reduced by $s1%.", 0 },
+  { 386399, "$@spelldesc370867", "Your next Blue spell deals $s1% more damage.", 0 },
   { 386405, "Your Living Flame and Emerald Blossom are $s1% more effective on yourself.", 0, 0 },
   { 386443, "Lava Burst and Lava Burst Overload damage reduces the cooldown of Primordial Wave by ${$s1/-1000}.1 sec.", 0, 0 },
   { 386449, "$@spelldesc376743", 0, 0 },

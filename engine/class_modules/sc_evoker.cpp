@@ -111,7 +111,8 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> tip_the_scales;
 
     // Devastation Traits
-
+    propagate_const<buff_t*> iridescence_blue;
+    propagate_const<buff_t*> iridescence_red;
     // Preservation Traits
   } buff;
 
@@ -851,6 +852,31 @@ public:
     parse_options( options_str );
   }
 
+  void execute() override
+  {
+    ab::execute();
+
+    if ( !ab::has_amount_result() )
+      return;
+
+    if ( spell_color == SPELL_BLUE )
+      p()->buff.iridescence_blue->decrement();
+    else if ( spell_color == SPELL_RED )
+      p()->buff.iridescence_red->decrement();
+  }
+
+  double action_multiplier() const override
+  {
+    double am = ab::action_multiplier();
+
+    if ( spell_color == SPELL_BLUE )
+      am *= 1.0 + p()->buff.iridescence_blue->check_value();
+    else if ( spell_color == SPELL_RED )
+      am *= 1.0 + p()->buff.iridescence_red->check_value();
+
+    return am;
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
@@ -863,7 +889,7 @@ public:
     return tm;
   }
 
-  double composite_persistent_multiplier( const action_state_t* s ) const
+  double composite_persistent_multiplier( const action_state_t* s ) const override
   {
     auto mult = ab::composite_persistent_multiplier( s );
 
@@ -876,7 +902,7 @@ public:
     return mult;
   }
 
-  void consume_resource()
+  void consume_resource() override
   {
     ab::consume_resource();
 
@@ -954,7 +980,18 @@ struct empowered_spell_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
+    if ( !has_amount_result() )
+      return;
+
     p()->buff.tip_the_scales->expire();
+
+    if ( p()->talent.iridescence.ok() )
+    {
+      if ( spell_color == SPELL_BLUE )
+        p()->buff.iridescence_blue->trigger();
+      else if ( spell_color == SPELL_RED )
+        p()->buff.iridescence_red->trigger();
+    }
   }
 };
 
@@ -1038,13 +1075,6 @@ struct living_flame_t : public evoker_spell_t
 
       return da;
     }
-
-    void execute() override
-    {
-      evoker_spell_t::execute();
-
-      p()->buff.scarlet_adaptation->expire();
-    }
   };
 
   struct living_flame_heal_t : public heals::evoker_heal_t
@@ -1101,6 +1131,7 @@ struct living_flame_t : public evoker_spell_t
 
     p()->buff.ancient_flame->expire();
     p()->buff.leaping_flames->expire();
+    p()->buff.scarlet_adaptation->expire();
   }
 
   void impact( action_state_t* s ) override
@@ -1410,6 +1441,7 @@ void evoker_t::init_spells()
   talent.might_of_the_aspects = ST( "Might of the Aspects" );
   talent.eternitys_span       = ST( "Eternity's Span" );
   talent.font_of_magic        = ST( "Font of Magic" );
+  talent.iridescence          = ST( "Iridescence" );
   // Preservation Traits
 
   // Evoker Specialization Spells
@@ -1461,11 +1493,17 @@ void evoker_t::create_buffs()
 
   buff.scarlet_adaptation = make_buff( this, "scarlet_adaptation", find_spell( 372470 ) );
 
-  buff.tip_the_scales = make_buff( this, "Tip the Scales", talent.tip_the_scales )
+  buff.tip_the_scales = make_buff( this, "tip_the_scales", talent.tip_the_scales )
     ->set_cooldown( 0_ms );
 
   // Devastation Traits
+  buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
+    ->set_default_value_from_effect( 1 );
+  buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
 
+  buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
+    ->set_default_value_from_effect( 1 );
+  buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
   // Preservation Traits
 }
 
