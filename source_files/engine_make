@@ -151,7 +151,6 @@ SRC += \
     sim$(PATHSEP)raid_event.cpp \
     sim$(PATHSEP)real_ppm.cpp \
     sim$(PATHSEP)reforge_plot.cpp \
-    sim$(PATHSEP)sc_event.cpp \
     sim$(PATHSEP)scale_factor_control.cpp \
     sim$(PATHSEP)shuffled_rng.cpp \
     sim$(PATHSEP)sim.cpp \
