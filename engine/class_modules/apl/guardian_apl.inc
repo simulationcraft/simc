@@ -38,6 +38,8 @@ bear->add_action( "incarnation,if=(!covenant.venthyr&((trinket.1.is.cache_of_acq
 bear->add_action( "use_item,slot=trinket1,if=trinket.1.is.cache_of_acquired_treasures&buff.acquired_axe.up" );
 bear->add_action( "use_item,slot=trinket2,if=trinket.2.is.cache_of_acquired_treasures&buff.acquired_axe.up" );
 bear->add_action( "use_item,name=gavel_of_the_first_arbiter" );
+bear->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+bear->add_action( "use_item,name=ring_of_collapsing_futures" );
 bear->add_action( "use_item,name=jotungeirr_destinys_call,if=covenant.venthyr" );
 bear->add_action( "use_item,slot=trinket1,if=!buff.prowl.up&covenant.venthyr&!trinket.1.is.cache_of_acquired_treasures&(!buff.acquired_axe.up&!buff.acquired_sword.up&!buff.acquired_wand.up)|!buff.prowl.up&!covenant.venthyr&!trinket.1.is.cache_of_acquired_treasures&(!buff.acquired_axe.up&!buff.acquired_sword.up&!buff.acquired_wand.up)" );
 bear->add_action( "use_item,slot=trinket2,if=!buff.prowl.up&covenant.venthyr&!trinket.2.is.cache_of_acquired_treasures&(!buff.acquired_axe.up&!buff.acquired_sword.up&!buff.acquired_wand.up)|!buff.prowl.up&!covenant.venthyr&!trinket.1.is.cache_of_acquired_treasures&(!buff.acquired_axe.up&!buff.acquired_sword.up&!buff.acquired_wand.up)" );
