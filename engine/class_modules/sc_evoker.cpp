@@ -944,23 +944,14 @@ public:
   }
 };
 
-struct empowered_spell_t : public evoker_spell_t
+struct empowered_base_t : public evoker_spell_t
 {
-  int empower_to;
   empower_e max_empower;
 
-  empowered_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
-    : evoker_spell_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
-      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 ),
-      empower_to( empower_e::EMPOWER_MAX )
-  {
-    // TODO: convert to full empower expression support
-    add_option( opt_int( "empower_to", empower_to ) );
-    parse_options( options_str );
-
-    base_execute_time = time_to_empower( static_cast<empower_e>( empower_to ) );
-    trigger_gcd       = base_execute_time + 1.5_s;
-  }
+  empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
+    : evoker_spell_t( name, p, spell, options_str ),
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
+  {}
 
   action_state_t* new_state() override
   { return new empowered_state_t( this, target ); }
@@ -970,12 +961,6 @@ struct empowered_spell_t : public evoker_spell_t
 
   int empower_value( const action_state_t* s ) const
   { return static_cast<int>( debug_cast<const empowered_state_t*>( s )->empower ); }
-
-  virtual empower_e empower_level() const
-  {
-    // TODO: return the current empowerment level based on elapsed cast/channel time
-    return std::min( static_cast<empower_e>( empower_to ), max_empower );
-  }
 
   timespan_t time_to_empower( empower_e empower ) const
   {
@@ -995,21 +980,19 @@ struct empowered_spell_t : public evoker_spell_t
 
   timespan_t max_hold_time() const
   { return time_to_empower( max_empower ) + 2_s; }
+};
 
-  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
-  {
-    evoker_spell_t::snapshot_internal( s, flags, rt );
-    debug_cast<empowered_state_t*>( s )->empower = empower_level();
-  }
+struct empowered_release_spell_t : public empowered_base_t
+{
+  using base_t = empowered_release_spell_t;
+
+  empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
+    : empowered_base_t( name, p, spell )
+  {}
 
   void execute() override
   {
-    evoker_spell_t::execute();
-
-    p()->buff.tip_the_scales->expire();
-
-    if ( background )
-      return;
+    empowered_base_t::execute();
 
     if ( p()->talent.iridescence.ok() )
     {
@@ -1018,6 +1001,79 @@ struct empowered_spell_t : public evoker_spell_t
       else if ( spell_color == SPELL_RED )
         p()->buff.iridescence_red->trigger();
     }
+  }
+};
+
+struct empowered_charge_spell_t : public empowered_base_t
+{
+  using base_t = empowered_charge_spell_t;
+
+  action_t* release_spell;
+  int empower_to;
+
+  empowered_charge_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
+                            std::string_view options_str )
+    : empowered_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
+      release_spell( nullptr ),
+      empower_to( max_empower )
+  {
+    channeled = true;
+
+    // TODO: convert to full empower expression support
+    add_option( opt_int( "empower_to", empower_to ) );
+    parse_options( options_str );
+
+    dot_duration = base_tick_time = time_to_empower( static_cast<empower_e>( empower_to ) );
+  }
+
+  template <typename T>
+  void create_release_spell( std::string_view n )
+  {
+    static_assert( std::is_base_of_v<empowered_release_spell_t, T>,
+                   "Empowered release spell must be dervied from empowered_release_spell_t." );
+
+    release_spell = p()->get_secondary_action<T>( n );
+    release_spell->stats = stats;
+    release_spell->background = false;
+  }
+
+  virtual empower_e empower_level() const
+  {
+    // TODO: return the current empowerment level based on elapsed cast/channel time
+    return std::min( static_cast<empower_e>( empower_to ), max_empower );
+  }
+
+  void init() override
+  {
+    empowered_base_t::init();
+    assert( release_spell && "Empowered charge spell must have a release spell." );
+  }
+
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    empowered_base_t::snapshot_internal( s, flags, rt );
+    debug_cast<empowered_state_t*>( s )->empower = empower_level();
+  }
+
+  void execute() override
+  {
+    empowered_base_t::execute();
+
+    p()->buff.tip_the_scales->expire();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    empowered_base_t::last_tick( d );
+
+    d->current_action = release_spell;
+
+    auto emp_state = release_spell->get_state();
+    emp_state->target = d->state->target;
+    release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
+    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
+
+    release_spell->schedule_execute( emp_state );
   }
 };
 
@@ -1244,66 +1300,45 @@ struct tip_the_scales_t : public evoker_spell_t
 
 // Empowered Spells =========================================================
 
-struct fire_breath_t : public empowered_spell_t
+struct fire_breath_t : public empowered_charge_spell_t
 {
-  struct fire_breath_damage_t : public empowered_spell_t
+  struct fire_breath_damage_t : public empowered_release_spell_t
   {
-    fire_breath_damage_t( evoker_t* p ) : empowered_spell_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
+    fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
     {
       dual = true;
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
-      return empowered_spell_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+      return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( p()->talent.leaping_flames.ok() )
+        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
   };
 
-  empowered_spell_t* damage;
-
   fire_breath_t( evoker_t* p, std::string_view options_str )
-    : empowered_spell_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
+    : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
   {
-    damage = p->get_secondary_action<fire_breath_damage_t>( "fire_breath_damage" );
-    damage->stats = stats;
+    create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
   }
 
-  bool has_amount_result() const override
-  {
-    return damage->has_amount_result();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    empowered_spell_t::impact( s );
-
-    auto emp_state = damage->get_state();
-    emp_state->target = s->target;
-    damage->snapshot_state( emp_state, damage->amount_type( emp_state ) );
-    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
-
-    damage->schedule_execute( emp_state );
-  }
-
-  void execute() override
-  {
-    empowered_spell_t::execute();
-
-    if ( p()->talent.leaping_flames.ok() )
-      p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
-  }
 };
 
-
-struct eternity_surge_t : public empowered_spell_t
+struct eternity_surge_t : public empowered_charge_spell_t
 {
-  struct eternity_surge_damage_t : public empowered_spell_t
+  struct eternity_surge_damage_t : public empowered_release_spell_t
   {
-    eternity_surge_damage_t( evoker_t* p ) : empowered_spell_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
+    eternity_surge_damage_t( evoker_t* p ) : base_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
     {
       dual = true;
-      background = true;
-      aoe        = 1;
+      aoe = 1;
     }
 
     int n_targets() const override
@@ -1314,30 +1349,10 @@ struct eternity_surge_t : public empowered_spell_t
     }
   };
 
-  empowered_spell_t* damage;
-
   eternity_surge_t( evoker_t* p, std::string_view options_str )
-    : empowered_spell_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
+    : base_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
   {
-    damage        = p->get_secondary_action<eternity_surge_damage_t>( "eternity_surge_damage" );
-    damage->stats = stats;
-  }
-
-  bool has_amount_result() const override
-  {
-    return damage->has_amount_result();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    empowered_spell_t::impact( s );
-
-    auto emp_state    = damage->get_state();
-    emp_state->target = s->target;
-    damage->snapshot_state( emp_state, damage->amount_type( emp_state ) );
-    debug_cast<empowered_state_t*>( emp_state )->empower = empower_level();
-
-    damage->schedule_execute( emp_state );
+    create_release_spell<eternity_surge_damage_t>( "eternity_surge_damage" );
   }
 };
 }  // end namespace spells
