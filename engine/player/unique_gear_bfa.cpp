@@ -5384,14 +5384,19 @@ void items::shorting_bit_band( special_effect_t& effect )
 
     void execute() override
     {
-      auto numTargets = targets_in_range_list( target_list() ).size();
-      if ( numTargets !=
-           0 )  // We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      const auto& targets = targets_in_range_list( target_list() );
+      if ( targets.size() != 0 ) // Skip action_t::execute if no targets are in range.
       {
-        size_t index = rng().range( numTargets );
-        set_target( targets_in_range_list( target_list() )[ index ] );
+        size_t index = rng().range( targets.size() );
+        set_target( targets[ index ] );
 
         generic_proc_t::execute();
+      }
+      else if ( pre_execute_state )
+      {
+        // If action_t::execute is not called, we need to manually release this state.
+        action_state_t::release( pre_execute_state );
+        pre_execute_state = nullptr;
       }
     }
   };
