@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.5.44908
-static const std::array<spelltext_data_t, 16094> __spelltext_data { {
+static const std::array<spelltext_data_t, 16097> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16094,6 +16094,9 @@ static const std::array<spelltext_data_t, 16094> __spelltext_data { {
   { 376635, "Create a piece of Cosmic Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },
   { 376808, "Create a soulbound Mythic Dungeon item appropriate for your loot specialization ($@lootspec) during Shadowlands Season 3.", 0, 0 },
   { 386528, "Add a socket to a Shadowlands Season $s2 item that does not already have one. Can be used on Helms, Necks, Bracers, Belts, or Rings.\r\n", 0, 0 },
+  { 388400, "Improve Rae'shalare, Death's Whisper to item level $s2.", 0, 0 },
+  { 388403, "Improve Rae'shalare, Death's Whisper to item level $s2.", 0, 0 },
+  { 388408, "Improve Rae'shalare, Death's Whisper to item level $s2.", 0, 0 },
 } };
 
 // spelltext hotfix entries, wow build 9.2.5.44908
