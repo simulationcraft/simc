@@ -1298,6 +1298,34 @@ struct tip_the_scales_t : public evoker_spell_t
   }
 };
 
+struct pyre_t : public evoker_spell_t
+{
+  struct pyre_damage_t : public evoker_spell_t
+  {
+    pyre_damage_t( evoker_t* p ) : evoker_spell_t( "pyre_damage", p, p->talent.pyre->effectN( 1 ).trigger() )
+    {
+      dual = true;
+      aoe  = -1;
+    }
+  };
+
+  action_t* damage;
+
+  pyre_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "pyre", p, p->talent.pyre, options_str )
+  {
+    damage        = p->get_secondary_action<pyre_damage_t>( "pyre_damage" );
+    damage->stats = stats;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    evoker_spell_t::impact( s );
+
+    damage->execute_on_target( s->target );
+  }
+};
+
 // Empowered Spells =========================================================
 
 struct fire_breath_t : public empowered_charge_spell_t
@@ -1491,8 +1519,10 @@ void evoker_t::init_spells()
   talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
   talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
+  talent.pyre                 = ST( "Pyre" );
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.azure_essence_burst  = ST( "Azure Essence Burst" );
+  talent.dense_energy         = ST( "Dense Energy" );
   talent.eternity_surge       = ST( "Eternity Surge" );
   talent.power_nexus          = ST( "Power Nexus" );
   talent.ruby_embers          = ST( "Ruby Embers" );
@@ -1653,6 +1683,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.obsidian_bulwark );
   // Devastaion Traits
   // TODO: Coonfirm if this works properly with Scarlet Adaptation
+  action.apply_affecting_aura( talent.dense_energy );
   action.apply_affecting_aura( talent.engulfing_blaze );
   // Preservation Traits
 }
@@ -1670,6 +1701,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   if ( name == "landslide" ) return new landslide_t( this, options_str );
   if ( name == "living_flame" ) return new living_flame_t( this, options_str );
   if ( name == "obsidian_scales" ) return new obsidian_scales_t( this, options_str );
+  if ( name == "pyre" ) return new pyre_t( this, options_str );
   if ( name == "quell" ) return new quell_t( this, options_str );
   if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
   if ( name == "tip_the_scales" ) return new tip_the_scales_t( this, options_str );
