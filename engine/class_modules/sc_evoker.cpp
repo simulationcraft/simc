@@ -1451,7 +1451,7 @@ void evoker_t::init_base_stats()
 
   base.spell_power_per_intellect = 1.0;
 
-  resources.base[ RESOURCE_ESSENCE ] = 5;
+  resources.base[ RESOURCE_ESSENCE ] = 5 + find_spelleffect( talent.power_nexus, A_MOD_MAX_RESOURCE )->base_value();
   // TODO: confirm base essence regen. currently estimated at 1 per 5s base
   resources.base_regen_per_second[ RESOURCE_ESSENCE ] = 0.2 * ( 1.0 + talent.innate_magic->effectN( 1 ).percent() );
 }
@@ -1494,6 +1494,7 @@ void evoker_t::init_spells()
   talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
   talent.azure_essence_burst  = ST( "Azure Essence Burst" );
   talent.eternity_surge       = ST( "Eternity Surge" );
+  talent.power_nexus          = ST( "Power Nexus" );
   talent.ruby_embers          = ST( "Ruby Embers" );
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
   talent.essence_attunement   = ST( "Essence Attunement" );
