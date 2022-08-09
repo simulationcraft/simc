@@ -1230,8 +1230,8 @@ struct disintegrate_t : public evoker_spell_t
     {
       auto emp_state = eternity_surge->get_state();
       emp_state->target = d->state->target;
-      debug_cast<empowered_state_t*>( emp_state )->empower = EMPOWER_1;
       eternity_surge->snapshot_state( emp_state, eternity_surge->amount_type( emp_state ) );
+      debug_cast<empowered_state_t*>( emp_state )->empower = EMPOWER_1;
 
       eternity_surge->schedule_execute( emp_state );
     }
