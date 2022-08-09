@@ -43,10 +43,10 @@ T28_5_Mage_Arcane.simc
 # T28_5_Paladin_Retribution.simc
 
 # T28_5_Priest_Discipline.simc
-# T28_5_Priest_Shadow.simc
-# T28_5_Priest_Shadow_Kyrian.simc
-# T28_5_Priest_Shadow_Night_Fae.simc
-# T28_5_Priest_Shadow_Venthyr.simc
+T28_5_Priest_Shadow.simc
+T28_5_Priest_Shadow_Kyrian.simc
+T28_5_Priest_Shadow_Night_Fae.simc
+T28_5_Priest_Shadow_Venthyr.simc
 
 # T28_5_Rogue_Assassination.simc
 # T28_5_Rogue_Outlaw.simc
