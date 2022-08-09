@@ -843,6 +843,7 @@ public:
 
 namespace spells
 {
+
 // Base Classes =============================================================
 
 struct evoker_spell_t : public evoker_action_t<spell_t>
@@ -1092,6 +1093,97 @@ struct empowered_charge_spell_t : public empowered_base_t
   }
 };
 
+
+// Empowered Spells =========================================================
+
+struct fire_breath_t : public empowered_charge_spell_t
+{
+  struct fire_breath_damage_t : public empowered_release_spell_t
+  {
+    fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
+    {
+      dual = true;
+    }
+
+    timespan_t composite_dot_duration( const action_state_t* s ) const override
+    {
+      return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+    }
+
+    void execute() override
+    {
+      base_t::execute();
+
+      if ( p()->talent.burnout.ok() )
+        p()->buff.burnout->trigger();
+
+      if ( p()->talent.leaping_flames.ok() )
+        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
+    }
+
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = base_t::tick_time( state );
+
+      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
+      {
+        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+      }
+
+      return t;
+    }
+  };
+
+  fire_breath_t( evoker_t* p, std::string_view options_str )
+    : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
+  {
+    create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
+  }
+};
+
+struct eternity_surge_t : public empowered_charge_spell_t
+{
+  struct eternity_surge_damage_t : public empowered_release_spell_t
+  {
+    eternity_surge_damage_t( evoker_t* p ) : base_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
+    {
+      dual = true;
+      aoe  = 1;
+    }
+
+    eternity_surge_damage_t( evoker_t* p, std::string_view name )
+      : base_t( name, p, p->find_spell( 359077 ) )
+    {
+      dual = true;
+      aoe  = 1;
+    }
+
+    int n_targets() const override
+    {
+      int n = pre_execute_state ? empower_value( pre_execute_state ) : empower_e::EMPOWER_MAX;
+
+      return as<int>( n * ( 1.0 + p()->talent.eternitys_span->effectN( 2 ).percent() ) );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
+
+      if ( p()->talent.continuum.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
+      {
+        p()->buff.essence_burst->trigger();
+        p()->proc.continuum->occur();
+      }
+    }
+  };
+
+  eternity_surge_t( evoker_t* p, std::string_view options_str )
+    : base_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
+  {
+    create_release_spell<eternity_surge_damage_t>( "eternity_surge_damage" );
+  }
+};
+
 // Spells ===================================================================
 
 struct azure_strike_t : public evoker_spell_t
@@ -1116,10 +1208,29 @@ struct azure_strike_t : public evoker_spell_t
 
 struct disintegrate_t : public evoker_spell_t
 {
+  action_t* eternity_surge;
+
   disintegrate_t( evoker_t* p, std::string_view options_str )
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
   {
-    channeled = true;
+    channeled      = true;
+    eternity_surge = p->get_secondary_action<eternity_surge_t::eternity_surge_damage_t>( "scintillation" );
+    add_child( eternity_surge );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    evoker_spell_t::tick( d );
+
+    if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 1 ).percent() ) )
+    {
+      auto emp_state = eternity_surge->get_state();
+      emp_state->target = d->state->target;
+      debug_cast<empowered_state_t*>( emp_state )->empower = EMPOWER_1;
+      eternity_surge->snapshot_state( emp_state, eternity_surge->amount_type( emp_state ) );
+
+      eternity_surge->schedule_execute( emp_state );
+    }
   }
 };
 
@@ -1273,7 +1384,7 @@ struct quell_t : public evoker_spell_t
 
     // always assume succes since action cannot be used unless target is casting
     if ( p()->talent.roar_of_exhilaration.ok() )
-    {
+    {   
       p()->resource_gain(
           RESOURCE_ESSENCE,
           p()->talent.roar_of_exhilaration->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_ESSENCE ),
@@ -1343,90 +1454,6 @@ struct pyre_t : public evoker_spell_t
     evoker_spell_t::impact( s );
 
     damage->execute_on_target( s->target );
-  }
-};
-
-// Empowered Spells =========================================================
-
-struct fire_breath_t : public empowered_charge_spell_t
-{
-  struct fire_breath_damage_t : public empowered_release_spell_t
-  {
-    fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
-    {
-      dual = true;
-    }
-
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-      return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
-    }
-
-    void execute() override
-    {
-      base_t::execute();
-
-      if ( p()->talent.burnout.ok() )
-        p()->buff.burnout->trigger();
-
-      if ( p()->talent.leaping_flames.ok() )
-        p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
-    }
-
-    timespan_t tick_time( const action_state_t* state ) const override
-    {
-      timespan_t t = base_t::tick_time( state );
-
-      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
-      {
-        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
-      }
-
-      return t;
-    } 
-  };
-
-  fire_breath_t( evoker_t* p, std::string_view options_str )
-    : base_t( "fire_breath", p, p->find_class_spell( "Fire Breath" ), options_str )
-  {
-    create_release_spell<fire_breath_damage_t>( "fire_breath_damage" );
-  }
-
-};
-
-struct eternity_surge_t : public empowered_charge_spell_t
-{
-  struct eternity_surge_damage_t : public empowered_release_spell_t
-  {
-    eternity_surge_damage_t( evoker_t* p ) : base_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
-    {
-      dual = true;
-      aoe = 1;
-    }
-
-    int n_targets() const override
-    {
-      int n = pre_execute_state ? empower_value( pre_execute_state ) : empower_e::EMPOWER_MAX;
-
-      return as<int>( n * ( 1.0 + p()->talent.eternitys_span->effectN( 2 ).percent() ) );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      base_t::impact( s );
-
-      if ( p()->talent.continuum.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
-      {
-        p()->buff.essence_burst->trigger();
-        p()->proc.continuum->occur();
-      }
-    }
-  };
-
-  eternity_surge_t( evoker_t* p, std::string_view options_str )
-    : base_t( "eternity_surge", p, p->talent.eternity_surge, options_str )
-  {
-    create_release_spell<eternity_surge_damage_t>( "eternity_surge_damage" );
   }
 };
 }  // end namespace spells
@@ -1592,6 +1619,7 @@ void evoker_t::init_spells()
   talent.tyranny              = ST( "Tyranny" );
   talent.burnout              = ST( "Burnout" );
   talent.imminent_destruction = ST( "Imminent Destruction" );
+  talent.scintillation        = ST( "Scintillation" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
   talent.cascading_power      = ST( "Cascading Power" );
