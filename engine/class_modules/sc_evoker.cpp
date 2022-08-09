@@ -1367,7 +1367,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       timespan_t t = base_t::tick_time( state );
 
-      if ( p()->talent.catalyze.ok() && p()->get_target_data( target )->dots.disintegrate->is_ticking() )
+      if ( p()->talent.catalyze.ok() && p()->get_target_data( state->target )->dots.disintegrate->is_ticking() )
       {
         t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
       }
