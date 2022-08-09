@@ -113,6 +113,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> tip_the_scales;
 
     // Devastation Traits
+    propagate_const<buff_t*> dragonrage;
     propagate_const<buff_t*> burnout;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_red;
@@ -682,7 +683,6 @@ public:
 
     parse_buff_effects( p()->buff.ancient_flame );
     parse_buff_effects( p()->buff.essence_burst );
-    parse_buff_effects( p()->buff.tip_the_scales );
     parse_buff_effects( p()->buff.burnout );
   }
 
@@ -977,6 +977,9 @@ struct empowered_base_t : public evoker_spell_t
 
   timespan_t time_to_empower( empower_e empower ) const
   {
+    if ( p()->buff.tip_the_scales->check() )
+      return 1_ms; // TODO:: Remove this disgusting hack
+
     // TODO: confirm these values and determine if they're set values or adjust based on a formula
     // Currently all empowered spells are 2.5s base and 3.25s with empower 4
     switch ( std::min( empower, max_empower ) )
@@ -1198,7 +1201,8 @@ struct azure_strike_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
-    if ( p()->talent.azure_essence_burst.ok() && rng().roll( p()->talent.azure_essence_burst->effectN( 1 ).percent() ) )
+    if ( p()->talent.azure_essence_burst.ok() &&
+         ( p()->buff.dragonrage->up() || rng().roll( p()->talent.azure_essence_burst->effectN( 1 ).percent() ) ) )
     {
       p()->buff.essence_burst->trigger();
       p()->proc.azure_essence_burst->occur();
@@ -1340,7 +1344,8 @@ struct living_flame_t : public evoker_spell_t
   {
     evoker_spell_t::execute();
 
-    if ( p()->talent.ruby_essence_burst.ok() && rng().roll( p()->talent.ruby_essence_burst->effectN(1).percent() ) )
+    if ( p()->talent.ruby_essence_burst.ok() &&
+         ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) ) )
     {
       p()->buff.essence_burst->trigger();
       p()->proc.ruby_essence_burst->occur();
@@ -1460,6 +1465,44 @@ struct pyre_t : public evoker_spell_t
     damage->execute_on_target( s->target );
   }
 };
+
+struct dragonrage_t : public evoker_spell_t
+{
+  action_t* damage;
+
+  struct dragonrage_damage_t : public evoker_spell_t
+  {
+    action_t* pyre;
+    dragonrage_damage_t( evoker_t* p )
+      : evoker_spell_t( "dragonrage_damage", p, p->talent.dragonrage->effectN( 2 ).trigger() )
+    {
+      pyre = p->get_secondary_action<pyre_t>( "pyre", "" );
+      add_child( pyre );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      evoker_spell_t::impact( s );
+
+      pyre->execute_on_target( s->target );
+    }
+  };
+
+  dragonrage_t( evoker_t* p, std::string_view options_str ) : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str )
+  {
+    damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_damage" );
+    damage->stats = stats;
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    damage->schedule_execute();
+    p()->buff.dragonrage->trigger();
+  }
+};
+
 }  // end namespace spells
 
 // ==========================================================================
@@ -1605,6 +1648,7 @@ void evoker_t::init_spells()
   talent.dense_energy         = ST( "Dense Energy" );
   talent.eternity_surge       = ST( "Eternity Surge" );
   talent.power_nexus          = ST( "Power Nexus" );
+  talent.dragonrage           = ST( "Dragonrage" );
   talent.lay_waste            = ST( "Lay Waste" );
   talent.arcane_intensity     = ST( "Arcane Intensity" );
   talent.ruby_embers          = ST( "Ruby Embers" );
@@ -1683,6 +1727,7 @@ void evoker_t::create_buffs()
     ->set_cooldown( 0_ms );
 
   // Devastation Traits
+  buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
                      ->set_duration( timespan_t::from_seconds( talent.burnout->effectN( 1 ).base_value() ) );
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
@@ -1794,6 +1839,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
 
   if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
   if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
+  if ( name == "dragonrage" ) return new dragonrage_t( this, options_str );
   if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
   if ( name == "expunge" ) return new expunge_t( this, options_str );
   if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
