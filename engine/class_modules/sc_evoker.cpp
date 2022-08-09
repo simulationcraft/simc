@@ -1085,7 +1085,7 @@ struct empowered_charge_spell_t : public empowered_base_t
 
   timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
   {
-    return base_time_to_empoewr( emp ) * ( composite_dot_duration( s ) / base_empower_duration );
+    return base_time_to_empower( emp ) * ( composite_dot_duration( s ) / base_empower_duration );
   }
 
   empower_e empower_level( const dot_t* d ) const
