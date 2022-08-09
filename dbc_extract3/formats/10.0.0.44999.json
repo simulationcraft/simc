@@ -520,7 +520,8 @@
       { "data_type": "i", "field": "sequence_value"            },
       { "data_type": "i", "field": "id_item_extended_cost"     },
       { "data_type": "i", "field": "id_player_condition"       },
-      { "data_type": "i", "field": "flags"                     }
+      { "data_type": "i", "field": "flags"                     },
+      { "data_type": "i", "field": "unk_1"                     }
     ]
   },
   "ItemBonusTreeNode": {
