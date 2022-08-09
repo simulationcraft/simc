@@ -1578,6 +1578,8 @@ void evoker_t::init_spells()
   talent.casuality            = ST( "Causality" );
   talent.catalyze             = ST( "Catalyze" );
   talent.font_of_magic        = ST( "Font of Magic" );
+  talent.onyx_legacy          = ST( "Onyx Legacy" );
+  talent.tyranny              = ST( "Tyranny" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
   talent.cascading_power      = ST( "Cascading Power" );
@@ -1735,6 +1737,8 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.engulfing_blaze );
   action.apply_affecting_aura( talent.heat_wave );
   action.apply_affecting_aura( talent.honed_aggression );
+  action.apply_affecting_aura( talent.onyx_legacy );
+  action.apply_affecting_aura( talent.tyranny );
   // Preservation Traits
 }
 
