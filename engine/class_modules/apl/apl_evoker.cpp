@@ -52,8 +52,10 @@ void devastation( player_t* p )
 
   // Potions
   default_list->add_action( "potion" );
+  default_list->add_action( "dragonrage" );
   default_list->add_action( "shattering_star" );
   default_list->add_action( "eternity_surge,empower_to=1" );
+  default_list->add_action( "tip_the_scales,if=buff.dragonrage.up" );
   default_list->add_action( "fire_breath" );
   default_list->add_action( "pyre,if=spell_targets.pyre>2" );
   default_list->add_action( "disintegrate" );
