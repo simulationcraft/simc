@@ -1318,6 +1318,11 @@ struct pyre_t : public evoker_spell_t
     damage->stats = stats;
   }
 
+  bool has_amount_result() const override
+  {
+    return damage->has_amount_result();
+  }
+
   void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
