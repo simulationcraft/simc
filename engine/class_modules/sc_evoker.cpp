@@ -898,7 +898,12 @@ public:
     // Preliminary testing shows this is linear with target hp %.
     // TODO: confirm this applies only to all evoker offensive spells
     if ( p()->specialization() == EVOKER_DEVASTATION )
-      tm *= 1.0 + ( p()->cache.mastery_value() * t->health_percentage() / 100 );
+    {
+      if ( !p()->buff.dragonrage->check() || !p()->talent.ruin.ok() )
+        tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+      else
+        tm *= 1.0 + p()->cache.mastery_value();
+    }
 
     return tm;
   }
@@ -1671,6 +1676,7 @@ void evoker_t::init_spells()
   talent.continuum            = ST( "Continuum" );
   talent.casuality            = ST( "Causality" );
   talent.catalyze             = ST( "Catalyze" );
+  talent.ruin                 = ST( "Ruin" );
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.onyx_legacy          = ST( "Onyx Legacy" );
   talent.tyranny              = ST( "Tyranny" );
