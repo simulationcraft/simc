@@ -636,7 +636,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Priest TODO: Check 51, 53-59
+  { // Priest TODO: Check 51, 53-59, 61, 63-70
     //    Str     Agi     Sta     Int     Spi
     {     10,     15,     19,     20,      0 },
     {     11,     16,     21,     22,      0 },
@@ -699,7 +699,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {    104,    131,    372,    340,      0 },
     {    261,    373,    414,    450,      0 }, // 60
     {      0,      0,      0,      0,      0 },
-    {      0,      0,      0,      0,      0 },
+    {      0,      0,    605,    659,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 65
