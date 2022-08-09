@@ -256,7 +256,7 @@ void brewmaster( player_t* p )
   // Covenant Faeline Stomp
   def->add_action( "faeline_stomp,if=spell_targets>=2" );
 
-  def->add_action( p, "Keg Smash", "if=buff.weapons_of_order.up", "cast KS at top prio duricdng WoO buff" );
+  def->add_action( p, "Keg Smash", "if=buff.weapons_of_order.up", "cast KS at top prio during WoO buff" );
 
   // Celestial Brew
   def->add_action( p, "Celestial Brew",
