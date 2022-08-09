@@ -52,12 +52,14 @@ void devastation( player_t* p )
 
   // Potions
   default_list->add_action( "potion" );
+  default_list->add_action( "disintegrate,if=cooldown.dragonrage.remains<=3*gcd.max" );
   default_list->add_action( "dragonrage" );
   default_list->add_action( "shattering_star" );
   default_list->add_action( "eternity_surge,empower_to=1" );
   default_list->add_action( "tip_the_scales,if=buff.dragonrage.up" );
   default_list->add_action( "fire_breath" );
   default_list->add_action( "pyre,if=spell_targets.pyre>2" );
+  default_list->add_action( "living_flame,if=buff.burnout.up&buff.essence_burst.stack<buff.essence_burst.max_stack" );
   default_list->add_action( "disintegrate" );
   default_list->add_action( "azure_strike,if=spell_targets.azure_strike>2" );
   default_list->add_action( "living_flame" );
