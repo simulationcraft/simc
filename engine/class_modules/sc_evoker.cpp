@@ -998,7 +998,10 @@ struct empowered_release_spell_t : public empowered_base_t
 
   empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : empowered_base_t( name, p, spell )
-  {}
+  {
+    // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
+    trigger_gcd = 1_s;
+  }
 
   void execute() override
   {
