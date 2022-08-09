@@ -113,6 +113,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> tip_the_scales;
 
     // Devastation Traits
+    propagate_const<buff_t*> burnout;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_red;
     // Preservation Traits
@@ -682,6 +683,7 @@ public:
     parse_buff_effects( p()->buff.ancient_flame );
     parse_buff_effects( p()->buff.essence_burst );
     parse_buff_effects( p()->buff.tip_the_scales );
+    parse_buff_effects( p()->buff.burnout );
   }
 
   template <typename... Ts>
@@ -1364,6 +1366,9 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::execute();
 
+      if ( p()->talent.burnout.ok() )
+        p()->buff.burnout->trigger();
+
       if ( p()->talent.leaping_flames.ok() )
         p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
@@ -1585,6 +1590,7 @@ void evoker_t::init_spells()
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.onyx_legacy          = ST( "Onyx Legacy" );
   talent.tyranny              = ST( "Tyranny" );
+  talent.burnout              = ST( "Burnout" );
   talent.imminent_destruction = ST( "Imminent Destruction" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
@@ -1645,6 +1651,8 @@ void evoker_t::create_buffs()
     ->set_cooldown( 0_ms );
 
   // Devastation Traits
+  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
+                     ->set_duration( timespan_t::from_seconds( talent.burnout->effectN( 1 ).base_value() ) );
   buff.iridescence_blue = make_buff( this, "iridescence_blue", find_spell( 386399 ) )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_blue->set_initial_stack( buff.iridescence_blue->max_stack() );
