@@ -1,5 +1,5 @@
 // Spell text, wow build 9.2.5.44908
-static const std::array<spelltext_data_t, 16090> __spelltext_data { {
+static const std::array<spelltext_data_t, 16094> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16085,6 +16085,10 @@ static const std::array<spelltext_data_t, 16090> __spelltext_data { {
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
   { 371525, "Combine $s2 Confounding Antique Cyphers to create the |cFFE6CC80Cosmic Creation Impetus|r, which can be used to improve Fated raid items to Heroic quality.", 0, 0 },
   { 371574, "Combine $s2 Confounding Ancient Cyphers to create the |cFFE6CC80Sacred Creation Impetus|r, which can be used to improve Fated raid items to Mythic quality.", 0, 0 },
+  { 373108, "Critical Strike increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Critical Strike increased by $s1%.", 0 },
+  { 373113, "Haste increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Haste increased by $s1%.", 0 },
+  { 373116, "Mastery increased by $s1 for each dreadlord captured. \r\n\r\nThis effect stacks.", "Mastery increased by $s1.", 0 },
+  { 373121, "Versatility increased by $s1% for each dreadlord captured. \r\n\r\nThis effect stacks.", "Versatility increased by $s1%.", 0 },
   { 373264, "Realize the potential in a Fated raid item, upgrading it to Heroic quality.", 0, 0 },
   { 373266, "Fulfil the destiny of a Fated raid item, upgrading it to Mythic quality.", 0, 0 },
   { 376635, "Create a piece of Cosmic Gladiator's equipment at Unrated rank, appropriate for your loot specialization ($@lootspec).", 0, 0 },

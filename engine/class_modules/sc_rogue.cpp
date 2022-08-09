@@ -1289,13 +1289,20 @@ public:
     register_damage_buff( p()->buffs.symbols_of_death );
     register_damage_buff( p()->buffs.shadow_dance );
     register_damage_buff( p()->buffs.perforated_veins );
-    register_damage_buff( p()->buffs.deeper_daggers );
     register_damage_buff( p()->buffs.finality_eviscerate );
     register_damage_buff( p()->buffs.finality_black_powder );
     register_damage_buff( p()->buffs.elaborate_planning );
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
     register_damage_buff( p()->buffs.the_rotten );
+
+    // 2022-08-04 -- S4 hotfixed whitelist data is incomplete, manually add R2 spells
+    //               Shadow Blades also works but this is handled elsewhere
+    register_damage_buff( p()->buffs.deeper_daggers );
+    if ( ab::data().id() == 328082 || ab::data().id() == 319190 )
+    {
+      direct_damage_buffs.push_back( p()->buffs.deeper_daggers );
+    }
 
     if ( p()->talent.nightstalker->ok() )
     {
@@ -1514,7 +1521,7 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
-  // Generic rules for proccing Banshee's Blight, used by rogue_t::spend_combo_points()
+  // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
   virtual bool procs_banshees_blight() const
   { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
 
@@ -6478,9 +6485,8 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
 
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
-  // TOCHECK: Re-test after S4 hotfix
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
-    amount *= 1.0 + p()->buffs.deeper_daggers->value();
+    amount *= p()->buffs.deeper_daggers->value_direct();
 
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
@@ -6679,6 +6685,10 @@ template <typename Base>
 void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_t* state )
 {
   if ( !p()->legendary.banshees_blight || !procs_banshees_blight() )
+    return;
+
+  // 2022-08-04 -- Further S4 testing shows BtE 4pc procs do not actually trigger the dagger
+  if ( is_secondary_action() )
     return;
 
   const auto rs = cast_state( state );
@@ -7204,6 +7214,8 @@ void rogue_t::init_action_list()
     cds->add_action( "sepsis,if=!stealthed.rogue&dot.garrote.ticking&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
     cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-variable.vendetta_cooldown_remains)%cooldown))" );
     cds->add_action( "variable,name=vendetta_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition", "Vendetta to be used if not stealthed, Rupture is up, and all other talent/covenant conditions are satisfied");
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.vendetta.up|variable.use_trinket_1_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
     cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.vendetta.up|variable.use_trinket_2_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( this, "Vendetta", "if=variable.vendetta_condition&(!set_bonus.tier28_4pc|(dot.garrote.haste_pct>=(dot.garrote.haste_pct_next_tick-3))&(dot.rupture.haste_pct>=(dot.rupture.haste_pct_next_tick-3)))", "If using T28 4pc, delay until the next DoT tick if we can gain more than a 3% haste snapshot compared to the current tick value");
@@ -7330,6 +7342,8 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood" );
     cds->add_action( "ancestral_call" );
 
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up|fight_remains<25" );
     cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
@@ -7417,6 +7431,8 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=buff.symbols_of_death.up" );
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1" );
     cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
@@ -9087,7 +9103,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 
   // Damage trigger spell from 358126
   // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
-  // This attack triggers multiple times based on target stack count, handled in spend_combo_points
+  // This attack triggers multiple times based on target stack count, handled in trigger_banshees_blight
   // When dual-wielding, the item damage amounts from both weapons are added together
   struct banshees_blight_damage_t : public unique_gear::proc_spell_t
   {
@@ -9127,7 +9143,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
   {
     rogue->legendary.banshees_blight = e.driver();
 
-    // Create damage action triggered by actions::rogue_action_t<Base>::spend_combo_points
+    // Create damage action triggered by actions::rogue_action_t<Base>::trigger_banshees_blight
     auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
     if ( !banshees_blight_damage )
       rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );

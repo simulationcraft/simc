@@ -6970,6 +6970,11 @@ struct totem_pulse_action_t : public T
 
     this->crit_bonus_multiplier *= 1.0 + totem->o()->spec.elemental_fury->effectN( 1 ).percent();
 
+    if ( this->data().affected_by( totem->o()->spec.elemental_shaman->effectN( 1 ) ) )
+    {
+      this->base_dd_multiplier *= 1.0 + totem->o()->spec.elemental_shaman->effectN( 1 ).percent();
+    }
+
     if ( this->type == ACTION_HEAL )
     {
       this->harmful = false;
@@ -7105,6 +7110,11 @@ struct liquid_magma_globule_t : public spell_t
     if ( p->o()->spec.elemental_fury->ok() )
     {
       crit_bonus_multiplier *= 1.0 + p->o()->spec.elemental_fury->effectN( 1 ).percent();
+    }
+
+    if ( data().affected_by( p->o()->spec.elemental_shaman->effectN( 1 ) ) )
+    {
+      base_dd_multiplier *= 1.0 + p->o()->spec.elemental_shaman->effectN( 1 ).percent();
     }
   }
 };

@@ -11,11 +11,11 @@ soulbind=pelagos,combat_meditation/piercing_verdict:7/show_of_force:7
 renown=40
 
 # Default consumables
-potion=potion_of_phantom_fire
+potion=spectral_strength
 flask=spectral_flask_of_power
 food=feast_of_gluttonous_hedonism
 augmentation=veiled
-temporary_enchant=main_hand:shadowcore_oil
+temporary_enchant=main_hand:shaded_sharpening_stone
 
 # This default action priority list is automatically created based on your character.
 # It is a attempt to provide you with a action list that is both simple and practicable,
@@ -93,6 +93,7 @@ off_hand=stonewrought_gargoyles_barrier,id=182399,bonus_id=7187/1531
 # gear_strength=884
 # gear_stamina=1530
 # gear_intellect=133
+# gear_attack_power=20
 # gear_crit_rating=186
 # gear_haste_rating=956
 # gear_mastery_rating=477

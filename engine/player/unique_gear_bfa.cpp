@@ -4457,6 +4457,8 @@ void items::dribbling_inkpod( special_effect_t& effect )
 void items::reclaimed_shock_coil( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
+  // damage spell coefficient is overriden by driver coefficient
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5384,14 +5386,19 @@ void items::shorting_bit_band( special_effect_t& effect )
 
     void execute() override
     {
-      auto numTargets = targets_in_range_list( target_list() ).size();
-      if ( numTargets !=
-           0 )  // We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      const auto& targets = targets_in_range_list( target_list() );
+      if ( targets.size() != 0 ) // Skip action_t::execute if no targets are in range.
       {
-        size_t index = rng().range( numTargets );
-        set_target( targets_in_range_list( target_list() )[ index ] );
+        size_t index = rng().range( targets.size() );
+        set_target( targets[ index ] );
 
         generic_proc_t::execute();
+      }
+      else if ( pre_execute_state )
+      {
+        // If action_t::execute is not called, we need to manually release this state.
+        action_state_t::release( pre_execute_state );
+        pre_execute_state = nullptr;
       }
     }
   };
@@ -5503,25 +5510,56 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
       }
     }
 
-    std::unique_ptr<expr_t> create_expression( std::string_view name ) override
+    // returns the number of occurrences of an action in the recently used spells of the tracker
+    unsigned tracked_count( action_t* a )
     {
-      if ( action_t* a = player->find_action( name ) )
+      unsigned count = 0;
+      for ( auto tracked_action : tracker->last_used )
       {
-        return make_fn_expr( name, [ this, a ]
+        if ( tracked_action->id == a->id )
         {
-          size_t count = 0;
-          for ( auto tracked_action : tracker->last_used )
+          count++;
+        }
+      }
+      return count;
+    }
+
+    // returns the number of spells required to push the oldest occurrence of an action out of the tracker
+    unsigned tracked_first_remains( action_t* a )
+    {
+      for ( unsigned i = 0; i < tracker->last_used.size(); i++ )
+      {
+        if ( tracker->last_used[ i ]->id == a->id )
+        {
+          return i + 1;
+        }
+      }
+      return 0;
+    }
+
+    // This is somewhat of a misuse of action_t::create_expression, but for an item that
+    // is probably going away in a few months it is not worth significantly restructuring
+    // things to make spell_tracker_cb_t and hyperthread_reduction_t accessible elsewhere.
+    std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
+    {
+      auto splits = ::util::string_split<std::string_view>( name_str, "." );
+
+      if ( splits[ 0 ] == "hyperthread_wristwraps" )
+      {
+        if ( action_t* a = player->find_action( splits[ 1 ] ) )
+        {
+          if ( splits.size() == 2 || splits.size() == 3 && splits[ 2 ] == "count" )
           {
-            if ( tracked_action->id == a->id )
-            {
-              count++;
-            }
+            return make_fn_expr( name_str, [ this, a ] { return tracked_count( a ); } );
           }
-          return count;
-        } );
+          else if ( splits.size() == 3 && splits[ 2 ] == "first_remains" )
+          {
+            return make_fn_expr( name_str, [ this, a ] { return tracked_first_remains( a ); } );
+          }
+        }
       }
 
-      return proc_spell_t::create_expression( name );
+      return proc_spell_t::create_expression( name_str );
     }
   };
 
