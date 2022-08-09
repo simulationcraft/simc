@@ -1976,15 +1976,7 @@ public:
 
   void schedule_execute( action_state_t* s = nullptr ) override
   {
-    if ( !check_form_restriction() )
-    {
-      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
-        p()->active.shift_to_caster->execute();
-      else if ( autoshift )
-        autoshift->execute();
-      else
-        assert( false && "Action executed in wrong form with no valid form to shift to!" );
-    }
+    check_autoshift();
 
     ab::schedule_execute( s );
   }
@@ -2531,6 +2523,19 @@ public:
     return !form_mask || ( form_mask & p()->get_form() ) == p()->get_form() ||
            ( p()->specialization() == DRUID_GUARDIAN && p()->buff.bear_form->check() &&
              ab::data().affected_by( p()->buff.bear_form->data().effectN( 2 ) ) );
+  }
+
+  void check_autoshift()
+  {
+    if ( !check_form_restriction() )
+    {
+      if ( may_autounshift && ( form_mask & NO_FORM ) == NO_FORM )
+        p()->active.shift_to_caster->execute();
+      else if ( autoshift )
+        autoshift->execute();
+      else
+        assert( false && "Action executed in wrong form with no valid form to shift to!" );
+    }
   }
 
   bool verify_actor_spec() const override
@@ -6250,6 +6255,9 @@ struct prowl_t : public druid_spell_t
   {
     sim->print_log( "{} performs {}", player->name(), name() );
 
+    // since prowl can be used off gcd, it can bypass schedule_execute() so we check for autoshift again here
+    check_autoshift();
+
     p()->buff.jungle_stalker->expire();
     p()->buff.prowl->trigger();
 
@@ -7588,6 +7596,16 @@ struct adaptive_swarm_t : public druid_spell_t
     return g;
   }
 
+  // return false on invulnerable targets as this action is !harmful to allow for self-healing, thus will pass the
+  // invulnerable check in action_t::target_ready()
+  bool target_ready( player_t* t ) override
+  {
+    if ( t->debuffs.invulnerable->check() && sim->ignore_invulnerable_targets )
+      return false;
+
+    return druid_spell_t::target_ready( t );
+  }
+
   void execute() override
   {
     druid_spell_t::execute();
@@ -8443,6 +8461,9 @@ struct lycaras_fleeting_glimpse_t : public action_t
 
   void execute() override
   {
+    if ( sim->target_non_sleeping_list.empty() )
+      return;
+
     action_t* a;
 
     if ( druid->buff.moonkin_form->check() )

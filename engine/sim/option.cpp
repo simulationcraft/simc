@@ -864,6 +864,8 @@ option_db_t::option_db_t()
     auto_path.push_back( path + "PreRaids" );
     auto_path.push_back( path + "generators/DungeonSlice" );
     auto_path.push_back( path + "DungeonSlice" );
+    auto_path.push_back( path + "Tier28_5" );
+    auto_path.push_back( path + "generators/Tier28_5" );
 
     // Add profiles for each tier
     for ( unsigned i = 0; i < N_TIER; ++i )

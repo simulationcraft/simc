@@ -4641,7 +4641,7 @@ bool action_t::execute_targeting(action_t* action) const
 }
 
 // This returns a list of all targets currently in range.
-std::vector<player_t*> action_t::targets_in_range_list(
+std::vector<player_t*>& action_t::targets_in_range_list(
   std::vector<player_t*>& tl) const
 {
   size_t i = tl.size();

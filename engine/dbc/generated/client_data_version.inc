@@ -8,8 +8,8 @@
 
 // Hotfix data versioning information
 
-#define CLIENT_DATA_HOTFIX_DATE "2022-08-02"
+#define CLIENT_DATA_HOTFIX_DATE "2022-08-08"
 #define CLIENT_DATA_HOTFIX_BUILD (44908)
-#define CLIENT_DATA_HOTFIX_HASH "faffbc1c5b8843d277a3c15b43c663aaa1891cf51f01b19235786e4fdc6b9dcb"
+#define CLIENT_DATA_HOTFIX_HASH "c3a6eadcc5aef4e588874a1e64799f430e56ebbef3e91fedb5ec4e5d20ded473"
 
 #endif /* CLIENT_DATA_VERSION_INC*/

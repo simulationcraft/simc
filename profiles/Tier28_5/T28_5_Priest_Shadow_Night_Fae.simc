@@ -1,0 +1,219 @@
+priest="T28_5_Priest_Shadow_Night_Fae"
+source=default
+spec=shadow
+level=60
+race=human
+role=spell
+position=ranged_back
+talents=1010122
+covenant=night_fae
+soulbind=dreamweaver,podtender/field_of_blossoms/dissonant_echoes:11:1/haunting_apparitions:11:1/rabid_shadows:11:1/dream_delver
+renown=80
+
+# Default consumables
+potion=potion_of_spectral_intellect
+flask=spectral_flask_of_power
+food=feast_of_gluttonous_hedonism
+augmentation=veiled_augment_rune
+temporary_enchant=main_hand:shadowcore_oil
+
+# This default action priority list is automatically created based on your character.
+# It is a attempt to provide you with a action list that is both simple and practicable,
+# while resulting in a meaningful and good simulation. It may not result in the absolutely highest possible dps.
+# Feel free to edit, adapt and improve it to your own needs.
+# SimulationCraft is always looking for updates and improvements to the default action lists.
+
+# Executed before combat begins. Accepts non-harmful actions only.
+actions.precombat=flask
+actions.precombat+=/food
+actions.precombat+=/augmentation
+# Snapshot raid buffed stats before combat begins and pre-potting is done.
+actions.precombat+=/snapshot_stats
+actions.precombat+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_solvent
+actions.precombat+=/shadowform,if=!buff.shadowform.up
+actions.precombat+=/arcane_torrent
+actions.precombat+=/use_item,name=shadowed_orb_of_torment
+actions.precombat+=/variable,name=mind_sear_cutoff,op=set,value=2
+actions.precombat+=/vampiric_touch,if=!talent.damnation.enabled
+actions.precombat+=/mind_blast,if=talent.damnation.enabled
+
+# Executed every time the actor is available.
+actions=potion,if=buff.power_infusion.up&(buff.bloodlust.up|(time+fight_remains)>=320)
+actions+=/antumbra_swap,if=buff.singularity_supreme_lockout.up&!buff.power_infusion.up&!buff.voidform.up&!pet.fiend.active&!buff.singularity_supreme.up&!buff.swap_stat_compensation.up&!buff.bloodlust.up&!((fight_remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+time)>=200)
+# Swap onto Antumbra approximately 30s before CDS if the cds will be 2 minutes apart not 90/180s
+actions+=/antumbra_swap,if=buff.swap_stat_compensation.up&!buff.singularity_supreme_lockout.up&(cooldown.power_infusion.remains<=30&cooldown.void_eruption.remains<=30&!((time>80&time<100)&((fight_remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+time)>=200))|fight_remains<=40)
+actions+=/variable,name=dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking
+actions+=/variable,name=all_dots_up,op=set,value=dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking
+# Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform
+actions+=/variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up
+# CD management control variables to make it easier to follow whats happening, this is if there is enough time in a sim to do 5minute cds
+actions+=/variable,name=five_minutes_viable,op=set,value=(fight_remains+time)>=60*5+20
+# Time for 4 minute CDs and it wont do 5.
+actions+=/variable,name=four_minutes_viable,op=set,value=!variable.five_minutes_viable&(fight_remains+time)>=60*4+20
+# Control to do use VF on cd for the first 3minutes
+actions+=/variable,name=do_three_mins,op=set,value=(variable.five_minutes_viable|!variable.five_minutes_viable&!variable.four_minutes_viable)&time<=200
+actions+=/variable,name=cd_management,op=set,value=variable.do_three_mins|(variable.four_minutes_viable&cooldown.power_infusion.remains<=gcd.max*3|variable.five_minutes_viable&time>300)|fight_remains<=25,default=0
+actions+=/variable,name=max_vts,op=set,default=1,value=spell_targets.vampiric_touch
+actions+=/variable,name=max_vts,op=set,value=5+2*(variable.cd_management&cooldown.void_eruption.remains<=10)&talent.hungering_void.enabled,if=talent.searing_nightmare.enabled&spell_targets.mind_sear=7
+actions+=/variable,name=max_vts,op=set,value=0,if=talent.searing_nightmare.enabled&spell_targets.mind_sear>7
+actions+=/variable,name=max_vts,op=set,value=4,if=talent.searing_nightmare.enabled&spell_targets.mind_sear=8&!talent.shadow_crash.enabled
+actions+=/variable,name=max_vts,op=set,value=(spell_targets.mind_sear<=5)*spell_targets.mind_sear,if=buff.voidform.up
+actions+=/variable,name=is_vt_possible,op=set,value=0,default=1
+actions+=/variable,name=is_vt_possible,op=set,value=1,target_if=max:(target.time_to_die*dot.vampiric_touch.refreshable),if=target.time_to_die>=18
+actions+=/variable,name=vts_applied,op=set,value=active_dot.vampiric_touch>=variable.max_vts|!variable.is_vt_possible
+# Cooldown Pool Variable, Used to pool before activating Voidform.
+actions+=/variable,name=pool_for_cds,op=set,value=cooldown.void_eruption.up&variable.cd_management
+# Helper variable for managing Scars Double On Use Logic, not inclusive of all trinkets.
+actions+=/variable,name=on_use_trinket,value=equipped.shadowed_orb_of_torment+equipped.moonlit_prism+equipped.neural_synapse_enhancer+equipped.fleshrenders_meathook+equipped.scars_of_fraternal_strife+equipped.the_first_sigil+equipped.soulletting_ruby+equipped.inscrutable_quantum_device
+actions+=/blood_fury,if=buff.power_infusion.up
+actions+=/fireblood,if=buff.power_infusion.up
+actions+=/berserking,if=buff.power_infusion.up
+# Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s.
+actions+=/lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)
+actions+=/ancestral_call,if=buff.power_infusion.up
+# Disable use of the Hyperthread Wristwraps entirely.
+actions+=/use_item,name=hyperthread_wristwraps,if=0
+# Use the ring every 30s as to not increase the cooldown unless the target is about to die.
+actions+=/use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60
+actions+=/call_action_list,name=cwc
+actions+=/run_action_list,name=main
+
+actions.boon=ascended_blast,if=spell_targets.mind_sear<=3
+# Only use Ascended Nova when not talented into Searing Nightmare on 2+ targets.
+actions.boon+=/ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled
+
+# Use Power Infusion with Voidform. Hold for Voidform comes off cooldown in the next 10 seconds otherwise use on cd unless the player is part of the kyrian covenant, or if there will not be another Void Eruption this fight. Attempt to sync the last power infusion of the fight to void eruption for non Kyrian's.
+actions.cds=power_infusion,if=buff.voidform.up&(!variable.five_minutes_viable|time>300|time<235)|fight_remains<=25
+# Fleshcraft to refresh Volatile Solvent.
+actions.cds+=/fleshcraft,if=soulbind.volatile_solvent&buff.volatile_solvent_humanoid.remains<=3*gcd.max,cancel_if=buff.volatile_solvent_humanoid.up
+# Use Silence on CD to proc Sephuz's Proclamation.
+actions.cds+=/silence,target_if=runeforge.sephuzs_proclamation.equipped&(target.is_add|target.debuff.casting.react)
+# Use Fae Guardians on CD outside of Voidform. Use Fae Guardiands in Voidform if you have either Grove Invigoration or Field of Blossoms. Wait for dots to be up before activating Fae Guardians to maximise the buff.
+actions.cds+=/fae_guardians,if=!buff.voidform.up&(!cooldown.void_torrent.up|!talent.void_torrent.enabled)&(variable.dots_up&spell_targets.vampiric_touch==1|variable.vts_applied&spell_targets.vampiric_touch>1)|buff.voidform.up&(soulbind.grove_invigoration.enabled|soulbind.field_of_blossoms.enabled)
+# Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns.
+actions.cds+=/unholy_nova,if=!talent.hungering_void&variable.dots_up|debuff.hungering_void.up&buff.voidform.up|(cooldown.void_eruption.remains>15|!variable.cd_management)&!buff.voidform.up
+# Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a voidbolt for cooldown efficiency and for hungering void uptime if talented.
+actions.cds+=/boon_of_the_ascended,if=variable.dots_up&(cooldown.fiend.up|!runeforge.shadowflame_prism)
+# Use Void Eruption on cooldown, spend insanity before entering if you will overcap instantly. Make sure Shadowfiend/Mindbender and Shadow Word: Death is on cooldown before VE if Shadowflame is equipped. Ensure Mindblast is on cooldown.
+actions.cds+=/void_eruption,if=variable.cd_management&(!soulbind.volatile_solvent|buff.volatile_solvent_humanoid.up)&(insanity<=85|talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(pet.fiend.active&!cooldown.shadow_word_death.up|cooldown.fiend.remains>=gcd.max*5|!runeforge.shadowflame_prism)&(cooldown.mind_blast.charges=0|time>=15)
+actions.cds+=/call_action_list,name=trinkets
+# Activate mindbender with dots up, if using shadowflame prism make sure vampiric touches are applied prior to use.
+actions.cds+=/mindbender,if=(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff|dot.shadow_word_pain.ticking)&variable.vts_applied
+actions.cds+=/desperate_prayer,if=health.pct<=75
+
+# T28 4-set conditional for CWC Mind Blast
+actions.cwc=mind_blast,only_cwc=1,target_if=set_bonus.tier28_4pc&buff.dark_thought.up&pet.fiend.active&runeforge.shadowflame_prism.equipped&!buff.voidform.up&pet.your_shadow.remains<fight_remains|buff.dark_thought.up&pet.your_shadow.remains<gcd.max*(3+(!buff.voidform.up)*16)&pet.your_shadow.remains<fight_remains
+# Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not ready, or to refresh SW:P on two or more targets.
+actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot.shadow_word_pain.refreshable&spell_targets.mind_sear>1)
+# Short Circuit Searing Nightmare condition to keep SW:P up in AoE
+actions.cwc+=/searing_nightmare,use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&spell_targets.mind_sear>2
+# Only_cwc makes the action only usable during channeling and not as a regular action.
+actions.cwc+=/mind_blast,only_cwc=1
+
+actions.main=call_action_list,name=boon,if=buff.boon_of_the_ascended.up
+# Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets.
+actions.main+=/shadow_word_pain,if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4
+actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot.shadow_word_pain.ticking&!cooldown.fiend.up&spell_targets.mind_sear>=4
+actions.main+=/call_action_list,name=cds
+# High Priority Mind Sear action to refresh DoTs with Searing Nightmare
+actions.main+=/mind_sear,target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot.shadow_word_pain.ticking&!cooldown.fiend.up
+# Prefer to use Damnation ASAP if SW:P or VT is not up or you cannot cast a normal Devouring Plague (including Mind Devourer procs) and you will not cap Dark Thoughts stacks if using T28 2pc.
+actions.main+=/damnation,target_if=(dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable|(!buff.mind_devourer.up&insanity<50))&(buff.dark_thought.stack<buff.dark_thought.max_stack|!set_bonus.tier28_2pc)
+# Use Shadow Word Death if using Shadowflame Prism and bender will expire during the next gcd.
+actions.main+=/shadow_word_death,if=pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains<=gcd&spell_targets.mind_sear<=7
+# Always use mindblasts if capped and hungering void is up and using Shadowflame Prism and bender is up.Additionally, cast mindblast if you would be unable to get the rift by waiting a gcd.
+actions.main+=/mind_blast,if=(cooldown.mind_blast.full_recharge_time<=gcd.max*2&(debuff.hungering_void.up|!talent.hungering_void.enabled)|pet.fiend.remains<=cast_time+gcd)&pet.fiend.active&runeforge.shadowflame_prism.equipped&pet.fiend.remains>cast_time&spell_targets.mind_sear<=7|buff.dark_thought.up&buff.voidform.up&!cooldown.void_bolt.up&(!runeforge.shadowflame_prism.equipped|!pet.fiend.active)&set_bonus.tier28_4pc
+# Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void will still be up when the cast time finishes. Stop using at 5+ targets with Searing Nightmare.
+actions.main+=/mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!variable.cd_management))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.remains>cast_time|!buff.voidform.up)
+# With Hungering Void, use voidbolt at a higher priority, but only as a builder if on AOE with Searing Nightmare.
+actions.main+=/void_bolt,if=talent.hungering_void&(insanity<=85&talent.searing_nightmare&spell_targets.mind_sear<=6|!talent.searing_nightmare|spell_targets.mind_sear=1)
+# Special Devouring Plague with Searing Nightmare when usage during Cooldowns
+actions.main+=/devouring_plague,if=(set_bonus.tier28_4pc|talent.hungering_void.enabled)&talent.searing_nightmare.enabled&pet.fiend.active&runeforge.shadowflame_prism.equipped&buff.voidform.up&spell_targets.mind_sear<=6
+# Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is talented and will hit enough targets.
+actions.main+=/devouring_plague,if=(refreshable|insanity>75|talent.void_torrent.enabled&cooldown.void_torrent.remains<=3*gcd&!buff.voidform.up|buff.voidform.up&(cooldown.mind_blast.charges_fractional<2|buff.mind_devourer.up))&(!variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare|!variable.searing_nightmare_cutoff)
+# With Hungering Void only, Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 with conduit).
+actions.main+=/void_bolt,if=talent.hungering_void.enabled&(spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85&talent.searing_nightmare.enabled|!talent.searing_nightmare.enabled)
+# Use Shadow Word: Death if the target is about to die or you have Shadowflame Prism equipped with Mindbender or Shadowfiend active.
+actions.main+=/shadow_word_death,target_if=(target.health.pct<20&spell_targets.mind_sear<4)|(pet.fiend.active&runeforge.shadowflame_prism.equipped&spell_targets.mind_sear<=7)
+# Use Surrender to Madness on a target that is going to die at the right time.
+actions.main+=/surrender_to_madness,target_if=target.time_to_die<25&buff.voidform.down
+# Use Void Torrent only if SW:P and VT are active and the target won't die during the channel.
+actions.main+=/void_torrent,target_if=variable.dots_up&(buff.voidform.down|buff.voidform.remains<cooldown.void_bolt.remains|prev_gcd.1.void_bolt&!buff.bloodlust.react&spell_targets.mind_sear<3)&variable.vts_applied&spell_targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))
+# Use SW:D with Painbreaker Psalm unless the target will be below 20% before the cooldown comes back.
+actions.main+=/shadow_word_death,if=runeforge.painbreaker_psalm.equipped&variable.dots_up&target.time_to_pct_20>(cooldown.shadow_word_death.duration+gcd)
+# Use Shadow Crash on CD unless there are adds incoming.
+actions.main+=/shadow_crash,if=raid_event.adds.in>10
+# Use Mind Sear to consume Dark Thoughts procs on AOE. TODO Confirm is this is a higher priority than redotting on AOE unless dark thoughts is about to time out
+actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff&buff.dark_thought.up,chain=1,interrupt_immediate=1,interrupt_if=ticks>=4
+# Use Mind Flay to consume Dark Thoughts procs on ST outside of VF.
+actions.main+=/mind_flay,if=buff.dark_thought.up&variable.dots_up&!buff.voidform.up&!variable.pool_for_cds&cooldown.mind_blast.full_recharge_time>=gcd.max,chain=1,interrupt_immediate=1,interrupt_if=ticks>=4&!buff.dark_thought.up
+# Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing Nightmare talented and you are not using Shadowflame Prism or Psychic Link.spell_targets.mind_sear>?5 gets the minimum of 5 and the number of targets. Also, do not press mindblast until all targets are dotted with VT when using shadowflame prism if bender is available.
+actions.main+=/mind_blast,if=variable.dots_up&raid_event.movement.in>cast_time+0.5&spell_targets.mind_sear<(4+2*talent.misery.enabled+active_dot.vampiric_touch*talent.psychic_link.enabled+(spell_targets.mind_sear>?5)*(pet.fiend.active&runeforge.shadowflame_prism.equipped))&(!runeforge.shadowflame_prism.equipped|!cooldown.fiend.up&runeforge.shadowflame_prism.equipped|variable.vts_applied)
+# Low Priority Void Bolt Fall Through
+actions.main+=/void_bolt,if=variable.dots_up
+# Refresh Vampiric Touch wisely based on Damnation and other Talents.
+actions.main+=/vampiric_touch,target_if=refreshable&target.time_to_die>=18&(dot.vampiric_touch.ticking|!variable.vts_applied)&variable.max_vts>0|(talent.misery.enabled&dot.shadow_word_pain.refreshable)|buff.unfurling_darkness.up
+# Special condition to stop casting SW:P on off-targets when fighting 3 or more stacked mobs and using Psychic Link and NOT Misery.
+actions.main+=/shadow_word_pain,if=refreshable&target.time_to_die>4&!talent.misery.enabled&talent.psychic_link.enabled&spell_targets.mind_sear>2
+# Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link.
+actions.main+=/shadow_word_pain,target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff)&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_targets.mind_sear<=2))
+actions.main+=/mind_sear,target_if=spell_targets.mind_sear>variable.mind_sear_cutoff,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2
+actions.main+=/mind_flay,chain=1,interrupt_immediate=1,interrupt_if=ticks>=2&(!buff.dark_thought.up|cooldown.void_bolt.up&(buff.voidform.up|!buff.dark_thought.up&buff.dissonant_echoes.up))
+# Use SW:D as last resort if on the move
+actions.main+=/shadow_word_death
+# Use SW:P as last resort if on the move and SW:D is on CD
+actions.main+=/shadow_word_pain
+
+# Use trinket after pull starts and then on CD after that until you get 4th stack. Use before other on use to not trigger ICD between trinkets (bug?).
+actions.trinkets=use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up
+# Use on CD ASAP to get DoT ticking and expire to line up better with Voidform
+actions.trinkets+=/use_item,name=empyreal_ordnance,if=cooldown.void_eruption.remains<=12|cooldown.void_eruption.remains>27
+# Try to Sync IQD with Double Stacked CDs if possible. On longer fights with more IQD uses attempt to sync with any cd or just use it.
+actions.trinkets+=/use_item,name=inscrutable_quantum_device,if=buff.voidform.up&buff.power_infusion.up|fight_remains<=20|buff.power_infusion.up&cooldown.void_eruption.remains+15>fight_remains|buff.voidform.up&cooldown.power_infusion.remains+15>fight_remains|(cooldown.power_infusion.remains>=10&cooldown.void_eruption.remains>=10)&fight_remains>=190
+# Sync Sheet Music with Voidform
+actions.trinkets+=/use_item,name=macabre_sheet_music,if=cooldown.void_eruption.remains>10
+# Sync Ruby with Power Infusion usage, make sure to snipe the lowest HP target. When used with Shadowed Orb of Torment, just use on CD as much as possible.
+actions.trinkets+=/use_item,name=soulletting_ruby,if=buff.power_infusion.up|!priest.self_power_infusion|equipped.shadowed_orb_of_torment,target_if=min:target.health.pct
+# First Sigil small optimization with Soulletting Ruby
+actions.trinkets+=/use_item,name=the_first_sigil,if=buff.voidform.up|buff.power_infusion.up|!priest.self_power_infusion|cooldown.void_eruption.remains>10|(equipped.soulletting_ruby&!trinket.soulletting_ruby.cooldown.up)|fight_remains<20
+# Use scars as a double on use trinket if two trinkets are equipped, else use at the end of a fight in last cds.
+actions.trinkets+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&((variable.on_use_trinket>=2&!equipped.shadowed_orb_of_torment)&cooldown.power_infusion.remains<=20&cooldown.void_eruption.remains<=(20-5*talent.ancient_madness)|buff.voidform.up&buff.power_infusion.up&(equipped.shadowed_orb_of_torment|variable.on_use_trinket<=1))&fight_remains<=80|fight_remains<=30
+# Use Neural Synapse Enhance to Buff Shadowfiends or in full cds.
+actions.trinkets+=/use_item,name=neural_synapse_enhancer,if=buff.voidform.up&buff.power_infusion.up|pet.fiend.active&cooldown.power_infusion.remains>=10*gcd.max
+# Use Badge inside of VF for the first use or on CD after the first use. Short circuit if void eruption cooldown is 10s or more away.
+actions.trinkets+=/use_item,name=sinful_gladiators_badge_of_ferocity,if=cooldown.void_eruption.remains>=10
+# Use Shadowed Orb of Torment when not in Voidform, or in between Void Bolt casts in Voidform. As Kyrian or Necrolord line it up with stacked cooldowns.
+actions.trinkets+=/use_item,name=shadowed_orb_of_torment,if=cooldown.power_infusion.remains<=10&cooldown.void_eruption.remains<=10|covenant.night_fae&(!buff.voidform.up|prev_gcd.1.void_bolt)|fight_remains<=40
+# Use this on CD for max CDR
+actions.trinkets+=/use_item,name=architects_ingenuity_core
+# Default fallback for usable items: Use on cooldown in order by trinket slot.
+actions.trinkets+=/use_items,if=buff.voidform.up|buff.power_infusion.up|cooldown.void_eruption.remains>10
+
+head=amice_of_the_empyrean,id=188880,bonus_id=1531/7187,gem_id=173130
+neck=worldkiller_iris,id=189859,bonus_id=1550/7187,gem_id=173130
+shoulders=capelet_of_the_empyrean,id=188879,bonus_id=1531/7187
+back=shroud_of_the_sires_chosen,id=189847,bonus_id=1550/7187
+chest=habit_of_the_empyrean,id=188875,bonus_id=1531/7187,enchant=eternal_stats
+wrists=grimveiled_bracers,id=173249,bonus_id=6648/6649/7729/1588,gem_id=173130,enchant=eternal_intellect
+hands=grimveiled_mittens,id=173244,bonus_id=6648/6649/6982/7882/1588
+waist=sash_of_the_silent_sonata,id=189793,bonus_id=1550/7187,gem_id=173130
+legs=leggings_of_the_empyrean,id=188878,bonus_id=1524/7187
+feet=stolen_nathrian_slippers,id=189823,bonus_id=1550/7187
+finger1=soulwarped_seal_of_wrynn,id=189839,bonus_id=1550/7187,gem_id=173130,enchant=tenet_of_mastery
+finger2=most_regal_signet_of_sire_denathrius,id=183036,bonus_id=1576/6646,gem_id=173130,enchant=tenet_of_mastery
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=1550/7187
+trinket2=cabalists_hymnal,id=184028,bonus_id=1576/6646
+main_hand=antumbra_shadow_of_the_cosmos,id=189852,bonus_id=1550/7187,enchant=sinful_revelation
+off_hand=forbidden_truth,id=189860,bonus_id=1550/7187
+
+# Gear Summary
+# gear_ilvl=306.75
+# gear_stamina=3822
+# gear_intellect=2223
+# gear_crit_rating=414
+# gear_haste_rating=1270
+# gear_mastery_rating=955
+# gear_versatility_rating=52
+# gear_armor=614
+# set_bonus=tier28_2pc=1
+# set_bonus=tier28_4pc=1

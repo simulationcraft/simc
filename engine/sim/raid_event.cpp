@@ -354,8 +354,22 @@ struct pull_event_t final : raid_event_t
   struct mob_t : public pet_t
   {
     pull_event_t* pull_event;
-    bool relic = false;
-    bool automaton = false;
+    unsigned bounty;
+
+    void trigger_bounty( player_t* p )
+    {
+      if ( sim->keystone_bounty == "haste" )
+        p->buffs.bounty_haste->increment( bounty );
+
+      if ( sim->keystone_bounty == "crit" )
+        p->buffs.bounty_crit->increment( bounty );
+
+      if ( sim->keystone_bounty == "mastery" )
+        p->buffs.bounty_mastery->increment( bounty );
+
+      if ( sim->keystone_bounty == "vers" )
+        p->buffs.bounty_vers->increment( bounty );
+    }
 
     mob_t( player_t* o, util::string_view n = "Mob", pet_e pt = PET_ENEMY ) : pet_t( o->sim, o, n, pt ),
       pull_event( nullptr )
@@ -399,11 +413,8 @@ struct pull_event_t final : raid_event_t
 
     void demise() override
     {
-      pet_t::demise();
-
-      if ( automaton )
+      if ( bounty > 0 && !is_sleeping() )
       {
-        automaton = false;
         if ( !sim->single_actor_batch )
         {
           for ( auto* p : sim->player_non_sleeping_list )
@@ -411,60 +422,19 @@ struct pull_event_t final : raid_event_t
             if ( p->is_pet() )
               continue;
 
-            if ( pull_event->relic == "vy" )
-              p->buffs.decrypted_vy_cypher->trigger();
-            else if ( pull_event->relic == "urh" )
-              p->buffs.decrypted_urh_cypher->trigger();
+            trigger_bounty( p );
           }
         }
         else
         {
           auto p = sim->player_no_pet_list[ sim->current_index ];
           if ( p )
-          {
-            if ( pull_event->relic == "vy" )
-              p->buffs.decrypted_vy_cypher->trigger();
-            else if ( pull_event->relic == "urh" )
-              p->buffs.decrypted_urh_cypher->trigger();
-          }
-        }
-      }
-      else if ( relic )
-      {
-        relic = false;
-        if ( !pull_event->automation_spawned )
-        {
-          double base_hp;
-          if ( pull_event->relic == "vy" )
-            base_hp = 192700.0;
-          else
-            base_hp = 214000.0;
-
-          auto adds = pull_event->adds_spawner->spawn( 1 );
-          adds[ 0 ]->resources.base[ RESOURCE_HEALTH ] = base_hp * pow( 1.08, sim->keystone_level - 10 ) * ( sim->keystone_pct_hp / 100.0 );
-          adds[ 0 ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
-          adds[ 0 ]->init_resources( true );
-          adds[ 0 ]->pull_event = pull_event;
-          adds[ 0 ]->relic      = false;
-          adds[ 0 ]->automaton  = true;
-
-          // Only for use with log output options as it makes the report strange but log much better
-          if ( sim->log )
-          {
-            adds[ 0 ]->full_name_str = adds[ 0 ]->name_str = pull_event->relic + " Automaton";
-          }
-
-          pull_event->automation_spawned = true;
-          sim->print_debug( "Spawned {} Automaton with {} hp", pull_event->relic, adds[ 0 ]->resources.base[ RESOURCE_HEALTH ] );
-
-          for ( auto add : pull_event->adds_spawner->active_pets() )
-          {
-            if ( add->relic )
-              add->demise();
-          }
+            trigger_bounty( p );
         }
       }
 
+      pet_t::demise();
+      
       if ( pull_event )
         pull_event->on_demise();
     }
@@ -482,20 +452,19 @@ struct pull_event_t final : raid_event_t
 
   player_t* master;
   std::string enemies_str;
-  std::string relic;
   timespan_t delay;
   timespan_t spawn_time;
   int pull;
   bool bloodlust;
   bool spawned;
-  bool automation_spawned;
+  bool demised;
   event_t* spawn_event;
 
   struct spawn_parameter
   {
-    double health = 0;
-    bool relic = false;
     std::string name;
+    double health = 0;
+    unsigned bounty = 0;
   };
   std::vector<spawn_parameter> spawn_parameters;
 
@@ -504,16 +473,13 @@ struct pull_event_t final : raid_event_t
   pull_event_t( sim_t* s, util::string_view options_str )
     : raid_event_t( s, "pull" ),
       enemies_str(),
-      relic( "urh" ),
       delay( 0_s ),
       spawn_time( 0_s ),
       pull( 0 ),
       spawned( false ),
-      automation_spawned( false ),
       spawn_event( nullptr )
   {
     add_option( opt_string( "enemies", enemies_str ) );
-    add_option( opt_string( "relic", relic ) );
     add_option( opt_timespan( "delay", delay ) );
     add_option( opt_int( "pull", pull ) );
     add_option( opt_bool( "bloodlust", bloodlust ) );
@@ -565,9 +531,14 @@ struct pull_event_t final : raid_event_t
           else
           {
             spawn_parameter spawn;
+
+            if ( util::starts_with( splits[ 0 ], "BOUNTY1_" ) )
+              spawn.bounty = 1;
+            else if ( util::starts_with( splits[ 0 ], "BOUNTY3_" ) )
+              spawn.bounty = 3;
+
             spawn.name = splits[ 0 ];
             spawn.health = util::to_double( splits[ 1 ] );
-            spawn.relic = util::starts_with( splits[ 0 ], "RELIC_" );
             spawn_parameters.emplace_back( spawn );
           }
         }
@@ -589,6 +560,10 @@ struct pull_event_t final : raid_event_t
         return;
     }
 
+    if ( demised )
+      return;
+
+    demised = true;
     sim->print_log( "Finished Pull {} in {:.1f} seconds", pull, ( sim->current_time() - spawn_time ).total_seconds() );
 
     // find the next pull and spawn it
@@ -676,7 +651,6 @@ struct pull_event_t final : raid_event_t
       return;
     
     spawned = true;
-    automation_spawned = false;
     spawn_time = sim->current_time();
 
     if ( bloodlust )
@@ -709,8 +683,7 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->resources.infinite_resource[ RESOURCE_HEALTH ] = false;
       adds[ i ]->init_resources( true );
       adds[ i ]->pull_event = this;
-      adds[ i ]->relic = spawn_parameters[ i ].relic;
-      adds[ i ]->automaton = false;
+      adds[ i ]->bounty = spawn_parameters[ i ].bounty;
 
       // Only for use with log output options as it makes the report strange but log much better
       if ( sim->log )
@@ -732,6 +705,7 @@ struct pull_event_t final : raid_event_t
     raid_event_t::reset();
 
     spawned = false;
+    demised = false;
   }
 };
 
@@ -1407,6 +1381,49 @@ struct damage_done_buff_event_t final : public raid_event_t
   }
 };
 
+// Buff Raid Event ==========================================================
+
+struct buff_raid_event_t final : public raid_event_t
+{
+  std::unordered_map<size_t, buff_t*> buff_list;
+  std::string buff_str;
+  unsigned stacks;
+
+  buff_raid_event_t( sim_t* s, std::string_view options_str ) : raid_event_t( s, "buff" ), stacks( 1 )
+  {
+    add_option( opt_string( "buff_name", buff_str ) );
+    add_option( opt_uint( "stacks", stacks ) );
+    parse_options( options_str );
+
+    players_only = true;
+
+    if ( buff_str.empty() )
+      throw std::invalid_argument( fmt::format( "{} you must specify a buff_name.", *this ) );
+  }
+
+  void _start() override
+  {
+    for ( auto p : affected_players )
+    {
+      auto& b = buff_list[ p->actor_index ];
+      if ( !b )
+        b = buff_t::find( p, buff_str );
+
+      if ( b )
+      {
+        b->trigger( stacks, duration > 0_ms ? duration : timespan_t::min() );
+      }
+      else
+      {
+        sim->error( "Error: Invalid buff raid event, buff_name '{}' not found on player '{}'.", buff_str, p->name() );
+        sim->cancel();
+      }
+    }
+  }
+
+  void _finish() override {}
+};
+
 // Vulnerable ===============================================================
 
 struct vulnerable_event_t final : public raid_event_t
@@ -1707,7 +1724,15 @@ void raid_event_t::start()
     auto& expr_uptr = player_expressions[ p->actor_index ];
     if ( !expr_uptr )
     {
-      expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      try
+      {
+        expr_uptr = parse_player_if_expr( *p, player_if_expr_str );
+      }
+      catch ( const std::exception& e )
+      {
+        sim->error( "{} player_if expression error '{}': {}", *this, player_if_expr_str, e.what() );
+        sim->cancel();
+      }
     }
 
     if ( expr_uptr && !expr_uptr->success() )
@@ -2034,6 +2059,8 @@ std::unique_ptr<raid_event_t> raid_event_t::create( sim_t* sim, util::string_vie
     return std::unique_ptr<raid_event_t>( new damage_taken_debuff_event_t( sim, options_str ) );
   if ( name == "damage_done_buff" )
     return std::unique_ptr<raid_event_t>( new damage_done_buff_event_t( sim, options_str ) );
+  if ( name == "buff" )
+    return std::unique_ptr<raid_event_t>( new buff_raid_event_t( sim, options_str ) );
 
   throw std::invalid_argument( fmt::format( "Invalid raid event type '{}'.", name ) );
 }

@@ -167,6 +167,11 @@ void brewmaster( player_t* p )
   pre->add_action( "potion" );
 
   pre->add_action( "fleshcraft" );
+  
+  // Append this line if the value is set
+  auto precombat_seconds = p->sim->shadowlands_opts.jotungeirr_prepull_seconds;
+  if (precombat_seconds > 0_s)
+    pre->add_action( "use_item,name=jotungeirr_destinys_call,if=equipped.jotungeirr_destinys_call", "Use Jotun Prepull" );  
 
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
   pre->add_talent( p, "Chi Wave" );
@@ -188,6 +193,8 @@ void brewmaster( player_t* p )
             ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
       else if( item.name_str == "cache_of_acquired_treasures" )
           def->add_action( "use_item,name=" + item.name_str + ",if=buff.acquired_axe.up|fight_remains<25" );
+      else if ( item.name_str == "ring_of_collapsing_futures" )
+        def->add_action( "use_item,name=" + item.name_str + ",if=buff.temptation.down|fight_remains<30" );         
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
@@ -335,6 +342,8 @@ void mistweaver( player_t* p )
     {
       if ( item.name_str == "scars_of_fraternal_strife" )
         def->add_action( "use_item,name=" + item.name_str + ",if=!buff.scars_of_fraternal_strife_4.up&time>1" );
+      else if ( item.name_str == "ring_of_collapsing_futures" )
+        def->add_action( "use_item,name=" + item.name_str + ",if=buff.temptation.down|fight_remains<30" );       
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
@@ -574,6 +583,11 @@ void windwalker( player_t* p )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
         cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+      else if ( item.name_str == "wraps_of_electrostatic_potential" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str ); 
+      else if ( item.name_str == "ring_of_collapsing_futures" )
+        cd_serenity->add_action( "use_item,name=" + item.name_str +
+                            ",if=buff.temptation.down|fight_remains<30" );       
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else
@@ -624,6 +638,11 @@ void windwalker( player_t* p )
       "if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
   // Storm, Earth, and Fire on-use trinkets
+  
+  // Scars of Fraternal Strife 1st-4th Rune, always used first
+  if (p->items[SLOT_TRINKET_1].name_str == "scars_of_fraternal_strife" || p->items[SLOT_TRINKET_2].name_str == "scars_of_fraternal_strife")
+      cd_sef->add_action("use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up");
+  
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     cd_sef->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
 
@@ -645,7 +664,7 @@ void windwalker( player_t* p )
                             ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>90|fight_remains<20" );
       else if ( item.name_str.find( "gladiators_badge" ) != -1 )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-                            ",if=cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen|fight_remains<15" );
+                            ",if=covenant.necrolord&(buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30)|!covenant.necrolord&(cooldown.invoke_xuen_the_white_tiger.remains>55|variable.hold_xuen)|fight_remains<15" );
       else if ( item.name_str == "the_first_sigil" )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=pet.xuen_the_white_tiger.remains>15|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>300|fight_remains<20" );
@@ -653,8 +672,20 @@ void windwalker( player_t* p )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
       else if ( item.name_str == "scars_of_fraternal_strife" )
+          // Scars of Fraternal Strife Final Rune, use in order of trinket slots
+          cd_sef->add_action("use_item,name=" + item.name_str +
+              ",if=(buff.scars_of_fraternal_strife_4.up&(active_enemies>1|raid_event.adds.in<20)&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35");
+      else if ( item.name_str == "enforcers_stun_grenade" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
-                            ",if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35" );
+                            ",if=!covenant.necrolord&pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" ); 
+      else if ( item.name_str == "kihras_adrenaline_injector" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
+                            ",if=!covenant.necrolord&pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" ); 
+      else if ( item.name_str == "wraps_of_electrostatic_potential" )
+        cd_sef->add_action( "use_item,name=" + item.name_str ); 
+      else if ( item.name_str == "ring_of_collapsing_futures" )
+        cd_sef->add_action( "use_item,name=" + item.name_str +
+                            ",if=buff.temptation.down|fight_remains<30" ); 
       else if ( item.name_str == "jotungeirr_destinys_call" )
         continue;
       else

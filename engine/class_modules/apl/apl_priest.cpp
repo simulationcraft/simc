@@ -86,6 +86,8 @@ void shadow( player_t* p )
   default_->add_action( "berserking,if=buff.power_infusion.up" );
   default_->add_action( "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)", "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   default_->add_action( "ancestral_call,if=buff.power_infusion.up" );
+  default_->add_action( "use_item,name=hyperthread_wristwraps,if=0", "Disable use of the Hyperthread Wristwraps entirely.");
+  default_->add_action( "use_item,name=ring_of_collapsing_futures,if=(buff.temptation.stack<1&target.time_to_die>60)|target.time_to_die<60", "Use the ring every 30s as to not increase the cooldown unless the target is about to die.");
   default_->add_action( "call_action_list,name=cwc" );
   default_->add_action( "run_action_list,name=main" );
 
