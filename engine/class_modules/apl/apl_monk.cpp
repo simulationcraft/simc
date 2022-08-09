@@ -638,6 +638,11 @@ void windwalker( player_t* p )
       "if=fight_remains<20|!covenant.necrolord&(cooldown.storm_earth_and_fire.charges=2|buff.weapons_of_order.up|covenant.kyrian&cooldown.weapons_of_order.remains>cooldown.storm_earth_and_fire.full_recharge_time|cooldown.invoke_xuen_the_white_tiger.remains>cooldown.storm_earth_and_fire.full_recharge_time)&cooldown.fists_of_fury.remains<=9&chi>=2&cooldown.whirling_dragon_punch.remains<=12" );
 
   // Storm, Earth, and Fire on-use trinkets
+  
+  // Scars of Fraternal Strife 1st-4th Rune, always used first
+  if (p->items[SLOT_TRINKET_1].name_str == "scars_of_fraternal_strife" || p->items[SLOT_TRINKET_2].name_str == "scars_of_fraternal_strife")
+      cd_sef->add_action("use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up");
+  
   if ( p->items[ SLOT_MAIN_HAND ].name_str == "jotungeirr_destinys_call" )
     cd_sef->add_action( "use_item,name=" + p->items[ SLOT_MAIN_HAND ].name_str + ",if=pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>60&fight_remains>180|fight_remains<20" );
 
@@ -667,8 +672,9 @@ void windwalker( player_t* p )
         cd_sef->add_action( "use_item,name=" + item.name_str + 
                             ",if=active_enemies<2&buff.acquired_wand.up|active_enemies>1&buff.acquired_axe.up|fight_remains<20" );
       else if ( item.name_str == "scars_of_fraternal_strife" )
-        cd_sef->add_action( "use_item,name=" + item.name_str +
-                            ",if=!buff.scars_of_fraternal_strife_4.up|((active_enemies>1|raid_event.adds.in<20)&buff.scars_of_fraternal_strife_4.up&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35" );
+          // Scars of Fraternal Strife Final Rune, use in order of trinket slots
+          cd_sef->add_action("use_item,name=" + item.name_str +
+              ",if=(buff.scars_of_fraternal_strife_4.up&(active_enemies>1|raid_event.adds.in<20)&(buff.weapons_of_order.up|(debuff.bonedust_brew_debuff.up&pet.xuen_the_white_tiger.active)))|fight_remains<35");
       else if ( item.name_str == "enforcers_stun_grenade" )
         cd_sef->add_action( "use_item,name=" + item.name_str +
                             ",if=!covenant.necrolord&pet.xuen_the_white_tiger.active|buff.storm_earth_and_fire.remains>10|buff.bonedust_brew.up&cooldown.bonedust_brew.remains>30|fight_remains<20" ); 
