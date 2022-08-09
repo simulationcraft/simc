@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44895
-static const std::array<spelltext_data_t, 17648> __spelltext_data { {
+static const std::array<spelltext_data_t, 17649> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16462,6 +16462,7 @@ static const std::array<spelltext_data_t, 17648> __spelltext_data { {
   { 375796, "Essence Burst has a $s1% chance to not be consumed.", 0, 0 },
   { 375797, "Casting an empower spell extends the duration of Dragonrage by ${$s1/1000} sec.", 0, 0 },
   { 375801, "Fire Breath reduces the cast time of Living Flame by $<rate>% for $s1 sec.", 0, 0 },
+  { 375802, "$@spelldesc375801", "Living Flame's cast time is reduced by $w1%.", 0 },
   { 375844, "Your spells and abilities have a chance to increase your $pri by $s2 for $372134d and extend the duration of your active phial by $s1 sec.", 0, 0 },
   { 375845, "Your abilities have a chance to wrap your target in blue flames, causing ${$s1*$377420d} Arcane damage over $377420d.", 0, 0 },
   { 375888, "Vampiric Touch periodic damage has a chance to reset the remaining cooldown on Mind Blast and cause your next Mind Blast to be instant.\r\n\r\nMind Blast gains $s1 additional charge.", 0, 0 },
