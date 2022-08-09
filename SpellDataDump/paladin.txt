@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-08/44908, no-networking)
+SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
