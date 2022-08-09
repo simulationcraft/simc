@@ -1013,6 +1013,14 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     empowered_base_t::execute();
 
+    if ( background )
+      return;
+
+    if ( p()->talent.animosity.ok() )
+    {
+      p()->buff.dragonrage->extend_duration(p(), p()->talent.animosity->effectN( 1 ).time_value() );
+    }
+
     if ( p()->talent.iridescence.ok() )
     {
       if ( spell_color == SPELL_BLUE )
@@ -1653,6 +1661,7 @@ void evoker_t::init_spells()
   talent.arcane_intensity     = ST( "Arcane Intensity" );
   talent.ruby_embers          = ST( "Ruby Embers" );
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
+  talent.animosity            = ST( "Animosity" );
   talent.essence_attunement   = ST( "Essence Attunement" );
   talent.heat_wave            = ST( "Heat Wave" );
   talent.shattering_star      = ST( "Shattering Star" );
