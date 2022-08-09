@@ -1530,8 +1530,10 @@ void evoker_t::init_spells()
   talent.ruby_embers          = ST( "Ruby Embers" );
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
   talent.essence_attunement   = ST( "Essence Attunement" );
+  talent.heat_wave            = ST( "Heat Wave" );
   talent.shattering_star      = ST( "Shattering Star" );
   talent.might_of_the_aspects = ST( "Might of the Aspects" );
+  talent.honed_aggression     = ST( "Honed Aggression" );
   talent.eternitys_span       = ST( "Eternity's Span" );
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
@@ -1684,11 +1686,13 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
   // Devastaion Traits
-  // TODO: Coonfirm if this works properly with Scarlet Adaptation
+  // TODO: Confirm if this works properly with Scarlet Adaptation
   action.apply_affecting_aura( talent.dense_energy );
   action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.arcane_intensity );
   action.apply_affecting_aura( talent.engulfing_blaze );
+  action.apply_affecting_aura( talent.heat_wave );
+  action.apply_affecting_aura( talent.honed_aggression );
   // Preservation Traits
 }
 
