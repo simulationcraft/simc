@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44895 dragonflight-BETA (hotfix 2022-08-06/44895, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-09/44999, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1167,7 +1167,7 @@ Effects          :
 #2 (id=43857)    : Apply Aura (6) | Pacify Silence (60)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Enemy (6)
 #3 (id=43858)    : Apply Aura (6) | Unknown(260)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 754 | Misc Value 2: 0x1 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 754 | Misc Value 2: 0x7 | Target: Enemy (6)
 #4 (id=756197)   : Apply Aura (6) | Unknown(321)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Transforms the enemy into a frog for $d. While hexed, the victim is incapacitated, and cannot attack or cast spells. Damage may cancel the effect. Limit 1. Only works on Humanoids and Beasts.
@@ -1758,7 +1758,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : Causes the earth within $a1 yards of the target location to tremble and break, dealing $<damage> Physical damage over $d and has a $?s381743[${$77478s2*(1+$381743s1/100)}.1][$77478s2]% chance to knock the enemy down.
 Variables        : $mawPower=$?a329580[${1+($329580m5/100)}][${1}]
-$damage=${$SPN*0.391*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}
+$damage=${$SPN*0.2346*$d/$t2*(1+$@versadmg)*(($137040s1+100)/100)*$<mawPower>}
 
 Name             : Earthgrab (id=64695) [Spell Family (11)] 
 Class            : Shaman
@@ -2223,7 +2223,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
-Triggered by     : Windspeaker's Lava Resurgence (336065), Windspeaker's Lava Resurgence (378269)
+Triggered by     : Windspeaker's Lava Resurgence (336065), Windspeaker's Lava Resurgence (378269), Heat Wave (387622)
 Family Flags     : 67
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -2604,7 +2604,10 @@ Effects          :
                    Affected Spells (Category): Riptide (61295)
 #3 (id=263363)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1569 | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394), Cloudburst Totem (157153)
+                   Affected Spells (Category): Healing Stream Totem (5394)
+#4 (id=1023076)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 2062 | Target: Self (1)
+                   Affected Spells (Category): Cloudburst Totem (157153)
 Description      : $?c1[Lava Burst now has ${$s2+1}][Riptide, Healing Stream Totem, and Lava Burst now have ${$s2+1}] charges. Effects that reset $?c1[its][their] remaining cooldown will instead grant 1 charge.
 
 Name             : Call of the Elements (id=108285) [Spell Family (11)] 
@@ -3668,8 +3671,8 @@ Resource         : 8.6% Base Mana (0) (id=9766)
 GCD              : 1 seconds
 Duration         : 15 seconds
 Cooldown         : 1 seconds
-Charges          : 1 (30 seconds cooldown)
-Category         : 1569: Echo of the Elements (108283 effect#3), Totemic Surge (381867 effect#2)
+Charges          : 1 (45 seconds cooldown)
+Category         : 2062: Echo of the Elements (108283 effect#4), Totemic Surge (381867 effect#4)
 Labels           : 1658: Totemic Focus (382201 effect#2)
 Category Cooldown: 1 seconds
 Affecting spells : Totemic Surge (381867 effect#1), Ancestral Wolf Affinity (382197 effect#1)
@@ -3865,7 +3868,7 @@ Effects          :
 #1 (id=219618)   : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 #2 (id=306466)   : Dummy (3)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : $@spelldesc157153
 
 Name             : Stat Negation Aura - Agility DPS (id=162697) [Passive, Hidden] 
@@ -13685,7 +13688,7 @@ Effects          :
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 #4 (id=1002733)  : Dummy (3)
                    Base Value: 150 | Scaled Value: 150 | PvP Coefficient: 1.00000 | Target: Unknown(25)
-Description      : Blast your target with a Primordial Wave, dealing $375984s1 Elemental damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $375985s1 and apply Riptide to them][heal an ally for $375985s1].
+Description      : Blast your target with a Primordial Wave, dealing $375984s1 Shadow damage and apply Flame Shock to an enemy, or $?a137039[heal an ally for $375985s1 and apply Riptide to them][heal an ally for $375985s1].
 
 Your next $?a137040[Lava Burst]?a137041[Lightning Bolt][Healing Wave] will also hit all targets affected by your $?a137040|a137041[Flame Shock][Riptide] for $?a137039[$s2%]?a137040[$s3%][$s4%] of normal $?a137039[healing][damage].
 
@@ -15126,10 +15129,13 @@ Effects          :
                    Family Flags: 29
 #2 (id=1014666)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1569 | Target: Self (1)
-                   Affected Spells (Category): Healing Stream Totem (5394), Cloudburst Totem (157153)
+                   Affected Spells (Category): Healing Stream Totem (5394)
 #3 (id=1014667)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 1540 | Target: Self (1)
                    Affected Spells (Category): Spirit Link Totem (98008)
+#4 (id=1023077)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
+                   Base Value: -2000 | Scaled Value: -2000 | PvP Coefficient: 1.00000 | Misc Value: 2062 | Target: Self (1)
+                   Affected Spells (Category): Cloudburst Totem (157153)
 Description      : Reduces the cooldown of your totems by ${$s1/-1000} sec.
 
 Name             : Mana Spring Totem (id=381930) [Spell Family (11)] 
@@ -16813,7 +16819,7 @@ Effects          :
 
 Name             : Rolling Magma (id=386443) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-500, -1000)]
+                 : Effect#1 [op=set, values=(-200, -500)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -16832,11 +16838,12 @@ Effects          :
                    Base Value: -500 | Scaled Value: -500 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Lava Burst and Lava Burst Overload damage reduces the cooldown of Primordial Wave by ${$s1/-1000}.1 sec.
 
-Name             : Heat Wave [NYI] (id=386474) [Spell Family (11), Passive, Hidden] 
+Name             : Heat Wave (id=386474) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Elemental [tree=spec, row=10, col=2, max_rank=1, req_points=20, select_idx=200]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
 Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -16847,10 +16854,75 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
-#1 (id=1020566)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12000 | Scaled Value: 12000 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1020570)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 3000 | Scaled Value: 3000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Casting Primordial Wave triggers Lava Surge immediately and every ${$s2/1000} sec for ${$s1/1000} sec.
+#1 (id=1020566)  : Apply Aura (6) | Proc Trigger Spell (42): Heat Wave
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387622 | Target: Self (1)
+Description      : Casting Primordial Wave triggers Lava Surge immediately and every $387622T sec for $387622d.
+
+Name             : Infused Globule (id=387363) 
+Class            : Shaman
+School           : Frost
+Spell Type       : Magic
+Cast Time        : 2.5 seconds
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
+                 : x....... ........ ........ ........   ...x.... ........ .xxx.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261)
+Effects          :
+#1 (id=1022109)  : School Damage (2): frost
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+#2 (id=1022113)  : Dummy (3)
+                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage on impact.
+
+The Infused Globule drifts about, triggering Waterlogged on enemies on contact.
+
+After $s2 sec, the Globule explodes, inflicting $s1 Frost damage to players within $a1 yards.
+
+Name             : Infused Globule (id=387474) 
+Class            : Shaman
+School           : Frost
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
+                 : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
+                 : x......x ........ ........ ........   ...x.... ........ .xxx.... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow Cast While Casting (135), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261), Allow Cast While Channeling (308)
+Effects          :
+#1 (id=1022276)  : School Damage (2): frost
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Radius: 2.5 yards | Target: AOE enemy (instant) (16)
+#2 (id=1022277)  : Summon (28)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 196008 | Misc Value 2: 0xc3d | Target: Unknown(87)
+Description      : $@spelldesc387363
+
+Name             : Heat Wave (id=387622) [Spell Family (11), Hidden] 
+Class            : Shaman
+School           : Physical
+Spell Type       : None
+Duration         : 12 seconds
+Triggered by     : Heat Wave (386474)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Extra Initial Period (169)
+Effects          :
+#1 (id=1022526)  : Apply Aura (6) | Periodic Trigger Spell (23): Lava Surge every 3 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 77762 | Target: Self (1)
+Description      : $@spelldesc387474
 
 
