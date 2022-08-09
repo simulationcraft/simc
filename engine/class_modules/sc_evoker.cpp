@@ -1795,16 +1795,9 @@ void evoker_t::create_buffs()
   using namespace buffs;
 
   // Baseline Abilities
-  if ( specialization() == EVOKER_DEVASTATION)
-  {
-    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 359618 ) )
-      ->apply_affecting_aura( talent.essence_attunement );
-  }
-  else
-  {
-    buff.essence_burst = make_buff( this, "essence_burst", find_spell( 369299 ) )
-      ->apply_affecting_aura( find_specialization_spell( "Essence Attunement") );
-  }
+  buff.essence_burst =
+      make_buff( this, "essence_burst", find_spell( specialization() == EVOKER_DEVASTATION ? 359618 : 369299 ) )
+          ->apply_affecting_aura( talent.essence_attunement );
 
   buff.hover = make_buff( this, "hover", find_class_spell( "Hover" ) )
     ->set_cooldown( 0_ms )
