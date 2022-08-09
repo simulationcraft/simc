@@ -402,7 +402,7 @@ void survival( player_t* p )
 
   other_on_use -> add_action( "use_items,slots=finger1");
   other_on_use -> add_action( "use_items,slots=finger2");
-  other_on_use -> add_action( "use_item,name=jotungeirr_destinys_call" );
+  other_on_use -> add_action( "use_item,name=jotungeirr_destinys_call,if=cooldown.coordinated_assault.remains>75|time_to_die<30" );
 }
 //survival_apl_end
 
