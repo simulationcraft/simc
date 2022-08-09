@@ -66,6 +66,7 @@ struct evoker_td_t : public actor_target_data_t
   struct dots_t
   {
     dot_t* fire_breath;
+    dot_t* disintegrate;
   } dots;
 
   struct debuffs_t
@@ -1361,6 +1362,18 @@ struct fire_breath_t : public empowered_charge_spell_t
       if ( p()->talent.leaping_flames.ok() )
         p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
+
+    timespan_t tick_time( const action_state_t* state ) const override
+    {
+      timespan_t t = base_t::tick_time( state );
+
+      if ( p()->talent.catalyze.ok() && p()->get_target_data( target )->dots.disintegrate->is_ticking() )
+      {
+        t /= ( 1 + p()->talent.catalyze->effectN( 1 ).percent() );
+      }
+
+      return t;
+    } 
   };
 
   fire_breath_t( evoker_t* p, std::string_view options_str )
@@ -1418,6 +1431,7 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
     debuffs()
 {
   dots.fire_breath = target->get_dot( "fire_breath_damage", evoker );
+  dots.disintegrate = target->get_dot( "disintegrate", evoker );
 
   debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
     ->set_cooldown( 0_ms );
@@ -1562,6 +1576,7 @@ void evoker_t::init_spells()
   talent.eternitys_span       = ST( "Eternity's Span" );
   talent.continuum            = ST( "Continuum" );
   talent.casuality            = ST( "Causality" );
+  talent.catalyze             = ST( "Catalyze" );
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
