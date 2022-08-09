@@ -192,7 +192,7 @@ struct evoker_t : public player_t
     player_talent_t power_nexus;
     player_talent_t dragonrage;
     player_talent_t lay_waste;
-    player_talent_t arcane_instability;
+    player_talent_t arcane_intensity;
     player_talent_t ruby_embers;  // row 5
     player_talent_t engulfing_blaze;
     player_talent_t animosity;
@@ -1525,6 +1525,7 @@ void evoker_t::init_spells()
   talent.dense_energy         = ST( "Dense Energy" );
   talent.eternity_surge       = ST( "Eternity Surge" );
   talent.power_nexus          = ST( "Power Nexus" );
+  talent.arcane_intensity     = ST( "Arcane Intensity" );
   talent.ruby_embers          = ST( "Ruby Embers" );
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
   talent.essence_attunement   = ST( "Essence Attunement" );
@@ -1684,6 +1685,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   // Devastaion Traits
   // TODO: Coonfirm if this works properly with Scarlet Adaptation
   action.apply_affecting_aura( talent.dense_energy );
+  action.apply_affecting_aura( talent.arcane_intensity );
   action.apply_affecting_aura( talent.engulfing_blaze );
   // Preservation Traits
 }
