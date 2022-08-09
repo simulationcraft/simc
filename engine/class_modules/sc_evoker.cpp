@@ -236,6 +236,7 @@ struct evoker_t : public player_t
   struct cooldowns_t
   {
     propagate_const<cooldown_t*> fire_breath;
+    propagate_const<cooldown_t*> eternity_surge;
   } cooldown;
 
   // Gains
@@ -249,6 +250,7 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
+    propagate_const<proc_t*> continuum;
   } proc;
 
   // RPPMs
@@ -857,6 +859,11 @@ public:
   {
     ab::execute();
 
+    if ( p()->talent.casuality.ok() && current_resource() == RESOURCE_ESSENCE )
+    {
+      p()->cooldown.eternity_surge->adjust( p()->talent.casuality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
+    }
+
     if ( ab::background )
       return;
 
@@ -1380,6 +1387,17 @@ struct eternity_surge_t : public empowered_charge_spell_t
 
       return as<int>( n * ( 1.0 + p()->talent.eternitys_span->effectN( 2 ).percent() ) );
     }
+
+    void impact( action_state_t* s ) override
+    {
+      base_t::impact( s );
+
+      if ( p()->talent.continuum.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
+      {
+        p()->buff.essence_burst->trigger();
+        p()->proc.continuum->occur();
+      }
+    }
   };
 
   eternity_surge_t( evoker_t* p, std::string_view options_str )
@@ -1419,7 +1437,8 @@ evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
     rppm(),
     uptime()
 {
-  cooldown.fire_breath = get_cooldown( "fire_breath" );
+  cooldown.fire_breath    = get_cooldown( "fire_breath" );
+  cooldown.eternity_surge = get_cooldown( "eternity_surge" );
 
   resource_regeneration = regen_type::DYNAMIC;
   regen_caches[ CACHE_HASTE ] = true;
@@ -1474,8 +1493,9 @@ void evoker_t::init_procs()
 {
   player_t::init_procs();
 
-  proc.ruby_essence_burst = get_proc( "Ruby Essence Burst" );
+  proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
+  proc.continuum           = get_proc( "Continuum" );
 }
 
 void evoker_t::init_base_stats()
@@ -1540,6 +1560,8 @@ void evoker_t::init_spells()
   talent.might_of_the_aspects = ST( "Might of the Aspects" );
   talent.honed_aggression     = ST( "Honed Aggression" );
   talent.eternitys_span       = ST( "Eternity's Span" );
+  talent.continuum            = ST( "Continuum" );
+  talent.casuality            = ST( "Causality" );
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
