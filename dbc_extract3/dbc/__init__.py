@@ -110,7 +110,8 @@ KEY_FIELD_HOTFIX_RECORD = {
     'TraitNodeGroupXTraitCost'  : 'id_trait_node_group',
     'TraitNodeGroupXTraitNode'  : 'id_trait_node_group',
     'TraitNodeGroupXTraitCond'  : 'id_trait_node_group',
-    'TraitCond'                 : 'id_trait_tree'
+    'TraitCond'                 : 'id_trait_tree',
+    'ItemBonusListGroupEntry'   : 'id_item_bonus_list_group'
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for
