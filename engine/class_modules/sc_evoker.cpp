@@ -955,11 +955,13 @@ public:
 struct empowered_base_t : public evoker_spell_t
 {
   empower_e max_empower;
+  double imminent_destruction_mult;
 
   empowered_base_t( std::string_view name, evoker_t* p, const spell_data_t* spell, std::string_view options_str = {} )
     : evoker_spell_t( name, p, spell, options_str ),
-      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 )
-  {}
+      max_empower( p->talent.font_of_magic.ok() ? empower_e::EMPOWER_4 : empower_e::EMPOWER_3 ),
+      imminent_destruction_mult( 1 + p->talent.imminent_destruction->effectN( 1 ).percent() )
+  { }
 
   action_state_t* new_state() override
   { return new empowered_state_t( this, target ); }
@@ -976,10 +978,10 @@ struct empowered_base_t : public evoker_spell_t
     // Currently all empowered spells are 2.5s base and 3.25s with empower 4
     switch ( std::min( empower, max_empower ) )
     {
-      case empower_e::EMPOWER_1: return 1000_ms;
-      case empower_e::EMPOWER_2: return 1750_ms;
-      case empower_e::EMPOWER_3: return 2500_ms;
-      case empower_e::EMPOWER_4: return 3250_ms;
+      case empower_e::EMPOWER_1: return 1000_ms * imminent_destruction_mult;
+      case empower_e::EMPOWER_2: return 1750_ms * imminent_destruction_mult;
+      case empower_e::EMPOWER_3: return 2500_ms * imminent_destruction_mult;
+      case empower_e::EMPOWER_4: return 3250_ms * imminent_destruction_mult;
       default: break;
     }
 
@@ -1580,6 +1582,7 @@ void evoker_t::init_spells()
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.onyx_legacy          = ST( "Onyx Legacy" );
   talent.tyranny              = ST( "Tyranny" );
+  talent.imminent_destruction = ST( "Imminent Destruction" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
   talent.cascading_power      = ST( "Cascading Power" );
@@ -1588,7 +1591,7 @@ void evoker_t::init_spells()
 
   // Evoker Specialization Spells
   // Baseline
-  spec.evoker       = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.evoker       = find_spell( 353167 );  // TODO: confirm this is the class aura    
   spec.devastation  = find_specialization_spell( "Devastation Evoker" );
   spec.preservation = find_specialization_spell( "Preservation Evoker" );
   // Devastation
