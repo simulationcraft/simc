@@ -1214,7 +1214,11 @@ struct disintegrate_t : public evoker_spell_t
     : evoker_spell_t( "disintegrate", p, p->find_class_spell( "Disintegrate" ), options_str )
   {
     channeled      = true;
-    eternity_surge = p->get_secondary_action<eternity_surge_t::eternity_surge_damage_t>( "scintillation" );
+    
+    eternity_surge = p->get_secondary_action<eternity_surge_t::eternity_surge_damage_t>( "scintillation", "scintillation" );
+    eternity_surge->s_data_reporting = p->talent.scintillation;
+    eternity_surge->name_str_reporting = "scintillation";
+    
     add_child( eternity_surge );
   }
 
