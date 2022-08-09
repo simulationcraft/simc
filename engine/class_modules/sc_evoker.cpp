@@ -984,6 +984,7 @@ struct empowered_release_spell_t : public empowered_base_t
   {
     // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
     trigger_gcd = 1_s;
+    gcd_type = gcd_haste_type::NONE;
   }
 
   empower_e empower_level( const action_state_t* s ) const
@@ -1023,6 +1024,7 @@ struct empowered_charge_spell_t : public empowered_base_t
   stats_t* orig_stat;
   int empower_to;
   timespan_t base_empower_duration;
+  timespan_t lag;
 
   empowered_charge_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
                             std::string_view options_str )
@@ -1031,7 +1033,8 @@ struct empowered_charge_spell_t : public empowered_base_t
       dummy_stat( p->get_stats( "dummy_stat" ) ),
       orig_stat( stats ),
       empower_to( max_empower ),
-      base_empower_duration( 0_ms )
+      base_empower_duration( 0_ms ),
+      lag( 0_ms )
   {
     channeled = true;
 
@@ -1078,14 +1081,36 @@ struct empowered_charge_spell_t : public empowered_base_t
     return base_time_to_empower( max_empower ) + 2_s;
   }
 
-  timespan_t composite_dot_duration( const action_state_t* s ) const
+  timespan_t tick_time( const action_state_t* s ) const override
   {
-    return std::max( 1_ms, empowered_base_t::composite_dot_duration( s ) );
+    // we need to have the tick time match duration.
+    // NOTE: composite_dot_duration CANNOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    return composite_dot_duration( s );
+  }
+
+  timespan_t base_composite_dot_duration( const action_state_t* s ) const
+  {
+    return dot_duration * s->haste * get_buff_effects_value( dot_duration_buffeffects );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    // NOTE: DO NOT reference parent method as spell_t::composite_dot_duration calls tick_time()
+    auto dur = base_composite_dot_duration( s );
+
+    // hack so we always have a non-zero duration in order to trigger last_tick()
+    if ( dur == 0_ms )
+      return 1_ms;
+
+    return dur + lag;
   }
 
   timespan_t composite_time_to_empower( const action_state_t* s, empower_e emp ) const
   {
-    return base_time_to_empower( emp ) * ( composite_dot_duration( s ) / base_empower_duration );
+    auto base = base_time_to_empower( emp );
+    auto mult = base_composite_dot_duration( s ) / base_empower_duration;
+
+    return base * mult;
   }
 
   empower_e empower_level( const dot_t* d ) const
@@ -1116,6 +1141,14 @@ struct empowered_charge_spell_t : public empowered_base_t
     assert( release_spell && "Empowered charge spell must have a release spell." );
   }
 
+  void execute() override
+  {
+    // pre-determine lag here per every execute
+    lag = rng().gauss( sim->channel_lag, sim->channel_lag_stddev );
+
+    empowered_base_t::execute();
+  }
+
   void tick( dot_t* d ) override
   {
     // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
@@ -1134,11 +1167,6 @@ struct empowered_charge_spell_t : public empowered_base_t
   {
     empowered_base_t::last_tick( d );
 
-    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
-    d->current_action = release_spell;
-    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
-    p()->last_foreground_action = release_spell;
-
     auto emp_state = release_spell->get_state();
     emp_state->target = d->state->target;
     release_spell->snapshot_state( emp_state, release_spell->amount_type( emp_state ) );
@@ -1147,6 +1175,11 @@ struct empowered_charge_spell_t : public empowered_base_t
     release_spell->schedule_execute( emp_state );
 
     p()->buff.tip_the_scales->expire();
+
+    // hack to prevent dot_t::last_tick() from schedule_ready()'ing the player
+    d->current_action = release_spell;
+    // hack to prevent channel lag being added when player is schedule_ready()'d after the release spell execution
+    p()->last_foreground_action = release_spell;
   }
 };
 
