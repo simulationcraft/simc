@@ -287,6 +287,7 @@ struct evoker_t : public player_t
   //void arise() override;
   //void combat_begin() override;
   //void combat_end() override;
+  void analyze( sim_t& ) override;
   void reset() override;
   void copy_from( player_t* ) override;
   void merge( player_t& ) override;
@@ -1028,12 +1029,16 @@ struct empowered_charge_spell_t : public empowered_base_t
   using base_t = empowered_charge_spell_t;
 
   action_t* release_spell;
+  stats_t* dummy_stat;  // used to hack channel tick time into execute time
+  stats_t* orig_stat;
   int empower_to;
 
   empowered_charge_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell,
                             std::string_view options_str )
     : empowered_base_t( name, p, p->find_spell_override( spell, p->talent.font_of_magic ) ),
       release_spell( nullptr ),
+      dummy_stat( p->get_stats( "dummy_stat" ) ),
+      orig_stat( stats ),
       empower_to( max_empower )
   {
     channeled = true;
@@ -1079,6 +1084,20 @@ struct empowered_charge_spell_t : public empowered_base_t
     empowered_base_t::execute();
 
     p()->buff.tip_the_scales->expire();
+  }
+
+  void tick( dot_t* d ) override
+  {
+    // For proper DPET analysis, we need to treat charge spells as non-channel, since channelled spells sum up tick
+    // times to get the execute time, but this does not work for fire breath which also has a dot component. Instead we
+    // hijack the stat obj during action_t:tick() causing the channel's tick to be recorded onto a throwaway stat obj.
+    // We then record the corresponding tick time as execute time onto the original real stat obj. See further notes in
+    // evoker_t::analyze().
+    stats = dummy_stat;
+    empowered_base_t::tick( d );
+    stats = orig_stat;
+
+    stats->iteration_total_execute_time += d->time_to_tick();
   }
 
   void last_tick( dot_t* d ) override
@@ -1743,6 +1762,21 @@ void evoker_t::create_buffs()
 void evoker_t::create_options()
 {
   player_t::create_options();
+}
+
+void evoker_t::analyze( sim_t& sim )
+{
+  // For proper DTEP analysis, we need to treat empowered spell stat objs as non-channelled so the dot ticks from fire
+  // breath do not get summed up into total execute time. All empowered spells have a release spell that is pushed onto
+  // secondary_action_list, which we can use to find stat objs for empowered actions without having to go through the
+  // entire action_list. See empower_charge_spell_t::tick() for more notes.
+  for ( auto a : secondary_action_list )
+  {
+    if ( auto emp = dynamic_cast<spells::empowered_charge_spell_t*>( a->stats->action_list[ 0 ] ) )
+      range::for_each( emp->stats->action_list, []( action_t* a ) { a->channeled = false; } );
+  }
+
+  player_t::analyze( sim );
 }
 
 void evoker_t::reset()
