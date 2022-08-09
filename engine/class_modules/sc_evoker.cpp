@@ -1180,18 +1180,15 @@ struct eternity_surge_t : public empowered_charge_spell_t
 {
   struct eternity_surge_damage_t : public empowered_release_spell_t
   {
-    eternity_surge_damage_t( evoker_t* p ) : base_t( "eternity_surge_damage", p, p->find_spell( 359077 ) )
-    {
-      dual = true;
-      aoe  = 1;
-    }
-
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
       : base_t( name, p, p->find_spell( 359077 ) )
     {
       dual = true;
       aoe  = 1;
     }
+
+    eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" )
+    {}
 
     int n_targets() const override
     {
@@ -1469,11 +1466,16 @@ struct pyre_t : public evoker_spell_t
 {
   struct pyre_damage_t : public evoker_spell_t
   {
-    pyre_damage_t( evoker_t* p ) : evoker_spell_t( "pyre_damage", p, p->talent.pyre->effectN( 1 ).trigger() )
+    pyre_damage_t( evoker_t* p, std::string_view name_str )
+      : evoker_spell_t( name_str, p, p->talent.pyre->effectN( 1 ).trigger() )
     {
       dual = true;
       aoe  = -1;
     }
+
+    pyre_damage_t( evoker_t* p ) : pyre_damage_t( p, "pyre_damage" ) 
+    {}
+
   };
 
   action_t* damage;
@@ -1508,7 +1510,17 @@ struct dragonrage_t : public evoker_spell_t
     dragonrage_damage_t( evoker_t* p )
       : evoker_spell_t( "dragonrage_damage", p, p->talent.dragonrage->effectN( 2 ).trigger() )
     {
-      pyre = p->get_secondary_action<pyre_t>( "pyre", "" );
+      name_str_reporting = "dragonrage";
+      s_data_reporting   = p->talent.dragonrage;
+
+      pyre = p->get_secondary_action<pyre_t::pyre_damage_t>( "dragonrage_pyre", "dragonrage_pyre" );
+      pyre->name_str_reporting = "pyre";
+      pyre->s_data_reporting = p->talent.pyre;
+      pyre->proc = true;
+
+      // TODO: Change to multiple execute_on_traget in main action rather than making this an aoe
+      aoe = data().effectN( 1 ).base_value();
+
       add_child( pyre );
     }
 
