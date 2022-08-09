@@ -4316,7 +4316,6 @@ struct revenge_t : public warrior_attack_t
   void execute() override
   {
     warrior_attack_t::execute();
-    //bool free_revenge_should_trigger_outburst = p()->buff.revenge->up() && p()->buff.seeing_red->stack() >= 7;
     p()->buff.revenge->expire();
     p()->buff.vengeance_revenge->expire();
     p()->buff.vengeance_ignore_pain->trigger();
@@ -4327,12 +4326,6 @@ struct revenge_t : public warrior_attack_t
       seismic_action->set_target( target );
       seismic_action->schedule_execute();
     }
-
-    //if ( free_revenge_should_trigger_outburst )
-    //{
-    //  p()->buff.seeing_red->expire();
-    //  p()->buff.outburst->trigger();
-    //}
 
     if ( rng().roll( shield_slam_reset ) )
       p()->cooldown.shield_slam->reset( true );
