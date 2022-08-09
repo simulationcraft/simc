@@ -100,10 +100,10 @@ actions.bos_pooling+=/frost_strike,target_if=max:(debuff.razorice.stack+1)%(debu
 
 # Breath of Sindragosa Active Rotation
 actions.bos_ticking=obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power<=(45+talent.runic_attenuation*5)
-actions.bos_ticking+=/remorseless_winter,if=variable.rw_buffs|active_enemies>=2|runic_power<32&rune.time_to_2<runic_power%16
+actions.bos_ticking+=/remorseless_winter,if=variable.rw_buffs|active_enemies>=2|runic_power<32&rune.time_to_2>runic_power%16
 actions.bos_ticking+=/obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react
-actions.bos_ticking+=/death_and_decay,if=runic_power<32&rune.time_to_2<runic_power%16
-actions.bos_ticking+=/howling_blast,if=variable.rotfc_rime&(runic_power>=45|rune.time_to_3<=gcd|spell_targets.howling_blast>=2|buff.rime.remains<3)|runic_power<32&rune.time_to_2<runic_power%16
+actions.bos_ticking+=/death_and_decay,if=runic_power<32&rune.time_to_2>runic_power%16
+actions.bos_ticking+=/howling_blast,if=variable.rotfc_rime&(runic_power>=45|rune.time_to_3<=gcd|spell_targets.howling_blast>=2|buff.rime.remains<3)|runic_power<32&rune.time_to_2>runic_power%16
 actions.bos_ticking+=/frostscythe,if=buff.killing_machine.up&spell_targets.frostscythe>2&!variable.deaths_due_active
 actions.bos_ticking+=/horn_of_winter,if=runic_power<=60&rune.time_to_3>gcd
 actions.bos_ticking+=/frostscythe,if=spell_targets.frostscythe>2&!variable.deaths_due_active
