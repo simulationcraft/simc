@@ -1345,6 +1345,14 @@ public:
 
   void init_finished() override
   {
+    // Update the stats reporting for spells that use background sub-spells
+    if ( ab::execute_action && ab::execute_action->school != SCHOOL_NONE )
+      ab::stats->school = ab::execute_action->school;
+    else if ( ab::impact_action && ab::impact_action->school != SCHOOL_NONE )
+      ab::stats->school = ab::impact_action->school;
+    else if ( ab::tick_action && ab::tick_action->school != SCHOOL_NONE )
+      ab::stats->school = ab::tick_action->school;
+
     // For reporting purposes only, as the game displays this as SCHOOL_CHAOS
     if ( ab::stats->school == SCHOOL_CHROMATIC )
       ab::stats->school = SCHOOL_CHAOS;
