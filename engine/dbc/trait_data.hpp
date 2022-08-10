@@ -49,7 +49,7 @@ struct trait_definition_effect_entry_t
 {
   unsigned  id_trait_definition;
   unsigned  effect_index;
-  unsigned  operation;
+  int       operation;
   unsigned  id_curve;
 
   // static functions

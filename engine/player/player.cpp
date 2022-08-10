@@ -2545,6 +2545,13 @@ void player_t::init_talents()
 
       switch ( effect_point.operation )
       {
+        case TRAIT_OP_NONE:
+          sim->print_debug( "{} not affecting talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
+                            "effect id {} (index={}), effect={}, curve={}",
+            name(), trait->name, spell->id(), trait->id_trait_node_entry, rank, effect_id,
+            effect_point.effect_index + 1U,
+            spell->effectN( effect_point.effect_index + 1U ).base_value(), value );
+            break;
         case TRAIT_OP_SET:
           sim->print_debug( "{} setting talent {} (spell_id={}, trait_node_entry_id={}) rank {} "
                             "effect id {} (index={}) value, old={}, new={}",
