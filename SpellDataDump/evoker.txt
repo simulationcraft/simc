@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-09/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -5938,7 +5938,7 @@ Description      : Increases the duration of Permeating Chill by |cFFFFFFFF${$s1
 
 Name             : Walloping Blow (id=387341) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
-                 : Effect#1 [op=set, values=(2000, 4000)]
+                 : Effect#1 [op=set, values=(15, 15)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
