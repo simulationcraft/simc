@@ -6032,12 +6032,12 @@ struct ignore_pain_t : public warrior_spell_t
 
     double previous_ip = p() -> buff.ignore_pain -> current_value;
 
-    // IP is capped at 1.3 times the amount of the current IP
-    double ip_cap_ratio = 1.3;
+    // IP is capped to 30% of max health
+    double ip_max_health_cap = p() -> max_health() * 0.3;
 
-    if ( previous_ip + new_ip > new_ip * ip_cap_ratio )
+    if ( previous_ip + new_ip > ip_max_health_cap )
     {
-      new_ip *= ip_cap_ratio;
+      new_ip = ip_max_health_cap;
     }
 
     if ( new_ip > 0.0 )
