@@ -1986,6 +1986,7 @@ class SpellDataGenerator(DataGenerator):
           # Devastation
           ( 386399, 1 ), # Iridescence: Blue buff
           ( 375802, 1 ), # Burnout buff
+          ( 376850, 1 ), # Power Swell buff
           # Preservation
           ( 369299, 2 ), # Preservation Essence Burst
        ),

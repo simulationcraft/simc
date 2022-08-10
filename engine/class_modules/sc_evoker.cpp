@@ -117,6 +117,7 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> burnout;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_red;
+    propagate_const<buff_t*> power_swell;
     // Preservation Traits
   } buff;
 
@@ -1012,6 +1013,9 @@ struct empowered_release_spell_t : public empowered_base_t
       else if ( spell_color == SPELL_RED )
         p()->buff.iridescence_red->trigger();
     }
+
+    if ( p()->talent.power_swell.ok() )
+      p()->buff.power_swell->trigger();
   }
 };
 
@@ -1765,9 +1769,10 @@ void evoker_t::init_spells()
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.onyx_legacy          = ST( "Onyx Legacy" );
   talent.tyranny              = ST( "Tyranny" );
-  talent.burnout              = ST( "Burnout" );
+  talent.burnout              = ST( "Burnout" );  // Row 9
   talent.imminent_destruction = ST( "Imminent Destruction" );
   talent.scintillation        = ST( "Scintillation" );
+  talent.power_swell          = ST( "Power Swell" );
   talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame    = ST( "Everburning Flame" );
   talent.cascading_power      = ST( "Cascading Power" );
@@ -1830,6 +1835,11 @@ void evoker_t::create_buffs()
   buff.iridescence_red = make_buff( this, "iridescence_red", find_spell( 386353 ) )
     ->set_default_value_from_effect( 1 );
   buff.iridescence_red->set_initial_stack( buff.iridescence_red->max_stack() );
+
+  buff.power_swell = make_buff( this, "power_swell", find_spell( 376850 ) )
+    ->set_affects_regen( true )
+    ->set_default_value_from_effect_type( A_MOD_POWER_REGEN_PERCENT )
+    ->set_duration( talent.power_swell->effectN( 1 ).time_value() );
   // Preservation Traits
 }
 
@@ -2036,6 +2046,9 @@ double evoker_t::passive_movement_modifier() const
 double evoker_t::resource_regen_per_second( resource_e resource ) const
 {
   auto rrps = player_t::resource_regen_per_second( resource );
+
+  if ( resource == RESOURCE_ESSENCE )
+    rrps *= 1.0 + buff.power_swell->check_value();
 
   return rrps;
 }

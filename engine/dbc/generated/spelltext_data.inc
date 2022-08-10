@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44999
-static const std::array<spelltext_data_t, 17869> __spelltext_data { {
+static const std::array<spelltext_data_t, 17870> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16525,6 +16525,7 @@ static const std::array<spelltext_data_t, 17869> __spelltext_data { {
   { 376847, "Apply a Frosted Armor Kit to your leg armor, permanently increasing its armor by $ec1. Additionally, the item also gains $ec2 Agility and Strength.", 0, 0 },
   { 376848, "Apply a Tattered Armor Kit to your leg armor, causing it to permanently gain $ec1 Stamina, as well as $ec2 Agility and Strength.", 0, 0 },
   { 376849, "Apply a Reinforced Armor Kit to your leg armor, causing it to permanently gain $ec1 Agility and Strength.", 0, 0 },
+  { 376850, "$@spelldesc370839", "Essence regeneration rate increased by $w1%.", 0 },
   { 376870, "The Spirit of the Eagle grants unerring focus, reducing the duration of incoming slows and roots used against you by $s1%. Does not stack with similar effects.", 0, 0 },
   { 376872, "Your Living Flame has a $s1% chance to cause an Essence Burst, making your next Disintegrate or Pyre cost no Essence.", 0, 0 },
   { 376888, "During Deep Breath and Dragonrage you gain the maximum benefit of Mastery: Giantkiller regardless of targets' health.", 0, 0 },
