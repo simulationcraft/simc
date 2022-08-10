@@ -2052,7 +2052,7 @@ void soul_cage_fragment( special_effect_t& effect )
   auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "torturous_might" ) );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "torturous_might", effect.player->find_spell( 357672 ) )
+    buff = make_buff<stat_buff_t>( effect.player, "torturous_might", effect.driver()->effectN( 1 ).trigger() )
            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
 
     effect.custom_buff = buff;
