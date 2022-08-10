@@ -1655,9 +1655,7 @@ highchart::time_series_t& chart::generate_stats_timeline(
 
   ts.set_title( fmt::format( "{} {}", stat_name, chart_title_base ) );
 
-  auto area_color = color::YELLOW;
-  if ( !s.action_list.empty() )
-    area_color = color::school_color( s.action_list[ 0 ]->school );
+  auto area_color = color::school_color( s.school );
 
   ts.add_simple_series( "area", area_color, s.type == STATS_DMG ? "DPS" : "HPS",
                         timeline_aps.data() );
