@@ -5139,10 +5139,12 @@ struct efflorescence_t : public druid_heal_t
         spring = p->get_secondary_action<spring_blossoms_t>( "spring_blossoms" );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+    std::vector<player_t*>& target_list() const override
     {
       // get the full list
-      druid_heal_t::available_targets( tl );
+      auto& tl = druid_heal_t::target_list();
+
+      rng().shuffle( tl.begin(), tl.end() );
 
       // sort by targets without spring blossoms
       if ( spring )
@@ -5158,7 +5160,7 @@ struct efflorescence_t : public druid_heal_t
         } );
       }
 
-      return tl.size();
+      return tl;
     }
 
     void execute() override
@@ -6856,7 +6858,6 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
         p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
-      aoe      = 1;
       may_miss = false;
       dual = background = true;
 
@@ -6867,14 +6868,14 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.twin_moons.ok() )
       {
         // The increased target number has been removed from spell data
-        aoe += 1;
+        aoe = std::max( aoe, 1 ) + 1;
         radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
       if ( p->talent.twin_moonfire.ok() )
       {
         // uses balance twin moons talent for radius
-        aoe += 1;
+        aoe = std::max( aoe, 1 ) + 1;
         radius = p->find_spell( 279620 )->effectN( 1 ).base_value();
       }
 
@@ -6942,14 +6943,14 @@ struct moonfire_t : public druid_spell_t
       trigger_shooting_stars( d->target );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+    std::vector<player_t*>& target_list() const override
     {
-      auto ret = druid_spell_t::available_targets( tl );
+      auto& tl = druid_spell_t::target_list();
 
       /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
-      if ( is_aoe() && ret > aoe )
+      if ( is_aoe() && tl.size() > aoe )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
@@ -6963,7 +6964,7 @@ struct moonfire_t : public druid_spell_t
         } );
       }
 
-      return ret;
+      return tl;
     }
 
     void execute() override
