@@ -94,7 +94,7 @@ struct evoker_t : public player_t
   // Action pointers
   struct actions_t
   {
-
+    action_t* volatility;
   } action;
 
   // Buffs
@@ -1620,6 +1620,9 @@ struct pyre_t : public evoker_spell_t
     damage->stats = stats;
     damage->proc = true;
 
+    if ( p->action.volatility )
+      add_child( p->action.volatility );
+
     // Charged blast is consumed on cast, but we need it to apply to the damage action that is executed on impact. We
     // snapshot ONLY the da mul from charged blast and pass it along to the damage action state.
 
@@ -1659,6 +1662,13 @@ struct pyre_t : public evoker_spell_t
     damage->snapshot_state( state, damage->amount_type( state ) );
     state->da_multiplier *= s->da_multiplier;
     damage->schedule_execute( state );
+
+    // TODO: How many times can volatility chain?
+    if ( p()->action.volatility && rng().roll( p()->talent.volatility->effectN( 1 ).percent() ) )
+    {
+      const auto& tl = p()->action.volatility->target_list();
+      p()->action.volatility->execute_on_target( tl[ rng().range( tl.size() ) ] );
+    }
   }
 };
 
@@ -1817,9 +1827,10 @@ void evoker_t::init_spells()
 {
   player_t::init_spells();
 
+  // Evoker Talents
   auto CT = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::CLASS, n ); };
   auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
-  // Evoker Talents
+
   // Class Traits
   talent.landslide            = CT( "Landslide" );  // Row 1
   talent.obsidian_scales      = CT( "Obsidian Scales" );
@@ -1848,16 +1859,18 @@ void evoker_t::init_spells()
   talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
   talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
-  talent.pyre                 = ST( "Pyre" );
-  talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );
+  talent.pyre                 = ST( "Pyre" );  // Row 1
+  talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );  // Row 2
   talent.azure_essence_burst  = ST( "Azure Essence Burst" );
-  talent.dense_energy         = ST( "Dense Energy" );
+  talent.dense_energy         = ST( "Dense Energy" );  // Row 3
+  talent.imposing_presence    = ST( "Imposing Presence" );
   talent.eternity_surge       = ST( "Eternity Surge" );
+  talent.volatility           = ST( "Volatility" );  // Row 4
   talent.power_nexus          = ST( "Power Nexus" );
   talent.dragonrage           = ST( "Dragonrage" );
   talent.lay_waste            = ST( "Lay Waste" );
   talent.arcane_intensity     = ST( "Arcane Intensity" );
-  talent.ruby_embers          = ST( "Ruby Embers" );
+  talent.ruby_embers          = ST( "Ruby Embers" );  // Row 5
   talent.engulfing_blaze      = ST( "Engulfing Blaze" );
   talent.animosity            = ST( "Animosity" );
   talent.essence_attunement   = ST( "Essence Attunement" );
@@ -1889,16 +1902,24 @@ void evoker_t::init_spells()
   // Preservation Traits
 
   // Evoker Specialization Spells
-  // Baseline
   spec.evoker       = find_spell( 353167 );  // TODO: confirm this is the class aura    
   spec.devastation  = find_specialization_spell( "Devastation Evoker" );
   spec.preservation = find_specialization_spell( "Preservation Evoker" );
-  // Devastation
-  // Preservation
 }
 
 void evoker_t::create_actions()
 {
+  using namespace spells;
+  using namespace heals;
+
+  if ( talent.volatility.ok() )
+  {
+    auto vol = get_secondary_action<pyre_t>( "pyre_volatility", "pyre_volatility", talent.pyre );
+    vol->s_data_reporting = talent.volatility;
+    vol->name_str_reporting = "volatility";
+    action.volatility = vol;
+  }
+
   player_t::create_actions();
 }
 
@@ -1962,6 +1983,7 @@ void evoker_t::create_buffs()
       if ( new_ )
         cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
     } );
+
   // Preservation Traits
 }
 
@@ -2060,16 +2082,18 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.lush_growth );
   action.apply_affecting_aura( talent.natural_convergence );
   action.apply_affecting_aura( talent.obsidian_bulwark );
+
   // Devastaion Traits
-  // TODO: Confirm if this works properly with Scarlet Adaptation
-  action.apply_affecting_aura( talent.dense_energy );
-  action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.arcane_intensity );
+  action.apply_affecting_aura( talent.dense_energy );
   action.apply_affecting_aura( talent.engulfing_blaze );
   action.apply_affecting_aura( talent.heat_wave );
   action.apply_affecting_aura( talent.honed_aggression );
+  action.apply_affecting_aura( talent.imposing_presence );
+  action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.onyx_legacy );
   action.apply_affecting_aura( talent.tyranny );
+
   // Preservation Traits
 }
 
@@ -2077,21 +2101,21 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
 {
   using namespace spells;
 
-  if ( name == "azure_strike" ) return new azure_strike_t( this, options_str );
-  if ( name == "disintegrate" ) return new disintegrate_t( this, options_str );
-  if ( name == "dragonrage" ) return new dragonrage_t( this, options_str );
-  if ( name == "eternity_surge" ) return new eternity_surge_t( this, options_str );
-  if ( name == "expunge" ) return new expunge_t( this, options_str );
-  if ( name == "fire_breath" ) return new fire_breath_t( this, options_str );
-  if ( name == "firestorm" ) return new firestorm_t( this, options_str );
-  if ( name == "hover" ) return new hover_t( this, options_str );
-  if ( name == "landslide" ) return new landslide_t( this, options_str );
-  if ( name == "living_flame" ) return new living_flame_t( this, options_str );
+  if ( name == "azure_strike" )    return new    azure_strike_t( this, options_str );
+  if ( name == "disintegrate" )    return new    disintegrate_t( this, options_str );
+  if ( name == "dragonrage" )      return new      dragonrage_t( this, options_str );
+  if ( name == "eternity_surge" )  return new  eternity_surge_t( this, options_str );
+  if ( name == "expunge" )         return new         expunge_t( this, options_str );
+  if ( name == "fire_breath" )     return new     fire_breath_t( this, options_str );
+  if ( name == "firestorm" )       return new       firestorm_t( this, options_str );
+  if ( name == "hover" )           return new           hover_t( this, options_str );
+  if ( name == "landslide" )       return new       landslide_t( this, options_str );
+  if ( name == "living_flame" )    return new    living_flame_t( this, options_str );
   if ( name == "obsidian_scales" ) return new obsidian_scales_t( this, options_str );
-  if ( name == "pyre" ) return new pyre_t( this, options_str );
-  if ( name == "quell" ) return new quell_t( this, options_str );
+  if ( name == "pyre" )            return new            pyre_t( this, options_str );
+  if ( name == "quell" )           return new           quell_t( this, options_str );
   if ( name == "shattering_star" ) return new shattering_star_t( this, options_str );
-  if ( name == "tip_the_scales" ) return new tip_the_scales_t( this, options_str );
+  if ( name == "tip_the_scales" )  return new  tip_the_scales_t( this, options_str );
 
   return player_t::create_action( name, options_str );
 }
