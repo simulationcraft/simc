@@ -646,18 +646,13 @@ struct eye_of_command_cb_t : public dbc_proc_callback_t
 
 // TODO: Autoattacks don't really change targets currently in simc, so this code is for future
 // reference.
-// TODO: For PTR purposes is CR_MULTIPLIER_TRINKET correct, or should it be CR_MULTIPLIER_ARMOR?
 void item::eye_of_command( special_effect_t& effect )
 {
-  auto amount = effect.trigger() -> effectN( 1 ).average( effect.item ) *
-                effect.player -> dbc->combat_rating_multiplier( effect.item -> item_level(), CR_MULTIPLIER_TRINKET ) *
-                util::composite_karazhan_empower_multiplier( effect.player );
-
   stat_buff_t* b = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "legions_gaze" ) );
   if ( ! b )
   {
     b = make_buff<stat_buff_t>( effect.player, "legions_gaze", effect.trigger(), effect.item )
-        ->add_stat( STAT_CRIT_RATING, amount );
+        ->add_stat( STAT_CRIT_RATING, effect.trigger()->effectN( 1 ).average( effect.item ) );
   }
 
   effect.custom_buff = b;
