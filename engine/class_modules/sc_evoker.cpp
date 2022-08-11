@@ -1544,6 +1544,13 @@ struct shattering_star_t : public evoker_spell_t
     : evoker_spell_t( "shattering_star", p, p->talent.shattering_star, options_str )
   {
     aoe = as<int>( data().effectN( 1 ).base_value() * ( 1.0 + p->talent.eternitys_span->effectN( 2 ).percent() ) );
+
+    if ( p->talent.arcane_vigor.ok() )
+    {
+      energize_type = action_energize::ON_CAST;
+      energize_amount +=
+          p->find_spelleffect( p->talent.arcane_vigor, A_ADD_FLAT_MODIFIER, P_EFFECT_4, &data() )->base_value();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1669,7 +1676,8 @@ evoker_td_t::evoker_td_t( player_t* target, evoker_t* evoker )
   dots.disintegrate = target->get_dot( "disintegrate", evoker );
 
   debuffs.shattering_star = make_buff( *this, "shattering_star_debuff", evoker->talent.shattering_star )
-    ->set_cooldown( 0_ms );
+    ->set_cooldown( 0_ms )
+    ->apply_affecting_aura( evoker->talent.focusing_iris );
 }
 
 evoker_t::evoker_t( sim_t* sim, std::string_view name, race_e r )
@@ -1809,18 +1817,20 @@ void evoker_t::init_spells()
   talent.essence_attunement   = ST( "Essence Attunement" );
   talent.firestorm            = ST( "Firestorm" );  // Row 6
   talent.heat_wave            = ST( "Heat Wave" );
-  talent.shattering_star      = ST( "Shattering Star" );
   talent.might_of_the_aspects = ST( "Might of the Aspects" );
   talent.honed_aggression     = ST( "Honed Aggression" );
   talent.eternitys_span       = ST( "Eternity's Span" );
   talent.continuum            = ST( "Continuum" );
   talent.casuality            = ST( "Causality" );
-  talent.catalyze             = ST( "Catalyze" );
+  talent.catalyze             = ST( "Catalyze" );  // Row 7
   talent.ruin                 = ST( "Ruin" );
+  talent.shattering_star      = ST( "Shattering Star" );
   talent.snapfire             = ST( "Snapfire" );  // Row 8
   talent.font_of_magic        = ST( "Font of Magic" );
   talent.onyx_legacy          = ST( "Onyx Legacy" );
   talent.tyranny              = ST( "Tyranny" );
+  talent.focusing_iris        = ST( "Focusing Iris" );
+  talent.arcane_vigor         = ST( "Arcane Vigor" );
   talent.burnout              = ST( "Burnout" );  // Row 9
   talent.imminent_destruction = ST( "Imminent Destruction" );
   talent.scintillation        = ST( "Scintillation" );
