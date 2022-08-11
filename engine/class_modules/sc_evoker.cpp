@@ -1220,6 +1220,7 @@ struct fire_breath_t : public empowered_charge_spell_t
     fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
     {
       dual = true;
+      aoe = -1;  // TODO: actually a cone so we need to model it if possible
     }
 
     timespan_t composite_dot_duration( const action_state_t* s ) const override
@@ -1428,18 +1429,57 @@ struct landslide_t : public evoker_spell_t
 
 struct living_flame_t : public evoker_spell_t
 {
-  struct living_flame_damage_t : public evoker_spell_t
+  template <class Base>
+  struct living_flame_base_t : public Base
   {
-    living_flame_damage_t( evoker_t* p ) : evoker_spell_t( "living_flame_damage", p, p->find_spell( 361500 ) )
-    {
-      dual = true;
+    using base_t = living_flame_base_t<Base>;
 
-      dot_duration = p->talent.ruby_embers.ok() ? dot_duration : 0_ms;
+    living_flame_base_t( std::string_view n, evoker_t* p, const spell_data_t* s ) : Base( n, p, s )
+    {
+      base_t::dual = true;
+      base_t::dot_duration = p->talent.ruby_embers.ok() ? base_t::dot_duration : 0_ms;
     }
+
+    int n_targets() const override
+    {
+      if ( auto n = base_t::p()->buff.leaping_flames->check() )
+        return 1 + n;
+      else
+        return base_t::n_targets();
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      auto& tl = Base::target_list();
+
+      if ( base_t::is_aoe() && tl.size() > base_t::n_targets() )
+      {
+        // always hit the target, so if it exists make sure it's first
+        auto start_it = tl.begin() + ( tl[ 0 ] == base_t::target ? 1 : 0 );
+
+        // randomize remaining targets
+        base_t::rng().shuffle( start_it, tl.end() );
+      }
+
+      return tl;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      Base::impact( s );
+
+      if ( base_t::p()->talent.snapfire.ok() )
+        base_t::p()->buff.snapfire->trigger();
+    }
+  };
+
+  struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
+  {
+    living_flame_damage_t( evoker_t* p ) : base_t( "living_flame_damage", p, p->find_spell( 361500 ) ) {}
 
     double bonus_da( const action_state_t* s ) const override
     {
-      auto da = evoker_spell_t::bonus_da( s );
+      auto da = base_t::bonus_da( s );
 
       da += p()->buff.scarlet_adaptation->check_value();
 
@@ -1447,15 +1487,9 @@ struct living_flame_t : public evoker_spell_t
     }
   };
 
-  struct living_flame_heal_t : public heals::evoker_heal_t
+  struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
   {
-    using base_t = heals::evoker_heal_t;
-
-    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->find_spell( 361509 ) )
-    {
-      dual = true;
-      dot_duration = p->talent.ruby_embers.ok() ? dot_duration : 0_ms;
-    }
+    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->find_spell( 361509 ) ) {}
 
     void execute() override
     {
@@ -1489,25 +1523,15 @@ struct living_flame_t : public evoker_spell_t
     return damage->has_amount_result();
   }
 
-  int n_targets() const override
-  {
-    return std::min( 1, evoker_spell_t::n_targets() ) + p()->buff.leaping_flames->check();
-  }
-
   void execute() override
   {
     evoker_spell_t::execute();
 
+    damage->execute_on_target( target );
+
     p()->buff.ancient_flame->expire();
     p()->buff.leaping_flames->expire();
     p()->buff.scarlet_adaptation->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    evoker_spell_t::impact( s );
-
-    damage->execute_on_target( s->target );
 
     if ( p()->talent.ruby_essence_burst.ok() &&
          ( p()->buff.dragonrage->up() || rng().roll( p()->talent.ruby_essence_burst->effectN( 1 ).percent() ) ) )
@@ -1515,9 +1539,6 @@ struct living_flame_t : public evoker_spell_t
       p()->buff.essence_burst->trigger();
       p()->proc.ruby_essence_burst->occur();
     }
-
-    if ( p()->talent.snapfire.ok() )
-      p()->buff.snapfire->trigger();
   }
 };
 
@@ -1676,14 +1697,24 @@ struct dragonrage_t : public evoker_spell_t
 {
   struct dragonrage_damage_t : public pyre_t
   {
-    dragonrage_damage_t( evoker_t* p )
-      : pyre_t( p, "dragonrage_pyre", p->talent.dragonrage->effectN( 2 ).trigger() )
+    dragonrage_damage_t( evoker_t* p ) : pyre_t( p, "dragonrage_pyre", p->talent.dragonrage->effectN( 2 ).trigger() )
     {
       name_str_reporting = "Pyre";
       s_data_reporting   = p->talent.pyre;
 
       // spell has 30yd range but the effect to launch pyre only has 25yd
       range = data().effectN( 1 ).radius();
+      aoe = as<int>( data().effectN( 1 ).base_value() );
+    }
+
+    std::vector<player_t*>& target_list() const override
+    {
+      auto& tl = pyre_t::target_list();
+
+      if ( tl.size() > n_targets() )
+        rng().shuffle( tl.begin(), tl.end() );
+
+      return tl;
     }
   };
 
@@ -1703,17 +1734,7 @@ struct dragonrage_t : public evoker_spell_t
     evoker_spell_t::execute();
 
     p()->buff.dragonrage->trigger();
-
-    // grab a copy of the damage target_list so we can randomize the 3 targets.
-    auto tl = damage->target_list();
-
-    for ( size_t i = 0; !tl.empty() && i < max_targets; i++ )
-    {
-      auto t = tl[ rng().range( tl.size() ) ];
-      tl.erase( std::remove( tl.begin(), tl.end(), t ), tl.end() );
-
-      damage->execute_on_target( t );
-    }
+    damage->execute_on_target( target );
   }
 };
 
