@@ -114,6 +114,7 @@ struct evoker_t : public player_t
 
     // Devastation Traits
     propagate_const<buff_t*> burnout;
+    propagate_const<buff_t*> charged_blast;
     propagate_const<buff_t*> dragonrage;
     propagate_const<buff_t*> iridescence_blue;
     propagate_const<buff_t*> iridescence_red;
@@ -897,6 +898,26 @@ public:
     }
   }
 
+  void trigger_charged_blast( action_state_t* s )
+  {
+    if ( spell_color == SPELL_BLUE && has_amount_result() && result_is_hit( s->result ) )
+      p()->buff.charged_blast->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    ab::impact( s );
+
+    trigger_charged_blast( s );
+  }
+
+  void tick( dot_t* d ) override
+  {
+    ab::tick( d );
+
+    trigger_charged_blast( d->state );
+  }
+
   double composite_target_multiplier( player_t* t ) const override
   {
     double tm = ab::composite_target_multiplier( t );
@@ -1586,19 +1607,27 @@ struct pyre_t : public evoker_spell_t
       dual = true;
       aoe  = -1;
     }
-
-    pyre_damage_t( evoker_t* p ) : pyre_damage_t( p, "pyre_damage" ) 
-    {}
-
   };
 
   action_t* damage;
 
-  pyre_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "pyre", p, p->talent.pyre, options_str )
+  pyre_t( evoker_t* p, std::string_view options_str ) : pyre_t( p, "pyre", p->talent.pyre, options_str ) {}
+
+  pyre_t( evoker_t* p, std::string_view n, const spell_data_t* s, std::string_view o = {} )
+    : evoker_spell_t( n, p, s, o )
   {
-    damage        = p->get_secondary_action<pyre_damage_t>( "pyre_damage" );
+    damage = p->get_secondary_action<pyre_damage_t>( name_str + "_damage", name_str + "_damage" );
     damage->stats = stats;
+    damage->proc = true;
+
+    // Charged blast is consumed on cast, but we need it to apply to the damage action that is executed on impact. We
+    // snapshot ONLY the da mul from charged blast and pass it along to the damage action state.
+
+    // WARNING: If an effect whitelists both the cast spell (357211) and the damage spell (357212) then we must refactor
+    // to not double dip.
+
+    // TODO: Determine if target hp w.r.t. mastery is snapshotted on spell cast
+    snapshot_flags |= STATE_MUL_DA;
   }
 
   bool has_amount_result() const override
@@ -1606,58 +1635,75 @@ struct pyre_t : public evoker_spell_t
     return damage->has_amount_result();
   }
 
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    p()->buff.charged_blast->expire();
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    // The base da_mul is NOT called here since we only want to capture the multiplier from charged blast in order to
+    // pass it on to the damage action state.
+    return 1.0 + p()->buff.charged_blast->check_stack_value();
+  }
+
   void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
 
-    damage->execute_on_target( s->target );
+    // The captured da mul from charged blast is passed along to the damage action state.
+    auto state = damage->get_state();
+    state->target = s->target;
+    damage->snapshot_state( state, damage->amount_type( state ) );
+    state->da_multiplier *= s->da_multiplier;
+    damage->schedule_execute( state );
   }
 };
 
 struct dragonrage_t : public evoker_spell_t
 {
-  action_t* damage;
-
-  struct dragonrage_damage_t : public evoker_spell_t
+  struct dragonrage_damage_t : public pyre_t
   {
-    action_t* pyre;
     dragonrage_damage_t( evoker_t* p )
-      : evoker_spell_t( "dragonrage_damage", p, p->talent.dragonrage->effectN( 2 ).trigger() )
+      : pyre_t( p, "dragonrage_pyre", p->talent.dragonrage->effectN( 2 ).trigger() )
     {
-      name_str_reporting = "dragonrage";
-      s_data_reporting   = p->talent.dragonrage;
+      name_str_reporting = "Pyre";
+      s_data_reporting   = p->talent.pyre;
 
-      pyre = p->get_secondary_action<pyre_t::pyre_damage_t>( "dragonrage_pyre", "dragonrage_pyre" );
-      pyre->name_str_reporting = "pyre";
-      pyre->s_data_reporting = p->talent.pyre;
-      pyre->proc = true;
-
-      // TODO: Change to multiple execute_on_traget in main action rather than making this an aoe
-      aoe = data().effectN( 1 ).base_value();
-
-      add_child( pyre );
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      evoker_spell_t::impact( s );
-
-      pyre->execute_on_target( s->target );
+      // spell has 30yd range but the effect to launch pyre only has 25yd
+      range = data().effectN( 1 ).radius();
     }
   };
 
-  dragonrage_t( evoker_t* p, std::string_view options_str ) : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str )
+  action_t* damage;
+  unsigned max_targets;
+
+  dragonrage_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "dragonrage", p, p->talent.dragonrage, options_str ),
+      max_targets( as<unsigned>( data().effectN( 2 ).trigger()->effectN( 1 ).base_value() ) )
   {
-    damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_damage" );
-    damage->stats = stats;
+    damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
+    add_child( damage );
   }
 
   void execute() override
   {
     evoker_spell_t::execute();
 
-    damage->schedule_execute();
     p()->buff.dragonrage->trigger();
+
+    // grab a copy of the damage target_list so we can randomize the 3 targets.
+    auto tl = damage->target_list();
+
+    for ( size_t i = 0; !tl.empty() && i < max_targets; i++ )
+    {
+      auto t = tl[ rng().range( tl.size() ) ];
+      tl.erase( std::remove( tl.begin(), tl.end(), t ), tl.end() );
+
+      damage->execute_on_target( t );
+    }
   }
 };
 
@@ -1824,6 +1870,7 @@ void evoker_t::init_spells()
   talent.casuality            = ST( "Causality" );
   talent.catalyze             = ST( "Catalyze" );  // Row 7
   talent.ruin                 = ST( "Ruin" );
+  talent.charged_blast        = ST( "Charged Blast" );
   talent.shattering_star      = ST( "Shattering Star" );
   talent.snapfire             = ST( "Snapfire" );  // Row 8
   talent.font_of_magic        = ST( "Font of Magic" );
@@ -1889,6 +1936,9 @@ void evoker_t::create_buffs()
   // Devastation Traits
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
     ->set_duration( timespan_t::from_seconds( talent.burnout->effectN( 1 ).base_value() ) );
+
+  buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
+    ->set_default_value_from_effect( 1 );
 
   buff.dragonrage = make_buff( this, "dragonrage", talent.dragonrage );
 
