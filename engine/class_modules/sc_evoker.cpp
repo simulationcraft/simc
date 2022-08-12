@@ -878,14 +878,8 @@ public:
     if ( ab::background )
       return;
 
-    if ( spell_color == SPELL_BLUE )
+    if ( spell_color == SPELL_RED )
     {
-      p()->buff.iridescence_blue->decrement();
-    }
-    else if ( spell_color == SPELL_RED )
-    {
-      p()->buff.iridescence_red->decrement();
-
       if ( p()->talent.everburning_flame.ok() )
       {
         for ( auto t : sim->target_non_sleeping_list )
@@ -909,6 +903,15 @@ public:
     ab::impact( s );
 
     trigger_charged_blast( s );
+
+    if ( !ab::background && !ab::dual )
+    {
+      // These happen after any secondary spells are executed, so we schedule as events
+      if ( spell_color == SPELL_BLUE )
+        make_event( *sim, [ this ]() { p()->buff.iridescence_blue->decrement(); } );
+      else if ( spell_color == SPELL_RED )
+        make_event( *sim, [ this ]() { p()->buff.iridescence_red->decrement(); } );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -933,19 +936,6 @@ public:
     }
 
     return tm;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    auto da = ab::composite_da_multiplier( s );
-
-    // iridescence red doesn't affect living flame dot, so we account for it here instead of
-    // composite_persistent_multiplier.
-    // TODO: confirm this remains true in each new build
-    if ( spell_color == SPELL_RED )
-      da *= 1.0 + p()->buff.iridescence_red->check_value();
-
-    return da;
   }
 
   double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -1007,6 +997,8 @@ struct empowered_release_spell_t : public empowered_base_t
   empowered_release_spell_t( std::string_view name, evoker_t* p, const spell_data_t* spell )
     : empowered_base_t( name, p, spell )
   {
+    dual = true;
+
     // TODO: Confirm this still applies, as of 09/Aug/2022 it would appear to be approximately a 1s gcd after a empower finishes
     trigger_gcd = 1_s;
     gcd_type = gcd_haste_type::NONE;
@@ -1219,7 +1211,6 @@ struct fire_breath_t : public empowered_charge_spell_t
   {
     fire_breath_damage_t( evoker_t* p ) : base_t( "fire_breath_damage", p, p->find_spell( 357209 ) )
     {
-      dual = true;
       aoe = -1;  // TODO: actually a cone so we need to model it if possible
     }
 
@@ -1265,19 +1256,18 @@ struct eternity_surge_t : public empowered_charge_spell_t
   {
     eternity_surge_damage_t( evoker_t* p, std::string_view name )
       : base_t( name, p, p->find_spell( 359077 ) )
-    {
-      dual = true;
-      aoe  = 1;
-    }
+    {}
 
     eternity_surge_damage_t( evoker_t* p ) : eternity_surge_damage_t( p, "eternity_surge_damage" )
     {}
 
     int n_targets() const override
     {
-      int n = pre_execute_state ? empower_value( pre_execute_state ) : empower_e::EMPOWER_MAX;
+      int n = pre_execute_state ? empower_value( pre_execute_state ) : max_empower;
 
-      return as<int>( n * ( 1.0 + p()->talent.eternitys_span->effectN( 2 ).percent() ) );
+      n *=  as<int>( 1 + p()->talent.eternitys_span->effectN( 2 ).percent() );
+
+      return n == 1 ? 0 : n;
     }
 
     void impact( action_state_t* s ) override
@@ -1376,6 +1366,7 @@ struct firestorm_t : public evoker_spell_t
       auto pm = evoker_spell_t::composite_persistent_multiplier( s );
 
       pm *= 1.0 + p()->buff.snapfire->check_value();
+      pm *= 1.0 + p()->buff.iridescence_red->check_value();
 
       return pm;
     }
@@ -1482,6 +1473,15 @@ struct living_flame_t : public evoker_spell_t
       auto da = base_t::bonus_da( s );
 
       da += p()->buff.scarlet_adaptation->check_value();
+
+      return da;
+    }
+
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      auto da = base_t::composite_da_multiplier( s );
+
+      da *= 1.0 + p()->buff.iridescence_red->check_value();
 
       return da;
     }
@@ -1645,12 +1645,7 @@ struct pyre_t : public evoker_spell_t
       add_child( p->action.volatility );
 
     // Charged blast is consumed on cast, but we need it to apply to the damage action that is executed on impact. We
-    // snapshot ONLY the da mul from charged blast and pass it along to the damage action state.
-
-    // WARNING: If an effect whitelists both the cast spell (357211) and the damage spell (357212) then we must refactor
-    // to not double dip.
-
-    // TODO: Determine if target hp w.r.t. mastery is snapshotted on spell cast
+    // snapshot ONLY the da mul from charged blast and iridescence and pass it along to the damage action state.
     snapshot_flags |= STATE_MUL_DA;
   }
 
@@ -1668,16 +1663,20 @@ struct pyre_t : public evoker_spell_t
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
-    // The base da_mul is NOT called here since we only want to capture the multiplier from charged blast in order to
-    // pass it on to the damage action state.
-    return 1.0 + p()->buff.charged_blast->check_stack_value();
+    // The base da_mul is NOT called here since we only want to capture the multiplier from charged blast & iridescence
+    // in order to pass it on to the damage action state.
+    double da = 1.0;
+    da *= 1.0 + p()->buff.charged_blast->check_stack_value();
+    da *= 1.0 + p()->buff.iridescence_red->check_value();
+
+    return da;
   }
 
   void impact( action_state_t* s ) override
   {
     evoker_spell_t::impact( s );
 
-    // The captured da mul from charged blast is passed along to the damage action state.
+    // The captured da mul from charged blast and iridescence is passed along to the damage action state.
     auto state = damage->get_state();
     state->target = s->target;
     damage->snapshot_state( state, damage->amount_type( state ) );
