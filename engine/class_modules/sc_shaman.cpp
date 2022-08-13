@@ -5496,6 +5496,7 @@ struct lightning_bolt_t : public shaman_spell_t
         aoe = -1;
         background = true;
         base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
         if ( auto pw_action = p()->find_action( "primordial_wave" ) )
         {
           pw_action->add_child( this );
@@ -5506,6 +5507,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         background = true;
         base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
         if ( auto asc_action = p()->find_action( "ascendance" ) )
         {
           asc_action->add_child( this );
@@ -5572,9 +5574,17 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    if ( p()->buff.primordial_wave->check() &&
+         p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      m *= p()->covenant.necrolord->effectN( 4 ).percent();
+      if ( p()->covenant.necrolord->ok() )
+      {
+        m *= p()->covenant.necrolord->effectN( 4 ).percent();
+      }
+      else if ( p()->talent.primordial_wave.ok() )
+      {
+        m *= p()->talent.primordial_wave->effectN( 4 ).percent();
+      }
     }
 
     return m;
