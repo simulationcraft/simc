@@ -1835,7 +1835,7 @@ public:
       affected_by_maelstrom_weapon = true;
     }
 
-    mw_consume_max_stack = std::min(
+    mw_consume_max_stack = std::max(
         as<int>( this->p()->buff.maelstrom_weapon->data().max_stacks() ),
         as<int>( this->p()->talent.overflowing_maelstrom->effectN( 1 ).base_value() )
     );
