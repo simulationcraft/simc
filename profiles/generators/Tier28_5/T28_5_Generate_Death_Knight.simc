@@ -9,21 +9,22 @@ covenant=night_fae
 soulbind=dreamweaver,podtender/withering_plague:11:1/withering_ground:11:1/eternal_hunger:11:1/meat_shield:11:1/field_of_blossoms/dream_delver
 renown=80
 
-head=shadowghast_helm,id=171415,bonus_id=6716/8119/6647/6649/1588/6935,gem_id=173128
-neck=sin_stained_pendant,id=178827,bonus_id=1592/6646/6935,gem_id=173128
-shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=7187/1505
-back=shroud_of_the_sires_chosen,id=189847,bonus_id=7187/1524,enchant=soul_vitality
-chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1505,enchant=eternal_stats
-wrists=unstable_giants_cuffs,id=189777,bonus_id=1524/6808/6935,gem_id=173128
-hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1505,enchant=eternal_strength
+head=visage_of_the_first_eidolon,id=188868,bonus_id=8762/4786/1531,gem_id=173128
+neck=interplanar_keystone,id=186379,bonus_id=8762/4786/1550,gem_id=173128
+shoulders=shoulderplates_of_the_first_eidolon,id=188867,bonus_id=8762/4786/1531
+back=crest_of_the_legionnaire_general,id=183032,bonus_id=8762/4786/1576
+chest=carapace_of_the_first_eidolon,id=188864,bonus_id=7187/1531,enchant=eternal_stats
+wrists=shadowghast_armguards,id=171419,bonus_id=6716/8119/6647/6649/1588/6935,gem_id=173128
+hands=gauntlets_of_the_first_eidolon,id=188863,bonus_id=7187/1531,enchant=eternal_strength
 waist=shadowghast_waistguard,id=171418,bonus_id=6941/6649/6647/6935/7882/1588/8156,gem_id=173128
-legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1505
-feet=muckwallow_stompers,id=178774,bonus_id=6646/1592
-finger1=bloodoath_signet,id=178871,bonus_id=1592/6646/6935,gem_id=173128,enchant=tenet_of_haste
-finger2=loquacious_keepers_peridot,id=189802,bonus_id=7187/1524/6935,gem_id=173128,enchant=tenet_of_haste
-trinket1=scars_of_fraternal_strife,id=188253,bonus_id=4800/4786/1524
-trinket2=old_warriors_soul,id=186438,bonus_id=7187/6652/1498/6646
-main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=7187/1524,enchant=rune_of_the_fallen_crusader
+legs=chausses_of_the_first_eidolon,id=188866,bonus_id=7187/1531
+feet=greaves_of_the_first_eidolon,id=188865,bonus_id=1531
+finger1=overclocking_bit_band,id=169159,bonus_id=4776/3536/4786/3176,gem_id=173128,enchant=tenet_of_haste
+finger2=logic_loop_of_recursion,id=169158,bonus_id=4776/3536/4786/3176,gem_id=173128,enchant=tenet_of_haste
+trinket1=scars_of_fraternal_strife,id=188253,bonus_id=8762/4786/1550
+trinket2=old_warriors_soul,id=186438,bonus_id=8762/4786/1550
+main_hand=gavel_of_the_first_arbiter,id=189862,bonus_id=8762/4786/1550,enchant=rune_of_the_fallen_crusader
+
 
 save=T28_5_Death_Knight_Blood.simc
 
