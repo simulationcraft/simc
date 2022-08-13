@@ -9361,7 +9361,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
   auto threshold = as<unsigned>( legendary.legacy_of_the_frost_witch->effectN( 1 ).base_value() );
   if ( threshold == 0 )
   {
-    threshold = as<unsigned>( talent.legacy_of_the_frost_witch->effectN( 1 ).base_value() );
+    threshold = as<unsigned>( talent.legacy_of_the_frost_witch->effectN( 2 ).base_value() );
   }
   if ( lotfw_counter >= threshold )
   {
