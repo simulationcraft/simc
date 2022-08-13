@@ -949,7 +949,7 @@ public:
     }
 
     // iridescence blue affects the entire channel for disintegrate
-    if ( spell_color == SPELL_BLUE )
+    if ( spell_color == SPELL_BLUE && !background )
       mult *= 1.0 + p()->buff.iridescence_blue->check_value();
 
     return mult;
