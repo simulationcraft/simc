@@ -648,6 +648,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
        << "<th class=\"small\">Direct Results</th>\n"
        << "<th class=\"small\">Ticks</th>\n"
        << "<th class=\"small\">Tick Results</th>\n"
+       << "<th class=\"small\">Refreshes</th>\n"
        << "<th class=\"small\">Execute Time per Execution</th>\n"
        << "<th class=\"small\">Tick Time per  Tick</th>\n"
        << "<th class=\"small\">Actual Amount</th>\n"
@@ -664,6 +665,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                "<td class=\"right small\">%.2f</td>\n"
                "<td class=\"right small\">%.2f</td>\n"
                "<td class=\"right small\">%.2f</td>\n"
+               "<td class=\"right small\">%.2f</td>\n"
                "<td class=\"right small\">%.4f</td>\n"
                "<td class=\"right small\">%.4f</td>\n"
                "<td class=\"right small\">%.2f</td>\n"
@@ -676,6 +678,7 @@ void print_html_action_info( report::sc_html_stream& os, unsigned stats_mask, co
                s.num_direct_results.mean(),
                s.num_ticks.mean(),
                s.num_tick_results.mean(),
+               s.num_refreshes.mean(),
                s.etpe,
                s.ttpt,
                s.actual_amount.mean(),
