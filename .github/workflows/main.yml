@@ -11,7 +11,7 @@ on:
       - 'casc_extract/**'
 
 env:
-  MAIN_BRANCH: shadowlands # note that env is accessible at jobs.if context so much be manually editted in ubuntu-clang-run and simc-tests
+  MAIN_BRANCH: shadowlands # env is not accessible at jobs.if context so must be manually editted in ubuntu-clang-run and simc-tests
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
   ccache-generation: 0 # bump if you need to "clean" ccache
@@ -79,7 +79,6 @@ jobs:
 
 
   ubuntu-clang-build:
-    if: ${{ github.ref_name == 'shadowlands' }}
     name: ubuntu-clang-build
     runs-on: ubuntu-20.04
     strategy:
