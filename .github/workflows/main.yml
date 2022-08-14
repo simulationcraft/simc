@@ -4,13 +4,14 @@ on:
   pull_request:
     branches: [ shadowlands ]
   push:
-    branches: [ shadowlands ]
+    branches: [ shadowlands, dragonflight ]
     paths-ignore:
       - 'SpellDataDump/**'
       - 'dbc_extract3/**'
       - 'casc_extract/**'
 
 env:
+  MAIN_BRANCH: shadowlands # env is not accessible at jobs.if context so must be manually editted in ubuntu-clang-run and simc-tests
   SIMC_PROFILE: profiles/CI.simc
   CCACHE_COMPRESS: true # always enable ccache compression
   ccache-generation: 0 # bump if you need to "clean" ccache
@@ -68,10 +69,12 @@ jobs:
           ccache -s
 
       - name: Smoke Test
+        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         run: ${{ runner.workspace }}/b/ninja/simc $SIMC_PROFILE iterations=20
               output=/dev/null html=/dev/null json2=/dev/null
 
       - name: Spell Query
+        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         run: ${{ runner.workspace }}/b/ninja/simc spell_query=spell.name=auto_shot
 
 
@@ -121,6 +124,7 @@ jobs:
           ccache -s
 
       - uses: actions/cache@v2
+        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
@@ -130,6 +134,7 @@ jobs:
 
 
   ubuntu-clang-run:
+    if: ${{ github.ref_name == 'shadowlands' }}
     name: ubuntu-clang-cpp-${{ matrix.cppVersion }}-${{ matrix.type }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
@@ -164,6 +169,7 @@ jobs:
         run: ${{ runner.workspace }}/b/ninja/simc output=/dev/null html=/dev/null json2=/dev/null json3=/dev/null ${{ matrix.simc_flags }}
 
   simc-tests:
+    if: ${{ github.ref_name == 'shadowlands' }}
     name: test-${{ matrix.tier }}-${{ matrix.spec }}
     runs-on: ubuntu-20.04
     needs: [ ubuntu-clang-build ]
@@ -219,6 +225,7 @@ jobs:
         run: make SANITIZE=1 -C engine debug -j 2
 
       - name: Smoke Test
+        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         run: ./engine/simc $SIMC_PROFILE iterations=5 output=/dev/null html=/dev/null json2=/dev/null cleanup_threads=1
 
   windows-VS:
@@ -255,5 +262,5 @@ jobs:
           cmake --build "${{ env.CMAKE_BUILD_DIR }}"
 
       - name: Smoke Test
-        if: ${{ matrix.runSmokeTest }}
+        if: ${{ matrix.runSmokeTest && github.ref_name == env.MAIN_BRANCH }}
         run: ${{ env.CMAKE_BUILD_DIR }}/simc.exe $env:SIMC_PROFILE iterations=5 output=nul html=nul json2=nul cleanup_threads=1
