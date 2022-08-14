@@ -392,6 +392,7 @@ void demonology( player_t* p )
   trinkets->add_action( "use_item,name=overflowing_anima_cage,if=variable.use_buff_trinkets" );
   trinkets->add_action( "use_item,slot=trinket1,if=trinket.1.has_use_buff&variable.use_buff_trinkets" );
   trinkets->add_action( "use_item,slot=trinket2,if=trinket.2.has_use_buff&variable.use_buff_trinkets" );
+  trinkets->add_action( "use_item,name=neural_synapse_enhancer,if=variable.buff_sync_cd>45|variable.use_buff_trinkets" );
   trinkets->add_action( "call_action_list,name=pure_damage_trinks,if=time>variable.first_tyrant_time&variable.buff_sync_cd>20" );
 
   tyrant_setup->add_action( "nether_portal,if=variable.next_tyrant_cd<15" );
