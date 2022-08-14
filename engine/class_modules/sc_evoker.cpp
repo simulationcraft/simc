@@ -874,11 +874,18 @@ public:
     {
       p()->cooldown.eternity_surge->adjust( p()->talent.casuality->effectN( 1 ).trigger()->effectN( 1 ).time_value() );
     }
+  }
 
-    if ( ab::background )
-      return;
+  virtual void trigger_charged_blast( action_state_t* s )
+  {
+    if ( spell_color == SPELL_BLUE && has_amount_result() && result_is_hit( s->result ) )
+      p()->buff.charged_blast->trigger();
+  }
 
-    if ( spell_color == SPELL_RED )
+  virtual void trigger_everburning_flame( action_state_t* s )
+  {
+    if ( s->chain_target == 0 && s->result_amount > 0 && s->result_type == result_amount_type::DMG_DIRECT &&
+         spell_color == SPELL_RED )
     {
       if ( p()->talent.everburning_flame.ok() )
       {
@@ -892,17 +899,12 @@ public:
     }
   }
 
-  void trigger_charged_blast( action_state_t* s )
-  {
-    if ( spell_color == SPELL_BLUE && has_amount_result() && result_is_hit( s->result ) )
-      p()->buff.charged_blast->trigger();
-  }
-
   void impact( action_state_t* s ) override
   {
     ab::impact( s );
 
     trigger_charged_blast( s );
+    trigger_everburning_flame( s );
 
     if ( !ab::background && !ab::dual )
     {
@@ -1217,6 +1219,11 @@ struct fire_breath_t : public empowered_charge_spell_t
     timespan_t composite_dot_duration( const action_state_t* s ) const override
     {
       return base_t::composite_dot_duration( s ) * empower_value( s ) / 3.0;
+    }
+
+    void trigger_everburning_flame( action_state_t* ) override
+    {
+      return;  // flame breath can't extend itself. TODO: confirm if this ever becomes a possiblity.
     }
 
     void execute() override
