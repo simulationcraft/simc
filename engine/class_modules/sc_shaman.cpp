@@ -460,6 +460,7 @@ public:
     buff_t* power_of_the_maelstrom;
     buff_t* splintered_elements;
     buff_t* stormkeeper;
+    buff_t* surge_of_power;
     buff_t* wind_gust;  // Storm Elemental passive 263806
     buff_t* windspeakers_lava_resurgence;
 
@@ -628,6 +629,11 @@ public:
     proc_t* t28_4pc_ele_cd_reduction;
 
     proc_t* pyroclastic_shock;
+
+    proc_t* surge_of_power_lightning_bolt;
+    proc_t* surge_of_power_lava_burst;
+    proc_t* surge_of_power_frost_shock;
+    proc_t* surge_of_power_flame_shock;
 
 
     // Enhancement
@@ -5272,6 +5278,13 @@ struct lava_burst_t : public shaman_spell_t
         p()->buff.windspeakers_lava_resurgence->expire();
       }
 
+      if ( p()->buff.surge_of_power->up() )
+      {
+        p()->cooldown.fire_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->cooldown.storm_elemental->adjust( -1.0 * p()->talent.surge_of_power->effectN( 1 ).time_value() );
+        p()->buff.surge_of_power->decrement();
+        p()->proc.surge_of_power_lava_burst->occur();
+      }
       p()->buff.flux_melting->expire();
     }
   }
@@ -5552,6 +5565,10 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       n += p()->buff.power_of_the_maelstrom->value();
     }
+    if ( p() ->buff.surge_of_power->up())
+    {
+      n += 2U;
+    }
 
     return n;
   }
@@ -5616,6 +5633,12 @@ struct lightning_bolt_t : public shaman_spell_t
     }
 
     shaman_spell_t::execute();
+
+    if ( p()->talent.surge_of_power->ok() && p()->buff.surge_of_power->check() )
+    {
+      p()->proc.surge_of_power_lightning_bolt->occur();
+    }
+    p()->buff.surge_of_power->decrement();
 
     // Storm Elemental Wind Gust passive buff trigger
     if ( p()->talent.storm_elemental->ok() )
@@ -6218,6 +6241,11 @@ struct earth_shock_t : public shaman_spell_t
       p()->buff.echoes_of_great_sundering->trigger();
     }
 
+    if (p()->talent.surge_of_power->ok() )
+    {
+      p()->buff.surge_of_power->trigger();
+    }
+
     if ( p()->legendary.windspeakers_lava_resurgence.ok() ||
          p()->talent.windspeakers_lava_resurgence.ok() )
     {
@@ -6278,6 +6306,7 @@ struct earth_shock_t : public shaman_spell_t
 struct flame_shock_t : public shaman_spell_t
 {
 private:
+  flame_shock_spreader_t* spreader;
   const spell_data_t* elemental_resource;
   const spell_data_t* skybreakers_effect;
   const spell_data_t* elemental_conduit;
@@ -6360,8 +6389,9 @@ private:
   }
 
 public:
-  flame_shock_t( shaman_t* player, util::string_view options_str = {} ) :
-    shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
+  flame_shock_t( shaman_t* player, util::string_view options_str = {} )
+    : shaman_spell_t( "flame_shock", player, player->find_class_spell( "Flame Shock" ) ),
+      spreader( player->talent.surge_of_power->ok() ? new flame_shock_spreader_t( player ) : nullptr ),
     elemental_resource( player->find_spell( 263819 ) ),
     skybreakers_effect( player->find_spell( 336734 ) ),
     elemental_conduit( player->find_spell( 356250 ) )
@@ -6511,6 +6541,17 @@ public:
     {
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
+
+    if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
+    {
+      spreader->target = state->target;
+      spreader->execute();
+    }
+    if ( p()->buff.surge_of_power->check() )
+    {
+      p()->proc.surge_of_power_flame_shock->occur();
+    }
+    p()->buff.surge_of_power->expire();
   }
 };
 
@@ -9853,6 +9894,8 @@ void shaman_t::create_buffs()
   buff.lava_surge = make_buff( this, "lava_surge", find_spell( 77762 ) )
                         ->set_activated( false )
                         ->set_chance( 1.0 );  // Proc chance is handled externally
+  buff.surge_of_power =
+      make_buff( this, "surge_of_power", talent.surge_of_power )->set_duration( find_spell( 285514 )->duration() );
   buff.icefury = make_buff( this, "icefury", talent.icefury )
                      ->set_cooldown( timespan_t::zero() )  // Handled by the action
                      ->set_default_value( talent.icefury->effectN( 2 ).percent() );
@@ -10060,6 +10103,11 @@ void shaman_t::init_procs()
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_fireheart              = get_proc( "Lava Surge: Wasted Fireheart" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
+
+  proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
+  proc.surge_of_power_lava_burst     = get_proc( "Surge of Power: Lava Burst" );
+  proc.surge_of_power_frost_shock    = get_proc( "Surge of Power: Frost Shock" );
+  proc.surge_of_power_flame_shock    = get_proc( "Surge of Power: Flame Shock" );
 
   proc.aftershock           = get_proc( "Aftershock" );
   proc.flash_of_lightning   = get_proc( "Flash of Lightning" );
