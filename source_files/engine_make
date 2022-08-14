@@ -122,6 +122,7 @@ SRC += \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
+    player$(PATHSEP)unique_gear_dragonflight.cpp \
     player$(PATHSEP)unique_gear_helper.cpp \
     player$(PATHSEP)unique_gear_legion.cpp \
     player$(PATHSEP)unique_gear_shadowlands.cpp \

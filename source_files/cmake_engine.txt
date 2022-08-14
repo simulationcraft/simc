@@ -122,6 +122,7 @@ player/stats.hpp
 player/talent.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
+player/unique_gear_dragonflight.hpp
 player/unique_gear_helper.hpp
 player/unique_gear_shadowlands.hpp
 player/weapon.hpp
@@ -303,6 +304,7 @@ player/talent.cpp
 player/target_specific.cpp
 player/unique_gear.cpp
 player/unique_gear_bfa.cpp
+player/unique_gear_dragonflight.cpp
 player/unique_gear_helper.cpp
 player/unique_gear_legion.cpp
 player/unique_gear_shadowlands.cpp

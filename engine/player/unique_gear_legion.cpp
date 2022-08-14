@@ -5483,13 +5483,6 @@ void consumables::lavish_suramar_feast( special_effect_t& effect )
       break;
   }
 
-  // TODO: Is this actually spec specific?
-  if ( effect.player -> role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-  {
-    effect.stat = STAT_STAMINA;
-    effect.trigger_spell_id = 201641;
-  }
-
   effect.stat_amount = effect.player -> find_spell( effect.trigger_spell_id ) -> effectN( 1 ).average( effect.player );
 }
 

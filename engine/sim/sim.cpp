@@ -3834,8 +3834,7 @@ void sim_t::create_options()
   add_option( opt_bool( "bfa.nyalotha", bfa_opts.nyalotha ) );
   add_option( opt_obsoleted( "bfa.infinite_stars_miss_chance" ) );
 
-  // applies to: "lavish_suramar_feast", battle for azeroth feasts
-  add_option( opt_bool( "feast_as_dps", feast_as_dps ) );
+  add_option( opt_deprecated( "feast_as_dps", "no longer necessary" ) );
 
   // Shadowlands
   add_option( opt_float( "shadowlands.combat_meditation_extend_chance", shadowlands_opts.combat_meditation_extend_chance, 0.0, 1.0 ) );

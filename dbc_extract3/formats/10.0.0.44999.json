@@ -216,6 +216,11 @@
       { "data_type": "i", "field": "unk_5"}
     ]
   },
+  "CraftingQuality": {
+    "fields": [
+      { "data_type": "i", "field": "tier" }
+    ]
+  },
   "CurrencyCategory": {
     "fields": [
       { "data_type": "S", "field": "name" },
@@ -388,20 +393,15 @@
     "fields": [
       { "data_type": "B", "field": "classs" },
       { "data_type": "B", "field": "subclass" },
-
       { "data_type": "B", "field": "material" },
       { "data_type": "B", "field": "type_inv" },
-
       { "data_type": "B", "field": "sheath" },
       { "data_type": "B", "field": "unk_2" },
       { "data_type": "i", "field": "unk_1" },
-
       { "data_type": "B", "field": "unk_3" },
-
       { "data_type": "i", "field": "unk_4" },
       { "data_type": "i", "field": "unk_5" },
-
-      { "data_type": "i", "field": "unk_44649_1" }
+      { "data_type": "i", "field": "id_crafting_quality", "ref": "CraftingQuality" }
     ]
   },
   "ItemSparse": {

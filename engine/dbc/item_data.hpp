@@ -48,6 +48,7 @@ struct dbc_item_data_t {
   int      id_set;
   int      id_curve;
   unsigned id_artifact;
+  int      crafting_quality;
 
   bool is_armor()
   { return item_class == ITEM_CLASS_ARMOR && ( item_subclass >= ITEM_SUBCLASS_ARMOR_CLOTH && item_subclass <= ITEM_SUBCLASS_ARMOR_SHIELD ); }
