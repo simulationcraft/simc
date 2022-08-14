@@ -332,6 +332,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    allow_class_ability_procs(),
+    not_a_proc(),
     special(),
     channeled(),
     sequence(),
