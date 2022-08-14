@@ -5783,6 +5783,11 @@ struct elemental_blast_t : public shaman_spell_t
       p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 2 ).time_value() );
       p()->proc.further_beyond->occur();
     }
+
+    if ( p()->talent.surge_of_power->ok() )
+    {
+      p()->buff.surge_of_power->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -6100,6 +6105,11 @@ struct earthquake_t : public earthquake_base_t
     earthquake_base_t::execute();
 
     trigger_lightning_rod( execute_state );
+
+    if ( p()->talent.surge_of_power->ok() )
+    {
+      p()->buff.surge_of_power->trigger();
+    }
   }
 };
 
@@ -8891,6 +8901,7 @@ void shaman_t::init_spells()
   talent.electrified_shocks = _ST( "Electrified Shocks" );
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
+  talent.surge_of_power         = _ST( "Surge of Power" );
   talent.flames_of_the_cauldron = _ST( "Flames of the Cauldron" );
   // Row 7
   talent.flash_of_lightning = _ST( "Flash of Lightning" );
