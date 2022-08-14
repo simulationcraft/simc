@@ -2717,7 +2717,7 @@ struct blade_rush_t : public rogue_attack_t
   struct blade_rush_attack_t : public rogue_attack_t
   {
     blade_rush_attack_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell( 271881 ) )
+      rogue_attack_t( name, p, p->find_spell( 271881 ) )
     {
       dual = true;
       aoe = -1;
@@ -6201,7 +6201,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   p()->active.blade_flurry->base_dd_min = damage;
   p()->active.blade_flurry->base_dd_max = damage;
   p()->active.blade_flurry->set_target( state->target );
-  p()->active.blade_flurry->execute();
+  p()->active.blade_flurry->schedule_execute();
 }
 
 template <typename Base>
