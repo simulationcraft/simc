@@ -5139,10 +5139,12 @@ struct efflorescence_t : public druid_heal_t
         spring = p->get_secondary_action<spring_blossoms_t>( "spring_blossoms" );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+    std::vector<player_t*>& target_list() const override
     {
       // get the full list
-      druid_heal_t::available_targets( tl );
+      auto& tl = druid_heal_t::target_list();
+
+      rng().shuffle( tl.begin(), tl.end() );
 
       // sort by targets without spring blossoms
       if ( spring )
@@ -5158,7 +5160,7 @@ struct efflorescence_t : public druid_heal_t
         } );
       }
 
-      return tl.size();
+      return tl;
     }
 
     void execute() override
@@ -6045,7 +6047,7 @@ struct adaptive_swarm_t : public druid_spell_t
       : adaptive_swarm_base_t( p, "adaptive_swarm_damage", p->spec.adaptive_swarm_damage )
     {}
 
-    bool dots_ticking( druid_td_t* td )
+    bool dots_ticking( const druid_td_t* td ) const
     {
       return td->dots.moonfire->is_ticking() || td->dots.rake->is_ticking() || td->dots.rip->is_ticking() ||
              td->dots.stellar_flare->is_ticking() || td->dots.sunfire->is_ticking() ||
@@ -6068,39 +6070,32 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( tl.empty() )
         return {};
 
-      // Target priority
-      std::vector<player_t*> tl_1;  // 1: has a dot, but no swarm
-      std::vector<player_t*> tl_2;  // 2: has no dot and not swarm
-      std::vector<player_t*> tl_3;  // 3: has a dot, but also swarm
-      std::vector<player_t*> tl_4;  // 4: rest
+      if ( tl.size() == 1 )
+        return tl[ 0 ];
 
-      for ( const auto& t : tl )
+      rng().shuffle( tl.begin(), tl.end() );
+
+      // prioritize unswarmed over swarmed
+      auto it = range::partition( tl, [ this ]( player_t* t ) {
+        return !p()->find_target_data( t )->dots.adaptive_swarm_damage->is_ticking();
+      } );
+
+      // if unswarmed exists, prioritize dotted over undotted
+      if ( it != tl.begin() )
       {
-        auto t_td = other->td( t );
-
-        if ( !t_td->dots.adaptive_swarm_damage->is_ticking() )
-        {
-          if ( dots_ticking( t_td ) )
-            tl_1.push_back( t );
-          else
-            tl_2.push_back( t );
-        }
-        else
-        {
-          if ( dots_ticking( t_td ) )
-            tl_3.push_back( t );
-          else
-            tl_4.push_back( t );
-        }
+        std::partition( tl.begin(), it, [ this ]( player_t* t ) {
+          return dots_ticking( p()->find_target_data( t ) );
+        } );
+      }
+      // otherwise if swarmed exists, prioritize dotted over undotted
+      else if ( it != tl.end() )
+      {
+        std::partition( it, tl.end(), [ this ]( player_t* t ) {
+          return dots_ticking( p()->find_target_data( t ) );
+        } );
       }
 
-      if ( !tl_1.empty() )
-        return tl_1[ rng().range( tl_1.size() ) ];
-      if ( !tl_2.empty() )
-        return tl_2[ rng().range( tl_2.size() ) ];
-      if ( !tl_3.empty() )
-        return tl_3[ rng().range( tl_3.size() ) ];
-      return tl_4[ rng().range( tl_4.size() ) ];
+      return tl[ 0 ];
     }
 
     void impact( action_state_t* s ) override
@@ -6863,7 +6858,6 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
         p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
 
-      aoe      = 1;
       may_miss = false;
       dual = background = true;
 
@@ -6874,14 +6868,14 @@ struct moonfire_t : public druid_spell_t
       if ( p->talent.twin_moons.ok() )
       {
         // The increased target number has been removed from spell data
-        aoe += 1;
+        aoe = std::max( aoe, 1 ) + 1;
         radius = p->talent.twin_moons->effectN( 1 ).base_value();
       }
 
       if ( p->talent.twin_moonfire.ok() )
       {
         // uses balance twin moons talent for radius
-        aoe += 1;
+        aoe = std::max( aoe, 1 ) + 1;
         radius = p->find_spell( 279620 )->effectN( 1 ).base_value();
       }
 
@@ -6949,60 +6943,28 @@ struct moonfire_t : public druid_spell_t
       trigger_shooting_stars( d->target );
     }
 
-    size_t available_targets( std::vector<player_t*>& tl ) const override
+    std::vector<player_t*>& target_list() const override
     {
+      auto& tl = druid_spell_t::target_list();
+
       /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
-      if ( is_aoe() )
+      if ( is_aoe() && tl.size() > aoe )
       {
-        // Get the full target list.
-        druid_spell_t::available_targets( tl );
-        std::vector<player_t*> full_list = tl;
+        // always hit the target, so if it exists make sure it's first
+        auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
 
-        tl.clear();
-        // Add the target of the action.
-        tl.push_back( target );
+        // randomize remaining targets
+        rng().shuffle( start_it, tl.end() );
 
-        // Loop through the full list and sort into afflicted/unafflicted.
-        std::vector<player_t*> afflicted;
-        std::vector<player_t*> unafflicted;
-
-        for ( const auto& i : full_list )
-        {
-          if ( i == target || i->debuffs.invulnerable->up() )
-            continue;
-
-          if ( td( i )->dots.moonfire->is_ticking() )
-            afflicted.push_back( i );
-          else
-            unafflicted.push_back( i );
-        }
-
-        // Fill list with random unafflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && !unafflicted.empty() )
-        {
-          // Random target
-          auto i = rng().range( unafflicted.size() );
-
-          tl.push_back( unafflicted[ i ] );
-          unafflicted.erase( unafflicted.begin() + i );
-        }
-
-        // Fill list with random afflicted targets.
-        while ( tl.size() < as<size_t>( aoe ) && !afflicted.empty() )
-        {
-          // Random target
-          auto i = rng().range( afflicted.size() );
-
-          tl.push_back( afflicted[ i ] );
-          afflicted.erase( afflicted.begin() + i );
-        }
-
-        return tl.size();
+        // prioritize undotted over dotted
+        std::partition( start_it, tl.end(), [ this ]( player_t* t ) {
+          return !td( t )->dots.moonfire->is_ticking();
+        } );
       }
 
-      return druid_spell_t::available_targets( tl );
+      return tl;
     }
 
     void execute() override

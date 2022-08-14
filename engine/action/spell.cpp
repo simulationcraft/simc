@@ -42,6 +42,14 @@ spell_base_t::spell_base_t( action_e at,
   crit_multiplier *= util::crit_multiplier( player -> meta_gem );
 }
 
+double spell_base_t::cost() const
+{
+  if ( current_resource() == RESOURCE_MANA && player->buffs.chilled_clarity && player->buffs.chilled_clarity->check() )
+    return 0;
+
+  return action_t::cost();
+}
+
 timespan_t spell_base_t::execute_time() const
 {
   timespan_t t = base_execute_time;
@@ -51,6 +59,9 @@ timespan_t spell_base_t::execute_time() const
   }
 
   t *= composite_haste();
+
+  if ( player->buffs.chilled_clarity )
+    t *= 1.0 - player->buffs.chilled_clarity->check_value();
 
   return t;
 }

@@ -53,6 +53,10 @@ CONSUMABLE_ITEM_WHITELIST = {
     # Shadowlands
     171270, 171273, 171275,            # Spectral Stat potions (9.0)
     171352, 171351, 171349,            # Empowered Exorcisms, Deathly Fixation, Phantom Fire
+    # Dragonflight
+    191360, 191361, 191362,            # Bottled Putrescence
+    191366, 191367, 191368,            # Potion of Chilled Clarity
+    191399, 191400, 191401,            # Potion of Shocking Disclosure
     ]
 }
 

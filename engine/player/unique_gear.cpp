@@ -3,18 +3,21 @@
 // Send questions to natehieter@gmail.com
 // ==========================================================================
 
-#include "sc_enums.hpp"
-#include "sim/expressions.hpp"
 #include "unique_gear.hpp"
 
-#include "unique_gear_shadowlands.hpp"
+#include "dbc/racial_spells.hpp"
 #include "player/scaling_metric_data.hpp"
 #include "player/soulbinds.hpp"
-#include "simulationcraft.hpp"
-#include "dbc/racial_spells.hpp"
+#include "sc_enums.hpp"
+#include "sim/expressions.hpp"
+#include "unique_gear_dragonflight.hpp"
+#include "unique_gear_shadowlands.hpp"
 #include "util/util.hpp"
+
 #include <cctype>
 #include <memory>
+
+#include "simulationcraft.hpp"
 
 using namespace unique_gear;
 
@@ -4509,6 +4512,21 @@ bool unique_gear::create_fallback_buffs( const special_effect_t& effect, const s
   return true;
 }
 
+void unique_gear::init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
+{
+  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
+
+  for ( auto&& stat : stat_map )
+  {
+    if ( stat.first == effect.stat )
+    {
+      effect.trigger_spell_id = stat.second;
+      break;
+    }
+  }
+  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
+}
+
 /**
  * Master list of special effects in Simulationcraft.
  *
@@ -4579,6 +4597,8 @@ void unique_gear::register_special_effects()
 
   shadowlands::register_special_effects();
   covenant::soulbinds::register_special_effects();
+
+  dragonflight::register_special_effects();
 
   /* Legacy Effects, pre-5.0 */
   register_special_effect( 45481,  "ProcOn/hit_45479Trigger"            ); /* Shattered Sun Pendant of Acumen */

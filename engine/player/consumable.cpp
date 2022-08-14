@@ -14,7 +14,7 @@
 #include "sim/cooldown.hpp"
 #include "sim/expressions.hpp"
 #include "sim/sim.hpp"
-#include "item/special_effect.hpp"
+#include "item/item.hpp"
 #include "player/unique_gear.hpp"
 #include "util/rng.hpp"
 #include "util/static_map.hpp"
@@ -26,19 +26,31 @@ namespace { // UNNAMED NAMESPACE
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
-const dbc_item_data_t* find_consumable( const dbc_t& dbc,
-                                                 util::string_view name,
-                                                 item_subclass_consumable type )
+const dbc_item_data_t* find_consumable( const dbc_t& dbc, util::string_view name_str, item_subclass_consumable type )
 {
-  if ( name.empty() )
+  if ( name_str.empty() )
   {
     return nullptr;
   }
 
+  auto split = util::string_split<std::string_view>( name_str, ":" );
+
+  auto name = split[ 0 ];
+  if ( name.empty() )
+    return nullptr;
+
+  auto quality = split.size() >= 2 ? util::to_int( split[ 1 ] ) : 0;
+
   // Poor man's longest matching prefix!
-  const auto& item = dbc::find_consumable( type, dbc.ptr, [name]( const dbc_item_data_t* i ) {
-    auto n = util::tokenize_fn( i -> name ? i -> name : "unknown" );
-    return util::str_in_str_ci( n, name );
+  const auto& item = dbc::find_consumable( type, dbc.ptr, [ name, quality ]( const dbc_item_data_t* i ) {
+    auto n = util::tokenize_fn( i->name ? i->name : "unknown" );
+    if ( util::str_in_str_ci( n, name ) )
+    {
+      auto q = i->crafting_quality;
+      return q == quality || ( !quality && q == 1 );
+    }
+
+    return false;
   } );
 
   if ( item.id != 0 )
@@ -412,7 +424,7 @@ struct dbc_consumable_base_t : public action_t
   // the consumable
   virtual special_effect_t* create_special_effect()
   {
-    auto effect = new special_effect_t( player );
+    auto effect = new consumable::consumable_effect_t( player, item_data );
     effect -> type = SPECIAL_EFFECT_USE;
     effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
 
@@ -656,9 +668,23 @@ struct potion_t : public dbc_consumable_base_t
     // Setup a cooldown duration for the potion
     for ( const item_effect_t& effect : player->dbc->item_effects( item_data->id ) )
     {
-      if ( effect.cooldown_group > 0 && effect.cooldown_group_duration > 0 )
+      auto cd_grp = effect.cooldown_group;
+      auto cd_dur = effect.cooldown_group_duration;
+
+      // fallback to spell cooldown group & duration if item effect data doesn't contain it
+      if ( cd_grp <= 0 && cd_dur <= 0 )
       {
-        cooldown -> duration = timespan_t::from_millis( effect.cooldown_group_duration );
+        auto s_data = player->find_spell( effect.spell_id );
+        if ( s_data->ok() )
+        {
+          cd_grp = s_data->_category;
+          cd_dur = s_data->_category_cooldown;
+        }
+      }
+
+      if ( cd_grp > 0 && cd_dur > 0 )
+      {
+        cooldown->duration = timespan_t::from_millis( cd_dur );
         break;
       }
     }
@@ -954,6 +980,22 @@ struct food_t : public dbc_consumable_base_t
 };
 
 } // END UNNAMED NAMESPACE
+
+consumable::consumable_effect_t::consumable_effect_t( player_t* player, const dbc_item_data_t* item_data )
+  : special_effect_t( player )
+{
+  if ( item_data && item_data->crafting_quality )
+  {
+    // Dragonflight consumables with crafting quality use the items ilevel for action/buff effect values, so if the
+    // item_data has a crafting quality, create an item for the effect to use
+    consumable_item = std::make_unique<item_t>( player, "" );
+    consumable_item->parsed.data.name = item_data->name;
+    consumable_item->parsed.data.id = item_data->id;
+    consumable_item->parsed.data.level = item_data->level;
+
+    item = consumable_item.get();
+  }
+}
 
 // ==========================================================================
 // consumable_t::create_action

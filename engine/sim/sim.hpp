@@ -180,7 +180,6 @@ struct sim_t : private sc_thread_t
   unsigned int enable_4_set; // Enables all 4 set bonuses for the tier/integer that this is set as
   const spell_data_t* pvp_rules; // Hidden aura that contains the PvP crit damage reduction
   bool pvp_mode; // Enables PvP mode - reduces crit damage, adjusts PvP gear iLvl
-  bool feast_as_dps = true;
   bool auto_attacks_always_land; /// Allow Auto Attacks (white attacks) to always hit the enemy
   bool log_spell_id; // Add spell data ids to log/debug output where available. (actions, buffs)
 

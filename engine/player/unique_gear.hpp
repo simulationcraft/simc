@@ -12,6 +12,7 @@
 
 #include <cassert>
 #include <functional>
+#include <memory>
 #include <vector>
 
 struct action_t;

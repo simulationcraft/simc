@@ -1841,7 +1841,7 @@ public:
       affected_by_maelstrom_weapon = true;
     }
 
-    mw_consume_max_stack = std::min(
+    mw_consume_max_stack = std::max(
         as<int>( this->p()->buff.maelstrom_weapon->data().max_stacks() ),
         as<int>( this->p()->talent.overflowing_maelstrom->effectN( 1 ).base_value() )
     );
@@ -3188,9 +3188,12 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
 
-    if ( !stormflurry )
+    if ( !stormflurry && p()->buff.legacy_of_the_frost_witch->check() )
     {
-      m *= 1.0 + p()->buff.legacy_of_the_frost_witch->stack_value();
+      double val = p()->legendary.legacy_of_the_frost_witch.ok()
+        ? p()->buff.legacy_of_the_frost_witch->stack_value()
+        : p()->legendary.legacy_of_the_frost_witch->effectN( 1 ).percent();
+      m *= 1.0 + val;
     }
 
     return m;
@@ -5506,6 +5509,7 @@ struct lightning_bolt_t : public shaman_spell_t
         aoe = -1;
         background = true;
         base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
         if ( auto pw_action = p()->find_action( "primordial_wave" ) )
         {
           pw_action->add_child( this );
@@ -5516,6 +5520,7 @@ struct lightning_bolt_t : public shaman_spell_t
       {
         background = true;
         base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
         if ( auto asc_action = p()->find_action( "ascendance" ) )
         {
           asc_action->add_child( this );
@@ -5586,9 +5591,17 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->buff.primordial_wave->check() && p()->specialization() == SHAMAN_ENHANCEMENT )
+    if ( p()->buff.primordial_wave->check() &&
+         p()->specialization() == SHAMAN_ENHANCEMENT )
     {
-      m *= p()->covenant.necrolord->effectN( 4 ).percent();
+      if ( p()->covenant.necrolord->ok() )
+      {
+        m *= p()->covenant.necrolord->effectN( 4 ).percent();
+      }
+      else if ( p()->talent.primordial_wave.ok() )
+      {
+        m *= p()->talent.primordial_wave->effectN( 4 ).percent();
+      }
     }
 
     return m;
@@ -9389,7 +9402,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
   auto threshold = as<unsigned>( legendary.legacy_of_the_frost_witch->effectN( 1 ).base_value() );
   if ( threshold == 0 )
   {
-    threshold = as<unsigned>( talent.legacy_of_the_frost_witch->effectN( 1 ).base_value() );
+    threshold = as<unsigned>( talent.legacy_of_the_frost_witch->effectN( 2 ).base_value() );
   }
   if ( lotfw_counter >= threshold )
   {
