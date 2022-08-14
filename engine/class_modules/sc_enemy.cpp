@@ -420,7 +420,7 @@ struct melee_t : public enemy_action_t<melee_attack_t>
     trigger_gcd       = timespan_t::zero();
     base_dd_min       = 1040;
     base_execute_time = timespan_t::from_seconds( 1.5 );
-    may_crit = background = repeating = true;
+    may_crit = background = repeating = not_a_proc = true;
     may_dodge = may_parry = may_block = true;
     special                           = false;
 
