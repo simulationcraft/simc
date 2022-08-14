@@ -332,6 +332,8 @@ action_t::action_t( action_e ty, util::string_view token, player_t* p, const spe
     aoe(),
     dual(),
     callbacks( true ),
+    allow_class_ability_procs(),
+    not_a_proc(),
     special(),
     channeled(),
     sequence(),
@@ -4641,7 +4643,7 @@ bool action_t::execute_targeting(action_t* action) const
 }
 
 // This returns a list of all targets currently in range.
-std::vector<player_t*> action_t::targets_in_range_list(
+std::vector<player_t*>& action_t::targets_in_range_list(
   std::vector<player_t*>& tl) const
 {
   size_t i = tl.size();
@@ -4933,6 +4935,11 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
           ground_aoe_duration += effect.time_value();
           sim->print_debug( "{} ground aoe duration modified by {}", *this, effect.time_value() );
         }
+        break;
+
+      case P_CAST_TIME:
+        base_execute_time += effect.time_value();
+        sim->print_debug( "{} cast time modified by {}", *this, effect.time_value() );
         break;
 
       case P_RANGE:

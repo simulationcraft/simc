@@ -87,25 +87,6 @@ struct SL_proc_spell_t : public proc_spell_t
   }
 };
 
-// feasts initialization helper
-void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
-{
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
-  // TODO: Is this actually spec specific?
-  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-    effect.stat = STAT_STAMINA;
-
-  for ( auto&& stat : stat_map )
-  {
-    if ( stat.first == effect.stat )
-    {
-      effect.trigger_spell_id = stat.second;
-      break;
-    }
-  }
-  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
-}
-
 namespace consumables
 {
 void smothered_shank( special_effect_t& effect )
@@ -2052,7 +2033,7 @@ void soul_cage_fragment( special_effect_t& effect )
   auto buff = debug_cast<stat_buff_t*>( buff_t::find( effect.player, "torturous_might" ) );
   if ( !buff )
   {
-    buff = make_buff<stat_buff_t>( effect.player, "torturous_might", effect.player->find_spell( 357672 ) )
+    buff = make_buff<stat_buff_t>( effect.player, "torturous_might", effect.driver()->effectN( 1 ).trigger() )
            ->add_stat( effect.player->convert_hybrid_stat( STAT_STR_AGI_INT ), effect.driver()->effectN( 1 ).average( effect.item ) );
 
     effect.custom_buff = buff;

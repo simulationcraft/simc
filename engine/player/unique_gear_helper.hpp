@@ -30,7 +30,6 @@ namespace unique_gear
 void register_special_effect( unsigned spell_id, const char* encoded_str );
 void register_special_effect( unsigned spell_id, std::function<void( special_effect_t& )> init_callback,
                               bool fallback = false );
-bool create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names );
 
 // New-style special effect registering function
 template <typename T, typename = std::enable_if_t<std::is_base_of<scoped_callback_t, T>::value>>
@@ -43,6 +42,10 @@ void register_special_effect( unsigned spell_id, const T& cb, bool fallback = fa
 
   add_effect( dbitem );
 }
+
+// Utility helpers
+bool create_fallback_buffs( const special_effect_t& effect, const std::vector<util::string_view>& names );
+void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map);
 
 // A scoped special effect callback that validates against a player class or specialization.
 struct class_scoped_callback_t : public scoped_callback_t

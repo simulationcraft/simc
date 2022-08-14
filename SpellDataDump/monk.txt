@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44895 dragonflight-BETA (hotfix 2022-08-06/44895, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -390,7 +390,7 @@ Name             : Kindred Spirits (id=88680) [Spell Family (9), Passive, Hidden
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Affecting spells : Kindred Spirits (56315 effect#2)
+Affecting spells : Kindred Spirits (56315 effect#2), Energetic Ally (378961 effect#2)
 Family Flags     : 87
 Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ....x... ........ 
@@ -403,7 +403,7 @@ Attributes       : ......xx x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Aura While Dead (116), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=91116)    : Apply Aura (6) | Increase Energy (35)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2 | Target: Self (1)
 
 Name             : Item - Proc Mastery (id=92322) [Spell Family (10), Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter
@@ -1080,7 +1080,7 @@ Spell Level      : 29
 GCD              : 1 seconds
 Cooldown         : 15 seconds
 Proc Chance      : 101%
-Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Combo (228563 effect#2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
+Affecting spells : Brewmaster Monk (137023 effects: #1, #2, #16), Windwalker Monk (137025 effects: #1, #2), Serenity (152173 effects: #2, #6), Hit Combo (196741 effects: #1, #2), The Wind Blows (281452 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2)
 Family Flags     : 19, 67, 103
 Attributes       : ....x... ........ x....... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1550,7 +1550,6 @@ Name             : Thunder Focus Tea (id=116680) [Spell Family (53)]
 Class            : Mistweaver Monk
 School           : Nature
 Spell Type       : Magic
-Spell Level      : 23
 Duration         : 30 seconds
 Cooldown         : 30 seconds
 Stacks           : 1 maximum
@@ -1570,17 +1569,25 @@ Attributes       : ........ ........ x....... .x......   ........ ........ .....
                  : Not Shapeshifted (16), Cooldown On Event (25), Do Not Reset Combat Timers (81), Can Proc From Procs (122), Aura Points On Client (268), Heal Prediction (280), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=131804)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -9000 | Scaled Value: -9000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Rising Sun Kick (107428), Rising Sun Kick (185099)
                    Family Flags: 39
 #2 (id=214145)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
                    Affected Spells: Vivify (116670)
                    Family Flags: 26
 #3 (id=289634)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 10000 | Scaled Value: 10000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Renewing Mist (115151), Renewing Mist (119611)
                    Family Flags: 23
+#4 (id=1023532)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Essence Font (191837)
+                   Family Flags: 107
+#5 (id=1023533)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Essence Font (191837)
+                   Family Flags: 107
 Description      : Receive a jolt of energy, empowering your next $?a197895[$u spells][spell] cast:
 
 $@spellname124682: Immediately heals for $274062s1.
@@ -2570,7 +2577,7 @@ Range            : 50000 yards
 GCD              : 1 seconds
 Duration         : 12 seconds
 Proc Chance      : 101%
-Affecting spells : Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1), Breath of the Cosmos (364415 effect#1)
+Affecting spells : Blackout Combo (228563 effects: #2, #5), Boiling Brew (272792 effect#2), Celestial Flames (325190 effect#1), Breath of the Cosmos (364415 effect#1)
 Family Flags     : 125
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2971,7 +2978,7 @@ Effects          :
 #1 (id=157840)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.60000 | PvP Coefficient: 1.10000 | Target: Friend (21)
 #2 (id=290817)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Soothing Mist (115175), Revival (115310), Vivify (116670), Renewing Mist (119611), Enveloping Mist (124682), Chi Burst (130654), Chi Wave (132463), Refreshing Jade Wind (162530), Essence Font (191840), Gust of Mists (191894), Soothing Mist (198533), Surging Mist (227344), Enveloping Mist (274062), Strength of Spirit (274774), Rising Mist (274912), Revival (297850), Weapons of Order (311123), Expel Harm (322101), Enveloping Breath (325209), Celestial Breath (325212), Soothing Mist (328283), Gust of Mists (328748), Yu'lon's Whisper (337268), Soothing Breath (343737), Gust of Mists (343819), Enveloping Mist (344008), Faeline Stomp (345727)
                    Family Flags: 48, 102
 #3 (id=874900)   : Direct Heal (10)
@@ -4269,6 +4276,7 @@ Spell Level      : 21
 GCD              : 1.5 seconds
 Duration         : 3 seconds
 Cooldown         : 12 seconds
+Affecting spells : Thunder Focus Tea (116680 effects: #4, #5)
 Family Flags     : 107
 Attributes       : ........ ........ x....... ........   ..x...x. ..x..... ........ ....xx.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4629,12 +4637,15 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=344195)   : Apply Aura (6) | Proc Trigger Spell (42): Blackout Combo
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 228563 | Target: Self (1)
+#6 (id=1022294)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Blackout Kick also empowers your next ability:
 
 Tiger Palm: Damage increased by $s1%.
-Breath of Fire: Cooldown reduced by $s2 sec.
+Breath of Fire: Periodic damage increased by $228563s5%, and damage reduction increased by $228563s2%.
 Keg Smash: Reduces the remaining cooldown on your Brews by $s3 additional sec.
-Celestial Brew: Pauses Stagger damage for $s4 sec.
+Celestial Brew: Gain up to $s6 additional stacks of Purified Chi.
+Purifying Brew: Pauses Stagger damage for $s4 sec.
 
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
 Class            : Monk
@@ -5493,14 +5504,18 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Tiger Palm (100780)
                    Family Flags: 10
-#2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -3000 | Scaled Value: -3000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Breath of Fire (115181)
-                   Family Flags: 19
+#2 (id=344192)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Breath of Fire (123725)
+                   Family Flags: 125
 #3 (id=344193)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=344194)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=1022297)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Breath of Fire (123725)
+                   Family Flags: 125
 Description      : $@spelldesc196736
 Tooltip          : Your next ability is empowered.
 
@@ -5573,7 +5588,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=349343)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Enveloping Mist (124682), Enveloping Breath (325209)
                    Family Flags: 79
 Description      : Enveloping Mist increases healing received from your other spells by $s1%.

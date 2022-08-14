@@ -428,7 +428,12 @@ class TraitSet(DataSet):
             if len(node_groups) > 1:
                 logging.warn("Multiple node groups defined for trait tree currency")
 
-            _trait_node_group_map[node_groups[0].id_trait_node_group] = entry.index
+            index = 0
+            if currency.flags == 0x4:
+                index = 1
+            elif currency.flags == 0x8:
+                index = 2
+            _trait_node_group_map[node_groups[0].id_trait_node_group] = index
 
         # Map of trait_node_id, node_data
         _trait_nodes = dict()

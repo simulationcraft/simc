@@ -183,25 +183,6 @@ void writhing_segment_of_drestagath( special_effect_t& );
 
 namespace util
 {
-// feasts initialization helper
-void init_feast( special_effect_t& effect, std::initializer_list<std::pair<stat_e, int>> stat_map )
-{
-  effect.stat = effect.player->convert_hybrid_stat( STAT_STR_AGI_INT );
-  // TODO: Is this actually spec specific?
-  if ( effect.player->role == ROLE_TANK && !effect.player->sim->feast_as_dps )
-    effect.stat = STAT_STAMINA;
-
-  for ( auto&& stat : stat_map )
-  {
-    if ( stat.first == effect.stat )
-    {
-      effect.trigger_spell_id = stat.second;
-      break;
-    }
-  }
-  effect.stat_amount = effect.player->find_spell( effect.trigger_spell_id )->effectN( 1 ).average( effect.player );
-}
-
 std::string tokenized_name( const spell_data_t* spell )
 {
   return ::util::tokenize_fn( spell->name_cstr() );
@@ -234,7 +215,7 @@ void titanic_empowerment( special_effect_t& );
 
 void consumables::galley_banquet( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 259452}, {STAT_AGILITY, 259448}, {STAT_INTELLECT, 259449}, {STAT_STAMINA, 259453}} );
 }
 
@@ -242,7 +223,7 @@ void consumables::galley_banquet( special_effect_t& effect )
 
 void consumables::bountiful_captains_feast( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 259456}, {STAT_AGILITY, 259454}, {STAT_INTELLECT, 259455}, {STAT_STAMINA, 259457}} );
 }
 
@@ -250,7 +231,7 @@ void consumables::bountiful_captains_feast( special_effect_t& effect )
 
 void consumables::famine_evaluator_and_snack_table( special_effect_t& effect )
 {
-  util::init_feast(
+  init_feast(
       effect, {{STAT_STRENGTH, 297118}, {STAT_AGILITY, 297116}, {STAT_INTELLECT, 297117}, {STAT_STAMINA, 297119}} );
 }
 
@@ -258,7 +239,7 @@ void consumables::famine_evaluator_and_snack_table( special_effect_t& effect )
 
 void consumables::boralus_blood_sausage( special_effect_t& effect )
 {
-  util::init_feast( effect, {{STAT_STRENGTH, 290469}, {STAT_AGILITY, 290467}, {STAT_INTELLECT, 290468}} );
+  init_feast( effect, { { STAT_STRENGTH, 290469 }, { STAT_AGILITY, 290467 }, { STAT_INTELLECT, 290468 } } );
 }
 
 // Potion of Rising Death ===================================================
@@ -4457,6 +4438,8 @@ void items::dribbling_inkpod( special_effect_t& effect )
 void items::reclaimed_shock_coil( special_effect_t& effect )
 {
   effect.proc_flags2_ = PF2_CRIT;
+  // damage spell coefficient is overriden by driver coefficient
+  effect.discharge_amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   new dbc_proc_callback_t( effect.player, effect );
 }
@@ -5384,14 +5367,19 @@ void items::shorting_bit_band( special_effect_t& effect )
 
     void execute() override
     {
-      auto numTargets = targets_in_range_list( target_list() ).size();
-      if ( numTargets !=
-           0 )  // We only do anything if target in range; we just eat the proc and do nothing if no targets <=8y
+      const auto& targets = targets_in_range_list( target_list() );
+      if ( targets.size() != 0 ) // Skip action_t::execute if no targets are in range.
       {
-        size_t index = rng().range( numTargets );
-        set_target( targets_in_range_list( target_list() )[ index ] );
+        size_t index = rng().range( targets.size() );
+        set_target( targets[ index ] );
 
         generic_proc_t::execute();
+      }
+      else if ( pre_execute_state )
+      {
+        // If action_t::execute is not called, we need to manually release this state.
+        action_state_t::release( pre_execute_state );
+        pre_execute_state = nullptr;
       }
     }
   };

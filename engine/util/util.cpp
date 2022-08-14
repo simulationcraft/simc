@@ -2564,6 +2564,8 @@ const char* util::trait_definition_op_string( trait_definition_op op )
 {
   switch ( op )
   {
+    case trait_definition_op::TRAIT_OP_NONE:
+      return "none";
     case trait_definition_op::TRAIT_OP_SET:
       return "set";
     case trait_definition_op::TRAIT_OP_MUL:

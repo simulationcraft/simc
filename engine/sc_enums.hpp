@@ -1427,8 +1427,9 @@ enum class talent_tree : unsigned
   SPECIALIZATION
 };
 
-enum trait_definition_op : unsigned
+enum trait_definition_op : int
 {
-  TRAIT_OP_SET = 0,
+  TRAIT_OP_NONE = -1,
+  TRAIT_OP_SET,
   TRAIT_OP_MUL
 };

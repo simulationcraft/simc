@@ -15,6 +15,7 @@ action/spell_base.hpp
 action/variable.hpp
 buff/buff.hpp
 class_modules/apl/apl_death_knight.hpp
+class_modules/apl/apl_evoker.hpp
 class_modules/apl/apl_hunter.hpp
 class_modules/apl/apl_monk.hpp
 class_modules/apl/apl_priest.hpp
@@ -121,6 +122,7 @@ player/stats.hpp
 player/talent.hpp
 player/target_specific.hpp
 player/unique_gear.hpp
+player/unique_gear_dragonflight.hpp
 player/unique_gear_helper.hpp
 player/unique_gear_shadowlands.hpp
 player/weapon.hpp
@@ -198,6 +200,7 @@ action/stats.cpp
 action/variable.cpp
 buff/buff.cpp
 class_modules/apl/apl_death_knight.cpp
+class_modules/apl/apl_evoker.cpp
 class_modules/apl/apl_hunter.cpp
 class_modules/apl/apl_monk.cpp
 class_modules/apl/apl_priest.cpp
@@ -301,6 +304,7 @@ player/talent.cpp
 player/target_specific.cpp
 player/unique_gear.cpp
 player/unique_gear_bfa.cpp
+player/unique_gear_dragonflight.cpp
 player/unique_gear_helper.cpp
 player/unique_gear_legion.cpp
 player/unique_gear_shadowlands.cpp

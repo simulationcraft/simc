@@ -946,3 +946,7 @@
 4644012, DBFilesClient\GlideEvent.db2
 4633656, DBFilesClient\MapRenderScale.db2
 4635649, DBFilesClient\TraitSystem.db2
+4672833, DBFilesClient\ChrCustomizationVoice.db2
+4674394, DBFilesClient\SpellReplacement.db2
+4677533, DBFilesClient\ItemLogicalCost.db2
+4677534, DBFilesClient\ItemLogicalCostGroup.db2

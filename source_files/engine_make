@@ -18,6 +18,7 @@ SRC += \
     action$(PATHSEP)variable.cpp \
     buff$(PATHSEP)buff.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_death_knight.cpp \
+    class_modules$(PATHSEP)apl$(PATHSEP)apl_evoker.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_hunter.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_monk.cpp \
     class_modules$(PATHSEP)apl$(PATHSEP)apl_priest.cpp \
@@ -121,6 +122,7 @@ SRC += \
     player$(PATHSEP)target_specific.cpp \
     player$(PATHSEP)unique_gear.cpp \
     player$(PATHSEP)unique_gear_bfa.cpp \
+    player$(PATHSEP)unique_gear_dragonflight.cpp \
     player$(PATHSEP)unique_gear_helper.cpp \
     player$(PATHSEP)unique_gear_legion.cpp \
     player$(PATHSEP)unique_gear_shadowlands.cpp \

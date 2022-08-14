@@ -21,6 +21,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\action\variable.hpp" />
 		<ClInclude Include="..\engine\buff\buff.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_death_knight.hpp" />
+		<ClInclude Include="..\engine\class_modules\apl\apl_evoker.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_hunter.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_monk.hpp" />
 		<ClInclude Include="..\engine\class_modules\apl\apl_priest.hpp" />
@@ -127,6 +128,7 @@ To change the list of source files run synchronize.py
 		<ClInclude Include="..\engine\player\talent.hpp" />
 		<ClInclude Include="..\engine\player\target_specific.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear.hpp" />
+		<ClInclude Include="..\engine\player\unique_gear_dragonflight.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_helper.hpp" />
 		<ClInclude Include="..\engine\player\unique_gear_shadowlands.hpp" />
 		<ClInclude Include="..\engine\player\weapon.hpp" />
@@ -204,6 +206,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\action\variable.cpp" />
 		<ClCompile Include="..\engine\buff\buff.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_death_knight.cpp" />
+		<ClCompile Include="..\engine\class_modules\apl\apl_evoker.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_hunter.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_monk.cpp" />
 		<ClCompile Include="..\engine\class_modules\apl\apl_priest.cpp" />
@@ -307,6 +310,7 @@ To change the list of source files run synchronize.py
 		<ClCompile Include="..\engine\player\target_specific.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_bfa.cpp" />
+		<ClCompile Include="..\engine\player\unique_gear_dragonflight.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_helper.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_legion.cpp" />
 		<ClCompile Include="..\engine\player\unique_gear_shadowlands.cpp" />

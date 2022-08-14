@@ -565,6 +565,9 @@ struct player_t : public actor_t
     // 9.2 Encrypted Affix Buffs
     buff_t* decrypted_urh_cypher;
     buff_t* decrypted_vy_cypher;
+
+    // 10.0 Buffs
+    buff_t* chilled_clarity;  // potion of chilled clarity
   } buffs;
 
   struct debuffs_t

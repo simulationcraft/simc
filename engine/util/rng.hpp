@@ -14,6 +14,7 @@
 #include <cassert>
 #include <cmath>
 #include <cstdint>
+#include <iterator>
 
 #include "util/timespan.hpp"
 
@@ -90,6 +91,15 @@ public:
 
   /// Timespan exponentially Modified Gaussian Distribution
   timespan_t exgauss( timespan_t mean, timespan_t stddev, timespan_t nu );
+
+  /// Shuffle a range: https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+  template<typename T, typename std::enable_if_t<std::is_same_v<typename std::iterator_traits<T>::iterator_category, std::random_access_iterator_tag>, int> = 0>
+  void shuffle( T first, T last )
+  {
+    size_t n = last - first;
+    for ( size_t i = 0; i < n - 1; i++ )
+      std::swap( first[ i ], first[ range( i, n ) ] );
+  }
 
 private:
   Engine engine;

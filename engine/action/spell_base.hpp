@@ -17,6 +17,7 @@ struct spell_base_t : public action_t
   spell_base_t( action_e at, util::string_view token, player_t* p, const spell_data_t* s );
 
   // Spell Base Overrides
+  double cost() const override;
   timespan_t execute_time() const override;
   result_e   calculate_result( action_state_t* ) const override;
   void   execute() override;

@@ -842,6 +842,7 @@ class ItemDataGenerator(DataGenerator):
                 fields += item.field('class_mask', 'race_mask')
                 fields += [ '{ %s }' % ', '.join(item.field('socket_color_1', 'socket_color_2', 'socket_color_3')) ]
                 fields += item.field('gem_props', 'socket_bonus', 'item_set', 'id_curve', 'id_artifact' )
+                fields += item2.ref('id_crafting_quality').field('tier')
 
                 self.output_record(fields)
 
@@ -1976,6 +1977,19 @@ class SpellDataGenerator(DataGenerator):
           ( 207760, 2 ), # Burning Alive spread radius
           ( 333386, 2 ), ( 333389, 2 ), # Sigil of the Illidari Legendary fake Eye Beam spells
           ( 346504, 2 ), ( 346505, 2 ), # New Sigil of the Illidari Legendary fake Eye Beam spells
+       ),
+
+       # Evoker:
+       (
+          # General
+          ( 372470, 0 ), # Scarlet Adaptation buff
+          ( 370901, 0 ), ( 370917, 0 ), # Leaping Flames buff
+          # Devastation
+          ( 386399, 1 ), # Iridescence: Blue buff
+          ( 375802, 1 ), # Burnout buff
+          ( 376850, 1 ), # Power Swell buff
+          # Preservation
+          ( 369299, 2 ), # Preservation Essence Burst
        ),
     ]
 

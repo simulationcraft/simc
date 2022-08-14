@@ -808,6 +808,7 @@ enum effect_type_t : unsigned {
     E_254 = 254,
     E_255 = 255,
     E_256 = 256,
+    E_REDUCE_REMAINING_COOLDOWN = 290,
     E_MAX
 };
 
@@ -1143,7 +1144,7 @@ enum effect_subtype_t : unsigned {
     A_327 = 327,
     A_328 = 328,
     A_329 = 329,
-    A_330 = 330,
+    A_CAST_WHILE_MOVING_WHITELIST = 330,
     A_331 = 331,
     A_OVERRIDE_ACTION_SPELL = 332,
     A_333 = 333,
