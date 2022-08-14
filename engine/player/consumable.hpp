@@ -8,6 +8,8 @@
 #include "item/special_effect.hpp"
 #include "util/string_view.hpp"
 
+#include <memory>
+
 struct action_t;
 struct player_t;
 struct item_t;
