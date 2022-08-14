@@ -1436,7 +1436,7 @@ struct living_flame_t : public evoker_spell_t
       if ( auto n = base_t::p()->buff.leaping_flames->check() )
         return 1 + n;
       else
-        return base_t::n_targets();
+        return Base::n_targets();
     }
 
     std::vector<player_t*>& target_list() const override
