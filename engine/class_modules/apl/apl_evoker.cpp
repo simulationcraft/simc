@@ -66,11 +66,11 @@ void devastation( player_t* p )
   
 }
 
-void preservation( player_t* p )
+void preservation( player_t* /*p*/ )
 {
 }
 
-void no_spec( player_t* p )
+void no_spec( player_t* /*p*/ )
 {
 }
 

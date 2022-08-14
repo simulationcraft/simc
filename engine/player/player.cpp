@@ -9902,7 +9902,7 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
   auto spec_trait_offset   = class_select_offset + 1 + class_select_bytes;
   auto spec_trait_bytes    = char_array.find( hash[ spec_trait_offset ] );
   auto spec_select_offset  = spec_trait_offset + 1 + spec_trait_bytes;
-  auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
+  // auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
 
   auto get_next_bit = [ hash ]( size_t idx, size_t offset ) -> size_t {
     size_t byte = char_array.find( hash[ offset + 1 + idx / 3 ] );
@@ -9918,7 +9918,7 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
     return 0;
   };
 
-  auto get_select_trait = [ &do_error ]( auto begin, auto end, int key ) -> const trait_data_t* {
+  auto get_select_trait = []( auto begin, auto end, int key ) -> const trait_data_t* {
     auto it = std::find_if( begin, end, [ key ]( std::pair<int, const trait_data_t*> entry ) {
       return entry.first == key;
     } );

@@ -1045,8 +1045,8 @@ public:
       gain( gains_t() ),
       mastery( masteries_t() ),
       proc( procs_t() ),
-      spec( specializations_t() ),
       talent( talents_t() ),
+      spec( specializations_t() ),
       uptime( uptimes_t() ),
       cov( covenant_t() ),
       conduit( conduit_t() ),
@@ -2687,15 +2687,14 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_dot_debuffs[<S|C[,...]>]( func, spell_data_t* dot[, spell_data_t* spell|conduit_data_t conduit][,...] )
+  // Syntax: parse_dot_debuffs[<S[,...]>]( func, spell_data_t* dot[, spell_data_t* spell][,...] )
   //  func = function returning the dot_t* of the dot
   //  dot = spell data of the dot
-  //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
-  //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the dot
+  //  S = optional list of template parameter to indicate spell with redirect effects
+  //  spell = optional list of spell with redirect effects that modify the effects on the dot
   void apply_dot_debuffs()
   {
     using S = const spell_data_t*;
-    using C = const conduit_data_t&;
 
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
                           p()->spec.adaptive_swarm_damage, p()->spec.balance );
@@ -3288,7 +3287,6 @@ public:
     if ( data().ok() )
     {
       using S = const spell_data_t*;
-      using C = const conduit_data_t&;
 
       snapshots.bloodtalons =
           parse_persistent_buff_effects( p->buff.bloodtalons, 0U, false );
@@ -4917,7 +4915,7 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
 struct rage_of_the_sleeper_t : public bear_attack_t
 {
   rage_of_the_sleeper_t( druid_t* p, std::string_view opt )
-    : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper )
+    : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper, opt )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     base_dd_min = base_dd_max = 0.0;  // effect#2 is parsed as 100000000 damage
@@ -5231,7 +5229,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   {}
 
   frenzied_regeneration_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_heal_t( n, p, s, opt ), goe_mul( 0.0 ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown )
+    : druid_heal_t( n, p, s, opt ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown ), goe_mul( 0.0 )
   {
     target = p;
 
@@ -6656,7 +6654,7 @@ struct innervate_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "mark_of_the_wild", p, p->find_class_spell( "Mark of the Wild" ) )
+    : druid_spell_t( "mark_of_the_wild", p, p->find_class_spell( "Mark of the Wild" ), opt )
   {
     harmful = false;
     ignore_false_positive = true;
@@ -6950,7 +6948,7 @@ struct moonfire_t : public druid_spell_t
       /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
-      if ( is_aoe() && tl.size() > aoe )
+      if ( is_aoe() && as<int>( tl.size( )) > aoe )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );

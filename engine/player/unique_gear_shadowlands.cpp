@@ -6019,11 +6019,6 @@ void hack_and_gore( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
-void ripped_secrets( special_effect_t& effect )
-{
-
-}
-
 void branding_blade( special_effect_t& effect )
 {
   auto ripped      = new special_effect_t( effect.player );
