@@ -153,8 +153,6 @@ void dot_t::refresh_duration( uint32_t state_flags )
       current_action->type == ACTION_HEAL ? result_amount_type::HEAL_OVER_TIME : result_amount_type::DMG_OVER_TIME );
 
   refresh( current_action->composite_dot_duration( state ) );
-
-  current_action->stats->add_refresh( state->target );
 }
 
 /* Reset Dot
@@ -889,6 +887,8 @@ void dot_t::refresh( timespan_t duration )
     sim.print_debug( "{} refreshes {} ({}) on {}{}. old_remains={} refresh_duration={} duration={}", *source, *this,
                      stack, *target, current_action->dot_refreshable( this, duration ) ? " (no penalty)" : "",
                      remaining_duration, duration, current_duration );
+
+  current_action->stats->add_refresh( state->target );
 }
 
 void dot_t::check_tick_zero( bool start )
