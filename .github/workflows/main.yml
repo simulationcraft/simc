@@ -124,6 +124,7 @@ jobs:
           ccache -s
 
       - uses: actions/cache@v2
+        if: ${{ github.ref_name == env.MAIN_BRANCH }}
         with:
           path: |
             ${{ runner.workspace }}/b/ninja/simc
