@@ -5813,6 +5813,24 @@ struct elemental_blast_t : public shaman_spell_t
     {
       p()->buff.magma_chamber->expire();
     }
+
+    if ( p()->legendary.windspeakers_lava_resurgence.ok() || p()->talent.windspeakers_lava_resurgence.ok() )
+    {
+      p()->buff.windspeakers_lava_resurgence->trigger();
+
+      if ( p()->buff.lava_surge->check() )
+      {
+        p()->proc.wasted_lava_surge->occur();
+      }
+
+      p()->proc.lava_surge_windspeakers_lava_resurgence->occur();
+      if ( !p()->executing || p()->executing->id != 51505 )
+      {
+        p()->cooldown.lava_burst->reset( true );
+      }
+
+      p()->buff.lava_surge->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -9998,7 +10016,7 @@ void shaman_t::create_buffs()
                      ->set_default_value( talent.icefury->effectN( 2 ).percent() );
 
   buff.master_of_the_elements = make_buff( this, "master_of_the_elements", talent.master_of_the_elements->effectN(1).trigger() )
-          ->set_default_value( talent.master_of_the_elements->effectN( 1 ).trigger()->effectN( 1 ).percent() );
+          ->set_default_value( talent.master_of_the_elements->effectN( 2 ).percent() );
   buff.wind_gust = make_buff( this, "wind_gust", find_spell( 263806 ) )
                        ->set_default_value( find_spell( 263806 )->effectN( 1 ).percent() );
 
