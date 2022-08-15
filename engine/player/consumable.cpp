@@ -5,24 +5,25 @@
 
 #include "consumable.hpp"
 
-#include "dbc/dbc.hpp"
-#include "sc_enums.hpp"
-#include "player.hpp"
 #include "action/action.hpp"
 #include "action/heal.hpp"
 #include "buff/buff.hpp"
+#include "dbc/dbc.hpp"
+#include "item/item.hpp"
+#include "player.hpp"
+#include "player/unique_gear.hpp"
+#include "sc_enums.hpp"
 #include "sim/cooldown.hpp"
 #include "sim/expressions.hpp"
 #include "sim/sim.hpp"
-#include "item/item.hpp"
-#include "player/unique_gear.hpp"
 #include "util/rng.hpp"
 #include "util/static_map.hpp"
 #include "util/string_view.hpp"
 
 #include <string>
 
-namespace { // UNNAMED NAMESPACE
+namespace
+{  // UNNAMED NAMESPACE
 
 // Find a consumable of a given subtype, see data_enum.hh for type values.
 // Returns 0 if not found.
@@ -85,11 +86,8 @@ struct elixir_t : public action_t
   const elixir_data_t* data;
   stat_buff_t* buff;
 
-  elixir_t( player_t* p, util::string_view options_str ) :
-    action_t( ACTION_USE, "elixir", p ),
-    gain( p -> get_gain( "elixir" ) ),
-    data( nullptr ),
-    buff( nullptr )
+  elixir_t( player_t* p, util::string_view options_str )
+    : action_t( ACTION_USE, "elixir", p ), gain( p->get_gain( "elixir" ) ), data( nullptr ), buff( nullptr )
   {
     std::string type_str;
 
@@ -107,25 +105,23 @@ struct elixir_t : public action_t
         break;
       }
     }
-    if ( ! data )
+    if ( !data )
     {
-      sim -> error( "Player {} attempting to use unsupported elixir '{}'.\n",
-                     player -> name(), type_str );
+      sim->error( "Player {} attempting to use unsupported elixir '{}'.\n", player->name(), type_str );
       background = true;
     }
     else
     {
-      double amount = data -> stat_amount;
-      buff = make_buff<stat_buff_t>( player, fmt::format( "{}_elixir", data -> name ) )
-             ->add_stat( data -> st, amount );
+      double amount = data->stat_amount;
+      buff = make_buff<stat_buff_t>( player, fmt::format( "{}_elixir", data->name ) )->add_stat( data->st, amount );
       buff->set_duration( timespan_t::from_minutes( 60 ) );
-      if ( data -> type == elixir::BATTLE )
+      if ( data->type == elixir::BATTLE )
       {
-        player -> consumables.battle_elixir = buff;
+        player->consumables.battle_elixir = buff;
       }
-      else if ( data -> type == elixir::GUARDIAN )
+      else if ( data->type == elixir::GUARDIAN )
       {
-        player -> consumables.guardian_elixir = buff;
+        player->consumables.guardian_elixir = buff;
       }
     }
   }
@@ -136,36 +132,40 @@ struct elixir_t : public action_t
 
     assert( buff );
 
-    buff -> trigger();
+    buff->trigger();
 
-    if ( data -> st == STAT_STAMINA )
+    if ( data->st == STAT_STAMINA )
     {
       // Cap Health for stamina elixir if used outside of combat
-      if ( ! p.in_combat )
+      if ( !p.in_combat )
       {
-        p.resource_gain( RESOURCE_HEALTH,
-                         p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
+        p.resource_gain( RESOURCE_HEALTH, p.resources.max[ RESOURCE_HEALTH ] - p.resources.current[ RESOURCE_HEALTH ] );
       }
     }
 
-    sim->print_log( "{} uses elixir {}.", p.name(), data -> name );
-
+    sim->print_log( "{} uses elixir {}.", p.name(), data->name );
   }
   bool ready() override
   {
-    if ( ! player -> sim -> allow_flasks )
+    if ( !player->sim->allow_flasks )
       return false;
 
-    if ( player -> consumables.flask &&  player -> consumables.flask -> check() )
+    if ( player->consumables.flask && player->consumables.flask->check() )
       return false;
 
     assert( data );
 
-    if ( data -> type == elixir::BATTLE && player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+    if ( data->type == elixir::BATTLE && player->consumables.battle_elixir &&
+         player->consumables.battle_elixir->check() )
+    {
       return false;
+    }
 
-    if ( data -> type == elixir::GUARDIAN && player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+    if ( data->type == elixir::GUARDIAN && player->consumables.guardian_elixir &&
+         player->consumables.guardian_elixir->check() )
+    {
       return false;
+    }
 
     return action_t::ready();
   }
@@ -181,8 +181,8 @@ struct mana_potion_t : public action_t
   int min;
   int max;
 
-  mana_potion_t( player_t* p, util::string_view options_str ) :
-    action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
+  mana_potion_t( player_t* p, util::string_view options_str )
+    : action_t( ACTION_USE, "mana_potion", p ), trigger( 0 ), min( 0 ), max( 0 )
   {
     add_option( opt_int( "min", min ) );
     add_option( opt_int( "max", max ) );
@@ -206,7 +206,7 @@ struct mana_potion_t : public action_t
       for ( const auto& entry : entries )
       {
         min = max = entry.value;
-        if ( player -> level() > entry.level)
+        if ( player->level() > entry.level )
         {
           break;
         }
@@ -224,19 +224,18 @@ struct mana_potion_t : public action_t
 
   void execute() override
   {
-    sim -> print_log( "{} uses Mana potion", player -> name() );
+    sim->print_log( "{} uses Mana potion", player->name() );
     double gain = rng().range( min, max );
-    player -> resource_gain( RESOURCE_MANA, gain, player -> gains.mana_potion );
-    player -> potion_used = true;
+    player->resource_gain( RESOURCE_MANA, gain, player->gains.mana_potion );
+    player->potion_used = true;
   }
 
   bool ready() override
   {
-    if ( player -> potion_used )
+    if ( player->potion_used )
       return false;
 
-    if ( ( player -> resources.max    [ RESOURCE_MANA ] -
-           player -> resources.current[ RESOURCE_MANA ] ) < trigger )
+    if ( ( player->resources.max[ RESOURCE_MANA ] - player->resources.current[ RESOURCE_MANA ] ) < trigger )
       return false;
 
     return action_t::ready();
@@ -251,14 +250,13 @@ struct health_stone_t : public heal_t
 {
   int charges;
 
-  health_stone_t( player_t* p, util::string_view options_str ) :
-    heal_t( "health_stone", p ), charges( 3 )
+  health_stone_t( player_t* p, util::string_view options_str ) : heal_t( "health_stone", p ), charges( 3 )
   {
     add_option( opt_float( "pct_heal", base_pct_heal ) );
     parse_options( options_str );
 
-    cooldown -> duration = timespan_t::from_minutes( 2 );
-    trigger_gcd = timespan_t::zero();
+    cooldown->duration = 2_min;
+    trigger_gcd = 0_ms;
 
     harmful = false;
     may_crit = true;
@@ -269,7 +267,9 @@ struct health_stone_t : public heal_t
   }
 
   void reset() override
-  { charges = 3; }
+  {
+    charges = 3;
+  }
 
   void execute() override
   {
@@ -283,9 +283,9 @@ struct health_stone_t : public heal_t
     if ( charges <= 0 )
       return false;
 
-    if ( ! if_expr )
+    if ( !if_expr )
     {
-      if ( player -> resources.pct( RESOURCE_HEALTH ) > ( 1 - base_pct_heal ) )
+      if ( player->resources.pct( RESOURCE_HEALTH ) > ( 1 - base_pct_heal ) )
         return false;
     }
 
@@ -299,17 +299,21 @@ struct health_stone_t : public heal_t
 
 struct dbc_consumable_base_t : public action_t
 {
-  std::string              consumable_name;
-  const dbc_item_data_t*   item_data;
+  std::string consumable_name;
+  const dbc_item_data_t* item_data;
   item_subclass_consumable type;
 
-  action_t*                consumable_action;
-  buff_t*                  consumable_buff;
-  bool                     opt_disabled; // Disabled through a consumable-specific "disabled" keyword
+  action_t* consumable_action;
+  buff_t* consumable_buff;
+  bool opt_disabled;  // Disabled through a consumable-specific "disabled" keyword
 
-  dbc_consumable_base_t( player_t* p, util::string_view name_str ) :
-    action_t( ACTION_USE, name_str, p ), item_data( nullptr ), type( ITEM_SUBCLASS_CONSUMABLE ),
-    consumable_action( nullptr ), consumable_buff( nullptr ), opt_disabled( false )
+  dbc_consumable_base_t( player_t* p, util::string_view name_str )
+    : action_t( ACTION_USE, name_str, p ),
+      item_data( nullptr ),
+      type( ITEM_SUBCLASS_CONSUMABLE ),
+      consumable_action( nullptr ),
+      consumable_buff( nullptr ),
+      opt_disabled( false )
   {
     add_option( opt_string( "name", consumable_name ) );
     add_option( opt_string( "type", consumable_name ) );
@@ -336,7 +340,9 @@ struct dbc_consumable_base_t : public action_t
 
   // Needed to satisfy normal execute conditions
   result_e calculate_result( action_state_t* ) const override
-  { return RESULT_HIT; }
+  {
+    return RESULT_HIT;
+  }
 
   void execute() override
   {
@@ -344,24 +350,28 @@ struct dbc_consumable_base_t : public action_t
 
     if ( consumable_action )
     {
-      consumable_action -> execute();
+      consumable_action->execute();
     }
 
     if ( consumable_buff )
     {
-      consumable_buff -> trigger();
+      consumable_buff->trigger();
     }
   }
 
   // Figure out the default consumable for a given type
   virtual std::string consumable_default() const
-  { return {}; }
+  {
+    return {};
+  }
 
   // Consumable type is fully disabled; base class just returns the option state (for the consumable
   // type). Consumable type specialized classes take into account other options (i.e., the allow_X
   // sim-wide options)
   virtual bool disabled_consumable() const
-  { return opt_disabled; }
+  {
+    return opt_disabled;
+  }
 
   void init() override
   {
@@ -379,18 +389,18 @@ struct dbc_consumable_base_t : public action_t
       opt_disabled = util::str_compare_ci( consumable_default(), "disabled" );
     }
 
-    if ( ! disabled_consumable() )
+    if ( !disabled_consumable() )
     {
-      item_data = find_consumable( *player -> dbc, consumable_name, type );
+      item_data = find_consumable( *player->dbc, consumable_name, type );
 
       try
       {
         initialize_consumable();
       }
-      catch (const std::exception&)
+      catch ( const std::exception& )
       {
-        std::throw_with_nested( std::invalid_argument(fmt::format("Unable to initialize consumable '{}' from '{}'",
-            signature_str, consumable_name)));
+        std::throw_with_nested( std::invalid_argument(
+            fmt::format( "Unable to initialize consumable '{}' from '{}'", signature_str, consumable_name ) ) );
       }
     }
 
@@ -401,7 +411,7 @@ struct dbc_consumable_base_t : public action_t
   // example custom flasks)
   virtual const spell_data_t* driver() const
   {
-    if ( ! item_data )
+    if ( !item_data )
     {
       return spell_data_t::not_found();
     }
@@ -411,7 +421,7 @@ struct dbc_consumable_base_t : public action_t
       // Note, bypasses level check from the spell itself, since it seems some consumable spells are
       // flagged higher level than the actual food they are in.
       auto ptr = dbc::find_spell( player, effect.spell_id );
-      if ( ptr && ptr -> id() == effect.spell_id )
+      if ( ptr && ptr->id() == effect.spell_id )
       {
         return ptr;
       }
@@ -425,8 +435,8 @@ struct dbc_consumable_base_t : public action_t
   virtual special_effect_t* create_special_effect()
   {
     auto effect = new consumable::consumable_effect_t( player, item_data );
-    effect -> type = SPECIAL_EFFECT_USE;
-    effect -> source = SPECIAL_EFFECT_SOURCE_ITEM;
+    effect->type = SPECIAL_EFFECT_USE;
+    effect->source = SPECIAL_EFFECT_SOURCE_ITEM;
 
     return effect;
   }
@@ -436,34 +446,35 @@ struct dbc_consumable_base_t : public action_t
   // with potions for example).
   virtual void initialize_consumable()
   {
-    if ( driver() -> id() == 0 )
+    if ( driver()->id() == 0 )
     {
-      throw std::invalid_argument("Unable to find consumable.");
+      throw std::invalid_argument( "Unable to find consumable." );
     }
 
     // populate ID and spell data for better reporting
-    id = driver() -> id();
+    id = driver()->id();
     s_data_reporting = driver();
     name_str_reporting = s_data_reporting->name_cstr();
     util::tokenize( name_str_reporting );
 
-    auto effect = unique_gear::find_special_effect( player, driver() -> id(), SPECIAL_EFFECT_USE );
+    auto effect = unique_gear::find_special_effect( player, driver()->id(), SPECIAL_EFFECT_USE );
     // No special effect for this consumable found, so create one
-    if ( ! effect )
+    if ( !effect )
     {
       effect = create_special_effect();
-      unique_gear::initialize_special_effect( *effect, driver() -> id() );
+      unique_gear::initialize_special_effect( *effect, driver()->id() );
 
       // First special effect initialization phase could not deduce a proper consumable to create
-      if ( effect -> type == SPECIAL_EFFECT_NONE )
+      if ( effect->type == SPECIAL_EFFECT_NONE )
       {
-        throw std::invalid_argument("First special effect initialization phase could not deduce a proper consumable to create.");
+        throw std::invalid_argument(
+            "First special effect initialization phase could not deduce a proper consumable to create." );
       }
 
       // Note, this needs to be added before initializing the (potentially) custom special effect,
       // since find_special_effect for this same driver needs to find this newly created special
       // effect, not anything the custom init might create.
-      player -> special_effects.push_back( effect );
+      player->special_effects.push_back( effect );
 
       // Finally, initialize the special effect. If it's a plain old stat buff this does nothing,
       // but some consumables require custom initialization.
@@ -471,8 +482,8 @@ struct dbc_consumable_base_t : public action_t
     }
 
     // And then, grab the action and buff from the special effect, if they are enabled
-    consumable_action = effect -> create_action();
-    consumable_buff = effect -> create_buff();
+    consumable_action = effect->create_action();
+    consumable_buff = effect->create_buff();
     if ( consumable_buff )
       consumable_buff->s_data_reporting = s_data_reporting;
   }
@@ -494,8 +505,7 @@ struct dbc_consumable_base_t : public action_t
 
 struct flask_base_t : public dbc_consumable_base_t
 {
-  flask_base_t( player_t* p, util::string_view name, util::string_view options_str ) :
-    dbc_consumable_base_t( p, name )
+  flask_base_t( player_t* p, util::string_view name, util::string_view options_str ) : dbc_consumable_base_t( p, name )
   {
     // Backwards compatibility reasons
     parse_options( options_str );
@@ -504,19 +514,21 @@ struct flask_base_t : public dbc_consumable_base_t
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || !sim -> allow_flasks; }
+  {
+    return dbc_consumable_base_t::disabled_consumable() || !sim->allow_flasks;
+  }
 
   // Figure out the default consumable for flasks
   std::string consumable_default() const override
   {
-    if ( ! player -> flask_str.empty() )
+    if ( !player->flask_str.empty() )
     {
-      return player -> flask_str;
+      return player->flask_str;
     }
     // Class module default, if defined
-    else if ( ! player -> default_flask().empty() )
+    else if ( !player->default_flask().empty() )
     {
-      return player -> default_flask();
+      return player->default_flask();
     }
 
     return {};
@@ -529,7 +541,7 @@ struct flask_base_t : public dbc_consumable_base_t
   special_effect_t* create_special_effect() override
   {
     auto e = dbc_consumable_base_t::create_special_effect();
-    e -> trigger_spell_id = driver() -> id();
+    e->trigger_spell_id = driver()->id();
     return e;
   }
 
@@ -537,9 +549,9 @@ struct flask_base_t : public dbc_consumable_base_t
   {
     dbc_consumable_base_t::init();
 
-    if ( ! background )
+    if ( !background )
     {
-      player -> consumables.flask = consumable_buff;
+      player->consumables.flask = consumable_buff;
     }
   }
 
@@ -560,22 +572,24 @@ struct flask_base_t : public dbc_consumable_base_t
       if ( ep->ok() )
         mul *= 1.0 + ep->effectN( 1 ).percent();  // While all effects have the same value, effect#1 applies to flasks
 
-      range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
+      range::for_each( buff->stats, [ mul ]( stat_buff_t::buff_stat_t& s ) {
+        s.amount *= mul;
+      } );
     }
   }
 
   bool ready() override
   {
-    if ( ! player -> consumables.flask )
+    if ( !player->consumables.flask )
       return false;
 
-    if ( player -> consumables.flask && player -> consumables.flask -> check() )
+    if ( player->consumables.flask && player->consumables.flask->check() )
       return false;
 
-    if ( player -> consumables.battle_elixir && player -> consumables.battle_elixir -> check() )
+    if ( player->consumables.battle_elixir && player->consumables.battle_elixir->check() )
       return false;
 
-    if( player -> consumables.guardian_elixir && player -> consumables.guardian_elixir -> check() )
+    if ( player->consumables.guardian_elixir && player->consumables.guardian_elixir->check() )
       return false;
 
     return dbc_consumable_base_t::ready();
@@ -584,29 +598,31 @@ struct flask_base_t : public dbc_consumable_base_t
 
 struct flask_t : public flask_base_t
 {
-  flask_t( player_t* p, util::string_view options_str ) :
-    flask_base_t( p, "flask", options_str )
-  { }
+  flask_t( player_t* p, util::string_view options_str ) : flask_base_t( p, "flask", options_str ) {}
 };
 
 struct oralius_whispering_crystal_t : public flask_base_t
 {
-  oralius_whispering_crystal_t( player_t* p, util::string_view options_str ) :
-    flask_base_t( p, "oralius_whispering_crystal", options_str )
-  { }
+  oralius_whispering_crystal_t( player_t* p, util::string_view options_str )
+    : flask_base_t( p, "oralius_whispering_crystal", options_str )
+  {}
 
   const spell_data_t* driver() const override
-  { return player -> find_spell( 176151 ); }
+  {
+    return player->find_spell( 176151 );
+  }
 };
 
 struct crystal_of_insanity_t : public flask_base_t
 {
-  crystal_of_insanity_t( player_t* p, util::string_view options_str ) :
-    flask_base_t( p, "crystal_of_insanity", options_str )
-  { }
+  crystal_of_insanity_t( player_t* p, util::string_view options_str )
+    : flask_base_t( p, "crystal_of_insanity", options_str )
+  {}
 
   const spell_data_t* driver() const override
-  { return player -> find_spell( 127230 ); }
+  {
+    return player->find_spell( 127230 );
+  }
 };
 
 // ==========================================================================
@@ -633,29 +649,31 @@ struct potion_t : public dbc_consumable_base_t
     auto refined = p->find_soulbind_spell( "Refined Palate" );
     if ( refined->ok() )
     {
-      dur_mod_low  = refined->effectN( 1 ).percent();
+      dur_mod_low = refined->effectN( 1 ).percent();
       dur_mod_high = refined->effectN( 2 ).percent();
     }
 
     type = ITEM_SUBCLASS_POTION;
-    cooldown = player -> get_cooldown( "potion" );
+    cooldown = player->get_cooldown( "potion" );
 
     // Note, potions pretty much have to be targeted to an enemy so expressions still work.
-    target = p -> target;
+    target = p->target;
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_potions); }
+  {
+    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>( sim->allow_potions );
+  }
 
   std::string consumable_default() const override
   {
-    if ( ! player -> potion_str.empty() )
+    if ( !player->potion_str.empty() )
     {
-      return player -> potion_str;
+      return player->potion_str;
     }
-    else if ( ! player -> default_potion().empty() )
+    else if ( !player->default_potion().empty() )
     {
-      return player -> default_potion();
+      return player->default_potion();
     }
 
     return {};
@@ -689,7 +707,7 @@ struct potion_t : public dbc_consumable_base_t
       }
     }
 
-    if ( cooldown -> duration == 0_ms )
+    if ( cooldown->duration == 0_ms )
     {
       throw std::invalid_argument( fmt::format( "No cooldown found for potion '{}'.", item_data->name ) );
     }
@@ -711,11 +729,11 @@ struct potion_t : public dbc_consumable_base_t
 
     pre_pot_time = 0_ms;
 
-    std::for_each( it + 1, apl.end(), [this]( action_t* a ) {
+    std::for_each( it + 1, apl.end(), [ this ]( action_t* a ) {
       if ( a->action_ready() )
       {
         timespan_t delta =
-          std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
+            std::max( std::max( a->base_execute_time, a->trigger_gcd ) * a->composite_haste(), a->min_gcd );
         sim->print_debug( "PRECOMBAT: {} pre-pot timing pushed by {} for {}", consumable_name, delta, a->name() );
         pre_pot_time += delta;
 
@@ -777,8 +795,7 @@ struct potion_t : public dbc_consumable_base_t
 
 struct augmentation_t : public dbc_consumable_base_t
 {
-  augmentation_t( player_t* p, util::string_view options_str ) :
-    dbc_consumable_base_t( p, "augmentation" )
+  augmentation_t( player_t* p, util::string_view options_str ) : dbc_consumable_base_t( p, "augmentation" )
   {
     parse_options( options_str );
 
@@ -787,18 +804,18 @@ struct augmentation_t : public dbc_consumable_base_t
 
   bool disabled_consumable() const override
   {
-    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_augmentations);
+    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>( sim->allow_augmentations );
   }
 
   std::string consumable_default() const override
   {
-    if ( ! player -> rune_str.empty() )
+    if ( !player->rune_str.empty() )
     {
-      return player -> rune_str;
+      return player->rune_str;
     }
-    else if ( ! player -> default_rune().empty() )
+    else if ( !player->default_rune().empty() )
     {
-      return player -> default_rune();
+      return player->default_rune();
     }
 
     return {};
@@ -807,12 +824,12 @@ struct augmentation_t : public dbc_consumable_base_t
   // Custom driver for now, we don't really want to include the item data for now
   const spell_data_t* driver() const override
   {
-    if      ( util::str_in_str_ci( consumable_name, "defiled" ) ) return player->find_spell( 224001 );
-    else if ( util::str_in_str_ci( consumable_name, "focus"   ) ) return player->find_spell( 175457 );
-    else if ( util::str_in_str_ci( consumable_name, "hyper"   ) ) return player->find_spell( 175456 );
-    else if ( util::str_in_str_ci( consumable_name, "stout"   ) ) return player->find_spell( 175439 );
+    if      ( util::str_in_str_ci( consumable_name, "defiled"        ) ) return player->find_spell( 224001 );
+    else if ( util::str_in_str_ci( consumable_name, "focus"          ) ) return player->find_spell( 175457 );
+    else if ( util::str_in_str_ci( consumable_name, "hyper"          ) ) return player->find_spell( 175456 );
+    else if ( util::str_in_str_ci( consumable_name, "stout"          ) ) return player->find_spell( 175439 );
     else if ( util::str_in_str_ci( consumable_name, "battle_scarred" ) ) return player->find_spell( 270058 );
-    else if ( util::str_in_str_ci( consumable_name, "veiled" ) ) return player->find_spell( 347901 );
+    else if ( util::str_in_str_ci( consumable_name, "veiled"         ) ) return player->find_spell( 347901 );
     else return spell_data_t::not_found();
   }
 
@@ -822,16 +839,16 @@ struct augmentation_t : public dbc_consumable_base_t
 
     if ( consumable_buff )
     {
-      player -> consumables.augmentation = consumable_buff;
+      player->consumables.augmentation = consumable_buff;
     }
   }
 
   bool ready() override
   {
-    if ( ! player -> consumables.augmentation )
+    if ( !player->consumables.augmentation )
       return false;
 
-    if ( player -> consumables.augmentation && player -> consumables.augmentation -> check() )
+    if ( player->consumables.augmentation && player->consumables.augmentation->check() )
       return false;
 
     return action_t::ready();
@@ -854,8 +871,7 @@ static constexpr auto __manual_food_map = util::make_static_map<util::string_vie
 
 struct food_t : public dbc_consumable_base_t
 {
-  food_t( player_t* p, util::string_view options_str ) :
-    dbc_consumable_base_t( p, "food" )
+  food_t( player_t* p, util::string_view options_str ) : dbc_consumable_base_t( p, "food" )
   {
     parse_options( options_str );
 
@@ -863,17 +879,19 @@ struct food_t : public dbc_consumable_base_t
   }
 
   bool disabled_consumable() const override
-  { return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>(sim -> allow_food); }
+  {
+    return dbc_consumable_base_t::disabled_consumable() || !static_cast<bool>( sim->allow_food );
+  }
 
   std::string consumable_default() const override
   {
-    if ( ! player -> food_str.empty() )
+    if ( !player->food_str.empty() )
     {
-      return player -> food_str;
+      return player->food_str;
     }
-    else if ( ! player -> default_food().empty() )
+    else if ( !player->default_food().empty() )
     {
-      return player -> default_food();
+      return player->default_food();
     }
 
     return {};
@@ -885,7 +903,7 @@ struct food_t : public dbc_consumable_base_t
 
     if ( consumable_buff )
     {
-      player -> consumables.food = consumable_buff;
+      player->consumables.food = consumable_buff;
     }
   }
 
@@ -897,7 +915,7 @@ struct food_t : public dbc_consumable_base_t
 
     if ( item_data )
     {
-      effect -> name_str = util::tokenize_fn( item_data -> name );
+      effect->name_str = util::tokenize_fn( item_data->name );
     }
 
     return effect;
@@ -914,22 +932,21 @@ struct food_t : public dbc_consumable_base_t
     auto it = __manual_food_map.find( consumable_name );
     if ( it != __manual_food_map.end() )
     {
-      return player -> find_spell( it -> second );
+      return player->find_spell( it->second );
     }
 
     // Figure out base food buff (the spell you cast from the food item)
     const spell_data_t* driver = dbc_consumable_base_t::driver();
-    if ( driver -> id() == 0 )
+    if ( driver->id() == 0 )
     {
       return driver;
     }
 
     // Find the "Well Fed" buff from the base food
-    for ( const spelleffect_data_t& effect : driver -> effects() )
+    for ( const spelleffect_data_t& effect : driver->effects() )
     {
       // Return the "Well Fed" effect of the food (might not always be named well fed)
-      if ( effect.type() == E_APPLY_AURA &&
-           effect.subtype() == A_PERIODIC_TRIGGER_SPELL &&
+      if ( effect.type() == E_APPLY_AURA && effect.subtype() == A_PERIODIC_TRIGGER_SPELL &&
            effect.period() == timespan_t::from_millis( 10000 ) )
       {
         return effect.trigger();
@@ -963,23 +980,25 @@ struct food_t : public dbc_consumable_base_t
       if ( ep->ok() )
         mul *= 1.0 + ep->effectN( 2 ).percent();  // While all effects have the same value, effect#2 applies to well fed
 
-      range::for_each( buff->stats, [mul]( stat_buff_t::buff_stat_t& s ) { s.amount *= mul; } );
+      range::for_each( buff->stats, [ mul ]( stat_buff_t::buff_stat_t& s ) {
+        s.amount *= mul;
+      } );
     }
   }
 
   bool ready() override
   {
-    if ( ! player -> consumables.food )
+    if ( !player->consumables.food )
       return false;
 
-    if ( player -> consumables.food && player -> consumables.food -> check() )
+    if ( player->consumables.food && player->consumables.food->check() )
       return false;
 
     return dbc_consumable_base_t::ready();
   }
 };
 
-} // END UNNAMED NAMESPACE
+}  // END UNNAMED NAMESPACE
 
 consumable::consumable_effect_t::consumable_effect_t( player_t* player, const dbc_item_data_t* item_data )
   : special_effect_t( player )
@@ -1001,21 +1020,19 @@ consumable::consumable_effect_t::consumable_effect_t( player_t* player, const db
 // consumable_t::create_action
 // ==========================================================================
 
-action_t* consumable::create_action( player_t*          p,
-                                     util::string_view name,
-                                     util::string_view options_str )
+action_t* consumable::create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
-  if ( name == "potion"               ) return new       potion_t( p, options_str );
-  if ( name == "flask"                ) return new        flask_t( p, options_str );
-  if ( name == "elixir"               ) return new       elixir_t( p, options_str );
-  if ( name == "food"                 ) return new         food_t( p, options_str );
-  if ( name == "health_stone"         ) return new health_stone_t( p, options_str );
-  if ( name == "mana_potion"          ) return new  mana_potion_t( p, options_str );
-  if ( name == "augmentation"         ) return new augmentation_t( p, options_str );
+  if ( name == "potion"       ) return new       potion_t( p, options_str );
+  if ( name == "flask"        ) return new        flask_t( p, options_str );
+  if ( name == "elixir"       ) return new       elixir_t( p, options_str );
+  if ( name == "food"         ) return new         food_t( p, options_str );
+  if ( name == "health_stone" ) return new health_stone_t( p, options_str );
+  if ( name == "mana_potion"  ) return new  mana_potion_t( p, options_str );
+  if ( name == "augmentation" ) return new augmentation_t( p, options_str );
 
   // Misc consumables
   if ( name == "oralius_whispering_crystal" ) return new oralius_whispering_crystal_t( p, options_str );
-  if ( name == "crystal_of_insanity" ) return new crystal_of_insanity_t( p, options_str );
+  if ( name == "crystal_of_insanity"        ) return new        crystal_of_insanity_t( p, options_str );
 
   return nullptr;
 }
