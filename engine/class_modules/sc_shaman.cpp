@@ -5738,6 +5738,16 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
     affected_by_master_of_the_elements = true;
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
+
+
   void execute() override
   {
     // Trigger buff before executing the spell, because apparently the buffs affect the cast result
@@ -5766,6 +5776,16 @@ struct elemental_blast_t : public shaman_spell_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
+
+
   void execute() override
   {
     shaman_spell_t::execute();
@@ -5787,6 +5807,11 @@ struct elemental_blast_t : public shaman_spell_t
     if ( p()->talent.surge_of_power->ok() )
     {
       p()->buff.surge_of_power->trigger();
+    }
+
+    if ( p()->buff.magma_chamber->up() )
+    {
+      p()->buff.magma_chamber->expire();
     }
   }
 
@@ -6012,6 +6037,15 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
     spell_power_mod.direct = 0.2346 * player->talent.mountains_will_fall->effectN( 1 ).percent();
   }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
 };
 
 struct earthquake_overload_t : public earthquake_base_t
@@ -6045,6 +6079,15 @@ struct earthquake_damage_t : public earthquake_damage_base_t
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
     spell_power_mod.direct = 0.2346;
+  }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
   }
 };
 
@@ -6109,6 +6152,11 @@ struct earthquake_t : public earthquake_base_t
     if ( p()->talent.surge_of_power->ok() )
     {
       p()->buff.surge_of_power->trigger();
+    }
+
+    if ( p()->buff.magma_chamber->up() )
+    {
+      p()->buff.magma_chamber->expire();
     }
   }
 };
@@ -6236,6 +6284,15 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
   {
     affected_by_master_of_the_elements = true;
   }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
 };
 
 struct earth_shock_t : public shaman_spell_t
@@ -6253,6 +6310,16 @@ struct earth_shock_t : public shaman_spell_t
       overload = new earth_shock_overload_t( player, this );
     }
   }
+
+  double action_multiplier() const override
+  {
+    double m = shaman_spell_t::action_multiplier();
+
+    m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    return m;
+  }
+
 
   void execute() override
   {
@@ -6296,11 +6363,17 @@ struct earth_shock_t : public shaman_spell_t
         p()->proc.pyroclastic_shock->occur();
       }
     }
+
     if ( p()->talent.further_beyond->ok() && p()->buff.ascendance->up() )
     {
       p()->buff.ascendance->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->buff.oath_of_the_far_seer->extend_duration( p(), p()->talent.further_beyond->effectN( 1 ).time_value() );
       p()->proc.further_beyond->occur();
+    }
+
+    if ( p()->buff.magma_chamber->up() )
+    {
+      p()->buff.magma_chamber->expire();
     }
   }
 
@@ -9945,7 +10018,6 @@ void shaman_t::create_buffs()
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
 
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
-                            // TODO Elemental: confirm 5% vs 0.5% as default value
                             ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
 
   buff.oath_of_the_far_seer = make_buff<buff_t>( this, "oath_of_the_far_seer", talent.oath_of_the_far_seer )
