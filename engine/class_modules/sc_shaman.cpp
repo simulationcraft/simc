@@ -1292,12 +1292,13 @@ public:
   gain_t* gain;
   double maelstrom_gain;
   double maelstrom_gain_coefficient;
-  bool enable_enh_mastery_scaling;
 
   bool affected_by_molten_weapon;
   bool affected_by_natures_fury;
   bool affected_by_ns_cost;
   bool affected_by_ns_cast_time;
+  bool affected_by_enh_mastery_da;
+  bool affected_by_enh_mastery_ta;
 
   bool may_proc_bron;
   proc_t* bron_proc;
@@ -1312,11 +1313,12 @@ public:
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
-      enable_enh_mastery_scaling( false ),
       affected_by_molten_weapon( false ),
       affected_by_natures_fury( false ),
       affected_by_ns_cost( false ),
       affected_by_ns_cast_time( false ),
+      affected_by_enh_mastery_da( false ),
+      affected_by_enh_mastery_ta( false ),
       may_proc_bron( false ), bron_proc( nullptr )
   {
     ab::may_crit = true;
@@ -1344,6 +1346,9 @@ public:
     affected_by_ns_cost = ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) );
     affected_by_ns_cast_time =
       ab::data().affected_by( player->talent.natures_swiftness->effectN( 1 ) );
+
+    affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
+    affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
   }
 
   std::string full_name() const
@@ -1418,24 +1423,33 @@ public:
     return m;
   }
 
+  double action_da_multiplier() const override
+  {
+    double m = ab::action_da_multiplier();
+
+    if ( affected_by_enh_mastery_da )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    return m;
+  }
+
+  double action_ta_multiplier() const override
+  {
+    double m = ab::action_ta_multiplier();
+
+    if ( affected_by_enh_mastery_ta )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    return m;
+  }
+
   double action_multiplier() const override
   {
     double m = ab::action_multiplier();
-
-    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
-    {
-      if ( ( dbc::is_school( this->school, SCHOOL_FIRE ) || dbc::is_school( this->school, SCHOOL_FROST ) ||
-             dbc::is_school( this->school, SCHOOL_NATURE ) ) &&
-           p()->mastery.enhanced_elements->ok() )
-      {
-        if ( ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 1 ) ) ||
-             ab::data().affected_by( p()->mastery.enhanced_elements->effectN( 5 ) ) || enable_enh_mastery_scaling )
-        {
-          //...hopefully blizzard never makes direct and periodic scaling different from eachother in our mastery..
-          m *= 1.0 + p()->cache.mastery_value();
-        }
-      }
-    }
 
     if ( affected_by_molten_weapon && p()->buff.molten_weapon->check() )
     {
@@ -1889,7 +1903,7 @@ public:
 
     if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE &&
          this->p()->talent.improved_flametongue_weapon.ok() &&
-         dbc::is_school(this->school, SCHOOL_FIRE) )
+         dbc::is_school( this->school, SCHOOL_FIRE ) )
     {
       // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
       m *= 1.0 + 0.05;
@@ -3051,17 +3065,13 @@ struct flametongue_weapon_spell_t : public shaman_spell_t  // flametongue_attack
     : shaman_spell_t( n, player, player->find_spell( 10444 ) )
   {
     may_crit = background      = true;
-    enable_enh_mastery_scaling = true;
 
-    if ( player->specialization() == SHAMAN_ENHANCEMENT )
+    snapshot_flags          = STATE_AP;
+    attack_power_mod.direct = 0.0264;
+
+    if ( player->main_hand_weapon.type != WEAPON_NONE )
     {
-      snapshot_flags          = STATE_AP;
-      attack_power_mod.direct = 0.0264;
-
-      if ( player->main_hand_weapon.type != WEAPON_NONE )
-      {
-        attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
-      }
+      attack_power_mod.direct *= player->main_hand_weapon.swing_time.total_seconds() / 2.6;
     }
   }
 };
@@ -4121,8 +4131,8 @@ struct weapon_imbue_t : public shaman_spell_t
     if ( player->items[ slot ].active() &&
          player->items[ slot ].parsed.temporary_enchant_id > 0 )
     {
-      sim->error( "Player {} has a temporary enchant on slot {}, disabling {}",
-        player->name(), util::slot_type_string( slot ), name() );
+      sim->error( "Player {} has a temporary enchant {} on slot {}, disabling {}",
+        player->name(), util::slot_type_string( slot ), player->items[ slot ].parsed.temporary_enchant_id, name() );
     }
   }
 
@@ -4189,7 +4199,10 @@ struct flametongue_weapon_t : public weapon_imbue_t
 {
   flametongue_weapon_t( shaman_t* player, util::string_view options_str ) :
     weapon_imbue_t( "flametongue_weapon", player,
-                    SLOT_OFF_HAND, player->find_class_spell( "Flametongue Weapon" ), options_str )
+                    player->specialization() == SHAMAN_ENHANCEMENT
+                    ? SLOT_OFF_HAND
+                    : SLOT_MAIN_HAND,
+                    player->find_class_spell( "Flametongue Weapon" ), options_str )
   {
     imbue = FLAMETONGUE_IMBUE;
 
@@ -11113,12 +11126,14 @@ void shaman_t::init_action_list()
   }
 
   // After error checks, initialize secondary actions for various things
+  windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
+  flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this,
+      specialization() == SHAMAN_ENHANCEMENT
+      ? &( off_hand_weapon )
+      : &( main_hand_weapon ) );
+
   if ( specialization() == SHAMAN_ENHANCEMENT )
   {
-    windfury_mh = new windfury_attack_t( "windfury_attack", this, find_spell( 25504 ), &( main_hand_weapon ) );
-
-    flametongue = new flametongue_weapon_spell_t( "flametongue_attack", this, &( off_hand_weapon ) );
-
     icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
 
     action.molten_weapon_dot = new molten_weapon_dot_t( this );
