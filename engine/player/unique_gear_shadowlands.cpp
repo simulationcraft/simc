@@ -4285,79 +4285,66 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
 // TODO: Add proc restrictions to match the weapons or expansion options.
 void cruciform_veinripper(special_effect_t& effect)
 {
-  struct cruciform_veinripper_cb_t : public dbc_proc_callback_t
-  {
-    double proc_modifier_override;
-
-    cruciform_veinripper_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect ),
-      proc_modifier_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate )
+    struct cruciform_veinripper_cb_t : public dbc_proc_callback_t
     {
-    }
+        double time_behind_pct;
 
-    void trigger( action_t* a, action_state_t* s ) override
-    {
-      assert( rppm );
-      assert( s->target );
-      
-      double proc_modifier = 1.0;
-      if ( proc_modifier_override > 0.0 )
-      {
-        proc_modifier = proc_modifier_override;
-      }
-      else
-      {
-        // CC'd/Snared mobs appear to take the full proc rate, which does not work on bosses
-        // The "from behind" rate is roughly half the CC'd target rate in the spell data
-        if ( s->target->is_boss() )
+        cruciform_veinripper_cb_t(const special_effect_t& effect) : dbc_proc_callback_t(effect.player, effect),
+            time_behind_pct(effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate)
         {
-          proc_modifier = 0.5;
-          if ( a->player->position() == POSITION_FRONT )
-          {
+        }
+
+        void trigger(action_t* a, action_state_t* s) override
+        {
+            assert(rppm);
+            assert(s->target);
+
+            double proc_modifier = s->target->is_boss() ? 0.5 : 1.0;
+
             // Generalize default tank "behind boss" time as ~40% when no manual modifier is specified
             // This does not proc from the front at all, but tanks are always position front for sims
-            proc_modifier *= a->player->role == ROLE_TANK ? 0.4 : 0.0;
-          }
+            // TODO: Is the ROLE_TANK necessary here?
+            if (a->player->position() == POSITION_FRONT && a->player->role == ROLE_TANK)
+                proc_modifier *= time_behind_pct > 0.0 ? time_behind_pct : 0.4;
+
+            if (proc_modifier != rppm->get_modifier())
+            {
+                effect.player->sim->print_debug("Player {} adjusts {} rppm modifer: old={} new={}",
+                    *a->player, effect, rppm->get_modifier(), proc_modifier);
+                rppm->set_modifier(proc_modifier);
+            }
+
+            dbc_proc_callback_t::trigger(a, s);
         }
-      }
+    };
 
-      if ( proc_modifier != rppm->get_modifier() )
-      {
-        effect.player->sim->print_debug( "Player {} adjusts {} rppm modifer: old={} new={}",
-                                         *a->player, effect, rppm->get_modifier(), proc_modifier);
-        rppm->set_modifier( proc_modifier );
-      }
-
-      dbc_proc_callback_t::trigger( a, s );
-    }
-  };
-
-  struct sadistic_glee_t : public proc_spell_t
-  {
-    double scaled_dmg;
-
-    sadistic_glee_t(const special_effect_t& e)
-      : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item),
-        scaled_dmg(e.driver()->effectN(1).average(e.item))
+    struct sadistic_glee_t : public proc_spell_t
     {
-      base_td = scaled_dmg;
-    }
+        double scaled_dmg;
 
-    double base_ta(const action_state_t* /* s */) const override
-    {
-      return scaled_dmg;
-    }
-  };
+        sadistic_glee_t(const special_effect_t& e)
+            : proc_spell_t("sadistic_glee", e.player, e.player->find_spell(353466), e.item),
+            scaled_dmg(e.driver()->effectN(1).average(e.item))
+        {
+            base_td = scaled_dmg;
+        }
 
-  auto sadistic_glee = static_cast<sadistic_glee_t*>(effect.player->find_action("sadistic_glee"));
+        double base_ta(const action_state_t* /* s */) const override
+        {
+            return scaled_dmg;
+        }
+    };
 
-  if (!sadistic_glee)
-    effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
-  else
-    sadistic_glee->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
+    auto sadistic_glee = static_cast<sadistic_glee_t*>(effect.player->find_action("sadistic_glee"));
 
-  effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
+    if (!sadistic_glee)
+        effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
+    else
+        sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
 
-  new cruciform_veinripper_cb_t( effect );
+    effect.spell_id = effect.driver()->effectN(1).trigger_spell_id();
+
+    new cruciform_veinripper_cb_t(effect);
 }
 	
 void jotungeirr_destinys_call(special_effect_t& effect)
