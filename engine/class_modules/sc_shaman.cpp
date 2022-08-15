@@ -1876,7 +1876,7 @@ public:
     t *= 1.0 + this->p()->spell.maelstrom_weapon->effectN( 1 ).percent() *
       maelstrom_weapon_stacks();
 
-    return t;
+    return std::max( t, 0_s );
   }
 
   double action_multiplier() const override
