@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44999
-static const std::array<spelltext_data_t, 17870> __spelltext_data { {
+static const std::array<spelltext_data_t, 17874> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16209,6 +16209,10 @@ static const std::array<spelltext_data_t, 17870> __spelltext_data { {
   { 371299, "$@spelldesc371287 $d.", 0, 0 },
   { 371301, "$@spelldesc371287 $d.", 0, 0 },
   { 371339, "Infuse yourself with the power of the elements, periodically granting you elemental boons. Each boon increases a secondary stat by $s1 and grants a bonus effect.\r\n\r\nLasts $d and through death. Consuming a second will add another $d.", "Periodically gaining an elemental boon. Each boon increases a secondary stat by $w1 and grants a bonus effect.", 0 },
+  { 371348, 0, "Critical strike increased by $w1. Damage dealt by critical strikes increased by $w2%.", 0 },
+  { 371350, 0, "Haste increased by $w1.\r\nMovement speed increased by $M2%.", 0 },
+  { 371351, 0, "Mastery increased by $w1.\r\nDamage taken reduced by $M2%.", 0 },
+  { 371353, 0, "Versatility increased by $w1. Healing dealt by critical strikes increased by $w2%.", 0 },
   { 371354, "Your $pri is increased by $s1 for each enemy that is attacking you, stacking up to $371355u times.\r\n\r\nLasts $d and through death. Consuming a second will add another $d.", "Your $pri is increased by $w1 for each enemy that has attacked you in the last $s2 sec, stacking up to $371355u times.", 0 },
   { 371355, "$@spelldesc371354", "$pri increased by $w1.", 0 },
   { 371386, "Your $pri is increased by $s1 while at least $371385A1 yds from allies. You will retain $M2% of this stat for $384713d after being near an ally.\r\n\r\nLasts $d and through death. Consuming a second will add another $d.", "Your $pri is increased by $w1 while at least $371385A1 yds from allies. $w2% of this stat will linger for $384713d after being near an ally.", 0 },

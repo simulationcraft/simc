@@ -16,6 +16,7 @@ namespace unique_gear::dragonflight
 {
 namespace consumables
 {
+void phial_of_elemental_chaos( special_effect_t& );
 void bottled_putrescence( special_effect_t& );
 void chilled_clarity( special_effect_t& );
 void shocking_disclosure( special_effect_t& );

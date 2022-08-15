@@ -1011,6 +1011,7 @@ consumable::consumable_effect_t::consumable_effect_t( player_t* player, const db
     consumable_item->parsed.data.name = item_data->name;
     consumable_item->parsed.data.id = item_data->id;
     consumable_item->parsed.data.level = item_data->level;
+    consumable_item->parsed.data.inventory_type = INVTYPE_TRINKET;  // DF consumables use trinket CR multipliers
 
     item = consumable_item.get();
   }
@@ -1022,13 +1023,13 @@ consumable::consumable_effect_t::consumable_effect_t( player_t* player, const db
 
 action_t* consumable::create_action( player_t* p, util::string_view name, util::string_view options_str )
 {
-  if ( name == "potion"       ) return new       potion_t( p, options_str );
-  if ( name == "flask"        ) return new        flask_t( p, options_str );
-  if ( name == "elixir"       ) return new       elixir_t( p, options_str );
-  if ( name == "food"         ) return new         food_t( p, options_str );
-  if ( name == "health_stone" ) return new health_stone_t( p, options_str );
-  if ( name == "mana_potion"  ) return new  mana_potion_t( p, options_str );
-  if ( name == "augmentation" ) return new augmentation_t( p, options_str );
+  if ( name == "potion"                   ) return new       potion_t( p, options_str );
+  if ( name == "flask" || name == "phial" ) return new        flask_t( p, options_str );
+  if ( name == "elixir"                   ) return new       elixir_t( p, options_str );
+  if ( name == "food"                     ) return new         food_t( p, options_str );
+  if ( name == "health_stone"             ) return new health_stone_t( p, options_str );
+  if ( name == "mana_potion"              ) return new  mana_potion_t( p, options_str );
+  if ( name == "augmentation"             ) return new augmentation_t( p, options_str );
 
   // Misc consumables
   if ( name == "oralius_whispering_crystal" ) return new oralius_whispering_crystal_t( p, options_str );

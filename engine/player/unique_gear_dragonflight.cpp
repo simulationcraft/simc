@@ -19,6 +19,51 @@ namespace unique_gear::dragonflight
 {
 namespace consumables
 {
+void phial_of_elemental_chaos( special_effect_t& effect )
+{
+  if ( create_fallback_buffs( effect, { "elemental_chaos_fire", "elemental_chaos_air", "elemental_chaos_earth",
+                                        "elemental_chaos_frost" } ) )
+  {
+    return;
+  }
+
+  auto buff = buff_t::find( effect.player, "phial_of_elemental_chaos" );
+  if ( !buff )
+  {
+    std::vector<buff_t*> buff_list;
+    auto amount = effect.driver()->effectN( 1 ).average( effect.item );
+    auto duration = effect.driver()->effectN( 1 ).period();
+
+    effect.player->buffs.elemental_chaos_fire = buff_list.emplace_back(
+        make_buff<stat_buff_t>( effect.player, "elemental_chaos_fire", effect.player->find_spell( 371348 ) )
+            ->add_stat( STAT_CRIT_RATING, amount )
+            ->set_default_value_from_effect_type( A_MOD_CRIT_DAMAGE_BONUS )
+            ->set_duration( duration ) );
+    effect.player->buffs.elemental_chaos_air = buff_list.emplace_back(
+        make_buff<stat_buff_t>( effect.player, "elemental_chaos_air", effect.player->find_spell( 371350 ) )
+            ->add_stat( STAT_HASTE_RATING, amount )
+            ->set_default_value_from_effect_type( A_MOD_SPEED_ALWAYS )
+            ->set_duration( duration ) );
+    effect.player->buffs.elemental_chaos_earth = buff_list.emplace_back(
+        make_buff<stat_buff_t>( effect.player, "elemental_chaos_earth", effect.player->find_spell( 371351 ) )
+            ->add_stat( STAT_MASTERY_RATING, amount )
+            ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN )
+            ->set_duration( duration ) );
+    effect.player->buffs.elemental_chaos_frost = buff_list.emplace_back(
+        make_buff<stat_buff_t>( effect.player, "elemental_chaos_frost", effect.player->find_spell( 371353 ) )
+            ->add_stat( STAT_VERSATILITY_RATING, amount )
+            ->set_default_value_from_effect_type( A_MOD_CRITICAL_HEALING_AMOUNT )
+            ->set_duration( duration ) );
+
+    buff = make_buff( effect.player, "phial_of_elemental_chaos", effect.driver() )
+      ->set_tick_callback( [ buff_list ]( buff_t* b, int, timespan_t ) {
+        buff_list[ b->rng().range( buff_list.size() ) ]->trigger();
+      } );
+  }
+
+  effect.custom_buff = buff;
+}
+
 void bottled_putrescence( special_effect_t& effect )
 {
   struct bottled_putrescence_t : public proc_spell_t
@@ -117,6 +162,9 @@ namespace items
 void register_special_effects()
 {
   // Food
+  // Phials
+  register_special_effect( 371339, consumables::phial_of_elemental_chaos );
+
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
   register_special_effect( 371149, consumables::chilled_clarity );
@@ -124,7 +172,6 @@ void register_special_effects()
   register_special_effect( 371152, consumables::chilled_clarity );
   register_special_effect( 370816, consumables::shocking_disclosure );
 
-  // Phials
   // Enchants
   // Trinkets
   // Weapons
