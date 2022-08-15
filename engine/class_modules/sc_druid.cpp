@@ -3553,10 +3553,6 @@ public:
 
     if ( harmful )
     {
-      // Track benefit of damage buffs
-      p()->buff.tigers_fury->up();
-      p()->buff.savage_roar->up();
-
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p()->buff.incarnation_cat->up();
     }
@@ -6131,7 +6127,7 @@ struct adaptive_swarm_t : public druid_spell_t
       double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
 
       // inherits from druid_spell_t so does not get automatic persistent multiplier parsing
-      if ( !state( s )->jump && p()->buff.tigers_fury->check() )
+      if ( !state( s )->jump && p()->buff.tigers_fury->up() )
         pm *= 1.0 + tf_mul;
 
       return pm;
