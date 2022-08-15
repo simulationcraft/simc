@@ -64,6 +64,114 @@ void phial_of_elemental_chaos( special_effect_t& effect )
   effect.custom_buff = buff;
 }
 
+void phial_of_glacial_fury( special_effect_t& effect )
+{
+  // Damage proc
+  struct glacial_fury_t : public proc_spell_t
+  {
+    const buff_t* buff;
+
+    glacial_fury_t( const special_effect_t& e, const buff_t* b )
+      : proc_spell_t( "glacial_fury", e.player, e.driver()->effectN( 2 ).trigger() ), buff( b )
+    {
+      base_dd_min = base_dd_max = e.driver()->effectN( 3 ).average( e.item );
+    }
+
+    double composite_aoe_multiplier( const action_state_t* s ) const override
+    {
+      // spell data is flagged to ignore all caster multpliers, so da_multiplier is not snapshot. however, the 15% per
+      // buff does take effect and as this is an aoe action, we can use composite_aoe_multiplier without having  to
+      // adjust snapshot flags.
+      return proc_spell_t::composite_aoe_multiplier( s ) * ( 1.0 + buff->check_stack_value() );
+    }
+  };
+
+  // Buff that triggers when you hit a new target
+  auto new_target_buff = buff_t::find( effect.player, "glacial_fury" );
+  if ( !new_target_buff )
+  {
+    new_target_buff = make_buff( effect.player, "glacial_fury", effect.player->find_spell( 373265 ) )
+      ->set_default_value( effect.driver()->effectN( 4 ).percent() );
+  }
+  // effect to trigger damage proc
+  auto damage_effect            = new special_effect_t( effect.player );
+  damage_effect->type           = SPECIAL_EFFECT_EQUIP;
+  damage_effect->source         = SPECIAL_EFFECT_SOURCE_ITEM;
+  damage_effect->spell_id       = effect.spell_id;
+  damage_effect->cooldown_      = 0_ms;
+  damage_effect->execute_action = create_proc_action<glacial_fury_t>( "glacial_fury", effect, new_target_buff );
+  effect.player->special_effects.push_back( damage_effect );
+
+  // callback to proc damage
+  auto damage_cb = new dbc_proc_callback_t( effect.player, *damage_effect );
+  damage_cb->initialize();
+  damage_cb->deactivate();
+
+  // effect to trigger new target buff
+  auto new_target_effect          = new special_effect_t( effect.player );
+  new_target_effect->name_str     = "glacial_fury_new_target";
+  new_target_effect->type         = SPECIAL_EFFECT_EQUIP;
+  new_target_effect->source       = SPECIAL_EFFECT_SOURCE_ITEM;
+  new_target_effect->proc_chance_ = 1.0;
+  new_target_effect->proc_flags_  = PF_ALL_DAMAGE | PF_PERIODIC;
+  new_target_effect->proc_flags2_ = PF2_ALL_HIT | PF2_PERIODIC_DAMAGE;
+  new_target_effect->custom_buff  = new_target_buff;
+  effect.player->special_effects.push_back( new_target_effect );
+
+  // callback to trigger buff on attacking a new target
+  struct glacial_fury_buff_cb_t : public dbc_proc_callback_t
+  {
+    std::vector<int> target_list;
+
+    glacial_fury_buff_cb_t( const special_effect_t& e ) : dbc_proc_callback_t( e.player, e ) {}
+
+    void execute( action_t* a, action_state_t* s ) override
+    {
+      if ( !a->harmful )
+        return;
+
+      if ( range::contains( target_list, s->target->actor_spawn_index ) )
+        return;
+
+      dbc_proc_callback_t::execute( a, s );
+      target_list.push_back( s->target->actor_spawn_index );
+    }
+
+    void reset() override
+    {
+      dbc_proc_callback_t::reset();
+      target_list.clear();
+    }
+  };
+
+  auto new_target_cb = new glacial_fury_buff_cb_t( *new_target_effect );
+  new_target_cb->initialize();
+  new_target_cb->deactivate();
+
+  // Phial buff itself
+  auto buff = buff_t::find( effect.player, "phial_of_glacial_fury" );
+  if ( !buff )
+  {
+    buff = make_buff( effect.player, "phial_of_glacial_fury", effect.driver() )
+      ->set_cooldown( 0_ms )
+      ->set_chance( 1.0 )
+      ->set_stack_change_callback( [ damage_cb, new_target_cb ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+        {
+          damage_cb->activate();
+          new_target_cb->activate();
+        }
+        else
+        {
+          damage_cb->deactivate();
+          new_target_cb->deactivate();
+        }
+      } );
+  }
+
+  effect.custom_buff = buff;
+}
+
 void bottled_putrescence( special_effect_t& effect )
 {
   struct bottled_putrescence_t : public proc_spell_t
@@ -164,6 +272,7 @@ void register_special_effects()
   // Food
   // Phials
   register_special_effect( 371339, consumables::phial_of_elemental_chaos );
+  register_special_effect( 373257, consumables::phial_of_glacial_fury );
 
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
