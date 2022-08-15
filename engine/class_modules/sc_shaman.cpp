@@ -1831,10 +1831,12 @@ public:
   bool affected_by_maelstrom_weapon = false;
 
   int mw_consume_max_stack;
+  // Cache execute MW multiplier into a variable upon cast finish
+  double mw_multiplier;
 
   shaman_spell_base_t( util::string_view n, shaman_t* player,
                        const spell_data_t* s = spell_data_t::nil() )
-    : ab( n, player, s ), mw_consume_max_stack( 0 )
+    : ab( n, player, s ), mw_consume_max_stack( 0 ), mw_multiplier( 0.0 )
   {
     if ( this->data().affected_by( player->spell.maelstrom_weapon->effectN( 1 ) ) )
     {
@@ -1883,17 +1885,11 @@ public:
   {
     double m = ab::action_multiplier();
 
-    auto mw_stacks = maelstrom_weapon_stacks();
-    if ( mw_stacks && affected_by_maelstrom_weapon )
-    {
-      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
-                           this->p()->talent.focused_maelstrom->effectN( 1 ).percent() +
-                           this->p()->conduit.focused_lightning.percent();
+    m *= 1.0 + mw_multiplier;
 
-      m *= 1.0 + stack_value * mw_stacks;
-    }
-
-    if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE && this->p()->talent.improved_flametongue_weapon.ok() && dbc::is_school(this->school, SCHOOL_FIRE) )
+    if ( this->p()->main_hand_weapon.buff_type == FLAMETONGUE_IMBUE &&
+         this->p()->talent.improved_flametongue_weapon.ok() &&
+         dbc::is_school(this->school, SCHOOL_FIRE) )
     {
       // spelldata doesn't have the 5% yet. It's hardcoded in the tooltip.
       m *= 1.0 + 0.05;
@@ -1902,8 +1898,34 @@ public:
     return m;
   }
 
+  void compute_mw_multiplier()
+  {
+    mw_multiplier = 0.0;
+
+    auto mw_stacks = maelstrom_weapon_stacks();
+    if ( mw_stacks && affected_by_maelstrom_weapon )
+    {
+      double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
+                           this->p()->talent.focused_maelstrom->effectN( 1 ).percent() +
+                           this->p()->conduit.focused_lightning.percent();
+
+      mw_multiplier = stack_value * mw_stacks;
+    }
+
+    if ( this->sim->debug && mw_multiplier )
+    {
+      this->sim->out_debug.print( "{} {} mw_affected={}, mw_benefit={}, mw_consumed={}, mw_stacks={}, mw_multiplier={}",
+          this->player->name(), this->name(), affected_by_maelstrom_weapon, benefit_from_maelstrom_weapon(),
+          consume_maelstrom_weapon(), mw_stacks, mw_multiplier );
+    }
+  }
+
   void execute() override
   {
+    // Compute and cache Maelstrom Weapon multiplier before executing the spell. MW multiplier is
+    // used to compute the damage of the spell, either during execute or during impact (Lava Burst).
+    compute_mw_multiplier();
+
     ab::execute();
 
     // for benefit tracking purpose
@@ -1920,7 +1942,6 @@ public:
     }
 
     auto stacks = maelstrom_weapon_stacks();
-    auto cast_time = execute_time();
     if ( stacks && consume_maelstrom_weapon() )
     {
       this->p()->buff.maelstrom_weapon->decrement( stacks );
@@ -1948,7 +1969,7 @@ public:
     }
 
     // Main hand swing timer resets if the MW-affected spell is not instant cast
-    if ( affected_by_maelstrom_weapon && cast_time > 0_ms )
+    if ( affected_by_maelstrom_weapon && execute_time() > 0_ms )
     {
       if ( this->p()->main_hand_attack && this->p()->main_hand_attack->execute_event )
       {
