@@ -4288,9 +4288,11 @@ void cruciform_veinripper(special_effect_t& effect)
   struct cruciform_veinripper_cb_t : public dbc_proc_callback_t
   {
     double proc_modifier_override;
+    double proc_modifier_in_front_override;
 
     cruciform_veinripper_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect ),
-      proc_modifier_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate )
+      proc_modifier_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate ),
+      proc_modifier_in_front_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_in_front_rate )
     {
     }
 
@@ -4304,14 +4306,18 @@ void cruciform_veinripper(special_effect_t& effect)
       {
         proc_modifier = proc_modifier_override;
       }
-      else
+      else if( s->target->is_boss() )
       {
         // CC'd/Snared mobs appear to take the full proc rate, which does not work on bosses
         // The "from behind" rate is roughly half the CC'd target rate in the spell data
-        if ( s->target->is_boss() )
+        proc_modifier = 0.5;
+        if ( a->player->position() == POSITION_FRONT )
         {
-          proc_modifier = 0.5;
-          if ( a->player->position() == POSITION_FRONT )
+          if ( proc_modifier_in_front_override > 0.0 )
+          {
+            proc_modifier *= proc_modifier_in_front_override;
+          }
+          else
           {
             // Generalize default tank "behind boss" time as ~40% when no manual modifier is specified
             // This does not proc from the front at all, but tanks are always position front for sims
