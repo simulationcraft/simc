@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44999
-static const std::array<spelltext_data_t, 17875> __spelltext_data { {
+static const std::array<spelltext_data_t, 17878> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16184,6 +16184,7 @@ static const std::array<spelltext_data_t, 17875> __spelltext_data { {
   { 371039, "Consume this vile concoction to instantly heal yourself for $s1, but suffer that same amount as Plague damage over $371850d.", "Suffering $s2 damage every second.", 0 },
   { 371052, "Reduces the imbiber's casting speed by $@371052M1 but reduces all mana costs by $@371052M2 for $d seconds.\r\n\r\nToxic.", "Casting speed reduced by $M1%. All mana costs reduced by $M2%.", 0 },
   { 371055, "Use upon a fallen ally to spread restorative spores nearby, which cling to allies and heal them for ${$s1*($371087d/$371087t)} over $371087d. Usable on yourself while dead.", "Spreading restorative spores.", 0 },
+  { 371070, 0, "Feeling the toxic effects of a recently consumed potion or phial. Suffering $W% of your maximum health every $t sec.", 0 },
   { 371087, 0, "Healing for $s1 every $t second.", 0 },
   { 371124, "The imbiber gains invisibility for $d.", "Invisible.", 0 },
   { 371125, "Drink to gain invisibility for $M seconds.", 0, 0 },
@@ -16386,7 +16387,9 @@ static const std::array<spelltext_data_t, 17875> __spelltext_data { {
   { 373926, "Icebound Fortitude's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 373930, "Chains of Ice affects $s1 additional nearby enemy.", 0, 0 },
   { 374000, "Gain Corrupting Rage which grants $s2 Critical Strike rating. After suffering 100% of your health in damage, you briefly swap to Overwhelming Rage which causes you to take $M3% of your health as Nature damage over 30 sec.\r\n\r\nLasts $d and through death. Consuming a second will add another $d.", "Gain Corrupting Rage which grants $w2 Critical Strike until you have suffered $M3% of your health, then become afflicted by Overwhelming Rage for $M4 sec before the cycle begins anew.", 0 },
+  { 374002, 0, "Critical Strike increased by $w1. Upon suffering a total of $M2% of your health damage, convert to Overwhelming Rage.", 0 },
   { 374030, "Increases Leech by $s1%.", 0, 0 },
+  { 374037, 0, "Suffering $w1% of your maximum health as Frost damage every $t sec.", 0 },
   { 374049, "Increases Avoidance by $s2%.", 0, 0 },
   { 374087, "Blasts nearby enemies with $s1 Frost damage.", 0, 0 },
   { 374111, "Increases Strength by $s1%.", 0, 0 },

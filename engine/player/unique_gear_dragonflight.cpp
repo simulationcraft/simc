@@ -182,9 +182,6 @@ void phial_of_static_empowerment( special_effect_t& effect )
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
     primary->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
-    auto speed = make_buff<stat_buff_t>( effect.player, "mobile_empowerment", effect.player->find_spell( 370773 ) )
-      ->add_stat( STAT_SPEED_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
-
     buff = make_buff( effect.player, "phial_of_static_empowerment", effect.driver() )
       ->set_cooldown( 0_ms )
       ->set_period( 0_ms )
@@ -195,28 +192,60 @@ void phial_of_static_empowerment( special_effect_t& effect )
           primary->expire();
       } );
 
+    auto speed = make_buff<stat_buff_t>( effect.player, "mobile_empowerment", effect.player->find_spell( 370773 ) )
+      ->add_stat( STAT_SPEED_RATING, effect.driver()->effectN( 2 ).average( effect.item ) )
+      ->set_stack_change_callback( [ buff, primary ]( buff_t*, int, int new_ ) {
+        if ( !new_ && buff->check() )
+          primary->trigger();
+      } );
+
     primary->set_stack_change_callback( [ buff, speed ]( buff_t*, int, int new_ ) {
-      if ( buff->check() )
-      {
-        if ( new_ )
-          speed->expire();
-        else
-          speed->trigger();
-      }
+      if ( !new_ && buff->check() )
+        speed->trigger();
     } );
 
     if ( effect.player->buffs.movement )
     {
       effect.player->buffs.movement->set_stack_change_callback( [ primary, speed, buff ]( buff_t*, int, int new_ ) {
-        if ( buff->check() )
-        {
-          if ( new_ )
-            primary->expire();
-          else
-            primary->trigger();
-        }
+        if ( new_ && buff->check() )
+          primary->expire();
       } );
     }
+  }
+
+  effect.custom_buff = buff;
+}
+
+// TODO: implement reasonabl model of losing buff due to damage taken. note that 'rotting from within' randomly procced
+// from using toxic phial/potions will eventually cause you to lose the buff, even if you are taking 0 external damage.
+void iced_phial_of_corrupting_rage( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "iced_phial_of_corrupting_rage" );
+  if ( !buff )
+  {
+    auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
+      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+    buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
+      ->set_cooldown( 0_ms )
+      ->set_chance( 1.0 )
+      ->set_stack_change_callback( [ crit ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          crit->trigger();
+        else
+          crit->expire();
+      } );
+
+    auto debuff = make_buff( effect.player, "overwhelming_rage", effect.player->find_spell( 374037 ) )
+      ->set_stack_change_callback( [ buff, crit ]( buff_t*, int, int new_ ) {
+        if ( !new_ && buff->check() )
+          crit->trigger();
+      } );
+
+    crit->set_stack_change_callback( [ buff, debuff ]( buff_t*, int, int new_ ) {
+      if ( !new_ && buff->check() )
+        debuff->trigger();
+    } );
   }
 
   effect.custom_buff = buff;
@@ -324,6 +353,7 @@ void register_special_effects()
   register_special_effect( 371339, consumables::phial_of_elemental_chaos );
   register_special_effect( 373257, consumables::phial_of_glacial_fury );
   register_special_effect( 370652, consumables::phial_of_static_empowerment );
+  register_special_effect( 374000, consumables::iced_phial_of_corrupting_rage );
 
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
