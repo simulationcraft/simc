@@ -1347,6 +1347,7 @@ class SpellDataGenerator(DataGenerator):
          371348, 371350, 371351, 371353, # Phial of Elemental Chaos
          370772, 370773, # Phial of Static Empowerment
          374002, 374037, # Iced Phial of Corrupting Rage
+         371387, # Phial of Charged Isolation
         ),
 
         # Warrior:

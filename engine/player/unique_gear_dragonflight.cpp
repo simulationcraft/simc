@@ -19,6 +19,76 @@ namespace unique_gear::dragonflight
 {
 namespace consumables
 {
+// TODO: implement reasonable model of losing buff due to damage taken. note that 'rotting from within' randomly procced
+// from using toxic phial/potions will eventually cause you to lose the buff, even if you are taking 0 external damage.
+void iced_phial_of_corrupting_rage( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "iced_phial_of_corrupting_rage" );
+  if ( !buff )
+  {
+    auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
+      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+    buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
+      ->set_cooldown( 0_ms )
+      ->set_chance( 1.0 )
+      ->set_stack_change_callback( [ crit ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          crit->trigger();
+        else
+          crit->expire();
+      } );
+
+    auto debuff = make_buff( effect.player, "overwhelming_rage", effect.player->find_spell( 374037 ) )
+      ->set_stack_change_callback( [ buff, crit ]( buff_t*, int, int new_ ) {
+        if ( !new_ && buff->check() )
+          crit->trigger();
+      } );
+
+    crit->set_stack_change_callback( [ buff, debuff ]( buff_t*, int, int new_ ) {
+      if ( !new_ && buff->check() )
+        debuff->trigger();
+    } );
+  }
+
+  effect.custom_buff = buff;
+}
+
+// TODO: implement reasonable model of losing buff due to other players coming too close. note that
+// driver()->effectN(2)->trigger() is called every 1s to check within a 10yd radius for close players.
+void phial_of_charged_isolation( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, effect.name() );
+  if ( !buff )
+  {
+    auto amount = effect.driver()->effectN( 1 ).average( effect.item );
+    auto linger_mul = effect.driver()->effectN( 2 ).percent();
+
+    auto stat_buff =
+        make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_stats", effect.player->find_spell( 371387 ) )
+            ->add_stat( STAT_STR_AGI_INT, amount );
+
+    auto linger_buff =
+        make_buff<stat_buff_t>( effect.player, "phial_of_charged_isolation_linger", effect.player->find_spell( 384713 ) )
+            ->add_stat( STAT_STR_AGI_INT, amount * linger_mul );
+
+    buff = make_buff( effect.player, effect.name(), effect.driver() )
+      ->set_stack_change_callback( [ stat_buff ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          stat_buff->trigger();
+        else
+          stat_buff->expire();
+      } );
+
+    stat_buff->set_stack_change_callback( [ buff, linger_buff ]( buff_t*, int, int new_ ) {
+      if ( !new_ && buff->check() )
+        linger_buff->trigger();
+    } );
+  }
+
+  effect.custom_buff = buff;
+}
+
 void phial_of_elemental_chaos( special_effect_t& effect )
 {
   if ( create_fallback_buffs( effect, { "elemental_chaos_fire", "elemental_chaos_air", "elemental_chaos_earth",
@@ -27,7 +97,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
     return;
   }
 
-  auto buff = buff_t::find( effect.player, "phial_of_elemental_chaos" );
+  auto buff = buff_t::find( effect.player, effect.name() );
   if ( !buff )
   {
     std::vector<buff_t*> buff_list;
@@ -55,7 +125,7 @@ void phial_of_elemental_chaos( special_effect_t& effect )
             ->set_default_value_from_effect_type( A_MOD_CRITICAL_HEALING_AMOUNT )
             ->set_duration( duration ) );
 
-    buff = make_buff( effect.player, "phial_of_elemental_chaos", effect.driver() )
+    buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_tick_callback( [ buff_list ]( buff_t* b, int, timespan_t ) {
         buff_list[ b->rng().range( buff_list.size() ) ]->trigger();
       } );
@@ -150,11 +220,10 @@ void phial_of_glacial_fury( special_effect_t& effect )
   new_target_cb->deactivate();
 
   // Phial buff itself
-  auto buff = buff_t::find( effect.player, "phial_of_glacial_fury" );
+  auto buff = buff_t::find( effect.player, effect.name() );
   if ( !buff )
   {
-    buff = make_buff( effect.player, "phial_of_glacial_fury", effect.driver() )
-      ->set_cooldown( 0_ms )
+    buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_chance( 1.0 )
       ->set_stack_change_callback( [ damage_cb, new_target_cb ]( buff_t*, int, int new_ ) {
         if ( new_ )
@@ -176,15 +245,13 @@ void phial_of_glacial_fury( special_effect_t& effect )
 // TODO: implement reasonable model of losing buff due to movement
 void phial_of_static_empowerment( special_effect_t& effect )
 {
-  auto buff = buff_t::find( effect.player, "phial_of_static_empowerment" );
+  auto buff = buff_t::find( effect.player, effect.name() );
   if ( !buff )
   {
     auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
     primary->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
 
-    buff = make_buff( effect.player, "phial_of_static_empowerment", effect.driver() )
-      ->set_cooldown( 0_ms )
-      ->set_period( 0_ms )
+    buff = make_buff( effect.player, effect.name(), effect.driver() )
       ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
         if ( new_ )
           primary->trigger();
@@ -211,41 +278,6 @@ void phial_of_static_empowerment( special_effect_t& effect )
           primary->expire();
       } );
     }
-  }
-
-  effect.custom_buff = buff;
-}
-
-// TODO: implement reasonabl model of losing buff due to damage taken. note that 'rotting from within' randomly procced
-// from using toxic phial/potions will eventually cause you to lose the buff, even if you are taking 0 external damage.
-void iced_phial_of_corrupting_rage( special_effect_t& effect )
-{
-  auto buff = buff_t::find( effect.player, "iced_phial_of_corrupting_rage" );
-  if ( !buff )
-  {
-    auto crit = make_buff<stat_buff_t>( effect.player, "corrupting_rage", effect.player->find_spell( 374002 ) )
-      ->add_stat( STAT_CRIT_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
-
-    buff = make_buff( effect.player, "iced_phial_of_corrupting_rage", effect.driver() )
-      ->set_cooldown( 0_ms )
-      ->set_chance( 1.0 )
-      ->set_stack_change_callback( [ crit ]( buff_t*, int, int new_ ) {
-        if ( new_ )
-          crit->trigger();
-        else
-          crit->expire();
-      } );
-
-    auto debuff = make_buff( effect.player, "overwhelming_rage", effect.player->find_spell( 374037 ) )
-      ->set_stack_change_callback( [ buff, crit ]( buff_t*, int, int new_ ) {
-        if ( !new_ && buff->check() )
-          crit->trigger();
-      } );
-
-    crit->set_stack_change_callback( [ buff, debuff ]( buff_t*, int, int new_ ) {
-      if ( !new_ && buff->check() )
-        debuff->trigger();
-    } );
   }
 
   effect.custom_buff = buff;
@@ -350,10 +382,11 @@ void register_special_effects()
 {
   // Food
   // Phials
+  register_special_effect( 374000, consumables::iced_phial_of_corrupting_rage );
+  register_special_effect( 371386, consumables::phial_of_charged_isolation );
   register_special_effect( 371339, consumables::phial_of_elemental_chaos );
   register_special_effect( 373257, consumables::phial_of_glacial_fury );
   register_special_effect( 370652, consumables::phial_of_static_empowerment );
-  register_special_effect( 374000, consumables::iced_phial_of_corrupting_rage );
 
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );
