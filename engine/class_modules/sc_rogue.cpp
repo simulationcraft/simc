@@ -28,6 +28,7 @@ enum class secondary_trigger
   FLAGELLATION,
   IMMORTAL_TECHNIQUE,
   TORNADO_TRIGGER,
+  MAIN_GAUCHE,
 };
 
 enum stealth_type_e
@@ -994,6 +995,7 @@ struct secondary_action_trigger_t : public event_t
     if ( !state )
     {
       state = action->get_state();
+      state->target = action_target;
       action->cast_state( state )->set_combo_points( cp, cp );
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
@@ -6089,8 +6091,7 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !p()->rng().roll( proc_chance ) )
     return;
 
-  p()->active.main_gauche->set_target( state->target );
-  p()->active.main_gauche->schedule_execute();
+  p()->active.main_gauche->trigger_secondary_action( state->target );
 }
 
 template <typename Base>
@@ -8311,7 +8312,8 @@ void rogue_t::init_spells()
 
   if ( mastery.main_gauche->ok() )
   {
-    active.main_gauche = get_background_action<actions::main_gauche_t>( "main_gauche" );
+    active.main_gauche = get_secondary_trigger_action<actions::main_gauche_t>(
+      secondary_trigger::MAIN_GAUCHE, "main_gauche" );
   }
 
   if ( spec.blade_flurry->ok() )
