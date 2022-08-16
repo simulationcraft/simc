@@ -3794,7 +3794,8 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       cycle_period = effect.player->find_spell( 367804 )->effectN( 1 ).period();
 
       auto cycle_weapon = [ this ]( int cycles ) {
-        if ( cooldown->up() )
+        // As of 9.2.5 the Sword buff is triggered in the cycle prior coming off cooldown, rather than after
+        if ( cooldown->remains() < cycle_period )
         {
           weapons.front()->expire();
           std::rotate( weapons.begin(), weapons.begin() + cycles, weapons.end() );
