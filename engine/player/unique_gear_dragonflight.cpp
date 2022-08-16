@@ -93,6 +93,7 @@ void phial_of_glacial_fury( special_effect_t& effect )
     new_target_buff = make_buff( effect.player, "glacial_fury", effect.player->find_spell( 373265 ) )
       ->set_default_value( effect.driver()->effectN( 4 ).percent() );
   }
+
   // effect to trigger damage proc
   auto damage_effect            = new special_effect_t( effect.player );
   damage_effect->type           = SPECIAL_EFFECT_EQUIP;
@@ -167,6 +168,55 @@ void phial_of_glacial_fury( special_effect_t& effect )
           new_target_cb->deactivate();
         }
       } );
+  }
+
+  effect.custom_buff = buff;
+}
+
+// TODO: implement reasonable model of losing buff due to movement
+void phial_of_static_empowerment( special_effect_t& effect )
+{
+  auto buff = buff_t::find( effect.player, "phial_of_static_empowerment" );
+  if ( !buff )
+  {
+    auto primary = make_buff<stat_buff_t>( effect.player, "static_empowerment", effect.player->find_spell( 370772 ) );
+    primary->add_stat( STAT_STR_AGI_INT, effect.driver()->effectN( 1 ).average( effect.item ) / primary->max_stack() );
+
+    auto speed = make_buff<stat_buff_t>( effect.player, "mobile_empowerment", effect.player->find_spell( 370773 ) )
+      ->add_stat( STAT_SPEED_RATING, effect.driver()->effectN( 2 ).average( effect.item ) );
+
+    buff = make_buff( effect.player, "phial_of_static_empowerment", effect.driver() )
+      ->set_cooldown( 0_ms )
+      ->set_period( 0_ms )
+      ->set_stack_change_callback( [ primary ]( buff_t*, int, int new_ ) {
+        if ( new_ )
+          primary->trigger();
+        else
+          primary->expire();
+      } );
+
+    primary->set_stack_change_callback( [ buff, speed ]( buff_t*, int, int new_ ) {
+      if ( buff->check() )
+      {
+        if ( new_ )
+          speed->expire();
+        else
+          speed->trigger();
+      }
+    } );
+
+    if ( effect.player->buffs.movement )
+    {
+      effect.player->buffs.movement->set_stack_change_callback( [ primary, speed, buff ]( buff_t*, int, int new_ ) {
+        if ( buff->check() )
+        {
+          if ( new_ )
+            primary->expire();
+          else
+            primary->trigger();
+        }
+      } );
+    }
   }
 
   effect.custom_buff = buff;
@@ -273,6 +323,7 @@ void register_special_effects()
   // Phials
   register_special_effect( 371339, consumables::phial_of_elemental_chaos );
   register_special_effect( 373257, consumables::phial_of_glacial_fury );
+  register_special_effect( 370652, consumables::phial_of_static_empowerment );
 
   // Potion
   register_special_effect( 372046, consumables::bottled_putrescence );

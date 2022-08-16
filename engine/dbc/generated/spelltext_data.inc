@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.44999
-static const std::array<spelltext_data_t, 17874> __spelltext_data { {
+static const std::array<spelltext_data_t, 17875> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -16149,6 +16149,7 @@ static const std::array<spelltext_data_t, 17874> __spelltext_data { {
   { 370665, "Swoop to an ally and fly with them to the target location.", "About to be picked up!", 0 },
   { 370695, "While in Bear From, you deal $s1% increased Arcane damage.", 0, 0 },
   { 370718, "The Jailer grasps the souls of all nearby enemies, stunning them.", "Stunned.", 0 },
+  { 370772, "$@spelldesc370652", "$pri increased by $w1.", 0 },
   { 370773, "$@spelldesc370652\r\r\n", "Speed increased by $w1.", 0 },
   { 370781, "Empower spells reach maximum level in $s1% less time.", 0, 0 },
   { 370783, "Living Flame has a $s1% chance to reset the cooldown of Firestorm, and make your next one instant cast and deal $370818s2% increased damage.", 0, 0 },

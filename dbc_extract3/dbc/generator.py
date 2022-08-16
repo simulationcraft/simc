@@ -1344,6 +1344,7 @@ class SpellDataGenerator(DataGenerator):
          363338, # Jailer fight buff
          # 10.0 =============================================================
          371348, 371350, 371351, 371353, # Phial of Elemental Chaos
+         370772, 370773, # Phial of Static Empowerment
         ),
 
         # Warrior:
