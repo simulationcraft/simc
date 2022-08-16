@@ -6196,12 +6196,20 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   // Target multipliers do not replicate to secondary targets, need to reverse them out
   const double target_da_multiplier = ( 1.0 / state->target_da_multiplier );
 
-  // Note, unmitigated damage
+  // Note: Unmitigated damage as Blade Flurry target mitigation is handled on each impact
   double damage = state->result_total * multiplier * target_da_multiplier;
-  p()->active.blade_flurry->base_dd_min = damage;
-  p()->active.blade_flurry->base_dd_max = damage;
-  p()->active.blade_flurry->set_target( state->target );
-  p()->active.blade_flurry->schedule_execute();
+  player_t* primary_target = state->target;
+
+  p()->sim->print_debug( "{} flurries {} for {:.2f} damage ({:.2f} * {} * {:.3f})", *p(), *this, damage, state->result_total, multiplier, target_da_multiplier );
+  
+  // Trigger as an event so that this happens after the impact for proc/RPPM targeting purposes
+  // Can't use schedule_execute() since multiple flurries can trigger at the same time due to Main Gauche
+  make_event( *p()->sim, 0_ms, [ this, damage, primary_target ]() {
+    p()->active.blade_flurry->base_dd_min = damage;
+    p()->active.blade_flurry->base_dd_max = damage;
+    p()->active.blade_flurry->set_target( primary_target );
+    p()->active.blade_flurry->execute();
+  } );
 }
 
 template <typename Base>
