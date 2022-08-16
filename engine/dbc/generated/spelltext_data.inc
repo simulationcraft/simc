@@ -1,4 +1,4 @@
-// Spell text, wow build 9.2.5.44908
+// Spell text, wow build 9.2.7.45114
 static const std::array<spelltext_data_t, 16097> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16099,14 +16099,11 @@ static const std::array<spelltext_data_t, 16097> __spelltext_data { {
   { 388408, "Improve Rae'shalare, Death's Whisper to item level $s2.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 9.2.5.44908
-static constexpr std::array<hotfix::client_hotfix_entry_t, 3> __spelltext_hotfix_data { {
-  {   24275,  0, "Hurls a divine hammer that strikes an enemy for $s1 Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", "Hurls a divine hammer that strikes an enemy for $<damage> Holy damage. Only usable on enemies that have less than 20% health$?s326730[, or during Avenging Wrath][].\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power." },
-  {   31884,  0, "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $s1% for $d.", "Call upon the Light to become an avatar of retribution, increasing your damage, healing, and critical strike chance by $<wings>% for $d." },
-  {   35395,  0, "Strike the target for $s1 Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power.", "Strike the target for $<damage> Physical damage.\r\n\r\n|cFFFFFFFFGenerates $s2 Holy Power." },
+// spelltext hotfix entries, wow build 9.2.7.45114
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 9.2.5.44908
+// Spell description variables, wow build 9.2.7.45114
 static const std::array<spelldesc_vars_data_t, 310> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$shield=${$SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -16420,9 +16417,7 @@ static const std::array<spelldesc_vars_data_t, 310> __spelldesc_vars_data { {
   {  368495, "$points=${($s2/100*$max($AP,$SP)*(1+$@versadmg))}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 9.2.5.44908
-static constexpr std::array<hotfix::client_hotfix_entry_t, 2> __spelldesc_vars_hotfix_data { {
-  {   35395,  0, "$mult=${($min($pl-1,19)*6+96)/210}", "$mult=${($min($pl-1,19)*6+96)/210}\r\n$pvp=$?a134735[${1.3}][${1}]}\r\n$retribution=$?a137027[${1.00*$<pvp>}][${1}]\r\n$damage=${$s1*$<retribution>}" },
-  {  231895,  0, "$damage=${$s1/10}\r\n$haste=${$s3/10}", "$haste=${$s3/10}\r\n$pvp=$?a134735[${0.75}][${1}]\r\n$damage=${$s1/10*$<pvp>}" },
+// spelldesc_vars hotfix entries, wow build 9.2.7.45114
+static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
