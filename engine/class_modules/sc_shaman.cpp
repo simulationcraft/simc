@@ -10303,7 +10303,6 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
   def->add_action( "potion" );
   def->add_action( "use_items" );
-  def->add_action( this, "Flame Shock", "if=!ticking" );
   def->add_action( this, "Earth Elemental" );
 
   // Racials
@@ -10317,11 +10316,12 @@ void shaman_t::init_action_list_restoration_dps()
   def->add_action( "chain_harvest,if=covenant.venthyr" );
   def->add_action( "vesper_totem,if=covenant.kyrian" );
 
+  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );
+  def->add_action( this, "Flame Shock", "if=!ticking" );
   def->add_action( this, "Lava Burst", "if=dot.flame_shock.remains>cast_time&cooldown_react" );
   def->add_action( "fae_transfusion,if=covenant.night_fae" );
   def->add_action( "primordial_wave,if=covenant.necrolord" );
   def->add_action( this, "Lightning Bolt", "if=spell_targets.chain_lightning<3" );
-  def->add_action( this, "Chain Lightning", "if=spell_targets.chain_lightning>2" );
   def->add_action( this, "Flame Shock", "moving=1" );
   def->add_action( this, "Frost Shock", "moving=1" );
 }
