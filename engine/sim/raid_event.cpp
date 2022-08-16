@@ -463,6 +463,7 @@ struct pull_event_t final : raid_event_t
   struct spawn_parameter
   {
     std::string name;
+    bool boss = false;
     double health = 0;
     unsigned bounty = 0;
   };
@@ -531,6 +532,9 @@ struct pull_event_t final : raid_event_t
           else
           {
             spawn_parameter spawn;
+
+            if ( util::starts_with( splits[ 0 ], "BOSS_" ) )
+              spawn.boss = true;
 
             if ( util::starts_with( splits[ 0 ], "BOUNTY1_" ) )
               spawn.bounty = 1;
@@ -684,6 +688,7 @@ struct pull_event_t final : raid_event_t
       adds[ i ]->init_resources( true );
       adds[ i ]->pull_event = this;
       adds[ i ]->bounty = spawn_parameters[ i ].bounty;
+      adds[ i ]->type = spawn_parameters[ i ].boss ? ENEMY_ADD_BOSS : ENEMY_ADD;
 
       // Only for use with log output options as it makes the report strange but log much better
       if ( sim->log )
