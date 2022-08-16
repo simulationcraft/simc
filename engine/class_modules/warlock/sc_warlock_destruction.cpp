@@ -133,7 +133,8 @@ struct internal_combustion_t : public destruction_spell_t
     double total_damage = ticks_left * tick_base_damage;
 
     action_state_t::release( state );
-    this->base_dd_min = this->base_dd_max = total_damage;
+    double ce_coeff = 1.0 + td->debuffs_combusting_engine->check_stack_value();
+    this->base_dd_min = this->base_dd_max = total_damage/ce_coeff; // 2022-08-15: Combusting Engine appears to not be included in Internal Combustion calculations, so we must approximate by factoring it back out
 
     destruction_spell_t::execute();
     td->dots_immolate->adjust_duration( -remaining );

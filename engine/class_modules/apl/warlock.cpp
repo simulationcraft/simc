@@ -380,6 +380,8 @@ void demonology( player_t* p )
   pure_damage_trinks->add_action( "use_item,name=darkmoon_deck_putrescence" );
   pure_damage_trinks->add_action( "use_item,name=ebonsoul_vise" );
   pure_damage_trinks->add_action( "use_item,name=unchained_gladiators_shackles" );
+  pure_damage_trinks->add_action( "use_item,slot=trinket1" );
+  pure_damage_trinks->add_action( "use_item,slot=trinket2" );
 
   trinkets->add_action( "variable,name=use_buff_trinkets,value=(!variable.use_bolt_timings&pet.demonic_tyrant.active)|(variable.use_bolt_timings&buff.shard_of_annihilation.up)" );
   trinkets->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up" );
