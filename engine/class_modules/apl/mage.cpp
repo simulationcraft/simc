@@ -418,7 +418,7 @@ void fire( player_t* p )
   precombat->add_action( "variable,name=time_to_combustion,value=fight_remains+100,if=variable.disable_combustion", "If Combustion is disabled, schedule the first Combustion far after the fight ends." );
   precombat->add_action( "variable,name=skb_duration,value=dbc.effect.828420.base_value", "The duration of a Sun King's Blessing Combustion." );
   precombat->add_action( "variable,name=mot_recharge_amount,value=dbc.effect.871274.base_value", "The number of seconds of Fire Blast recharged by Mirrors of Torment." );
-  precombat->add_action( "variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment|equipped.the_first_sigil|equipped.neural_synapse_enhancer|equipped.fleshrenders_meathook", "Whether a usable item used to buff Combustion is equipped." );
+  precombat->add_action( "variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment|equipped.the_first_sigil|equipped.neural_synapse_enhancer|equipped.fleshrenders_meathook|equipped.enforcers_stun_grenade", "Whether a usable item used to buff Combustion is equipped." );
   precombat->add_action( "variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use", "How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?" );
   precombat->add_action( "variable,name=on_use_cutoff,value=25,if=equipped.macabre_sheet_music" );
   precombat->add_action( "variable,name=on_use_cutoff,value=20+variable.empyreal_ordnance_delay,if=equipped.empyreal_ordnance" );
@@ -494,6 +494,7 @@ void fire( player_t* p )
   combustion_cooldowns->add_action( "use_item,name=sunblood_amethyst" );
   combustion_cooldowns->add_action( "use_item,name=the_first_sigil" );
   combustion_cooldowns->add_action( "use_item,name=fleshrenders_meathook" );
+  combustion_cooldowns->add_action( "use_item,name=enforcers_stun_grenade" );
   combustion_cooldowns->add_action( "use_item,name=neural_synapse_enhancer" );
   combustion_cooldowns->add_action( "use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2&action.fire_blast.charges=0" );
 
