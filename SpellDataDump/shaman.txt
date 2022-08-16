@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
+SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -13001,7 +13001,6 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=913147)   : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-Hotfixed         : PvP Coefficient (0.7 -> 1)
 Description      : Your Chain Heal critical hits reduce the remaining cooldown of one of your totems by $s1 sec. Your Healing Stream Totem, Healing Tide Totem, Mana Tide Totem, and Spirit Link Totem now also cast Chain Heal with $s3% effectiveness when you drop them.
 
 Name             : Heal the Soul (id=364470) [Spell Family (11), Passive, Hidden] 

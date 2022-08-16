@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
+SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -8948,7 +8948,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 0.75000 | Target: Self (1)
                    Affected Spells: Blade Dance (200685), Death Sweep (210155)
                    Family Flags: 12, 38
-Hotfixed         : PvP Coefficient (1 -> 0.75)
 Description      : The final slash of Blade Dance deals an additional |cFFFFFFFF${$s1}.1%|r damage.
 
 Name             : Exposed Wound (id=339229) [Spell Family (107)] 

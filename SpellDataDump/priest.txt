@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
+SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
 Name             : Power Word: Shield (id=17) [Spell Family (6)] 
 Class            : Priest
 School           : Holy
@@ -356,7 +356,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=612)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.95000 | PvP Coefficient: 1.25000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.35 -> 1.25)
 Description      : An efficient spell that heals an ally for $s1.
 
 Name             : Flash Heal (id=2061) [Spell Family (6)] 
@@ -385,7 +384,6 @@ Attributes       : ........ ........ x....... ........   ........ ........ .....
 Effects          :
 #1 (id=613)      : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | Value Multiplier: 1 | SP Coefficient: 2.03000 | PvP Coefficient: 1.20000 | Target: Friend (21)
-Hotfixed         : PvP Coefficient (1.3 -> 1.2)
 Description      : A fast spell that heals an ally for $s1.
 
 Name             : Mind Vision (id=2096) [Spell Family (6)] 
@@ -1615,7 +1613,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.15) | PvP Coefficient: 1.00000 | Target: Unknown(77)
 #2 (id=326288)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.16380 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.126 -> 0.1638)
 Description      : $@spelldesc48045
 Tooltip          : Causing shadow damage to all targets within $a2 yards.
 
@@ -3209,7 +3206,6 @@ Effects          :
 #11 (id=1021371)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: 15000 | Scaled Value: 15000 | PvP Coefficient: 1.00000 | Misc Value: 11
                    Family Flags: 27
-Hotfixed         : NEW EFFECT
 Description      : Holy Priest core passive
 
 Name             : Discipline Priest (id=137032) [Spell Family (6), Passive, Hidden] 
@@ -5040,7 +5036,6 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=303255)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.91250 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (1.53 -> 1.9125)
 Description      : $@spelldesc205385
 
 Name             : Void Bolt (id=205448) [Spell Family (6)] 
@@ -11160,7 +11155,6 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Unknown(77)
 #2 (id=841736)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.49450 | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
-Hotfixed         : SP Coefficient (0.43 -> 0.4945)
 #3 (id=841753)   : Server Side Script (77)
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 10 yards | Target: Unknown(76) -> AOE enemy (instant) (16)
 Description      : Instantly deals $s2 Shadow damage to enemies around the target and afflicts them with Shadow Word: Pain. If the enemy is already afflicted by your Shadow Word: Pain, Searing Nightmare's damage is increased by $m1%.
@@ -12300,20 +12294,16 @@ Effects          :
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Smite (585), Prayer of Healing (596), Heal (2060), Flash Heal (2061)
                    Family Flags: 7, 9, 11, 12, 34
-Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 #3 (id=908499)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Holy Word: Serenity (2050), Holy Word: Sanctify (34861)
                    Family Flags: 10, 28
-Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 #4 (id=908500)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 0.40000 | Target: Self (1)
                    Affected Spells: Circle of Healing (204883)
                    Family Flags: 86
-Hotfixed         : PvP Coefficient (0.6 -> 0.4)
 #5 (id=983483)   : Dummy (3)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000
-Hotfixed         : Base Value (60 -> 40)
 Description      : $@spelldesc363492
 Tooltip          : Your next Holy-Word-affecting spell reduces the cooldown by an additional $s1 sec$?a363492[ and its effectiveness is increased by $s2%][].
 

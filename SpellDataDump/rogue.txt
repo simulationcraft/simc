@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
+SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -4156,7 +4156,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=288959)   : School Damage (2): physical
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.17600 | PvP Coefficient: 0.90000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : Finishing move that disembowels the target, causing damage per combo point.$?s231716[ Targets with Find Weakness suffer an additional $231716s1% damage as Shadow.][]
    1 point  : ${$m1*1} damage
    2 points: ${$m1*2} damage
@@ -9408,7 +9407,6 @@ Attributes       : ....x... ........ x.x..... ........   ........ .x...... .....
 Effects          :
 #1 (id=819933)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08800 | PvP Coefficient: 0.90000 | Target: Enemy (6)
-Hotfixed         : PvP Coefficient (1 -> 0.9)
 Description      : $@spelldesc196819
 
 Name             : Blindside (id=328085) [Spell Family (8), Passive] 
@@ -9714,7 +9712,6 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839727)   : Apply Aura (6) | Dummy (4)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Vanish reduces the remaining cooldown of your other abilities by $s1 sec.
 
 Name             : Dashing Scoundrel (id=340081) [Spell Family (8), Passive] 
@@ -10395,7 +10392,6 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=841631)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 0.50000 | Target: Self (1)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 #2 (id=841632)   : Apply Aura (6) | Dummy (4)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Sepsis's damage over time is increased by |cFFFFFFFF$s1%|r, reduced by $s2% each time it deals damage.
@@ -10819,7 +10815,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Shadow Blades (121471), Shadow Blade Off-hand (121474), Gloomblade (200758), Flagellation (323654), Flagellation (345316)
                    Family Flags: 15, 78, 79, 80, 109, 124
-Hotfixed         : Sub Type (79 -> 108), Base Value (30 -> 0), Misc Value (32 -> 0), Affects Spells
 Description      : $@spelldesc341549
 Tooltip          : Shadow damage dealt increased by ${$w1}.1%.
 

@@ -1,4 +1,4 @@
-SimulationCraft 920-01 for World of Warcraft 9.2.5.44908 Live (hotfix 2022-08-09/44908)
+SimulationCraft 920-01 for World of Warcraft 9.2.7.45114 Live (hotfix 2022-08-16/45114)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -12468,7 +12468,6 @@ Effects          :
 #1 (id=837441)   : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 0.50000 | Misc Value 2: 1062 (Label) | Target: Self (1)
                    Affected Spells (Label): Abomination Limb (323710), Abomination Limb (323798)
-Hotfixed         : PvP Coefficient (1 -> 0.5)
 Description      : Abomination Limb deals |cFFFFFFFF${$s1}.1%|r increased damage.
 
 Name             : Proliferation (id=338664) [Spell Family (15), Passive, Hidden] 
