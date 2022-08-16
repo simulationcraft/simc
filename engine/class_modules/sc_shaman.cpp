@@ -453,6 +453,7 @@ public:
     buff_t* elemental_equilibrium_nature;
     buff_t* fire_elemental;
     buff_t* flux_melting;
+    buff_t* heat_wave;
     buff_t* icefury;
     buff_t* magma_chamber;
     buff_t* master_of_the_elements;
@@ -615,13 +616,15 @@ public:
 
     // Elemental
     proc_t* lava_surge_fireheart;
-    proc_t* lava_surge_windspeakers_lava_resurgence;
     proc_t* wasted_lava_surge_fireheart;
+    proc_t* lava_surge_heat_wave;
+    proc_t* wasted_lava_surge_heat_wave;
+    proc_t* lava_surge_windspeakers_lava_resurgence;
 
     proc_t* aftershock;
     proc_t* flash_of_lightning;
     proc_t* further_beyond;
-    proc_t* lightning_rod; // NYI Ele
+    proc_t* lightning_rod;
     proc_t* searing_flames;
     proc_t* tumbling_waves;
 
@@ -825,14 +828,14 @@ public:
     player_talent_t electrified_shocks;
     player_talent_t flux_melting;
     player_talent_t aftershock;
-    player_talent_t surge_of_power; // TODO: NYI
+    player_talent_t surge_of_power;
     player_talent_t flames_of_the_cauldron;
     // Row 7
     player_talent_t flash_of_lightning;
     player_talent_t eye_of_the_storm;
     player_talent_t power_of_the_maelstrom;
     player_talent_t master_of_the_elements;
-    player_talent_t improved_flametongue_weapon; // TODO: NYI
+    player_talent_t improved_flametongue_weapon;
     // Row 8
     player_talent_t deeply_rooted_elements;
     player_talent_t liquid_magma_totem;
@@ -848,6 +851,7 @@ public:
     // Row 10
     player_talent_t stormkeeper2;
     player_talent_t lightning_rod;
+    player_talent_t heat_wave;
     player_talent_t mountains_will_fall;
     player_talent_t further_beyond;
     player_talent_t skybreakers_fiery_demise;
@@ -975,7 +979,7 @@ public:
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
   void trigger_vesper_totem( const action_state_t* state );
-  void trigger_lava_surge( bool fireheart = false );
+  void trigger_lava_surge( bool fireheart = false, bool heat_wave = false );
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
@@ -7941,6 +7945,11 @@ struct primordial_wave_t : public shaman_spell_t
     {
       cooldown->reset( true );
     }
+
+    if ( p()->talent.heat_wave.ok() )
+    {
+      p()->buff.heat_wave->trigger();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -9049,7 +9058,7 @@ void shaman_t::init_spells()
   // Row 10
   talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 383009 );
   talent.lightning_rod = _ST( "Lightning Rod" );
-  //talent.heat_wave_NYI                = _ST( "Heat Wave" ); // TODO: NYI (ingame)
+  talent.heat_wave = _ST( "Heat Wave" );
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
   talent.further_beyond = _ST( "Further Beyond" );
   talent.skybreakers_fiery_demise = _ST( "Skybreaker's Fiery Demise" );
@@ -9864,13 +9873,17 @@ void shaman_t::trigger_lightning_shield( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_lava_surge( bool fireheart )
+void shaman_t::trigger_lava_surge( bool fireheart, bool heat_wave )
 {
   if ( buff.lava_surge->check() )
   {
     if ( fireheart )
     {
       proc.wasted_lava_surge_fireheart->occur();
+    }
+    else if (heat_wave)
+    {
+      proc.wasted_lava_surge_heat_wave->occur();
     }
     else
     {
@@ -9882,10 +9895,15 @@ void shaman_t::trigger_lava_surge( bool fireheart )
   {
     proc.lava_surge_fireheart->occur();
   }
+  else if (heat_wave)
+  {
+    proc.lava_surge_heat_wave->occur();
+  }
   else
   {
     proc.lava_surge->occur();
   }
+
   if ( !executing || executing->id != 51505 )
   {
     cooldown.lava_burst->reset( true );
@@ -10068,7 +10086,9 @@ void shaman_t::create_buffs()
         );
   buff.flux_melting = make_buff( this, "flux_melting", talent.flux_melting->effectN( 1 ).trigger() )
                             ->set_default_value( talent.flux_melting->effectN( 1 ).trigger()->effectN(1).percent() );
-
+  buff.heat_wave =
+      make_buff( this, "heat_wave", find_spell( 387622 ) )
+          ->set_tick_callback( [ this ]( buff_t* /* b */, int, timespan_t ) { trigger_lava_surge( false, true ); } );
   buff.magma_chamber = make_buff( this, "magma_chamber", find_spell( 381933 ) )
                             ->set_default_value( talent.magma_chamber->effectN( 1 ).percent() );
 
@@ -10247,9 +10267,11 @@ void shaman_t::init_procs()
 
   proc.lava_surge                               = get_proc( "Lava Surge" );
   proc.lava_surge_fireheart                     = get_proc( "Lava Surge: Fireheart" );
+  proc.lava_surge_heat_wave                     = get_proc( "Lava Surge: Heat Wave" );
   proc.lava_surge_windspeakers_lava_resurgence  = get_proc( "Lava Surge: Windspeaker's Fiery Demise" );
   proc.wasted_lava_surge                        = get_proc( "Lava Surge: Wasted" );
   proc.wasted_lava_surge_fireheart              = get_proc( "Lava Surge: Wasted Fireheart" );
+  proc.wasted_lava_surge_heat_wave              = get_proc( "Lava Surge: Heat Wave" );
   proc.surge_during_lvb                         = get_proc( "Lava Surge: During Lava Burst" );
 
   proc.surge_of_power_lightning_bolt = get_proc( "Surge of Power: Lightning Bolt" );
