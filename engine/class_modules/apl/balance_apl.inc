@@ -12,7 +12,8 @@ precombat->add_action( "variable,name=ss_cost,value=30*(1-0.15*set_bonus.tier28_
 precombat->add_action( "variable,name=sf_cost,value=50*(1-0.15*set_bonus.tier28_4pc)" );
 precombat->add_action( "variable,name=convoke_asp,value=30+10*runeforge.celestial_spirits","Sets at which amount of AsP Convoke should be used: 40 without Celestial Spirits and 30 with." );
 precombat->add_action( "moonkin_form" );
-precombat->add_action( "wrath","Precast 2 Wrath and a Starsurge on ST with Night Fae and BoAT, Starfire without T28 2pc and only 2 Wrath with" );
+precombat->add_action( "use_item,name=shadowed_orb_of_torment","Precast 2 Wrath and a Starsurge on ST with Night Fae and BoAT, Starfire without T28 2pc and only 2 Wrath with" );
+precombat->add_action( "wrath" );
 precombat->add_action( "wrath" );
 precombat->add_action( "starfire,if=(!runeforge.balance_of_all_things|!covenant.night_fae|!spell_targets.starfall=1|!talent.natures_balance.enabled)&!set_bonus.tier28_2pc" );
 precombat->add_action( "starsurge,if=(runeforge.balance_of_all_things&covenant.night_fae&spell_targets.starfall=1)&!set_bonus.tier28_2pc" );
