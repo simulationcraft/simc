@@ -82,6 +82,9 @@ public:
 
   bool action_disabled, buff_disabled;
 
+  std::string cooldown_group_name_override;
+  timespan_t cooldown_group_duration_override;
+
   // Old-style function-based custom second phase initializer (callback)
   std::function<void(special_effect_t&)> custom_init;
   // New-style object-based custom second phase initializer
