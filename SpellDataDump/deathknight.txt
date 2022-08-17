@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -3323,7 +3323,7 @@ Effects          :
 Description      : Cause a target corpse to explode in a shower of gore. Does not affect mechanical or elemental corpses.
 
 Name             : Death Knight (id=137005) [Spell Family (15), Passive, Hidden] 
-Class            : Death Knight
+Class            : Death Knight, Monk
 School           : Physical
 Spell Type       : None
 Family Flags     : 70, 83

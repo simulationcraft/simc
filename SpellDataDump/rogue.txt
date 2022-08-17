@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -3095,7 +3095,7 @@ Effects          :
 Description      : Enemies disabled by your Cheap Shot or $?s199804[Between the Eyes][Kidney Shot] take $s1% increased damage from all sources for $255909d.
 
 Name             : Rogue (id=137034) [Spell Family (8), Passive, Hidden] 
-Class            : Rogue
+Class            : Rogue, Monk
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 

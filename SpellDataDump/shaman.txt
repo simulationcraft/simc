@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1019,7 +1019,7 @@ School           : Nature
 Spell Type       : Magic
 Spell Level      : 17 (max 49)
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Surge of Power (285514 effect#2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1)
 Family Flags     : 39, 63, 79
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -2867,7 +2867,7 @@ School           : Fire
 Spell Type       : Magic
 Spell Level      : 16
 Range            : 40 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Improved Flametongue Weapon (382028 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2), Al'Akir's Acrimony (208699 effect#1), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1)
 Family Flags     : 39, 79, 101
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3283,7 +3283,7 @@ Effects          :
 Description      : Gives a chance to block enemy melee attacks.
 
 Name             : Shaman (id=137038) [Spell Family (11), Passive, Hidden] 
-Class            : Shaman
+Class            : Shaman, Monk
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4307,7 +4307,7 @@ Range            : 40 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Category         : 85
-Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #7), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2)
+Affecting spells : Elemental Fury (60188 effect#1), Mastery: Enhanced Elements (77223 effects: #1, #5), Spiritwalker's Grace (79206 effect#1), Ascendance (114050 effect#2), Restoration Shaman (137039 effects: #3, #4, #7), Elemental Shaman (137040 effects: #1, #2, #12), Enhancement Shaman (137041 effects: #1, #2, #5), Maelstrom Weapon (187881 effects: #1, #2), Stormkeeper (191634 effect#1), Stormkeeper (205495 effects: #1, #3), Al'Akir's Acrimony (208699 effect#1), Lightningburn (263792 effect#1), Wind Gust (263806 effects: #1, #2), Surge of Power (285514 effect#2), Tectonic Thunder (286976 effect#1), Stormkeeper (320137 effects: #1, #2), Chains of Devastation (336736 effects: #1, #2), Nature's Swiftness (378081 effects: #1, #2), Call of Thunder (378241 effect#1), Nature's Fury (381655 effect#1), Unrelenting Calamity (382685 effect#1), Stormkeeper (383009 effects: #1, #2)
 Family Flags     : 1, 39, 56
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -7251,11 +7251,15 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
 #3 (id=753865)   : Dummy (3)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
+#4 (id=1024247)  : Dummy (3)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000
 Description      : Earth Shock, Elemental Blast, and Earthquake enhance your next spell cast within $285514d:
 
 |cFFFFFFFFFlame Shock|r: The next cast also applies Flame Shock to $287185s1 additional target within $287185A1 yards of the target.
 
 |cFFFFFFFFLightning Bolt|r: Your next cast will cause an additional $s2 Elemental Overloads.
+
+|cFFFFFFFFChain Lightning|r: Your next cast will chain to $s4 additional target.
 
 |cFFFFFFFFLava Burst|r: Reduces the cooldown of your Fire and Storm Elemental by ${$m1/1000}.1 sec.
 
@@ -10081,7 +10085,7 @@ Class            : Shaman
 School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Improved Flametongue Weapon (382028 effect#1)
+Affecting spells : Elemental Fury (60188 effect#1), Spiritwalker's Grace (79206 effect#1), Restoration Shaman (137039 effects: #3, #4), Elemental Shaman (137040 effects: #1, #2), Enhancement Shaman (137041 effects: #1, #2), Igneous Potential (279829 effect#2), Maelstrom (343725 effect#4), Fireheart (364523 effect#2), Call of Fire (378255 effect#1), Improved Flametongue Weapon (382028 effect#1)
 Triggered by     : Lava Burst Overload (77451)
 Family Flags     : 39, 79, 86
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10123,6 +10127,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=747359)   : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1024258)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Chain Lightning Overload (45297), Chain Lightning (188443)
+                   Family Flags: 1, 63
 Description      : $@spelldesc262303
 Tooltip          : Your next spell cast will be enhanced.
 
@@ -14082,8 +14090,8 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006598)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Lava Burst (51505), Lava Beam (114074), Flame Shock (188389), Lava Burst (285452)
-                   Family Flags: 28, 34, 44
+                   Affected Spells: Lava Burst (51505), Lava Beam (114074), Lava Beam Overload (114738), Flame Shock (188389), Lava Burst (285452), Lava Burst Overload (285466)
+                   Family Flags: 28, 34, 44, 86, 101
 #2 (id=1006599)  : Apply Aura (6) | Unknown(382)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 0x17355 | Target: Self (1)
 #3 (id=1006600)  : Apply Aura (6) | Unknown(382)
@@ -15110,6 +15118,7 @@ Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(-2000, -4000)]
                  : Effect#2 [op=set, values=(-2000, -4000)]
                  : Effect#3 [op=set, values=(-2000, -4000)]
+                 : Effect#4 [op=set, values=(-2000, -4000)]
 Class            : Shaman
 School           : Physical
 Spell Type       : None
@@ -16862,7 +16871,7 @@ Name             : Infused Globule (id=387363)
 Class            : Shaman
 School           : Frost
 Spell Type       : Magic
-Cast Time        : 2.5 seconds
+Cast Time        : 3 seconds
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 
                  : x....... ........ ........ ........   ...x.... ........ .xxx.... ........ 
@@ -16874,7 +16883,7 @@ Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ .....
                  : Allow While Mounted (24), Aura Is Debuff (26), Allow While Sitting (27), No Redirection (35), Allow While Stealthed (37), No Reflection (39), Ignore Line of Sight (66), Allow While Invisible (78), No Cast Log (128), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), AI Doesn't Face Target (179), Allow While Charmed (261)
 Effects          :
 #1 (id=1022109)  : School Damage (2): frost
-                   Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=1022113)  : Dummy (3)
                    Base Value: 65 | Scaled Value: 65 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 Description      : The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage on impact.
@@ -16887,7 +16896,7 @@ Name             : Infused Globule (id=387474)
 Class            : Shaman
 School           : Frost
 Spell Type       : Magic
-Range            : 100 yards
+Range            : 1000 yards
 Duration         : 30 seconds
 Attributes       : ........ ........ ........ x.xx....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ........ ........   ........ ........ ........ ........ 

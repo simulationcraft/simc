@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=1, col=4, max_rank=1, req_points=0]
 Class            : Paladin, Mage
@@ -967,7 +967,7 @@ Effects          :
 #1 (id=21276)    : Apply Aura (6) | Confuse (5)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 12 yards | Mechanic: Disorient | Target: Cone Front (104)
 #2 (id=21277)    : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.58250 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : Enemies in a cone in front of you take $s2 Fire damage and are disoriented for $d. Damage will cancel the effect.
 Tooltip          : Disoriented.
 
@@ -2863,7 +2863,7 @@ Effects          :
 Description      : Summons a Ring of Frost at the target location. Enemies entering the ring will become frozen for $82691d. Lasts $d. $s2 yd radius. Limit 10 targets.
 
 Name             : Mage (id=137018) [Spell Family (3), Passive, Hidden] 
-Class            : Mage
+Class            : Mage, Monk
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
