@@ -154,6 +154,9 @@ void special_effect_t::reset()
   action_disabled = false;
   buff_disabled = false;
 
+  cooldown_group_name_override.clear();
+  cooldown_group_duration_override = 0_ms;
+
   enchant_data = nullptr;
 }
 
@@ -1233,6 +1236,9 @@ std::string special_effect_t::cooldown_group_name() const
     return {};
   }
 
+  if ( !cooldown_group_name_override.empty() )
+    return cooldown_group_name_override;
+
   unsigned cdgroup = cooldown_group();
   if ( cdgroup > 0 )
   {
@@ -1279,6 +1285,9 @@ timespan_t special_effect_t::cooldown_group_duration() const
   {
     return timespan_t::zero();
   }
+
+  if ( cooldown_group_duration_override > 0_ms )
+    return cooldown_group_duration_override;
 
   if ( cooldown_category_ > 0 )
   {

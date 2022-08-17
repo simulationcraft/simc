@@ -5493,6 +5493,8 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
 
   auto cb = new spell_tracker_cb_t( *spell_tracker, as<size_t>( effect.driver()->effectN( 1 ).base_value() ) );
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // Anodized Deflectors
@@ -5522,6 +5524,8 @@ void items::anodized_deflectors( special_effect_t& effect )
   }
 
   effect.custom_buff = anodized_deflectors_buff;
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // Shared Callback for all Titan trinkets
