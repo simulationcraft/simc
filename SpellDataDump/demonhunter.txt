@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.44999 dragonflight-BETA (hotfix 2022-08-10/44999, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -1021,7 +1021,7 @@ Effects          :
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=355950)   : Apply Aura (6) | Restore Power (85)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
-Description      : Blasts all enemies in front of you, $?s320415[dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage to secondary targets.$?s343311[
+Description      : Blasts all enemies in front of you, $?s320415[dealing guaranteed critical strikes][] for up to $<dmg> Chaos damage over $d. Deals reduced damage beyond 5 targets.$?s343311[
 
 When Eye Beam finishes fully channeling, your Haste is increased by an additional $343312s1% for $343312d.][]
 Variables        : $dmg={?a320415[{$?a203550[${$198030s1*15*2}][${$198030s1*10*2}]}][{$?a203550[${$198030s1*15}][${$198030s1*10}]}]
@@ -1079,7 +1079,7 @@ Spell Type       : None
 Duration         : 1 seconds
 Cooldown         : 25 seconds
 Category Cooldown: 25 seconds
-Affecting spells : Prepared (203551 effect#2), Momentum (206476 effect#1)
+Affecting spells : Prepared (203551 effect#2)
 Triggered by     : Vengeful Retreat (344866)
 Family Flags     : 3
 Attributes       : ....x... ........ ........ .......x   ........ .xx..... ........ ....x... 
@@ -1109,7 +1109,7 @@ Class            : Demon Hunter
 School           : Physical
 Spell Type       : Melee
 Duration         : 3 seconds
-Affecting spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Momentum (206476 effect#1), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2)
+Affecting spells : Demon Soul (163073 effects: #1, #2), Prepared (203551 effect#2), Momentum (208628 effects: #1, #2), Havoc Demon Hunter (212612 effects: #1, #2), Chaos Blades (247938 effects: #2, #3), Demon Soul (347765 effects: #1, #2)
 Triggered by     : Vengeful Retreat (198793)
 Family Flags     : 3, 16, 42
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ........ 
@@ -1703,11 +1703,11 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=300260)   : Apply Aura (6) | Proc Trigger Spell (42): Demon Blades
-                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Trigger Spell: 203796 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 203796 | Target: Self (1)
 #2 (id=350250)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
                    Base Value: -8 | Scaled Value: -8 | PvP Coefficient: 1.00000 | Misc Value: 3
                    Family Flags: 59
-Description      : Your auto attacks have a $s1% chance to deal additional Shadow damage and generate Fury.
+Description      : Your auto attacks deal additional Shadow damage and generate 7-12 Fury.
 
 Name             : Master of the Glaive (id=203556) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -1973,7 +1973,7 @@ Effects          :
 #1 (id=300651)   : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.15180 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=300652)   : Energize Power (30)
-                   Base Value: 16 | Scaled Value: 16 (coefficient=0, delta coefficient=0.5) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
+                   Base Value: 9.5 | Scaled Value: 9.5 (coefficient=0, delta coefficient=0.526316) | PvP Coefficient: 1.00000 | Misc Value: fury | Target: Self (1)
 Description      : Inflicts $s1 Shadow damage and generates $m2 to $M2 Fury.
 
 Name             : Demon Spikes (id=203819) [Spell Family (107)] 
@@ -2384,13 +2384,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=305361)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -5000 | Scaled Value: -5000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Vengeful Retreat (198793), Vengeful Retreat (198813), Vengeful Retreat (344866)
-                   Family Flags: 3
-Description      : Fel Rush increases your damage done by $208628s1% for $208628d.
-
-Vengeful Retreat's cooldown is reduced by ${$s1/-1000} sec, and it generates ${($203650s1/5)*$203650d} Fury over $203650d if it damages at least one enemy.
+#1 (id=305361)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Fel Rush, Felblade, The Hunt, and Vengeful Retreat increase your damage done by $208628s1% for $208628d.
 
 Name             : Unleashed Power (id=206477) [Spell Family (107), Passive] 
 Class            : Demon Hunter
@@ -3315,7 +3311,7 @@ Effects          :
 Description      : $@spelldesc212084
 
 Name             : Demon Hunter (id=212611) [Spell Family (107), Passive, Hidden] 
-Class            : Vengeance Demon Hunter
+Class            : Vengeance Monk, Demon Hunter
 School           : Physical
 Spell Type       : None
 Attributes       : ....x.xx x....... ........ ........   ........ ........ ........ ........ 
@@ -4552,8 +4548,8 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : Passive (6), Do Not Log (8), Not In Spellbook (143)
 Effects          :
 #1 (id=483114)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When Chaos Strike refunds Fury, it also reduces the cooldown of Eye Beam by $s1 sec.
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Chaos Strike also reduces the cooldown of Eye Beam by $s1 sec, and an additional $s1 sec when it critically strikes.
 
 Name             : Immolation Aura (id=258920) [Spell Family (107)] 
 Class            : Demon Hunter
@@ -7794,10 +7790,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
 #1 (id=807470)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Metamorphosis (162264), Metamorphosis (191427)
                    Family Flags: 15
-Description      : The Demon Hunter gains an additional $s0% Haste during Metamorphosis.
+Description      : The Demon Hunter gains an additional $s1% Haste during Metamorphosis.
 
 Name             : Vengeful Retreat (desc=Rank 2) (id=320635) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
@@ -9484,7 +9480,7 @@ Effects          :
                    Family Flags: 31
 Description      : Soul Cleave damage increased by $s1%.
 
-Name             : Eye Beam (desc=Rank 3) (id=343311) [Spell Family (107), Passive] 
+Name             : Furious Gaze (id=343311) [Spell Family (107), Passive] 
 Class            : Havoc Demon Hunter
 School           : Physical
 Spell Type       : None
@@ -9507,7 +9503,7 @@ Name             : Furious Gaze (id=343312)
 Class            : Demon Hunter
 School           : Physical
 Spell Type       : None
-Duration         : 12 seconds
+Duration         : 9 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -9519,7 +9515,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=845008)   : Apply Aura (6) | Modify All Haste% (193)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc273231
 Tooltip          : Haste increased by $w1%.
 
@@ -9620,7 +9616,7 @@ School           : Physical
 Spell Type       : None
 Cooldown         : 25 seconds
 Category Cooldown: 25 seconds
-Affecting spells : Prepared (203551 effect#2), Momentum (206476 effect#1)
+Affecting spells : Prepared (203551 effect#2)
 Family Flags     : 3
 Attributes       : ....x... ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 

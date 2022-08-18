@@ -3208,6 +3208,8 @@ void architects_ingenuity_core( special_effect_t& effect )
   };
 
   effect.execute_action = create_proc_action<architects_ingenuity_t>( "architects_ingenuity", effect );
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // TODO: extremely annoying to do as none of these things show up on the combat log
@@ -4757,6 +4759,8 @@ void gavel_of_the_first_arbiter( special_effect_t& effect )
 
   effect.type           = SPECIAL_EFFECT_USE;
   effect.execute_action = create_proc_action<twisted_judgment_t>( "twisted_judgment", effect );
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // Armor
@@ -6017,11 +6021,6 @@ void hack_and_gore( special_effect_t& effect )
   effect.execute_action->base_td_multiplier = 1.1;
 
   new dbc_proc_callback_t( effect.player, effect );
-}
-
-void ripped_secrets( special_effect_t& effect )
-{
-
 }
 
 void branding_blade( special_effect_t& effect )

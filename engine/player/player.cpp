@@ -4596,20 +4596,21 @@ double player_t::composite_player_critical_damage_multiplier( const action_state
   m *= 1.0 + racials.might_of_the_mountain->effectN( 1 ).percent();
   m *= 1.0 + passive_values.amplification_1;
   m *= 1.0 + passive_values.amplification_2;
+
+  if ( buffs.elemental_chaos_fire )
+    m *= 1.0 + buffs.elemental_chaos_fire->check_value();
+
   if ( buffs.incensed )
-  {
     m *= 1.0 + buffs.incensed->check_value();
-  }
+
   // Critical hit damage buff from R3 Blood of the Enemy major on-use
   if ( buffs.seething_rage )
-  {
     m *= 1.0 + buffs.seething_rage->check_value();
-  }
+
   // Critical hit damage buff from follower themed Benthic boots
   if ( buffs.fathom_hunter )
-  {
     m *= 1.0 + buffs.fathom_hunter->check_value();
-  }
+
   return m;
 }
 
@@ -4621,6 +4622,9 @@ double player_t::composite_player_critical_healing_multiplier() const
   m += racials.might_of_the_mountain->effectN( 1 ).percent();
   m += 0.5 * passive_values.amplification_1;
   m += 0.5 * passive_values.amplification_2;
+
+  if ( buffs.elemental_chaos_frost )
+    m += buffs.elemental_chaos_frost->check_value();
 
   return m;
 }
@@ -4679,12 +4683,13 @@ double player_t::passive_movement_modifier() const
   double passive = passive_modifier;
 
   if ( race == RACE_ZANDALARI_TROLL && zandalari_loa == GONK )
-  {
     passive += find_spell( 292362 )->effectN( 1 ).percent();
-  }
 
   passive += racials.quickness->effectN( 2 ).percent();
   passive += composite_run_speed();
+
+  if ( buffs.elemental_chaos_air )
+    passive += buffs.elemental_chaos_air->check_value();
 
   return passive;
 }
@@ -7411,6 +7416,9 @@ void player_t::target_mitigation( school_e school, result_amount_type dmg_type, 
   if ( buffs.fortitude && buffs.fortitude->up() )
     s->result_amount *= 1.0 + buffs.fortitude->data().effectN( 1 ).percent();
 
+  if ( buffs.elemental_chaos_earth && buffs.elemental_chaos_earth->check() )
+    s->result_amount *= 1.0 + buffs.elemental_chaos_earth->check_value();
+
   if ( s->action->is_aoe() )
     s->result_amount *= 1.0 - cache.avoidance();
 
@@ -9902,7 +9910,7 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
   auto spec_trait_offset   = class_select_offset + 1 + class_select_bytes;
   auto spec_trait_bytes    = char_array.find( hash[ spec_trait_offset ] );
   auto spec_select_offset  = spec_trait_offset + 1 + spec_trait_bytes;
-  auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
+  // auto spec_select_bytes   = char_array.find( hash[ spec_select_offset ] );
 
   auto get_next_bit = [ hash ]( size_t idx, size_t offset ) -> size_t {
     size_t byte = char_array.find( hash[ offset + 1 + idx / 3 ] );
@@ -9918,7 +9926,7 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
     return 0;
   };
 
-  auto get_select_trait = [ &do_error ]( auto begin, auto end, int key ) -> const trait_data_t* {
+  auto get_select_trait = []( auto begin, auto end, int key ) -> const trait_data_t* {
     auto it = std::find_if( begin, end, [ key ]( std::pair<int, const trait_data_t*> entry ) {
       return entry.first == key;
     } );
@@ -12163,6 +12171,7 @@ void player_t::create_options()
   // Cosumables
   add_option( opt_string( "potion", potion_str ) );
   add_option( opt_string( "flask", flask_str ) );
+  add_option( opt_string( "phial", flask_str ) );
   add_option( opt_string( "food", food_str ) );
   add_option( opt_string( "augmentation", rune_str ) );
   add_option( opt_string( "temporary_enchant", temporary_enchant_str ) );

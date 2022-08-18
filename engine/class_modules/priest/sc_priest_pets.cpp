@@ -953,7 +953,7 @@ struct your_shadow_t final : public priest_pet_t
     action_priority_list_t* def = get_action_priority_list( "default" );
   }
 
-  void init_background_actions()
+  void init_background_actions() override
   {
     priest_pet_t::init_background_actions();
 
@@ -1305,6 +1305,8 @@ action_t* priest_t::get_living_shadow_action( living_shadow_action action )
         return pet->shadow_sear;
       case living_shadow_action::SHADOW_NOVA:
         return pet->shadow_nova;
+      default:
+        break;
     }
   }
 
@@ -1416,8 +1418,8 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } ),
+    your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
   // TODO: consider changing duration over to 377355

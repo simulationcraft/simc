@@ -429,7 +429,7 @@ public:
     buff_t* lycaras_teachings_crit;   // cat form
     buff_t* lycaras_teachings_vers;   // bear form
     buff_t* lycaras_teachings_mast;   // moonkin form
-    std::vector<buff_t*> lycaras_teachings_buffs;
+    buff_t* lycaras_teachings;        // placeholder buff
     buff_t* moonkin_form;
     buff_t* natures_vigil;
     buff_t* tiger_dash;
@@ -1045,8 +1045,8 @@ public:
       gain( gains_t() ),
       mastery( masteries_t() ),
       proc( procs_t() ),
-      spec( specializations_t() ),
       talent( talents_t() ),
+      spec( specializations_t() ),
       uptime( uptimes_t() ),
       cov( covenant_t() ),
       conduit( conduit_t() ),
@@ -1423,9 +1423,7 @@ struct bear_form_buff_t : public druid_buff_t<buff_t>
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    p().buff.cat_form->expire();
     p().buff.tigers_fury->expire();  // Mar 03 2016: Tiger's Fury ends when you enter bear form.
-    p().buff.moonkin_form->expire();
 
     swap_melee( p().bear_melee_attack, p().bear_weapon );
 
@@ -1456,9 +1454,6 @@ struct cat_form_buff_t : public druid_buff_t<buff_t>
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    p().buff.bear_form->expire();
-    p().buff.moonkin_form->expire();
-
     swap_melee( p().cat_melee_attack, p().cat_weapon );
 
     base_t::start( stacks, value, duration );
@@ -1474,14 +1469,6 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    p().buff.bear_form->expire();
-    p().buff.cat_form->expire();
-
-    base_t::start( stacks, value, duration );
   }
 };
 
@@ -2687,15 +2674,14 @@ public:
     return return_value;
   }
 
-  // Syntax: parse_dot_debuffs[<S|C[,...]>]( func, spell_data_t* dot[, spell_data_t* spell|conduit_data_t conduit][,...] )
+  // Syntax: parse_dot_debuffs[<S[,...]>]( func, spell_data_t* dot[, spell_data_t* spell][,...] )
   //  func = function returning the dot_t* of the dot
   //  dot = spell data of the dot
-  //  S/C = optional list of template parameter to indicate spell or conduit with redirect effects
-  //  spell/conduit = optional list of spell or conduit with redirect effects that modify the effects on the dot
+  //  S = optional list of template parameter to indicate spell with redirect effects
+  //  spell = optional list of spell with redirect effects that modify the effects on the dot
   void apply_dot_debuffs()
   {
     using S = const spell_data_t*;
-    using C = const conduit_data_t&;
 
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
                           p()->spec.adaptive_swarm_damage, p()->spec.balance );
@@ -3288,7 +3274,6 @@ public:
     if ( data().ok() )
     {
       using S = const spell_data_t*;
-      using C = const conduit_data_t&;
 
       snapshots.bloodtalons =
           parse_persistent_buff_effects( p->buff.bloodtalons, 0U, false );
@@ -3555,10 +3540,6 @@ public:
 
     if ( harmful )
     {
-      // Track benefit of damage buffs
-      p()->buff.tigers_fury->up();
-      p()->buff.savage_roar->up();
-
       if ( special && base_costs[ RESOURCE_ENERGY ] > 0 )
         p()->buff.incarnation_cat->up();
     }
@@ -4917,7 +4898,7 @@ struct rage_of_the_sleeper_reflect_t : public bear_attack_t
 struct rage_of_the_sleeper_t : public bear_attack_t
 {
   rage_of_the_sleeper_t( druid_t* p, std::string_view opt )
-    : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper )
+    : bear_attack_t( "rage_of_the_sleeper", p, p->talent.rage_of_the_sleeper, opt )
   {
     harmful = may_miss = may_parry = may_dodge = may_crit = false;
     base_dd_min = base_dd_max = 0.0;  // effect#2 is parsed as 100000000 damage
@@ -5231,7 +5212,7 @@ struct frenzied_regeneration_t : public druid_heal_t
   {}
 
   frenzied_regeneration_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_heal_t( n, p, s, opt ), goe_mul( 0.0 ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown )
+    : druid_heal_t( n, p, s, opt ), dummy_cd( p->get_cooldown( "dummy_cd" ) ), orig_cd( cooldown ), goe_mul( 0.0 )
   {
     target = p;
 
@@ -6133,7 +6114,7 @@ struct adaptive_swarm_t : public druid_spell_t
       double pm = adaptive_swarm_base_t::composite_persistent_multiplier( s );
 
       // inherits from druid_spell_t so does not get automatic persistent multiplier parsing
-      if ( !state( s )->jump && p()->buff.tigers_fury->check() )
+      if ( !state( s )->jump && p()->buff.tigers_fury->up() )
         pm *= 1.0 + tf_mul;
 
       return pm;
@@ -6656,7 +6637,7 @@ struct innervate_t : public druid_spell_t
 struct mark_of_the_wild_t : public druid_spell_t
 {
   mark_of_the_wild_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "mark_of_the_wild", p, p->find_class_spell( "Mark of the Wild" ) )
+    : druid_spell_t( "mark_of_the_wild", p, p->find_class_spell( "Mark of the Wild" ), opt )
   {
     harmful = false;
     ignore_false_positive = true;
@@ -6950,7 +6931,7 @@ struct moonfire_t : public druid_spell_t
       /* When Twin Moons is active, this is an AoE action meaning it will impact onto the
       first 2 targets in the target list. Instead, we want it to impact on the target of the action
       and 1 additional, so we'll override the target_list to make it so. */
-      if ( is_aoe() && tl.size() > aoe )
+      if ( is_aoe() && as<int>( tl.size( )) > aoe )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == target ? 1 : 0 );
@@ -9771,6 +9752,33 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_name_reporting( "Lycara's Teachings (Mastery)" );
 
+  buff.lycaras_teachings = make_buff( this, "lycaras_teachings", talent.lycaras_teachings )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_period( 5.25_s )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      buff_t* new_buff;
+
+      switch( get_form() )
+      {
+        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
+        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
+        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
+        default: return;
+      }
+
+      if ( !new_buff->check() )
+      {
+        buff.lycaras_teachings_haste->expire();
+        buff.lycaras_teachings_crit->expire();
+        buff.lycaras_teachings_vers->expire();
+        buff.lycaras_teachings_mast->expire();
+
+        new_buff->trigger();
+      }
+    } );
+
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( *this );
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
@@ -10722,13 +10730,12 @@ void druid_t::arise()
   player_t::arise();
 
   if ( talent.lycaras_teachings.ok() )
-    buff.lycaras_teachings_haste->trigger();
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
 
   if ( talent.natures_balance.ok() )
     buff.natures_balance->trigger();
 
-  // Trigger persistent events
-  if ( specialization() == DRUID_BALANCE )
+  if ( talent.eclipse.ok() )
   {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
       eclipse_handler.snapshot_eclipse();
@@ -11835,17 +11842,9 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form->expire();
   buff.moonkin_form->expire();
 
-  buff.lycaras_teachings_haste->expire();
-  buff.lycaras_teachings_vers->expire();
-  buff.lycaras_teachings_crit->expire();
-  buff.lycaras_teachings_mast->expire();
-
-  auto do_form = [ this ]( buff_t* form_buff, buff_t* lycaras_buff, cooldown_t* furor_cd ) {
+  auto do_form = [ this ]( buff_t* form_buff, cooldown_t* furor_cd ) {
     if ( form_buff )
       form_buff->trigger();
-
-    if ( talent.lycaras_teachings.ok() )
-      lycaras_buff->trigger();
 
     if ( in_combat && talent.furor.ok() )
     {
@@ -11858,10 +11857,10 @@ void druid_t::shapeshift( form_e f )
 
   switch ( f )
   {
-    case BEAR_FORM:    do_form( buff.bear_form,    buff.lycaras_teachings_vers,  cooldown.furor_bear_form );    break;
-    case CAT_FORM:     do_form( buff.cat_form,     buff.lycaras_teachings_crit,  cooldown.furor_cat_form );     break;
-    case MOONKIN_FORM: do_form( buff.moonkin_form, buff.lycaras_teachings_mast,  cooldown.furor_moonkin_form ); break;
-    case NO_FORM:      do_form( nullptr,           buff.lycaras_teachings_haste, cooldown.furor_caster_form );  break;
+    case BEAR_FORM:    do_form( buff.bear_form,    cooldown.furor_bear_form    ); break;
+    case CAT_FORM:     do_form( buff.cat_form,     cooldown.furor_cat_form     ); break;
+    case MOONKIN_FORM: do_form( buff.moonkin_form, cooldown.furor_moonkin_form ); break;
+    case NO_FORM:      do_form( nullptr,           cooldown.furor_caster_form  ); break;
     default: assert( 0 ); break;
   }
 

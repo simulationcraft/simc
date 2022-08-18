@@ -155,6 +155,7 @@ void remote_guidance_device( special_effect_t& );
 void gladiators_maledict( special_effect_t& );
 void getiikku_cut_of_death( special_effect_t& );
 void bilestained_crawg_tusks( special_effect_t& );
+void wraps_of_electrostatic_potential( special_effect_t& );
 // 8.2.0 - Rise of Azshara Punchcards
 void yellow_punchcard( special_effect_t& );
 void subroutine_overclock( special_effect_t& );
@@ -4692,6 +4693,13 @@ void items::bilestained_crawg_tusks( special_effect_t& effect )
   new dbc_proc_callback_t( effect.player, effect );
 }
 
+void items::wraps_of_electrostatic_potential( special_effect_t& effect )
+{
+  effect.execute_action = create_proc_action<proc_spell_t>( "electrostatic_induction", effect );
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
+}
+
 // Punchcard stuff ========================================================
 
 item_t init_punchcard( const special_effect_t& effect )
@@ -5493,6 +5501,8 @@ void items::hyperthread_wristwraps( special_effect_t& effect )
 
   auto cb = new spell_tracker_cb_t( *spell_tracker, as<size_t>( effect.driver()->effectN( 1 ).base_value() ) );
   effect.execute_action = create_proc_action<hyperthread_reduction_t>( "hyperthread_wristwraps", effect, cb );
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // Anodized Deflectors
@@ -5522,6 +5532,8 @@ void items::anodized_deflectors( special_effect_t& effect )
   }
 
   effect.custom_buff = anodized_deflectors_buff;
+  effect.cooldown_group_name_override = "item_cd_1141_gcd";
+  effect.cooldown_group_duration_override = effect.driver()->gcd();
 }
 
 // Shared Callback for all Titan trinkets
@@ -6035,6 +6047,7 @@ void unique_gear::register_special_effects_bfa()
   register_special_effect( 305252, items::gladiators_maledict );
   register_special_effect( 281712, items::getiikku_cut_of_death );
   register_special_effect( 281720, items::bilestained_crawg_tusks );
+  register_special_effect( 300145, items::wraps_of_electrostatic_potential );
   // 8.2 Mechagon combo rings
   register_special_effect( 300124, items::logic_loop_of_division );
   register_special_effect( 300125, items::logic_loop_of_recursion );

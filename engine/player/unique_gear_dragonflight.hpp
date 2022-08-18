@@ -16,6 +16,11 @@ namespace unique_gear::dragonflight
 {
 namespace consumables
 {
+void iced_phial_of_corrupting_rage( special_effect_t& );
+void phial_of_charged_isolation( special_effect_t& );
+void phial_of_elemental_chaos( special_effect_t& );
+void phial_of_glacial_fury( special_effect_t& );
+void phial_of_static_empowerment( special_effect_t& );
 void bottled_putrescence( special_effect_t& );
 void chilled_clarity( special_effect_t& );
 void shocking_disclosure( special_effect_t& );

@@ -224,7 +224,7 @@ namespace semver
       }
 
       return result;
-    };
+    }
 
     /* calculate AND-conjunction from a list of @c semantic::interval */
     inline std::unique_ptr<semantic::interval> and_conj(const std::vector< semantic::interval >& input)

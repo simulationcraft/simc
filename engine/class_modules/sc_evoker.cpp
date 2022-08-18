@@ -684,7 +684,7 @@ public:
   //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
   void apply_buff_effects()
   {
-    using S = const spell_data_t*;
+    // using S = const spell_data_t*;
 
     parse_buff_effects( p()->buff.ancient_flame );
     parse_buff_effects( p()->buff.burnout );
@@ -748,7 +748,7 @@ public:
   //  spell = optional list of spell(s) with redirect effects that modify the effects on the dot
   void apply_debuffs_effects()
   {
-    using S = const spell_data_t*;
+    // using S = const spell_data_t*;
 
     parse_debuff_effects( []( evoker_td_t* t ) -> buff_t* { return t->debuffs.shattering_star; },
         p()->talent.shattering_star );
@@ -1061,7 +1061,7 @@ struct empowered_charge_spell_t : public empowered_base_t
     channeled = true;
 
     // TODO: convert to full empower expression support
-    add_option( opt_int( "empower_to", empower_to ) );
+    add_option( opt_int( "empower_to", empower_to, 1, max_empower ) );
     parse_options( options_str );
 
     dot_duration = base_tick_time = base_empower_duration =
@@ -1450,7 +1450,7 @@ struct living_flame_t : public evoker_spell_t
     {
       auto& tl = Base::target_list();
 
-      if ( base_t::is_aoe() && tl.size() > base_t::n_targets() )
+      if ( base_t::is_aoe() && as<int>( tl.size() ) > base_t::n_targets() )
       {
         // always hit the target, so if it exists make sure it's first
         auto start_it = tl.begin() + ( tl[ 0 ] == base_t::target ? 1 : 0 );
@@ -1668,7 +1668,7 @@ struct pyre_t : public evoker_spell_t
     p()->buff.charged_blast->expire();
   }
 
-  double composite_da_multiplier( const action_state_t* s ) const override
+  double composite_da_multiplier( const action_state_t* /*s*/ ) const override
   {
     // The base da_mul is NOT called here since we only want to capture the multiplier from charged blast & iridescence
     // in order to pass it on to the damage action state.
@@ -1717,7 +1717,7 @@ struct dragonrage_t : public evoker_spell_t
     {
       auto& tl = pyre_t::target_list();
 
-      if ( tl.size() > n_targets() )
+      if ( as<int>( tl.size() ) > n_targets() )
         rng().shuffle( tl.begin(), tl.end() );
 
       return tl;
@@ -2307,7 +2307,7 @@ class evoker_report_t : public player_report_extension_t
 public:
   evoker_report_t( evoker_t& player ) : p( player ) {}
 
-  void html_customsection( report::sc_html_stream& os ) override {}
+  void html_customsection( report::sc_html_stream& /*os*/ ) override {}
 
 private:
   evoker_t& p;
@@ -2325,7 +2325,7 @@ struct evoker_module_t : public module_t
     return p;
   }
   bool valid() const override { return true; }
-  void init( player_t* p ) const override {}
+  void init( player_t* ) const override {}
   void static_init() const override {}
   void register_hotfixes() const override {}
   void combat_begin( sim_t* ) const override {}

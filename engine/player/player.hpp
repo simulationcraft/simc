@@ -568,6 +568,10 @@ struct player_t : public actor_t
 
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
+    buff_t* elemental_chaos_fire;  // phial of elemental chaos
+    buff_t* elemental_chaos_air;
+    buff_t* elemental_chaos_earth;
+    buff_t* elemental_chaos_frost;
   } buffs;
 
   struct debuffs_t

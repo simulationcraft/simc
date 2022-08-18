@@ -950,3 +950,7 @@
 4674394, DBFilesClient\SpellReplacement.db2
 4677533, DBFilesClient\ItemLogicalCost.db2
 4677534, DBFilesClient\ItemLogicalCostGroup.db2
+4044373, DBFilesClient\CreatureDifficultyTreasure.db2
+4682325, DBFilesClient\GlideEventBlendTimes.db2
+4278503, DBFilesClient\GossipNPCOption.db2
+4335720, DBFilesClient\GossipNPCOptionDisplayInfo.db2

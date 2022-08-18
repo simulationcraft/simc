@@ -1342,6 +1342,12 @@ class SpellDataGenerator(DataGenerator):
          367327, 367455, 367457, 367458, # Gemstone of Prismatic Brilliance
          368643, # Chains of Domination AoE damage
          363338, # Jailer fight buff
+         # 10.0 =============================================================
+         371070, # Rotting from Within debuff on 'toxic' consumables
+         371348, 371350, 371351, 371353, # Phial of Elemental Chaos
+         370772, 370773, # Phial of Static Empowerment
+         374002, 374037, # Iced Phial of Corrupting Rage
+         371387, # Phial of Charged Isolation
         ),
 
         # Warrior:
@@ -2015,24 +2021,26 @@ class SpellDataGenerator(DataGenerator):
         ( 188, 189, 204, 205, 206, 207, 761 ),  # Warlock
         ( ),         # Monk
         ( ),         # Druid
+        ( ),         # Evoker
     ]
 
     # Specialization categories, Spec0 | Spec1 | Spec2
     # Note, these are reset for MoP
     _spec_skill_categories = [
         (),
-        (  71,  72,  73,   0 ), # Warrior
-        (  65,  66,  70,   0 ), # Paladin
-        ( 254, 255, 256,   0 ), # Hunter
-        ( 259, 260, 261,   0 ), # Rogue
-        ( 256, 257, 258,   0 ), # Priest
-        ( 250, 251, 252,   0 ), # Death Knight
-        ( 262, 263, 264,   0 ), # Shaman
-        (  62,  63,  64,   0 ), # Mage
-        ( 265, 266, 267,   0 ), # Warlock
-        ( 268, 270, 269,   0 ), # Monk
-        ( 102, 103, 104, 105 ), # Druid
-        ( 577, 581,   0,   0 ), # Demon Hunter
+        (   71,   72,  73,   0 ), # Warrior
+        (   65,   66,  70,   0 ), # Paladin
+        (  254,  255, 256,   0 ), # Hunter
+        (  259,  260, 261,   0 ), # Rogue
+        (  256,  257, 258,   0 ), # Priest
+        (  250,  251, 252,   0 ), # Death Knight
+        (  262,  263, 264,   0 ), # Shaman
+        (   62,   63,  64,   0 ), # Mage
+        (  265,  266, 267,   0 ), # Warlock
+        (  268,  270, 269,   0 ), # Monk
+        (  102,  103, 104, 105 ), # Druid
+        (  577,  581,   0,   0 ), # Demon Hunter
+        ( 1467, 1468,   0,   0 ), # Evoker
     ]
 
     _race_categories = [

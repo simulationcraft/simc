@@ -54,6 +54,15 @@ CONSUMABLE_ITEM_WHITELIST = {
     171270, 171273, 171275,            # Spectral Stat potions (9.0)
     171352, 171351, 171349,            # Empowered Exorcisms, Deathly Fixation, Phantom Fire
     # Dragonflight
+    191318, 191319, 191320,            # Phial of the Eye in the Storm
+    191321, 191322, 191323,            # Phial of Still Air
+    191324, 191325, 191326,            # Phial of Icy Preservation
+    191327, 191328, 191329,            # Iced Phial of Corrupting Rage
+    191330, 191331, 191332,            # Phial of Charged Isolation
+    191333, 191334, 191335,            # Phial of Glacial Fury
+    191336, 191337, 191338,            # Phial of Static Empowerment
+    191339, 191340, 191341,            # Phial of Tepid Versatility
+    191357, 191358, 191359,            # Phial of Elemental Chaos
     191360, 191361, 191362,            # Bottled Putrescence
     191366, 191367, 191368,            # Potion of Chilled Clarity
     191399, 191400, 191401,            # Potion of Shocking Disclosure
