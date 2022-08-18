@@ -189,7 +189,7 @@ struct blessing_of_protection_t : public paladin_spell_t
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "avenging_wrath", p, p->spells.avenging_wrath )
+    : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884) )
   {
     parse_options( options_str );
 

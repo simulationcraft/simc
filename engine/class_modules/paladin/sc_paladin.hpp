@@ -284,6 +284,7 @@ public:
     const spell_data_t* avenging_wrath_2;
     const spell_data_t* avenging_wrath_3;
     const spell_data_t* hammer_of_wrath_2;
+    const spell_data_t* moment_of_glory;
 
     const spell_data_t* ashen_hallow_how;
 

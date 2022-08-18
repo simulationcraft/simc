@@ -48,9 +48,9 @@ struct avengers_shield_base_t : public paladin_spell_t
       background = true;
     }
     may_crit = true;
-
-
     //Turn off chaining if focused enmity
+    if ( !p->talents.focused_enmity->ok() )
+    {
     aoe = data().effectN( 1 ).chain_target();
     if ( p -> azerite.soaring_shield.enabled() )
     {
@@ -59,6 +59,7 @@ struct avengers_shield_base_t : public paladin_spell_t
 
     // Soaring Shield hits +2 targets
     aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
+  }
   }
 
   void impact( action_state_t* s ) override
@@ -215,7 +216,6 @@ struct moment_of_glory_t : public paladin_spell_t
   }
 };
 // Tyrs Enforcer damage proc =================================================
-// TODO Could not verify if this worked, think spelldata is empty?
 struct tyrs_enforcer_damage_t : public paladin_spell_t
 {
   tyrs_enforcer_damage_t( paladin_t* p )
@@ -953,16 +953,16 @@ void paladin_t::init_spells_protection()
   talents.consecrated_ground             = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground" );
   talents.inspiring_vanguard             = find_talent_spell( talent_tree::SPECIALIZATION, "Inspiring Vanguard" );
   talents.ardent_defender                = find_talent_spell( talent_tree::SPECIALIZATION, "Ardent Defender" );
-  talents.crusaders_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Judgement" );
+  talents.crusaders_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Crusader's Judgement" );
   talents.consecration_in_flame          = find_talent_spell( talent_tree::SPECIALIZATION, "Consecration in Flame" );
   talents.bastion_of_light               = find_talent_spell( talent_tree::SPECIALIZATION, "Bastion of Light" );
   talents.bulwark_of_order               = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Order" );
   talents.light_of_the_titans            = find_talent_spell( talent_tree::SPECIALIZATION, "Light of the Titans" );
-  talents.uthers_guard                   = find_talent_spell( talent_tree::SPECIALIZATION, "Uthers Guard" );
+  talents.uthers_guard                   = find_talent_spell( talent_tree::SPECIALIZATION, "Uther's Guard" );
   talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
-  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath Might" );
+  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
   talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
@@ -972,16 +972,16 @@ void paladin_t::init_spells_protection()
   talents.faith_barricade                = find_talent_spell( talent_tree::SPECIALIZATION, "Faith Barricade" );
   talents.soaring_shield                 = find_talent_spell( talent_tree::SPECIALIZATION, "Soaring Shield" );
   talents.focused_enmity                 = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Enmity" );
-  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faiths Armor" );
+  talents.faiths_armor                   = find_talent_spell( talent_tree::SPECIALIZATION, "Faith's Armor" );
   talents.faith_in_the_light             = find_talent_spell( talent_tree::SPECIALIZATION, "Faith in the Light" );
-  talents.crusaders_resolve              = find_talent_spell( talent_tree::SPECIALIZATION, "Crusaders Resolve" );
+  talents.crusaders_resolve              = find_talent_spell( talent_tree::SPECIALIZATION, "Crusader's Resolve" );
   talents.gift_of_the_golden_valkyr      = find_talent_spell( talent_tree::SPECIALIZATION, "Gift of the Golden Valkyr" );
   talents.final_stand                    = find_talent_spell( talent_tree::SPECIALIZATION, "Final Stand" );
   talents.righteous_protector            = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Protector" );
   talents.divine_toll                    = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Toll" );
   talents.bulwark_of_righteous_fury      = find_talent_spell( talent_tree::SPECIALIZATION, "Bulwark of Righteous Fury" );
   talents.moment_of_glory                = find_talent_spell( talent_tree::SPECIALIZATION, "Moment of Glory" );
-  talents.eye_for_an_eye                 = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
+  talents.eye_of_tyr                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
   talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera and DT" );
   talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
 
