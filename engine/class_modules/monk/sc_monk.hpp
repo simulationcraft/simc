@@ -335,77 +335,238 @@ public:
 
   struct talents_t
   {
-    // Tier 15 Talents
-    const spell_data_t* eye_of_the_tiger;  // Brewmaster & Windwalker
-    const spell_data_t* chi_wave;
-    const spell_data_t* chi_burst;
-    // Mistweaver
-    const spell_data_t* zen_pulse;
+      // Class Tree
+      const spell_data_t* soothing_mist;
+      const spell_data_t* rising_sun_kick;
+      const spell_data_t* tigers_lust;
 
-    // Tier 25 Talents
-    const spell_data_t* celerity;
-    const spell_data_t* chi_torpedo;
-    const spell_data_t* tigers_lust;
+      const spell_data_t* roll;
+      const spell_data_t* calming_presence;
+      const spell_data_t* paralysis; // Paralysis Baseline
 
-    // Tier 30 Talents
-    // Brewmaster
-    const spell_data_t* light_brewing;
-    const spell_data_t* spitfire;
-    const spell_data_t* black_ox_brew;
-    // Windwalker
-    const spell_data_t* ascension;
-    const spell_data_t* fist_of_the_white_tiger;
-    const spell_data_t* energizing_elixir;
-    // Mistweaver
-    const spell_data_t* spirit_of_the_crane;
-    const spell_data_t* mist_wrap;
-    const spell_data_t* lifecycles;
+      const spell_data_t* tiger_tail_sweep;
+      const spell_data_t* heavy_air;
+      const spell_data_t* vivify;
+      const spell_data_t* detox;
+      const spell_data_t* disable;
+      const spell_data_t *paralysis_2; // Paralysis CD Reduction
 
-    // Tier 35 Talents
-    const spell_data_t* tiger_tail_sweep;
-    const spell_data_t* summon_black_ox_statue;  // Brewmaster
-    const spell_data_t* song_of_chi_ji;          // Mistweaver
-    const spell_data_t* ring_of_peace;
-    // Windwalker
-    const spell_data_t* good_karma;
+      const spell_data_t *grace_of_the_crane;
+      const spell_data_t *vivacious_vivification;
+      const spell_data_t *ferocity_of_xuen;
 
-    // Tier 40 Talents
-    // Windwalker
-    const spell_data_t* inner_strength;
-    // Mistweaver & Windwalker
-    const spell_data_t* diffuse_magic;
-    // Brewmaster
-    const spell_data_t* bob_and_weave;
-    const spell_data_t* healing_elixir;
-    const spell_data_t* dampen_harm;
+      const spell_data_t *elusive_mists;
+      const spell_data_t *transcendence;
+      const spell_data_t *spear_hand_strike;
+      const spell_data_t *fortifying_brew; // Fortifying Brew Baseline
 
-    // Tier 45 Talents
-    // Brewmaster
-    const spell_data_t* special_delivery;
-    const spell_data_t* exploding_keg;
-    // Windwalker
-    const spell_data_t* hit_combo;
-    const spell_data_t* dance_of_chiji;
-    // Brewmaster & Windwalker
-    const spell_data_t* rushing_jade_wind;
-    // Mistweaver
-    const spell_data_t* summon_jade_serpent_statue;
-    const spell_data_t* refreshing_jade_wind;
-    const spell_data_t* invoke_chi_ji;
+      const spell_data_t *chi_wave;
+      const spell_data_t *chi_burst;
+      const spell_data_t *provoke;
+      const spell_data_t *ring_of_peace;
+      const spell_data_t *fast_feet;
+      const spell_data_t *celerity;
+      const spell_data_t *chi_torpedo;
+      const spell_data_t *fortifying_brew_2; // Fortifying Brew Dodge/armor
+      const spell_data_t *fortifying_brew_3; // Fortifying Brew CD Reduction
 
-    // Tier 50 Talents
-    // Brewmaster
-    const spell_data_t* high_tolerance;
-    const spell_data_t* celestial_flames;
-    const spell_data_t* blackout_combo;
-    // Windwalker
-    const spell_data_t* spirtual_focus;
-    const spell_data_t* whirling_dragon_punch;
-    const spell_data_t* serenity;
-    // Mistweaver
-    const spell_data_t* mana_tea;
-    const spell_data_t* focused_thunder;
-    const spell_data_t* rising_thunder;
+      const spell_data_t *roll_out;
+      const spell_data_t* diffuse_magic;
+      const spell_data_t *eye_of_the_tiger;
+      const spell_data_t *dampen_harm;
+      const spell_data_t *touch_of_death;
+      const spell_data_t *expel_harm;
+
+
+      const spell_data_t* close_to_heart;
+      const spell_data_t *escape_from_reality;
+      const spell_data_t *windwalking;
+      const spell_data_t *fatal_touch;
+      const spell_data_t *generous_pour;
+      const spell_data_t *save_them_all;
+      const spell_data_t *resonant_fists;
+      const spell_data_t *bounce_back;
+
+      const spell_data_t *summon_jade_serpent_statue;
+      // NYI Placeholder
+      const spell_data_t *summon_black_ox_statue;
+
+      // Shared Spec Talents
+      const spell_data_t *bonedust_brew;
+      const spell_data_t *rushing_jade_wind;
+      const spell_data_t *attenuation;
+      const spell_data_t *teachings_of_the_monastery;
+      const spell_data_t *healing_elixir;
+      const spell_data_t *faeline_stomp;
+      const spell_data_t *invokers_delight;
+      const spell_data_t* hit_scheme;
+
+      // Windwalker Talent Tree
+      const spell_data_t *fists_of_fury;
+
+      const spell_data_t *touch_of_karma;
+      const spell_data_t *ascension;
+      const spell_data_t *power_strikes;
+
+      const spell_data_t *feathers_of_a_hundred_flocks;
+      const spell_data_t *touch_of_the_tiger;
+      const spell_data_t *flying_serpent_kick;
+      const spell_data_t *flashing_fists;
+      const spell_data_t *open_palm_strikes;
+
+      const spell_data_t *mark_of_the_crane;
+      const spell_data_t *gale_burst;
+      const spell_data_t *glory_of_the_dawn;
+
+      const spell_data_t *shadowboxing_treads_ww;
+      const spell_data_t *storm_earth_and_fire; // Second Charge
+      const spell_data_t *serenity;
+      const spell_data_t *meridian_strikes;
+      const spell_data_t *jade_ignition;
+
+      const spell_data_t *dance_of_chiji;
+      const spell_data_t *inner_peace;
+      const spell_data_t *drinking_horn_cover;
+      const spell_data_t *spiritual_focus;
+      const spell_data_t *strike_of_the_windlord;
+
+      const spell_data_t *hidden_masters_forbidden_touch;
+      const spell_data_t *invoke_xuen_the_white_tiger;
+      const spell_data_t *thunderfist;
+
+      const spell_data_t *crane_vortex;
+      const spell_data_t *xuens_bond;
+      const spell_data_t *fury_of_xuen;
+      const spell_data_t *empowered_tiger_lightning;
+      const spell_data_t *rising_star;
+
+      const spell_data_t *fatal_flying_guillotine;
+      // NYI Placeholder
+      const spell_data_t *xuens_battlegear;
+      const spell_data_t *transfer_the_power;
+      const spell_data_t *whirling_dragon_punch;
+
+      const spell_data_t* calculated_strikes;
+      const spell_data_t *keefers_skyreach;
+      const spell_data_t *way_of_the_fae;
+      const spell_data_t *last_emporers_capacitor;
+
+      // Brewmaster Talent Tree
+      const spell_data_t *keg_smash;
+
+      const spell_data_t *stagger;
+
+      const spell_data_t *purifying_brew;
+      const spell_data_t *shuffle;
+
+      const spell_data_t *gift_of_the_ox;
+      const spell_data_t *quick_sip;
+      const spell_data_t *special_delivery;
+
+      const spell_data_t *celestial_flames;
+      const spell_data_t *celestial_brew; // Celestial Brew Baseline
+      const spell_data_t *staggering_strikes;
+      const spell_data_t *graceful_exit;
+      const spell_data_t *zen_meditation;
+      const spell_data_t *clash;
+
+      const spell_data_t *breath_of_fire;
+      const spell_data_t *celestial_brew_2; // Celestial Brew Rank 2
+      const spell_data_t *purifying_brew_2; // Purifying Brew Rank 2
+      const spell_data_t *strength_of_spirit;
+      const spell_data_t *gai_plins_imperial_brew;
+      const spell_data_t *fundamental_observation;
+      const spell_data_t *face_palm;
+
+      const spell_data_t *scalding_brew;
+      const spell_data_t *salsalabims_strength;
+      const spell_data_t *fortifying_brew_4; // Stagger Effectiveness 
+      const spell_data_t *black_ox_brew;
+      const spell_data_t *bob_and_weave;
+      const spell_data_t *invoke_niuzao_the_black_ox;
+      const spell_data_t *light_brewing;
+      const spell_data_t *training_of_niuzao;
+      const spell_data_t *shocking_blow;
+      const spell_data_t *shadowboxing_treads_brm;
+      const spell_data_t *fluidity_of_motion;
+
+      const spell_data_t *dragonfire_brew;
+      const spell_data_t *charred_passions;
+      const spell_data_t *high_tolerance;
+      const spell_data_t *walk_with_the_ox;
+      const spell_data_t *elusive_footwork;
+      const spell_data_t *anvil_and_stave;
+      const spell_data_t *counterstrike;
+
+      const spell_data_t *invoke_niuzao_the_black_ox_2; // Invoke Niuzao Rank 2
+      const spell_data_t *exploding_keg;
+      const spell_data_t *blackout_combo;
+      const spell_data_t *weapons_of_order;
+
+      const spell_data_t *bountiful_brew;
+      const spell_data_t *stormstouts_last_keg;
+      const spell_data_t *call_to_arms;
+      const spell_data_t *effusive_anima_accelerator;
+
+
+      // Mistweaver Tree
+      const spell_data_t *enveloping_mist;
+
+      const spell_data_t *essence_font;
+      const spell_data_t *renewing_mist;
+
+      const spell_data_t *life_cocoon;
+      const spell_data_t *thunder_focus_tea;
+      const spell_data_t *invigorating_mists;
+
+      const spell_data_t *revival;
+      const spell_data_t *restoral;
+      const spell_data_t *mastery_of_mist;
+
+      const spell_data_t *spirit_of_the_crane;
+      const spell_data_t *mists_of_life;
+      const spell_data_t *uplifted_spirits;
+      const spell_data_t *zen_pulse;
+      const spell_data_t *lifecycles;
+      const spell_data_t *mana_tea;
+
+      const spell_data_t *nourishing_chi;
+      const spell_data_t *overflowing_mists;
+      const spell_data_t *invoke_yulon_the_jade_serpent;
+      const spell_data_t *invoke_chiji_the_red_crane;
+      const spell_data_t* zen_reverberation;
+      const spell_data_t *accumulating_mists;
+      const spell_data_t *song_of_chiji;
+      const spell_data_t *rapid_diffusion;
+
+      const spell_data_t *calming_coallesence;
+      const spell_data_t *yulons_whisper;
+      const spell_data_t *mist_wrap;
+      const spell_data_t *refreshing_jade_wind;
+      const spell_data_t *enveloping_breath;
+      const spell_data_t *dancing_mists;
+      const spell_data_t *font_of_life;
+
+      const spell_data_t *ancient_teachings_of_the_monastery;
+      const spell_data_t *clouded_focus;
+      const spell_data_t *jade_bond;
+      const spell_data_t *gift_of_the_celestials;
+      const spell_data_t *focused_thunder;
+      const spell_data_t *upwelling;
+
+      const spell_data_t *ancient_concordance;
+      const spell_data_t *peaceful_mending;
+      const spell_data_t *secret_infusion;
+      const spell_data_t *misty_peaks;
+      const spell_data_t *resplendent_mists;
+
+      const spell_data_t *awakened_faeline;
+      const spell_data_t *restorative_proliferation;
+      const spell_data_t *tea_of_plenty;
+      const spell_data_t *unison;
+
+      const spell_data_t *tear_of_morning;
+      const spell_data_t *rising_mist;
   } talent;
 
   // Specialization
@@ -668,78 +829,6 @@ public:
     real_ppm_t* bountiful_brew;
   } rppm;
 
-  // Covenant
-  struct covenant_t
-  {
-    // Kyrian:
-    // Weapons of Order - Increases your Mastery by X% and your
-    // Windwalker - Rising Sun Kick reduces the cost of your Chi Abilities by 1 for 5 sec
-    // Mistweaver - Essence Font heals nearby allies for (30% of Spell power) health on channel start and end
-    // Brewmaster - Keg Smash increases the damage you deal to those enemies by X%, up to 5*X% for 8 sec.
-    const spell_data_t* kyrian;
-
-    // Night Fae
-    // Faeline Stomp - Strike the ground fiercely to expose a faeline for 30 sec, dealing (X% of Attack power) Nature
-    // damage Brewmaster - and igniting enemies with Breath of Fire Mistweaver - and healing allies with an Essence Font
-    // bolt Windwalker - and ripping Chi and Energy Spheres out of enemies Your abilities have a 6% chance of resetting
-    // the cooldown of Faeline Stomp while fighting on a faeline.
-    const spell_data_t* night_fae;
-
-    // Venthyr
-    // Fallen Order
-    // Opens a mystic portal for 24 sec. Every 2 sec, it summons a spirit of your order's fallen Ox, Crane, or Tiger
-    // adepts for 4 sec. Fallen [Ox][Crane][Tiger] adepts assist for an additional 2 sec, and will [attack your enemies
-    // with Breath of Fire][heal with Enveloping Mist][assault with Fists of Fury].
-    const spell_data_t* venthyr;
-
-    // Necrolord
-    // Bonedust Brew
-    // Hurl a brew created from the bones of your enemies at the ground, coating all targets struck for 10 sec.  Your
-    // abilities have a 35% chance to affect the target a second time at 35% effectiveness as Shadow damage or healing.
-    // Mistweaver - Gust of Mists heals targets with your Bonedust Brew active for an additional (42% of Attack power)
-    // Brewmaster - Tiger Palm and Keg Smash reduces the cooldown of your brews by an additional 1 sec. when striking
-    // enemies with your Bonedust Brew active Windwalker - Spinning Crane Kick refunds 1 Chi when striking enemies with
-    // your Bonedust Brew active
-    const spell_data_t* necrolord;
-  } covenant;
-
-  // Conduits
-  struct conduit_t
-  {
-    // General
-    conduit_data_t dizzying_tumble;
-    conduit_data_t fortifying_ingredients;
-    conduit_data_t grounding_breath;
-    conduit_data_t harm_denial;
-    conduit_data_t lingering_numbness;
-    conduit_data_t swift_transference;
-    conduit_data_t tumbling_technique;
-
-    // Brewmaster
-    conduit_data_t celestial_effervescence;
-    conduit_data_t evasive_stride;
-    conduit_data_t scalding_brew;
-    conduit_data_t walk_with_the_ox;
-
-    // Mistweaver
-    conduit_data_t jade_bond;
-    conduit_data_t nourishing_chi;
-    conduit_data_t rising_sun_revival;
-    conduit_data_t resplendent_mist;
-
-    // Windwalker
-    conduit_data_t calculated_strikes;
-    conduit_data_t coordinated_offensive;
-    conduit_data_t inner_fury;
-    conduit_data_t xuens_bond;
-
-    // Covenant
-    conduit_data_t strike_with_clarity;
-    conduit_data_t imbued_reflections;
-    conduit_data_t bone_marrow_hops;
-    conduit_data_t way_of_the_fae;
-  } conduit;
-
   struct legendary_t
   {
     // General
@@ -815,6 +904,12 @@ private:
 
 public:
   monk_t( sim_t* sim, util::string_view name, race_e r );
+
+  // Talent Helpers
+  player_talent_t find_class_talent(std::string_view n);
+  player_talent_t find_class_talent(unsigned int spell_id);
+  player_talent_t find_spec_talent(std::string_view n);
+  player_talent_t find_spec_talent(unsigned int spell_id);
 
   // Default consumables
   std::string default_potion() const override;
