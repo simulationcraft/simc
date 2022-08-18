@@ -317,7 +317,7 @@ public:
     // 8
     const spell_data_t* golden_path;
     const spell_data_t* judgment_of_light;
-    const spell_data_t* avenging_wrath; // Spell
+    const spell_data_t* avenging_wrath_1; // Spell
     const spell_data_t* seal_of_the_templar;
     const spell_data_t* turn_evil;
     const spell_data_t* rebuke;
@@ -337,7 +337,7 @@ public:
     // 20
     const spell_data_t* seal_of_clarity;
     const spell_data_t* aspirations_of_divinity;
-    //const spell_data_t* avenging_wrath; //Cdr
+    const spell_data_t* avenging_wrath_2; //Cdr
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;

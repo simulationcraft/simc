@@ -203,8 +203,8 @@ struct avenging_wrath_t : public paladin_spell_t
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p->cooldowns.avenging_wrath;
 
-    if ( p->spells.avenging_wrath_2->ok() )
-      cooldown->duration += timespan_t::from_millis( p->spells.avenging_wrath_2->effectN( 1 ).base_value() );
+    if ( p->talents.avenging_wrath_2->ok() )
+      cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
@@ -2422,7 +2422,7 @@ void paladin_t::init_spells()
   talents.golden_path                     = find_talent_spell( "Golden Path" );
   talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
   //Avenging Wrath spell
-  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.avenging_wrath_1                = find_talent_spell( 384376 );
   talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
   talents.turn_evil                       = find_talent_spell( "Turn Evil" );
   talents.rebuke                          = find_talent_spell( "Rebuke" );
@@ -2444,7 +2444,7 @@ void paladin_t::init_spells()
   talents.seal_of_clarity                 = find_talent_spell( "Seal of Clarity" );
   talents.aspirations_of_divinity         = find_talent_spell( "Aspirations of Divinity" );
   //Avenging Wrath CDR
-  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
+  talents.avenging_wrath_2                = find_talent_spell( talent_tree::CLASS, 317872 );
   talents.touch_of_light                  = find_talent_spell( "Touch of Light" );
   talents.incandescence                   = find_talent_spell( "Incandescence" );
   talents.hallowed_ground                 = find_talent_spell( "Hallowed Ground" );
@@ -2466,10 +2466,10 @@ void paladin_t::init_spells()
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
-  spells.avenging_wrath         = find_class_spell( "Avenging Wrath" );
+  spells.avenging_wrath         = find_spell( 31884 );
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
-  spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
-  spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
+  //spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
+  //spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
