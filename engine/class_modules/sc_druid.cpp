@@ -429,7 +429,7 @@ public:
     buff_t* lycaras_teachings_crit;   // cat form
     buff_t* lycaras_teachings_vers;   // bear form
     buff_t* lycaras_teachings_mast;   // moonkin form
-    std::vector<buff_t*> lycaras_teachings_buffs;
+    buff_t* lycaras_teachings;        // placeholder buff
     buff_t* moonkin_form;
     buff_t* natures_vigil;
     buff_t* tiger_dash;
@@ -1423,9 +1423,7 @@ struct bear_form_buff_t : public druid_buff_t<buff_t>
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    p().buff.cat_form->expire();
     p().buff.tigers_fury->expire();  // Mar 03 2016: Tiger's Fury ends when you enter bear form.
-    p().buff.moonkin_form->expire();
 
     swap_melee( p().bear_melee_attack, p().bear_weapon );
 
@@ -1456,9 +1454,6 @@ struct cat_form_buff_t : public druid_buff_t<buff_t>
 
   void start( int stacks, double value, timespan_t duration ) override
   {
-    p().buff.bear_form->expire();
-    p().buff.moonkin_form->expire();
-
     swap_melee( p().cat_melee_attack, p().cat_weapon );
 
     base_t::start( stacks, value, duration );
@@ -1474,14 +1469,6 @@ struct moonkin_form_buff_t : public druid_buff_t<buff_t>
     add_invalidate( CACHE_EXP );
     add_invalidate( CACHE_HIT );
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-  }
-
-  void start( int stacks, double value, timespan_t duration ) override
-  {
-    p().buff.bear_form->expire();
-    p().buff.cat_form->expire();
-
-    base_t::start( stacks, value, duration );
   }
 };
 
@@ -9765,6 +9752,33 @@ void druid_t::create_buffs()
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
     ->set_name_reporting( "Lycara's Teachings (Mastery)" );
 
+  buff.lycaras_teachings = make_buff( this, "lycaras_teachings", talent.lycaras_teachings )
+    ->set_quiet( true )
+    ->set_tick_zero( true )
+    ->set_period( 5.25_s )
+    ->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
+      buff_t* new_buff;
+
+      switch( get_form() )
+      {
+        case NO_FORM:      new_buff = buff.lycaras_teachings_haste; break;
+        case CAT_FORM:     new_buff = buff.lycaras_teachings_crit;  break;
+        case BEAR_FORM:    new_buff = buff.lycaras_teachings_vers;  break;
+        case MOONKIN_FORM: new_buff = buff.lycaras_teachings_mast;  break;
+        default: return;
+      }
+
+      if ( !new_buff->check() )
+      {
+        buff.lycaras_teachings_haste->expire();
+        buff.lycaras_teachings_crit->expire();
+        buff.lycaras_teachings_vers->expire();
+        buff.lycaras_teachings_mast->expire();
+
+        new_buff->trigger();
+      }
+    } );
+
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( *this );
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
@@ -10716,13 +10730,12 @@ void druid_t::arise()
   player_t::arise();
 
   if ( talent.lycaras_teachings.ok() )
-    buff.lycaras_teachings_haste->trigger();
+    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.lycaras_teachings ) );
 
   if ( talent.natures_balance.ok() )
     buff.natures_balance->trigger();
 
-  // Trigger persistent events
-  if ( specialization() == DRUID_BALANCE )
+  if ( talent.eclipse.ok() )
   {
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
       eclipse_handler.snapshot_eclipse();
@@ -11829,17 +11842,9 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form->expire();
   buff.moonkin_form->expire();
 
-  buff.lycaras_teachings_haste->expire();
-  buff.lycaras_teachings_vers->expire();
-  buff.lycaras_teachings_crit->expire();
-  buff.lycaras_teachings_mast->expire();
-
-  auto do_form = [ this ]( buff_t* form_buff, buff_t* lycaras_buff, cooldown_t* furor_cd ) {
+  auto do_form = [ this ]( buff_t* form_buff, cooldown_t* furor_cd ) {
     if ( form_buff )
       form_buff->trigger();
-
-    if ( talent.lycaras_teachings.ok() )
-      lycaras_buff->trigger();
 
     if ( in_combat && talent.furor.ok() )
     {
@@ -11852,10 +11857,10 @@ void druid_t::shapeshift( form_e f )
 
   switch ( f )
   {
-    case BEAR_FORM:    do_form( buff.bear_form,    buff.lycaras_teachings_vers,  cooldown.furor_bear_form );    break;
-    case CAT_FORM:     do_form( buff.cat_form,     buff.lycaras_teachings_crit,  cooldown.furor_cat_form );     break;
-    case MOONKIN_FORM: do_form( buff.moonkin_form, buff.lycaras_teachings_mast,  cooldown.furor_moonkin_form ); break;
-    case NO_FORM:      do_form( nullptr,           buff.lycaras_teachings_haste, cooldown.furor_caster_form );  break;
+    case BEAR_FORM:    do_form( buff.bear_form,    cooldown.furor_bear_form    ); break;
+    case CAT_FORM:     do_form( buff.cat_form,     cooldown.furor_cat_form     ); break;
+    case MOONKIN_FORM: do_form( buff.moonkin_form, cooldown.furor_moonkin_form ); break;
+    case NO_FORM:      do_form( nullptr,           cooldown.furor_caster_form  ); break;
     default: assert( 0 ); break;
   }
 
