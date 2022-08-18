@@ -496,15 +496,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     void snapshot_internal( action_state_t* state, uint32_t flags, result_amount_type rt ) override
     {
       super_t::snapshot_internal( state, flags, rt );
-
-      if ( this->o()->conduit.coordinated_offensive->ok() && this->p()->sticky_target )
-      {
-        if ( rt == result_amount_type::DMG_DIRECT && ( flags & STATE_MUL_DA ) )
-          state->da_multiplier += this->o()->conduit.coordinated_offensive.percent();
-
-        if ( rt == result_amount_type::DMG_OVER_TIME && ( flags & STATE_MUL_TA ) )
-          state->ta_multiplier += this->o()->conduit.coordinated_offensive.percent();
-      }
     }
   };
 
@@ -938,40 +929,6 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     }
   };
 
-  struct sef_fist_of_the_white_tiger_oh_t : public sef_melee_attack_t
-  {
-    sef_fist_of_the_white_tiger_oh_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fist_of_the_white_tiger_offhand", player, player->o()->talent.fist_of_the_white_tiger )
-    {
-      may_dodge = may_parry = may_block = may_miss = true;
-      dual                                         = true;
-
-      energize_type = action_energize::NONE;
-    }
-
-    void impact( action_state_t* state ) override
-    {
-      sef_melee_attack_t::impact( state );
-
-      if ( result_is_hit( state->result ) )
-      {
-        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
-          o()->trigger_mark_of_the_crane( state );
-      }
-    }
-  };
-
-  struct sef_fist_of_the_white_tiger_t : public sef_melee_attack_t
-  {
-    sef_fist_of_the_white_tiger_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fist_of_the_white_tiger_mainhand", player,
-                            player->o()->talent.fist_of_the_white_tiger->effectN( 2 ).trigger() )
-    {
-      may_dodge = may_parry = may_block = may_miss = true;
-      dual                                         = true;
-    }
-  };
-
   struct sef_chi_wave_damage_t : public sef_spell_t
   {
     sef_chi_wave_damage_t( storm_earth_and_fire_pet_t* player )
@@ -1113,8 +1070,6 @@ public:
     attacks.at( (int)sef_ability_e::SEF_SPINNING_CRANE_KICK ) = new sef_spinning_crane_kick_t( this );
     attacks.at( (int)sef_ability_e::SEF_RUSHING_JADE_WIND )   = new sef_rushing_jade_wind_t( this );
     attacks.at( (int)sef_ability_e::SEF_WHIRLING_DRAGON_PUNCH ) = new sef_whirling_dragon_punch_t( this );
-    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER ) = new sef_fist_of_the_white_tiger_t( this );
-    attacks.at( (int)sef_ability_e::SEF_FIST_OF_THE_WHITE_TIGER_OH ) = new sef_fist_of_the_white_tiger_oh_t( this );
 
     spells.at( sef_spell_index( (int)sef_ability_e::SEF_CHI_WAVE ) ) = new sef_chi_wave_t( this );
     spells.at( sef_spell_index( (int)sef_ability_e::SEF_CRACKLING_JADE_LIGHTNING ) ) = new sef_crackling_jade_lightning_t( this );
@@ -1299,8 +1254,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
+    if ( o()->talent.xuens_bond->ok() )
+      cpm *= 1 + o()->talent.xuens_bond->effectN( 1 ).percent();
 
     return cpm;
   }
@@ -1412,8 +1367,8 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
+    if ( o()->talent.xuens_bond->ok() )
+      cpm *= 1 + o()->talent.xuens_bond->effectN(1).percent();
 
     return cpm;
   }
@@ -1492,8 +1447,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      if ( o()->talent.walk_with_the_ox->ok() )
+        am *= 1 + o()->talent.walk_with_the_ox->effectN(1).percent();
 
       return am;
     }
@@ -1607,8 +1562,8 @@ private:
     {
       double am = pet_melee_attack_t::action_multiplier();
 
-      if ( o()->conduit.walk_with_the_ox->ok() )
-        am *= 1 + o()->conduit.walk_with_the_ox.percent();
+      if ( o()->talent.walk_with_the_ox->ok() )
+        am *= 1 + o()->talent.walk_with_the_ox->effectN(1).percent();
 
       return am;
     }
@@ -1812,16 +1767,11 @@ public:
   {
     monk_pet_t::create_buffs();
 
-    buff.primordial_potential =
-        make_buff( this, "fallen_order_primordial_potential", o()->passives.primordial_potential );
   }
 
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
-
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2109,9 +2059,6 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
-
     return cpm;
   }
 
@@ -2141,11 +2088,11 @@ public:
       if ( o()->legendary.stormstouts_last_keg->ok() )
         am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->talent.scalding_brew->ok() )
       {
         auto td = o()->get_target_data( player->target );
         if ( td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+          am *= 1 + o()->talent.scalding_brew->effectN(1).percent();
       }
 
       return am;
@@ -2295,9 +2242,6 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
-
     return cpm;
   }
 
@@ -2435,9 +2379,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = monk_pet_t::composite_player_multiplier ( school );
-
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
@@ -2722,9 +2663,6 @@ public:
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
-
     return cpm;
   }
 
@@ -2754,11 +2692,11 @@ public:
       if ( o()->legendary.stormstouts_last_keg->ok() )
         am *= 1 + o()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
 
-      if ( o()->conduit.scalding_brew->ok() )
+      if ( o()->talent.scalding_brew->ok() )
       {
         auto td = o()->find_target_data( player->target );
         if ( td && td->dots.breath_of_fire->is_ticking() )
-          am *= 1 + o()->conduit.scalding_brew.percent();
+          am *= 1 + o()->talent.scalding_brew->effectN(1).percent();
       }
 
       return am;
@@ -2911,9 +2849,6 @@ public:
   double composite_player_multiplier( school_e school ) const override
   {
     double cpm = monk_pet_t::composite_player_multiplier( school );
-
-    if ( o()->conduit.imbued_reflections->ok() )
-      cpm *= 1 + o()->conduit.imbued_reflections.percent();
 
     return cpm;
   }
