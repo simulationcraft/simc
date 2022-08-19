@@ -611,6 +611,9 @@ public:
         }
     }
 
+    if (p()->talent.ferocity_of_xuen->ok())
+        pm *= 1 + p()->talent.ferocity_of_xuen->effectN(1).percent();
+
     return pm;
   }
 
@@ -1361,9 +1364,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
-    if ( p()->spec.rising_sun_kick_2->ok() )
-      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+    if ( p()->talent.fast_feet->ok() )
+      am *= 1 + p()->talent.fast_feet->effectN( 1 ).percent();
 
     return am;
   }
@@ -1898,6 +1900,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->buff.dance_of_chiji_hidden->check() )
       am *= 1 + p()->talent.dance_of_chiji->effectN( 1 ).percent();
+
+    if (p()->talent.fast_feet->ok())
+        am *= 1 + p()->talent.fast_feet->effectN(2).percent();
 
     return am;
   }
@@ -2536,7 +2541,7 @@ struct keg_smash_t : public monk_melee_attack_t
 struct touch_of_death_t : public monk_melee_attack_t
 {
   touch_of_death_t( monk_t& p, util::string_view options_str )
-    : monk_melee_attack_t( "touch_of_death", &p, p.spec.touch_of_death )
+    : monk_melee_attack_t( "touch_of_death", &p, p.talent.touch_of_death )
   {
     ww_mastery = true;
     may_crit = hasted_ticks     = false;
@@ -2743,7 +2748,7 @@ struct provoke_t : public monk_melee_attack_t
 struct spear_hand_strike_t : public monk_melee_attack_t
 {
   spear_hand_strike_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "spear_hand_strike", p, p->spec.spear_hand_strike )
+    : monk_melee_attack_t( "spear_hand_strike", p, p->talent.spear_hand_strike )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -2771,6 +2776,9 @@ struct leg_sweep_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+
+    if (p->talent.tiger_tail_sweep)
+        cooldown->duration += p->talent.tiger_tail_sweep->effectN(2).time_value(); // Saved as -10000
   }
 
   void execute() override
@@ -2788,11 +2796,14 @@ struct leg_sweep_t : public monk_melee_attack_t
 
 struct paralysis_t : public monk_melee_attack_t
 {
-  paralysis_t( monk_t* p, util::string_view options_str ) : monk_melee_attack_t( "paralysis", p, p->spec.paralysis )
+  paralysis_t( monk_t* p, util::string_view options_str ) : monk_melee_attack_t( "paralysis", p, p->talent.paralysis )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+
+    if (p->talent.paralysis_2)
+        cooldown->duration += p->talent.paralysis_2->effectN(1).time_value(); // Saved as -15000
   }
 
   void execute() override
@@ -3218,20 +3229,15 @@ struct fortifying_brew_t : public monk_spell_t
 
   fortifying_brew_t( monk_t& p, util::string_view options_str )
     : monk_spell_t(
-          "fortifying_brew", &p,
-          ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
+          "fortifying_brew", &p, p.talent.fortifying_brew),
       delivery( new special_delivery_t( p ) ),
       fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
     parse_options( options_str );
 
     harmful = may_crit = false;
-
-    if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
-
-    if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
+    
+    // TODO: Other Fortifying Brew talents
   }
 
   void execute() override
@@ -4603,7 +4609,7 @@ struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t* dmg;
   expel_harm_t( monk_t& p, util::string_view options_str )
-    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
+    : monk_heal_t( "expel_harm", p, p.talent.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
   {
     parse_options( options_str );
 
@@ -4611,9 +4617,6 @@ struct expel_harm_t : public monk_heal_t
     may_combo_strike = true;
 
     trigger_ww_t28_4p_potential = true;
-
-    if ( p.spec.expel_harm_2_brm->ok() )
-      cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
 
     add_child( dmg );
   }
@@ -4631,13 +4634,10 @@ struct expel_harm_t : public monk_heal_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      double chi_gain = 0;
-
-      if ( p()->spec.expel_harm_2_ww->ok() )
-        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
+      double chi_gain = p()->talent.expel_harm->effectN( 3 ).base_value();
 
       if ( chi_gain > 0 )
-        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm);
     }
   }
 
