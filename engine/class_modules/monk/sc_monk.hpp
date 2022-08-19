@@ -130,6 +130,9 @@ struct monk_t : public player_t
 public:
   using base_t = player_t;
 
+  // Prepatch filter
+  bool monk_prepatch;
+
   // Active
   action_t* windwalking_aura;
 
@@ -449,7 +452,7 @@ public:
       const spell_data_t* calculated_strikes;
       const spell_data_t *keefers_skyreach;
       const spell_data_t *way_of_the_fae;
-      const spell_data_t *last_emporers_capacitor;
+      const spell_data_t *last_emperors_capacitor;
 
       // Brewmaster Talent Tree
       const spell_data_t *keg_smash;
@@ -829,8 +832,12 @@ public:
     real_ppm_t* bountiful_brew;
   } rppm;
 
+  
   struct legendary_t
   {
+    /*
+    * TODO: Determine how Prepatch handles these
+    * 
     // General
     item_runeforge_t fatal_touch;          // 7081
     item_runeforge_t invokers_delight;     // 7082
@@ -860,6 +867,7 @@ public:
     item_runeforge_t call_to_arms;         // 7718; Bastion Covenant
     item_runeforge_t faeline_harmony;      // 7721; Night Fae Covenant
     item_runeforge_t sinister_teachings;   // 7726; Venthyr Covenant
+    */
   } legendary;
 
   struct pets_t
