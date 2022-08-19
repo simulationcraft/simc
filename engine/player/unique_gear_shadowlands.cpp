@@ -4324,15 +4324,18 @@ void cruciform_veinripper(special_effect_t& effect)
           {
             // Generalize default tank "behind boss" time as ~40% when no manual modifier is specified
             // This does not proc from the front at all, but tanks are always position front for sims
-            proc_modifier *= a->player->role == ROLE_TANK ? 0.4 : 0.0;
+            //
+            // When the role is not tank, this is explicitly set to 0 to allow DPS to model bosses where
+            // they can't hit from behind.
+            proc_modifier *= a->player->primary_role() == ROLE_TANK ? 0.4 : 0.0;
           }
         }
       }
 
       if ( proc_modifier != rppm->get_modifier() )
       {
-        effect.player->sim->print_debug( "Player {} adjusts {} rppm modifer: old={} new={}",
-                                         *a->player, effect, rppm->get_modifier(), proc_modifier);
+        effect.player->sim->print_debug( "Player {} (position: {}, role: {}) adjusts {} rppm modifer: old={} new={}",
+                                         *a->player, a->player->position(), a->player->primary_role(), effect, rppm->get_modifier(), proc_modifier);
         rppm->set_modifier( proc_modifier );
       }
 
