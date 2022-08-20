@@ -2,7 +2,7 @@ name: CI
 
 on:
   pull_request:
-    branches: [ shadowlands ]
+    branches: [ shadowlands, dragonflight ]
   push:
     branches: [ shadowlands, dragonflight ]
     paths-ignore:
