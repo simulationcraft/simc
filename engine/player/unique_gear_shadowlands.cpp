@@ -2166,8 +2166,8 @@ void old_warriors_soul( special_effect_t& effect )
 }
 	
 /**Whispering Shard of Power
- * id=357185 Stat buffs
- * id=355319 periodic roll for proc & coefficients for stat amounts & Driver
+ * id=357185 Stat buff
+ * id=355319 periodic roll for proc & coefficients for stat amounts and Driver
  * id=357491 Strength in Fealty Driver?
  */
 void whispering_shard_of_power( special_effect_t& effect )
@@ -2195,15 +2195,13 @@ void whispering_shard_of_power( special_effect_t& effect )
 
       effect.player->register_combat_begin( [ &effect, buff, max_stat, fealty_buffs ]( player_t* ) {
 
-        double chance     = 0.05;
         timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+        double chance = 0.0125;
 
-      if ( effect.player->rng().roll( chance ) )
-          ( *fealty_buffs )[ max_stat ]->execute();
-
-      make_repeating_event( buff->source->sim, period, [ &effect, buff, chance, max_stat, fealty_buffs ]() {
+      make_repeating_event( effect.player->sim, period,
+                              [ &effect, buff, chance, max_stat, fealty_buffs ]() {
         if ( effect.player->rng().roll( chance ) )
-          ( *fealty_buffs )[ max_stat ]->execute();
+          ( *fealty_buffs )[ max_stat ]->trigger();
         } );
       } );
     }
