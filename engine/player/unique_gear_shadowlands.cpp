@@ -2166,8 +2166,8 @@ void old_warriors_soul( special_effect_t& effect )
 }
 	
 /**Whispering Shard of Power
- * id=357185 Driver
- * id=355319 periodic roll for proc & coefficients for stat amounts
+ * id=357185 Stat Buffs
+ * id=355319 periodic roll for proc & coefficients for stat amounts & Driver
  * id=357491 Strength in Fealty Driver?
  */
 void whispering_shard_of_power( special_effect_t& effect )
@@ -2179,7 +2179,7 @@ void whispering_shard_of_power( special_effect_t& effect )
   // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
   // reference them. Store these in pointers to reduce the size of the events that use them.
   auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
-  double amount = effect.player->find_spell( 355319 )->effectN( 1 ).average( effect.item );
+  double amount = effect.driver()->effectN( 1 ).average( effect.item );
 
   for ( auto stat : ratings )
   {
@@ -6283,7 +6283,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
-    unique_gear::register_special_effect( 357491, items::whispering_shard_of_power );
+    unique_gear::register_special_effect( 355319, items::whispering_shard_of_power );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
