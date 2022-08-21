@@ -2166,8 +2166,8 @@ void old_warriors_soul( special_effect_t& effect )
 }
 	
 /**Whispering Shard of Power
- * id=357185 Driver
- * id=355319 periodic roll for proc & coefficients for stat amounts
+ * id=357185 Stat buffs
+ * id=355319 periodic roll for proc & coefficients for stat amounts & Driver
  * id=357491 Strength in Fealty Driver?
  */
 void whispering_shard_of_power( special_effect_t& effect )
