@@ -2164,6 +2164,45 @@ void old_warriors_soul( special_effect_t& effect )
     } );
   }
 }
+	
+/**Whispering Shard of Power
+ * id=357185 coefficients for stat amounts
+ * id=355319 periodic roll for proc
+ * id=357491 Strength in Fealty Driver?
+ * id=357577 Potentially another driver?
+ */
+void whispering_shard_of_power( special_effect_t& effect )
+{
+  // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
+  // reference them. Store these in pointers to reduce the size of the events that use them.
+  auto buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount = effect.player->find_spell( 355319 )->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "strength_in_fealty_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
+                 ->add_stat( stat, amount );
+
+      ( [ &effect, buff ]( player_t* ) {
+        make_repeating_event( buff->source->sim, effect.player->find_spell( 355319 )->effectN( 1 ).period(),
+                              [ &effect, buff ]() {
+                                if ( effect.player->rng().roll( 0.05 ) )
+                                  buff->trigger();
+                              } );
+      } );
+    }
+    ( *buffs )[ stat ] = buff;
+  }
+}
 
 void salvaged_fusion_amplifier( special_effect_t& effect)
 {
