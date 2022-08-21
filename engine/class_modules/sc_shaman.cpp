@@ -3137,6 +3137,14 @@ struct windfury_attack_t : public shaman_attack_t
       m *= 1.0 + p()->talent.doom_winds->effectN( 2 ).percent();
     }
 
+    if ( p()->buff.crackling_surge->up() )
+    {
+      for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.crackling_surge->value();
+      }
+    }
+
     return m;
   }
 
