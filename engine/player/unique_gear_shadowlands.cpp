@@ -2166,10 +2166,9 @@ void old_warriors_soul( special_effect_t& effect )
 }
 	
 /**Whispering Shard of Power
- * id=357185 coefficients for stat amounts
- * id=355319 periodic roll for proc
+ * id=357185 Driver
+ * id=355319 periodic roll for proc & coefficients for stat amounts
  * id=357491 Strength in Fealty Driver?
- * id=357577 Potentially another driver?
  */
 void whispering_shard_of_power( special_effect_t& effect )
 {
@@ -2190,12 +2189,20 @@ void whispering_shard_of_power( special_effect_t& effect )
     if ( !buff )
     {
       buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
-                 ->add_stat( stat, amount );
+                 ->add_stat( stat, amount )
+                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-      ( [ &effect, buff ]( player_t* ) {
-        make_repeating_event( buff->source->sim, effect.player->find_spell( 355319 )->effectN( 1 ).period(),
-                              [ &effect, buff ]() {
-                                if ( effect.player->rng().roll( 0.05 ) )
+        effect.player->register_combat_begin( [ &effect, buff ]( player_t* ) {
+
+        double chance = 0.05;
+        timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+
+        if ( effect.player->rng().roll( chance ) )
+          buff->trigger();
+
+        make_repeating_event( buff->source->sim, period,
+                              [ &effect, buff, chance ]() {
+                                if ( effect.player->rng().roll( chance ) )
                                   buff->trigger();
                               } );
       } );
@@ -6276,6 +6283,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
+    unique_gear::register_special_effect( 357491, items::whispering_shard_of_power );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
