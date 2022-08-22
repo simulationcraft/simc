@@ -10703,7 +10703,7 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 
   if ( r == RESOURCE_ENERGY )
   {
-    if ( buff.savage_roar->check() )
+    if ( get_form() == CAT_FORM && buff.savage_roar->check() )
       reg *= 1.0 + buff.savage_roar->data().effectN( 3 ).percent();
   }
 
