@@ -3124,7 +3124,7 @@ struct provoke_t : public monk_melee_attack_t
 struct spear_hand_strike_t : public monk_melee_attack_t
 {
   spear_hand_strike_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "spear_hand_strike", p, p->spec.spear_hand_strike )
+    : monk_melee_attack_t( "spear_hand_strike", p, p->talent.general.spear_hand_strike )
   {
     parse_options( options_str );
     ignore_false_positive = true;
@@ -3610,9 +3610,7 @@ struct fortifying_brew_t : public monk_spell_t
   fortifying_ingredients_t* fortifying_ingredients;
 
   fortifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t(
-          "fortifying_brew", &p,
-          ( p.specialization() == MONK_BREWMASTER ? p.spec.fortifying_brew_brm : p.spec.fortifying_brew_mw_ww ) ),
+    : monk_spell_t( "fortifying_brew", &p, p.talent.general.fortifying_brew ),
       delivery( new special_delivery_t( p ) ),
       fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
@@ -3620,11 +3618,8 @@ struct fortifying_brew_t : public monk_spell_t
 
     harmful = may_crit = false;
 
-    if ( p.spec.fortifying_brew_2_mw )
-      cooldown->duration += p.spec.fortifying_brew_2_mw->effectN( 1 ).time_value();
-
-    if ( p.spec.fortifying_brew_2_ww )
-      cooldown->duration += p.spec.fortifying_brew_2_ww->effectN( 1 ).time_value();
+    if ( p.talent.general.fortifying_brew_cooldown )
+      cooldown->duration += p.talent.general.fortifying_brew_cooldown->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -5785,13 +5780,15 @@ struct fortifying_brew_t : public monk_buff_t<buff_t>
   fortifying_brew_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s ), health_gain( 0 )
   {
     cooldown->duration = timespan_t::zero();
+    add_invalidate( CACHE_DODGE );
+    add_invalidate( CACHE_ARMOR );
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
     double health_multiplier = p().spec.fortifying_brew_mw_ww->effectN( 1 ).percent();
 
-    if ( p().specialization() == MONK_BREWMASTER && p().spec.fortifying_brew_2_brm->ok() )
+    if ( p().talent.brewmaster.fortifying_brew_stagger->ok() )
     {
       // The tooltip is hard-coded with 20% if Brewmaster Rank 2 is activated
       // Currently it's bugged and giving 17.39% HP instead of the intended 20%
@@ -7478,7 +7475,7 @@ void monk_t::create_buffs()
 
   buff.fortifying_brew = new buffs::fortifying_brew_t(
       *this, "fortifying_brew",
-      ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : spec.fortifying_brew_mw_ww ) );
+      ( specialization() == MONK_BREWMASTER ? passives.fortifying_brew : talent.general.fortifying_brew ) );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t( *this, "rushing_jade_wind", 
       ( specialization() == MONK_BREWMASTER ? talent.brewmaster.rushing_jade_wind : 
@@ -8269,6 +8266,9 @@ double monk_t::composite_dodge() const
   if ( buff.elusive_brawler->check() )
     d += buff.elusive_brawler->current_stack * cache.mastery_value();
 
+  if ( buff.fortifying_brew->check() && talent.general.fortifying_brew_dodge_armor->ok() )
+    d += talent.general.fortifying_brew_dodge_armor->effectN( 1 ).percent();
+
   return d;
 }
 
@@ -8321,6 +8321,9 @@ double monk_t::composite_base_armor_multiplier() const
 
   if ( buff.mighty_pour->check() )
     a *= 1 + buff.mighty_pour->data().effectN( 1 ).percent();
+
+  if ( buff.fortifying_brew->check() && talent.general.fortifying_brew_dodge_armor->ok() )
+    a *= 1 + talent.general.fortifying_brew_dodge_armor->effectN( 1 ).percent();
 
   return a;
 }
@@ -8695,6 +8698,10 @@ void monk_t::target_mitigation( school_e school, result_amount_type dt, action_s
     s->result_amount *= 1.0 + spec.brewmasters_balance->effectN( 2 ).percent();
   }
 
+  // Calming Presence talent
+  if ( talent.general.calming_presence->ok() )
+    s->result_amount *= 1.0 + talent.general.calming_presence->effectN( 1 ).percent();
+
   // Diffuse Magic
   if ( buff.diffuse_magic->up() && school != SCHOOL_PHYSICAL )
     s->result_amount *= 1.0 + buff.diffuse_magic->default_value;  // Stored as -60%
@@ -8903,7 +8910,7 @@ double monk_t::stagger_base_value()
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
 
-    if ( spec.fortifying_brew_2_brm->ok() && buff.fortifying_brew->up() )
+    if ( talent.brewmaster.fortifying_brew_stagger->ok() && buff.fortifying_brew->up() )
       stagger_base *= 1 + passives.fortifying_brew->effectN( 6 ).percent();
 
     // Hard coding the 125% multiplier until Blizzard fixes this
