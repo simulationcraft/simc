@@ -394,7 +394,7 @@ void windwalker( player_t* p )
   pre->add_action( "fleshcraft" );
   pre->add_action( p, "Expel Harm", "if=chi<chi.max" );
   pre->add_talent( p, "Chi Burst", "if=!covenant.night_fae" );
-  pre->add_talent( p, "Chi Wave", "if=!talent.energizing_elixir.enabled" );
+  pre->add_talent( p, "Chi Wave" );
 
   std::vector<std::string> racial_actions  = p->get_racial_actions();
   action_priority_list_t* def              = p->get_action_priority_list( "default" );
@@ -444,7 +444,6 @@ void windwalker( player_t* p )
   def->add_action( "call_action_list,name=spend_energy,if=!buff.bonedust_brew.up&!buff.first_strike.up" );
 
   def->add_talent( p, "Chi Burst", "if=covenant.night_fae&cooldown.faeline_stomp.remains&(chi.max-chi>=1&active_enemies=1|chi.max-chi>=2&active_enemies>=2)&!buff.first_strike.up" );
-  def->add_talent( p, "Energizing Elixir", "if=prev_gcd.1.tiger_palm&chi<4" );
   def->add_action( "call_action_list,name=cd_sef,if=!talent.serenity" );
   def->add_action( "call_action_list,name=cd_serenity,if=talent.serenity" );
   def->add_action( "call_action_list,name=bonedust,if=buff.bonedust_brew.up" );
@@ -452,8 +451,6 @@ void windwalker( player_t* p )
   def->add_action( "call_action_list,name=aoe,if=active_enemies>=3" );
 
   // Opener
-  opener->add_talent( p, "Fist of the White Tiger",
-                      "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   opener->add_action( p, "Expel Harm", "if=talent.chi_burst.enabled&chi.max-chi>=3" );
   opener->add_action( p, "Tiger Palm",
                       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2" );
@@ -463,8 +460,6 @@ void windwalker( player_t* p )
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=chi.max-chi>=2" );
 
   // Spend Energy
-  spend_energy->add_talent( p, "Fist of the White Tiger",
-                            "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3&(energy.time_to_max<1|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy" );
   spend_energy->add_action( p, "Expel Harm", "if=chi.max-chi>=1&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&(!buff.bonedust_brew.up|buff.bloodlust.up|buff.invokers_delight.up)&!cap_energy" );
   spend_energy->add_action( p, "Tiger Palm",
                    "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=combo_strike&chi.max-chi>=2&(energy.time_to_max<1|cooldown.serenity.remains<2|energy.time_to_max<4&cooldown.fists_of_fury.remains<1.5|cooldown.weapons_of_order.remains<2)&!buff.primordial_power.up&!cap_energy" );
@@ -490,7 +485,6 @@ void windwalker( player_t* p )
       "target_if=min:debuff.mark_of_the_crane.remains,if=(talent.whirling_dragon_punch&cooldown.rising_sun_kick.duration>cooldown.whirling_dragon_punch.remains+4)&(cooldown.fists_of_fury.remains>3|chi>=5)" );
   aoe->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down" );
   aoe->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
-  aoe->add_talent( p, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi.max-chi>=3" );
   aoe->add_talent( p, "Chi Burst", "if=chi.max-chi>=2&!buff.bonedust_brew.up" );
   aoe->add_action( p, "Crackling Jade Lightning",
                    "if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.fists_of_fury.remains>execute_time" );
@@ -701,7 +695,6 @@ void windwalker( player_t* p )
                         "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up&cooldown.rising_sun_kick.remains>2" );
   serenity->add_action( p, "Fists of Fury", "interrupt_if=!cooldown.rising_sun_kick.up" );
   serenity->add_action( p, "Spinning Crane Kick", "if=combo_strike&debuff.bonedust_brew_debuff.up" );
-  serenity->add_talent( p, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   serenity->add_action( p, "Blackout Kick",
                         "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike|!talent.hit_combo" );
   serenity->add_action( p, "Spinning Crane Kick" );
@@ -719,8 +712,6 @@ void windwalker( player_t* p )
       "target_if=max:target.time_to_die,if=active_enemies>=3&(set_bonus.tier28_2pc&debuff.carvers_eye_debuff.up|spinning_crane_kick.count<4|!conduit.calculated_strikes)" );
   bonedust->add_action( p, "Spinning Crane Kick",
       "if=active_enemies>=3&(combo_strike|buff.bonedust_brew.remains<2*gcd|(!tp_fill|chi.max-chi<2&conduit.calculated_strikes.enabled&spinning_crane_kick.count>3)&variable.max_stacks)" );
-  bonedust->add_talent( p, "Fist of the White Tiger",
-      "target_if=min:debuff.mark_of_the_crane.remains,if=active_enemies>=3&chi.max-chi>=3" );
   bonedust->add_action( p, "Tiger Palm",
       "target_if=min:debuff.mark_of_the_crane.remains+(debuff.skyreach_exhaustion.up*20),if=active_enemies>=3&chi.max-chi>=2" );
   bonedust->add_action( p, "Spinning Crane Kick",
@@ -738,8 +729,6 @@ void windwalker( player_t* p )
   weapons_of_order->add_talent( p, "Whirling Dragon Punch" );
   weapons_of_order->add_action( p, "Spinning Crane Kick",
                                 "if=combo_strike&active_enemies>=3&buff.weapons_of_order_ww.up" );
-  weapons_of_order->add_talent( p, "Fist of the White Tiger",
-                                "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   weapons_of_order->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   weapons_of_order->add_talent( p, "Chi Burst", "if=chi.max-chi>=(1+active_enemies>1)" );
   weapons_of_order->add_action( p, "Tiger Palm",
@@ -767,7 +756,6 @@ void windwalker( player_t* p )
   st->add_action( p, "Crackling Jade Lightning",
       "if=buff.the_emperors_capacitor.stack>19&energy.time_to_max>execute_time-1&cooldown.rising_sun_kick.remains>execute_time|buff.the_emperors_capacitor.stack>14&(cooldown.serenity.remains<5&talent.serenity|cooldown.weapons_of_order.remains<5&covenant.kyrian|fight_remains<5)" );
   st->add_talent( p, "Rushing Jade Wind", "if=buff.rushing_jade_wind.down&active_enemies>1" );
-  st->add_talent( p, "Fist of the White Tiger", "target_if=min:debuff.mark_of_the_crane.remains,if=chi<3" );
   st->add_action( p, "Expel Harm", "if=chi.max-chi>=1" );
   st->add_talent( p, "Chi Burst",
       "if=chi.max-chi>=1&active_enemies=1&raid_event.adds.in>20|chi.max-chi>=2&active_enemies>=2" );
