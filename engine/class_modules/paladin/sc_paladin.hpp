@@ -96,6 +96,7 @@ public:
     buff_t* devotion_aura;
 
     buff_t* avengers_might;
+    buff_t* avenging_wrath_might;
 
     // Holy
     buff_t* divine_protection;
@@ -281,8 +282,7 @@ public:
     const spell_data_t* sanctified_wrath_damage;
 
     const spell_data_t* judgment_2;
-    const spell_data_t* avenging_wrath_2;
-    const spell_data_t* avenging_wrath_3;
+    const spell_data_t* improved_avenging_wrath;
     const spell_data_t* hammer_of_wrath_2;
     const spell_data_t* moment_of_glory;
 
@@ -317,14 +317,13 @@ public:
     // 8
     const spell_data_t* golden_path;
     const spell_data_t* judgment_of_light;
-    const spell_data_t* avenging_wrath_1; // Spell
+    const spell_data_t* avenging_wrath; // Spell
     const spell_data_t* seal_of_the_templar;
     const spell_data_t* turn_evil;
     const spell_data_t* rebuke;
     const spell_data_t* seal_of_mercy;
     const spell_data_t* cleanse_toxins;
     const spell_data_t* blessing_of_sacrifice;
-    const spell_data_t* judgment;  // 1 Holy Power
     const spell_data_t* seal_of_reprisal;
     const spell_data_t* afterimage;
     const spell_data_t* recompense;
@@ -343,6 +342,7 @@ public:
     const spell_data_t* hallowed_ground;
     const spell_data_t* of_dusk_and_dawn;
     const spell_data_t* unbreakable_spirit;
+    const spell_data_t* judgment;
     const spell_data_t* seal_of_might;
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
@@ -353,6 +353,12 @@ public:
     const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* seraphim;
     const spell_data_t* the_mad_paragon;
+
+
+    // Shared
+    const spell_data_t* holy_avenging_wrath_might;
+    const spell_data_t* prot_avenging_wrath_might;
+    const spell_data_t* ret_avenging_wrath_might;
 
     // Holy -- NYI, Not touching for now
     // T15
@@ -605,10 +611,10 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
+  
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
-
   void         trigger_memory_of_lucid_dreams( double cost );
   virtual void vision_of_perfection_proc() override;
 
@@ -771,7 +777,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
@@ -936,6 +942,13 @@ public:
     if ( affected_by.divine_purpose && p() -> buffs.divine_purpose -> up() )
     {
       am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
+    }
+
+    //if ( p()->talents.seal_of_reprisal->ok() )
+    if ( affected_by.divine_purpose && p()->talents.seal_of_reprisal->ok() )
+    {
+      am *= 1.0 + 40.0;
+          //p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
 
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
@@ -1340,13 +1353,12 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-    // Roll for Divine Purpose
-    if ( p -> talents.divine_purpose -> ok() &&
-         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() )
-      )
+        // Roll for Divine Purpose
+    if ( p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
-      p -> buffs.divine_purpose -> trigger();
-      p -> procs.divine_purpose -> occur();
+      p->buffs.divine_purpose->trigger();
+      p->procs.divine_purpose->occur();
+
     }
 
     if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )

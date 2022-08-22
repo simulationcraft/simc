@@ -112,12 +112,6 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
         base_buff_duration *= 1.0 + p->talents.holy_sanctified_wrath->effectN( 1 ).percent();
         took_sw = true;
       }
-      if ( p->spells.avenging_wrath_3->ok() )
-      {
-        healing_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
-        crit_bonus += p->spells.avenging_wrath_3->effectN( 4 ).percent();
-        damage_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
-      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p->talents.ret_sanctified_wrath->ok() )
@@ -192,12 +186,12 @@ struct avenging_wrath_t : public paladin_spell_t
     : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884) )
   {
     parse_options( options_str );
-
+    if ( !p->talents.avenging_wrath->ok() )
+      background = true;
     if ( p->talents.crusade->ok() )
       background = true;
     if ( p->talents.avenging_crusader->ok() )
       background = true;
-
     harmful = false;
 
     // link needed for Righteous Protector / SotR cooldown reduction
@@ -213,11 +207,16 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p()->buffs.avenging_wrath->trigger();
+    if ( p()->talents.avenging_wrath->ok() )
+        p()->buffs.avenging_wrath->trigger();
 
     if ( p()->azerite.avengers_might.ok() )
       p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
                                           p()->buffs.avenging_wrath->buff_duration() );
+
+    //Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
+   // if ( p()->talents.avenging_wrath_might->ok() )
+   //   p()->buffs.avenging_wrath_might->trigger();
   }
 };
 
@@ -298,6 +297,10 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->talents.consecration_in_flame->ok() )
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
+    }
+    if ( p()->talents.hallowed_ground->ok() )
+    {
+      m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
     return m;
   }
@@ -1029,6 +1032,10 @@ void judgment_t::impact( action_state_t* s )
 {
   if ( result_is_hit( s->result ) )
   {
+    // TODO: Make this work, suspecting the talent isnt being picked up, am dum tho so who knows ^-^
+    //  if ( p()->talents.judgment->ok() )
+      td( s->target )->debuff.judgment->trigger();
+
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( 25 );
   }
@@ -1201,6 +1208,10 @@ struct divine_toll_t : public paladin_spell_t
     }
 
     if ( p()->legendary.divine_resonance->ok() )
+    {
+      p()->buffs.divine_resonance->trigger();
+    }
+    if ( p()->talents.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
     }
@@ -1634,6 +1645,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       {
         p()->buffs.crusade->extend_duration(
             p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+      }
+    }
+
+    if ( p()->talents.the_mad_paragon->ok() )
+    {
+      if ( p()->buffs.avenging_wrath->up() )
+      {
+        p()->buffs.avenging_wrath->extend_duration(
+            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
+      }
+      else if ( p()->buffs.crusade->up() )
+      {
+        p()->buffs.crusade->extend_duration(
+            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
       }
     }
 
@@ -2198,6 +2223,7 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
+  //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
@@ -2422,15 +2448,13 @@ void paladin_t::init_spells()
   talents.golden_path                     = find_talent_spell( "Golden Path" );
   talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
   //Avenging Wrath spell
-  talents.avenging_wrath_1                = find_talent_spell( 384376 );
+  talents.avenging_wrath                  = find_talent_spell( talent_tree::CLASS, "Avenging Wrath" );
   talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
   talents.turn_evil                       = find_talent_spell( "Turn Evil" );
   talents.rebuke                          = find_talent_spell( "Rebuke" );
   talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
   talents.cleanse_toxins                  = find_talent_spell( "Cleanse Toxins" );
   talents.blessing_of_sacrifice           = find_talent_spell( "Blessing of Sacrifice" );
-  //Judgment Generates 1 Holy Power
-  talents.judgment                        = find_talent_spell( "Judgment" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
   talents.judgment                        = find_talent_spell( "Judgment" );
   talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
@@ -2458,6 +2482,9 @@ void paladin_t::init_spells()
   talents.holy_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
   talents.prot_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
   talents.ret_sanctified_wrath            = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION  );
+  talents.holy_avenging_wrath_might       = find_talent_spell( "Avenging Wrath: Might", PALADIN_HOLY );
+  talents.prot_avenging_wrath_might       = find_talent_spell( "Avenging Wrath: Might", PALADIN_PROTECTION );
+  talents.ret_avenging_wrath_might        = find_talent_spell( "Avenging Wrath: Might", PALADIN_RETRIBUTION );
   talents.seraphim                        = find_talent_spell( "Seraphim" );
   talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
 
@@ -2468,8 +2495,6 @@ void paladin_t::init_spells()
   passives.paladin              = find_spell( 137026 );
   spells.avenging_wrath         = find_spell( 31884 );
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
-  //spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
-  //spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );

@@ -58,7 +58,10 @@ struct avengers_shield_base_t : public paladin_spell_t
     }
 
     // Soaring Shield hits +2 targets
+    if ( p->talents.soaring_shield->ok() )
+    {
     aoe += as<int>( p -> talents.soaring_shield -> effectN( 1 ).base_value() );
+    }
   }
   }
 
@@ -459,9 +462,6 @@ struct judgment_prot_t : public judgment_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> spec.judgment_4 -> ok() )
-        td( s -> target ) -> debuff.judgment -> trigger();
-
       int hopo = 0;
       if ( p() -> spec.judgment_3 -> ok() )
         hopo += judge_holy_power;
@@ -962,7 +962,6 @@ void paladin_t::init_spells_protection()
   talents.hand_of_the_protector          = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of the Protector" );
   talents.resolute_defender              = find_talent_spell( talent_tree::SPECIALIZATION, "Resolute Defender" );
   talents.sentinel                       = find_talent_spell( talent_tree::SPECIALIZATION, "Sentinel" );
-  talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
   talents.strength_of_conviction         = find_talent_spell( talent_tree::SPECIALIZATION, "Strength of Conviction" );
   talents.relentless_inquisitor          = find_talent_spell( talent_tree::SPECIALIZATION, "Relentless Inquisitor" );
   talents.ferren_marcuss_strength        = find_talent_spell( talent_tree::SPECIALIZATION, "Ferren Marcus's Strength" );
@@ -984,6 +983,7 @@ void paladin_t::init_spells_protection()
   talents.eye_of_tyr                     = find_talent_spell( talent_tree::SPECIALIZATION, "Eye of Tyr" );
   talents.improved_sera_and_dt           = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Sera and DT" );
   talents.divine_resonance               = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Resonance" );
+  //talents.avenging_wrath_might           = find_talent_spell( talent_tree::SPECIALIZATION, "Avenging Wrath: Might" );
 
   talents.blessing_of_spellwarding   = find_talent_spell( "Blessing of Spellwarding" );
 
