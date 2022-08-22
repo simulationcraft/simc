@@ -2166,9 +2166,8 @@ void old_warriors_soul( special_effect_t& effect )
 }
 	
 /**Whispering Shard of Power
- * id=357185 Stat buff
- * id=355319 periodic roll for proc & coefficients for stat amounts and Driver
- * id=357491 Strength in Fealty Driver?
+ * id=357185 Stat buffs
+ * id=355319 periodic roll for proc & coefficients for stat amounts & Driver
  */
 void whispering_shard_of_power( special_effect_t& effect )
 {
@@ -2178,9 +2177,8 @@ void whispering_shard_of_power( special_effect_t& effect )
 
   // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
   // reference them. Store these in pointers to reduce the size of the events that use them.
-  auto fealty_buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
-  double amount = effect.driver()->effectN( 1 ).average( effect.item );
-  
+  auto fealty_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount     = effect.driver()->effectN( 1 ).average( effect.item );
 
   for ( auto stat : ratings )
   {
@@ -2190,28 +2188,24 @@ void whispering_shard_of_power( special_effect_t& effect )
     if ( !buff )
     {
       buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
-                 ->add_stat( stat, amount )
-                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-
-      
+                 ->add_stat( stat, amount );
     }
     ( *fealty_buffs )[ stat ] = buff;
   }
 
   effect.player->register_combat_begin( [ &effect, fealty_buffs ]( player_t* ) {
+    timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+    // Proc chance appears to be 5% per roll based on testing and logs. 21-8-2022 
+    double chance     = 0.05;
 
-        timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
-        double chance = 0.0125;
-
-      make_repeating_event( effect.player->sim, period,
-                              [ &effect, chance, fealty_buffs ]() {
-        if ( effect.player->rng().roll( chance ) )
-        {
-          stat_e max_stat = util::highest_stat( effect.player, ratings );
-          ( *fealty_buffs )[ max_stat ]->trigger();
-        }
-        } );
-      } );
+    make_repeating_event( effect.player->sim, period, [ &effect, chance, fealty_buffs ]() {
+      if ( effect.player->rng().roll( chance ) )
+      {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *fealty_buffs )[ max_stat ]->trigger();
+      }
+    } );
+  } );
 }
 
 void salvaged_fusion_amplifier( special_effect_t& effect)
