@@ -813,6 +813,9 @@ public:
       }
     }
 
+    if ( p()->talent.general.ferocity_of_xuen->ok() )
+        pm *= 1 + p()->talent.general.ferocity_of_xuen->effectN( 1 ).percent();
+
     return pm;
   }
 
@@ -1574,6 +1577,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p()->spec.rising_sun_kick_2->ok() )
       am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
+
+    if ( p()->talent.general.fast_feet->ok() )
+        am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
+
     return am;
   }
 
@@ -2149,6 +2156,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->buff.dance_of_chiji_hidden->check() )
       am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
+
+    if (p()->talent.general.fast_feet->ok())
+        am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
     return am;
   }
@@ -3122,6 +3132,10 @@ struct leg_sweep_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+
+
+    if (p->talent.general.tiger_tail_sweep)
+        cooldown->duration += p->talent.general.tiger_tail_sweep->effectN(2).time_value(); // Saved as -10000
   }
 
   void execute() override
@@ -3281,7 +3295,8 @@ struct roll_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
+    if ( player->talent.general.roll )
+        cooldown->charges += 1;
 
     if ( player->talent.general.celerity )
     {
@@ -3291,7 +3306,13 @@ struct roll_t : public monk_spell_t
 
     if ( player->legendary.swiftsure_wraps.ok() )
       cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
+
+    if ( player->talent.general.roll_out )
+    {
+        //TODO?
+    }
   }
+
 };
 
 // ==========================================================================
@@ -3305,10 +3326,18 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    cooldown->charges += (int)player->spec.roll_2->effectN( 1 ).base_value();
+    if ( player->talent.general.roll )
+        cooldown->charges += 1;
 
     if ( player->legendary.swiftsure_wraps.ok() )
       cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
+
+
+    if (player->talent.general.roll_out)
+    {
+        //TODO?
+    }
+
   }
 
   void execute() override
