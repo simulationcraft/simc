@@ -1536,7 +1536,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t( monk_t* p, util::string_view name )
-    : monk_melee_attack_t( name, p, p->spec.rising_sun_kick->effectN( 1 ).trigger() )
+    : monk_melee_attack_t( name, p, p->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
   {
     ww_mastery             = true;
     trigger_faeline_stomp  = true;
@@ -1546,7 +1546,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     may_crit          = true;
     trigger_chiji     = true;
 
-    if ( p->specialization() == MONK_WINDWALKER )
+    if ( p->specialization() == MONK_WINDWALKER || p->specialization() == MONK_BREWMASTER )
       apply_dual_wield_two_handed_scaling();
   }
 
@@ -1554,9 +1554,8 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    // Rank 2 seems to be applied after Bonus Damage. Hence the reason for being in the Action Multiplier
-    if ( p()->spec.rising_sun_kick_2->ok() )
-      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
+    if ( p()->talent.general.fast_feet->ok() )
+      am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
 
     return am;
   }
@@ -1575,15 +1574,12 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->specialization() == MONK_MISTWEAVER )
+    if ( p()->buff.thunder_focus_tea->up() )
     {
-      if ( p()->buff.thunder_focus_tea->up() )
-      {
-        if ( p()->spec.thunder_focus_tea_2->ok() )
-          p()->cooldown.rising_sun_kick->adjust( p()->spec.thunder_focus_tea_2->effectN( 1 ).time_value(), true );
+      p()->cooldown.rising_sun_kick->adjust(
+          p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(), true );
 
-        p()->buff.thunder_focus_tea->decrement();
-      }
+      p()->buff.thunder_focus_tea->decrement();
     }
   }
 
@@ -1597,11 +1593,10 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       {
         p()->buff.teachings_of_the_monastery->expire();
         // Spirit of the Crane does not have a buff associated with it. Since
-        // this is tied somewhat with Teachings of the Monastery, tacking
+        // this is tied with Teachings of the Monastery, tacking
         // this onto the removal of that buff.
         if ( p()->talent.mistweaver.spirit_of_the_crane->ok() )
-          p()->resource_gain(
-              RESOURCE_MANA,
+          p()->resource_gain( RESOURCE_MANA,
               ( p()->resources.max[ RESOURCE_MANA ] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
               p()->gain.spirit_of_the_crane );
       }
@@ -1609,19 +1604,19 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       // Apply Mortal Wonds
       if ( p()->specialization() == MONK_WINDWALKER )
       {
-        if ( s->target->debuffs.mortal_wounds )
-        {
-          s->target->debuffs.mortal_wounds->trigger();
-        }
-
         if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
         {
           p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
           p()->proc.xuens_battlegear_reduction->occur();
         }
+        else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+        {
+          p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
+          p()->proc.xuens_battlegear_reduction->occur();
+        }
 
         // Apply Mark of the Crane
-        if ( p()->spec.spinning_crane_kick_2_ww->ok() )
+        if ( p()->talent.windwalker.mark_of_the_crane->ok() )
           p()->trigger_mark_of_the_crane( s );
       }
     }
@@ -1633,7 +1628,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   rising_sun_kick_dmg_t* trigger_attack;
 
   rising_sun_kick_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "rising_sun_kick", p, p->spec.rising_sun_kick )
+    : monk_melee_attack_t( "rising_sun_kick", p, p->talent.general.rising_sun_kick )
   {
     parse_options( options_str );
 
@@ -1693,6 +1688,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
         p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
       else
         p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
+
       p()->buff.whirling_dragon_punch->trigger();
     }
 
