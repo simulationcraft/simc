@@ -627,11 +627,20 @@ public:
 
             if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->buff.storm_earth_and_fire->up() )
             {
-                auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() * 100;
-                p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
+                if ( p()->buff.storm_earth_and_fire->up() )
+                {
+                    auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
+                    p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend );
 
-                p()->find_pet("earth_spirit")->adjust_duration( timespan_t::from_seconds( time_extend ) );
-                p()->find_pet("fire_spirit")->adjust_duration( timespan_t::from_seconds( time_extend ) );
+                    p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+                    p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+                }
+                else if ( p()->buff.serenity-up() )
+                {
+                    p()->buff.serenity->extend_duration(
+                        p(), timespan_t::from_seconds(
+                            p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) )
+                }
             }
         }
 
@@ -3141,9 +3150,11 @@ struct leg_sweep_t : public monk_melee_attack_t
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
 
-
     if (p->talent.general.tiger_tail_sweep)
-        cooldown->duration += p->talent.general.tiger_tail_sweep->effectN(2).time_value(); // Saved as -10000
+    {
+      radius += p->talent.general.tiger_tail_sweep->effectN( 1 ).base_value();
+      cooldown->duration += p->talent.general.tiger_tail_sweep->effectN( 2 ).time_value(); // Saved as -10000
+    }
   }
 
   void execute() override
