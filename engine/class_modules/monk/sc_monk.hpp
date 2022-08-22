@@ -567,7 +567,7 @@ public:
       player_talent_t dance_of_chiji;
       player_talent_t inner_peace;
       player_talent_t drinking_horn_cover;
-      player_talent_t spirtual_focus;
+      player_talent_t spiritual_focus;
       player_talent_t strike_of_the_windlord;
       // Row 7
       player_talent_t rushing_jade_wind;
