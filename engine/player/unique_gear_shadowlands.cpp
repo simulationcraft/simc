@@ -2171,6 +2171,10 @@ void old_warriors_soul( special_effect_t& effect )
  */
 void whispering_shard_of_power( special_effect_t& effect )
 {
+  if ( unique_gear::create_fallback_buffs(
+     effect, { "strength_in_fealty_crit_rating", "strength_in_fealty_mastery_rating", "strength_in_fealty_haste_rating",
+                  "strength_in_fealty_versatility_rating" } ) )
+  return;
   // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
@@ -6280,7 +6284,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
-    unique_gear::register_special_effect( 355319, items::whispering_shard_of_power );
+    unique_gear::register_special_effect( 355319, items::whispering_shard_of_power, true );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
