@@ -437,7 +437,8 @@ public:
                                          std::min<int>( p()->sim->max_aoe_enemies, target_count ) );
 
     auto cyclone_strike_bonus_per_target = p()->passives.cyclone_strikes->effectN( 1 ).percent() 
-                                        + ( p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent() : 0 );
+                                        + ( p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent() : 
+                                            ( p()->talent.windwalker.calculated_strikes->ok() ? p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent() : 0 ) );
 
     auto cyclone_strike_bonus = 1 + (cyclone_strike_bonus_per_target * cyclone_strike_counter);
 
@@ -2124,6 +2125,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->conduit.calculated_strikes->ok() )
       motc_multiplier += p()->conduit.calculated_strikes.percent();
+    else if ( p()->talent.windwalker.calculated_strikes->ok() )
+      motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
 
     if ( p()->spec.spinning_crane_kick_2_ww->ok() )
       am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
@@ -8435,8 +8438,8 @@ double monk_t::resource_regen_per_second( resource_e r ) const
 void monk_t::combat_begin()
 {
   base_t::combat_begin();
-
-  if ( specialization() == MONK_WINDWALKER )
+  
+  if ( talent.general.windwalking->ok() )
   {
     if ( sim->distance_targeting_enabled )
     {
@@ -8447,7 +8450,10 @@ void monk_t::combat_begin()
       buffs.windwalking_movement_aura->trigger( 1, buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), 1,
                                                 timespan_t::zero() );
     }
-
+  }
+ 
+  if ( specialization() == MONK_WINDWALKER )
+  {
     if ( user_options.initial_chi > 0 )
       resources.current[ RESOURCE_CHI ] =
           clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
