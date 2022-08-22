@@ -68,6 +68,8 @@ actions+=/run_action_list,name=normal
 actions.cooldown=metamorphosis,if=!talent.demonic.enabled&(cooldown.eye_beam.remains>20|fight_remains<25)
 actions.cooldown+=/metamorphosis,if=talent.demonic.enabled&(cooldown.eye_beam.remains>20&(!variable.blade_dance|cooldown.blade_dance.remains>gcd.max)|fight_remains<25)
 actions.cooldown+=/potion,if=buff.metamorphosis.remains>25|fight_remains<60
+actions.cooldown+=/use_item,name=wraps_of_electrostatic_potential
+actions.cooldown+=/use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30
 actions.cooldown+=/use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&((active_enemies=desired_targets&raid_event.adds.in>60|active_enemies>desired_targets)&(active_enemies<3|cooldown.eye_beam.remains<20)|fight_remains<25)
 # Default use item logic
 actions.cooldown+=/use_items,slots=trinket1,if=variable.trinket_sync_slot=1&(buff.metamorphosis.up|(!talent.demonic.enabled&cooldown.metamorphosis.remains>(fight_remains>?trinket.1.cooldown.duration%2))|fight_remains<=20)|(variable.trinket_sync_slot=2&!trinket.2.cooldown.ready)|!variable.trinket_sync_slot

@@ -169,6 +169,7 @@ struct sim_t : private sc_thread_t
   int scale_to_itemlevel; //itemlevel to scale to. if -1, we don't scale down
   int keystone_level; // keystone difficulty for scaling purposes
   int keystone_pct_hp;     // keystone mob health percent
+  std::string keystone_bounty; // Shrouded bounty stat type
   bool challenge_mode; // if active, players will get scaled down to 620 and set bonuses are deactivated
   bool scale_itemlevel_down_only; // Items below the value of scale_to_itemlevel will not be scaled up.
   bool disable_set_bonuses; // Disables all set bonuses.
@@ -430,8 +431,10 @@ struct sim_t : private sc_thread_t
     timespan_t reactive_defense_matrix_interval = 0_ms;
     /// Percentage of default duration for Field of Blossoms.
     double field_of_blossoms_duration_multiplier = 1.0;
-    /// Modifier for Cruciform Veinripper to control uptime for tanks. When set to 0, proc rate is not affected unless position=front, in which case 0.4 is used.
+    /// Modifier for Cruciform Veinripper to control uptime. When set to 0, proc rate is not affected.
     double cruciform_veinripper_proc_rate = 0.0;
+    /// Modifier for Cruciform Veinripper to control uptime for tanks. When set to 0, proc rate is not affected unless position=front, in which case 0.4 is used.
+    double cruciform_veinripper_in_front_rate = 0.0;
     /// How many pustules to generate during pre-combat, as events before the pull will normally remove a few
     unsigned int precombat_pustules = 9;
     // Prevents Soul Ignite from being used a second time to trigger the

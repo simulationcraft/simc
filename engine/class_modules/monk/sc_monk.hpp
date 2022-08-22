@@ -42,8 +42,8 @@ enum class sef_ability_e
   SEF_SPINNING_CRANE_KICK,
   SEF_RUSHING_JADE_WIND,
   SEF_WHIRLING_DRAGON_PUNCH,
-  SEF_FIST_OF_THE_WHITE_TIGER,
-  SEF_FIST_OF_THE_WHITE_TIGER_OH,
+  SEF_STRIKE_OF_THE_WINDLORD,
+  SEF_STRIKE_OF_THE_WINDLORD_OH,
   SEF_ATTACK_MAX,
   // Attacks end here
 
@@ -175,6 +175,11 @@ public:
     propagate_const<action_t*> call_to_arms_empowered_tiger_lightning;
   } active_actions;
 
+  struct passive_actions_t
+  {
+    action_t* thunderfist;
+  } passive_actions;
+
   std::vector<action_t*> combo_strike_actions;
   double spiritual_focus_count;
 
@@ -209,7 +214,6 @@ public:
     propagate_const<buff_t*> invoke_niuzao;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
-    propagate_const<buff_t*> spitfire;
     propagate_const<buff_t*> zen_meditation;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t*> recent_purifies;
@@ -240,11 +244,10 @@ public:
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t*> dizzying_kicks;
     propagate_const<buff_t*> flying_serpent_kick_movement;
-    propagate_const<buff_t*> hit_combo;
-    propagate_const<buff_t*> inner_stength;
     propagate_const<buff_t*> invoke_xuen;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> serenity;
+    propagate_const<buff_t*> thunderfist;
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
     propagate_const<buff_t*> windwalking_driver;
@@ -294,7 +297,6 @@ public:
     propagate_const<gain_t*> energizing_elixir_chi;
     propagate_const<gain_t*> energizing_elixir_energy;
     propagate_const<gain_t*> expel_harm;
-    propagate_const<gain_t*> fist_of_the_white_tiger;
     propagate_const<gain_t*> focus_of_xuen;
     propagate_const<gain_t*> fortuitous_spheres;
     propagate_const<gain_t*> gift_of_the_ox;
@@ -327,7 +329,6 @@ public:
     propagate_const<proc_t*> bountiful_brew_proc;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> sinister_teaching_reduction;
-    propagate_const<proc_t*> spitfire_reset;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;
     propagate_const<proc_t*> tumbling_technique_roll;
     propagate_const<proc_t*> xuens_battlegear_reduction;
@@ -335,77 +336,268 @@ public:
 
   struct talents_t
   {
-    // Tier 15 Talents
-    const spell_data_t* eye_of_the_tiger;  // Brewmaster & Windwalker
-    const spell_data_t* chi_wave;
-    const spell_data_t* chi_burst;
-    // Mistweaver
-    const spell_data_t* zen_pulse;
+    // General Talents
+    struct
+    {
+      // Row 1
+      player_talent_t soothing_mist;
+      player_talent_t rising_sun_kick;
+      player_talent_t tigers_lust;
+      // Row 2
+      player_talent_t roll;
+      player_talent_t calming_presence;
+      player_talent_t paralysis;
+      // Row 3
+      player_talent_t tiger_tail_sweep;
+      player_talent_t heavy_air;
+      player_talent_t vivify;
+      player_talent_t detox;
+      player_talent_t disable;
+      player_talent_t paralysis_rank_2;
+      // Row 4
+      player_talent_t grace_of_the_crane;
+      player_talent_t vivacious_vivification;
+      player_talent_t ferocity_of_xuen;
+      // 8 Required
+      // Row 5
+      player_talent_t elusive_mists;
+      player_talent_t transcendence;
+      player_talent_t spear_hand_strike;
+      player_talent_t fortifying_brew;
+      // Row 6
+      player_talent_t chi_wave;
+      player_talent_t chi_burst;
+      player_talent_t provoke;
+      player_talent_t ring_of_peace;
+      player_talent_t fast_feet;
+      player_talent_t celerity;
+      player_talent_t chi_torpedo;
+      player_talent_t fortifying_brew_dodge_armor;
+      player_talent_t fortifying_brew_cooldown;
+      // Row 7
+      player_talent_t roll_out;
+      player_talent_t diffuse_magic;
+      player_talent_t eye_of_the_tiger;
+      player_talent_t dampen_harm;
+      player_talent_t touch_of_death;
+      player_talent_t expel_harm;
+      // 20 Required
+      // Row 8
+      player_talent_t close_to_heart;
+      player_talent_t escape_from_reality;
+      player_talent_t windwalking;
+      player_talent_t fatal_touch;
+      player_talent_t generous_pour;
+      // Row 9
+      player_talent_t save_them_all;
+      player_talent_t resonant_fists;
+      player_talent_t bounce_back;
+      // Row 10
+      player_talent_t summon_jade_serpent_statue;
+      // player_talent_t summon_xuen_statue;
+      player_talent_t summon_black_ox_statue;
+    } general;
 
-    // Tier 25 Talents
-    const spell_data_t* celerity;
-    const spell_data_t* chi_torpedo;
-    const spell_data_t* tigers_lust;
-
-    // Tier 30 Talents
     // Brewmaster
-    const spell_data_t* light_brewing;
-    const spell_data_t* spitfire;
-    const spell_data_t* black_ox_brew;
-    // Windwalker
-    const spell_data_t* ascension;
-    const spell_data_t* fist_of_the_white_tiger;
-    const spell_data_t* energizing_elixir;
+    struct
+    {
+      // Row 1
+      player_talent_t keg_smash;
+      // Row 2
+      player_talent_t stagger;
+      // Row 3
+      player_talent_t purifying_brew;
+      player_talent_t shuffle;
+      // Row 4
+      player_talent_t hit_scheme;
+      player_talent_t gift_of_the_ox;
+      player_talent_t healing_elixir;
+      player_talent_t quick_sip;
+      player_talent_t rushing_jade_wind;
+      player_talent_t special_delivery;
+      // 8 Required
+      // Row 5
+      player_talent_t celestial_flames;
+      player_talent_t celestial_brew;
+      player_talent_t staggering_strikes;
+      player_talent_t graceful_exit;
+      player_talent_t zen_meditation;
+      player_talent_t clash;
+      // Row 6
+      player_talent_t breath_of_fire;
+      player_talent_t celestial_brew_rank_2;
+      player_talent_t purifying_brew_rank_2;
+      player_talent_t strength_of_spirit;
+      player_talent_t gai_plins_imperial_brew;
+      player_talent_t fundamental_observation;
+      player_talent_t face_palm;
+      // Row 7
+      player_talent_t scalding_brew;
+      player_talent_t salsalabims_strength;
+      player_talent_t fortifying_brew_stagger;
+      player_talent_t black_ox_brew;
+      player_talent_t bob_and_weave;
+      player_talent_t invoke_niuzao_the_black_ox;
+      player_talent_t light_brewing;
+      player_talent_t training_of_niuzao;
+      player_talent_t shocking_brew;
+      player_talent_t shadowboxing_treads;
+      player_talent_t fluidity_of_motion;
+      // 20 Required
+      // Row 8
+      player_talent_t dragonfire_brew;
+      player_talent_t charred_passions;
+      player_talent_t high_tolerance;
+      player_talent_t walk_with_the_ox;
+      player_talent_t elusive_footwork;
+      player_talent_t anvil_and_stave;
+      player_talent_t counterstrike;
+      // Row 9
+      player_talent_t bonedust_brew;
+      player_talent_t invoke_niuzao_the_black_ox_rank_2;
+      player_talent_t exploding_keg;
+      player_talent_t blackout_combo;
+      player_talent_t weapons_of_order;
+      // Row 10
+      player_talent_t bountiful_brew;
+      player_talent_t attenuation;
+      player_talent_t stormstouts_last_keg;
+      player_talent_t call_to_arms;
+      player_talent_t effusive_anima_accelerator;
+    } brewmaster;
+
     // Mistweaver
-    const spell_data_t* spirit_of_the_crane;
-    const spell_data_t* mist_wrap;
-    const spell_data_t* lifecycles;
+    struct
+    {
+      // Row 1
+      player_talent_t enveloping_mist;
+      // Row 2
+      player_talent_t essence_font;
+      player_talent_t renewing_mist;
+      // Row 3
+      player_talent_t life_cocoon;
+      player_talent_t thunder_focus_tea;
+      player_talent_t invigorating_mists;
+      // Row 4
+      player_talent_t teachings_of_the_monastery;
+      player_talent_t revival;
+      player_talent_t restoral;
+      player_talent_t healing_elixir;
+      player_talent_t mastery_of_mist;
+      // 8 Required
+      // Row 5
+      player_talent_t spirit_of_the_crane;
+      player_talent_t mists_of_life;
+      player_talent_t uplifting_spirits;
+      player_talent_t zen_pulse;
+      player_talent_t lifecycles;
+      player_talent_t mana_tea;
+      // Row 6
+      player_talent_t nourishing_chi;
+      player_talent_t overflowing_mists;
+      player_talent_t invoke_yulon_the_jade_serpent;
+      player_talent_t invoke_chi_ji_the_red_crane;
+      player_talent_t zen_reverberation;
+      player_talent_t accumulating_mist;
+      player_talent_t song_of_chi_ji;
+      player_talent_t rapid_diffusion;
+      // Row 7
+      player_talent_t calming_coalescence;
+      player_talent_t yulons_whisper;
+      player_talent_t mist_wrap;
+      player_talent_t refreshing_jade_wind;
+      player_talent_t enveloping_breath;
+      player_talent_t dancing_mists;
+      player_talent_t font_of_life;
+      // 20 Required
+      // Row 8
+      player_talent_t faeline_stomp;
+      player_talent_t ancient_teachings_of_the_monastery;
+      player_talent_t clouded_focus;
+      player_talent_t jade_bond;
+      player_talent_t gift_of_the_celestials;
+      player_talent_t focused_thunder;
+      player_talent_t upwelling;
+      player_talent_t bonedust_brew;
+      // Row 9
+      player_talent_t ancient_concordance;
+      player_talent_t peaceful_mending;
+      player_talent_t secret_infusion;
+      player_talent_t misty_peaks;
+      player_talent_t resplendent_mist;
+      // Row 10
+      player_talent_t awakened_faeline;
+      player_talent_t restorative_proliferation;
+      player_talent_t tea_of_plenty;
+      player_talent_t unison;
+      player_talent_t invokers_delight;
+      player_talent_t tear_of_morning;
+      player_talent_t rising_mist;
+      player_talent_t bountiful_brew;
+      player_talent_t attenuation;
+    } mistweaver;
 
-    // Tier 35 Talents
-    const spell_data_t* tiger_tail_sweep;
-    const spell_data_t* summon_black_ox_statue;  // Brewmaster
-    const spell_data_t* song_of_chi_ji;          // Mistweaver
-    const spell_data_t* ring_of_peace;
     // Windwalker
-    const spell_data_t* good_karma;
-
-    // Tier 40 Talents
-    // Windwalker
-    const spell_data_t* inner_strength;
-    // Mistweaver & Windwalker
-    const spell_data_t* diffuse_magic;
-    // Brewmaster
-    const spell_data_t* bob_and_weave;
-    const spell_data_t* healing_elixir;
-    const spell_data_t* dampen_harm;
-
-    // Tier 45 Talents
-    // Brewmaster
-    const spell_data_t* special_delivery;
-    const spell_data_t* exploding_keg;
-    // Windwalker
-    const spell_data_t* hit_combo;
-    const spell_data_t* dance_of_chiji;
-    // Brewmaster & Windwalker
-    const spell_data_t* rushing_jade_wind;
-    // Mistweaver
-    const spell_data_t* summon_jade_serpent_statue;
-    const spell_data_t* refreshing_jade_wind;
-    const spell_data_t* invoke_chi_ji;
-
-    // Tier 50 Talents
-    // Brewmaster
-    const spell_data_t* high_tolerance;
-    const spell_data_t* celestial_flames;
-    const spell_data_t* blackout_combo;
-    // Windwalker
-    const spell_data_t* spirtual_focus;
-    const spell_data_t* whirling_dragon_punch;
-    const spell_data_t* serenity;
-    // Mistweaver
-    const spell_data_t* mana_tea;
-    const spell_data_t* focused_thunder;
-    const spell_data_t* rising_thunder;
+    struct {
+      // Row 1
+      player_talent_t fists_of_fury;
+      // Row 2
+      player_talent_t touch_of_karma;
+      player_talent_t ascension;
+      player_talent_t power_strikes;
+      // Row 3
+      player_talent_t feathers_of_a_hundred_flocks;
+      player_talent_t touch_of_the_tiger;
+      player_talent_t flying_serpent_kick;
+      player_talent_t flashing_fists;
+      player_talent_t open_palm_strikes;
+      // Row 4
+      player_talent_t mark_of_the_crane;
+      player_talent_t gale_burst;
+      player_talent_t glory_of_the_dawn;
+      // 8 Required
+      // Row 5
+      player_talent_t shadowboxing_treads;
+      player_talent_t hit_scheme;
+      player_talent_t storm_earth_and_fire;
+      player_talent_t serenity;
+      player_talent_t meridian_strikes;
+      player_talent_t jade_ignition;
+      // Row 6
+      player_talent_t dance_of_chiji;
+      player_talent_t inner_peace;
+      player_talent_t drinking_horn_cover;
+      player_talent_t spirtual_focus;
+      player_talent_t strike_of_the_windlord;
+      // Row 7
+      player_talent_t rushing_jade_wind;
+      player_talent_t hidden_masters_forbidden_touch;
+      player_talent_t invoke_xuen_the_white_tiger;
+      player_talent_t teachings_of_the_monastery;
+      player_talent_t thunderfist;
+      // 20 Required
+      // Row 8
+      player_talent_t crane_vortex;
+      player_talent_t xuens_bond;
+      player_talent_t fury_of_xuen;
+      player_talent_t empower_tiger_lightning;
+      player_talent_t rising_star;
+      // Row 9
+      player_talent_t boneduest_brew;
+      player_talent_t fatal_flying_guillotine;
+      // player_talent_t NYI
+      player_talent_t xuens_battlegear;
+      player_talent_t transfer_the_power;
+      player_talent_t whirling_dragon_punch;
+      player_talent_t faeline_stomp;
+      // Row 10
+      player_talent_t calculated_strikes;
+      player_talent_t attenuation;
+      player_talent_t keefers_skyreach;
+      player_talent_t invokers_delight;
+      player_talent_t way_of_the_fae;
+      player_talent_t last_emperors_capacitor;
+    } windwalker;
   } talent;
 
   // Specialization
@@ -535,7 +727,6 @@ public:
     propagate_const<cooldown_t*> celestial_brew;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> expel_harm;
-    propagate_const<cooldown_t*> fist_of_the_white_tiger;
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
     propagate_const<cooldown_t*> fortifying_brew;
@@ -551,6 +742,7 @@ public:
     propagate_const<cooldown_t*> rushing_jade_wind_brm;
     propagate_const<cooldown_t*> rushing_jade_wind_ww;
     propagate_const<cooldown_t*> storm_earth_and_fire;
+    propagate_const<cooldown_t*> strike_of_the_windlord;
     propagate_const<cooldown_t*> thunder_focus_tea;
     propagate_const<cooldown_t*> touch_of_death;
     propagate_const<cooldown_t*> serenity;
@@ -612,8 +804,8 @@ public:
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
-    const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
+    const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
 
@@ -890,6 +1082,11 @@ public:
     }
     return td;
   }
+  const spelleffect_data_t* find_spelleffect( const spell_data_t* spell, effect_subtype_t subtype,
+                                              int misc_value               = P_GENERIC,
+                                              const spell_data_t* affected = spell_data_t::nil(),
+                                              effect_type_t type           = E_APPLY_AURA );
+  const spell_data_t* find_spell_override( const spell_data_t* base, const spell_data_t* passive );
   void apply_affecting_auras( action_t& ) override;
   void merge( player_t& other ) override;
 

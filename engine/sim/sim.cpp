@@ -1479,6 +1479,7 @@ sim_t::sim_t() :
   scale_to_itemlevel( -1 ),
   keystone_level( 10 ),
   keystone_pct_hp( 27 ),
+  keystone_bounty( "haste"),
   challenge_mode( false ),
   scale_itemlevel_down_only( false ),
   disable_set_bonuses( false ),
@@ -3590,8 +3591,9 @@ void sim_t::create_options()
   add_option( opt_float( "tmi_bin_size", tmi_bin_size ) );
   add_option( opt_bool( "enable_taunts", enable_taunts ) );
   add_option( opt_bool( "use_item_verification", use_item_verification ) );
-  add_option( opt_int( "keystone_level", keystone_level, 10, 50 ) );
+  add_option( opt_int( "keystone_level", keystone_level, 1, 50 ) );
   add_option( opt_int( "keystone_pct_hp", keystone_pct_hp, 1, 100 ) );
+  add_option( opt_string( "keystone_bounty", keystone_bounty ) );
 
   // Character Creation
   add_option( opt_func( "deathknight", parse_player ) );
@@ -3876,6 +3878,7 @@ void sim_t::create_options()
   add_option( opt_uint( "shadowlands.precombat_pustules", shadowlands_opts.precombat_pustules, 1, 9 ) );
   add_option( opt_float( "shadowlands.field_of_blossoms_duration_multiplier", shadowlands_opts.field_of_blossoms_duration_multiplier, 0.0, 1.0 ) );
   add_option( opt_float( "shadowlands.cruciform_veinripper_proc_rate", shadowlands_opts.cruciform_veinripper_proc_rate, 0.0, 1.0) );
+  add_option( opt_float( "shadowlands.cruciform_veinripper_in_front_rate", shadowlands_opts.cruciform_veinripper_in_front_rate, 0.0, 1.0 ) );
   add_option( opt_timespan( "shadowlands.the_first_sigil_fleshcraft_cancel_time", shadowlands_opts.the_first_sigil_fleshcraft_cancel_time, 50_ms, timespan_t::from_seconds( 3 ) ) );
   add_option( opt_uint( "shadowlands.earthbreakers_impact_weak_points", shadowlands_opts.earthbreakers_impact_weak_points, 0, 3 ) );
   add_option( opt_float( "shadowlands.grim_eclipse_dot_duration_multiplier", shadowlands_opts.grim_eclipse_dot_duration_multiplier, 0.0, 1.0 ) );

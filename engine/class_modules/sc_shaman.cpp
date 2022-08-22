@@ -18,9 +18,7 @@
 //
 // Elemental
 // - Liquid Magma Totem: Randomize target
-// - Improved Flametongue Weapon
 // - Inundate
-// - Totemic Surge (for Liquid Magma Totem)
 //
 // Enhancement
 // - Review target caps
@@ -4542,6 +4540,19 @@ struct chain_lightning_overload_t : public chained_overload_base_t
   {
     affected_by_master_of_the_elements = true;
   }
+
+
+  int n_targets() const override
+  {
+    int t = chained_overload_base_t::n_targets();
+
+    if ( p()->buff.surge_of_power->up() )
+    {
+      t += p()->talent.surge_of_power->effectN( 4 ).base_value();
+    }
+
+    return t;
+  }
 };
 
 struct lava_beam_overload_t : public chained_overload_base_t
@@ -4696,6 +4707,19 @@ struct chain_lightning_t : public chained_base_t
     return t;
   }
 
+  int n_targets() const override
+  {
+    int t = chained_base_t::n_targets();
+
+    if ( p()->buff.surge_of_power->up() )
+    {
+      t += p()->talent.surge_of_power->effectN( 4 ).base_value();
+    }
+
+    return t;
+  }
+
+
   timespan_t gcd() const override
   {
     timespan_t t = chained_base_t::gcd();
@@ -4763,6 +4787,7 @@ struct chain_lightning_t : public chained_base_t
 
     p()->trigger_flash_of_lightning();
     p()->buff.power_of_the_maelstrom->decrement();
+    p()->buff.surge_of_power->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -6751,17 +6776,19 @@ struct frost_shock_t : public shaman_spell_t
 
   int n_targets() const override
   {
+    int t = shaman_spell_t::n_targets();
+
     if ( p()->buff.hailstorm->check() )
     {
-      return 1 + p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
+      t += p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
     }
 
     if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
     {
-      return 1 + p()->talent.electrified_shocks->effectN( 1 ).base_value();
+      t += p()->talent.electrified_shocks->effectN( 1 ).base_value();
     }
 
-    return shaman_spell_t::n_targets();
+    return t;
   }
 
   void execute() override

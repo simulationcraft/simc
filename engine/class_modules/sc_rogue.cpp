@@ -28,6 +28,7 @@ enum class secondary_trigger
   FLAGELLATION,
   IMMORTAL_TECHNIQUE,
   TORNADO_TRIGGER,
+  MAIN_GAUCHE,
 };
 
 enum stealth_type_e
@@ -317,7 +318,7 @@ public:
     buff_t* sepsis;
 
     // Conduits
-    buff_t* deeper_daggers;
+    damage_buff_t* deeper_daggers;
     damage_buff_t* perforated_veins;
 
     // Set Bonuses
@@ -469,12 +470,9 @@ public:
     const spell_data_t* killing_spree_mh;
     const spell_data_t* killing_spree_oh;
     const spell_data_t* master_of_shadows;
-    const spell_data_t* memory_of_lucid_dreams;
     const spell_data_t* nightstalker_dmg_amp;
     const spell_data_t* poison_bomb_driver;
     const spell_data_t* relentless_strikes_energize;
-    const spell_data_t* ruthlessness_cp_driver;
-    const spell_data_t* ruthlessness_driver;
     const spell_data_t* ruthlessness_cp;
     const spell_data_t* shadow_focus;
     const spell_data_t* slice_and_dice;
@@ -997,6 +995,7 @@ struct secondary_action_trigger_t : public event_t
     if ( !state )
     {
       state = action->get_state();
+      state->target = action_target;
       action->cast_state( state )->set_combo_points( cp, cp );
       // Calling snapshot_internal, snapshot_state would overwrite CP.
       action->snapshot_internal( state, action->snapshot_flags, action->amount_type( state ) );
@@ -1169,6 +1168,7 @@ public:
     bool sepsis = false;
     bool t28_assassination_2pc = false;
     bool t28_assassination_4pc = false;
+    bool deeper_daggers = false;
 
     damage_affect_data mastery_executioner;
     damage_affect_data mastery_potent_assassin;
@@ -1297,6 +1297,14 @@ public:
     register_damage_buff( p()->buffs.broadside );
     register_damage_buff( p()->buffs.deathly_shadows );
     register_damage_buff( p()->buffs.the_rotten );
+
+    // 2022-08-04 -- S4 hotfixed whitelist data is incomplete, manually add R2 spells
+    //               Shadow Blades also works but this is handled elsewhere
+    register_damage_buff( p()->buffs.deeper_daggers );
+    if ( ab::data().id() == 328082 || ab::data().id() == 319190 )
+    {
+      direct_damage_buffs.push_back( p()->buffs.deeper_daggers );
+    }
 
     if ( p()->talent.nightstalker->ok() )
     {
@@ -1515,6 +1523,10 @@ public:
   virtual bool procs_shadow_blades_damage() const
   { return ab::energize_type != action_energize::NONE && ab::energize_amount > 0 && ab::energize_resource == RESOURCE_COMBO_POINT; }
 
+  // Generic rules for proccing Banshee's Blight, used by rogue_t::trigger_banshees_blight()
+  virtual bool procs_banshees_blight() const
+  { return ab::base_costs[ RESOURCE_COMBO_POINT ] > 0 && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ); }
+
   virtual double proc_chance_main_gauche() const
   { return p()->mastery.main_gauche->proc_chance(); }
 
@@ -1576,6 +1588,7 @@ public:
   void trigger_count_the_odds( const action_state_t* state );
   void trigger_flagellation( const action_state_t* state );
   void trigger_perforated_veins( const action_state_t* state );
+  void trigger_banshees_blight( const action_state_t* state );
 
   // General Methods ==========================================================
 
@@ -1844,6 +1857,7 @@ public:
       trigger_alacrity( ab::execute_state );
       trigger_deepening_shadows( ab::execute_state );
       trigger_flagellation( ab::execute_state );
+      trigger_banshees_blight( ab::execute_state );
     }
 
     // Trigger the 1ms delayed breaking of all stealth buffs
@@ -2526,7 +2540,7 @@ struct backstab_t : public rogue_attack_t
   {
     double m = rogue_attack_t::composite_da_multiplier( state );
 
-    if ( p() -> position() == POSITION_BACK )
+    if ( p()->position() == POSITION_BACK )
     {
       m *= 1.0 + data().effectN( 4 ).percent();
     }
@@ -2705,7 +2719,7 @@ struct blade_rush_t : public rogue_attack_t
   struct blade_rush_attack_t : public rogue_attack_t
   {
     blade_rush_attack_t( util::string_view name, rogue_t* p ) :
-      rogue_attack_t( name, p, p -> find_spell( 271881 ) )
+      rogue_attack_t( name, p, p->find_spell( 271881 ) )
     {
       dual = true;
       aoe = -1;
@@ -4687,12 +4701,12 @@ struct echoing_reprimand_t : public rogue_attack_t
 
 // Flagellation =============================================================
 
-struct flagellation_damage_t : public rogue_spell_t
+struct flagellation_damage_t : public rogue_attack_t
 {
   buff_t* debuff;
 
   flagellation_damage_t( util::string_view name, rogue_t* p ) :
-    rogue_spell_t( name, p, p->find_spell( 345316 ) ),
+    rogue_attack_t( name, p, p->find_spell( 345316 ) ),
     debuff( nullptr )
   {
     dual = true;
@@ -6077,8 +6091,7 @@ void actions::rogue_action_t<Base>::trigger_main_gauche( const action_state_t* s
   if ( !p()->rng().roll( proc_chance ) )
     return;
 
-  p()->active.main_gauche->set_target( state->target );
-  p()->active.main_gauche->schedule_execute();
+  p()->active.main_gauche->trigger_secondary_action( state->target );
 }
 
 template <typename Base>
@@ -6189,7 +6202,7 @@ void actions::rogue_action_t<Base>::trigger_blade_flurry( const action_state_t* 
   p()->active.blade_flurry->base_dd_min = damage;
   p()->active.blade_flurry->base_dd_max = damage;
   p()->active.blade_flurry->set_target( state->target );
-  p()->active.blade_flurry->execute();
+  p()->active.blade_flurry->schedule_execute();
 }
 
 template <typename Base>
@@ -6441,26 +6454,6 @@ void actions::rogue_action_t<Base>::spend_combo_points( const action_state_t* st
     }
   }
 
-  // Sylvanas Dagger
-  // This only appears to trigger from damaging finishers, as SnD does not do anything
-  if ( p()->legendary.banshees_blight && ( ab::attack_power_mod.direct > 0.0 || ab::attack_power_mod.tick > 0.0 ) )
-  {
-    int stack_count = td( rs->target )->debuffs.banshees_blight->check();
-    if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
-    {
-      // Only executes on the "primary" target of AoE finishers
-      player_t* proc_target = rs->target;
-      for ( int i = 0; i < stack_count; ++i )
-      {
-        make_event( *ab::sim, i * 150_ms, [ this, proc_target ]
-        {
-          p()->active.banshees_blight->set_target( proc_target );
-          p()->active.banshees_blight->execute();
-        } );
-      }
-    }
-  }
-
   // T28 Subtlety 4pc -- Triggers as a "cast" individually as each can generate CP
   if ( p()->set_bonuses.t28_subtlety_4pc->ok() )
   {
@@ -6494,7 +6487,7 @@ void actions::rogue_action_t<Base>::trigger_shadow_blades_attack( action_state_t
   double amount = state->result_amount * p()->buffs.shadow_blades->check_value();
   // Deeper Daggers, despite Shadow Blades having the disable player multipliers flag, affects Shadow Blades with a manual exclusion for Gloomblade.
   if ( p()->buffs.deeper_daggers->check() && ab::data().id() != p()->talent.gloomblade->id() )
-    amount *= 1.0 + p()->buffs.deeper_daggers->value();
+    amount *= p()->buffs.deeper_daggers->value_direct();
 
   p()->active.shadow_blades_attack->base_dd_min = amount;
   p()->active.shadow_blades_attack->base_dd_max = amount;
@@ -6687,6 +6680,33 @@ void actions::rogue_action_t<Base>::trigger_perforated_veins( const action_state
 
   tcd->start();
   p()->buffs.perforated_veins->trigger();
+}
+
+template <typename Base>
+void actions::rogue_action_t<Base>::trigger_banshees_blight( const action_state_t* state )
+{
+  if ( !p()->legendary.banshees_blight || !procs_banshees_blight() )
+    return;
+
+  // 2022-08-04 -- Further S4 testing shows BtE 4pc procs do not actually trigger the dagger
+  if ( is_secondary_action() )
+    return;
+
+  const auto rs = cast_state( state );
+  int stack_count = td( rs->target )->debuffs.banshees_blight->check();
+  if ( stack_count > 0 && p()->rng().roll( rs->get_combo_points() * p()->legendary.banshees_blight->effectN( 2 ).percent() ) )
+  {
+    // Only executes on the "primary" target of AoE finishers
+    player_t* proc_target = rs->target;
+    for ( int i = 0; i < stack_count; ++i )
+    {
+      make_event( *ab::sim, i * 150_ms, [this, proc_target]
+      {
+        p()->active.banshees_blight->set_target( proc_target );
+        p()->active.banshees_blight->execute();
+      } );
+    }
+  }
 }
 
 // ==========================================================================
@@ -6996,9 +7016,6 @@ double rogue_t::composite_player_multiplier( school_e school ) const
 {
   double m = player_t::composite_player_multiplier( school );
 
-  if ( buffs.deeper_daggers->up() && buffs.deeper_daggers->data().effectN( 1 ).has_common_school( school ) )
-    m *= 1.0 + buffs.deeper_daggers->check_value();
-
   if ( legendary.guile_charm.ok() )
   {
     m *= 1.0 + buffs.guile_charm_insight_1->value();
@@ -7198,6 +7215,8 @@ void rogue_t::init_action_list()
     cds->add_action( "sepsis,if=!stealthed.rogue&dot.garrote.ticking&(cooldown.vendetta.remains<1&target.time_to_die>10|debuff.vendetta.up|fight_remains<10)", "Sync Sepsis with Vendetta as long as we won't lose a cast over the fight duration, but prefer targets that will live at least 10s" );
     cds->add_action( "sepsis,if=!stealthed.rogue&(floor((fight_remains-10)%cooldown)>floor((fight_remains-10-variable.vendetta_cooldown_remains)%cooldown))" );
     cds->add_action( "variable,name=vendetta_condition,value=!stealthed.rogue&dot.rupture.ticking&!debuff.vendetta.up&variable.vendetta_nightstalker_condition&variable.vendetta_ma_condition&variable.vendetta_covenant_condition", "Vendetta to be used if not stealthed, Rupture is up, and all other talent/covenant conditions are satisfied");
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=(!variable.use_trinket_1_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.1.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=1&(debuff.vendetta.up|variable.use_trinket_1_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=2&(!trinket.2.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)", "Sync the priority stat buff trinket with Vendetta, otherwise use on cooldown" );
     cds->add_action( "use_items,slots=trinket2,if=(!variable.use_trinket_2_pre_vendetta|variable.vendetta_condition&(cooldown.vendetta.remains<2|variable.vendetta_cooldown_remains>trinket.2.cooldown.duration%2)|fight_remains<=20)&(variable.trinket_sync_slot=2&(debuff.vendetta.up|variable.use_trinket_2_pre_vendetta|fight_remains<=20)|(variable.trinket_sync_slot=1&(!trinket.1.cooldown.ready|variable.vendetta_cooldown_remains>20))|!variable.trinket_sync_slot)" );
     cds->add_action( this, "Vendetta", "if=variable.vendetta_condition&(!set_bonus.tier28_4pc|(dot.garrote.haste_pct>=(dot.garrote.haste_pct_next_tick-3))&(dot.rupture.haste_pct>=(dot.rupture.haste_pct_next_tick-3)))", "If using T28 4pc, delay until the next DoT tick if we can gain more than a 3% haste snapshot compared to the current tick value");
@@ -7214,6 +7233,7 @@ void rogue_t::init_action_list()
     cds->add_action( "call_action_list,name=vanish,if=!stealthed.all&master_assassin_remains=0" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
 
     // Vanish
@@ -7323,8 +7343,11 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood" );
     cds->add_action( "ancestral_call" );
 
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_item,name=windscar_whetstone,if=spell_targets.blade_flurry>desired_targets|raid_event.adds.in>60|fight_remains<7" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up|fight_remains<25" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,slots=trinket1,if=debuff.between_the_eyes.up|trinket.1.has_stat.any_dps|fight_remains<=20", "Default conditions for usable items." );
     cds->add_action( "use_items,slots=trinket2,if=debuff.between_the_eyes.up|trinket.2.has_stat.any_dps|fight_remains<=20" );
@@ -7409,7 +7432,10 @@ void rogue_t::init_action_list()
     cds->add_action( "fireblood,if=buff.symbols_of_death.up" );
     cds->add_action( "ancestral_call,if=buff.symbols_of_death.up" );
 
+    cds->add_action( "use_item,name=wraps_of_electrostatic_potential" );
+    cds->add_action( "use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30" );
     cds->add_action( "use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1" );
+    cds->add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
     cds->add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30" );
     cds->add_action( "use_items,if=buff.symbols_of_death.up|fight_remains<20", "Default fallback for usable items: Use with Symbols of Death." );
 
@@ -8109,7 +8135,6 @@ void rogue_t::init_spells()
   spell.master_of_shadows             = find_spell( 196980 );
   spell.nightstalker_dmg_amp          = find_spell( 130493 );
   spell.poison_bomb_driver            = find_spell( 255545 );
-  spell.ruthlessness_driver           = find_spell( 14161 );
   spell.ruthlessness_cp               = spec.ruthlessness->effectN( 1 ).trigger();
   spell.shadow_focus                  = find_spell( 112942 );
   spell.slice_and_dice                = find_class_spell( "Slice and Dice" );
@@ -8287,7 +8312,8 @@ void rogue_t::init_spells()
 
   if ( mastery.main_gauche->ok() )
   {
-    active.main_gauche = get_background_action<actions::main_gauche_t>( "main_gauche" );
+    active.main_gauche = get_secondary_trigger_action<actions::main_gauche_t>(
+      secondary_trigger::MAIN_GAUCHE, "main_gauche" );
   }
 
   if ( spec.blade_flurry->ok() )
@@ -8715,10 +8741,9 @@ void rogue_t::create_buffs()
 
   // Conduits ===============================================================
 
-  buffs.deeper_daggers = make_buff( this, "deeper_daggers", conduit.deeper_daggers->effectN( 1 ).trigger() )
-    ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-    ->set_trigger_spell( conduit.deeper_daggers )
-    ->set_default_value( conduit.deeper_daggers.percent() );
+  buffs.deeper_daggers = make_buff<damage_buff_t>( this, "deeper_daggers",
+                                                   conduit.deeper_daggers->effectN( 1 ).trigger(),
+                                                   conduit.deeper_daggers );
 
   buffs.perforated_veins = make_buff<damage_buff_t>( this, "perforated_veins",
                                                      conduit.perforated_veins->effectN( 1 ).trigger(),
@@ -9080,7 +9105,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
 
   // Damage trigger spell from 358126
   // Damage values are stored on both the item driver 357595 and hotfixed spell 359180
-  // This attack triggers multiple times based on target stack count, handled in spend_combo_points
+  // This attack triggers multiple times based on target stack count, handled in trigger_banshees_blight
   // When dual-wielding, the item damage amounts from both weapons are added together
   struct banshees_blight_damage_t : public unique_gear::proc_spell_t
   {
@@ -9120,7 +9145,7 @@ struct banshees_blight_t : public unique_gear::scoped_actor_callback_t<rogue_t>
   {
     rogue->legendary.banshees_blight = e.driver();
 
-    // Create damage action triggered by actions::rogue_action_t<Base>::spend_combo_points
+    // Create damage action triggered by actions::rogue_action_t<Base>::trigger_banshees_blight
     auto banshees_blight_damage = static_cast<banshees_blight_damage_t*>( e.player->find_action( "banshees_blight" ) );
     if ( !banshees_blight_damage )
       rogue->active.banshees_blight = unique_gear::create_proc_action<banshees_blight_damage_t>( "banshees_blight", e );

@@ -566,6 +566,12 @@ struct player_t : public actor_t
     buff_t* decrypted_urh_cypher;
     buff_t* decrypted_vy_cypher;
 
+    // 9.2.5 M+ S4 Shrouded Affix Buffs
+    buff_t* bounty_crit;
+    buff_t* bounty_haste;
+    buff_t* bounty_mastery;
+    buff_t* bounty_vers;
+
     // 10.0 Buffs
     buff_t* chilled_clarity;  // potion of chilled clarity
     buff_t* elemental_chaos_fire;  // phial of elemental chaos
