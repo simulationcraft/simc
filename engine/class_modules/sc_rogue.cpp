@@ -2911,7 +2911,10 @@ struct blade_flurry_t : public rogue_attack_t
   {
     harmful = false;
 
-    add_child( p->active.blade_flurry );
+    if ( p->spec.blade_flurry_attack->ok() )
+    {
+      add_child( p->active.blade_flurry );
+    }
 
     if ( p->spec.blade_flurry_instant_attack->ok() )
     {
