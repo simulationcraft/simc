@@ -96,22 +96,23 @@ class WowVersion:
 # repeated in the actual record data. For those files, the key block id is
 # actually not concatenated to the hotfix entry.
 KEY_FIELD_HOTFIX_RECORD = {
-    'ItemBonus'                 : 'id_node',
-    'ItemBonusTreeNode'         : 'id_node',
-    'SkillLineAbility'          : 'id_skill',
-    'SpecializationSpells'      : 'spec_id',
-    'ItemModifiedAppearance'    : 'id_item',
-    'JournalEncounterItem'      : 'id_encounter',
-    'JournalEncounterCreature'  : 'id',
-    'AzeritePowerSetMember'     : 'unk_28366',
-    'RenownRewards'             : 'id_covenant',
-    'GarrTalent'                : 'id_garr_talent_tree',
-    'CurvePoint'                : 'id_distribution',
-    'TraitNodeGroupXTraitCost'  : 'id_trait_node_group',
-    'TraitNodeGroupXTraitNode'  : 'id_trait_node_group',
-    'TraitNodeGroupXTraitCond'  : 'id_trait_node_group',
-    'TraitCond'                 : 'id_trait_tree',
-    'ItemBonusListGroupEntry'   : 'id_item_bonus_list_group'
+    'ItemBonus'                   : 'id_node',
+    'ItemBonusTreeNode'           : 'id_node',
+    'SkillLineAbility'            : 'id_skill',
+    'SpecializationSpells'        : 'spec_id',
+    'ItemModifiedAppearance'      : 'id_item',
+    'JournalEncounterItem'        : 'id_encounter',
+    'JournalEncounterCreature'    : 'id',
+    'AzeritePowerSetMember'       : 'unk_28366',
+    'RenownRewards'               : 'id_covenant',
+    'GarrTalent'                  : 'id_garr_talent_tree',
+    'CurvePoint'                  : 'id_distribution',
+    'TraitNodeGroupXTraitCost'    : 'id_trait_node_group',
+    'TraitNodeGroupXTraitNode'    : 'id_trait_node_group',
+    'TraitNodeGroupXTraitCond'    : 'id_trait_node_group',
+    'TraitCond'                   : 'id_trait_tree',
+    'ItemBonusListGroupEntry'     : 'id_item_bonus_list_group',
+    'TraitDefinitionEffectPoints' : 'id_trait_definition'
 }
 
 # Some DB2 files seem to be expanded to 4 byte fields for the hotfix data for
