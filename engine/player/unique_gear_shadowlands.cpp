@@ -3777,7 +3777,8 @@ void cache_of_acquired_treasures( special_effect_t& effect )
       cycle_period = effect.player->find_spell( 367804 )->effectN( 1 ).period();
 
       auto cycle_weapon = [ this ]( int cycles ) {
-        if ( cooldown->up() )
+        // As of 9.2.5 the Sword buff is triggered in the cycle prior coming off cooldown, rather than after
+        if ( cooldown->remains() < cycle_period )
         {
           weapons.front()->expire();
           std::rotate( weapons.begin(), weapons.begin() + cycles, weapons.end() );
@@ -4268,6 +4269,60 @@ void yasahm_the_riftbreaker( special_effect_t& effect )
 // TODO: Add proc restrictions to match the weapons or expansion options.
 void cruciform_veinripper(special_effect_t& effect)
 {
+  struct cruciform_veinripper_cb_t : public dbc_proc_callback_t
+  {
+    double proc_modifier_override;
+    double proc_modifier_in_front_override;
+
+    cruciform_veinripper_cb_t( const special_effect_t& effect ) : dbc_proc_callback_t( effect.player, effect ),
+      proc_modifier_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate ),
+      proc_modifier_in_front_override( effect.player->sim->shadowlands_opts.cruciform_veinripper_in_front_rate )
+    {
+    }
+
+    void trigger( action_t* a, action_state_t* s ) override
+    {
+      assert( rppm );
+      assert( s->target );
+      
+      double proc_modifier = 1.0;
+      if ( proc_modifier_override > 0.0 )
+      {
+        proc_modifier = proc_modifier_override;
+      }
+      else if( s->target->is_boss() )
+      {
+        // CC'd/Snared mobs appear to take the full proc rate, which does not work on bosses
+        // The "from behind" rate is roughly half the CC'd target rate in the spell data
+        proc_modifier = 0.5;
+        if ( a->player->position() == POSITION_FRONT )
+        {
+          if ( proc_modifier_in_front_override > 0.0 )
+          {
+            proc_modifier *= proc_modifier_in_front_override;
+          }
+          else
+          {
+            // Generalize default tank "behind boss" time as ~40% when no manual modifier is specified
+            // This does not proc from the front at all, but tanks are always position front for sims
+            //
+            // When the role is not tank, this is explicitly set to 0 to allow DPS to model bosses where
+            // they can't hit from behind.
+            proc_modifier *= a->player->primary_role() == ROLE_TANK ? 0.4 : 0.0;
+          }
+        }
+      }
+
+      if ( proc_modifier != rppm->get_modifier() )
+      {
+        effect.player->sim->print_debug( "Player {} (position: {}, role: {}) adjusts {} rppm modifer: old={} new={}",
+                                         *a->player, a->player->position(), a->player->primary_role(), effect, rppm->get_modifier(), proc_modifier);
+        rppm->set_modifier( proc_modifier );
+      }
+
+      dbc_proc_callback_t::trigger( a, s );
+    }
+  };
 
   struct sadistic_glee_t : public proc_spell_t
   {
@@ -4291,23 +4346,11 @@ void cruciform_veinripper(special_effect_t& effect)
   if (!sadistic_glee)
     effect.execute_action = create_proc_action<sadistic_glee_t>("sadistic_glee", effect);
   else
-    sadistic_glee->scaled_dmg += effect.driver()->effectN(1).average(effect.item);
+    sadistic_glee->scaled_dmg += effect.driver()->effectN( 1 ).average( effect.item );
 
-  effect.spell_id = 357588;
-  /* apparently due to proc rate being lower than reported in spell data (?) - emallson */
-  effect.rppm_modifier_ = 0.5;
+  effect.spell_id = effect.driver()->effectN( 1 ).trigger_spell_id();
 
-
-  /* override proc rate for tanks (40% of regular proc rate unless option is
-     set), and allow override via expansion option */
-  auto proc_option = effect.player->sim->shadowlands_opts.cruciform_veinripper_proc_rate;
-  if (proc_option == 0.0 && effect.player->position() == POSITION_FRONT) {
-    effect.rppm_modifier_ *= 0.4;
-  } else if(proc_option > 0.0) {
-    effect.rppm_modifier_ *= proc_option;
-  }
-
-  new dbc_proc_callback_t(effect.player, effect);
+  new cruciform_veinripper_cb_t( effect );
 }
 
 struct singularity_supreme_t : public stat_buff_t
