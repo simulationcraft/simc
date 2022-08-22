@@ -6937,6 +6937,38 @@ struct soul_reaper_gavel_t : public death_knight_melee_attack_t
   }
 };
 
+// Soul Reaper Whispering Shard of Power ========================================================
+// Soul reaper action specifically to proc the T28 4 Piece when Whispering Shard of Power is equipped
+
+struct soul_reaper_shard_t : public death_knight_melee_attack_t
+{
+  soul_reaper_shard_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_melee_attack_t( "soul_reaper_shard", p, p -> talent.soul_reaper )
+  {
+    parse_options( options_str );
+
+    cooldown -> duration = 20_s;
+
+    triggers_shackle_the_unworthy = true;
+  }
+
+  void init() override
+  {
+    death_knight_melee_attack_t::init();
+    may_proc_bron = true;
+  }
+  
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+    if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
+    p() -> buffs.harvest_time -> trigger();
+    
+    p() -> buffs.runic_corruption -> trigger();
+  }
+};
+
+
 // Summon Gargoyle ==========================================================
 
 struct summon_gargoyle_t : public death_knight_spell_t
@@ -8419,6 +8451,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "scourge_strike"           ) return new scourge_strike_t           ( this, options_str );
   if ( name == "soul_reaper"              ) return new soul_reaper_t              ( this, options_str );
   if ( name == "soul_reaper_gavel"        ) return new soul_reaper_gavel_t        ( this, options_str );
+  if ( name == "soul_reaper_shard"        ) return new soul_reaper_shard_t        ( this, options_str );
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
