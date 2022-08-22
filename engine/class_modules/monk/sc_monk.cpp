@@ -635,7 +635,7 @@ public:
                     p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
                     p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
                 }
-                else if ( p()->buff.serenity-up() )
+                if ( p()->buff.serenity-up() )
                 {
                     p()->buff.serenity->extend_duration(
                         p(), timespan_t::from_seconds(
@@ -3150,7 +3150,7 @@ struct leg_sweep_t : public monk_melee_attack_t
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
 
-    if (p->talent.general.tiger_tail_sweep)
+    if (p->talent.general.tiger_tail_sweep->ok() )
     {
       radius += p->talent.general.tiger_tail_sweep->effectN( 1 ).base_value();
       cooldown->duration += p->talent.general.tiger_tail_sweep->effectN( 2 ).time_value(); // Saved as -10000
@@ -4937,27 +4937,23 @@ struct vivify_t : public monk_heal_t
   {
     parse_options( options_str );
 
-    // 1 for the primary target, plus the value of the effect
-    aoe                    = (int)( 1 + data().effectN( 1 ).base_value() );
     spell_power_mod.direct = data().effectN( 2 ).sp_coeff();
 
-    mastery = new gust_of_mists_t( p );
+    if ( p.talent.general.vivacious_vivification->ok() )
+      base_execute_time += p.talent.general.vivacious_vivification->effectN( 1 ).time_value();
 
-    may_miss = false;
+    mastery = new gust_of_mists_t( p );
   }
 
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
+    if ( p()->talent.general.vivify->ok() )
+      am *= 1 + p()->talent.general.vivify->effectN( 1 ).percent();
+
     if ( p()->buff.uplifting_trance->check() )
       am *= 1 + p()->buff.uplifting_trance->check_value();
-
-    if ( p()->spec.vivify_2_brm->ok() )
-      am *= 1 + p()->spec.vivify_2_brm->effectN( 1 ).percent();
-
-    if ( p()->spec.vivify_2_ww->ok() )
-      am *= 1 + p()->spec.vivify_2_ww->effectN( 1 ).percent();
 
     return am;
   }
@@ -4966,8 +4962,8 @@ struct vivify_t : public monk_heal_t
   {
     double c = monk_heal_t::cost();
 
-    if ( p()->buff.thunder_focus_tea->check() && p()->spec.thunder_focus_tea_2->ok() )
-      c *= 1 + p()->spec.thunder_focus_tea_2->effectN( 2 ).percent();  // saved as -100
+    if ( p()->buff.thunder_focus_tea->check() && p()->talent.mistweaver.thunder_focus_tea->ok() )
+      c *= 1 + p()->talent.mistweaver.thunder_focus_tea->effectN( 2 ).percent();  // saved as -100
 
     if ( p()->buff.lifecycles_vivify->check() )
       c *= 1 + p()->buff.lifecycles_vivify->check_value();  // saved as -25%
