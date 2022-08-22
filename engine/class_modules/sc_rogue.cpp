@@ -749,6 +749,7 @@ public:
     const spell_data_t* potent_assassin;
     // Outlaw
     const spell_data_t* main_gauche;
+    const spell_data_t* main_gauche_attack;
     // Subtlety
     const spell_data_t* executioner;
   } mastery;
@@ -3607,7 +3608,7 @@ struct pistol_shot_t : public rogue_attack_t
 struct main_gauche_t : public rogue_attack_t
 {
   main_gauche_t( util::string_view name, rogue_t* p ) :
-    rogue_attack_t( name, p, p -> find_spell( 86392 ) )
+    rogue_attack_t( name, p, p->mastery.main_gauche_attack )
   {
   }
 
@@ -4499,7 +4500,7 @@ struct sinister_strike_t : public rogue_attack_t
     // Only trigger secondary hits on initial casts of Sinister Strike
     if ( p()->talent.outlaw.opportunity->ok() )
     {
-      const int stacks = 1 + p()->talent.outlaw.fan_the_hammer->effectN( 2 ).base_value();
+      const int stacks = 1 + as<int>( p()->talent.outlaw.fan_the_hammer->effectN( 2 ).base_value() );
       if ( p()->buffs.opportunity->trigger( stacks, buff_t::DEFAULT_VALUE(), extra_attack_proc_chance() ) )
       {
         extra_attack->trigger_secondary_action( execute_state->target, 300_ms );
@@ -8318,6 +8319,7 @@ void rogue_t::init_spells()
   // Masteries
   mastery.potent_assassin = find_mastery_spell( ROGUE_ASSASSINATION );
   mastery.main_gauche = find_mastery_spell( ROGUE_OUTLAW );
+  mastery.main_gauche_attack = mastery.main_gauche->ok() ? find_spell( 86392 ) : spell_data_t::not_found();
   mastery.executioner = find_mastery_spell( ROGUE_SUBTLETY );
 
   // Class Talents
