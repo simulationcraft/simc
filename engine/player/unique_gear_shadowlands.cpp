@@ -2180,7 +2180,7 @@ void whispering_shard_of_power( special_effect_t& effect )
   // reference them. Store these in pointers to reduce the size of the events that use them.
   auto fealty_buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver()->effectN( 1 ).average( effect.item );
-  stat_e max_stat = util::highest_stat( effect.player, ratings );
+  
 
   for ( auto stat : ratings )
   {
@@ -2195,18 +2195,21 @@ void whispering_shard_of_power( special_effect_t& effect )
 
       
     }
-    ( *fealty_buffs )[ max_stat ] = buff;
+    ( *fealty_buffs )[ stat ] = buff;
   }
 
-  effect.player->register_combat_begin( [ &effect, max_stat, fealty_buffs ]( player_t* ) {
+  effect.player->register_combat_begin( [ &effect, fealty_buffs ]( player_t* ) {
 
         timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
         double chance = 0.0125;
 
       make_repeating_event( effect.player->sim, period,
-                              [ &effect, chance, max_stat, fealty_buffs ]() {
+                              [ &effect, chance, fealty_buffs ]() {
         if ( effect.player->rng().roll( chance ) )
+        {
+          stat_e max_stat = util::highest_stat( effect.player, ratings );
           ( *fealty_buffs )[ max_stat ]->trigger();
+        }
         } );
       } );
 }
