@@ -1350,7 +1350,7 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
     {
       // Hard code Patch 9.0.5
       // Eye of the Tiger's heal is now increased by 35% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
     }
 
     return am;
@@ -1381,7 +1381,7 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
     {
       // Hard code Patch 9.0.5
       // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
     }
 
     // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
@@ -1399,12 +1399,14 @@ struct tiger_palm_t : public monk_melee_attack_t
   heal_t* eye_of_the_tiger_heal;
   spell_t* eye_of_the_tiger_damage;
   bool shaohoas_might;
+  bool face_palm;
 
   tiger_palm_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
-      shaohoas_might( false )
+      shaohoas_might( false ),
+      face_palm( false )
   {
     parse_options( options_str );
 
@@ -1429,6 +1431,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p->legendary.keefers_skyreach->ok() )
       this->range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
+    else if ( p->talent.windwalker.keefers_skyreach->ok() ) 
+      this->range += p->talent.windwalker.keefers_skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -1440,6 +1444,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( shaohoas_might )
       am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
+    else if ( face_palm ) 
+      am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
     return am;
   }
@@ -1448,6 +1454,9 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
       shaohoas_might = true;
+    else if ( p()->talent.brewmaster.face_palm->ok() &&
+              rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+      face_palm = true;
 
     monk_melee_attack_t::execute();
 
@@ -1474,7 +1483,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     {
       case MONK_MISTWEAVER:
       {
-        p()->buff.teachings_of_the_monastery->trigger();
+        if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() )
+          p()->buff.teachings_of_the_monastery->trigger();
         break;
       }
       case MONK_WINDWALKER:
@@ -1488,20 +1498,22 @@ struct tiger_palm_t : public monk_melee_attack_t
             p()->trigger_storm_earth_and_fire_bok_proc( sef_pet_e::SEF_EARTH );
           }
         }
+        if ( p()->talent.windwalker.teachings_of_the_monastery->ok() )
+          p()->buff.teachings_of_the_monastery->trigger();
         break;
       }
       case MONK_BREWMASTER:
       {
-        auto brew_cdr = p()->spec.tiger_palm->effectN( 3 ).base_value();
-
         // Reduces the remaining cooldown on your Brews by 1 sec
-        brew_cooldown_reduction( brew_cdr );
+        brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
 
         if ( shaohoas_might )
           brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
+        else if ( face_palm )
+          brew_cooldown_reduction( p()->passives.face_palm->effectN( 2 ).base_value() );
         break;
       }
       default:
@@ -1515,7 +1527,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     // Apply Mark of the Crane
     if ( p()->specialization() == MONK_WINDWALKER && result_is_hit( s->result ) &&
-         p()->spec.spinning_crane_kick_2_ww->ok() )
+         p()->talent.windwalker.mark_of_the_crane->ok() )
       p()->trigger_mark_of_the_crane( s );
 
     // Bonedust Brew
@@ -1524,6 +1536,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     p()->trigger_keefers_skyreach( s );
     shaohoas_might = false;
+    face_palm      = false;
   }
 };
 
@@ -1553,6 +1566,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   double action_multiplier() const override
   {
     double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p()->spec.rising_sun_kick_2->ok() )
+      am *= 1 + p()->spec.rising_sun_kick_2->effectN( 1 ).percent();
 
     if ( p()->talent.general.fast_feet->ok() )
       am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
@@ -6605,6 +6621,14 @@ void monk_t::trigger_keefers_skyreach( action_state_t* s )
       get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
     }
   }
+  else if ( talent.windwalker.keefers_skyreach->ok() )
+  {
+    if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
+    {
+      get_target_data( s->target )->debuff.keefers_skyreach->trigger();
+      get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
+    }
+  }
 }
 
 player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
@@ -7172,6 +7196,7 @@ void monk_t::init_spells()
   passives.breath_of_fire_dot  = find_spell( 123725 );
   passives.celestial_fortune   = find_spell( 216521 );
   passives.elusive_brawler     = find_spell( 195630 );
+  passives.face_palm           = find_spell( 227679 );
   passives.gift_of_the_ox_heal = find_spell( 124507 );
   passives.shuffle             = find_spell( 215479 );
   passives.keg_smash_buff      = find_spell( 196720 );
