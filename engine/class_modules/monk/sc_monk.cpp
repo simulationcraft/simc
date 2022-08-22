@@ -2598,6 +2598,34 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack->execute();
     }
   }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->talent.windwalker.thunderfist->ok() )
+      p()->buff.thunderfist->trigger();
+  }
+};
+
+// ==========================================================================
+// Thunderfist
+// ==========================================================================
+
+struct thunderfist_t : public monk_spell_t
+{
+  thunderfist_t( monk_t* player ) : monk_spell_t( "thunderfist", player, player->passives.thunderfist->effectN( 1 ).trigger() )
+  {
+    background = true;
+    may_crit   = true;
+  }
+
+  virtual void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->buff.thunderfist->decrement( 1 );
+  }
 };
 
 // ==========================================================================
@@ -2664,6 +2692,17 @@ struct melee_t : public monk_melee_attack_t
       first = false;
 
     monk_melee_attack_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( p()->buff.thunderfist->up() )
+    {
+      p()->passive_actions.thunderfist->target = s->target;
+      p()->passive_actions.thunderfist->schedule_execute();
+    }
   }
 };
 
@@ -6324,6 +6363,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   : player_t( sim, MONK, name, r ),
     sample_datas( sample_data_t() ),
     active_actions(),
+    passive_actions(),
     spiritual_focus_count( 0 ),
     gift_of_the_ox_proc_chance(),
     buff(),
@@ -6355,7 +6395,6 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.chi_torpedo             = get_cooldown( "chi_torpedo" );
   cooldown.expel_harm              = get_cooldown( "expel_harm" );
   cooldown.fortifying_brew         = get_cooldown( "fortifying_brew" );
-  cooldown.fist_of_the_white_tiger = get_cooldown( "fist_of_the_white_tiger" );
   cooldown.fists_of_fury           = get_cooldown( "fists_of_fury" );
   cooldown.healing_elixir          = get_cooldown( "healing_elixir" );
   cooldown.invoke_niuzao           = get_cooldown( "invoke_niuzao_the_black_ox" );
@@ -7249,6 +7288,9 @@ void monk_t::init_spells()
   active_actions.bountiful_brew = new actions::spells::bountiful_brew_t( *this );
   active_actions.call_to_arms_empowered_tiger_lightning =
       new actions::call_to_arms_empowered_tiger_lightning_t( *this );
+
+  // Passive Action Spells
+  passive_actions.thunderfist = new actions::thunderfist_t( this );
 }
 
 // monk_t::init_base ========================================================
@@ -7484,6 +7526,8 @@ void monk_t::create_buffs()
           ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
           ->set_cooldown( timespan_t::zero() );
 
+  buff.thunderfist = make_buff( this, "thunderfist", passives.thunderfist );
+
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( *this, "touch_of_death_ww", spell_data_t::nil() );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
@@ -7608,7 +7652,6 @@ void monk_t::init_gains()
   gain.energizing_elixir_chi    = get_gain( "energizing_elixir_chi" );
   gain.energy_refund            = get_gain( "energy_refund" );
   gain.expel_harm               = get_gain( "expel_harm" );
-  gain.fist_of_the_white_tiger  = get_gain( "fist_of_the_white_tiger" );
   gain.focus_of_xuen            = get_gain( "focus_of_xuen" );
   gain.gift_of_the_ox           = get_gain( "gift_of_the_ox" );
   gain.glory_of_the_dawn        = get_gain( "glory_of_the_dawn" );

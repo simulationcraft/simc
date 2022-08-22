@@ -175,6 +175,11 @@ public:
     propagate_const<action_t*> call_to_arms_empowered_tiger_lightning;
   } active_actions;
 
+  struct passive_actions_t
+  {
+    action_t* thunderfist;
+  } passive_actions;
+
   std::vector<action_t*> combo_strike_actions;
   double spiritual_focus_count;
 
@@ -242,6 +247,7 @@ public:
     propagate_const<buff_t*> invoke_xuen;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> serenity;
+    propagate_const<buff_t*> thunderfist;
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
     propagate_const<buff_t*> windwalking_driver;
@@ -291,7 +297,6 @@ public:
     propagate_const<gain_t*> energizing_elixir_chi;
     propagate_const<gain_t*> energizing_elixir_energy;
     propagate_const<gain_t*> expel_harm;
-    propagate_const<gain_t*> fist_of_the_white_tiger;
     propagate_const<gain_t*> focus_of_xuen;
     propagate_const<gain_t*> fortuitous_spheres;
     propagate_const<gain_t*> gift_of_the_ox;
@@ -722,7 +727,6 @@ public:
     propagate_const<cooldown_t*> celestial_brew;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> expel_harm;
-    propagate_const<cooldown_t*> fist_of_the_white_tiger;
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
     propagate_const<cooldown_t*> fortifying_brew;
@@ -738,6 +742,7 @@ public:
     propagate_const<cooldown_t*> rushing_jade_wind_brm;
     propagate_const<cooldown_t*> rushing_jade_wind_ww;
     propagate_const<cooldown_t*> storm_earth_and_fire;
+    propagate_const<cooldown_t*> strike_of_the_windlord;
     propagate_const<cooldown_t*> thunder_focus_tea;
     propagate_const<cooldown_t*> touch_of_death;
     propagate_const<cooldown_t*> serenity;
@@ -800,6 +805,7 @@ public:
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
     const spell_data_t* mark_of_the_crane;
+    const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
 
