@@ -630,16 +630,16 @@ public:
                 if ( p()->buff.storm_earth_and_fire->up() )
                 {
                     auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
-                    p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend );
+                    p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
                     p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
                     p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
                 }
-                if ( p()->buff.serenity-up() )
+                if ( p()->buff.serenity->up() )
                 {
-                    p()->buff.serenity->extend_duration(
-                        p(), timespan_t::from_seconds(
-                            p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) )
+                  p()->buff.serenity->extend_duration(
+                      p(), timespan_t::from_seconds(
+                               p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) );
                 }
             }
         }
@@ -957,6 +957,9 @@ struct monk_heal_t : public monk_action_t<heal_t>
   double action_multiplier() const override
   {
     double am = base_t::action_multiplier();
+
+    if ( p()->talent.general.grace_of_the_crane->ok() )
+      am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
 
     if ( p()->specialization() == MONK_MISTWEAVER )
     {
@@ -1458,9 +1461,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     spell_power_mod.direct = 0.0;
 
     if ( p->legendary.keefers_skyreach->ok() )
-      this->range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
+      range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
     else if ( p->talent.windwalker.keefers_skyreach->ok() ) 
-      this->range += p->talent.windwalker.keefers_skyreach->effectN( 1 ).base_value();
+      range += p->talent.windwalker.keefers_skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -3172,16 +3175,14 @@ struct leg_sweep_t : public monk_melee_attack_t
 
 struct paralysis_t : public monk_melee_attack_t
 {
-  paralysis_t( monk_t* p, util::string_view options_str ) : monk_melee_attack_t( "paralysis", p, p->spec.paralysis )
+  paralysis_t( monk_t* p, util::string_view options_str ) : monk_melee_attack_t( "paralysis", p, p->talent.general.paralysis )
   {
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
-  }
 
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
+    if ( p->talent.general.paralysis_rank_2->ok() )
+      cooldown->duration += p->talent.general.paralysis_rank_2->effectN( 1 ).time_value();
   }
 };
 
@@ -3417,6 +3418,9 @@ struct crackling_jade_lightning_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
+
+    if (p.talent.general.heavy_air->ok())
+      range += p.talent.general.heavy_air->effectN( 1 ).base_value();
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
