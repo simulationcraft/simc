@@ -2176,36 +2176,29 @@ void whispering_shard_of_power( special_effect_t& effect )
   static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
                                                      STAT_CRIT_RATING };
 
-  // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
-  // reference them. Store these in pointers to reduce the size of the events that use them.
-  auto fealty_buffs    = std::make_shared<std::map<stat_e, buff_t*>>();
   double amount = effect.driver()->effectN( 1 ).average( effect.item );
   stat_e max_stat = util::highest_stat( effect.player, ratings );
 
-  for ( auto stat : ratings )
+  auto name    = std::string( "strength_in_fealty_" ) + util::stat_type_string( max_stat );
+  buff_t* buff = buff_t::find( effect.player, name );
+
+  if ( !buff )
   {
-    auto name    = std::string( "strength_in_fealty_" ) + util::stat_type_string( stat );
-    buff_t* buff = buff_t::find( effect.player, name );
+    buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
+                ->add_stat( max_stat, amount )
+                ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
 
-    if ( !buff )
-    {
-      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
-                 ->add_stat( stat, amount )
-                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+    effect.player->register_combat_begin( [ &effect, buff, max_stat ]( player_t* ) {
 
-      effect.player->register_combat_begin( [ &effect, buff, max_stat, fealty_buffs ]( player_t* ) {
+      timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+      double chance = 0.05;
 
-        timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
-        double chance = 0.0125;
-
-      make_repeating_event( effect.player->sim, period,
-                              [ &effect, buff, chance, max_stat, fealty_buffs ]() {
-        if ( effect.player->rng().roll( chance ) )
-          ( *fealty_buffs )[ max_stat ]->trigger();
-        } );
+    make_repeating_event( effect.player->sim, period,
+                            [ &effect, buff, chance, max_stat ]() {
+      if ( effect.player->rng().roll( chance ) )
+        buff->trigger();
       } );
-    }
-    ( *fealty_buffs )[ max_stat ] = buff;
+    } );
   }
 }
 
