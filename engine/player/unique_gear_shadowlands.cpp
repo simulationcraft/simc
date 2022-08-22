@@ -2187,19 +2187,18 @@ void whispering_shard_of_power( special_effect_t& effect )
     buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
                 ->add_stat( max_stat, amount )
                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  }
 
-    effect.player->register_combat_begin( [ &effect, buff, max_stat ]( player_t* ) {
-
-      timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
-      double chance = 0.05;
+  effect.player->register_combat_begin( [ &effect, buff ]( player_t* ) {
+    timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+    double chance = 0.05;
 
     make_repeating_event( effect.player->sim, period,
-                            [ &effect, buff, chance, max_stat ]() {
+                            [ &effect, buff, chance ]() {
       if ( effect.player->rng().roll( chance ) )
         buff->trigger();
       } );
-    } );
-  }
+  } );
 }
 
 void salvaged_fusion_amplifier( special_effect_t& effect)
