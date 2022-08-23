@@ -330,6 +330,7 @@ public:
     propagate_const<proc_t*> boiling_brew_healing_sphere;
     propagate_const<proc_t*> bonedust_brew_reduction;
     propagate_const<proc_t*> bountiful_brew_proc;
+    propagate_const<proc_t*> glory_of_the_dawn;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> sinister_teaching_reduction;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;

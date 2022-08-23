@@ -1583,6 +1583,43 @@ struct tiger_palm_t : public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
+// Glory of the Dawn =================================================
+struct glory_of_the_dawn_t : public monk_melee_attack_t
+{
+  glory_of_the_dawn_t( monk_t* p, const std::string& name )
+    : monk_melee_attack_t( name, p, p->talent.windwalker.glory_of_the_dawn )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // 2019-02-14
+    // In 8.1.5, the Glory of the Dawn artifact trait will now deal 35% increased damage while Storm, Earth, and Fire is
+    // active. https://www.wowhead.com/bluetracker?topic=95585&region=us
+    // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
+    // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
+    // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
+    if ( p()->buff.storm_earth_and_fire->up() )
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      p()->resource_gain( RESOURCE_CHI, 
+          p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(), p()->gain.glory_of_the_dawn );
+    }
+  }
+};
+
 // Rising Sun Kick Damage Trigger ===========================================
 
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
@@ -1611,6 +1648,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     if ( p()->talent.general.fast_feet->ok() )
       am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
+
+    if ( p()->talent.windwalker.rising_star->ok() )
+      am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
 
     return am;
   }
@@ -1656,24 +1696,23 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
               p()->gain.spirit_of_the_crane );
       }
 
-      // Apply Mortal Wonds
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-        {
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
-          p()->proc.xuens_battlegear_reduction->occur();
-        }
-        else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-        {
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
-          p()->proc.xuens_battlegear_reduction->occur();
-        }
+      if ( p()->talent.windwalker.transfer_the_power->ok() )
+        p()->buff.transfer_the_power->trigger();
 
-        // Apply Mark of the Crane
-        if ( p()->talent.windwalker.mark_of_the_crane->ok() )
-          p()->trigger_mark_of_the_crane( s );
+      if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+      {
+        p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
+        p()->proc.xuens_battlegear_reduction->occur();
       }
+      else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+      {
+        p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
+        p()->proc.xuens_battlegear_reduction->occur();
+      }
+
+      // Apply Mark of the Crane
+      if ( p()->talent.windwalker.mark_of_the_crane->ok() )
+        p()->trigger_mark_of_the_crane( s );
     }
   }
 };
@@ -1681,6 +1720,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t* trigger_attack;
+  glory_of_the_dawn_t* gotd;
 
   rising_sun_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "rising_sun_kick", p, p->talent.general.rising_sun_kick )
@@ -1701,6 +1741,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
+
+    gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+    add_child( gotd );
   }
 
   double cost() const override
@@ -1736,6 +1779,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     trigger_attack->set_target( target );
     trigger_attack->execute();
+
+    if ( p()->talent.windwalker.glory_of_the_dawn->ok() && 
+        rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
+    {
+        // TODO check if the damage values are being applied correctly
+      gotd->target = p()->target;
+      gotd->execute();
+    }
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
@@ -3113,7 +3164,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
   double pct_health;
   touch_of_karma_dot_t* touch_of_karma_dot;
   touch_of_karma_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "touch_of_karma", p, p->spec.touch_of_karma ),
+    : monk_melee_attack_t( "touch_of_karma", p, p->talent.windwalker.touch_of_karma ),
       interval( 100 ),
       interval_stddev( 0.05 ),
       interval_stddev_opt( 0 ),
@@ -3172,6 +3223,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
     {
       double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
 
+      // Redirects 70% of the damage absorbed
       damage_amount *= data().effectN( 4 ).percent();
 
       residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
