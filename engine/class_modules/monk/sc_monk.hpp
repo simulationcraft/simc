@@ -244,6 +244,7 @@ public:
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t*> dizzying_kicks;
     propagate_const<buff_t*> flying_serpent_kick_movement;
+    propagate_const<buff_t*> hidden_masters_forbidden_touch;
     propagate_const<buff_t*> invoke_xuen;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> serenity;
@@ -567,7 +568,7 @@ public:
       player_talent_t dance_of_chiji;
       player_talent_t inner_peace;
       player_talent_t drinking_horn_cover;
-      player_talent_t spirtual_focus;
+      player_talent_t spiritual_focus;
       player_talent_t strike_of_the_windlord;
       // Row 7
       player_talent_t rushing_jade_wind;
@@ -776,6 +777,7 @@ public:
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
+    const spell_data_t* face_palm;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* shuffle;
@@ -804,6 +806,7 @@ public:
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
+    const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;
