@@ -1846,15 +1846,17 @@ void blessing_of_sacrifice_t::execute()
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_target_data_t( target, paladin )
 {
-  debuff.blessed_hammer     = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
-  debuff.execution_sentence = make_buff<buffs::execution_sentence_debuff_t>( this );
-  debuff.judgment           = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
-  debuff.judgment_of_light  = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
-  debuff.final_reckoning    = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
+  debuff.blessed_hammer       = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
+  debuff.execution_sentence   = make_buff<buffs::execution_sentence_debuff_t>( this );
+  debuff.judgment             = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  debuff.judgment_of_light    = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
+  debuff.final_reckoning      = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                ->set_cooldown( 0_ms );  // handled by ability
-  debuff.reckoning      = make_buff( *this, "reckoning", paladin->spells.reckoning );
-  debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
+  debuff.reckoning            = make_buff( *this, "reckoning", paladin->spells.reckoning );
+  debuff.vengeful_shock       = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                               ->set_default_value( paladin->conduit.vengeful_shock.percent() );
+  debuff.seal_of_the_crusader = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
+
 }
 
 // paladin_t::create_actions ================================================

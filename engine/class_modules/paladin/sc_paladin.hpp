@@ -45,6 +45,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* final_reckoning;
     buff_t* reckoning;
     buff_t* vengeful_shock;
+    buff_t* seal_of_the_crusader;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
