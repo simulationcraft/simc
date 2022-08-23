@@ -1003,10 +1003,13 @@ void paladin_t::generate_action_prio_list_ret()
   // Items
 
   // special-cased items
-  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "the_first_sigil", "scars_of_fraternal_strife", "chains_of_domination", "earthbreakers_impact", "heart_of_the_swarm", "cosmic_gladiators_badge_of_ferocity", "cosmic_aspirants_badge_of_ferocity", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone", "gavel_of_the_first_arbiter" };
+  std::unordered_set<std::string> special_items { "skulkers_wing", "macabre_sheet_music", "memory_of_past_sins", "dreadfire_vessel", "darkmoon_deck_voracity", "overwhelming_power_crystal", "spare_meat_hook", "grim_codex", "inscrutable_quantum_device", "salvaged_fusion_amplifier", "the_first_sigil", "scars_of_fraternal_strife", "chains_of_domination", "earthbreakers_impact", "heart_of_the_swarm", "cosmic_gladiators_badge_of_ferocity", "cosmic_aspirants_badge_of_ferocity", "unchained_gladiators_badge_of_ferocity", "unchained_aspirants_badge_of_ferocity", "sinful_gladiators_badge_of_ferocity", "sinful_aspirants_badge_of_ferocity", "faulty_countermeasure", "giant_ornamental_pearl", "windscar_whetstone", "gavel_of_the_first_arbiter", "ring_of_collapsing_futures", "anodized_deflectors", "enforcers_stun_grenade", "bloodstained_handkerchief", "toe_knees_promise", "remote_guidance_device" };
 
   cds -> add_action( "use_item,name=gavel_of_the_first_arbiter" );
+  cds -> add_action( "use_item,name=ring_of_collapsing_futures,if=!buff.temptation.up|fight_remains<15" );
+  cds -> add_action( "use_item,name=anodized_deflectors" );
   cds -> add_action( "use_item,name=the_first_sigil,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
+  cds -> add_action( "use_item,name=enforcers_stun_grenade,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
   cds -> add_action( "use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30" );
   cds -> add_action( "use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15" );
   cds -> add_action( "use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20" );
@@ -1020,7 +1023,10 @@ void paladin_t::generate_action_prio_list_ret()
   cds -> add_action( "use_item,name=salvaged_fusion_amplifier" );
   cds -> add_action( "use_item,name=giant_ornamental_pearl" );
   cds -> add_action( "use_item,name=windscar_whetstone" );
-  cds -> add_action( "use_item,name=scars_of_fraternal_strife" );
+  cds -> add_action( "use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking" );
+  cds -> add_action( "use_item,name=toe_knees_promise" );
+  cds -> add_action( "use_item,name=remote_guidance_device" );
+  cds -> add_action( "use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35" );
   cds -> add_action( "use_item,name=chains_of_domination" );
   cds -> add_action( "use_item,name=earthbreakers_impact" );
   cds -> add_action( "use_item,name=heart_of_the_swarm,if=!buff.avenging_wrath.up&!buff.crusade.up" );
