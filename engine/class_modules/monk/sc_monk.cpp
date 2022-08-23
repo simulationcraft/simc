@@ -2239,6 +2239,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
+    if ( p->talent.windwalker.feathers_of_a_hundred_flocks.ok() )
+        radius *= 1 + p->talent.windwalker.feathers_of_a_hundred_flocks->effectN( 1 ).percent();
+
     if ( p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
 
@@ -2256,6 +2259,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
   int mark_of_the_crane_counter() const
   {
+    if ( p()->user_options.motc_override > 0 )
+        return p()->user_options.motc_override;
+
     std::vector<player_t*> targets = target_list();
     int mark_of_the_crane_counter  = 0;
 
@@ -2291,8 +2297,11 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->buff.dance_of_chiji_hidden->check() )
       am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
 
-    if (p()->talent.general.fast_feet->ok())
+    if ( p()->talent.general.fast_feet->ok() )
         am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.crane_vortex->ok() )
+        am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
 
     return am;
   }
@@ -6631,6 +6640,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.expel_harm_effectiveness  = 0.25;
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
+  user_options.motc_override             = 0;
 }
 
 // monk_t::create_action ====================================================
@@ -6874,6 +6884,9 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 
 int monk_t::mark_of_the_crane_counter()
 {
+  if ( user_options.motc_override > 0 )
+      return user_options.motc_override;
+
   std::vector<player_t*> targets = sim->target_non_sleeping_list.data();
   int mark_of_the_crane_counter  = 0;
 
@@ -6891,6 +6904,30 @@ int monk_t::mark_of_the_crane_counter()
     }
   }
   return mark_of_the_crane_counter;
+}
+
+// Current talent contributions to SCK ( not including DoCJ bonus )
+double monk_t::sck_modifier()
+{
+    double current = 1;
+
+    double motc_multiplier = passives.cyclone_strikes->effectN( 1 ).percent();
+
+    if ( conduit.calculated_strikes->ok() )
+        motc_multiplier += conduit.calculated_strikes.percent();
+    else if ( talent.windwalker.calculated_strikes->ok() )
+        motc_multiplier += talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+
+    if ( spec.spinning_crane_kick_2_ww->ok() )
+        current *= 1 + (mark_of_the_crane_counter() * motc_multiplier);
+
+    if ( talent.general.fast_feet->ok() )
+        current *= 1 + talent.general.fast_feet->effectN( 2 ).percent();
+
+    if ( talent.windwalker.crane_vortex->ok() )
+        current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
+
+    return current;
 }
 
 // monk_t::activate =========================================================
@@ -8614,6 +8651,7 @@ void monk_t::create_options()
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
+  add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -9325,9 +9363,9 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
     if ( splits[ 1 ] == "count" )
-    {
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
-    }
+    else if ( splits[ 1 ] == "modifier" )
+      return make_fn_expr(name_str, [this] { return sck_modifier(); });
   }
 
   return base_t::create_expression( name_str );
