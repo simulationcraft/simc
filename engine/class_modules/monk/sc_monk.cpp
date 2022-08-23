@@ -5155,7 +5155,8 @@ struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t* dmg;
   expel_harm_t( monk_t& p, util::string_view options_str )
-    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ), dmg( new expel_harm_dmg_t( &p ) )
+    : monk_heal_t( "expel_harm", p, p.talent.general.expel_harm ),
+      dmg( new expel_harm_dmg_t( &p ) )
   {
     parse_options( options_str );
 
@@ -5184,16 +5185,8 @@ struct expel_harm_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      double chi_gain = 0;
-
-      if ( p()->spec.expel_harm_2_ww->ok() )
-        chi_gain += p()->spec.expel_harm_2_ww->effectN( 1 ).base_value();
-
-      if ( chi_gain > 0 )
-        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.expel_harm );
-    }
+    if ( p()->specialization() == MONK_WINDWALKER && p()->spec.expel_harm_2_ww->ok() )
+        p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
   }
 
   void impact( action_state_t* s ) override
