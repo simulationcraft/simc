@@ -625,21 +625,29 @@ public:
                 }
             }
 
-            if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->buff.storm_earth_and_fire->up() )
+            if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
             {
                 if ( p()->buff.storm_earth_and_fire->up() )
                 {
                     auto time_extend = p()->talent.windwalker.drinking_horn_cover->effectN( 1 ).base_value() / 10;
+                    time_extend *= ab::cost();
+
                     p()->buff.storm_earth_and_fire->extend_duration( p(), timespan_t::from_seconds( time_extend ) );
 
                     p()->find_pet( "earth_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
                     p()->find_pet( "fire_spirit" )->adjust_duration( timespan_t::from_seconds( time_extend ) );
+
+                    p()->cooldown.drinking_horn_cover->start(
+                        p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
                 }
                 if ( p()->buff.serenity->up() )
                 {
                   p()->buff.serenity->extend_duration(
                       p(), timespan_t::from_seconds(
                                p()->talent.windwalker.drinking_horn_cover->effectN( 2 ).base_value() / 10 ) );
+
+                    p()->cooldown.drinking_horn_cover->start(
+                      p()->talent.windwalker.drinking_horn_cover->internal_cooldown() );
                 }
             }
         }
@@ -1575,6 +1583,43 @@ struct tiger_palm_t : public monk_melee_attack_t
 // Rising Sun Kick
 // ==========================================================================
 
+// Glory of the Dawn =================================================
+struct glory_of_the_dawn_t : public monk_melee_attack_t
+{
+  glory_of_the_dawn_t( monk_t* p, const std::string& name )
+    : monk_melee_attack_t( name, p, p->talent.windwalker.glory_of_the_dawn )
+  {
+    background = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    // 2019-02-14
+    // In 8.1.5, the Glory of the Dawn artifact trait will now deal 35% increased damage while Storm, Earth, and Fire is
+    // active. https://www.wowhead.com/bluetracker?topic=95585&region=us
+    // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
+    // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
+    // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
+    if ( p()->buff.storm_earth_and_fire->check() )
+      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+
+    return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    monk_melee_attack_t::impact( s );
+
+    if ( result_is_hit( s->result ) )
+    {
+      p()->resource_gain( RESOURCE_CHI, 
+          p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(), p()->gain.glory_of_the_dawn );
+    }
+  }
+};
+
 // Rising Sun Kick Damage Trigger ===========================================
 
 struct rising_sun_kick_dmg_t : public monk_melee_attack_t
@@ -1603,6 +1648,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 
     if ( p()->talent.general.fast_feet->ok() )
       am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
+
+    if ( p()->talent.windwalker.rising_star->ok() )
+      am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
 
     return am;
   }
@@ -1648,24 +1696,23 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
               p()->gain.spirit_of_the_crane );
       }
 
-      // Apply Mortal Wonds
-      if ( p()->specialization() == MONK_WINDWALKER )
-      {
-        if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-        {
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
-          p()->proc.xuens_battlegear_reduction->occur();
-        }
-        else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
-        {
-          p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
-          p()->proc.xuens_battlegear_reduction->occur();
-        }
+      if ( p()->talent.windwalker.transfer_the_power->ok() )
+        p()->buff.transfer_the_power->trigger();
 
-        // Apply Mark of the Crane
-        if ( p()->talent.windwalker.mark_of_the_crane->ok() )
-          p()->trigger_mark_of_the_crane( s );
+      if ( p()->legendary.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+      {
+        p()->cooldown.fists_of_fury->adjust( -1 * p()->legendary.xuens_battlegear->effectN( 2 ).time_value(), true );
+        p()->proc.xuens_battlegear_reduction->occur();
       }
+      else if ( p()->talent.windwalker.xuens_battlegear->ok() && ( s->result == RESULT_CRIT ) )
+      {
+        p()->cooldown.fists_of_fury->adjust( -1 * p()->talent.windwalker.xuens_battlegear->effectN( 2 ).time_value(), true );
+        p()->proc.xuens_battlegear_reduction->occur();
+      }
+
+      // Apply Mark of the Crane
+      if ( p()->talent.windwalker.mark_of_the_crane->ok() )
+        p()->trigger_mark_of_the_crane( s );
     }
   }
 };
@@ -1673,6 +1720,7 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
 struct rising_sun_kick_t : public monk_melee_attack_t
 {
   rising_sun_kick_dmg_t* trigger_attack;
+  glory_of_the_dawn_t* gotd;
 
   rising_sun_kick_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "rising_sun_kick", p, p->talent.general.rising_sun_kick )
@@ -1693,6 +1741,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
+
+    gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+    add_child( gotd );
   }
 
   double cost() const override
@@ -1729,6 +1780,14 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->set_target( target );
     trigger_attack->execute();
 
+    if ( p()->talent.windwalker.glory_of_the_dawn->ok() && 
+        rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
+    {
+        // TODO check if the damage values are being applied correctly
+      gotd->target = p()->target;
+      gotd->execute();
+    }
+
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
     {
       if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
@@ -1738,6 +1797,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
 
       p()->buff.whirling_dragon_punch->trigger();
     }
+
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->buff.weapons_of_order->up() )
       p()->buff.weapons_of_order_ww->trigger();
@@ -1790,7 +1852,14 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+    if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() &&
+         rng().roll( p()->talent.mistweaver.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+    {
+      p()->cooldown.rising_sun_kick->reset( true );
+      p()->proc.rsk_reset_totm->occur();
+    }
+    else if ( p()->talent.windwalker.teachings_of_the_monastery->ok() &&
+              rng().roll( p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent() ) )
     {
       p()->cooldown.rising_sun_kick->reset( true );
       p()->proc.rsk_reset_totm->occur();
@@ -1861,12 +1930,23 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
 
+
     if ( p->specialization() == MONK_WINDWALKER )
     {
       if ( p->spec.blackout_kick_2 )
-        // Saved as -1
+        // Saved as -2
         base_costs[ RESOURCE_CHI ] +=
-            p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 2
+            p->spec.blackout_kick_2->effectN( 1 ).base_value();  // Reduce base from 3 chi to 1
+
+      if ( p->talent.windwalker.shadowboxing_treads->ok() )
+        aoe = 1 + (int)p->talent.windwalker.shadowboxing_treads->effectN( 1 ).base_value();
+
+      apply_dual_wield_two_handed_scaling();
+    }
+    if ( p->specialization() == MONK_BREWMASTER )
+    {
+      if ( p->talent.brewmaster.shadowboxing_treads->ok() )
+        aoe = 1 + (int)p->talent.brewmaster.shadowboxing_treads->effectN( 1 ).base_value();
 
       apply_dual_wield_two_handed_scaling();
     }
@@ -1907,6 +1987,19 @@ struct blackout_kick_t : public monk_melee_attack_t
     }
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_melee_attack_t::action_multiplier();
+
+    if ( p()->talent.brewmaster.shadowboxing_treads->ok() )
+      am *= 1 + p()->talent.brewmaster.shadowboxing_treads->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.shadowboxing_treads->ok() )
+      am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -1924,14 +2017,17 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->talent.brewmaster.blackout_combo->ok() )
           p()->buff.blackout_combo->trigger();
 
-        auto shuffle_duration = p()->spec.blackout_kick_brm->effectN( 2 ).base_value();
+        if ( p()->talent.brewmaster.shuffle->ok() )
+          trigger_shuffle( p()->talent.brewmaster.shuffle->effectN( 1 ).base_value() );
 
-        trigger_shuffle( shuffle_duration );
+        if ( p()->talent.brewmaster.hit_scheme->ok() )
+          p()->buff.hit_scheme->trigger();
         break;
       }
       case MONK_MISTWEAVER:
       {
-        if ( rng().roll( p()->spec.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() &&
+             rng().roll( p()->talent.mistweaver.teachings_of_the_monastery->effectN( 1 ).percent() ) )
         {
           p()->cooldown.rising_sun_kick->reset( true );
           p()->proc.rsk_reset_totm->occur();
@@ -1963,6 +2059,13 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
         }
+
+        if ( p()->talent.windwalker.teachings_of_the_monastery->ok() &&
+             rng().roll( p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent() ) )
+        {
+          p()->cooldown.rising_sun_kick->reset( true );
+          p()->proc.rsk_reset_totm->occur();
+        }
         break;
       }
       default:
@@ -1990,7 +2093,7 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( result_is_hit( s->result ) )
     {
-      if ( p()->specialization() == MONK_WINDWALKER && p()->spec.spinning_crane_kick_2_ww->ok() )
+      if ( p()->talent.windwalker.mark_of_the_crane->ok() )
         p()->trigger_mark_of_the_crane( s );
 
       if ( p()->buff.teachings_of_the_monastery->up() )
@@ -2007,13 +2110,24 @@ struct blackout_kick_t : public monk_melee_attack_t
         double dmg_percent            = p()->legendary.charred_passions->effectN( 1 ).percent();
         charred_passions->base_dd_min = s->result_amount * dmg_percent;
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
+
+        if ( p()->legendary.charred_passions->ok() )
+          charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
+        else if ( p()->talent.brewmaster.charred_passions->ok() )
+          charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
+
         charred_passions->execute();
 
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
           get_td( s->target )->dots.breath_of_fire->refresh_duration();
-          p()->cooldown.charred_passions->start(
-              p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+
+          if ( p()->legendary.charred_passions->ok() )
+              p()->cooldown.charred_passions->start(
+                  p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+          else if ( p()->talent.brewmaster.charred_passions->ok() )
+            p()->cooldown.charred_passions->start(
+                p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
     }
@@ -2125,6 +2239,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
+    if ( p->talent.windwalker.feathers_of_a_hundred_flocks.ok() )
+        radius *= 1 + p->talent.windwalker.feathers_of_a_hundred_flocks->effectN( 1 ).percent();
+
     if ( p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
 
@@ -2142,6 +2259,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
   int mark_of_the_crane_counter() const
   {
+    if ( p()->user_options.motc_override > 0 )
+        return p()->user_options.motc_override;
+
     std::vector<player_t*> targets = target_list();
     int mark_of_the_crane_counter  = 0;
 
@@ -2177,8 +2297,11 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->buff.dance_of_chiji_hidden->check() )
       am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
 
-    if (p()->talent.general.fast_feet->ok())
+    if ( p()->talent.general.fast_feet->ok() )
         am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.crane_vortex->ok() )
+        am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
 
     return am;
   }
@@ -2405,7 +2528,7 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 struct fists_of_fury_t : public monk_melee_attack_t
 {
   fists_of_fury_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "fists_of_fury", p, p->spec.fists_of_fury )
+    : monk_melee_attack_t( "fists_of_fury", p, p->talent.windwalker.fists_of_fury )
   {
     parse_options( options_str );
 
@@ -2478,6 +2601,8 @@ struct fists_of_fury_t : public monk_melee_attack_t
 
     if ( p()->legendary.xuens_battlegear->ok() )
       p()->buff.pressure_point->trigger();
+    else if ( p()->talent.windwalker.xuens_battlegear->ok() )
+        p()->buff.pressure_point->trigger();
   }
 };
 
@@ -2933,6 +3058,9 @@ struct touch_of_death_t : public monk_melee_attack_t
       cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
     else if ( p.talent.general.fatal_touch->ok() )
       cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value();
+
+    if ( p.talent.windwalker.fatal_flying_guillotine->ok() )
+      aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
   }
 
   void init() override
@@ -3045,7 +3173,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
   double pct_health;
   touch_of_karma_dot_t* touch_of_karma_dot;
   touch_of_karma_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "touch_of_karma", p, p->spec.touch_of_karma ),
+    : monk_melee_attack_t( "touch_of_karma", p, p->talent.windwalker.touch_of_karma ),
       interval( 100 ),
       interval_stddev( 0.05 ),
       interval_stddev_opt( 0 ),
@@ -3104,6 +3232,7 @@ struct touch_of_karma_t : public monk_melee_attack_t
     {
       double damage_amount = pct_health * player->resources.max[ RESOURCE_HEALTH ];
 
+      // Redirects 70% of the damage absorbed
       damage_amount *= data().effectN( 4 ).percent();
 
       residual_action::trigger( touch_of_karma_dot, execute_state->target, damage_amount );
@@ -5132,16 +5261,6 @@ struct gift_of_the_ox_expire_t : public monk_heal_t
 // Expel Harm
 // ==========================================================================
 
-struct niuzaos_blessing_t : public monk_heal_t
-{
-  niuzaos_blessing_t( monk_t& p ) : monk_heal_t( "niuzaos_blessing", p, p.find_spell( 278535 ) )
-  {
-    background = true;
-    proc       = true;
-    target     = player;
-  }
-};
-
 struct expel_harm_dmg_t : public monk_spell_t
 {
   expel_harm_dmg_t( monk_t* player ) : monk_spell_t( "expel_harm_damage", player, player->find_spell( 115129 ) )
@@ -6481,6 +6600,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.breath_of_fire          = get_cooldown( "breath_of_fire" );
   cooldown.celestial_brew          = get_cooldown( "celestial_brew" );
   cooldown.chi_torpedo             = get_cooldown( "chi_torpedo" );
+  cooldown.drinking_horn_cover     = get_cooldown( "drinking_horn_cover" );
   cooldown.expel_harm              = get_cooldown( "expel_harm" );
   cooldown.fortifying_brew         = get_cooldown( "fortifying_brew" );
   cooldown.fists_of_fury           = get_cooldown( "fists_of_fury" );
@@ -6520,6 +6640,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   user_options.expel_harm_effectiveness  = 0.25;
   user_options.faeline_stomp_uptime      = 1.0;
   user_options.chi_burst_healing_targets = 8;
+  user_options.motc_override             = 0;
 }
 
 // monk_t::create_action ====================================================
@@ -6763,6 +6884,9 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 
 int monk_t::mark_of_the_crane_counter()
 {
+  if ( user_options.motc_override > 0 )
+      return user_options.motc_override;
+
   std::vector<player_t*> targets = sim->target_non_sleeping_list.data();
   int mark_of_the_crane_counter  = 0;
 
@@ -6780,6 +6904,30 @@ int monk_t::mark_of_the_crane_counter()
     }
   }
   return mark_of_the_crane_counter;
+}
+
+// Current talent contributions to SCK ( not including DoCJ bonus )
+double monk_t::sck_modifier()
+{
+    double current = 1;
+
+    double motc_multiplier = passives.cyclone_strikes->effectN( 1 ).percent();
+
+    if ( conduit.calculated_strikes->ok() )
+        motc_multiplier += conduit.calculated_strikes.percent();
+    else if ( talent.windwalker.calculated_strikes->ok() )
+        motc_multiplier += talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+
+    if ( spec.spinning_crane_kick_2_ww->ok() )
+        current *= 1 + (mark_of_the_crane_counter() * motc_multiplier);
+
+    if ( talent.general.fast_feet->ok() )
+        current *= 1 + talent.general.fast_feet->effectN( 2 ).percent();
+
+    if ( talent.windwalker.crane_vortex->ok() )
+        current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
+
+    return current;
 }
 
 // monk_t::activate =========================================================
@@ -6918,7 +7066,7 @@ void monk_t::init_spells()
   talent.brewmaster.light_brewing                     = _ST( "Light Brewing" );
   talent.brewmaster.training_of_niuzao                = _ST( "Training of Niuzao" );
   talent.brewmaster.shocking_brew                     = _ST( "Shoocking Blow" );
-  talent.brewmaster.shadowboxing_treads               = _ST( "Shadowboxing Treads" );
+  talent.brewmaster.shadowboxing_treads               = find_talent_spell( talent_tree::SPECIALIZATION, 387638 );
   talent.brewmaster.fluidity_of_motion                = _ST( "Fluidity of Motion" );
   // Row 8
   talent.brewmaster.dragonfire_brew                   = _ST( "Dragonfire Brew" );
@@ -7030,7 +7178,7 @@ void monk_t::init_spells()
   talent.windwalker.glory_of_the_dawn              = _ST( "Glory of the Dawn" );
   // 8 Required
   // Row 5
-  talent.windwalker.shadowboxing_treads            = _ST( "Shadowboxing Treads" );
+  talent.windwalker.shadowboxing_treads            = find_talent_spell( talent_tree::SPECIALIZATION, 331512 );
   talent.windwalker.hit_scheme                     = _ST( "Hit Scheme" );
   talent.windwalker.storm_earth_and_fire           = _ST( "Storm, Earth, and Fire" );
   talent.windwalker.serenity                       = _ST( "Serentiy" );
@@ -7534,17 +7682,20 @@ void monk_t::create_buffs()
   buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
                              ->add_invalidate( CACHE_DODGE );
 
-  buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
-                     ->set_duration_multiplier( 3 )
-                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
   buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
   buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", spec.invoke_niuzao )
                            ->set_default_value_from_effect( 2 )
                            ->set_cooldown( timespan_t::zero() );
 
+  buff.hit_scheme = make_buff( this, "hit_scheme", talent.brewmaster.hit_scheme->effectN( 1 ).trigger() )
+                        ->set_default_value_from_effect( 1 );
+
   buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )->set_default_value_from_effect( 1 );
+
+  buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
+                     ->set_duration_multiplier( 3 )
+                     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.light_stagger    = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
   buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
@@ -7632,6 +7783,8 @@ void monk_t::create_buffs()
   buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t( *this, "touch_of_death_ww", spell_data_t::nil() );
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
+
+  buff.transfer_the_power = make_buff( this, "transfer_the_power", find_spell( 195321 ) );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
@@ -8498,6 +8651,7 @@ void monk_t::create_options()
   add_option( opt_float( "monk.expel_harm_effectiveness", user_options.expel_harm_effectiveness, 0.0, 1.0 ) );
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
+  add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
 }
 
 // monk_t::copy_from =========================================================
@@ -9209,9 +9363,9 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
   else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
     if ( splits[ 1 ] == "count" )
-    {
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
-    }
+    else if ( splits[ 1 ] == "modifier" )
+      return make_fn_expr(name_str, [this] { return sck_modifier(); });
   }
 
   return base_t::create_expression( name_str );

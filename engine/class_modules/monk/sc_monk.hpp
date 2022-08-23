@@ -211,6 +211,7 @@ public:
     propagate_const<buff_t*> elusive_brawler;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
+    propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
@@ -251,6 +252,7 @@ public:
     propagate_const<buff_t*> thunderfist;
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
+    propagate_const<buff_t*> transfer_the_power;
     propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
 
@@ -328,6 +330,7 @@ public:
     propagate_const<proc_t*> boiling_brew_healing_sphere;
     propagate_const<proc_t*> bonedust_brew_reduction;
     propagate_const<proc_t*> bountiful_brew_proc;
+    propagate_const<proc_t*> glory_of_the_dawn;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> sinister_teaching_reduction;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;
@@ -727,6 +730,7 @@ public:
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
     propagate_const<cooldown_t*> desperate_measure;
+    propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
@@ -997,6 +1001,7 @@ public:
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
+    int motc_override;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1112,6 +1117,7 @@ public:
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
+  double sck_modifier();
   double clear_stagger();
   double partial_clear_stagger_pct( double );
   double partial_clear_stagger_amount( double );
