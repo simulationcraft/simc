@@ -2929,8 +2929,10 @@ struct touch_of_death_t : public monk_melee_attack_t
     parse_options( options_str );
     cooldown->duration = data().cooldown();
 
-    if ( p.legendary.fatal_touch.ok() )
+    if ( p.legendary.fatal_touch->ok() )
       cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
+    else if ( p.talent.general.fatal_touch->ok() )
+      cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value();
   }
 
   void init() override
@@ -2947,8 +2949,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   bool ready() override
   {
-    if ( p()->spec.touch_of_death_2->ok() &&
-         ( target->health_percentage() < p()->spec.touch_of_death->effectN( 2 ).base_value() ) )
+    if ( p()->talent.general.touch_of_death->ok() &&
+         ( target->health_percentage() < p()->talent.general.touch_of_death->effectN( 1 ).percent() ) )
       return monk_melee_attack_t::ready();
     if ( ( target->true_level <= p()->true_level ) &&
          ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
@@ -2960,6 +2962,17 @@ struct touch_of_death_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
+
+    if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+    {
+      if ( p()->buff.hidden_masters_forbidden_touch->up() )
+        p()->buff.hidden_masters_forbidden_touch->expire();
+      else
+      {
+        p()->buff.hidden_masters_forbidden_touch->execute();
+        this->cooldown->reset( true );
+      }
+    }
 
     if ( p()->spec.touch_of_death_3_ww->ok() )
       p()->buff.touch_of_death_ww->trigger();
@@ -2975,7 +2988,10 @@ struct touch_of_death_t : public monk_melee_attack_t
     double amount = p()->resources.initial[ RESOURCE_HEALTH ];
 
     if ( target->true_level > p()->true_level )
-      amount *= p()->spec.touch_of_death->effectN( 3 ).percent();  // 35% HP
+      amount *= p()->talent.general.touch_of_death->effectN( 2 ).percent();  // 35% HP
+
+    if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+      amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
 
     // Damage is only affected by Windwalker's Mastery
     // Versatility does not affect the damage of Touch of Death.
@@ -6184,7 +6200,7 @@ struct windwalking_driver_t : public monk_buff_t<buff_t>
     set_duration( timespan_t::zero() );
     set_period( timespan_t::from_seconds( 1 ) );
     set_tick_behavior( buff_tick_behavior::CLIP );
-    movement_increase = p.buffs.windwalking_movement_aura->data().effectN( 1 ).percent();
+    movement_increase = p.talent.general.windwalking->effectN( 1 ).percent();
   }
 };
 
@@ -6204,6 +6220,24 @@ struct stagger_buff_t : public monk_buff_t<buff_t>
     {
       add_invalidate( CACHE_HASTE );
     }
+  }
+};
+
+// ===============================================================================
+// Hidden Master's Forbidden Touch Legendary
+// ===============================================================================
+
+struct hidden_masters_forbidden_touch_t : public monk_buff_t<buff_t>
+{
+  hidden_masters_forbidden_touch_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+  }
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    base_t::expire_override( expiration_stacks, remaining_duration );
+    cooldown_t* touch_of_death = source->get_cooldown( "touch_of_death" );
+    if ( touch_of_death->up() )
+      touch_of_death->start();
   }
 };
 
@@ -7274,6 +7308,7 @@ void monk_t::init_spells()
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
+  passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
@@ -7583,6 +7618,9 @@ void monk_t::create_buffs()
                                    ->set_default_value( talent.windwalker.dance_of_chiji->effectN( 1 ).percent() );
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
+
+  buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t(
+      *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
   buff.invoke_xuen =
       new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_the_white_tiger", spec.invoke_xuen );
