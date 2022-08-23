@@ -2998,6 +2998,9 @@ struct touch_of_death_t : public monk_melee_attack_t
       cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
     else if ( p.talent.general.fatal_touch->ok() )
       cooldown->duration += p.talent.general.fatal_touch->effectN( 1 ).time_value();
+
+    if ( p.talent.windwalker.fatal_flying_guillotine->ok() )
+      aoe = 1 + (int)p.talent.windwalker.fatal_flying_guillotine->effectN( 1 ).base_value();
   }
 
   void init() override
