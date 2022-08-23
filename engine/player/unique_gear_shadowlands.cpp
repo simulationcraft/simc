@@ -2164,6 +2164,53 @@ void old_warriors_soul( special_effect_t& effect )
     } );
   }
 }
+	
+/**Whispering Shard of Power
+ * id=357185 Stat buffs
+ * id=355319 periodic roll for proc & coefficients for stat amounts & Driver
+ */
+void whispering_shard_of_power( special_effect_t& effect )
+{
+  if ( unique_gear::create_fallback_buffs(
+     effect, { "strength_in_fealty_crit_rating", "strength_in_fealty_mastery_rating", "strength_in_fealty_haste_rating",
+                  "strength_in_fealty_versatility_rating" } ) )
+  return;
+  // When selecting the highest stat, the priority of equal secondary stats is Vers > Mastery > Haste > Crit.
+  static constexpr std::array<stat_e, 4> ratings = { STAT_VERSATILITY_RATING, STAT_MASTERY_RATING, STAT_HASTE_RATING,
+                                                     STAT_CRIT_RATING };
+
+  // Use a separate buff for each rating type so that individual uptimes are reported nicely and APLs can easily
+  // reference them. Store these in pointers to reduce the size of the events that use them.
+  auto fealty_buffs = std::make_shared<std::map<stat_e, buff_t*>>();
+  double amount     = effect.driver()->effectN( 1 ).average( effect.item );
+
+  for ( auto stat : ratings )
+  {
+    auto name    = std::string( "strength_in_fealty_" ) + util::stat_type_string( stat );
+    buff_t* buff = buff_t::find( effect.player, name );
+
+    if ( !buff )
+    {
+      buff = make_buff<stat_buff_t>( effect.player, name, effect.player->find_spell( 357185 ), effect.item )
+                 ->add_stat( stat, amount );
+    }
+    ( *fealty_buffs )[ stat ] = buff;
+  }
+
+  effect.player->register_combat_begin( [ &effect, fealty_buffs ]( player_t* ) {
+    timespan_t period = effect.player->find_spell( 355319 )->effectN( 1 ).period();
+    // Proc chance appears to be 5% per roll based on testing and logs. 21-8-2022 
+    double chance     = 0.05;
+
+    make_repeating_event( effect.player->sim, period, [ &effect, chance, fealty_buffs ]() {
+      if ( effect.player->rng().roll( chance ) )
+      {
+        stat_e max_stat = util::highest_stat( effect.player, ratings );
+        ( *fealty_buffs )[ max_stat ]->trigger();
+      }
+    } );
+  } );
+}
 
 void salvaged_fusion_amplifier( special_effect_t& effect)
 {
@@ -6237,6 +6284,7 @@ void register_special_effects()
     unique_gear::register_special_effect( 355323, items::decanter_of_endless_howling );
     unique_gear::register_special_effect( 355324, items::tormentors_rack_fragment );
     unique_gear::register_special_effect( 355297, items::old_warriors_soul );
+    unique_gear::register_special_effect( 355319, items::whispering_shard_of_power, true );
     unique_gear::register_special_effect( 355333, items::salvaged_fusion_amplifier );
     unique_gear::register_special_effect( 355313, items::titanic_ocular_gland );
     unique_gear::register_special_effect( 355327, items::ebonsoul_vise );
