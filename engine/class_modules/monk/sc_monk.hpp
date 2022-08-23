@@ -1001,6 +1001,7 @@ public:
     double expel_harm_effectiveness;
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
+    int motc_override;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1116,6 +1117,7 @@ public:
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
+  double sck_modifier();
   double clear_stagger();
   double partial_clear_stagger_pct( double );
   double partial_clear_stagger_amount( double );
