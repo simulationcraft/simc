@@ -211,6 +211,7 @@ public:
     propagate_const<buff_t*> elusive_brawler;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
+    propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
@@ -251,6 +252,7 @@ public:
     propagate_const<buff_t*> thunderfist;
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
+    propagate_const<buff_t*> transfer_the_power;
     propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
 
@@ -727,6 +729,7 @@ public:
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
     propagate_const<cooldown_t*> desperate_measure;
+    propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;
     propagate_const<cooldown_t*> fists_of_fury;
     propagate_const<cooldown_t*> flying_serpent_kick;
