@@ -1602,7 +1602,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     // https://us.forums.blizzard.com/en/wow/t/ww-sef-bugs-and-more/95585/10
     // The 35% cannot be located in any effect (whether it's Windwalker aura, SEF's spell, or in either of GotD's
     // spells) Using SEF' damage reduction times 3 for future proofing (1 + -55%) = 45%; 45% * 3 = 135%
-    if ( p()->buff.storm_earth_and_fire->up() )
+    if ( p()->buff.storm_earth_and_fire->check() )
       am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
 
     return am;
