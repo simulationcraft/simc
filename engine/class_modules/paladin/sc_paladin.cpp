@@ -2802,7 +2802,6 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
   {
     cptm *= 1.0 + td->debuff.vengeful_shock->value();
   }
-  // TODO: Figure out what can trigger it
   if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
   {
     cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();
