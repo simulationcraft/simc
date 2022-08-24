@@ -1446,7 +1446,8 @@ struct tiger_palm_t : public monk_melee_attack_t
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
       shaohoas_might( false ),
-      face_palm( false )
+      face_palm( false ),
+      power_strikes( false )
   {
     parse_options( options_str );
 
@@ -1589,6 +1590,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->trigger_keefers_skyreach( s );
     shaohoas_might = false;
     face_palm      = false;
+    power_strikes  = false;
   }
 };
 
