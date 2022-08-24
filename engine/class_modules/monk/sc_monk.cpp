@@ -3358,9 +3358,9 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   bool first_charge;
   double movement_speed_increase;
   flying_serpent_kick_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "flying_serpent_kick", p, p->spec.flying_serpent_kick ),
+    : monk_melee_attack_t( "flying_serpent_kick", p, p->talent.windwalker.flying_serpent_kick ),
       first_charge( true ),
-      movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
+      movement_speed_increase( p->talent.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     may_crit                        = true;
@@ -7333,7 +7333,7 @@ void monk_t::init_spells()
   spec.disable                    = find_specialization_spell( "Disable" );
   spec.disable_2                  = find_rank_spell( "Disable", "Rank 2" );
   spec.fists_of_fury              = find_specialization_spell( "Fists of Fury" );
-  spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" );
+  //spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" ); // Changed to talent in Dragonflight
   spec.flying_serpent_kick_2      = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
   spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" );
   spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" );
