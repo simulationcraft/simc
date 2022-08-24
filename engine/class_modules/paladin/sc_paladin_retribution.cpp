@@ -883,7 +883,7 @@ void paladin_t::init_spells_retribution()
     spec.judgment_3 = find_specialization_spell( 315867 );
     spec.judgment_4 = find_specialization_spell( 231663 );
 
-    spells.judgment_debuff = find_spell( 197277 );
+    spells.judgment_debuff = find_spell( 231663 );
   }
 
   passives.boundless_conviction = find_spell( 115675 );

@@ -1006,7 +1006,7 @@ void paladin_t::init_spells_protection()
     spec.judgment_3 = find_rank_spell( "Judgment", "Rank 3" );
     spec.judgment_4 = find_rank_spell( "Judgment", "Rank 4" );
 
-    spells.judgment_debuff = find_spell( 197277 );
+    spells.judgment_debuff = find_spell( 231663 );
   }
 
   spec.shield_of_the_righteous = find_class_spell( "Shield of the Righteous" );

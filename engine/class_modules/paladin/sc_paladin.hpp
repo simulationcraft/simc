@@ -551,6 +551,7 @@ public:
   virtual void      init() override;
   virtual void      init_scaling() override;
   virtual void      create_buffs() override;
+  virtual void      init_special_effects() override;
   virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
@@ -954,8 +955,7 @@ public:
       am *= 1.0 + p() -> talents.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
     }
 
-    // TODO: Figure out how this nesting of spells work
-    if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
+    if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
     {
       am *= 1.0 + p()->talents.seal_of_order->effectN( 1 ).percent();
     }

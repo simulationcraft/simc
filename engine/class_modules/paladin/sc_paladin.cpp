@@ -669,6 +669,21 @@ struct devotion_aura_t : public paladin_aura_base_t
   }
 };
 
+struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
+{
+  paladin_t* p;
+  seal_of_the_crusader_cb_t( paladin_t* player, const special_effect_t& effect )
+    : dbc_proc_callback_t( player, effect ), p( player )
+  {
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    auto td = p->get_target_data( s->target );
+    td->debuff.seal_of_the_crusader->trigger();
+  }
+};
+
 // ==========================================================================
 // End Spells, Heals, and Absorbs
 // ==========================================================================
@@ -1033,7 +1048,7 @@ void judgment_t::impact( action_state_t* s )
   if ( result_is_hit( s->result ) )
   {
     // TODO: Make this work, suspecting the talent isnt being picked up, am dum tho so who knows ^-^
-    //  if ( p()->talents.judgment->ok() )
+      if ( p()->talents.judgment->ok() )
       td( s->target )->debuff.judgment->trigger();
 
     if ( p()->talents.judgment_of_light->ok() )
@@ -1116,6 +1131,7 @@ struct hand_of_reckoning_t : public paladin_melee_attack_t
     paladin_melee_attack_t::impact( s );
   }
 };
+
 
 // Covenants =======
 
@@ -2410,6 +2426,22 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+void paladin_t::init_special_effects()
+{
+  player_t::init_special_effects();
+  
+  if ( talents.seal_of_the_crusader->ok() )
+  {
+    auto const seal_of_the_crusader_driver = new special_effect_t( this );
+    seal_of_the_crusader_driver->name_str  = "seal_of_the_crusader_driver";
+    seal_of_the_crusader_driver->spell_id  = 385728;
+    special_effects.push_back( seal_of_the_crusader_driver );
+
+    auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
+  }
+}
+
+
 void paladin_t::init_rng()
 {
   player_t::init_rng();
@@ -2770,7 +2802,7 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
   {
     cptm *= 1.0 + td->debuff.vengeful_shock->value();
   }
-  // TODO: Figure out what can trigger it, NYI in simc
+  // TODO: Figure out what can trigger it
   if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
   {
     cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();

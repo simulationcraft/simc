@@ -596,7 +596,7 @@ void paladin_t::init_spells_holy()
   {
     spec.judgment_3 = find_specialization_spell( 231644 );
 
-    spells.judgment_debuff = find_spell( 214222 );
+    spells.judgment_debuff = find_spell( 231663 );
     spec.holy_shock_2      = find_spell( 272906 );
   }
 
