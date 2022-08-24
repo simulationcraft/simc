@@ -4301,7 +4301,9 @@ struct xuen_spell_t : public monk_spell_t
     p()->buff.invoke_xuen->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.windwalker.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
   }
 };
 
@@ -4411,7 +4413,10 @@ struct chiji_spell_t : public monk_spell_t
     p()->buff.invoke_chiji->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
+
   }
 };
 
@@ -4448,7 +4453,9 @@ struct yulon_spell_t : public monk_spell_t
     p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
   }
 };
 
@@ -7883,7 +7890,7 @@ void monk_t::create_buffs()
   // Shadowland Legendaries
   // General
   buff.charred_passions = make_buff( this, "charred_passions", find_spell( 338140 ) );
-  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
+  buff.invokers_delight = make_buff( this, "invokers_delight", find_spell( 388663 ) )
                               ->set_default_value_from_effect_type( A_HASTE_ALL )
                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                               ->add_invalidate( CACHE_ATTACK_HASTE )
