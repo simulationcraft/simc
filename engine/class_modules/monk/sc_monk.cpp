@@ -1439,6 +1439,7 @@ struct tiger_palm_t : public monk_melee_attack_t
   spell_t* eye_of_the_tiger_damage;
   bool shaohoas_might;
   bool face_palm;
+  bool power_strikes;
 
   tiger_palm_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
@@ -1486,6 +1487,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( face_palm ) 
       am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
+    if (power_strikes)
+        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+
     return am;
   }
 
@@ -1501,6 +1505,15 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( result_is_miss( execute_state->result ) )
       return;
+
+    if ( p()->buff.power_strikes->check() )
+    {
+        power_strikes = true;
+
+        double chi_gain = p()->talent.windwalker.power_strikes->effectN( 1 ).base_value();
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.power_strikes );
+        p()->buff.power_strikes->expire();
+    }
 
     if ( p()->talent.general.eye_of_the_tiger->ok() )
     {
@@ -6957,6 +6970,7 @@ void monk_t::collect_resource_timeline_information()
 void monk_t::init_spells()
 {
   base_t::init_spells();
+
   // Talents spells =====================================
   auto _CT = [this]( util::string_view name ) {
     return find_talent_spell( talent_tree::CLASS, name );
@@ -7791,6 +7805,9 @@ void monk_t::create_buffs()
   buff.whirling_dragon_punch = make_buff( this, "whirling_dragon_punch", find_spell( 196742 ) )
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
 
+  buff.power_strikes = make_buff( this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() )
+      ->set_default_value( talent.windwalker.power_strikes->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
                            ->set_cooldown( timespan_t::zero() )
@@ -7914,6 +7931,7 @@ void monk_t::init_gains()
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
+  gain.power_strikes            = get_gain( "power_strikes" );
 
   // Azerite Traits
   gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
@@ -8806,6 +8824,9 @@ void monk_t::combat_begin()
 
   if ( spec.bladed_armor->ok() )
     buff.bladed_armor->trigger();
+
+  if ( talent.windwalker.power_strikes->ok() )
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN(1 ).period(), [this]() { buff.power_strikes->trigger(); } );
 }
 
 // monk_t::assess_damage ====================================================
