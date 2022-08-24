@@ -2433,62 +2433,58 @@ void paladin_t::init_spells()
   init_spells_holy();
 
   // Shared talents
-  talents.lay_on_hands                    = find_talent_spell( "Lay on Hands" );
-  talents.blessing_of_freedom             = find_talent_spell( "Blessing of Freedom" ); 
-  talents.hammer_of_wrath                 = find_talent_spell( "Hammer of Wrath" );
-  talents.concentration_aura              = find_talent_spell( "Concentration Aura" );
-  talents.devotion_aura                   = find_talent_spell( "Devotion Aura" );
-  talents.retribution_aura                = find_talent_spell( "Retribution Aura" );
-  talents.blinding_light                  = find_talent_spell( "Blinding Light" );
-  talents.repentance                      = find_talent_spell( "Repentance" );
-  talents.divine_steed                    = find_talent_spell( "Divine Steed" );
-  talents.fist_of_justice                 = find_talent_spell( "Fist of Justice" );
-  talents.holy_aegis                      = find_talent_spell( "Holy Aegis" );
-  talents.cavalier                        = find_talent_spell( "Cavalier" );
-  talents.seasoned_warhorse               = find_talent_spell( "Seasoned Warhorse" );
-  talents.seal_of_alacrity                = find_talent_spell( "Seal of Alacrity" );
-  talents.golden_path                     = find_talent_spell( "Golden Path" );
-  talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
+  talents.lay_on_hands                    = find_talent_spell( talent_tree::CLASS, "Lay on Hands" );
+  talents.blessing_of_freedom             = find_talent_spell( talent_tree::CLASS, "Blessing of Freedom" ); 
+  talents.hammer_of_wrath                 = find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" );
+  talents.auras_of_the_resolute           = find_talent_spell( talent_tree::CLASS, "Auras of the Resolute" );
+  talents.auras_of_swift_vengeance        = find_talent_spell( talent_tree::CLASS, "Auras of Swift Vengeance" );
+  talents.blinding_light                  = find_talent_spell( talent_tree::CLASS, "Blinding Light" );
+  talents.repentance                      = find_talent_spell( talent_tree::CLASS, "Repentance" );
+  talents.divine_steed                    = find_talent_spell( talent_tree::CLASS, 190784 );
+  talents.fist_of_justice                 = find_talent_spell( talent_tree::CLASS, "Fist of Justice" );
+  talents.holy_aegis                      = find_talent_spell( talent_tree::CLASS, "Holy Aegis" );
+  talents.cavalier                        = find_talent_spell( talent_tree::CLASS, "Cavalier" );
+  talents.seasoned_warhorse               = find_talent_spell( talent_tree::CLASS, "Seasoned Warhorse" );
+  talents.seal_of_alacrity                = find_talent_spell( talent_tree::CLASS, "Seal of Alacrity" );
+  talents.golden_path                     = find_talent_spell( talent_tree::CLASS, "Golden Path" );
+  talents.judgment_of_light               = find_talent_spell( talent_tree::CLASS, "Judgment of Light" );
   //Avenging Wrath spell
   talents.avenging_wrath                  = find_talent_spell( talent_tree::CLASS, "Avenging Wrath" );
-  talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
-  talents.turn_evil                       = find_talent_spell( "Turn Evil" );
-  talents.rebuke                          = find_talent_spell( "Rebuke" );
-  talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
-  talents.cleanse_toxins                  = find_talent_spell( "Cleanse Toxins" );
-  talents.blessing_of_sacrifice           = find_talent_spell( "Blessing of Sacrifice" );
+  talents.seal_of_the_templar             = find_talent_spell( talent_tree::CLASS, "Seal of the Templar" );
+  talents.turn_evil                       = find_talent_spell( talent_tree::CLASS, "Turn Evil" );
+  talents.rebuke                          = find_talent_spell( talent_tree::CLASS, "Rebuke" );
+  talents.seal_of_mercy                   = find_talent_spell( talent_tree::CLASS, "Seal of Mercy" );
+  talents.cleanse_toxins                  = find_talent_spell( talent_tree::CLASS, "Cleanse Toxins" );
+  talents.blessing_of_sacrifice           = find_talent_spell( talent_tree::CLASS, "Blessing of Sacrifice" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
-  talents.judgment                        = find_talent_spell( "Judgment" );
-  talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
-  talents.afterimage                      = find_talent_spell( "Afterimage" );
-  talents.recompense                      = find_talent_spell( "Recompense" );
-  talents.sacrifice_of_the_just           = find_talent_spell( "Sacrifice of the Just" );
-  talents.blessing_of_protection          = find_talent_spell( "Blessing of Protection" );
-  talents.holy_avenger                    = find_talent_spell( "Holy Avenger" );
-  talents.divine_purpose                  = find_talent_spell( "Divine Purpose" );
-  talents.obduracy                        = find_talent_spell( "Obduracy" );
-  talents.seal_of_clarity                 = find_talent_spell( "Seal of Clarity" );
-  talents.aspirations_of_divinity         = find_talent_spell( "Aspirations of Divinity" );
+  talents.judgment                        = find_talent_spell( talent_tree::CLASS, "Judgment" );
+  talents.seal_of_reprisal                = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
+  talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
+  talents.recompense                      = find_talent_spell( talent_tree::CLASS, "Recompense" );
+  talents.sacrifice_of_the_just           = find_talent_spell( talent_tree::CLASS, "Sacrifice of the Just" );
+  talents.blessing_of_protection          = find_talent_spell( talent_tree::CLASS, "Blessing of Protection" );
+  talents.holy_avenger                    = find_talent_spell( talent_tree::CLASS, "Holy Avenger" );
+  talents.divine_purpose                  = find_talent_spell( talent_tree::CLASS, "Divine Purpose" );
+  talents.obduracy                        = find_talent_spell( talent_tree::CLASS, "Obduracy" );
+  talents.seal_of_clarity                 = find_talent_spell( talent_tree::CLASS, "Seal of Clarity" );
+  talents.aspirations_of_divinity         = find_talent_spell( talent_tree::CLASS, "Aspirations of Divinity" );
   //Avenging Wrath CDR
   talents.avenging_wrath_2                = find_talent_spell( talent_tree::CLASS, 317872 );
-  talents.touch_of_light                  = find_talent_spell( "Touch of Light" );
-  talents.incandescence                   = find_talent_spell( "Incandescence" );
-  talents.hallowed_ground                 = find_talent_spell( "Hallowed Ground" );
-  talents.of_dusk_and_dawn                = find_talent_spell( "Of Dusk and Dawn" );
-  talents.unbreakable_spirit              = find_talent_spell( "Unbreakable Spirit" );
-  talents.seal_of_might                   = find_talent_spell( "Seal of Might" );
-  talents.blessing_of_spellwarding        = find_talent_spell( "Blessing of Spellwarding" );
-  talents.improved_blessing_of_protection = find_talent_spell( "Improved Blessing of Protection" );
-  talents.seal_of_the_crusader            = find_talent_spell( "Seal of the Crusader" );
-  talents.seal_of_order                   = find_talent_spell( "Seal of Order" );
-  talents.holy_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
-  talents.prot_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
-  talents.ret_sanctified_wrath            = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION  );
-  talents.holy_avenging_wrath_might       = find_talent_spell( "Avenging Wrath: Might", PALADIN_HOLY );
-  talents.prot_avenging_wrath_might       = find_talent_spell( "Avenging Wrath: Might", PALADIN_PROTECTION );
-  talents.ret_avenging_wrath_might        = find_talent_spell( "Avenging Wrath: Might", PALADIN_RETRIBUTION );
-  talents.seraphim                        = find_talent_spell( "Seraphim" );
-  talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
+  talents.touch_of_light                  = find_talent_spell( talent_tree::CLASS, "Touch of Light" );
+  talents.incandescence                   = find_talent_spell( talent_tree::CLASS, "Incandescence" );
+  talents.hallowed_ground                 = find_talent_spell( talent_tree::CLASS, "Hallowed Ground" );
+  talents.of_dusk_and_dawn                = find_talent_spell( talent_tree::CLASS, "Of Dusk and Dawn" );
+  talents.unbreakable_spirit              = find_talent_spell( talent_tree::CLASS, "Unbreakable Spirit" );
+  talents.seal_of_might                   = find_talent_spell( talent_tree::CLASS, "Seal of Might" );
+  talents.blessing_of_spellwarding        = find_talent_spell( talent_tree::CLASS, "Blessing of Spellwarding" );
+  talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
+  talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
+  talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
+  talents.holy_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_HOLY );
+  talents.prot_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_PROTECTION );
+  talents.ret_sanctified_wrath            = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_RETRIBUTION );
+  talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
+  talents.the_mad_paragon                 = find_talent_spell( talent_tree::CLASS, "The Mad Paragon" );
 
 
 
@@ -2774,6 +2770,12 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
   {
     cptm *= 1.0 + td->debuff.vengeful_shock->value();
   }
+  // TODO: Figure out what can trigger it, NYI in simc
+  if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
+  {
+    cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();
+  }
+
   return cptm;
 }
 

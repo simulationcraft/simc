@@ -303,9 +303,8 @@ public:
     const spell_data_t* lay_on_hands;
     const spell_data_t* blessing_of_freedom;
     const spell_data_t* hammer_of_wrath;
-    const spell_data_t* concentration_aura;
-    const spell_data_t* devotion_aura;
-    const spell_data_t* retribution_aura;
+    const spell_data_t* auras_of_the_resolute;
+    const spell_data_t* auras_of_swift_vengeance;
     const spell_data_t* blinding_light;
     const spell_data_t* repentance;
     const spell_data_t* divine_steed;
@@ -778,7 +777,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
@@ -817,6 +816,7 @@ public:
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
     this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
+    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -945,16 +945,19 @@ public:
       am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
     }
 
-    //if ( p()->talents.seal_of_reprisal->ok() )
-    if ( affected_by.divine_purpose && p()->talents.seal_of_reprisal->ok() )
+    if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
     {
-      am *= 1.0 + 40.0;
-          //p()->talents.seal_of_reprisal->effectN( 1 ).percent();
+      am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
     }
-
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
       am *= 1.0 + p() -> legendary.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+    }
+
+    // TODO: Figure out how this nesting of spells work
+    if ( affected_by.blessing_of_dawn && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
+    {
+      am *= 1.0 + p()->talents.seal_of_order->effectN( 1 ).percent();
     }
 
     return am;
