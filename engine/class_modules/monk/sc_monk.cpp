@@ -1488,8 +1488,11 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( face_palm ) 
       am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
-    if (power_strikes)
+    if ( power_strikes )
         am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
+        am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN(1 ).percent();
 
     return am;
   }
