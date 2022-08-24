@@ -72,7 +72,6 @@ catweave->add_action( "heart_of_the_wild,if=talent.heart_of_the_wild.enabled&!bu
 catweave->add_action( "empower_bond,if=druid.catweave_bear" );
 catweave->add_action( "rake,if=dot.rake.refreshable|energy<45" );
 catweave->add_action( "rip,if=dot.rip.refreshable&combo_points>=1" );
-catweave->add_action( "barkskin,if=!covenant.night_fae" );
 catweave->add_action( "convoke_the_spirits,if=druid.catweave_bear" );
 catweave->add_action( "ferocious_bite,if=combo_points>=4&energy>50" );
 catweave->add_action( "adaptive_swarm,if=(!dot.adaptive_swarm_damage.ticking&!action.adaptive_swarm_damage.in_flight&(!dot.adaptive_swarm_heal.ticking|dot.adaptive_swarm_heal.remains>3)|dot.adaptive_swarm_damage.stack<3&dot.adaptive_swarm_damage.remains<5&dot.adaptive_swarm_damage.ticking)" );
