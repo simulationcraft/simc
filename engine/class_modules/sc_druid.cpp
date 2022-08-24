@@ -1419,6 +1419,8 @@ struct bear_form_buff_t : public druid_buff_t<buff_t>
 
     p().resource_loss( RESOURCE_RAGE, p().resources.current[ RESOURCE_RAGE ] );
     p().recalculate_resource_max( RESOURCE_HEALTH );
+
+    p().buff.ironfur->expire();
   }
 
   void start( int stacks, double value, timespan_t duration ) override
