@@ -2531,6 +2531,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
       am *= 1 + p()->sets->set( MONK_WINDWALKER, T28, B2 )->effectN( 1 ).percent();
 
+    if ( p()->talent.windwalker.flashing_fists.ok() )
+        am *= 1 + p()->talent.windwalker.flashing_fists->effectN(1 ).percent();
+
     return am;
   }
 
