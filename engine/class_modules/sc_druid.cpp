@@ -5338,6 +5338,15 @@ struct lifebloom_t : public druid_heal_t
     druid_heal_t::impact( s );
   }
 
+  void trigger_dot( action_state_t* s ) override
+  {
+    auto lb = find_dot( s->target );
+    if ( lb && lb->remains() <= composite_dot_duration( lb->state ) * 0.3 )
+      bloom->execute_on_target( s->target );
+
+    druid_heal_t::trigger_dot( s );
+  }
+
   void tick( dot_t* d ) override
   {
     druid_heal_t::tick( d );
@@ -5740,7 +5749,7 @@ struct wild_growth_t : public druid_heal_t
 
   wild_growth_t( druid_t* p, std::string_view opt )
     : druid_heal_t( "wild_growth", p, p->talent.wild_growth, opt ),
-      decay_coeff( 0.07 ),  // unknown if this is hard set to 0.07, or is base duration * 0.01, or some other formula
+      decay_coeff( 0.07 * ( 1.0 - p->talent.unstoppable_growth->effectN( 1 ).percent() ) ),
       sotf_mul( p->buff.soul_of_the_forest_tree->data().effectN( 2 ).percent() ),
       inc_mod( as<int>( p->talent.incarnation_tree->effectN( 3 ).base_value() ) )
   {
@@ -9337,7 +9346,7 @@ void druid_t::init_spells()
   talent.efflorescence                  = ST( "Efflorescence" );
   talent.natures_swiftness              = ST( "Nature's Swiftness" );
   talent.omen_of_clarity_tree           = STS( "Omen of Clarity", DRUID_RESTORATION );
-  talent.improved_lifebloom             = ST( "Improved Lifebloom" );
+  talent.improved_lifebloom             = ST( "Improved Lifebloom" );  // TODO: NYI
   talent.ready_for_anything             = ST( "Ready for Anything" );
   talent.ironbark                       = ST( "Ironbark" );
   talent.improved_wild_growth           = ST( "Improved Wild Growth" );
@@ -9350,13 +9359,13 @@ void druid_t::init_spells()
   talent.soul_of_the_forest_tree        = STS( "Soul of the Forest", DRUID_RESTORATION );
   talent.inner_peace                    = ST( "Inner Peace" );
   talent.cultivation                    = ST( "Cultivation" );
-  talent.deep_roots                     = ST( "Deep Roots" );
+  talent.deep_roots                     = ST( "Deep Roots" );  // TODO: NYI
   talent.abundance                      = ST( "Abundance" );
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
   talent.stonebark                      = ST( "Stonebark" );
   talent.overgrowth                     = ST( "Overgrowth" );
   talent.spring_blossoms                = ST( "Spring Blossoms" );
-  talent.rampant_growth                 = ST( "Rampant Growth" );
+  talent.rampant_growth                 = ST( "Rampant Growth" );  // TODO: copy on lb target NYI
   talent.autumn_leaves                  = ST( "Autumn Leaves [no extension]" );
   talent.grove_tending                  = ST( "Grove Tending" );
   talent.memory_of_the_mother_tree      = ST( "Memory of the Mother Tree" );
@@ -9467,8 +9476,8 @@ void druid_t::init_spells()
     spec.wrath                  = find_class_spell( "Wrath" );
 
   // Class Abilities
-  spec.sunfire_dmg              = check( talent.sunfire.ok(), find_spell( 164815 ) );
-  spec.thrash_bear_dot          = check( talent.thrash.ok(), find_spell( 192090 ) );
+  spec.sunfire_dmg              = check( talent.sunfire.ok(), 164815 );
+  spec.thrash_bear_dot          = check( talent.thrash.ok(), 192090 );
 
   // Multi-Spec Abilities
   spec.adaptive_swarm_damage    = check( talent.adaptive_swarm.ok(), 325733 );
@@ -9477,8 +9486,8 @@ void druid_t::init_spells()
   // Balance Abilities
   spec.balance                  = find_specialization_spell( "Balance Druid" );
   spec.astral_power             = find_specialization_spell( "Astral Power" );
-  spec.eclipse_lunar            = find_spell( 48518 );
-  spec.eclipse_solar            = find_spell( 48517 );
+  spec.eclipse_lunar            = check( talent.eclipse.ok(), 48518 );
+  spec.eclipse_solar            = check( talent.eclipse.ok(), 48517 );
   spec.full_moon                = check( talent.new_moon.ok(), 274283 );
   spec.half_moon                = check( talent.new_moon.ok(), 274282 );
   spec.shooting_stars_dmg       = check( talent.shooting_stars.ok(), 202497 );  // shooting stars damage
@@ -10000,7 +10009,8 @@ void druid_t::create_buffs()
 
   buff.cenarion_ward = make_buff( this, "cenarion_ward", talent.cenarion_ward );
 
-  buff.clearcasting_tree = make_buff( this, "clearcasting_tree", talent.omen_of_clarity_tree->effectN( 1 ).trigger() );
+  buff.clearcasting_tree = make_buff( this, "clearcasting_tree", talent.omen_of_clarity_tree->effectN( 1 ).trigger() )
+    ->set_chance( talent.omen_of_clarity_tree->effectN( 1 ).percent() );
   buff.clearcasting_tree->name_str_reporting = "clearcasting";
 
   buff.flourish = make_buff( this, "flourish", talent.flourish )
@@ -12422,8 +12432,11 @@ void druid_t::apply_affecting_auras( action_t& action )
 
   // Restoration
   action.apply_affecting_aura( talent.germination );
+  action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );
   action.apply_affecting_aura( talent.new_resto_passive );
+  action.apply_affecting_aura( talent.rampant_growth );
+  action.apply_affecting_aura( talent.ready_for_anything );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
