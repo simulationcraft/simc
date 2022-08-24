@@ -2244,8 +2244,8 @@ void paladin_t::create_buffs()
                             ->set_default_value( find_class_spell( "Devotion Aura" )->effectN( 1 ).percent() );
 
   // Legendaries
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn->effectN( 1 ).trigger() );
-  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn->effectN( 2 ).trigger() )
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
                                ->set_default_value_from_effect( 1 );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
@@ -3064,6 +3064,11 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double result = player_t::resource_gain( resource_type, amount, source, action );
 
+  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && ( talents.of_dusk_and_dawn->ok() )&&
+       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 1 ).base_value() )
+  {
+    buffs.blessing_of_dawn->trigger();
+  }
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 1 ).base_value() )
   {
@@ -3080,6 +3085,8 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
   double result     = player_t::resource_loss( resource_type, amount, source, action );
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
+  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
+       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
   {
     buffs.blessing_of_dusk->trigger();
   }

@@ -814,7 +814,7 @@ public:
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
     this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
   }
@@ -951,7 +951,7 @@ public:
     }
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> legendary.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      am *= 1.0 + p() -> talents.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
     }
 
     // TODO: Figure out how this nesting of spells work
