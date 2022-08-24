@@ -255,6 +255,7 @@ public:
     propagate_const<buff_t*> transfer_the_power;
     propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
+    propagate_const<buff_t*> power_strikes;
 
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
@@ -309,10 +310,11 @@ public:
     propagate_const<gain_t*> spirit_of_the_crane;
     propagate_const<gain_t*> tiger_palm;
     propagate_const<gain_t*> touch_of_death_ww;
+    propagate_const<gain_t*> power_strikes;
+    propagate_const<gain_t*> open_palm_strikes;
 
     // Azerite Traits
     propagate_const<gain_t*> glory_of_the_dawn;
-    propagate_const<gain_t*> open_palm_strikes;
     propagate_const<gain_t*> memory_of_lucid_dreams;
     propagate_const<gain_t*> lucid_dreams;
 
@@ -584,7 +586,7 @@ public:
       player_talent_t crane_vortex;
       player_talent_t xuens_bond;
       player_talent_t fury_of_xuen;
-      player_talent_t empower_tiger_lightning;
+      player_talent_t empowered_tiger_lightning;
       player_talent_t rising_star;
       // Row 9
       player_talent_t boneduest_brew;

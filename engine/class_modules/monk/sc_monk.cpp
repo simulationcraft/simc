@@ -452,7 +452,7 @@ public:
     if ( p()->buff.invoke_xuen->check() )
     {
       // Tiger Lightning
-      total_damage_amplifier *= ( 1 + p()->spec.invoke_xuen_2->effectN( 2 ).percent() );
+      total_damage_amplifier *= ( 1 + p()->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent() );
     }
 
     if ( p()->buff.storm_earth_and_fire->check() )
@@ -1439,13 +1439,15 @@ struct tiger_palm_t : public monk_melee_attack_t
   spell_t* eye_of_the_tiger_damage;
   bool shaohoas_might;
   bool face_palm;
+  bool power_strikes;
 
   tiger_palm_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "tiger_palm", p, p->spec.tiger_palm ),
       eye_of_the_tiger_heal( new eye_of_the_tiger_heal_tick_t( *p, "eye_of_the_tiger_heal" ) ),
       eye_of_the_tiger_damage( new eye_of_the_tiger_dmg_tick_t( p, "eye_of_the_tiger_damage" ) ),
       shaohoas_might( false ),
-      face_palm( false )
+      face_palm( false ),
+      power_strikes( false )
   {
     parse_options( options_str );
 
@@ -1486,6 +1488,12 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( face_palm ) 
       am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
+    if ( power_strikes )
+        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+
+    if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
+        am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN(1 ).percent();
+
     return am;
   }
 
@@ -1501,6 +1509,15 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( result_is_miss( execute_state->result ) )
       return;
+
+    if ( p()->buff.power_strikes->check() )
+    {
+        power_strikes = true;
+
+        double chi_gain = p()->talent.windwalker.power_strikes->effectN( 1 ).base_value();
+        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.power_strikes );
+        p()->buff.power_strikes->expire();
+    }
 
     if ( p()->talent.general.eye_of_the_tiger->ok() )
     {
@@ -1576,6 +1593,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     p()->trigger_keefers_skyreach( s );
     shaohoas_might = false;
     face_palm      = false;
+    power_strikes  = false;
   }
 };
 
@@ -2490,6 +2508,18 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     apply_dual_wield_two_handed_scaling();
   }
 
+  double bonus_da(const action_state_t* state) const override
+  {
+      double b = monk_melee_attack_t::bonus_da(state);
+
+      if ( p()->talent.windwalker.open_palm_strikes.ok() )
+      {
+          double open_palm_bonus = 0; // TODO
+          b += open_palm_bonus;
+      }
+      return b;
+  }
+
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = melee_attack_t::composite_aoe_multiplier( state );
@@ -2513,6 +2543,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B2 ) )
       am *= 1 + p()->sets->set( MONK_WINDWALKER, T28, B2 )->effectN( 1 ).percent();
 
+    if ( p()->talent.windwalker.flashing_fists.ok() )
+        am *= 1 + p()->talent.windwalker.flashing_fists->effectN(1 ).percent();
+
     return am;
   }
 
@@ -2522,6 +2555,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
+
+    if ( p()->talent.windwalker.open_palm_strikes.ok() && rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
+        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.open_palm_strikes->effectN( 3 ).base_value(), p()->gain.open_palm_strikes );
   }
 };
 
@@ -3340,9 +3376,9 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
   bool first_charge;
   double movement_speed_increase;
   flying_serpent_kick_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "flying_serpent_kick", p, p->spec.flying_serpent_kick ),
+    : monk_melee_attack_t( "flying_serpent_kick", p, p->talent.windwalker.flying_serpent_kick ),
       first_charge( true ),
-      movement_speed_increase( p->spec.flying_serpent_kick->effectN( 1 ).percent() )
+      movement_speed_increase( p->talent.windwalker.flying_serpent_kick->effectN( 1 ).percent() )
   {
     parse_options( options_str );
     may_crit                        = true;
@@ -4245,7 +4281,7 @@ struct diffuse_magic_t : public monk_spell_t
 struct xuen_spell_t : public monk_spell_t
 {
   xuen_spell_t( monk_t* p, util::string_view options_str )
-    : monk_spell_t( "invoke_xuen_the_white_tiger", p, p->spec.invoke_xuen )
+    : monk_spell_t( "invoke_xuen_the_white_tiger", p, p->talent.windwalker.invoke_xuen_the_white_tiger )
   {
     parse_options( options_str );
 
@@ -4260,12 +4296,14 @@ struct xuen_spell_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    p()->pets.xuen.spawn( p()->spec.invoke_xuen->duration(), 1 );
+    p()->pets.xuen.spawn( p()->talent.windwalker.invoke_xuen_the_white_tiger->duration(), 1 );
 
     p()->buff.invoke_xuen->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.windwalker.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
   }
 };
 
@@ -4289,7 +4327,7 @@ struct empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->spec.invoke_xuen_2->ok();
+    return p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -4313,7 +4351,7 @@ struct call_to_arms_empowered_tiger_lightning_t : public monk_spell_t
 
   bool ready() override
   {
-    return p()->legendary.call_to_arms->ok() && p()->spec.invoke_xuen_2->ok();
+    return p()->legendary.call_to_arms->ok() && p()->talent.windwalker.empowered_tiger_lightning->ok();
   }
 };
 
@@ -4375,7 +4413,10 @@ struct chiji_spell_t : public monk_spell_t
     p()->buff.invoke_chiji->trigger();
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
+
   }
 };
 
@@ -4412,7 +4453,9 @@ struct yulon_spell_t : public monk_spell_t
     p()->pets.yulon.spawn( p()->spec.invoke_yulon->duration(), 1 );
 
     if ( p()->legendary.invokers_delight->ok() )
-      p()->buff.invokers_delight->trigger();
+        p()->buff.invokers_delight->trigger();
+    else if ( p()->talent.mistweaver.invokers_delight->ok() )
+        p()->buff.invokers_delight->trigger();
   }
 };
 
@@ -6094,7 +6137,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
     auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
+    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
     {
@@ -6120,9 +6163,9 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   invoke_xuen_the_white_tiger_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
   {
     set_cooldown( timespan_t::zero() );
-    set_duration( p.spec.invoke_xuen->duration() );
+    set_duration( p.talent.windwalker.invoke_xuen_the_white_tiger->duration() );
 
-    set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
+    set_period( p.talent.windwalker.invoke_xuen_the_white_tiger->effectN( 2 ).period() );
 
     set_tick_callback( invoke_xuen_callback );
   }
@@ -6141,7 +6184,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
   static void call_to_arm_callback( buff_t* b, int, timespan_t )
   {
     auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
+    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
     {
@@ -6171,7 +6214,7 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
     set_cooldown( timespan_t::zero() );
     set_duration( p.passives.call_to_arms_invoke_xuen->duration() );
 
-    set_period( p.spec.invoke_xuen->effectN( 2 ).period() );
+    set_period( p.talent.windwalker.invoke_xuen_the_white_tiger->effectN( 2 ).period() );
 
     set_tick_callback( call_to_arm_callback );
   }
@@ -6957,6 +7000,7 @@ void monk_t::collect_resource_timeline_information()
 void monk_t::init_spells()
 {
   base_t::init_spells();
+
   // Talents spells =====================================
   auto _CT = [this]( util::string_view name ) {
     return find_talent_spell( talent_tree::CLASS, name );
@@ -7201,7 +7245,7 @@ void monk_t::init_spells()
   talent.windwalker.crane_vortex                   = _ST( "Crane Vortex" );
   talent.windwalker.xuens_bond                     = _ST( "Xuen's Bond" );
   talent.windwalker.fury_of_xuen                   = _ST( "Fury of Xuen" );
-  talent.windwalker.empower_tiger_lightning        = _ST( "Empowered Tiger Lightning" );
+  talent.windwalker.empowered_tiger_lightning      = _ST( "Empowered Tiger Lightning" );
   talent.windwalker.rising_star                    = _ST( "Rising Star" );
   // Row 9
   talent.windwalker.boneduest_brew                 = _ST( "Bonedust Brew" );
@@ -7314,10 +7358,10 @@ void monk_t::init_spells()
   spec.disable                    = find_specialization_spell( "Disable" );
   spec.disable_2                  = find_rank_spell( "Disable", "Rank 2" );
   spec.fists_of_fury              = find_specialization_spell( "Fists of Fury" );
-  spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" );
+  //spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" ); // talent.windwalker.flying_serpent_kick
   spec.flying_serpent_kick_2      = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
-  spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" );
-  spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" );
+  //spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" ); // talent.windwalker.invoke_xuen_the_white_tiger
+  //spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" ); // talent.windwalker.empowered_tiger_lightning
   spec.reverse_harm               = find_spell( 342928 );
   spec.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
   spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
@@ -7767,7 +7811,7 @@ void monk_t::create_buffs()
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
   buff.invoke_xuen =
-      new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_the_white_tiger", spec.invoke_xuen );
+      new buffs::invoke_xuen_the_white_tiger_buff_t( *this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
 
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.windwalker.serenity );
 
@@ -7790,6 +7834,9 @@ void monk_t::create_buffs()
 
   buff.whirling_dragon_punch = make_buff( this, "whirling_dragon_punch", find_spell( 196742 ) )
                                    ->set_refresh_behavior( buff_refresh_behavior::NONE );
+
+  buff.power_strikes = make_buff( this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() )
+      ->set_default_value( talent.windwalker.power_strikes->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
@@ -7843,7 +7890,7 @@ void monk_t::create_buffs()
   // Shadowland Legendaries
   // General
   buff.charred_passions = make_buff( this, "charred_passions", find_spell( 338140 ) );
-  buff.invokers_delight = make_buff( this, "invokers_delight", legendary.invokers_delight->effectN( 1 ).trigger() )
+  buff.invokers_delight = make_buff( this, "invokers_delight", find_spell( 388663 ) )
                               ->set_default_value_from_effect_type( A_HASTE_ALL )
                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                               ->add_invalidate( CACHE_ATTACK_HASTE )
@@ -7914,9 +7961,10 @@ void monk_t::init_gains()
   gain.spirit_of_the_crane      = get_gain( "spirit_of_the_crane" );
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
+  gain.power_strikes            = get_gain( "power_strikes" );
+  gain.open_palm_strikes        = get_gain("open_palm_strikes");
 
   // Azerite Traits
-  gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
   gain.lucid_dreams           = get_gain( "lucid_dreams" );
 
@@ -8806,6 +8854,9 @@ void monk_t::combat_begin()
 
   if ( spec.bladed_armor->ok() )
     buff.bladed_armor->trigger();
+
+  if ( talent.windwalker.power_strikes->ok() )
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN(1 ).period(), [this]() { buff.power_strikes->trigger(); } );
 }
 
 // monk_t::assess_damage ====================================================
@@ -9247,7 +9298,8 @@ double monk_t::calculate_last_stagger_tick_damage( int n ) const
 
 void monk_t::trigger_empowered_tiger_lightning( action_state_t* s, bool trigger_invoke_xuen, bool trigger_call_to_arms )
 {
-  if ( spec.invoke_xuen_2->ok() )
+
+  if ( talent.windwalker.empowered_tiger_lightning->ok() )
   {
     if ( !s->action->harmful )
       return;
