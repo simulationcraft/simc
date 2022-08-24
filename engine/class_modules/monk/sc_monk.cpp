@@ -2508,6 +2508,18 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     apply_dual_wield_two_handed_scaling();
   }
 
+  double bonus_da(const action_state_t* state) const override
+  {
+      double b = monk_melee_attack_t::bonus_da(state);
+
+      if ( p()->talent.windwalker.open_palm_strikes.ok() )
+      {
+          double open_palm_bonus = 0; // TODO
+          b += open_palm_bonus;
+      }
+      return b;
+  }
+
   double composite_aoe_multiplier( const action_state_t* state ) const override
   {
     double cam = melee_attack_t::composite_aoe_multiplier( state );
@@ -2543,6 +2555,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
+
+    if ( p()->talent.windwalker.open_palm_strikes.ok() && rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
+        p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.open_palm_strikes->effectN( 3 ).base_value(), p()->gain.open_palm_strikes );
   }
 };
 
@@ -7940,9 +7955,9 @@ void monk_t::init_gains()
   gain.tiger_palm               = get_gain( "tiger_palm" );
   gain.touch_of_death_ww        = get_gain( "touch_of_death_ww" );
   gain.power_strikes            = get_gain( "power_strikes" );
+  gain.open_palm_strikes        = get_gain("open_palm_strikes");
 
   // Azerite Traits
-  gain.open_palm_strikes      = get_gain( "open_palm_strikes" );
   gain.memory_of_lucid_dreams = get_gain( "memory_of_lucid_dreams_proc" );
   gain.lucid_dreams           = get_gain( "lucid_dreams" );
 
