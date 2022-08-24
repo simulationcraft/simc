@@ -6303,6 +6303,9 @@ struct barkskin_t : public druid_spell_t
 
   void execute() override
   {
+    // since barkskin can be used off gcd, it can bypass schedule_execute() so we check for autoshift with 4t28 here
+    check_autoshift();
+
     druid_spell_t::execute();
 
     if ( brambles )
