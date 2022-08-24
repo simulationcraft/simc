@@ -6500,6 +6500,7 @@ struct fury_of_elune_t : public druid_spell_t
       energize( b ),
       tick_period( p->query_aura_effect( &b->data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER )->period() )
   {
+    form_mask |= NO_FORM; // can be cast without form
     dot_duration = 0_ms;  // AP gain handled via buffs
 
     damage = p->get_secondary_action_n<fury_of_elune_tick_t>( name_str + "_tick", s_damage );
