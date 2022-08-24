@@ -127,7 +127,7 @@ actions.nta+=/tar_trap,if=!buff.wild_spirits.remains|buff.wild_spirits.remains&c
 
 actions.other_on_use=use_items,slots=finger1
 actions.other_on_use+=/use_items,slots=finger2
-actions.other_on_use+=/use_item,name=jotungeirr_destinys_call
+actions.other_on_use+=/use_item,name=jotungeirr_destinys_call,if=cooldown.coordinated_assault.remains>75|time_to_die<30
 
 actions.st=death_chakram,if=focus+cast_regen<focus.max&(!raid_event.adds.exists|!raid_event.adds.up&raid_event.adds.duration+raid_event.adds.in<5)|raid_event.adds.up&raid_event.adds.remains>40
 actions.st+=/serpent_sting,target_if=min:remains,if=!dot.serpent_sting.ticking&target.time_to_die>7&(!dot.pheromone_bomb.ticking|buff.mad_bombardier.up&next_wi_bomb.pheromone)|buff.vipers_venom.up&buff.vipers_venom.remains<gcd|!set_bonus.tier28_2pc&!dot.serpent_sting.ticking&target.time_to_die>7

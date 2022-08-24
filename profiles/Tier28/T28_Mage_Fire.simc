@@ -59,7 +59,7 @@ actions.precombat+=/variable,name=skb_duration,value=dbc.effect.828420.base_valu
 # The number of seconds of Fire Blast recharged by Mirrors of Torment.
 actions.precombat+=/variable,name=mot_recharge_amount,value=dbc.effect.871274.base_value
 # Whether a usable item used to buff Combustion is equipped.
-actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment|equipped.the_first_sigil|equipped.neural_synapse_enhancer|equipped.fleshrenders_meathook
+actions.precombat+=/variable,name=combustion_on_use,value=equipped.gladiators_badge|equipped.macabre_sheet_music|equipped.inscrutable_quantum_device|equipped.sunblood_amethyst|equipped.empyreal_ordnance|equipped.flame_of_battle|equipped.wakeners_frond|equipped.instructors_divine_bell|equipped.shadowed_orb_of_torment|equipped.the_first_sigil|equipped.neural_synapse_enhancer|equipped.fleshrenders_meathook|equipped.enforcers_stun_grenade
 # How long before Combustion should trinkets that trigger a shared category cooldown on other trinkets not be used?
 actions.precombat+=/variable,name=on_use_cutoff,value=20,if=variable.combustion_on_use
 actions.precombat+=/variable,name=on_use_cutoff,value=25,if=equipped.macabre_sheet_music
@@ -158,6 +158,7 @@ actions.combustion_cooldowns+=/use_item,name=instructors_divine_bell
 actions.combustion_cooldowns+=/use_item,name=sunblood_amethyst
 actions.combustion_cooldowns+=/use_item,name=the_first_sigil
 actions.combustion_cooldowns+=/use_item,name=fleshrenders_meathook
+actions.combustion_cooldowns+=/use_item,name=enforcers_stun_grenade
 actions.combustion_cooldowns+=/use_item,name=neural_synapse_enhancer
 actions.combustion_cooldowns+=/use_item,name=hyperthread_wristwraps,if=hyperthread_wristwraps.fire_blast>=2&action.fire_blast.charges=0
 

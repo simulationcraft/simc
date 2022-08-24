@@ -49,7 +49,10 @@ actions.cooldowns+=/fleshcraft,if=soulbind.pustule_eruption|soulbind.volatile_so
 actions.cooldowns+=/shield_of_vengeance,if=(!talent.execution_sentence|cooldown.execution_sentence.remains<52)&fight_remains>15
 actions.cooldowns+=/blessing_of_the_seasons
 actions.cooldowns+=/use_item,name=gavel_of_the_first_arbiter
+actions.cooldowns+=/use_item,name=ring_of_collapsing_futures,if=!buff.temptation.up|fight_remains<15
+actions.cooldowns+=/use_item,name=anodized_deflectors
 actions.cooldowns+=/use_item,name=the_first_sigil,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20
+actions.cooldowns+=/use_item,name=enforcers_stun_grenade,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20
 actions.cooldowns+=/use_item,name=inscrutable_quantum_device,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<30
 actions.cooldowns+=/use_item,name=overwhelming_power_crystal,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<15
 actions.cooldowns+=/use_item,name=darkmoon_deck_voracity,if=buff.avenging_wrath.up|buff.crusade.up&buff.crusade.stack=10|fight_remains<20
@@ -63,7 +66,10 @@ actions.cooldowns+=/use_item,name=spare_meat_hook
 actions.cooldowns+=/use_item,name=salvaged_fusion_amplifier
 actions.cooldowns+=/use_item,name=giant_ornamental_pearl
 actions.cooldowns+=/use_item,name=windscar_whetstone
-actions.cooldowns+=/use_item,name=scars_of_fraternal_strife
+actions.cooldowns+=/use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking
+actions.cooldowns+=/use_item,name=toe_knees_promise
+actions.cooldowns+=/use_item,name=remote_guidance_device
+actions.cooldowns+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35
 actions.cooldowns+=/use_item,name=chains_of_domination
 actions.cooldowns+=/use_item,name=earthbreakers_impact
 actions.cooldowns+=/use_item,name=heart_of_the_swarm,if=!buff.avenging_wrath.up&!buff.crusade.up
