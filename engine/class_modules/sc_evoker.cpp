@@ -1336,6 +1336,8 @@ struct disintegrate_t : public evoker_spell_t
     eternity_surge->s_data_reporting = p->talent.scintillation;
     eternity_surge->name_str_reporting = "scintillation";
     
+    tick_zero = true;
+
     add_child( eternity_surge );
   }
 
