@@ -1302,7 +1302,7 @@ struct force_of_nature_t : public pet_t
   {
     // Treants have base weapon damage + ap from player's sp.
     owner_coeff.ap_from_sp = 0.6;
-    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 3.0;
+    main_hand_weapon.min_dmg = main_hand_weapon.max_dmg = 6.0;
 
     resource_regeneration = regen_type::DISABLED;
     main_hand_weapon.type = WEAPON_BEAST;
@@ -1321,11 +1321,20 @@ struct force_of_nature_t : public pet_t
     return owner->cache.player_multiplier( school );
   }
 
-  double composite_melee_crit_chance() const override { return owner->cache.spell_crit_chance(); }
+  double composite_melee_crit_chance() const override
+  {
+    return owner->cache.spell_crit_chance();
+  }
 
-  double composite_spell_haste() const override { return owner->cache.spell_haste(); }
+  double composite_spell_haste() const override
+  {
+    return owner->cache.spell_haste();
+  }
 
-  double composite_damage_versatility() const override { return owner->cache.damage_versatility(); }
+  double composite_damage_versatility() const override
+  {
+    return owner->cache.damage_versatility();
+  }
 
   void init_base_stats() override
   {
