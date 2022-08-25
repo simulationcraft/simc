@@ -6692,6 +6692,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     active_actions(),
     passive_actions(),
     spiritual_focus_count( 0 ),
+    shuffle_count_secs( 0 ),
     gift_of_the_ox_proc_chance(),
     buff(),
     gain(),
