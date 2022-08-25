@@ -201,7 +201,6 @@ struct avengers_shield_t : public avengers_shield_base_t
 
 
 // Moment of Glory ============================================================
-//TODO Add a visible buff
 struct moment_of_glory_t : public paladin_spell_t
 {
   moment_of_glory_t( paladin_t* p, util::string_view options_str ) :
@@ -889,7 +888,6 @@ void paladin_t::create_buffs_protection()
           if ( curr == 1 && conduit.royal_decree -> ok() )
             this -> buffs.royal_decree -> trigger();
         } );
-  //TODO: Replace BoO spell id with real id
 //HS and BH fake absorbs
   buffs.holy_shield_absorb = make_buff<absorb_buff_t>( this, "holy_shield", talents.holy_shield );
   buffs.holy_shield_absorb -> set_absorb_school( SCHOOL_MAGIC )

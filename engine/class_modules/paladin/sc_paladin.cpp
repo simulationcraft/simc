@@ -1047,7 +1047,6 @@ void judgment_t::impact( action_state_t* s )
 {
   if ( result_is_hit( s->result ) )
   {
-    // TODO: Make this work, suspecting the talent isnt being picked up, am dum tho so who knows ^-^
       if ( p()->talents.judgment->ok() )
       td( s->target )->debuff.judgment->trigger();
 
