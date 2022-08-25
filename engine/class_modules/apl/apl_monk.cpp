@@ -426,7 +426,7 @@ void windwalker( player_t* p )
 
   if ( p->sim->allow_potions )
   {
-    if ( monk->spec.invoke_xuen->ok() )
+    if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
       def->add_action(
           "potion,if=(buff.serenity.up|buff.storm_earth_and_fire.up)&pet.xuen_the_white_tiger.active|fight_remains<=60" );
     else
@@ -435,7 +435,7 @@ void windwalker( player_t* p )
 
   def->add_action( "call_action_list,name=serenity,if=buff.serenity.up" );
   def->add_action( "call_action_list,name=weapons_of_order,if=buff.weapons_of_order.up" );
-  if ( monk->spec.invoke_xuen->ok() )
+  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5&!pet.xuen_the_white_tiger.active" );
   else
     def->add_action( "call_action_list,name=opener,if=time<4&chi<5" );
@@ -499,7 +499,7 @@ void windwalker( player_t* p )
                    "target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(buff.bok_proc.up|talent.hit_combo&prev_gcd.1.tiger_palm&chi=2&cooldown.fists_of_fury.remains<3|chi.max-chi<=1&prev_gcd.1.spinning_crane_kick&energy.time_to_max<3)" );
 
   // Serenity Cooldowns
-  if ( monk->spec.invoke_xuen->ok() )
+  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     cd_serenity->add_action(
         "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20" );
   else
@@ -525,7 +525,7 @@ void windwalker( player_t* p )
       cd_serenity->add_action( racial_action );
   }
 
-  if ( monk->spec.invoke_xuen->ok() )
+  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
   {
     cd_serenity->add_action( p, "Touch of Death",
         "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
@@ -596,7 +596,7 @@ void windwalker( player_t* p )
                       "if=!variable.hold_xuen&!covenant.necrolord&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)&chi>=3" );
 
 
-  if ( monk->spec.invoke_xuen->ok() )
+  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     cd_sef->add_action( p, "Touch of Death",
                         "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
   else
@@ -651,7 +651,7 @@ void windwalker( player_t* p )
     }
   }
 
-  if ( monk->spec.invoke_xuen->ok() )
+  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     cd_sef->add_action( p, "Touch of Karma",
                         "target_if=max:target.time_to_die,if=fight_remains>90|pet.xuen_the_white_tiger.active|variable.hold_xuen|fight_remains<16" );
   else
