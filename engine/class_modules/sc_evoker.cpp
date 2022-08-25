@@ -131,6 +131,8 @@ struct evoker_t : public player_t
     const spell_data_t* devastation;   // devastation class aura
     const spell_data_t* preservation;  // preservation class aura
 
+    const spell_data_t* living_flame_damage;
+    const spell_data_t* living_flame_heal;
     // Devastation
 
     // Preservation
@@ -811,9 +813,11 @@ private:
   using ab = evoker_action_t<heal_t>;
 
 public:
+  double scarlet_adaptation_sp_cap;
+
   evoker_heal_t( std::string_view name, evoker_t* player, const spell_data_t* spell = spell_data_t::nil(),
                  std::string_view options_str = {} )
-    : ab( name, player, spell )
+    : ab( name, player, spell ), scarlet_adaptation_sp_cap( player->spec.living_flame_damage->effectN( 1 ).sp_coeff() )
   {
     parse_options( options_str );
   }
@@ -827,12 +831,12 @@ public:
       if ( !p()->buff.scarlet_adaptation->check() )
         p()->buff.scarlet_adaptation->trigger();
 
-      auto stored = p()->buff.scarlet_adaptation->check_value();
+      auto& stored = p()->buff.scarlet_adaptation->current_value;
       // TODO: raw_amount for used for testing
       // stored += s->result_amount * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
       stored += s->result_raw * p()->talent.scarlet_adaptation->effectN( 1 ).percent();
-      // TODO: confirm if this changes dynamically
-      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * 2.0 );
+      // TODO: confirm if this always matches living flame SP coeff
+      stored = std::min( stored, p()->cache.spell_power( SCHOOL_MAX ) * scarlet_adaptation_sp_cap );
     }
   }
 
@@ -1473,7 +1477,7 @@ struct living_flame_t : public evoker_spell_t
 
   struct living_flame_damage_t : public living_flame_base_t<evoker_spell_t>
   {
-    living_flame_damage_t( evoker_t* p ) : base_t( "living_flame_damage", p, p->find_spell( 361500 ) ) {}
+    living_flame_damage_t( evoker_t* p ) : base_t( "living_flame_damage", p, p->spec.living_flame_damage ) {}
 
     double bonus_da( const action_state_t* s ) const override
     {
@@ -1496,7 +1500,7 @@ struct living_flame_t : public evoker_spell_t
 
   struct living_flame_heal_t : public living_flame_base_t<heals::evoker_heal_t>
   {
-    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->find_spell( 361509 ) ) {}
+    living_flame_heal_t( evoker_t* p ) : base_t( "living_flame_heal", p, p->spec.living_flame_heal ) {}
 
     void execute() override
     {
@@ -1929,9 +1933,11 @@ void evoker_t::init_spells()
   // Preservation Traits
 
   // Evoker Specialization Spells
-  spec.evoker       = find_spell( 353167 );  // TODO: confirm this is the class aura    
-  spec.devastation  = find_specialization_spell( "Devastation Evoker" );
-  spec.preservation = find_specialization_spell( "Preservation Evoker" );
+  spec.evoker              = find_spell( 353167 );  // TODO: confirm this is the class aura
+  spec.devastation         = find_specialization_spell( "Devastation Evoker" );
+  spec.preservation        = find_specialization_spell( "Preservation Evoker" );
+  spec.living_flame_damage = find_spell( 361500 );
+  spec.living_flame_heal   = find_spell( 361509 );
 }
 
 void evoker_t::create_actions()
