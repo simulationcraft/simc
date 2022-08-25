@@ -2978,6 +2978,51 @@ public:
     return monk_pet_t::create_action( name, options_str );
   }
 };
+
+// ==========================================================================
+// White Tiger Statue
+// ==========================================================================
+struct white_tiger_statue_t : public monk_pet_t
+{
+private:
+  struct claw_of_the_white_tiger_t : public pet_spell_t
+  {
+    claw_of_the_white_tiger_t( white_tiger_statue_t* p, util::string_view options_str )
+      : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->passives.claw_of_the_white_tiger )
+    {
+      parse_options( options_str );
+    }
+  };
+
+public:
+  white_tiger_statue_t( monk_t* owner ) : monk_pet_t( owner, "white_tiger_statue", PET_MONK_STATUE, false, true )
+  {
+    npc_id                      = (int)o()->find_spell( 388686 )->effectN( 1 ).misc_value1();
+    main_hand_weapon.type       = WEAPON_BEAST;
+    main_hand_weapon.min_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.max_dmg    = dbc->spell_scaling( o()->type, level() );
+    main_hand_weapon.damage     = ( main_hand_weapon.min_dmg + main_hand_weapon.max_dmg ) / 2;
+    main_hand_weapon.swing_time = timespan_t::from_seconds( 2.0 );
+    owner_coeff.ap_from_ap      = o()->spec.mistweaver_monk->effectN( 4 ).percent();
+
+  }
+
+  void init_action_list() override
+  {
+    action_list_str += "crackling_tiger_lightning";
+
+    pet_t::init_action_list();
+  }
+
+  action_t* create_action( util::string_view name, util::string_view options_str ) override
+  {
+    if ( name == "claw_of_the_white_tiger" )
+      return new claw_of_the_white_tiger_t( this, options_str );
+
+    return pet_t::create_action( name, options_str );
+  }
+};
+
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -2989,6 +3034,7 @@ monk_t::pets_t::pets_t( monk_t* p )
     tiger_adept( "fallen_monk_windwalker", p, []( monk_t* p ) { return new pets::tiger_adept_pet_t( p ); } ),
     crane_adept( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::crane_adept_pet_t( p ); } ),
     ox_adept( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::ox_adept_pet_t( p ); } ),
+    white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
     call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
     call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
     sinister_teaching_tiger_adept( "sinister_teaching_tiger_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_tiger_adept_pet_t( p ); } ),

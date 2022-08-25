@@ -1777,6 +1777,7 @@ class SpellDataGenerator(DataGenerator):
           ( 138311, 0 ), # Energy Sphere energy refund
           ( 163272, 0 ), # Chi Sphere chi refund
           ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
+          ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage

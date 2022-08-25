@@ -400,7 +400,7 @@ public:
       player_talent_t bounce_back;
       // Row 10
       player_talent_t summon_jade_serpent_statue;
-      // player_talent_t summon_xuen_statue;
+      player_talent_t summon_white_tiger_statue;
       player_talent_t summon_black_ox_statue;
     } general;
 
@@ -775,6 +775,7 @@ public:
     const spell_data_t* chi_burst_heal;
     const spell_data_t* chi_wave_damage;
     const spell_data_t* chi_wave_heal;
+    const spell_data_t* claw_of_the_white_tiger;
     const spell_data_t* fortifying_brew;
     const spell_data_t* healing_elixir;
     const spell_data_t* mystic_touch;
@@ -984,6 +985,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> tiger_adept;
     spawner::pet_spawner_t<pet_t, monk_t> crane_adept;
     spawner::pet_spawner_t<pet_t, monk_t> ox_adept;
+    spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_tiger_adept;

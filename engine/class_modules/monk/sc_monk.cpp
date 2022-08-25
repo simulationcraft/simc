@@ -7054,18 +7054,18 @@ void monk_t::init_spells()
   talent.general.touch_of_death              = find_talent_spell( talent_tree::CLASS, 322113 );
   talent.general.expel_harm                  = _CT( "Expel Harm" );
   // Row 8
-  //talent.general.close_to_heart              = _CT( "Close to Heart" );
+  talent.general.close_to_heart              = _CT( "Close to Heart" );
   talent.general.escape_from_reality         = _CT( "Escape froom Reality" );
   talent.general.windwalking                 = _CT( "Windwalking" );
   talent.general.fatal_touch                 = _CT( "Fatal Touch" );
-  //talent.general.generous_pour                = _CT( "Generous Pour" );
+  talent.general.generous_pour               = _CT( "Generous Pour" );
   // Row 9
   //talent.general.save_them_all                = _CT( "Save Them All" );
   //talent.general.resonant_fists               = _CT( "Resonant Fists" );
   //talent.general.bounce_back                  = _CT( "Bounce Back" );
   // Row 10
-  talent.general.summon_jade_serpent_statue  = _CT( "Suummon Jade Serpent Statue" );
-  // Xuen Statue
+  talent.general.summon_jade_serpent_statue  = _CT( "Summon Jade Serpent Statue" );
+  talent.general.summon_white_tiger_statue   = _CT( "Summon White Tiger Statue" );
   talent.general.summon_black_ox_statue      = _CT( "Summon Black Ox Statue" );
 
   // ========
@@ -7449,16 +7449,17 @@ void monk_t::init_spells()
 
   // Passives =========================================
   // General
-  passives.aura_monk          = find_spell( 137022 );
-  passives.chi_burst_damage   = find_spell( 148135 );
-  passives.chi_burst_energize = find_spell( 261682 );
-  passives.chi_burst_heal     = find_spell( 130654 );
-  passives.chi_wave_damage    = find_spell( 132467 );
-  passives.chi_wave_heal      = find_spell( 132463 );
-  passives.fortifying_brew    = find_spell( 120954 );
+  passives.aura_monk               = find_spell( 137022 );
+  passives.chi_burst_damage        = find_spell( 148135 );
+  passives.chi_burst_energize      = find_spell( 261682 );
+  passives.chi_burst_heal          = find_spell( 130654 );
+  passives.chi_wave_damage         = find_spell( 132467 );
+  passives.chi_wave_heal           = find_spell( 132463 );
+  passives.claw_of_the_white_tiger = find_spell( 389541 );
+  passives.fortifying_brew         = find_spell( 120954 );
   passives.healing_elixir =
       find_spell( 122281 );  // talent.healing_elixir -> effectN( 1 ).trigger() -> effectN( 1 ).trigger()
-  passives.mystic_touch = find_spell( 8647 );
+  passives.mystic_touch            = find_spell( 8647 );
 
   // Brewmaster
   passives.breath_of_fire_dot  = find_spell( 123725 );
