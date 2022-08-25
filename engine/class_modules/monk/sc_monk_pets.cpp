@@ -2991,6 +2991,7 @@ private:
       : pet_spell_t( "claw_of_the_white_tiger", p, p->o()->passives.claw_of_the_white_tiger )
     {
       parse_options( options_str );
+      aoe = -1;
     }
   };
 
