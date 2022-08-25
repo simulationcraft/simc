@@ -5195,7 +5195,7 @@ struct coil_of_devastation_t :
 {
   coil_of_devastation_t(death_knight_t* p) :
     residual_action::residual_periodic_action_t<death_knight_spell_t>	
-    ( "coil_of_devastation", p, p -> talent.unholy.coil_of_devastation -> effectN( 1 ).trigger() )
+    ( "coil_of_devastation", p, p -> find_spell( 253367 ) )
   {
 	background = true;
 	hasted_ticks = tick_zero = false;
@@ -5222,11 +5222,10 @@ struct coil_of_devastation_t :
 struct death_coil_t : public death_knight_spell_t
 {
   coil_of_devastation_t* coil_of_devastation;
-  double cod_damage;
 
   death_coil_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "death_coil", p, p -> spec.death_coil ), 
-	coil_of_devastation( nullptr ), cod_damage( 0 )
+	coil_of_devastation( nullptr )
   {
     parse_options( options_str );
 
@@ -5237,8 +5236,6 @@ struct death_coil_t : public death_knight_spell_t
 	{
 	  coil_of_devastation = new coil_of_devastation_t( p );
 	  add_child( coil_of_devastation );
-	  const spell_data_t* cod_spell = p -> talent.unholy.coil_of_devastation.spell() -> effectN( 1 ).trigger();
-	  cod_damage = p -> talent.unholy.coil_of_devastation->effectN( 1 ).base_value() * ( cod_spell -> duration() / cod_spell -> effectN( 1 ).period() );
 	}
   }
 
@@ -5294,9 +5291,10 @@ struct death_coil_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 	
-	if( p() -> talent.unholy.coil_of_devastation.ok() )
+	if( p() -> talent.unholy.coil_of_devastation.ok() && result_is_hit( state -> result) )
 	{
-	  residual_action::trigger( coil_of_devastation, state -> target, cod_damage );
+          residual_action::trigger( coil_of_devastation, state->target,
+                                    state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
 	}
 	
 	if( p() -> talent.unholy.rotten_touch.ok() )
