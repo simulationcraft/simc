@@ -5168,12 +5168,28 @@ struct deaths_caress_t : public death_knight_spell_t
 
 // Death Coil ===============================================================
 
+struct coil_of_devastation_t : public residual_action::residual_periodic_action_t<death_knight_spell_t>
+{
+  coil_of_devastation_t( death_knight_t* p )
+    : residual_action::residual_periodic_action_t<death_knight_spell_t>( "coil_of_devastation", p,
+                                                                         p->find_spell( 253367 ) )
+  {
+    background = true;
+    may_miss = may_crit = false;
+  }
+};
 struct death_coil_damage_t : public death_knight_spell_t
 {
-  death_coil_damage_t( util::string_view name, death_knight_t* p ) :
-    death_knight_spell_t( name, p, p -> find_spell( 47632 ) )
+  coil_of_devastation_t* coil_of_devastation;
+  death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->find_spell( 47632 ) ), coil_of_devastation( nullptr )
   {
     background = dual = true;
+
+    if ( p->talent.unholy.coil_of_devastation.ok() )
+    {
+      coil_of_devastation = new coil_of_devastation_t( p );
+      add_child( coil_of_devastation );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5188,55 +5204,28 @@ struct death_coil_damage_t : public death_knight_spell_t
 
     return m;
   }
-};
 
-struct coil_of_devastation_t :
-  public residual_action::residual_periodic_action_t<death_knight_spell_t>
-{
-  coil_of_devastation_t(death_knight_t* p) :
-    residual_action::residual_periodic_action_t<death_knight_spell_t>	
-    ( "coil_of_devastation", p, p -> find_spell( 253367 ) )
+  void impact( action_state_t* state ) override
   {
-	background = true;
-	hasted_ticks = tick_zero = false;
-  }
-	
-  void init() override
-  {
-	residual_periodic_action_t<death_knight_spell_t>::init();
-	  
-	tick_may_crit = true;
-	  
-	// Re-apply crit and vers scaling because they're disabled for residual actions
-        update_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA | STATE_TGT_MUL_TA;
-        snapshot_flags |= STATE_CRIT | STATE_VERSATILITY | STATE_MUL_TA | STATE_TGT_MUL_TA;
-  }
+    death_knight_spell_t::impact( state );
 
-  //Skip the residual_action's function to keep the pandemic duration
-  timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
-  {
-	return death_knight_spell_t::calculate_dot_refresh_duration( dot, triggered_duration );
+    if ( p()->talent.unholy.coil_of_devastation.ok() && result_is_hit( state->result ) )
+    {
+      residual_action::trigger( coil_of_devastation, state->target,
+                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
+    }
   }
 };
 
 struct death_coil_t : public death_knight_spell_t
 {
   coil_of_devastation_t* coil_of_devastation;
-
-  death_coil_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "death_coil", p, p -> spec.death_coil ), 
-	coil_of_devastation( nullptr )
+  death_coil_t( death_knight_t* p, util::string_view options_str ) : death_knight_spell_t( "death_coil", p, p->spec.death_coil ), coil_of_devastation( nullptr )
   {
     parse_options( options_str );
 
     execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
     execute_action -> stats = stats;
-	
-	if( p -> talent.unholy.coil_of_devastation.ok() )
-	{
-	  coil_of_devastation = new coil_of_devastation_t( p );
-	  add_child( coil_of_devastation );
-	}
   }
 
   double cost() const override
@@ -5289,14 +5278,6 @@ struct death_coil_t : public death_knight_spell_t
   
   void impact( action_state_t* state ) override
   {
-    death_knight_spell_t::impact( state );
-	
-	if( p() -> talent.unholy.coil_of_devastation.ok() && result_is_hit( state -> result) )
-	{
-          residual_action::trigger( coil_of_devastation, state->target,
-                                    state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
-	}
-	
 	if( p() -> talent.unholy.rotten_touch.ok() )
 	{
 	  get_td( state -> target ) -> debuff.rotten_touch -> trigger();
