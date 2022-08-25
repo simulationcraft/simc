@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -19,7 +19,7 @@ Effects          :
 Description      : Increases your melee haste by $s1 for $d.
 
 Name             : Invisibility (id=66) [Spell Family (3)] 
-Talent Entry     : Generic [tree=class, row=1, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage
 School           : Arcane
 Spell Type       : Magic
@@ -105,7 +105,7 @@ Spell Level      : 26
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Labels           : 1284: Symbol of Hope (265144 effect#2)
-Affecting spells : Unbreakable Spirit (114154 effect#1)
+Affecting spells : Unbreakable Spirit (114154 effect#1), Retribution Paladin (137027 effect#16)
 Family Flags     : 72
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
@@ -334,8 +334,8 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 10.5% Base Mana (0) (id=400)
-Spell Level      : 24
 Range            : 20 yards
+Max Targets      : 1
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 40 seconds
@@ -358,7 +358,7 @@ Attributes       : ........ ........ x....... ......x.   ........ ........ .....
 Effects          :
 #2 (id=200198)   : Apply Aura (6) | Unknown(191)
                    Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-Description      : The power of the Light compels an Undead, Aberration, or Demon target to flee for up to $d. Damage may break the effect. Only one target can be turned at a time.
+Description      : The power of the Light compels an Undead, Aberration, or Demon target to flee for up to $d. Damage may break the effect. Lesser creatures have a chance to be destroyed. Only one target can be turned at a time.
 Tooltip          : Disoriented.
 
 Name             : Flash of Light (id=19750) [Spell Family (10)] 
@@ -535,7 +535,7 @@ Range            : 30 yards
 GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (7.5 seconds cooldown)
-Category         : 1895: Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1), Vanguard's Momentum (383310 effect#1)
+Category         : 1895: Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1), Vanguard's Momentum (383314 effect#3)
 Affecting spells : Avenging Wrath (31884 effects: #2, #3, #7), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Path of Ruin (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2)
 Family Flags     : 27, 39, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
@@ -812,7 +812,6 @@ Name             : Avenging Wrath (id=31884) [Spell Family (10)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 37
 Duration         : 20 seconds
 Cooldown         : 180 seconds
 Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
@@ -1024,7 +1023,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=46029)    : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884), Avenging Crusader (216331)
+                   Affected Spells: Avenging Wrath (31884), Avenging Crusader (216331), Sentinel (389539)
                    Family Flags: 40, 102
 #2 (id=165370)   : Apply Aura (6) | Dummy (4)
                    Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
@@ -2631,11 +2630,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=179711)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Final Verdict (383328), Path of Ruin (383469), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200)
                    Family Flags: 65
 #2 (id=191092)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -24 | Scaled Value: -24 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Judgment (20271), Hammer of Wrath (24275), Holy Shock (25912), Avenger's Shield (31935), Crusader Strike (35395), Divine Storm (53385), Hammer of the Righteous (53595), Shield of the Righteous (53600), Consecration (81297), Hammer of the Righteous (88263), Holy Prism (114852), Holy Prism (114871), Light's Hammer (114919), Holy Shield (157122), Blade of Justice (184575), Judgment (197277), Divine Hammer (198137), Blessed Hammer (204301), Eye for an Eye (205191), Eye for an Eye (205202), Justicar's Vengeance (215661), Templar's Verdict (224266), Wake of Ashes (255937), Zeal (269937), Expurgation (273481), Inner Light (275483), Judgment (275773), Judgment (275779), Radiant Incandescence (278145), Light's Decree (286232), Glimmer of Light (287280), Ashen Hallow (317221), Glimmer of Light (325984), Sanctified Wrath (326731), Vanquisher's Hammer (328204), Blessing of Winter (328506), Final Verdict (336872), Hallowed Discernment (340203), Execution Sentence (343527), Final Reckoning (343721), Reckoning (343724), Final Verdict (383328), Path of Ruin (383469), Recompense (384914), Inner Light (386553), Execution Sentence (387113), Execution Sentence (387200)
                    Family Flags: 65
 #3 (id=191093)   : Apply Aura (6) | Hasted Cooldown Duration (416)
@@ -2684,6 +2683,10 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Word of Glory (85673)
                    Family Flags: 78
+#16 (id=1025169)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Divine Protection (498)
+                   Family Flags: 72
 
 Name             : Protection Paladin (id=137028) [Spell Family (10), Passive, Hidden] 
 Class            : Protection Paladin
@@ -3234,7 +3237,7 @@ Attributes       : ....x.x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=243710)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884)
+                   Affected Spells: Avenging Wrath (31884), Sentinel (389539)
                    Family Flags: 40
 #2 (id=243711)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
@@ -4471,7 +4474,6 @@ Description      : $@spelldesc208408
 Tooltip          : Generating $s1 Holy Power every $t1 sec.
 
 Name             : Eye of Tyr (desc=Artifact) (id=209202) [Spell Family (10)] 
-Talent Entry     : Protection [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -4768,7 +4770,7 @@ Talent Entry     : Retribution [tree=spec, row=7, col=6, max_rank=1, req_points=
 Class            : Paladin
 School           : Holy
 Spell Type       : Melee
-Resource         : 5 Holy Power (9) (id=11251)
+Resource         : 3 Holy Power (9) (id=11251)
 Range            : 5 yards
 Max Targets      : Unlimited(-1)
 GCD              : 1.5 seconds
@@ -4786,7 +4788,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Melee Chain Targeting (172), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=320674)   : Health Leech (9)
-                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | AP Coefficient: 1.40000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=320675)   : Dummy (3)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Focuses Holy energy to deliver a powerful weapon strike that deals $s1 Holy damage, and restores health equal to the damage done.
@@ -5978,7 +5980,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Spellbook (143), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=714412)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 0.66667 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 0.66667 | Target: Self (1)
                    Affected Spells: Templar's Verdict (224266), Final Verdict (336872), Final Verdict (383328)
                    Family Flags: 44
 Description      : $@spelldesc267610
@@ -8205,7 +8207,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=748553)   : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
                    Base Value: 5000 | Scaled Value: 5000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884), Crusade (231895)
+                   Affected Spells: Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
                    Family Flags: 40, 45
 Description      : $@spelldesc286229
 
@@ -8889,7 +8891,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=803323)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884), Crusade (231895)
+                   Affected Spells: Avenging Wrath (31884), Crusade (231895), Sentinel (389539)
                    Family Flags: 40, 45
 Description      : Cooldown reduced by ${$s1/-1000} sec.
 
@@ -11915,7 +11917,7 @@ Description      : Consecration's damage is increased by $s1%.
 
 Name             : Seal of Reprisal (id=377053) [Spell Family (10), Passive] 
 Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=5, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#1 [op=set, values=(5, 10)]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -11968,14 +11970,14 @@ Proc Chance      : 100%
 Proc Flags       : ........ ........ x....... ........ 
                  : Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Include In Advanced Combat Log (72)
+                 : Passive (6), Include In Advanced Combat Log (72), Can Proc From Procs (122)
 Effects          :
 #1 (id=1006645)  : Apply Aura (6) | Dummy (4)
                    Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
@@ -12004,6 +12006,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 378286 | Target: Self (1)
 #2 (id=1020936)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Trigger Spell: 378286 | Target: Self (1)
+#3 (id=1027260)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 378286 | Target: Self (1)
 Description      : $@spelldesc378286
 
 Name             : Tyr's Enforcer (id=378286) [Spell Family (10)] 
@@ -12045,8 +12049,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1006795)  : Apply Aura (6) | Proc Trigger Spell (42): Light of the Titans
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 378412 | Target: Self (1)
+#1 (id=1006795)  : Apply Aura (6) | Trigger Spell with Value (231)
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Trigger Spell: 378412 | Target: Self (1)
 Description      : $@spelldesc378412
 
 Name             : Light of the Titans (id=378412) [Spell Family (10)] 
@@ -12269,7 +12273,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1007573)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 26573 | Target: Self (1)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 26573 | Target: Self (1)
 #2 (id=1007574)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Trigger Spell: 81297
 Description      : Consecration lasts $s1 sec longer and its damage is increased by $s2%.
@@ -12353,21 +12357,21 @@ Class            : Paladin
 School           : Physical
 Spell Type       : None
 Proc Chance      : 101%
-Proc Flags       : ........ ........ x....... ........ 
-                 : Magic Hostile Spell
+Proc Flags       : ........ ....x... x....... ........ 
+                 : Generic Hostile Spell, Magic Hostile Spell
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Can Proc From Procs (122)
 Effects          :
 #1 (id=1009867)  : Apply Aura (6) | Trigger Spell with Value (231)
                    Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Trigger Spell: 383843 | Target: Self (1)
-Description      : Enemies hit by Avenger's Shield deal ${$abs($s1)}.1% reduced damage to you for $383843d. Max 3 stacks.
+Description      : Enemies hit by Avenger's Shield deal ${$abs($s1)}.1% reduced damage to you for $383843d. Multiple applications may overlap, up to a maximum of 3.
 
 Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
@@ -12720,26 +12724,6 @@ Effects          :
 Description      : $@spelldesc383304
 Tooltip          : Templar's Verdict, Crusader Strike, Blade of Justice, and weapon attack deals $383304s1% additional Holy damage.
 
-Name             : Vanguard's Momentum (id=383310) [Spell Family (10), Hidden] 
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Duration         : Aura (infinite)
-Attributes       : .......x ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1015144)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
-                   Affected Spells (Category): Hammer of Wrath (24275)
-Description      : $@spelldesc383314
-
 Name             : Vanguard's Momentum (id=383311) [Spell Family (10)] 
 Class            : Paladin
 School           : Physical
@@ -12787,7 +12771,10 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1015872)  : Apply Aura (6) | Proc Trigger Spell (42): Vanguard's Momentum
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 383311 | Target: Self (1)
-Description      : Hammer of Wrath has $383310s1 extra $Lcharge:charges; and increases Holy damage done by $s1% for $383311d, stacking $383311u times.
+#3 (id=1025301)  : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1895 | Target: Self (1)
+                   Affected Spells (Category): Hammer of Wrath (24275)
+Description      : Hammer of Wrath has $s3 extra charge and increases Holy damage done by $s1% for $383311d, stacking $383311u times.
 
 Name             : Final Verdict (id=383327) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Retribution [tree=spec, row=9, col=5, max_rank=1, req_points=20]
@@ -12834,7 +12821,7 @@ Attributes       : ........ ........ x.x..... ........   ....x... .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), No Skill Increase (36), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Melee Chain Targeting (172), Spellcast Override In Spellbook (310), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1015174)  : School Damage (2): holy
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.23000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 2.10000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=1015175)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unleashes a powerful weapon strike that deals $s1 Holy damage to an enemy target.
@@ -13326,11 +13313,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1016941)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884)
+                   Affected Spells: Avenging Wrath (31884), Sentinel (389539)
                    Family Flags: 40
 #2 (id=1016942)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 5 (33)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 33 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884)
+                   Affected Spells: Avenging Wrath (31884), Sentinel (389539)
                    Family Flags: 40
 Description      : Call upon the Light and become and avatar of retribution, increasing your damage and healing done by $s1% for $31884d, and allowing Hammer of Wrath to be cast on any target.
 
@@ -13380,11 +13367,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1017062)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884)
+                   Affected Spells: Avenging Wrath (31884), Sentinel (389539)
                    Family Flags: 40
 #2 (id=1017561)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
-                   Affected Spells: Avenging Wrath (31884)
+                   Affected Spells: Avenging Wrath (31884), Sentinel (389539)
                    Family Flags: 40
 Description      : Call upon the Light and become and avatar of retribution, increasing your critical strike chance by $s1% for $31884d.
 
@@ -13646,7 +13633,6 @@ Talent Entry     : Holy, Protection, Retribution [tree=class, row=8, col=4, max_
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 70
 Proc Chance      : 101%
 Real PPM         : 3 (Haste multiplier)
 Proc Flags       : ....x... x.x.x.x. x.x..x.. ........ 
@@ -13661,8 +13647,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Can Proc From Procs (122)
 Effects          :
-#1 (id=1018505)  : Apply Aura (6) | Dummy (4) | Scaling Class: -6
-                   Base Value: 0 | Scaled Value: 479.9542 (coefficient=0.003751) | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1018505)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your spells and abilities have a chance to cause your target to erupt in a blinding light dealing $385354s1 Holy damage or healing an ally for $385352s1 health.
 
 Name             : Touch of Light (id=385352) 
@@ -13740,6 +13726,7 @@ Talent Entry     : Holy, Protection, Retribution [tree=class, row=8, col=2, max_
 Class            : Paladin
 School           : Physical
 Spell Type       : None
+Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
@@ -13762,6 +13749,8 @@ Class            : Paladin
 School           : Holy
 Spell Type       : None
 Duration         : 6 seconds
+Stacks           : 3 maximum
+Proc Chance      : 101%
 Triggered by     : Aspirations of Divinity (385416)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13845,12 +13834,12 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Speed and Avoidance increased by $s3%.
 
-Name             : Sentinel [NYI] (id=385438) [Passive] 
+Name             : Sentinel (id=385438) [Passive, Hidden] 
 Talent Entry     : Protection [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13858,13 +13847,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1018664)  : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Gain 15 stacks of Divine Resolve, increasing your maximum health by $s1% and reducing your damage taken by $s1% per stack for $d. After 5 sec, you will begin to lose 1 stack per second, but each 3 Holy Power spent will delay the loss of your next stack by 1 sec.
-
-Combines with Avenging Wrath.
+Description      : $@spelldesc389539
 
 Name             : Seal of Might [NYI] (id=385450) [Passive] 
 Talent Entry     : Holy, Protection, Retribution [tree=class, row=9, col=3, max_rank=3, req_points=20]
@@ -13910,7 +13897,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1018718)  : Apply Aura (6) | Proc Trigger Spell (42): Incandescence
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Trigger Spell: 385752 | Target: Self (1)
-Description      : Each Holy Power you spend has a $s1% chance to cause your Consecration to flare up, dealing medium Holy damage to up to $s1 enemies standing within it.
+Description      : Each Holy Power you spend has a $s1% chance to cause your Consecration to flare up, dealing $385816s1 Holy damage to up to $s1 enemies standing within it.
 
 Name             : Holy Aegis (id=385515) [Passive] 
 Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=2, max_rank=2, req_points=8]
@@ -13918,7 +13905,6 @@ Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=2, max_
 Class            : Paladin
 School           : Physical
 Spell Type       : None
-Max Scaling Level: 70
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13929,10 +13915,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1018816)  : Apply Aura (6) | Modify Rating (189) | Scaling Class: -7
-                   Base Value: 2 | Scaled Value: 290.4118 (coefficient=0.53914) | PvP Coefficient: 1.00000 | Misc Value: 1792 | Target: Self (1)
-#2 (id=1018817)  : Apply Aura (6) | Unknown(466)
+#1 (id=1018816)  : Apply Aura (6) | Modify Critical Strike% (290)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1018817)  : Apply Aura (6) | Modify Base Resistance (142)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#3 (id=1027212)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Armor and critical strike chance increased by $s2%.
 
 Name             : Auras of the Resolute (id=385633) [Passive] 
@@ -14046,7 +14034,7 @@ Description      : When you use Avenger's Shield, your block chance is increased
 
 Name             : Seal of the Crusader (id=385728) [Spell Family (10), Passive] 
 Talent Entry     : Holy, Protection, Retribution [tree=class, row=9, col=5, max_rank=3, req_points=20]
-                 : Effect#2 [op=set, values=(5, 10, 15)]
+                 : Effect#2 [op=set, values=(3, 6, 10)]
 Class            : Paladin
 School           : Physical
 Spell Type       : Melee
@@ -14070,7 +14058,7 @@ Effects          :
 #2 (id=1019196)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1782 (Label) | Target: Self (1)
                    Affected Spells (Label): Seal of the Crusader (385723)
-Description      : Your attacks have a chance to apply a debuff on the target, causing them to take $s2% increased Holy damage for $385723d. 
+Description      : Your attacks have a chance to cause your target to take $s2% increased Holy damage for $385723d. 
 Tooltip          : Taking $w2% increased Holy damage.
 
 Name             : Incandescence (id=385752) [Spell Family (10)] 
@@ -14091,6 +14079,25 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1019230)  : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+Description      : Each Holy Power you spend has a 5% chance to cause your Consecration to flare up, dealing medium Holy damage to up to 5 enemies standing within it.
+
+Name             : Incandescence (id=385816) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : Magic
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can Proc From Procs (122), Do Not Display Range (126), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1019318)  : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.36000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Each Holy Power you spend has a 5% chance to cause your Consecration to flare up, dealing medium Holy damage to up to 5 enemies standing within it.
 
 Name             : Inner Light (id=386553) [Spell Family (10)] 
@@ -14420,6 +14427,34 @@ Description      : Judgment empowers your next Templar's Verdict to automaticall
 This effect can only occur every $387441d.
 
 Tooltip          : Your next Templar's Verdict automatically triggers Divine Storm with $s2% increased effectiveness.
+
+Name             : Eye of Tyr (id=387174) [Spell Family (10)] 
+Talent Entry     : Protection [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Class            : Paladin
+School           : Holy
+Spell Type       : Magic
+GCD              : 1.5 seconds
+Duration         : 9 seconds
+Cooldown         : 60 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1021792)  : Apply Aura (6) | Modify Damage Done% to Caster (269)
+                   Base Value: -25 | Scaled Value: -25 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+                   Affected School(s): All
+#2 (id=1021793)  : School Damage (2): holy
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.56700 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (15)
+#3 (id=1021794)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: At Caster (22) -> AOE enemy (instant) (7)
+Description      : Releases a blinding flash from |cFFFFCC99Truthguard|r, causing $s2 Holy damage to all nearby enemies within $A1 yds and reducing all damage they deal to you by $s1% for $d.
+Tooltip          : Dealing $s1% less damage to the Paladin.
 
 Name             : Executioner's Wrath (id=387196) [Spell Family (10), Passive] 
 Talent Entry     : Retribution [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
@@ -15093,5 +15128,42 @@ Effects          :
                    Family Flags: 124
 Description      : $@spelldesc340458
 Tooltip          : Your next Light of the Martyr also heals your Beacon of Light and its healing is increased by $s1%.
+
+Name             : Sentinel (id=389539) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Duration         : 20 seconds
+Cooldown         : 120 seconds
+Category         : 1550: Strive for Perfection (296320 effect#6), Strive for Perfection (299367 effect#6), Strive for Perfection (299369 effect#6), Benevolent Faerie (327710 effect#2), Haunted Mask (356968 effect#2)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
+Category Cooldown: 120 seconds
+Stacks           : 15 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ..x.x.x. x....... ........ 
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Affecting spells : Sanctified Wrath (53376 effect#1), Sanctified Wrath (171648 effect#1), Light's Decree (286231 effect#2), Avenging Wrath (317872 effect#1), Avenging Wrath (384376 effects: #1, #2), Avenging Wrath: Might (384442 effects: #1, #2)
+Family Flags     : 40
+Attributes       : ....x... ........ ..x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x......x ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Do Not Sheath (18), No Threat (42), Aura Is Buff (140), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+Effects          :
+#1 (id=1025850)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -2 | Scaled Value: -2 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+#2 (id=1025851)  : Apply Aura (6) | Modify Max Health% (133)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1026054)  : Apply Aura (6) | Periodic Trigger Spell (23): Unknown(0) every 1 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Gain 15 stacks of Divine Resolve, increasing your maximum health by $s1% and reducing your damage taken by $s1% per stack for $d. After 5 sec, you will begin to lose 1 stack per second, but each 3 Holy Power spent will delay the loss of your next stack by 1 sec.
+
+Combines with Avenging Wrath.
+Tooltip          : Damage taken reduced by $s1%. Maximum health increased by $s2%.
 
 
