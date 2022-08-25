@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.45232
-static const std::array<spelltext_data_t, 18259> __spelltext_data { {
+static const std::array<spelltext_data_t, 18260> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18069,6 +18069,7 @@ static const std::array<spelltext_data_t, 18259> __spelltext_data { {
   { 389537, "Permanently enchants a weapon to sometimes incite flames, increasing your Critical Strike by $ec1s1 for $390165d.", 0, 0 },
   { 389539, "Gain 15 stacks of Divine Resolve, increasing your maximum health by $s1% and reducing your damage taken by $s1% per stack for $d. After 5 sec, you will begin to lose 1 stack per second, but each 3 Holy Power spent will delay the loss of your next stack by 1 sec.\r\n\r\nCombines with Avenging Wrath.", "Damage taken reduced by $s1%. Maximum health increased by $s2%.", 0 },
   { 389540, "Permanently enchants a weapon to sometimes rumble the earth, increasing your Mastery by $ec1s1 for $390170d.", 0, 0 },
+  { 389541, "Deals $s1 Nature damage.", 0, 0 },
   { 389542, "Permanently enchants a weapon to sometimes beckon Order, increasing your primary stat by $ec1s1 for $390216d.", 0, 0 },
   { 389543, "Permanently enchants a weapon to sometimes chill your veins, increasing your Versatility by $ec1s1 for $390242d.", 0, 0 },
   { 389546, "Permanently enchants a weapon to sometimes draw a breeze, increasing your Haste by $ec1s1 for $390247d.", 0, 0 },
