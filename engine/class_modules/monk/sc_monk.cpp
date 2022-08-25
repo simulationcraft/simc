@@ -3020,21 +3020,21 @@ struct keg_smash_t : public monk_melee_attack_t
 {
   keg_of_the_heavens_heal_t* heal;
   keg_smash_t( monk_t& p, util::string_view options_str )
-    : monk_melee_attack_t( "keg_smash", &p, p.spec.keg_smash ), heal( new keg_of_the_heavens_heal_t( p ) )
+    : monk_melee_attack_t( "keg_smash", &p, p.talent.brewmaster.keg_smash ), heal( new keg_of_the_heavens_heal_t( p ) )
   {
     parse_options( options_str );
 
     aoe                    = -1;
-    reduced_aoe_targets    = p.spec.keg_smash->effectN( 7 ).base_value();
+    reduced_aoe_targets    = p.talent.brewmaster.keg_smash->effectN( 7 ).base_value();
     full_amount_targets    = 1;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
 
-    attack_power_mod.direct = p.spec.keg_smash->effectN( 2 ).ap_coeff();
-    radius                  = p.spec.keg_smash->effectN( 2 ).radius();
+    attack_power_mod.direct = p.talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
+    radius                  = p.talent.brewmaster.keg_smash->effectN( 2 ).radius();
 
-    cooldown->duration = p.spec.keg_smash->cooldown();
-    cooldown->duration = p.spec.keg_smash->charge_cooldown();
+    cooldown->duration = p.talent.brewmaster.keg_smash->cooldown();
+    cooldown->duration = p.talent.brewmaster.keg_smash->charge_cooldown();
 
     if ( p.legendary.stormstouts_last_keg->ok() )
       cooldown->charges += (int)p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
@@ -3071,7 +3071,7 @@ struct keg_smash_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
-    double time_reduction = p()->spec.keg_smash->effectN( 4 ).base_value();
+    double time_reduction = p()->talent.brewmaster.keg_smash->effectN( 4 ).base_value();
 
     // Blackout Combo talent reduces Brew's cooldown by 2 sec.
     if ( p()->buff.blackout_combo->up() )
@@ -3080,7 +3080,7 @@ struct keg_smash_t : public monk_melee_attack_t
       p()->buff.blackout_combo->expire();
     }
 
-    trigger_shuffle( p()->spec.keg_smash->effectN( 6 ).base_value() );
+    trigger_shuffle( p()->talent.brewmaster.keg_smash->effectN( 6 ).base_value() );
 
     brew_cooldown_reduction( time_reduction );
   }
@@ -6613,7 +6613,7 @@ monk_td_t::monk_td_t( player_t* target, monk_t* p ) : actor_target_data_t( targe
 
   if ( p->specialization() == MONK_BREWMASTER )
   {
-    debuff.keg_smash = make_buff( *this, "keg_smash", p->spec.keg_smash )
+    debuff.keg_smash = make_buff( *this, "keg_smash", p->talent.brewmaster.keg_smash )
                            ->set_cooldown( timespan_t::zero() )
                            ->set_default_value_from_effect( 3 );
 
@@ -7386,7 +7386,7 @@ void monk_t::init_spells()
   spec.gift_of_the_ox      = find_specialization_spell( "Gift of the Ox" );
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
   spec.invoke_niuzao_2     = find_specialization_spell( "Invoke Niuzao, the Black Ox", "Rank 2" );
-  spec.keg_smash           = find_specialization_spell( "Keg Smash" );
+  //spec.keg_smash           = find_specialization_spell( "Keg Smash" ); // talent.brewmaster.keg_smash
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
   //spec.shuffle             = find_specialization_spell( "Shuffle" ); // talent.brewmaster.shuffle
