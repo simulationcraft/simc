@@ -2632,13 +2632,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
-    {
-        p()->buff.fury_of_xuen_haste->trigger();
-
-        p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
-
         p()->buff.fury_of_xuen_stacks->expire();
-    }
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
@@ -6268,6 +6262,26 @@ struct call_to_arms_xuen_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
+// Fury of Xuen Buff
+// ===============================================================================
+struct fury_of_xuen_stacking_buff_t : public monk_buff_t<buff_t>
+{
+  fury_of_xuen_stacking_buff_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    // Currently this is saved as 100, but we need to utilize it as a percent so (100 / 100) = 1 * 0.01 = 1%
+    set_default_value( ( p.passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 );
+    set_cooldown( timespan_t::zero() );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+    p().buff.fury_of_xuen_haste->trigger();
+    p().pets.fury_of_xuen_tiger.spawn( p().passives.fury_of_xuen_haste_buff->duration(), 1 );
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
 // Niuzao Rank 2 Purifying Buff
 // ===============================================================================
 struct purifying_buff_t : public monk_buff_t<buff_t>
@@ -7855,6 +7869,15 @@ void monk_t::create_buffs()
 
   buff.flying_serpent_kick_movement = make_buff( this, "flying_serpent_kick_movement" );  // find_spell( 115057 )
 
+  buff.fury_of_xuen_stacks = new buffs::fury_of_xuen_stacking_buff_t( *this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff );
+
+  // TODO: This is using BFA Azerite formula (Scaling Class -7) in Spell Data still
+  // Currently on Alpha it increases haste rating by 170 at level 70, 109 at level 60, and 12 at level 10.
+  // HOWEVER: The haste % on the character sheet does NOT increase
+  // I believe this will be replaced with a modern % haste buff in a future build
+  buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
+                                ->add_stat( STAT_HASTE_RATING, 0 );  // Placeholder
+
   buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t(
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
 
@@ -7885,17 +7908,6 @@ void monk_t::create_buffs()
 
   buff.power_strikes = make_buff( this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() )
       ->set_default_value( talent.windwalker.power_strikes->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
-
-  buff.fury_of_xuen_stacks =
-      make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
-      ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 ); // Saved as 100
-
-  // TODO: This is using BFA Azerite formula (Scaling Class -7) in Spell Data still
-  // Currently on Alpha it increases haste rating by 170 at level 70, 109 at level 60, and 12 at level 10.
-  // HOWEVER: The haste % on the character sheet does NOT increase
-  // I believe this will be replaced with a modern % haste buff in a future build
-  buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
-      ->add_stat( STAT_HASTE_RATING, 0 ); // Placeholder
 
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )

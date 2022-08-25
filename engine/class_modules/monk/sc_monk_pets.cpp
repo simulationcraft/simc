@@ -3085,12 +3085,13 @@ private:
 public:
     fury_of_xuen_pet_t(monk_t* owner) : monk_pet_t(owner, "fury_of_xuen_tiger", PET_XUEN, false, true)
     {
-        main_hand_weapon.type = WEAPON_BEAST;
-        main_hand_weapon.min_dmg = dbc->spell_scaling(o()->type, level());
-        main_hand_weapon.max_dmg = dbc->spell_scaling(o()->type, level());
-        main_hand_weapon.damage = (main_hand_weapon.min_dmg + main_hand_weapon.max_dmg) / 2;
-        main_hand_weapon.swing_time = timespan_t::from_seconds(1.0);
-        owner_coeff.ap_from_ap = 1.00;
+      npc_id                        = (int)o()->find_spell( 287063 )->effectN( 3 ).misc_value1();
+        main_hand_weapon.type       = WEAPON_BEAST;
+        main_hand_weapon.min_dmg    = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.max_dmg    = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.damage     = (main_hand_weapon.min_dmg + main_hand_weapon.max_dmg) / 2;
+        main_hand_weapon.swing_time = timespan_t::from_seconds( 1.0 );
+        owner_coeff.ap_from_ap      = 1.00;
     }
 
     double composite_player_multiplier(school_e school) const override

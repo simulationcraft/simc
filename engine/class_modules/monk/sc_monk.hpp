@@ -20,6 +20,20 @@ struct stagger_self_damage_t;
 namespace pets
 {
 struct storm_earth_and_fire_pet_t;
+struct xuen_pet_t;
+struct call_to_arms_xuen_pet_t;
+struct niuzao_pet_t;
+struct call_to_arms_niuzao_pet_t;
+struct chiji_pet_t;
+struct yulon_pet_t;
+struct tiger_adept_pet_t;
+struct ox_adept_pet_t;
+struct crane_adept_pet_t;
+struct sinister_teaching_tiger_adept_pet_t;
+struct sinister_teaching_ox_adept_pet_t;
+struct sinister_teaching_crane_adept_pet_t;
+struct white_tiger_statue_t;
+struct fury_of_xuen_pet_t;
 }
 
 struct monk_t;
@@ -245,6 +259,8 @@ public:
     propagate_const<buff_t*> dance_of_chiji_hidden;  // Used for trigger DoCJ ticks
     propagate_const<buff_t*> dizzying_kicks;
     propagate_const<buff_t*> flying_serpent_kick_movement;
+    propagate_const<buff_t*> fury_of_xuen_stacks;
+    propagate_const<stat_buff_t*> fury_of_xuen_haste;
     propagate_const<buff_t*> hidden_masters_forbidden_touch;
     propagate_const<buff_t*> invoke_xuen;
     propagate_const<buff_t*> storm_earth_and_fire;
@@ -256,8 +272,6 @@ public:
     propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
     propagate_const<buff_t*> power_strikes;
-    propagate_const<buff_t*> fury_of_xuen_stacks;
-    propagate_const<stat_buff_t*> fury_of_xuen_haste;
 
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
