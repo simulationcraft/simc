@@ -1295,7 +1295,9 @@ public:
     double cpm = monk_pet_t::composite_player_multiplier( school );
 
     if ( o()->conduit.xuens_bond->ok() )
-      cpm *= 1 + o()->conduit.xuens_bond.percent();
+        cpm *= 1 + o()->conduit.xuens_bond.percent();
+    else if ( o()->talent.windwalker.xuens_bond->ok() )
+        cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN( 1 ).percent();
 
     return cpm;
   }
@@ -1409,6 +1411,8 @@ public:
 
     if ( o()->conduit.xuens_bond->ok() )
       cpm *= 1 + o()->conduit.xuens_bond.percent();
+    else if ( o()->talent.windwalker.xuens_bond->ok() )
+      cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN( 1 ).percent();
 
     return cpm;
   }
@@ -3024,6 +3028,107 @@ public:
   }
 };
 
+// ==========================================================================
+// Fury of Xuen Tiger
+// ==========================================================================
+struct fury_of_xuen_pet_t : public monk_pet_t
+{
+private:
+    struct melee_t : public pet_melee_t
+    {
+        melee_t(util::string_view n, fury_of_xuen_pet_t* player, weapon_t* weapon) : pet_melee_t(n, player, weapon)
+        {
+        }
+    };
+
+    struct crackling_tiger_lightning_tick_t : public pet_spell_t
+    {
+        crackling_tiger_lightning_tick_t(fury_of_xuen_pet_t* p)
+            : pet_spell_t("crackling_tiger_lightning_tick", p, p->o()->passives.crackling_tiger_lightning)
+        {
+            background = true;
+            merge_report = false;
+        }
+    };
+
+    struct crackling_tiger_lightning_t : public pet_spell_t
+    {
+        crackling_tiger_lightning_t(fury_of_xuen_pet_t* p, util::string_view options_str)
+            : pet_spell_t("crackling_tiger_lightning", p, p->o()->passives.crackling_tiger_lightning_driver)
+        {
+            parse_options(options_str);
+            s_data_reporting = p->o()->passives.crackling_tiger_lightning;
+
+            dot_duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+            cooldown->duration = p->o()->passives.fury_of_xuen_haste_buff->duration();
+
+            tick_action = new crackling_tiger_lightning_tick_t(p);
+        }
+
+        double last_tick_factor(const dot_t*, timespan_t, timespan_t) const
+        {
+            return 0.0;
+        }
+    };
+
+    struct auto_attack_t : public pet_auto_attack_t
+    {
+        auto_attack_t(fury_of_xuen_pet_t* player, util::string_view options_str) : pet_auto_attack_t(player)
+        {
+            parse_options(options_str);
+
+            player->main_hand_attack = new melee_t("melee_main_hand", player, &(player->main_hand_weapon));
+            player->main_hand_attack->base_execute_time = player->main_hand_weapon.swing_time;
+        }
+    };
+
+public:
+    fury_of_xuen_pet_t(monk_t* owner) : monk_pet_t(owner, "fury_of_xuen_tiger", PET_XUEN, false, true)
+    {
+        main_hand_weapon.type = WEAPON_BEAST;
+        main_hand_weapon.min_dmg = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.max_dmg = dbc->spell_scaling(o()->type, level());
+        main_hand_weapon.damage = (main_hand_weapon.min_dmg + main_hand_weapon.max_dmg) / 2;
+        main_hand_weapon.swing_time = timespan_t::from_seconds(1.0);
+        owner_coeff.ap_from_ap = 1.00;
+    }
+
+    double composite_player_multiplier(school_e school) const override
+    {
+
+        // TODO: Validate that Xuen's Bond buffs Fury of Xuen Tiger
+
+        double cpm = monk_pet_t::composite_player_multiplier(school);
+
+        if (o()->conduit.xuens_bond->ok())
+            cpm *= 1 + o()->conduit.xuens_bond.percent();
+        else if (o()->talent.windwalker.xuens_bond->ok())
+            cpm *= 1 + o()->talent.windwalker.xuens_bond->effectN(1).percent();
+
+        return cpm;
+    }
+
+    void init_action_list() override
+    {
+        action_list_str = "auto_attack";
+        action_list_str += "/crackling_tiger_lightning";
+
+        pet_t::init_action_list();
+    }
+
+    action_t* create_action(util::string_view name, util::string_view options_str) override
+    {
+        
+        if (name == "crackling_tiger_lightning")
+            return new crackling_tiger_lightning_t(this, options_str);
+        
+        if (name == "auto_attack")
+            return new auto_attack_t(this, options_str);
+        
+        return pet_t::create_action(name, options_str);
+    }
+};
+
 }  // end namespace pets
 
 monk_t::pets_t::pets_t( monk_t* p )
@@ -3036,6 +3141,7 @@ monk_t::pets_t::pets_t( monk_t* p )
     crane_adept( "fallen_monk_mistweaver", p, []( monk_t* p ) { return new pets::crane_adept_pet_t( p ); } ),
     ox_adept( "fallen_monk_brewmaster", p, []( monk_t* p ) { return new pets::ox_adept_pet_t( p ); } ),
     white_tiger_statue( "white_tiger_statue", p, []( monk_t* p ) { return new pets::white_tiger_statue_t( p ); } ),
+    fury_of_xuen_tiger( "fury_of_xuen_tiger", p, []( monk_t* p ) { return new pets::fury_of_xuen_pet_t( p ); }),
     call_to_arms_xuen( "call_to_arms_xuen", p, []( monk_t* p ) { return new pets::call_to_arms_xuen_pet_t( p ); } ),
     call_to_arms_niuzao( "call_to_arms_niuzao", p, []( monk_t* p ) { return new pets::call_to_arms_niuzao_pet_t( p ); } ),
     sinister_teaching_tiger_adept( "sinister_teaching_tiger_adept", p, []( monk_t* p ) { return new pets::sinister_teaching_tiger_adept_pet_t( p ); } ),

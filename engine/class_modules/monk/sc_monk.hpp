@@ -256,6 +256,8 @@ public:
     propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
     propagate_const<buff_t*> power_strikes;
+    propagate_const<buff_t*> fury_of_xuen_stacks;
+    propagate_const<stat_buff_t*> fury_of_xuen_haste;
 
     // Covenant Abilities
     propagate_const<buff_t*> bonedust_brew;
@@ -818,6 +820,8 @@ public:
     const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
+    const spell_data_t* fury_of_xuen_stacking_buff;
+    const spell_data_t* fury_of_xuen_haste_buff;
 
     // Covenants
     const spell_data_t* bonedust_brew_dmg;
@@ -986,6 +990,7 @@ public:
     spawner::pet_spawner_t<pet_t, monk_t> crane_adept;
     spawner::pet_spawner_t<pet_t, monk_t> ox_adept;
     spawner::pet_spawner_t<pet_t, monk_t> white_tiger_statue;
+    spawner::pet_spawner_t<pet_t, monk_t> fury_of_xuen_tiger;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_xuen;
     spawner::pet_spawner_t<pet_t, monk_t> call_to_arms_niuzao;
     spawner::pet_spawner_t<pet_t, monk_t> sinister_teaching_tiger_adept;
