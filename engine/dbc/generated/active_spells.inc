@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.0.45141
-static const std::array<active_class_spell_t, 274> __active_spells_data { {
+// Active class spells, wow build 10.0.0.45232
+static const std::array<active_class_spell_t, 260> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -49,20 +49,12 @@ static const std::array<active_class_spell_t, 274> __active_spells_data { {
   {  3,    0,    883,      0, "Call Pet 1"                         },
   {  3,    0,    982,      0, "Revive Pet"                         },
   {  3,    0,   1462,      0, "Beast Lore"                         },
-  {  3,    0,   1494,      0, "Track Beasts"                       },
   {  3,    0,   1515,      0, "Tame Beast"                         },
   {  3,    0,   1543,      0, "Flare"                              },
   {  3,    0,   2641,      0, "Dismiss Pet"                        },
   {  3,    0,   5384,      0, "Feign Death"                        },
   {  3,    0,   6197,      0, "Eagle Eye"                          },
   {  3,    0,   6991,      0, "Feed Pet"                           },
-  {  3,    0,  19878,      0, "Track Demons"                       },
-  {  3,    0,  19879,      0, "Track Dragonkin"                    },
-  {  3,    0,  19880,      0, "Track Elementals"                   },
-  {  3,    0,  19882,      0, "Track Giants"                       },
-  {  3,    0,  19883,      0, "Track Humanoids"                    },
-  {  3,    0,  19884,      0, "Track Undead"                       },
-  {  3,    0,  19885,      0, "Track Hidden"                       },
   {  3,    0,  56641,      0, "Steady Shot"                        },
   {  3,    0, 109304,      0, "Exhilaration"                       },
   {  3,    0, 175686,      0, "Stopping Power"                     },
@@ -151,6 +143,7 @@ static const std::array<active_class_spell_t, 274> __active_spells_data { {
   {  7,  264,  77130,      0, "Purify Spirit"                      },
   {  7,  264, 212048,      0, "Ancestral Vision"                   },
   {  8,    0,    116,      0, "Frostbolt"                          },
+  {  8,    0,    120,      0, "Cone of Cold"                       },
   {  8,    0,    122,      0, "Frost Nova"                         },
   {  8,    0,    130,      0, "Slow Fall"                          },
   {  8,    0,   1449,      0, "Arcane Explosion"                   },
@@ -235,23 +228,16 @@ static const std::array<active_class_spell_t, 274> __active_spells_data { {
   { 12,    0, 185245,      0, "Torment"                            },
   { 12,    0, 188501,      0, "Spectral Sight"                     },
   { 12,    0, 191427,      0, "Metamorphosis"                      },
-  { 12,    0, 198589,      0, "Blur"                               },
   { 12,    0, 217832,      0, "Imprison"                           },
   { 12,    0, 258920,      0, "Immolation Aura"                    },
-  { 12,    0, 278326,      0, "Consume Magic"                      },
   { 12,    0, 344859,      0, "Demon's Bite"                       },
   { 12,    0, 344862,      0, "Chaos Strike"                       },
   { 12,    0, 344865,      0, "Fel Rush"                           },
   { 12,    0, 344866,      0, "Vengeful Retreat"                   },
-  { 12,    0, 344867,      0, "Chaos Nova"                         },
   { 12,  577, 162243, 344859, "Demon's Bite"                       },
   { 12,  577, 162794, 344862, "Chaos Strike"                       },
-  { 12,  577, 179057, 344867, "Chaos Nova"                         },
   { 12,  577, 188499,      0, "Blade Dance"                        },
   { 12,  577, 195072, 344865, "Fel Rush"                           },
-  { 12,  577, 196718,      0, "Darkness"                           },
-  { 12,  577, 198013,      0, "Eye Beam"                           },
-  { 12,  577, 198793, 344866, "Vengeful Retreat"                   },
   { 12,  581, 187827, 191427, "Metamorphosis"                      },
   { 12,  581, 189110, 344865, "Infernal Strike"                    },
   { 12,  581, 202137,      0, "Sigil of Silence"                   },
@@ -276,7 +262,7 @@ static const std::array<active_class_spell_t, 274> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.0.45141
+// Pet active spells, wow build 10.0.0.45232
 static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

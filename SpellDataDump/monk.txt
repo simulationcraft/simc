@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -101,7 +101,7 @@ Spell Level      : 33
 Range            : 100 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
-Affecting spells : Hunter (137014 effect#3), Aspect of the Wild (193530 effect#3)
+Affecting spells : Hunter (137014 effect#3)
 Family Flags     : 1, 67
 Attributes       : ....x... ........ x.x..x.. ........   ........ .xx..... ........ ..x.x... 
                  : ..x..... ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -487,7 +487,7 @@ Cooldown         : 3 seconds
 Category         : 1561: Fluidity of Motion (387230 effect#3)
 Category Cooldown: 3 seconds
 Proc Chance      : 101%
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Shadowboxing Treads (331512 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effect#1), Shadowboxing Treads (387638 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Shadowboxing Treads (331512 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effect#1), Shadowboxing Treads (387638 effects: #1, #2), Ancient Concordance (389391 effect#1)
 Triggered by     : Fluidity of Motion (387230)
 Family Flags     : 4, 67, 103
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
@@ -730,7 +730,7 @@ Attributes       : ....x... ........ x......x ........   .....x.. ..x..... .x...
 Effects          :
 #1 (id=120482)   : Dummy (3)
                    Base Value: 175 | Scaled Value: 175 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Roll a short distance.
+Description      : Grants an additional charge of Roll and Chi Torpedo.
 
 Name             : Fists of Fury (id=113656) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=1, col=1, max_rank=1, req_points=0]
@@ -807,7 +807,7 @@ Tooltip          : Physical damage taken increased by $w1%.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Replaces         : Roll (id=109132)
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200, override="Roll" (id=109132)]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk, Evoker
 School           : Physical
 Spell Type       : None
@@ -1051,8 +1051,8 @@ Effects          :
 Description      : Reduces the cooldown of Roll by ${$m1/-1000} sec and increases its maximum number of charges by $m2.
 
 Name             : Soothing Mist (id=115175) [Spell Family (53)] 
-Talent Entry     : Generic [free=(Mistweaver), tree=class, row=1, col=1, max_rank=1, req_points=0]
-                 : Generic [tree=class, row=5, col=1, max_rank=2, req_points=8, name="Elusive Mists"]
+Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=2, req_points=8, name="Elusive Mists"]
+                 : Generic [free=(Mistweaver), tree=class, row=1, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -1141,6 +1141,7 @@ Description      : Breathe fire on targets in front of you, causing $s1 Fire dam
 Targets affected by Keg Smash will also burn, taking $123725o1 Fire damage and dealing $123725s2% reduced damage to you for $123725d.
 
 Name             : Fortifying Brew (id=115203) [Spell Family (53)] 
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : Magic
@@ -1426,7 +1427,7 @@ Effects          :
 Description      : Your abilities deal ${$s1}.1% more damage when they are not a repeat of the previous ability.
 
 Name             : Mortal Wounds (id=115804) 
-Class            : Warrior, Hunter, Monk
+Class            : Warrior, Hunter, Monk, Demon Hunter
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
@@ -1475,7 +1476,7 @@ Description      : When you kill an enemy, you summon a Healing Sphere, healing 
 When you kill an enemy with Blackout Kick, you have a $322719m1% chance to summon a Chi Sphere, granting 1 Chi when you walk through it.][]
 
 Name             : Disable (id=116095) [Spell Family (53)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : Melee
@@ -2981,7 +2982,9 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=157616)   : Apply Aura (6) | Dummy (4)
                    Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Misc Value: 15 | Target: Self (1)
-Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for $124507s1.
+#2 (id=1026541)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When you take damage, you have a chance to summon a Healing Sphere visible only to you. Moving through this Healing Sphere heals you for ${$124507s1*$s2/100}.
 
 Name             : Gift of the Ox (id=124503) [Spell Family (53)] 
 Class            : Monk
@@ -3603,7 +3606,7 @@ Effects          :
                    Family Flags: 11, 38, 40, 52, 62, 91
 #4 (id=191164)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Jungle Stalker (252071), Aquatic Form (276012), Flight Form (276029)
+                   Affected Spells: Incapacitating Roar (99), Cat Form (768), Travel Form (783), Mighty Bash (5211), Bear Form (5487), Maul (6807), Frenzied Regeneration (22842), Moonkin Form (24858), Incarnation: Tree of Life (33891), Mangle (33917), Thrash (77758), Stampeding Roar (77761), Stampeding Roar (77764), Pulverize (80313), Skull Bash (93985), Cenarion Ward (102351), Cenarion Ward (102352), Incarnation: Avatar of Ashamane (102543), Incarnation: Guardian of Ursoc (102558), Incarnation: Chosen of Elune (102560), Skull Bash (106839), Flight Form (165962), Thrash (192090), Moonkin Form (197625), Mount Form (210053), Swipe (213771), Strength of the Wild (236716), Jungle Stalker (252071), Aquatic Form (276012), Flight Form (276029), Incarnation: Chosen of Elune (390414)
                    Family Flags: 3, 11, 13, 25, 29, 30, 31, 32, 38, 40, 43, 45, 46, 47, 52, 62, 87, 91, 106, 123
 #5 (id=191165)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: 220 | Scaled Value: 220 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -3632,7 +3635,7 @@ Effects          :
                    Family Flags: 2
 #3 (id=191143)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893)
+                   Affected Spells: Call Pet 1 (883), Revive Pet (982), Flare (1543), Dismiss Pet (2641), Multi-Shot (2643), Concussive Shot (5116), Aimed Shot (19434), Bestial Wrath (19574), Intimidation (19577), Kill Command (34026), Chimaera Shot (53209), Kill Shot (53351), Steady Shot (56641), Binding Shot (109248), Exhilaration (109304), Barrage (120360), Dire Beast (120679), A Murder of Crows (131894), Steel Trap (162488), Arcane Shot (185358), Raptor Strike (186270), Aspect of the Eagle (186289), Bursting Shot (186387), Freezing Trap (187650), Tar Trap (187698), Carve (187708), Harpoon (190925), Cobra Shot (193455), Aspect of the Wild (193530), Spitting Cobra (194407), Wing Clip (195645), Explosive Shot (212431), Butchery (212436), Scatter Shot (213691), Barbed Shot (217200), Hi-Explosive Trap (236776), Rapid Fire (257044), Hunter's Mark (257284), Multi-Shot (257620), Mongoose Bite (259387), Chakrams (259391), Kill Command (259489), Wildfire Bomb (259495), Volley (260243), Double Tap (260402), Raptor Strike (265189), Mongoose Bite (265888), Chakrams (267605), Flanking Strike (269751), Pheromone Bomb (270323), Shrapnel Bomb (270335), Volatile Bomb (271045), Serpent Sting (271788), Dire Beast (281036), Trueshot (288613), Resonating Arrow (308491), Kill Shot (320976), Bloodshed (321530), Bloodshed (321538), Flayed Shot (324149), Death Chakram (325028), Death Chakram (325037), Wild Mark (328275), Wild Spirits (328757), Wild Spirits (328837), Chimaera Shot (342049), Wailing Arrow (354831), Wailing Arrow (355589), Wailing Arrow (355596), Death Chakram (361756), Death Chakram (375891), Death Chakram (375893), Master Handler (389654)
                    Family Flags: 1
 #4 (id=191144)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1628 | Target: Self (1)
@@ -3656,8 +3659,9 @@ Effects          :
                    Affected Spells (Category): Kill Command (259489)
 #12 (id=260643)   : Apply Aura (6) | Modify Ranged Attack Speed% (320)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 640 | Target: Self (1)
-#13 (id=260644)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#13 (id=260644)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2067 | Target: Self (1)
+                   Affected Spells (Category): Kill Command (34026)
 #14 (id=260645)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #15 (id=260646)   : Apply Aura (6) | Dummy (4)
@@ -4140,11 +4144,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
 Effects          :
 #1 (id=179731)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Execute (163201), Skullsplitter (260643), Execute (280735), Execute (281000), Onslaught (315720), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Bloodbath (335096), Execute (383150)
+                   Affected Spells: Cleave (845), Slam (1464), Execute (5308), Thunder Clap (6343), Revenge (6572), Mortal Strike (12294), Bloodthirst (23881), Shield Slam (23922), Execute (163201), Skullsplitter (260643), Execute (280735), Execute (281000), Onslaught (315720), Condemn (317349), Condemn (317485), Condemn (330325), Condemn (330334), Bloodbath (335096), Execute (383150), Odyn's Fury (385059)
                    Family Flags: 18
 #2 (id=188987)   : Apply Aura (6) | Hasted Global Cooldown (417)
                    Base Value: 100 | Scaled Value: 100 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Raging Blow (85288), Rallying Cry (97462), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Ravager (152277), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Execute (280735), Siegebreaker (280772), Execute (280849), Execute (281000), Spear of Bastion (307865), Onslaught (315720), Intimidating Shout (316593), Condemn (317349), Condemn (317485), Condemn (317488), Conqueror's Banner (324143), Ancient Aftershock (325886), Condemn (330325), Condemn (330334), Bloodbath (335096), Crushing Blow (335097), Raise Banner (343666), Spear of Bastion (376079), Execute (383150), Titanic Throw (384090), Shattering Throw (384110), Thunderous Roar (384318), Shield Charge (385952), Rend (389031)
+                   Affected Spells: Charge (100), Rend (772), Cleave (845), Demoralizing Shout (1160), Slam (1464), Whirlwind (1680), Hamstring (1715), Recklessness (1719), Intimidating Shout (5246), Execute (5308), Thunder Clap (6343), Revenge (6572), Battle Shout (6673), Overpower (7384), Mortal Strike (12294), Piercing Howl (12323), Devastate (20243), Bloodthirst (23881), Shield Slam (23922), Victory Rush (34428), Bladestorm (46924), Shockwave (46968), Heroic Throw (57755), Shattering Throw (64382), Raging Blow (85288), Rallying Cry (97462), Storm Bolt (107570), Avatar (107574), Dragon Roar (118000), Ravager (152277), Execute (163201), Colossus Smash (167105), Rampage (184367), Whirlwind (190411), Impending Victory (202168), Bladestorm (227847), Ravager (228920), Skullsplitter (260643), Sweeping Strikes (260708), Warbreaker (262161), Deadly Calm (262228), Execute (280735), Siegebreaker (280772), Execute (280849), Execute (281000), Spear of Bastion (307865), Onslaught (315720), Intimidating Shout (316593), Condemn (317349), Condemn (317485), Condemn (317488), Conqueror's Banner (324143), Ancient Aftershock (325886), Condemn (330325), Condemn (330334), Bloodbath (335096), Crushing Blow (335097), Raise Banner (343666), Spear of Bastion (376079), Execute (383150), Titanic Throw (384090), Wrecking Throw (384110), Thunderous Roar (384318), Odyn's Fury (385059), Shield Charge (385952), Rend (389031)
                    Family Flags: 8
 #3 (id=191020)   : Apply Aura (6) | Dummy (4)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -4455,7 +4459,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=219501)   : Apply Aura (6) | Unknown(395)
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2763 | Target: Self (1)
-Description      : You and your allies within $m1 yards have $166646s1% increased movement speed.
+#2 (id=1026787)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : You and your allies within $m2 yards have $s1% increased movement speed.
 
 Name             : Critical Strikes (desc=Passive) (id=157445) [Passive] 
 Class            : Brewmaster Windwalker Monk
@@ -4622,31 +4628,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: chi | Target: Friend (21)
 Description      : $@spelldesc116092
 
-Name             : Windwalking (id=166646) [Spell Family (53)] 
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Spell Level      : 1
-Range            : 100 yards
-Duration         : Aura (infinite)
-Stacks           : 1 maximum
-Proc Chance      : 101%
-Affecting spells : March of the Legion (212132 effect#1)
-Family Flags     : 120
-Attributes       : ....x... ........ ..x..... x..x.x.x   .....x.. ..x..... .x...... ........ 
-                 : x....... x.....x. ...x.... ....x...   ........ ........ xx..x... ..x..... 
-                 : x......x ........ ....xx.. ........   ...x.... ........ .xx..... ........ 
-                 : ..x..... ..x.x... ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ...x.... ........ ....x... ........ 
-                 : x....... ........ ......x. ........   ........ ........ ........ ..xx.... 
-                 : ........ ........ ........ ........   xx...... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Is Ability (4), Do Not Sheath (18), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), No Aura Cancel (31), Allow While Stealthed (37), No Threat (42), No AutoCast (AI) (49), Allow Dead Target (64), Include In Advanced Combat Log (72), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Can Proc From Procs (122), No Cast Log (128), Allow Cast While Casting (135), Aura Never Bounces (148), Allow Entering Arena (149), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Not an Attack (194), No Aura Log (202), Allow While Riding Vehicle (204), Can Proc From Suppressed Target Procs (254), Do Not Log Aura Refresh (291), Allow Cast While Channeling (308), Bypass Visibility Check (320), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Don't close loot window (379), Allow Class Ability Procs (416), Allow While Feared By Fear Mechanic (417)
-Effects          :
-#1 (id=235496)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Friend (21)
-Tooltip          : Movement speed increased by $s1%.
-
 Name             : Touch of Fatality (id=169340) [Spell Family (53)] 
 Class            : Monk
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
@@ -4742,9 +4723,9 @@ Attributes       : ........ ........ x....... ........   ..x...x. ..x..... .....
 Effects          :
 #1 (id=281435)   : Apply Aura (6) | Periodic Trigger Spell (23): Essence Font every 0.167 seconds
                    Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Trigger Spell: 191840 | Target: Self (1)
-Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1$?a231633[, plus an additional $191840o2 over $191840d.
+Description      : Unleashes a rapid twirl of healing bolts at up to $s1 allies within $191840A1 yds, every ${6*$t1}.1 sec for $d. Each bolt heals a target for $191840s1, plus an additional $191840o2 over $191840d.
 
-Gust of Mists will heal affected targets twice.][.]  Castable while moving.
+Gust of Mists will heal affected targets twice. Castable while moving.
 
 Name             : Essence Font (id=191840) [Spell Family (53)] 
 Class            : Monk
@@ -5220,7 +5201,10 @@ Purifying Brew: Pauses Stagger damage for $s4 sec.
 Name             : High Tolerance (id=196737) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=8, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(2, 4)]
-                 : Effect#2 [op=set, values=(7, 15)]
+                 : Effect#2 [op=set, values=(2, 5)]
+                 : Effect#3 [op=set, values=(3, 7)]
+                 : Effect#4 [op=set, values=(5, 10)]
+                 : Effect#5 [op=set, values=(10, 20)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -5237,19 +5221,19 @@ Effects          :
 #1 (id=288839)   : Apply Aura (6) | Dummy (4)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=344133)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Light Stagger (124275)
                    Family Flags: 86
 #3 (id=344134)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 7 | Scaled Value: 7 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Moderate Stagger (124274)
                    Family Flags: 91
 #4 (id=344135)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Heavy Stagger (124273)
                    Family Flags: 93
 #5 (id=726763)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 1 (3)
-                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
                    Affected Spells: Stagger (115069), Shuffle (322120)
                    Family Flags: 34
 Description      : Stagger is $s1% more effective at delaying damage.
@@ -5899,7 +5883,6 @@ Description      : $@spelldesc213112
 Tooltip          : You may cast Touch of Death again before the cooldown is triggered.
 
 Name             : Face Palm (id=213116) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -5991,6 +5974,7 @@ Effects          :
 Description      : $@spelldesc216519
 
 Name             : Detox (id=218164) [Spell Family (53)] 
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Monk
 School           : Nature
 Spell Type       : Magic
@@ -6261,7 +6245,7 @@ School           : Physical
 Spell Type       : Melee
 Spell Level      : 3
 Range            : 100 yards
-Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Shadowboxing Treads (331512 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effect#1), Shadowboxing Treads (387638 effects: #1, #2)
+Affecting spells : Blackout Kick! (116768 effects: #1, #2, #3), Brewmaster Monk (137023 effects: #1, #2, #14, #16), Mistweaver Monk (137024 effects: #6, #7, #12), Windwalker Monk (137025 effects: #1, #2, #5, #9, #10, #13, #16, #18), Storm, Earth, and Fire (137639 effects: #1, #2), Serenity (152173 effects: #1, #2, #6), Hit Combo (196741 effects: #1, #2), Blackout Kick (261916 effect#1), The Wind Blows (281452 effects: #1, #2), Weapons of Order (310454 effect#8), Weapons of Order (311054 effect#1), Shadowboxing Treads (331512 effects: #1, #2), Keefer's Skyreach (344021 effect#1), Windwalker Monk Two-Hand Adjustment (346104 effects: #1, #2), Primordial Power (363924 effects: #1, #2), Elusive Footwork (387046 effect#3), Weapons of Order (387184 effect#8), Fluidity of Motion (387230 effect#1), Shadowboxing Treads (387638 effects: #1, #2), Ancient Concordance (389391 effect#1)
 Family Flags     : 4, 103
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
@@ -6289,7 +6273,6 @@ $high=${$<stnc>*($<dwm>*(($MWB)/($MWS)+$<offm>*$<offhigh>)+$AP/3.5+1)}
 
 Name             : Vivify (desc=Rank 2) (id=231602) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=3, col=3, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(20, 40)]
 Class            : Brewmaster Windwalker Monk
 School           : Frost
 Spell Type       : None
@@ -6350,27 +6333,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1592 | Target: Self (1)
                    Affected Spells (Category): Storm, Earth, and Fire (137639)
 Description      : Storm, Earth, and Fire has ${$s1+1} charges.
-
-Name             : Essence Font (desc=Rank 2) (id=231633) [Spell Family (53), Passive] 
-Class            : Monk
-School           : Frost
-Spell Type       : None
-Spell Level      : 34
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=349457)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-Description      : Each bolt of Essence Font heals a target for an additional $191840o2 over $191840d.
-
-Gust of Mists will heal affected targets twice.
 
 Name             : The Emperor's Capacitor (id=235053) [Spell Family (53), Passive] 
 Class            : Monk
@@ -7104,7 +7066,6 @@ Tooltip          : Increases Mastery by $s1 and Leech by $s2.
 
 Name             : Tiger Tail Sweep (id=264348) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=3, col=1, max_rank=2, req_points=0]
-                 : Effect#2 [op=set, values=(-5000, -10000)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -10010,7 +9971,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summons an effigy of Yu'lon, the Jade Serpent for $d. Yu'lon will heal injured allies with Soothing Breath, healing the target and up to $s2 allies for $343737o1 over $343737d. 
 
-[NYI] Enveloping Mist costs 33% less mana while Yu'lon is active.
+Enveloping Mist costs 33% less mana while Yu'lon is active.
 
 Name             : Shuffle (id=322120) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=3, col=2, max_rank=1, req_points=0]
@@ -10378,7 +10339,7 @@ Effects          :
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE enemy (instant) (16)
 #4 (id=1024392)  : Apply Aura (6) | Proc Trigger Spell (42): Exploding Keg
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Trigger Spell: 388867 | Target: Self (1)
-Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies, causing your attacks against them to deal $388867s1 additional Fire damage, and causing them to miss their melee attacks for the next $d.
+Description      : Hurls a flaming keg at the target location, dealing $s1 Fire damage to nearby enemies, causing your attacks against them to deal $388867s1 additional Fire damage, and causing their melee attacks to deal $s2% reduced damage for the next $d.
 Tooltip          : Misses melee attacks.
 
 Name             : Celestial Flames (id=325177) [Spell Family (53), Passive] 
@@ -10630,6 +10591,7 @@ Effects          :
 Description      : Touch of Death spawns $s1 Chi Spheres, granting 1 Chi when you walk through them.
 
 Name             : Bonedust Brew (desc=Necrolord) (id=325216) [Spell Family (53)] 
+Talent Entry     : Windwalker [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Monk
 Covenant         : Necrolord
 School           : Shadow
@@ -11665,7 +11627,7 @@ Effects          :
 #1 (id=835112)   : Apply Aura (6) | Dummy (4)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=835113)   : Apply Aura (6) | Add Flat Modifier (107): Spell Direct Amount (0) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 289.1566 (coefficient=2.147239) | PvP Coefficient: 0.50000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 289.1566 (coefficient=2.147239) | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Essence Font (191840)
                    Family Flags: 108
 Description      : Your Essence Font's initial heal is increased by $s2 and has a chance to reduce the cooldown of Thunder Focus Tea by $s1 sec.
@@ -11913,6 +11875,8 @@ Description      : During $?s115008[Chi Torpedo][Roll], you are immune to roots 
 Tooltip          : During $?s115008[Chi Torpedo][Roll], you are immune to roots and snares.
 
 Name             : Bone Marrow Hops (id=337295) [Spell Family (53), Passive, Hidden] 
+Talent Entry     : Windwalker [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Class            : Monk
 School           : Physical
 Spell Type       : None
 Spell Level      : 60
@@ -11935,7 +11899,6 @@ Description      : Bonedust Brew's Shadow damage or healing is increased by |cFF
 
 Name             : Fatal Touch (id=337296) [Spell Family (53)] 
 Talent Entry     : Generic [tree=class, row=8, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(-60000, -120000)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12448,7 +12411,6 @@ Vivify's healing is increased by $w3% and you're refunded $m2% of the cost when 
 
 Name             : Escape from Reality (id=343250) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(35, 70)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -12823,7 +12785,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 40 yards | Target: Custom (18) -> AOE friendly (31)
 
 Name             : Paralysis (desc=Rank 2) (id=344359) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=3, col=5, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=3, col=6, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -13864,18 +13826,16 @@ Effects          :
 #1 (id=1011987)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
-Name             : Hit Scheme (id=383695) [Spell Family (53)] 
+Name             : Hit Scheme (id=383695) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Windwalker [tree=spec, row=5, col=2, max_rank=1, req_points=8]
                  : Brewmaster [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : Aura (infinite)
-Stacks           : 4 maximum
 Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
-Attributes       : ........ ........ ........ .......x   ........ ..x..... ........ ........ 
+Attributes       : ......xx ........ ........ .......x   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ....x... ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13883,7 +13843,7 @@ Attributes       : ........ ........ ........ .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ........ ........   ........ ....x... ........ .x...... 
                  : ........ ........ ........ ........   
-                 : No Aura Cancel (31), No Threat (42), Not an Action (92), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Don't close loot window (379), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), No Threat (42), Not an Action (92), Allow Aura While Dead (116), Can Proc From Procs (122), Aura Points On Client (268), Don't close loot window (379), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1015763)  : Apply Aura (6) | Proc Trigger Spell (42): Hit Scheme
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Trigger Spell: 383696 | Target: Self (1)
@@ -14028,13 +13988,13 @@ Effects          :
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Gain up to ${$s1*$s3}% Mastery based on your current level of Stagger.
 
-Name             : Quick Sip (id=383764) [Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=4, col=4, max_rank=2, req_points=0]
+Name             : Quick Sip (id=383764) 
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Triggered by     : Quick Sip (388505)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14042,14 +14002,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display Range (126)
+                 : Do Not Display Range (126)
 Effects          :
 #1 (id=1015895)  : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1015896)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Every $s2 sec of Shuffle you gain Purifies $s1% of your damage delayed by Stagger.
-Tooltip          : Reduces stagger by $s1%.
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc388505
 
 Name             : Counterstrike (id=383785) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=8, col=6, max_rank=1, req_points=20]
@@ -14131,7 +14090,6 @@ Breath of Fire damage increased by up to 100% based on your level of Stagger.
 
 Name             : Bonedust Brew (id=386276) [Spell Family (53)] 
 Talent Entry     : Mistweaver [tree=spec, row=8, col=5, max_rank=1, req_points=20]
-                 : Windwalker [tree=spec, row=9, col=1, max_rank=1, req_points=20]
                  : Brewmaster [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Monk
 School           : Shadow
@@ -14175,7 +14133,7 @@ Talent Entry     : Brewmaster [tree=spec, row=8, col=5, max_rank=2, req_points=2
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Internal Cooldown: 1 seconds
+Internal Cooldown: 3 seconds
 Proc Chance      : 100%
 Proc Flags       : ...x.x.x .x...x.. .x.x.... ........ 
                  : White Melee Taken, Yellow Melee Taken, White Ranged Taken, Yellow Ranged Taken, Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
@@ -14195,7 +14153,6 @@ Description      : Each time you dodge or an enemy misses you, the remaining coo
 
 Name             : Attenuation (id=386941) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=10, col=6, max_rank=1, req_points=20, select_idx=200]
-                 : Windwalker [tree=spec, row=10, col=2, max_rank=1, req_points=20]
                  : Brewmaster [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Monk
 School           : Physical
@@ -14315,8 +14272,8 @@ Description      : Zen Meditation has $s2% reduced cooldown and is no longer can
 
 Name             : Elusive Footwork (id=387046) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=8, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(5, 10)]
                  : Effect#2 [op=set, values=(1, 2)]
+                 : Effect#3 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14349,21 +14306,22 @@ Proc Chance      : 100%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Triggered by     : Elusive Footwork (387046)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+Attributes       : ........ x....... ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ .....x.. ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Allow Aura While Dead (116), Allow Entering Arena (149), Disable Aura While Dead (226), Aura Points On Client (268), Only Proc From Class Abilities (415)
+                 : Do Not Log (8), No Aura Icon (60), Allow Entering Arena (149), Aura Points On Client (268), Only Proc From Class Abilities (415)
 Effects          :
 #1 (id=1021577)  : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc387046
 
-Name             : Weapons of Order (desc=Kyrian) (id=387184) [Spell Family (53)] 
+Name             : Weapons of Order (id=387184) [Spell Family (53)] 
+Talent Entry     : Brewmaster [tree=spec, row=9, col=5, max_rank=1, req_points=20]
 Class            : Monk
 School           : Arcane
 Spell Type       : Magic
@@ -14378,7 +14336,6 @@ Proc Chance      : 101%
 Proc Flags       : ....x... ........ ........ ........ 
                  : Yellow Melee
 Affecting spells : Brewmaster Monk (137023 effect#14), Windwalker Monk (137025 effect#13)
-Triggered by     : Weapons of Order (387185)
 Family Flags     : 77
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -14411,30 +14368,10 @@ Effects          :
 Description      : For the next $d, your Mastery is increased by $?c1[${$117906bc1*$s1}]?c2[${$117907bc1*$s1}][${$115636bc1*$s1}.1]%. Additionally, $?a137025[Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.][]$?a137023 [Keg Smash cooldown is reset instantly and enemies hit by Keg Smash take $312106s1% increased damage from you for $312106d, stacking up to $312106u times.][]$?a137024[Essence Font cooldown is reset instantly and heals up to $311123s2 nearby allies for $311123s1 health on channel start and end.][]
 Tooltip          : Increases your Mastery by $?c1[${$117906bc1*$w1}]?c2[${$117907bc1*$w1}][${$115636bc1*$w1}]%$?a137025[, Rising Sun Kick reduces Chi costs by $311054s1 for $311054d, and Blackout Kick reduces the cooldown of affected abilities by an additional ${$s8/1000} sec.]?a137023 [ and your Keg Smash increases the damage you deal to those enemies by $312106s1%, up to ${$312106s1*$312106u}% for $312106d.]?a137024[ and your Essence Font heals nearby allies for $311123s1 health on channel start and end.][ and your abilities are enhanced.]
 
-Name             : Weapons of Order (id=387185) [Hidden] 
-Talent Entry     : Brewmaster [tree=spec, row=9, col=5, max_rank=1, req_points=20]
-Class            : Monk
-School           : Physical
-Spell Type       : None
-Attributes       : .......x x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
-                 : ........ ........ ........ ........   
-                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308), Do Not Display Cast Time (441)
-Effects          :
-#1 (id=1021820)  : Learn Spell (36)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387184 | Target: Self (1)
-#2 (id=1021821)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-Description      : $@spelldesc310454
-
 Name             : Walk with the Ox (id=387219) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=8, col=3, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(-250, -500)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14455,7 +14392,7 @@ Effects          :
 Description      : Abilities that grant Shuffle reduce the cooldown on Invoke Niuzao, the Black Ox by ${$s2/-1000}.1 sec, and Niuzao's Stomp deals an additional |cFFFFFFFF${$s1}.1%|r damage. 
 
 Name             : Fluidity of Motion (id=387230) [Spell Family (53), Passive] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14476,7 +14413,7 @@ Effects          :
 #2 (id=1021887)  : Apply Aura (6) | Modify Damage Done% (79)
                    Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Trigger Spell: 100784 | Target: Self (1)
 #3 (id=1024225)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
-                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Misc Value: 1561 | Target: Self (1)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Misc Value: 1561 | Target: Self (1)
                    Affected Spells (Category): Blackout Kick (100784)
 Description      : Blackout Kick's cooldown is reduced by ${-$s1/1000} sec and its damage by $s2%.
 
@@ -14504,6 +14441,7 @@ Tooltip          : Increases movement speed by $s1%.
 
 Name             : Graceful Exit (id=387256) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=5, col=4, max_rank=2, req_points=8]
+                 : Effect#1 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -14529,7 +14467,7 @@ Talent Entry     : Brewmaster [tree=spec, row=6, col=4, max_rank=1, req_points=8
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14537,7 +14475,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6)
+                 : Passive (6), No Aura Icon (60)
 Effects          :
 #1 (id=1021960)  : Apply Party Aura (35) | Dummy (4)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -14562,12 +14500,12 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 (coefficient=0, delta coefficient=0.24) | AP Coefficient: 0.13230 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Cone Front (104)
 Description      : $@spelldesc383994
 
-Name             : Staggering Strikes [NYI] (id=387624) 
+Name             : Staggering Strikes (id=387624) 
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 100 yards
-Triggered by     : Staggering Strikes [NYI] (387625)
+Triggered by     : Staggering Strikes (387625)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14579,11 +14517,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Aura Points On Client (268)
 Effects          :
 #1 (id=1022528)  : Dummy (3)
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you Blackout Kick, your Stagger is reduced by $s1.
-Tooltip          : Reduces stagger by $s1 damage.
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc387625
 
-Name             : Staggering Strikes [NYI] (id=387625) [Spell Family (53), Passive] 
+Name             : Staggering Strikes (id=387625) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#2 [op=set, values=(50, 100)]
 Class            : Monk
@@ -14602,21 +14539,21 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Aura Points On Client (268), Not In Spellbook Until Learned (269), Only Proc From Class Abilities (415)
 Effects          :
-#1 (id=1022530)  : Apply Aura (6) | Proc Trigger Spell (42): Staggering Strikes [NYI]
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387624 | Target: Self (1)
+#1 (id=1022530)  : Apply Aura (6) | Proc Trigger Spell (42): Staggering Strikes
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Trigger Spell: 387624 | Target: Self (1)
 #2 (id=1024490)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.00000 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : When you Blackout Kick, your Stagger is reduced by $s2.
+                   Base Value: 50 | Scaled Value: 50 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When you Blackout Kick, your Stagger is reduced by $<reduc>.
+Variables        : $reduc=${$AP*$s2/100}
 
-Name             : Shadowboxing Treads (id=387638) [Spell Family (53)] 
-Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=100]
+Name             : Shadowboxing Treads (id=387638) [Spell Family (53), Passive] 
+Talent Entry     : Brewmaster [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Monk
 School           : Physical
 Spell Type       : None
-Duration         : Aura (infinite)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
+Attributes       : ......x. ........ .......x .......x   ........ ..x..... ........ ........ 
                  : x....... ........ ........ ....x...   ........ ........ xx..x... ........ 
                  : ........ ........ .......x ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14624,7 +14561,7 @@ Attributes       : ........ ........ .......x .......x   ........ ..x..... .....
                  : ........ ........ ........ ........   ........ ........ ........ ...x.... 
                  : ........ ........ ....x... ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   
-                 : Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
+                 : Passive (6), Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Suppress Weapon Procs (151), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=1022553)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
@@ -14743,8 +14680,8 @@ Attributes       : ......x. ........ ........ .......x   ........ ..x..... .....
                  : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Allow Aura While Dead (116), Can Proc From Procs (122), Allow While Riding Vehicle (204), Aura Points On Client (268)
 Effects          :
 #1 (id=1023472)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 250 | Scaled Value: 250 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : After casting Essence Font, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal an injured ally within $388024A1 yards for $m1% of the damage done. Lasts $388026d.
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : After casting Essence Font or Faeline Stomp, your Tiger Palm, Blackout Kick, and Rising Sun Kick heal an injured ally within $388024A1 yards for $m1% of the damage done. Lasts $388026d.
 
 Name             : Ancient Teachings of the Monastery (id=388024) [Spell Family (53)] 
 Class            : Monk
@@ -14763,7 +14700,7 @@ Attributes       : ........ ........ .......x x..x....   .....x.. ........ .....
 Effects          :
 #1 (id=1023473)  : Direct Heal (10)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
-Description      : $@spelldescX
+Description      : $@spelldesc388023
 
 Name             : Ancient Teachings of the Monastery (id=388026) [Spell Family (53)] 
 Class            : Monk
@@ -14800,7 +14737,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1023483)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 12 | Scaled Value: 12 | PvP Coefficient: 1.00000 | Misc Value 2: 0x471 | Target: Self (1)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Misc Value 2: 0x471 | Target: Self (1)
 #2 (id=1023484)  : Apply Aura (6) | Dummy (4)
                    Base Value: -300 | Scaled Value: -300 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Abilities that activate Gust of Mist reduce the cooldown on $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by ${$s2/-1000}.1 sec, and $?s325197[Chi-Ji's Gusts of Mists][Yu'lon's Soothing Breath] healing is increased by |cFFFFFFFF${$s1}.1%|r.
@@ -15028,6 +14965,8 @@ Effects          :
                    Base Value: -13000 | Scaled Value: -13000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
                    Affected Spells: Invoke Xuen, the White Tiger (123904), Invoke Niuzao, the Black Ox (132578), Stomp (227291), Invoke Yu'lon, the Jade Serpent (322118), Invoke Chi-Ji, the Red Crane (325197), Invoke Niuzao, the Black Ox (358520)
                    Family Flags: 3
+#3 (id=1026491)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 7000 | Scaled Value: 7000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Reduces the cooldown of $?s325197[Invoke Chi-Ji, the Red Crane][Invoke Yul'on, the Jade Serpent] by 2 min, but decreases its duration to 12 sec. 
 
 Name             : Calming Coalescence (id=388218) [Spell Family (53), Passive] 
@@ -15096,7 +15035,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Include In Advanced Combat Log (72)
 Effects          :
 #1 (id=1024187)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
 Description      : Soothing Mist heals a second injured ally within $388478A2 yds for $s1% of the amount healed.
 
 Name             : Unison (id=388478) [Spell Family (53)] 
@@ -15188,6 +15127,30 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 388491
 Description      : $@spelldesc388491
 Tooltip          : Haste increased by $w1%.
+
+Name             : Quick Sip (id=388505) [Spell Family (53), Passive] 
+Talent Entry     : Brewmaster [tree=spec, row=4, col=4, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(1, 2)]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Proc Chance      : 101%
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Icon (60), Do Not Display Range (126)
+Effects          :
+#1 (id=1024228)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 383764 | Target: Self (1)
+#2 (id=1024229)  : Dummy (3)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Purify $s1% of your Staggered damage each time you gain $s2 sec of Shuffle duration.
 
 Name             : Restorative Proliferation (id=388508) [Spell Family (53)] 
 Class            : Monk
@@ -15434,7 +15397,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Is Buff (140), Do Not Display Duration (170), Aura Points On Client (268)
 Effects          :
 #1 (id=1024335)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Zen Pulse (124081), Zen Pulse (198487)
                    Family Flags: 18
 Description      : $@spelldesc388564
@@ -15479,7 +15442,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6)
 Effects          :
 #1 (id=1024391)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Zen Pulse triggers a second time at $s1% effectiveness if cast on targets with both Renewing Mist and Enveloping Mist.
 
 Name             : Restoral (id=388615) [Spell Family (53)] 
@@ -15604,7 +15567,6 @@ Tooltip          : Increases the range of Crackling Jade Lightning by $w1 yards.
 
 Name             : Ferocity of Xuen (id=388674) [Spell Family (53), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=3, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(2, 4)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15624,12 +15586,16 @@ Effects          :
 Description      : Increases all damage dealt by $s1%.
 Tooltip          : Increases all damage dealt by $w1%.
 
-Name             : Misty Peaks [NYI] (id=388682) [Spell Family (53), Passive] 
+Name             : Misty Peaks (id=388682) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=4, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(5, 10)]
+                 : Effect#1 [op=set, values=(0.00068, 0.01456)]
+                 : Effect#3 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. .....x.. ........ 
+                 : Magic Heal, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15640,11 +15606,39 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1024520)  : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+#1 (id=1024520)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0.0007 | Scaled Value: 0.0007 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1024521)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-Description      : Renewing Mist's heal over time effect has a $s1% chance to proc Enveloping Mist for $s2 sec.
+#3 (id=1025147)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Renewing Mist's heal over time effect has a $s3% chance to proc Enveloping Mist for $s2 sec.
+
+Name             : Summon White Tiger Statue (id=388686) [Spell Family (53)] 
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 1
+Range            : 40 yards
+GCD              : 1 seconds
+Duration         : 30 seconds
+Cooldown         : 120 seconds
+Attributes       : ....x... ........ x....... ........   ........ ........ .x...... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Not Shapeshifted (16), No AutoCast (AI) (49), Always Line of Sight (185), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1024526)  : Summon (28)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 196581 | Misc Value 2: 0x156d | Target: Unknown(87)
+#2 (id=1024527)  : None (0)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+Description      : Summons a White Tiger Statue at the target location for $d, pulsing $s1 damage to all enemies every 2 sec for $d.
 
 Name             : Dancing Mists (id=388701) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=7, col=5, max_rank=2, req_points=8]
@@ -15667,10 +15661,9 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 1573 | Target: Self (1)
 Description      : Renewing Mist has a $s1% chance to immediately spread to an additional target when initially cast or when traveling to a new target.
 
-Name             : Ancient Concordance [NYI] (id=388740) [Spell Family (53), Passive] 
+Name             : Ancient Concordance (id=388740) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=9, col=1, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(3, 6)]
-                 : Effect#2 [op=set, values=(2, 3)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15684,17 +15677,18 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1024606)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
-#2 (id=1024775)  : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Your Blackout Kicks strike $s2 targets and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.
+#1 (id=1024606)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your Blackout Kicks strike $389391s1 additional target and have an additional $s1% chance to reset the cooldown of your Rising Sun Kick while within your Faeline Stomp.
 
-Name             : Awakened Faeline [NYI] (id=388779) [Spell Family (53), Passive] 
+Name             : Awakened Faeline (id=388779) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15709,14 +15703,14 @@ Effects          :
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1024678)  : Dummy (3)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000
-#3 (id=1024679)  : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000
-Description      : Your abilities reset Faeline Stomp 100% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals nearby allies for $s1% of the damage done.
+#3 (id=1024679)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+#4 (id=1025572)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your abilities reset Faeline Stomp $s2% more often. While within Faeline Stomp, your Tiger Palms strike $s3 targets and your Spinning Crane Kick heals $s4 nearby allies for $s1% of the damage done.
 
 Name             : Fast Feet (id=388809) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(35, 70)]
-                 : Effect#2 [op=set, values=(5, 10)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15765,7 +15759,6 @@ Tooltip          : During $?s115008[Chi Torpedo][Roll], you are immune to roots 
 
 Name             : Grace of the Crane (id=388811) [Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=4, col=1, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(2, 4)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15828,6 +15821,25 @@ Effects          :
                    Family Flags: 52
 Description      : Cooldown reduced by ${$s1/-60000} min.
 
+Name             : Fortifying Brew [NYI] (id=388814) [Spell Family (53), Passive] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 48
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ x....... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+Effects          :
+#1 (id=1024733)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Increases Dodge and Armor while Fortifying Brew is Active by $s1%.
+
 Name             : Feathers of a Hundred Flocks (id=388846) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Monk
@@ -15852,13 +15864,16 @@ Effects          :
                    Family Flags: 8, 63
 Description      : Spinning Crane Kick radius increased by $s1%. 
 
-Name             : Rapid Diffusion [NYI] (id=388847) [Spell Family (53), Passive] 
+Name             : Rapid Diffusion (id=388847) [Spell Family (53), Passive] 
 Talent Entry     : Mistweaver [tree=spec, row=6, col=6, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(3, 6)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
 Range            : 40 yards
+Proc Chance      : 100%
+Proc Flags       : ....x... ..x...x. .....x.. ........ 
+                 : Yellow Melee, Generic Heal, Magic Heal, Trap Triggered
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -15869,13 +15884,12 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6)
 Effects          :
-#1 (id=1024785)  : Dummy (3)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
+#1 (id=1024785)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Rising Sun Kick and Enveloping Mist apply Renewing Mist for $s1 seconds to an ally within $r yds.
 
 Name             : Crane Vortex (id=388848) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15900,7 +15914,6 @@ Description      : Spinning Crane Kick damage  increased by $s1%.
 
 Name             : Rising Star (id=388849) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=8, col=5, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(15, 30)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15925,7 +15938,6 @@ Description      : Rising Sun Kick damage  increased by $s1%.
 
 Name             : Flashing Fists (id=388854) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=3, col=4, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(10, 20)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15950,7 +15962,6 @@ Description      : Fists of Fury damage  increased by $s1%.
 
 Name             : Touch of the Tiger (id=388856) [Spell Family (53)] 
 Talent Entry     : Windwalker [tree=spec, row=3, col=2, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(25, 50)]
 Class            : Monk
 School           : Physical
 Spell Type       : None
@@ -15995,27 +16006,240 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : $@spelldesc325153
 
-Name             : Fortifying Brew (id=388917) [Spell Family (53), Passive] 
-Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
+Name             : Ancient Concordance (id=389391) [Spell Family (53)] 
 Class            : Monk
 School           : Physical
 Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+Effects          :
+#1 (id=1025630)  : Apply Aura (6) | Add Flat Modifier (107): Spell Targets (17)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 17 | Target: Self (1)
+                   Affected Spells: Blackout Kick (100784), Blackout Kick (228649)
+                   Family Flags: 4
+Description      : $@spelldesc388740
+Tooltip          : Blackout Kick strikes $s1 targets.
+
+Name             : Close to Heart (id=389574) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(2, 4)]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
+                 : Passive (6), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=1024898)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
-Description      : Turns your skin to stone for $120954d, increasing your current and maximum health by $<health>% and reducing all damage you take by $<damage>%.
+#1 (id=1025898)  : Apply Aura (6) | Unknown(395)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 26722 | Target: Self (1)
+#2 (id=1026794)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : You and your allies within $m2 yards have $s1% increased Leech.
+
+Name             : Generous Pour (id=389575) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(2, 4)]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1025899)  : Apply Aura (6) | Unknown(395)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 26723 | Target: Self (1)
+#2 (id=1026793)  : Dummy (3)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000
+Description      : You and your allies within $m2 yards have $s1% increased avoidance.
+
+Name             : Bounce Back [NYI] (id=389577) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
+Internal Cooldown: 30 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ .....x.. .x.x.... ........ 
+                 : Generic Hostile Spell Taken, Magic Hostile Spell Taken, Periodic Taken
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1025904)  : Apply Aura (6) | Proc Trigger Spell (42): Bounce Back
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390239 | Target: Self (1)
+#2 (id=1026929)  : Dummy (3)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000
+#3 (id=1026930)  : Dummy (3)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000
+Description      : When a hit deals more than $m2% of your maximum health, reduce all damage by $s1% for $390239d.
 
-Combines with other Fortifying Brew effects.
-Variables        : $health=$?s322960[${20}][${15}]
-$damage=$?s322960[${20}][${15}]
+This effect cannot occur more than once every $m3  seconds.
+Tooltip          : When a hit deals more than 20% of your maximum health, reduce all damage by $w1% for $390239d.
+
+Name             : Resonant Fists [NYI] (id=389578) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1025905)  : Apply Aura (6) | Unknown(395)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Misc Value: 2763 | Target: Self (1)
+
+Name             : Save Them All (id=389579) [Spell Family (53), Passive] 
+Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(10, 20)]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. .....x.. ........ 
+                 : Generic Heal, Magic Heal, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1025906)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1026536)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000
+#3 (id=1026537)  : Dummy (3)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000
+Description      : When your healing spells heal an ally whose health is below $s3% maximum health, you gain an additional $s1% healing for the next $390105d.
+
+Name             : Face Palm (id=389942) [Spell Family (53), Passive] 
+Talent Entry     : Brewmaster [tree=spec, row=7, col=7, max_rank=1, req_points=8]
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026492)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
+#2 (id=1026495)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Target: Self (1)
+#3 (id=1026496)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Tiger Palm has a $s1% chance to deal $s2% of normal damage and reduce the remaining cooldown of your Brews by ${$s3/1000} additional sec.
+
+Name             : Shocking Blow [NYI] (id=389982) [Spell Family (53), Passive] 
+Talent Entry     : Brewmaster [tree=spec, row=7, col=6, max_rank=1, req_points=8]
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Icon (60), No Aura Log (202), Only Proc From Class Abilities (415)
+Effects          :
+#1 (id=1026573)  : Apply Aura (6) | Proc Trigger Spell (42)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Crackling Jade Lightning deals 40% less damage and has a cost of 40 energy, but is now instant and causes your next Blackout Kick against the target to shock them, dealing additional Nature damage.
+
+Name             : Save Them All (id=390105) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : None
+Spell Level      : 19
+Duration         : 4 seconds
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. .....x.. ........ 
+                 : Generic Heal, Magic Heal, Trap Triggered
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026709)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Healing increased by $s1%
+Tooltip          : Healing increased by $w1%.
+
+Name             : Bounce Back (id=390239) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Spell Level      : 19
+Duration         : 4 seconds
+Triggered by     : Bounce Back [NYI] (389577)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026908)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Tooltip          : Reduces damage by $w1%.
 
 

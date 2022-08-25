@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45141 dragonflight-BETA (hotfix 2022-08-17/45141, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -210,7 +210,7 @@ Effects          :
 Description      : Increases Agility by $s1.
 
 Name             : Army of the Dead (id=42650) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -546,13 +546,13 @@ Name             : Death Coil (id=47541) [Spell Family (15)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
-Resource         : 40 Runic Power (6) (id=2194)
+Resource         : 30 Runic Power (6) (id=2194)
 Spell Level      : 2
 Range            : 30 yards
 GCD              : 1.5 seconds
 Proc Chance      : 101%
 Stance Mask      : 0x01000000
-Affecting spells : Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Deadly Coil (377577 effect#1)
+Affecting spells : Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13
 Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -618,7 +618,7 @@ Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Deadly Coil (377577 effect#1), Improved Death Coil (377580 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Sudden Doom (81340 effects: #1, #2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Improved Death Coil (377580 effects: #1, #2)
 Family Flags     : 13, 43, 64, 78
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -642,7 +642,7 @@ Spell Level      : 2
 Range            : 40 yards
 Velocity         : 35 yards/sec
 Min Travel Time  : 0.1 seconds
-Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1), Deadly Coil (377577 effect#1)
+Affecting spells : Veteran of the Third War (48263 effect#2), Sudden Doom (81340 effect#1), Death March (235556 effect#2), Death's Certainty (334898 effect#2), Deadliest Coil (334949 effect#1)
 Family Flags     : 13, 31
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ..x..... ........ 
@@ -765,7 +765,7 @@ Variables        : $amb=$?s205727[${1.3}][${1.0}]
 $shield=${$MHP*$m2/100*(1+$@versadmg)*$<amb>}
 
 Name             : Death Pact (id=48743) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -908,7 +908,7 @@ Description      : Summons a rune weapon for $81256d that mirrors your melee att
 While active, you gain $81256s1% parry chance.
 
 Name             : Lichborne (id=49039) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -916,7 +916,7 @@ Spell Level      : 33
 Duration         : 10 seconds
 Cooldown         : 120 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Cold Hearted (288425 effect#3)
+Affecting spells : Cold Hearted (288425 effect#3), Unholy Endurance (389682 effect#1)
 Family Flags     : 36
 Attributes       : ........ ........ x.x..... ........   .....x.. ..x....x .x...... ........ 
                  : .x...... ........ ...x.... ........   ........ ........ ........ ........ 
@@ -942,6 +942,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=844417)   : Apply Aura (6) | Shapeshift (36)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 25 | Misc Value 2: 0x7 | Target: Self (1)
+#8 (id=1026075)  : Apply Aura (6) | Modify Damage Taken% (87)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
 Description      : Draw upon unholy energy to become Undead for $d, increasing Leech by $s1%, and making you immune to Charm, Fear, and Sleep.
 Tooltip          : Leech increased by $s1% and immune to Charm, Fear and Sleep.  Undead.
 
@@ -1033,14 +1036,13 @@ $@spelldesc55095
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Summon Gargoyle (id=49206) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
-Spell Level      : 34
 Range            : 30 yards
 GCD              : 1.5 seconds
-Duration         : 35 seconds
+Duration         : 25 seconds
 Cooldown         : 180 seconds
 Category         : 1834
 Category Cooldown: 180 seconds
@@ -1064,13 +1066,13 @@ Effects          :
 #3 (id=41321)    : Trigger Spell (64): Summon Gargoyle
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 61777 | Target: Self (1)
 #4 (id=728503)   : Dummy (3)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Summon a Gargoyle into the area to bombard the target for $61777d.
 
 The Gargoyle gains $211947s1% increased damage for every $s4 Runic Power you spend.
 
 Name             : Sudden Doom (id=49530) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -1260,7 +1262,7 @@ Description      : Opens a gate which you can use to return to Ebon Hold.
 Using a Death Gate while in Ebon Hold will return you back to near your departure point.
 
 Name             : Anti-Magic Zone (id=51052) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -1409,7 +1411,7 @@ Description      : Increases your rune regeneration rate for $51460d.
 Tooltip          : Rune regeneration rate increased by $w1%.
 
 Name             : Runic Corruption (id=51462) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -1612,7 +1614,7 @@ Spell Type       : Melee
 Spell Level      : 23
 Range            : 50000 yards
 Duration         : 24 seconds
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Rapid Decomposition (194662 effects: #1, #3), Soulflayer's Corruption (248066 effect#1), Plaguebringer (332688 effect#1), Withering Plague (337884 effect#1), Debilitating Malady (338523 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #5, #6), Plaguebringer (390178 effect#1)
 Triggered by     : Death's Caress (195292)
 Family Flags     : 43, 57, 65
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -1633,6 +1635,10 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
                    Affected Spells: Heart Strike (206930), Heart Strike (228645)
                    Family Flags: 24
+#4 (id=1026997)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+#5 (id=1026998)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : A shadowy disease that drains $o1 health from the target over $d.  
 Tooltip          : Draining $w1 health from the target every $t1 sec.
 
@@ -1649,7 +1655,7 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : Two-handed Axe, Two-handed Mace, Polearm, Two-handed Sword, Staff
 Stance Mask      : 0x01000000
-Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Rotten Touch (390276 effect#1)
 Family Flags     : 43, 59, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -1664,7 +1670,7 @@ Effects          :
 #1 (id=48018)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=48019)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.34500 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.41400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 #3 (id=48020)    : Trigger Spell (64): Scourge Strike
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Trigger Spell: 70890 | Target: Enemy (6)
 #4 (id=840915)   : Dummy (3)
@@ -1678,7 +1684,7 @@ Spell Type       : Melee
 Range            : 50000 yards
 Duration         : 24 seconds
 Proc Chance      : 101%
-Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Razorice (51714 effect#1), Mastery: Frozen Heart (77514 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Plaguebringer (332688 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #7, #8), Plaguebringer (390178 effect#1)
 Family Flags     : 43, 58, 65, 120
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   ........ ........ ..x..... ......x. 
@@ -1692,6 +1698,11 @@ Attributes       : ....x... ........ ........ ..x.....   ........ ........ .....
 Effects          :
 #1 (id=48025)    : Apply Aura (6) | Periodic Damage (3): frost every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.21400 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Unknown(25)
+#2 (id=1026999)  : Apply Aura (6) | Modify Damage Taken% from Caster (270)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Affected School(s): All
+#3 (id=1027000)  : Apply Aura (6) | Modify Damage Taken% from Caster Pet (381)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
 Description      : A disease that deals ${$o1*$<CAP>/$AP} Frost damage over $d and has a chance to grant the Death Knight ${$195617m1/10} Runic Power each time it deals damage.
 Tooltip          : Suffering $w1 Frost damage every $t1 sec.
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
@@ -1783,7 +1794,7 @@ Description      : Command the target to attack you.
 Tooltip          : Taunted.
 
 Name             : Horn of Winter (id=57330) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -2137,7 +2148,7 @@ Effects          :
 Description      : When your pet is at or above 50 Focus, your pet's Basic Attacks will deal $s1% more damage, but cost $s2% additional focus.
 
 Name             : Dark Transformation (id=63560) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -2147,7 +2158,7 @@ GCD              : 1.5 seconds
 Duration         : 15 seconds
 Cooldown         : 60 seconds
 Stance Mask      : 0x01000000
-Affecting spells : Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#2)
+Affecting spells : Unholy Command (316941 effect#1), Dark Transformation (325554 effect#1), Eternal Hunger (337381 effect#2)
 Family Flags     : 69
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ..x..... ........ ...x.... ........   ........ ........ ........ ........ 
@@ -2309,7 +2320,7 @@ School           : Shadow
 Spell Type       : Melee
 Range            : 100 yards
 Proc Chance      : 101%
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Rotten Touch (390276 effect#1)
 Triggered by     : Scourge Strike (55090)
 Family Flags     : 43, 71, 78
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2325,7 +2336,7 @@ Effects          :
 #1 (id=64510)    : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=214692)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.19000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.22800 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc55090
 
 Name             : Mastery: Blood Shield (id=77513) [Spell Family (15), Passive] 
@@ -2427,7 +2438,7 @@ Description      : When you deal damage with Death Strike while in Blood Presenc
 Tooltip          : Absorbs $w1 Physical damage.
 
 Name             : Outbreak (id=77575) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -2509,7 +2520,7 @@ Description      : $@spelldesc81136
 Tooltip          : Your next Death and Decay costs no Runes and generates no Runic Power.
 
 Name             : Runic Empowerment (id=81229) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Generic [tree=class, row=7, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -3179,7 +3190,7 @@ Description      : An unholy pact that prevents fatal damage, instead absorbing 
 If any healing absorption remains when this effect expires, you will die. This effect may only occur every $123981d.
 
 Name             : Unholy Blight (id=115989) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3599,7 +3610,7 @@ Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : Defile (id=152280) [Spell Family (15)] 
 Replaces         : Death and Decay (id=43265)
-Talent Entry     : Unholy [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -3900,11 +3911,7 @@ Description      : $@spelldesc190778
 Tooltip          : Movement speed slowed by $s2%.
 
 Name             : Aspect of the Beast (id=191384) [Spell Family (9), Passive] 
-Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(15, 30)]
-                 : Effect#2 [op=set, values=(15, 30)]
-                 : Effect#3 [op=set, values=(25, 50)]
-                 : Effect#4 [op=set, values=(25, 50)]
+Talent Entry     : Beast Mastery [tree=spec, row=3, col=1, max_rank=1, req_points=0]
 Class            : Hunter, Death Knight
 School           : Physical
 Spell Type       : None
@@ -3950,7 +3957,7 @@ Internal Cooldown: 1 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #1, #2), Plaguebringer (390178 effect#1)
 Triggered by     : Outbreak (77575)
 Family Flags     : 40, 43, 65, 78
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
@@ -3981,7 +3988,7 @@ Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #1, #2)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Ebon Fever (207269 effects: #1, #2, #3), Plaguebringer (332688 effect#1), Lingering Plague (338566 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Morbidity (377592 effects: #1, #2), Plaguebringer (390178 effect#1)
 Family Flags     : 40, 43, 78
 Attributes       : ........ ........ ........ ...x....   ...x...x ........ ........ ........ 
                  : ........ ........ ........ ....x...   ........ ........ ......x. ......x. 
@@ -4025,7 +4032,6 @@ Internal Cooldown: 1 seconds
 Stacks           : -1 initial, 6 maximum
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
-Affecting spells : Morbidity (377592 effects: #5, #6)
 Family Flags     : 112
 Attributes       : ....x... ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ..x..... ........ ........ ........   .......x ........ ..x..... ......x. 
@@ -4162,8 +4168,8 @@ Description      : A whirl of bone and gore batters all nearby enemies, dealing 
 Tooltip          : Dealing $196528s1 Shadow damage to nearby enemies every $t3 sec, and healing for $196545s1% of maximum health for each target hit (up to ${$s1*$s4}%).
 
 Name             : Icy Talons (id=194878) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=3, req_points=20]
-                 : Effect#1 [op=set, values=(2, 4, 6)]
+Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(3, 6)]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -4182,7 +4188,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Can Proc From Procs (122), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=286061)   : Apply Aura (6) | Trigger Spell with Value (231)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 194879 | Target: Self (1)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Trigger Spell: 194879 | Target: Self (1)
 Description      : Your Runic Power spending abilities increase your melee attack speed by $s1% for $194879d, stacking up to $194879u times.
 
 Name             : Icy Talons (id=194879) [Spell Family (15)] 
@@ -4209,7 +4215,7 @@ Description      : $@spelldesc194878
 Tooltip          : Attack speed increased $194878s1%.
 
 Name             : Frozen Pulse (id=194909) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Frost
 Spell Type       : None
@@ -4283,7 +4289,7 @@ Description      : Summon glacial spikes from the ground that advance forward, e
 Variables        : $CAP=$?$OWB==0[${$AP*0.98}][${($AP+$OAP)*2/3}]--2H, DW
 
 Name             : All Will Serve (id=194916) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=5, col=7, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -4302,7 +4308,7 @@ Effects          :
 Description      : Your Raise Dead spell summons an additional skeletal minion.
 
 Name             : Pestilent Pustules (id=194917) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -4478,7 +4484,7 @@ Effects          :
 Description      : $@spelldesc195617
 
 Name             : Bloodworms (id=195679) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Blood [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5076,7 +5082,7 @@ Description      : Instantly strike the target and 1 other nearby enemy, causing
 Tooltip          : Movement speed reduced by $s5%.
 
 Name             : Blooddrinker (id=206931) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5107,7 +5113,7 @@ You can move, parry, dodge, and use defensive abilities while channeling this ab
 Tooltip          : Draining $s1 health from the target every $t1 sec.
 
 Name             : Mark of Blood (id=206940) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Magic
@@ -5135,8 +5141,9 @@ Effects          :
 Description      : Places a Mark of Blood on an enemy for $d. The enemy's damaging auto attacks will also heal their victim for $206940s1% of the victim's maximum health.
 Tooltip          : Auto attacks will heal the victim for $206940s1% of their maximum health.
 
-Name             : Will of the Necropolis (desc=Passive Talent) (id=206967) [Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=1, req_points=20]
+Name             : Will of the Necropolis (id=206967) [Passive] 
+Talent Entry     : Generic [tree=class, row=8, col=3, max_rank=2, req_points=20]
+                 : Effect#2 [op=set, values=(20, 35)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5155,7 +5162,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Misc Value 2: 0xfffffff6 | Target: Self (1)
                    Affected School(s): All
 #2 (id=306101)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #3 (id=306102)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage taken below $s3% Health is reduced by $s2%.
@@ -5254,7 +5261,7 @@ Effects          :
 Description      : Grants the Death Knight $s1 rune.
 
 Name             : Runic Attenuation (id=207104) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5277,7 +5284,7 @@ Effects          :
 Description      : Auto attacks have a chance to generate ${$221322s1/10} Runic Power.
 
 Name             : Icecap (id=207126) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=0]
+Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5302,7 +5309,7 @@ Description      : Your Frost Strike$?s207230[, Frostscythe,][] and Obliterate c
 Variables        : $cd=${$m1/10}
 
 Name             : Avalanche (id=207142) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Frost [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -5489,7 +5496,7 @@ Description      : $@spelldesc281238
 Tooltip          : $@spellaura281238
 
 Name             : Bursting Sores (id=207264) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Unholy [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5539,7 +5546,7 @@ Effects          :
 Description      : $@spelldesc207264
 
 Name             : Ebon Fever (id=207269) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Unholy [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5568,7 +5575,7 @@ Effects          :
 Description      : Virulent Plague deals $s3% more damage over time in half the duration.
 
 Name             : Infected Claws (id=207272) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5623,7 +5630,7 @@ Tooltip          : Haste increased by $s1%.
 
 Name             : Clawing Shadows (id=207311) [Spell Family (15)] 
 Replaces         : Scourge Strike (id=55090)
-Talent Entry     : Unholy [tree=spec, row=6, col=1, max_rank=1, req_points=8, override="Scourge Strike" (id=55090)]
+Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100, override="Scourge Strike" (id=55090)]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -5634,7 +5641,7 @@ Max Targets      : 5
 GCD              : 1.5 seconds
 Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed Mace, Polearm, One-handed Sword, Two-handed Sword, Staff, Fist Weapon, Dagger, Spear
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Scourge Strike (317234 effect#1), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Death and Decay (188290 effect#2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1), Rotten Touch (390276 effect#1)
 Family Flags     : 43, 59, 78, 127
 Attributes       : ....x... ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -5649,7 +5656,7 @@ Effects          :
 #1 (id=306601)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=324719)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.46000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.55200 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : Deals $s2 Shadow damage and causes 1 Festering Wound to burst.
 
 Name             : Sludge Belcher (id=207313) [Spell Family (15), Passive] 
@@ -5671,7 +5678,7 @@ Effects          :
 Description      : Raise Dead now summons an abomination instead of a ghoul, with improved innate abilities.
 
 Name             : Epidemic (id=207317) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=4, col=4, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -5944,7 +5951,7 @@ Effects          :
 Description      : A ranged shot that causes Physical damage.
 
 Name             : Wraith Walk (id=212552) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -6027,10 +6034,75 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Treat as Area Effect (175), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=315517)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.20000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=872659)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
+
+Name             : Tak'theritrix's Command (id=215068) [Spell Family (15), Passive] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Req. Max Level   : 49
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
+Effects          :
+#1 (id=319410)   : Apply Aura (6) | Proc Trigger Spell (42): Tak'theritrix's Command
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 215074 | Target: Self (1)
+Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $215069d, increasing their damage by $215069s1%.
+
+Name             : Tak'theritrix's Command (id=215069) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 30 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ....x... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72), Allow Aura While Dead (116), Do Not Display Range (126)
+Effects          :
+#1 (id=319411)   : Apply Aura (6) | Modify Damage Done% (79)
+                   Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 0.50000 | Misc Value: 0x7f | Target: Unknown(25)
+                   Affected School(s): All
+#2 (id=319412)   : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : $@spelldesc215068
+Tooltip          : All damage done increased by $s1%.
+
+Name             : Tak'theritrix's Command (id=215074) [Spell Family (5), Hidden] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Triggered by     : Tak'theritrix's Command (215068)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=319467)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+Description      : $@spelldesc215068
 
 Name             : Epidemic (id=215969) [Spell Family (15)] 
 Class            : Death Knight
@@ -6053,7 +6125,7 @@ Effects          :
 #1 (id=321210)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=328301)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.08000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.09600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
 Description      : $@spelldesc207317
 
 Name             : Ossuary (id=219786) [Spell Family (15), Passive] 
@@ -6102,7 +6174,7 @@ Description      : $@spelldesc219786
 Tooltip          : Death Strike cost reduced by ${$m1/-10} Runic Power.
 
 Name             : Tombstone (id=219809) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Blood [tree=spec, row=6, col=2, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -6484,8 +6556,50 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
+Name             : Item - Death Knight T21 Unholy 2P Bonus (id=251871) [Spell Family (15), Passive, Hidden] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... x...x... x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72), Can Proc From Procs (122), Not In Arena or Rated Battleground (144), Not In Proving Grounds (401)
+Effects          :
+#1 (id=471480)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
+
+Name             : Coils of Devastation (id=253367) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 4 seconds
+Attributes       : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ x....... ........ .....x..   .......x ........ ........ ........ 
+                 : ........ x....... x....... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ......x. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ .x...... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), Include In Advanced Combat Log (72), Can't Crit (93), DoT Stacking Rule (103), Ignore Damage Taken Modifiers (136), Not In Arena or Rated Battleground (144), Ignore Caster Damage Modifiers (221), Aura Points On Client (268), Rolling Periodic (334), Not In Proving Grounds (401)
+Effects          :
+#1 (id=473764)   : Apply Aura (6) | Periodic Damage (3): shadow every 2 seconds
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc251871
+Tooltip          : Suffering $w1 Shadow damage every $t sec.
+
 Name             : Inexorable Assault (id=253593) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7670,7 +7784,7 @@ Description      : $@spelldesc273946
 Tooltip          : Damage and healing done by your next Death Strike increased by $s1%.
 
 Name             : Grip of the Dead (id=273952) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -7691,7 +7805,7 @@ Effects          :
 Description      : $?s152280[Defile][Death and Decay] reduces the movement speed of enemies within its area by $s1%, decaying by $s2% every sec.
 
 Name             : Voracious (id=273953) [Spell Family (15), Passive] 
-Talent Entry     : Blood [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Blood [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -7782,7 +7896,7 @@ Effects          :
 Description      : Bursting a Festering Wound grants you $s1 Strength for $274373d, stacking. Stacking this effect does not extend its duration.
 
 Name             : Consumption (id=274156) [Spell Family (15)] 
-Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Blood [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -7857,7 +7971,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: Cone Front (104)
 
 Name             : Apocalypse (id=275699) [Spell Family (15)] 
-Talent Entry     : Unholy [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : Melee
@@ -7868,7 +7982,7 @@ Requires weapon  : One-handed Axe, Two-handed Axe, One-handed Mace, Two-handed M
 Cooldown         : 90 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Stance Mask      : 0x01000000
-Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
+Affecting spells : Mastery: Dreadblade (77515 effects: #1, #2), Might of the Frozen Wastes (81333 effect#2), Death Knight (137005 effect#2), Frost Death Knight (137006 effects: #1, #2), Unholy Death Knight (137007 effects: #1, #2), Blood Death Knight (137008 effects: #1, #2), Army of the Damned (276837 effect#3), Brittle (374557 effect#1), Tightening Grasp (374776 effect#1)
 Family Flags     : 43, 56, 78, 127
 Attributes       : ........ ........ x.x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ..x..... ........ ........ 
@@ -7954,7 +8068,7 @@ Effects          :
 Description      : Death Coil infects the target with Harrowing Decay, dealing ${$s1*($275931d/$275931t1)} Shadow damage over $275931d.
 
 Name             : Harbinger of Doom (id=276023) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -7977,7 +8091,7 @@ Effects          :
 Description      : Sudden Doom triggers $s2% more often and can accumulate up to ${$m1+1} charges.
 
 Name             : Death's Reach (id=276079) [Spell Family (15), Passive] 
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Generic [tree=class, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -8003,7 +8117,7 @@ Description      : Increases the range of Death Grip by $s1 yds.
 Killing an enemy that yields experience or honor resets the cooldown of Death Grip.
 
 Name             : Army of the Damned (id=276837) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -8025,14 +8139,16 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=731639)   : Apply Aura (6) | Dummy (4)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Apocalypse by $<cd1> sec and Army of the Dead by $<cd2> sec. 
-
-Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.
+#3 (id=1026288)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -45000 | Scaled Value: -45000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Apocalypse (275699)
+                   Family Flags: 56
+Description      : Apocalypse's cooldown is reduced by ${$s3/-1000} sec. Additionally, $?s207317[Death Coil and Epidemic reduce][Death Coil reduces] the cooldown of Army of the Dead by $<cd2> sec.
 Variables        : $cd1=${$s1/10}
 $cd2=${$s2/10}
 
 Name             : Pestilence (id=277234) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -8204,8 +8320,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268), Scales with Casting Item's Level (354), Check Required Target Aura By Caster (382)
 Effects          :
 #1 (id=734211)   : Apply Aura (6) | Dummy (4) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 1597.797 (coefficient=11.86503) | PvP Coefficient: 0.50000 | Target: Self (1)
-#2 (id=734212)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 1607.426 (coefficient=11.93654) | PvP Coefficient: 0.50000 | Target: Self (1)
+#2 (id=1026898)  : Dummy (3)
                    Base Value: 33 | Scaled Value: 33 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
 
@@ -9014,7 +9130,7 @@ Effects          :
 Description      : Your spells and abilities have a chance to increase all secondary stats by $s1 for $280713d, stacking up to $280713u times.
 
 Name             : Cold Heart (id=281208) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Frost [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -9081,7 +9197,7 @@ Effects          :
 Description      : $@spelldesc281208
 
 Name             : Obliteration (id=281238) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=1]
+Talent Entry     : Frost [tree=spec, row=10, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : Melee
@@ -10439,7 +10555,7 @@ Effects          :
 Description      : Increases Howling Blast damage done by an additional $s1%.
 
 Name             : Festering Strike (id=316867) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=4, col=2, max_rank=3, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=4, col=2, max_rank=2, req_points=0]
                  : Effect#1 [op=set, values=(10, 20, 30)]
 Class            : Death Knight
 School           : Physical
@@ -10489,8 +10605,8 @@ Effects          :
 Description      : $?a137008[Heart Strike hits up to $s3]?a137006[Obliterate hits up to $s2]?s207311[Clawing Shadows][Scourge Strike]$?a137007[ hits up to ${$55090s4-1}][] additional $?a137006[enemy][enemies] while you remain in Death and Decay.
 
 Name             : Unholy Command (id=316941) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=7, col=2, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(500, 1000)]
+Talent Entry     : Unholy [tree=spec, row=6, col=3, max_rank=2, req_points=8]
+                 : Effect#1 [op=set, values=(-8000, -15000)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -10504,9 +10620,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
 Effects          :
-#1 (id=801793)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Damage Dealt by Death Coil reduces the cooldown of Dark Transformation by ${$s1/1000}.1 sec.
+#1 (id=801793)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -8000 | Scaled Value: -8000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Dark Transformation (63560)
+                   Family Flags: 69
+Description      : The cooldown of Dark Transformation is reduced by ${$s1/-1000} sec.
 
 Name             : Improved Vampiric Blood (id=317133) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=7, col=2, max_rank=2, req_points=8]
@@ -10600,29 +10718,6 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your next Obliterate also deals Frost damage.
 
-Name             : Scourge Strike (id=317234) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=5, col=1, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(10, 20)]
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Spell Level      : 56
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ x....... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Only In Spellbook Until Learned (240), Cooldown Shared With AI Group (418)
-Effects          :
-#1 (id=802301)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311)
-                   Family Flags: 59, 71
-Description      : Scourge Strike damage increased by $s1%.
-
 Name             : Relish in Blood (id=317610) [Spell Family (15), Passive] 
 Talent Entry     : Blood [tree=spec, row=6, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
@@ -10683,7 +10778,7 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=803165)   : School Damage (2): shadow
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.26000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.31200 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 Description      : Deals $s1 Shadow damage.
 
 Name             : Frostbolt (id=317792) 
@@ -10695,7 +10790,7 @@ Spell Level      : 22
 Range            : 40 yards
 Cast Time        : 2 seconds
 Velocity         : 35 yards/sec
-Duration         : 4 seconds
+Duration         : 6 seconds
 Stance Mask      : 0x00000040
 Attributes       : ........ ........ ..x..... ........   ........ .x...... ........ ...x.... 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
@@ -10708,9 +10803,9 @@ Attributes       : ........ ........ ..x..... ........   ........ .x...... .....
                  : Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Discount Power On Miss (59), Allow While Not Shapeshifted (caster form) (83), Not In Spellbook (143), Show Mechanic as Combat Text (213), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=803166)   : School Damage (2): frost
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.30160 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.33176 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=803167)   : Apply Aura (6) | Decrease Movement Speed% (33)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
 Description      : Deals $s1 Frost damage and reduces their movement speed by $s2% for $d.
 Tooltip          : Movement speed reduced by $w2%.
 
@@ -10736,7 +10831,7 @@ Description      : $@spelldesc207167
 Tooltip          : Movement slowed by $w1%.
 
 Name             : Unholy Pact (id=319230) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Unholy [tree=spec, row=6, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -11631,6 +11726,57 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Death and Decay (188290)
                    Family Flags: 118
+
+Name             : Plaguebringer (id=332685) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Internal Cooldown: 0.7 seconds
+Stacks           : 5 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ .......x .......x   ........ ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ...x.... 
+                 : ........ ........ ....x... ........   ........ ....x... ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Allow Cast While Dead (23), No Aura Cancel (31), No Threat (42), Allow Dead Target (64), Not an Action (92), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Aura Points On Client (268), Don't close loot window (379), Allow during spell override (404), Do Not Consume Aura Stack On Proc (428), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=827450)   : Apply Aura (6) | Dummy (4)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Marrowrend, Obliterate, and Festering Strike cause your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
+
+Tooltip          : Marrowrend, Obliterate, and Festering Strike cause your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
+
+Name             : Plaguebringer (id=332688) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 5 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Extra Initial Period (169), Aura Points On Client (268), Allow during spell override (404)
+Effects          :
+#1 (id=827454)   : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685)
+                   Family Flags: 40, 57, 58
+Description      : $@spelldesc332685
+Tooltip          : Disease damage occurring ${100*(1/(1+$s1/100)-1)}% more quickly.
 
 Name             : Rune of Razorice (id=332944) [Spell Family (15)] 
 Class            : Death Knight
@@ -12700,7 +12846,7 @@ Effects          :
 Description      : Wielding a two-handed weapon increases Obliterate damage by $81333s1%, and your auto attack critical strikes always grant Killing Machine.
 
 Name             : Soul Reaper (id=343294) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=10, col=5, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadowfrost
 Spell Type       : Melee
@@ -13413,8 +13559,7 @@ Effects          :
 Description      : $@spelldesc206930
 
 Name             : Merciless Strikes (id=373923) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
-                 : Effect#1 [op=set, values=(2, 4)]
+Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13433,7 +13578,7 @@ Effects          :
 Description      : Increases Critical Strike chance by $s1%.
 
 Name             : Acclimation (id=373926) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=5, col=1, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13516,8 +13661,7 @@ Effects          :
 Description      : Increases Avoidance by $s2%.
 
 Name             : Might of Thassarian (id=374111) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=5, col=3, max_rank=1, req_points=8]
-                 : Effect#1 [op=set, values=(2, 4)]
+Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13536,10 +13680,10 @@ Effects          :
 Description      : Increases Strength by $s1%.
 
 Name             : Unholy Bond (id=374261) [Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=3, req_points=20]
-                 : Effect#1 [op=set, values=(10, 20, 30)]
-                 : Effect#2 [op=set, values=(10, 20, 30)]
-                 : Effect#3 [op=set, values=(10, 20, 30)]
+Talent Entry     : Generic [tree=class, row=9, col=3, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(10, 20)]
+                 : Effect#2 [op=set, values=(10, 20)]
+                 : Effect#3 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13605,10 +13749,7 @@ Description      : $@spelldesc374265
 Tooltip          : Haste increased by $w1%.
 
 Name             : Improved Death Strike (id=374277) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=3, req_points=20]
-                 : Effect#1 [op=set, values=(20, 40, 60)]
-                 : Effect#2 [op=set, values=(20, 40, 60)]
-                 : Effect#4 [op=set, values=(3, 6, 9)]
+Talent Entry     : Generic [tree=class, row=3, col=4, max_rank=1, req_points=0]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13623,11 +13764,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
 Effects          :
 #1 (id=1000060)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #2 (id=1000061)  : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 3 (23)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #3 (id=1000062)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
@@ -13635,13 +13776,13 @@ Effects          :
                    Affected Spells: Death Strike (49998), Death Strike Off-Hand (66188)
                    Family Flags: 4
 #4 (id=1000063)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #5 (id=1012454)  : Apply Aura (6) | Dummy (4)
                    Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Death Strike's cost is reduced by $?a137008[${$s5/-10}][${$s3/-10}], and its healing is increased by $?a137008[$s4%][$s1%].
 
 Name             : Assimilation (id=374383) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=7, col=2, max_rank=1, req_points=8]
+Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13712,7 +13853,8 @@ Description      : $@spelldesc374504
 Tooltip          : Damage taken from $@auracaster increased by $s1%.
 
 Name             : Rune Mastery (id=374574) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(3, 6)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13729,15 +13871,17 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Update Passives on Apply/Remove (344)
 Effects          :
-#1 (id=1000477)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+#1 (id=1000477)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Effect 1 (3)
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 3 | Misc Value 2: 1927 (Label) | Target: Self (1)
+                   Affected Spells (Label): Rune Mastery (374585)
 Description      : Consuming a Rune has a chance to increase your Strength by $374585s1% for $374585d.
 
 Name             : Rune Mastery (id=374585) [Spell Family (15)] 
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
-Duration         : 6 seconds
+Duration         : 8 seconds
+Labels           : 1927: Rune Mastery (374574 effect#1)
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -13749,12 +13893,13 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Points On Client (268)
 Effects          :
 #1 (id=1000492)  : Apply Aura (6) | Modify Total Stat% (137)
-                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value 2: 0x1 | Target: Self (1)
 Description      : $@spelldesc374574
 Tooltip          : Strength increased by $w1%
 
 Name             : Blood Draw (id=374598) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Generic [tree=class, row=10, col=4, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=8, col=2, max_rank=2, req_points=20]
+                 : Effect#2 [op=set, values=(0, -60000)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -13770,6 +13915,9 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1000517)  : Apply Aura (6) | Trigger Spell Based on Health% (468)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Misc Value: 1 | Trigger Spell: 374606 | Target: Self (1)
+#2 (id=1026270)  : Apply Aura (6) | Apply Flat Modifier w/ Label (219): Spell Duration (1)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Misc Value 2: 1926 (Label) | Target: Self (1)
+                   Affected Spells (Label): Blood Draw (374609)
 Description      : When you fall below $s1% health you drain $374606s1 health from nearby enemies. Can only occur every $374609d.
 
 Name             : Blood Draw (id=374606) [Spell Family (15)] 
@@ -13800,6 +13948,7 @@ Class            : Death Knight
 School           : Physical
 Spell Type       : None
 Duration         : 180 seconds
+Labels           : 1926: Blood Draw (374598 effect#2)
 Triggered by     : Blood Draw (374606)
 Attributes       : ........ x....... .......x x.xx.x..   .....x.. ..x..... ........ ........ 
                  : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
@@ -13977,7 +14126,7 @@ Tooltip          : Damage taken from $@auracaster increased by $s1%.
 
 Name             : Runic Command (id=376251) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Frost [tree=spec, row=4, col=2, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(50, 50)]
+                 : Effect#1 [op=set, values=(50, 100)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14161,7 +14310,7 @@ Effects          :
 Description      : Remorseless Winter damage is increased by $s2%. The first time Remorseless Winter deals damage to $s1 different enemies, you gain Rime.
 
 Name             : Frigid Executioner (id=377073) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Frost [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14207,7 +14356,7 @@ Effects          :
 Description      : $@spelldesc377073
 
 Name             : Rage of the Frozen Champion (id=377076) [Spell Family (15), Passive] 
-Talent Entry     : Frost [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Frost [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14534,7 +14683,7 @@ Description      : $@spelldesc377226
 Tooltip          : Grants ${$s1*$mas}% Mastery.
 
 Name             : Piercing Chill (id=377351) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=1]
+Talent Entry     : Frost [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=100]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14577,7 +14726,7 @@ Description      : $@spelldesc377351
 Tooltip          : Damage taken from $@auracaster's Chill Streak increased by $s1%.
 
 Name             : Enduring Chill (id=377376) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Frost [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=0]
+Talent Entry     : Frost [tree=spec, row=7, col=7, max_rank=1, req_points=8, select_idx=200]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14601,7 +14750,7 @@ Effects          :
 Description      : Chill Streak's bounce range is increased by $s2 yds and each time Chill Streak bounces it has a $s1% chance to increase the maximum number of bounces by $s3.
 
 Name             : Unholy Aura (id=377440) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+Talent Entry     : Unholy [tree=spec, row=9, col=5, max_rank=2, req_points=20]
                  : Effect#3 [op=set, values=(10, 20)]
 Class            : Death Knight
 School           : Physical
@@ -14627,7 +14776,7 @@ Effects          :
 Description      : All enemies within $a2 yards take $s3% increased damage from your minions.
 
 Name             : Reaping (id=377514) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=7, col=5, max_rank=1, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=7, col=6, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14693,30 +14842,8 @@ Effects          :
 Description      : $@spelldesc377537
 Tooltip          : Shadow damage taken from $@auracaster is increased by $s1%.
 
-Name             : Deadly Coil (id=377577) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Unholy [tree=spec, row=5, col=4, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(-50, -100)]
-Class            : Death Knight
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx x....... ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   x....... ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
-Effects          :
-#1 (id=1005499)  : Apply Aura (6) | Add Flat Modifier (107): Spell Resource Cost (14)
-                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Death Coil (47541), Death Coil (47632), Death Coil (47633)
-                   Family Flags: 13
-Description      : Reduces the Runic Power cost of Death Coil by ${$s1/-10}.
-
 Name             : Improved Death Coil (id=377580) [Spell Family (15), Passive, Hidden] 
-Talent Entry     : Unholy [tree=spec, row=7, col=4, max_rank=2, req_points=8]
+Talent Entry     : Unholy [tree=spec, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(20, 40)]
 Class            : Death Knight
 School           : Physical
@@ -14742,7 +14869,7 @@ Effects          :
 Description      : Death Coil deals $s1% additional damage and seeks out $s2 additional nearby enemy.
 
 Name             : Replenishing Wounds (id=377585) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=4, col=1, max_rank=1, req_points=0]
+Talent Entry     : Unholy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14830,13 +14957,15 @@ Description      : $@spelldesc377590
 Tooltip          : Strength increased by $w1%.
 
 Name             : Morbidity (id=377592) [Spell Family (15), Passive] 
-Talent Entry     : Unholy [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(3, 6)]
-                 : Effect#2 [op=set, values=(3, 6)]
-                 : Effect#3 [op=set, values=(3, 6)]
-                 : Effect#4 [op=set, values=(3, 6)]
-                 : Effect#5 [op=set, values=(3, 6)]
-                 : Effect#6 [op=set, values=(3, 6)]
+Talent Entry     : Unholy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(1, 3)]
+                 : Effect#2 [op=set, values=(1, 3)]
+                 : Effect#3 [op=set, values=(1, 3)]
+                 : Effect#4 [op=set, values=(1, 3)]
+                 : Effect#5 [op=set, values=(1, 3)]
+                 : Effect#6 [op=set, values=(1, 3)]
+                 : Effect#7 [op=set, values=(1, 3)]
+                 : Effect#8 [op=set, values=(1, 3)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -14851,29 +14980,37 @@ Attributes       : ......x. ........ ........ .......x   ........ ........ .....
                  : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1005519)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
                    Family Flags: 40
 #2 (id=1005522)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
                    Affected Spells: Virulent Plague (191587), Virulent Eruption (191685)
                    Family Flags: 40
 #3 (id=1005550)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
 #4 (id=1005551)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
                    Affected Spells: Unholy Blight (115989), Unholy Blight (115994)
                    Family Flags: 93
-#5 (id=1005555)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Festering Wound (194310)
-                   Family Flags: 112
-#6 (id=1005556)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Festering Wound (194310)
-                   Family Flags: 112
+#5 (id=1005555)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078)
+                   Family Flags: 57
+#6 (id=1005556)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078)
+                   Family Flags: 57
+#7 (id=1027001)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
+                   Affected Spells: Frost Fever (55095)
+                   Family Flags: 58
+#8 (id=1027002)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
+                   Affected Spells: Frost Fever (55095)
+                   Family Flags: 58
 Description      : Diseased enemies take $s1% increased damage from you per disease they are affected by.
 
 Name             : Leeching Strike (id=377629) [Spell Family (15), Passive] 
@@ -14921,7 +15058,7 @@ Description      : Dancing Rune Weapon generates $s2 Bone Shield charges. When a
 
 Name             : Shattering Bone (id=377640) [Spell Family (15), Passive, Hidden] 
 Talent Entry     : Blood [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#2 [op=set, values=(0, 2)]
+                 : Effect#1 [op=set, values=(0, 100)]
 Class            : Death Knight
 School           : Physical
 Spell Type       : None
@@ -15072,7 +15209,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Abomination Limb (id=383269) [Spell Family (15)] 
-Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
+Talent Entry     : Generic [tree=class, row=10, col=2, max_rank=1, req_points=20]
 Class            : Death Knight
 School           : Shadow
 Spell Type       : None
@@ -15163,5 +15300,407 @@ Effects          :
 #1 (id=1015149)  : School Damage (2): shadow
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.28400 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Caster (22) -> AOE enemy (instant) (16)
 Description      : $@spelldesc383269
+
+Name             : Clenching Grasp (id=389679) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=5, col=5, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1026071)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Death Grip slows enemy movement speed by ${$389681s1*-1}% for $389681d.
+
+Name             : Clenching Grasp (id=389681) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display Range (126), Aura Points On Client (268), Not In Spellbook Until Learned (269), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026073)  : Apply Aura (6) | Decrease Movement Speed% (33)
+                   Base Value: -50 | Scaled Value: -50 | PvP Coefficient: 1.00000 | Mechanic: Snare | Target: Enemy (6)
+Description      : $@spelldesc389679
+Tooltip          : Movement speed reduced by $w1%.
+
+Name             : Unholy Endurance (id=389682) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ...x.... ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Not In Spellbook Until Learned (269)
+Effects          :
+#1 (id=1026074)  : Apply Aura (6) | Add Flat Modifier (107): Spell Duration (1)
+                   Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+                   Affected Spells: Lichborne (49039)
+                   Family Flags: 36
+Description      : Increases Lichborne duration by ${$s1/1000} sec and while active damage taken is reduced by $49039s8%.
+
+Name             : Feasting Strikes (id=390161) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.7 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1026779)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Festering Strike and $?s207311[Clawing Shadows][Scourge Strike] have a $s1% chance to generate $390162s1 Rune.
+
+Name             : Feasting Strikes (id=390162) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Include In Advanced Combat Log (72), Aura Points On Client (268)
+Effects          :
+#1 (id=1026780)  : Energize Power (30)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: rune | Target: Self (1)
+Description      : $@spelldesc390161
+
+Name             : Runic Mastery (id=390166) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Unholy [tree=spec, row=4, col=3, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(100, 200)]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Not In Spellbook (143)
+Effects          :
+#1 (id=1026788)  : Apply Aura (6) | Modify Max Resource (418)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
+Description      : Increases your maximum Runic Power by ${$s1/10}.
+
+Name             : Plaguebringer (id=390175) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Internal Cooldown: 0.7 seconds
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ .x...... 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Threat (42), Not an Action (92), Aura Points On Client (268), Do Not Display Cast Time (441)
+Effects          :
+#1 (id=1026801)  : Apply Aura (6) | Trigger Spell with Value (231)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Trigger Spell: 390178 | Target: Self (1)
+Description      : Scourge Strike causes your disease damage to occur ${100*(1/(1+$s1/100)-1)}% more quickly for $332688d.
+
+
+Name             : Plaguebringer (id=390178) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Range            : 100 yards
+Duration         : 5 seconds
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Triggered by     : Plaguebringer (390175)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Extra Initial Period (169), Aura Points On Client (268), Allow during spell override (404)
+Effects          :
+#1 (id=1026806)  : Apply Aura (6) | Add Percent Modifier (108): Spell Tick Time (19)
+                   Base Value: -60 | Scaled Value: -60 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Affected Spells: Blood Plague (55078), Frost Fever (55095), Virulent Plague (191587), Virulent Eruption (191685)
+                   Family Flags: 40, 57, 58
+Description      : $@spelldesc390175
+Tooltip          : Disease damage occurring ${100*(1/(1+$s1/100)-1)}% more quickly.
+
+Name             : Magus of the Dead (id=390196) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ....x.x. x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Passive (6), Do Not Log (8), Not In Spellbook (143), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026837)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Apocalypse and Army of the Dead also summon a Magus of the Dead who hurls Frostbolts and Shadow Bolts at your foes.
+
+Name             : Ruptured Viscera (id=390220) [Spell Family (15)] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1026875)  : School Damage (2): shadow
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 0.24000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : When your ghouls expire, they explode in viscera dealing $s1 Shadow damage to nearby enemies. 
+
+Name             : Ruptured Viscera (id=390236) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=200]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Aura Points On Client (268)
+Effects          :
+#1 (id=1026902)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : When your ghouls expire, they explode in viscera dealing $390220s1 Shadow damage to nearby enemies. 
+
+Name             : Commander of the Dead (id=390259) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=10, col=3, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1026942)  : Apply Aura (6) | Proc Trigger Spell (42): Commander of the Dead
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 390260 | Target: Self (1)
+Description      : Dark Transformation also empowers your $?s207349[Dark Arbiter][Gargoyle] and Army of the Dead for $215069d, increasing their damage by $215069s1%.
+
+Name             : Commander of the Dead (id=390260) [Spell Family (15), Hidden] 
+Class            : Death Knight
+School           : Shadow
+Spell Type       : None
+Triggered by     : Commander of the Dead (390259)
+Attributes       : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Include In Advanced Combat Log (72)
+Effects          :
+#1 (id=1026943)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 100 yards | Target: Unknown(120)
+Description      : $@spelldesc390259
+
+Name             : Eternal Agony (id=390268) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=7, col=3, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ..x.x.x. x....... ........ 
+                 : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026963)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Death Coil increases the duration of Dark Transformation by $s1 sec.
+
+Name             : Coil of Devastation (id=390270) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Unholy [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ....x... x...x... x....... ........ 
+                 : Yellow Melee, Yellow Ranged, Generic Hostile Spell, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1026970)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 35 | Scaled Value: 35 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.
+
+Name             : Rotten Touch (id=390275) [Spell Family (15), Passive, Hidden] 
+Talent Entry     : Unholy [tree=spec, row=6, col=6, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ x....... x....... ........ 
+                 : Yellow Ranged, Magic Hostile Spell
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Can Proc From Procs (122)
+Effects          :
+#1 (id=1026979)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Sudden Doom causes your next Death Coil to also increase your $?s207311[Clawing Shadows][Scourge Strike] damage against the target by $390276s1% for $390276d.
+
+Name             : Rotten Touch (id=390276) [Spell Family (15)] 
+Class            : Death Knight
+School           : Physical
+Spell Type       : Magic
+Range            : 100 yards
+Duration         : 6 seconds
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ..x..... ......x. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Always Hit (114), Do Not Display Range (126), Aura Points On Client (268), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026981)  : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Affected Spells: Scourge Strike (55090), Scourge Strike (70890), Clawing Shadows (207311)
+                   Family Flags: 59, 71
+Description      : $@spelldesc390275
+Tooltip          : Scourge Strike damage taken from $@auracaster is increased by $s1%.
+
+Name             : [NYI] Plaguebearer (id=390279) [Spell Family (15)] 
+Talent Entry     : Unholy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
+Class            : Death Knight
+School           : Shadow
+Spell Type       : Magic
+Resource         : 30 Runic Power (6) (id=265594)
+Range            : 30 yards
+GCD              : 1.5 seconds
+Cooldown         : 45 seconds
+Proc Chance      : 101%
+Stance Mask      : 0x01000000
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ....x...   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Allow While Not Shapeshifted (caster form) (83), Do Not Auto Select Target with Initiates Combat (220), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1026986)  : Dummy (3)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : Inflict disease upon your enemies spreading Festering Wounds equal to the amount currently active on your target to $s1 nearby enemies.
+
+Name             : Superstrain (id=390283) [Spell Family (15), Passive] 
+Talent Entry     : Unholy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
+Class            : Death Knight
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Threat (42), Allow Aura While Dead (116), Allow While Riding Vehicle (204), Aura Points On Client (268)
+Effects          :
+#1 (id=1026992)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Your Virulent Plague also applies Frost Fever and Blood Plague.
 
 
