@@ -4460,6 +4460,29 @@ struct yulon_spell_t : public monk_spell_t
 };
 
 // ==========================================================================
+// Summon White Tiger Statue
+// ==========================================================================
+
+struct summon_white_tiger_statue_spell_t : public monk_spell_t
+{
+  summon_white_tiger_statue_spell_t( monk_t* p, util::string_view options_str )
+    : monk_spell_t( "summon_white_tiger_statue", p, p->talent.general.summon_white_tiger_statue )
+  {
+    parse_options( options_str );
+
+    harmful       = false;
+    may_proc_bron = false; // TODO Check if this procs Bron
+  }
+
+  void execute() override
+  {
+    monk_spell_t::execute();
+
+    p()->pets.white_tiger_statue.spawn( p()->talent.general.summon_white_tiger_statue->duration(), 1 );
+  }
+};
+
+// ==========================================================================
 // Weapons of Order - Kyrian Covenant Ability
 // ==========================================================================
 
@@ -6716,6 +6739,8 @@ action_t* monk_t::create_action( util::string_view name, util::string_view optio
     return new spear_hand_strike_t( this, options_str );
   if ( name == "spinning_crane_kick" )
     return new spinning_crane_kick_t( this, options_str );
+  if ( name == "summon_white_tiger_statue" ) 
+      return new summon_white_tiger_statue_spell_t( this, options_str );
   if ( name == "vivify" )
     return new vivify_t( *this, options_str );
 
