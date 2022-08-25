@@ -532,7 +532,7 @@ public:
 	buff_t* ghoulish_frenzy;
 	// buff_t* unholy_aura; -- NYI
 	// buff_t* commander_of_the_dead; -- NYI
-	// buff_t* plaguebringer; -- NYI
+	buff_t* plaguebringer; 
 
     // Conduits
     buff_t* meat_shield;
@@ -2208,6 +2208,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + frenzied_monstrosity -> value();
 
+    m *= 1.0 + ghoulish_frenzy->value();
+
     return m;
   }
 
@@ -2232,6 +2234,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     // The default value stores the %damage increase
     if ( frenzied_monstrosity -> up() )
       haste *= 1.0 / ( 1.0 + frenzied_monstrosity -> data().effectN( 2 ).percent() );
+
+    if ( ghoulish_frenzy->up() )
+      haste *= 1.0 / ( 1.0 + ghoulish_frenzy->data().effectN( 2 ).percent() );
 
     return haste;
   }
@@ -2287,8 +2292,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_duration( 0_s );
 	  
 	ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell( 377587 ) )
-	  -> set_default_value_from_effect( 1 )
-	  -> set_duration( 0_s );
+	  -> set_default_value_from_effect( 1 );
   }
 };
 
@@ -3312,7 +3316,7 @@ struct blood_plague_t : public death_knight_disease_t
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= .75;
+      base_multiplier *= 1;
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
@@ -3378,7 +3382,7 @@ struct frost_fever_t : public death_knight_disease_t
     // The "reduced effectiveness" mentioned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= .375;
+      base_multiplier *= 1;
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
@@ -3445,7 +3449,7 @@ struct virulent_plague_t : public death_knight_disease_t
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
-      base_multiplier *= .375;
+      base_multiplier *= 1;
     // Create superstrain-triggered spells if needed
     else if ( p -> legendary.superstrain -> ok() )
     {
@@ -3453,6 +3457,13 @@ struct virulent_plague_t : public death_knight_disease_t
         "blood_plague_superstrain", p, true ) );
       superstrain_diseases.push_back( get_action<frost_fever_t>(
         "frost_fever_superstrain", p, true ) );
+    }
+    else if ( p->talent.unholy.superstrain.ok() )
+    {
+      {
+        superstrain_diseases.push_back( get_action<blood_plague_t>( "blood_plague_superstrain", p, true ) );
+        superstrain_diseases.push_back( get_action<frost_fever_t>( "frost_fever_superstrain", p, true ) );
+      }
     }
   }
   void tick( dot_t* d ) override
@@ -4726,6 +4737,9 @@ struct dark_transformation_buff_t : public buff_t
     if ( p -> legendary.frenzied_monstrosity -> ok() )
       debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> frenzied_monstrosity -> trigger();
 
+    if ( p->talent.unholy.ghoulish_frenzy.ok() )
+      debug_cast<pets::ghoul_pet_t*>( p->pets.ghoul_pet )->ghoulish_frenzy->trigger();
+
     return buff_t::trigger( s, v, c, d );
   }
 
@@ -4733,6 +4747,9 @@ struct dark_transformation_buff_t : public buff_t
   {
     debug_cast<pets::ghoul_pet_t*>( debug_cast<death_knight_t*>( player )
         -> pets.ghoul_pet ) -> frenzied_monstrosity -> expire();
+
+    debug_cast<pets::ghoul_pet_t*>( debug_cast<death_knight_t*>( player )->pets.ghoul_pet )
+        ->ghoulish_frenzy->expire();
   }
 };
 
@@ -4800,6 +4817,11 @@ struct dark_transformation_t : public death_knight_spell_t
       if ( p() -> legendary.frenzied_monstrosity.ok() )
       {
         p() -> buffs.frenzied_monstrosity -> trigger();
+      }
+
+      if ( p()->talent.unholy.ghoulish_frenzy.ok() )
+      {
+        p()->buffs.ghoulish_frenzy->trigger();
       }
 
       if ( p() -> talent.unholy.unholy_command.ok() )
@@ -5767,7 +5789,7 @@ struct festering_wound_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_melee_attack_t
 {
   festering_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "festering_strike", p, p -> find_spell( 85948 ) )
+    death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -7217,6 +7239,11 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
     {
       p() -> buffs.deaths_due->trigger();
+    }
+
+    if ( p() -> talent.unholy.plaguebringer.ok() )
+    {
+      p()->buffs.plaguebringer->trigger();
     }
   }
 
@@ -9963,6 +9990,16 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_blight = new unholy_blight_buff_t( this );
 
+  buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell( 377587 ) )
+        ->add_invalidate( CACHE_ATTACK_SPEED )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  buffs.plaguebringer =
+      make_buff( this, "plaguebringer", find_spell( 390178 ) )
+          ->set_trigger_spell( talent.unholy.plaguebringer )
+          ->set_cooldown( talent.unholy.plaguebringer->internal_cooldown() )
+          ->set_default_value( talent.unholy.plaguebringer->effectN( 1 ).percent() )
+          ->set_max_stack( 1 );
 
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
@@ -10506,6 +10543,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
   }
 
+  if ( buffs.ghoulish_frenzy->up() )
+  {
+    m *= 1.0 + buffs.ghoulish_frenzy->data().effectN( 2 ).percent();
+  }
+
   if ( buffs.final_sentence->up() &&
         ( dbc::is_school( school, SCHOOL_PHYSICAL ) || dbc::is_school( school, SCHOOL_SHADOW ) || dbc::is_school( school, SCHOOL_FROST ) ) )
   {
@@ -10610,6 +10652,11 @@ double death_knight_t::composite_melee_speed() const
   if ( buffs.frenzied_monstrosity -> up() )
   {
     haste *= 1.0 / ( 1.0 + buffs.frenzied_monstrosity -> data().effectN( 1 ).percent() );
+  }
+
+  if ( buffs.ghoulish_frenzy->up() )
+  {
+    haste *= 1.0 / ( 1.0 + buffs.ghoulish_frenzy->data().effectN( 1 ).percent() );
   }
 
   return haste;
@@ -10772,6 +10819,7 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
+  action.apply_affecting_aura( find_spell( 390178 ) );
 }
 
 /* Report Extension Class
