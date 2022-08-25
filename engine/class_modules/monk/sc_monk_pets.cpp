@@ -1255,8 +1255,8 @@ private:
       parse_options( options_str );
       s_data_reporting = p->o()->passives.crackling_tiger_lightning;
 
-      dot_duration        = p->o()->spec.invoke_xuen->duration();
-      cooldown->duration  = p->o()->spec.invoke_xuen->duration();                // we're done when Xuen despawns
+      dot_duration        = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();
+      cooldown->duration  = p->o()->talent.windwalker.invoke_xuen_the_white_tiger->duration();                // we're done when Xuen despawns
 
       tick_action = new crackling_tiger_lightning_tick_t( p );
     }
@@ -2125,7 +2125,7 @@ public:
 
       trigger_mystic_touch    = true;
       aoe                     = -1;
-      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
+      reduced_aoe_targets     = o()->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
@@ -2738,7 +2738,7 @@ public:
 
       trigger_mystic_touch    = true;
       aoe                     = -1;
-      reduced_aoe_targets     = o()->spec.keg_smash->effectN( 7 ).base_value();
+      reduced_aoe_targets     = o()->talent.brewmaster.keg_smash->effectN( 7 ).base_value();
       full_amount_targets     = 1;
       attack_power_mod.direct = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).ap_coeff();
       radius                  = p->o()->passives.fallen_monk_keg_smash->effectN( 2 ).radius();
@@ -3158,7 +3158,7 @@ void monk_t::create_pets()
 {
   base_t::create_pets();
 
-/*  if ( spec.invoke_xuen->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
+/*  if ( talent.windwalker.invoke_xuen_the_white_tiger->ok() && ( find_action( "invoke_xuen" ) || find_action( "invoke_xuen_the_white_tiger" ) ) )
   {
     pets.xuen = new pets::xuen_pet_t( this );
   }
