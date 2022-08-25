@@ -182,6 +182,7 @@ public:
 
   std::vector<action_t*> combo_strike_actions;
   double spiritual_focus_count;
+  double shuffle_count_secs;
 
   // Blurred time cooldown shenanigans
   std::vector<cooldown_t*> serenity_cooldowns;
