@@ -7390,7 +7390,7 @@ void monk_t::init_spells()
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
   spec.shuffle             = find_specialization_spell( "Shuffle" );
-  spec.stagger             = find_specialization_spell( "Stagger" );
+  //spec.stagger             = find_specialization_spell( "Stagger" ); // talent.brewmaster.stagger
   spec.stagger_2           = find_rank_spell( "Stagger", "Rank 2" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
 
@@ -9101,7 +9101,7 @@ void monk_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_t
     {
       // Blizzard is putting a cap on how much damage can go into stagger
       double amount_remains = active_actions.stagger_self_damage->amount_remaining();
-      double cap            = max_health() * spec.stagger->effectN( 4 ).percent();
+      double cap            = max_health() * talent.brewmaster.stagger->effectN( 4 ).percent();
       if ( amount_remains + stagger_dmg >= cap )
       {
         double diff = ( amount_remains + stagger_dmg ) - cap;
@@ -9220,7 +9220,7 @@ double monk_t::stagger_base_value()
 
   if ( specialization() == MONK_BREWMASTER )  // no stagger when not in Brewmaster Specialization
   {
-    stagger_base = agility() * spec.stagger->effectN( 1 ).percent();
+    stagger_base = agility() * talent.brewmaster.stagger->effectN( 1 ).percent();
 
     if ( talent.brewmaster.high_tolerance->ok() )
       stagger_base *= 1 + talent.brewmaster.high_tolerance->effectN( 5 ).percent();
