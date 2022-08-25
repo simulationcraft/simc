@@ -547,6 +547,25 @@ public:
     if ( p()->specialization() == MONK_BREWMASTER && p()->spec.shuffle->ok() )
     {
       timespan_t base_time = timespan_t::from_seconds( time_extension );
+
+      if ( p()->talent.brewmaster.quick_sip->ok() )
+      {
+          p()->shuffle_count_secs += time_extension;
+
+          double quick_sip_seconds = p()->talent.brewmaster.quick_sip->effectN( 2 ).base_value(); // Saved as 3
+     
+          if ( p()->shuffle_count_secs >= quick_sip_seconds )
+          {
+              // Reduce stagger damage
+              auto amount_cleared =
+                  p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() ); // Saved as 1
+              p()->sample_datas.purified_damage->add( amount_cleared) ;
+              p()->buff.recent_purifies->trigger( 1, amount_cleared );
+
+              p()->shuffle_count_secs -= quick_sip_seconds;
+          }
+      }
+
       if ( p()->buff.shuffle->up() )
       {
         timespan_t max_time     = p()->buff.shuffle->buff_duration();
@@ -561,6 +580,8 @@ public:
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
+
+      
     }
   }
 
@@ -7306,7 +7327,6 @@ void monk_t::init_spells()
   talent.windwalker.invokers_delight               = _ST( "Invoker's Delight" );
   talent.windwalker.way_of_the_fae                 = _ST( "Way of the Fae" );
   talent.windwalker.last_emperors_capacitor        = _ST( "Last Emperor's Capacitor" );
-
 
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
