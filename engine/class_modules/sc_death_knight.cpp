@@ -3849,6 +3849,12 @@ struct apocalypse_t : public death_knight_melee_attack_t
     // TODO July 19 2022.  As apoc is going to change a good bit shortly, just commenting these out so we can move forward
     //cooldown -> duration += p -> spec.apocalypse_2 -> effectN( 1 ).time_value();
     //base_multiplier *= 1.0 + p -> spec.apocalypse_2 -> effectN( 2 ).percent();
+    if ( p->talent.unholy.army_of_the_damned.ok() )
+    {
+      cooldown -> duration += (
+          timespan_t::from_seconds( p->talent.unholy.army_of_the_damned->effectN( 3 ).base_value() / 1000 ) );
+    }
+
   }
 
   void init() override
@@ -4795,6 +4801,12 @@ struct dark_transformation_t : public death_knight_spell_t
       {
         p() -> buffs.frenzied_monstrosity -> trigger();
       }
+
+      if ( p() -> talent.unholy.unholy_command.ok() )
+      {
+        p()->cooldown.dark_transformation->adjust(
+            timespan_t::from_seconds( p()->talent.unholy.unholy_command->effectN( 1 ).base_value() / 1000 ) );
+      }
     }
   }
 
@@ -5684,9 +5696,6 @@ struct epidemic_t : public death_knight_spell_t
 
     death_knight_spell_t::execute();
 
-    p() -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
-      p() -> talent.unholy.army_of_the_damned -> effectN( 1 ).base_value() / 10 ) );
-
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
@@ -5758,7 +5767,7 @@ struct festering_wound_t : public death_knight_spell_t
 struct festering_strike_t : public death_knight_melee_attack_t
 {
   festering_strike_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_melee_attack_t( "festering_strike", p, p -> talent.unholy.festering_strike )
+    death_knight_melee_attack_t( "festering_strike", p, p -> find_spell( 85948 ) )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
