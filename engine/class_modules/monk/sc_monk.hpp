@@ -669,11 +669,11 @@ public:
     const spell_data_t* gift_of_the_ox;
     const spell_data_t* invoke_niuzao;
     const spell_data_t* invoke_niuzao_2;
-    const spell_data_t* keg_smash;
-    const spell_data_t* purifying_brew;
-    const spell_data_t* purifying_brew_2;
-    const spell_data_t* shuffle;
-    const spell_data_t* stagger;
+    //const spell_data_t* keg_smash;
+    //const spell_data_t* purifying_brew;
+    //const spell_data_t* purifying_brew_2;
+    //const spell_data_t* shuffle;
+    //const spell_data_t* stagger;
     const spell_data_t* stagger_2;
     const spell_data_t* zen_meditation;
 
@@ -705,10 +705,10 @@ public:
     const spell_data_t* disable;
     const spell_data_t* disable_2;
     const spell_data_t* fists_of_fury;
-    const spell_data_t* flying_serpent_kick;
+    //const spell_data_t* flying_serpent_kick;
     const spell_data_t* flying_serpent_kick_2;
-    const spell_data_t* invoke_xuen;
-    const spell_data_t* invoke_xuen_2;
+    //const spell_data_t* invoke_xuen;
+    //const spell_data_t* invoke_xuen_2;
     const spell_data_t* reverse_harm;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
