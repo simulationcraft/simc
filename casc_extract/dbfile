@@ -954,3 +954,5 @@
 4682325, DBFilesClient\GlideEventBlendTimes.db2
 4278503, DBFilesClient\GossipNPCOption.db2
 4335720, DBFilesClient\GossipNPCOptionDisplayInfo.db2
+4669507, DBFilesClient\TraitTreeLoadout.db2
+4669509, DBFilesClient\TraitTreeLoadoutEntry.db2
