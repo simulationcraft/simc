@@ -544,7 +544,7 @@ public:
 
   void trigger_shuffle( double time_extension )
   {
-    if ( p()->specialization() == MONK_BREWMASTER && p()->spec.shuffle->ok() )
+    if ( p()->specialization() == MONK_BREWMASTER && p()->talent.brewmaster.shuffle->ok() )
     {
       timespan_t base_time = timespan_t::from_seconds( time_extension );
 
@@ -7389,7 +7389,7 @@ void monk_t::init_spells()
   spec.keg_smash           = find_specialization_spell( "Keg Smash" );
   spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
   spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
-  spec.shuffle             = find_specialization_spell( "Shuffle" );
+  //spec.shuffle             = find_specialization_spell( "Shuffle" ); // talent.brewmaster.shuffle
   //spec.stagger             = find_specialization_spell( "Stagger" ); // talent.brewmaster.stagger
   spec.stagger_2           = find_rank_spell( "Stagger", "Rank 2" );
   spec.zen_meditation      = find_specialization_spell( "Zen Meditation" );
