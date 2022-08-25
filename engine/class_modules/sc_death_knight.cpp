@@ -525,13 +525,12 @@ public:
     buff_t* sudden_doom;
     buff_t* unholy_assault;
     buff_t* unholy_blight;
-	buff_t* rotten_touch;
     buff_t* unholy_pact;
 	// buff_t* morbidity; -- NYI
 	// buff_t* festermight; -- NYI
 	buff_t* ghoulish_frenzy;
 	// buff_t* unholy_aura; -- NYI
-	// buff_t* commander_of_the_dead; -- NYI
+	buff_t* commander_of_the_dead;
 	buff_t* plaguebringer; 
 
     // Conduits
@@ -669,6 +668,7 @@ public:
     // Unholy
     gain_t* apocalypse;
     gain_t* festering_wound;
+    gain_t* replenishing_wounds;
 	gain_t* feasting_strikes;
   } gains;
 
@@ -1345,9 +1345,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.unholy_blight    = make_buff( *this, "unholy_blight_debuff", p -> talent.unholy.unholy_blight -> effectN( 1 ).trigger() )
                            -> set_default_value_from_effect( 2 );
 						  
-  debuff.rotten_touch     = make_buff( *this, "rotten_touch_debuff", p -> talent.unholy.rotten_touch -> effectN( 1 ).trigger() )
-                           -> set_cooldown( 0_ms )
-						   -> set_default_value_from_effect( 1 );
+  debuff.rotten_touch     = make_buff( *this, "rotten_touch", p -> talent.unholy.rotten_touch -> effectN( 1 ).trigger() )
+                           -> set_trigger_spell( p -> find_spell( 390275 ) )
+						   -> set_default_value_from_effect( p -> find_spell( 390276 ) -> effectN( 1 ).percent() );
   
   debuff.death_rot        = make_buff( *this, "death_rot_debuff", p -> find_spell( 377540 ) );
 
@@ -1790,11 +1790,13 @@ struct death_knight_pet_t : public pet_t
 {
   bool use_auto_attack, precombat_spawn;
   double precombat_spawn_adjust, spawn_travel_duration, spawn_travel_stddev;
+  buff_t* commander_of_the_dead;
 
   death_knight_pet_t( death_knight_t* player, util::string_view name, bool guardian = true, bool auto_attack = true, bool dynamic = true ) :
     pet_t( player -> sim, player, name, guardian, dynamic ), use_auto_attack( auto_attack ),
     precombat_spawn( false ), precombat_spawn_adjust( 0 ),
-    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 )
+    spawn_travel_duration( 0 ), spawn_travel_stddev( 0 ), 
+    commander_of_the_dead( nullptr )
   {
     if ( auto_attack )
     {
@@ -2370,7 +2372,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
     return base_ghoul_pet_t::create_action( name, options_str );
   }
-  
+
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
@@ -2438,6 +2440,10 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::create_buffs();
 
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
+
+    commander_of_the_dead =
+        make_buff( this, "commander_of_the_dead", find_spell( 215069 ) )
+            -> set_default_value_from_effect( 1 );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -4829,6 +4835,14 @@ struct dark_transformation_t : public death_knight_spell_t
         p()->cooldown.dark_transformation->adjust(
             timespan_t::from_seconds( p()->talent.unholy.unholy_command->effectN( 1 ).base_value() / 1000 ) );
       }
+
+      if ( p()->talent.unholy.commander_of_the_dead.ok() )
+      {
+        if ( p()->pets.gargoyle && p()->pets.gargoyle->commander_of_the_dead )
+        {
+          p()->pets.gargoyle->commander_of_the_dead->trigger();
+        }
+      }
     }
   }
 
@@ -5305,17 +5319,15 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
-    }	
+    }
+
+    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
+         result_is_hit( execute_state->result ) )
+    {
+      get_td( execute_state->target )->debuff.rotten_touch->trigger();
+    }
 
     p() -> buffs.sudden_doom -> decrement();
-  }
-  
-  void impact( action_state_t* state ) override
-  {
-	if( p() -> talent.unholy.rotten_touch.ok() )
-	{
-	  get_td( state -> target ) -> debuff.rotten_touch -> trigger();
-	}
   }
 };
 
@@ -5781,8 +5793,16 @@ struct festering_wound_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                          p() -> spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
-                          p() -> gains.festering_wound, this );
+                        p()->find_spell( 197147 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                        p() -> gains.festering_wound, this );
+
+    if ( p() -> talent.unholy.replenishing_wounds.ok() )
+    {
+      p()->resource_gain(
+          RESOURCE_RUNIC_POWER,
+          p()->find_spell( 377585 )->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+          p()->gains.replenishing_wounds, this );
+    }
   }
 };
 
@@ -8505,6 +8525,10 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
                  spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
                  gains.festering_wound );
 
+  resource_gain( RESOURCE_RUNIC_POWER,
+                 talent.unholy.replenishing_wounds->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) * n_wounds,
+                 gains.replenishing_wounds );
+
   if ( talent.unholy.pestilent_pustules.ok() )
   {
     trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds );
@@ -9333,6 +9357,9 @@ void death_knight_t::init_base_stats()
 
   if ( talent.frost.runic_command.ok() )
     resources.base [ RESOURCE_RUNIC_POWER ] += talent.frost.runic_command -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
+  
+  if ( talent.unholy.runic_mastery.ok() )
+    resources.base [ RESOURCE_RUNIC_POWER ] += talent.unholy.runic_mastery -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
 
 
   resources.base[ RESOURCE_RUNE        ] = MAX_RUNES;
@@ -9368,7 +9395,7 @@ void death_knight_t::init_spells()
 
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
-  spec.festering_wound      = find_class_spell( "Festering Wound" );
+  spec.festering_wound     = find_spell( 194311 );
 
   //////// Class Talent Tree
   // Row 1
@@ -10001,6 +10028,8 @@ void death_knight_t::create_buffs()
           ->set_default_value( talent.unholy.plaguebringer->effectN( 1 ).percent() )
           ->set_max_stack( 1 );
 
+  buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", find_spell( 215069 ) );
+
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
         -> set_default_value( conduits.eradicating_blow.percent() )
@@ -10125,6 +10154,7 @@ void death_knight_t::init_gains()
   // Unholy
   gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
+  gains.replenishing_wounds              = get_gain( "Replenishing Wounds" );
 
   // Shadowlands / Covenants
   gains.final_sentence                   = get_gain( "Final Sentence" );
@@ -10819,7 +10849,10 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
-  action.apply_affecting_aura( find_spell( 390178 ) );
+  /* if ( buffs.plaguebringer->up() )
+  {
+    action.apply_affecting_aura( find_spell( 390178 ) );
+  }*/
 }
 
 /* Report Extension Class
