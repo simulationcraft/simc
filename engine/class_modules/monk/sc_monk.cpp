@@ -350,7 +350,15 @@ public:
       p()->buff.combo_strikes->trigger();
 
       if ( p()->conduit.xuens_bond->ok() )
-        p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+          p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
+      else if ( p()->talent.windwalker.xuens_bond->ok() )
+          p()->cooldown.invoke_xuen->adjust( p()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(), true ); // Saved as -100
+
+      if ( p()->talent.windwalker.meridian_strikes->ok() )
+          p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 25
+
+      if ( p()->talent.windwalker.fury_of_xuen->ok() )
+          p()->buff.fury_of_xuen_stacks->trigger();
     }
     else
     {
@@ -2555,6 +2563,8 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
 
     if ( p()->legendary.jade_ignition->ok() )
       p()->buff.chi_energy->trigger();
+    else if ( p()->talent.windwalker.jade_ignition->ok() )
+      p()->buff.chi_energy->trigger();
 
     if ( p()->talent.windwalker.open_palm_strikes.ok() && rng().roll( p()->talent.windwalker.open_palm_strikes->effectN( 2 ).percent() ) )
         p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.open_palm_strikes->effectN( 3 ).base_value(), p()->gain.open_palm_strikes );
@@ -2620,6 +2630,15 @@ struct fists_of_fury_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
+
+    if ( p()->buff.fury_of_xuen_stacks->up() && rng().roll( p()->buff.fury_of_xuen_stacks->stack_value() ) )
+    {
+        p()->buff.fury_of_xuen_haste->trigger();
+
+        //p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
+
+        p()->buff.fury_of_xuen_stacks->expire();
+    }
 
     if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.rising_sun_kick->down() )
     {
@@ -7288,6 +7307,7 @@ void monk_t::init_spells()
   talent.windwalker.way_of_the_fae                 = _ST( "Way of the Fae" );
   talent.windwalker.last_emperors_capacitor        = _ST( "Last Emperor's Capacitor" );
 
+
   // Specialization spells ====================================
   // Multi-Specialization & Class Spells
   spec.blackout_kick             = find_class_spell( "Blackout Kick" );
@@ -7523,6 +7543,8 @@ void monk_t::init_spells()
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
+  passives.fury_of_xuen_stacking_buff       = find_spell(287062);
+  passives.fury_of_xuen_haste_buff          = find_spell(287063);
 
   // Covenants
   passives.bonedust_brew_dmg                    = find_spell( 325217 );
@@ -7863,6 +7885,17 @@ void monk_t::create_buffs()
 
   buff.power_strikes = make_buff( this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() )
       ->set_default_value( talent.windwalker.power_strikes->effectN( 1 ).trigger()->effectN( 1 ).base_value() );
+
+  buff.fury_of_xuen_stacks =
+      make_buff( this, "fury_of_xuen_stacks", passives.fury_of_xuen_stacking_buff )
+      ->set_default_value( ( passives.fury_of_xuen_stacking_buff->effectN( 3 ).base_value() / 100 ) * 0.01 ); // Saved as 100
+
+  // TODO: This is using BFA Azerite formula (Scaling Class -7) in Spell Data still
+  // Currently on Alpha it increases haste rating by 170 at level 70, 109 at level 60, and 12 at level 10.
+  // HOWEVER: The haste % on the character sheet does NOT increase
+  // I believe this will be replaced with a modern % haste buff in a future build
+  buff.fury_of_xuen_haste = make_buff<stat_buff_t>( this, "fury_of_xuen_haste", passives.fury_of_xuen_haste_buff )
+      ->add_stat( STAT_HASTE_RATING, 0 ); // Placeholder
 
   // Covenant Abilities
   buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
