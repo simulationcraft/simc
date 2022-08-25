@@ -2635,7 +2635,7 @@ struct fists_of_fury_t : public monk_melee_attack_t
     {
         p()->buff.fury_of_xuen_haste->trigger();
 
-        //p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
+        p()->pets.fury_of_xuen_tiger.spawn( p()->passives.fury_of_xuen_haste_buff->duration(), 1 );
 
         p()->buff.fury_of_xuen_stacks->expire();
     }
