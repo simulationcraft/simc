@@ -4154,13 +4154,13 @@ struct purifying_brew_t : public monk_spell_t
   special_delivery_t* delivery;
 
   purifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "purifying_brew", &p, p.spec.purifying_brew ), delivery( new special_delivery_t( p ) )
+    : monk_spell_t( "purifying_brew", &p, p.talent.brewmaster.purifying_brew ), delivery( new special_delivery_t( p ) )
   {
     parse_options( options_str );
 
     harmful = false;
 
-    cooldown->charges += (int)p.spec.purifying_brew_2->effectN( 1 ).base_value();
+    cooldown->charges += (int)p.talent.brewmaster.purifying_brew_rank_2->effectN( 1 ).base_value();
 
     if ( p.talent.brewmaster.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
@@ -7387,8 +7387,8 @@ void monk_t::init_spells()
   spec.invoke_niuzao       = find_specialization_spell( "Invoke Niuzao, the Black Ox" );
   spec.invoke_niuzao_2     = find_specialization_spell( "Invoke Niuzao, the Black Ox", "Rank 2" );
   //spec.keg_smash           = find_specialization_spell( "Keg Smash" ); // talent.brewmaster.keg_smash
-  spec.purifying_brew      = find_specialization_spell( "Purifying Brew" );
-  spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" );
+  //spec.purifying_brew      = find_specialization_spell( "Purifying Brew" ); // talent.brewmaster.purifying_brew
+  //spec.purifying_brew_2    = find_rank_spell( "Purifying Brew", "Rank 2" ); // talent.brewmaster.purifying_brew_rank_2
   //spec.shuffle             = find_specialization_spell( "Shuffle" ); // talent.brewmaster.shuffle
   //spec.stagger             = find_specialization_spell( "Stagger" ); // talent.brewmaster.stagger
   spec.stagger_2           = find_rank_spell( "Stagger", "Rank 2" );
