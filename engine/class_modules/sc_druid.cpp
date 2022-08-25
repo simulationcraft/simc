@@ -1077,6 +1077,7 @@ public:
   // Character Definition
   void activate() override;
   void init() override;
+  bool validate_fight_style( fight_style_e ) const override;
   void init_absorb_priority() override;
   void init_action_list() override;
   void init_base_stats() override;
@@ -10521,6 +10522,25 @@ void druid_t::init()
     else
       options.kindred_spirits_target = *it;
   }
+}
+
+bool druid_t::validate_fight_style( fight_style_e style ) const
+{
+  switch ( specialization() )
+  {
+    case DRUID_BALANCE:
+      if ( style == FIGHT_STYLE_PATCHWERK || style == FIGHT_STYLE_CASTING_PATCHWERK )
+        return true;
+      else
+        return false;
+    case DRUID_FERAL:
+    case DRUID_GUARDIAN:
+    case DRUID_RESTORATION:
+    default:
+      break;
+  }
+
+  return true;
 }
 
 // druid_t::init_gains ======================================================
