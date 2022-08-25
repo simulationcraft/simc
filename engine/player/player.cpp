@@ -4222,7 +4222,28 @@ double player_t::composite_melee_attack_power_by_type( attack_power_type type ) 
       break;
   }
 
-  return ap;
+  // 2022-08-25 -- Recent logs have shown that player->auto_attack_modifier now works as a general AP modifier
+  //               This is normalized to AP based on weapon speed in a similar way as base weapon DPS above
+  double aa_bonus_ap = 0;
+  if ( auto_attack_modifier > 0 )
+  {
+    if ( type == attack_power_type::WEAPON_MAINHAND )
+    {
+      aa_bonus_ap = auto_attack_modifier / main_hand_weapon.swing_time.total_seconds();
+    }
+    else if ( type == attack_power_type::WEAPON_OFFHAND )
+    {
+      aa_bonus_ap = auto_attack_modifier / off_hand_weapon.swing_time.total_seconds();
+    }
+    else if ( type == attack_power_type::WEAPON_BOTH )
+    {
+      aa_bonus_ap = ( auto_attack_modifier / main_hand_weapon.swing_time.total_seconds()
+              + auto_attack_modifier / off_hand_weapon.swing_time.total_seconds() * 0.5 ) * ( 2.0 / 3.0 );
+    }
+    aa_bonus_ap *= WEAPON_POWER_COEFFICIENT;
+  }
+
+  return ap + aa_bonus_ap;
 }
 
 double player_t::composite_attack_power_multiplier() const
