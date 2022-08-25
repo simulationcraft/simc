@@ -1,4 +1,4 @@
-// 528 talents, wow build 10.0.0.45141
+// 528 talents, wow build 10.0.0.45232
 static std::array<talent_data_t, 528> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -134,7 +134,7 @@ static std::array<talent_data_t, 528> __talent_data { {
   { "Soul Rending"                      , 21863, 0x00, 0x0800,  577,   0,   3,  204909,       0,  0 },
   { "Desperate Instincts"               , 21864, 0x00, 0x0800,  577,   1,   3,  205411,       0,  0 },
   { "Netherwalk"                        , 21865, 0x00, 0x0800,  577,   2,   3,  196555,       0,  0 },
-  { "Cycle of Hatred"                   , 21866, 0x00, 0x0800,  577,   0,   4,  258887,       0,  0 },
+  { "Cycle of Hatred [NYI]"             , 21866, 0x00, 0x0800,  577,   0,   4,  258887,       0,  0 },
   { "First Blood"                       , 21867, 0x00, 0x0800,  577,   1,   4,  206416,       0,  0 },
   { "Essence Break"                     , 21868, 0x00, 0x0800,  577,   2,   4,  258860,       0,  0 },
   { "Unleashed Power"                   , 21869, 0x00, 0x0800,  577,   0,   5,  206477,       0,  0 },
@@ -256,7 +256,7 @@ static std::array<talent_data_t, 528> __talent_data { {
   { "Killer Instinct"                   , 22291, 0x00, 0x0004,  253,   0,   0,  273887,       0,  0 },
   { "Bloodshed"                         , 22295, 0x00, 0x0004,  253,   2,   6,  321530,       0,  0 },
   { "Alpha Predator"                    , 22296, 0x00, 0x0004,  255,   2,   0,  269737,       0,  0 },
-  { "Butchery"                          , 22297, 0x00, 0x0004,  255,   2,   1,  212436,  187708,  0 },
+  { "Butchery"                          , 22297, 0x00, 0x0004,  255,   2,   1,  212436,       0,  0 },
   { "A Murder of Crows"                 , 22299, 0x00, 0x0004,  255,   2,   3,  131894,       0,  0 },
   { "Tip of the Spear"                  , 22300, 0x00, 0x0004,  255,   0,   5,  260285,       0,  0 },
   { "Wildfire Infusion"                 , 22301, 0x00, 0x0004,  255,   1,   6,  271014,       0,  0 },

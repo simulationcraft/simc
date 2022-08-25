@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.0.45141
-static const std::array<item_name_description_t, 705> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.0.45232
+static const std::array<item_name_description_t, 706> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -705,5 +705,6 @@ static const std::array<item_name_description_t, 705> __item_name_description_da
   { 13968, "Green"                                       },
   { 13969, "Primal Infused"                              },
   { 13970, "Iskaaran Fishing Gear Material"              },
+  { 13971, "Dragon Isles Supplies"                       },
 } };
 
