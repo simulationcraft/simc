@@ -2198,13 +2198,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     return chance;
   }
 
-  // Additional guaranteed overloads
-  virtual unsigned n_overloads( const action_state_t* ) const
-  {
-    return 0;
-  }
-
-  void trigger_elemental_overload( const action_state_t* source_state ) const
+  void trigger_elemental_overload( const action_state_t* source_state, double override_chance = -1.0 ) const
   {
     if ( !p()->mastery.elemental_overload->ok() )
     {
@@ -2216,17 +2210,26 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
       return;
     }
 
-    unsigned overloads = rng().roll( overload_chance( source_state ) );
+    double proc_chance = override_chance == -1.0
+      ? overload_chance( source_state )
+      : override_chance;
 
-    overloads += n_overloads( source_state );
-
-    for ( size_t i = 0, end = overloads; i < end; ++i )
+    if ( !rng().roll( proc_chance ) )
     {
-      action_state_t* s = overload->get_state();
-      overload->snapshot_state( s, result_amount_type::DMG_DIRECT );
-      s->target = source_state->target;
+      return;
+    }
 
-      make_event<elemental_overload_event_t>( *sim, s );
+    action_state_t* s = overload->get_state();
+    s->target = source_state->target;
+    overload->snapshot_state( s, result_amount_type::DMG_DIRECT );
+
+    make_event<elemental_overload_event_t>( *sim, s );
+
+    if ( sim->debug )
+    {
+      sim->out_debug.print( "{} elemental overload {}, chance={:.5f}{}, target={}", p()->name(),
+        name(), proc_chance, override_chance != -1.0 ? " (overridden)" : "",
+        source_state->target->name() );
     }
   }
 
@@ -4619,13 +4622,8 @@ struct chain_lightning_t : public chained_base_t
       overload = new chain_lightning_overload_t( player, suffix, this );
       //add_child( overload );
     }
-    
+
     affected_by_master_of_the_elements = true;
-    
-    if ( player->specialization() == SHAMAN_ELEMENTAL )
-    {
-      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
-    }
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4785,6 +4783,11 @@ struct chain_lightning_t : public chained_base_t
       }
     }
 
+    if ( p()->buff.power_of_the_maelstrom->up() )
+    {
+      trigger_elemental_overload( execute_state, 1.0 );
+    }
+
     p()->trigger_flash_of_lightning();
     p()->buff.power_of_the_maelstrom->decrement();
     p()->buff.surge_of_power->expire();
@@ -4795,19 +4798,6 @@ struct chain_lightning_t : public chained_base_t
     chained_base_t::impact( state );
 
     p()->trigger_lightning_rod_damage( state );
-  }
-
-  /* Number of guaranteed overloads */
-  unsigned n_overloads( const action_state_t* t ) const override
-  {
-    auto n = chained_base_t::n_overloads( t );
-
-    if ( p()->buff.power_of_the_maelstrom->up() )
-    {
-      n += p()->buff.power_of_the_maelstrom->value();
-    }
-
-    return n;
   }
 };
 
@@ -5562,9 +5552,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
       maelstrom_gain = player->spec.maelstrom->effectN( 1 ).resource( RESOURCE_MAELSTROM );
       maelstrom_gain += player->talent.flow_of_power->effectN( 3 ).base_value();
-
-      base_execute_time += player->spec.lightning_bolt_2->effectN( 1 ).time_value();
-      base_execute_time += player->talent.unrelenting_calamity->effectN( 1 ).time_value();
     }
 
     if ( player->mastery.elemental_overload->ok() )
@@ -5630,23 +5617,6 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
       coeff *= 2.0;
     return coeff;
-  }
-
-  /* Number of guaranteed overloads */
-  unsigned n_overloads( const action_state_t* t ) const override
-  {
-    auto n = shaman_spell_t::n_overloads( t );
-
-    if ( p()->buff.power_of_the_maelstrom->up() )
-    {
-      n += p()->buff.power_of_the_maelstrom->value();
-    }
-    if ( p() ->buff.surge_of_power->up())
-    {
-      n += 2U;
-    }
-
-    return n;
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -5718,12 +5688,6 @@ struct lightning_bolt_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
-    if ( p()->talent.surge_of_power->ok() && p()->buff.surge_of_power->check() )
-    {
-      p()->proc.surge_of_power_lightning_bolt->occur();
-    }
-    p()->buff.surge_of_power->decrement();
-
     // Storm Elemental Wind Gust passive buff trigger
     if ( p()->talent.storm_elemental->ok() )
     {
@@ -5742,6 +5706,23 @@ struct lightning_bolt_t : public shaman_spell_t
     if ( type == spell_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->buff.stormkeeper->decrement();
+    }
+
+    if ( p()->buff.power_of_the_maelstrom->up() )
+    {
+      trigger_elemental_overload( execute_state, 1.0 );
+    }
+
+    if ( p()->buff.surge_of_power->check() )
+    {
+      p()->proc.surge_of_power_lightning_bolt->occur();
+
+      for ( auto i = 0; i < as<int>( p()->talent.surge_of_power->effectN( 2 ).base_value() ); ++i )
+      {
+        trigger_elemental_overload( execute_state, 1.0 );
+      }
+
+      p()->buff.surge_of_power->decrement();
     }
 
     p()->buff.power_of_the_maelstrom->decrement();
@@ -10480,13 +10461,16 @@ void shaman_t::init_special_effect( special_effect_t& effect )
 
 void shaman_t::apply_affecting_auras( action_t& action )
 {
+  // Generic
   action.apply_affecting_aura( spec.shaman );
+
+  // Specialization
   action.apply_affecting_aura( spec.elemental_shaman );
   action.apply_affecting_aura( spec.enhancement_shaman );
   action.apply_affecting_aura( spec.restoration_shaman );
+  action.apply_affecting_aura( spec.lightning_bolt_2 );
 
   // Talents
-  //
   action.apply_affecting_aura( talent.call_of_fire );
   action.apply_affecting_aura( talent.call_of_thunder );
   action.apply_affecting_aura( talent.elemental_assault );
@@ -10496,6 +10480,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.natures_fury );
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
+  action.apply_affecting_aura( talent.unrelenting_calamity );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
