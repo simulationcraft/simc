@@ -3377,6 +3377,18 @@ struct blood_plague_t : public death_knight_disease_t
     return m;
   }
 
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up())
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
+    }
+
+    return base_tick_time;
+  }
+
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
@@ -3433,6 +3445,18 @@ struct frost_fever_t : public death_knight_disease_t
     }
   }
 
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up())
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
+    }
+
+    return base_tick_time;
+  }
+
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
@@ -3472,8 +3496,6 @@ struct virulent_plague_t : public death_knight_disease_t
     // TODO: Does VP also apply in aoe with superstrain? Keep at one target for now
     aoe = superstrain ? 0 : -1;
 
-    base_tick_time *= 1.0 + p -> talent.unholy.ebon_fever -> effectN( 1 ).percent();
-
     // Order of operation matters for dot_duration.  lingering plague gives you an extra 3 seconds, or 1 tick of the dot
     // Ebon fever does the same damage, in half the time, with tick rate doubled.  So you get the same number of ticks
     // Tested Oct 21 2020 in beta build 36294
@@ -3506,6 +3528,24 @@ struct virulent_plague_t : public death_knight_disease_t
       }
     }
   }
+
+  timespan_t tick_time ( const action_state_t* ) const override
+  {
+    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
+
+    if ( p() -> buffs.plaguebringer -> up())
+    { 
+      base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
+    }
+
+    if (p()->talent.unholy.ebon_fever.ok())
+    {
+      base_tick_time *= 1.0 + p()->talent.unholy.ebon_fever->effectN(1).percent();
+    }
+
+    return base_tick_time;
+  }
+
   void tick( dot_t* d ) override
   {
     death_knight_spell_t::tick( d );
@@ -11141,10 +11181,6 @@ void death_knight_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( spec.unholy_death_knight );
   action.apply_affecting_aura( spec.frost_death_knight );
   action.apply_affecting_aura( spec.blood_death_knight );
-  /* if ( buffs.plaguebringer->up() )
-  {
-    action.apply_affecting_aura( find_spell( 390178 ) );
-  }*/
 }
 
 /* Report Extension Class
