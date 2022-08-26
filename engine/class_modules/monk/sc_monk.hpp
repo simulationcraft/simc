@@ -633,8 +633,8 @@ public:
     const spell_data_t* blackout_kick_brm;
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
-    const spell_data_t* detox;
-    const spell_data_t* expel_harm;
+    //const spell_data_t* detox;
+    //const spell_data_t* expel_harm;
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
@@ -646,15 +646,15 @@ public:
     const spell_data_t* leather_specialization;
     const spell_data_t* leg_sweep;
     const spell_data_t* mystic_touch;
-    const spell_data_t* paralysis;
+    //const spell_data_t* paralysis;
     const spell_data_t* provoke;
     const spell_data_t* provoke_2;
     const spell_data_t* resuscitate;
-    const spell_data_t* rising_sun_kick;
+    //const spell_data_t* rising_sun_kick;
     const spell_data_t* rising_sun_kick_2;
     const spell_data_t* roll;
-    const spell_data_t* roll_2;
-    const spell_data_t* spear_hand_strike;
+    //const spell_data_t* roll_2;
+    //const spell_data_t* spear_hand_strike;
     const spell_data_t* spinning_crane_kick;
     const spell_data_t* spinning_crane_kick_brm;
     const spell_data_t* spinning_crane_kick_2_brm;
@@ -673,23 +673,23 @@ public:
 
     // Brewmaster
     const spell_data_t* bladed_armor;
-    const spell_data_t* breath_of_fire;
+    //const spell_data_t* breath_of_fire;
     const spell_data_t* brewmasters_balance;
     const spell_data_t* brewmaster_monk;
-    const spell_data_t* celestial_brew;
-    const spell_data_t* celestial_brew_2;
+    //const spell_data_t* celestial_brew;
+    //const spell_data_t* celestial_brew_2;
     const spell_data_t* celestial_fortune;
-    const spell_data_t* clash;
-    const spell_data_t* gift_of_the_ox;
-    const spell_data_t* invoke_niuzao;
-    const spell_data_t* invoke_niuzao_2;
+    //const spell_data_t* clash;
+    //const spell_data_t* gift_of_the_ox;
+    //const spell_data_t* invoke_niuzao;
+    //const spell_data_t* invoke_niuzao_2;
     //const spell_data_t* keg_smash;
     //const spell_data_t* purifying_brew;
     //const spell_data_t* purifying_brew_2;
     //const spell_data_t* shuffle;
     //const spell_data_t* stagger;
     const spell_data_t* stagger_2;
-    const spell_data_t* zen_meditation;
+    //const spell_data_t* zen_meditation;
 
     // Mistweaver
     const spell_data_t* enveloping_mist;
@@ -716,9 +716,9 @@ public:
     const spell_data_t* combat_conditioning;  // Possibly will get removed
     const spell_data_t* combo_breaker;
     const spell_data_t* cyclone_strikes;
-    const spell_data_t* disable;
+    //const spell_data_t* disable;
     const spell_data_t* disable_2;
-    const spell_data_t* fists_of_fury;
+    //const spell_data_t* fists_of_fury;
     //const spell_data_t* flying_serpent_kick;
     const spell_data_t* flying_serpent_kick_2;
     //const spell_data_t* invoke_xuen;
@@ -727,7 +727,7 @@ public:
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
     const spell_data_t* storm_earth_and_fire_2;
-    const spell_data_t* touch_of_karma;
+    //const spell_data_t* touch_of_karma;
     const spell_data_t* windwalker_monk;
     const spell_data_t* windwalking;
   } spec;
