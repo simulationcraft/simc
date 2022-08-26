@@ -371,6 +371,7 @@ public:
     action_t* shooting_stars;
     action_t* starfall_oneth;            // free starfall from oneth's clear vision
     action_t* starsurge_oneth;           // free starsurge from oneth's clear vision
+    action_t* syzygy;
 
     // Feral
     action_t* ferocious_bite_apex;       // free bite from apex predator's crazing
@@ -1672,8 +1673,14 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
   {
     bool ret = base_t::trigger( s, v, c, d );
 
-    p().eclipse_handler.trigger_both( remains() );
-    p().uptime.combined_ca_inc->update( true, sim->current_time() );
+    if ( ret )
+    {
+      p().eclipse_handler.trigger_both( remains() );
+      p().uptime.combined_ca_inc->update( true, sim->current_time() );
+
+      if ( p().active.syzygy )
+        p().active.syzygy->execute_on_target( p().target );
+    }
 
     return ret;
   }
@@ -7699,7 +7706,11 @@ struct starsurge_t : public druid_spell_t
 struct stellar_flare_t : public druid_spell_t
 {
   stellar_flare_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "stellar_flare", p, p->talent.stellar_flare, opt )
+    : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
+  {}
+
+  stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : druid_spell_t( n, p, s, opt )
   {}
 };
 
@@ -7776,6 +7787,29 @@ struct survival_instincts_t : public druid_spell_t
 
     if ( p()->talent.ursocs_endurance.ok() )
       p()->buff.ursocs_endurance->trigger();
+  }
+};
+
+// Syzygy ===================================================================
+struct syzygy_t : public druid_spell_t
+{
+  action_t* flare;
+
+  syzygy_t( druid_t* p ) : druid_spell_t( "syzygy", p, p->find_spell( 361237 ) )
+  {
+    aoe = -1;
+    travel_speed = 75.0;  // guesstimate
+
+    flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_syzygy", p->find_spell( 202347 ), "" );
+    flare->name_str_reporting = "stellar_flare";
+    add_child( flare );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    flare->execute_on_target( s->target );  // flare is applied before impact damage
+
+    druid_spell_t::impact( s );
   }
 };
 
@@ -10205,6 +10239,9 @@ void druid_t::create_actions()
     active.orbit_breaker = fm;
   }
 
+  if ( talent.syzygy.ok() )
+    active.syzygy = get_secondary_action<syzygy_t>( "syzygy" );
+  
   // Feral
   if ( talent.apex_predators_craving.ok() )
   {
