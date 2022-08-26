@@ -755,7 +755,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       : sef_tick_action_t( "fists_of_fury_tick", p, p->o()->passives.fists_of_fury_tick )
     {
       aoe                 = -1;
-      reduced_aoe_targets = p->o()->spec.fists_of_fury->effectN( 1 ).base_value();
+      reduced_aoe_targets = p->o()->talent.windwalker.fists_of_fury->effectN( 1 ).base_value();
       full_amount_targets = 1;
     }
   };
