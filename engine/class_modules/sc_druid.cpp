@@ -6079,21 +6079,21 @@ struct adaptive_swarm_t : public druid_spell_t
 
       // prioritize unswarmed over swarmed
       auto it = range::partition( tl, [ this ]( player_t* t ) {
-        return !p()->find_target_data( t )->dots.adaptive_swarm_damage->is_ticking();
+        return !p()->get_target_data( t )->dots.adaptive_swarm_damage->is_ticking();
       } );
 
       // if unswarmed exists, prioritize dotted over undotted
       if ( it != tl.begin() )
       {
         std::partition( tl.begin(), it, [ this ]( player_t* t ) {
-          return dots_ticking( p()->find_target_data( t ) );
+          return dots_ticking( p()->get_target_data( t ) );
         } );
       }
       // otherwise if swarmed exists, prioritize dotted over undotted
       else if ( it != tl.end() )
       {
         std::partition( it, tl.end(), [ this ]( player_t* t ) {
-          return dots_ticking( p()->find_target_data( t ) );
+          return dots_ticking( p()->get_target_data( t ) );
         } );
       }
 
