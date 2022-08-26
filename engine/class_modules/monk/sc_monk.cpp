@@ -4802,7 +4802,12 @@ struct faeline_stomp_damage_t : public monk_spell_t
     if ( p()->conduit.way_of_the_fae->ok() && !targets.empty() )
     {
       cam *= 1 + ( p()->conduit.way_of_the_fae.percent() *
-                   std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+                std::min( (double)targets.size(), p()->conduit.way_of_the_fae->effectN( 2 ).base_value() ) );
+    }
+    else if ( p()->talent.windwalker.way_of_the_fae->ok() && !targets.empty() )
+    {
+      cam *= 1 + ( p()->talent.windwalker.way_of_the_fae->effectN( 1 ).percent() *
+                std::min( (double)targets.size(), p()->talent.windwalker.way_of_the_fae->effectN( 2 ).base_value() ) );
     }
 
     return cam;
@@ -4836,7 +4841,10 @@ struct faeline_stomp_t : public monk_spell_t
   int aoe_initial_cap;
   int ww_aoe_cap;
   faeline_stomp_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "faeline_stomp", &p, p.covenant.night_fae ),
+    : monk_spell_t( "faeline_stomp", &p, 
+        (p.covenant.night_fae->ok() ? p.covenant.night_fae :
+            (p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp :
+                (p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp : nullptr )))),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) ),
@@ -4845,7 +4853,12 @@ struct faeline_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
-    aoe              = (int)p.covenant.night_fae->effectN( 3 ).base_value();
+    if (p.covenant.night_fae)
+      aoe                       = (int)p.covenant.night_fae->effectN( 3 ).base_value();
+    else if (p.talent.mistweaver.faeline_stomp->ok())
+      aoe                       = (int)p.talent.mistweaver.faeline_stomp->effectN( 3 ).base_value();
+    else if ( p.talent.windwalker.faeline_stomp->ok() )
+      aoe                       = (int)p.talent.windwalker.faeline_stomp->effectN( 3 ).base_value();
 
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
@@ -7386,7 +7399,7 @@ void monk_t::init_spells()
   talent.windwalker.empowered_tiger_lightning      = _ST( "Empowered Tiger Lightning" );
   talent.windwalker.rising_star                    = _ST( "Rising Star" );
   // Row 9
-  talent.windwalker.bonedust_brew                 = _ST( "Bonedust Brew" );
+  talent.windwalker.bonedust_brew                  = _ST( "Bonedust Brew" );
   talent.windwalker.fatal_flying_guillotine        = _ST( "Fatal Flying Guillotine" );
   // talent.windwalker.NYI = _ST( "" )
   talent.windwalker.xuens_battlegear               = _ST( "Xuen's Battlegear" );
