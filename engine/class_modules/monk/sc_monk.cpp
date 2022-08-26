@@ -2024,6 +2024,7 @@ struct chi_explosion_t : public monk_spell_t
   {
     dual = background = true;
     aoe               = -1;
+    school            = SCHOOL_NATURE;
   }
 
   double action_multiplier() const override
@@ -2031,7 +2032,7 @@ struct chi_explosion_t : public monk_spell_t
     double am = monk_spell_t::action_multiplier();
 
     if ( p()->buff.chi_energy->check() )
-      am += 1 + p()->buff.chi_energy->check_stack_value();
+      am *= 1 + p()->buff.chi_energy->check_stack_value();
 
     return am;
   }
