@@ -6409,7 +6409,7 @@ struct celestial_alignment_t : public celestial_alignment_base_t
 
   bool ready() override
   {
-    p()->talent.incarnation_moonkin.ok() ? false : celestial_alignment_base_t::ready();
+    return p()->talent.incarnation_moonkin.ok() ? false : celestial_alignment_base_t::ready();
   }
 };
 
