@@ -58,6 +58,7 @@ enum free_cast_e
   ORBIT,     // orbit breaker talent
   PAWSITIVE, // pawsitive outlook talent
   PILLAR,    // celestial pillar balance tier 28 2pc
+  SYZYGY,
   URSOCS,    // ursoc's fury remembered legendary
 };
 
@@ -524,7 +525,6 @@ public:
 
     // Helper pointers
     buff_t* clearcasting;  // clearcasting_cat or clearcasting_tree
-    buff_t* incarnation;   // incarnation_moonkin or incarnation_bear or incarnation_cat or incarnation_tree
     buff_t* b_inc_cat;     // berserk_cat or incarnation_cat
     buff_t* b_inc_bear;    // berserk_bear or incarnation_bear
     buff_t* ca_inc;        // celestial_alignment or incarnation_moonkin
@@ -718,7 +718,7 @@ public:
     player_talent_t incarnation_moonkin;
     // player_talent_t circle_of_life_and_death_moonkin;
     player_talent_t primordial_arcanic_pulsar;
-    player_talent_t syzygy;  // NNF
+    player_talent_t syzygy;
 
     player_talent_t fury_of_elune;  // Row 10
     player_talent_t new_moon;
@@ -1655,7 +1655,7 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
   bool inc;
 
   celestial_alignment_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, bool b = false )
-    : base_t( p, n, s ), inc( b )
+    : base_t( p, n, p.apply_override( s, p.talent.syzygy ) ), inc( b )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect_type( A_HASTE_ALL );
@@ -3603,15 +3603,15 @@ public:
   }
 };  // end druid_cat_attack_t
 
-// Berserk ==================================================================
-struct berserk_cat_t : public cat_attack_t
+// Berserk (Cat) ==============================================================
+struct berserk_cat_base_t : public cat_attack_t
 {
-  berserk_cat_t( druid_t* p, std::string_view options_str )
-    : cat_attack_t( "berserk_cat", p, p->spec.berserk_cat, options_str )
-  {
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    name_str_reporting = "berserk";
+  buff_t* buff;
 
+  berserk_cat_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
+    : cat_attack_t( n, p, s, opt ), buff( p->buff.berserk_cat )
+  {
+    harmful   = false;
     form_mask = CAT_FORM;
     autoshift = p->active.shift_to_cat;
   }
@@ -3620,15 +3620,29 @@ struct berserk_cat_t : public cat_attack_t
   {
     cat_attack_t::execute();
 
-    p()->buff.berserk_cat->trigger();
+    buff->trigger();
+  }
+};
+
+struct berserk_cat_t : public berserk_cat_base_t
+{
+  berserk_cat_t( druid_t* p, std::string_view opt ) : berserk_cat_base_t( "berserk_cat", p, p->spec.berserk_cat, opt )
+  {
+    name_str_reporting = "berserk";
   }
 
   bool ready() override
   {
-    if ( p()->talent.incarnation_cat.ok() )
-      return false;
+    return p()->talent.incarnation_cat.ok() ? false : berserk_cat_base_t::ready();
+  }
+};
 
-    return cat_attack_t::ready();
+struct incarnation_cat_t : public berserk_cat_base_t
+{
+  incarnation_cat_t( druid_t* p, std::string_view opt )
+    : berserk_cat_base_t( "incarnation_avatar_of_ashamane", p, p->talent.incarnation_cat, opt )
+  {
+    buff = p->buff.incarnation_cat;
   }
 };
 
@@ -4607,13 +4621,14 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
 };  // end bear_attack_t
 
 // Berserk (Bear) ===========================================================
-struct berserk_bear_t : public bear_attack_t
+struct berserk_bear_base_t : public bear_attack_t
 {
-  berserk_bear_t( druid_t* p, std::string_view opt ) : bear_attack_t( "berserk_bear", p, p->spec.berserk_bear, opt )
-  {
-    harmful = may_miss = may_parry = may_dodge = may_crit = false;
-    name_str_reporting = "berserk";
+  buff_t* buff;
 
+  berserk_bear_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
+    : bear_attack_t( n, p, s, opt ), buff( p->buff.berserk_bear )
+  {
+    harmful   = false;
     form_mask = BEAR_FORM;
     autoshift = p->active.shift_to_bear;
   }
@@ -4622,15 +4637,30 @@ struct berserk_bear_t : public bear_attack_t
   {
     bear_attack_t::execute();
 
-    p()->buff.berserk_bear->trigger();
+    buff->trigger();
+  }
+};
+
+struct berserk_bear_t : public berserk_bear_base_t
+{
+  berserk_bear_t( druid_t* p, std::string_view opt )
+    : berserk_bear_base_t( "berserk_bear", p, p->spec.berserk_bear, opt )
+  {
+    name_str_reporting = "berserk";
   }
 
   bool ready() override
   {
-    if ( p()->talent.incarnation_bear.ok() )
-      return false;
+    return p()->talent.incarnation_bear.ok() ? false : berserk_bear_base_t::ready();
+  }
+};
 
-    return bear_attack_t::ready();
+struct incarnation_bear_t : public berserk_bear_base_t
+{
+  incarnation_bear_t( druid_t* p, std::string_view opt )
+    : berserk_bear_base_t( "incarnation_guardian_of_ursoc", p, p->talent.incarnation_bear, opt )
+  {
+    buff = p->buff.incarnation_bear;
   }
 };
 
@@ -6351,10 +6381,12 @@ struct barkskin_t : public druid_spell_t
 };
 
 // Celestial Alignment ======================================================
-struct celestial_alignment_t : public druid_spell_t
+struct celestial_alignment_base_t : public druid_spell_t
 {
-  celestial_alignment_t( druid_t* p, std::string_view opt )
-    : druid_spell_t( "celestial_alignment", p, p->talent.celestial_alignment, opt )
+  buff_t* buff;
+
+  celestial_alignment_base_t( std::string_view n, druid_t* p, const spell_data_t* s, std::string_view opt )
+    : druid_spell_t( n, p, p->apply_override( s, p->talent.syzygy ), opt ), buff( p->buff.celestial_alignment )
   {
     harmful = false;
   }
@@ -6363,17 +6395,32 @@ struct celestial_alignment_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    p()->buff.celestial_alignment->trigger();
+    buff->trigger();
     p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
     p()->eclipse_handler.cast_ca_inc();
   }
+};
+
+struct celestial_alignment_t : public celestial_alignment_base_t
+{
+  celestial_alignment_t( druid_t* p, std::string_view opt )
+    : celestial_alignment_base_t( "celestial_alignment", p, p->talent.celestial_alignment, opt )
+  {}
 
   bool ready() override
   {
-    if ( p()->talent.incarnation_moonkin.ok() )
-      return false;
+    p()->talent.incarnation_moonkin.ok() ? false : celestial_alignment_base_t::ready();
+  }
+};
 
-    return druid_spell_t::ready();
+struct incarnation_moonkin_t : public celestial_alignment_base_t
+{
+  incarnation_moonkin_t( druid_t* p, std::string_view opt )
+    : celestial_alignment_base_t( "incarnation_chosen_of_elune", p, p->talent.incarnation_moonkin, opt )
+  {
+    form_mask = MOONKIN_FORM;
+    autoshift = p->active.shift_to_moonkin;
+    buff      = p->buff.incarnation_moonkin;
   }
 };
 
@@ -6587,58 +6634,22 @@ struct heart_of_the_wild_t : public druid_spell_t
   }
 };
 
-// Incarnation ==============================================================
-struct incarnation_t : public druid_spell_t
+// Incarnation (Tree) =========================================================
+struct incarnation_tree_t : public druid_spell_t
 {
-  incarnation_t( druid_t* p, std::string_view opt ) :
-    druid_spell_t( "incarnation", p,
-      p->specialization() == DRUID_BALANCE     ? p->talent.incarnation_moonkin :
-      p->specialization() == DRUID_FERAL       ? p->talent.incarnation_cat :
-      p->specialization() == DRUID_GUARDIAN    ? p->talent.incarnation_bear :
-      p->specialization() == DRUID_RESTORATION ? p->talent.incarnation_tree :
-      spell_data_t::nil(), opt )
+  incarnation_tree_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "incarnation_tree_of_life", p, p->talent.incarnation_tree, opt )
   {
-    switch ( p->specialization() )
-    {
-      case DRUID_BALANCE:
-        form_mask = MOONKIN_FORM;
-        name_str_reporting = "incarnation_chosen_of_elune";
-        autoshift = p->active.shift_to_moonkin;
-        break;
-      case DRUID_FERAL:
-        form_mask = CAT_FORM;
-        name_str_reporting = "incarnation_king_of_the_jungle";
-        autoshift = p->active.shift_to_cat;
-        break;
-      case DRUID_GUARDIAN:
-        form_mask = BEAR_FORM;
-        name_str_reporting = "incarnation_guardian_of_ursoc";
-        autoshift = p->active.shift_to_bear;
-        break;
-      case DRUID_RESTORATION:
-        form_mask = NO_FORM;
-        name_str_reporting = "incarnation_tree_of_life";
-        autoshift = p->active.shift_to_caster;
-        break;
-      default:
-        assert( false && "Actor attempted to create incarnation action with no specialization." );
-        break;
-    }
-
-    harmful = false;
+    harmful   = false;
+    form_mask = NO_FORM;
+    autoshift = p->active.shift_to_caster;
   }
 
   void execute() override
   {
     druid_spell_t::execute();
 
-    p()->buff.incarnation->trigger();
-
-    if ( p()->buff.incarnation_moonkin->check() )
-    {
-      p()->eclipse_handler.cast_ca_inc();
-      p()->uptime.primordial_arcanic_pulsar->update( false, sim->current_time() );
-    }
+    p()->buff.incarnation_tree->trigger();
   }
 };
 
@@ -7750,8 +7761,8 @@ struct sunfire_t : public druid_spell_t
 // Survival Instincts =======================================================
 struct survival_instincts_t : public druid_spell_t
 {
-  survival_instincts_t( druid_t* player, std::string_view opt )
-    : druid_spell_t( "survival_instincts", player, player->talent.survival_instincts, opt )
+  survival_instincts_t( druid_t* p, std::string_view opt )
+    : druid_spell_t( "survival_instincts", p, p->talent.survival_instincts, opt )
   {
     harmful     = false;
     use_off_gcd = true;
@@ -7773,7 +7784,7 @@ struct thorns_t : public druid_spell_t
 {
   struct thorns_proc_t : public druid_spell_t
   {
-    thorns_proc_t( druid_t* player ) : druid_spell_t( "thorns_hit", player, player->find_spell( 305496 ) )
+    thorns_proc_t( druid_t* p ) : druid_spell_t( "thorns_hit", p, p->find_spell( 305496 ) )
     {
       background = true;
     }
@@ -9072,7 +9083,17 @@ action_t* druid_t::create_action( std::string_view name, std::string_view option
     else if ( specialization() == DRUID_FERAL ) return new    berserk_cat_t( this, options_str );
   }
   if ( name == "convoke_the_spirits"   ) return new   convoke_the_spirits_t( this, options_str );
-  if ( name == "incarnation"           ) return new           incarnation_t( this, options_str );
+  if ( name == "incarnation"           )
+  {
+    switch ( specialization() )
+    {
+      case DRUID_BALANCE:                return new   incarnation_moonkin_t( this, options_str );
+      case DRUID_FERAL:                  return new       incarnation_cat_t( this, options_str );
+      case DRUID_GUARDIAN:               return new      incarnation_bear_t( this, options_str );
+      case DRUID_RESTORATION:            return new      incarnation_tree_t( this, options_str );
+      default: break;
+    }
+  }
   if ( name == "survival_instincts"    ) return new    survival_instincts_t( this, options_str );
 
   // Balance
@@ -9267,7 +9288,7 @@ void druid_t::init_spells()
   talent.umbral_infusion                = ST( "Umbral Infusion [NNF]" );  // NNF
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
   talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
-  talent.syzygy                         = ST( "Syzygy" );  // NNF
+  talent.syzygy                         = ST( "Syzygy" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.new_moon                       = ST( "New Moon" );
   talent.balance_of_all_things          = ST( "Balance of All Things" );
@@ -10099,28 +10120,6 @@ void druid_t::create_buffs()
       else if ( old_ )
         buff.sinful_hysteria->trigger( old_ );
     } );
-  }
-
-  // Helpers
-  switch ( specialization() )
-  {
-    case DRUID_BALANCE:
-      buff.incarnation = buff.incarnation_moonkin;
-      break;
-    case DRUID_FERAL:
-      buff.incarnation = buff.incarnation_cat;
-      buff.clearcasting = buff.clearcasting_cat;
-      break;
-    case DRUID_GUARDIAN:
-      buff.incarnation = buff.incarnation_bear;
-      break;
-    case DRUID_RESTORATION:
-      buff.incarnation = buff.incarnation_tree;
-      buff.clearcasting = buff.clearcasting_tree;
-      break;
-    default:  // empty buff
-      buff.incarnation = make_buff( this, "incarnation" );
-      break;
   }
 
   // Note you cannot replace buff checking with these, as it's possible to gain incarnation without the talent
