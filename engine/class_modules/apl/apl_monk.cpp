@@ -208,12 +208,12 @@ void brewmaster( player_t* p )
   }
 
   def->add_action(
-      p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
+      p, monk->talent.brewmaster.invoke_niuzao_the_black_ox, "invoke_niuzao_the_black_ox",
       "if=buff.recent_purifies.value>=health.max*0.05&(target.cooldown.pause_action.remains>=20|time<=10|target.cooldown.pause_action.duration=0)&(!runeforge.call_to_arms.equipped|cooldown.weapons_of_order.remains>25)&!buff.invoke_niuzao_the_black_ox.up",
       "Cast Niuzao when we'll get at least 20 seconds of uptime. This is specific to the default enemy APL and will "
       "need adjustments for other enemies." );
   def->add_action(
-      p, monk->spec.invoke_niuzao, "invoke_niuzao_the_black_ox",
+      p, monk->talent.brewmaster.invoke_niuzao_the_black_ox, "invoke_niuzao_the_black_ox",
       "if=buff.weapons_of_order.up&runeforge.call_to_arms.equipped&!buff.invoke_niuzao_the_black_ox.up",
       "Cast Niuzao if we just lost the Niuzao from CtA"
       );
