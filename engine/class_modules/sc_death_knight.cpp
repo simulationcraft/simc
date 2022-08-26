@@ -530,7 +530,6 @@ public:
     buff_t* festermight;
     buff_t* ghoulish_frenzy;
     // buff_t* unholy_aura; -- NYI
-    buff_t* commander_of_the_dead;
     buff_t* plaguebringer; 
 
     // Conduits
@@ -982,6 +981,8 @@ public:
     // Army of the damned magus
     const spell_data_t* frostbolt;
     const spell_data_t* shadow_bolt;
+    // Commander of the Dead Talent
+    const spell_data_t* commander_of_the_dead;
   } pet_spell;
 
   // RPPM
@@ -2398,6 +2399,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
+  buff_t* commander_of_the_dead;
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
@@ -2409,7 +2411,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   };
 
   gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), commander_of_the_dead( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -2430,6 +2432,11 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     m *= 1.0 + dark_empowerment -> stack_value();
 
+    if (dk()->pets.gargoyle->commander_of_the_dead->up())
+    {
+      m *= 1.0 + commander_of_the_dead -> value();
+    }
+
     return m;
   }
 
@@ -2447,8 +2454,8 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
 
-    commander_of_the_dead =  make_buff( this, "commander_of_the_dead", find_spell( 215069 ) )
-                              -> set_default_value_from_effect( 1 );
+    commander_of_the_dead =  make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
+                                -> set_default_value_from_effect( 1 );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -4852,6 +4859,7 @@ struct dark_transformation_buff_t : public buff_t
 
 struct dark_transformation_t : public death_knight_spell_t
 {
+  buff_t* commander_of_the_dead;
   bool precombat_frenzy;
 
   dark_transformation_t( death_knight_t* p, util::string_view options_str ) :
@@ -4929,7 +4937,7 @@ struct dark_transformation_t : public death_knight_spell_t
 
       if ( p()->talent.unholy.commander_of_the_dead.ok() )
       {
-        if ( p()->pets.gargoyle && p()->pets.gargoyle->commander_of_the_dead )
+        if ( p()->pets.gargoyle )
         {
           p()->pets.gargoyle->commander_of_the_dead->trigger();
         }
@@ -9850,6 +9858,8 @@ void death_knight_t::init_spells()
   // Magus of the dead (army of the damned)
   pet_spell.frostbolt        = find_spell( 317792 );
   pet_spell.shadow_bolt      = find_spell( 317791 );
+  // Commander of the Dead Talent
+  pet_spell.commander_of_the_dead = find_spell( 215069 );
 
   // Shadowlands specific - Commented out = NYI
 
@@ -10209,8 +10219,6 @@ void death_knight_t::create_buffs()
           ->set_cooldown( talent.unholy.plaguebringer->internal_cooldown() )
           ->set_default_value( talent.unholy.plaguebringer->effectN( 1 ).percent() )
           ->set_max_stack( 1 );
-
-  buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", find_spell( 215069 ) );
 
   buffs.festermight = make_buff( this, "festermight", find_spell( 377591 ) )
                           ->add_invalidate( CACHE_STRENGTH )
