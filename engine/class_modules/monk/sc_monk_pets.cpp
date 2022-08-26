@@ -663,7 +663,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
     {
       sef_melee_attack_t::impact( state );
 
-      if ( result_is_hit( state->result ) && o()->spec.spinning_crane_kick_2_ww->ok() )
+      if ( result_is_hit( state->result ) && o()->talent.windwalker.mark_of_the_crane->ok() )
         o()->trigger_mark_of_the_crane( state );
 
       o()->trigger_keefers_skyreach( state );
@@ -685,7 +685,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       if ( result_is_hit( state->result ) )
       {
-        if ( o()->spec.spinning_crane_kick_2_ww->ok() )
+        if ( o()->talent.windwalker.mark_of_the_crane->ok() )
           o()->trigger_mark_of_the_crane( state );
 
         if ( p()->buff.bok_proc_sef->up() )
@@ -697,7 +697,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rising_sun_kick_dmg_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_dmg_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->spec.rising_sun_kick->effectN( 1 ).trigger() )
+      : sef_melee_attack_t( "rising_sun_kick_dmg", player, player->o()->talent.general.rising_sun_kick->effectN( 1 ).trigger() )
     {
       background = true;
     }
@@ -730,7 +730,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_rising_sun_kick_t : public sef_melee_attack_t
   {
     sef_rising_sun_kick_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->spec.rising_sun_kick )
+      : sef_melee_attack_t( "rising_sun_kick", player, player->o()->talent.general.rising_sun_kick )
     {
       execute_action = new sef_rising_sun_kick_dmg_t( player );
     }
@@ -763,7 +763,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
   struct sef_fists_of_fury_t : public sef_melee_attack_t
   {
     sef_fists_of_fury_t( storm_earth_and_fire_pet_t* player )
-      : sef_melee_attack_t( "fists_of_fury", player, player->o()->spec.fists_of_fury )
+      : sef_melee_attack_t( "fists_of_fury", player, player->o()->talent.windwalker.fists_of_fury )
     {
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
