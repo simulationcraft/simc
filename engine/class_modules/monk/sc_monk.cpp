@@ -4586,7 +4586,10 @@ struct bountiful_brew_t : public monk_spell_t
 {
   buff_t* lead_by_example;
 
-  bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p, p.legendary.bountiful_brew )
+  bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p, 
+      (p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
+            (p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew :
+                (p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew : nullptr))))
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
@@ -4617,13 +4620,23 @@ struct bountiful_brew_t : public monk_spell_t
     p()->buff.bonedust_brew_hidden->trigger();
     monk_spell_t::execute();
 
-    p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+    if ( p()->legendary.bountiful_brew->ok() )
+        p()->buff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
+      p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
+    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
+      p()->buff.bonedust_brew->extend_duration_or_trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
 
     // Force trigger Lead by Example Buff
     if ( lead_by_example )
     {
       // Unlike Bountiful Brew procs that extend it's duration, Lead by Example overrides it's buff.
-      lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+      if ( p()->legendary.bountiful_brew->ok() )
+        lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+      else if ( p()->talent.brewmaster.bountiful_brew->ok() )
+        lead_by_example->trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
+      else if ( p()->talent.mistweaver.bountiful_brew->ok() )
+        lead_by_example->trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
     }
   }
 
@@ -4631,15 +4644,30 @@ struct bountiful_brew_t : public monk_spell_t
   {
     monk_spell_t::impact( s );
 
-    get_td( s->target )
-        ->debuff.bonedust_brew->extend_duration_or_trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+    if ( p()->legendary.bountiful_brew->ok() )
+      get_td( s->target )
+          ->debuff.bonedust_brew->extend_duration_or_trigger(
+              p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
+    else if ( p()->talent.brewmaster.bountiful_brew->ok() )
+      get_td( s->target )
+          ->debuff.bonedust_brew->extend_duration_or_trigger( 
+              p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
+    else if ( p()->talent.mistweaver.bountiful_brew->ok() )
+      get_td( s->target )
+          ->debuff.bonedust_brew->extend_duration_or_trigger(
+              p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
+    
   }
 };
 
 struct bonedust_brew_t : public monk_spell_t
 {
   bonedust_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "bonedust_brew", &p, p.covenant.necrolord )
+    : monk_spell_t( "bonedust_brew", &p, 
+        (p.covenant.necrolord->ok() ? p.covenant.necrolord :
+            (p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
+                (p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
+                    (p.talent.windwalker.boneduest_brew->ok() ? p.talent.windwalker.boneduest_brew : nullptr)))))
   {
     parse_options( options_str );
     may_combo_strike            = true;
