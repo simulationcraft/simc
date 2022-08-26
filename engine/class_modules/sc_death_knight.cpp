@@ -483,6 +483,7 @@ public:
     buff_t* unholy_ground;
     buff_t* icy_talons;
     buff_t* empower_rune_weapon;
+    buff_t* abomination_limb_talent;
 
     // Runeforges
     buff_t* rune_of_hysteria;
@@ -545,7 +546,7 @@ public:
     buff_t* final_sentence;
 
     // Covenants
-    buff_t* abomination_limb; // Necrolord
+    buff_t* abomination_limb_covenant; // Necrolord
     buff_t* deaths_due; // Night Fae
     buff_t* swarming_mist; // Venthyr
 
@@ -3741,12 +3742,12 @@ struct auto_attack_t : public death_knight_melee_attack_t
 // Death Knight Abilities
 // ==========================================================================
 
-// Abomination Limb =========================================================
+// Abomination Limb Covenant ================================================
 
-struct abomination_limb_damage_t : public death_knight_spell_t
+struct abomination_limb_covenant_damage_t : public death_knight_spell_t
 {
   int bone_shield_stack_gain;
-  abomination_limb_damage_t( death_knight_t* p ) :
+  abomination_limb_covenant_damage_t( death_knight_t* p ) :
     death_knight_spell_t( "abomination_limb_damage", p, p -> covenant.abomination_limb -> effectN( 2 ).trigger() )
   {
     background = true;
@@ -3800,13 +3801,13 @@ struct abomination_limb_damage_t : public death_knight_spell_t
   }
 };
 
-struct abomination_limb_buff_t : public buff_t
+struct abomination_limb_covenant_buff_t : public buff_t
 {
-  abomination_limb_damage_t* damage; // (AOE) damage that ticks every second
+  abomination_limb_covenant_damage_t* damage; // (AOE) damage that ticks every second
 
-  abomination_limb_buff_t( death_knight_t* p ) :
+  abomination_limb_covenant_buff_t( death_knight_t* p ) :
     buff_t( p, "abomination_limb", p -> covenant.abomination_limb ),
-    damage( new abomination_limb_damage_t( p ) )
+    damage( new abomination_limb_covenant_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ )
@@ -3821,9 +3822,9 @@ struct abomination_limb_buff_t : public buff_t
   }
 };
 
-struct abomination_limb_t : public death_knight_spell_t
+struct abomination_limb_covenant_t : public death_knight_spell_t
 {
-  abomination_limb_t( death_knight_t* p, util::string_view options_str ) :
+  abomination_limb_covenant_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_spell_t( "abomination_limb", p, p -> covenant.abomination_limb )
   {
     may_crit = may_miss = may_dodge = may_parry = false;
@@ -3833,9 +3834,9 @@ struct abomination_limb_t : public death_knight_spell_t
     // Periodic behavior handled by the buff
     dot_duration = base_tick_time = 0_ms;
 
-    if ( action_t* abomination_limb_damage = p -> find_action( "abomination_limb_damage" ) )
+    if ( action_t* abomination_limb_covenant_damage = p -> find_action( "abomination_limb_damage" ) )
     {
-      add_child( abomination_limb_damage );
+      add_child( abomination_limb_covenant_damage );
     }
   }
 
@@ -3845,7 +3846,92 @@ struct abomination_limb_t : public death_knight_spell_t
 
     // Pull affect for this ability is NYI
 
-    p() -> buffs.abomination_limb -> trigger();
+    p() -> buffs.abomination_limb_covenant -> trigger();
+  }
+};
+
+// Abomination Limb Talent ================================================
+
+struct abomination_limb_talent_damage_t : public death_knight_spell_t
+{
+  int bone_shield_stack_gain;
+  abomination_limb_talent_damage_t( death_knight_t* p )
+    : death_knight_spell_t( "abomination_limb_damage", p, p->talent.abomination_limb->effectN( 2 ).trigger() )
+  {
+    background = true;
+    bone_shield_stack_gain = as<int>( p->talent.abomination_limb->effectN( 3 ).base_value() );
+    aoe                    = -1;
+    reduced_aoe_targets    = p->talent.abomination_limb->effectN( 5 ).base_value();
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+    // We proc this on cast, then every 6 seconds thereafter, on tick
+    // Every 4 seconds if we have abominations_frenzy legendary equipped
+    if ( p()->cooldown.abomination_limb->is_ready() )
+    {
+      switch ( p()->specialization() )
+      {
+        case DEATH_KNIGHT_BLOOD:
+          p()->buffs.bone_shield->trigger( bone_shield_stack_gain );
+          sim->print_debug( "{} triggers bone shield via abominations_limb", player->name() );
+          break;
+        case DEATH_KNIGHT_FROST:
+          p()->buffs.rime->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0 );
+          sim->print_debug( "{} triggers rime via abominations_limb", player->name() );
+          break;
+        case DEATH_KNIGHT_UNHOLY:
+          p()->trigger_runic_corruption( p()->procs.al_runic_corruption, 0, 1.0 );
+          sim->print_debug( "{} triggers runic corruption via abominations_limb", player->name() );
+          break;
+        default:
+          break;
+      }
+      p()->cooldown.abomination_limb->start();
+    }
+  }
+};
+
+struct abomination_limb_talent_buff_t : public buff_t
+{
+  abomination_limb_talent_damage_t* damage;  // (AOE) damage that ticks every second
+
+  abomination_limb_talent_buff_t( death_knight_t* p )
+    : buff_t( p, "abomination_limb", p->talent.abomination_limb ), damage( new abomination_limb_talent_damage_t( p ) )
+  {
+    cooldown->duration = 0_ms;  // Controlled by the action
+    set_tick_callback(
+        [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) { damage->execute(); } );
+    set_partial_tick( true );
+  }
+};
+
+struct abomination_limb_talent_t : public death_knight_spell_t
+{
+  abomination_limb_talent_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "abomination_limb", p, p->talent.abomination_limb )
+  {
+    may_crit = may_miss = may_dodge = may_parry = false;
+
+    parse_options( options_str );
+
+    // Periodic behavior handled by the buff
+    dot_duration = base_tick_time = 0_ms;
+
+    if ( action_t* abomination_limb_talent_damage = p->find_action( "abomination_limb_damage" ) )
+    {
+      add_child( abomination_limb_talent_damage );
+    }
+  }
+
+  void execute() override
+  {
+    death_knight_spell_t::execute();
+
+    // Pull affect for this ability is NYI
+
+    p()->buffs.abomination_limb_talent->trigger();
   }
 };
 
@@ -5250,6 +5336,16 @@ struct death_coil_damage_t : public death_knight_spell_t
 
     m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
 
+    if (p()->talent.unholy.improved_death_coil.ok())
+    {
+      m *= 1.0 + p()->talent.unholy.improved_death_coil->effectN( 1 ).percent();
+    }
+
+    if ( p()->talent.unholy.reaping.ok() && target -> health_percentage() < p() -> find_spell(377514) -> effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p()->talent.unholy.reaping->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -5786,6 +5882,12 @@ struct festering_wound_t : public death_knight_spell_t
     {
       base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
     }
+
+    if ( p ->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p -> find_spell( 377514 )->effectN( 2 ).base_value() )
+    {
+      base_multiplier *= 1.0 + p ->talent.unholy.reaping->effectN( 1 ).percent();
+    }
   }
 
   void execute() override
@@ -5815,6 +5917,12 @@ struct festering_strike_t : public death_knight_melee_attack_t
     triggers_shackle_the_unworthy = true;
 
     base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
+
+    if ( p->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
+    {
+      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
+    }
   }
 
   void init() override
@@ -5835,6 +5943,16 @@ struct festering_strike_t : public death_knight_melee_attack_t
       unsigned n_stacks = fw_proc_stacks[ n ];
 
       p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_festering_strike );
+    }
+
+    if ( p()->talent.unholy.feasting_strikes.ok() )
+    {
+      if ( rng().roll( p()->find_spell(390161)->effectN( 1 ).percent() ) )
+      {
+        double gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
+
+        p()->replenish_rune( gains, p()->gains.feasting_strikes );
+      }
     }
   }
 };
@@ -7265,6 +7383,16 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     {
       p()->buffs.plaguebringer->trigger();
     }
+
+    if ( p()->talent.unholy.feasting_strikes.ok() )
+    {
+      if ( rng().roll( p()->find_spell( 390161 )->effectN( 1 ).percent() ) )
+      {
+        double gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
+
+        p()->replenish_rune( gains, p()->gains.feasting_strikes );
+      }
+    }
   }
 
   void execute() override
@@ -7295,6 +7423,12 @@ struct clawing_shadows_t : public scourge_strike_base_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
+
+    if ( p->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
+    {
+      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
+    }
   }
 };
 
@@ -7307,6 +7441,12 @@ struct scourge_strike_shadow_t : public death_knight_melee_attack_t
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
     base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
+
+    if ( p->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
+    {
+      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
+    }
   }
 };
 
@@ -7318,6 +7458,12 @@ struct scourge_strike_t : public scourge_strike_base_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
     base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
+
+    if ( p->talent.unholy.reaping.ok() &&
+         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
+    {
+      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
+    }
 
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
@@ -8026,7 +8172,8 @@ struct endless_rune_waltz_duration_buff_t : public buff_t
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
-    buff_t( p, "runic_corruption", p -> spell.runic_corruption )
+      // Talent wont always be selected when proccing runic corruption, spell lookup works as a fallback. 
+    buff_t( p, "runic_corruption", p -> find_spell( 51460 ) ) 
   {
     // Runic Corruption refreshes to remaining time + buff duration
     refresh_behavior = buff_refresh_behavior::EXTEND;
@@ -8902,7 +9049,8 @@ void death_knight_t::create_actions()
 action_t* death_knight_t::create_action( util::string_view name, util::string_view options_str )
 {
   // General Actions
-  if ( name == "abomination_limb"         ) return new abomination_limb_t         ( this, options_str );
+  if ( name == "abomination_limb_covenant") return new abomination_limb_covenant_t( this, options_str );
+  if ( name == "abomination_limb_talent"  ) return new abomination_limb_talent_t  ( this, options_str );
   if ( name == "antimagic_shell"          ) return new antimagic_shell_t          ( this, options_str );
   if ( name == "auto_attack"              ) return new auto_attack_t              ( this, options_str );
   if ( name == "chains_of_ice"            ) return new chains_of_ice_t            ( this, options_str );
@@ -9631,6 +9779,8 @@ void death_knight_t::init_spells()
   spell.final_sentence = find_spell( 353823 );
   spell.razorice_debuff = find_spell( 51714 );
   spell.deaths_due      = find_spell( 315442 );
+  spell.runic_corruption     = find_spell( 51460 );
+  spell.runic_empowerment_gain = find_spell( 193486 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
@@ -9647,12 +9797,10 @@ void death_knight_t::init_spells()
   // Frost
   spell.murderous_efficiency_gain = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
-  spell.runic_empowerment_gain = find_spell( 193486 );
   spell.piercing_chill_debuff = find_spell( 377359 );
 
   // Unholy
   spell.festering_wound_debuff = find_spell( 194310 );
-  spell.runic_corruption       = find_spell( 51460 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -9878,6 +10026,8 @@ void death_knight_t::create_buffs()
         -> set_default_value_from_effect( 1 )
         -> set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
+  buffs.abomination_limb_talent = new abomination_limb_talent_buff_t( this );
+
   // Blood
   buffs.blood_shield = new blood_shield_buff_t( this );
 
@@ -10093,7 +10243,7 @@ void death_knight_t::create_buffs()
   }
 
   // Covenants
-  buffs.abomination_limb = new abomination_limb_buff_t( this );
+  buffs.abomination_limb_covenant = new abomination_limb_covenant_buff_t( this );
   buffs.swarming_mist = new swarming_mist_buff_t( this );
 
   // Tier 28
@@ -10155,6 +10305,7 @@ void death_knight_t::init_gains()
   gains.apocalypse                       = get_gain( "Apocalypse" );
   gains.festering_wound                  = get_gain( "Festering Wound" );
   gains.replenishing_wounds              = get_gain( "Replenishing Wounds" );
+  gains.feasting_strikes                 = get_gain( "Feasting Strikes" );
 
   // Shadowlands / Covenants
   gains.final_sentence                   = get_gain( "Final Sentence" );
@@ -10625,6 +10776,11 @@ double death_knight_t::composite_player_pet_damage_multiplier( const action_stat
     {
       m *= 1.0 + buffs.harvest_time -> value();
     }
+  }
+
+  if ( talent.unholy.unholy_aura.ok() )
+  {
+    m *= 1.0 + talent.unholy.unholy_aura->effectN( 3 ).percent();
   }
 
   return m;
