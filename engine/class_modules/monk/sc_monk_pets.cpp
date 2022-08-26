@@ -768,7 +768,7 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       channeled = tick_zero = interrupt_auto_attack = true;
       may_crit = may_miss = may_block = may_dodge = may_parry = callbacks = false;
       // Hard code a 10% reduced cast time to not cause any clipping issues.
-      // Obtained from logs as of 04-05-2022
+      // Obtained from logs as of 2022-04-05
       dot_duration = data().duration() / 1.1;
       // Effect 1 shows a period of 166 milliseconds which appears to refer to the visual and not the tick period
       base_tick_time = ( dot_duration / 4 );
