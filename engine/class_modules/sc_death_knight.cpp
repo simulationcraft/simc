@@ -5329,10 +5329,6 @@ struct death_coil_damage_t : public death_knight_spell_t
       coil_of_devastation = new coil_of_devastation_t( p );
       add_child( coil_of_devastation );
     }
-    if ( p->talent.unholy.improved_death_coil.ok() )
-    { 
-      aoe = 1 + as<int>(p->talent.unholy.improved_death_coil -> effectN(2).base_value());
-    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5367,22 +5363,6 @@ struct death_coil_damage_t : public death_knight_spell_t
       residual_action::trigger( coil_of_devastation, state->target,
                                 state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
-
-    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
-    {
-      get_td( state->target )->debuff.death_rot->trigger();
-      
-      if ( p()->buffs.sudden_doom->check() )
-      {
-        get_td( state->target )->debuff.death_rot->trigger();
-      }
-    }
-
-    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
-         result_is_hit( execute_state->result ) )
-    {
-      get_td( execute_state->target )->debuff.rotten_touch->trigger();
-    }
   }
 };
 
@@ -5395,6 +5375,11 @@ struct death_coil_t : public death_knight_spell_t
 
       execute_action = get_action<death_coil_damage_t>("death_coil_damage", p);
       execute_action->stats = stats;
+
+    if ( p->talent.unholy.improved_death_coil.ok() )
+    { 
+      aoe = 1 + as<int>(p->talent.unholy.improved_death_coil -> effectN(2).base_value());
+    }
   }
 
   double cost() const override
@@ -5443,6 +5428,25 @@ struct death_coil_t : public death_knight_spell_t
     }
 
     p() -> buffs.sudden_doom -> decrement();
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    {
+      get_td( state->target )->debuff.death_rot->trigger();
+      
+      if ( p()->buffs.sudden_doom->check() )
+      {
+        get_td( state->target )->debuff.death_rot->trigger();
+      }
+    }
+
+    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
+         result_is_hit( execute_state->result ) )
+    {
+      get_td( state->target )->debuff.rotten_touch->trigger();
+    }
   }
 };
 
@@ -7387,6 +7391,24 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     return current_targets;
   }
 
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+    if ( get_td(t) -> debuff.rotten_touch -> up() )
+    {
+      m *= 1.0 + p()->find_spell(390276)->effectN(1).percent();
+    }
+
+    if ( p()->talent.unholy.reaping.ok() &&
+         t->health_percentage() < p()->find_spell(377514)->effectN(2).base_value())
+    {
+      m *= 1.0 + p()->talent.unholy.reaping->effectN(1).percent();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* state ) override
   {
     death_knight_melee_attack_t::impact( state );
@@ -7441,13 +7463,6 @@ struct clawing_shadows_t : public scourge_strike_base_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
-
-    if ( p->talent.unholy.reaping.ok() &&
-         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
-    {
-      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
-    }
   }
 };
 
@@ -7459,13 +7474,6 @@ struct scourge_strike_shadow_t : public death_knight_melee_attack_t
     may_miss = may_parry = may_dodge = false;
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
-    base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
-
-    if ( p->talent.unholy.reaping.ok() &&
-         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
-    {
-      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
-    }
   }
 };
 
@@ -7476,13 +7484,6 @@ struct scourge_strike_t : public scourge_strike_base_t
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
-    base_multiplier *= 1.0 + get_td( target ) -> debuff.rotten_touch -> stack_value();
-
-    if ( p->talent.unholy.reaping.ok() &&
-         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
-    {
-      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
-    }
 
     impact_action = get_action<scourge_strike_shadow_t>( "scourge_strike_shadow", p );
     add_child( impact_action );
