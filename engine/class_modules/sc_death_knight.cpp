@@ -7147,6 +7147,49 @@ struct pillar_of_frost_t : public death_knight_spell_t
   }
 };
 
+// Plaguebearer =============================================================
+
+struct plaguebearer_t : public death_knight_spell_t
+{
+  plaguebearer_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "plaguebearer", p, p -> talent.unholy.plaguebearer )
+  {
+    parse_options( options_str );
+    aoe = 1 + p->talent.unholy.plaguebearer->effectN(1).base_value();
+  }
+
+  void init() override
+  {
+    death_knight_spell_t::init();
+  }
+
+  size_t available_targets( std::vector< player_t* >& tl ) const override
+  {
+    death_knight_spell_t::available_targets( tl );
+
+    // Does not hit the main target
+    auto it = range::find( tl, target );
+    if ( it != tl.end() )
+    {
+      tl.erase( it );
+    }
+
+    return tl.size();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_knight_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) && get_td( s -> target ) -> debuff.festering_wound->stack() > 0  )
+    {
+      unsigned n_stacks = get_td( s -> target )->debuff.festering_wound->stack();
+
+      p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_plaguebearer );
+    }
+  }
+};
+
 // Raise Dead ===============================================================
 
 struct raise_dead_t : public death_knight_spell_t
@@ -9181,6 +9224,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
+  if ( name == "plaguebearer"             ) return new plaguebearer_t             ( this, options_str );
 
   // Covenant Actions
   if ( name == "swarming_mist"            ) return new swarming_mist_t            ( this, options_str );
@@ -9816,7 +9860,7 @@ void death_knight_t::init_spells()
   talent.unholy.unholy_pact = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
   talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
   // Row 7
-  talent.unholy.plaguebearer = find_talent_spell( talent_tree::SPECIALIZATION, "Plaguebearer" );
+  talent.unholy.plaguebearer = find_talent_spell( talent_tree::SPECIALIZATION, 390279 );
   talent.unholy.pestilence = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
   talent.unholy.eternal_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agony" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
@@ -10430,6 +10474,7 @@ void death_knight_t::init_procs()
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
   procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
+  procs.fw_plaguebearer     = get_proc( "Festering Wound from Plaguebearer" );
 
   procs.reanimated_shambler = get_proc( "Reanimated Shambler" );
 }
