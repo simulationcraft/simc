@@ -527,8 +527,7 @@ public:
     buff_t* unholy_assault;
     buff_t* unholy_blight;
     buff_t* unholy_pact;
-    // buff_t* morbidity; -- NYI
-    // buff_t* festermight; -- NYI
+    buff_t* festermight;
     buff_t* ghoulish_frenzy;
     // buff_t* unholy_aura; -- NYI
     buff_t* commander_of_the_dead;
@@ -959,6 +958,7 @@ public:
     // Unholy
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* rotten_touch_debuff;
+    const spell_data_t* death_rot;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -1352,7 +1352,9 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.rotten_touch     = make_buff( *this, "rotten_touch", p -> spell.rotten_touch_debuff )
                            -> set_default_value_from_effect( 1 );
   
-  debuff.death_rot        = make_buff( *this, "death_rot_debuff", p -> find_spell( 377540 ) );
+  debuff.death_rot = make_buff( *this, "death_rot", p->spell.death_rot )
+                           -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                           -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
   debuff.apocalypse_death  = make_buff( *this, "death", p -> find_spell( 327095 ) );  // Effect not implemented
@@ -5361,6 +5363,22 @@ struct death_coil_damage_t : public death_knight_spell_t
       residual_action::trigger( coil_of_devastation, state->target,
                                 state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
+
+    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    {
+      get_td( state->target )->debuff.death_rot->trigger();
+      
+      if ( p()->buffs.sudden_doom->check() )
+      {
+        get_td( state->target )->debuff.death_rot->trigger();
+      }
+    }
+
+    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
+         result_is_hit( execute_state->result ) )
+    {
+      get_td( execute_state->target )->debuff.rotten_touch->trigger();
+    }
   }
 };
 
@@ -5418,12 +5436,6 @@ struct death_coil_t : public death_knight_spell_t
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
-    }
-
-    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
-         result_is_hit( execute_state->result ) )
-    {
-      get_td( execute_state->target )->debuff.rotten_touch->trigger();
     }
 
     p() -> buffs.sudden_doom -> decrement();
@@ -8700,6 +8712,11 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
     conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
   }
+
+    if ( talent.unholy.festermight.ok() )
+  {
+    buffs.festermight->trigger( n_wounds );
+  }
 }
 
 void death_knight_t::trigger_virulent_plague_death( player_t* target )
@@ -8928,6 +8945,11 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       if ( dk -> talent.unholy.pestilent_pustules.ok() )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n );
+      }
+
+      if ( dk-> talent.unholy.festermight.ok() )
+      {
+        dk->buffs.festermight->trigger( n_executes );
       }
 
       td -> debuff.festering_wound -> decrement( n_executes );
@@ -9776,13 +9798,13 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
-  spell.brittle_debuff  = find_spell( 374557 );
-  spell.dnd_buff        = find_spell( 188290 );
-  spell.exacting_preparation = find_soulbind_spell( "Exacting Preparation" );
-  spell.final_sentence = find_spell( 353823 );
-  spell.razorice_debuff = find_spell( 51714 );
-  spell.deaths_due      = find_spell( 315442 );
-  spell.runic_corruption     = find_spell( 51460 );
+  spell.brittle_debuff         = find_spell( 374557 );
+  spell.dnd_buff               = find_spell( 188290 );
+  spell.exacting_preparation   = find_soulbind_spell( "Exacting Preparation" );
+  spell.final_sentence         = find_spell( 353823 );
+  spell.razorice_debuff        = find_spell( 51714 );
+  spell.deaths_due             = find_spell( 315442 );
+  spell.runic_corruption       = find_spell( 51460 );
   spell.runic_empowerment_gain = find_spell( 193486 );
 
   // Diseases
@@ -9798,13 +9820,14 @@ void death_knight_t::init_spells()
   spell.endless_rune_waltz_4pc      = find_spell( 363590 );
 
   // Frost
-  spell.murderous_efficiency_gain = find_spell( 207062 );
+  spell.murderous_efficiency_gain   = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
-  spell.piercing_chill_debuff = find_spell( 377359 );
+  spell.piercing_chill_debuff       = find_spell( 377359 );
 
   // Unholy
   spell.festering_wound_debuff = find_spell( 194310 );
-  spell.rotten_touch_debuff = find_spell( 390276 );
+  spell.rotten_touch_debuff    = find_spell( 390276 );
+  spell.death_rot              = find_spell( 377540 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10183,6 +10206,12 @@ void death_knight_t::create_buffs()
           ->set_max_stack( 1 );
 
   buffs.commander_of_the_dead = make_buff( this, "commander_of_the_dead", find_spell( 215069 ) );
+
+  buffs.festermight = make_buff( this, "festermight", find_spell( 377591 ) )
+                          ->add_invalidate( CACHE_STRENGTH )
+                          ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
+                          ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
+                          ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
@@ -10714,6 +10743,16 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   if( td && td -> debuff.abominations_frenzy -> up() )
   {
     m *= 1.0 + td -> debuff.abominations_frenzy -> value();
+  }
+
+  if ( td && td->debuff.death_rot->up() && dbc::is_school( s, SCHOOL_SHADOW ) )
+  {
+    m *= 1.0 + td->debuff.death_rot->stack_value();
+  }
+
+  if ( td && talent.unholy.morbidity.ok() )
+  {
+    m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + td->dot.blood_plague->is_ticking() ) * find_spell( 377592 )->effectN(1).percent() );
   }
 
   return m;
