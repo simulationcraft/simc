@@ -2583,6 +2583,9 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.flashing_fists.ok() )
         am *= 1 + p()->talent.windwalker.flashing_fists->effectN(1 ).percent();
 
+    if ( p()->buff.transfer_the_power->check() )
+      am *= 1 + p()->buff.transfer_the_power->check_stack_value();
+
     return am;
   }
 
@@ -7991,7 +7994,8 @@ void monk_t::create_buffs()
 
   buff.touch_of_karma = new buffs::touch_of_karma_buff_t( *this, "touch_of_karma", find_spell( 125174 ) );
 
-  buff.transfer_the_power = make_buff( this, "transfer_the_power", find_spell( 195321 ) );
+  buff.transfer_the_power = make_buff( this, "transfer_the_power", find_spell( 195321 ) )
+                                ->set_default_value( 1 );
 
   buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 166646 ) );
 
