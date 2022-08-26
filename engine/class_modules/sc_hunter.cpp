@@ -5544,19 +5544,14 @@ struct wildfire_bomb_t: public hunter_spell_t
         a -> add_child( violent_reaction );
     }
 
-    void execute() override
-    {
-      bomb_base_t::execute();
-
-      if ( td( target ) -> dots.serpent_sting -> is_ticking() )
-        violent_reaction -> execute_on_target( target );
-    }
-
     void impact( action_state_t* s ) override
     {
       bomb_base_t::impact( s );
 
-      td( s -> target ) -> dots.serpent_sting -> refresh_duration();
+      auto serpent_sting = td( s -> target ) -> dots.serpent_sting;
+      if ( serpent_sting -> is_ticking() )
+        violent_reaction -> execute_on_target( s -> target );
+      serpent_sting -> refresh_duration();
     }
   };
 
