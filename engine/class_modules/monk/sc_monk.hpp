@@ -615,7 +615,7 @@ public:
       player_talent_t faeline_stomp;
       // Row 10
       player_talent_t calculated_strikes;
-      player_talent_t attenuation;
+      player_talent_t bone_marrow_hops;
       player_talent_t keefers_skyreach;
       player_talent_t invokers_delight;
       player_talent_t way_of_the_fae;

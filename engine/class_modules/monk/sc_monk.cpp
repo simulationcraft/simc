@@ -466,7 +466,7 @@ public:
     if ( p()->buff.storm_earth_and_fire->check() )
     {
       // Base 135% from SEF
-      auto sef_multiplier = ( 1 + p()->spec.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
+      auto sef_multiplier = ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       total_damage_amplifier *= sef_multiplier;
 
       p()->sim->print_debug( " JEREMY sef_multiplier {}", sef_multiplier );
@@ -479,7 +479,12 @@ public:
     total_damage_amplifier *=
         1 + ( p()->covenant.necrolord->proc_chance() *                                                           // Chance for bonus damage from Bonedust Brew
               p()->covenant.necrolord->effectN( 1 ).percent() *                                                 // Damage amplifier from Bonedust Brew
-              ( 1 + ( p()->conduit.bone_marrow_hops->ok() ? p()->conduit.bone_marrow_hops.percent() : 0 ) ) *  // Damage amplifier from Bone Marrow Hops conduit
+              ( 1 + ( p()->conduit.bone_marrow_hops->ok()
+                          ? p()->conduit.bone_marrow_hops.percent()                                            // Damage amplifier from Bone Marrow Hops conduit
+                          : ( p()->talent.windwalker.bone_marrow_hops->ok()
+                                        ? p()->talent.windwalker.bone_marrow_hops->effectN( 1 ).percent()     // Damage amplifier from Bone Marrow Hops talent
+                                        : 0 ) ) ) *  
+          
               ( static_cast<double>( targets_affected ) / target_count ) );                                   // Delta targets affected by Bonedust Brew
 
     // Generate a lambda to refactor these expressions for ease of use and legibility
@@ -682,6 +687,8 @@ public:
         }
 
       if ( p()->legendary.last_emperors_capacitor->ok() )
+        p()->buff.the_emperors_capacitor->trigger();
+      else if ( p()->talent.windwalker.last_emperors_capacitor->ok() )
         p()->buff.the_emperors_capacitor->trigger();
 
       // Chi Savings on Dodge & Parry & Miss
@@ -935,9 +942,9 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( p()->buff.storm_earth_and_fire->check() )
     {
       // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+      if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
-        double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+        double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
         am *= 1 + sef_multiplier;
       }
@@ -1024,9 +1031,9 @@ struct monk_heal_t : public monk_action_t<heal_t>
     if ( p()->buff.storm_earth_and_fire->check() )
     {
       // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+      if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
-        double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+        double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
         am *= 1 + sef_multiplier;
       }
@@ -1125,7 +1132,7 @@ public:
 struct storm_earth_and_fire_t : public monk_spell_t
 {
   storm_earth_and_fire_t( monk_t* p, util::string_view options_str )
-    : monk_spell_t( "storm_earth_and_fire", p, p->spec.storm_earth_and_fire )
+    : monk_spell_t( "storm_earth_and_fire", p, p->talent.windwalker.storm_earth_and_fire )
   {
     parse_options( options_str );
 
@@ -1196,7 +1203,7 @@ struct storm_earth_and_fire_t : public monk_spell_t
 struct storm_earth_and_fire_fixate_t : public monk_spell_t
 {
   storm_earth_and_fire_fixate_t( monk_t* p, util::string_view options_str )
-    : monk_spell_t( "storm_earth_and_fire_fixate", p, p->spec.storm_earth_and_fire->effectN( 5 ).trigger() )
+    : monk_spell_t( "storm_earth_and_fire_fixate", p, p->find_spell( (int)p->talent.windwalker.storm_earth_and_fire->effectN( 5 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -1284,9 +1291,9 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( p()->buff.storm_earth_and_fire->check() )
     {
       // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-      if ( base_t::data().affected_by( p()->spec.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+      if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
       {
-        double sef_multiplier = p()->spec.storm_earth_and_fire->effectN( 1 ).percent();
+        double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
         am *= 1 + sef_multiplier;
       }
@@ -2902,7 +2909,7 @@ struct melee_t : public monk_melee_attack_t
     double am = monk_melee_attack_t::action_multiplier();
 
     if ( p()->buff.storm_earth_and_fire->check() )
-      am *= 1.0 + p()->spec.storm_earth_and_fire->effectN( 3 ).percent();
+      am *= 1.0 + p()->talent.windwalker.storm_earth_and_fire->effectN( 3 ).percent();
 
     if ( p()->buff.serenity->check() )
       am *= 1 + p()->talent.windwalker.serenity->effectN( 7 ).percent();
@@ -4673,13 +4680,24 @@ struct bonedust_brew_damage_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok() && p()->buff.bonedust_brew_hidden->up() )
+    if ( p()->buff.bonedust_brew_hidden->up() )
     {
-      // Saved at -500
-      p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+      if ( p()->conduit.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
-      p()->buff.bonedust_brew_hidden->decrement();
-      p()->proc.bonedust_brew_reduction->occur();
+        p()->buff.bonedust_brew_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
+      else if ( p()->talent.windwalker.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->talent.windwalker.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+        p()->buff.bonedust_brew_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
     }
   }
 };
@@ -4699,13 +4717,24 @@ struct bonedust_brew_heal_t : public monk_heal_t
   {
     monk_heal_t::execute();
 
-    if ( p()->conduit.bone_marrow_hops->ok() && p()->buff.bonedust_brew_hidden->up() )
+    if ( p()->buff.bonedust_brew_hidden->up() )
     {
-      // Saved at -500
-      p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
+      if ( p()->conduit.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
-      p()->buff.bonedust_brew_hidden->decrement();
-      p()->proc.bonedust_brew_reduction->occur();
+        p()->buff.bonedust_brew_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
+      else if ( p()->talent.windwalker.bone_marrow_hops->ok() )
+      {
+        // Saved at -500
+        p()->cooldown.bonedust_brew->adjust( p()->talent.windwalker.bone_marrow_hops->effectN( 2 ).time_value(), true );
+
+        p()->buff.bonedust_brew_hidden->decrement();
+        p()->proc.bonedust_brew_reduction->occur();
+      }
     }
   }
 };
@@ -7337,7 +7366,7 @@ void monk_t::init_spells()
   talent.windwalker.faeline_stomp                  = _ST( "Faeline Stomp" );
   // Row 10
   talent.windwalker.calculated_strikes             = _ST( "Calculated Strikes" );
-  talent.windwalker.attenuation                    = _ST( "Attenuation" );
+  talent.windwalker.bone_marrow_hops               = _ST( "Bone Marrow Hops" );
   talent.windwalker.keefers_skyreach               = _ST( "Keefer's Skyreach" );
   talent.windwalker.invokers_delight               = _ST( "Invoker's Delight" );
   talent.windwalker.way_of_the_fae                 = _ST( "Way of the Fae" );
@@ -7444,7 +7473,7 @@ void monk_t::init_spells()
   //spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" ); // talent.windwalker.empowered_tiger_lightning
   spec.reverse_harm               = find_spell( 342928 );
   spec.stance_of_the_fierce_tiger = find_specialization_spell( "Stance of the Fierce Tiger" );
-  spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
+  //spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
   spec.storm_earth_and_fire_2     = find_rank_spell( "Storm, Earth, and Fire", "Rank 2" );
   spec.touch_of_karma             = find_specialization_spell( "Touch of Karma" );
   spec.windwalker_monk            = find_specialization_spell( "Windwalker Monk" );
@@ -7908,7 +7937,7 @@ void monk_t::create_buffs()
   buff.serenity = new buffs::serenity_buff_t( *this, "serenity", talent.windwalker.serenity );
 
   buff.storm_earth_and_fire =
-      make_buff( this, "storm_earth_and_fire", spec.storm_earth_and_fire )
+      make_buff( this, "storm_earth_and_fire", talent.windwalker.storm_earth_and_fire )
           ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
           ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER )
           ->set_can_cancel( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
@@ -8358,8 +8387,8 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
 
         if (conduit.bone_marrow_hops->ok())
             damage *= 1 + conduit.bone_marrow_hops.percent();
-
-        //TODO: Attenuation talent is bugged on alpha and doesn't seem to work
+        else if (talent.windwalker.bone_marrow_hops->ok())
+          damage *= 1 + talent.windwalker.bone_marrow_hops->effectN( 1 ).percent();
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
