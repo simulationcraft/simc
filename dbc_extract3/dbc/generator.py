@@ -1504,6 +1504,9 @@ class SpellDataGenerator(DataGenerator):
             ( 350964, 0 ),          # Subtlety-specific Deathly Shadows legendary buff
             ( 364234, 0 ), ( 364235, 0 ), ( 364556, 0 ), # T28 Outlaw 4pc Spells
             ( 364668, 0 ),          # T28 Assassination debuff
+            ( 385897, 0 ),          # Hidden Opportunity Ambush
+            ( 386270, 0 ),          # Audacity buff
+            ( 385794, 0 ), ( 385802, 0 ), ( 385806, 0 ), # Vicious Venoms Ambush/Mutilate variant spells
         ),
 
         # Priest:
