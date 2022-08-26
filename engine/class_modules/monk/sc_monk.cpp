@@ -4667,7 +4667,7 @@ struct bonedust_brew_t : public monk_spell_t
         (p.covenant.necrolord->ok() ? p.covenant.necrolord :
             (p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
                 (p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
-                    (p.talent.windwalker.boneduest_brew->ok() ? p.talent.windwalker.boneduest_brew : nullptr)))))
+                    (p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew : nullptr)))))
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -7386,7 +7386,7 @@ void monk_t::init_spells()
   talent.windwalker.empowered_tiger_lightning      = _ST( "Empowered Tiger Lightning" );
   talent.windwalker.rising_star                    = _ST( "Rising Star" );
   // Row 9
-  talent.windwalker.boneduest_brew                 = _ST( "Bonedust Brew" );
+  talent.windwalker.bonedust_brew                 = _ST( "Bonedust Brew" );
   talent.windwalker.fatal_flying_guillotine        = _ST( "Fatal Flying Guillotine" );
   // talent.windwalker.NYI = _ST( "" )
   talent.windwalker.xuens_battlegear               = _ST( "Xuen's Battlegear" );

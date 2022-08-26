@@ -606,7 +606,7 @@ public:
       player_talent_t empowered_tiger_lightning;
       player_talent_t rising_star;
       // Row 9
-      player_talent_t boneduest_brew;
+      player_talent_t bonedust_brew;
       player_talent_t fatal_flying_guillotine;
       // player_talent_t NYI
       player_talent_t xuens_battlegear;
