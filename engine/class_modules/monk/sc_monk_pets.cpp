@@ -3193,20 +3193,17 @@ void monk_t::create_pets()
 
 void monk_t::trigger_storm_earth_and_fire( const action_t* a, sef_ability_e sef_ability )
 {
-  if ( !spec.storm_earth_and_fire->ok() )
-  {
+  if ( specialization() != MONK_WINDWALKER )
     return;
-  }
+
+  if ( !talent.windwalker.storm_earth_and_fire->ok() )
+    return;
 
   if ( sef_ability == sef_ability_e::SEF_NONE )
-  {
     return;
-  }
 
   if ( !buff.storm_earth_and_fire->up() )
-  {
     return;
-  }
 
   // Trigger pet retargeting if sticky target is not defined, and the Monk used one of the Cyclone
   // Strike triggering abilities
