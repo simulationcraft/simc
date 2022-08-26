@@ -3351,8 +3351,6 @@ struct blood_plague_t : public death_knight_disease_t
 
     heal = get_action<blood_plague_heal_t>( "blood_plague_heal", p );
 
-    base_tick_time *= 1.0 + p -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
-
     // The "reduced effectiveness" mentionned in the tooltip is handled server side
     // Value calculated from testing, may change without notice
     if ( superstrain )
@@ -3379,11 +3377,16 @@ struct blood_plague_t : public death_knight_disease_t
 
   timespan_t tick_time ( const action_state_t* ) const override
   {
-    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
+    timespan_t base_tick_time = p() -> spell.blood_plague -> effectN( 1 ).period();
 
     if ( p() -> buffs.plaguebringer -> up())
     { 
       base_tick_time *= 1.0 + p() -> talent.unholy.plaguebringer->effectN( 1 ).percent();
+    }
+    
+    if ( p() -> talent.blood.rapid_decomposition.ok() )
+    { 
+      base_tick_time *= 1.0 + p() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
     }
 
     return base_tick_time;
@@ -3447,7 +3450,7 @@ struct frost_fever_t : public death_knight_disease_t
 
   timespan_t tick_time ( const action_state_t* ) const override
   {
-    timespan_t base_tick_time = p() -> spell.virulent_plague -> effectN( 1 ).period();
+    timespan_t base_tick_time = p() -> spell.frost_fever -> effectN( 1 ).period();
 
     if ( p() -> buffs.plaguebringer -> up())
     { 
