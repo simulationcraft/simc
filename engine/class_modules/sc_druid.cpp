@@ -316,8 +316,9 @@ public:
     double time_spend_healing = 0.0;
 
     // Covenant options
-    double adaptive_swarm_jump_distance_min = 5.0;
-    double adaptive_swarm_jump_distance_max = 40.0;
+    double adaptive_swarm_jump_distance_melee = 5.0;
+    double adaptive_swarm_jump_distance_ranged = 25.0;
+    double adaptive_swarm_jump_distance_stddev = 1.0;
     unsigned adaptive_swarm_friendly_targets = 20;
     std::string adaptive_swarm_prepull_setup = "";
     double celestial_spirits_exceptional_chance = 0.85;
@@ -7214,12 +7215,14 @@ struct adaptive_swarm_t : public druid_spell_t
 
   public:
     swarm_target_t swarm_target;
+    double range;
     int stacks;
     bool jump;
 
     adaptive_swarm_state_t( action_t* a, player_t* t )
       : action_state_t( a, t ),
         default_stacks( as<int>( debug_cast<druid_t*>( a->player )->cov.necrolord->effectN( 1 ).base_value() ) ),
+        range( 0.0 ),
         stacks( 0 ),
         jump( false )
     {}
@@ -7229,6 +7232,7 @@ struct adaptive_swarm_t : public druid_spell_t
       action_state_t::initialize();
 
       swarm_target = {};
+      range = 0.0;
       stacks = default_stacks;
       jump = false;
     }
@@ -7239,6 +7243,7 @@ struct adaptive_swarm_t : public druid_spell_t
       auto swarm_s = debug_cast<const adaptive_swarm_state_t*>( s );
 
       swarm_target = swarm_s->swarm_target;
+      range = swarm_s->range;
       stacks = swarm_s->stacks;
       jump = swarm_s->jump;
     }
@@ -7247,6 +7252,7 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       action_state_t::debug_str( s );
 
+      s << " range=" << range;
       s << " swarm_stacks=" << stacks;
 
       if ( jump )
@@ -7289,13 +7295,10 @@ struct adaptive_swarm_t : public druid_spell_t
 
     timespan_t travel_time() const override
     {
-      if ( debug_cast<adaptive_swarm_state_t*>( execute_state )->jump )
-      {
-        auto dist =
-            rng().range( p()->options.adaptive_swarm_jump_distance_min, p()->options.adaptive_swarm_jump_distance_max );
+      auto s_ = state( execute_state );
 
-        return timespan_t::from_seconds( dist / travel_speed );
-      }
+      if ( s_->jump )
+        return timespan_t::from_seconds( s_->range / travel_speed );
 
       if ( target == player )
         return 0_ms;
@@ -7305,12 +7308,25 @@ struct adaptive_swarm_t : public druid_spell_t
 
     virtual swarm_target_t new_swarm_target( swarm_target_t = {} ) = 0;
 
-    void send_swarm( swarm_target_t swarm_target, int stack )
+    void send_swarm( swarm_target_t swarm_target, int stack, double range )
     {
       sim->print_debug( "ADAPTIVE_SWARM: jumping {} {} stacks to {}", stack, heal ? "heal" : "damage",
                         heal ? swarm_target.event ? "existing target" : "new target" : swarm_target.player->name() );
 
       auto new_state = state( get_state() );
+
+      // healing swarm get a new randomized ranged. damage swarms replicate the range of the preceding healing swarm.
+      if ( heal )
+      {
+        new_state->range = rng().roll( 0.5 ) ? rng().gauss( p()->options.adaptive_swarm_jump_distance_melee,
+                                                            p()->options.adaptive_swarm_jump_distance_stddev, true )
+                                             : rng().gauss( p()->options.adaptive_swarm_jump_distance_ranged,
+                                                            p()->options.adaptive_swarm_jump_distance_stddev, true );
+      }
+      else
+      {
+        new_state->range = range;
+      }
 
       new_state->stacks = stack;
       new_state->jump = true;
@@ -7320,7 +7336,7 @@ struct adaptive_swarm_t : public druid_spell_t
       schedule_execute( new_state );
     }
 
-    void jump_swarm( int s )
+    void jump_swarm( int s, double r )
     {
       auto stacks = s - 1;
 
@@ -7335,11 +7351,11 @@ struct adaptive_swarm_t : public druid_spell_t
       {
         new_target = new_swarm_target();
         assert( !new_target == false );
-        send_swarm( new_target, stacks );
+        send_swarm( new_target, stacks, r );
       }
       else
       {
-        other->send_swarm( new_target, stacks );
+        other->send_swarm( new_target, stacks, r );
       }
 
       if ( p()->legendary.unbridled_swarm->ok() &&
@@ -7351,12 +7367,12 @@ struct adaptive_swarm_t : public druid_spell_t
           second_target = new_swarm_target();
           assert( !second_target == false );
           sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", heal ? "heal" : "damage" );
-          send_swarm( second_target, stacks );
+          send_swarm( second_target, stacks, r );
         }
         else
         {
           sim->print_debug( "ADAPTIVE_SWARM: splitting off {} swarm", other->heal ? "heal" : "damage" );
-          other->send_swarm( second_target, stacks );
+          other->send_swarm( second_target, stacks, r );
         }
       }
     }
@@ -7453,7 +7469,7 @@ struct adaptive_swarm_t : public druid_spell_t
       if ( d->remains() > 0_ms && !d->target->is_sleeping() )
         return;
 
-      jump_swarm( d->current_stack() );
+      jump_swarm( d->current_stack(), state( d->state )->range );
     }
 
     double composite_persistent_multiplier( const action_state_t* s ) const override
@@ -7482,10 +7498,11 @@ struct adaptive_swarm_t : public druid_spell_t
     {
       adaptive_swarm_heal_t* swarm;
       druid_t* druid;
+      double range;
       int stacks;
 
-      adaptive_swarm_heal_event_t( druid_t* p, adaptive_swarm_heal_t* a, int s, timespan_t d )
-        : event_t( *p, d ), swarm( a ), druid( p ), stacks( s )
+      adaptive_swarm_heal_event_t( druid_t* p, adaptive_swarm_heal_t* a, double r, int s, timespan_t d )
+        : event_t( *p, d ), swarm( a ), druid( p ), range( r ), stacks( s )
       {}
 
       const char* name() const override
@@ -7498,7 +7515,7 @@ struct adaptive_swarm_t : public druid_spell_t
         auto& tracker = druid->swarm_tracker;
         tracker.erase( std::remove( tracker.begin(), tracker.end(), this ), tracker.end() );
 
-        swarm->jump_swarm( stacks );
+        swarm->jump_swarm( stacks, range );
       }
     };
 
@@ -7545,7 +7562,8 @@ struct adaptive_swarm_t : public druid_spell_t
       {
         // TODO: fix edge case where a healing swarm will be sent out while another is in-flight allowing you to end up
         // with swarm_tracker.size() > adaptive_swarm_friendly_targets
-        p()->swarm_tracker.push_back( make_event<adaptive_swarm_heal_event_t>( *sim, p(), this, final, dot_duration ) );
+        p()->swarm_tracker.push_back(
+            make_event<adaptive_swarm_heal_event_t>( *sim, p(), this, state( s )->range, final, dot_duration ) );
       }
 
       final = std::min( dot_max_stack, final );
@@ -10173,10 +10191,15 @@ void druid_t::combat_begin()
       if ( !rng().roll( chance ) )
         continue;
 
-      auto stacks = rng().range( min_stack, max_stack );
+      auto stacks   = rng().range( min_stack, max_stack );
       auto duration = rng().range( min_dur, max_dur );
+      auto range    = rng().roll( 0.5 ) ? rng().gauss( options.adaptive_swarm_jump_distance_melee,
+                                                       options.adaptive_swarm_jump_distance_stddev, true )
+                                        : rng().gauss( options.adaptive_swarm_jump_distance_ranged,
+                                                       options.adaptive_swarm_jump_distance_stddev, true );
 
-      swarm_tracker.push_back( make_event<swarm_t::adaptive_swarm_heal_event_t>( *sim, this, heal, stacks, duration ) );
+      swarm_tracker.push_back(
+          make_event<swarm_t::adaptive_swarm_heal_event_t>( *sim, this, heal, range, stacks, duration ) );
     }
   }
 
@@ -10974,8 +10997,11 @@ void druid_t::create_options()
     "druid.kindred_spirits_dps_pool_multiplier or druid.kindred_spirits_non_dps_pool_multiplier" ) );
   add_option( opt_deprecated( "druid.kindred_spirits_hide_partner", "this option has been removed" ) );
 
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_min", options.adaptive_swarm_jump_distance_min ) );
-  add_option( opt_float( "druid.adaptive_swarm_jump_distance_max", options.adaptive_swarm_jump_distance_max ) );
+  add_option( opt_deprecated( "druid.adaptive_swarm_jump_distance_min", "druid.adaptive_swarm_jump_distance_melee" ) );
+  add_option( opt_deprecated( "druid.adaptive_swarm_jump_distance_max", "druid.adaptive_swarm_jump_distance_ranged" ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_melee", options.adaptive_swarm_jump_distance_melee ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_ranged", options.adaptive_swarm_jump_distance_ranged ) );
+  add_option( opt_float( "druid.adaptive_swarm_jump_distance_stddev", options.adaptive_swarm_jump_distance_stddev ) );
   add_option( opt_uint( "druid.adaptive_swarm_friendly_targets", options.adaptive_swarm_friendly_targets, 1U, 20U ) );
   add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
   add_option( opt_float( "druid.celestial_spirits_exceptional_chance", options.celestial_spirits_exceptional_chance ) );
