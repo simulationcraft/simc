@@ -2215,7 +2215,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + frenzied_monstrosity -> value();
 
-    m *= 1.0 + ghoulish_frenzy -> value();
+    m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
     return m;
   }
@@ -5329,6 +5329,10 @@ struct death_coil_damage_t : public death_knight_spell_t
       coil_of_devastation = new coil_of_devastation_t( p );
       add_child( coil_of_devastation );
     }
+    if ( p->talent.unholy.improved_death_coil.ok() )
+    { 
+      aoe = 1 + as<int>(p->talent.unholy.improved_death_coil -> effectN(2).base_value());
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5385,12 +5389,12 @@ struct death_coil_damage_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   coil_of_devastation_t* coil_of_devastation;
-  death_coil_t( death_knight_t* p, util::string_view options_str ) : death_knight_spell_t( "death_coil", p, p->spec.death_coil ), coil_of_devastation( nullptr )
+  death_coil_t(death_knight_t* p, util::string_view options_str) : death_knight_spell_t("death_coil", p, p->spec.death_coil), coil_of_devastation(nullptr)
   {
-    parse_options( options_str );
+      parse_options(options_str);
 
-    execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    execute_action -> stats = stats;
+      execute_action = get_action<death_coil_damage_t>("death_coil_damage", p);
+      execute_action->stats = stats;
   }
 
   double cost() const override
@@ -10769,7 +10773,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.ghoulish_frenzy->up() )
   {
-    m *= 1.0 + buffs.ghoulish_frenzy->data().effectN( 2 ).percent();
+    m *= 1.0 + ( talent.unholy.ghoulish_frenzy->effectN( 2 ).base_value() / 100);
   }
 
   if ( buffs.final_sentence->up() &&
@@ -10885,7 +10889,7 @@ double death_knight_t::composite_melee_speed() const
 
   if ( buffs.ghoulish_frenzy->up() )
   {
-    haste *= 1.0 / ( 1.0 + buffs.ghoulish_frenzy->data().effectN( 1 ).percent() );
+    haste *= 1.0 / ( 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 1 ).percent() );
   }
 
   return haste;
