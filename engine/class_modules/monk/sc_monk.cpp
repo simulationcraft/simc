@@ -4608,6 +4608,7 @@ struct bountiful_brew_t : public monk_spell_t
           ( p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew : 
               ( p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
                                                                                : nullptr ) ) ) )
+      // TODO: convert nullptr to spell_data_t::nil() once legendary bountiful brew is removed
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
