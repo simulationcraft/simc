@@ -11146,17 +11146,8 @@ double druid_t::composite_spell_power( school_e school ) const
 {
   if ( spec_override.spell_power )
   {
-    double weapon_dps;
-
-    if ( buff.cat_form->check() )
-      weapon_dps = cat_weapon.dps;
-    else if ( buff.bear_form->check() )
-      weapon_dps = bear_weapon.dps;
-    else
-      weapon_dps = main_hand_weapon.dps;
-
-    return spec_override.spell_power * composite_attack_power_multiplier() *
-           ( cache.attack_power() + weapon_dps * WEAPON_POWER_COEFFICIENT );
+    return composite_melee_attack_power_by_type( attack_power_type::WEAPON_MAINHAND ) *
+           composite_attack_power_multiplier() * spec_override.spell_power;
   }
 
   return player_t::composite_spell_power( school );
