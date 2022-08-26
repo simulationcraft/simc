@@ -7740,10 +7740,13 @@ void monk_t::bonedust_brew_assessor( action_state_t* s )
     case 325218: // bonedust_brew_heal
     case 335913: // empowered_tiger_lightning
     case 360829: // empowered_tiger_lightning_call_to_arms
+    case 337342: // chi_explosion      
         return;
 
     default:
-        sim->print_debug("Bad spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);     
+        sim->print_debug("Bad spell passed to BDB Assessor: {}, id: {}", s->action->name(), s->action->id);
+        if ( specialization() != MONK_WINDWALKER )
+            break;
         return;
   }
 
