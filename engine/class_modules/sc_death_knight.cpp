@@ -529,7 +529,6 @@ public:
     buff_t* unholy_pact;
     buff_t* festermight;
     buff_t* ghoulish_frenzy;
-    // buff_t* unholy_aura; -- NYI
     buff_t* plaguebringer; 
 
     // Conduits
@@ -10888,7 +10887,7 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
 
   if ( td && talent.unholy.morbidity.ok() )
   {
-    m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + td->dot.blood_plague->is_ticking() ) * find_spell( 377592 )->effectN(1).percent() );
+    m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + td->dot.blood_plague->is_ticking() + td->debuff.unholy_blight->up() ) * find_spell( 377592 )->effectN(1).percent() );
   }
 
   return m;
