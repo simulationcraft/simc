@@ -6018,7 +6018,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     {
       if ( rng().roll( p()->find_spell(390161)->effectN( 1 ).percent() ) )
       {
-        double gains = as<int>(p()->find_spell( 390162 )->effectN( 1 ).base_value());
+        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
 
         p()->replenish_rune( gains, p()->gains.feasting_strikes );
       }
@@ -7475,7 +7475,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     {
       if ( rng().roll( p()->find_spell( 390161 )->effectN( 1 ).percent() ) )
       {
-        double gains = as<int>(p()->find_spell( 390162 )->effectN( 1 ).base_value());
+        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
 
         p()->replenish_rune( gains, p()->gains.feasting_strikes );
       }
@@ -8922,15 +8922,12 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
 void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance )
 {
-  if ( ! talent.runic_corruption.ok() )
-    return;
+    double proc_chance = 0.0;
 
-  double proc_chance = 0.0;
-  // Use the overriden chance if there's one and RP cost is 0
-  proc_chance = ( !rpcost && override_chance != -1.0 ) ? override_chance :
-    // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
-    talent.runic_corruption -> effectN( 1 ).percent() * rpcost / 100.0;
-
+    // Use the overriden chance if there's one and RP cost is 0
+    proc_chance = (!rpcost && override_chance != -1.0) ? override_chance :
+      // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
+      talent.runic_corruption->effectN(1).percent() * rpcost / 100.0;
   // Buff duration and refresh behavior handled in runic_corruption_buff_t
   if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
     proc -> occur();
