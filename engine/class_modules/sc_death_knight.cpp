@@ -2071,8 +2071,9 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
+  buff_t* commander_of_the_dead;
   base_ghoul_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true ) :
-    death_knight_pet_t( owner, name, guardian, true, dynamic )
+    death_knight_pet_t( owner, name, guardian, true, dynamic ), commander_of_the_dead( nullptr )
   {
     main_hand_weapon.swing_time = 2.0_s;
 
@@ -2312,6 +2313,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
+  buff_t* commander_of_the_dead;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
@@ -2333,7 +2335,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
-    base_ghoul_pet_t( owner, name, true )
+    base_ghoul_pet_t( owner, name, true ), commander_of_the_dead( nullptr )
   { }
 
   void init_base_stats() override
@@ -2342,6 +2344,14 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
     owner_coeff.ap_from_ap = 0.424;
+  }
+
+  void create_buffs() override
+  {
+    base_ghoul_pet_t::create_buffs();
+
+    commander_of_the_dead =  make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
+                                -> set_default_value_from_effect( 1 );
   }
 
   void init_action_list() override
@@ -2378,6 +2388,18 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     if ( name == "claw" ) return new army_claw_t( this, options_str );
 
     return base_ghoul_pet_t::create_action( name, options_str );
+  }
+
+  double composite_player_multiplier( school_e s ) const override
+  {
+    double m = base_ghoul_pet_t::composite_player_multiplier( s );
+
+    if ( commander_of_the_dead ) 
+    {
+      m *= 1.0 + commander_of_the_dead -> value();
+    }
+
+    return m;
   }
 
   void dismiss( bool expired = false ) override
@@ -4941,6 +4963,22 @@ struct dark_transformation_t : public death_knight_spell_t
         {
           p()->pets.gargoyle->commander_of_the_dead->trigger();
         }
+
+        for ( size_t n_ghouls = 0; n_ghouls < p() -> pets.army_ghouls.active_pets().size(); n_ghouls++ )
+        {
+          if ( p() -> pets.army_ghouls.active_pets()[n_ghouls])
+          {
+              p()->pets.army_ghouls.active_pets()[n_ghouls]->commander_of_the_dead->trigger();
+          }
+        }
+
+        for ( size_t n_ghouls = 0; n_ghouls < p() -> pets.apoc_ghouls.active_pets().size(); n_ghouls++ )
+        {
+          if ( p() -> pets.apoc_ghouls.active_pets()[n_ghouls])
+          {
+              p()->pets.apoc_ghouls.active_pets()[n_ghouls]->commander_of_the_dead->trigger();
+          }
+        }
       }
     }
   }
@@ -5980,7 +6018,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     {
       if ( rng().roll( p()->find_spell(390161)->effectN( 1 ).percent() ) )
       {
-        double gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
+        double gains = as<int>(p()->find_spell( 390162 )->effectN( 1 ).base_value());
 
         p()->replenish_rune( gains, p()->gains.feasting_strikes );
       }
@@ -7437,7 +7475,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     {
       if ( rng().roll( p()->find_spell( 390161 )->effectN( 1 ).percent() ) )
       {
-        double gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
+        double gains = as<int>(p()->find_spell( 390162 )->effectN( 1 ).base_value());
 
         p()->replenish_rune( gains, p()->gains.feasting_strikes );
       }
