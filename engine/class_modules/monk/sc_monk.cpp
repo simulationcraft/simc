@@ -2223,7 +2223,7 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
   rushing_jade_wind_t( monk_t* p, util::string_view options_str )
     : monk_melee_attack_t( "rushing_jade_wind", p, 
         ( p->specialization() == MONK_BREWMASTER ? p->talent.brewmaster.rushing_jade_wind :
-         ( p->specialization() == MONK_WINDWALKER ? p->talent.windwalker.rushing_jade_wind : nullptr ) ) )
+         ( p->specialization() == MONK_WINDWALKER ? p->talent.windwalker.rushing_jade_wind : spell_data_t::nil() ) ) )
   {
     parse_options( options_str );
     sef_ability                     = sef_ability_e::SEF_RUSHING_JADE_WIND;
@@ -4604,9 +4604,10 @@ struct bountiful_brew_t : public monk_spell_t
   buff_t* lead_by_example;
 
   bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p,
-      (p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
-          (p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew :
-              (p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew : nullptr))))
+    ( p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
+          ( p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew : 
+              ( p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
+                                                                               : nullptr ) ) ) )
   {
     harmful            = false;
     cooldown->duration = timespan_t::zero();
@@ -4681,8 +4682,9 @@ struct bonedust_brew_t : public monk_spell_t
       : monk_spell_t( "bonedust_brew", &p,
           (p.covenant.necrolord->ok() ? p.covenant.necrolord :
               (p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
-                  (p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
-                      (p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew : nullptr)))))
+                  (p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew : 
+                      ( p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew
+                                                                            : spell_data_t::nil() ) ) ) ) )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -4857,8 +4859,9 @@ struct faeline_stomp_t : public monk_spell_t
   faeline_stomp_t( monk_t& p, util::string_view options_str )
       : monk_spell_t( "faeline_stomp", &p,
           (p.covenant.night_fae->ok() ? p.covenant.night_fae :
-              (p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp :
-                  (p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp : nullptr)))),
+              (p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp : 
+                  ( p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp
+                                                                              : spell_data_t::nil() ) ) ) ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
       ww_damage( new faeline_stomp_ww_damage_t( p ) ),
@@ -5828,7 +5831,8 @@ struct healing_elixir_t : public monk_heal_t
 {
   healing_elixir_t( monk_t& p ) : monk_heal_t( "healing_elixir", p, 
       ( p.specialization() == MONK_BREWMASTER ? p.talent.brewmaster.healing_elixir : 
-          ( p.specialization() == MONK_MISTWEAVER ? p.talent.mistweaver.healing_elixir : nullptr ) ) )
+          ( p.specialization() == MONK_MISTWEAVER ? p.talent.mistweaver.healing_elixir
+                                                                   : spell_data_t::nil() ) ) )
   {
     harmful = may_crit = false;
     target             = &p;
@@ -7895,8 +7899,8 @@ void monk_t::create_buffs ()
     ( specialization () == MONK_BREWMASTER ? passives.fortifying_brew : talent.general.fortifying_brew ) );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t ( *this, "rushing_jade_wind",
-    ( specialization () == MONK_BREWMASTER ? talent.brewmaster.rushing_jade_wind :
-      ( specialization () == MONK_WINDWALKER ? talent.windwalker.rushing_jade_wind : nullptr ) ) );
+    ( specialization () == MONK_BREWMASTER ? talent.brewmaster.rushing_jade_wind : 
+        ( specialization() == MONK_WINDWALKER ? talent.windwalker.rushing_jade_wind : spell_data_t::nil() ) ) );
 
   buff.dampen_harm = make_buff ( this, "dampen_harm", talent.general.dampen_harm );
 
