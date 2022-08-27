@@ -1918,6 +1918,13 @@ struct death_knight_pet_t : public pet_t
 
     pet_t::init_action_list();
   }
+
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    commander_of_the_dead = make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead ) -> set_default_value_from_effect( 1 );
+  }
 };
 
 // ==========================================================================
@@ -2069,9 +2076,8 @@ struct auto_attack_melee_t : public pet_melee_attack_t<T>
 
 struct base_ghoul_pet_t : public death_knight_pet_t
 {
-  buff_t* commander_of_the_dead;
   base_ghoul_pet_t( death_knight_t* owner, util::string_view name, bool guardian = false, bool dynamic = true ) :
-    death_knight_pet_t( owner, name, guardian, true, dynamic ), commander_of_the_dead( nullptr )
+    death_knight_pet_t( owner, name, guardian, true, dynamic )
   {
     main_hand_weapon.swing_time = 2.0_s;
 
@@ -2311,7 +2317,6 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 struct army_ghoul_pet_t : public base_ghoul_pet_t
 {
   pet_spell_t<army_ghoul_pet_t>* ruptured_viscera;
-  buff_t* commander_of_the_dead;
 
   struct army_claw_t : public pet_melee_attack_t<army_ghoul_pet_t>
   {
@@ -2333,7 +2338,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   };
 
   army_ghoul_pet_t( death_knight_t* owner, util::string_view name = "army_ghoul" ) :
-    base_ghoul_pet_t( owner, name, true ), commander_of_the_dead( nullptr )
+    base_ghoul_pet_t( owner, name, true )
   { }
 
   void init_base_stats() override
@@ -2344,13 +2349,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     owner_coeff.ap_from_ap = 0.424;
   }
 
-  void create_buffs() override
-  {
-    base_ghoul_pet_t::create_buffs();
 
-    commander_of_the_dead =  make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
-                                -> set_default_value_from_effect( 1 );
-  }
 
   void init_action_list() override
   {
@@ -2392,7 +2391,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   {
     double m = base_ghoul_pet_t::composite_player_multiplier( s );
 
-    if ( commander_of_the_dead ) 
+    if ( commander_of_the_dead -> up() ) 
     {
       m *= 1.0 + commander_of_the_dead -> value();
     }
@@ -2419,7 +2418,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
 struct gargoyle_pet_t : public death_knight_pet_t
 {
   buff_t* dark_empowerment;
-  buff_t* commander_of_the_dead;
 
   struct gargoyle_strike_t : public pet_spell_t<gargoyle_pet_t>
   {
@@ -2431,7 +2429,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
   };
 
   gargoyle_pet_t( death_knight_t* owner ) :
-    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr ), commander_of_the_dead( nullptr )
+    death_knight_pet_t( owner, "gargoyle", true, false ), dark_empowerment( nullptr )
   {
     resource_regeneration = regen_type::DISABLED;
 
@@ -2452,7 +2450,7 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     m *= 1.0 + dark_empowerment -> stack_value();
 
-    if (dk()->pets.gargoyle->commander_of_the_dead->up())
+    if ( commander_of_the_dead -> up() )
     {
       m *= 1.0 + commander_of_the_dead -> value();
     }
@@ -2474,8 +2472,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
 
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
 
-    commander_of_the_dead =  make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
-                                -> set_default_value_from_effect( 1 );
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -4922,7 +4918,6 @@ struct dark_transformation_buff_t : public buff_t
 
 struct dark_transformation_t : public death_knight_spell_t
 {
-  buff_t* commander_of_the_dead;
   bool precombat_frenzy;
 
   dark_transformation_t( death_knight_t* p, util::string_view options_str ) :
@@ -4998,18 +4993,18 @@ struct dark_transformation_t : public death_knight_spell_t
             timespan_t::from_seconds( p()->talent.unholy.unholy_command->effectN( 1 ).base_value() / 1000 ) );
       }
 
-      if ( p()->talent.unholy.commander_of_the_dead.ok() )
+      if ( p( ) -> talent.unholy.commander_of_the_dead.ok() )
       {
-        if ( p()->pets.gargoyle )
+        if ( p() -> pets.gargoyle )
         {
-          p()->pets.gargoyle->commander_of_the_dead->trigger();
+          p() -> pets.gargoyle -> commander_of_the_dead -> trigger();
         }
 
         for ( size_t n_ghouls = 0; n_ghouls < p() -> pets.army_ghouls.active_pets().size(); n_ghouls++ )
         {
           if ( p() -> pets.army_ghouls.active_pets()[n_ghouls])
           {
-              p()->pets.army_ghouls.active_pets()[n_ghouls]->commander_of_the_dead->trigger();
+              p() -> pets.army_ghouls.active_pets()[n_ghouls] -> commander_of_the_dead -> trigger();
           }
         }
 
@@ -5017,7 +5012,7 @@ struct dark_transformation_t : public death_knight_spell_t
         {
           if ( p() -> pets.apoc_ghouls.active_pets()[n_ghouls])
           {
-              p()->pets.apoc_ghouls.active_pets()[n_ghouls]->commander_of_the_dead->trigger();
+              p() -> pets.apoc_ghouls.active_pets()[n_ghouls] -> commander_of_the_dead -> trigger();
           }
         }
       }
