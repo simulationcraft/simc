@@ -231,6 +231,7 @@ public:
     propagate_const<buff_t*> invoke_niuzao;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
+    propagate_const<buff_t*> training_of_niuzao;
     propagate_const<buff_t*> zen_meditation;
     // niuzao r2 recent purifies fake buff
     propagate_const<buff_t*> recent_purifies;

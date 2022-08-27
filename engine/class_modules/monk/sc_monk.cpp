@@ -2016,6 +2016,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     {
       if ( p->talent.brewmaster.shadowboxing_treads->ok() )
         aoe = 1 + (int)p->talent.brewmaster.shadowboxing_treads->effectN( 1 ).base_value();
+      if ( p->talent.brewmaster.fluidity_of_motion->ok() )
+        cooldown->duration += p->talent.brewmaster.fluidity_of_motion->effectN( 1 ).time_value();
 
       apply_dual_wield_two_handed_scaling();
     }
@@ -2062,6 +2064,9 @@ struct blackout_kick_t : public monk_melee_attack_t
 
     if ( p()->talent.brewmaster.shadowboxing_treads->ok() )
       am *= 1 + p()->talent.brewmaster.shadowboxing_treads->effectN( 2 ).percent();
+
+    if ( p()->talent.brewmaster.fluidity_of_motion->ok() )
+      am *= 1 + p()->talent.brewmaster.fluidity_of_motion->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.shadowboxing_treads->ok() )
       am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
@@ -5558,10 +5563,16 @@ struct expel_harm_t : public monk_heal_t
 
   void impact( action_state_t* s ) override
   {
-    monk_heal_t::impact( s );
-
     double health_difference =
         p()->resources.max[ RESOURCE_HEALTH ] - std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 );
+
+    if ( p()->talent.brewmaster.strength_of_spirit->ok() )
+    {
+      double health_percent = health_difference / p()->resources.max[ RESOURCE_HEALTH ];
+      s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
+    }
+
+    monk_heal_t::impact( s );
 
     double result = s->result_total;
 
@@ -5581,12 +5592,6 @@ struct expel_harm_t : public monk_heal_t
       // Normally this would be using health_difference, but since Windwalkers will almost always be set
       // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
       result = rng().range( min_amount, result );
-    }
-
-    if ( p()->talent.brewmaster.strength_of_spirit->ok() )
-    {
-      double health_percent = health_difference / p()->resources.max[ RESOURCE_HEALTH ];
-      result *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
     }
 
     result *= p()->talent.general.expel_harm->effectN( 2 ).percent();
@@ -8010,6 +8015,10 @@ void monk_t::create_buffs ()
     buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
       ->set_duration_multiplier( 3 )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+    buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 383733 ) )
+      ->set_default_value( talent.brewmaster.training_of_niuzao->effectN(1).percent() )
+      ->add_invalidate( CACHE_MASTERY );
+    buff.training_of_niuzao->set_max_stack( 3 );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
@@ -8819,6 +8828,8 @@ double monk_t::composite_mastery() const
     if ( conduit.strike_with_clarity->ok() )
       m += conduit.strike_with_clarity.value();
   }
+  if ( buff.training_of_niuzao->check() )
+    m += buff.training_of_niuzao->check_stack_value();
 
   return m;
 }
@@ -9503,6 +9514,7 @@ void monk_t::stagger_damage_changed( bool last_tick )
 
   buff_t* new_buff = nullptr;
   dot_t* dot       = nullptr;
+  int niuzao       = 0;
   if ( active_actions.stagger_self_damage )
     dot = active_actions.stagger_self_damage->get_dot();
   if ( !last_tick && dot && dot->is_ticking() )  // fake dot not active on last tick
@@ -9513,14 +9525,17 @@ void monk_t::stagger_damage_changed( bool last_tick )
     if ( current_tick_dmg_per_max_health > 0.045 )
     {
       new_buff = buff.heavy_stagger;
+      niuzao   = 3;
     }
     else if ( current_tick_dmg_per_max_health > 0.03 )
     {
       new_buff = buff.moderate_stagger;
+      niuzao   = 2;
     }
     else if ( current_tick_dmg_per_max_health > 0.0 )
     {
       new_buff = buff.light_stagger;
+      niuzao   = 1;
     }
   }
   sim->print_debug( "Stagger new buff is {}.", new_buff ? new_buff->name() : "none" );
@@ -9528,10 +9543,14 @@ void monk_t::stagger_damage_changed( bool last_tick )
   if ( previous_buff && previous_buff != new_buff )
   {
     previous_buff->expire();
+    if ( buff.training_of_niuzao->check() )
+      buff.training_of_niuzao->expire();
   }
   if ( new_buff && previous_buff != new_buff )
   {
     new_buff->trigger();
+    if ( talent.brewmaster.training_of_niuzao.ok() )
+      buff.training_of_niuzao->trigger( niuzao );
   }
 }
 
