@@ -10133,6 +10133,16 @@ void death_knight_t::init_spells()
       cooldown.abomination_limb -> duration -= timespan_t::from_seconds( legendary.abominations_frenzy -> effectN ( 2 ).base_value() );
     }
   }
+
+  if ( talent.abomination_limb )
+  {
+    cooldown.abomination_limb -> duration = timespan_t::from_seconds( talent.abomination_limb -> effectN ( 4 ).base_value() );
+    if ( legendary.abominations_frenzy.ok() )
+    {
+      cooldown.abomination_limb -> duration -= timespan_t::from_seconds( legendary.abominations_frenzy -> effectN ( 2 ).base_value() );
+    }
+  }
+
   if ( covenant.shackle_the_unworthy )
     cooldown.shackle_the_unworthy_icd -> duration = covenant.shackle_the_unworthy -> internal_cooldown();
   if ( legendary.koltiras_favor )
