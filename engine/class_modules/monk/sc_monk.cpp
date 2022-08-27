@@ -621,14 +621,19 @@ public:
   {
     double c = 0.0;
 
-    if ( p()->buff.mana_tea->check() && ab::data().affected_by( p()->talent.mistweaver.mana_tea->effectN( 1 ) ) )
-      c += p()->buff.mana_tea->check_value();  // saved as -50%
+    if ( p()->specialization() == MONK_MISTWEAVER )
+    {
+      if ( p()->buff.mana_tea->check() && ab::data().affected_by( p()->talent.mistweaver.mana_tea->effectN( 1 ) ) )
+        c += p()->buff.mana_tea->check_value();  // saved as -50%
+    }
 
-    else if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
-      c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
-
-    else if ( p()->buff.bok_proc->check() && ab::data().affected_by( p()->passives.bok_proc->effectN( 1 ) ) )
-      c += p()->passives.bok_proc->effectN( 1 ).percent();  // Saved as -100
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.serenity->check() && ab::data().affected_by( p()->talent.windwalker.serenity->effectN( 1 ) ) )
+        c += p()->talent.windwalker.serenity->effectN( 1 ).percent();  // Saved as -100
+      else if ( p()->buff.bok_proc->check() && ab::data().affected_by( p()->passives.bok_proc->effectN( 1 ) ) )
+        c += p()->passives.bok_proc->effectN( 1 ).percent();  // Saved as -100
+    }
 
     return c;
   }
@@ -714,48 +719,54 @@ public:
 
   void execute() override
   {
-    if ( may_combo_strike )
-      combo_strikes_trigger();
-
-    if ( trigger_chiji && p()->buff.invoke_chiji->up() )
-      p()->buff.invoke_chiji_evm->trigger();
-
-    // Primordial Potential transforms into Primordial Power before
-    // the ability executes and thus benefits from the Primordial Power
-    // buff when Primordial Potential hits 10 stacks.
-    // At the same time, the 3rd stack of Primorodial Power does not provide
-    // any benefits.
-    if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
+    
+    if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      // Check if Primordial Power is active
-      // If it is then if the ability can trigger, then decrement
-      // Only do this for non-channeled abilities.
-      // Channeled abilities will be decremented on last tick
-      if ( p()->buff.primordial_power->check() )
+      if ( trigger_chiji && p()->buff.invoke_chiji->up() )
+        p()->buff.invoke_chiji_evm->trigger();
+    }
+    else if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( may_combo_strike )
+        combo_strikes_trigger();
+
+      // Primordial Potential transforms into Primordial Power before
+      // the ability executes and thus benefits from the Primordial Power
+      // buff when Primordial Potential hits 10 stacks.
+      // At the same time, the 3rd stack of Primorodial Power does not provide
+      // any benefits.
+      if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
       {
-        if ( trigger_ww_t28_4p_power )
+        // Check if Primordial Power is active
+        // If it is then if the ability can trigger, then decrement
+        // Only do this for non-channeled abilities.
+        // Channeled abilities will be decremented on last tick
+        if ( p()->buff.primordial_power->check() )
         {
-          p()->buff.primordial_power->trigger();
-          p()->buff.primordial_power_hidden_gcd->trigger();
-          p()->storm_earth_and_fire_trigger_primordial_power();
-          primordial_power_proc->occur();
+          if ( trigger_ww_t28_4p_power )
+          {
+            p()->buff.primordial_power->trigger();
+            p()->buff.primordial_power_hidden_gcd->trigger();
+            p()->storm_earth_and_fire_trigger_primordial_power();
+            primordial_power_proc->occur();
+          }
+          else if ( trigger_ww_t28_4p_power_channel )
+          {
+            p()->buff.primordial_power->trigger();
+            if ( ab::id == p()->talent.windwalker.rushing_jade_wind->id() )
+              p()->buff.primordial_power_hidden_channel->trigger( p()->talent.windwalker.rushing_jade_wind->duration() );
+            else
+              p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
+            p()->storm_earth_and_fire_trigger_primordial_power();
+            primordial_power_proc->occur();
+          }
         }
-        else if ( trigger_ww_t28_4p_power_channel )
+        // else check if the ability can trigger Primordial Potential and trigger that.
+        else if ( trigger_ww_t28_4p_potential )
         {
-          p()->buff.primordial_power->trigger();
-          if ( ab::id == p()->talent.windwalker.rushing_jade_wind->id() )
-            p()->buff.primordial_power_hidden_channel->trigger( p()->talent.windwalker.rushing_jade_wind->duration() );
-          else
-            p()->buff.primordial_power_hidden_channel->trigger( ab::dot_duration );
-          p()->storm_earth_and_fire_trigger_primordial_power();
-          primordial_power_proc->occur();
+          p()->buff.primordial_potential->trigger();
+          primordial_potential_proc->occur();
         }
-      }
-      // else check if the ability can trigger Primordial Potential and trigger that.
-      else if ( trigger_ww_t28_4p_potential )
-      {
-        p()->buff.primordial_potential->trigger();
-        primordial_potential_proc->occur();
       }
     }
 
@@ -1432,11 +1443,14 @@ struct eye_of_the_tiger_heal_tick_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p()->buff.storm_earth_and_fire->check() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // Hard code Patch 9.0.5
-      // Eye of the Tiger's heal is now increased by 35% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
+      if ( p()->buff.storm_earth_and_fire->check() )
+      {
+        // Hard code Patch 9.0.5
+        // Eye of the Tiger's heal is now increased by 35% when Storm, Earth, and Fire is out
+        am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
+      }
     }
 
     return am;
@@ -1463,17 +1477,22 @@ struct eye_of_the_tiger_dmg_tick_t : public monk_spell_t
   {
     double am = monk_spell_t::action_multiplier();
 
-    if ( p()->buff.storm_earth_and_fire->check() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // Hard code Patch 9.0.5
-      // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
-      am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
-    }
 
-    // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
-    // becomes Primordial Power. Does not require Tiger Palm during Primoridal Power.
-    if ( p()->buff.primordial_power->check() )
-      am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+      if ( p()->buff.storm_earth_and_fire->check() )
+      {
+        // Hard code Patch 9.0.5
+        // Eye of the Tiger's damage is now increased by 35% when Storm, Earth, and Fire is out
+        am *= ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;  // Results in 135%
+      }
+
+      // Unlike other parts of Primordial Power, this can be buffed once Primordial Potential
+      // becomes Primordial Power. Does not require Tiger Palm during Primoridal Power.
+      if ( p()->buff.primordial_power->check() )
+        am *= 1 + p()->passives.primordial_power->effectN( 1 ).percent();
+
+    }
 
     return am;
   }
@@ -1519,7 +1538,7 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p->legendary.keefers_skyreach->ok() )
       range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
-    else if ( p->talent.windwalker.keefers_skyreach->ok() ) 
+    else if ( p->talent.windwalker.keefers_skyreach && p->talent.windwalker.keefers_skyreach->ok() )
       range += p->talent.windwalker.keefers_skyreach->effectN( 1 ).base_value();
   }
 
@@ -1527,47 +1546,68 @@ struct tiger_palm_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    if ( p()->buff.blackout_combo->check() )
-      am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.blackout_combo->check() )
+        am *= 1 + p()->buff.blackout_combo->data().effectN( 1 ).percent();
 
-    if ( shaohoas_might )
-      am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
-    else if ( face_palm ) 
-      am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
+      if ( shaohoas_might )
+        am *= 1 + p()->passives.shaohaos_might->effectN( 2 ).percent();
+      else if ( face_palm )
+        am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
-    if ( p()->buff.counterstrike->check() )
-      am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+      if ( p()->buff.counterstrike->check() )
+        am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+    }
+    else if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( power_strikes )
+        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
 
-    if ( power_strikes )
-      am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
-
-    if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
-      am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN(1 ).percent();
+      if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
+        am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN( 1 ).percent();
+    }
 
     return am;
   }
 
   void execute() override
   {
-    if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
-      shaohoas_might = true;
-    else if ( p()->talent.brewmaster.face_palm->ok() &&
-              rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
-      face_palm = true;
+    //============
+    // Pre-Execute
+    //============
 
-    monk_melee_attack_t::execute();
-
-    if ( result_is_miss( execute_state->result ) )
-      return;
-
-    if ( p()->buff.power_strikes->check() )
+    if ( p()->specialization() == MONK_BREWMASTER )
     {
+      if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
+        shaohoas_might = true;
+      else if ( p()->talent.brewmaster.face_palm->ok() && rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+        face_palm = true;
+    }
+    else if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.power_strikes->check() )
+      {
         power_strikes = true;
 
         double chi_gain = p()->talent.windwalker.power_strikes->effectN( 1 ).base_value();
         p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.power_strikes );
         p()->buff.power_strikes->expire();
+      }
     }
+
+    //------------
+
+    monk_melee_attack_t::execute();
+ 
+    if ( result_is_miss( execute_state->result ) )
+      return;
+
+    //-----------
+
+    //============
+    // Post-hit
+    //============
 
     if ( p()->talent.general.eye_of_the_tiger->ok() )
     {
@@ -1595,6 +1635,7 @@ struct tiger_palm_t : public monk_melee_attack_t
       }
       case MONK_WINDWALKER:
       {
+
         // Combo Breaker calculation
         if ( p()->spec.combo_breaker->ok() && p()->buff.bok_proc->trigger() )
         {
@@ -2379,28 +2420,32 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     double am = monk_melee_attack_t::action_multiplier();
 
-    double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
-    if ( p()->conduit.calculated_strikes->ok() )
-      motc_multiplier += p()->conduit.calculated_strikes.percent();
-    else if ( p()->talent.windwalker.calculated_strikes->ok() )
-      motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+      if ( p()->conduit.calculated_strikes->ok() )
+        motc_multiplier += p()->conduit.calculated_strikes.percent();
+      else if ( p()->talent.windwalker.calculated_strikes->ok() )
+        motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
 
-    if ( p()->spec.spinning_crane_kick_2_ww->ok() )
-      am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+      if ( p()->spec.spinning_crane_kick_2_ww->ok() )
+        am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
 
-    if ( p()->buff.dance_of_chiji_hidden->check() )
-      am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
+      if ( p()->buff.dance_of_chiji_hidden->check() )
+        am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
+
+      if ( p()->talent.windwalker.crane_vortex->ok() )
+        am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
+    }
+    else if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.counterstrike->check() )
+        am *= 1 + p()->buff.counterstrike->data().effectN( 2 ).percent();
+    }
 
     if ( p()->talent.general.fast_feet->ok() )
-        am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
-
-    if ( p()->talent.windwalker.crane_vortex->ok() )
-        am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
-
-    if ( p()->buff.counterstrike->check() )
-      am *= 1 + p()->buff.counterstrike->data().effectN( 2 ).percent();
-
+      am *= 1 + p()->talent.general.fast_feet->effectN( 2 ).percent();
 
     return am;
   }
@@ -5661,10 +5706,13 @@ struct expel_harm_t : public monk_heal_t
     double health_difference =
         p()->resources.max[ RESOURCE_HEALTH ] - std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 );
 
-    if ( p()->talent.brewmaster.strength_of_spirit->ok() )
+    if ( p()->specialization() == MONK_BREWMASTER )
     {
-      double health_percent = health_difference / p()->resources.max[ RESOURCE_HEALTH ];
-      s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
+      if ( p()->talent.brewmaster.strength_of_spirit->ok() )
+      {
+        double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
+        s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
+      }
     }
 
     monk_heal_t::impact( s );
@@ -5675,36 +5723,44 @@ struct expel_harm_t : public monk_heal_t
     if ( p()->conduit.harm_denial->ok() )
       result /= 1 + p()->conduit.harm_denial.percent();
 
-    // Have to manually set the combo strike mastery multiplier
-    if ( p()->buff.combo_strikes->up() )
-      result *= 1 + p()->cache.mastery_value();
-
-    // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
-    // option to simulate the amount of time that the results will use the full amount.
-    if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      double min_amount = 1 / p()->talent.general.expel_harm->effectN( 2 ).percent();
-      // Normally this would be using health_difference, but since Windwalkers will almost always be set
-      // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
-      result = rng().range( min_amount, result );
+      // Have to manually set the combo strike mastery multiplier
+      if ( p()->buff.combo_strikes->up() )
+        result *= 1 + p()->cache.mastery_value();
+
+      // Windwalker health difference will almost always be zero. So using the Expel Harm Effectiveness
+      // option to simulate the amount of time that the results will use the full amount.
+      if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
+      {
+        double min_amount = 1 / p()->talent.general.expel_harm->effectN( 2 ).percent();
+        // Normally this would be using health_difference, but since Windwalkers will almost always be set
+        // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
+        result = rng().range( min_amount, result );
+      }
+
     }
 
     result *= p()->talent.general.expel_harm->effectN( 2 ).percent();
 
-    if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
+    if ( p()->specialization() == MONK_BREWMASTER )
     {
-      double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
-      goto_heal *= p()->buff.gift_of_the_ox->check();
-      result += goto_heal;
-    }
 
-    dmg->base_dd_min = result;
-    dmg->base_dd_max = result;
-    dmg->execute();
+      if ( p()->buff.gift_of_the_ox->up() && p()->spec.expel_harm_2_brm->ok() )
+      {
+        double goto_heal = p()->passives.gift_of_the_ox_heal->effectN( 1 ).ap_coeff();
+        goto_heal *= p()->buff.gift_of_the_ox->check();
+        result += goto_heal;
+      }
 
-    for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
-    {
-      p()->buff.gift_of_the_ox->decrement();
+      dmg->base_dd_min = result;
+      dmg->base_dd_max = result;
+      dmg->execute();
+
+      for ( int i = 0; i < p()->buff.gift_of_the_ox->check(); i++ )
+      {
+        p()->buff.gift_of_the_ox->decrement();
+      }
     }
   }
 };
@@ -7293,21 +7349,29 @@ double monk_t::sck_modifier()
 {
     double current = 1;
 
-    double motc_multiplier = passives.cyclone_strikes->effectN( 1 ).percent();
+    if ( specialization() == MONK_WINDWALKER )
+    {
+      double motc_multiplier = passives.cyclone_strikes->effectN( 1 ).percent();
 
-    if ( conduit.calculated_strikes->ok() )
+      if ( conduit.calculated_strikes->ok() )
         motc_multiplier += conduit.calculated_strikes.percent();
-    else if ( talent.windwalker.calculated_strikes->ok() )
+      else if ( talent.windwalker.calculated_strikes->ok() )
         motc_multiplier += talent.windwalker.calculated_strikes->effectN( 1 ).percent();
 
-    if ( spec.spinning_crane_kick_2_ww->ok() )
-        current *= 1 + (mark_of_the_crane_counter() * motc_multiplier);
+      if ( spec.spinning_crane_kick_2_ww->ok() )
+        current *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+
+      if ( talent.windwalker.crane_vortex->ok() )
+        current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
+    }
+    else if ( specialization() == MONK_BREWMASTER )
+    {
+      if ( buff.counterstrike->check() )
+        current *= 1 + buff.counterstrike->data().effectN( 2 ).percent();
+    }
 
     if ( talent.general.fast_feet->ok() )
-        current *= 1 + talent.general.fast_feet->effectN( 2 ).percent();
-
-    if ( talent.windwalker.crane_vortex->ok() )
-        current *= 1 + talent.windwalker.crane_vortex->effectN( 1 ).percent();
+      current *= 1 + talent.general.fast_feet->effectN( 2 ).percent();
 
     return current;
 }
@@ -8103,6 +8167,12 @@ void monk_t::create_buffs ()
     buff.elusive_brawler = make_buff( this, "elusive_brawler", mastery.elusive_brawler->effectN( 3 ).trigger() )
       ->add_invalidate( CACHE_DODGE );
 
+    buff.faeline_stomp_brm = make_buff( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
+      ->set_default_value_from_effect( 1 )
+      ->set_max_stack( 99 )
+      ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+      ->set_quiet( true );
+
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
     buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
@@ -8218,6 +8288,9 @@ void monk_t::create_buffs ()
       ->set_can_cancel ( false )  // Undocumented hotfix 2018-09-28 - SEF can no longer be canceled.
       ->set_cooldown ( timespan_t::zero () );
 
+    buff.teachings_of_the_monastery =
+      make_buff( this, "teachings_of_the_monastery", find_spell( 202090 ) )->set_default_value_from_effect( 1 );
+
     buff.thunderfist = make_buff ( this, "thunderfist", passives.thunderfist );
 
     buff.touch_of_death_ww = new buffs::touch_of_death_ww_buff_t ( *this, "touch_of_death_ww", spell_data_t::nil () );
@@ -8236,36 +8309,10 @@ void monk_t::create_buffs ()
       ->set_default_value ( talent.windwalker.power_strikes->effectN ( 1 ).trigger ()->effectN ( 1 ).base_value () );
 
     // Covenant Abilities
-    buff.bonedust_brew = make_buff ( this, "bonedust_brew", find_spell ( 325216 ) )
-      ->set_cooldown ( timespan_t::zero () )
-      ->set_chance ( covenant.necrolord->ok () ? 1 : 0 )
-      ->set_default_value_from_effect ( 3 );
-    buff.bonedust_brew_hidden = make_buff ( this, "bonedust_brew_hidden" )
-      ->set_quiet ( true )
-      ->set_duration ( timespan_t::from_seconds ( 10 ) )
-      ->set_max_stack ( 5 )
-      ->set_reverse ( true )
-      ->set_reverse_stack_count ( 5 );
-
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
       ->set_default_value ( find_spell ( 311054 )->effectN ( 1 ).base_value () )
       ->set_chance ( covenant.kyrian->ok () ? 1 : 0 );
 
-    buff.faeline_stomp = make_buff ( this, "faeline_stomp", find_spell ( 327104 ) )
-      ->set_default_value_from_effect ( 2 )
-      ->set_trigger_spell ( covenant.night_fae );
-
-    buff.faeline_stomp_brm = make_buff ( this, "faeline_stomp_brm", passives.faeline_stomp_brm )
-      ->set_default_value_from_effect ( 1 )
-      ->set_max_stack ( 99 )
-      ->set_stack_behavior ( buff_stack_behavior::ASYNCHRONOUS )
-      ->set_quiet ( true );
-
-    buff.faeline_stomp_reset = make_buff ( this, "faeline_stomp_reset", find_spell ( 327276 ) );
-
-    buff.fallen_order = make_buff ( this, "fallen_order", find_spell ( 326860 ) )
-      ->set_cooldown ( timespan_t::zero () )
-      ->set_trigger_spell ( covenant.venthyr );
     buff.windwalking_venthyr =
       make_buff ( this, "windwalking_venthyr", passives.fallen_monk_windwalking )->set_default_value_from_effect ( 1 );
   }
@@ -8301,6 +8348,18 @@ void monk_t::create_buffs ()
       make_buff( this, "the_emperors_capacitor", find_spell( 337291 ) )->set_default_value_from_effect( 1 );
 
   // Covenants
+
+  buff.bonedust_brew = make_buff( this, "bonedust_brew", find_spell( 325216 ) )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_chance( covenant.necrolord->ok() ? 1 : 0 )
+    ->set_default_value_from_effect( 3 );
+  buff.bonedust_brew_hidden = make_buff( this, "bonedust_brew_hidden" )
+    ->set_quiet( true )
+    ->set_duration( timespan_t::from_seconds( 10 ) )
+    ->set_max_stack( 5 )
+    ->set_reverse( true )
+    ->set_reverse_stack_count( 5 );
+
   buff.weapons_of_order =
     make_buff( this, "weapons_of_order", find_spell( 310454 ) )
     ->set_default_value( find_spell( 310454 )->effectN( 1 ).base_value() )
@@ -8316,6 +8375,16 @@ void monk_t::create_buffs ()
 
   buff.fae_exposure =
       make_buff( this, "fae_exposure_heal", passives.fae_exposure_heal )->set_default_value_from_effect( 1 );
+
+  buff.faeline_stomp = make_buff( this, "faeline_stomp", find_spell( 327104 ) )
+    ->set_default_value_from_effect( 2 )
+    ->set_trigger_spell( covenant.night_fae );
+
+  buff.faeline_stomp_reset = make_buff( this, "faeline_stomp_reset", find_spell( 327276 ) );
+
+  buff.fallen_order = make_buff( this, "fallen_order", find_spell( 326860 ) )
+    ->set_cooldown( timespan_t::zero() )
+    ->set_trigger_spell( covenant.venthyr );
 
   // Tier 28 Set Bonus
   buff.keg_of_the_heavens =
@@ -8954,8 +9023,12 @@ double monk_t::composite_mastery() const
     if ( conduit.strike_with_clarity->ok() )
       m += conduit.strike_with_clarity.value();
   }
-  if ( buff.training_of_niuzao->check() )
-    m += buff.training_of_niuzao->check_stack_value();
+
+  if ( specialization() == MONK_BREWMASTER )
+  {
+    if ( buff.training_of_niuzao->check() )
+      m += buff.training_of_niuzao->check_stack_value();
+  }
 
   return m;
 }
@@ -8996,8 +9069,11 @@ double monk_t::temporary_movement_modifier() const
   if ( buff.chi_torpedo->check() )
     active = std::max( buff.chi_torpedo->check_stack_value(), active );
 
-  if ( buff.flying_serpent_kick_movement->check() )
-    active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
+  if ( specialization() == MONK_WINDWALKER )
+  {
+    if ( buff.flying_serpent_kick_movement->check() )
+      active = std::max( buff.flying_serpent_kick_movement->check_value(), active );
+  }
 
   return active;
 }
@@ -9038,7 +9114,8 @@ double monk_t::composite_player_pet_damage_multiplier( const action_state_t* sta
 {
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
 
-  multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
+  if ( specialization() == MONK_BREWMASTER )
+    multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
 
   return multiplier;
 }
@@ -9496,7 +9573,8 @@ void monk_t::assess_heal( school_e school, result_amount_type dmg_type, action_s
 {
   player_t::assess_heal( school, dmg_type, s );
 
-  trigger_celestial_fortune( s );
+  if ( specialization() == MONK_BREWMASTER )
+    trigger_celestial_fortune( s );
 }
 
 // =========================================================================
