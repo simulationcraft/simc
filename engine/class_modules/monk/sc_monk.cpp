@@ -2555,11 +2555,14 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.weapons_of_order_ww->check() )
-      c += p()->buff.weapons_of_order_ww->check_value();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.weapons_of_order_ww->check() )
+        c += p()->buff.weapons_of_order_ww->check_value();
 
-    if ( p()->buff.dance_of_chiji_hidden->check() )
-      c += p()->passives.dance_of_chiji->effectN( 1 ).base_value();  // saved as -2
+      if ( p()->buff.dance_of_chiji_hidden->check() )
+        c += p()->passives.dance_of_chiji->effectN( 1 ).base_value();  // saved as -2
+    }
 
     if ( c < 0 )
       c = 0;
@@ -2572,66 +2575,89 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     monk_melee_attack_t::consume_resource();
 
     // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      double cost = base_costs[ RESOURCE_CHI ];
+      if ( p()->buff.serenity->up() )
+      {
+        double cost = base_costs[RESOURCE_CHI];
 
-      if ( p()->buff.weapons_of_order_ww->up() )
-        cost += p()->buff.weapons_of_order_ww->value();
+        if ( p()->buff.weapons_of_order_ww->up() )
+          cost += p()->buff.weapons_of_order_ww->value();
 
-      if ( p()->buff.dance_of_chiji_hidden->up() )
-        cost += p()->buff.dance_of_chiji->value();
+        if ( p()->buff.dance_of_chiji_hidden->up() )
+          cost += p()->buff.dance_of_chiji->value();
 
-      if ( cost < 0 )
-        cost = 0;
+        if ( cost < 0 )
+          cost = 0;
 
-      p()->gain.serenity->add( RESOURCE_CHI, cost );
+        p()->gain.serenity->add( RESOURCE_CHI, cost );
+      }
     }
   }
 
   void execute() override
   {
-    if ( p()->buff.dance_of_chiji->up() )
+    //===========
+    // Pre-Execute
+    //===========
+
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      p()->buff.dance_of_chiji->expire();
-      p()->buff.dance_of_chiji_hidden->trigger();
+      if ( p()->buff.dance_of_chiji->up() )
+      {
+        p()->buff.dance_of_chiji->expire();
+        p()->buff.dance_of_chiji_hidden->trigger();
+      }
     }
 
     monk_melee_attack_t::execute();
+
+    //===========
+    // Post-Execute
+    //===========
 
     timespan_t buff_duration = composite_dot_duration( execute_state );
 
     p()->buff.spinning_crane_kick->trigger( 1, buff_t::DEFAULT_VALUE(), 1.0, buff_duration );
 
-    if ( p()->buff.chi_energy->up() )
-      chi_x->execute();
-
-    if ( p()->buff.celestial_flames->up() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      p()->active_actions.breath_of_fire->target = execute_state->target;
-      p()->active_actions.breath_of_fire->execute();
+      if ( p()->buff.chi_energy->up() )
+        chi_x->execute();
+
+      // Bonedust Brew
+      // Chi refund is triggering once on the trigger spell and not from tick spells.
+      if ( get_td( execute_state->target )->debuff.bonedust_brew->up() )
+          p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(), p()->gain.bonedust_brew );
+    }
+    else if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.celestial_flames->up() )
+      {
+        p()->active_actions.breath_of_fire->target = execute_state->target;
+        p()->active_actions.breath_of_fire->execute();
+      }
     }
 
-    // Bonedust Brew
-    // Chi refund is triggering once on the trigger spell and not from tick spells.
-    if ( p()->covenant.necrolord->ok() )
-      if ( p()->specialization() == MONK_WINDWALKER && get_td( execute_state->target )->debuff.bonedust_brew->up() )
-        p()->resource_gain( RESOURCE_CHI, p()->passives.bonedust_brew_chi->effectN( 1 ).base_value(),
-                            p()->gain.bonedust_brew );
   }
 
   void last_tick( dot_t* dot ) override
   {
     monk_melee_attack_t::last_tick( dot );
 
-    if ( p()->buff.dance_of_chiji_hidden->up() )
-      p()->buff.dance_of_chiji_hidden->expire();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.dance_of_chiji_hidden->up() )
+        p()->buff.dance_of_chiji_hidden->expire();
 
-    if ( p()->buff.chi_energy->up() )
-      p()->buff.chi_energy->expire();
-
-    if ( p()->buff.counterstrike->up() )
-      p()->buff.counterstrike->expire();
+      if ( p()->buff.chi_energy->up() )
+        p()->buff.chi_energy->expire();
+    }
+    else if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.counterstrike->up() )
+        p()->buff.counterstrike->expire();
+    }
   }
 };
 
