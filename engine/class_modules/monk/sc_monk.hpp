@@ -228,6 +228,7 @@ public:
     propagate_const<buff_t*> elusive_brawler;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
+    propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
     propagate_const<buff_t*> purified_chi;

@@ -8312,6 +8312,9 @@ void monk_t::create_buffs ()
 
     buff.gift_of_the_ox = new buffs::gift_of_the_ox_buff_t( *this, "gift_of_the_ox", find_spell( 124503 ) );
 
+    buff.graceful_exit = make_buff( this, "graceful_exit", talent.brewmaster.graceful_exit->effectN( 1 ).trigger() )
+     ->add_invalidate( CACHE_RUN_SPEED );
+
     buff.invoke_niuzao = make_buff( this, "invoke_niuzao_the_black_ox", talent.brewmaster.invoke_niuzao_the_black_ox )
       ->set_default_value_from_effect( 2 )
       ->set_cooldown( timespan_t::zero() );
@@ -9530,6 +9533,9 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       // Saved as 5/10 base values but need it as 0.5 and 1 base values
       if ( talent.brewmaster.anvil_and_stave->ok() )
         brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
+
+      if ( talent.brewmaster.graceful_exit->ok() )
+        buff.graceful_exit->trigger();
     }
     if ( s->result == RESULT_MISS )
     {
@@ -9538,6 +9544,9 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
         buff.counterstrike->trigger();
         cooldown.counterstrike->start( talent.brewmaster.counterstrike->internal_cooldown() );
       }
+
+      if ( talent.brewmaster.graceful_exit->ok() )
+        buff.graceful_exit->trigger();
     }
   }
 
