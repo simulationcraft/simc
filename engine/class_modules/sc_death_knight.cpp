@@ -5411,6 +5411,11 @@ struct death_coil_damage_t : public death_knight_spell_t
       coil_of_devastation = new coil_of_devastation_t( p );
       add_child( coil_of_devastation );
     }
+    
+    if ( p -> talent.unholy.improved_death_coil.ok() )
+    {
+      aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
+    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -5463,11 +5468,6 @@ struct death_coil_t : public death_knight_spell_t
 
     execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
     execute_action->stats = stats;
-
-    if ( p -> talent.unholy.improved_death_coil.ok() )
-    {
-      aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
-    }
   }
 
   double cost() const override
