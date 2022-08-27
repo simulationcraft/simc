@@ -224,6 +224,7 @@ public:
     propagate_const<buff_t*> blackout_combo;
     propagate_const<absorb_buff_t*> celestial_brew;
     propagate_const<buff_t*> celestial_flames;
+    propagate_const<buff_t*> counterstrike;
     propagate_const<buff_t*> elusive_brawler;
     propagate_const<buff_t*> fortifying_brew;
     propagate_const<buff_t*> gift_of_the_ox;
@@ -750,6 +751,7 @@ public:
     propagate_const<cooldown_t*> breath_of_fire;
     propagate_const<cooldown_t*> chi_torpedo;
     propagate_const<cooldown_t*> celestial_brew;
+    propagate_const<cooldown_t*> counterstrike;
     propagate_const<cooldown_t*> desperate_measure;
     propagate_const<cooldown_t*> drinking_horn_cover;
     propagate_const<cooldown_t*> expel_harm;
@@ -802,6 +804,7 @@ public:
     // Brewmaster
     const spell_data_t* breath_of_fire_dot;
     const spell_data_t* celestial_fortune;
+    const spell_data_t* dragonfire_brew;
     const spell_data_t* elusive_brawler;
     const spell_data_t* face_palm;
     const spell_data_t* gai_plins_imperial_brew_heal;
@@ -1150,6 +1153,7 @@ public:
   double partial_clear_stagger_amount( double );
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
+  void brew_cooldown_reduction( double );
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;

@@ -390,6 +390,8 @@ public:
 
     if ( p()->covenant.necrolord->ok() && p()->cooldown.bonedust_brew->down() )
       p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+    else if ( p()->talent.brewmaster.bonedust_brew->ok() && p()->cooldown.bonedust_brew->down() )
+      p()->cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
   }
 
  bonedust_brew_zone_results_e bonedust_brew_zone()
@@ -585,7 +587,8 @@ public:
 
       if ( p()->conduit.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
         p()->cooldown.invoke_niuzao->adjust( p()->conduit.walk_with_the_ox->effectN( 2 ).time_value(), true );
-
+      else if ( p()->talent.brewmaster.walk_with_the_ox->ok() && p()->cooldown.invoke_niuzao->down() )
+        p()->cooldown.invoke_niuzao->adjust( p()->talent.brewmaster.walk_with_the_ox->effectN( 2 ).time_value(), true );
       
     }
   }
@@ -1532,11 +1535,14 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( face_palm ) 
       am *= 1 + p()->passives.face_palm->effectN( 1 ).percent();
 
+    if ( p()->buff.counterstrike->check() )
+      am *= 1 + p()->buff.counterstrike->data().effectN( 1 ).percent();
+
     if ( power_strikes )
-        am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
+      am *= 1 + p()->talent.windwalker.power_strikes->effectN( 2 ).percent();
 
     if ( p()->talent.windwalker.touch_of_the_tiger->ok() )
-        am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN(1 ).percent();
+      am *= 1 + p()->talent.windwalker.touch_of_the_tiger->effectN(1 ).percent();
 
     return am;
   }
@@ -1609,6 +1615,9 @@ struct tiger_palm_t : public monk_melee_attack_t
 
         if ( p()->buff.blackout_combo->up() )
           p()->buff.blackout_combo->expire();
+
+        if ( p()->buff.counterstrike->up() )
+          p()->buff.counterstrike->expire();
 
         if ( shaohoas_might )
           brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
@@ -2068,6 +2077,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( p()->talent.brewmaster.fluidity_of_motion->ok() )
       am *= 1 + p()->talent.brewmaster.fluidity_of_motion->effectN( 2 ).percent();
 
+    if ( p()->talent.brewmaster.elusive_footwork->ok() )
+      am *= 1 + p()->talent.brewmaster.elusive_footwork->effectN( 3 ).percent();
+
     if ( p()->talent.windwalker.shadowboxing_treads->ok() )
       am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
 
@@ -2181,7 +2193,12 @@ struct blackout_kick_t : public monk_melee_attack_t
 
       if ( p()->buff.charred_passions->up() )
       {
-        double dmg_percent            = p()->legendary.charred_passions->effectN( 1 ).percent();
+        double dmg_percent = 0;
+        if ( p()->legendary.charred_passions->ok() )
+          dmg_percent += p()->legendary.charred_passions->effectN( 1 ).percent();
+        else if ( p()->talent.brewmaster.charred_passions->ok() )
+          dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).percent();
+
         charred_passions->base_dd_min = s->result_amount * dmg_percent;
         charred_passions->base_dd_max = s->result_amount * dmg_percent;
 
@@ -2204,6 +2221,9 @@ struct blackout_kick_t : public monk_melee_attack_t
                 p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
+
+      if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
+        p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
     }
   }
 };
@@ -2378,6 +2398,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
     if ( p()->talent.windwalker.crane_vortex->ok() )
         am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
 
+    if ( p()->buff.counterstrike->check() )
+      am *= 1 + p()->buff.counterstrike->data().effectN( 2 ).percent();
+
+
     return am;
   }
 
@@ -2394,15 +2418,35 @@ struct sck_tick_action_t : public monk_melee_attack_t
     monk_melee_attack_t::impact( s );
 
     if ( p()->buff.charred_passions->up() )
-    {
-      double dmg_percent            = p()->legendary.charred_passions->effectN( 1 ).percent();
-      charred_passions->base_dd_min = s->result_amount * dmg_percent;
-      charred_passions->base_dd_max = s->result_amount * dmg_percent;
-      charred_passions->execute();
+      {
+        double dmg_percent = 0;
+        if ( p()->legendary.charred_passions->ok() )
+          dmg_percent += p()->legendary.charred_passions->effectN( 1 ).percent();
+        else if ( p()->talent.brewmaster.charred_passions->ok() )
+          dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).percent();
 
-      if ( get_td( s->target )->dots.breath_of_fire->is_ticking() )
-        get_td( s->target )->dots.breath_of_fire->refresh_duration();
-    }
+        charred_passions->base_dd_min = s->result_amount * dmg_percent;
+        charred_passions->base_dd_max = s->result_amount * dmg_percent;
+
+        if ( p()->legendary.charred_passions->ok() )
+          charred_passions->s_data = p()->legendary.charred_passions->effectN( 1 ).trigger();
+        else if ( p()->talent.brewmaster.charred_passions->ok() )
+          charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
+
+        charred_passions->execute();
+
+        if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
+        {
+          get_td( s->target )->dots.breath_of_fire->refresh_duration();
+
+          if ( p()->legendary.charred_passions->ok() )
+              p()->cooldown.charred_passions->start(
+                  p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+          else if ( p()->talent.brewmaster.charred_passions->ok() )
+            p()->cooldown.charred_passions->start(
+                p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+        }
+      }
   }
 };
 
@@ -2540,6 +2584,9 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     if ( p()->buff.chi_energy->up() )
       p()->buff.chi_energy->expire();
+
+    if ( p()->buff.counterstrike->up() )
+      p()->buff.counterstrike->expire();
   }
 };
 
@@ -3069,6 +3116,8 @@ struct keg_smash_t : public monk_melee_attack_t
 
     if ( p.legendary.stormstouts_last_keg->ok() )
       cooldown->charges += (int)p.legendary.stormstouts_last_keg->effectN( 2 ).base_value();
+    else if ( p.talent.brewmaster.stormstouts_last_keg->ok() )
+      cooldown->charges += (int)p.talent.brewmaster.stormstouts_last_keg->effectN( 2 ).base_value();
 
     // Keg Smash does not appear to be picking up the baseline Trigger GCD reduction
     // Forcing the trigger GCD to 1 second.
@@ -3081,6 +3130,8 @@ struct keg_smash_t : public monk_melee_attack_t
 
     if ( p()->legendary.stormstouts_last_keg->ok() )
       am *= 1 + p()->legendary.stormstouts_last_keg->effectN( 1 ).percent();
+    else if ( p()->talent.brewmaster.stormstouts_last_keg->ok() )
+      am *= 1 + p()->talent.brewmaster.stormstouts_last_keg->effectN( 1 ).percent();
 
     if ( p()->conduit.scalding_brew->ok() )
     {
@@ -3798,6 +3849,16 @@ struct crackling_jade_lightning_t : public monk_spell_t
 // Breath of Fire
 // ==========================================================================
 
+// Dragonfire Brew ==========================================================
+struct dragonfire_brew_t : public monk_spell_t
+{
+  dragonfire_brew_t( monk_t& p ) : monk_spell_t( "dragonfire_brew", &p, p.passives.dragonfire_brew )
+  {
+    background    = true;
+    aoe        = -1;
+  }
+};
+
 struct breath_of_fire_dot_t : public monk_spell_t
 {
   breath_of_fire_dot_t( monk_t& p ) : monk_spell_t( "breath_of_fire_dot", &p, p.passives.breath_of_fire_dot )
@@ -3812,8 +3873,10 @@ struct breath_of_fire_dot_t : public monk_spell_t
 
 struct breath_of_fire_t : public monk_spell_t
 {
+  dragonfire_brew_t* dragonfire;
   breath_of_fire_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire )
+    : monk_spell_t( "breath_of_fire", &p, p.talent.brewmaster.breath_of_fire ), 
+      dragonfire( new dragonfire_brew_t( p ) )
   {
     parse_options( options_str );
     gcd_type = gcd_haste_type::NONE;
@@ -3842,6 +3905,26 @@ struct breath_of_fire_t : public monk_spell_t
     monk_spell_t::update_ready( cd );
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_spell_t::action_multiplier();
+
+    if ( p()->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      // Currently value is saved as 100% and each of the values is a divisable of 33%
+      auto bof_stagger_bonus = p()->talent.brewmaster.dragonfire_brew->effectN( 2 ).percent();
+      if ( p()->buff.light_stagger->check() )
+        am *= 1 + ( ( 1 / 3 ) * bof_stagger_bonus);
+      if ( p()->buff.moderate_stagger->check() )
+        am *= 1 + ( ( 2 / 3 ) * bof_stagger_bonus );
+      if ( p()->buff.heavy_stagger->check() )
+        am *= 1 + bof_stagger_bonus;
+    }
+    am *= p()->cache.mastery_value();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_spell_t::execute();
@@ -3860,7 +3943,18 @@ struct breath_of_fire_t : public monk_spell_t
          td.debuff.sinister_teaching_fallen_monk_keg_smash->up() )
     {
       p()->active_actions.breath_of_fire->target = s->target;
+      if ( p()->buff.blackout_combo->up() )
+        p()->active_actions.breath_of_fire->base_multiplier =
+            1 + p()->buff.blackout_combo->data().effectN( 5 ).percent();
+      else
+        p()->active_actions.breath_of_fire->base_multiplier = 1; 
       p()->active_actions.breath_of_fire->execute();
+    }
+
+    if ( p()->talent.brewmaster.dragonfire_brew->ok() )
+    {
+      for ( int i = 0; i < (int)p()->talent.brewmaster.dragonfire_brew->effectN( 1 ).base_value(); i++ )
+        dragonfire->execute();
     }
   }
 };
@@ -4263,7 +4357,8 @@ struct purifying_brew_t : public monk_spell_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      p()->buff.elusive_brawler->trigger( 1 );
+      p()->active_actions.stagger_self_damage->delay_tick( timespan_t::from_seconds(
+          p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
       p()->buff.blackout_combo->expire();
     }
 
@@ -6063,6 +6158,9 @@ struct celestial_brew_t : public monk_absorb_t
   {
     monk_absorb_t::execute();
 
+    if ( p()->buff.purified_chi->up() )
+      p()->buff.purified_chi->expire();
+
     if ( p()->talent.brewmaster.special_delivery->ok() )
     {
       delivery->set_target( target );
@@ -6074,8 +6172,8 @@ struct celestial_brew_t : public monk_absorb_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      p()->active_actions.stagger_self_damage->delay_tick(
-          timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
+      // TODO: Tooltip says "up to 3 stacks." Not sure how this is calculated
+      p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
       p()->buff.blackout_combo->expire();
     }
 
@@ -6881,6 +6979,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.breath_of_fire          = get_cooldown( "breath_of_fire" );
   cooldown.celestial_brew          = get_cooldown( "celestial_brew" );
   cooldown.chi_torpedo             = get_cooldown( "chi_torpedo" );
+  cooldown.counterstrike           = get_cooldown( "counterstrike" );
   cooldown.drinking_horn_cover     = get_cooldown( "drinking_horn_cover" );
   cooldown.expel_harm              = get_cooldown( "expel_harm" );
   cooldown.fortifying_brew         = get_cooldown( "fortifying_brew" );
@@ -7724,6 +7823,7 @@ void monk_t::init_spells()
   // Brewmaster
   passives.breath_of_fire_dot           = find_spell( 123725 );
   passives.celestial_fortune            = find_spell( 216521 );
+  passives.dragonfire_brew              = find_spell( 387621 );
   passives.elusive_brawler              = find_spell( 195630 );
   passives.face_palm                    = find_spell( 227679 );
   passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
@@ -7993,6 +8093,8 @@ void monk_t::create_buffs ()
 
     buff.celestial_brew = make_buff<absorb_buff_t>( this, "celestial_brew", talent.brewmaster.celestial_brew );
     buff.celestial_brew->set_absorb_source( get_stats( "celestial_brew" ) )->set_cooldown( timespan_t::zero() );
+
+    buff.counterstrike = make_buff( this, "counterstrike", talent.brewmaster.counterstrike->effectN( 1 ).trigger() );
 
     buff.celestial_flames = make_buff( this, "celestial_flames", talent.brewmaster.celestial_flames->effectN( 1 ).trigger() )
       ->set_chance( talent.brewmaster.celestial_flames->proc_chance() )
@@ -8664,6 +8766,30 @@ double shared_composite_haste_modifiers( const monk_t& p, double h )
   return h;
 }
 
+// Reduces Brewmaster Brew cooldowns by the time given
+void monk_t::brew_cooldown_reduction( double time_reduction )
+  {
+    // we need to adjust the cooldown time DOWNWARD instead of UPWARD so multiply the time_reduction by -1
+    time_reduction *= -1;
+
+    if ( cooldown.purifying_brew->down() )
+      cooldown.purifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( cooldown.celestial_brew->down() )
+      cooldown.celestial_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( cooldown.fortifying_brew->down() )
+      cooldown.fortifying_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( cooldown.black_ox_brew->down() )
+      cooldown.black_ox_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+
+    if ( covenant.necrolord->ok() && cooldown.bonedust_brew->down() )
+      cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+    else if ( talent.brewmaster.bonedust_brew->ok() && cooldown.bonedust_brew->down() )
+      cooldown.bonedust_brew->adjust( timespan_t::from_seconds( time_reduction ), true );
+  }
+
 // monk_t::composite_spell_haste =========================================
 
 double monk_t::composite_spell_haste() const
@@ -9180,6 +9306,24 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
     {
       if ( buff.elusive_brawler->up() )
         buff.elusive_brawler->expire();
+
+      if ( talent.brewmaster.counterstrike->ok() && cooldown.counterstrike->up() )
+      {
+        buff.counterstrike->trigger();
+        cooldown.counterstrike->start( talent.brewmaster.counterstrike->internal_cooldown() );
+      }
+
+      // Saved as 5/10 base values but need it as 0.5 and 1 base values
+      if ( talent.brewmaster.anvil_and_stave->ok() )
+        brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
+    }
+    if ( s->result == RESULT_MISS )
+    {
+      if ( talent.brewmaster.counterstrike->ok() && cooldown.counterstrike->up() )
+      {
+        buff.counterstrike->trigger();
+        cooldown.counterstrike->start( talent.brewmaster.counterstrike->internal_cooldown() );
+      }
     }
   }
 
