@@ -159,6 +159,7 @@ public:
     sample_data_helper_t* heavy_stagger_damage;
     sample_data_helper_t* purified_damage;
     sample_data_helper_t* staggering_strikes_cleared;
+    sample_data_helper_t* quick_sip_cleared;
     double buffed_stagger_base;
     double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
@@ -802,6 +803,7 @@ public:
     const spell_data_t* celestial_fortune;
     const spell_data_t* elusive_brawler;
     const spell_data_t* face_palm;
+    const spell_data_t* gai_plins_imperial_brew_heal;
     const spell_data_t* gift_of_the_ox_heal;
     const spell_data_t* keg_smash_buff;
     const spell_data_t* shuffle;

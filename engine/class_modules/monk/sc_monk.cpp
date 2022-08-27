@@ -564,7 +564,7 @@ public:
               // Reduce stagger damage
               auto amount_cleared =
                   p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() ); // Saved as 1
-              p()->sample_datas.purified_damage->add( amount_cleared) ;
+              p()->sample_datas.quick_sip_cleared->add( amount_cleared );
               p()->buff.recent_purifies->trigger( 1, amount_cleared );
 
               p()->shuffle_count_secs -= quick_sip_seconds;
@@ -1954,6 +1954,13 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
           RESOURCE_MANA,
           ( p()->resources.max[ RESOURCE_MANA ] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
           p()->gain.spirit_of_the_crane );
+
+    if ( p()->talent.brewmaster.staggering_strikes->ok() )
+    {
+      auto ap             = s->composite_attack_power();
+      auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
+      p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
+    }
   }
 };
 
@@ -3078,6 +3085,17 @@ struct keg_smash_t : public monk_melee_attack_t
           am *= 1 + p()->conduit.scalding_brew.percent();
       }
     }
+    else if ( p()->talent.brewmaster.scalding_brew->ok() )
+    {
+      if ( auto* td = this->get_td( p()->target ) )
+      {
+        if ( td->dots.breath_of_fire->is_ticking() )
+          am *= 1 + p()->talent.brewmaster.scalding_brew->effectN( 1 ).percent();
+      }
+    }
+
+    if ( p()->buff.hit_scheme->check() )
+      am *= 1 + p()->buff.hit_scheme->check_value();
 
     if ( p()->sets->has_set_bonus( MONK_BREWMASTER, T28, B4 ) )
       am *= 1 + p()->sets->set( MONK_BREWMASTER, T28, B4 )->effectN( 1 ).percent();
@@ -3088,6 +3106,9 @@ struct keg_smash_t : public monk_melee_attack_t
   void execute() override
   {
     monk_melee_attack_t::execute();
+
+    if ( p()->talent.brewmaster.salsalabims_strength->ok() )
+      p()->cooldown.breath_of_fire->reset( true, 1 );
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
     double time_reduction = p()->talent.brewmaster.keg_smash->effectN( 4 ).base_value();
@@ -3511,13 +3532,42 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 namespace spells
 {
 // ==========================================================================
+// Special Delivery
+// ==========================================================================
+
+struct special_delivery_t : public monk_spell_t
+{
+  special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
+  {
+    may_block = may_dodge = may_parry = true;
+    background                        = true;
+    trigger_gcd                       = timespan_t::zero();
+    aoe                               = -1;
+    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
+    radius                            = data().effectN( 1 ).radius();
+  }
+
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
+  }
+
+  double cost() const override
+  {
+    return 0;
+  }
+};
+
+// ==========================================================================
 // Black Ox Brew
 // ==========================================================================
 
 struct black_ox_brew_t : public monk_spell_t
 {
-  black_ox_brew_t( monk_t* player, util::string_view options_str )
-    : monk_spell_t( "black_ox_brew", player, player->talent.brewmaster.black_ox_brew )
+  special_delivery_t* delivery;
+  black_ox_brew_t( monk_t& player, util::string_view options_str )
+    : monk_spell_t( "black_ox_brew", &player, player.talent.brewmaster.black_ox_brew ),
+      delivery( new special_delivery_t( player ) )
   {
     parse_options( options_str );
 
@@ -3538,6 +3588,12 @@ struct black_ox_brew_t : public monk_spell_t
 
     p()->resource_gain( RESOURCE_ENERGY, p()->talent.brewmaster.black_ox_brew->effectN( 1 ).base_value(),
                         p()->gain.black_ox_brew_energy );
+
+    if ( p()->talent.brewmaster.special_delivery->ok() )
+    {
+      delivery->set_target( target );
+      delivery->execute();
+    }
 
     if ( p()->talent.brewmaster.celestial_flames->ok() )
       p()->buff.celestial_flames->trigger();
@@ -3801,33 +3857,6 @@ struct breath_of_fire_t : public monk_spell_t
       p()->active_actions.breath_of_fire->target = s->target;
       p()->active_actions.breath_of_fire->execute();
     }
-  }
-};
-
-// ==========================================================================
-// Special Delivery
-// ==========================================================================
-
-struct special_delivery_t : public monk_spell_t
-{
-  special_delivery_t( monk_t& p ) : monk_spell_t( "special_delivery", &p, p.passives.special_delivery )
-  {
-    may_block = may_dodge = may_parry = true;
-    background                        = true;
-    trigger_gcd                       = timespan_t::zero();
-    aoe                               = -1;
-    attack_power_mod.direct           = data().effectN( 1 ).ap_coeff();
-    radius                            = data().effectN( 1 ).radius();
-  }
-
-  timespan_t travel_time() const override
-  {
-    return timespan_t::from_seconds( p()->talent.brewmaster.special_delivery->effectN( 1 ).base_value() );
-  }
-
-  double cost() const override
-  {
-    return 0;
   }
 };
 
@@ -4168,12 +4197,32 @@ struct stagger_self_damage_t : public residual_action::residual_periodic_action_
 // Purifying Brew
 // ==========================================================================
 
+// Gai Plin's Imperial Brew Heal ============================================
+struct gai_plins_imperial_brew_heal_t : public monk_heal_t
+{
+  gai_plins_imperial_brew_heal_t( monk_t& p ) : 
+      monk_heal_t( "gai_plins_imperial_brew_heal", p, p.passives.gai_plins_imperial_brew_heal )
+  {
+    background = true;
+  }
+
+  void init() override
+  {
+    monk_heal_t::init();
+
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct purifying_brew_t : public monk_spell_t
 {
   special_delivery_t* delivery;
+  gai_plins_imperial_brew_heal_t* gai_plin;
 
   purifying_brew_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "purifying_brew", &p, p.talent.brewmaster.purifying_brew ), delivery( new special_delivery_t( p ) )
+    : monk_spell_t( "purifying_brew", &p, p.talent.brewmaster.purifying_brew ), 
+      delivery( new special_delivery_t( p ) ),
+      gai_plin( new gai_plins_imperial_brew_heal_t( p ) )
   {
     parse_options( options_str );
 
@@ -4235,6 +4284,15 @@ struct purifying_brew_t : public monk_spell_t
         p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
     p()->sample_datas.purified_damage->add( amount_cleared );
     p()->buff.recent_purifies->trigger( 1, amount_cleared );
+
+    if ( p()->talent.brewmaster.gai_plins_imperial_brew->ok() )
+    {
+      auto amount_healed = amount_cleared * p()->talent.brewmaster.gai_plins_imperial_brew->effectN( 1 ).percent();
+      gai_plin->base_dd_min = amount_healed;
+      gai_plin->base_dd_max = amount_healed;
+      gai_plin->target      = p();
+      gai_plin->execute();
+    }
   }
 };
 
@@ -5413,7 +5471,7 @@ struct gift_of_the_ox_t : public monk_heal_t
 
   bool ready() override
   {
-    if ( p()->specialization() != MONK_BREWMASTER )
+    if ( !p()->talent.brewmaster.gift_of_the_ox->ok() )
       return false;
 
     return p()->buff.gift_of_the_ox->check();
@@ -5523,6 +5581,12 @@ struct expel_harm_t : public monk_heal_t
       // Normally this would be using health_difference, but since Windwalkers will almost always be set
       // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
       result = rng().range( min_amount, result );
+    }
+
+    if ( p()->talent.brewmaster.strength_of_spirit->ok() )
+    {
+      double health_percent = health_difference / p()->resources.max[ RESOURCE_HEALTH ];
+      result *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
     }
 
     result *= p()->talent.general.expel_harm->effectN( 2 ).percent();
@@ -6958,7 +7022,7 @@ action_t* monk_t::create_action( util::string_view name, util::string_view optio
   if ( name == "chi_wave" )
     return new chi_wave_t( this, options_str );
   if ( name == "black_ox_brew" )
-    return new black_ox_brew_t( this, options_str );
+    return new black_ox_brew_t( *this, options_str );
   if ( name == "dampen_harm" )
     return new dampen_harm_t( *this, options_str );
   if ( name == "diffuse_magic" )
@@ -7653,17 +7717,18 @@ void monk_t::init_spells()
   passives.mystic_touch            = find_spell( 8647 );
 
   // Brewmaster
-  passives.breath_of_fire_dot  = find_spell( 123725 );
-  passives.celestial_fortune   = find_spell( 216521 );
-  passives.elusive_brawler     = find_spell( 195630 );
-  passives.face_palm           = find_spell( 227679 );
-  passives.gift_of_the_ox_heal = find_spell( 124507 );
-  passives.shuffle             = find_spell( 215479 );
-  passives.keg_smash_buff      = find_spell( 196720 );
-  passives.special_delivery    = find_spell( 196733 );
-  passives.stagger_self_damage = find_spell( 124255 );
-  passives.heavy_stagger       = find_spell( 124273 );
-  passives.stomp               = find_spell( 227291 );
+  passives.breath_of_fire_dot           = find_spell( 123725 );
+  passives.celestial_fortune            = find_spell( 216521 );
+  passives.elusive_brawler              = find_spell( 195630 );
+  passives.face_palm                    = find_spell( 227679 );
+  passives.gai_plins_imperial_brew_heal = find_spell( 383701 );
+  passives.gift_of_the_ox_heal          = find_spell( 124507 );
+  passives.shuffle                      = find_spell( 215479 );
+  passives.keg_smash_buff               = find_spell( 196720 );
+  passives.special_delivery             = find_spell( 196733 );
+  passives.stagger_self_damage          = find_spell( 124255 );
+  passives.heavy_stagger                = find_spell( 124273 );
+  passives.stomp                        = find_spell( 227291 );
 
   // Mistweaver
   passives.totm_bok_proc        = find_spell( 228649 );
@@ -7749,6 +7814,7 @@ void monk_t::init_spells()
   sample_datas.heavy_stagger_damage       = get_sample_data( "Effective heavy stagger damage" );
   sample_datas.purified_damage            = get_sample_data( "Stagger damage that was purified" );
   sample_datas.staggering_strikes_cleared = get_sample_data( "Stagger damage that was cleared by Staggering Strikes" );
+  sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
 
   // Active Action Spells
   // Brewmaster
@@ -9712,6 +9778,7 @@ public:
       double stagger_tick_dmg   = p.sample_datas.stagger_damage->mean();
       double purified_dmg       = p.sample_datas.purified_damage->mean();
       double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
+      double quick_sip          = p.sample_datas.quick_sip_cleared->mean();
       double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
 
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
@@ -9758,6 +9825,8 @@ public:
                   ( purified_dmg / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
                   ( staggering_strikes / stagger_total_dmg ) * 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", quick_sip,
+                  ( quick_sip / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
                   ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
 
