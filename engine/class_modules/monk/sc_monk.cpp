@@ -940,8 +940,12 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double pm = base_t::composite_persistent_multiplier( action_state );
 
-    if ( ww_mastery && p()->buff.combo_strikes->check() )
-      pm *= 1 + p()->cache.mastery_value();
+    // Windwalker Mastery: Combo Strikes
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( ww_mastery && p()->buff.combo_strikes->check() )
+        pm *= 1 + p()->cache.mastery_value();
+    }
 
     return pm;
   }
@@ -950,27 +954,30 @@ struct monk_spell_t : public monk_action_t<spell_t>
   {
     double am = base_t::action_multiplier();
 
-    if ( p()->buff.storm_earth_and_fire->check() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-      if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+      if ( p()->buff.storm_earth_and_fire->check() )
       {
-        double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+        // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
+        if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+        {
+          double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-        am *= 1 + sef_multiplier;
+          am *= 1 + sef_multiplier;
+        }
       }
-    }
 
-    if ( p()->buff.serenity->check() )
-    {
-      if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+      if ( p()->buff.serenity->check() )
       {
-        double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
+        if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+        {
+          double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
 
-        if ( p()->conduit.coordinated_offensive->ok() )
-          serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+          if ( p()->conduit.coordinated_offensive->ok() )
+            serenity_multiplier += p()->conduit.coordinated_offensive.percent();
 
-        am *= 1 + serenity_multiplier;
+          am *= 1 + serenity_multiplier;
+        }
       }
     }
 
@@ -1016,51 +1023,59 @@ struct monk_heal_t : public monk_action_t<heal_t>
     if ( p()->talent.general.grace_of_the_crane->ok() )
       am *= 1 + p()->talent.general.grace_of_the_crane->effectN( 1 ).percent();
 
-    if ( p()->specialization() == MONK_MISTWEAVER )
-    {
-      player_t* t = ( execute_state ) ? execute_state->target : target;
+    player_t* t = ( execute_state ) ? execute_state->target : target;
 
-      if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
-      {
-        if ( td->dots.enveloping_mist->is_ticking() )
+    switch ( p()->specialization() )
+    {
+      case MONK_MISTWEAVER:      
+
+        if ( auto td = this->get_td( t ) )  // Use get_td since we can have a ticking dot without target-data
         {
-          if ( p()->talent.mistweaver.mist_wrap->ok() )
-            am *=
-                1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent() + p()->talent.mistweaver.mist_wrap->effectN( 2 ).percent();
-          else
-            am *= 1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent();
+          if ( td->dots.enveloping_mist->is_ticking() )
+          {
+            if ( p()->talent.mistweaver.mist_wrap->ok() )
+              am *=
+              1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent() + p()->talent.mistweaver.mist_wrap->effectN( 2 ).percent();
+            else
+              am *= 1.0 + p()->spec.enveloping_mist->effectN( 2 ).percent();
+          }
         }
-      }
 
-      if ( p()->buff.life_cocoon->check() )
-        am *= 1.0 + p()->spec.life_cocoon->effectN( 2 ).percent();
+        if ( p()->buff.life_cocoon->check() )
+          am *= 1.0 + p()->spec.life_cocoon->effectN( 2 ).percent();
 
-      if ( p()->buff.fae_exposure->check() )
-        am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
-    }
+        if ( p()->buff.fae_exposure->check() )
+          am *= 1.0 + p()->passives.fae_exposure_heal->effectN( 1 ).percent();
 
-    if ( p()->buff.storm_earth_and_fire->check() )
-    {
-      // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-      if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-      {
-        double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+        break;
 
-        am *= 1 + sef_multiplier;
-      }
-    }
+      case MONK_WINDWALKER:
 
-    if ( p()->buff.serenity->check() )
-    {
-      if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
-      {
-        double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
+        if ( p()->buff.storm_earth_and_fire->check() )
+        {
+          // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
+          if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
+          {
+            double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-        if ( p()->conduit.coordinated_offensive->ok() )
-          serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+            am *= 1 + sef_multiplier;
+          }
+        }
 
-        am *= 1 + serenity_multiplier;
-      }
+        if ( p()->buff.serenity->check() )
+        {
+          if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
+          {
+            double serenity_multiplier = p()->talent.windwalker.serenity->effectN( 2 ).percent();
+
+            if ( p()->conduit.coordinated_offensive->ok() )
+              serenity_multiplier += p()->conduit.coordinated_offensive.percent();
+
+            am *= 1 + serenity_multiplier;
+          }
+        }
+
+        break;
     }
 
     return am;
@@ -1332,6 +1347,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( p()->buff.touch_of_death_mw->check() )
         am *= 1 + p()->buff.touch_of_death_mw->check_value();
     }
+
     return am;
   }
 
@@ -2530,7 +2546,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( p()->buff.charred_passions->up() )
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->buff.charred_passions->up() )
       {
         double dmg_percent = 0;
         if ( p()->legendary.charred_passions->ok() )
@@ -2553,13 +2571,14 @@ struct sck_tick_action_t : public monk_melee_attack_t
           get_td( s->target )->dots.breath_of_fire->refresh_duration();
 
           if ( p()->legendary.charred_passions->ok() )
-              p()->cooldown.charred_passions->start(
-                  p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+            p()->cooldown.charred_passions->start(
+              p()->legendary.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
           else if ( p()->talent.brewmaster.charred_passions->ok() )
             p()->cooldown.charred_passions->start(
-                p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
+              p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
       }
+    }
   }
 };
 
@@ -3402,46 +3421,63 @@ struct touch_of_death_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+    switch ( p()->specialization() )
     {
-      if ( p()->buff.hidden_masters_forbidden_touch->up() )
-        p()->buff.hidden_masters_forbidden_touch->expire();
-      else
-      {
-        p()->buff.hidden_masters_forbidden_touch->execute();
-        this->cooldown->reset( true );
-      }
+      case MONK_WINDWALKER:
+
+        if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+        {
+          if ( p()->buff.hidden_masters_forbidden_touch->up() )
+            p()->buff.hidden_masters_forbidden_touch->expire();
+          else
+          {
+            p()->buff.hidden_masters_forbidden_touch->execute();
+            this->cooldown->reset( true );
+          }
+        }
+
+        if ( p()->spec.touch_of_death_3_ww->ok() )
+          p()->buff.touch_of_death_ww->trigger();
+
+        break;
+
+      case MONK_MISTWEAVER:
+
+        if ( p()->spec.touch_of_death_3_mw->ok() )
+          p()->buff.touch_of_death_mw->trigger();
+
+        break;
     }
-
-    if ( p()->spec.touch_of_death_3_ww->ok() )
-      p()->buff.touch_of_death_ww->trigger();
-
-    if ( p()->spec.touch_of_death_3_mw->ok() )
-      p()->buff.touch_of_death_mw->trigger();
   }
 
   void impact( action_state_t* s ) override
   {
     // Damage is associated with the players non-buffed max HP
     // Meaning using Fortifying Brew does not affect ToD's damage
-    double amount = p()->resources.initial[ RESOURCE_HEALTH ];
+    double amount = p()->resources.initial[RESOURCE_HEALTH];
 
     if ( target->true_level > p()->true_level )
       amount *= p()->talent.general.touch_of_death->effectN( 2 ).percent();  // 35% HP
 
-    if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
-      amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+        amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
 
-    // Damage is only affected by Windwalker's Mastery
-    // Versatility does not affect the damage of Touch of Death.
-    if ( p()->buff.combo_strikes->up() )
-      amount *= 1 + p()->cache.mastery_value();
+      // Damage is only affected by Windwalker's Mastery
+      // Versatility does not affect the damage of Touch of Death.
+      if ( p()->buff.combo_strikes->up() )
+        amount *= 1 + p()->cache.mastery_value();
+    }
 
     s->result_total = s->result_raw = amount;
     monk_melee_attack_t::impact( s );
 
-    if ( p()->spec.touch_of_death_3_brm->ok() )
-      p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      if ( p()->spec.touch_of_death_3_brm->ok() )
+        p()->partial_clear_stagger_amount( amount * p()->spec.touch_of_death_3_brm->effectN( 1 ).percent() );
+    }
   }
 };
 
@@ -4135,22 +4171,26 @@ struct fortifying_brew_t : public monk_spell_t
 
     p()->buff.fortifying_brew->trigger();
 
-    if ( p()->talent.brewmaster.special_delivery->ok() )
+    if ( p()->specialization() == MONK_BREWMASTER )
     {
-      delivery->set_target( target );
-      delivery->execute();
-    }
+      if ( p()->talent.brewmaster.special_delivery->ok() )
+      {
+        delivery->set_target( target );
+        delivery->execute();
+      }
 
-    if ( p()->talent.brewmaster.celestial_flames->ok() )
-      p()->buff.celestial_flames->trigger();
+      if ( p()->talent.brewmaster.celestial_flames->ok() )
+        p()->buff.celestial_flames->trigger();
+    }
 
     if ( p()->conduit.fortifying_ingredients->ok() )
     {
-      double absorb_percent               = p()->conduit.fortifying_ingredients.percent();
-      fortifying_ingredients->base_dd_min = p()->resources.max[ RESOURCE_HEALTH ] * absorb_percent;
-      fortifying_ingredients->base_dd_max = p()->resources.max[ RESOURCE_HEALTH ] * absorb_percent;
+      double absorb_percent = p()->conduit.fortifying_ingredients.percent();
+      fortifying_ingredients->base_dd_min = p()->resources.max[RESOURCE_HEALTH] * absorb_percent;
+      fortifying_ingredients->base_dd_max = p()->resources.max[RESOURCE_HEALTH] * absorb_percent;
       fortifying_ingredients->execute();
     }
+
   }
 };
 
