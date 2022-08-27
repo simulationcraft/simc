@@ -403,7 +403,6 @@ public:
 
     auto target_count           = static_cast<int>( target_list.size() );
     auto targets_affected       = 0;
-    auto cyclone_strike_counter = 0;
 
     if ( p()->specialization() != MONK_WINDWALKER || target_count < 2 )
       return bonedust_brew_zone_results_e::NONE;
@@ -414,8 +413,6 @@ public:
       {
         if ( td->debuff.bonedust_brew->check() )
           targets_affected++;
-        if ( td->debuff.mark_of_the_crane->check() )
-          cyclone_strike_counter++;
       }
     }
 
@@ -436,23 +433,20 @@ public:
                                        ( 1 + p()->spec.windwalker_monk->effectN( 18 ).percent() );
   
     // SCK
-    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 2 ).ap_coeff() *
-                                // 4 ticks
-                                4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
-                                ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() );
+    auto SCK_AP_ratio_by_aura = p()->spec.spinning_crane_kick->effectN( 1 ).trigger()->effectN( 1 ).ap_coeff() *
+                                        // 4 ticks
+                                        4 * ( 1 + p()->spec.windwalker_monk->effectN( 2 ).percent() ) *
+                                        ( 1 + p()->spec.windwalker_monk->effectN( 8 ).percent() ) *
+                                        ( 1 + p()->spec.windwalker_monk->effectN( 22 ).percent() );
 
     // SQRT Scaling
     if ( target_count > p()->spec.spinning_crane_kick->effectN( 1 ).base_value() )
       SCK_AP_ratio_by_aura *= std::sqrt( p()->spec.spinning_crane_kick->effectN( 1 ).base_value() /
                                          std::min<int>( p()->sim->max_aoe_enemies, target_count ) );
 
-    auto cyclone_strike_bonus_per_target = p()->passives.cyclone_strikes->effectN( 1 ).percent() 
-                                        + ( p()->conduit.calculated_strikes->ok() ? p()->conduit.calculated_strikes.percent() : 
-                                            ( p()->talent.windwalker.calculated_strikes->ok() ? p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent() : 0 ) );
+    SCK_AP_ratio_by_aura *= p()->sck_modifier();
 
-    auto cyclone_strike_bonus = 1 + (cyclone_strike_bonus_per_target * cyclone_strike_counter);
-
-    auto SCK_dmg_total = ( target_count * SCK_AP_ratio_by_aura * cyclone_strike_bonus );
+    auto SCK_dmg_total = ( target_count * SCK_AP_ratio_by_aura );
     auto tp_over_sck = tiger_palm_AP_ratio_by_aura / SCK_dmg_total;
 
     // Damage amplifiers
