@@ -123,9 +123,21 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
     : base_t( n, p, data ), trigger_mystic_touch( false )
   {
     base_t::apply_affecting_aura( p->o()->passives.aura_monk );
-    base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
-    base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
-    base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+
+    switch ( p->o()->specialization() )
+    {
+      case MONK_WINDWALKER:
+        base_t::apply_affecting_aura( p->o()->spec.windwalker_monk );
+        break;
+
+      case MONK_BREWMASTER:
+        base_t::apply_affecting_aura( p->o()->spec.brewmaster_monk );
+        break;
+
+      case MONK_MISTWEAVER:
+        base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
+        break;
+    }
 
     if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )
     {
@@ -137,10 +149,13 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
   {
     double am = pet_action_base_t::action_multiplier();
 
-    if ( o()->buff.serenity->check() )
+    if ( o()->specialization() == MONK_WINDWALKER )
     {
-      if ( data().affected_by( o()->talent.windwalker.serenity->effectN( 2 ) ) )
-        am *= 1 + o()->talent.windwalker.serenity->effectN( 2 ).percent();
+      if ( o()->buff.serenity->check() )
+      {
+        if ( data().affected_by( o()->talent.windwalker.serenity->effectN( 2 ) ) )
+          am *= 1 + o()->talent.windwalker.serenity->effectN( 2 ).percent();
+      }
     }
 
     return am;
