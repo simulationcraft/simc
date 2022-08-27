@@ -6172,7 +6172,10 @@ struct celestial_brew_t : public monk_absorb_t
 
     if ( p()->buff.blackout_combo->up() )
     {
-      // TODO: Tooltip says "up to 3 stacks." Not sure how this is calculated
+      // Currently on Alpha, Blackout Combo Celestial Brew is overriding any current Purrifying Chi
+      if ( p()->bugs && p()->buff.purified_chi->up() )
+          p()->buff.purified_chi->expire();
+
       p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
       p()->buff.blackout_combo->expire();
     }
