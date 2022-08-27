@@ -594,7 +594,7 @@ public:
     cooldown_t* apocalypse;
     cooldown_t* army_of_the_dead;
     cooldown_t* dark_transformation;
-	cooldown_t* plaguebearer;
+    cooldown_t* plaguebearer;
 
     // T28
     cooldown_t* endless_rune_waltz_icd;  // internal cooldown for Blood T28 4PC counterattack
@@ -667,7 +667,7 @@ public:
     gain_t* apocalypse;
     gain_t* festering_wound;
     gain_t* replenishing_wounds;
-	gain_t* feasting_strikes;
+    gain_t* feasting_strikes;
   } gains;
 
   // Specialization
@@ -956,7 +956,7 @@ public:
     // Unholy
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* rotten_touch_debuff;
-    const spell_data_t* death_rot;
+    const spell_data_t* death_rot_debuff;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -1352,8 +1352,7 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   debuff.rotten_touch     = make_buff( *this, "rotten_touch", p -> spell.rotten_touch_debuff )
                            -> set_default_value_from_effect( 1 );
   
-  debuff.death_rot = make_buff( *this, "death_rot", p->spell.death_rot )
-                           -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+  debuff.death_rot        = make_buff( *this, "death_rot", p -> spell.death_rot_debuff )
                            -> set_default_value_from_effect( 1 );
 
   // Apocalypse Death Knight Runeforge Debuffs
@@ -5429,14 +5428,14 @@ struct death_coil_damage_t : public death_knight_spell_t
 
     m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
 
-    if (p()->talent.unholy.improved_death_coil.ok())
+    if ( p() -> talent.unholy.improved_death_coil.ok() )
     {
-      m *= 1.0 + p()->talent.unholy.improved_death_coil->effectN( 1 ).percent();
+      m *= 1.0 + p() -> talent.unholy.improved_death_coil -> effectN( 1 ).percent();
     }
 
-    if ( p()->talent.unholy.reaping.ok() && target -> health_percentage() < p() -> find_spell(377514) -> effectN( 2 ).base_value() )
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
-      m *= 1.0 + p()->talent.unholy.reaping->effectN( 1 ).percent();
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
     }
 
     return m;
@@ -5446,10 +5445,15 @@ struct death_coil_damage_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
 
-    if ( p()->talent.unholy.coil_of_devastation.ok() && result_is_hit( state->result ) )
+    if ( p() -> talent.unholy.coil_of_devastation.ok() && result_is_hit( state -> result ) )
     {
-      residual_action::trigger( coil_of_devastation, state->target,
-                                state->result_amount * p()->talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
+      residual_action::trigger( coil_of_devastation, state -> target,
+                                state -> result_amount * p() -> talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
+    }
+
+    if ( p() -> talent.unholy.rotten_touch.ok() && result_is_hit( state -> result ) )
+    {
+      get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
 };
@@ -5457,16 +5461,17 @@ struct death_coil_damage_t : public death_knight_spell_t
 struct death_coil_t : public death_knight_spell_t
 {
   coil_of_devastation_t* coil_of_devastation;
-  death_coil_t(death_knight_t* p, util::string_view options_str) : death_knight_spell_t("death_coil", p, p->spec.death_coil), coil_of_devastation(nullptr)
+  death_coil_t( death_knight_t* p, util::string_view options_str )
+    : death_knight_spell_t( "death_coil", p, p -> spec.death_coil ), coil_of_devastation( nullptr )
   {
-      parse_options(options_str);
+    parse_options( options_str );
 
-      execute_action = get_action<death_coil_damage_t>("death_coil_damage", p);
-      execute_action->stats = stats;
+    execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    execute_action->stats = stats;
 
-    if ( p->talent.unholy.improved_death_coil.ok() )
-    { 
-      aoe = 1 + as<int>(p->talent.unholy.improved_death_coil -> effectN(2).base_value());
+    if ( p -> talent.unholy.improved_death_coil.ok() )
+    {
+      aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
     }
   }
 
@@ -5509,7 +5514,7 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
     }
 	
-	if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
+	  if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
@@ -5520,20 +5525,20 @@ struct death_coil_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
-    if ( p()->talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
     {
-      get_td( state->target )->debuff.death_rot->trigger();
+      get_td( state -> target ) -> debuff.death_rot -> trigger();
       
-      if ( p()->buffs.sudden_doom->check() )
+      if ( p() -> buffs.sudden_doom -> check() )
       {
-        get_td( state->target )->debuff.death_rot->trigger();
+        get_td( state -> target ) -> debuff.death_rot -> trigger();
       }
     }
 
-    if ( p()->talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
          result_is_hit( execute_state->result ) )
     {
-      get_td( state->target )->debuff.rotten_touch->trigger();
+      get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
 };
@@ -5993,12 +5998,6 @@ struct festering_wound_t : public death_knight_spell_t
     {
       base_multiplier *= 1.0 + p -> conduits.convocation_of_the_dead.percent();
     }
-
-    if ( p ->talent.unholy.reaping.ok() &&
-         target->health_percentage() < p -> find_spell( 377514 )->effectN( 2 ).base_value() )
-    {
-      base_multiplier *= 1.0 + p ->talent.unholy.reaping->effectN( 1 ).percent();
-    }
   }
 
   void execute() override
@@ -6027,12 +6026,9 @@ struct festering_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
 
-    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
-
-    if ( p->talent.unholy.reaping.ok() &&
-         target->health_percentage() < p->find_spell( 377514 )->effectN( 2 ).base_value() )
+    if ( p -> talent.unholy.festering_strike_r2 -> ok() )
     {
-      base_multiplier *= 1.0 + p->talent.unholy.reaping->effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
     }
   }
 
@@ -6066,7 +6062,19 @@ struct festering_strike_t : public death_knight_melee_attack_t
       }
     }
   }
-};
+
+    double composite_da_multiplier( const action_state_t* state ) const override
+    {
+      double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+      if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
+      {
+        m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+      }
+
+      return m;
+    }
+  };
 
 // Frostscythe ==============================================================
 
@@ -7526,15 +7534,21 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_target_multiplier( t );
 
-    if ( get_td(t) -> debuff.rotten_touch -> up() )
+    if ( get_td( t ) -> debuff.rotten_touch->up() )
     {
-      m *= 1.0 + p()->find_spell(390276)->effectN(1).percent();
+      m *= 1.0 + p() -> spell.rotten_touch_debuff -> effectN( 1 ).percent();
     }
 
-    if ( p()->talent.unholy.reaping.ok() &&
-         t->health_percentage() < p()->find_spell(377514)->effectN(2).base_value())
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
     {
-      m *= 1.0 + p()->talent.unholy.reaping->effectN(1).percent();
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
     }
 
     return m;
@@ -7606,6 +7620,30 @@ struct scourge_strike_shadow_t : public death_knight_melee_attack_t
     background = proc = dual = true;
     weapon = &( player -> main_hand_weapon );
   }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_target_multiplier( t );
+
+    if ( get_td( t ) -> debuff.rotten_touch -> up() )
+    {
+      m *= 1.0 + p() -> spell.rotten_touch_debuff -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+    }
+    
+    return m;
+  }
 };
 
 struct scourge_strike_t : public scourge_strike_base_t
@@ -7671,6 +7709,18 @@ struct soul_reaper_execute_t : public death_knight_spell_t
     death_knight_spell_t::execute();
     if( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
       p() -> buffs.harvest_time -> trigger();
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 };
 
@@ -9961,7 +10011,7 @@ void death_knight_t::init_spells()
   // Unholy
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.rotten_touch_debuff    = find_spell( 390276 );
-  spell.death_rot              = find_spell( 377540 );
+  spell.death_rot_debuff       = find_spell( 377540 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
