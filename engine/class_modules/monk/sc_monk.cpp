@@ -1761,8 +1761,11 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     if ( p()->talent.general.fast_feet->ok() )
       am *= 1 + p()->talent.general.fast_feet->effectN( 1 ).percent();
 
-    if ( p()->talent.windwalker.rising_star->ok() )
-      am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->talent.windwalker.rising_star->ok() )
+        am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -1771,8 +1774,11 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p()->buff.pressure_point->check() )
-      c += p()->buff.pressure_point->check_value();
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.pressure_point->check() )
+        c += p()->buff.pressure_point->check_value();
+    }
 
     return c;
   }
@@ -1781,12 +1787,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::execute();
 
-    if ( p()->buff.thunder_focus_tea->up() )
+    if ( p()->specialization() == MONK_MISTWEAVER )
     {
-      p()->cooldown.rising_sun_kick->adjust(
+      if ( p()->buff.thunder_focus_tea->up() )
+      {
+        p()->cooldown.rising_sun_kick->adjust(
           p()->talent.mistweaver.thunder_focus_tea->effectN( 1 ).time_value(), true );
 
-      p()->buff.thunder_focus_tea->decrement();
+        p()->buff.thunder_focus_tea->decrement();
+      }
     }
   }
 
@@ -1794,19 +1803,26 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::impact( s );
 
-    if ( result_is_hit( s->result ) )
+    if ( !result_is_hit( s->result ) )
+      return;
+
+    if ( p()->specialization() == MONK_MISTWEAVER )
     {
       if ( p()->buff.teachings_of_the_monastery->up() )
       {
         p()->buff.teachings_of_the_monastery->expire();
+
         // Spirit of the Crane does not have a buff associated with it. Since
         // this is tied with Teachings of the Monastery, tacking
         // this onto the removal of that buff.
         if ( p()->talent.mistweaver.spirit_of_the_crane->ok() )
           p()->resource_gain( RESOURCE_MANA,
-              ( p()->resources.max[ RESOURCE_MANA ] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
-              p()->gain.spirit_of_the_crane );
+            ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
+            p()->gain.spirit_of_the_crane );
       }
+    }
+    else if ( p()->specialization() == MONK_WINDWALKER )
+    {
 
       if ( p()->talent.windwalker.transfer_the_power->ok() )
         p()->buff.transfer_the_power->trigger();
@@ -1862,8 +1878,11 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     double c = monk_melee_attack_t::cost();
 
-    if ( p()->buff.weapons_of_order_ww->check() )
-      c += p()->buff.weapons_of_order_ww->check_value();  // saved as -1
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.weapons_of_order_ww->check() )
+        c += p()->buff.weapons_of_order_ww->check_value();  // saved as -1
+    }
 
     if ( c < 0 )
       c = 0;
@@ -1875,13 +1894,16 @@ struct rising_sun_kick_t : public monk_melee_attack_t
   {
     monk_melee_attack_t::consume_resource();
 
-    // Register how much chi is saved without actually refunding the chi
-    if ( p()->buff.serenity->up() )
+    if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.weapons_of_order_ww->up() )
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] + p()->buff.weapons_of_order_ww->value() );
-      else
-        p()->gain.serenity->add( RESOURCE_CHI, base_costs[ RESOURCE_CHI ] );
+      // Register how much chi is saved without actually refunding the chi
+      if ( p()->buff.serenity->up() )
+      {
+        if ( p()->buff.weapons_of_order_ww->up() )
+          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] + p()->buff.weapons_of_order_ww->value() );
+        else
+          p()->gain.serenity->add( RESOURCE_CHI, base_costs[RESOURCE_CHI] );
+      }
     }
   }
 
@@ -1892,29 +1914,32 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack->set_target( target );
     trigger_attack->execute();
 
-    if ( p()->talent.windwalker.glory_of_the_dawn->ok() && 
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->talent.windwalker.glory_of_the_dawn->ok() &&
         rng().roll( p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).percent() ) )
-    {
+      {
         // TODO check if the damage values are being applied correctly
-      gotd->target = p()->target;
-      gotd->execute();
+        gotd->target = p()->target;
+        gotd->execute();
+      }
+
+      if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
+      {
+        if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
+          p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
+        else
+          p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
+
+        p()->buff.whirling_dragon_punch->trigger();
+      }
+
+      if ( p()->talent.windwalker.transfer_the_power->ok() )
+        p()->buff.transfer_the_power->trigger();
+
+      if ( p()->buff.weapons_of_order->up() )
+        p()->buff.weapons_of_order_ww->trigger();
     }
-
-    if ( p()->talent.windwalker.whirling_dragon_punch->ok() && p()->cooldown.fists_of_fury->down() )
-    {
-      if ( this->cooldown_duration() <= p()->cooldown.fists_of_fury->remains() )
-        p()->buff.whirling_dragon_punch->set_duration( this->cooldown_duration() );
-      else
-        p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.fists_of_fury->remains() );
-
-      p()->buff.whirling_dragon_punch->trigger();
-    }
-
-    if ( p()->talent.windwalker.transfer_the_power->ok() )
-      p()->buff.transfer_the_power->trigger();
-
-    if ( p()->specialization() == MONK_WINDWALKER && p()->buff.weapons_of_order->up() )
-      p()->buff.weapons_of_order_ww->trigger();
   }
 };
 
@@ -5089,8 +5114,8 @@ struct faeline_stomp_t : public monk_spell_t
   faeline_stomp_t( monk_t& p, util::string_view options_str )
       : monk_spell_t( "faeline_stomp", &p,
           (p.covenant.night_fae->ok() ? p.covenant.night_fae :
-              (p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp : 
-                  ( p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp
+              ( p.talent.mistweaver.faeline_stomp && p.talent.mistweaver.faeline_stomp->ok() ? p.talent.mistweaver.faeline_stomp : 
+                  ( p.talent.windwalker.faeline_stomp && p.talent.windwalker.faeline_stomp->ok() ? p.talent.windwalker.faeline_stomp
                                                                               : spell_data_t::nil() ) ) ) ),
       damage( new faeline_stomp_damage_t( p ) ),
       heal( new faeline_stomp_heal_t( p ) ),
