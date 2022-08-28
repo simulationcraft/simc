@@ -6761,7 +6761,10 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.hailstorm->check() )
     {
-      t += p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
+      // TODO: Note, buff max stack in client data is still 5, so this will be 2 for now. The bonus
+      // targets is now hardcoded into the tooltip instead of being extractable from client data
+      // directly.
+      t += p()->buff.hailstorm->check() / 2;
     }
 
     if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
@@ -10201,7 +10204,8 @@ void shaman_t::create_buffs()
   buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+                            ->set_max_stack( 10 ); // TODO: Fix hardcoding when client data updates
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
