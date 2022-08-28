@@ -250,7 +250,6 @@ struct shaman_td_t : public actor_target_data_t
 
     // Enhancement
     buff_t* lashing_flames;
-    buff_t* primal_primer;
   } debuff;
 
   struct heals
@@ -769,7 +768,6 @@ public:
     player_talent_t raging_maelstrom;
     player_talent_t feral_lunge;
     player_talent_t primal_lava_actuators;
-    player_talent_t primal_primer; // TODO: Proc ordering & such
     // Row 5
     player_talent_t doom_winds;
     player_talent_t sundering;
@@ -1269,8 +1267,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
   debuff.lashing_flames = make_buff( *this, "lashing_flames", spell_data_t::not_found() );
-  debuff.primal_primer  = make_buff( *this, "primal_primer", p->find_spell( 273006 ) )
-    ->set_default_value( p->talent.primal_primer->effectN( 1 ).average( p ) / 2.0 );
 }
 
 // ==========================================================================
@@ -1701,7 +1697,6 @@ public:
   bool may_proc_hot_hand;
   bool may_proc_icy_edge;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
-  bool may_proc_primal_primer;
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
 
@@ -1715,7 +1710,6 @@ public:
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
       may_proc_icy_edge( false ),
       may_proc_ability_procs( true ),
-      may_proc_primal_primer( p->talent.primal_primer.ok() ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_mw( nullptr ),
@@ -1753,11 +1747,6 @@ public:
     if ( may_proc_maelstrom_weapon )
     {
       may_proc_maelstrom_weapon = ab::weapon != nullptr;
-    }
-
-    if ( may_proc_primal_primer )
-    {
-      may_proc_primal_primer = ab::weapon != nullptr;
     }
 
     may_proc_lightning_shield = ab::weapon != nullptr;
@@ -1818,11 +1807,6 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
-
-    if ( may_proc_primal_primer )
-    {
-      td( execute_state->target )->debuff.primal_primer->trigger();
-    }
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3675,15 +3659,6 @@ struct lava_lash_t : public shaman_attack_t
     return m;
   }
 
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double bonus = shaman_attack_t::bonus_da( state );
-
-    bonus += td( state->target )->debuff.primal_primer->stack_value();
-
-    return bonus;
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
     double tc = shaman_attack_t::composite_target_crit_chance( target );
@@ -3701,7 +3676,6 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->buff.primal_lava_actuators->expire();
-    td( execute_state->target )->debuff.primal_primer->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -9024,7 +8998,6 @@ void shaman_t::init_spells()
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.feral_lunge = _ST( "Feral Lunge" );
   talent.primal_lava_actuators = _ST( "Primal Lava Actuators" );
-  talent.primal_primer = _ST( "Primal Primer" );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
