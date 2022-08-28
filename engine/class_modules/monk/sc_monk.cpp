@@ -5756,6 +5756,16 @@ struct gift_of_the_ox_t : public monk_heal_t
     return p()->buff.gift_of_the_ox->check();
   }
 
+  double action_multiplier() const override
+  {
+    double am = monk_heal_t::action_multiplier();
+
+    if ( p()->talent.brewmaster.gift_of_the_ox->ok() )
+      am *= p()->talent.brewmaster.gift_of_the_ox->effectN( 2 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     monk_heal_t::execute();
