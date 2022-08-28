@@ -5941,8 +5941,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     parse_options( options_str );
     harmful = false;
-
-    cooldown->duration += player->talent.elemental_spirits->effectN( 1 ).time_value();
   }
 
   void init() override
