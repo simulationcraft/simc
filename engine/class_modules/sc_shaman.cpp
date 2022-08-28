@@ -10222,8 +10222,7 @@ void shaman_t::create_buffs()
       cooldown.lava_lash->adjust_recharge_multiplier();
     } );*/
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
-  buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
-                          ->set_max_stack( find_spell( 201846 )->initial_stacks() );
+  buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
