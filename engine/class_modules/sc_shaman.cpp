@@ -779,6 +779,7 @@ public:
     player_talent_t fire_nova;
     player_talent_t hailstorm;
     player_talent_t elemental_weapons;
+    player_talent_t crashing_storms;
     // Row 6
     player_talent_t stormbringer;
     player_talent_t crash_lightning;
@@ -9032,6 +9033,7 @@ void shaman_t::init_spells()
   talent.fire_nova = _ST( "Fire Nova" );
   talent.hailstorm = _ST( "Hailstorm" );
   talent.elemental_weapons = _ST( "Elemental Weapons" );
+  talent.crashing_storms = _ST( "Crashing Storms" );
   // Row 6
   talent.stormbringer = _ST( "Stormbringer" );
   talent.crash_lightning = _ST( "Crash Lightning" );
@@ -10510,6 +10512,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity );
+  action.apply_affecting_aura( talent.crashing_storms );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
