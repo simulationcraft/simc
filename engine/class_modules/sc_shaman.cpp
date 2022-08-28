@@ -250,7 +250,6 @@ struct shaman_td_t : public actor_target_data_t
 
     // Enhancement
     buff_t* lashing_flames;
-    buff_t* primal_primer;
   } debuff;
 
   struct heals
@@ -377,6 +376,8 @@ public:
     action_t* flame_shock;
 
     action_t* lightning_rod;
+    action_t* stormblast;
+    action_t* stormblast_oh;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -767,7 +768,6 @@ public:
     player_talent_t raging_maelstrom;
     player_talent_t feral_lunge;
     player_talent_t primal_lava_actuators;
-    player_talent_t primal_primer; // TODO: Proc ordering & such
     // Row 5
     player_talent_t doom_winds;
     player_talent_t sundering;
@@ -777,13 +777,14 @@ public:
     player_talent_t fire_nova;
     player_talent_t hailstorm;
     player_talent_t elemental_weapons;
+    player_talent_t crashing_storms;
     // Row 6
     player_talent_t stormbringer;
     player_talent_t crash_lightning;
     player_talent_t stormflurry;
     player_talent_t ice_strike;
     // Row 7
-    player_talent_t improved_stormbringer; // TODO: NYI
+    player_talent_t stormblast;
     player_talent_t gathering_storms;
     player_talent_t chain_lightning2;
     player_talent_t hot_hand;
@@ -1266,8 +1267,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
   debuff.lashing_flames = make_buff( *this, "lashing_flames", spell_data_t::not_found() );
-  debuff.primal_primer  = make_buff( *this, "primal_primer", p->find_spell( 273006 ) )
-    ->set_default_value( p->talent.primal_primer->effectN( 1 ).average( p ) / 2.0 );
 }
 
 // ==========================================================================
@@ -1698,7 +1697,6 @@ public:
   bool may_proc_hot_hand;
   bool may_proc_icy_edge;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
-  bool may_proc_primal_primer;
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
 
@@ -1712,7 +1710,6 @@ public:
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
       may_proc_icy_edge( false ),
       may_proc_ability_procs( true ),
-      may_proc_primal_primer( p->talent.primal_primer.ok() ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
       proc_mw( nullptr ),
@@ -1750,11 +1747,6 @@ public:
     if ( may_proc_maelstrom_weapon )
     {
       may_proc_maelstrom_weapon = ab::weapon != nullptr;
-    }
-
-    if ( may_proc_primal_primer )
-    {
-      may_proc_primal_primer = ab::weapon != nullptr;
     }
 
     may_proc_lightning_shield = ab::weapon != nullptr;
@@ -1815,11 +1807,6 @@ public:
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
     p()->trigger_icy_edge( state );
-
-    if ( may_proc_primal_primer )
-    {
-      td( execute_state->target )->debuff.primal_primer->trigger();
-    }
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3049,6 +3036,16 @@ struct storm_elemental_t : public primal_elemental_t
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
+struct stormblast_t : public spell_t
+{
+  stormblast_t( shaman_t* p, util::string_view name ) :
+    spell_t( name, p, p->find_spell( 390287 ) )
+  {
+    background = may_crit = callbacks = false;
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct lightning_rod_damage_t : public shaman_spell_t
 {
   lightning_rod_damage_t( shaman_t* p ) :
@@ -3246,6 +3243,18 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( execute_state->result ) )
+    {
+      auto sb = weapon->slot == SLOT_MAIN_HAND
+        ? p()->action.stormblast
+        : p()->action.stormblast_oh;
+
+      sb->base_dd_min = sb->base_dd_max =
+        p()->talent.stormblast->effectN( 1 ).percent() * execute_state->result_amount;
+      sb->set_target( execute_state->target );
+      sb->execute();
+    }
 
     stormflurry = false;
     stormbringer = false;
@@ -3650,15 +3659,6 @@ struct lava_lash_t : public shaman_attack_t
     return m;
   }
 
-  double bonus_da( const action_state_t* state ) const override
-  {
-    double bonus = shaman_attack_t::bonus_da( state );
-
-    bonus += td( state->target )->debuff.primal_primer->stack_value();
-
-    return bonus;
-  }
-
   double composite_target_crit_chance( player_t* target ) const override
   {
     double tc = shaman_attack_t::composite_target_crit_chance( target );
@@ -3676,7 +3676,6 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->buff.primal_lava_actuators->expire();
-    td( execute_state->target )->debuff.primal_primer->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -3950,14 +3949,15 @@ struct stormstrike_base_t : public shaman_attack_t
 
     p()->buff.gathering_storms->decrement();
 
-    make_event( sim, 0_s, [ this ]() {
-      if ( p()->talent.elemental_assault->ok() && !stormflurry )
-      {
+    if ( p()->talent.elemental_assault.ok() && !stormflurry &&
+        p()->rng().roll( p()->talent.elemental_assault->effectN( 3 ).percent() ) )
+    {
+      make_event( sim, 0_s, [ this ]() {
         p()->buff.maelstrom_weapon->trigger(
           p()->talent.elemental_assault->effectN( 2 ).base_value() );
         p()->proc.maelstrom_weapon_ea->occur();
-      }
-    } );
+      } );
+    }
 
     p()->buff.legacy_of_the_frost_witch->expire();
   }
@@ -4284,11 +4284,6 @@ struct crash_lightning_t : public shaman_attack_t
     }
 
     p()->buff.cl_crash_lightning->expire();
-
-    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
-    {
-      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
-    }
   }
 };
 
@@ -4791,6 +4786,11 @@ struct chain_lightning_t : public chained_base_t
     p()->trigger_flash_of_lightning();
     p()->buff.power_of_the_maelstrom->decrement();
     p()->buff.surge_of_power->expire();
+
+    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    {
+      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5941,8 +5941,6 @@ struct feral_spirit_spell_t : public shaman_spell_t
   {
     parse_options( options_str );
     harmful = false;
-
-    cooldown->duration += player->talent.elemental_spirits->effectN( 1 ).time_value();
   }
 
   void init() override
@@ -6761,7 +6759,10 @@ struct frost_shock_t : public shaman_spell_t
 
     if ( p()->buff.hailstorm->check() )
     {
-      t += p()->buff.hailstorm->check();  // The initial cast, plus an extra target for each stack
+      // TODO: Note, buff max stack in client data is still 5, so this will be 2 for now. The bonus
+      // targets is now hardcoded into the tooltip instead of being extractable from client data
+      // directly.
+      t += p()->buff.hailstorm->check() / 2;
     }
 
     if ( p() ->buff.icefury->up() && p()->talent.electrified_shocks->ok() )
@@ -8819,6 +8820,12 @@ void shaman_t::create_actions()
     action.lightning_rod = new lightning_rod_damage_t( this );
   }
 
+  if ( talent.stormblast.ok() )
+  {
+    action.stormblast = new stormblast_t( this, "stormblast_mh" );
+    action.stormblast_oh = new stormblast_t( this, "stormblast_oh" );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -8992,7 +8999,6 @@ void shaman_t::init_spells()
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.feral_lunge = _ST( "Feral Lunge" );
   talent.primal_lava_actuators = _ST( "Primal Lava Actuators" );
-  talent.primal_primer = _ST( "Primal Primer" );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
@@ -9002,13 +9008,14 @@ void shaman_t::init_spells()
   talent.fire_nova = _ST( "Fire Nova" );
   talent.hailstorm = _ST( "Hailstorm" );
   talent.elemental_weapons = _ST( "Elemental Weapons" );
+  talent.crashing_storms = _ST( "Crashing Storms" );
   // Row 6
   talent.stormbringer = _ST( "Stormbringer" );
   talent.crash_lightning = _ST( "Crash Lightning" );
   talent.stormflurry = _ST( "Stormflurry" );
   talent.ice_strike = _ST( "Ice Strike" );
   // Row 7
-  talent.improved_stormbringer = _ST( "Improvd Stormbringer" ); // TODO: Typo in trait data
+  talent.stormblast = _ST( "Stormblast" );
   talent.gathering_storms = _ST( "Gathering Storms" );
   talent.chain_lightning2 = _ST( "Chain Lightning" );
   talent.hot_hand = _ST( "Hot Hand" );
@@ -10192,11 +10199,11 @@ void shaman_t::create_buffs()
       cooldown.lava_lash->adjust_recharge_multiplier();
     } );*/
   buff.spirit_walk  = make_buff( this, "spirit_walk", talent.spirit_walk );
-  buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) )
-                          ->set_max_stack( find_spell( 201846 )->initial_stacks() );
+  buff.stormbringer = make_buff( this, "stormbringer", find_spell( 201846 ) );
   buff.maelstrom_weapon = new maelstrom_weapon_buff_t( this );
   buff.hailstorm        = make_buff( this, "hailstorm", find_spell( 334196 ) )
-                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
+                            ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+                            ->set_max_stack( 10 ); // TODO: Fix hardcoding when client data updates
   buff.static_accumulation = make_buff( this, "static_accumulation", find_spell( 384437 ) )
     ->set_default_value( talent.static_accumulation->effectN( 1 ).base_value() )
     ->set_tick_callback( [ this ]( buff_t* b, int, timespan_t ) {
@@ -10481,6 +10488,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity );
+  action.apply_affecting_aura( talent.crashing_storms );
 }
 
 // shaman_t::generate_bloodlust_options =====================================

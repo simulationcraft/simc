@@ -1650,6 +1650,7 @@ class SpellDataGenerator(DataGenerator):
           ( 354648, 0 ),                                # Runeforged Legendary: Splintered Elements
           ( 222251, 0 ),                                # Improved Stormbringer damage
           ( 381725, 0 ), ( 298765, 0 ),                 # Mountains Will Fall Earth Shock and Earthquake Overload
+          ( 390287, 0 ),                                # Improved Stormbringer damage spell
         ),
 
         # Mage:
