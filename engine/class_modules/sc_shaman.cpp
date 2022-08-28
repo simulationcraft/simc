@@ -4308,11 +4308,6 @@ struct crash_lightning_t : public shaman_attack_t
     }
 
     p()->buff.cl_crash_lightning->expire();
-
-    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
-    {
-      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
-    }
   }
 };
 
@@ -4815,6 +4810,11 @@ struct chain_lightning_t : public chained_base_t
     p()->trigger_flash_of_lightning();
     p()->buff.power_of_the_maelstrom->decrement();
     p()->buff.surge_of_power->expire();
+
+    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    {
+      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+    }
   }
 
   void impact( action_state_t* state ) override
