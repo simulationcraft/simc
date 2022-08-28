@@ -1711,7 +1711,7 @@ struct dragonrage_t : public evoker_spell_t
   {
     dragonrage_damage_t( evoker_t* p ) : pyre_t( p, "dragonrage_pyre", p->talent.dragonrage->effectN( 2 ).trigger() )
     {
-      name_str_reporting = "Pyre";
+      name_str_reporting = "pyre";
       s_data_reporting   = p->talent.pyre;
 
       // spell has 30yd range but the effect to launch pyre only has 25yd
@@ -1739,6 +1739,11 @@ struct dragonrage_t : public evoker_spell_t
   {
     damage = p->get_secondary_action<dragonrage_damage_t>( "dragonrage_pyre" );
     add_child( damage );
+  }
+
+  school_e get_school() const override
+  {
+    return damage->school;
   }
 
   void execute() override
