@@ -457,7 +457,8 @@ public:
       player_talent_t strength_of_spirit;
       player_talent_t gai_plins_imperial_brew;
       player_talent_t fundamental_observation;
-      player_talent_t face_palm;
+      player_talent_t shadowboxing_treads;
+      player_talent_t fluidity_of_motion;
       // Row 7
       player_talent_t scalding_brew;
       player_talent_t salsalabims_strength;
@@ -468,8 +469,7 @@ public:
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
       player_talent_t shocking_brew;
-      player_talent_t shadowboxing_treads;
-      player_talent_t fluidity_of_motion;
+      player_talent_t face_palm;
       // 20 Required
       // Row 8
       player_talent_t dragonfire_brew;

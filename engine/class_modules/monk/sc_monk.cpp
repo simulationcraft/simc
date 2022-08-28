@@ -7654,19 +7654,19 @@ void monk_t::init_spells()
       talent.brewmaster.strength_of_spirit      = _ST( "Strength of Spirit" );
       talent.brewmaster.gai_plins_imperial_brew = _ST( "Gai Plin's Imperial Brew" );
       talent.brewmaster.fundamental_observation = _ST( "Fundamental Observation" );
-      talent.brewmaster.face_palm               = _ST( "Face Palm" );
-      // Row 7
-      talent.brewmaster.scalding_brew           = _ST( "Scalding Brew" );
-      talent.brewmaster.salsalabims_strength    = _ST( "Sal'salabim's Strength" );
-      talent.brewmaster.fortifying_brew_stagger = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
-      talent.brewmaster.black_ox_brew           = _ST( "Black OOx Brew" );
-      talent.brewmaster.bob_and_weave           = _ST( "Bob and Weave" );
-      talent.brewmaster.invoke_niuzao_the_black_ox = _ST( "Invoke Niuzao, the Black Ox" );
-      talent.brewmaster.light_brewing           = _ST( "Light Brewing" );
-      talent.brewmaster.training_of_niuzao      = _ST( "Training of Niuzao" );
-      talent.brewmaster.shocking_brew           = _ST( "Shoocking Blow" );
-      talent.brewmaster.shadowboxing_treads     = find_talent_spell(talent_tree::SPECIALIZATION, 387638);
+      talent.brewmaster.shadowboxing_treads     = find_talent_spell( talent_tree::SPECIALIZATION, 387638 );
       talent.brewmaster.fluidity_of_motion      = _ST( "Fluidity of Motion" );
+      // Row 7
+      talent.brewmaster.scalding_brew              = _ST( "Scalding Brew" );
+      talent.brewmaster.salsalabims_strength       = _ST( "Sal'salabim's Strength" );
+      talent.brewmaster.fortifying_brew_stagger    = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
+      talent.brewmaster.black_ox_brew              = _ST( "Black OOx Brew" );
+      talent.brewmaster.bob_and_weave              = _ST( "Bob and Weave" );
+      talent.brewmaster.invoke_niuzao_the_black_ox = _ST( "Invoke Niuzao, the Black Ox" );
+      talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
+      talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
+      talent.brewmaster.shocking_brew              = _ST( "Shoocking Blow" );
+      talent.brewmaster.face_palm                  = _ST( "Face Palm" );
       // Row 8
       talent.brewmaster.dragonfire_brew         = _ST( "Dragonfire Brew" );
       talent.brewmaster.charred_passions        = _ST( "Charred Passions" );
