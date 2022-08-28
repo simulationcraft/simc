@@ -377,6 +377,8 @@ public:
     action_t* flame_shock;
 
     action_t* lightning_rod;
+    action_t* stormblast;
+    action_t* stormblast_oh;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -783,7 +785,7 @@ public:
     player_talent_t stormflurry;
     player_talent_t ice_strike;
     // Row 7
-    player_talent_t improved_stormbringer; // TODO: NYI
+    player_talent_t stormblast;
     player_talent_t gathering_storms;
     player_talent_t chain_lightning2;
     player_talent_t hot_hand;
@@ -3049,6 +3051,16 @@ struct storm_elemental_t : public primal_elemental_t
 // Shaman Secondary Spells / Attacks
 // ==========================================================================
 
+struct stormblast_t : public spell_t
+{
+  stormblast_t( shaman_t* p, util::string_view name ) :
+    spell_t( name, p, p->find_spell( 390287 ) )
+  {
+    background = may_crit = callbacks = false;
+    snapshot_flags = update_flags = 0;
+  }
+};
+
 struct lightning_rod_damage_t : public shaman_spell_t
 {
   lightning_rod_damage_t( shaman_t* p ) :
@@ -3246,6 +3258,18 @@ struct stormstrike_attack_t : public shaman_attack_t
   void execute() override
   {
     shaman_attack_t::execute();
+
+    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( execute_state->result ) )
+    {
+      auto sb = weapon->slot == SLOT_MAIN_HAND
+        ? p()->action.stormblast
+        : p()->action.stormblast_oh;
+
+      sb->base_dd_min = sb->base_dd_max =
+        p()->talent.stormblast->effectN( 1 ).percent() * execute_state->result_amount;
+      sb->set_target( execute_state->target );
+      sb->execute();
+    }
 
     stormflurry = false;
     stormbringer = false;
@@ -8819,6 +8843,12 @@ void shaman_t::create_actions()
     action.lightning_rod = new lightning_rod_damage_t( this );
   }
 
+  if ( talent.stormblast.ok() )
+  {
+    action.stormblast = new stormblast_t( this, "stormblast_mh" );
+    action.stormblast_oh = new stormblast_t( this, "stormblast_oh" );
+  }
+
   // Generic Actions
   action.flame_shock = new flame_shock_t( this );
   action.flame_shock->background = true;
@@ -9008,7 +9038,7 @@ void shaman_t::init_spells()
   talent.stormflurry = _ST( "Stormflurry" );
   talent.ice_strike = _ST( "Ice Strike" );
   // Row 7
-  talent.improved_stormbringer = _ST( "Improvd Stormbringer" ); // TODO: Typo in trait data
+  talent.stormblast = _ST( "Stormblast" );
   talent.gathering_storms = _ST( "Gathering Storms" );
   talent.chain_lightning2 = _ST( "Chain Lightning" );
   talent.hot_hand = _ST( "Hot Hand" );
