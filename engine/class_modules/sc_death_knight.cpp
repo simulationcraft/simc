@@ -5469,6 +5469,11 @@ struct death_coil_t : public death_knight_spell_t
 
     execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
     execute_action -> stats = stats;
+
+    if ( p -> talent.unholy.improved_death_coil.ok() )
+    {
+      aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
+    }
   }
 
   double cost() const override
@@ -5510,7 +5515,7 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> legendary.deadliest_coil -> effectN( 2 ).base_value() ) );
     }
 	
-	  if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
+	if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
     {
       p() -> buffs.dark_transformation -> extend_duration( p(),
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
@@ -5521,22 +5526,22 @@ struct death_coil_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
-    death_knight_spell_t::impact(state);
+      death_knight_spell_t::impact( state );
 
-    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( execute_state -> result) )
     {
-      get_td( state -> target ) -> debuff.death_rot -> trigger();
+      get_td( execute_state -> target ) -> debuff.death_rot -> trigger();
       
       if ( p() -> buffs.sudden_doom -> check() )
       {
-        get_td( state -> target ) -> debuff.death_rot -> trigger();
+        get_td( execute_state -> target ) -> debuff.death_rot -> trigger();
       }
     }
 
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
-         result_is_hit( execute_state->result ) )
+         result_is_hit( execute_state -> result ) )
     {
-      get_td( state -> target ) -> debuff.rotten_touch -> trigger();
+      get_td( execute_state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
 };
