@@ -957,6 +957,7 @@ public:
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* rotten_touch_debuff;
     const spell_data_t* death_rot_debuff;
+    const spell_data_t* coil_of_devastation_debuff;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -982,6 +983,10 @@ public:
     const spell_data_t* shadow_bolt;
     // Commander of the Dead Talent
     const spell_data_t* commander_of_the_dead;
+    // Ruptured Viscera Talent
+    const spell_data_t* ruptured_viscera;
+    // Ghoulish Frenzy
+    const spell_data_t* ghoulish_frenzy;
   } pet_spell;
 
   // RPPM
@@ -2304,7 +2309,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
 	  
-	  ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell (377587 ) )
+	  ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
 	  -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
   }
@@ -2330,7 +2335,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   struct ruptured_viscera_t : public pet_spell_t<army_ghoul_pet_t>
   {
     ruptured_viscera_t( army_ghoul_pet_t* p ) :
-      pet_spell_t( p, "ruptured_viscera", p -> dk() -> find_spell( 390220 ) )
+      pet_spell_t( p, "ruptured_viscera", p -> dk() -> pet_spell.ruptured_viscera )
     {
       aoe = -1;
       background = true;
@@ -5394,9 +5399,9 @@ struct coil_of_devastation_t : public residual_action::residual_periodic_action_
 {
   coil_of_devastation_t( death_knight_t* p )
     : residual_action::residual_periodic_action_t<death_knight_spell_t>( "coil_of_devastation", p,
-                                                                         p->find_spell( 253367 ) )
+                                                                         p -> spell.coil_of_devastation_debuff )
   {
-    background = true;
+    background = dual = true;
     may_miss = may_crit = false;
   }
 };
@@ -5407,16 +5412,15 @@ struct death_coil_damage_t : public death_knight_spell_t
   death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->find_spell( 47632 ) ), coil_of_devastation( nullptr )
   {
     background = dual = true;
-
-    if ( p->talent.unholy.coil_of_devastation.ok() )
-    {
-      coil_of_devastation = new coil_of_devastation_t( p );
-      add_child( coil_of_devastation );
-    }
     
     if ( p -> talent.unholy.improved_death_coil.ok() )
     {
       aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
+    }
+
+    if ( p -> talent.unholy.coil_of_devastation.ok() )
+    {
+      coil_of_devastation = new coil_of_devastation_t( p );
     }
   }
 
@@ -5452,11 +5456,6 @@ struct death_coil_damage_t : public death_knight_spell_t
       residual_action::trigger( coil_of_devastation, state -> target,
                                 state -> result_amount * p() -> talent.unholy.coil_of_devastation->effectN( 1 ).percent() );
     }
-
-    if ( p() -> talent.unholy.rotten_touch.ok() && result_is_hit( state -> result ) )
-    {
-      get_td( state -> target ) -> debuff.rotten_touch -> trigger();
-    }
   }
 };
 
@@ -5469,7 +5468,7 @@ struct death_coil_t : public death_knight_spell_t
     parse_options( options_str );
 
     execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    execute_action->stats = stats;
+    execute_action -> stats = stats;
   }
 
   double cost() const override
@@ -5481,7 +5480,7 @@ struct death_coil_t : public death_knight_spell_t
 
     if ( p() -> legendary.deadliest_coil.ok() )
     {
-      cost += (p() -> legendary.deadliest_coil->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
+      cost += ( p() -> legendary.deadliest_coil->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) );
     }
 
     return cost;
@@ -5522,6 +5521,8 @@ struct death_coil_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
+    death_knight_spell_t::impact(state);
+
     if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
     {
       get_td( state -> target ) -> debuff.death_rot -> trigger();
@@ -7569,16 +7570,6 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
     if ( p() -> talent.unholy.plaguebringer.ok() )
     {
       p()->buffs.plaguebringer->trigger();
-    }
-
-    if ( p()->talent.unholy.feasting_strikes.ok() )
-    {
-      if ( rng().roll( p()->find_spell( 390161 )->effectN( 1 ).percent() ) )
-      {
-        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
-
-        p()->replenish_rune( gains, p()->gains.feasting_strikes );
-      }
     }
   }
 
@@ -10013,6 +10004,7 @@ void death_knight_t::init_spells()
   spell.festering_wound_debuff = find_spell( 194310 );
   spell.rotten_touch_debuff    = find_spell( 390276 );
   spell.death_rot_debuff       = find_spell( 377540 );
+  spell.coil_of_devastation_debuff = find_spell( 253367 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10032,6 +10024,10 @@ void death_knight_t::init_spells()
   pet_spell.shadow_bolt      = find_spell( 317791 );
   // Commander of the Dead Talent
   pet_spell.commander_of_the_dead = find_spell( 215069 );
+  // Ruptured Viscera Talent
+  pet_spell.ruptured_viscera = find_spell( 390220 );
+  // Ghoulish Frenzy
+  pet_spell.ghoulish_frenzy = find_spell ( 377587 );
 
   // Shadowlands specific - Commented out = NYI
 
