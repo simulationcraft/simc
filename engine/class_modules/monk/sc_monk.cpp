@@ -920,6 +920,15 @@ struct monk_spell_t : public monk_action_t<spell_t>
     ap_type = attack_power_type::WEAPON_MAINHAND;
   }
 
+  bool ready() override
+  {
+    // Spell data nil or not_found
+    if ( data().id() == 0 )
+      return false;
+
+    return true;
+  }
+
   double composite_target_crit_chance( player_t* target ) const override
   {
     double c = base_t::composite_target_crit_chance( target );
@@ -1278,6 +1287,15 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
   {
     special    = true;
     may_glance = false;
+  }
+
+  bool ready() override
+  {
+    // Spell data nil or not_found
+    if ( data().id() == 0 )
+      return false;
+
+    return true;
   }
 
   void init_finished() override
@@ -4929,7 +4947,8 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
 struct weapons_of_order_t : public monk_spell_t
 {
   weapons_of_order_t( monk_t& p, util::string_view options_str )
-    : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian )
+    : monk_spell_t( "weapons_of_order", &p, p.covenant.kyrian->ok() ? p.covenant.kyrian :
+                                            (p.talent.brewmaster.weapons_of_order && p.talent.brewmaster.weapons_of_order->ok() ? p.talent.brewmaster.weapons_of_order : spell_data_t::nil() ) )
   {
     parse_options( options_str );
     may_combo_strike            = true;
@@ -4986,8 +5005,8 @@ struct bountiful_brew_t : public monk_spell_t
 
   bountiful_brew_t( monk_t& p ) : monk_spell_t( "bountiful_brew", &p,
     ( p.legendary.bountiful_brew->ok() ? p.legendary.bountiful_brew :
-          ( p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew : 
-              ( p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
+          ( p.talent.brewmaster.bountiful_brew && p.talent.brewmaster.bountiful_brew->ok() ? p.talent.brewmaster.bountiful_brew :
+              ( p.talent.mistweaver.bountiful_brew && p.talent.mistweaver.bountiful_brew->ok() ? p.talent.mistweaver.bountiful_brew
                                                                                : nullptr ) ) ) )
       // TODO: convert nullptr to spell_data_t::nil() once legendary bountiful brew is removed
   {
@@ -5032,9 +5051,9 @@ struct bountiful_brew_t : public monk_spell_t
     {
         if ( p()->legendary.bountiful_brew->ok() )
             lead_by_example->trigger( p()->legendary.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.brewmaster.bountiful_brew->ok())
+        else if ( p()->talent.brewmaster.bountiful_brew->ok() )
             lead_by_example->trigger( p()->talent.brewmaster.bountiful_brew->effectN( 1 ).time_value() );
-        else if ( p()->talent.mistweaver.bountiful_brew->ok())
+        else if ( p()->talent.mistweaver.bountiful_brew->ok() )
             lead_by_example->trigger( p()->talent.mistweaver.bountiful_brew->effectN( 1 ).time_value() );
     }
   }
@@ -5063,9 +5082,9 @@ struct bonedust_brew_t : public monk_spell_t
   bonedust_brew_t( monk_t& p, util::string_view options_str )
       : monk_spell_t( "bonedust_brew", &p,
           (p.covenant.necrolord->ok() ? p.covenant.necrolord :
-              (p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
-                  (p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew : 
-                      ( p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew
+              ( p.talent.brewmaster.bonedust_brew && p.talent.brewmaster.bonedust_brew->ok() ? p.talent.brewmaster.bonedust_brew :
+                  ( p.talent.mistweaver.bonedust_brew && p.talent.mistweaver.bonedust_brew->ok() ? p.talent.mistweaver.bonedust_brew :
+                      ( p.talent.windwalker.bonedust_brew && p.talent.windwalker.bonedust_brew->ok() ? p.talent.windwalker.bonedust_brew
                                                                             : spell_data_t::nil() ) ) ) ) )
   {
     parse_options( options_str );
@@ -5255,9 +5274,9 @@ struct faeline_stomp_t : public monk_spell_t
 
     if ( p.covenant.night_fae )
         aoe = (int)p.covenant.night_fae->effectN( 3 ).base_value();
-    else if ( p.talent.mistweaver.faeline_stomp->ok() )
+    else if ( p.specialization() == MONK_MISTWEAVER && p.talent.mistweaver.faeline_stomp->ok() )
         aoe = (int)p.talent.mistweaver.faeline_stomp->effectN( 3 ).base_value();
-    else if ( p.talent.windwalker.faeline_stomp->ok() )
+    else if ( p.specialization() == MONK_WINDWALKER && p.talent.windwalker.faeline_stomp->ok() )
         aoe = (int)p.talent.windwalker.faeline_stomp->effectN( 3 ).base_value();
 
     trigger_ww_t28_4p_potential = true;
@@ -7602,8 +7621,8 @@ void monk_t::init_spells()
     return find_talent_spell( talent_tree::CLASS, name );
   };
 
-  auto _ST = [ this ]( util::string_view name ) { 
-    return find_talent_spell( talent_tree::SPECIALIZATION, name ); 
+  auto _ST = [ this ]( util::string_view name ) {
+    return find_talent_spell( talent_tree::SPECIALIZATION, name );
   };
   
   // ========
