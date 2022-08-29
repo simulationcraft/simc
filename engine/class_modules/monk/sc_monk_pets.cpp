@@ -137,6 +137,10 @@ struct pet_melee_attack_t : public pet_action_base_t<melee_attack_t>
       case MONK_MISTWEAVER:
         base_t::apply_affecting_aura( p->o()->spec.mistweaver_monk );
         break;
+
+      default:
+        assert( 0 );
+        break;
     }
 
     if ( p->o()->main_hand_weapon.group() == weapon_e::WEAPON_1H )

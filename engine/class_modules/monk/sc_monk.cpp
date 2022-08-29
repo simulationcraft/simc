@@ -1077,6 +1077,10 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
         break;
 
+      case MONK_BREWMASTER:
+
+        break;
+
       default:
         assert( 0 );
         break;
@@ -2065,7 +2069,7 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
             ( p()->resources.max[RESOURCE_MANA] * p()->passives.spirit_of_the_crane->effectN( 1 ).percent() ),
             p()->gain.spirit_of_the_crane );
         break;
-      
+  
       case MONK_BREWMASTER:
 
         if ( p()->talent.brewmaster.staggering_strikes->ok() )
@@ -2074,6 +2078,10 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
           auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
           p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
         }
+        break;
+
+      case MONK_WINDWALKER:
+
         break;
 
       default:
@@ -2203,6 +2211,10 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_WINDWALKER:
         if ( p()->talent.windwalker.shadowboxing_treads->ok() )
           am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
+        break;
+
+      case MONK_MISTWEAVER:
+
         break;
 
       default:
@@ -2362,6 +2374,10 @@ struct blackout_kick_t : public monk_melee_attack_t
 
         if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
           p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
+
+        break;
+
+      case MONK_MISTWEAVER:
 
         break;
 
@@ -3465,6 +3481,10 @@ struct touch_of_death_t : public monk_melee_attack_t
 
         if ( p()->spec.touch_of_death_3_mw->ok() )
           p()->buff.touch_of_death_mw->trigger();
+
+        break;
+
+      case MONK_BREWMASTER:
 
         break;
 
@@ -7684,9 +7704,9 @@ void monk_t::init_spells()
       talent.brewmaster.scalding_brew              = _ST( "Scalding Brew" );
       talent.brewmaster.salsalabims_strength       = _ST( "Sal'salabim's Strength" );
       talent.brewmaster.fortifying_brew_stagger    = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
-      talent.brewmaster.black_ox_brew              = _ST( "Black OOx Brew" );
+      talent.brewmaster.black_ox_brew              = _ST( "Black Ox Brew" );
       talent.brewmaster.bob_and_weave              = _ST( "Bob and Weave" );
-      talent.brewmaster.invoke_niuzao_the_black_ox = _ST( "Invoke Niuzao, the Black Ox" );
+      talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
       talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
       talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
       talent.brewmaster.shocking_brew              = _ST( "Shoocking Blow" );
@@ -9530,10 +9550,15 @@ void monk_t::combat_begin()
   if ( specialization() == MONK_WINDWALKER )
   {
     if ( user_options.initial_chi > 0 )
-      resources.current[ RESOURCE_CHI ] =
-          clamp( as<double>( user_options.initial_chi + resources.current[ RESOURCE_CHI ] ), 0.0,
-                 resources.max[ RESOURCE_CHI ] );
-    sim->print_debug( "Combat starting chi has been set to {}", resources.current[ RESOURCE_CHI ] );
+    {
+      resources.current[RESOURCE_CHI] =
+        clamp( as<double>( user_options.initial_chi + resources.current[RESOURCE_CHI] ), 0.0,
+          resources.max[RESOURCE_CHI] );
+      sim->print_debug( "Combat starting chi has been set to {}", resources.current[RESOURCE_CHI] );
+    }
+
+    if ( talent.windwalker.power_strikes->ok() )
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () { buff.power_strikes->trigger(); } );
   }
 
   if ( specialization () == MONK_BREWMASTER )
@@ -9542,8 +9567,6 @@ void monk_t::combat_begin()
       buff.bladed_armor->trigger ();
   }
 
-  if ( talent.windwalker.power_strikes->ok() )
-      make_repeating_event( sim, talent.windwalker.power_strikes->effectN(1 ).period(), [this]() { buff.power_strikes->trigger(); } );
 }
 
 // monk_t::assess_damage ====================================================
