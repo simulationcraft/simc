@@ -958,6 +958,7 @@ public:
     const spell_data_t* rotten_touch_debuff;
     const spell_data_t* death_rot_debuff;
     const spell_data_t* coil_of_devastation_debuff;
+    const spell_data_t* feasting_strikes_gain;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -6055,13 +6056,13 @@ struct festering_strike_t : public death_knight_melee_attack_t
       p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_festering_strike );
     }
 
-    if ( p()->talent.unholy.feasting_strikes.ok() )
+    if ( p() -> talent.unholy.feasting_strikes.ok() )
     {
-      if ( rng().roll( p()->talent.unholy.feasting_strikes->effectN( 1 ).percent() ) )
+      if ( rng().roll( p() -> talent.unholy.feasting_strikes -> effectN( 1 ).percent() ) )
       {
-        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value(); // FIXME This needs to be cached
+        unsigned gains = p() -> spell.feasting_strikes_gain -> effectN( 1 ).base_value();
 
-        p()->replenish_rune( gains, p()->gains.feasting_strikes );
+        p() -> replenish_rune( gains, p() -> gains.feasting_strikes );
       }
     }
   }
@@ -10010,6 +10011,7 @@ void death_knight_t::init_spells()
   spell.rotten_touch_debuff    = find_spell( 390276 );
   spell.death_rot_debuff       = find_spell( 377540 );
   spell.coil_of_devastation_debuff = find_spell( 253367 );
+  spell.feasting_strikes_gain = find_spell( 390162 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
