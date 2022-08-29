@@ -5399,6 +5399,7 @@ struct coil_of_devastation_t : public residual_action::residual_periodic_action_
     may_miss = may_crit = false;
   }
 };
+
 struct death_coil_damage_t : public death_knight_spell_t
 {
   coil_of_devastation_t* coil_of_devastation;
@@ -6049,9 +6050,9 @@ struct festering_strike_t : public death_knight_melee_attack_t
 
     if ( p()->talent.unholy.feasting_strikes.ok() )
     {
-      if ( rng().roll( p()->find_spell(390161)->effectN( 1 ).percent() ) )
+      if ( rng().roll( p()->talent.unholy.feasting_strikes->effectN( 1 ).percent() ) )
       {
-        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value();
+        unsigned gains = p()->find_spell( 390162 )->effectN( 1 ).base_value(); // FIXME This needs to be cached
 
         p()->replenish_rune( gains, p()->gains.feasting_strikes );
       }
