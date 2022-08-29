@@ -1076,6 +1076,10 @@ struct monk_heal_t : public monk_action_t<heal_t>
         }
 
         break;
+
+      default:
+        assert( 0 );
+        break;
     }
 
     return am;
@@ -2025,6 +2029,10 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 
         trigger_shuffle( p()->spec.blackout_kick->effectN( 2 ).base_value() );
         break;
+
+      default:
+        assert( 0 );
+        break;
     }
 
     if ( p()->conduit.tumbling_technique->ok() &&
@@ -2066,6 +2074,10 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
           auto amount_cleared = p()->partial_clear_stagger_amount( ap * p()->talent.brewmaster.staggering_strikes->effectN( 2 ).percent() );
           p()->sample_datas.staggering_strikes_cleared->add( amount_cleared );
         }
+        break;
+
+      default:
+        assert( 0 );
         break;
     }
   }
@@ -2191,6 +2203,10 @@ struct blackout_kick_t : public monk_melee_attack_t
       case MONK_WINDWALKER:
         if ( p()->talent.windwalker.shadowboxing_treads->ok() )
           am *= 1 + p()->talent.windwalker.shadowboxing_treads->effectN( 2 ).percent();
+        break;
+
+      default:
+        assert( 0 );
         break;
     }
     return am;
@@ -2347,6 +2363,10 @@ struct blackout_kick_t : public monk_melee_attack_t
         if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
           p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
 
+        break;
+
+      default:
+        assert( 0 );
         break;
     }
 
@@ -3446,6 +3466,10 @@ struct touch_of_death_t : public monk_melee_attack_t
         if ( p()->spec.touch_of_death_3_mw->ok() )
           p()->buff.touch_of_death_mw->trigger();
 
+        break;
+
+      default:
+        assert( 0 );
         break;
     }
   }
@@ -10135,6 +10159,9 @@ void monk_t::apply_affecting_auras ( action_t& action )
       break;
     case MONK_MISTWEAVER:
       action.apply_affecting_aura ( spec.mistweaver_monk );
+      break;
+    default:
+      assert( 0 );
       break;
 }
 
