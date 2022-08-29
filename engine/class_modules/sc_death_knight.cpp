@@ -959,6 +959,9 @@ public:
     const spell_data_t* death_rot_debuff;
     const spell_data_t* coil_of_devastation_debuff;
     const spell_data_t* feasting_strikes_gain;
+    const spell_data_t* ghoulish_frenzy_player;
+    const spell_data_t* plaguebringer_buff;
+    const spell_data_t* festermight_buff;
 
     // T28 Blood 4pc
     const spell_data_t* endless_rune_waltz_4pc; // parry % chance and ICD
@@ -6009,7 +6012,7 @@ struct festering_wound_t : public death_knight_spell_t
     death_knight_spell_t::execute();
 
     p() -> resource_gain( RESOURCE_RUNIC_POWER,
-                        p()->find_spell( 197147 )->effectN( 1 ).trigger()->effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
+                        p() -> spec.festering_wound -> effectN( 1 ).trigger() -> effectN( 2 ).resource( RESOURCE_RUNIC_POWER ),
                         p() -> gains.festering_wound, this );
 
     if ( p() -> talent.unholy.replenishing_wounds.ok() )
@@ -8371,8 +8374,7 @@ struct endless_rune_waltz_duration_buff_t : public buff_t
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
-      // Talent wont always be selected when proccing runic corruption, spell lookup works as a fallback. 
-    buff_t( p, "runic_corruption", p -> find_spell( 51460 ) ) 
+    buff_t( p, "runic_corruption", p -> spell.runic_corruption ) 
   {
     // Runic Corruption refreshes to remaining time + buff duration
     refresh_behavior = buff_refresh_behavior::EXTEND;
@@ -10007,11 +10009,14 @@ void death_knight_t::init_spells()
   spell.piercing_chill_debuff       = find_spell( 377359 );
 
   // Unholy
-  spell.festering_wound_debuff = find_spell( 194310 );
-  spell.rotten_touch_debuff    = find_spell( 390276 );
-  spell.death_rot_debuff       = find_spell( 377540 );
+  spell.festering_wound_debuff     = find_spell( 194310 );
+  spell.rotten_touch_debuff        = find_spell( 390276 );
+  spell.death_rot_debuff           = find_spell( 377540 );
   spell.coil_of_devastation_debuff = find_spell( 253367 );
-  spell.feasting_strikes_gain = find_spell( 390162 );
+  spell.feasting_strikes_gain      = find_spell( 390162 );
+  spell.ghoulish_frenzy_player     = find_spell( 377587 );
+  spell.plaguebringer_buff         = find_spell( 390178 );
+  spell.festermight_buff           = find_spell( 377591 );
 
   // Pet abilities
   // Raise Dead abilities, used for both rank 1 and rank 2
@@ -10394,18 +10399,18 @@ void death_knight_t::create_buffs()
 
   buffs.unholy_blight = new unholy_blight_buff_t( this );
 
-  buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell( 377587 ) )
+  buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", spell.ghoulish_frenzy_player )
         -> add_invalidate( CACHE_ATTACK_SPEED )
         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.plaguebringer =
-      make_buff( this, "plaguebringer", find_spell( 390178 ) )
+      make_buff( this, "plaguebringer", spell.plaguebringer_buff )
           ->set_trigger_spell( talent.unholy.plaguebringer )
           ->set_cooldown( talent.unholy.plaguebringer->internal_cooldown() )
           ->set_default_value( talent.unholy.plaguebringer->effectN( 1 ).percent() )
           ->set_max_stack( 1 );
 
-  buffs.festermight = make_buff( this, "festermight", find_spell( 377591 ) )
+  buffs.festermight = make_buff( this, "festermight", spell.festermight_buff )
                           ->add_invalidate( CACHE_STRENGTH )
                           ->set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
                           ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
