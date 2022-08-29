@@ -2304,7 +2304,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
 	  
-	  ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell( 377587 ) )
+	  ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell (377587 ) )
 	    -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
   }
@@ -4900,8 +4900,8 @@ struct dark_transformation_buff_t : public buff_t
     if ( p -> legendary.frenzied_monstrosity -> ok() )
       debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> frenzied_monstrosity -> trigger();
 
-    if ( p->talent.unholy.ghoulish_frenzy.ok() )
-      debug_cast<pets::ghoul_pet_t*>( p->pets.ghoul_pet )->ghoulish_frenzy->trigger();
+    if ( p -> talent.unholy.ghoulish_frenzy.ok() )
+      debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> trigger();
 
     return buff_t::trigger( s, v, c, d );
   }
@@ -4912,7 +4912,7 @@ struct dark_transformation_buff_t : public buff_t
         -> pets.ghoul_pet ) -> frenzied_monstrosity -> expire();
 
     debug_cast<pets::ghoul_pet_t*>( debug_cast<death_knight_t*>( player )->pets.ghoul_pet )
-        ->ghoulish_frenzy->expire();
+        -> ghoulish_frenzy->expire();
   }
 };
 
@@ -4982,9 +4982,9 @@ struct dark_transformation_t : public death_knight_spell_t
         p() -> buffs.frenzied_monstrosity -> trigger();
       }
 
-      if ( p()->talent.unholy.ghoulish_frenzy.ok() )
+      if ( p() -> talent.unholy.ghoulish_frenzy.ok() )
       {
-        p()->buffs.ghoulish_frenzy->trigger();
+        p() -> buffs.ghoulish_frenzy -> trigger();
       }
 
       if ( p() -> talent.unholy.unholy_command.ok() )
@@ -10386,8 +10386,9 @@ void death_knight_t::create_buffs()
   buffs.unholy_blight = new unholy_blight_buff_t( this );
 
   buffs.ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", find_spell( 377587 ) )
-        ->add_invalidate( CACHE_ATTACK_SPEED )
-        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+        -> set_duration ( 15_s )
+        -> add_invalidate( CACHE_ATTACK_SPEED )
+        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.plaguebringer =
       make_buff( this, "plaguebringer", find_spell( 390178 ) )
@@ -10957,9 +10958,9 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
     m *= 1.0 + buffs.frenzied_monstrosity->data().effectN( 2 ).percent();
   }
 
-  if ( buffs.ghoulish_frenzy->up() )
+  if ( buffs.ghoulish_frenzy -> up() )
   {
-    m *= 1.0 + ( talent.unholy.ghoulish_frenzy->effectN( 2 ).base_value() / 100);
+    m *= 1.0 + ( talent.unholy.ghoulish_frenzy -> effectN( 2 ).base_value() / 100);
   }
 
   if ( buffs.final_sentence->up() &&
@@ -11073,7 +11074,7 @@ double death_knight_t::composite_melee_speed() const
     haste *= 1.0 / ( 1.0 + buffs.frenzied_monstrosity -> data().effectN( 1 ).percent() );
   }
 
-  if ( buffs.ghoulish_frenzy->up() )
+  if ( buffs.ghoulish_frenzy -> up() )
   {
     haste *= 1.0 / ( 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 1 ).percent() );
   }
