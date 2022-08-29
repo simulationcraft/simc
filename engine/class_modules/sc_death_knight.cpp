@@ -6007,7 +6007,7 @@ struct festering_wound_t : public death_knight_spell_t
     {
       p()->resource_gain(
           RESOURCE_RUNIC_POWER,
-          p()->find_spell( 377585 )->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
+          p()->talent.unholy.replenishing_wounds->effectN( 1 ).resource( RESOURCE_RUNIC_POWER ),
           p()->gains.replenishing_wounds, this );
     }
   }
@@ -9751,7 +9751,7 @@ void death_knight_t::init_spells()
 
   // Unholy Baselines
   spec.unholy_death_knight = find_specialization_spell( "Unholy Death Knight" );
-  spec.festering_wound     = find_spell( 194311 );
+  spec.festering_wound     = find_spell( 197147 );
 
   //////// Class Talent Tree
   // Row 1
