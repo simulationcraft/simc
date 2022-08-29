@@ -926,7 +926,7 @@ struct monk_spell_t : public monk_action_t<spell_t>
     if ( data().id() == 0 )
       return false;
 
-    return true;
+    return monk_action_t::ready();
   }
 
   double composite_target_crit_chance( player_t* target ) const override
@@ -1295,7 +1295,7 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     if ( data().id() == 0 )
       return false;
 
-    return true;
+    return monk_action_t::ready();
   }
 
   void init_finished() override
@@ -3058,6 +3058,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     {
       make_event<whirling_dragon_punch_tick_event_t>( *sim, tick, tick->delay );
     }
+
   }
 
   bool ready() override
