@@ -7507,7 +7507,11 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   // The death and decay target cap is displayed both in scourge strike's effects
   // And in SS and CS' max_targets data entry. Using the latter
   int n_targets() const override
-  { return p() -> in_death_and_decay() ? data().max_targets() : 0; }
+  {
+    if ( p() -> talent.cleaving_strikes.ok() )
+      return p() -> in_death_and_decay() ? data().max_targets() : 0;
+    return 0;
+  }
 
   std::vector<player_t*>& target_list() const override // smart targeting to targets with wounds when cleaving SS
   {
