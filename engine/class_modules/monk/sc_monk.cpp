@@ -7723,7 +7723,7 @@ void monk_t::init_spells()
       talent.brewmaster.scalding_brew              = _ST( "Scalding Brew" );
       talent.brewmaster.salsalabims_strength       = _ST( "Sal'salabim's Strength" );
       talent.brewmaster.fortifying_brew_stagger    = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
-      talent.brewmaster.black_ox_brew              = _ST( "Black OOx Brew" );
+      talent.brewmaster.black_ox_brew              = _ST( "Black Ox Brew" );
       talent.brewmaster.bob_and_weave              = _ST( "Bob and Weave" );
       talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
       talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
