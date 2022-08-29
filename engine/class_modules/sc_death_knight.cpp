@@ -5526,22 +5526,22 @@ struct death_coil_t : public death_knight_spell_t
 
   void impact( action_state_t* state ) override
   {
-      death_knight_spell_t::impact( state );
+    death_knight_spell_t::impact( state );
 
-    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( execute_state -> result) )
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
     {
-      get_td( execute_state -> target ) -> debuff.death_rot -> trigger();
+      get_td( state -> target ) -> debuff.death_rot -> trigger();
       
       if ( p() -> buffs.sudden_doom -> check() )
       {
-        get_td( execute_state -> target ) -> debuff.death_rot -> trigger();
+        get_td( state -> target ) -> debuff.death_rot -> trigger();
       }
     }
 
     if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() && 
-         result_is_hit( execute_state -> result ) )
+         result_is_hit( state -> result ) )
     {
-      get_td( execute_state -> target ) -> debuff.rotten_touch -> trigger();
+      get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
 };
