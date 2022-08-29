@@ -67,8 +67,8 @@ enum class spell_type : unsigned
 {
   NORMAL = 0,
   ASCENDANCE,
-  // Deeply Rooted Elements
-  DRE_ASCENDANCE,
+  DEEPLY_ROOTED_ELEMENTS,
+  SHAKE_THE_FOUNDATIONS,
   PRIMORDIAL_WAVE,
   THORIMS_INVOCATION
 };
@@ -197,23 +197,12 @@ static std::string action_name( util::string_view name, spell_type t )
   switch ( t )
   {
     case spell_type::ASCENDANCE: return fmt::format( "{}_asc", name );
-    case spell_type::DRE_ASCENDANCE: return fmt::format( "{}_dre", name );
+    case spell_type::DEEPLY_ROOTED_ELEMENTS: return fmt::format( "{}_dre", name );
+    case spell_type::SHAKE_THE_FOUNDATIONS: return fmt::format( "{}_stf", name );
     case spell_type::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
     case spell_type::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
     default: return std::string( name );
   }
-}
-
-static std::string action_name( util::string_view prefix, util::string_view suffix )
-{
-  std::string str_ { prefix };
-  if ( !suffix.empty() )
-  {
-    str_ += '_';
-    str_ += suffix;
-  }
-
-  return str_;
 }
 
 struct shaman_attack_t;
@@ -4507,8 +4496,9 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chained_overload_base_t : public elemental_overload_spell_t
 {
-  chained_overload_base_t( shaman_t* p, util::string_view name, const spell_data_t* spell, double mg, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( p, name, spell, parent_ )
+  chained_overload_base_t( shaman_t* p, util::string_view name, spell_type t,
+                           const spell_data_t* spell, double mg, shaman_spell_t* parent_ )
+    : elemental_overload_spell_t( p, ::action_name( name, t ), spell, parent_ )
   {
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
@@ -4531,9 +4521,8 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
 struct chain_lightning_overload_t : public chained_overload_base_t
 {
-  chain_lightning_overload_t( shaman_t* p, util::string_view suffix, shaman_spell_t* parent_ ) :
-    chained_overload_base_t( p, action_name( "chain_lightning_overload", suffix ),
-        p->find_spell( 45297 ),
+  chain_lightning_overload_t( shaman_t* p, spell_type t, shaman_spell_t* parent_ ) :
+    chained_overload_base_t( p, "chain_lightning_overload", t, p->find_spell( 45297 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   {
     affected_by_master_of_the_elements = true;
@@ -4555,20 +4544,22 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 
 struct lava_beam_overload_t : public chained_overload_base_t
 {
-  lava_beam_overload_t( shaman_t* p, util::string_view suffix, shaman_spell_t* parent_ )
-    : chained_overload_base_t( p, action_name( "lava_beam_overload", suffix ),
-        p->find_spell( 114738 ),
+  lava_beam_overload_t( shaman_t* p, spell_type t, shaman_spell_t* parent_ )
+    : chained_overload_base_t( p, "lava_beam_overload", t, p->find_spell( 114738 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   { }
 };
 
 struct chained_base_t : public shaman_spell_t
 {
-  chained_base_t( shaman_t* player, util::string_view name, const spell_data_t* spell, double mg,
-                  util::string_view options_str )
-    : shaman_spell_t( name, player, spell )
+  spell_type type;
+
+  chained_base_t( shaman_t* player, util::string_view name, spell_type t,
+                  const spell_data_t* spell, double mg, util::string_view options_str )
+    : shaman_spell_t( ::action_name( name, t ), player, spell ), type( t )
   {
     parse_options( options_str );
+
     if ( data().effectN( 1 ).chain_multiplier() != 0 )
     {
       chain_multiplier = data().effectN( 1 ).chain_multiplier();
@@ -4607,15 +4598,13 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
-  chain_lightning_t( shaman_t* player, util::string_view options_str, util::string_view suffix = "" )
-    : chained_base_t( player, action_name( "chain_lightning", suffix ),
-        player->talent.chain_lightning,
+  chain_lightning_t( shaman_t* player, spell_type t = spell_type::NORMAL, util::string_view options_str = {} )
+    : chained_base_t( player, "chain_lightning", t, player->talent.chain_lightning,
         player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new chain_lightning_overload_t( player, suffix, this );
-      //add_child( overload );
+      overload = new chain_lightning_overload_t( player, t, this );
     }
 
     affected_by_master_of_the_elements = true;
@@ -4805,21 +4794,22 @@ struct lava_beam_t : public chained_base_t
 {
   // This is actually a tooltip bug in-game: real testing shows that Lava Beam and
   // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
-  lava_beam_t( shaman_t* player, util::string_view options_str, util::string_view suffix = "" )
-    : chained_base_t( player, action_name( "lava_beam", suffix ), player->find_spell( 114074 ),
+  lava_beam_t( shaman_t* player, spell_type t = spell_type::NORMAL, util::string_view options_str = {} )
+    : chained_base_t( player, "lava_beam", t, player->find_spell( 114074 ),
                       player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
     if ( player->mastery.elemental_overload->ok() )
     {
-      overload = new lava_beam_overload_t( player, suffix, this );
-      //add_child( overload );
+      overload = new lava_beam_overload_t( player, t, this );
     }
   }
 
   bool ready() override
   {
     if ( !p()->buff.ascendance->check() )
+    {
       return false;
+    }
 
     return shaman_spell_t::ready();
   }
@@ -4868,7 +4858,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   bool wlr_buffed_impact;
 
   lava_burst_overload_t( shaman_t* player, spell_type type, shaman_spell_t* parent_ )
-    : elemental_overload_spell_t( player, action_name( "lava_burst_overload", type ),
+    : elemental_overload_spell_t( player, ::action_name( "lava_burst_overload", type ),
         player->find_spell( 285466 ), parent_ ),
       impact_flags(), type(type), wlr_buffed_impact( false )
   {
@@ -5207,7 +5197,7 @@ struct lava_burst_t : public shaman_spell_t
   bool wlr_buffed_impact;
 
   lava_burst_t( shaman_t* player, spell_type type_, util::string_view options_str = {} )
-    : shaman_spell_t( action_name( "lava_burst", type_ ), player, player->talent.lava_burst ),
+    : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst ),
       type( type_ ), impact_flags(), wlr_buffed_impact( false )
   {
     parse_options( options_str );
@@ -5250,7 +5240,7 @@ struct lava_burst_t : public shaman_spell_t
             }
           }
           break;
-        case spell_type::DRE_ASCENDANCE:
+        case spell_type::DEEPLY_ROOTED_ELEMENTS:
           {
             auto dre_asc_action = p()->find_action( "dre_ascendance" );
             if ( dre_asc_action )
@@ -5541,7 +5531,7 @@ struct lightning_bolt_t : public shaman_spell_t
   spell_type type;
 
   lightning_bolt_t( shaman_t* player, spell_type type_, util::string_view options_str = {} ) :
-    shaman_spell_t( action_name( "lightning_bolt", type_ ),
+    shaman_spell_t( ::action_name( "lightning_bolt", type_ ),
         player, player->find_class_spell( "Lightning Bolt" ) ),
     type( type_ )
   {
@@ -6040,13 +6030,13 @@ struct earthquake_base_t : public shaman_spell_t
 
     if ( p()->conduit.shake_the_foundations.ok() )
     {
-      shake_the_foundations_cl = new chain_lightning_t( player, "", "stf" );
+      shake_the_foundations_cl = new chain_lightning_t( player, spell_type::SHAKE_THE_FOUNDATIONS );
       shake_the_foundations_cl->background = true;
       shake_the_foundations_cl->base_costs[ RESOURCE_MANA ] = 0;
 
       add_child( shake_the_foundations_cl );
 
-      shake_the_foundations_lb = new lava_beam_t( player, "", "stf" );
+      shake_the_foundations_lb = new lava_beam_t( player, spell_type::SHAKE_THE_FOUNDATIONS );
       shake_the_foundations_lb->background = true;
       shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
 
@@ -7017,7 +7007,7 @@ struct ascendance_dre_t : public ascendance_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), spell_type::DRE_ASCENDANCE );
+        lvb = new lava_burst_t( p(), spell_type::DEEPLY_ROOTED_ELEMENTS );
         add_child( lvb );
       }
     }
@@ -8436,7 +8426,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "lightning_bolt" )
     return new lightning_bolt_t( this, spell_type::NORMAL, options_str );
   if ( name == "chain_lightning" )
-    return new chain_lightning_t( this, options_str );
+    return new chain_lightning_t( this, spell_type::NORMAL, options_str );
   if ( name == "stormkeeper" )
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
@@ -8475,7 +8465,7 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "icefury" )
     return new icefury_t( this, options_str );
   if ( name == "lava_beam" )
-    return new lava_beam_t( this, options_str );
+    return new lava_beam_t( this, spell_type::NORMAL, options_str );
   if ( name == "lava_burst" )
     return new lava_burst_t( this, spell_type::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
