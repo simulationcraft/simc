@@ -4,6 +4,7 @@
 #   Available build-arg:
 #     - THREADS=[int] Default 1, provide a value for -j
 #     - APIKEY=[str] Default '' (empty) SC_DEFAULT_APIKEY used for authentication with blizzard api (armory)
+#     - PTR_DATA=[int] Default 1, enable the PTR data removing script, to smaller images
 ##
 #   Example usage:
 #   - creating the image (note the dot!)
