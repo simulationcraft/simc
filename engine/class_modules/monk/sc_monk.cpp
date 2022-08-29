@@ -7240,6 +7240,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   // actives
   windwalking_aura = nullptr;
 
+  cooldown.anvil_and_stave         = get_cooldown( "anvil_and_stave" );
   cooldown.blackout_kick           = get_cooldown( "blackout_kick" );
   cooldown.black_ox_brew           = get_cooldown( "black_ox_brew" );
   cooldown.brewmaster_attack       = get_cooldown( "brewmaster_attack" );
@@ -9608,8 +9609,11 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       }
 
       // Saved as 5/10 base values but need it as 0.5 and 1 base values
-      if ( talent.brewmaster.anvil_and_stave->ok() )
+      if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
+      {
+        cooldown.anvil_and_stave->start( talent.brewmaster.anvil_and_stave->internal_cooldown() );
         brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
+      }
 
       if ( talent.brewmaster.graceful_exit->ok() )
         buff.graceful_exit->trigger();

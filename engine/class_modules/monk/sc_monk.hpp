@@ -746,6 +746,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    propagate_const<cooldown_t*> anvil_and_stave;
     propagate_const<cooldown_t*> blackout_kick;
     propagate_const<cooldown_t*> black_ox_brew;
     propagate_const<cooldown_t*> brewmaster_attack;
