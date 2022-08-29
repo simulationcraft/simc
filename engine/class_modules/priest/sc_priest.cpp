@@ -2506,6 +2506,7 @@ void priest_t::init_base_stats()
     if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
     {
       // Range Based on Talents
+      // TODO: check if this is still needed in Dragonflight
       if ( talents.divine_star->ok() )
       {
         base.distance = 24.0;
@@ -2518,12 +2519,6 @@ void priest_t::init_base_stats()
       {
         base.distance = 27.0;
       }
-    }
-    else if ( specialization() == PRIEST_SHADOW )
-    {
-      // Need to be 8 yards away for Ascended Nova
-      // Need to be 10 yards - SC radius for Shadow Crash
-      base.distance = 8.0;
     }
   }
 
