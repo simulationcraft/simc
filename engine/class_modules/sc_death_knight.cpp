@@ -7205,7 +7205,7 @@ struct plaguebearer_t : public death_knight_spell_t
     death_knight_spell_t( "plaguebearer", p, p -> talent.unholy.plaguebearer )
   {
     parse_options( options_str );
-    aoe = 1 + p->talent.unholy.plaguebearer->effectN(1).base_value();
+    aoe = p->talent.unholy.plaguebearer->effectN(1).base_value();
   }
 
   void init() override
@@ -7231,9 +7231,9 @@ struct plaguebearer_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && get_td( s -> target ) -> debuff.festering_wound->stack() > 0  )
+    if ( result_is_hit( s -> result ) && get_td( target ) -> debuff.festering_wound->stack() > 0  )
     {
-      unsigned n_stacks = get_td( s -> target )->debuff.festering_wound->stack();
+      unsigned n_stacks = get_td( target )->debuff.festering_wound->stack();
 
       p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_plaguebearer );
     }
