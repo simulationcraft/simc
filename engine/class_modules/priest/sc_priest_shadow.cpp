@@ -1525,73 +1525,6 @@ struct shadow_crash_t final : public priest_spell_t
 };
 
 // ==========================================================================
-// Searing Nightmare
-// ==========================================================================
-struct searing_nightmare_t final : public priest_spell_t
-{
-  propagate_const<shadow_word_pain_t*> child_swp;
-  const spell_data_t* mind_sear_spell;
-
-  searing_nightmare_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "searing_nightmare", p, p.talents.shadow.searing_nightmare ),
-      child_swp( new shadow_word_pain_t( priest(), false ) ),
-      mind_sear_spell( p.talents.shadow.mind_sear )
-  {
-    parse_options( options_str );
-    child_swp->background = true;
-
-    may_miss                   = false;
-    aoe                        = -1;
-    radius                     = data().effectN( 2 ).radius_max();
-    usable_while_casting       = use_while_casting;
-    affected_by_shadow_weaving = true;
-
-    living_shadow_action = living_shadow_action::SHADOW_NOVA;
-  }
-
-  bool ready() override
-  {
-    if ( player->channeling == nullptr || player->channeling->data().id() != mind_sear_spell->id() )
-      return false;
-    return priest_spell_t::ready();
-  }
-
-  double composite_target_da_multiplier( player_t* t ) const override
-  {
-    double tdm = priest_spell_t::composite_target_da_multiplier( t );
-
-    const priest_td_t* td = find_td( t );
-
-    if ( td && td->dots.shadow_word_pain->is_ticking() )
-    {
-      tdm *= ( 1 + data().effectN( 1 ).percent() );
-    }
-
-    return tdm;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    child_swp->target = s->target;
-    child_swp->execute();
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
-         rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 2 ).percent() ) )
-    {
-      priest().buffs.dark_thought->trigger();
-      priest().procs.dark_thoughts_searing_nightmare->occur();
-    }
-  }
-};
-
-// ==========================================================================
 // Damnation
 // ==========================================================================
 struct damnation_t final : public priest_spell_t
@@ -2018,7 +1951,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_bomb                  = find_talent_spell( talent_tree::SPECIALIZATION, "Mind Bomb" );
   talents.shadow.psychic_voice              = find_talent_spell( talent_tree::SPECIALIZATION, "Psychic Voice" );
   talents.shadow.misery                     = find_talent_spell( talent_tree::SPECIALIZATION, "Misery" );
-  talents.shadow.searing_nightmare          = find_talent_spell( talent_tree::SPECIALIZATION, "Searing Nightmare" );
   talents.shadow.silence                    = find_talent_spell( talent_tree::SPECIALIZATION, "Silence" );
   talents.shadow.fortress_of_the_mind       = find_talent_spell( talent_tree::SPECIALIZATION, "Fortress of the Mind" );
   // Row 4
@@ -2157,10 +2089,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "damnation" )
   {
     return new damnation_t( *this, options_str );
-  }
-  if ( name == "searing_nightmare" )
-  {
-    return new searing_nightmare_t( *this, options_str );
   }
 
   return nullptr;

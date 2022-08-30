@@ -211,7 +211,6 @@ public:
       player_talent_t death_and_madness;
       player_talent_t mind_bomb;
       player_talent_t psychic_voice;
-      player_talent_t searing_nightmare;
       player_talent_t misery;
       const spell_data_t* death_and_madness_insanity;
       player_talent_t silence;
@@ -412,7 +411,6 @@ public:
     propagate_const<proc_t*> dark_thoughts_flay;
     propagate_const<proc_t*> dark_thoughts_sear;
     propagate_const<proc_t*> dark_thoughts_devouring_plague;
-    propagate_const<proc_t*> dark_thoughts_searing_nightmare;
     propagate_const<proc_t*> dark_thoughts_missed;
     propagate_const<proc_t*> living_shadow_tier;
     propagate_const<proc_t*> vampiric_insight;

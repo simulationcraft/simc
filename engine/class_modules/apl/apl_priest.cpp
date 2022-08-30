@@ -43,9 +43,7 @@ void shadow( player_t* p )
   action_priority_list_t* precombat    = p->get_action_priority_list( "precombat" );
   action_priority_list_t* default_list = p->get_action_priority_list( "default" );
   action_priority_list_t* main         = p->get_action_priority_list( "main" );
-  action_priority_list_t* cwc          = p->get_action_priority_list( "cwc" );
   action_priority_list_t* cds          = p->get_action_priority_list( "cds" );
-  action_priority_list_t* boon         = p->get_action_priority_list( "boon" );
   action_priority_list_t* trinkets     = p->get_action_priority_list( "trinkets" );
 
   // Snapshot stats
@@ -77,21 +75,10 @@ void shadow( player_t* p )
       "variable,name=all_dots_up,op=set,value="
       "dot.shadow_word_pain.ticking&dot.vampiric_touch.ticking&dot.devouring_plague.ticking" );
   default_list->add_action(
-      "variable,name=searing_nightmare_cutoff,op=set,value=spell_targets.mind_sear>2+buff.voidform.up",
-      "Start using Searing Nightmare at 3+ targets or 4+ if you are in Voidform" );
-  default_list->add_action(
       "variable,name=cd_management,op=set,value=(!runeforge.spheres_harmony.equipped&(!covenant.necrolord|((fight_"
       "remains+time)>=330&time<=200|(fight_remains+time)<=250&(fight_remains+time)>=200))|cooldown.power_infusion."
       "remains<=gcd.max*3|buff.power_infusion.up|fight_remains<=25),default=0" );
   default_list->add_action( "variable,name=max_vts,op=set,default=1,value=spell_targets.vampiric_touch" );
-  default_list->add_action(
-      "variable,name=max_vts,op=set,value=5+2*(variable.cd_management&cooldown.void_eruption.remains<=10)&talent."
-      "hungering_void.enabled,if=talent.searing_nightmare.enabled&spell_targets.mind_sear=7" );
-  default_list->add_action(
-      "variable,name=max_vts,op=set,value=0,if=talent.searing_nightmare.enabled&spell_targets.mind_sear>7" );
-  default_list->add_action(
-      "variable,name=max_vts,op=set,value=4,if=talent.searing_nightmare.enabled&spell_targets.mind_sear=8&!talent."
-      "shadow_crash.enabled" );
   default_list->add_action(
       "variable,name=max_vts,op=set,value=(spell_targets.mind_sear<=5)*spell_targets.mind_sear,if=buff.voidform.up" );
   default_list->add_action( "variable,name=is_vt_possible,op=set,value=0,default=1" );
@@ -110,7 +97,6 @@ void shadow( player_t* p )
       "lights_judgment,if=spell_targets.lights_judgment>=2|(!raid_event.adds.exists|raid_event.adds.in>75)",
       "Use Light's Judgment if there are 2 or more targets, or adds aren't spawning for more than 75s." );
   default_list->add_action( "ancestral_call,if=buff.voidform.up" );
-  default_list->add_call_action_list( cwc );
   default_list->add_run_action_list( main );
 
   // Trinkets
@@ -177,56 +163,22 @@ void shadow( player_t* p )
   cds->add_action(
       "mindgames,target_if=insanity<90&((variable.all_dots_up&(!cooldown.void_eruption.up|!talent.hungering_void."
       "enabled))|buff.voidform.up)&(!talent.hungering_void.enabled|debuff.hungering_void.remains>cast_time|!buff."
-      "voidform.up)&(!talent.searing_nightmare.enabled|spell_targets.mind_sear<5)",
+      "voidform.up)",
       "Use Mindgames when all 3 DoTs are up, or you are in Voidform. Ensure Hungering Void will still be up when the "
-      "cast time finishes. Stop using at 5+ targets with Searing Nightmare." );
+      "cast time finishes." );
   cds->add_action(
       "unholy_nova,if=!talent.hungering_void.enabled&variable.dots_up|debuff.hungering_void.up&buff.voidform.up|("
       "cooldown.void_eruption.remains>10|!variable.pool_for_cds)&!buff.voidform.up",
       "Use Unholy Nova on CD, holding briefly to wait for power infusion or add spawns." );
-  cds->add_action(
-      "boon_of_the_ascended,if=!buff.voidform.up&!cooldown.void_eruption.up&spell_targets.mind_sear>1&!talent.searing_"
-      "nightmare.enabled|("
-      "buff.voidform.up&spell_targets.mind_sear<2&!talent.searing_nightmare.enabled&(prev_gcd.1.void_bolt&(!equipped."
-      "empyreal_ordnance|!talent.hungering_void.enabled)|equipped.empyreal_ordnance&trinket.empyreal_ordnance.cooldown."
-      "remains<=162&debuff.hungering_void.up))|(buff.voidform.up&talent.searing_nightmare.enabled)",
-      "Use on CD but prioritise using Void Eruption first, if used inside of VF on ST use after a "
-      "voidbolt for cooldown efficiency and for hungering void uptime if talented." );
   cds->add_call_action_list( trinkets );
   cds->add_action( "desperate_prayer,if=health.pct<=75" );
 
-  // APL to use when Boon of the Ascended is active
-  boon->add_action( "ascended_blast,if=spell_targets.mind_sear<=3" );
-  boon->add_action(
-      "ascended_nova,if=spell_targets.ascended_nova>1&spell_targets.mind_sear>1&!talent.searing_nightmare.enabled",
-      "Only use Ascended Nova when not talented into Searing Nightmare on 2+ targets." );
-
-  // Cast While Casting actions. Set at higher priority to short circuit interrupt conditions on Mind Sear/Flay
-  cwc->add_action(
-      p, "Mind Blast",
-      "only_cwc=1,target_if=set_bonus.tier28_4pc&buff.dark_thought.up&pet.fiend.active&runeforge."
-      "shadowflame_prism.equipped&!buff.voidform.up&pet.your_shadow.remains<fight_remains|buff.dark_thought.up&pet."
-      "your_shadow.remains<gcd.max*(3+(!buff.voidform.up)*16)&pet.your_shadow.remains<fight_remains",
-      "T28 4-set conditional for CWC Mind Blast" );
-  cwc->add_talent( p, "Searing Nightmare",
-                   "use_while_casting=1,target_if=(variable.searing_nightmare_cutoff&!variable.pool_for_cds)|(dot."
-                   "shadow_word_pain.refreshable&spell_targets.mind_sear>1)",
-                   "Use Searing Nightmare if you will hit enough targets and Power Infusion and Voidform are not "
-                   "ready, or to refresh SW:P on two or more targets." );
-  cwc->add_talent( p, "Searing Nightmare",
-                   "use_while_casting=1,target_if=talent.searing_nightmare.enabled&dot.shadow_word_pain.refreshable&"
-                   "spell_targets.mind_sear>2",
-                   "Short Circuit Searing Nightmare condition to keep SW:P up in AoE" );
-  cwc->add_action( p, "Mind Blast", "only_cwc=1",
-                   "Only_cwc makes the action only usable during channeling and not as a regular action." );
-
   // Main APL, should cover all ranges of targets and scenarios
-  main->add_call_action_list( boon, "if=buff.boon_of_the_ascended.up" );
   main->add_action(
       p, "Void Eruption",
       "if=variable.pool_for_cds&(insanity>=25+(15*(race.blood_elf&time<30))|pet.fiend.active&runeforge."
-      "shadowflame_prism.equipped&!cooldown.mind_blast.up&!cooldown.shadow_word_death.up)&(insanity<=85|"
-      "talent.searing_nightmare.enabled&variable.searing_nightmare_cutoff)&!cooldown.fiend.up&(!soulbind."
+      "shadowflame_prism.equipped&!cooldown.mind_blast.up&!cooldown.shadow_word_death.up)&!cooldown.fiend.up&(!"
+      "soulbind."
       "volatile_solvent|buff.volatile_solvent_humanoid.up)",
       "Use Void Eruption on cooldown pooling at least 25 insanity (or 40 for Blood Elf on opener) but "
       "not if you will overcap insanity in VF. Make sure Shadowfiend/Mindbender and Mind Blast is on cooldown before "
@@ -234,14 +186,7 @@ void shadow( player_t* p )
   main->add_action(
       p, "Shadow Word: Pain", "if=buff.fae_guardians.up&!debuff.wrathful_faerie.up&spell_targets.mind_sear<4",
       "Make sure you put up SW:P ASAP on the target if Wrathful Faerie isn't active when fighting 1-3 targets." );
-  main->add_action( p, "Mind Sear",
-                    "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
-                    "shadow_word_pain.ticking&!cooldown.fiend.up&spell_targets.mind_sear>=4" );
   main->add_call_action_list( cds );
-  main->add_action( p, "Mind Sear",
-                    "target_if=talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff&!dot."
-                    "shadow_word_pain.ticking&!cooldown.fiend.up",
-                    "High Priority Mind Sear action to refresh DoTs with Searing Nightmare" );
   main->add_talent( p, "Damnation",
                     "target_if=(dot.vampiric_touch.refreshable|dot.shadow_word_pain.refreshable|(!buff.mind_devourer."
                     "up&insanity<50))&(buff.dark_thought.stack<buff.dark_thought.max_stack|!set_bonus.tier28_2pc)",
@@ -259,26 +204,12 @@ void shadow( player_t* p )
       "equipped|!pet.fiend.active)&set_bonus.tier28_4pc",
       "Always use mindblasts if capped and hungering void is up and using Shadowflame Prism and bender is up."
       "Additionally, cast mindblast if you would be unable to get the rift by waiting a gcd." );
-  main->add_action(
-      p, "Void Bolt",
-      "if=insanity<=85&talent.hungering_void.enabled&talent.searing_nightmare.enabled&spell_targets.mind_sear<=6|(("
-      "talent.hungering_void.enabled&!talent.searing_nightmare.enabled)|spell_targets.mind_sear=1)",
-      "Use Void Bolt at higher priority with Hungering Void up to 4 targets, or other talents on ST." );
-  main->add_action( p, "Devouring Plague",
-                    "if=(set_bonus.tier28_4pc|talent.hungering_void.enabled)&talent.searing_nightmare.enabled&"
-                    "pet.fiend.active&runeforge.shadowflame_prism.equipped&buff.voidform.up&spell_targets.mind_sear<=6",
-                    "Special Devouring Plague with Searing Nightmare when usage during Cooldowns" );
+  main->add_action( p, "Void Bolt", "if=(talent.hungering_void.enabled|spell_targets.mind_sear=1)" );
   main->add_action( p, "Devouring Plague",
                     "if=(refreshable|insanity>75|talent.void_torrent.enabled&cooldown.void_torrent.remains<=3*gcd)&(!"
-                    "variable.pool_for_cds|insanity>=85)&(!talent.searing_nightmare.enabled|(talent.searing_nightmare."
-                    "enabled&!variable.searing_nightmare_cutoff))",
-                    "Don't use Devouring Plague if you can get into Voidform instead, or if Searing Nightmare is "
-                    "talented and will hit enough targets." );
-  main->add_action( p, "Void Bolt",
-                    "if=spell_targets.mind_sear<(4+conduit.dissonant_echoes.enabled)&insanity<=85&talent.searing_"
-                    "nightmare.enabled|!talent.searing_nightmare.enabled",
-                    "Use VB on CD if you don't need to cast Devouring Plague, and there are less than 4 targets out (5 "
-                    "with conduit)." );
+                    "variable.pool_for_cds|insanity>=85)",
+                    "Don't use Devouring Plague if you can get into Voidform instead." );
+  main->add_action( p, "Void Bolt" );
   main->add_action( p, "Shadow Word: Death",
                     "target_if=(target.health.pct<20&spell_targets.mind_sear<4)|(pet.fiend.active&runeforge."
                     "shadowflame_prism.equipped&spell_targets.mind_sear<=7)",
@@ -291,9 +222,7 @@ void shadow( player_t* p )
                     "prev_gcd.1.void_bolt&!buff.bloodlust.react&spell_targets.mind_sear<3)&variable.vts_applied&spell_"
                     "targets.mind_sear<(5+(6*talent.twist_of_fate.enabled))",
                     "Use Void Torrent only if SW:P and VT are active and the target won't die during the channel." );
-  main->add_action( p, "Mindbender",
-                    "if=(talent.searing_nightmare.enabled&spell_targets.mind_sear>variable.mind_sear_cutoff|dot.shadow_"
-                    "word_pain.ticking)&variable.vts_applied",
+  main->add_action( p, "Mindbender", "if=dot.shadow_word_pain.ticking&variable.vts_applied",
                     "Activate mindbender with dots up, if using shadowflame prism make sure vampiric touches are "
                     "applied prior to use." );
   main->add_action(
@@ -320,8 +249,7 @@ void shadow( player_t* p )
       "active_dot.vampiric_touch*talent.psychic_link.enabled+(spell_targets.mind_sear>?5)*(pet.fiend.active&runeforge."
       "shadowflame_prism.equipped))&(!runeforge.shadowflame_prism.equipped|!cooldown.fiend.up&runeforge.shadowflame_"
       "prism.equipped|variable.vts_applied)",
-      "Use Mind Blast if you don't need to refresh DoTs. Stop casting at 4 or more targets with Searing "
-      "Nightmare talented and you are not using Shadowflame Prism or Psychic Link."
+      "Use Mind Blast if you don't need to refresh DoTs."
       "spell_targets.mind_sear>?5 gets the minimum of 5 and the number of targets. Also, do not press mindblast until "
       "all targets are dotted with VT when using shadowflame prism if bender is available." );
   main->add_action(
@@ -336,8 +264,8 @@ void shadow( player_t* p )
                     "using Psychic Link and NOT Misery." );
   main->add_action(
       p, "Shadow Word: Pain",
-      "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&!(talent.searing_nightmare.enabled&spell_"
-      "targets.mind_sear>variable.mind_sear_cutoff)&(!talent.psychic_link.enabled|(talent.psychic_link.enabled&spell_"
+      "target_if=refreshable&target.time_to_die>4&!talent.misery.enabled&(!talent.psychic_link.enabled|(talent.psychic_"
+      "link.enabled&spell_"
       "targets.mind_sear<=2))",
       "Keep SW:P up on as many targets as possible, except when fighting 3 or more stacked mobs with Psychic Link." );
   main->add_action(
@@ -358,7 +286,6 @@ void shadow( player_t* p )
 void discipline( player_t* p )
 {
   action_priority_list_t* def     = p->get_action_priority_list( "default" );
-  action_priority_list_t* boon    = p->get_action_priority_list( "boon" );
   action_priority_list_t* racials = p->get_action_priority_list( "racials" );
 
   action_priority_list_t* precombat = p->get_action_priority_list( "precombat" );
@@ -367,9 +294,6 @@ void discipline( player_t* p )
   precombat->add_action( "augmentation" );
   precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
   precombat->add_action( "smite" );
-
-  boon->add_action( "ascended_blast" );
-  boon->add_action( "ascended_nova" );
 
   // On-Use Items
   def->add_action( "use_items", "Default fallback for usable items: Use on cooldown in order by trinket slot." );
@@ -396,15 +320,11 @@ void discipline( player_t* p )
   def->add_action( "halo" );
   def->add_action( "penance" );
   def->add_action( "power_word_solace" );
-  def->add_action(
-      "shadow_covenant,if=!covenant.kyrian|(!cooldown.boon_of_the_ascended.up&!buff.boon_of_the_ascended.up)",
-      "Hold Shadow Covenant if Boon of the Ascended cooldown is up or the buff is active." );
+  def->add_action( "shadow_covenant" );
   def->add_action( "schism" );
   def->add_action( "mindgames" );
   def->add_action( "fae_guardians" );
   def->add_action( "unholy_nova" );
-  def->add_action( "boon_of_the_ascended" );
-  def->add_call_action_list( boon, "if=buff.boon_of_the_ascended.up" );
   def->add_action( "mindbender" );
   def->add_action( "spirit_shell" );
   def->add_action( "purge_the_wicked,if=!ticking" );
