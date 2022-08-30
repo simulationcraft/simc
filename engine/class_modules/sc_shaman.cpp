@@ -3233,20 +3233,25 @@ struct stormstrike_attack_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( execute_state->result ) )
+    stormflurry = false;
+    stormbringer = false;
+  }
+
+  void impact( action_state_t* state ) override
+  {
+    shaman_attack_t::impact( state );
+
+    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
       auto sb = weapon->slot == SLOT_MAIN_HAND
         ? p()->action.stormblast
         : p()->action.stormblast_oh;
 
       sb->base_dd_min = sb->base_dd_max =
-        p()->talent.stormblast->effectN( 1 ).percent() * execute_state->result_amount;
-      sb->set_target( execute_state->target );
+        p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
+      sb->set_target( state->target );
       sb->execute();
     }
-
-    stormflurry = false;
-    stormbringer = false;
   }
 };
 
