@@ -7666,7 +7666,8 @@ void monk_t::init_spells()
   talent.general.fortifying_brew_cooldown    = find_talent_spell( talent_tree::CLASS, 388813 );
   // Row 7
   talent.general.roll_out                    = _CT( "Roll Out" );
-  talent.general.diffuse_magic               = _CT( "Eye of the Tiger" );
+  talent.general.diffuse_magic               = _CT( "Diffuse Magic" );
+  talent.general.eye_of_the_tiger            = _CT( "Eye of the Tiger" );
   talent.general.dampen_harm                 = _CT( "Dampen Harm" );
   talent.general.touch_of_death              = find_talent_spell( talent_tree::CLASS, 322113 );
   talent.general.expel_harm                  = _CT( "Expel Harm" );
