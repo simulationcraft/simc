@@ -7731,7 +7731,7 @@ void monk_t::init_spells()
       talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
       talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
       talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
-      talent.brewmaster.shocking_brew              = _ST( "Shoocking Blow" );
+      talent.brewmaster.shocking_brew              = _ST( "Shocking Blow" );
       talent.brewmaster.face_palm                  = _ST( "Face Palm" );
       // Row 8
       talent.brewmaster.dragonfire_brew         = _ST( "Dragonfire Brew" );
@@ -7750,7 +7750,7 @@ void monk_t::init_spells()
       // Row 10
       talent.brewmaster.bountiful_brew                      = _ST( "Bountiful Brew" );
       talent.brewmaster.attenuation                         = _ST( "Attenuation" );
-      talent.brewmaster.stormstouts_last_keg                = _ST( "Stoormstout's Last Keg" );
+      talent.brewmaster.stormstouts_last_keg                = _ST( "Stormstout's Last Keg" );
       talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
       talent.brewmaster.effusive_anima_accelerator          = _ST( "Effusive Anima Accelerator" );
   }
