@@ -5415,11 +5415,6 @@ struct death_coil_damage_t : public death_knight_spell_t
   death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->find_spell( 47632 ) ), coil_of_devastation( nullptr )
   {
     background = dual = true;
-    
-    if ( p -> talent.unholy.improved_death_coil.ok() )
-    {
-      aoe = 1 + as<int>( p -> talent.unholy.improved_death_coil -> effectN( 2 ).base_value() );
-    }
 
     if ( p -> talent.unholy.coil_of_devastation.ok() )
     {
@@ -5470,8 +5465,8 @@ struct death_coil_t : public death_knight_spell_t
   {
     parse_options( options_str );
 
-    execute_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
-    execute_action -> stats = stats;
+    impact_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
+    impact_action -> stats = stats;
 
     if ( p -> talent.unholy.improved_death_coil.ok() )
     {
@@ -6062,9 +6057,7 @@ struct festering_strike_t : public death_knight_melee_attack_t
     {
       if ( rng().roll( p() -> talent.unholy.feasting_strikes -> effectN( 1 ).percent() ) )
       {
-        unsigned gains = p() -> spell.feasting_strikes_gain -> effectN( 1 ).base_value();
-
-        p() -> replenish_rune( gains, p() -> gains.feasting_strikes );
+        p() -> replenish_rune( as<unsigned int>( p() -> spell.feasting_strikes_gain -> effectN( 1 ).base_value() ), p() -> gains.feasting_strikes );
       }
     }
   }
