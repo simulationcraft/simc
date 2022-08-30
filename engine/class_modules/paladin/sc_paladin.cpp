@@ -1048,7 +1048,7 @@ void judgment_t::impact( action_state_t* s )
   if ( result_is_hit( s->result ) )
   {
       if ( p()->talents.judgment->ok() )
-      td( s->target )->debuff.judgment->trigger();
+        td( s->target )->debuff.judgment->trigger();
 
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( 25 );
