@@ -4949,6 +4949,11 @@ struct dark_transformation_t : public death_knight_spell_t
       execute_action -> stats = stats;
     }
 
+    if ( p -> talent.unholy.unholy_command.ok() )
+    {
+      cooldown->duration += p->talent.unholy.unholy_command->effectN( 1 ).time_value();
+    }
+
     parse_options( options_str );
   }
 
@@ -4995,12 +5000,6 @@ struct dark_transformation_t : public death_knight_spell_t
       if ( p() -> legendary.frenzied_monstrosity.ok() )
       {
         p() -> buffs.frenzied_monstrosity -> trigger();
-      }
-
-      if ( p() -> talent.unholy.unholy_command.ok() )
-      {
-        p()->cooldown.dark_transformation->adjust(
-            timespan_t::from_seconds( p()->talent.unholy.unholy_command->effectN( 1 ).base_value() / 1000 ) );
       }
 
       if ( p( ) -> talent.unholy.commander_of_the_dead.ok() )
@@ -8374,7 +8373,7 @@ struct endless_rune_waltz_duration_buff_t : public buff_t
 struct runic_corruption_buff_t : public buff_t
 {
   runic_corruption_buff_t( death_knight_t* p ) :
-    buff_t( p, "runic_corruption", p -> spell.runic_corruption ) 
+    buff_t( p, "runic_corruption", p -> spell.runic_corruption )
   {
     // Runic Corruption refreshes to remaining time + buff duration
     refresh_behavior = buff_refresh_behavior::EXTEND;
