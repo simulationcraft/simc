@@ -5400,9 +5400,8 @@ struct deaths_caress_t : public death_knight_spell_t
 
 struct coil_of_devastation_t : public residual_action::residual_periodic_action_t<death_knight_spell_t>
 {
-  coil_of_devastation_t( death_knight_t* p )
-    : residual_action::residual_periodic_action_t<death_knight_spell_t>( "coil_of_devastation", p,
-                                                                         p -> spell.coil_of_devastation_debuff )
+  coil_of_devastation_t( util::string_view name, death_knight_t* p )
+    : residual_action::residual_periodic_action_t<death_knight_spell_t>( name, p, p -> spell.coil_of_devastation_debuff )
   {
     background = dual = true;
     may_miss = may_crit = false;
@@ -5411,14 +5410,14 @@ struct coil_of_devastation_t : public residual_action::residual_periodic_action_
 
 struct death_coil_damage_t : public death_knight_spell_t
 {
-  coil_of_devastation_t* coil_of_devastation;
+  action_t* coil_of_devastation;
   death_coil_damage_t( util::string_view name, death_knight_t* p ) : death_knight_spell_t( name, p, p->find_spell( 47632 ) ), coil_of_devastation( nullptr )
   {
     background = dual = true;
 
     if ( p -> talent.unholy.coil_of_devastation.ok() )
     {
-      coil_of_devastation = new coil_of_devastation_t( p );
+      coil_of_devastation = get_action<coil_of_devastation_t>( "coil_of_devastation", p );
     }
   }
 
@@ -5459,14 +5458,16 @@ struct death_coil_damage_t : public death_knight_spell_t
 
 struct death_coil_t : public death_knight_spell_t
 {
-  coil_of_devastation_t* coil_of_devastation;
   death_coil_t( death_knight_t* p, util::string_view options_str )
-    : death_knight_spell_t( "death_coil", p, p -> spec.death_coil ), coil_of_devastation( nullptr )
+    : death_knight_spell_t( "death_coil", p, p -> spec.death_coil )
   {
     parse_options( options_str );
 
     impact_action = get_action<death_coil_damage_t>( "death_coil_damage", p );
     impact_action -> stats = stats;
+
+    if ( p -> talent.unholy.coil_of_devastation.ok() )
+      add_child( get_action<coil_of_devastation_t>( "coil_of_devastation", p ) );
 
     if ( p -> talent.unholy.improved_death_coil.ok() )
     {
