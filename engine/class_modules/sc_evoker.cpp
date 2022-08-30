@@ -1323,6 +1323,49 @@ struct azure_strike_t : public evoker_spell_t
   }
 };
 
+struct deep_breath_t : public evoker_spell_t
+{
+  struct deep_breath_dot_t : public evoker_spell_t
+  {
+    deep_breath_dot_t( evoker_t* p ) : evoker_spell_t( "deep_breath_dot", p, p->find_spell( 353759 ) )
+    {
+      travel_delay = 0.9;   // guesstimate, TODO: confirm
+      travel_speed = 19.5;  // guesstimate, TODO: confirm
+      aoe = -1;
+    }
+
+    timespan_t travel_time() const override
+    {
+      // we set the execute_time of the base action as travel_time of the damage action so they match, but when we
+      // actually execute the damage action, we want travel_time to be 0_ms since it is already accounted for in the
+      // base action.
+      return execute_state && execute_state->target ? 0_ms : evoker_spell_t::travel_time();
+    }
+  };
+
+  action_t* damage;
+
+  deep_breath_t( evoker_t* p, std::string_view options_str )
+    : evoker_spell_t( "deep_breath", p, p->find_class_spell( "Deep Breath" ) )
+  {
+
+    damage = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
+    damage->stats = stats;
+  }
+
+  timespan_t execute_time() const override
+  {
+    return damage->travel_time();
+  }
+
+  void execute() override
+  {
+    evoker_spell_t::execute();
+
+    damage->execute_on_target( target );
+  }
+};
+
 struct disintegrate_t : public evoker_spell_t
 {
   action_t* eternity_surge;
@@ -1852,6 +1895,9 @@ void evoker_t::init_procs()
 
 void evoker_t::init_base_stats()
 {
+  if ( base.distance < 1 )
+    base.distance = 25;
+
   player_t::init_base_stats();
 
   base.spell_power_per_intellect = 1.0;
@@ -2142,6 +2188,7 @@ action_t* evoker_t::create_action( std::string_view name, std::string_view optio
   using namespace spells;
 
   if ( name == "azure_strike" )    return new    azure_strike_t( this, options_str );
+  if ( name == "deep_breath" )     return new     deep_breath_t( this, options_str );
   if ( name == "disintegrate" )    return new    disintegrate_t( this, options_str );
   if ( name == "dragonrage" )      return new      dragonrage_t( this, options_str );
   if ( name == "eternity_surge" )  return new  eternity_surge_t( this, options_str );
