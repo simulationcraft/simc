@@ -207,7 +207,6 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    if ( p()->talents.avenging_wrath->ok() )
         p()->buffs.avenging_wrath->trigger();
 
     if ( p()->azerite.avengers_might.ok() )
@@ -1612,7 +1611,7 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS,"Hammer of Wrath" ) )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) )
   {
     parse_options( options_str );
 
