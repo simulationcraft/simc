@@ -10978,7 +10978,7 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
 
   if ( buffs.ghoulish_frenzy -> up() )
   {
-    m *= 1.0 + ( talent.unholy.ghoulish_frenzy -> effectN( 2 ).base_value() / 100);
+    m *= 1.0 + talent.unholy.ghoulish_frenzy -> effectN( 2 ).percent();
   }
 
   if ( buffs.final_sentence->up() &&
