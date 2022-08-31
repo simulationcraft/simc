@@ -7773,6 +7773,18 @@ struct soul_reaper_t : public death_knight_melee_attack_t
     may_proc_bron = true;
   }
 
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+    if ( p() -> talent.unholy.reaping.ok() && target -> health_percentage() < p() -> talent.unholy.reaping -> effectN( 2 ).base_value() )
+    {
+      m *= 1.0 + p() -> talent.unholy.reaping -> effectN( 1 ).percent();
+    }
+
+    return m;
+  }
+
   void tick( dot_t* dot ) override
   {
     if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
