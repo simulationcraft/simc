@@ -3885,7 +3885,7 @@ struct abomination_limb_covenant_buff_t : public buff_t
   abomination_limb_covenant_damage_t* damage; // (AOE) damage that ticks every second
 
   abomination_limb_covenant_buff_t( death_knight_t* p ) :
-    buff_t( p, "abomination_limb", p -> covenant.abomination_limb ),
+    buff_t( p, "abomination_limb_covenant", p -> covenant.abomination_limb ),
     damage( new abomination_limb_covenant_damage_t( p ) )
   {
     cooldown -> duration = 0_ms; // Controlled by the action
@@ -3977,7 +3977,7 @@ struct abomination_limb_talent_buff_t : public buff_t
   abomination_limb_talent_damage_t* damage;  // (AOE) damage that ticks every second
 
   abomination_limb_talent_buff_t( death_knight_t* p )
-    : buff_t( p, "abomination_limb", p->talent.abomination_limb ), damage( new abomination_limb_talent_damage_t( p ) )
+    : buff_t( p, "abomination_limb_talent", p->talent.abomination_limb ), damage( new abomination_limb_talent_damage_t( p ) )
   {
     cooldown->duration = 0_ms;  // Controlled by the action
     set_tick_callback( [ this ]( buff_t* /* buff */, int /* total_ticks */, timespan_t /* tick_time */ ) 
