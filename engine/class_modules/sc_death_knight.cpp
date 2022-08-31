@@ -2313,8 +2313,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
 	  
-	  ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
-	  -> set_default_value_from_effect( 1 )
+    ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
+      -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
   }
 };
@@ -2357,8 +2357,6 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
     // This three-decimal number was caused by a +6% hotfix slapped on the original 0.4 value
     owner_coeff.ap_from_ap = 0.424;
   }
-
-
 
   void init_action_list() override
   {
@@ -2411,12 +2409,12 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
-	  {
-	    ruptured_viscera -> set_target( target );
-	    ruptured_viscera -> execute();
-	  }
+    {
+      ruptured_viscera -> set_target( target );
+      ruptured_viscera -> execute();
+    }
 	  
-	  pet_t::dismiss( expired );
+    pet_t::dismiss( expired );
   }
 };
 
@@ -2480,7 +2478,6 @@ struct gargoyle_pet_t : public death_knight_pet_t
     death_knight_pet_t::create_buffs();
 
     dark_empowerment = make_buff( this, "dark_empowerment", dk() -> pet_spell.dark_empowerment );
-
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
@@ -8896,7 +8893,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
   }
 
-    if ( talent.unholy.festermight.ok() )
+  if ( talent.unholy.festermight.ok() )
   {
     buffs.festermight->trigger( n_wounds );
   }
@@ -9054,12 +9051,12 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
 void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance )
 {
-    double proc_chance = 0.0;
+  double proc_chance = 0.0;
 
-    // Use the overriden chance if there's one and RP cost is 0
-    proc_chance = (!rpcost && override_chance != -1.0) ? override_chance :
-      // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
-      talent.runic_corruption->effectN(1).percent() * rpcost / 100.0;
+  // Use the overriden chance if there's one and RP cost is 0
+  proc_chance = (!rpcost && override_chance != -1.0) ? override_chance :
+    // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
+    talent.runic_corruption->effectN(1).percent() * rpcost / 100.0;
   // Buff duration and refresh behavior handled in runic_corruption_buff_t
   if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
     proc -> occur();
