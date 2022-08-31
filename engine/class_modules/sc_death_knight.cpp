@@ -10958,7 +10958,7 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
 
   if ( td && talent.unholy.morbidity.ok() )
   {
-    m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + td->dot.blood_plague->is_ticking() + td->debuff.unholy_blight->up() ) * find_spell( 377592 )->effectN(1).percent() );
+    m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + td->dot.blood_plague->is_ticking() + td->debuff.unholy_blight->up() ) * talent.unholy.morbidity->effectN(1).percent() );
   }
 
   return m;
@@ -11053,6 +11053,13 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
     if ( td -> debuff.brittle -> up() )
     {
       m *= 1.0 + td -> debuff.brittle -> value();
+    }
+
+    // Currently morbidity only has spelldata to affect pets, not guardians
+    // Aug 31 2022, blood plague does not seem to apply to pets
+    if ( talent.unholy.morbidity.ok() && !guardian )
+    {
+      m *= 1.0 + ( ( td->dot.virulent_plague->is_ticking() + td->dot.frost_fever->is_ticking() + /*td->dot.blood_plague->is_ticking() + */ td->debuff.unholy_blight->up() ) * talent.unholy.morbidity->effectN(1).percent() );
     }
   }
 
