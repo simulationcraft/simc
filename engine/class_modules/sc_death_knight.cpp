@@ -5006,21 +5006,16 @@ struct dark_transformation_t : public death_knight_spell_t
           p() -> pets.gargoyle -> commander_of_the_dead -> trigger();
         }
 
-        for ( size_t n_ghouls = 0; n_ghouls < p() -> pets.army_ghouls.active_pets().size(); n_ghouls++ )
+        for ( auto ghoul : p() -> pets.army_ghouls.active_pets() )
         {
-          if ( p() -> pets.army_ghouls.active_pets()[n_ghouls])
-          {
-              p() -> pets.army_ghouls.active_pets()[n_ghouls] -> commander_of_the_dead -> trigger();
-          }
+          ghoul -> commander_of_the_dead -> trigger();
         }
 
-        for ( size_t n_ghouls = 0; n_ghouls < p() -> pets.apoc_ghouls.active_pets().size(); n_ghouls++ )
+        for ( auto ghoul : p() -> pets.apoc_ghouls.active_pets() )
         {
-          if ( p() -> pets.apoc_ghouls.active_pets()[n_ghouls])
-          {
-              p() -> pets.apoc_ghouls.active_pets()[n_ghouls] -> commander_of_the_dead -> trigger();
-          }
+          ghoul -> commander_of_the_dead -> trigger();
         }
+
       }
     }
   }
