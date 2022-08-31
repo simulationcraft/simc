@@ -3085,10 +3085,9 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
   {
     sef_ability            = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD;
     ww_mastery             = true;
-    may_proc_bron          = false;  // Only the first hit from FotWT triggers Bron
+    may_proc_bron          = false;  // Only the first hit from SotWTL triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-    ap_type = attack_power_type::WEAPON_OFFHAND;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
@@ -3105,7 +3104,8 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     may_proc_bron           = true;
     trigger_faeline_stomp   = true;
     trigger_bountiful_brew  = true;
-
+    ap_type = attack_power_type::WEAPON_OFFHAND;
+    
     may_dodge = may_parry = may_block = may_miss  = true;
     dual                                          = true;
   }
