@@ -4030,12 +4030,9 @@ struct apocalypse_t : public death_knight_melee_attack_t
   {
     parse_options( options_str );
 
-    // TODO July 19 2022.  As apoc is going to change a good bit shortly, just commenting these out so we can move forward
-    //cooldown -> duration += p -> spec.apocalypse_2 -> effectN( 1 ).time_value();
-    //base_multiplier *= 1.0 + p -> spec.apocalypse_2 -> effectN( 2 ).percent();
     if ( p->talent.unholy.army_of_the_damned.ok() )
     {
-      cooldown -> duration += ( timespan_t::from_seconds( p -> talent.unholy.army_of_the_damned->effectN( 3 ).base_value() / 1000 ) );
+      cooldown -> duration += p -> talent.unholy.army_of_the_damned->effectN( 3 ).time_value();
     }
 
   }
@@ -9539,7 +9536,7 @@ void death_knight_t::create_pets()
         [] ( death_knight_t* p ) { return new pets::army_ghoul_pet_t( p, "harvest_ghoul" ); } );
     }
 
-    if ( talent.unholy.army_of_the_damned.ok() )
+    if ( talent.unholy.magus_of_the_dead.ok() )
     {
       pets.magus_of_the_dead.set_creation_callback(
         [] ( death_knight_t* p ) { return new pets::magus_pet_t( p ); } );
