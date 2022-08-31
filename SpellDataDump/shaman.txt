@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -16878,6 +16878,26 @@ Effects          :
 #1 (id=1022526)  : Apply Aura (6) | Periodic Trigger Spell (23): Lava Surge every 3 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 77762 | Target: Self (1)
 Description      : $@spelldesc387474
+
+Name             : Stormblast (id=390287) [Spell Family (11)] 
+Class            : Shaman
+School           : Nature
+Spell Type       : Melee
+Spell Level      : 1
+Range            : 40 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
+Effects          :
+#1 (id=1027004)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc319930
 
 Name             : Unruly Winds (id=390288) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=4, col=1, max_rank=1, req_points=0]

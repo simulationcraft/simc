@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
 Name             : Vanguard (id=71) [Spell Family (4), Passive] 
 Class            : Protection Warrior
 School           : Physical
@@ -13028,10 +13028,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1015190)  : Apply Aura (6) | Modify Versatility% (471)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1025578)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
+#2 (id=1025578)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Die by the Sword (118038)
                    Family Flags: 97
+Hotfixed         : Sub Type (108 -> 107)
 #3 (id=1027187)  : None (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000
 Description      : Increases versatility by ${$s3/10}.2% and reduces the cooldown of Die by the Sword by ${$s2/1000}.1 sec.

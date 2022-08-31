@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-25/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -13938,6 +13938,24 @@ Effects          :
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Purifying Brew instantly heals you for $s1% of the purified Stagger damage.
 
+Name             : Gai Plin's Imperial Brew (id=383701) 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Attributes       : ........ ........ ..x..... ........   ........ ..x..... ........ ....x... 
+                 : ........ x....... ........ .....x..   ........ ........ ........ .....x.. 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), No Threat (42), No Aura Icon (60), Include In Advanced Combat Log (72), Can't Crit (93), Ignore Caster Modifiers (125), Ignore Healing Modifiers (219), Aura Points On Client (268), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=1015769)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : $@spelldesc383700
+
 Name             : Stormstout's Last Keg (id=383707) [Spell Family (53), Passive] 
 Talent Entry     : Brewmaster [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Monk
@@ -13987,6 +14005,26 @@ Effects          :
 #3 (id=1015797)  : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000
 Description      : Gain up to ${$s1*$s3}% Mastery based on your current level of Stagger.
+
+Name             : Training of Niuzao (id=383733) [Spell Family (53)] 
+Class            : Monk
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Points On Client (268)
+Effects          :
+#1 (id=1015827)  : Apply Aura (6) | Modify Combat Rating Multiplier (405)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 33554432 | Target: Self (1)
+Description      : $@spelldesc383714
+Tooltip          : Mastery increased by $w1.
 
 Name             : Quick Sip (id=383764) 
 Class            : Monk
@@ -16026,6 +16064,27 @@ Effects          :
                    Family Flags: 4
 Description      : $@spelldesc388740
 Tooltip          : Blackout Kick strikes $s1 targets.
+
+Name             : Claw of the White Tiger (id=389541) [Spell Family (53)] 
+Class            : Monk
+School           : Nature
+Spell Type       : Magic
+Spell Level      : 1
+Range            : 40 yards
+Cooldown         : 2 seconds
+Attributes       : ....x... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Is Ability (4), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1025853)  : School Damage (2): nature
+                   Base Value: 0 | Scaled Value: 0 | AP Coefficient: 1.00000 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+Description      : Deals $s1 Nature damage.
 
 Name             : Close to Heart (id=389574) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=2, req_points=20]

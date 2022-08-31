@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.45232
-static const std::array<spelltext_data_t, 18270> __spelltext_data { {
+static const std::array<spelltext_data_t, 18268> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.  You cannot shield the target again for $6788d.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17056,7 +17056,6 @@ static const std::array<spelltext_data_t, 18270> __spelltext_data { {
   { 382292, "While inside Ice Block, you heal for ${$s1*10}% of your maximum health over the duration.", 0, 0 },
   { 382293, "$?s110959[Greater ][]Invisibility increases your movement speed by $?a137021[${$s1*0.40}][$s1]% for $337278d.", 0, 0 },
   { 382297, "Successfully interrupting an enemy with Counterspell reduces its cooldown by ${$s1/1000} sec.", 0, 0 },
-  { 382307, "Your spells and abilities have a chance to Arcanocrystalize the energies around you, granting a fluctuating secondary stat for $382963d.", 0, 0 },
   { 382309, "When you critically heal with your Healing Wave, Healing Surge, or Riptide you summon an Ancestral spirit to aid you, instantly healing the lowest percentage health friendly party or raid target within 40 yards for $s1% of the amount of healed.", 0, 0 },
   { 382310, "Rallying Cry's duration and health granted are increased by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 382312, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 of your highest secondary stat for $382145d.\r\n\r\nGood fortune to you!", 0, 0 },
@@ -17136,7 +17135,6 @@ static const std::array<spelltext_data_t, 18270> __spelltext_data { {
   { 382956, "If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $s3% damage.", 0, 0 },
   { 382957, "Hurl a Smoldering Inferno at the target that deals between 21,456-32,516 Fire damage. Damage dealt is determined by the top-most card of the deck.\r\n\r\nEquip: Periodically shuffle the deck while in combat.", 0, 0 },
   { 382958, 0, "Shuffles cards. (DNT)", 0 },
-  { 382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
   { 382998, "$@spelldesc382820\r\n", 0, 0 },
   { 383009, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
   { 383010, "Increases the number of Elemental Shields you can have active on yourself by 1.\r\n\r\nYou can have Earth Shield on yourself and one ally at the same time.", 0, 0 },
