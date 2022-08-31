@@ -3114,6 +3114,9 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
   double result     = player_t::resource_loss( resource_type, amount, source, action );
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
+  {
+    buffs.blessing_of_dusk->trigger();
+  }
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
   {
