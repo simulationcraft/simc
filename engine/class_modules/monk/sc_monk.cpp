@@ -3088,47 +3088,26 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false;  // Only the first hit from FotWT triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    ap_type = attack_power_type::WEAPON_OFFHAND;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual                                         = true;
   }
 };
 
-struct strike_of_the_windlord_t : public monk_melee_attack_t
+struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
 {
-  strike_of_the_windlord_main_hand_t* mh_attack;
-  strike_of_the_windlord_t( monk_t* p, util::string_view options_str )
-    : monk_melee_attack_t( "strike_of_the_windlord_offhand", p, p->talent.windwalker.strike_of_the_windlord->effectN(4).trigger() ),
-      mh_attack( nullptr )
+  strike_of_the_windlord_off_hand_t( monk_t* p, const char* name, const spell_data_t* s )
+    : monk_melee_attack_t( name, p, s )
   {
-    sef_ability                 = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
-    ww_mastery                  = true;
-    may_combo_strike            = true;
-    trigger_faeline_stomp       = true;
-    trigger_bountiful_brew      = true;
-    trigger_ww_t28_4p_potential = true;
-    trigger_ww_t28_4p_power     = true;
-    affected_by.serenity        = false;
-    cooldown->hasted            = false;
-    ap_type                     = attack_power_type::WEAPON_OFFHAND;
+    sef_ability             = sef_ability_e::SEF_STRIKE_OF_THE_WINDLORD_OH;
+    ww_mastery              = true;
+    may_proc_bron           = true;
+    trigger_faeline_stomp   = true;
+    trigger_bountiful_brew  = true;
 
-    parse_options( options_str );
-    may_dodge = may_parry = may_block = true;
-    trigger_gcd                       = data().gcd();
-
-    mh_attack = new strike_of_the_windlord_main_hand_t(
-        p, "strike_of_the_windlord_mainhand", p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger() );
-    add_child( mh_attack );
-  }
-
-  void execute() override
-  {
-    monk_melee_attack_t::execute();
-
-    if ( result_is_hit( execute_state->result ) )
-    {
-      mh_attack->execute();
-    }
+    may_dodge = may_parry = may_block = may_miss  = true;
+    dual                                          = true;
   }
 
   void impact( action_state_t* s ) override
@@ -3140,6 +3119,44 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
   }
 };
 
+struct strike_of_the_windlord_t : public monk_melee_attack_t
+{
+  strike_of_the_windlord_main_hand_t* mh_attack;
+  strike_of_the_windlord_off_hand_t* oh_attack;
+
+  strike_of_the_windlord_t( monk_t* p, util::string_view options_str )
+    : monk_melee_attack_t( "strike_of_the_windlord", p, p->talent.windwalker.strike_of_the_windlord ),
+      mh_attack( nullptr ),
+      oh_attack( nullptr )
+  {
+    affected_by.serenity        = false;
+    cooldown->hasted            = false;
+
+    parse_options( options_str );
+
+    trigger_gcd  = data().gcd();
+
+    oh_attack = new strike_of_the_windlord_off_hand_t(
+      p, "strike_of_the_windlord_offhand", p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger() );
+    mh_attack = new strike_of_the_windlord_main_hand_t(
+        p, "strike_of_the_windlord_mainhand", p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger() );
+
+    add_child( oh_attack );
+    add_child( mh_attack );
+  }
+
+  void execute() override
+  {
+    monk_melee_attack_t::execute();
+
+    // Off-hand attack hits first
+    oh_attack->execute();
+
+    if ( result_is_hit( oh_attack->execute_state->result ) )
+      mh_attack->execute();
+  }
+};
+    
 // ==========================================================================
 // Thunderfist
 // ==========================================================================
