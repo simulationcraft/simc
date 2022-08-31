@@ -9922,6 +9922,9 @@ bool player_t::parse_talents_wowhead( std::string_view talent_url )
     return false;
   }
 
+  // Clear all existing traits
+  player_traits.clear();
+
   // hash[ 0 ] is always 'B'  TODO: confirm
   auto class_trait_offset  = 1;
   auto class_trait_bytes   = char_array.find( hash[ class_trait_offset ] );
