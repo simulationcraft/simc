@@ -3088,7 +3088,8 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false;  // Only the first hit from SotWTL triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
-
+    
+    aoe                                          = -1;
     may_dodge = may_parry = may_block = may_miss = true;
     dual = background                            = true;
   }
@@ -3106,6 +3107,7 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     trigger_bountiful_brew  = true;
     ap_type                 = attack_power_type::WEAPON_OFFHAND;
 
+    aoe                                           = -1;
     may_dodge = may_parry = may_block = may_miss  = true;
     dual = background                             = true;
   }
@@ -3131,15 +3133,14 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
   {
     affected_by.serenity        = false;
     cooldown->hasted            = false;
+    trigger_gcd                 = data().gcd();
 
     parse_options( options_str );
 
-    trigger_gcd  = data().gcd();
-
     oh_attack = new strike_of_the_windlord_off_hand_t(
-      p, "strike_of_the_windlord_offhand", p->talent.windwalker.strike_of_the_windlord->effectN( 4 ).trigger() );
+        p, "strike_of_the_windlord_offhand", data().effectN( 4 ).trigger() );
     mh_attack = new strike_of_the_windlord_main_hand_t(
-        p, "strike_of_the_windlord_mainhand", p->talent.windwalker.strike_of_the_windlord->effectN( 3 ).trigger() );
+        p, "strike_of_the_windlord_mainhand", data().effectN( 3 ).trigger() );
 
     add_child( oh_attack );
     add_child( mh_attack );
