@@ -1618,7 +1618,10 @@ struct tiger_palm_t : public monk_melee_attack_t
       if ( p()->legendary.shaohaos_might->ok() && rng().roll( p()->legendary.shaohaos_might->effectN( 1 ).percent() ) )
         shaohoas_might = true;
       else if ( p()->talent.brewmaster.face_palm->ok() && rng().roll( p()->talent.brewmaster.face_palm->effectN( 1 ).percent() ) )
+      {
         face_palm = true;
+        p()->proc.face_palm->occur();
+      }
     }
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
@@ -1691,7 +1694,10 @@ struct tiger_palm_t : public monk_melee_attack_t
         brew_cooldown_reduction( p()->spec.tiger_palm->effectN( 3 ).base_value() );
 
         if ( p()->buff.blackout_combo->up() )
+        {
+          p()->proc.blackout_combo_tiger_palm->occur();
           p()->buff.blackout_combo->expire();
+        }
 
         if ( p()->buff.counterstrike->up() )
           p()->buff.counterstrike->expire();
@@ -2391,7 +2397,10 @@ struct blackout_kick_t : public monk_melee_attack_t
         }
 
         if ( p()->talent.brewmaster.elusive_footwork->ok() && s->result == RESULT_CRIT )
+        {
           p()->buff.elusive_brawler->trigger( (int)p()->talent.brewmaster.elusive_footwork->effectN( 2 ).base_value() );
+          p()->proc.elusive_footwork_proc->occur();
+        }
 
         break;
 
@@ -3088,6 +3097,7 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false;  // Only the first hit from SotWTL triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    ap_type                = attack_power_type::WEAPON_MAINHAND;
 
     may_dodge = may_parry = may_block = may_miss = true;
     dual = background                            = true;
@@ -3394,7 +3404,10 @@ struct keg_smash_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     if ( p()->talent.brewmaster.salsalabims_strength->ok() )
+    {
       p()->cooldown.breath_of_fire->reset( true, 1 );
+      p()->proc.salsalabim_bof_reset->occur();
+    }
 
     // Reduces the remaining cooldown on your Brews by 4 sec.
     double time_reduction = p()->talent.brewmaster.keg_smash->effectN( 4 ).base_value();
@@ -3403,6 +3416,7 @@ struct keg_smash_t : public monk_melee_attack_t
     if ( p()->buff.blackout_combo->up() )
     {
       time_reduction += p()->buff.blackout_combo->data().effectN( 3 ).base_value();
+      p()->proc.blackout_combo_keg_smash->occur();
       p()->buff.blackout_combo->expire();
     }
 
@@ -4154,6 +4168,7 @@ struct breath_of_fire_t : public monk_spell_t
     {
       // Saved as 3 seconds
       cd += ( -1 * timespan_t::from_seconds( p()->buff.blackout_combo->data().effectN( 2 ).base_value() ) );
+      p()->proc.blackout_combo_breath_of_fire->occur();
       p()->buff.blackout_combo->expire();
     }
 
@@ -4618,6 +4633,7 @@ struct purifying_brew_t : public monk_spell_t
     {
       p()->active_actions.stagger_self_damage->delay_tick( timespan_t::from_seconds(
           p()->buff.blackout_combo->data().effectN( 4 ).base_value() ) );
+      p()->proc.blackout_combo_purifying_brew->occur();
       p()->buff.blackout_combo->expire();
     }
 
@@ -6458,6 +6474,7 @@ struct celestial_brew_t : public monk_absorb_t
           p()->buff.purified_chi->expire();
 
       p()->buff.purified_chi->trigger( (int)p()->talent.brewmaster.blackout_combo->effectN( 6 ).base_value() );
+      p()->proc.blackout_combo_celestial_brew->occur();
       p()->buff.blackout_combo->expire();
     }
 
@@ -8679,6 +8696,12 @@ void monk_t::init_procs()
 {
   base_t::init_procs();
 
+  proc.anvil_and_stave                     = get_proc( "Anvil & Stave" );
+  proc.blackout_combo_tiger_palm           = get_proc( "Blackout Combo - Tiger Palm" );
+  proc.blackout_combo_breath_of_fire       = get_proc( "Blackout Combo - Breath of Fire" );
+  proc.blackout_combo_keg_smash            = get_proc( "Blackout Combo - Keg Smash" );
+  proc.blackout_combo_celestial_brew       = get_proc( "Blackout Combo - Celestial Brew" );
+  proc.blackout_combo_purifying_brew       = get_proc( "Blackout Combo - Purifying Brew" );
   proc.blackout_kick_cdr_with_woo          = get_proc( "Blackout Kick CDR with WoO" );
   proc.blackout_kick_cdr                   = get_proc( "Blackout Kick CDR" );
   proc.blackout_kick_cdr_serenity_with_woo = get_proc( "Blackout Kick CDR with Serenity with WoO" );
@@ -8686,7 +8709,11 @@ void monk_t::init_procs()
   proc.boiling_brew_healing_sphere         = get_proc( "Boiling Brew Healing Sphere" );
   proc.bonedust_brew_reduction             = get_proc( "Bonedust Brew SCK Reduction" );
   proc.bountiful_brew_proc                 = get_proc( "Bountiful Brew Trigger" );
+  proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
+  proc.face_palm                           = get_proc( "Face Palm" );
+  proc.glory_of_the_dawn                   = get_proc( "Glory of the Dawn" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
+  proc.salsalabim_bof_reset                = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
   proc.tumbling_technique_chi_torpedo      = get_proc( "Tumbling Technique Chi Torpedo Reset" );
   proc.tumbling_technique_roll             = get_proc( "Tumbling Technique Roll Reset" );
@@ -9630,6 +9657,7 @@ void monk_t::assess_damage( school_e school, result_amount_type dtype, action_st
       if ( talent.brewmaster.anvil_and_stave->ok() && cooldown.anvil_and_stave->up() )
       {
         cooldown.anvil_and_stave->start( talent.brewmaster.anvil_and_stave->internal_cooldown() );
+        proc.anvil_and_stave->occur();
         brew_cooldown_reduction( talent.brewmaster.anvil_and_stave->effectN( 1 ).base_value() / 10 );
       }
 

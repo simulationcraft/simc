@@ -346,6 +346,12 @@ public:
 
   struct procs_t
   {
+    propagate_const<proc_t*> anvil_and_stave;
+    propagate_const<proc_t*> blackout_combo_tiger_palm;
+    propagate_const<proc_t*> blackout_combo_breath_of_fire;
+    propagate_const<proc_t*> blackout_combo_keg_smash;
+    propagate_const<proc_t*> blackout_combo_celestial_brew;
+    propagate_const<proc_t*> blackout_combo_purifying_brew;
     propagate_const<proc_t*> blackout_kick_cdr_with_woo;
     propagate_const<proc_t*> blackout_kick_cdr;
     propagate_const<proc_t*> blackout_kick_cdr_serenity_with_woo;
@@ -353,8 +359,11 @@ public:
     propagate_const<proc_t*> boiling_brew_healing_sphere;
     propagate_const<proc_t*> bonedust_brew_reduction;
     propagate_const<proc_t*> bountiful_brew_proc;
+    propagate_const<proc_t*> elusive_footwork_proc;
+    propagate_const<proc_t*> face_palm;
     propagate_const<proc_t*> glory_of_the_dawn;
     propagate_const<proc_t*> rsk_reset_totm;
+    propagate_const<proc_t*> salsalabim_bof_reset;
     propagate_const<proc_t*> sinister_teaching_reduction;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;
     propagate_const<proc_t*> tumbling_technique_roll;
