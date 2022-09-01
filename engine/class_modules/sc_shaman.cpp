@@ -3222,7 +3222,7 @@ struct stormstrike_attack_t : public shaman_attack_t
     {
       double val = p()->legendary.legacy_of_the_frost_witch.ok()
         ? p()->buff.legacy_of_the_frost_witch->stack_value()
-        : p()->legendary.legacy_of_the_frost_witch->effectN( 1 ).percent();
+        : p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
       m *= 1.0 + val;
     }
 
