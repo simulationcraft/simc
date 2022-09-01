@@ -562,6 +562,7 @@ public:
                   p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() ); // Saved as 1
               p()->sample_datas.quick_sip_cleared->add( amount_cleared );
               p()->buff.recent_purifies->trigger( 1, amount_cleared );
+              p()->proc.quick_sip->occur();
 
               p()->shuffle_count_secs -= quick_sip_seconds;
           }
@@ -8712,6 +8713,7 @@ void monk_t::init_procs()
   proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
   proc.face_palm                           = get_proc( "Face Palm" );
   proc.glory_of_the_dawn                   = get_proc( "Glory of the Dawn" );
+  proc.quick_sip                           = get_proc( "Quick Sip" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset                = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
