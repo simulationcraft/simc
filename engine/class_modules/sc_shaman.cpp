@@ -361,6 +361,8 @@ public:
     action_t* molten_weapon_dot;
     action_t* lightning_bolt_pw;
     action_t* lightning_bolt_ti;
+    action_t* chain_lightning_ti;
+    action_t* ti_trigger;
     action_t* lava_burst_pw;
     action_t* flame_shock;
 
@@ -4029,7 +4031,9 @@ struct windstrike_t : public stormstrike_base_t
   bool ready() override
   {
     if ( p()->buff.ascendance->remains() <= cooldown->queue_delay() )
+    {
       return false;
+    }
 
     return stormstrike_base_t::ready();
   }
@@ -4040,8 +4044,11 @@ struct windstrike_t : public stormstrike_base_t
 
     if ( p()->talent.thorims_invocation.ok() && p()->buff.maelstrom_weapon->check() )
     {
-      p()->action.lightning_bolt_ti->set_target( execute_state->target );
-      p()->action.lightning_bolt_ti->execute();
+      auto spell = p()->action.ti_trigger
+        ? p()->action.ti_trigger
+        : p()->action.lightning_bolt_ti; // Default to lightning bolt if nothing is seen
+      spell->set_target( execute_state->target );
+      spell->execute();
     }
   }
 };
@@ -4613,6 +4620,22 @@ struct chain_lightning_t : public chained_base_t
     }
 
     affected_by_master_of_the_elements = true;
+
+    switch ( type )
+    {
+      case spell_type::THORIMS_INVOCATION:
+      {
+        background = true;
+        base_execute_time = 0_s;
+        base_costs[ RESOURCE_MANA ] = 0;
+        if ( auto asc_action = p()->find_action( "ascendance" ) )
+        {
+          asc_action->add_child( this );
+        }
+      }
+      default:
+        break;
+    }
   }
 
   size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -4784,6 +4807,12 @@ struct chain_lightning_t : public chained_base_t
     for ( auto pet : p()->pet.spirit_wolves.active_pets() )
     {
       debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
+    }
+
+    // Track last cast for LB / CL because of Thorim's Invocation
+    if ( p()->talent.thorims_invocation.ok() && type == spell_type::NORMAL )
+    {
+      p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
   }
 
@@ -5610,7 +5639,9 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double coeff = shaman_spell_t::composite_maelstrom_gain_coefficient( state );
     if ( p()->conduit.high_voltage->ok() && rng().roll( p()->conduit.high_voltage.percent() ) )
+    {
       coeff *= 2.0;
+    }
     return coeff;
   }
 
@@ -5724,6 +5755,12 @@ struct lightning_bolt_t : public shaman_spell_t
 
     p()->trigger_flash_of_lightning();
     p()->trigger_lightning_rod_damage( execute_state );
+
+    // Track last cast for LB / CL because of Thorim's Invocation
+    if ( p()->talent.thorims_invocation.ok() && type == spell_type::NORMAL )
+    {
+      p()->action.ti_trigger = p()->action.lightning_bolt_ti;
+    }
   }
 
   //void reset_swing_timers()
@@ -8808,6 +8845,7 @@ void shaman_t::create_actions()
   if ( talent.thorims_invocation.ok() )
   {
     action.lightning_bolt_ti = new lightning_bolt_t( this, spell_type::THORIMS_INVOCATION );
+    action.chain_lightning_ti = new chain_lightning_t( this, spell_type::THORIMS_INVOCATION );
   }
 
   if ( talent.lightning_rod.ok() )
@@ -11542,6 +11580,7 @@ void shaman_t::reset()
   ev_vesper_totem_dmg = ev_vesper_totem_heal = nullptr;
   vesper_totem_used_charges = vesper_totem_heal_charges = vesper_totem_dmg_charges = 0;
   lotfw_counter = 0U;
+  action.ti_trigger = nullptr;
 
   assert( active_flame_shock.empty() );
 }
