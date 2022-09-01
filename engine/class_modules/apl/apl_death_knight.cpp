@@ -347,7 +347,7 @@ void unholy( player_t* p )
   default_->add_action( "variable,name=st_planning,value=active_enemies<3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>2&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>10))" );
   default_->add_action( "variable,name=major_cooldowns_active,value=(talent.summon_gargoyle&!pet.gargoyle.active&cooldown.summon_gargoyle.remains|!talent.summon_gargoyle)&(buff.unholy_assault.up|talent.army_of_the_damned&pet.apoc_ghoul.active|buff.dark_transformation.up&buff.dark_transformation.remains>5|active_enemies>=2&death_and_decay.ticking)" );
-  default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&(talent.plaguebringer|talent.ebon_fever)&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>5)", "Maintaining Virulent Plague is a priority" );
+  default_->add_action( "outbreak,if=dot.virulent_plague.refreshable&(!talent.unholy_blight|talent.unholy_blight&cooldown.unholy_blight.remains>15%((talent.superstrain*3)+(talent.plaguebringer*2)))", "Maintaining Virulent Plague is a priority" );
   default_->add_action( "outbreak,target_if=dot.virulent_plague.refreshable&active_enemies>=2&(!talent.unholy_blight|talent.unholy_blight&(cooldown.unholy_blight.remains>(15%active_enemies+dot.virulent_plague.remains)|active_enemies>=3))" );
   default_->add_action( "wait_for_cooldown,name=soul_reaper,if=talent.soul_reaper&target.time_to_pct_35<5&fight_remains>5&cooldown.soul_reaper.remains<(gcd*0.75)&active_enemies=1", "Refreshes Deaths Due's buff just before deaths due ends" );
   default_->add_action( "call_action_list,name=trinkets", "Action Lists and Openers" );
@@ -382,7 +382,7 @@ void unholy( player_t* p )
   cooldowns->add_action( "army_of_the_dead,if=(talent.commander_of_the_dead&cooldown.dark_transformation.remains_expected<8|!talent.commander_of_the_dead)", "Cooldowns" );
   cooldowns->add_action( "army_of_the_dead,if=fight_remains<30+gcd" );
   cooldowns->add_action( "summon_gargoyle,if=runic_power.deficit<14&cooldown.apocalypse.remains>15" );
-  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(talent.commander_of_the_dead&(pet.apoc_ghoul.active&cooldown.summon_gargoyle.remains>20|pet.gargoyle.active)|!talent.commander_of_the_dead)" );
+  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(talent.commander_of_the_dead&(pet.apoc_ghoul.active&cooldown.summon_gargoyle.remains>20|pet.gargoyle.active|!talent.apocalypse&!talent.summon_gargoyle)|!talent.commander_of_the_dead)" );
   cooldowns->add_action( "dark_transformation,if=variable.adds_remain|fight_remains<30" );
   cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&!death_and_decay.ticking" );
