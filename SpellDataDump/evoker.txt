@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45335 dragonflight-BETA (hotfix 2022-09-01/45335, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -17,6 +17,28 @@ Effects          :
 #1 (id=12247)    : Apply Aura (6) | Modify Pet Damage Done% (429)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Damage dealt by pets increased by $s1%.
+
+Name             : Exhaustion (id=57723) 
+Class            : Shaman, Evoker
+Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Pandaren, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
+School           : Physical
+Spell Type       : None
+Range            : 50000 yards
+Duration         : 600 seconds
+Attributes       : ........ ........ ........ ..x..x..   ...x.x.x ........ .x...... ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ....x... ......x. 
+                 : ..x....x ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Aura Is Debuff (26), No Immunities (29), No Redirection (35), Allow While Stealthed (37), No Reflection (39), No AutoCast (AI) (49), Ignore Line of Sight (66), Allow Aura While Dead (116), Do Not Display Range (126), Aura Expires Offline (130), Allow Cast While Casting (135), Remove Entering Arena (162)
+Effects          :
+#1 (id=51004)    : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Unknown(25)
+Description      : Cannot benefit from Heroism or other similar effects.
+Tooltip          : Cannot benefit from Heroism or other similar effects.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Replaces         : Roll (id=109132)
@@ -1194,7 +1216,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Misc Value: 4 | Mechanic: Sleep | Chain Targets: 1 | Target: Enemy (6)
 #2 (id=898609)   : Apply Aura (6) | Unknown(191)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Chain Multiplier: 1 | Chain Targets: 1 | Target: Enemy (6)
-Description      : Incapacitate an enemy for $d, causing them to sleep walk towards you. Damage has a chance to awaken them.
+Description      : Disorient an enemy for $d, causing them to sleep walk towards you. Damage has a chance to awaken them.
 Tooltip          : Asleep.
 
 Name             : Naturalize (desc=Green) (id=360823) [Spell Family (224)] 
@@ -1829,18 +1851,18 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .....x.. ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Allow Class Ability Procs (416)
+                 : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=1003140)  : Apply Aura (6) | Unknown(504)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.
-Tooltip          : Healing for $s1 every $t1 sec.
+Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Mail Specialization (desc=Passive) (id=366524) [Spell Family (224), Passive, Hidden] 
 Class            : Evoker
@@ -4941,24 +4963,6 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : Reversion instantly heals the target for $s1% of damage taken in the last $s2 sec.
 
-Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1011987)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
 Name             : Blessing of the Bronze (desc=Bronze) (id=381732) [Spell Family (224)] 
 Class            : Evoker
 School           : Arcane
@@ -6112,5 +6116,32 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $@spelldesc385696
 Tooltip          : Time is moving $s1% faster.
+
+Name             : Fury of the Aspects (id=390386) [Spell Family (224)] 
+Class            : Evoker
+School           : Arcane
+Spell Type       : None
+Resource         : 4% Base Mana (0) (id=265596)
+Spell Level      : 60
+Duration         : 40 seconds
+Cooldown         : 300 seconds
+Attributes       : ........ ........ x.x..... ........   ........ ........ .x...... ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ x....... ........   ........ x....... ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ .x...... ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No AutoCast (AI) (49), Ignore Line of Sight (66), Not In Arena or Rated Battleground (144), Not On Player Controlled NPC (168), Vehicle Immunity Category (218), Aura Points On Client (268), Not In Arena (297), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1027169)  : Apply Aura (6) | Modify All Haste% (193)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+#2 (id=1027170)  : Apply Aura (6) | Scale% (Stacking) (61)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 50000 yards | Target: Raid Members (56)
+Description      : Increases haste by $s1% for all party and raid members for $d.
+
+Allies receiving this effect will become Exhausted and unable to benefit from Fury of the Aspects or similar effects again for $57723d.
+Tooltip          : Haste increased by $w1%.
 
 

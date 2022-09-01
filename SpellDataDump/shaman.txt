@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45335 dragonflight-BETA (hotfix 2022-09-01/45335, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -1391,7 +1391,7 @@ Effects          :
 Description      : Increases your Versatility by $s1.
 
 Name             : Exhaustion (id=57723) 
-Class            : Shaman
+Class            : Shaman, Evoker
 Race             : Human, Dwarf, Night Elf, Gnome, Draenei, Dark Iron Dwarf, Mechagnome, Worgen, Pandaren, Void Elf, Lightforged Draenei, Kul Tiran (0x55155555b1354c4d)
 School           : Physical
 Spell Type       : None
@@ -14410,24 +14410,6 @@ Effects          :
                    Family Flags: 45
 Description      : Thunderstorm knocks enemies up instead of away and its cooldown is reduced by ${$s1/-1000} sec.
 
-Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1011987)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-
 Name             : Planes Traveler (id=381647) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Shaman
@@ -16831,9 +16813,9 @@ Effects          :
                    Base Value: 45 | Scaled Value: 45 | PvP Coefficient: 1.00000 | Radius: 0 - 10 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=1022113)  : Dummy (3)
                    Base Value: 11 | Scaled Value: 11 | PvP Coefficient: 1.00000 | Radius: 0 - 6 yards | Target: Custom (18) -> AOE enemy (instant) (16)
-Description      : The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage on impact.
+Description      : The Primal Tsunami unleashes several globules of water, inflicting $387474s1 Frost damage to players within $387474A1 yards of each impact.
 
-The Infused Globule drifts about, triggering Waterlogged on enemies on contact.
+The Infused Globule then drifts about, applying Waterlogged to players on contact.
 
 After $s2 sec, the Globule explodes, inflicting $s1 Frost damage to players within $a1 yards.
 

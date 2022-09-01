@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45232 dragonflight-BETA (hotfix 2022-08-31/45232, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.0.45335 dragonflight-BETA (hotfix 2022-09-01/45335, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -1697,7 +1697,7 @@ Description      : Finishing move that drives your poisoned blades in deep, deal
 Tooltip          : Poison application chance increased by $s2%.$?s340081[
 Poison critical strikes generate $340426s1 Energy.][]
 
-Name             : Combat Potency (id=35546) [Spell Family (8)] 
+Name             : Fatal Flourish (id=35546) [Spell Family (8)] 
 Class            : Rogue
 School           : Physical
 Spell Type       : None
@@ -1739,7 +1739,7 @@ Attributes       : ......x. x....... ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   
                  : Passive (6), Do Not Log (8), Only In Spellbook Until Learned (240), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
-#1 (id=25764)    : Apply Aura (6) | Proc Trigger Spell (42): Combat Potency
+#1 (id=25764)    : Apply Aura (6) | Proc Trigger Spell (42): Fatal Flourish
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Trigger Spell: 35546 | Target: Self (1)
 Description      : Your off-hand attacks have a $s1% chance to generate $35546s1 Energy.
 
@@ -12109,24 +12109,6 @@ Effects          :
                    Affected Spells: Sap (6770)
                    Family Flags: 7
 Description      : Energy cost of Sap reduced by ${$s1*-1}%.
-
-Name             : I'm a Template Character (id=381259) [Passive, Hidden] 
-Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
-Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
-School           : Physical
-Spell Type       : None
-Attributes       : ......xx x....... .......x x..x.x..   .....x.. ..x..... ........ ........ 
-                 : x.x..... ......x. ...x..x. ....x...   ........ .x...... xx..x... ....x... 
-                 : .......x ........ .......x ........   ...x.... ........ .xx..... ........ 
-                 : ........ .x..x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ....x... ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Cast While Dead (23), Allow While Mounted (24), Allow While Sitting (27), No Immunities (29), Allow While Stealthed (37), No Threat (42), Allow Dead Target (64), Ignore Line of Sight (66), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), No Initial Threat (86), Not an Action (92), Not a Proc (105), Suppress Caster Procs (112), Suppress Target Procs (113), Allow Aura While Dead (116), Ignore Caster & Target Restrictions (124), Allow Cast While Casting (135), Suppress Weapon Procs (151), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow On Charmed Targets (201), Allow While Riding Vehicle (204), Allow Cast While Channeling (308)
-Effects          :
-#1 (id=1011987)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Deadly Precision (id=381542) [Spell Family (8), Passive] 
 Talent Entry     : Generic [tree=class, row=6, col=1, max_rank=2, req_points=8]
