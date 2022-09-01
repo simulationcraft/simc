@@ -267,6 +267,7 @@ public:
     propagate_const<buff_t*> fury_of_xuen_stacks;
     propagate_const<stat_buff_t*> fury_of_xuen_haste;
     propagate_const<buff_t*> hidden_masters_forbidden_touch;
+    propagate_const<buff_t*> hit_combo;
     propagate_const<buff_t*> invoke_xuen;
     propagate_const<buff_t*> storm_earth_and_fire;
     propagate_const<buff_t*> serenity;
@@ -589,24 +590,24 @@ public:
       // Row 3
       player_talent_t feathers_of_a_hundred_flocks;
       player_talent_t touch_of_the_tiger;
-      player_talent_t flying_serpent_kick;
+      player_talent_t hardened_soles;
       player_talent_t flashing_fists;
       player_talent_t open_palm_strikes;
       // Row 4
       player_talent_t mark_of_the_crane;
-      player_talent_t gale_burst;
+      player_talent_t flying_serpent_kick;
       player_talent_t glory_of_the_dawn;
       // 8 Required
       // Row 5
       player_talent_t shadowboxing_treads;
-      player_talent_t hit_scheme;
+      player_talent_t inner_peace;
       player_talent_t storm_earth_and_fire;
       player_talent_t serenity;
       player_talent_t meridian_strikes;
       player_talent_t jade_ignition;
       // Row 6
       player_talent_t dance_of_chiji;
-      player_talent_t inner_peace;
+      player_talent_t hit_combo;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
       player_talent_t strike_of_the_windlord;
@@ -626,7 +627,7 @@ public:
       // Row 9
       player_talent_t bonedust_brew;
       player_talent_t fatal_flying_guillotine;
-      // player_talent_t NYI
+      player_talent_t last_emperors_capacitor;
       player_talent_t xuens_battlegear;
       player_talent_t transfer_the_power;
       player_talent_t whirling_dragon_punch;
@@ -637,7 +638,7 @@ public:
       player_talent_t keefers_skyreach;
       player_talent_t invokers_delight;
       player_talent_t way_of_the_fae;
-      player_talent_t last_emperors_capacitor;
+      player_talent_t faeline_harmony;
     } windwalker;
   } talent;
 
@@ -853,6 +854,7 @@ public:
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
     const spell_data_t* hidden_masters_forbidden_touch;
+    const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
     const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;

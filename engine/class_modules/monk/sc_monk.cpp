@@ -349,6 +349,9 @@ public:
     {
       p()->buff.combo_strikes->trigger();
 
+      if ( p()->talent.windwalker.hit_combo->ok() )
+        p()->buff.hit_combo->trigger();
+
       if ( p()->conduit.xuens_bond->ok() )
           p()->cooldown.invoke_xuen->adjust( p()->conduit.xuens_bond->effectN( 2 ).time_value(), true );  // Saved as -100
       else if ( p()->talent.windwalker.xuens_bond->ok() )
@@ -364,6 +367,7 @@ public:
     {
       p()->combo_strike_actions.clear();
       p()->buff.combo_strikes->expire();
+      p()->buff.hit_combo->expire();
     }
 
     // Record the current action in the history.
@@ -778,6 +782,8 @@ public:
 
         if ( p()->legendary.faeline_harmony->ok() )
           reset_value *= 1 + p()->legendary.faeline_harmony->effectN( 2 ).percent();
+        else if ( p()->talent.windwalker.faeline_harmony->ok() )
+          reset_value *= 1 + p()->talent.windwalker.faeline_harmony->effectN( 2 ).percent();
 
         if ( p()->rng().roll( reset_value ) )
         {
@@ -7888,24 +7894,24 @@ void monk_t::init_spells()
       // Row 3
       talent.windwalker.feathers_of_a_hundred_flocks        = _ST( "Feathers of a Hundred Flocks" );
       talent.windwalker.touch_of_the_tiger                  = _ST( "Touch of the Tiger" );
-      talent.windwalker.flying_serpent_kick                 = _ST( "Flying Serpent Kick" );
+      talent.windwalker.hardened_soles                      = _ST( "Hardened Soles" );
       talent.windwalker.flashing_fists                      = _ST( "Flashing Fists" );
       talent.windwalker.open_palm_strikes                   = _ST( "Open Palm Strikes" );
       // Row 4
       talent.windwalker.mark_of_the_crane                   = _ST( "Mark of the Crane" );
-      talent.windwalker.gale_burst                          = _ST( "Gale Burst" );
+      talent.windwalker.flying_serpent_kick                 = _ST( "Flying Serpent Kick" );
       talent.windwalker.glory_of_the_dawn                   = _ST( "Glory of the Dawn" );
       // 8 Required
       // Row 5
       talent.windwalker.shadowboxing_treads                 = find_talent_spell(talent_tree::SPECIALIZATION, 331512);
-      talent.windwalker.hit_scheme                          = _ST( "Hit Scheme" );
+      talent.windwalker.inner_peace                         = _ST( "Inner Peace" );
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
       talent.windwalker.serenity                            = _ST( "Serentiy" );
       talent.windwalker.meridian_strikes                    = _ST( "Meridian Strikes" );
       talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );
       // Row 6
       talent.windwalker.dance_of_chiji                      = _ST( "Dance of Chi-Ji" );
-      talent.windwalker.inner_peace                         = _ST( "Inner Peace" );
+      talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
       talent.windwalker.drinking_horn_cover                 = _ST( "Drinking Horn Cover" );
       talent.windwalker.spiritual_focus                     = _ST( "Spiritual Focus" );
       talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
@@ -7925,7 +7931,7 @@ void monk_t::init_spells()
       // Row 9
       talent.windwalker.bonedust_brew                       = _ST( "Bonedust Brew" );
       talent.windwalker.fatal_flying_guillotine             = _ST( "Fatal Flying Guillotine" );
-      // talent.windwalker.NYI = _ST( "" )
+      talent.windwalker.last_emperors_capacitor             = _ST( "Last Emperor's Capacitor" );
       talent.windwalker.xuens_battlegear                    = _ST( "Xuen's Battlegear" );
       talent.windwalker.transfer_the_power                  = _ST( "Transfer the Power" );
       talent.windwalker.whirling_dragon_punch               = _ST( "Whirling Dragon Punch" );
@@ -7936,7 +7942,7 @@ void monk_t::init_spells()
       talent.windwalker.keefers_skyreach                    = _ST( "Keefer's Skyreach" );
       talent.windwalker.invokers_delight                    = _ST( "Invoker's Delight" );
       talent.windwalker.way_of_the_fae                      = _ST( "Way of the Fae" );
-      talent.windwalker.last_emperors_capacitor             = _ST( "Last Emperor's Capacitor" );
+      talent.windwalker.faeline_harmony                     = _ST( "Faeline Harmony" );
   }
 
   // Specialization spells ====================================
@@ -8179,6 +8185,7 @@ void monk_t::init_spells()
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
+  passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
@@ -8537,6 +8544,10 @@ void monk_t::create_buffs ()
 
     buff.hidden_masters_forbidden_touch = new buffs::hidden_masters_forbidden_touch_t (
       *this, "hidden_masters_forbidden_touch", passives.hidden_masters_forbidden_touch );
+
+    buff.hit_combo = make_buff( this, "hit_combo", passives.hit_combo )
+      ->set_default_value_from_effect( 1 )
+      ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
     buff.invoke_xuen =
       new buffs::invoke_xuen_the_white_tiger_buff_t ( *this, "invoke_xuen_the_white_tiger", talent.windwalker.invoke_xuen_the_white_tiger );
@@ -9360,6 +9371,10 @@ double monk_t::composite_player_dd_multiplier( school_e school, const action_t* 
 {
   double multiplier = player_t::composite_player_dd_multiplier( school, action );
 
+  if ( specialization() == MONK_WINDWALKER && buff.hit_combo->check() &&
+       action->data().affected_by( passives.hit_combo->effectN( 1 ) ) )
+    multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 1 ).percent();
+
   return multiplier;
 }
 
@@ -9367,6 +9382,10 @@ double monk_t::composite_player_dd_multiplier( school_e school, const action_t* 
 double monk_t::composite_player_td_multiplier( school_e school, const action_t* action ) const
 {
   double multiplier = player_t::composite_player_td_multiplier( school, action );
+
+  if ( specialization() == MONK_WINDWALKER && buff.hit_combo->check() &&
+       action->data().affected_by( passives.hit_combo->effectN( 2 ) ) )
+    multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 2 ).percent();
 
   return multiplier;
 }
@@ -9390,6 +9409,9 @@ double monk_t::composite_player_target_multiplier( player_t* target, school_e sc
 double monk_t::composite_player_pet_damage_multiplier( const action_state_t* state, bool guardian ) const
 {
   double multiplier = player_t::composite_player_pet_damage_multiplier( state, guardian );
+
+  if ( specialization() == MONK_WINDWALKER && buff.hit_combo->check() )
+    multiplier *= 1 + buff.hit_combo->check() * passives.hit_combo->effectN( 4 ).percent();
 
   if ( specialization() == MONK_BREWMASTER )
     multiplier *= 1 + spec.brewmaster_monk->effectN( 3 ).percent();
