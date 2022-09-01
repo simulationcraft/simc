@@ -732,7 +732,7 @@ public:
     // Feral
     player_talent_t tigers_fury;  // Row 1
 
-    player_talent_t max_energy;  // Row 2
+    player_talent_t tireless_energy;  // Row 2
     player_talent_t omen_of_clarity_cat;
     player_talent_t improved_tigers_fury;
 
@@ -745,7 +745,7 @@ public:
     player_talent_t improved_bleeds;  // NNF
 
     player_talent_t sudden_ambush;  // Row 5
-    player_talent_t berserk_relentlessness;
+    player_talent_t berserk;
     player_talent_t taste_for_blood;
 
     player_talent_t lunar_inspiration;  // Row 6
@@ -1119,6 +1119,8 @@ public:
   double composite_dodge_rating() const override;
   double composite_leech() const override;
   double composite_parry() const override { return 0; }
+  double composite_melee_haste() const override;
+  double composite_spell_haste() const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   double composite_melee_expertise( const weapon_t* ) const override;
@@ -3284,7 +3286,7 @@ public:
       consumes_combo_points = true;
       form_mask |= CAT_FORM;
 
-      if ( p->talent.berserk_relentlessness.ok() )
+      if ( p->talent.berserk.ok() )
         berserk_cp = p->spec.berserk_cat->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_COMBO_POINT );
     }
 
@@ -3387,7 +3389,7 @@ public:
       stats->consume_resource( RESOURCE_COMBO_POINT, consumed );
 
       if ( ( p()->buff.berserk_cat->check() || p()->buff.incarnation_cat->check() ) && berserk_cp &&
-           rng().roll( consumed * p()->talent.berserk_relentlessness->effectN( 1 ).percent() ) )
+           rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
       {
         p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
       }
@@ -3530,13 +3532,13 @@ public:
 
     if ( energize_resource == RESOURCE_COMBO_POINT && energize_amount > 0 && hit_any_target )
     {
-      if ( p()->talent.berserk_frenzy.ok() )
+      /*if ( p()->talent.berserk_frenzy.ok() )  TODO: check if still removed in next build
       {
         auto dur = p()->talent.berserk_frenzy->effectN( 1 ).time_value();  // spell data has this as a positive value
 
         p()->cooldown.berserk_cat->adjust( -dur, false );
         p()->cooldown.incarnation->adjust( -dur, false );
-      }
+      }*/
 
       trigger_primal_fury();
     }
@@ -3607,7 +3609,7 @@ public:
     if ( !special || !harmful || !d )
       return;
 
-    residual_action::trigger( p()->active.frenzied_assault, t, p()->talent.berserk_frenzy->effectN( 2 ).percent() * d );
+    residual_action::trigger( p()->active.frenzied_assault, t, p()->talent.berserk_frenzy->effectN( 1 ).percent() * d );
   }
 };  // end druid_cat_attack_t
 
@@ -3662,6 +3664,9 @@ struct brutal_slash_t : public cat_attack_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 3 ).base_value();
+
+    if ( p->talent.improved_bleeds.ok() )
+      bleed_mul = data().effectN( 4 ).percent();
   }
 
   double cost() const override
@@ -3980,7 +3985,7 @@ struct ferocious_bite_t : public cat_attack_t
 struct frenzied_assault_t : public residual_action::residual_periodic_action_t<cat_attack_t>
 {
   frenzied_assault_t( druid_t* p )
-    : residual_action::residual_periodic_action_t<cat_attack_t>( "frenzied_assault", p, p->find_spell( 340056 ) )
+    : residual_action::residual_periodic_action_t<cat_attack_t>( "frenzied_assault", p, p->find_spell( 391140 ) )
   {
     background = proc = true;
     may_miss = may_dodge = may_parry = false;
@@ -9350,9 +9355,9 @@ void druid_t::init_spells()
   // Feral
   sim->print_debug( "Initializing feral talents..." );
   talent.tigers_fury                    = ST( "Tiger's Fury" );
-  talent.max_energy                     = ST( "[Max Energy]" );  // NNF
+  talent.tireless_energy                = ST( "Tireless Energy" );
   talent.omen_of_clarity_cat            = STS( "Omen of Clarity", DRUID_FERAL );
-  talent.improved_tigers_fury           = ST( "Improved Tiger's Fury" );
+  talent.improved_tigers_fury           = find_talent_spell( talent_tree::SPECIALIZATION, 231055 );  // NNF
   talent.improved_shred                 = ST( "Improved Shred" );
   talent.scent_of_blood                 = ST( "Scent of Blood" );
   talent.sabertooth                     = ST( "Sabertooth" );
@@ -9360,7 +9365,7 @@ void druid_t::init_spells()
   talent.improved_prowl                 = ST( "Improved Prowl [Needs Points Scaling]" );   // NNF
   talent.improved_bleeds                = ST( "Improved Bleeds (Needs Points Scaling)" );  // NNF
   talent.sudden_ambush                  = ST( "Sudden Ambush" );
-  talent.berserk_relentlessness         = ST( "Berserk: Relentlessness" );
+  talent.berserk                        = ST( "Berserk" );
   talent.taste_for_blood                = ST( "Taste for Blood" );
   talent.lunar_inspiration              = ST( "Lunar Inspiration" );
   talent.primal_wrath                   = ST( "Primal Wrath" );
@@ -9580,7 +9585,7 @@ void druid_t::init_spells()
   // Feral Abilities
   spec.feral                    = find_specialization_spell( "Feral Druid" );
   spec.feral_overrides          = find_specialization_spell( "Feral Overrides Passive" );
-  spec.berserk_cat              = check( talent.berserk_relentlessness.ok() ||
+  spec.berserk_cat              = check( talent.berserk.ok() ||
                                          talent.berserk_jungle_stalker.ok() ||
                                          talent.berserk_frenzy.ok(), 106951 );
 
@@ -9621,7 +9626,7 @@ void druid_t::init_base_stats()
   resources.base[ RESOURCE_RAGE ]         = 100;
   resources.base[ RESOURCE_COMBO_POINT ]  = 5;
   resources.base[ RESOURCE_ASTRAL_POWER ] = 100;
-  resources.base[ RESOURCE_ENERGY ]       = 100 + talent.max_energy->effectN( 1 ).base_value() +
+  resources.base[ RESOURCE_ENERGY ]       = 100 + talent.tireless_energy->effectN( 1 ).base_value() +
                                             talent.cateye_curio->effectN( 2 ).base_value();
 
   // only activate other resources if you have the affinity and affinity_resources = true
@@ -10016,7 +10021,7 @@ void druid_t::create_buffs()
   buff.eye_of_fearful_symmetry->set_default_value(
       buff.eye_of_fearful_symmetry->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
-  buff.jungle_stalker = make_buff( this, "jungle_stalker", spec.berserk_cat->effectN( 2 ).trigger() );
+  buff.jungle_stalker = make_buff( this, "jungle_stalker", talent.incarnation_cat->effectN( 2 ).trigger() );
 
   buff.predatory_swiftness = make_buff( this, "predatory_swiftness", find_spell( 69369 ) )
     ->set_default_value( talent.predatory_swiftness->effectN( 3 ).percent() );  // % chance per CP
@@ -11091,6 +11096,24 @@ double druid_t::composite_leech() const
   return l;
 }
 
+// Haste ====================================================================
+double druid_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  h *= 1.0 + talent.tireless_energy->effectN( 2 ).percent();
+
+  return h;
+}
+
+double druid_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  h *= 1.0 + talent.tireless_energy->effectN( 2 ).percent();
+
+  return h;
+}
 
 // Miscellaneous ============================================================
 double druid_t::composite_attribute_multiplier( attribute_e attr ) const
@@ -12502,6 +12525,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.twin_moons );
   
   // Feral
+  action.apply_affecting_aura( talent.infected_wounds_cat );
 
   // Guardian
   action.apply_affecting_aura( talent.improved_survival_instincts );
