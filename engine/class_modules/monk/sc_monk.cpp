@@ -3042,6 +3042,8 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
       auto delay = base_tick_time * i;
       ticks[ i ] = new whirling_dragon_punch_tick_t( "whirling_dragon_punch_tick", p,
                                                      p->passives.whirling_dragon_punch_tick, delay );
+                                                     
+      add_child( ticks[ i ] );                                                     
     }
   }
 
