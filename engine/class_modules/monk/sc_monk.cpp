@@ -657,13 +657,29 @@ public:
         {
             if ( p()->talent.windwalker.spiritual_focus->ok() )
             {
+              if ( p()->talent.windwalker.storm_earth_and_fire->ok() )
+              {
                 p()->spiritual_focus_count += ab::cost();
 
                 if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
                 {
-                    p()->cooldown.storm_earth_and_fire->adjust( -1 * p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
-                    p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
+                  p()->cooldown.storm_earth_and_fire->adjust(
+                      -1 * p()->talent.windwalker.spiritual_focus->effectN( 2 ).time_value() );
+                  p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
                 }
+              }
+              // Serenity brings all spells down to 0 chi spent so don't reduce while Serenity is up
+              if ( p()->talent.windwalker.serenity->ok() && !p()->buff.serenity->up() )
+              {
+                p()->spiritual_focus_count += ab::cost();
+
+                if ( p()->spiritual_focus_count >= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value() )
+                {
+                  p()->cooldown.serenity->adjust( -1 *
+                                                  p()->talent.windwalker.spiritual_focus->effectN( 3 ).time_value() );
+                  p()->spiritual_focus_count -= p()->talent.windwalker.spiritual_focus->effectN( 1 ).base_value();
+                }
+              }
             }
 
             if ( p()->talent.windwalker.drinking_horn_cover->ok() && p()->cooldown.drinking_horn_cover->up() )
@@ -2032,6 +2048,26 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
   double cost() const override
   {
     return 0;
+  }
+
+  double composite_crit_chance_multiplier() const override
+  {
+    double crit = monk_melee_attack_t::composite_crit_chance_multiplier();
+
+    if ( p()->talent.windwalker.hardened_soles->ok() )
+      crit += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+
+    return crit;
+  }
+
+  double composite_crit_damage_bonus_multiplier() const override
+  {
+    double crit = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+
+    if ( p()->talent.windwalker.hardened_soles->ok() )
+      crit += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+
+    return crit;
   }
 
   void execute() override
