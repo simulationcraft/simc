@@ -943,6 +943,8 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
         auto delay = base_tick_time * i;
         ticks[i] = 
           new sef_whirling_dragon_punch_tick_t( player, delay );
+          
+        add_child( ticks[ i ] );    
       }
     }
 
