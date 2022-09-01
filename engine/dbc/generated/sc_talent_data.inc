@@ -1,4 +1,4 @@
-// 528 talents, wow build 10.0.0.45232
+// 528 talents, wow build 10.0.0.45335
 static std::array<talent_data_t, 528> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -88,7 +88,7 @@ static std::array<talent_data_t, 528> __talent_data { {
   { "Enlightened"                       , 21145, 0x00, 0x0080,   62,   2,   6,  321387,       0,  0 },
   { "Poison Bomb"                       , 21186, 0x00, 0x0008,  259,   0,   6,  255544,       0,  0 },
   { "Shuriken Tornado"                  , 21188, 0x00, 0x0008,  261,   2,   6,  277925,       0,  0 },
-  { "Serenity"                          , 21191, 0x00, 0x0200,  269,   2,   6,  152173,  137639,  0 },
+  { "Serenity"                          , 21191, 0x00, 0x0200,  269,   2,   6,  152173,       0,  0 },
   { "Fury of Elune"                     , 21193, 0x00, 0x0400,  102,   1,   6,  202770,       0,  0 },
   { "Unlimited Power"                   , 21198, 0x00, 0x0040,  262,   0,   6,  260895,       0,  0 },
   { "Wellspring"                        , 21199, 0x00, 0x0040,  264,   1,   6,  197995,       0,  0 },
@@ -134,7 +134,7 @@ static std::array<talent_data_t, 528> __talent_data { {
   { "Soul Rending"                      , 21863, 0x00, 0x0800,  577,   0,   3,  204909,       0,  0 },
   { "Desperate Instincts"               , 21864, 0x00, 0x0800,  577,   1,   3,  205411,       0,  0 },
   { "Netherwalk"                        , 21865, 0x00, 0x0800,  577,   2,   3,  196555,       0,  0 },
-  { "Cycle of Hatred [NYI]"             , 21866, 0x00, 0x0800,  577,   0,   4,  258887,       0,  0 },
+  { "Cycle of Hatred"                   , 21866, 0x00, 0x0800,  577,   0,   4,  258887,       0,  0 },
   { "First Blood"                       , 21867, 0x00, 0x0800,  577,   1,   4,  206416,       0,  0 },
   { "Essence Break"                     , 21868, 0x00, 0x0800,  577,   2,   4,  258860,       0,  0 },
   { "Unleashed Power"                   , 21869, 0x00, 0x0800,  577,   0,   5,  206477,       0,  0 },

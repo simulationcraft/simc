@@ -1,4 +1,4 @@
-// RPPM Modifiers, wow build 10.0.0.45232
+// RPPM Modifiers, wow build 10.0.0.45335
 static const std::array<rppm_modifier_t, 1183> __rppm_modifier_data { {
   {   5301,    4,  1,  1.0000 },
   {  17495,    4,  1,  1.0000 },

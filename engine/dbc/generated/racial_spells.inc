@@ -1,4 +1,4 @@
-// Racial abilities, wow build 10.0.0.45232
+// Racial abilities, wow build 10.0.0.45335
 static const std::array<racial_spell_entry_t, 153> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
@@ -95,7 +95,7 @@ static const std::array<racial_spell_entry_t, 153> __racial_spell_data { {
   { 0x0000000000018000, 0x00000000, 365575, "Awakened"                           },
   { 0x0000000000018000, 0x00000000, 360022, "Chosen Identity"                    },
   { 0x0000000000018000, 0x00000000, 366489, "Discerning Eye (NYI)"               },
-  { 0x0000000000018000, 0x00000000, 360009, "Familiar Skies"                     },
+  { 0x0000000000018000, 0x00000000, 360009, "Familiar Skies (NYI)"               },
   { 0x0000000000018000, 0x00000000, 358731, "Glide"                              },
   { 0x0000000000018000, 0x00000000, 358733, "Glide"                              },
   { 0x0000000000018000, 0x00000000, 381451, "Principles of Soaring"              },

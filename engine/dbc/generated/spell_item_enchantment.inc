@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.0.0.45232
-static const std::array<item_enchantment_data_t, 4553> __spell_item_ench_data { {
+// Item enchantment data, wow build 10.0.0.45335
+static const std::array<item_enchantment_data_t, 4555> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4551,7 +4551,9 @@ static const std::array<item_enchantment_data_t, 4553> __spell_item_ench_data { 
   { 6668,      0, -3,  60,  72, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "+$k1 Resourcefulness |A:Professions-Icon-Quality-Tier1-Small:20:20|a" },
   { 6669,      0, -3,  60,  72, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, {  2.2500,  0.0000,  0.0000 },      0, "+$k1 Resourcefulness |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
   { 6670,      0, -3,  60,  72, 0, 0,   0,   0, {   5,   0,   0 }, {    0,    0,    0 }, {     76,      0,      0 }, {  2.5000,  0.0000,  0.0000 },      0, "+$k1 Resourcefulness |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
-  { 6671,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  2.0000,  0.0000,  0.0000 },      0, "Primal Illusion - Fire |A:Professions-Icon-Quality-Tier1-Small:20:20|a" },
+  { 6671,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Illusion - Fire |A:Professions-Icon-Quality-Tier1-Small:20:20|a" },
   { 6672,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Mastery"                    },
+  { 6673,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Illusion: Fire |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
+  { 6674,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Illusion - Fire |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
 } };
 

@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.0.45232
-static const std::array<item_name_description_t, 706> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.0.45335
+static const std::array<item_name_description_t, 707> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -693,7 +693,7 @@ static const std::array<item_name_description_t, 706> __item_name_description_da
   { 13956, "Frost Amber"                                 },
   { 13957, "Hunting Party"                               },
   { 13958, "Shadowlands Season 3"                        },
-  { 13959, "[PH] Radiant"                                },
+  { 13959, "[PH] Radiant - Equip Limit 2"                },
   { 13960, "[PH] Radiant (2)"                            },
   { 13961, "Cobalt Assembly Arcane Essences"             },
   { 13962, "Tuskarr Feast Reagent"                       },
@@ -706,5 +706,6 @@ static const std::array<item_name_description_t, 706> __item_name_description_da
   { 13969, "Primal Infused"                              },
   { 13970, "Iskaaran Fishing Gear Material"              },
   { 13971, "Dragon Isles Supplies"                       },
+  { 13976, "Primal Infused"                              },
 } };
 
