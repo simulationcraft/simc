@@ -938,6 +938,7 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* runic_corruption; // buff
     const spell_data_t* runic_empowerment_gain;
+    const spell_data_t* rune_mastery_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -9984,6 +9985,7 @@ void death_knight_t::init_spells()
   spell.deaths_due             = find_spell( 315442 );
   spell.runic_corruption       = find_spell( 51460 );
   spell.runic_empowerment_gain = find_spell( 193486 );
+  spell.rune_mastery_buff      = find_spell( 374585 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
@@ -10236,9 +10238,9 @@ void death_knight_t::create_buffs()
         -> set_duration( talent.icebound_fortitude -> duration() )
         -> set_cooldown( 0_ms ); // Handled by the action
 
-  buffs.rune_mastery = make_buff( this, "rune_mastery", find_spell( 374585 ) )
+  buffs.rune_mastery = make_buff( this, "rune_mastery", spell.rune_mastery_buff )
         -> set_chance( 0.15 )  // This was found through testing 2022 July 21.  Not in spelldata.
-        -> set_default_value_from_effect_type( A_MOD_TOTAL_STAT_PERCENTAGE )
+        -> set_default_value ( talent.rune_mastery -> effectN ( 1 ).percent() )
         -> set_pct_buff_type( STAT_PCT_BUFF_STRENGTH )
         -> add_invalidate( CACHE_STRENGTH );
 
