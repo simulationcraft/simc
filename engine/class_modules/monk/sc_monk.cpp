@@ -3090,6 +3090,7 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_proc_bron          = false;  // Only the first hit from SotWTL triggers Bron
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    ap_type                = attack_power_type::WEAPON_MAINHAND;
     
     aoe                                          = -1;
     may_dodge = may_parry = may_block = may_miss = true;
