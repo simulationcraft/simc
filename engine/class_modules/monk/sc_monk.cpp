@@ -1701,7 +1701,10 @@ struct tiger_palm_t : public monk_melee_attack_t
         }
 
         if ( p()->buff.counterstrike->up() )
+        {
+          p()->proc.counterstrike_tp->occur();
           p()->buff.counterstrike->expire();
+        }
 
         if ( shaohoas_might )
           brew_cooldown_reduction( p()->passives.shaohaos_might->effectN( 3 ).base_value() );
@@ -2383,6 +2386,7 @@ struct blackout_kick_t : public monk_melee_attack_t
             charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
 
           charred_passions->execute();
+          p()->proc.charred_passions_bok->occur();
 
           if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
           {
@@ -2629,6 +2633,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
           charred_passions->s_data = p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger();
 
         charred_passions->execute();
+        p()->proc.charred_passions_sck->occur();
 
         if ( get_td( s->target )->dots.breath_of_fire->is_ticking() && p()->cooldown.charred_passions->up() )
         {
@@ -2807,7 +2812,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     else if ( p()->specialization() == MONK_BREWMASTER )
     {
       if ( p()->buff.counterstrike->up() )
+      {
+        p()->proc.counterstrike_sck->occur();
         p()->buff.counterstrike->expire();
+      }
     }
   }
 };
@@ -8710,6 +8718,10 @@ void monk_t::init_procs()
   proc.boiling_brew_healing_sphere         = get_proc( "Boiling Brew Healing Sphere" );
   proc.bonedust_brew_reduction             = get_proc( "Bonedust Brew SCK Reduction" );
   proc.bountiful_brew_proc                 = get_proc( "Bountiful Brew Trigger" );
+  proc.charred_passions_bok                = get_proc( "Charred Passions - Blackout Kick" );
+  proc.charred_passions_sck                = get_proc( "Charred Passions - Spinning Crane Kick" );
+  proc.counterstrike_tp                    = get_proc( "Counterstrike - Tiger Palm" );
+  proc.counterstrike_sck                   = get_proc( "Counterstrike - Spinning Crane Kick" );
   proc.elusive_footwork_proc               = get_proc( "Elusive Footwork" );
   proc.face_palm                           = get_proc( "Face Palm" );
   proc.glory_of_the_dawn                   = get_proc( "Glory of the Dawn" );

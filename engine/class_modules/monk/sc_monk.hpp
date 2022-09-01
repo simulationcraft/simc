@@ -359,6 +359,10 @@ public:
     propagate_const<proc_t*> boiling_brew_healing_sphere;
     propagate_const<proc_t*> bonedust_brew_reduction;
     propagate_const<proc_t*> bountiful_brew_proc;
+    propagate_const<proc_t*> charred_passions_bok;
+    propagate_const<proc_t*> charred_passions_sck;
+    propagate_const<proc_t*> counterstrike_tp;
+    propagate_const<proc_t*> counterstrike_sck;
     propagate_const<proc_t*> elusive_footwork_proc;
     propagate_const<proc_t*> face_palm;
     propagate_const<proc_t*> glory_of_the_dawn;
