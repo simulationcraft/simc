@@ -72,6 +72,8 @@ struct monk_action_t : public Base
   bool trigger_bountiful_brew;
   // Whether the ability can trigger the Legendary Sinister Teaching Cooldown Reduction
   bool trigger_sinister_teaching_cdr;
+  // Whether the ability can trigger Resonant Fists
+  bool trigger_resonant_fists;
 
   // Windwalker Tier 28 4-piece info
 
@@ -113,6 +115,7 @@ public:
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
       trigger_sinister_teaching_cdr( true ),
+      trigger_resonant_fists( false ),
       trigger_ww_t28_4p_potential( false ),
       trigger_ww_t28_4p_power( false ),
       trigger_ww_t28_4p_power_channel( false ),
@@ -246,6 +249,15 @@ public:
       may_proc_bron = !this->background &&
                       ( this->spell_power_mod.direct || this->spell_power_mod.tick || this->attack_power_mod.direct ||
                         this->attack_power_mod.tick || this->base_dd_min || this->base_dd_max || this->base_td );
+
+    // Resonant Fists talent
+    if ( p()->talent.general.resonant_fists->ok() )
+    {
+      auto trigger = p()->talent.general.resonant_fists.spell();
+
+      trigger_resonant_fists = ab::harmful && ab::may_hit &&
+        ( trigger->proc_flags() & ( 1 << ab::proc_type() ) );
+    }
 
     if ( p()->sets->has_set_bonus( MONK_WINDWALKER, T28, B4 ) )
     {
@@ -834,6 +846,17 @@ public:
     }
 
     ab::impact( s );
+
+    if ( p()->talent.general.resonant_fists.ok() && trigger_resonant_fists ) 
+    {
+      if ( p()->cooldown.resonant_fists->up() && p()->rng().roll( p()->talent.general.resonant_fists.spell()->proc_chance() ) )
+      {
+          p()->active_actions.resonant_fists->target = ab::target;
+          p()->active_actions.resonant_fists->execute();
+          p()->proc.resonant_fists->occur();
+          p()->cooldown.resonant_fists->start( p()->talent.general.resonant_fists.spell()->internal_cooldown() );
+      }
+    }
 
     if ( p()->legendary.bountiful_brew->ok() && trigger_bountiful_brew && p()->cooldown.bountiful_brew->up() &&
          p()->rppm.bountiful_brew->trigger() )
@@ -3914,6 +3937,20 @@ struct flying_serpent_kick_t : public monk_melee_attack_t
 
 namespace spells
 {
+
+// ==========================================================================
+// Resonant Fists
+// ==========================================================================
+
+struct resonant_fists_t : public monk_spell_t
+{
+  resonant_fists_t( monk_t& p )
+    : monk_spell_t( "resonant_fists", &p, p.talent.general.resonant_fists->effectN( 1 ).trigger() )
+  {
+    background = true;
+  }
+};
+
 // ==========================================================================
 // Special Delivery
 // ==========================================================================
@@ -5020,8 +5057,9 @@ struct summon_white_tiger_statue_spell_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    harmful       = false;
-    may_proc_bron = false; // TODO Check if this procs Bron
+    harmful               = false;
+    may_proc_bron         = false; // TODO Check if this procs Bron
+    trigger_faeline_stomp = true;
   }
 
   void execute() override
@@ -7349,6 +7387,7 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
   cooldown.invoke_xuen             = get_cooldown( "invoke_xuen_the_white_tiger" );
   cooldown.keg_smash               = get_cooldown( "keg_smash" );
   cooldown.purifying_brew          = get_cooldown( "purifying_brew" );
+  cooldown.resonant_fists          = get_cooldown( "resonant_fists" );
   cooldown.rising_sun_kick         = get_cooldown( "rising_sun_kick" );
   cooldown.refreshing_jade_wind    = get_cooldown( "refreshing_jade_wind" );
   cooldown.roll                    = get_cooldown( "roll" );
@@ -7771,7 +7810,7 @@ void monk_t::init_spells()
   talent.general.generous_pour               = _CT( "Generous Pour" );
   // Row 9
   //talent.general.save_them_all                = _CT( "Save Them All" );
-  //talent.general.resonant_fists               = _CT( "Resonant Fists" );
+  talent.general.resonant_fists              = _CT( "Resonant Fists" );
   //talent.general.bounce_back                  = _CT( "Bounce Back" );
   // Row 10
   talent.general.summon_jade_serpent_statue  = _CT( "Summon Jade Serpent Statue" );
@@ -8292,6 +8331,10 @@ void monk_t::init_spells()
   sample_datas.quick_sip_cleared          = get_sample_data( "Stagger damage that was cleared by Quick Sip" );
 
   // Active Action Spells
+  
+  // General
+  active_actions.resonant_fists = new actions::spells::resonant_fists_t( *this );
+
   // Brewmaster
   if ( spec_tree == MONK_BREWMASTER )
   {
@@ -8780,6 +8823,7 @@ void monk_t::init_procs()
   proc.face_palm                           = get_proc( "Face Palm" );
   proc.glory_of_the_dawn                   = get_proc( "Glory of the Dawn" );
   proc.quick_sip                           = get_proc( "Quick Sip" );
+  proc.resonant_fists                      = get_proc( "Resonant Fists" );
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset                = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
@@ -8890,6 +8934,7 @@ void monk_t::init_special_effects()
 
         return false;
       } );
+
 }
 
 // monk_t::init_special_effect ============================================
