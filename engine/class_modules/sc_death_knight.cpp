@@ -7506,7 +7506,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   int n_targets() const override
   {
     if ( p() -> talent.cleaving_strikes.ok() )
-      return p() -> in_death_and_decay() ? data().max_targets() : 0;
+      return p() -> in_death_and_decay() ? p() -> find_spell( 55090 ) -> effectN( 4 ).base_value() : 0;
     return 0;
   }
 
