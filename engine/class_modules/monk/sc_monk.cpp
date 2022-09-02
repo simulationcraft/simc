@@ -2050,24 +2050,24 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     return 0;
   }
 
-  double composite_crit_chance_multiplier() const override
+  double composite_crit_chance() const override
   {
-    double crit = monk_melee_attack_t::composite_crit_chance_multiplier();
+    double c = monk_melee_attack_t::composite_crit_chance();
 
-    if ( p()->talent.windwalker.hardened_soles->ok() )
-      crit += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      c += p()->talent.windwalker.hardened_soles->effectN( 1 ).percent();
 
-    return crit;
+    return c;
   }
 
   double composite_crit_damage_bonus_multiplier() const override
   {
-    double crit = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
+    double m = monk_melee_attack_t::composite_crit_damage_bonus_multiplier();
 
-    if ( p()->talent.windwalker.hardened_soles->ok() )
-      crit += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
+    if ( p()->specialization() == MONK_WINDWALKER && p()->talent.windwalker.hardened_soles->ok() )
+      m += p()->talent.windwalker.hardened_soles->effectN( 2 ).percent();
 
-    return crit;
+    return m;
   }
 
   void execute() override
@@ -3609,6 +3609,10 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
+      // Bonus damage happens before any multipliers
+//      if ( p()->talent.windwalker.meridian_strikes.ok() )
+//        amount += p()->talent.windwalker.meridian_strikes->effectN(1).sc;
+
       if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
         amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
 
