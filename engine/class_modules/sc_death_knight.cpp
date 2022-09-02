@@ -47,6 +47,7 @@ namespace pets {
   struct bloodworm_pet_t;
   struct dancing_rune_weapon_pet_t;
   struct endless_rune_waltz_pet_t;
+  struct everlasting_bond_pet_t;
   struct gargoyle_pet_t;
   struct ghoul_pet_t;
   struct magus_pet_t;
@@ -1011,6 +1012,7 @@ public:
   {
     pets::dancing_rune_weapon_pet_t* dancing_rune_weapon_pet;
     pets::dancing_rune_weapon_pet_t* endless_rune_waltz_pet;
+    pets::dancing_rune_weapon_pet_t* everlasting_bond_pet;
     pets::gargoyle_pet_t* gargoyle;
     pets::ghoul_pet_t* ghoul_pet;
     pet_t* risen_skulker;
@@ -2691,6 +2693,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
           dk() -> pets.dancing_rune_weapon_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
           if ( dk() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
             dk() -> pets.endless_rune_waltz_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+          if ( dk() -> talent.blood.everlasting_bond.ok() )
+            dk() -> pets.everlasting_bond_pet -> adjust_duration( dk() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
         }
       }
 
@@ -4237,12 +4241,11 @@ struct blood_boil_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> set_target( target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute();
+      p() -> pets.dancing_rune_weapon_pet -> ability.blood_boil -> execute_on_target( target );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
         p() -> pets.endless_rune_waltz_pet -> ability.blood_boil -> execute_on_target( target );
-      }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.blood_boil -> execute_on_target( target );
     }
   }
 
@@ -4799,10 +4802,17 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
     // Only summon the rune weapons if the buff is down.
     if ( ! p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
+      p() -> pets.dancing_rune_weapon_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                               p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
       {
-        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) );
+        p() -> pets.endless_rune_waltz_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                                p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
+      }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+      {
+        p() -> pets.everlasting_bond_pet -> summon( timespan_t::from_seconds( p() -> talent.blood.dancing_rune_weapon -> effectN( 4 ).base_value() ) +
+                                                                              p() -> talent.blood.everlasting_bond -> effectN( 2 ).time_value() );
       }
     }
   }
@@ -5379,12 +5389,13 @@ struct deaths_caress_t : public death_knight_spell_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> set_target( target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute();
+      p() -> pets.dancing_rune_weapon_pet -> ability.deaths_caress -> execute_on_target( target );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
       {
         p() -> pets.endless_rune_waltz_pet -> ability.deaths_caress -> execute_on_target( target );
       }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.deaths_caress -> execute_on_target( target );
     }
   }
 };
@@ -5774,12 +5785,12 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> set_target( target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute();
+      p() -> pets.dancing_rune_weapon_pet -> ability.death_strike -> execute_on_target( target );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
         p() -> pets.endless_rune_waltz_pet -> ability.death_strike -> execute_on_target( target );
-      }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.death_strike -> execute_on_target( target );
+
     }
 
     if ( hit_any_target )
@@ -6491,8 +6502,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     {
       if( !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
       {
-        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> set_target( target );
-        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute();
+        p() -> pets.dancing_rune_weapon_pet -> ability.heart_strike -> execute_on_target( target );
       }
 
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B2 ) )
@@ -6504,12 +6514,19 @@ struct heart_strike_t : public death_knight_melee_attack_t
           p() -> pets.dancing_rune_weapon_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
           if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
             p() -> pets.endless_rune_waltz_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
+          if ( p() -> talent.blood.everlasting_bond.ok() )
+            p() -> pets.everlasting_bond_pet -> adjust_duration( p() -> sets -> set ( DEATH_KNIGHT_BLOOD, T28, B2 ) -> effectN( 1 ).time_value() );
         }
       }
 
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
       {
         p() -> pets.endless_rune_waltz_pet -> ability.heart_strike -> execute_on_target( target );
+      }
+
+      if ( p() -> talent.blood.everlasting_bond.ok() && !is_t28_counterattack )  // Counterattack does not trigger DRW heart strikes
+      {
+        p() -> pets.everlasting_bond_pet -> ability.heart_strike -> execute_on_target( target );
       }
     }
 
@@ -6752,12 +6769,11 @@ struct marrowrend_t : public death_knight_melee_attack_t
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
-      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> set_target(  target );
-      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute();
+      p() -> pets.dancing_rune_weapon_pet -> ability.marrowrend -> execute_on_target(  target );
       if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
         p() -> pets.endless_rune_waltz_pet -> ability.marrowrend -> execute_on_target( target );
-      }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.marrowrend -> execute_on_target( target );
     }
   }
 
@@ -9558,9 +9574,9 @@ void death_knight_t::create_pets()
     {
       pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
       if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
-      {
         pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc" );
-      }
+      if ( talent.blood.everlasting_bond.ok() )
+        pets.everlasting_bond_pet = new pets::dancing_rune_weapon_pet_t( this, "everlasting_bond" );
     }
 
     if ( talent.blood.bloodworms.ok() )
