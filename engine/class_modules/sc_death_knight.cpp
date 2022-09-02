@@ -4787,6 +4787,8 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   {
     may_miss = may_crit = may_dodge = may_parry = harmful = false;
     bone_shield_stack_gain = as<int>( p -> legendary.crimson_rune_weapon -> effectN( 2 ).base_value() );
+    if ( p -> talent.blood.insatiable_blade.ok() )
+      bone_shield_stack_gain += p -> talent.blood.insatiable_blade -> effectN( 2 ).base_value();
 
     parse_options( options_str );
   }
@@ -4794,7 +4796,7 @@ struct dancing_rune_weapon_t : public death_knight_spell_t
   void execute() override
   {
     death_knight_spell_t::execute();
-    if ( p() -> legendary.crimson_rune_weapon.ok() )
+    if ( p() -> legendary.crimson_rune_weapon.ok() || p() -> talent.blood.insatiable_blade.ok() )
     {
       p() -> buffs.bone_shield -> trigger ( bone_shield_stack_gain );
     }
@@ -7979,6 +7981,7 @@ struct tombstone_t : public death_knight_spell_t
     p() -> buffs.tombstone -> trigger( 1, shield * p() -> resources.max[ RESOURCE_HEALTH ] );
     p() -> buffs.bone_shield -> decrement( charges );
     p() -> cooldown.dancing_rune_weapon -> adjust( p() -> legendary.crimson_rune_weapon -> effectN( 1 ).time_value() * charges );
+    p() -> cooldown.dancing_rune_weapon -> adjust( p() -> talent.blood.insatiable_blade -> effectN( 1 ).time_value() * charges );
     if ( p() -> talent.blood.blood_tap.ok() )
     {
       p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap -> effectN( 2 ).base_value() ) * charges );
@@ -10726,6 +10729,7 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   }
 
   cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
+  cooldown.dancing_rune_weapon -> adjust( talent.blood.insatiable_blade -> effectN( 1 ).time_value() );
 }
 
 void death_knight_t::assess_damage_imminent( school_e school, result_amount_type, action_state_t* s )
