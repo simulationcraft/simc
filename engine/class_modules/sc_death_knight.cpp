@@ -10672,6 +10672,9 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   if ( buffs.vampiric_blood -> up() )
     s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + talent.blood.improved_vampiric_blood -> effectN( 1 ).percent();
 
+  if( in_death_and_decay() )
+    s -> result_total *= 1.0 + talent.blood.sanguine_ground -> effectN( 2 ).percent();
+
   player_t::assess_heal( school, t, s );
 }
 
@@ -10998,6 +11001,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( buffs.bonegrinder_frost->up() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.bonegrinder_frost->value();
+  }
+
+  if ( talent.blood.sanguine_ground.ok() && in_death_and_decay() )
+  {
+    m *= 1.0 + talent.blood.sanguine_ground -> effectN( 1 ).percent();
   }
 
   return m;
