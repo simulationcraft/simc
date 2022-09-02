@@ -1170,6 +1170,7 @@ public:
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
+  bool mark_of_the_crane_max();
   double sck_modifier();
   double clear_stagger();
   double partial_clear_stagger_pct( double );

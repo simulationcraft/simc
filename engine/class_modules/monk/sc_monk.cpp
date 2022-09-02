@@ -2604,33 +2604,35 @@ struct sck_tick_action_t : public monk_melee_attack_t
     cooldown->duration            = timespan_t::zero();
     base_costs[ RESOURCE_ENERGY ] = 0;
   }
+  
+  int motc_counter() const
+  {    
+    if ( p()->specialization() != MONK_WINDWALKER )
+      return 0;
+
+    if ( !p()->talent.windwalker.mark_of_the_crane->ok() )
+      return 0;
+
+    if ( p()->user_options.motc_override > 0 )
+      return p()->user_options.motc_override;
+
+    int count = 0;
+
+    for ( player_t* target : target_list() )
+    {
+      if ( this->find_td( target ) && this->find_td( target )->debuff.mark_of_the_crane->check() )
+        count++;
+
+      if ( count == p()->passives.cyclone_strikes->max_stacks() )
+        break;
+    }
+
+    return count;
+  }
 
   double cost() const override
   {
     return 0;
-  }
-
-  int mark_of_the_crane_counter() const
-  {
-    if ( p()->user_options.motc_override > 0 )
-        return p()->user_options.motc_override;
-
-    std::vector<player_t*> targets = target_list();
-    int mark_of_the_crane_counter  = 0;
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      for ( player_t* target : targets )
-      {
-        if ( auto* td = this->find_td( target ) )
-        {
-          if ( td->debuff.mark_of_the_crane->check() )
-            mark_of_the_crane_counter++;
-        }
-      }
-    }
-
-    return std::min( (int)p()->passives.cyclone_strikes->max_stacks(), mark_of_the_crane_counter );
   }
 
   double action_multiplier() const override
@@ -2639,15 +2641,19 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
+      int motc_stacks = motc_counter();
 
-      if ( p()->conduit.calculated_strikes->ok() )
-        motc_multiplier += p()->conduit.calculated_strikes.percent();
-      else if ( p()->talent.windwalker.calculated_strikes->ok() )
-        motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+      if ( motc_stacks > 0 && p()->spec.spinning_crane_kick_2_ww->ok() )
+      {
+        double motc_multiplier = p()->passives.cyclone_strikes->effectN( 1 ).percent();
 
-      if ( p()->spec.spinning_crane_kick_2_ww->ok() )
-        am *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
+        if ( p()->conduit.calculated_strikes->ok() )
+          motc_multiplier += p()->conduit.calculated_strikes.percent();
+        else if ( p()->talent.windwalker.calculated_strikes->ok() )
+          motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+
+        am *= 1 + ( motc_counter() * motc_multiplier );
+      }
 
       if ( p()->buff.dance_of_chiji_hidden->check() )
         am *= 1 + p()->talent.windwalker.dance_of_chiji->effectN( 1 ).percent();
@@ -7665,26 +7671,39 @@ player_t* monk_t::next_mark_of_the_crane_target( action_state_t* state )
 
 int monk_t::mark_of_the_crane_counter()
 {
+  if ( specialization() != MONK_WINDWALKER )
+    return 0;
+
+  if ( !talent.windwalker.mark_of_the_crane->ok() )
+    return 0;
+
   if ( user_options.motc_override > 0 )
-      return user_options.motc_override;
+    return user_options.motc_override;
 
-  std::vector<player_t*> targets = sim->target_non_sleeping_list.data();
-  int mark_of_the_crane_counter  = 0;
+  int count = 0;
 
-  if ( specialization() == MONK_WINDWALKER )
+  for ( player_t* target : sim->target_non_sleeping_list.data() )
   {
-    for ( player_t* target : targets )
-    {
-      if ( auto td = find_target_data( target ) )
-      {
-        if ( td->debuff.mark_of_the_crane->check() )
-        {
-          mark_of_the_crane_counter++;
-        }
-      }
-    }
+    if ( target_data[ target ] && target_data[ target ]->debuff.mark_of_the_crane->check() )
+      count++;
+
+    if ( count == passives.cyclone_strikes->max_stacks() )
+      break;
   }
-  return mark_of_the_crane_counter;
+
+  return count;
+}
+
+// Currently at maximum stacks for target count
+bool monk_t::mark_of_the_crane_max()
+{
+  int count = mark_of_the_crane_counter();
+  int targets = (int)sim->target_non_sleeping_list.data().size();
+
+  if ( count == 0 || (targets - count) > 0 && count < (int)passives.cyclone_strikes->max_stacks() )
+    return false;
+
+  return true;
 }
 
 // Current talent contributions to SCK ( not including DoCJ bonus )
@@ -10351,10 +10370,12 @@ std::unique_ptr<expr_t> monk_t::create_expression( util::string_view name_str )
 
   else if ( splits.size() == 2 && splits[ 0 ] == "spinning_crane_kick" )
   {
-    if ( splits[ 1 ] == "count" )
+    if ( splits[1] == "count" )
       return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_counter(); } );
-    else if ( splits[ 1 ] == "modifier" )
-      return make_fn_expr(name_str, [this] { return sck_modifier(); });
+    else if ( splits[1] == "modifier" )
+      return make_fn_expr( name_str, [ this ] { return sck_modifier(); } );
+    else if ( splits[1] == "max" )
+      return make_fn_expr( name_str, [ this ] { return mark_of_the_crane_max(); } );
   }
 
   return base_t::create_expression( name_str );
