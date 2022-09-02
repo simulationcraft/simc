@@ -216,7 +216,7 @@ void frost( player_t* p )
   aoe->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>(25+talent.runic_attenuation*5)" );
   aoe->add_action( "glacial_advance" );
   aoe->add_action( "frost_strike,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
-  aoe->add_action( "horn_of_winter" );
+  // aoe->add_action( "horn_of_winter" );
   aoe->add_action( "arcane_torrent" );
 
   bos_pooling->add_action( "remorseless_winter,if=active_enemies>=2|variable.rw_buffs", "Breath of Sindragosa pooling rotation : starts 10s before BoS is available" );
@@ -237,7 +237,7 @@ void frost( player_t* p )
   bos_ticking->add_action( "howling_blast,if=variable.rotfc_rime&(runic_power>=45|rune.time_to_3<=gcd|talent.rage_of_the_frozen_champion|spell_targets.howling_blast>=2|buff.rime.remains<3)|runic_power<32&rune.time_to_2<runic_power%16" );
   bos_ticking->add_action( "frostscythe,if=buff.killing_machine.up&spell_targets.frostscythe>2" );
   bos_ticking->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react" );
-  bos_ticking->add_action( "horn_of_winter,if=runic_power<=60&rune.time_to_3>gcd" );
+  // bos_ticking->add_action( "horn_of_winter,if=runic_power<=60&rune.time_to_3>gcd" );
   bos_ticking->add_action( "frostscythe,if=spell_targets.frostscythe>2" );
   bos_ticking->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=runic_power.deficit>25|rune.time_to_4<gcd" );
   bos_ticking->add_action( "howling_blast,if=variable.rotfc_rime" );
@@ -281,7 +281,7 @@ void frost( player_t* p )
   obliteration->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice" );
 
   obliteration_pooling->add_action( "remorseless_winter,if=variable.rw_buffs|active_enemies>=2", "Pooling For Obliteration: Starts 10 seconds before Pillar of Frost comes off CD" );
-  obliteration_pooling->add_action( "horn_of_winter,if=cooldown.pillar_of_frost.remains<gcd" );
+  // obliteration_pooling->add_action( "horn_of_winter,if=cooldown.pillar_of_frost.remains<gcd" );
   obliteration_pooling->add_action( "glacial_advance,if=!death_knight.runeforge.razorice&(debuff.razorice.stack<5|debuff.razorice.remains<gcd*4)" );
   obliteration_pooling->add_action( "frostscythe,if=buff.killing_machine.react&active_enemies>2" );
   obliteration_pooling->add_action( "obliterate,target_if=max:(debuff.razorice.stack+1)%(debuff.razorice.remains+1)*death_knight.runeforge.razorice,if=buff.killing_machine.react" );
@@ -310,7 +310,7 @@ void frost( player_t* p )
   standard->add_action( "frost_strike,if=runic_power.deficit<(15+talent.runic_attenuation*5)" );
   standard->add_action( "obliterate,if=!buff.frozen_pulse.up&talent.frozen_pulse|talent.gathering_storm&buff.remorseless_winter.up|runic_power.deficit>(25+talent.runic_attenuation*5)" );
   standard->add_action( "frost_strike" );
-  standard->add_action( "horn_of_winter,if=talent.obliteration&cooldown.pillar_of_frost.remains>30|talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains>20|talent.icecap" );
+  // standard->add_action( "horn_of_winter,if=talent.obliteration&cooldown.pillar_of_frost.remains>30|talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains>20|talent.icecap" );
   standard->add_action( "arcane_torrent" );
 
   trinkets->add_action( "use_items", "Trinkets  The trinket with the highest estimated value, will be used first and paired with Pillar of Frost. actions.trinkets+=/use_item,slot=trinket1,if=buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&(buff.pillar_of_frost.remains>=10|!talent.pillar_of_frost))&(!trinket.2.has_cooldown|trinket.2.cooldown.remains|variable.trinket_priority=1)|trinket.1.proc.any_dps.duration>=fight_remains actions.trinkets+=/use_item,slot=trinket2,if=buff.pillar_of_frost.up&(!talent.icecap|talent.icecap&(buff.pillar_of_frost.remains>=10|!talent.pillar_of_frost))&(!trinket.1.has_cooldown|trinket.1.cooldown.remains|variable.trinket_priority=2)|trinket.2.proc.any_dps.duration>=fight_remains  If only one on use trinket provides a buff, use the other on cooldown. Or if neither trinket provides a buff, use both on cooldown. actions.trinkets+=/use_item,slot=trinket1,if=(!trinket.1.has_use_buff&(trinket.2.cooldown.remains|!trinket.2.has_use_buff)|talent.pillar_of_frost&cooldown.pillar_of_frost.remains>20|!talent.pillar_of_frost) actions.trinkets+=/use_item,slot=trinket2,if=(!trinket.2.has_use_buff&(trinket.1.cooldown.remains|!trinket.1.has_use_buff)|talent.pillar_of_frost&cooldown.pillar_of_frost.remains>20|!talent.pillar_of_frost)" );
