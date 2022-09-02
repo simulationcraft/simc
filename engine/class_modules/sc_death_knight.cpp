@@ -5547,6 +5547,7 @@ struct blood_shield_buff_t : public absorb_buff_t
   {
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player -> get_stats( "blood_shield" ) );
+    modify_duration( player -> talent.blood.iron_heart ->effectN( 1 ).time_value() );
   }
 };
 
@@ -5659,6 +5660,12 @@ struct death_strike_heal_t : public death_knight_heal_t
     double amount = current_value;
     if ( p() -> mastery.blood_shield -> ok() )
       amount += state -> result_total * p() -> cache.mastery_value();
+
+    amount *= 1.0 + p() -> talent.blood.iron_heart -> effectN( 2 ).percent();
+
+    // Blood Shield caps at max health
+    if ( amount > player -> resources.max[ RESOURCE_HEALTH ] )
+      amount = player -> resources.max[ RESOURCE_HEALTH ];
 
     sim -> print_debug( "{} Blood Shield buff trigger, old_value={} added_value={} new_value={}",
                      player -> name(), current_value,
