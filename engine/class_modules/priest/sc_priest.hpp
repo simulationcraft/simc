@@ -725,77 +725,84 @@ namespace actions
 template <typename Base>
 struct priest_action_t : public Base
 {
-  struct
+  // auto parsed dynamic effects
+  using bfun = std::function<bool()>;
+  struct buff_effect_t
   {
-    bool voidform_da;
-    bool voidform_ta;
-    bool shadowform_da;
-    bool shadowform_ta;
-    bool twist_of_fate_da;
-    bool twist_of_fate_ta;
-    bool shadow_covenant_da;
-    bool shadow_covenant_ta;
-    bool schism;
-  } affected_by;
+    buff_t* buff;
+    double value;
+    bool use_stacks;
+    bfun func;
 
-  double vf_da_multiplier;
-  double vf_ta_multiplier;
+    buff_effect_t( buff_t* b, double v, bool s = true, bfun f = nullptr )
+      : buff( b ), value( v ), use_stacks( s ), func( std::move( f ) )
+    {
+    }
+  };
+
+  using dfun = std::function<buff_t*( priest_td_t* )>;
+  struct debuff_effect_t
+  {
+    dfun func;
+    double value;
+    bool use_stacks;
+
+    debuff_effect_t( dfun f, double v, bool b ) : func( std::move( f ) ), value( v ), use_stacks( b )
+    {
+    }
+  };
+
+  std::vector<buff_effect_t> ta_multiplier_buffeffects;
+  std::vector<buff_effect_t> da_multiplier_buffeffects;
+  std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> dot_duration_buffeffects;
+  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
+  std::vector<buff_effect_t> cost_buffeffects;
+  std::vector<buff_effect_t> crit_chance_buffeffects;
+  std::vector<debuff_effect_t> target_multiplier_debuffeffects;
+
+protected:
+  priest_t& priest()
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+  const priest_t& priest() const
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  priest_t& p()
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  const priest_t& p() const
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  // typedef for priest_action_t<action_base_t>
+  using base_t = priest_action_t;
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), affected_by(), vf_da_multiplier( 1 ), vf_ta_multiplier( 1 )
+    : ab( name, &p, s )
   {
-    init_affected_by();
+    if ( ab::data().ok() )
+    {
+      apply_buff_effects();
+      apply_debuffs_effects();
+    }
+
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-
-    if ( p.talents.sins_of_the_many->ok() )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-      ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-    }
-
-    if ( affected_by.voidform_da )
-    {
-      vf_da_multiplier = 1 + priest().buffs.voidform->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.voidform_ta )
-    {
-      vf_ta_multiplier = 1 + priest().buffs.voidform->data().effectN( 2 ).percent();
-    }
   }
 
-  /**
-   * Initialize all affected_by members and print out debug info
-   */
-  void init_affected_by()
+  priest_td_t* td( player_t* t ) const
   {
-    struct affect_init_t
-    {
-      const spelleffect_data_t& effect;
-      bool& affects;
-    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
-                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
-                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
-                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
-                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
-                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
-                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
-                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta },
-                    { priest().talents.schism->effectN( 2 ), affected_by.schism } };
-
-    for ( const auto& a : affects )
-    {
-      a.affects = base_t::data().affected_by( a.effect );
-      if ( a.affects && ab::sim->debug )
-      {
-        ab::sim->print_debug( "{} {} ({}) affected by {} (idx={}).", *ab::player, *this, ab::data().id(),
-                              a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
-      }
-    }
+    return p().get_target_data( t );
   }
-
   priest_td_t& get_td( player_t* t )
   {
     return *( priest().get_target_data( t ) );
@@ -822,82 +829,359 @@ public:
     }
   }
 
+  
+  template <typename T>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
+  {
+    for ( size_t i = 1; i <= mod->effect_count(); i++ )
+    {
+      const auto& eff = mod->effectN( i );
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( ( base->affected_by_all( eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+      {
+        double pct = eff.percent();
+
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+          val += pct;
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+          val *= 1.0 + pct;
+        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+          val = pct;
+        else
+          continue;
+      }
+    }
+  }
+
+  void parse_spell_effects_mods( double&, const spell_data_t*, size_t )
+  {
+  }
+
+  template <typename T, typename... Ts>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod, Ts... mods )
+  {
+    parse_spell_effects_mods( val, base, idx, mod );
+    parse_spell_effects_mods( val, base, idx, mods... );
+  }
+
+  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
+  // 1: Add Percent Modifier to Spell Direct Amount
+  // 2: Add Percent Modifier to Spell Periodic Amount
+  // 3: Add Percent Modifier to Spell Cast Time
+  // 4: Add Percent Modifier to Spell Cooldown
+  // 5: Add Percent Modifier to Spell Resource Cost
+  // 6: Add Flat Modifier to Spell Critical Chance
+  template <typename... Ts>
+  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
+                          Ts... mods )
+  {
+    const auto& eff = s_data->effectN( i );
+    double val      = eff.percent();
+
+    auto debug_message = [ & ]( std::string_view type ) {
+      if ( buff )
+      {
+        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", ab::name(), ab::id,
+                               type, val * 100.0, buff->name(), buff->data().id(), i );
+      }
+      else if ( f )
+      {
+        p().sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})",
+                               ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+      else
+      {
+        p().sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", ab::name(), ab::id, type,
+                               val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+    };
+
+    // TODO: more robust logic around 'party' buffs with radius
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
+      return;
+
+    if ( i <= 5 )
+      parse_spell_effects_mods( val, s_data, i, mods... );
+
+    if ( !ab::data().affected_by_all( eff ) )
+      return;
+
+    if ( use_default && buff )
+      val = buff->default_value;
+
+    if ( !val )
+      return;
+
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      switch ( eff.misc_value1() )
+      {
+        case P_GENERIC:
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "direct damage" );
+          break;
+        case P_DURATION:
+          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "duration" );
+          break;
+        case P_TICK_DAMAGE:
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "tick damage" );
+          break;
+        case P_CAST_TIME:
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cast time" );
+          break;
+        case P_COOLDOWN:
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cooldown" );
+          break;
+        case P_RESOURCE_COST:
+          cost_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cost" );
+          break;
+        default:
+          return;
+      }
+    }
+    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
+    {
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, f );
+      debug_message( "crit chance" );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* s_data = &buff->data();
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
+  }
+
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
+  {
+    if ( !spell || !spell->ok() )
+      return;
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( nullptr, f, spell, i, false, false );
+    }
+  }
+
+  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
+  {
+    parse_conditional_effects( spell, nullptr, ignore_mask );
+  }
+
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+                                 bool benefit = true ) const
+  {
+    double return_value = flat ? 0.0 : 1.0;
+
+    for ( const auto& i : buffeffects )
+    {
+      double eff_val = i.value;
+      int mod        = 1;
+
+      if ( i.func && !i.func() )
+        continue;  // continue to next effect if conditional effect function is false
+
+      if ( i.buff )
+      {
+        auto stack = benefit ? i.buff->stack() : i.buff->check();
+
+        if ( !stack )
+          continue;  // continue to next effect if stacks == 0 (buff is down)
+
+        mod = i.use_stacks ? stack : 1;
+      }
+
+      if ( flat )
+        return_value += eff_val * mod;
+      else
+        return_value *= 1.0 + eff_val * mod;
+    }
+
+    return return_value;
+  }
+
+  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  //  buff = buff to be checked for to see if effect applies
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  use_stacks = optional, default true, whether to multiply value by stacks
+  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  void apply_buff_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_buff_effects( p().buffs.voidform );
+    parse_buff_effects( p().buffs.shadowform );
+    parse_buff_effects( p().buffs.twist_of_fate );
+    parse_buff_effects( p().buffs.shadow_covenant );
+    parse_buff_effects( p().buffs.mind_devourer );
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
+  {
+    if ( !s_data->ok() )
+      return;
+
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      const auto& eff = s_data->effectN( i );
+      double val      = eff.percent();
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( eff.subtype() != A_MOD_DAMAGE_FROM_CASTER_SPELLS || !ab::data().affected_by_all( eff ) )
+        continue;
+
+      if ( i <= 5 )
+        parse_spell_effects_mods( val, s_data, i, mods... );
+
+      if ( !val )
+        continue;
+
+      p().sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})",
+                             ab::name(), ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      target_multiplier_debuffeffects.emplace_back( func, val, use_stacks );
+    }
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( dfun func, const spell_data_t* s_data, Ts... mods )
+  {
+    parse_debuff_effects( func, true, s_data, mods... );
+  }
+
+  double get_debuff_effect_values( priest_td_t* t ) const
+  {
+    double return_value = 1.0;
+
+    for ( const auto& i : target_multiplier_debuffeffects )
+    {
+      auto debuff = i.func( t );
+
+      if ( debuff->check() )
+        return_value *= 1.0 + i.value * ( i.use_stacks ? debuff->check() : 1.0 );
+    }
+
+    return return_value;
+  }
+
+  // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
+  //  func = function returning the dot_t* of the dot
+  //  dot = spell data of the dot
+  //  S = optional list of template parameter(s) to indicate spell(s)with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the dot
+  void apply_debuffs_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; },
+                          p().talents.schism );
+  }
+
   double cost() const override
   {
-    double c = ab::cost();
-
+    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
     return c;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = ab::composite_target_multiplier( target );
-
-    auto target_data = find_td( target );
-    if ( target_data && target_data->buffs.schism->check() )
-    {
-      m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
-    }
-
-    return m;
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effect_values( td( t ) );
+    return tm;
   }
 
-  double action_da_multiplier() const override
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double m = ab::action_da_multiplier();
-
-    if ( affected_by.voidform_da && priest().buffs.voidform->check() )
-    {
-      m *= vf_da_multiplier;
-    }
-    if ( affected_by.shadowform_da && priest().buffs.shadowform->check() )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
-    {
-      // TODO: use percent() based data on the talent when spelldata is fixed
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.shadow_covenant_da && priest().buffs.shadow_covenant->check() )
-    {
-      m *= 1 + priest().buffs.shadow_covenant->data().effectN( 2 ).percent();
-    }
-    if ( priest().buffs.yshaarj_pride->check() )
-    {
-      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
-    }
-    return m;
+    double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
   }
 
-  double action_ta_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = ab::action_ta_multiplier();
-
-    if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
-    {
-      m *= vf_ta_multiplier;
-    }
-    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN( 4 ).percent();
-    }
-    if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
-    {
-      // TODO: use percent() based data on the talent when spelldata is fixed
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 2 ).percent();
-    }
-    if ( affected_by.shadow_covenant_ta && priest().buffs.shadow_covenant->check() )
-    {
-      m *= 1 + priest().buffs.shadow_covenant->data().effectN( 3 ).percent();
-    }
-    if ( priest().buffs.yshaarj_pride->check() )
-    {
-      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
-    }
-    return m;
+    double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
   }
 
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
+  }
+  
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
     if ( resource_type == RESOURCE_INSANITY )
@@ -909,19 +1193,6 @@ public:
       ab::gain_energize_resource( resource_type, amount, gain );
     }
   }
-
-protected:
-  priest_t& priest()
-  {
-    return *debug_cast<priest_t*>( ab::player );
-  }
-  const priest_t& priest() const
-  {
-    return *debug_cast<priest_t*>( ab::player );
-  }
-
-  // typedef for priest_action_t<action_base_t>
-  using base_t = priest_action_t;
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
