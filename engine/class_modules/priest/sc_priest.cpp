@@ -2667,6 +2667,7 @@ void priest_t::create_buffs()
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )
                             ->set_trigger_spell( talents.twist_of_fate )
+                            ->apply_affecting_aura( talents.twist_of_fate )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.masochism = make_buff<buffs::masochism_t>( *this );

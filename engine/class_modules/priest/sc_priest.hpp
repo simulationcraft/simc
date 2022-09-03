@@ -1350,10 +1350,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
       tdm *= priest().shadow_weaving_multiplier( t, spell_id );
     }
 
-    if ( priest().hungering_void_active( t ) )
+    /* if ( priest().hungering_void_active( t ) )
     {
       tdm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
-    }
+    }*/
 
     return tdm;
   }
@@ -1367,10 +1367,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
       ttm *= priest().shadow_weaving_multiplier( t, id );
     }
 
-    if ( priest().hungering_void_active( t ) )
+    /* if ( priest().hungering_void_active( t ) )
     {
       ttm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
-    }
+    }*/
 
     return ttm;
   }
