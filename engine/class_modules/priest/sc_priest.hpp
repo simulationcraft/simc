@@ -1066,7 +1066,7 @@ public:
 
     parse_buff_effects( p().buffs.voidform );
     parse_buff_effects( p().buffs.shadowform );
-    parse_buff_effects( p().buffs.twist_of_fate );
+    parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_buff_effects( p().buffs.shadow_covenant );
     parse_buff_effects( p().buffs.mind_devourer );
   }
@@ -1130,8 +1130,8 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; },
-                          p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; }, p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.hungering_void; }, p().talents.shadow.hungering_void );
   }
 
   double cost() const override
