@@ -284,8 +284,8 @@ namespace buffs
 void priest_t::create_buffs_discipline()
 {
   buffs.power_of_the_dark_side =
-      make_buff( this, "power_of_the_dark_side", specs.power_of_the_dark_side->effectN( 1 ).trigger() )
-          ->set_trigger_spell( specs.power_of_the_dark_side );
+      make_buff( this, "power_of_the_dark_side", talents.discipline.power_of_the_dark_side->effectN( 1 ).trigger() )
+          ->set_trigger_spell( talents.discipline.power_of_the_dark_side );
 
   buffs.sins_of_the_many = make_buff( this, "sins_of_the_many", talents.sins_of_the_many->effectN( 1 ).trigger() )
                                ->set_default_value( talents.sins_of_the_many->effectN( 1 ).percent() )
@@ -303,7 +303,11 @@ void priest_t::init_rng_discipline()
 
 void priest_t::init_spells_discipline()
 {
+  auto ST = [ this ]( std::string_view n ) { return find_talent_spell( talent_tree::SPECIALIZATION, n ); };
+
   // Talents
+  // Row 2
+  talents.discipline.power_of_the_dark_side = ST( "Power of the Dark Side" );  // TODO: verify this still works
   // T15
   talents.castigation = find_talent_spell( "Castigation" );
   talents.schism      = find_talent_spell( "Schism" );
@@ -318,9 +322,6 @@ void priest_t::init_spells_discipline()
   talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
   // T50
   talents.spirit_shell = find_talent_spell( "Spirit Shell" );
-
-  // Passive spell data
-  specs.power_of_the_dark_side = find_specialization_spell( "Power of the Dark Side" );
 }
 
 action_t* priest_t::create_action_discipline( util::string_view name, util::string_view options_str )

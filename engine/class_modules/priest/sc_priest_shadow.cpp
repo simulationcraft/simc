@@ -510,10 +510,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( d->state->result_amount > 0 )
     {
-      if ( priest().specialization() == PRIEST_DISCIPLINE )
-      {
-        trigger_power_of_the_dark_side();
-      }
+      trigger_power_of_the_dark_side();
 
       priest().trigger_idol_of_nzoth( d->state->target );
 

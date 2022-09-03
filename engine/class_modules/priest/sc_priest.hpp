@@ -304,6 +304,11 @@ public:
       player_talent_t surrender_to_madness;
     } shadow;
 
+    struct
+    {
+      player_talent_t power_of_the_dark_side;
+    } discipline;
+
     // Shared
     const spell_data_t* shining_force;
 
@@ -337,8 +342,7 @@ public:
     const spell_data_t* shadow_word_death_self_damage;
 
     // Discipline
-    const spell_data_t* discipline_priest;       // General discipline data
-    const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
+    const spell_data_t* discipline_priest;  // General discipline data
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -816,6 +820,9 @@ public:
 
   void trigger_power_of_the_dark_side()
   {
+    if ( !priest().talents.discipline.power_of_the_dark_side.enabled() )
+      return;
+
     int stack = priest().buffs.power_of_the_dark_side->check();
     if ( priest().buffs.power_of_the_dark_side->trigger() )
     {
