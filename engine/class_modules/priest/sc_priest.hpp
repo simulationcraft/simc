@@ -360,7 +360,7 @@ public:
   struct
   {
     const spell_data_t* shadow_word_pain;
-    player_talent_t vampiric_touch;
+    const spell_data_t* vampiric_touch;
     player_talent_t devouring_plague;
   } dot_spells;
 
