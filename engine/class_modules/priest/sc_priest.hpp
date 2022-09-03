@@ -242,6 +242,7 @@ public:
       player_talent_t last_word;
       player_talent_t misery;
       player_talent_t dark_void;
+      const spell_data_t* dark_void_insanity;
       player_talent_t auspicious_spirits;
       player_talent_t tormented_spirits;
       player_talent_t dispersion;
@@ -415,6 +416,7 @@ public:
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> hallucinations_vampiric_embrace;
+    propagate_const<gain_t*> insanity_dark_void;
   } gains;
 
   // Benefits
@@ -696,7 +698,6 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
-  void trigger_dark_void_swp( player_t* target, int targets );
   event_t* t28_4pc_summon_event;
   timespan_t t28_4pc_summon_duration;
   event_t* living_shadow_summon_event;

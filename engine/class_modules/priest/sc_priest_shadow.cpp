@@ -1181,28 +1181,49 @@ struct void_eruption_t final : public priest_spell_t
 
 // ==========================================================================
 // Dark Void
-// TODO: Check Insanity generation
-// TODO: Does it deal damage to all targets, but only apply SW:P to 8?
+// Currently only hits targets that it will DoT
+// TODO: adjust targeting logic to be more accurate
 // ==========================================================================
 struct dark_void_t final : public priest_spell_t
 {
+  propagate_const<shadow_word_pain_t*> child_swp;
+  double insanity_gain;
+
   dark_void_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_void", p, p.talents.shadow.dark_void )
+    : priest_spell_t( "dark_void", p, p.talents.shadow.dark_void ),
+      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      insanity_gain( p.talents.shadow.dark_void_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-    base_costs[ RESOURCE_INSANITY ] = 0.0;
 
     may_miss = false;
-    aoe      = -1;
     radius   = data().effectN( 1 ).radius_max();
+
+    if ( !priest().bugs )
+    {
+      // BUG: only hitting 4 targets where it should be 8 targets
+      // 8 targets is found in spelldata though
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/930
+      aoe = data().effectN( 2 ).base_value();
+      // BUG: Currently does not scale with Mastery
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+      affected_by_shadow_weaving = true;
+    }
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    // TODO: replace with spelldata
-    priest().trigger_dark_void_swp( target, 8 );
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    child_swp->target = s->target;
+    child_swp->execute();
   }
 };
 
@@ -1856,7 +1877,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.psychic_horror     = ST( "Psychic Horror" );
   talents.shadow.last_word          = ST( "Last Word" );
   talents.shadow.misery             = ST( "Misery" );
-  talents.shadow.dark_void          = ST( "Dark Void" );  // Needs testing
+  talents.shadow.dark_void          = ST( "Dark Void" );
+  talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
   talents.shadow.dispersion         = ST( "Dispersion" );
@@ -1867,7 +1889,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_spike       = ST( "Mind Spike" );        // NYI
   talents.shadow.vampiric_insight = ST( "Vampiric Insight" );  // TODO: remove mind blast charge
   talents.shadow.intangibility    = ST( "Intangibility" );
-  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );
+  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );  // NYI
   // Row 5
   talents.shadow.puppet_master     = ST( "Puppet Master" );  // NYI
   talents.shadow.damnation         = ST( "Damnation" );
@@ -1878,7 +1900,7 @@ void priest_t::init_spells_shadow()
   // Row 6
   talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
   talents.shadow.malediction        = ST( "Malediction" );
-  talents.shadow.psychic_link       = ST( "Psychic Link" );
+  talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   talents.shadow.shadow_crash       = ST( "Shadow Crash" );    // TODO implement VT
   talents.shadow.dark_ascension     = ST( "Dark Ascension" );  // NYI
@@ -1896,8 +1918,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
-  talents.shadow.fiending_dark      = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania          = ST( "Monomania" );
+  talents.shadow.fiending_dark      = ST( "Fiending Dark" );      // NYI
+  talents.shadow.monomania          = ST( "Monomania" );          // NYI
   talents.shadow.monomania_tickrate = find_spell( 375408 );       // TODO: confirm we still need this
   talents.shadow.painbreaker_psalm  = ST( "Painbreaker Psalm" );  // NYI
   talents.shadow.mastermind         = ST( "Mastermind" );         // NYI
@@ -1905,12 +1927,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_devourer      = ST( "Mind Devourer" );      // TODO: check values
   talents.shadow.ancient_madness    = ST( "Ancient Madness" );    // TODO: add point scaling
   // Row 10
-  talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );  // Move from class talents
+  talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
   talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );
   talents.shadow.idol_of_yoggsaron    = ST( "Idol of Yogg-Saron" );
   talents.shadow.idol_of_nzoth        = ST( "Idol of N'Zoth" );
-  talents.shadow.lunacy               = ST( "Lunacy" );  // NYI
-  talents.shadow.hungering_void       = ST( "Hungering Void" );
+  talents.shadow.lunacy               = ST( "Lunacy" );          // NYI
+  talents.shadow.hungering_void       = ST( "Hungering Void" );  // Check values
   talents.shadow.hungering_void_buff  = find_spell( 345219 );
   talents.shadow.surrender_to_madness = ST( "Surrender to Madness" );  // Confirm 2m cd is working
 
@@ -1919,9 +1941,10 @@ void priest_t::init_spells_shadow()
   specs.shadowform = find_specialization_spell( "Shadowform" );
   specs.void_bolt  = find_spell( 205448 );
   specs.voidform   = find_spell( 194249 );
-  
-  // T28 2PC
-  specs.dark_thought = find_specialization_spell( "Dark Thought" );
+
+  // Still need these for pre-patch since 2p/4p still works with DT and not VI
+  specs.dark_thought  = find_specialization_spell( "Dark Thought" );
+  specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
@@ -2190,34 +2213,6 @@ void priest_t::trigger_idol_of_nzoth( player_t* target )
 void priest_t::spawn_thing_from_beyond()
 {
   pets.thing_from_beyond.spawn();
-}
-
-// ==========================================================================
-// Trigger Dark Void's Shadow Word: Pain
-// ==========================================================================
-void priest_t::trigger_dark_void_swp( player_t* target, int targets )
-{
-  if ( !talents.shadow.dark_void.enabled() )
-  {
-    return;
-  }
-
-  std::vector<priestspace::priest_td_t*> tl = _target_data.get_entries();
-  if ( tl.size() > targets )
-  {
-    // always hit the target, so if it exists make sure it's first
-    auto start_it = tl.begin() + ( tl[ 0 ] == find_target_data( target ) ? 1 : 0 );
-
-    // randomize remaining targets
-    rng().shuffle( start_it, tl.end() );
-    // trim down to the amount of targets given
-    tl.resize( targets );
-  }
-
-  for ( priest_td_t* priest_td : tl )
-  {
-    background_actions.shadow_word_pain->trigger( priest_td->target );
-  }
 }
 
 }  // namespace priestspace

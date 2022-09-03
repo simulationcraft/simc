@@ -2034,6 +2034,7 @@ void priest_t::create_gains()
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
+  gains.insanity_dark_void               = get_gain( "Insanity Gained from Dark Void" );
 }
 
 /** Construct priest procs */
@@ -2562,7 +2563,7 @@ void priest_t::init_spells()
   talents.holy_nova                  = CT( "Holy Nova" );        // NYI
   talents.move_with_grace            = CT( "Move With Grace" );  // NYI
   talents.body_and_soul              = CT( "Body and Soul" );    // NYI
-  talents.masochism                  = CT( "Masochism" );
+  talents.masochism                  = CT( "Masochism" );        // Ensure still working
   talents.masochism_buff             = find_spell( 193065 );
   talents.depth_of_the_shadows       = CT( "Depth of the Shadows" );  // NYI
   talents.throes_of_pain             = CT( "Throes of Pain" );        // Confirm values
