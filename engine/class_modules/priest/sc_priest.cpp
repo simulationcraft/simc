@@ -26,23 +26,14 @@ struct mind_blast_t final : public priest_spell_t
 {
 private:
   double mind_blast_insanity;
-  const spell_data_t* mind_flay_spell;
-  const spell_data_t* mind_sear_spell;
-  const spell_data_t* void_torrent_spell;
   timespan_t your_shadow_duration_tier;
-  bool only_cwc;
   bool T28_4PC;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
-      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
-      mind_flay_spell( p.specs.mind_flay ),
-      mind_sear_spell( p.talents.shadow.mind_sear ),
-      void_torrent_spell( p.talents.shadow.void_torrent ),
-      only_cwc( false )
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) )
   {
-    add_option( opt_bool( "only_cwc", only_cwc ) );
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
@@ -61,7 +52,6 @@ public:
     }
 
     cooldown->hasted     = true;
-    usable_while_casting = use_while_casting = only_cwc;
     cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
 
     if ( p.talents.improved_mind_blast.enabled() )
@@ -80,27 +70,6 @@ public:
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
     cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
-  }
-
-  bool ready() override
-  {
-    if ( only_cwc )
-    {
-      if ( !priest().buffs.dark_thought->check() )
-        return false;
-      if ( player->channeling == nullptr )
-        return false;
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/761
-      if ( player->channeling->data().id() == mind_flay_spell->id() ||
-           player->channeling->data().id() == mind_sear_spell->id() ||
-           player->channeling->data().id() == void_torrent_spell->id() )
-        return priest_spell_t::ready();
-      return false;
-    }
-    else
-    {
-      return priest_spell_t::ready();
-    }
   }
 
   bool talbadars_stratagem_active() const
