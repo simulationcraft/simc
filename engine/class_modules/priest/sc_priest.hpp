@@ -100,7 +100,8 @@ public:
     // Talents
     propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
-    propagate_const<buff_t*> puppet_master;
+    propagate_const<buff_t*> rhapsody;
+    propagate_const<buff_t*> rhapsody_timer;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -184,6 +185,7 @@ public:
     // Row 4
     player_talent_t spell_warding;
     player_talent_t rhapsody;
+    const spell_data_t* rhapsody_buff;
     player_talent_t angelic_feather;
     player_talent_t shackle_undead;
     player_talent_t sheer_terror;
