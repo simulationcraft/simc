@@ -459,6 +459,10 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      if ( priest().talents.depth_of_the_shadows.enabled() )
+      {
+        priest().buffs.depth_of_the_shadows->trigger();
+      }
       if ( priest().buffs.fae_guardians->check() )
       {
         priest_td_t& td = get_td( s->target );
@@ -504,13 +508,19 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( priest().specialization() != PRIEST_DISCIPLINE )
-      return;
-
     if ( d->state->result_amount > 0 )
     {
-      trigger_power_of_the_dark_side();
+      if ( priest().specialization() == PRIEST_DISCIPLINE )
+      {
+        trigger_power_of_the_dark_side();
+      }
+
       priest().trigger_idol_of_nzoth( d->state->target );
+
+      if ( priest().talents.depth_of_the_shadows.enabled() )
+      {
+        priest().buffs.depth_of_the_shadows->trigger();
+      }
     }
   }
 };

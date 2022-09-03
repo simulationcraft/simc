@@ -1275,6 +1275,21 @@ struct shadow_mend_t final : public priest_heal_t
     harmful = false;
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_heal_t::composite_da_multiplier( s );
+
+    if ( priest().talents.depth_of_the_shadows && priest().buffs.depth_of_the_shadows->check() )
+    {
+      player->sim->print_debug( "{} triggered shadow_mend with {} mod.", priest(),
+                                priest().buffs.depth_of_the_shadows->check_stack_value() );
+
+      m *= 1 + priest().buffs.depth_of_the_shadows->check_stack_value();
+    }
+
+    return m;
+  }
+
   void execute() override
   {
     if ( priest().talents.masochism.enabled() )
@@ -1294,6 +1309,11 @@ struct shadow_mend_t final : public priest_heal_t
     }
 
     priest_heal_t::impact( s );
+
+    if ( priest().talents.depth_of_the_shadows.enabled() )
+    {
+      priest().buffs.depth_of_the_shadows->expire();
+    }
   }
 };
 
@@ -2599,15 +2619,15 @@ void priest_t::init_spells()
   talents.shadow_word_death       = CT( "Shadow Word: Death" );  // TODO: Confirm CD
   // Row 3
   talents.focused_mending            = CT( "Focused Mending" );  // NYI
-  talents.holy_nova                  = CT( "Holy Nova" );        // NYI
+  talents.holy_nova                  = CT( "Holy Nova" );
   talents.move_with_grace            = CT( "Move With Grace" );  // NYI
   talents.body_and_soul              = CT( "Body and Soul" );    // NYI
-  talents.masochism                  = CT( "Masochism" );        // Ensure still working
+  talents.masochism                  = CT( "Masochism" );        // TODO: implement heal over time
   talents.masochism_buff             = find_spell( 193065 );
-  talents.depth_of_the_shadows       = CT( "Depth of the Shadows" );  // NYI
-  talents.throes_of_pain             = CT( "Throes of Pain" );        // Confirm values
-  talents.death_and_madness          = CT( "Death and Madness" );     // NYI
-  talents.death_and_madness_insanity = find_spell( 321973 );          // TODO: do we still need this?
+  talents.depth_of_the_shadows       = CT( "Depth of the Shadows" );
+  talents.throes_of_pain             = CT( "Throes of Pain" );     // Confirm values
+  talents.death_and_madness          = CT( "Death and Madness" );  // NYI
+  talents.death_and_madness_insanity = find_spell( 321973 );       // TODO: do we still need this?
   // Row 4
   talents.spell_warding   = CT( "Spell Warding" );  // NYI
   talents.rhapsody        = CT( "Rhapsody" );
@@ -2684,6 +2704,9 @@ void priest_t::create_buffs()
                                  buffs.rhapsody->trigger();
                                }
                              } ) );
+  buffs.depth_of_the_shadows =
+      make_buff( this, "depth_of_the_shadows", talents.depth_of_the_shadows->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 );
   // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
   buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
                                 ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );

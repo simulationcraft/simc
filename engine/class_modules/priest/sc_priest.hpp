@@ -102,6 +102,7 @@ public:
     propagate_const<buff_t*> twist_of_fate;
     propagate_const<buff_t*> rhapsody;
     propagate_const<buff_t*> rhapsody_timer;
+    propagate_const<buff_t*> depth_of_the_shadows;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -829,7 +830,6 @@ public:
     }
   }
 
-  
   template <typename T>
   void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
   {
@@ -888,18 +888,18 @@ public:
     auto debug_message = [ & ]( std::string_view type ) {
       if ( buff )
       {
-        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", ab::name(), ab::id,
-                               type, val * 100.0, buff->name(), buff->data().id(), i );
+        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", ab::name(), ab::id, type,
+                              val * 100.0, buff->name(), buff->data().id(), i );
       }
       else if ( f )
       {
         p().sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})",
-                               ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+                              ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
       }
       else
       {
         p().sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", ab::name(), ab::id, type,
-                               val * 100.0, s_data->name_cstr(), s_data->id(), i );
+                              val * 100.0, s_data->name_cstr(), s_data->id(), i );
       }
     };
 
@@ -1095,7 +1095,7 @@ public:
         continue;
 
       p().sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})",
-                             ab::name(), ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+                            ab::name(), ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
       target_multiplier_debuffeffects.emplace_back( func, val, use_stacks );
     }
   }
@@ -1130,8 +1130,7 @@ public:
   {
     // using S = const spell_data_t*;
 
-    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; },
-                          p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; }, p().talents.schism );
   }
 
   double cost() const override
@@ -1181,7 +1180,7 @@ public:
     double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
     return rm;
   }
-  
+
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
   {
     if ( resource_type == RESOURCE_INSANITY )
