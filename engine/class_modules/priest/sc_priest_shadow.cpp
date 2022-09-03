@@ -49,19 +49,15 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( s );
     priest().trigger_idol_of_cthun( s );
 
-    // TODO: convert to mental decay
-    // if ( priest().talents.shadow.rot_and_wither.enabled() )
-    // {
-    //   if ( rng().roll( priest().talents.shadow.rot_and_wither->proc_chance() ) )
-    //   {
-    //     timespan_t dot_extension =
-    //         timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
-    //     priest_td_t& td = get_td( s->target );
+    if ( priest().talents.shadow.mental_decay.enabled() )
+    {
+      timespan_t dot_extension =
+          timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 1 ).base_value() );
+      priest_td_t& td = get_td( s->target );
 
-    //     td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-    //     td.dots.vampiric_touch->adjust_duration( dot_extension, true );
-    //   }
-    // }
+      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+      td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+    }
   }
 };
 
@@ -122,19 +118,15 @@ struct mind_flay_t final : public priest_spell_t
     priest().trigger_idol_of_cthun( d->state );
     trigger_mind_flay_dissonant_echoes();
 
-    // TODO: convert to Mental Decay
-    // if ( priest().talents.shadow.rot_and_wither.enabled() )
-    // {
-    //   if ( rng().roll( priest().talents.shadow.rot_and_wither->proc_chance() ) )
-    //   {
-    //     timespan_t dot_extension =
-    //         timespan_t::from_seconds( priest().talents.shadow.rot_and_wither->effectN( 1 ).base_value() );
-    //     priest_td_t& td = get_td( d->state->target );
+    if ( priest().talents.shadow.mental_decay.enabled() )
+    {
+      timespan_t dot_extension =
+          timespan_t::from_seconds( priest().talents.shadow.mental_decay->effectN( 1 ).base_value() );
+      priest_td_t& td = get_td( d->state->target );
 
-    //     td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
-    //     td.dots.vampiric_touch->adjust_duration( dot_extension, true );
-    //   }
-    // }
+      td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
+      td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+    }
   }
 
   bool ready() override
