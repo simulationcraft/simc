@@ -307,9 +307,6 @@ void priest_t::init_spells_discipline()
   // T15
   talents.castigation = find_talent_spell( "Castigation" );
   talents.schism      = find_talent_spell( "Schism" );
-  // T25
-  talents.body_and_soul   = find_talent_spell( "Body and Soul" );
-  talents.angelic_feather = find_talent_spell( "Angelic Feather" );
   // T30
   talents.power_word_solace = find_talent_spell( "Power Word: Solace" );
   // T35
@@ -319,8 +316,6 @@ void priest_t::init_spells_discipline()
   talents.shadow_covenant  = find_talent_spell( "Shadow Covenant" );
   // T45
   talents.purge_the_wicked = find_talent_spell( "Purge the Wicked" );
-  talents.divine_star      = find_talent_spell( "Divine Star" );
-  talents.halo             = find_talent_spell( "Halo" );
   // T50
   talents.spirit_shell = find_talent_spell( "Spirit Shell" );
 

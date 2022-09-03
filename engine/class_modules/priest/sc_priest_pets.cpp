@@ -283,7 +283,7 @@ struct base_fiend_pet_t : public priest_pet_t
     priest_pet_t::init_gains();
 
     if ( o().specialization() == PRIEST_SHADOW &&
-         ( o().talents.mindbender.enabled() || o().talents.improved_shadowfiend.enabled() ) )
+         ( o().talents.shadow.mindbender.enabled() || o().talents.shadowfiend.enabled() ) )
     {
       gains.fiend = o().gains.insanity_pet;
     }
@@ -314,17 +314,11 @@ struct base_fiend_pet_t : public priest_pet_t
   void arise() override
   {
     priest_pet_t::arise();
-
-    if ( o().talents.puppet_master.enabled() )
-      o().buffs.puppet_master->trigger();
   }
 
   void demise() override
   {
     priest_pet_t::demise();
-    if ( o().talents.puppet_master.enabled() )
-      o().buffs.puppet_master->cancel();
-
     o().buffs.yshaarj_pride->cancel();
   }
 
@@ -354,7 +348,7 @@ struct shadowfiend_pet_t final : public base_fiend_pet_t
   }
   double insanity_gain() const override
   {
-    if ( o().talents.improved_shadowfiend.enabled() )
+    if ( o().talents.shadowfiend.enabled() )
     {
       return power_leech_insanity;
     }
@@ -448,11 +442,6 @@ struct fiend_melee_t : public priest_pet_melee_t
       hasted_time /= 1.0 + p().o().conduits.rabid_shadows.percent();
     }
 
-    if ( p().o().talents.rabid_shadows.enabled() )
-    {
-      hasted_time /= 1.0 + p().o().talents.rabid_shadows->effectN( 1 ).percent();
-    }
-
     return hasted_time;
   }
 
@@ -468,7 +457,7 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
-      if ( p().o().talents.improved_shadowfiend.enabled() )
+      if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
@@ -871,122 +860,6 @@ action_t* your_shadow_tier_t::create_action( util::string_view name, util::strin
 }
 
 // ==========================================================================
-// Living Shadow Actions
-// BUG: These actions do not scale with Mastery
-// https://github.com/SimCMinMax/WoW-BugTracker/issues/926
-// ==========================================================================
-namespace actions
-{
-struct shadow_spike_t final : public priest_pet_spell_t
-{
-  shadow_spike_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike", p, p.o().find_spell( 376914 ) )
-  {
-    // BUG: This also hits the player for damage
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/925
-    affected_by_shadow_weaving = true;
-    background                 = true;
-  }
-};
-
-struct shadow_spike_volley_t final : public priest_pet_spell_t
-{
-  shadow_spike_volley_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_spike_volley", p, p.o().find_spell( 376914 ) )
-  {
-    affected_by_shadow_weaving = true;
-    channeled                  = true;
-    background                 = true;
-    hasted_ticks               = true;
-    base_tick_time             = timespan_t::from_seconds( 0.5 );
-    dot_duration               = timespan_t::from_seconds( 6 );
-    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
-    spell_power_mod.direct     = 0.0;
-    tick_may_crit              = true;
-  }
-};
-
-struct shadow_sear_t final : public priest_pet_spell_t
-{
-  shadow_sear_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_sear", p, p.o().find_spell( 373387 ) )
-  {
-    affected_by_shadow_weaving = true;
-    channeled                  = true;
-    background                 = true;
-    hasted_ticks               = true;
-    base_tick_time             = timespan_t::from_seconds( 0.5 );
-    dot_duration               = timespan_t::from_seconds( 6 );
-    spell_power_mod.tick       = data().effectN( 2 ).sp_coeff();
-    spell_power_mod.direct     = 0.0;
-    tick_may_crit              = true;
-    aoe                        = -1;
-  }
-};
-
-struct shadow_nova_t final : public priest_pet_spell_t
-{
-  shadow_nova_t( priest_pet_t& p ) : priest_pet_spell_t( "shadow_nova", p, p.o().find_spell( 376915 ) )
-  {
-    affected_by_shadow_weaving = true;
-    background                 = true;
-
-    // TODO: not sure if this is a bug or not, kind of feels like it
-    // Each target hit by Searing Nightmare triggers a Shadow Nova at that target,
-    // which then AoE's to targets around it hit.
-    aoe = -1;
-  }
-};
-}  // namespace actions
-
-// ==========================================================================
-// Living Shadow (Your Shadow)
-// ==========================================================================
-struct your_shadow_t final : public priest_pet_t
-{
-  your_shadow_t( priest_t* owner ) : priest_pet_t( owner->sim, *owner, "your_shadow", true )
-  {
-  }
-
-  // Your Shadow should sit there and do nothing until you cast a spell for it to mimic
-  void init_action_list() override
-  {
-    priest_pet_t::init_action_list();
-
-    action_priority_list_t* def = get_action_priority_list( "default" );
-  }
-
-  void init_background_actions() override
-  {
-    priest_pet_t::init_background_actions();
-
-    shadow_spike        = new actions::shadow_spike_t( *this );
-    shadow_spike_volley = new actions::shadow_spike_volley_t( *this );
-    shadow_sear         = new actions::shadow_sear_t( *this );
-    shadow_nova         = new actions::shadow_nova_t( *this );
-  }
-
-  // Tracking buff to easily get pet uptime (especially in AoE this is easier)
-  virtual void arise() override
-  {
-    pet_t::arise();
-
-    o().buffs.living_shadow->trigger();
-  }
-
-  virtual void demise() override
-  {
-    pet_t::demise();
-
-    o().buffs.living_shadow->expire();
-  }
-
-  action_t* create_action( util::string_view name, util::string_view options_str ) override;
-};
-
-action_t* your_shadow_t::create_action( util::string_view name, util::string_view options_str )
-{
-  return priest_pet_t::create_action( name, options_str );
-}
-
-// ==========================================================================
 // Eternal Call to the Void and Idol of C'Thun
 // ==========================================================================
 struct void_tendril_t final : public priest_pet_t
@@ -1239,7 +1112,8 @@ action_t* thing_from_beyond_t::create_action( util::string_view name, util::stri
 // summoned through the action list, so please check for null.
 fiend::base_fiend_pet_t* get_current_main_pet( priest_t& priest )
 {
-  pet_t* current_main_pet = priest.talents.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
+  pet_t* current_main_pet =
+      priest.talents.shadow.mindbender.enabled() ? priest.pets.mindbender : priest.pets.shadowfiend;
 
   return debug_cast<fiend::base_fiend_pet_t*>( current_main_pet );
 }
@@ -1274,7 +1148,7 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   auto current_pet = get_current_main_pet( *this );
   if ( current_pet && !current_pet->is_sleeping() )
   {
-    if ( current_pet->o().talents.shadowflame_prism.enabled() )
+    if ( current_pet->o().talents.shadow.shadowflame_prism.enabled() )
     {
       assert( current_pet->shadowflame_prism );
       current_pet->shadowflame_prism->set_target( target );
@@ -1286,53 +1160,6 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
       current_pet->shadowflame_prism_legendary->set_target( target );
       current_pet->shadowflame_prism_legendary->execute();
     }
-  }
-}
-
-action_t* priest_t::get_living_shadow_action( living_shadow_action action )
-{
-  priest_pet_t* pet = debug_cast<priest_pet_t*>( pets.your_shadow.active_pet() );
-
-  if ( pet )
-  {
-    switch ( action )
-    {
-      case living_shadow_action::SHADOW_SPIKE:
-        return pet->shadow_spike;
-      case living_shadow_action::SHADOW_SPIKE_VOLLEY:
-        return pet->shadow_spike_volley;
-      case living_shadow_action::SHADOW_SEAR:
-        return pet->shadow_sear;
-      case living_shadow_action::SHADOW_NOVA:
-        return pet->shadow_nova;
-      default:
-        break;
-    }
-  }
-
-  return nullptr;
-}
-
-void priest_t::trigger_living_shadow_action( player_t* target, living_shadow_action action )
-{
-  auto pet_action = get_living_shadow_action( action );
-
-  if ( pet_action )
-  {
-    pet_action->set_target( target );
-    pet_action->execute();
-  }
-}
-
-void priest_t::cancel_living_shadow_action( living_shadow_action action )
-{
-  if ( action != living_shadow_action::SHADOW_SPIKE_VOLLEY && action != living_shadow_action::SHADOW_SEAR )
-    return;
-
-  auto pet_action = get_living_shadow_action( action );
-  if ( pet_action )
-  {
-    pet_action->cancel();
   }
 }
 
@@ -1418,7 +1245,6 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
     void_lasher( "void_lasher", &p, []( priest_t* priest ) { return new void_lasher_t( priest ); } ),
     rattling_mage( "rattling_mage", &p, []( priest_t* priest ) { return new rattling_mage_t( priest ); } ),
     cackling_chemist( "cackling_chemist", &p, []( priest_t* priest ) { return new cackling_chemist_t( priest ); } ),
-    your_shadow( "your_shadow", &p, []( priest_t* priest ) { return new your_shadow_t( priest ); } ),
     your_shadow_tier( "your_shadow_tier", &p, []( priest_t* priest ) { return new your_shadow_tier_t( priest ); } ),
     thing_from_beyond( "thing_from_beyond", &p, []( priest_t* priest ) { return new thing_from_beyond_t( priest ); } )
 {
@@ -1440,12 +1266,6 @@ priest_t::priest_pets_t::priest_pets_t( priest_t& p )
   auto your_shadow_spell = p.find_spell( 363469 );
   your_shadow_tier.set_default_duration( timespan_t::from_seconds( your_shadow_spell->effectN( 2 ).base_value() ) +
                                          timespan_t::from_millis( 1 ) );
-
-  // Add 1ms to ensure pet is dismissed after last dot tick.
-  // Note: this is overriden in mind_blast_t when spawning the pet
-  auto living_shadow_duration_spell = p.find_spell( 373384 );
-  your_shadow.set_default_duration( living_shadow_duration_spell->duration() + timespan_t::from_millis( 1 ) );
-
   auto thing_from_beyond_spell = p.find_spell( 373277 );
   thing_from_beyond.set_default_duration( thing_from_beyond_spell->duration() );
 }

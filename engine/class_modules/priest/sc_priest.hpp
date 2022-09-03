@@ -36,6 +36,7 @@ struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
 struct echoing_void_t;
 struct idol_of_cthun_t;
+struct shadow_word_pain_t;
 }  // namespace actions::spells
 
 /**
@@ -79,15 +80,6 @@ public:
   priest_td_t( player_t* target, priest_t& p );
   void reset();
   void target_demise();
-};
-
-enum class living_shadow_action
-{
-  SHADOW_SPIKE,         // Single Target
-  SHADOW_SPIKE_VOLLEY,  // Single Target Channel
-  SHADOW_SEAR,          // AoE Channel
-  SHADOW_NOVA,          // AoE
-  NONE                  // Does Nothing
 };
 
 /**
@@ -144,7 +136,6 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> yshaarj_pride;
-    propagate_const<buff_t*> living_shadow;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -169,108 +160,148 @@ public:
   {
     // Priest Tree
     // Row 1
-    player_talent_t shadow_word_death;
+    player_talent_t renew;
+    player_talent_t dispel_magic;
+    player_talent_t shadowfiend;
     // Row 2
-    player_talent_t improved_shadow_word_death;
+    player_talent_t prayer_of_mending;
+    player_talent_t leap_of_faith;
+    player_talent_t purify_disease;
     player_talent_t shadow_mend;
     const spell_data_t* shadow_mend_self_damage;
+    player_talent_t shadow_word_death;
     // Row 3
+    player_talent_t focused_mending;
+    player_talent_t holy_nova;
+    player_talent_t move_with_grace;
+    player_talent_t body_and_soul;
     player_talent_t masochism;
     const spell_data_t* masochism_buff;
-    // Row 4
-    player_talent_t power_infusion;
-    player_talent_t improved_mind_blast;
-    player_talent_t twist_of_fate;
-    player_talent_t taming_the_shadows;
-    // Row 5
-    player_talent_t shadowfiend;
-    // Row 6
+    player_talent_t depth_of_the_shadows;
     player_talent_t throes_of_pain;
-    player_talent_t improved_shadowfiend;
+    player_talent_t death_and_madness;
+    const spell_data_t* death_and_madness_insanity;
+    // Row 4
+    player_talent_t spell_warding;
+    player_talent_t rhapsody;
+    player_talent_t angelic_feather;
+    player_talent_t shackle_undead;
+    player_talent_t sheer_terror;
+    player_talent_t void_tendrils;
+    player_talent_t mind_control;
+    // Row 5
+    player_talent_t tools_of_the_cloth;
+    player_talent_t mass_dispel;
+    player_talent_t power_infusion;
+    player_talent_t vampiric_embrace;
+    player_talent_t dominant_mind;
+    // Row 6
+    player_talent_t inspiration;
+    player_talent_t blessed_recovery;
+    player_talent_t improved_mass_dispel;
+    player_talent_t psychic_voice;
+    player_talent_t twins_of_the_sun_priestess;
+    player_talent_t void_shield;
+    player_talent_t sanlayn;
+    player_talent_t apathy;
     // Row 7
-    player_talent_t puppet_master;
+    player_talent_t unwavering_will;
+    player_talent_t twist_of_fate;
+    player_talent_t improved_mind_blast;
     // Row 8
+    player_talent_t angels_mercy;
+    player_talent_t binding_heals;
+    player_talent_t halo;
+    player_talent_t divine_star;
     player_talent_t translucent_image;
-    player_talent_t mindbender;
-    // Row 9
-    player_talent_t tithe_evasion;
-    player_talent_t rabid_shadows;
-    // Row 10
+    player_talent_t phantasm;
     player_talent_t mindgames;
-    player_talent_t shadowflame_prism;
+    // Row 9
+    player_talent_t surge_of_light;
+    player_talent_t lights_inspiration;
+    player_talent_t crystalline_reflection;
+    player_talent_t improved_fade;
+    player_talent_t manipulation;
+    // Row 10
+    player_talent_t holy_word_life;
+    player_talent_t angelic_bulwark;
+    player_talent_t void_shift;
+    player_talent_t shattered_perceptions;
 
     struct
     {
       // Shadow Tree
-      // Row 1
-      player_talent_t mind_flay;
       // Row 2
+      player_talent_t silence;
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
       player_talent_t mind_sear;
       const spell_data_t* mind_sear_insanity;
       // Row 3
-      player_talent_t death_and_madness;
-      player_talent_t mind_bomb;
-      player_talent_t psychic_voice;
-      player_talent_t misery;
-      const spell_data_t* death_and_madness_insanity;
-      player_talent_t silence;
-      player_talent_t fortress_of_the_mind;
-      // Row 4
-      player_talent_t vampiric_embrace;
-      player_talent_t unfurling_darkness;
-      player_talent_t vampiric_insight;
+      player_talent_t psychic_horror;
       player_talent_t last_word;
+      player_talent_t misery;
+      player_talent_t dark_void;
+      player_talent_t auspicious_spirits;
+      player_talent_t tormented_spirits;
       player_talent_t dispersion;
-      // Row 5
-      player_talent_t sanlayn;
+      // Row 4
+      player_talent_t shadow_orbs;
       player_talent_t hallucinations;
-      const spell_data_t* shadowy_apparition;  // Damage event
-      player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t tithe_evasion;
+      player_talent_t mind_spike;
+      player_talent_t vampiric_insight;
+      player_talent_t intangibility;
+      player_talent_t mental_fortitude;
+      // Row 5
+      player_talent_t puppet_master;
+      player_talent_t damnation;
+      player_talent_t mind_melt;
+      player_talent_t surge_of_darkness;
+      player_talent_t mental_decay;
+      player_talent_t dark_evangelism;
+      // Row 6
+      player_talent_t harnessed_shadows;
+      player_talent_t malediction;
+      player_talent_t psychic_link;
+      player_talent_t void_torrent;
+      player_talent_t shadow_crash;
+      player_talent_t dark_ascension;
+      player_talent_t unfurling_darkness;
+      // Row 7
+      player_talent_t maddening_touch;
+      player_talent_t whispers_of_the_damned;
+      player_talent_t piercing_shadows;
+      // Row 8
+      player_talent_t mindbender;
+      player_talent_t idol_of_yshaarj;
+      player_talent_t pain_of_death;
+      player_talent_t mind_flay_insanity;
+      player_talent_t derangement;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
+      // Row 9
+      player_talent_t fiending_dark;
       player_talent_t monomania;
       const spell_data_t* monomania_tickrate;
-      player_talent_t psychic_horror;
-      player_talent_t intangibility;
-      // Row 6
-      player_talent_t psychic_link;
-      player_talent_t auspicious_spirits;
+      player_talent_t painbreaker_psalm;
+      player_talent_t mastermind;
+      player_talent_t insidious_ire;
+      player_talent_t mind_devourer;
+      player_talent_t ancient_madness;
+      // Row 10
+      player_talent_t shadowflame_prism;
+      player_talent_t idol_of_cthun;
+      player_talent_t idol_of_yoggsaron;
+      player_talent_t idol_of_nzoth;
+      player_talent_t lunacy;
       player_talent_t hungering_void;
       const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
       player_talent_t surrender_to_madness;
-      player_talent_t damnation;
-      player_talent_t void_touched;
-      // Row 7
-      player_talent_t shadow_crash;
-      player_talent_t ancient_madness;
-      player_talent_t malediction;
-      player_talent_t void_torrent;
-      // Row 8
-      player_talent_t mental_fortitude;
-      player_talent_t insidious_ire;
-      player_talent_t mind_devourer;
-      // Row 9
-      player_talent_t sanguine_teachings;
-      player_talent_t unleash_the_shadows;
-      player_talent_t rot_and_wither;
-      player_talent_t abyssal_knowledge;
-      // Row 10
-      player_talent_t idol_of_yshaarj;
-      player_talent_t idol_of_nzoth;
-      player_talent_t void_apparitions;
-      player_talent_t living_shadow;
-      const spell_data_t* living_shadow_duration;
-      player_talent_t eidolic_intuition;
-      player_talent_t idol_of_cthun;
-      player_talent_t idol_of_yoggsaron;
     } shadow;
 
     // Shared
-    const spell_data_t* angelic_feather;
-    const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
-    const spell_data_t* divine_star;
-    const spell_data_t* halo;
 
     // Discipline
     // T15
@@ -311,6 +342,7 @@ public:
     const spell_data_t* holy_word_serenity;
 
     // Shadow
+    const spell_data_t* mind_flay;
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* shadow_priest;  // General shadow data
@@ -418,7 +450,6 @@ public:
     propagate_const<proc_t*> vampiric_insight_missed;
     propagate_const<proc_t*> void_touched;
     propagate_const<proc_t*> thing_from_beyond;
-    propagate_const<proc_t*> living_shadow;
   } procs;
 
   // Special
@@ -436,6 +467,7 @@ public:
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
+    propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
   } background_actions;
 
   // Items
@@ -452,7 +484,6 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
-    spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
     spawner::pet_spawner_t<pet_t, priest_t> your_shadow_tier;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
@@ -647,9 +678,6 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
-  action_t* get_living_shadow_action( living_shadow_action action );
-  void trigger_living_shadow_action( player_t* target, living_shadow_action action );
-  void cancel_living_shadow_action( living_shadow_action action );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t* );
@@ -668,6 +696,7 @@ public:
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
+  void trigger_dark_void_swp( player_t* target, int targets );
   event_t* t28_4pc_summon_event;
   timespan_t t28_4pc_summon_duration;
   event_t* living_shadow_summon_event;
@@ -937,13 +966,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  priestspace::living_shadow_action living_shadow_action;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false ),
-      living_shadow_action( priestspace::living_shadow_action::NONE )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -981,9 +1006,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void last_tick( dot_t* d ) override
   {
-    if ( priest().channeling && living_shadow_action != living_shadow_action::NONE )
-      priest().cancel_living_shadow_action( living_shadow_action );
-
     base_t::last_tick( d );
   }
 
@@ -992,15 +1014,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double save_health_percentage = s->target->health_percentage();
 
     base_t::impact( s );
-
-    if ( living_shadow_action != living_shadow_action::NONE )
-    {
-      priest().trigger_living_shadow_action( s->target, living_shadow_action );
-    }
-    else
-    {
-      sim->print_debug( "{} casts action not replicated by Living Shadow: {}.", priest(), s->action->name_str );
-    }
 
     if ( result_is_hit( s->result ) )
     {
@@ -1106,9 +1119,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double amount = s->result_amount;
     amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();
 
-    if ( priest().talents.shadow.sanlayn.enabled() )
+    if ( priest().talents.sanlayn.enabled() )
     {
-      amount *= priest().talents.shadow.sanlayn->effectN( 2 ).percent();
+      amount *= priest().talents.sanlayn->effectN( 2 ).percent();
     }
 
     for ( player_t* ally : sim->player_no_pet_list )
