@@ -1198,7 +1198,7 @@ struct hot_hand_buff_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_trigger_spell( shaman->talent.hot_hand );
-    set_default_value_from_effect( 2 );
+    set_default_value( shaman->talent.hot_hand->effectN( 2 ).percent() );
     set_stack_change_callback(
         [ this ]( buff_t*, int, int ) { shaman->cooldown.lava_lash->adjust_recharge_multiplier(); } );
   }
@@ -3640,7 +3640,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( p()->buff.hot_hand->up() )
     {
-      m *= 1.0 + p()->buff.hot_hand->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->talent.hot_hand->effectN( 3 ).percent();
     }
 
     // Flametongue imbue only increases Lava Lash damage if it is imbued on the off-hand
