@@ -46,7 +46,7 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
-    cooldown->hasted     = true;
+    cooldown->hasted  = true;
     cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
 
     if ( p.talents.improved_mind_blast.enabled() )
@@ -151,7 +151,8 @@ public:
     if ( priest().buffs.dark_thought->up() )
     {
       priest().buffs.dark_thought->decrement();
-      priest().buffs.vampiric_insight->decrement(); // TODO: Check Prepatch Using a Dark Thought also uses your Vampiric Insight Proc 03/09/2022
+      priest().buffs.vampiric_insight->decrement();  // TODO: Check Prepatch Using a Dark Thought also uses your
+                                                     // Vampiric Insight Proc 03/09/2022
       if ( T28_4PC )
       {
         priest().procs.living_shadow_tier->occur();
@@ -1286,13 +1287,9 @@ struct shadow_mend_t final : public priest_heal_t
 
   void impact( action_state_t* s ) override
   {
+    // TODO: add in Masochism HoT
     if ( !priest().talents.masochism.enabled() && result_is_hit( s->result ) )
     {
-      if ( priest().talents.masochism.enabled() )
-      {
-        priest_heal_t::impact( s );
-        return;
-      }
       shadow_mend_self_damage->trigger( s->result_amount );
     }
 
