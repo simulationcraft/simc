@@ -7488,9 +7488,11 @@ struct sacrificial_pact_t : public death_knight_heal_t
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration; // For T28 Ghoul summon, remove after shadowlands
+  double dnd_cleave_targets; // For when in dnd how many targets we can cleave
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
-    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) )
+    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) ),
+    dnd_cleave_targets( p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value() )
   {
     weapon = &( player -> main_hand_weapon );
   }
@@ -7506,7 +7508,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   int n_targets() const override
   {
     if ( p() -> talent.cleaving_strikes.ok() )
-      return p() -> in_death_and_decay() ? p() -> find_spell( 55090 ) -> effectN( 4 ).base_value() : 0;
+      return p() -> in_death_and_decay() ? dnd_cleave_targets : 0;
     return 0;
   }
 
