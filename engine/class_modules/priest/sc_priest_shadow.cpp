@@ -1919,6 +1919,9 @@ void priest_t::init_spells_shadow()
   specs.shadowform = find_specialization_spell( "Shadowform" );
   specs.void_bolt  = find_spell( 205448 );
   specs.voidform   = find_spell( 194249 );
+  
+  // T28 2PC
+  specs.dark_thought = find_specialization_spell( "Dark Thought" );
 
   // Legendary Effects
   specs.cauterizing_shadows_health = find_spell( 336373 );
