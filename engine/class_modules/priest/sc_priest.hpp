@@ -138,6 +138,7 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> yshaarj_pride;
+    propagate_const<buff_t*> dark_evangelism;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -1076,6 +1077,7 @@ public:
     parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
     parse_buff_effects( p().buffs.shadow_covenant );
     parse_buff_effects( p().buffs.mind_devourer );
+    parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
   }
 
   template <typename... Ts>

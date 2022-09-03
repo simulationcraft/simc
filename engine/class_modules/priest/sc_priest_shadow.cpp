@@ -49,6 +49,11 @@ struct mind_sear_tick_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( s );
     priest().trigger_idol_of_cthun( s );
 
+    if ( priest().talents.shadow.dark_evangelism.enabled() )
+    {
+      priest().buffs.dark_evangelism->trigger();
+    }
+
     if ( priest().talents.shadow.mental_decay.enabled() )
     {
       timespan_t dot_extension =
@@ -117,6 +122,11 @@ struct mind_flay_t final : public priest_spell_t
     priest().trigger_eternal_call_to_the_void( d->state );
     priest().trigger_idol_of_cthun( d->state );
     trigger_mind_flay_dissonant_echoes();
+
+    if ( priest().talents.shadow.dark_evangelism.enabled() )
+    {
+      priest().buffs.dark_evangelism->trigger();
+    }
 
     if ( priest().talents.shadow.mental_decay.enabled() )
     {
@@ -1829,6 +1839,9 @@ void priest_t::create_buffs_shadow()
                                     spawn_thing_from_beyond();
                                   }
                                 } ) );
+
+  buffs.dark_evangelism =
+      make_buff( this, "dark_evangelism", find_spell( 391099 ) )->set_trigger_spell( talents.shadow.dark_evangelism );
 
   // TODO: Get real damage amplifier and spell data when blizzard implements this.
   buffs.yshaarj_pride =
