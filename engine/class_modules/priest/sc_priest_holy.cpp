@@ -78,37 +78,6 @@ struct holy_word_serenity_t final : public priest_heal_t
   }
 };
 
-// TODO Fix targeting to start from the priest and not the target
-// TODO Implement 3+ targets hit extra spawn of Holy Nova
-struct holy_nova_t final : public priest_spell_t
-{
-  const spell_data_t* holy_fire_rank2;
-
-  holy_nova_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "holy_nova", player, player.find_class_spell( "Holy Nova" ) ),
-      holy_fire_rank2( player.find_rank_spell( "Holy Nova", "Rank 2" ) )
-  {
-    parse_options( options_str );
-    aoe = -1;
-    apply_affecting_aura( player.find_rank_spell( "Holy Nova", "Rank 2" ) );  // GCD reduction
-  }
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    if ( holy_fire_rank2->ok() )
-    {
-      double hf_proc_chance = holy_fire_rank2->effectN( 1 ).percent();
-
-      if ( rng().roll( hf_proc_chance ) )
-      {
-        sim->print_debug( "{} reset holy fire cooldown, using holy nova. ", priest() );
-        priest().cooldowns.holy_fire->reset( true );
-      }
-    }
-  }
-};
-
 struct flash_heal_t final : public priest_heal_t
 {
   flash_heal_t( priest_t& p, util::string_view options_str )
@@ -189,11 +158,6 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
   if ( name == "apotheosis" )
   {
     return new apotheosis_t( *this, options_str );
-  }
-
-  if ( name == "holy_nova" )
-  {
-    return new holy_nova_t( *this, options_str );
   }
 
   if ( name == "holy_word_chastise" )

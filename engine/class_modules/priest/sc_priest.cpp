@@ -1551,6 +1551,49 @@ struct shadow_word_death_t final : public priest_spell_t
   }
 };
 
+// TODO: Add Improved Holy Nova for Holy/Discipline
+struct holy_nova_t final : public priest_spell_t
+{
+  holy_nova_t( priest_t& player, util::string_view options_str )
+    : priest_spell_t( "holy_nova", player, player.talents.holy_nova )
+  {
+    parse_options( options_str );
+    aoe = -1;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
+    {
+      m *= 1 + ( priest().talents.rhapsody_buff->effectN( 1 ).percent() * priest().buffs.rhapsody->current_stack );
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.rhapsody )
+    {
+      priest().buffs.rhapsody_timer->trigger();
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    if ( priest().talents.rhapsody && priest().buffs.rhapsody->check() )
+    {
+      priest().buffs.rhapsody->expire();
+    }
+  }
+};
+
 }  // namespace spells
 
 namespace heals
@@ -2411,6 +2454,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new shadow_word_death_t( *this, options_str );
   }
+  if ( name == "holy_nova" )
+  {
+    return new holy_nova_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -2600,8 +2647,9 @@ void priest_t::init_spells()
   talents.death_and_madness          = CT( "Death and Madness" );     // NYI
   talents.death_and_madness_insanity = find_spell( 321973 );          // TODO: do we still need this?
   // Row 4
-  talents.spell_warding   = CT( "Spell Warding" );    // NYI
-  talents.rhapsody        = CT( "Rhapsody" );         // NYI
+  talents.spell_warding   = CT( "Spell Warding" );  // NYI
+  talents.rhapsody        = CT( "Rhapsody" );
+  talents.rhapsody_buff   = find_spell( 390636 );
   talents.angelic_bulwark = CT( "Angelic Bulwark" );  // NYI
   talents.shackle_undead  = CT( "Shackle Undead" );   // NYI
   talents.sheer_terror    = CT( "Sheer Terror" );     // NYI
@@ -2660,6 +2708,19 @@ void priest_t::create_buffs()
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.masochism = make_buff<buffs::masochism_t>( *this );
+  buffs.rhapsody =
+      make_buff( this, "rhapsody", talents.rhapsody_buff )
+          ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
+  buffs.rhapsody_timer = make_buff( this, "rhapsody_timer", talents.rhapsody )
+                             ->set_quiet( true )
+                             ->set_duration( timespan_t::from_seconds( 5 ) )
+                             ->set_max_stack( 1 )
+                             ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int new_ ) {
+                               if ( new_ == 0 )
+                               {
+                                 buffs.rhapsody->trigger();
+                               }
+                             } ) );
   // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
   buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
                                 ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );
@@ -2831,6 +2892,11 @@ void priest_t::init_action_list()
 void priest_t::combat_begin()
 {
   player_t::combat_begin();
+
+  if ( talents.rhapsody.enabled() )
+  {
+    buffs.rhapsody_timer->trigger();
+  }
 }
 
 // priest_t::reset ==========================================================
