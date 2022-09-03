@@ -1066,6 +1066,7 @@ public:
     parse_buff_effects( p().buffs.shadowform );
     parse_buff_effects( p().buffs.twist_of_fate );
     parse_buff_effects( p().buffs.shadow_covenant );
+    parse_buff_effects( p().buffs.mind_devourer );
   }
 
   template <typename... Ts>

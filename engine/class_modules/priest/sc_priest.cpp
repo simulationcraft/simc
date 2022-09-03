@@ -46,11 +46,6 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
-    if ( priest().talents.shadow.mind_devourer.enabled() )
-    {
-      base_dd_multiplier *= ( 1.0 + priest().talents.shadow.mind_devourer->effectN( 1 ).percent() );
-    }
-
     cooldown->hasted     = true;
     cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
 
@@ -1203,7 +1198,7 @@ struct summon_mindbender_t final : public summon_pet_t
   timespan_t default_duration;
 
   summon_mindbender_t( priest_t& p, util::string_view options_str, int version )
-    : summon_pet_t( "mindbender", p, p.find_spell( p.talents.shadow.mindbender->effectN( version ).base_value() ) )
+    : summon_pet_t( "mindbender", p, p.talents.shadow.mindbender )
   {
     parse_options( options_str );
     harmful          = false;

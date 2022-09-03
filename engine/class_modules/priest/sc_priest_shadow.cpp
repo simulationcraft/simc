@@ -857,16 +857,6 @@ struct devouring_plague_t final : public priest_spell_t
     }
   }
 
-  double cost() const override
-  {
-    if ( priest().buffs.mind_devourer->check() || !casted )
-    {
-      return 0;
-    }
-
-    return priest_spell_t::cost();
-  }
-
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1808,7 +1798,7 @@ void priest_t::create_buffs_shadow()
   {
     buffs.mind_devourer = make_buff( this, "mind_devourer", find_spell( 373204 ) )
                               ->set_trigger_spell( talents.shadow.mind_devourer )
-                              ->set_chance( talents.shadow.mind_devourer->effectN( 2 ).percent() );
+                              ->set_chance( talents.shadow.mind_devourer->effectN( 1 ).percent() );
   }
   else
   {
