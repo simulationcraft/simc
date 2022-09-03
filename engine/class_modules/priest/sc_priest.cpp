@@ -156,6 +156,7 @@ public:
     if ( priest().buffs.dark_thought->up() )
     {
       priest().buffs.dark_thought->decrement();
+      priest().buffs.vampiric_insight->decrement(); // TODO: Check Prepatch Using a Dark Thought also uses your Vampiric Insight Proc 03/09/2022
       if ( T28_4PC )
       {
         priest().procs.living_shadow_tier->occur();
