@@ -933,8 +933,8 @@
       { "data_type": "I", "field": "quest_kill_monster", "elements": 6 },
       { "data_type": "i", "field": "movement_flags", "elements": 2 },
       { "data_type": "i", "field": "unk_81", "elements": 4 },
-      { "data_type": "I", "field": "unk_82", "elements": 4 },
-      { "data_type": "I", "field": "unk_83", "elements": 4 }
+      { "data_type": "h", "field": "unk_82", "elements": 4 },
+      { "data_type": "h", "field": "unk_83", "elements": 4 }
     ]
   },
   "RandPropPoints": {
