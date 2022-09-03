@@ -1964,7 +1964,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   buffs.wrathful_faerie_fermata     = make_buff( *this, "wrathful_faerie_fermata", p.find_spell( 345452 ) )
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
-  buffs.hungering_void = make_buff( *this, "hungering_void", p.find_spell( 345219 ) );
+  buffs.hungering_void = make_buff( *this, "hungering_void", p.talents.shadow.hungering_void_buff );
 
   buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
 
