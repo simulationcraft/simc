@@ -2064,6 +2064,7 @@ void priest_t::create_gains()
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
+  gains.insanity_dark_void               = get_gain( "Insanity Gained from Dark Void" );
 }
 
 /** Construct priest procs */

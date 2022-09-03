@@ -1181,28 +1181,49 @@ struct void_eruption_t final : public priest_spell_t
 
 // ==========================================================================
 // Dark Void
-// TODO: Check Insanity generation
-// TODO: Does it deal damage to all targets, but only apply SW:P to 8?
+// Currently only hits targets that it will DoT
+// TODO: adjust targeting logic to be more accurate
 // ==========================================================================
 struct dark_void_t final : public priest_spell_t
 {
+  propagate_const<shadow_word_pain_t*> child_swp;
+  double insanity_gain;
+
   dark_void_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "dark_void", p, p.talents.shadow.dark_void )
+    : priest_spell_t( "dark_void", p, p.talents.shadow.dark_void ),
+      child_swp( new shadow_word_pain_t( priest(), false ) ),
+      insanity_gain( p.talents.shadow.dark_void_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
-    base_costs[ RESOURCE_INSANITY ] = 0.0;
 
     may_miss = false;
-    aoe      = -1;
     radius   = data().effectN( 1 ).radius_max();
+
+    if ( !priest().bugs )
+    {
+      // BUG: only hitting 4 targets where it should be 8 targets
+      // 8 targets is found in spelldata though
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/930
+      aoe = data().effectN( 2 ).base_value();
+      // BUG: Currently does not scale with Mastery
+      // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+      affected_by_shadow_weaving = true;
+    }
   }
 
   void execute() override
   {
     priest_spell_t::execute();
 
-    // TODO: replace with spelldata
-    priest().trigger_dark_void_swp( target, 8 );
+    priest().generate_insanity( insanity_gain, priest().gains.insanity_dark_void, execute_state->action );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    child_swp->target = s->target;
+    child_swp->execute();
   }
 };
 
@@ -1856,7 +1877,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.psychic_horror     = ST( "Psychic Horror" );
   talents.shadow.last_word          = ST( "Last Word" );
   talents.shadow.misery             = ST( "Misery" );
-  talents.shadow.dark_void          = ST( "Dark Void" );  // Needs testing
+  talents.shadow.dark_void          = ST( "Dark Void" );     // Needs testing
+  talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
   talents.shadow.dispersion         = ST( "Dispersion" );
@@ -2187,34 +2209,6 @@ void priest_t::trigger_idol_of_nzoth( player_t* target )
 void priest_t::spawn_thing_from_beyond()
 {
   pets.thing_from_beyond.spawn();
-}
-
-// ==========================================================================
-// Trigger Dark Void's Shadow Word: Pain
-// ==========================================================================
-void priest_t::trigger_dark_void_swp( player_t* target, int targets )
-{
-  if ( !talents.shadow.dark_void.enabled() )
-  {
-    return;
-  }
-
-  std::vector<priestspace::priest_td_t*> tl = _target_data.get_entries();
-  if ( tl.size() > targets )
-  {
-    // always hit the target, so if it exists make sure it's first
-    auto start_it = tl.begin() + ( tl[ 0 ] == find_target_data( target ) ? 1 : 0 );
-
-    // randomize remaining targets
-    rng().shuffle( start_it, tl.end() );
-    // trim down to the amount of targets given
-    tl.resize( targets );
-  }
-
-  for ( priest_td_t* priest_td : tl )
-  {
-    background_actions.shadow_word_pain->trigger( priest_td->target );
-  }
 }
 
 }  // namespace priestspace
