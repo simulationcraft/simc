@@ -1877,7 +1877,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.psychic_horror     = ST( "Psychic Horror" );
   talents.shadow.last_word          = ST( "Last Word" );
   talents.shadow.misery             = ST( "Misery" );
-  talents.shadow.dark_void          = ST( "Dark Void" );     // Needs testing
+  talents.shadow.dark_void          = ST( "Dark Void" );
   talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
@@ -1889,7 +1889,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_spike       = ST( "Mind Spike" );        // NYI
   talents.shadow.vampiric_insight = ST( "Vampiric Insight" );  // TODO: remove mind blast charge
   talents.shadow.intangibility    = ST( "Intangibility" );
-  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );
+  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );  // NYI
   // Row 5
   talents.shadow.puppet_master     = ST( "Puppet Master" );  // NYI
   talents.shadow.damnation         = ST( "Damnation" );
@@ -1900,7 +1900,7 @@ void priest_t::init_spells_shadow()
   // Row 6
   talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
   talents.shadow.malediction        = ST( "Malediction" );
-  talents.shadow.psychic_link       = ST( "Psychic Link" );
+  talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   talents.shadow.shadow_crash       = ST( "Shadow Crash" );    // TODO implement VT
   talents.shadow.dark_ascension     = ST( "Dark Ascension" );  // NYI
@@ -1918,8 +1918,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
-  talents.shadow.fiending_dark      = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania          = ST( "Monomania" );
+  talents.shadow.fiending_dark      = ST( "Fiending Dark" );      // NYI
+  talents.shadow.monomania          = ST( "Monomania" );          // NYI
   talents.shadow.monomania_tickrate = find_spell( 375408 );       // TODO: confirm we still need this
   talents.shadow.painbreaker_psalm  = ST( "Painbreaker Psalm" );  // NYI
   talents.shadow.mastermind         = ST( "Mastermind" );         // NYI
@@ -1927,12 +1927,12 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_devourer      = ST( "Mind Devourer" );      // TODO: check values
   talents.shadow.ancient_madness    = ST( "Ancient Madness" );    // TODO: add point scaling
   // Row 10
-  talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );  // Move from class talents
+  talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
   talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );
   talents.shadow.idol_of_yoggsaron    = ST( "Idol of Yogg-Saron" );
   talents.shadow.idol_of_nzoth        = ST( "Idol of N'Zoth" );
-  talents.shadow.lunacy               = ST( "Lunacy" );  // NYI
-  talents.shadow.hungering_void       = ST( "Hungering Void" );
+  talents.shadow.lunacy               = ST( "Lunacy" );          // NYI
+  talents.shadow.hungering_void       = ST( "Hungering Void" );  // Check values
   talents.shadow.hungering_void_buff  = find_spell( 345219 );
   talents.shadow.surrender_to_madness = ST( "Surrender to Madness" );  // Confirm 2m cd is working
 
@@ -1941,7 +1941,7 @@ void priest_t::init_spells_shadow()
   specs.shadowform = find_specialization_spell( "Shadowform" );
   specs.void_bolt  = find_spell( 205448 );
   specs.voidform   = find_spell( 194249 );
-  
+
   // Still need these for pre-patch since 2p/4p still works with DT and not VI
   specs.dark_thought  = find_specialization_spell( "Dark Thought" );
   specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );

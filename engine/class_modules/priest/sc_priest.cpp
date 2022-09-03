@@ -2593,7 +2593,7 @@ void priest_t::init_spells()
   talents.holy_nova                  = CT( "Holy Nova" );        // NYI
   talents.move_with_grace            = CT( "Move With Grace" );  // NYI
   talents.body_and_soul              = CT( "Body and Soul" );    // NYI
-  talents.masochism                  = CT( "Masochism" );
+  talents.masochism                  = CT( "Masochism" );        // Ensure still working
   talents.masochism_buff             = find_spell( 193065 );
   talents.depth_of_the_shadows       = CT( "Depth of the Shadows" );  // NYI
   talents.throes_of_pain             = CT( "Throes of Pain" );        // Confirm values
