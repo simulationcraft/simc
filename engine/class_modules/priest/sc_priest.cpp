@@ -2620,7 +2620,7 @@ void priest_t::create_buffs()
   buffs.desperate_prayer = make_buff<buffs::desperate_prayer_t>( *this );
 
   // Shared talent buffs
-  buffs.twist_of_fate = make_buff( this, "twist_of_fate", talents.twist_of_fate->effectN( 1 ).trigger() )
+  buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )
                             ->set_trigger_spell( talents.twist_of_fate )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
