@@ -120,6 +120,12 @@ public:
     {
       priest().trigger_psychic_link( s );
     }
+
+    if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
+    {
+      priest_td_t& td = get_td( s->target );
+      td.buffs.apathy->trigger();
+    }
   }
 
   timespan_t execute_time() const override
@@ -2017,9 +2023,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
                                       ->set_cooldown( timespan_t::zero() )
                                       ->set_duration( priest().conduits.fae_fermata.time_value() );
   buffs.hungering_void = make_buff( *this, "hungering_void", p.talents.shadow.hungering_void_buff );
-
-  buffs.echoing_void = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
-
+  buffs.echoing_void   = make_buff( *this, "echoing_void", p.talents.shadow.idol_of_nzoth->effectN( 1 ).trigger() );
   buffs.echoing_void_collapse =
       make_buff( *this, "echoing_void_collapse" )
           ->set_tick_behavior( buff_tick_behavior::REFRESH )
@@ -2033,6 +2037,8 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
               make_event( b->sim, timespan_t::from_millis( 1 ), [ this ] { buffs.echoing_void_collapse->cancel(); } );
             }
           } );
+  buffs.apathy =
+      make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }

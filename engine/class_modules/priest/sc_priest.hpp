@@ -66,6 +66,7 @@ public:
     propagate_const<buff_t*> hungering_void;
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
+    propagate_const<buff_t*> apathy;
   } buffs;
 
   priest_t& priest()
