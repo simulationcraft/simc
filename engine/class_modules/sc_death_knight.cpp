@@ -5064,7 +5064,7 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
   { }
-
+  
   void execute() override
   {
     pestilence_procs_per_tick = 0;
@@ -5094,13 +5094,21 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 {
   double active_defile_multiplier;
   const double defile_tick_multiplier;
+  // Values found from testing
+  const int PESTILENCE_CAP_PER_TICK = 2;
+  const int PESTILENCE_CAP_PER_CAST = 10;
+
+  int pestilence_procs_per_tick;
+  int pestilence_procs_per_cast;
 
   defile_damage_t( util::string_view name, death_knight_t* p ) :
     death_and_decay_damage_base_t( name, p, p -> find_spell( 156000 ) ),
     active_defile_multiplier( 1.0 ),
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
-    defile_tick_multiplier( 1.06 )
+    defile_tick_multiplier( 1.06 ),
+    pestilence_procs_per_tick( 0 ),
+    pestilence_procs_per_cast( 0 )
   {
     base_multiplier *= 1.0 + p -> conduits.withering_ground.percent();
   }
@@ -5116,12 +5124,30 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 
   void execute() override
   {
+    pestilence_procs_per_tick = 0;
     death_and_decay_damage_base_t::execute();
     // Increase damage of next ticks if it damages at least an enemy
     // Yes, it is multiplicative
     if ( hit_any_target )
     {
       active_defile_multiplier *= defile_tick_multiplier;
+    }
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    death_and_decay_damage_base_t::impact( s );
+
+    if ( p() -> talent.unholy.pestilence.ok() &&
+         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
+         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
+    {
+      if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
+      {
+        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
+        pestilence_procs_per_tick++;
+        pestilence_procs_per_cast++;
+      }
     }
   }
 };
@@ -5321,6 +5347,8 @@ struct defile_t : public death_and_decay_base_t
 
   void execute() override
   {
+    // Reset death and decay damage's pestilence proc per cast counter
+    debug_cast<defile_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
     // Reset the damage component's increasing multiplier
     static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
 
@@ -9121,6 +9149,11 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
           dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
           dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
         }
+        
+        if ( dk-> talent.unholy.festermight.ok() )
+        {
+          dk->buffs.festermight->trigger( n_executes );
+        }
       }
 
       // Triggers once per target per player action:
@@ -9130,12 +9163,6 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n );
       }
-
-      if ( dk-> talent.unholy.festermight.ok() )
-      {
-        dk->buffs.festermight->trigger( n_executes );
-      }
-
       td -> debuff.festering_wound -> decrement( n_executes );
     }
   };
