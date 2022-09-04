@@ -1476,11 +1476,6 @@ struct damnation_t final : public priest_spell_t
     child_dp->background  = true;
 
     may_miss = false;
-
-    if ( p.talents.shadow.malediction.enabled() )
-    {
-      cooldown->duration += p.talents.shadow.malediction->effectN( 1 ).time_value();
-    }
   }
 
   void impact( action_state_t* s ) override

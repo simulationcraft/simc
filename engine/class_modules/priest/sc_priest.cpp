@@ -132,6 +132,18 @@ public:
     return priest_spell_t::execute_time();
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    auto mm = priest_spell_t::composite_crit_chance_multiplier();
+
+    if ( priest().talents.shadow.mastermind )
+    {
+      mm *= 1 + priest().talents.shadow.mastermind->effectN( 1 ).percent();
+    }
+
+    return mm;
+  }
+
   timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
   {
     timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
@@ -2773,6 +2785,13 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.shadow_priest );
   action.apply_affecting_aura( specs.holy_priest );
   action.apply_affecting_aura( specs.discipline_priest );
+
+  // Shadow Talents
+  action.apply_affecting_aura( talents.shadow.derangement );
+  action.apply_affecting_aura( talents.shadow.mastermind );
+  action.apply_affecting_aura( talents.shadow.lunacy );
+  action.apply_affecting_aura( talents.shadow.malediction );
+
 }
 
 void priest_t::invalidate_cache( cache_e cache )
