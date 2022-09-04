@@ -1545,11 +1545,13 @@ struct shadow_word_death_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Holy Nova
 // TODO: Add Improved Holy Nova for Holy/Discipline
+// ==========================================================================
 struct holy_nova_t final : public priest_spell_t
 {
-  holy_nova_t( priest_t& player, util::string_view options_str )
-    : priest_spell_t( "holy_nova", player, player.talents.holy_nova )
+  holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
   {
     parse_options( options_str );
     aoe = -1;
@@ -1585,6 +1587,24 @@ struct holy_nova_t final : public priest_spell_t
     {
       priest().buffs.rhapsody->expire();
     }
+  }
+};
+
+// ==========================================================================
+// Psychic Scream
+// ==========================================================================
+struct psychic_scream_t final : public priest_spell_t
+{
+  psychic_scream_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "psychic_scream", p, p.specs.psychic_scream )
+  {
+    parse_options( options_str );
+    aoe      = 5;
+    may_miss = may_crit   = false;
+    ignore_false_positive = true;
+
+    // CD reduction
+    apply_affecting_aura( p.talents.psychic_voice );
   }
 };
 
@@ -2452,6 +2472,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new holy_nova_t( *this, options_str );
   }
+  if ( name == "psychic_scream" )
+  {
+    return new psychic_scream_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -2556,6 +2580,7 @@ void priest_t::init_spells()
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
   specs.painbreaker_psalm_insanity    = find_spell( 336167 );
+  specs.psychic_scream                = find_class_spell( "Psychic Scream" );
 
   // Class passives
   specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
@@ -2791,7 +2816,6 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.lunacy );
   action.apply_affecting_aura( talents.shadow.malediction );
-
 }
 
 void priest_t::invalidate_cache( cache_e cache )

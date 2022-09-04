@@ -341,6 +341,7 @@ public:
     const spell_data_t* mind_blast;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death_self_damage;
+    const spell_data_t* psychic_scream;
 
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
