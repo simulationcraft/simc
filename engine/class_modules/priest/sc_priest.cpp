@@ -1505,6 +1505,17 @@ struct shadow_word_death_t final : public priest_spell_t
     return tdm;
   }
 
+  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
+  {
+    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
+
+    if ( !priest().buffs.death_and_madness_reset->check() && target->health_percentage() <= execute_percent )
+    {
+      cd = timespan_t::from_seconds( 0 );
+    }
+    return cd;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -1546,6 +1557,19 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         priest_td_t& td = get_td( s->target );
         td.buffs.death_and_madness_debuff->trigger();
+
+        // Cooldown is reset only if you have't already gotten a reset
+        if ( !priest().buffs.death_and_madness_reset->check() )
+        {
+          if ( s->target->health_percentage() <= execute_percent )
+          {
+            priest().buffs.death_and_madness_reset->trigger();
+          }
+        }
+        else
+        {
+          priest().buffs.death_and_madness_reset->expire();
+        }
       }
     }
   }
@@ -1857,11 +1881,9 @@ struct surrender_to_madness_debuff_t final : public priest_buff_t<buff_t>
 // ==========================================================================
 struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
 {
-  propagate_const<cooldown_t*> swd_cooldown;
   death_and_madness_debuff_t( priest_td_t& actor_pair )
     : base_t( actor_pair, "death_and_madness_death_check",
-              actor_pair.priest().talents.death_and_madness->effectN( 3 ).trigger() ),
-      swd_cooldown( actor_pair.priest().get_cooldown( "shadow_word_death" ) )
+              actor_pair.priest().talents.death_and_madness->effectN( 3 ).trigger() )
   {
   }
 
@@ -1873,8 +1895,6 @@ struct death_and_madness_debuff_t final : public priest_buff_t<buff_t>
       sim->print_debug( "{} death_and_madness insanity gain buff triggered", priest() );
 
       priest().buffs.death_and_madness_buff->trigger();
-
-      swd_cooldown->reset( true );
     }
 
     buff_t::expire_override( expiration_stacks, remaining_duration );
@@ -2103,6 +2123,7 @@ void priest_t::create_cooldowns()
   cooldowns.void_bolt               = get_cooldown( "void_bolt" );
   cooldowns.mind_blast              = get_cooldown( "mind_blast" );
   cooldowns.void_eruption           = get_cooldown( "void_eruption" );
+  cooldowns.shadow_word_death       = get_cooldown( "shadow_word_death" );
 }
 
 /** Construct priest gains */
@@ -2752,6 +2773,10 @@ void priest_t::create_buffs()
   // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
   buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
                                 ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );
+  // Tracking buff to see if the free reset is available for SW:D with DaM talented.
+  buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", talents.death_and_madness )
+                                      ->set_quiet( true )
+                                      ->set_duration( timespan_t::from_seconds( 0 ) );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )

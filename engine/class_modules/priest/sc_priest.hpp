@@ -140,6 +140,7 @@ public:
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> yshaarj_pride;
     propagate_const<buff_t*> dark_evangelism;
+    propagate_const<buff_t*> death_and_madness_reset;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -388,6 +389,7 @@ public:
     // Shared
     propagate_const<cooldown_t*> wrathful_faerie;
     propagate_const<cooldown_t*> wrathful_faerie_fermata;
+    propagate_const<cooldown_t*> shadow_word_death;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
