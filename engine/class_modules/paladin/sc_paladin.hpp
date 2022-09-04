@@ -46,6 +46,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* reckoning;
     buff_t* vengeful_shock;
     buff_t* seal_of_the_crusader;
+    buff_t* calm_before_the_storm;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -133,6 +134,7 @@ public:
     buff_t* fires_of_justice;
     buff_t* righteous_verdict;
     buff_t* zeal;
+    buff_t* sealed_verdict;
 
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
@@ -432,20 +434,20 @@ public:
     const spell_data_t* blade_of_justice;
     const spell_data_t* divine_storm;
     const spell_data_t* art_of_war;
-    const spell_data_t* timely_judgment; // NYI
+    const spell_data_t* timely_judgment;
     const spell_data_t* improved_crusader_strike;
     const spell_data_t* holy_crusader;
     const spell_data_t* holy_blade;
     const spell_data_t* condemning_blade;
     const spell_data_t* zeal;
-    const spell_data_t* shield_of_vengeance; // NYI
+    const spell_data_t* shield_of_vengeance;
     const spell_data_t* divine_protection; // NYI
     const spell_data_t* blade_of_wrath;
 
     // 8
     const spell_data_t* highlords_judgment;
     const spell_data_t* righteous_verdict;
-    const spell_data_t* calm_before_the_storm; // NYI
+    const spell_data_t* calm_before_the_storm;
     const spell_data_t* wake_of_ashes;
     const spell_data_t* consecrated_blade; // NYI
     const spell_data_t* seal_of_wrath; // NYI
@@ -1393,7 +1395,7 @@ struct holy_power_consumer_t : public Base
       }
     }
 
-        // Roll for Divine Purpose
+    // Roll for Divine Purpose
     if ( p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
       p->buffs.divine_purpose->trigger();
@@ -1416,6 +1418,11 @@ struct holy_power_consumer_t : public Base
         st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
         st -> execute();
       }
+    }
+
+    if ( p -> talents.sealed_verdict -> ok() )
+    {
+      p -> buffs.sealed_verdict -> trigger();
     }
   }
 

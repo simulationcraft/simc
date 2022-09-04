@@ -253,6 +253,8 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     double am = paladin_melee_attack_t::action_multiplier();
     if ( p() -> buffs.blade_of_wrath -> up() )
       am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
+    if ( p() -> buffs.sealed_verdict -> up() )
+      am *= 1.0 + p() -> buffs.sealed_verdict -> data().effectN( 1 ).percent();
     return am;
   }
 
@@ -354,6 +356,17 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
       am *= 1.0 + p() -> buffs.empyrean_power -> data().effectN( 1 ).percent();
 
     return am;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talents.calm_before_the_storm -> ok() )
+        td( s -> target ) -> debuff.calm_before_the_storm -> trigger();
+    }
   }
 };
 
@@ -621,6 +634,9 @@ struct judgment_ret_t : public judgment_t
 
     if ( p -> talents.highlords_judgment -> ok() )
       base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
+
+    if ( p -> talents.timely_judgment -> ok() )
+      cooldown->duration += timespan_t::from_seconds( p -> talents.timely_judgment -> effectN( 1 ).base_value() );
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
@@ -850,6 +866,7 @@ void paladin_t::create_buffs_retribution()
   buffs.vanguards_momentum = make_buff( this, "vanguards_momentum", find_spell( 383311 ) )
                                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                         -> set_default_value( find_spell( 383311 ) -> effectN( 1 ).percent() );
+  buffs.sealed_verdict = make_buff( this, "sealed_verdict", find_spell( 387643 ) );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )

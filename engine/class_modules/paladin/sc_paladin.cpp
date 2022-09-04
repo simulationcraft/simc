@@ -290,6 +290,7 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->conduit.golden_path->ok() && p()->standing_in_consecration() )
       heal_tick->execute();
   }
+
   double action_multiplier() const override
   {
     double m = paladin_spell_t::action_multiplier();
@@ -301,6 +302,17 @@ struct consecration_tick_t : public paladin_spell_t
     {
       m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = paladin_spell_t::composite_target_multiplier( target );
+
+    paladin_td_t* td = p()->get_target_data( target );
+    if ( td->debuff.calm_before_the_storm->up() )
+      m *= 1.0 + td->debuff.calm_before_the_storm->data().effectN( 1 ).percent();
+
     return m;
   }
 };
@@ -1882,17 +1894,17 @@ void blessing_of_sacrifice_t::execute()
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_target_data_t( target, paladin )
 {
-  debuff.blessed_hammer       = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
-  debuff.execution_sentence   = make_buff<buffs::execution_sentence_debuff_t>( this );
-  debuff.judgment             = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
-  debuff.judgment_of_light    = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
-  debuff.final_reckoning      = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
-                               ->set_cooldown( 0_ms );  // handled by ability
-  debuff.reckoning            = make_buff( *this, "reckoning", paladin->spells.reckoning );
-  debuff.vengeful_shock       = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
-                              ->set_default_value( paladin->conduit.vengeful_shock.percent() );
-  debuff.seal_of_the_crusader = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
-
+  debuff.blessed_hammer        = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
+  debuff.execution_sentence    = make_buff<buffs::execution_sentence_debuff_t>( this );
+  debuff.judgment              = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  debuff.judgment_of_light     = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
+  debuff.final_reckoning       = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
+                                ->set_cooldown( 0_ms );  // handled by ability
+  debuff.reckoning             = make_buff( *this, "reckoning", paladin->spells.reckoning );
+  debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
+                                ->set_default_value( paladin->conduit.vengeful_shock.percent() );
+  debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
+  debuff.calm_before_the_storm = make_buff( *this, "calm_before_the_storm", paladin->find_spell( 382538 ) );
 }
 
 // paladin_t::create_actions ================================================
@@ -2458,6 +2470,7 @@ void paladin_t::init_special_effects()
     special_effects.push_back( seal_of_the_crusader_driver );
 
     auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
+    cb->initialize();
   }
 }
 

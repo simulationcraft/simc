@@ -1411,6 +1411,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340214, 0 ),          # Hallowed Discernment heal
             ( 355567, 0 ),          # Equinox
             ( 355455, 0 ),          # Divine Resonance
+            ( 387643, 0 ),          # Sealed Verdict buff
         ),
 
         # Hunter:
