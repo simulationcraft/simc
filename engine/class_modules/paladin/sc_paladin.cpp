@@ -112,12 +112,6 @@ avenging_wrath_buff_t::avenging_wrath_buff_t( paladin_t* p )
         base_buff_duration *= 1.0 + p->talents.holy_sanctified_wrath->effectN( 1 ).percent();
         took_sw = true;
       }
-      if ( p->spells.avenging_wrath_3->ok() )
-      {
-        healing_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
-        crit_bonus += p->spells.avenging_wrath_3->effectN( 4 ).percent();
-        damage_modifier += p->spells.avenging_wrath_3->effectN( 1 ).percent();
-      }
       break;
     case PALADIN_RETRIBUTION:
       if ( p->talents.ret_sanctified_wrath->ok() )
@@ -189,22 +183,22 @@ struct blessing_of_protection_t : public paladin_spell_t
 struct avenging_wrath_t : public paladin_spell_t
 {
   avenging_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_spell_t( "avenging_wrath", p, p->spells.avenging_wrath )
+    : paladin_spell_t( "avenging_wrath", p, p->find_spell( 31884) )
   {
     parse_options( options_str );
-
+    if ( !p->talents.avenging_wrath->ok() )
+      background = true;
     if ( p->talents.crusade->ok() )
       background = true;
     if ( p->talents.avenging_crusader->ok() )
       background = true;
-
     harmful = false;
 
     // link needed for Righteous Protector / SotR cooldown reduction
     cooldown = p->cooldowns.avenging_wrath;
 
-    if ( p->spells.avenging_wrath_2->ok() )
-      cooldown->duration += timespan_t::from_millis( p->spells.avenging_wrath_2->effectN( 1 ).base_value() );
+    if ( p->talents.avenging_wrath_2->ok() )
+      cooldown->duration += timespan_t::from_millis( p->talents.avenging_wrath_2->effectN( 1 ).base_value() );
 
     cooldown->duration *= 1.0 + azerite::vision_of_perfection_cdr( p->azerite_essence.vision_of_perfection );
   }
@@ -213,11 +207,15 @@ struct avenging_wrath_t : public paladin_spell_t
   {
     paladin_spell_t::execute();
 
-    p()->buffs.avenging_wrath->trigger();
+        p()->buffs.avenging_wrath->trigger();
 
     if ( p()->azerite.avengers_might.ok() )
       p()->buffs.avengers_might->trigger( 1, p()->buffs.avengers_might->default_value, -1.0,
                                           p()->buffs.avenging_wrath->buff_duration() );
+
+    //Trigger avenging wrath: might, this can be cast on its own as well so we can't just edit the buff.
+   // if ( p()->talents.avenging_wrath_might->ok() )
+   //   p()->buffs.avenging_wrath_might->trigger();
   }
 };
 
@@ -298,6 +296,10 @@ struct consecration_tick_t : public paladin_spell_t
     if ( p()->talents.consecration_in_flame->ok() )
     {
       m *= 1.0 + p()->talents.consecration_in_flame->effectN( 2 ).percent();
+    }
+    if ( p()->talents.hallowed_ground->ok() )
+    {
+      m *= 1.0 + p()->talents.hallowed_ground->effectN( 1 ).percent();
     }
     return m;
   }
@@ -666,6 +668,21 @@ struct devotion_aura_t : public paladin_aura_base_t
   }
 };
 
+struct seal_of_the_crusader_cb_t : public dbc_proc_callback_t
+{
+  paladin_t* p;
+  seal_of_the_crusader_cb_t( paladin_t* player, const special_effect_t& effect )
+    : dbc_proc_callback_t( player, effect ), p( player )
+  {
+  }
+
+  void execute( action_t*, action_state_t* s ) override
+  {
+    auto td = p->get_target_data( s->target );
+    td->debuff.seal_of_the_crusader->trigger();
+  }
+};
+
 // ==========================================================================
 // End Spells, Heals, and Absorbs
 // ==========================================================================
@@ -1029,6 +1046,9 @@ void judgment_t::impact( action_state_t* s )
 {
   if ( result_is_hit( s->result ) )
   {
+      if ( p()->talents.judgment->ok() )
+        td( s->target )->debuff.judgment->trigger();
+
     if ( p()->talents.judgment_of_light->ok() )
       td( s->target )->debuff.judgment_of_light->trigger( 25 );
   }
@@ -1109,6 +1129,7 @@ struct hand_of_reckoning_t : public paladin_melee_attack_t
     paladin_melee_attack_t::impact( s );
   }
 };
+
 
 // Covenants =======
 
@@ -1201,6 +1222,10 @@ struct divine_toll_t : public paladin_spell_t
     }
 
     if ( p()->legendary.divine_resonance->ok() )
+    {
+      p()->buffs.divine_resonance->trigger();
+    }
+    if ( p()->talents.divine_resonance->ok() )
     {
       p()->buffs.divine_resonance->trigger();
     }
@@ -1586,7 +1611,7 @@ struct blessing_of_the_seasons_t : public paladin_spell_t
 struct hammer_of_wrath_t : public paladin_melee_attack_t
 {
   hammer_of_wrath_t( paladin_t* p, util::string_view options_str )
-    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_class_spell( "Hammer of Wrath" ) )
+    : paladin_melee_attack_t( "hammer_of_wrath", p, p->find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" ) )
   {
     parse_options( options_str );
 
@@ -1634,6 +1659,20 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
       {
         p()->buffs.crusade->extend_duration(
             p(), timespan_t::from_seconds( p()->legendary.the_mad_paragon->effectN( 1 ).base_value() ) );
+      }
+    }
+
+    if ( p()->talents.the_mad_paragon->ok() )
+    {
+      if ( p()->buffs.avenging_wrath->up() )
+      {
+        p()->buffs.avenging_wrath->extend_duration(
+            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
+      }
+      else if ( p()->buffs.crusade->up() )
+      {
+        p()->buffs.crusade->extend_duration(
+            p(), timespan_t::from_seconds( p()->talents.the_mad_paragon->effectN( 1 ).base_value() ) );
       }
     }
 
@@ -1821,15 +1860,17 @@ void blessing_of_sacrifice_t::execute()
 
 paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_target_data_t( target, paladin )
 {
-  debuff.blessed_hammer     = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
-  debuff.execution_sentence = make_buff<buffs::execution_sentence_debuff_t>( this );
-  debuff.judgment           = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
-  debuff.judgment_of_light  = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
-  debuff.final_reckoning    = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
+  debuff.blessed_hammer       = make_buff( *this, "blessed_hammer", paladin->find_spell( 204301 ) );
+  debuff.execution_sentence   = make_buff<buffs::execution_sentence_debuff_t>( this );
+  debuff.judgment             = make_buff( *this, "judgment", paladin->spells.judgment_debuff );
+  debuff.judgment_of_light    = make_buff( *this, "judgment_of_light", paladin->find_spell( 196941 ) );
+  debuff.final_reckoning      = make_buff( *this, "final_reckoning", paladin->talents.final_reckoning )
                                ->set_cooldown( 0_ms );  // handled by ability
-  debuff.reckoning      = make_buff( *this, "reckoning", paladin->spells.reckoning );
-  debuff.vengeful_shock = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
+  debuff.reckoning            = make_buff( *this, "reckoning", paladin->spells.reckoning );
+  debuff.vengeful_shock       = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                               ->set_default_value( paladin->conduit.vengeful_shock.percent() );
+  debuff.seal_of_the_crusader = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
+
 }
 
 // paladin_t::create_actions ================================================
@@ -2198,6 +2239,7 @@ void paladin_t::create_buffs()
 
   // General
   buffs.avenging_wrath = new buffs::avenging_wrath_buff_t( this );
+  //.avenging_wrath_might = new buffs::avenging_wrath_buff_t( this );
   buffs.divine_purpose = make_buff( this, "divine_purpose", spells.divine_purpose_buff );
   buffs.divine_shield  = make_buff( this, "divine_shield", find_class_spell( "Divine Shield" ) )
                             ->set_cooldown( 0_ms );  // Let the ability handle the CD
@@ -2216,8 +2258,8 @@ void paladin_t::create_buffs()
                             ->set_default_value( find_class_spell( "Devotion Aura" )->effectN( 1 ).percent() );
 
   // Legendaries
-  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", legendary.of_dusk_and_dawn->effectN( 1 ).trigger() );
-  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", legendary.of_dusk_and_dawn->effectN( 2 ).trigger() )
+  buffs.blessing_of_dawn = make_buff( this, "blessing_of_dawn", talents.of_dusk_and_dawn->effectN( 1 ).trigger() );
+  buffs.blessing_of_dusk = make_buff( this, "blessing_of_dusk", talents.of_dusk_and_dawn->effectN( 2 ).trigger() )
                                ->set_default_value_from_effect( 1 );
   buffs.relentless_inquisitor = make_buff( this, "relentless_inquisitor", find_spell( 337315 ) )
                                     ->set_default_value( find_spell( 337315 )->effectN( 1 ).percent() )
@@ -2382,6 +2424,22 @@ void paladin_t::init_action_list()
   player_t::init_action_list();
 }
 
+void paladin_t::init_special_effects()
+{
+  player_t::init_special_effects();
+  
+  if ( talents.seal_of_the_crusader->ok() )
+  {
+    auto const seal_of_the_crusader_driver = new special_effect_t( this );
+    seal_of_the_crusader_driver->name_str  = "seal_of_the_crusader_driver";
+    seal_of_the_crusader_driver->spell_id  = 385728;
+    special_effects.push_back( seal_of_the_crusader_driver );
+
+    auto cb = new paladin::seal_of_the_crusader_cb_t( this, *seal_of_the_crusader_driver );
+  }
+}
+
+
 void paladin_t::init_rng()
 {
   player_t::init_rng();
@@ -2405,72 +2463,66 @@ void paladin_t::init_spells()
   init_spells_holy();
 
   // Shared talents
-  //new stuff - how do i add double points? and choice talents?
-  talents.lay_on_hands                    = find_talent_spell( "Lay on Hands" );
-  talents.blessing_of_freedom             = find_talent_spell( "Blessing of Freedom" ); 
-  talents.hammer_of_wrath                 = find_talent_spell( "Hammer of Wrath" );
-  talents.concentration_aura              = find_talent_spell( "Concentration Aura" );
-  talents.devotion_aura                   = find_talent_spell( "Devotion Aura" );
-  talents.retribution_aura                = find_talent_spell( "Retribution Aura" );
-  talents.blinding_light                  = find_talent_spell( "Blinding Light" );
-  talents.repentance                      = find_talent_spell( "Repentance" );
-  talents.divine_steed                    = find_talent_spell( "Divine Steed" );
-  talents.fist_of_justice                 = find_talent_spell( "Fist of Justice" );
-  talents.holy_aegis                      = find_talent_spell( "Holy Aegis" );
-  talents.cavalier                        = find_talent_spell( "Cavalier" );
-  talents.seasoned_warhorse               = find_talent_spell( "Seasoned Warhorse" );
-  talents.seal_of_alacrity                = find_talent_spell( "Seal of Alacrity" );
-  talents.golden_path                     = find_talent_spell( "Golden Path" );
-  talents.judgment_of_light               = find_talent_spell( "Judgment of Light" );
+  talents.lay_on_hands                    = find_talent_spell( talent_tree::CLASS, "Lay on Hands" );
+  talents.blessing_of_freedom             = find_talent_spell( talent_tree::CLASS, "Blessing of Freedom" ); 
+  talents.hammer_of_wrath                 = find_talent_spell( talent_tree::CLASS, "Hammer of Wrath" );
+  talents.auras_of_the_resolute           = find_talent_spell( talent_tree::CLASS, "Auras of the Resolute" );
+  talents.auras_of_swift_vengeance        = find_talent_spell( talent_tree::CLASS, "Auras of Swift Vengeance" );
+  talents.blinding_light                  = find_talent_spell( talent_tree::CLASS, "Blinding Light" );
+  talents.repentance                      = find_talent_spell( talent_tree::CLASS, "Repentance" );
+  talents.divine_steed                    = find_talent_spell( talent_tree::CLASS, 190784 );
+  talents.fist_of_justice                 = find_talent_spell( talent_tree::CLASS, "Fist of Justice" );
+  talents.holy_aegis                      = find_talent_spell( talent_tree::CLASS, "Holy Aegis" );
+  talents.cavalier                        = find_talent_spell( talent_tree::CLASS, "Cavalier" );
+  talents.seasoned_warhorse               = find_talent_spell( talent_tree::CLASS, "Seasoned Warhorse" );
+  talents.seal_of_alacrity                = find_talent_spell( talent_tree::CLASS, "Seal of Alacrity" );
+  talents.golden_path                     = find_talent_spell( talent_tree::CLASS, "Golden Path" );
+  talents.judgment_of_light               = find_talent_spell( talent_tree::CLASS, "Judgment of Light" );
   //Avenging Wrath spell
-  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
-  talents.seal_of_the_templar             = find_talent_spell( "Seal of the Templar" );
-  talents.turn_evil                       = find_talent_spell( "Turn Evil" );
-  talents.rebuke                          = find_talent_spell( "Rebuke" );
-  talents.seal_of_mercy                   = find_talent_spell( "Seal of Mercy" );
-  talents.cleanse_toxins                  = find_talent_spell( "Cleanse Toxins" );
-  talents.blessing_of_sacrifice           = find_talent_spell( "Blessing of Sacrifice" );
-  //Judgment Generates 1 Holy Power
-  talents.judgment                        = find_talent_spell( "Judgment" );
+  talents.avenging_wrath                  = find_talent_spell( talent_tree::CLASS, "Avenging Wrath" );
+  talents.seal_of_the_templar             = find_talent_spell( talent_tree::CLASS, "Seal of the Templar" );
+  talents.turn_evil                       = find_talent_spell( talent_tree::CLASS, "Turn Evil" );
+  talents.rebuke                          = find_talent_spell( talent_tree::CLASS, "Rebuke" );
+  talents.seal_of_mercy                   = find_talent_spell( talent_tree::CLASS, "Seal of Mercy" );
+  talents.cleanse_toxins                  = find_talent_spell( talent_tree::CLASS, "Cleanse Toxins" );
+  talents.blessing_of_sacrifice           = find_talent_spell( talent_tree::CLASS, "Blessing of Sacrifice" );
   //Judgment causes the target to take 25% more damage from your next holy power spending ability
-  talents.judgment                        = find_talent_spell( "Judgment" );
-  talents.seal_of_reprisal                = find_talent_spell( "Seal of Reprisal" );
-  talents.afterimage                      = find_talent_spell( "Afterimage" );
-  talents.recompense                      = find_talent_spell( "Recompense" );
-  talents.sacrifice_of_the_just           = find_talent_spell( "Sacrifice of the Just" );
-  talents.blessing_of_protection          = find_talent_spell( "Blessing of Protection" );
-  talents.holy_avenger                    = find_talent_spell( "Holy Avenger" );
-  talents.divine_purpose                  = find_talent_spell( "Divine Purpose" );
-  talents.obduracy                        = find_talent_spell( "Obduracy" );
-  talents.seal_of_clarity                 = find_talent_spell( "Seal of Clarity" );
-  talents.aspirations_of_divinity         = find_talent_spell( "Aspirations of Divinity" );
+  talents.judgment                        = find_talent_spell( talent_tree::CLASS, "Judgment" );
+  talents.seal_of_reprisal                = find_talent_spell( talent_tree::CLASS, "Seal of Reprisal" );
+  talents.afterimage                      = find_talent_spell( talent_tree::CLASS, "Afterimage" );
+  talents.recompense                      = find_talent_spell( talent_tree::CLASS, "Recompense" );
+  talents.sacrifice_of_the_just           = find_talent_spell( talent_tree::CLASS, "Sacrifice of the Just" );
+  talents.blessing_of_protection          = find_talent_spell( talent_tree::CLASS, "Blessing of Protection" );
+  talents.holy_avenger                    = find_talent_spell( talent_tree::CLASS, "Holy Avenger" );
+  talents.divine_purpose                  = find_talent_spell( talent_tree::CLASS, "Divine Purpose" );
+  talents.obduracy                        = find_talent_spell( talent_tree::CLASS, "Obduracy" );
+  talents.seal_of_clarity                 = find_talent_spell( talent_tree::CLASS, "Seal of Clarity" );
+  talents.aspirations_of_divinity         = find_talent_spell( talent_tree::CLASS, "Aspirations of Divinity" );
   //Avenging Wrath CDR
-  talents.avenging_wrath                  = find_talent_spell( "Avenging Wrath" );
-  talents.touch_of_light                  = find_talent_spell( "Touch of Light" );
-  talents.incandescence                   = find_talent_spell( "Incandescence" );
-  talents.hallowed_ground                 = find_talent_spell( "Hallowed Ground" );
-  talents.of_dusk_and_dawn                = find_talent_spell( "Of Dusk and Dawn" );
-  talents.unbreakable_spirit              = find_talent_spell( "Unbreakable Spirit" );
-  talents.seal_of_might                   = find_talent_spell( "Seal of Might" );
-  talents.blessing_of_spellwarding        = find_talent_spell( "Blessing of Spellwarding" );
-  talents.improved_blessing_of_protection = find_talent_spell( "Improved Blessing of Protection" );
-  talents.seal_of_the_crusader            = find_talent_spell( "Seal of the Crusader" );
-  talents.seal_of_order                   = find_talent_spell( "Seal of Order" );
-  talents.holy_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_HOLY );
-  talents.prot_sanctified_wrath           = find_talent_spell( "Sanctified Wrath", PALADIN_PROTECTION );
-  talents.ret_sanctified_wrath            = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION  );
-  talents.seraphim                        = find_talent_spell( "Seraphim" );
-  talents.the_mad_paragon                 = find_talent_spell( "The Mad Paragon" );
+  talents.avenging_wrath_2                = find_talent_spell( talent_tree::CLASS, 317872 );
+  talents.touch_of_light                  = find_talent_spell( talent_tree::CLASS, "Touch of Light" );
+  talents.incandescence                   = find_talent_spell( talent_tree::CLASS, "Incandescence" );
+  talents.hallowed_ground                 = find_talent_spell( talent_tree::CLASS, "Hallowed Ground" );
+  talents.of_dusk_and_dawn                = find_talent_spell( talent_tree::CLASS, "Of Dusk and Dawn" );
+  talents.unbreakable_spirit              = find_talent_spell( talent_tree::CLASS, "Unbreakable Spirit" );
+  talents.seal_of_might                   = find_talent_spell( talent_tree::CLASS, "Seal of Might" );
+  talents.blessing_of_spellwarding        = find_talent_spell( talent_tree::CLASS, "Blessing of Spellwarding" );
+  talents.improved_blessing_of_protection = find_talent_spell( talent_tree::CLASS, "Improved Blessing of Protection" );
+  talents.seal_of_the_crusader            = find_talent_spell( talent_tree::CLASS, "Seal of the Crusader" );
+  talents.seal_of_order                   = find_talent_spell( talent_tree::CLASS, "Seal of Order" );
+  talents.holy_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_HOLY );
+  talents.prot_sanctified_wrath           = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_PROTECTION );
+  talents.ret_sanctified_wrath            = find_talent_spell( talent_tree::CLASS, "Sanctified Wrath", PALADIN_RETRIBUTION );
+  talents.seraphim                        = find_talent_spell( talent_tree::CLASS, "Seraphim" );
+  talents.the_mad_paragon                 = find_talent_spell( talent_tree::CLASS, "The Mad Paragon" );
 
 
 
   // Shared Passives and spells
   passives.plate_specialization = find_specialization_spell( "Plate Specialization" );
   passives.paladin              = find_spell( 137026 );
-  spells.avenging_wrath         = find_class_spell( "Avenging Wrath" );
+  spells.avenging_wrath         = find_spell( 31884 );
   spells.judgment_2             = find_rank_spell( "Judgment", "Rank 2" );         // 327977
-  spells.avenging_wrath_2       = find_rank_spell( "Avenging Wrath", "Rank 2" );   // 317872
-  spells.avenging_wrath_3       = find_rank_spell( "Avenging Wrath", "Rank 3" );   // 327979
   spells.hammer_of_wrath_2      = find_rank_spell( "Hammer of Wrath", "Rank 2" );  // 326730
   spec.word_of_glory_2          = find_rank_spell( "Word of Glory", "Rank 2" );
   spells.divine_purpose_buff    = find_spell( 223819 );
@@ -2748,6 +2800,11 @@ double paladin_t::composite_player_target_multiplier( player_t* target, school_e
   {
     cptm *= 1.0 + td->debuff.vengeful_shock->value();
   }
+  if ( dbc::is_school( school, SCHOOL_HOLY ) && td->debuff.seal_of_the_crusader->up() )
+  {
+    cptm *= 1.0 + td->debuff.seal_of_the_crusader->value();
+  }
+
   return cptm;
 }
 
@@ -3036,6 +3093,11 @@ double paladin_t::resource_gain( resource_e resource_type, double amount, gain_t
 
   double result = player_t::resource_gain( resource_type, amount, source, action );
 
+  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && ( talents.of_dusk_and_dawn->ok() )&&
+       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 1 ).base_value() )
+  {
+    buffs.blessing_of_dawn->trigger();
+  }
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 1 ).base_value() )
   {
@@ -3052,6 +3114,11 @@ double paladin_t::resource_loss( resource_e resource_type, double amount, gain_t
   double result     = player_t::resource_loss( resource_type, amount, source, action );
   if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && legendary.of_dusk_and_dawn->ok() &&
        resources.current[ RESOURCE_HOLY_POWER ] == legendary.of_dusk_and_dawn->effectN( 2 ).base_value() )
+  {
+    buffs.blessing_of_dusk->trigger();
+  }
+  if ( resource_type == RESOURCE_HOLY_POWER && result > 0 && talents.of_dusk_and_dawn->ok() &&
+       resources.current[ RESOURCE_HOLY_POWER ] == talents.of_dusk_and_dawn->effectN( 2 ).base_value() )
   {
     buffs.blessing_of_dusk->trigger();
   }
@@ -3239,7 +3306,7 @@ bool paladin_t::standing_in_hallow() const
 bool paladin_t::get_how_availability( player_t* t ) const
 {
   // Health threshold has to be hardcoded :peepocri:
-  bool buffs_ok = spells.hammer_of_wrath_2->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
+  bool buffs_ok = talents.hammer_of_wrath->ok() && ( buffs.avenging_wrath->up() || buffs.crusade->up() );
   buffs_ok      = buffs_ok || buffs.final_verdict->up();
   return ( buffs_ok || standing_in_hallow() || t->health_percentage() <= 20 );
 }
