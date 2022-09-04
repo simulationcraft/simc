@@ -137,12 +137,13 @@ public:
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
     buff_t* relentless_inquisitor_azerite;
+    buff_t* vanguards_momentum;
 
     // Covenants
     buff_t* vanquishers_hammer;
 
     // Legendaries
-    buff_t* vanguards_momentum;
+    buff_t* vanguards_momentum_legendary;
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
@@ -299,7 +300,7 @@ public:
 
     // Class
 
-   // 0
+    // 0
     const spell_data_t* lay_on_hands;
     const spell_data_t* blessing_of_freedom;
     const spell_data_t* hammer_of_wrath;
@@ -359,6 +360,9 @@ public:
     const spell_data_t* holy_avenging_wrath_might;
     const spell_data_t* prot_avenging_wrath_might;
     const spell_data_t* ret_avenging_wrath_might;
+    const spell_data_t* divine_toll;
+    const spell_data_t* divine_resonance;
+    const spell_data_t* relentless_inquisitor;
 
     // Holy -- NYI, Not touching for now
     // T15
@@ -378,7 +382,7 @@ public:
     const spell_data_t* beacon_of_virtue;
 
     // Protection
-   //0
+    // 0
     const spell_data_t* avengers_shield;
     const spell_data_t* blessed_hammer;
     const spell_data_t* hammer_of_the_righteous;
@@ -393,7 +397,7 @@ public:
     const spell_data_t* crusaders_judgment;
     const spell_data_t* consecration_in_flame;
     
-    //8
+    // 8
     const spell_data_t* bastion_of_light;
     const spell_data_t* bulwark_of_order;
     const spell_data_t* light_of_the_titans;
@@ -403,14 +407,13 @@ public:
     const spell_data_t* sentinel;
     const spell_data_t* avenging_wrath_might;
     const spell_data_t* strength_of_conviction;
-    const spell_data_t* relentless_inquisitor;
     const spell_data_t* ferren_marcuss_strength;
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
     const spell_data_t* faith_barricade;
     
-    //20
+    // 20
     const spell_data_t* soaring_shield;
     const spell_data_t* focused_enmity;
     const spell_data_t* faiths_armor;
@@ -419,32 +422,65 @@ public:
     const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* final_stand;
     const spell_data_t* righteous_protector;
-    const spell_data_t* divine_toll;
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
     const spell_data_t* improved_sera_and_dt;
-    const spell_data_t* divine_resonance;
 
     // Retribution
-    // T15
+    // 0
+    const spell_data_t* blade_of_justice;
+    const spell_data_t* divine_storm;
+    const spell_data_t* art_of_war;
+    const spell_data_t* timely_judgment; // NYI
+    const spell_data_t* improved_crusader_strike;
+    const spell_data_t* holy_crusader;
+    const spell_data_t* holy_blade;
+    const spell_data_t* condemning_blade;
     const spell_data_t* zeal;
-    const spell_data_t* righteous_verdict;
-    const spell_data_t* execution_sentence;
-    // T25
-    const spell_data_t* fires_of_justice;
+    const spell_data_t* shield_of_vengeance; // NYI
+    const spell_data_t* divine_protection; // NYI
     const spell_data_t* blade_of_wrath;
-    const spell_data_t* empyrean_power;
 
-    const spell_data_t* eye_for_an_eye;
-    // Skip T40, see Holy
-    // T45
-    const spell_data_t* selfless_healer;
-    const spell_data_t* justicars_vengeance;
-    const spell_data_t* healing_hands;
-    // T50
+    // 8
+    const spell_data_t* highlords_judgment;
+    const spell_data_t* righteous_verdict;
+    const spell_data_t* calm_before_the_storm; // NYI
+    const spell_data_t* wake_of_ashes;
+    const spell_data_t* consecrated_blade; // NYI
+    const spell_data_t* seal_of_wrath; // NYI
+    const spell_data_t* expurgation;
+    const spell_data_t* boundless_judgment; // NYI
+    const spell_data_t* sanctification; // NYI
+    const spell_data_t* inner_power; // NYI
+    const spell_data_t* ashes_to_dust;
+    const spell_data_t* path_of_ruin; // NYI
     const spell_data_t* crusade;
+    const spell_data_t* truths_wake; // NYI
+    const spell_data_t* empyrean_power;
+    const spell_data_t* fires_of_justice;
+    const spell_data_t* sealed_verdict; // NYI
+    const spell_data_t* consecrated_ground_ret; // NYI
+    const spell_data_t* sanctified_ground_ret; // NYI
+    const spell_data_t* exorcism; // NYI
+    const spell_data_t* hand_of_hindrance; // NYI
+    const spell_data_t* selfless_healer; // NYI
+    const spell_data_t* healing_hands; // NYI
+    const spell_data_t* tempest_of_the_lightbringer; // NYI
+    const spell_data_t* justicars_vengeance;
+    const spell_data_t* eye_for_an_eye; // NYI
+
+    // 20
+    const spell_data_t* ashes_to_ashes;
+    const spell_data_t* templars_vindication; // NYI
+    const spell_data_t* execution_sentence;
+    const spell_data_t* empyrean_endowment; // NYI
+    const spell_data_t* virtuous_command; // NYI
+    const spell_data_t* final_verdict; // NYI
+    const spell_data_t* executioners_will; // NYI
+    const spell_data_t* executioners_wrath; // NYI
     const spell_data_t* final_reckoning;
+    const spell_data_t* vanguards_momentum;
   } talents;
 
   struct azerite_t

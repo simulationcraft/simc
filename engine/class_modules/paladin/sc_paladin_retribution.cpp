@@ -35,7 +35,7 @@ namespace buffs {
   struct shield_of_vengeance_buff_t : public absorb_buff_t
   {
     shield_of_vengeance_buff_t( player_t* p ):
-      absorb_buff_t( p, "shield_of_vengeance", p -> find_spell( 184662 ) )
+      absorb_buff_t( p, "shield_of_vengeance", p -> find_talent_spell( "Shield of Vengeance" ) )
     {
       cooldown -> duration = 0_ms;
     }
@@ -199,20 +199,10 @@ struct execution_sentence_t : public holy_power_consumer_t<paladin_melee_attack_
 
 struct blade_of_justice_t : public paladin_melee_attack_t
 {
-  struct azerite_expurgation_t : public paladin_spell_t
-  {
-    azerite_expurgation_t( paladin_t* p ) :
-      paladin_spell_t( "expurgation", p, p -> find_spell( 273481 ) )
-    {
-      base_td = p -> azerite.expurgation.value();
-      hasted_ticks = false;
-      tick_may_crit = true;
-    }
-  };
 
-  struct expurgation_t : public paladin_spell_t
+  struct conduit_expurgation_t : public paladin_spell_t
   {
-    expurgation_t( paladin_t* p ):
+    conduit_expurgation_t( paladin_t* p ):
       paladin_spell_t( "expurgation", p, p -> find_spell( 344067 ) )
     {
       hasted_ticks = false;
@@ -220,32 +210,41 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     }
   };
 
-  azerite_expurgation_t* azerite_expurgation;
+  struct expurgation_t : public paladin_spell_t
+  {
+    expurgation_t( paladin_t* p ):
+      paladin_spell_t( "expurgation", p, p -> talents.expurgation )
+    {
+      hasted_ticks = false;
+      tick_may_crit = false;
+    }
+  };
+
+  conduit_expurgation_t* conduit_expurgation;
   expurgation_t* expurgation;
 
   blade_of_justice_t( paladin_t* p, util::string_view options_str ) :
-    paladin_melee_attack_t( "blade_of_justice", p, p -> find_class_spell( "Blade of Justice" ) ),
-    azerite_expurgation( nullptr ),
+    paladin_melee_attack_t( "blade_of_justice", p, p -> talents.blade_of_justice ),
+    conduit_expurgation( nullptr ),
     expurgation( nullptr )
   {
     parse_options( options_str );
 
-    if ( p -> azerite.expurgation.ok() )
+    if ( p -> conduit.expurgation -> ok() )
     {
-      azerite_expurgation = new azerite_expurgation_t( p );
-      add_child( azerite_expurgation );
+      conduit_expurgation = new conduit_expurgation_t( p );
+      add_child( conduit_expurgation );
     }
 
-    if ( p -> conduit.expurgation -> ok() )
+    if ( p -> talents.expurgation -> ok() )
     {
       expurgation = new expurgation_t( p );
       add_child( expurgation );
     }
 
-    const spell_data_t* blade_of_justice_2 = p -> find_specialization_spell( 327981 );
-    if ( blade_of_justice_2 )
+    if ( p -> talents.holy_blade -> ok() )
     {
-      energize_amount += blade_of_justice_2 -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
+      energize_amount += p -> talents.holy_blade -> effectN( 1 ).resource( RESOURCE_HOLY_POWER );
     }
   }
 
@@ -254,6 +253,13 @@ struct blade_of_justice_t : public paladin_melee_attack_t
     double am = paladin_melee_attack_t::action_multiplier();
     if ( p() -> buffs.blade_of_wrath -> up() )
       am *= 1.0 + p() -> buffs.blade_of_wrath -> data().effectN( 1 ).percent();
+    return am;
+  }
+
+  double composite_crit_chance_multiplier() const override {
+    double am = paladin_melee_attack_t::composite_crit_chance_multiplier();
+    if ( p() -> talents.condemning_blade -> ok() )
+      am *= 1.0 + p() -> talents.condemning_blade -> effectN( 1 ).percent();
     return am;
   }
 
@@ -270,17 +276,18 @@ struct blade_of_justice_t : public paladin_melee_attack_t
 
     if ( state -> result == RESULT_CRIT )
     {
-      if ( p() -> azerite.expurgation.ok() )
+      if ( p() -> talents.expurgation -> ok() )
       {
-        azerite_expurgation -> set_target( state -> target );
-        azerite_expurgation -> execute();
+        expurgation -> base_td = state -> result_amount * p() -> talents.expurgation -> effectN( 1 ).percent();
+        expurgation -> set_target( state -> target );
+        expurgation -> execute();
       }
 
       if ( p() -> conduit.expurgation -> ok() )
       {
-        expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
-        expurgation -> set_target( state -> target );
-        expurgation -> execute();
+        conduit_expurgation -> base_td = state -> result_amount * p() -> conduit.expurgation.percent();
+        conduit_expurgation -> set_target( state -> target );
+        conduit_expurgation -> execute();
       }
     }
 
@@ -302,6 +309,10 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
     holy_power_consumer_t( "divine_storm", p, p -> find_specialization_spell( "Divine Storm" ) )
   {
     parse_options( options_str );
+
+    if ( !( p -> talents.divine_storm -> ok() ) )
+      background = true;
+
     is_divine_storm = true;
 
     aoe = as<int>( data().effectN( 2 ).base_value() );
@@ -607,6 +618,9 @@ struct judgment_ret_t : public judgment_t
     holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
+
+    if ( p -> talents.highlords_judgment -> ok() )
+      base_multiplier *= 1.0 + p -> talents.highlords_judgment -> effectN( 1 ).percent();
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
@@ -691,7 +705,7 @@ struct shield_of_vengeance_proc_t : public paladin_spell_t
 struct shield_of_vengeance_t : public paladin_absorb_t
 {
   shield_of_vengeance_t( paladin_t* p, util::string_view options_str ) :
-    paladin_absorb_t( "shield_of_vengeance", p, p -> find_specialization_spell( "Shield of Vengeance" ) )
+    paladin_absorb_t( "shield_of_vengeance", p, p -> talents.shield_of_vengeance )
   {
     parse_options( options_str );
 
@@ -734,7 +748,7 @@ struct wake_of_ashes_t : public paladin_spell_t
   truths_wake_t* truths_wake;
 
   wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
-    paladin_spell_t( "wake_of_ashes", p, p -> find_specialization_spell( "Wake of Ashes" ) ),
+    paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes ),
     truths_wake( nullptr )
   {
     parse_options( options_str );
@@ -833,6 +847,10 @@ void paladin_t::create_buffs_retribution()
              -> add_invalidate( CACHE_ATTACK_SPEED )
              -> set_cooldown( timespan_t::from_millis( 500 ) );
 
+  buffs.vanguards_momentum = make_buff( this, "vanguards_momentum", find_spell( 383311 ) )
+                                        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                        -> set_default_value( find_spell( 383311 ) -> effectN( 1 ).percent() );
+
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )
                        -> set_default_value( azerite.empyrean_power.value() );
@@ -842,9 +860,9 @@ void paladin_t::create_buffs_retribution()
                               -> add_stat( STAT_HASTE_RATING, azerite.relentless_inquisitor.value() );
 
   // legendaries
-  buffs.vanguards_momentum = make_buff( this, "vanguards_momentum", find_spell( 345046 ) )
-                             -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             -> set_default_value( find_spell( 345046 ) -> effectN( 1 ).percent() );
+  buffs.vanguards_momentum_legendary = make_buff( this, "vanguards_momentum", find_spell( 345046 ) )
+                                        -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                                        -> set_default_value( find_spell( 345046 ) -> effectN( 1 ).percent() );
 }
 
 void paladin_t::init_rng_retribution()
@@ -856,23 +874,54 @@ void paladin_t::init_rng_retribution()
 void paladin_t::init_spells_retribution()
 {
   // Talents
-  talents.zeal                 = find_talent_spell( "Zeal" );
-  talents.righteous_verdict    = find_talent_spell( "Righteous Verdict" );
-  talents.execution_sentence   = find_talent_spell( "Execution Sentence" );
-
-  talents.fires_of_justice     = find_talent_spell( "Fires of Justice" );
-  talents.blade_of_wrath       = find_talent_spell( "Blade of Wrath" );
-  talents.empyrean_power       = find_talent_spell( "Empyrean Power" );
-
-  talents.eye_for_an_eye       = find_talent_spell( "Eye for an Eye" );
-
-  talents.selfless_healer      = find_talent_spell( "Selfless Healer" ); // Healing, NYI
-  talents.justicars_vengeance  = find_talent_spell( "Justicar's Vengeance" );
-  talents.healing_hands        = find_talent_spell( "Healing Hands" );
-
-  talents.ret_sanctified_wrath = find_talent_spell( "Sanctified Wrath", PALADIN_RETRIBUTION ); // 317866
-  talents.crusade              = find_talent_spell( "Crusade" );
-  talents.final_reckoning      = find_talent_spell( "Final Reckoning" );
+  talents.blade_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Justice" );
+  talents.divine_storm                = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Storm" ); // NYI
+  talents.art_of_war                  = find_talent_spell( talent_tree::SPECIALIZATION, "Art of War" );
+  talents.timely_judgment             = find_talent_spell( talent_tree::SPECIALIZATION, "Timely Judgment" ); // NYI
+  talents.improved_crusader_strike    = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Crusader Strike" ); // NYI
+  talents.holy_crusader               = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Crusader" ); // NYI
+  talents.holy_blade                  = find_talent_spell( talent_tree::SPECIALIZATION, "Holy Blade" ); // NYI
+  talents.condemning_blade            = find_talent_spell( talent_tree::SPECIALIZATION, "Condemning Blade" ); // NYI
+  talents.zeal                        = find_talent_spell( talent_tree::SPECIALIZATION, "Zeal" ); // NYI
+  talents.shield_of_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Shield of Vengeance" ); // NYI
+  talents.divine_protection           = find_talent_spell( talent_tree::SPECIALIZATION, "Divine Protection" ); // NYI
+  talents.blade_of_wrath              = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Wrath" );
+  talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" ); // NYI
+  talents.righteous_verdict           = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Verdict" ); // NYI
+  talents.calm_before_the_storm       = find_talent_spell( talent_tree::SPECIALIZATION, "Calm Before the Storm" ); // NYI
+  talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" ); // NYI
+  talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" ); // NYI
+  talents.seal_of_wrath               = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Wrath" ); // NYI
+  talents.expurgation                 = find_talent_spell( talent_tree::SPECIALIZATION, "Expurgation" ); // NYI
+  talents.boundless_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Boundless Judgment" ); // NYI
+  talents.sanctification              = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctification" ); // NYI
+  talents.inner_power                 = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Power" ); // NYI
+  talents.ashes_to_dust               = find_talent_spell( talent_tree::SPECIALIZATION, "Ashes to Dust" ); // NYI
+  talents.path_of_ruin                = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Ruin" ); // NYI
+  talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" ); // NYI
+  talents.truths_wake                 = find_talent_spell( talent_tree::SPECIALIZATION, "Truth's Wake" ); // NYI
+  talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" ); // NYI
+  talents.fires_of_justice            = find_talent_spell( talent_tree::SPECIALIZATION, "Fires of Justice" ); // NYI
+  talents.sealed_verdict              = find_talent_spell( talent_tree::SPECIALIZATION, "Sealed Verdict" ); // NYI
+  talents.consecrated_ground_ret      = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Ground", PALADIN_RETRIBUTION ); // NYI
+  talents.sanctified_ground_ret       = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctified Ground" ); // NYI
+  talents.exorcism                    = find_talent_spell( talent_tree::SPECIALIZATION, "Exorcism" ); // NYI
+  talents.hand_of_hindrance           = find_talent_spell( talent_tree::SPECIALIZATION, "Hand of Hindrance" ); // NYI
+  talents.selfless_healer             = find_talent_spell( talent_tree::SPECIALIZATION, "Selfless Healer" ); // NYI
+  talents.healing_hands               = find_talent_spell( talent_tree::SPECIALIZATION, "Healing Hands" ); // NYI
+  talents.tempest_of_the_lightbringer = find_talent_spell( talent_tree::SPECIALIZATION, "Tempest of the Lightbringer" ); // NYI
+  talents.justicars_vengeance         = find_talent_spell( talent_tree::SPECIALIZATION, "Justicar's Vengeance" ); // NYI
+  talents.eye_for_an_eye              = find_talent_spell( talent_tree::SPECIALIZATION, "Eye for an Eye" ); // NYI
+  talents.ashes_to_ashes              = find_talent_spell( talent_tree::SPECIALIZATION, "Ashes to Ashes" ); // NYI
+  talents.templars_vindication        = find_talent_spell( talent_tree::SPECIALIZATION, "Templar's Vindication" ); // NYI
+  talents.execution_sentence          = find_talent_spell( talent_tree::SPECIALIZATION, "Execution Sentence" ); // NYI
+  talents.empyrean_endowment          = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Endowment" ); // NYI
+  talents.virtuous_command            = find_talent_spell( talent_tree::SPECIALIZATION, "Virtuous Command" ); // NYI
+  talents.final_verdict               = find_talent_spell( talent_tree::SPECIALIZATION, "Final Verdict" ); // NYI
+  talents.executioners_will           = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Will" ); // NYI
+  talents.executioners_wrath          = find_talent_spell( talent_tree::SPECIALIZATION, "Executioner's Wrath" ); // NYI
+  talents.final_reckoning             = find_talent_spell( talent_tree::SPECIALIZATION, "Final Reckoning" ); // NYI
+  talents.vanguards_momentum          = find_talent_spell( talent_tree::SPECIALIZATION, "Vanguard's Momentum" ); // NYI
 
   // Spec passives and useful spells
   spec.retribution_paladin = find_specialization_spell( "Retribution Paladin" );
@@ -887,8 +936,6 @@ void paladin_t::init_spells_retribution()
   }
 
   passives.boundless_conviction = find_spell( 115675 );
-  passives.art_of_war = find_specialization_spell( 267344 );
-  passives.art_of_war_2 = find_specialization_spell( 317912 );
 
   spells.lights_decree = find_spell( 286231 );
   spells.reckoning = find_spell( 343724 );

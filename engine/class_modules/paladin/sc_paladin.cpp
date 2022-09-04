@@ -735,9 +735,7 @@ struct melee_t : public paladin_melee_attack_t
       if ( p()->specialization() == PALADIN_RETRIBUTION )
       {
         // Check for BoW procs
-        double aow_proc_chance = p()->passives.art_of_war->effectN( 1 ).percent();
-        if ( p()->passives.art_of_war_2->ok() )
-          aow_proc_chance += p()->passives.art_of_war_2->effectN( 1 ).percent();
+        double aow_proc_chance = p()->talents.art_of_war->effectN( 1 ).percent();
 
         if ( p()->talents.blade_of_wrath->ok() )
           aow_proc_chance *= 1.0 + p()->talents.blade_of_wrath->effectN( 1 ).percent();
@@ -754,16 +752,31 @@ struct melee_t : public paladin_melee_attack_t
             );
           }
 
+          if ( p()->talents.ashes_to_ashes->ok() )
+          {
+            p()->buffs.seraphim->extend_duration_or_trigger(
+              timespan_t::from_seconds( p()->talents.ashes_to_dust->effectN( 1 ).base_value() ),
+              player
+            );
+          }
+
           if ( p()->sets->has_set_bonus( PALADIN_RETRIBUTION, T28, B4 ) && rng().roll( p()->sets->set( PALADIN_RETRIBUTION, T28, B4 )->effectN( 1 ).percent() ) )
           {
             p()->cooldowns.wake_of_ashes->reset( true );
           }
           else
           {
-            if ( p()->talents.blade_of_wrath->ok() )
-              p()->buffs.blade_of_wrath->trigger();
+            if ( p()->talents.ashes_to_dust->ok() && rng().roll( p()->talents.ashes_to_dust->effectN( 1 ).percent() ) )
+            {
+              p()->cooldowns.wake_of_ashes->reset( true );
+            }
+            else
+            {
+              if ( p()->talents.blade_of_wrath->ok() )
+                p()->buffs.blade_of_wrath->trigger();
 
-            p()->cooldowns.blade_of_justice->reset( true );
+              p()->cooldowns.blade_of_justice->reset( true );
+            }
           }
         }
 
@@ -833,10 +846,9 @@ struct crusader_strike_t : public paladin_melee_attack_t
       cooldown->duration *= 1.0 + p->talents.fires_of_justice->effectN( 3 ).percent();
     }
 
-    const spell_data_t* crusader_strike_3 = p->find_specialization_spell( 231667 );
-    if ( crusader_strike_3 )
+    if ( p->talents.improved_crusader_strike )
     {
-      cooldown->charges += as<int>( crusader_strike_3->effectN( 1 ).base_value() );
+      cooldown->charges += as<int>( p->talents.improved_crusader_strike->effectN( 1 ).base_value() );
     }
   }
 
@@ -1622,6 +1634,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     {
       cooldown->charges += as<int>( p->legendary.vanguards_momentum->effectN( 1 ).base_value() );
     }
+
+    if ( p->talents.vanguards_momentum->ok() )
+    {
+      cooldown->charges += as<int>( p->talents.vanguards_momentum->effectN( 1 ).base_value() );
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -1677,6 +1694,11 @@ struct hammer_of_wrath_t : public paladin_melee_attack_t
     }
 
     if ( p()->legendary.vanguards_momentum->ok() )
+    {
+      p()->buffs.vanguards_momentum->trigger();
+    }
+
+    if ( p()->talents.vanguards_momentum->ok() )
     {
       p()->buffs.vanguards_momentum->trigger();
     }
@@ -2757,6 +2779,9 @@ double paladin_t::composite_mastery() const
   if ( buffs.seraphim->up() )
     m += buffs.seraphim->data().effectN( 4 ).base_value();
 
+  if ( talents.holy_crusader->ok() )
+    m += talents.holy_crusader->effectN( 1 ).percent();
+
   return m;
 }
 
@@ -2766,6 +2791,9 @@ double paladin_t::composite_spell_crit_chance() const
 
   if ( buffs.seraphim->up() )
     h += buffs.seraphim->data().effectN( 1 ).percent();
+
+  if ( talents.holy_aegis->ok() )
+    h += talents.holy_aegis->effectN( 1 ).percent();
 
   return h;
 }
@@ -2788,6 +2816,9 @@ double paladin_t::composite_base_armor_multiplier() const
 
   if ( passives.aegis_of_light -> ok() )
     a *= 1.0 + passives.aegis_of_light -> effectN( 2 ).percent();
+  
+  if ( talents.holy_aegis -> ok() )
+    a *= 1.0 + talents.holy_aegis -> effectN( 1 ).percent();
 
   return a;
 }
