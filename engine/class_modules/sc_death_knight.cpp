@@ -5042,39 +5042,31 @@ struct dark_transformation_t : public death_knight_spell_t
 
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
-    death_knight_spell_t( name, p, spell )
-  {
-    aoe = -1;
-    background = dual = true;
-  }
-};
-
-struct death_and_decay_damage_t : public death_and_decay_damage_base_t
-{
   // Values found from testing
   const int PESTILENCE_CAP_PER_TICK = 2;
   const int PESTILENCE_CAP_PER_CAST = 10;
 
   int pestilence_procs_per_tick;
   int pestilence_procs_per_cast;
-
-  death_and_decay_damage_t( util::string_view name, death_knight_t* p, const spell_data_t* s = nullptr ) :
-    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> find_spell( 52212 ) : s ),
+  death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_spell_t( name, p, spell ),
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
-  { }
-  
+  {
+    aoe = -1;
+    background = dual = true;
+  }
+
   void execute() override
   {
     pestilence_procs_per_tick = 0;
 
-    death_and_decay_damage_base_t::execute();
+    death_knight_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
-    death_and_decay_damage_base_t::impact( s );
+    death_knight_spell_t::impact( s );
 
     if ( p() -> talent.unholy.pestilence.ok() &&
          pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
@@ -5090,25 +5082,24 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
   }
 };
 
+struct death_and_decay_damage_t : public death_and_decay_damage_base_t
+{
+  death_and_decay_damage_t( util::string_view name, death_knight_t* p, const spell_data_t* s = nullptr ) :
+    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> find_spell( 52212 ) : s )
+  { }
+};
+
 struct defile_damage_t : public death_and_decay_damage_base_t
 {
   double active_defile_multiplier;
   const double defile_tick_multiplier;
-  // Values found from testing
-  const int PESTILENCE_CAP_PER_TICK = 2;
-  const int PESTILENCE_CAP_PER_CAST = 10;
-
-  int pestilence_procs_per_tick;
-  int pestilence_procs_per_cast;
 
   defile_damage_t( util::string_view name, death_knight_t* p ) :
     death_and_decay_damage_base_t( name, p, p -> find_spell( 156000 ) ),
     active_defile_multiplier( 1.0 ),
     // Testing shows a 1.06 multiplicative damage increase for every tick of defile that hits an enemy
     // Can't seem to find it anywhere in defile's spelldata
-    defile_tick_multiplier( 1.06 ),
-    pestilence_procs_per_tick( 0 ),
-    pestilence_procs_per_cast( 0 )
+    defile_tick_multiplier( 1.06 )
   {
     base_multiplier *= 1.0 + p -> conduits.withering_ground.percent();
   }
@@ -5124,30 +5115,12 @@ struct defile_damage_t : public death_and_decay_damage_base_t
 
   void execute() override
   {
-    pestilence_procs_per_tick = 0;
     death_and_decay_damage_base_t::execute();
     // Increase damage of next ticks if it damages at least an enemy
     // Yes, it is multiplicative
     if ( hit_any_target )
     {
       active_defile_multiplier *= defile_tick_multiplier;
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    death_and_decay_damage_base_t::impact( s );
-
-    if ( p() -> talent.unholy.pestilence.ok() &&
-         pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
-         pestilence_procs_per_cast < PESTILENCE_CAP_PER_CAST )
-    {
-      if ( rng().roll( p() -> talent.unholy.pestilence -> effectN( 1 ).percent() ) )
-      {
-        p() -> trigger_festering_wound( s, 1, p() -> procs.fw_pestilence );
-        pestilence_procs_per_tick++;
-        pestilence_procs_per_cast++;
-      }
     }
   }
 };
@@ -5253,6 +5226,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> active_dnd = nullptr;
     }
 
+    // Reset death and decay damage's pestilence proc per cast counter
+    debug_cast<death_and_decay_damage_base_t*>( damage ) -> pestilence_procs_per_cast = 0;
+
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -5323,14 +5299,6 @@ struct death_and_decay_t : public death_and_decay_base_t
     if ( p -> talent.unholy.defile.ok() || p -> covenant.deaths_due -> ok() )
       background = true;
   }
-
-  void execute() override
-  {
-    // Reset death and decay damage's pestilence proc per cast counter
-    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
-
-    death_and_decay_base_t::execute();
-  }
 };
 
 struct defile_t : public death_and_decay_base_t
@@ -5347,8 +5315,6 @@ struct defile_t : public death_and_decay_base_t
 
   void execute() override
   {
-    // Reset death and decay damage's pestilence proc per cast counter
-    debug_cast<defile_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
     // Reset the damage component's increasing multiplier
     static_cast<defile_damage_t*>( damage ) -> active_defile_multiplier = 1.0;
 
@@ -5371,13 +5337,6 @@ struct deaths_due_t : public death_and_decay_base_t
 
     if ( p -> talent.deaths_echo.ok() )
         cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
-  }
-
-  void execute() override
-  {
-    debug_cast<deaths_due_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
-
-    death_and_decay_base_t::execute();
   }
 };
 
@@ -9149,7 +9108,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
           dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
           dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
         }
-        
+
         if ( dk-> talent.unholy.festermight.ok() )
         {
           dk->buffs.festermight->trigger( n_executes );
