@@ -8822,6 +8822,20 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( name, vesper_totem_used_charges );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "ti_lightning_bolt" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+        return !action.ti_trigger || action.ti_trigger == action.lightning_bolt_ti;
+    } );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "ti_chain_lightning" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+        return action.ti_trigger == action.chain_lightning_ti;
+    } );
+  }
+
   return player_t::create_expression( name );
 }
 
