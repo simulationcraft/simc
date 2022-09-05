@@ -255,9 +255,9 @@ struct angelic_feather_t final : public priest_spell_t
 
 // ==========================================================================
 // Divine Star
+// Base Spell, used for both heal and damage spell.
+// TODO: add reduced healing beyond 6 targets
 // ==========================================================================
-
-/// Divine Star Base Spell, used for both heal and damage spell.
 template <class Base>
 struct divine_star_base_t : public Base
 {
@@ -330,23 +330,18 @@ private:
 
 // ==========================================================================
 // Halo
+// Base Spell, used for both damage and heal spell.
+// TODO: add reduced healing beyond 5 targets
 // ==========================================================================
-/// Halo Base Spell, used for both damage and heal spell.
 template <class Base>
 struct halo_base_t : public Base
 {
 public:
   halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
   {
-    Base::aoe        = -1;
-    Base::background = true;
-
-    if ( Base::data().ok() )
-    {
-      // Parse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
-      Base::parse_effect_data( Base::data().effectN( 1 ) );
-    }
-    Base::radius       = 30;
+    Base::aoe          = -1;
+    Base::background   = true;
+    Base::radius       = Base::data().max_range();
     Base::range        = 0;
     Base::travel_speed = 15;  // Rough estimate, 2021-01-03
   }
@@ -2559,22 +2554,16 @@ void priest_t::init_base_stats()
 {
   if ( base.distance < 1 )
   {
-    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    // Halo does the most damage between 25-30yd
+    // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
+    if ( talents.divine_star.enabled() )
     {
-      // Range Based on Talents
-      // TODO: check if this is still needed in Dragonflight
-      if ( talents.divine_star->ok() )
-      {
-        base.distance = 24.0;
-      }
-      else if ( talents.halo->ok() )
-      {
-        base.distance = 27.0;
-      }
-      else
-      {
-        base.distance = 27.0;
-      }
+      base.distance = 24.0;
+    }
+
+    if ( talents.halo.enabled() )
+    {
+      base.distance = 28.0;
     }
   }
 
