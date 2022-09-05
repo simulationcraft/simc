@@ -367,8 +367,6 @@ public:
     action_t* flame_shock;
 
     action_t* lightning_rod;
-    action_t* stormblast;
-    action_t* stormblast_oh;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -3189,13 +3187,24 @@ struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry, stormbringer;
 
+  action_t* stormblast;
+
   stormstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false )
+    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false ),
+    stormblast( nullptr )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     school = SCHOOL_PHYSICAL;
+
+    if ( player->talent.stormblast.ok() )
+    {
+      std::string name_str { "stormblast_" };
+      name_str += n;
+      stormblast = new stormblast_t( player, name_str );
+      add_child( stormblast );
+    }
   }
 
   double action_multiplier() const override
@@ -3245,14 +3254,10 @@ struct stormstrike_attack_t : public shaman_attack_t
 
     if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
-      auto sb = weapon->slot == SLOT_MAIN_HAND
-        ? p()->action.stormblast
-        : p()->action.stormblast_oh;
-
-      sb->base_dd_min = sb->base_dd_max =
+      stormblast->base_dd_min = stormblast->base_dd_max =
         p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
-      sb->set_target( state->target );
-      sb->execute();
+      stormblast->set_target( state->target );
+      stormblast->execute();
     }
   }
 };
@@ -8851,12 +8856,6 @@ void shaman_t::create_actions()
   if ( talent.lightning_rod.ok() )
   {
     action.lightning_rod = new lightning_rod_damage_t( this );
-  }
-
-  if ( talent.stormblast.ok() )
-  {
-    action.stormblast = new stormblast_t( this, "stormblast_mh" );
-    action.stormblast_oh = new stormblast_t( this, "stormblast_oh" );
   }
 
   // Generic Actions
