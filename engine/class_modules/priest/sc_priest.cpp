@@ -1359,10 +1359,13 @@ struct echoing_void_t final : public priest_spell_t
 // ==========================================================================
 struct fade_t final : public priest_spell_t
 {
-  fade_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "fade", p, p.find_class_spell( "Fade" ) )
+  fade_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "fade", p, p.specs.fade )
   {
     parse_options( options_str );
     harmful = false;
+
+    // Reduces CD of Fade
+    apply_affecting_aura( p.talents.improved_fade );
   }
 
   void execute() override
@@ -1373,10 +1376,7 @@ struct fade_t final : public priest_spell_t
       priest().buffs.translucent_image_conduit->trigger();
     }
 
-    if ( priest().talents.translucent_image.enabled() )
-    {
-      priest().buffs.translucent_image->trigger();
-    }
+    priest().buffs.fade->trigger();
 
     priest_spell_t::execute();
   }
@@ -2621,6 +2621,7 @@ void priest_t::init_spells()
   specs.shadow_word_death_self_damage = find_spell( 32409 );
   specs.painbreaker_psalm_insanity    = find_spell( 336167 );
   specs.psychic_scream                = find_class_spell( "Psychic Scream" );
+  specs.fade                          = find_class_spell( "Fade" );
 
   // Class passives
   specs.priest            = dbc::get_class_passive( *this, SPEC_NONE );
@@ -2761,6 +2762,7 @@ void priest_t::create_buffs()
   // Generic buffs
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this );
+  buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
 
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )
@@ -2784,9 +2786,6 @@ void priest_t::create_buffs()
   buffs.depth_of_the_shadows =
       make_buff( this, "depth_of_the_shadows", talents.depth_of_the_shadows->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1 );
-  // TODO: check if this actually scales damage taken. Looks like its -5 at both ranks
-  buffs.translucent_image = make_buff( this, "translucent_image", find_spell( 373447 ) )
-                                ->set_default_value( talents.translucent_image->effectN( 1 ).base_value() );
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
   buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", talents.death_and_madness )
                                       ->set_quiet( true )
@@ -3004,9 +3003,9 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
     s->result_amount *= 1.0 + buffs.dispersion->data().effectN( 1 ).percent();
   }
 
-  if ( buffs.translucent_image->up() )
+  if ( talents.translucent_image.enabled() && buffs.fade->up() )
   {
-    s->result_amount *= 1.0 + buffs.translucent_image->data().effectN( 1 ).percent();
+    s->result_amount *= 1.0 + specs.fade->effectN( 4 ).percent();
   }
 }
 

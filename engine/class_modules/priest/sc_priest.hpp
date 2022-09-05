@@ -98,6 +98,7 @@ public:
     // Generic
     propagate_const<buff_t*> desperate_prayer;
     absorb_buff_t* power_word_shield;
+    propagate_const<buff_t*> fade;
 
     // Talents
     propagate_const<buff_t*> masochism;
@@ -131,7 +132,6 @@ public:
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> translucent_image_conduit;
-    propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> vampiric_insight;
     propagate_const<buff_t*> void_touched;
@@ -345,6 +345,7 @@ public:
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death_self_damage;
     const spell_data_t* psychic_scream;
+    const spell_data_t* fade;
 
     // Discipline
     const spell_data_t* discipline_priest;  // General discipline data
