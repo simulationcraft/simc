@@ -1702,12 +1702,6 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       s->target->buffs.body_and_soul->trigger();
     }
-
-    // Store the initial amount of the shield in the Void Shield buff to know our max absorb amount
-    if ( priest().talents.void_shield.enabled() )
-    {
-      priest().buffs.void_shield->trigger( 1, s->result_amount );
-    }
   }
 };
 
@@ -2760,8 +2754,6 @@ void priest_t::create_buffs()
   // Generic buffs
   buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
   buffs.power_word_shield = new buffs::power_word_shield_buff_t( this );
-  buffs.void_shield =
-      make_buff( this, "void_shield", talents.void_shield )->set_quiet( true )->set_duration( timespan_t::zero() );
 
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )

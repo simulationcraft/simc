@@ -98,7 +98,6 @@ public:
     // Generic
     propagate_const<buff_t*> desperate_prayer;
     absorb_buff_t* power_word_shield;
-    propagate_const<buff_t*> void_shield;
 
     // Talents
     propagate_const<buff_t*> masochism;
@@ -1344,23 +1343,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
               priest().buffs.rigor_mortis->trigger( priest().options.pallid_command_allies );
             }
           }
-        }
-
-        // TODO: NYI
-        // Can't find a way to get the value of the current PW:S current_value does not seem to ever change
-        // This means I also cannot find a way to refill it
-        if ( priest().talents.void_shield.enabled() && priest().buffs.power_word_shield->check() )
-        {
-          // Store the initial amount of the shield in the Void Shield buff
-          double left_to_refill =
-              priest().buffs.void_shield->current_value - priest().buffs.power_word_shield->current_value;
-          double refill_amount = s->result_amount * priest().talents.void_shield->effectN( 1 ).percent();
-          refill_amount        = std::min( left_to_refill, refill_amount );
-
-          sim->print_debug( "{} adds value to Power Word: Shield. left_to_refill={}, refill_amount={}", priest(),
-                            left_to_refill, refill_amount );
-
-          priest().buffs.power_word_shield->current_value += refill_amount;
         }
       }
     }
