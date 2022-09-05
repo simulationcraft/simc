@@ -510,7 +510,9 @@ struct power_infusion_t final : public priest_spell_t
 
     // Trigger PI on the actor only if casting on itself or having the legendary
     if ( priest().options.self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
+    {
       player->buffs.power_infusion->trigger();
+    }
   }
 };
 
@@ -1485,11 +1487,6 @@ struct shadow_word_death_t final : public priest_spell_t
       cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
     }
 
-    if ( !priest().buffs.death_and_madness_reset->check() && target->health_percentage() <= execute_percent )
-    {
-      cooldown->duration = timespan_t::zero();
-    }
-
     cooldown->hasted = true;
   }
 
@@ -1508,6 +1505,29 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     return tdm;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.death_and_madness.enabled() )
+    {
+      // Cooldown is reset only if you have't already gotten a reset
+      if ( !priest().buffs.death_and_madness_reset->check() )
+      {
+        if ( target->health_percentage() <= execute_percent )
+        {
+          priest().buffs.death_and_madness_reset->trigger();
+          // TODO: this adds in reaction time but im not sure how realistic it is
+          cooldown->reset( true );
+        }
+      }
+      else
+      {
+        priest().buffs.death_and_madness_reset->expire();
+      }
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -1551,19 +1571,6 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         priest_td_t& td = get_td( s->target );
         td.buffs.death_and_madness_debuff->trigger();
-
-        // Cooldown is reset only if you have't already gotten a reset
-        if ( !priest().buffs.death_and_madness_reset->check() )
-        {
-          if ( s->target->health_percentage() <= execute_percent )
-          {
-            priest().buffs.death_and_madness_reset->trigger();
-          }
-        }
-        else
-        {
-          priest().buffs.death_and_madness_reset->expire();
-        }
       }
     }
   }
