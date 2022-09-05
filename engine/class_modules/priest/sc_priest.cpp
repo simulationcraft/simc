@@ -1485,6 +1485,11 @@ struct shadow_word_death_t final : public priest_spell_t
       cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
     }
 
+    if ( !priest().buffs.death_and_madness_reset->check() && target->health_percentage() <= execute_percent )
+    {
+      cooldown->duration = timespan_t::zero();
+    }
+
     cooldown->hasted = true;
   }
 
@@ -1503,17 +1508,6 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     return tdm;
-  }
-
-  timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
-  {
-    timespan_t cd = priest_spell_t::cooldown_base_duration( cooldown );
-
-    if ( !priest().buffs.death_and_madness_reset->check() && target->health_percentage() <= execute_percent )
-    {
-      cd = timespan_t::from_seconds( 0 );
-    }
-    return cd;
   }
 
   void impact( action_state_t* s ) override
@@ -1672,22 +1666,21 @@ struct desperate_prayer_t final : public priest_heal_t
 
 // ==========================================================================
 // Power Word: Shield
+// TODO: add Rapture and Weal and Woe bonuses
 // ==========================================================================
 struct power_word_shield_t final : public priest_absorb_t
 {
-  bool ignore_debuff;
-
   power_word_shield_t( priest_t& p, util::string_view options_str )
-    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ), ignore_debuff( false )
+    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) )
   {
-    add_option( opt_bool( "ignore_debuff", ignore_debuff ) );
     parse_options( options_str );
+    spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
+  }
 
-    // TODO: this is for sure wrong
-    // new formula in tooltip: $SP*1.65*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>
-    // $shadow=$?a137033[${1.00}][${1}]
-    // $rapture=$?a47536[${(1+$47536s1/100)}][${1}]
-    spell_power_mod.direct = 5.5;  // hardcoded into tooltip, last checked 2017-03-18
+  // Manually create the buff so we can reference it with Void Shield
+  absorb_buff_t* create_buff( const action_state_t* s ) override
+  {
+    return priest().buffs.power_word_shield;
   }
 
   void execute() override
@@ -1709,6 +1702,12 @@ struct power_word_shield_t final : public priest_absorb_t
     {
       s->target->buffs.body_and_soul->trigger();
     }
+
+    // Store the initial amount of the shield in the Void Shield buff to know our max absorb amount
+    if ( priest().talents.void_shield.enabled() )
+    {
+      priest().buffs.void_shield->trigger( 1, s->result_amount );
+    }
   }
 };
 
@@ -1718,6 +1717,19 @@ struct power_word_shield_t final : public priest_absorb_t
 
 namespace buffs
 {
+// ==========================================================================
+// Power Word: Shield
+// ==========================================================================
+struct power_word_shield_buff_t : public absorb_buff_t
+{
+  power_word_shield_buff_t( priest_t* p )
+    : absorb_buff_t( p, "power_word_shield", p->find_class_spell( "Power Word: Shield" ) )
+  {
+    set_absorb_school( SCHOOL_PHYSICAL );
+    set_absorb_source( player->get_stats( "power_word_shield" ) );
+  }
+};
+
 // ==========================================================================
 // Desperate Prayer - Health Increase buff
 // ==========================================================================
@@ -2746,7 +2758,10 @@ void priest_t::create_buffs()
   base_t::create_buffs();
 
   // Generic buffs
-  buffs.desperate_prayer = make_buff<buffs::desperate_prayer_t>( *this );
+  buffs.desperate_prayer  = make_buff<buffs::desperate_prayer_t>( *this );
+  buffs.power_word_shield = new buffs::power_word_shield_buff_t( this );
+  buffs.void_shield =
+      make_buff( this, "void_shield", talents.void_shield )->set_quiet( true )->set_duration( timespan_t::zero() );
 
   // Shared talent buffs
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )
