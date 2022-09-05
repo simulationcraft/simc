@@ -4628,9 +4628,9 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto asc_action = p()->find_action( "ascendance" ) )
+        if ( auto ws_action = p()->find_action( "windstrike" ) )
         {
-          asc_action->add_child( this );
+          ws_action->add_child( this );
         }
       }
       default:
@@ -5603,9 +5603,9 @@ struct lightning_bolt_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto asc_action = p()->find_action( "ascendance" ) )
+        if ( auto ws_action = p()->find_action( "windstrike" ) )
         {
-          asc_action->add_child( this );
+          ws_action->add_child( this );
         }
       }
       default:
