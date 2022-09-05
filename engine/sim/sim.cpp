@@ -468,9 +468,9 @@ bool parse_talent_format( sim_t*             sim,
   {
     sim -> talent_input_format = talent_format::WOWHEAD;
   }
-  else if ( util::str_compare_ci( value, "numbers" ) || util::str_compare_ci( value, "default" ) )
+  else if ( util::str_compare_ci( value, "blizzard" ) || util::str_compare_ci( value, "default" ) )
   {
-    sim -> talent_input_format = talent_format::NUMBERS;
+    sim -> talent_input_format = talent_format::BLIZZARD;
   }
 
   return true;

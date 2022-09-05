@@ -4377,6 +4377,7 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{entry["tree"]}')
             fields.append(f'{entry["class_"]:2d}')
             fields += entry['entry'].field('id')
+            fields += entry['node'].field('id')
             fields += entry['entry'].field('max_ranks')
             fields.append(f'{entry["req_points"]:2d}')
             fields += entry['definition'].field('id')

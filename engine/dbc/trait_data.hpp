@@ -19,6 +19,7 @@ struct trait_data_t
   unsigned    tree_index;
   unsigned    id_class;
   unsigned    id_trait_node_entry;
+  unsigned    id_node;
   unsigned    max_ranks;
   unsigned    req_points;
   unsigned    id_trait_definition;

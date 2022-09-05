@@ -103,10 +103,11 @@ constexpr sdata_field_t::getter_t::getter_t( nontype_t<Ptr> )
   : type( detail::getter<Ptr>::type ), get( detail::getter<Ptr>::get )
 {}
 
-static constexpr std::array<sdata_field_t, 6> _talent_data_fields { {
+static constexpr std::array<sdata_field_t, 7> _talent_data_fields { {
   { "name",  nontype< &trait_data_t::name > },
   { "id",    nontype< &trait_data_t::id_trait_node_entry > },
-  { "tree",  nontype< &trait_data_t::tree_index> },
+  { "node",  nontype< &trait_data_t::id_node > },
+  { "tree",  nontype< &trait_data_t::tree_index > },
   { "col",   nontype< &trait_data_t::col > },
   { "row",   nontype< &trait_data_t::row > },
   { "max_rank", nontype< &trait_data_t::max_ranks > },

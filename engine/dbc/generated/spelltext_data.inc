@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.0.45335
-static const std::array<spelltext_data_t, 18400> __spelltext_data { {
+static const std::array<spelltext_data_t, 18401> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17863,6 +17863,7 @@ static const std::array<spelltext_data_t, 18400> __spelltext_data { {
   { 387638, "Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.", "Blackout Kick damage increased by $s2% and strikes an additional $s1 $ltarget;targets.", 0 },
   { 387640, "Your Holy Power spending abilities increase the damage of your next Blade of Justice by $s1%.", 0, 0 },
   { 387641, "$@spelldesc385899", "Damage taken reduced by $s1%.", 0 },
+  { 387643, "$@spelldesc387640", "Your next Blade of Justice deals $w1% increased damage.", 0 },
   { 387671, "Your damaging and healing abilities have a chance to grant you Storm's Eye, increasing your highest secondary stat by $s2 for 10 sec.", 0, 0 },
   { 387690, "Your spells and abilities have a chance to usher in primal magics, dealing damage to enemies and buffing allies.", 0, 0 },
   { 387761, "Emerald Blossom instantly heals you for $387763s1 when cast.", 0, 0 },

@@ -789,6 +789,7 @@ public:
   void parse_talents_numbers( util::string_view talent_string );
   bool parse_talents_armory( util::string_view talent_string );
   bool parse_talents_armory2( util::string_view talent_url );
+  bool parse_talents_blizzard( std::string_view hash );
   bool parse_talents_wowhead( std::string_view talent_url );
   void parse_temporary_enchants();
 
@@ -1152,7 +1153,7 @@ public:
   virtual std::unique_ptr<expr_t> create_resource_expression( util::string_view expression_str );
 
   virtual void create_options();
-  void recreate_talent_str( talent_format format = talent_format::NUMBERS );
+  void recreate_talent_str( talent_format format = talent_format::BLIZZARD );
   virtual std::string create_profile( save_e = SAVE_ALL );
 
   virtual void copy_from( player_t* source );

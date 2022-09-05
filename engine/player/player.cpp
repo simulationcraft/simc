@@ -588,18 +588,9 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
   }
   else
   {
-    bool all_digits = true;
-    for ( size_t i = 0; i < url.size() && all_digits; i++ )
-      if ( !std::isdigit( url[ i ] ) )
-        all_digits = false;
-
-    if ( all_digits )
-    {
-      if ( sim->talent_input_format == talent_format::UNCHANGED )
-        sim->talent_input_format = talent_format::NUMBERS;
-      p->parse_talents_numbers( url );
-      return true;
-    }
+    if ( sim->talent_input_format == talent_format::UNCHANGED )
+        sim->talent_input_format = talent_format::BLIZZARD;
+    return p->parse_talents_blizzard( url );
   }
 
   sim->error( "Unable to decode talent string '{}' for player '{}'.\n", url, p->name() );
@@ -9823,6 +9814,50 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
   }
 
   create_talents_armory();
+
+  return true;
+}
+
+// Blizzad in-game talent tree export hash
+bool player_t::parse_talents_blizzard( std::string_view hash )
+{
+  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  auto do_error = [ hash, this ]() {
+    sim->error( "Player {} has invalid talent tree hash {}", name(), hash );
+    return false;
+  };
+
+  if ( hash.find_first_not_of( char_array ) != std::string::npos )
+    do_error();
+
+  // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+  size_t version_bits = 8;
+  size_t spec_bits    = 16;
+  size_t tree_bits    = 128;
+  // hardcoded value from Interface/SharedXML/ExportUtil.lua
+  size_t byte_size    = 6;
+
+  if ( version_bits + spec_bits + tree_bits < hash.size() * byte_size )
+    do_error();
+
+  auto get_bit = [ byte_size, hash ]( size_t bits, size_t& head ) -> size_t {
+    size_t val = 0;
+    for ( size_t i = 0; i < bits; i++ )
+    {
+      size_t byte = char_array.find( hash[ head / byte_size ] );
+      size_t bit  = head % byte_size;
+      head++;
+      val += ( byte >> bit & 0b1 ) << i;
+    }
+    return val;
+  };
+
+  size_t head = 0;
+
+  auto version_id = get_bit( version_bits, head );
+  auto spec_id    = get_bit( spec_bits, head );
+  auto tree_hash  = get_bit( tree_bits, head );
 
   return true;
 }
