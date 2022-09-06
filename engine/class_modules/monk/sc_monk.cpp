@@ -1339,7 +1339,13 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
     // Spell data nil or not_found
     if ( data().id() == 0 )
       return false;
-
+      
+    // These abilities are able to be used during Spinning Crane Kick
+    if ( data().id() == 100780    // Tiger Palm
+      || data().id() == 100784    // Blackout Kick 
+      || data().id() == 107428 )  // Rising Sun Kick
+      usable_while_casting = p()->channeling && p()->channeling->id == 101546;
+      
     return monk_action_t::ready();
   }
 
@@ -1607,6 +1613,9 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_ww_t28_4p_power     = true;
     sef_ability                 = sef_ability_e::SEF_TIGER_PALM;
 
+    usable_while_casting        = true; // Allow during Spinning Crane Kick
+    use_while_casting           = true;
+    
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
 
@@ -1955,6 +1964,9 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     affected_by.serenity        = true;
     ap_type                     = attack_power_type::NONE;
 
+    usable_while_casting        = true; // Allow during Spinning Crane Kick
+    use_while_casting           = true;
+
     attack_power_mod.direct = 0;
 
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
@@ -2218,7 +2230,9 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
 
-
+    usable_while_casting        = true; // Allow during Spinning Crane Kick
+    use_while_casting           = true;
+    
     if ( p->specialization() == MONK_WINDWALKER )
     {
       if ( p->spec.blackout_kick_2 )
@@ -2757,6 +2771,10 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
 
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
+
+    // Does not incur channel lag when interrupted by a cast-thru ability
+    ability_lag                     = p->world_lag;
+    ability_lag_stddev              = p->world_lag_stddev;
 
     spell_power_mod.direct = 0.0;
 
