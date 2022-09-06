@@ -2261,7 +2261,7 @@ void priest_t::create_gains()
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
   gains.insanity_mindgames               = get_gain( "Mindgames" );
   gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
-  gains.insanity_pet                     = get_gain( "Shadowfiend" );
+  gains.shadowfiend                      = get_gain( "Shadowfiend" );
   gains.insanity_surrender_to_madness    = get_gain( "Surrender to Madness" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.painbreaker_psalm                = get_gain( "Painbreaker Psalm" );

@@ -424,9 +424,9 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> insanity_mindgames;
-    propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
+    propagate_const<gain_t*> shadowfiend;
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;

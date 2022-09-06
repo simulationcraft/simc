@@ -2047,6 +2047,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
   // Row 8
   talents.shadow.mindbender           = ST( "Mindbender" );
+
   talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
   talents.shadow.pain_of_death        = ST( "Pain of Death" );        // NYI
   talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );  // NYI

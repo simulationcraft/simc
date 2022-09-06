@@ -282,24 +282,16 @@ struct base_fiend_pet_t : public priest_pet_t
   {
     priest_pet_t::init_gains();
 
-    if ( o().specialization() == PRIEST_SHADOW &&
-         ( o().talents.shadow.mindbender.enabled() || o().talents.shadowfiend.enabled() ) )
+    switch ( fiend_type )
     {
-      gains.fiend = o().gains.insanity_pet;
-    }
-    else
-    {
-      switch ( fiend_type )
+      case fiend_type::Mindbender:
       {
-        case fiend_type::Mindbender:
-        {
-          gains.fiend = o().gains.mindbender;
-        }
-        break;
-        default:
-          gains.fiend = get_gain( "basefiend" );
-          break;
+        gains.fiend = o().gains.mindbender;
       }
+      break;
+      default:
+        gains.fiend = o().gains.shadowfiend;
+        break;
     }
   }
 
