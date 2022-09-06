@@ -2032,8 +2032,7 @@ struct pet_melee_attack_t : public pet_action_t<T_PET, melee_attack_t>
         td -> debuff.apocalypse_famine -> trigger();
         break;
       case runeforge_apocalypse::PESTILENCE:
-        this -> dk() -> active_spells.runeforge_pestilence -> set_target( this -> target );
-        this -> dk() -> active_spells.runeforge_pestilence -> execute();
+        this -> dk() -> active_spells.runeforge_pestilence -> execute_on_target( this -> target );
         break;
       case runeforge_apocalypse::WAR:
         td -> debuff.apocalypse_war -> trigger();
@@ -2416,10 +2415,7 @@ struct army_ghoul_pet_t : public base_ghoul_pet_t
   void dismiss( bool expired = false ) override
   {
     if ( !sim -> event_mgr.canceled && dk() -> talent.unholy.ruptured_viscera.ok() )
-    {
-      ruptured_viscera -> set_target( target );
-      ruptured_viscera -> execute();
-    }
+      ruptured_viscera -> execute_on_target( target );
 	  
     pet_t::dismiss( expired );
   }
@@ -3313,10 +3309,7 @@ struct death_knight_disease_t : public death_knight_spell_t
     death_knight_spell_t::impact( s );
 
     for ( auto disease : superstrain_diseases )
-    {
-      disease -> set_target( s -> target );
-      disease -> execute();
-    }
+      disease -> execute_on_target( s -> target );
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -4497,8 +4490,7 @@ struct breath_of_sindragosa_buff_t : public buff_t
       if ( this -> current_tick == 0 )
       {
         p -> replenish_rune( rune_gen, p -> gains.breath_of_sindragosa );
-        bos_damage -> set_target( bos_target );
-        bos_damage -> execute();
+        bos_damage -> execute_on_target( bos_target );
         return;
       }
 
@@ -4532,8 +4524,8 @@ struct breath_of_sindragosa_buff_t : public buff_t
       }
 
       // If there's enough resources for another tick, deal damage
-      bos_damage -> set_target( bos_target );
-      bos_damage -> execute();
+      bos_damage -> execute_on_target( bos_target );
+
     } );
   }
 
@@ -4636,10 +4628,7 @@ struct chains_of_ice_t : public death_knight_spell_t
   {
     death_knight_spell_t::impact( state );
     if ( p() -> buffs.cold_heart -> check() > 0 )
-    {
-      cold_heart -> set_target( target );
-      cold_heart -> execute();
-    }
+      cold_heart -> execute_on_target( target );
   }
 
   void execute() override
@@ -6302,10 +6291,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
     if ( hit_any_target )
     {
       if ( oh )
-      {
-        oh -> set_target( target );
-        oh -> execute();
-      }
+        oh -> execute_on_target( target );
     }
 
     // TODO remove with conduits
@@ -6703,10 +6689,7 @@ struct howling_blast_t : public death_knight_spell_t
     }
 
     if ( p() -> talent.frost.avalanche.ok() && p() -> buffs.rime -> up() )
-    {
-      avalanche -> set_target( target );
-      avalanche -> execute();
-    }
+      avalanche -> execute_on_target( target );
 
     if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion.ok() )
     {
@@ -7025,29 +7008,19 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
       if ( km_mh && p() -> buffs.killing_machine -> up() )
       {
-        km_mh -> set_target( target );
-        km_mh -> execute();
+        km_mh -> execute_on_target( target );
         if ( oh && km_oh )
-        {
-          km_oh -> set_target( target );
-          km_oh -> execute();
-        }
+
+          km_oh -> execute_on_target( target );
         // Tier28, KM is up, so fire GA, in game fires before oblits
         if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_FROST, T28, B4 ) )
-        {
-          p() -> active_spells.glacial_advance_t28_4pc -> set_target( target );
-          p() -> active_spells.glacial_advance_t28_4pc -> execute();
-        }
+          p() -> active_spells.glacial_advance_t28_4pc -> execute_on_target( target );
       }
       else
       {
-        mh -> set_target( target );
-        mh -> execute();
+        mh -> execute_on_target( target );
         if ( oh )
-        {
-          oh -> set_target( target );
-          oh -> execute();
-        }
+          oh -> execute_on_target( target );
       }
 
       p() -> buffs.rime -> trigger();
@@ -7494,8 +7467,7 @@ struct sacrificial_pact_t : public death_knight_heal_t
   {
     death_knight_heal_t::execute();
 
-    damage -> set_target( player -> target );
-    damage -> execute();
+    damage -> execute_on_target( player -> target );
 
     p() -> pets.ghoul_pet -> dismiss();
   }
@@ -7603,8 +7575,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
 
       if ( p() -> buffs.harvest_time_stack -> at_max_stacks() )
       {
-        p() -> active_spells.soul_reaper_t28 -> set_target( target );
-        p() -> active_spells.soul_reaper_t28 -> execute();
+        p() -> active_spells.soul_reaper_t28 -> execute_on_target( target );
         if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
           p() -> pets.harvest_ghouls.spawn( summon_duration, 1 );
         p() -> buffs.harvest_time_stack -> expire();
@@ -7806,10 +7777,7 @@ struct soul_reaper_t : public death_knight_melee_attack_t
   void tick( dot_t* dot ) override
   {
     if ( dot -> target -> health_percentage() < data().effectN( 3 ).base_value() )
-    {
-      soul_reaper_execute -> set_target ( dot -> target );
-      soul_reaper_execute -> execute();
-    }
+      soul_reaper_execute -> execute_on_target ( dot -> target );
   }
 
   // 6-28-22 In 9.2.5 a bug was introduced that causes soul reaper refreshes to add the remaining debuff duration to the refreshed duration
@@ -8910,10 +8878,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   if ( talent.unholy.bursting_sores.ok() && !active_spells.bursting_sores -> target_list().empty() )
   {
     for ( int i = 0; i < n_wounds; i++ )
-    {
-      active_spells.bursting_sores -> set_target( target );
-      active_spells.bursting_sores -> execute();
-    }
+      active_spells.bursting_sores -> execute_on_target( target );
   }
 
   // 2021-Jun-21 Currently on mob death you only get the benefit of a single stack, even though you really should be getting for each stack
@@ -9129,15 +9094,13 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       unsigned n_executes = std::min( n, as<unsigned>( td -> debuff.festering_wound -> check() ) );
       for ( unsigned i = 0; i < n_executes; ++i )
       {
-        dk -> active_spells.festering_wound -> set_target( target );
-        dk -> active_spells.festering_wound -> execute();
+        dk -> active_spells.festering_wound -> execute_on_target( target );
 
         // Don't unnecessarily call bursting sores in single target scenarios
         if ( dk -> talent.unholy.bursting_sores.ok() &&
              !dk -> active_spells.bursting_sores -> target_list().empty() )
         {
-          dk -> active_spells.bursting_sores -> set_target( target );
-          dk -> active_spells.bursting_sores -> execute();
+          dk -> active_spells.bursting_sores -> execute_on_target( target );
         }
         if ( dk -> conduits.convocation_of_the_dead.ok() )
         {
