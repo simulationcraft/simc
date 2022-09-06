@@ -486,10 +486,10 @@ struct shadow_word_pain_t final : public priest_spell_t
     double crit = priest_spell_t::composite_target_crit_chance( target );
 
     // TODO: convert to new monomania
-    // if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
-    // {
-    //   crit += priest().talents.shadow.abyssal_knowledge->effectN( 1 ).percent();
-    // }
+    if ( priest().is_monomania_up( target ) )
+    {
+      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
+    }
 
     return crit;
   }
@@ -500,7 +500,7 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( priest().is_monomania_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania_tickrate->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
     }
 
     return t;
@@ -723,11 +723,11 @@ struct vampiric_touch_t final : public priest_spell_t
   {
     double crit = priest_spell_t::composite_target_crit_chance( target );
 
-    // TODO: convert this to new monomania
-    // if ( priest().talents.shadow.abyssal_knowledge.enabled() && priest().is_monomania_up( target ) )
-    // {
-    //   crit += priest().talents.shadow.abyssal_knowledge->effectN( 1 ).percent();
-    // }
+    // TODO: convert to new monomania
+    if ( priest().is_monomania_up( target ) )
+    {
+      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
+    }
 
     return crit;
   }
@@ -738,7 +738,7 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( priest().is_monomania_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania_tickrate->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
     }
 
     return t;
@@ -2050,8 +2050,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
   talents.shadow.fiending_dark      = ST( "Fiending Dark" );      // NYI
-  talents.shadow.monomania          = ST( "Monomania" );          // NYI
-  talents.shadow.monomania_tickrate = find_spell( 375408 );       // TODO: confirm we still need this
+  talents.shadow.monomania          = ST( "Monomania" );          
   talents.shadow.painbreaker_psalm  = ST( "Painbreaker Psalm" );  // NYI
   talents.shadow.mastermind         = ST( "Mastermind" );         // NYI
   talents.shadow.insidious_ire      = ST( "Insidious Ire" );      // TODO: check values

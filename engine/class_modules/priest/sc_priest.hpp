@@ -296,7 +296,6 @@ public:
       // Row 9
       player_talent_t fiending_dark;
       player_talent_t monomania;
-      const spell_data_t* monomania_tickrate;
       player_talent_t painbreaker_psalm;
       player_talent_t mastermind;
       player_talent_t insidious_ire;
