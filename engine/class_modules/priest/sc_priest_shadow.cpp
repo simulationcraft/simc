@@ -616,7 +616,9 @@ struct vampiric_touch_t final : public priest_spell_t
 
       if ( priest().talents.shadow.mental_fortitude.enabled() &&
            state->target->current_health() == state->target->max_health() )
+      {
         trigger_mental_fortitude( state );
+      }
     }
 
     void trigger_mental_fortitude( action_state_t* state )
@@ -702,6 +704,12 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().refresh_insidious_ire_buff( s );
+
+    // TODO: Copying over hard-code from MoP, needs testing
+    if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+    {
+      priest().buffs.surge_of_darkness->trigger();
+    }
   }
 
   timespan_t execute_time() const override
@@ -760,6 +768,12 @@ struct vampiric_touch_t final : public priest_spell_t
 
       priest().trigger_idol_of_nzoth( d->state->target );
       vampiric_touch_heal->trigger( d->state->result_amount );
+
+      // TODO: Copying over hard-code from MoP, needs testing
+      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+      {
+        priest().buffs.surge_of_darkness->trigger();
+      }
     }
   }
 };
@@ -882,6 +896,12 @@ struct devouring_plague_t final : public priest_spell_t
 
       priest().refresh_insidious_ire_buff( s );
     }
+
+    // TODO: Copying over hard-code from MoP, needs testing
+    if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+    {
+      priest().buffs.surge_of_darkness->trigger();
+    }
   }
 
   void tick( dot_t* d ) override
@@ -892,6 +912,12 @@ struct devouring_plague_t final : public priest_spell_t
     {
       devouring_plague_heal->trigger( d->state->result_amount );
       priest().trigger_idol_of_nzoth( d->state->target );
+
+      // TODO: Copying over hard-code from MoP, needs testing
+      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+      {
+        priest().buffs.surge_of_darkness->trigger();
+      }
     }
   }
 
@@ -1223,6 +1249,62 @@ struct dark_void_t final : public priest_spell_t
 
     child_swp->target = s->target;
     child_swp->execute();
+  }
+};
+
+struct mind_spike_t final : public priest_spell_t
+{
+  timespan_t manipulation_cdr;
+
+  mind_spike_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+
+  {
+    parse_options( options_str );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().talents.shadow.surge_of_darkness && priest().buffs.surge_of_darkness->check() )
+    {
+      m *= 1 + priest().talents.shadow.surge_of_darkness_buff->effectN( 4 ).percent();
+    }
+
+    return m;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    priest_td_t& td = get_td( s->target );
+
+    if ( !priest().buffs.surge_of_darkness->check() )
+    {
+      td.dots.shadow_word_pain->cancel();
+      td.dots.vampiric_touch->cancel();
+      td.dots.devouring_plague->cancel();
+    }
+
+    if ( priest().talents.shadow.surge_of_darkness.enabled() )
+    {
+      priest().buffs.surge_of_darkness->decrement();
+    }
+
+    td.buffs.mind_spike->trigger();
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
   }
 };
 
@@ -1796,6 +1878,8 @@ void priest_t::create_buffs_shadow()
       make_buff( this, "unfurling_darkness_cd",
                  talents.shadow.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
   buffs.void_torrent = make_buff( this, "void_torrent", talents.shadow.void_torrent );
+  buffs.surge_of_darkness =
+      make_buff( this, "surge_of_darkness", talents.shadow.surge_of_darkness_buff );  // automagic handles the cast time
 
   // TODO: Check Buff ID(s) for Mind Devourer
   if ( talents.shadow.mind_devourer.enabled() )
@@ -1882,18 +1966,19 @@ void priest_t::init_spells_shadow()
   // Row 4
   talents.shadow.shadow_orbs      = ST( "Shadow Orbs" );  // NYI
   talents.shadow.hallucinations   = ST( "Hallucinations" );
-  talents.shadow.tithe_evasion    = ST( "Tithe Evasion" );     // NYI
-  talents.shadow.mind_spike       = ST( "Mind Spike" );        // NYI
+  talents.shadow.tithe_evasion    = ST( "Tithe Evasion" );  // NYI
+  talents.shadow.mind_spike       = ST( "Mind Spike" );
   talents.shadow.vampiric_insight = ST( "Vampiric Insight" );  // TODO: remove mind blast charge
   talents.shadow.intangibility    = ST( "Intangibility" );
   talents.shadow.mental_fortitude = ST( "Mental Fortitude" );  // NYI
   // Row 5
-  talents.shadow.puppet_master     = ST( "Puppet Master" );  // NYI
-  talents.shadow.damnation         = ST( "Damnation" );
-  talents.shadow.mind_melt         = ST( "Mind Melt" );          // NYI
-  talents.shadow.surge_of_darkness = ST( "Surge of Darkness" );  // NYI
-  talents.shadow.mental_decay      = ST( "Mental Decay" );       // NYI
-  talents.shadow.dark_evangelism   = ST( "Dark Evangelism" );    // NYI
+  talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
+  talents.shadow.damnation              = ST( "Damnation" );
+  talents.shadow.mind_melt              = ST( "Mind Melt" );  // NYI
+  talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
+  talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
+  talents.shadow.mental_decay           = ST( "Mental Decay" );     // NYI
+  talents.shadow.dark_evangelism        = ST( "Dark Evangelism" );  // NYI
   // Row 6
   talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
   talents.shadow.malediction        = ST( "Malediction" );
@@ -2019,6 +2104,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "dark_void" )
   {
     return new dark_void_t( *this, options_str );
+  }
+  if ( name == "mind_spike" )
+  {
+    return new mind_spike_t( *this, options_str );
   }
 
   return nullptr;

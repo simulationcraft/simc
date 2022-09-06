@@ -28,11 +28,13 @@ private:
   double mind_blast_insanity;
   timespan_t your_shadow_duration_tier;
   bool T28_4PC;
+  timespan_t manipulation_cdr;
 
 public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
-      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) )
+      mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
 
@@ -59,6 +61,16 @@ public:
 
     your_shadow_duration_tier = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
     T28_4PC                   = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() && priest().specialization() == PRIEST_SHADOW )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
   }
 
   void reset() override
@@ -107,6 +119,8 @@ public:
   {
     priest_spell_t::impact( s );
 
+    priest_td_t& td = get_td( s->target );
+
     if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
     {
       priest().trigger_shadowflame_prism( s->target );
@@ -126,8 +140,12 @@ public:
 
     if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
     {
-      priest_td_t& td = get_td( s->target );
       td.buffs.apathy->trigger();
+    }
+
+    if ( priest().talents.shadow.mind_spike.enabled() )
+    {
+      td.buffs.mind_spike->expire();
     }
   }
 
@@ -151,6 +169,26 @@ public:
     }
 
     return mm;
+  }
+
+  double composite_target_crit_chance( player_t* target ) const override
+  {
+    double crit = priest_spell_t::composite_target_crit_chance( target );
+
+    if ( priest().talents.shadow.mind_spike )
+    {
+      priest_td_t* td      = priest().get_target_data( target );
+      double crit_increase = td->buffs.mind_spike->check_stack_value();
+      crit += crit_increase;
+
+      if ( crit_increase > 0.0 )
+      {
+        sim->print_debug( "{} mind_blast crit chance increased by {} from mind_spike. crit={}", priest(), crit_increase,
+                          crit );
+      }
+    }
+
+    return crit;
   }
 
   timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
@@ -419,18 +457,31 @@ struct smite_t final : public priest_spell_t
   const spell_data_t* holy_word_chastise;
   const spell_data_t* smite_rank2;
   propagate_const<cooldown_t*> holy_word_chastise_cooldown;
+  timespan_t manipulation_cdr;
 
   smite_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "smite", p, p.find_class_spell( "Smite" ) ),
       holy_fire_rank2( priest().find_rank_spell( "Holy Fire", "Rank 2" ) ),
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
       smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
-      holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) )
+      holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )
     {
       base_multiplier *= 1.0 + smite_rank2->effectN( 1 ).percent();
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() &&
+         ( priest().specialization() == PRIEST_HOLY || priest().specialization() == PRIEST_DISCIPLINE ) )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
 
@@ -799,6 +850,12 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
+
+    // TODO: this is not working in-game, confirm values later
+    if ( priest().talents.shattered_perceptions.enabled() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
+    }
   }
 };
 
@@ -828,6 +885,12 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
     {
       base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
+
+    // TODO: this is not working in-game, confirm values later
+    if ( priest().talents.shattered_perceptions.enabled() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
+    }
   }
 };
 
@@ -853,15 +916,23 @@ struct mindgames_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.shattered_perceptions.percent() );
     }
+
     if ( priest().options.mindgames_healing_reversal )
     {
       child_mindgames_healing_reversal = new mindgames_healing_reversal_t( priest() );
       add_child( child_mindgames_healing_reversal );
     }
+
     if ( priest().options.mindgames_damage_reversal )
     {
       child_mindgames_damage_reversal = new mindgames_damage_reversal_t( priest() );
       add_child( child_mindgames_damage_reversal );
+    }
+
+    // TODO: this is not working in-game, confirm values later
+    if ( priest().talents.shattered_perceptions.enabled() )
+    {
+      base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
     }
   }
 
@@ -1643,6 +1714,7 @@ namespace heals
 {
 // ==========================================================================
 // Desperate Prayer
+// TODO: add Light's Inspiration HoT
 // ==========================================================================
 struct desperate_prayer_t final : public priest_heal_t
 {
@@ -2070,6 +2142,9 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
           } );
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
+  buffs.mind_spike = make_buff( *this, "mind_spike",
+                                p.talents.shadow.mind_spike->effectN( 2 ).trigger() )
+                         ->set_default_value_from_effect( 1 );  // automagic handles the crit bonus on mind_blast
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -2135,6 +2210,7 @@ void priest_t::create_cooldowns()
   cooldowns.mind_blast              = get_cooldown( "mind_blast" );
   cooldowns.void_eruption           = get_cooldown( "void_eruption" );
   cooldowns.shadow_word_death       = get_cooldown( "shadow_word_death" );
+  cooldowns.mindgames               = get_cooldown( "mindgames" );
 }
 
 /** Construct priest gains */

@@ -40,8 +40,12 @@ struct apotheosis_t final : public priest_spell_t
 
 struct holy_fire_t final : public holy_fire_base_t
 {
+  timespan_t manipulation_cdr;
+
   holy_fire_t( priest_t& player, util::string_view options_str )
-    : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) )
+    : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+
   {
     parse_options( options_str );
 
@@ -49,6 +53,16 @@ struct holy_fire_t final : public holy_fire_base_t
     if ( rank2->ok() )
     {
       dot_max_stack += as<int>( rank2->effectN( 2 ).base_value() );
+    }
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
   }
 };

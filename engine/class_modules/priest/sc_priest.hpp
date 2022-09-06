@@ -67,6 +67,7 @@ public:
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
+    propagate_const<buff_t*> mind_spike;
   } buffs;
 
   priest_t& priest()
@@ -142,6 +143,7 @@ public:
     propagate_const<buff_t*> yshaarj_pride;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> death_and_madness_reset;
+    propagate_const<buff_t*> surge_of_darkness;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -266,6 +268,7 @@ public:
       player_talent_t damnation;
       player_talent_t mind_melt;
       player_talent_t surge_of_darkness;
+      const spell_data_t* surge_of_darkness_buff;
       player_talent_t mental_decay;
       player_talent_t dark_evangelism;
       // Row 6
@@ -392,6 +395,7 @@ public:
     propagate_const<cooldown_t*> wrathful_faerie;
     propagate_const<cooldown_t*> wrathful_faerie_fermata;
     propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> mindgames;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -1084,6 +1088,7 @@ public:
     parse_buff_effects( p().buffs.shadow_covenant );
     parse_buff_effects( p().buffs.mind_devourer );
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
+    parse_buff_effects( p().buffs.surge_of_darkness );  // Mind Spike instant cast
   }
 
   template <typename... Ts>

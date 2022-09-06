@@ -41,6 +41,8 @@ struct pain_suppression_t final : public priest_spell_t
 /// Penance damage spell
 struct penance_t final : public priest_spell_t
 {
+  timespan_t manipulation_cdr;
+
   struct penance_tick_t final : public priest_spell_t
   {
     bool first_tick;
@@ -88,7 +90,9 @@ struct penance_t final : public priest_spell_t
 
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) ),
-      penance_tick_action( new penance_tick_t( p, stats ) )
+      penance_tick_action( new penance_tick_t( p, stats ) ),
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+
   {
     parse_options( options_str );
 
@@ -158,6 +162,11 @@ struct penance_t final : public priest_spell_t
 
     priest().buffs.the_penitent_one->up();        // benefit tracking
     priest().buffs.power_of_the_dark_side->up();  // benefit tracking
+
+    if ( priest().talents.manipulation.enabled() )
+    {
+      priest().cooldowns.mindgames->adjust( -manipulation_cdr );
+    }
   }
 };
 
