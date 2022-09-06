@@ -37,6 +37,7 @@ struct unholy_transfusion_healing_t;
 struct echoing_void_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
+struct mental_fortitude_t;
 }  // namespace actions::spells
 
 /**
@@ -488,6 +489,7 @@ public:
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
+    propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
   } background_actions;
 
   // Items
@@ -703,6 +705,7 @@ public:
   void trigger_shadowy_apparitions( action_state_t* );
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
+  void trigger_void_shield( double result_amount );
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
   void refresh_insidious_ire_buff( action_state_t* s );
@@ -1389,6 +1392,10 @@ struct priest_spell_t : public priest_action_t<spell_t>
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
+
+    if ( result_is_hit( s->result ) && priest().talents.void_shield.enabled() &&
+         priest().buffs.power_word_shield->check() )
+      priest().trigger_void_shield( s->result_amount * priest().talents.void_shield->effectN( 1 ).percent() );
 
     if ( aoe == 0 && result_is_hit( s->result ) && priest().buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );

@@ -582,8 +582,7 @@ struct vampiric_touch_t final : public priest_spell_t
     double mental_fortitude_percentage;
 
     vampiric_touch_heal_t( priest_t& p )
-      : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch ),
-        mental_fortitude( new mental_fortitude_t( p ) )
+      : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch ) 
     {
       background         = true;
       may_crit           = false;
@@ -599,9 +598,8 @@ struct vampiric_touch_t final : public priest_spell_t
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
 
-      // TODO: determine why we need to multiply by rank
-      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent() *
-                                    priest().talents.shadow.mental_fortitude.rank();
+      mental_fortitude            = p.background_actions.mental_fortitude;
+      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
     }
 
     void trigger( double original_amount )
@@ -821,6 +819,9 @@ struct devouring_plague_t final : public priest_spell_t
 {
   struct devouring_plague_heal_t final : public priest_heal_t
   {
+    mental_fortitude_t* mental_fortitude;
+    double mental_fortitude_percentage;
+
     devouring_plague_heal_t( priest_t& p ) : priest_heal_t( "devouring_plague_heal", p, p.dot_spells.devouring_plague )
     {
       background         = true;
@@ -834,6 +835,37 @@ struct devouring_plague_t final : public priest_spell_t
       // Turn off all damage parts of the spell
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
+      
+      mental_fortitude                                                   = p.background_actions.mental_fortitude;
+      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
+
+    }
+
+    void impact( action_state_t* state ) override
+    {
+      priest_heal_t::impact( state );
+
+      if ( priest().talents.shadow.mental_fortitude.enabled() &&
+           state->target->current_health() == state->target->max_health() )
+        trigger_mental_fortitude( state );
+    }
+
+    void trigger_mental_fortitude( action_state_t* state )
+    {
+      double current_value = 0;
+      if ( mental_fortitude->target_specific[ state->target ] )
+        current_value = mental_fortitude->target_specific[ state->target ]->current_value;
+
+      double amount = current_value;
+      amount += state->result_total;
+
+      sim->print_debug( "mental_fortitude_percentage: {}", mental_fortitude_percentage );
+
+      amount = std::min( amount, state->target->max_health() * mental_fortitude_percentage );
+
+      mental_fortitude->base_dd_min = mental_fortitude->base_dd_max = amount;
+
+      mental_fortitude->execute();
     }
 
     void trigger( double original_amount )
@@ -2151,6 +2183,11 @@ void priest_t::init_background_actions_shadow()
   if ( talents.shadow.idol_of_cthun.enabled() )
   {
     background_actions.idol_of_cthun = new actions::spells::idol_of_cthun_t( *this );
+  }
+
+  if (talents.shadow.mental_fortitude.enabled())
+  {
+    background_actions.mental_fortitude = new actions::spells::mental_fortitude_t( *this );
   }
 
   background_actions.shadow_weaving = new actions::spells::shadow_weaving_t( *this );
