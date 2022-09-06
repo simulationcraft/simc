@@ -2252,28 +2252,28 @@ void priest_t::create_cooldowns()
 /** Construct priest gains */
 void priest_t::create_gains()
 {
-  gains.cauterizing_shadows_health  = get_gain( "Health from Cauterizing Shadows" );
-  gains.insanity_auspicious_spirits = get_gain( "Insanity Gained from Auspicious Spirits" );
-  gains.insanity_death_and_madness  = get_gain( "Insanity Gained from Death and Madness" );
+  gains.cauterizing_shadows_health  = get_gain( "Cauterizing Shadows" );
+  gains.insanity_auspicious_spirits = get_gain( "Auspicious Spirits" );
+  gains.insanity_death_and_madness  = get_gain( "Death and Madness" );
   gains.insanity_eternal_call_to_the_void_mind_flay =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Flay's" );
   gains.insanity_eternal_call_to_the_void_mind_sear =
       get_gain( "Insanity Gained from Eternal Call to the Void Mind Sear's" );
-  gains.insanity_mindgames               = get_gain( "Insanity Gained from Mindgames" );
+  gains.insanity_mindgames               = get_gain( "Mindgames" );
   gains.insanity_mind_sear               = get_gain( "Insanity Gained from Mind Sear" );
-  gains.insanity_pet                     = get_gain( "Insanity Gained from Shadowfiend" );
-  gains.insanity_surrender_to_madness    = get_gain( "Insanity Gained from Surrender to Madness" );
-  gains.mindbender                       = get_gain( "Mana Gained from Mindbender" );
-  gains.painbreaker_psalm                = get_gain( "Insanity Gained from Painbreaker Psalm" );
+  gains.insanity_pet                     = get_gain( "Shadowfiend" );
+  gains.insanity_surrender_to_madness    = get_gain( "Surrender to Madness" );
+  gains.mindbender                       = get_gain( "Mindbender" );
+  gains.painbreaker_psalm                = get_gain( "Painbreaker Psalm" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_throes_of_pain          = get_gain( "Insanity Gained from Throes of Pain" );
+  gains.insanity_throes_of_pain          = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
-  gains.insanity_dark_void               = get_gain( "Insanity Gained from Dark Void" );
-  gains.insanity_maddening_touch         = get_gain( "Insanity Gained from Maddening Touch" );
-  gains.insanity_whispers_of_the_damned  = get_gain( "Insanity Gained from Whispers of the Damned" );
+  gains.insanity_dark_void               = get_gain( "Dark Void" );
+  gains.insanity_maddening_touch         = get_gain( "Maddening Touch" );
+  gains.insanity_whispers_of_the_damned  = get_gain( "Whispers of the Damned" );
 }
 
 /** Construct priest procs */
