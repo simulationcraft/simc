@@ -2630,7 +2630,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   struct consumption_t: public drw_action_t<melee_attack_t>
   {
     consumption_t( dancing_rune_weapon_pet_t* p ) :
-      drw_action_t( p, "consumption", p -> dk() -> talent.consumption )
+      drw_action_t( p, "consumption", p -> dk() -> talent.blood.consumption )
     {
       aoe = -1;
       reduced_aoe_targets = data().effectN( 3 ).base_value();
