@@ -510,7 +510,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( d->state->result_amount > 0 )
+    if ( result_is_hit(d->state->result) && d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
 
@@ -519,6 +519,11 @@ struct shadow_word_pain_t final : public priest_spell_t
       if ( priest().talents.depth_of_the_shadows.enabled() )
       {
         priest().buffs.depth_of_the_shadows->trigger();
+      }
+
+      if (priest().talents.shadow.tormented_spirits.enabled() && rng().roll(priest().talents.shadow.tormented_spirits->effectN((d->state->result == RESULT_CRIT) ? 2 : 1).percent() ))
+      {
+        priest().trigger_shadowy_apparitions(d->state, false);
       }
     }
   }
@@ -2214,14 +2219,14 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 // Trigger Shadowy Apparitions on all targets affected by vampiric touch
 // ==========================================================================
-void priest_t::trigger_shadowy_apparitions( action_state_t* s )
+void priest_t::trigger_shadowy_apparitions( action_state_t* s, bool spawn_multiple )
 {
   if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
     return;
   }
   // TODO: check if this procs non non-hits
-  int number_of_apparitions_to_trigger = s->result == RESULT_CRIT ? 2 : 1;
+  int number_of_apparitions_to_trigger = spawn_multiple ? (s->result == RESULT_CRIT ? 2 : 1) : 1;
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
   {

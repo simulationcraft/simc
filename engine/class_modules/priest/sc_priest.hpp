@@ -704,7 +704,7 @@ public:
   void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( action_state_t* );
+  void trigger_shadowy_apparitions( action_state_t*, bool = true);
   void trigger_psychic_link( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
