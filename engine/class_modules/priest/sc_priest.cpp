@@ -37,6 +37,7 @@ public:
     parse_options( options_str );
 
     affected_by_shadow_weaving = true;
+    cooldown->hasted           = true;
 
     // This was removed from the Mind Blast spell and put on the Shadow Priest spell instead
     energize_amount = mind_blast_insanity;
@@ -46,13 +47,15 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
-    cooldown->hasted  = true;
-    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
-
-    if ( p.talents.improved_mind_blast.enabled() )
+    // BUG: this is supposed to be removed but is still functioning on Beta
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/936
+    if ( priest().bugs )
     {
-      cooldown->duration += p.talents.improved_mind_blast->effectN( 1 ).time_value();
+      cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
     }
+
+    // Handles CD reduction
+    apply_affecting_aura( p.talents.improved_mind_blast );
 
     your_shadow_duration_tier = timespan_t::from_seconds( p.find_spell( 363469 )->effectN( 2 ).base_value() );
     T28_4PC                   = priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B4 );
@@ -252,9 +255,9 @@ struct angelic_feather_t final : public priest_spell_t
 
 // ==========================================================================
 // Divine Star
+// Base Spell, used for both heal and damage spell.
+// TODO: add reduced healing beyond 6 targets
 // ==========================================================================
-
-/// Divine Star Base Spell, used for both heal and damage spell.
 template <class Base>
 struct divine_star_base_t : public Base
 {
@@ -327,23 +330,18 @@ private:
 
 // ==========================================================================
 // Halo
+// Base Spell, used for both damage and heal spell.
+// TODO: add reduced healing beyond 5 targets
 // ==========================================================================
-/// Halo Base Spell, used for both damage and heal spell.
 template <class Base>
 struct halo_base_t : public Base
 {
 public:
   halo_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : Base( n, p, s )
   {
-    Base::aoe        = -1;
-    Base::background = true;
-
-    if ( Base::data().ok() )
-    {
-      // Parse the correct effect number, because we have two competing ones ( were 2 > 1 always wins out )
-      Base::parse_effect_data( Base::data().effectN( 1 ) );
-    }
-    Base::radius       = 30;
+    Base::aoe          = -1;
+    Base::background   = true;
+    Base::radius       = Base::data().max_range();
     Base::range        = 0;
     Base::travel_speed = 15;  // Rough estimate, 2021-01-03
   }
@@ -2582,22 +2580,16 @@ void priest_t::init_base_stats()
 {
   if ( base.distance < 1 )
   {
-    if ( specialization() == PRIEST_DISCIPLINE || specialization() == PRIEST_HOLY )
+    // Halo does the most damage between 25-30yd
+    // Divine Star gets two hits if used at or below 24yd, only 1 up to 28yd. 0 hits from 29-30yd
+    if ( talents.divine_star.enabled() )
     {
-      // Range Based on Talents
-      // TODO: check if this is still needed in Dragonflight
-      if ( talents.divine_star->ok() )
-      {
-        base.distance = 24.0;
-      }
-      else if ( talents.halo->ok() )
-      {
-        base.distance = 27.0;
-      }
-      else
-      {
-        base.distance = 27.0;
-      }
+      base.distance = 24.0;
+    }
+
+    if ( talents.halo.enabled() )
+    {
+      base.distance = 28.0;
     }
   }
 
@@ -2791,8 +2783,10 @@ void priest_t::create_buffs()
   buffs.fade              = make_buff( this, "fade", find_class_spell( "Fade" ) )->set_default_value_from_effect( 1 );
 
   // Shared talent buffs
+  // Does not show damage value on the buff spelldata, that is only found on the talent
   buffs.twist_of_fate = make_buff( this, "twist_of_fate", find_spell( 390978 ) )
                             ->set_trigger_spell( talents.twist_of_fate )
+                            ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
   buffs.masochism = make_buff<buffs::masochism_t>( *this );
