@@ -1094,7 +1094,7 @@ public:
     parse_buff_effects( p().buffs.shadow_covenant );
     parse_buff_effects( p().buffs.mind_devourer );
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
-    parse_buff_effects( p().buffs.surge_of_darkness );  // Mind Spike instant cast
+    parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
   }
 
   template <typename... Ts>
@@ -1193,7 +1193,7 @@ public:
 
   timespan_t execute_time() const override
   {
-    timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
+    timespan_t et = std::max(0_ms, ab::execute_time() * get_buff_effects_value( execute_time_buffeffects ));
     return et;
   }
 
