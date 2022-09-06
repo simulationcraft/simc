@@ -282,6 +282,7 @@ public:
       player_talent_t unfurling_darkness;
       // Row 7
       player_talent_t maddening_touch;
+      const spell_data_t* maddening_touch_insanity;
       player_talent_t whispers_of_the_damned;
       player_talent_t piercing_shadows;
       // Row 8
@@ -436,6 +437,8 @@ public:
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> hallucinations_vampiric_embrace;
     propagate_const<gain_t*> insanity_dark_void;
+    propagate_const<gain_t*> insanity_maddening_touch;
+    propagate_const<gain_t*> insanity_whispers_of_the_damned;
   } gains;
 
   // Benefits

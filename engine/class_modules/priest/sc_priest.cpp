@@ -121,31 +121,41 @@ public:
 
     priest_td_t& td = get_td( s->target );
 
-    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+    if ( result_is_hit( s->result ) )
     {
-      priest().trigger_shadowflame_prism( s->target );
-    }
+      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+      {
+        priest().trigger_shadowflame_prism( s->target );
+      }
 
-    if ( priest().buffs.mind_devourer->trigger() )
-    {
-      priest().procs.mind_devourer->occur();
-    }
+      if ( priest().buffs.mind_devourer->trigger() )
+      {
+        priest().procs.mind_devourer->occur();
+      }
 
-    priest().trigger_shadowy_apparitions( s );
+      priest().trigger_shadowy_apparitions( s );
 
-    if ( priest().talents.shadow.psychic_link.enabled() )
-    {
-      priest().trigger_psychic_link( s );
-    }
+      if ( priest().talents.shadow.psychic_link.enabled() )
+      {
+        priest().trigger_psychic_link( s );
+      }
 
-    if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
-    {
-      td.buffs.apathy->trigger();
-    }
+      if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
+      {
+        td.buffs.apathy->trigger();
+      }
 
-    if ( priest().talents.shadow.mind_spike.enabled() )
-    {
-      td.buffs.mind_spike->expire();
+      if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
+      {
+        priest().generate_insanity(
+            priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_whispers_of_the_damned, s->action );
+      }
+
+      if ( priest().talents.shadow.mind_spike.enabled() )
+      {
+        td.buffs.mind_spike->expire();
+      }
     }
   }
 
@@ -244,7 +254,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-          } );
+             } );
         }
       }
     }
@@ -1800,13 +1810,13 @@ struct power_word_shield_buff_t : public absorb_buff_t
   {
     set_absorb_source( player->get_stats( "power_word_shield" ) );
     initial_size = 0;
-    buff_period  = 0_s; // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes them to full value.
+    buff_period = 0_s;  // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes
+                        // them to full value.
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    sim->print_debug( "{} changes stored Power Word: Shield maximum from {} to {}",
-                      *player, initial_size, value );
+    sim->print_debug( "{} changes stored Power Word: Shield maximum from {} to {}", *player, initial_size, value );
     initial_size = value;
 
     return absorb_buff_t::trigger( stacks, value, chance, duration );
@@ -1820,8 +1830,8 @@ struct power_word_shield_buff_t : public absorb_buff_t
 
     if ( refill_amount > 0 )
     {
-      sim->print_debug( "{} adds value to Power Word: Shield. original={}, left_to_refill={}, refill_amount={}", *player,
-                        current_value, left_to_refill, refill_amount );
+      sim->print_debug( "{} adds value to Power Word: Shield. original={}, left_to_refill={}, refill_amount={}",
+                        *player, current_value, left_to_refill, refill_amount );
       current_value += refill_amount;
     }
   }
@@ -2262,6 +2272,8 @@ void priest_t::create_gains()
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
   gains.hallucinations_vampiric_embrace  = get_gain( "Insanity Gained from Vampiric Embrace with Hallucinations" );
   gains.insanity_dark_void               = get_gain( "Insanity Gained from Dark Void" );
+  gains.insanity_maddening_touch         = get_gain( "Insanity Gained from Maddening Touch" );
+  gains.insanity_whispers_of_the_damned  = get_gain( "Insanity Gained from Whispers of the Damned" );
 }
 
 /** Construct priest procs */
@@ -3307,7 +3319,6 @@ void priest_t::trigger_void_shield( double result_amount )
   ( debug_cast<buffs::power_word_shield_buff_t*>( buffs.power_word_shield ) )->trigger_void_shield( result_amount );
 }
 
-
 struct priest_module_t final : public module_t
 {
   priest_module_t() : module_t( PRIEST )
@@ -3325,9 +3336,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =

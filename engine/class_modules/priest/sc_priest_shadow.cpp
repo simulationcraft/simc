@@ -581,8 +581,7 @@ struct vampiric_touch_t final : public priest_spell_t
     mental_fortitude_t* mental_fortitude;
     double mental_fortitude_percentage;
 
-    vampiric_touch_heal_t( priest_t& p )
-      : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch ) 
+    vampiric_touch_heal_t( priest_t& p ) : priest_heal_t( "vampiric_touch_heal", p, p.dot_spells.vampiric_touch )
     {
       background         = true;
       may_crit           = false;
@@ -764,6 +763,14 @@ struct vampiric_touch_t final : public priest_spell_t
         }
       }
 
+      if ( priest().talents.shadow.maddening_touch.enabled() &&
+           rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
+      {
+        priest().generate_insanity(
+            priest().talents.shadow.maddening_touch_insanity->effectN( 1 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_maddening_touch, d->state->action );
+      }
+
       priest().trigger_idol_of_nzoth( d->state->target );
       vampiric_touch_heal->trigger( d->state->result_amount );
 
@@ -835,10 +842,9 @@ struct devouring_plague_t final : public priest_spell_t
       // Turn off all damage parts of the spell
       spell_power_mod.direct = spell_power_mod.tick = base_td_multiplier = 0;
       dot_duration                                                       = timespan_t::from_seconds( 0 );
-      
-      mental_fortitude                                                   = p.background_actions.mental_fortitude;
-      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
 
+      mental_fortitude            = p.background_actions.mental_fortitude;
+      mental_fortitude_percentage = priest().talents.shadow.mental_fortitude->effectN( 1 ).percent();
     }
 
     void impact( action_state_t* state ) override
@@ -1314,19 +1320,29 @@ struct mind_spike_t final : public priest_spell_t
 
     priest_td_t& td = get_td( s->target );
 
-    if ( !priest().buffs.surge_of_darkness->check() )
+    if ( result_is_hit( s->result ) )
     {
-      td.dots.shadow_word_pain->cancel();
-      td.dots.vampiric_touch->cancel();
-      td.dots.devouring_plague->cancel();
-    }
+      if ( !priest().buffs.surge_of_darkness->check() )
+      {
+        td.dots.shadow_word_pain->cancel();
+        td.dots.vampiric_touch->cancel();
+        td.dots.devouring_plague->cancel();
+      }
 
-    if ( priest().talents.shadow.surge_of_darkness.enabled() )
-    {
-      priest().buffs.surge_of_darkness->decrement();
-    }
+      if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
+      {
+        priest().generate_insanity(
+            priest().talents.shadow.whispers_of_the_damned->effectN( 2 ).resource( RESOURCE_INSANITY ),
+            priest().gains.insanity_whispers_of_the_damned, s->action );
+      }
 
-    td.buffs.mind_spike->trigger();
+      if ( priest().talents.shadow.surge_of_darkness.enabled() )
+      {
+        priest().buffs.surge_of_darkness->decrement();
+      }
+
+      td.buffs.mind_spike->trigger();
+    }
   }
 
   void execute() override
@@ -2020,9 +2036,10 @@ void priest_t::init_spells_shadow()
   talents.shadow.dark_ascension     = ST( "Dark Ascension" );  // NYI
   talents.shadow.unfurling_darkness = ST( "Unfurling Darkness" );
   // Row 7
-  talents.shadow.maddening_touch        = ST( "Maddening Touch" );         // NYI
-  talents.shadow.whispers_of_the_damned = ST( "Whispers of the Damned" );  // NYI
-  talents.shadow.piercing_shadows       = ST( "Piercing Shadows" );        // NYI
+  talents.shadow.maddening_touch          = ST( "Maddening Touch" );
+  talents.shadow.maddening_touch_insanity = find_spell( 391232 );
+  talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
+  talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
   // Row 8
   talents.shadow.mindbender           = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
@@ -2185,7 +2202,7 @@ void priest_t::init_background_actions_shadow()
     background_actions.idol_of_cthun = new actions::spells::idol_of_cthun_t( *this );
   }
 
-  if (talents.shadow.mental_fortitude.enabled())
+  if ( talents.shadow.mental_fortitude.enabled() )
   {
     background_actions.mental_fortitude = new actions::spells::mental_fortitude_t( *this );
   }
