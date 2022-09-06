@@ -1724,12 +1724,7 @@ void action_t::execute()
   consume_resource();
 
   if ( !dual && ( !player->first_cast || !harmful ) )
-  {
-    if ( background )
-        stats->add_execute( time_to_execute, target );
-    else
-        stats->add_execute( std::max( time_to_execute, gcd() ), target );
-  }
+    stats->add_execute( time_to_execute, target );
 
   if ( pre_execute_state )
     action_state_t::release( pre_execute_state );
