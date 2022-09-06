@@ -37,6 +37,7 @@ struct unholy_transfusion_healing_t;
 struct echoing_void_t;
 struct idol_of_cthun_t;
 struct shadow_word_pain_t;
+struct mental_fortitude_t;
 }  // namespace actions::spells
 
 /**
@@ -484,6 +485,7 @@ public:
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
+    propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
   } background_actions;
 
   // Items
