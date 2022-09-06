@@ -1723,11 +1723,37 @@ namespace buffs
 // ==========================================================================
 struct power_word_shield_buff_t : public absorb_buff_t
 {
-  power_word_shield_buff_t( priest_t* p )
-    : absorb_buff_t( p, "power_word_shield", p->find_class_spell( "Power Word: Shield" ) )
+  double initial_size;
+
+  power_word_shield_buff_t( priest_t* player )
+    : absorb_buff_t( player, "power_word_shield", player->find_class_spell( "Power Word: Shield" ) )
   {
-    set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player->get_stats( "power_word_shield" ) );
+    initial_size = 0;
+    buff_period  = 0_s; // TODO: Work out why Power Word: Shield has buff period. Work out why shields ticking refreshes them to full value.
+  }
+
+  bool trigger( int stacks, double value, double chance, timespan_t duration ) override
+  {
+    sim->print_debug( "{} changes stored Power Word: Shield maximum from {} to {}",
+                      *player, initial_size, value );
+    initial_size = value;
+
+    return absorb_buff_t::trigger( stacks, value, chance, duration );
+  }
+
+  void trigger_void_shield( double result_amount )
+  {
+    // The initial amount of the shield and our "cap" is stored in the Void Shield buff
+    double left_to_refill = initial_size - current_value;
+    double refill_amount  = std::min( left_to_refill, result_amount );
+
+    if ( refill_amount > 0 )
+    {
+      sim->print_debug( "{} adds value to Power Word: Shield. original={}, left_to_refill={}, refill_amount={}", *player,
+                        current_value, left_to_refill, refill_amount );
+      current_value += refill_amount;
+    }
   }
 };
 
@@ -3205,6 +3231,12 @@ double priest_t::shadow_weaving_multiplier( const player_t* target, const unsign
 
   return multiplier;
 }
+
+void priest_t::trigger_void_shield( double result_amount )
+{
+  ( debug_cast<buffs::power_word_shield_buff_t*>( buffs.power_word_shield ) )->trigger_void_shield( result_amount );
+}
+
 
 struct priest_module_t final : public module_t
 {
