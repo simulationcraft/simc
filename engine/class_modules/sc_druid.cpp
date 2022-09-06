@@ -2595,7 +2595,7 @@ public:
     parse_buff_effects<S, S>( p()->buff.eclipse_solar, 0b10U, p()->mastery.total_eclipse, p()->talent.improved_eclipse );
     parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 0b10U, p()->mastery.total_eclipse, p()->talent.improved_eclipse );
     parse_buff_effects( p()->buff.incarnation_moonkin );
-    parse_buff_effects( p()->buff.warrior_of_elune );
+    parse_buff_effects( p()->buff.warrior_of_elune, false );
     parse_buff_effects( p()->buff.oneths_free_starfall );
     parse_buff_effects( p()->buff.oneths_free_starsurge );
     parse_buff_effects( p()->buff.owlkin_frenzy );
@@ -2770,7 +2770,7 @@ public:
   {
     timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
 
-    return et;
+    return std::max( 0_ms, et );
   }
 
   double recharge_multiplier( const cooldown_t& cd ) const override
