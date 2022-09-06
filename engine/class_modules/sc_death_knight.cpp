@@ -2351,6 +2351,9 @@ struct risen_skulker_pet_t : public death_knight_pet_t
 struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 {
   target_specific_t<dot_t> blood_plague_dot;
+  // Main drw is the only one that can apply BP.  Technically speaking all spells are only cast from main DRW pet
+  // However, we allow all of the copies to cast thier own in simc for accounting purposes.
+  bool main_drw_guardian;
 
   dot_t* get_blood_plague( player_t* target )
   {
@@ -2398,7 +2401,19 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       aoe = -1;
       cooldown -> duration = 0_ms;
-      this -> impact_action = p -> ability.blood_plague;
+      // Only main guardian can apply the dot
+      if( p -> main_drw_guardian )
+        this -> impact_action = p -> ability.blood_plague;
+    }
+  };
+
+  struct consumption_t: public drw_action_t<melee_attack_t>
+  {
+    consumption_t( dancing_rune_weapon_pet_t* p ) :
+      drw_action_t( p, "consumption", p -> dk() -> talent.consumption )
+    {
+      aoe = -1;
+      reduced_aoe_targets = data().effectN( 3 ).base_value();
     }
   };
 
@@ -2407,7 +2422,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     deaths_caress_t( dancing_rune_weapon_pet_t* p ) :
       drw_action_t( p, "deaths_caress", p -> dk() -> spec.deaths_caress )
     {
-      this -> impact_action = p -> ability.blood_plague;
+      // Only main guardian can apply the dot
+      if ( p -> main_drw_guardian )
+        this -> impact_action = p -> ability.blood_plague;
     }
   };
 
@@ -2505,9 +2522,10 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     drw_action_t<melee_attack_t>* death_strike;
     drw_action_t<melee_attack_t>* heart_strike;
     drw_action_t<melee_attack_t>* marrowrend;
+    drw_action_t<melee_attack_t>* consumption;
   } ability;
 
-  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name ) :
+  dancing_rune_weapon_pet_t( death_knight_t* owner, util::string_view drw_name, bool main_drw_guardian ) :
     death_knight_pet_t( owner, drw_name, true, true ),
     blood_plague_dot( false ),
     ability()
@@ -2518,6 +2536,8 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
 
     owner_coeff.ap_from_ap = 1 / 3.0;
     resource_regeneration = regen_type::DISABLED;
+
+    this->main_drw_guardian = main_drw_guardian;
   }
 
 
@@ -2531,6 +2551,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.death_strike  = new death_strike_t ( this );
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
+    ability.consumption   = new consumption_t  ( this );
   }
 
   void arise() override
@@ -4224,6 +4245,20 @@ struct consumption_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::init();
     may_proc_bron = true;
+  }
+
+  void execute() override
+  {
+    death_knight_melee_attack_t::execute();
+
+    if ( p() -> buffs.dancing_rune_weapon -> up() )
+    {
+      p() -> pets.dancing_rune_weapon_pet -> ability.consumption -> execute_on_target( target );
+      if ( p() -> sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
+      {
+        p() -> pets.endless_rune_waltz_pet -> ability.consumption -> execute_on_target( target );
+      }
+    }
   }
 };
 
@@ -8689,10 +8724,10 @@ void death_knight_t::create_pets()
   {
     if ( find_action( "dancing_rune_weapon" ) )
     {
-      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon" );
+      pets.dancing_rune_weapon_pet = new pets::dancing_rune_weapon_pet_t( this, "dancing_rune_weapon", true );
       if ( sets -> has_set_bonus( DEATH_KNIGHT_BLOOD, T28, B4 ) )
       {
-        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc" );
+        pets.endless_rune_waltz_pet = new pets::dancing_rune_weapon_pet_t( this, "endless_rune_waltz_t28_4pc", false );
       }
     }
 
