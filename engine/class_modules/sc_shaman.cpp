@@ -61,11 +61,6 @@ enum class elemental
 enum class execute_type : unsigned
 {
   NORMAL = 0,
-};
-
-enum class spell_type : unsigned
-{
-  NORMAL = 0,
   ASCENDANCE,
   DEEPLY_ROOTED_ELEMENTS,
   SHAKE_THE_FOUNDATIONS,
@@ -192,15 +187,15 @@ static std::vector<player_t*>& __check_distance_targeting( const action_t* actio
   return tl;
 }
 
-static std::string action_name( util::string_view name, spell_type t )
+static std::string action_name( util::string_view name, execute_type t )
 {
   switch ( t )
   {
-    case spell_type::ASCENDANCE: return fmt::format( "{}_asc", name );
-    case spell_type::DEEPLY_ROOTED_ELEMENTS: return fmt::format( "{}_dre", name );
-    case spell_type::SHAKE_THE_FOUNDATIONS: return fmt::format( "{}_stf", name );
-    case spell_type::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
-    case spell_type::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
+    case execute_type::ASCENDANCE: return fmt::format( "{}_asc", name );
+    case execute_type::DEEPLY_ROOTED_ELEMENTS: return fmt::format( "{}_dre", name );
+    case execute_type::SHAKE_THE_FOUNDATIONS: return fmt::format( "{}_stf", name );
+    case execute_type::PRIMORDIAL_WAVE: return fmt::format( "{}_pw", name );
+    case execute_type::THORIMS_INVOCATION: return fmt::format( "{}_ti", name );
     default: return std::string( name );
   }
 }
@@ -4558,7 +4553,7 @@ struct bloodlust_t : public shaman_spell_t
 
 struct chained_overload_base_t : public elemental_overload_spell_t
 {
-  chained_overload_base_t( shaman_t* p, util::string_view name, spell_type t,
+  chained_overload_base_t( shaman_t* p, util::string_view name, execute_type t,
                            const spell_data_t* spell, double mg, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( p, ::action_name( name, t ), spell, parent_ )
   {
@@ -4583,7 +4578,7 @@ struct chained_overload_base_t : public elemental_overload_spell_t
 
 struct chain_lightning_overload_t : public chained_overload_base_t
 {
-  chain_lightning_overload_t( shaman_t* p, spell_type t, shaman_spell_t* parent_ ) :
+  chain_lightning_overload_t( shaman_t* p, execute_type t, shaman_spell_t* parent_ ) :
     chained_overload_base_t( p, "chain_lightning_overload", t, p->find_spell( 45297 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   {
@@ -4606,7 +4601,7 @@ struct chain_lightning_overload_t : public chained_overload_base_t
 
 struct lava_beam_overload_t : public chained_overload_base_t
 {
-  lava_beam_overload_t( shaman_t* p, spell_type t, shaman_spell_t* parent_ )
+  lava_beam_overload_t( shaman_t* p, execute_type t, shaman_spell_t* parent_ )
     : chained_overload_base_t( p, "lava_beam_overload", t, p->find_spell( 114738 ),
         p->spec.maelstrom->effectN( 6 ).resource( RESOURCE_MAELSTROM ), parent_ )
   { }
@@ -4614,9 +4609,9 @@ struct lava_beam_overload_t : public chained_overload_base_t
 
 struct chained_base_t : public shaman_spell_t
 {
-  spell_type type;
+  execute_type type;
 
-  chained_base_t( shaman_t* player, util::string_view name, spell_type t,
+  chained_base_t( shaman_t* player, util::string_view name, execute_type t,
                   const spell_data_t* spell, double mg, util::string_view options_str )
     : shaman_spell_t( ::action_name( name, t ), player, spell ), type( t )
   {
@@ -4660,7 +4655,7 @@ struct chained_base_t : public shaman_spell_t
 
 struct chain_lightning_t : public chained_base_t
 {
-  chain_lightning_t( shaman_t* player, spell_type t = spell_type::NORMAL, util::string_view options_str = {} )
+  chain_lightning_t( shaman_t* player, execute_type t = execute_type::NORMAL, util::string_view options_str = {} )
     : chained_base_t( player, "chain_lightning", t, player->talent.chain_lightning,
         player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
@@ -4673,7 +4668,7 @@ struct chain_lightning_t : public chained_base_t
 
     switch ( type )
     {
-      case spell_type::THORIMS_INVOCATION:
+      case execute_type::THORIMS_INVOCATION:
       {
         background = true;
         base_execute_time = 0_s;
@@ -4860,7 +4855,7 @@ struct chain_lightning_t : public chained_base_t
     }
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && type == spell_type::NORMAL )
+    if ( p()->talent.thorims_invocation.ok() && type == execute_type::NORMAL )
     {
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
@@ -4878,7 +4873,7 @@ struct lava_beam_t : public chained_base_t
 {
   // This is actually a tooltip bug in-game: real testing shows that Lava Beam and
   // Lava Beam Overload generate resources identical to their Chain Lightning counterparts
-  lava_beam_t( shaman_t* player, spell_type t = spell_type::NORMAL, util::string_view options_str = {} )
+  lava_beam_t( shaman_t* player, execute_type t = execute_type::NORMAL, util::string_view options_str = {} )
     : chained_base_t( player, "lava_beam", t, player->find_spell( 114074 ),
                       player->spec.maelstrom->effectN( 5 ).resource( RESOURCE_MAELSTROM ), options_str )
   {
@@ -4938,10 +4933,10 @@ struct lava_burst_state_t : public shaman_spell_state_t
 struct lava_burst_overload_t : public elemental_overload_spell_t
 {
   unsigned impact_flags;
-  spell_type type;
+  execute_type type;
   bool wlr_buffed_impact;
 
-  lava_burst_overload_t( shaman_t* player, spell_type type, shaman_spell_t* parent_ )
+  lava_burst_overload_t( shaman_t* player, execute_type type, shaman_spell_t* parent_ )
     : elemental_overload_spell_t( player, ::action_name( "lava_burst_overload", type ),
         player->find_spell( 285466 ), parent_ ),
       impact_flags(), type(type), wlr_buffed_impact( false )
@@ -5003,7 +4998,7 @@ struct lava_burst_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( type == spell_type::PRIMORDIAL_WAVE )
+    if ( type == execute_type::PRIMORDIAL_WAVE )
     {
       if ( p()->covenant.necrolord->ok() )
       {
@@ -5276,11 +5271,11 @@ struct fire_nova_t : public shaman_spell_t
  */
 struct lava_burst_t : public shaman_spell_t
 {
-  spell_type type;
+  execute_type type;
   unsigned impact_flags;
   bool wlr_buffed_impact;
 
-  lava_burst_t( shaman_t* player, spell_type type_, util::string_view options_str = {} )
+  lava_burst_t( shaman_t* player, execute_type type_, util::string_view options_str = {} )
     : shaman_spell_t( ::action_name( "lava_burst", type_ ), player, player->talent.lava_burst ),
       type( type_ ), impact_flags(), wlr_buffed_impact( false )
   {
@@ -5301,7 +5296,7 @@ struct lava_burst_t : public shaman_spell_t
 
     spell_power_mod.direct = player->find_spell( 285452 )->effectN( 1 ).sp_coeff();
 
-    if ( type != spell_type::NORMAL )
+    if ( type != execute_type::NORMAL )
     {
       aoe = -1;
       background = true;
@@ -5309,13 +5304,13 @@ struct lava_burst_t : public shaman_spell_t
       cooldown->duration = 0_s;
       switch ( type )
       {
-        case spell_type::PRIMORDIAL_WAVE:
+        case execute_type::PRIMORDIAL_WAVE:
           if ( auto pw_action = p()->find_action( "primordial_wave" ) )
           {
             pw_action->add_child( this );
           }
           break;
-        case spell_type::ASCENDANCE:
+        case execute_type::ASCENDANCE:
           {
             auto asc_action = p()->find_action( "ascendance" );
             if ( p()->talent.ascendance->ok() && asc_action )
@@ -5324,7 +5319,7 @@ struct lava_burst_t : public shaman_spell_t
             }
           }
           break;
-        case spell_type::DEEPLY_ROOTED_ELEMENTS:
+        case execute_type::DEEPLY_ROOTED_ELEMENTS:
           {
             auto dre_asc_action = p()->find_action( "dre_ascendance" );
             if ( dre_asc_action )
@@ -5433,7 +5428,7 @@ struct lava_burst_t : public shaman_spell_t
 
     // Note, only Elemental Shaman gets the primordial_wave state set, so don't need
     // separate specialization checks here
-    if ( type == spell_type::PRIMORDIAL_WAVE )
+    if ( type == execute_type::PRIMORDIAL_WAVE )
     {
       if ( p()->covenant.necrolord->ok() )
       {
@@ -5550,7 +5545,7 @@ struct lava_burst_t : public shaman_spell_t
     p()->lava_surge_during_lvb = false;
 
     // Trigger primordial wave if there's targets to trigger it on
-    if ( p()->specialization() == SHAMAN_ELEMENTAL && type == spell_type::NORMAL &&
+    if ( p()->specialization() == SHAMAN_ELEMENTAL && type == execute_type::NORMAL &&
          p()->buff.primordial_wave->up() && p()->action.lava_burst_pw )
     {
       p()->buff.primordial_wave->expire();
@@ -5562,7 +5557,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->trigger_splintered_elements( p()->action.lava_burst_pw );
     }
 
-    if ( type == spell_type::NORMAL )
+    if ( type == execute_type::NORMAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
     }
@@ -5612,9 +5607,9 @@ struct lightning_bolt_overload_t : public elemental_overload_spell_t
 
 struct lightning_bolt_t : public shaman_spell_t
 {
-  spell_type type;
+  execute_type type;
 
-  lightning_bolt_t( shaman_t* player, spell_type type_, util::string_view options_str = {} ) :
+  lightning_bolt_t( shaman_t* player, execute_type type_, util::string_view options_str = {} ) :
     shaman_spell_t( ::action_name( "lightning_bolt", type_ ),
         player, player->find_class_spell( "Lightning Bolt" ) ),
     type( type_ )
@@ -5636,7 +5631,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
     switch ( type_ )
     {
-      case spell_type::PRIMORDIAL_WAVE:
+      case execute_type::PRIMORDIAL_WAVE:
       {
         aoe = -1;
         background = true;
@@ -5648,7 +5643,7 @@ struct lightning_bolt_t : public shaman_spell_t
         }
         break;
       }
-      case spell_type::THORIMS_INVOCATION:
+      case execute_type::THORIMS_INVOCATION:
       {
         background = true;
         base_execute_time = 0_s;
@@ -5665,7 +5660,7 @@ struct lightning_bolt_t : public shaman_spell_t
 
   bool consume_maelstrom_weapon() const override
   {
-    if ( type == spell_type::THORIMS_INVOCATION )
+    if ( type == execute_type::THORIMS_INVOCATION )
     {
       return true;
     }
@@ -5677,7 +5672,7 @@ struct lightning_bolt_t : public shaman_spell_t
   {
     double mw_stacks = as<double>( shaman_spell_t::maelstrom_weapon_stacks() );
 
-    if ( type == spell_type::THORIMS_INVOCATION )
+    if ( type == execute_type::THORIMS_INVOCATION )
     {
       mw_stacks = std::min( mw_stacks, p()->talent.thorims_invocation->effectN( 1 ).base_value() );
     }
@@ -5751,7 +5746,7 @@ struct lightning_bolt_t : public shaman_spell_t
     // PW needs to execute before the primary spell executes so we can retain proper
     // Maelstrom Weapon stacks for the AoE Lightning Bolt
     if ( p()->specialization() == SHAMAN_ENHANCEMENT &&
-         type == spell_type::NORMAL && p()->buff.primordial_wave->up() )
+         type == execute_type::NORMAL && p()->buff.primordial_wave->up() )
     {
       p()->action.lightning_bolt_pw->set_target( target );
       if ( !p()->action.lightning_bolt_pw->target_list().empty() )
@@ -5779,7 +5774,7 @@ struct lightning_bolt_t : public shaman_spell_t
       }
     }
 
-    if ( type == spell_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
+    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->buff.stormkeeper->decrement();
     }
@@ -5807,7 +5802,7 @@ struct lightning_bolt_t : public shaman_spell_t
     p()->trigger_lightning_rod_damage( execute_state );
 
     // Track last cast for LB / CL because of Thorim's Invocation
-    if ( p()->talent.thorims_invocation.ok() && type == spell_type::NORMAL )
+    if ( p()->talent.thorims_invocation.ok() && type == execute_type::NORMAL )
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
@@ -6122,13 +6117,13 @@ struct earthquake_base_t : public shaman_spell_t
 
     if ( p()->conduit.shake_the_foundations.ok() )
     {
-      shake_the_foundations_cl = new chain_lightning_t( player, spell_type::SHAKE_THE_FOUNDATIONS );
+      shake_the_foundations_cl = new chain_lightning_t( player, execute_type::SHAKE_THE_FOUNDATIONS );
       shake_the_foundations_cl->background = true;
       shake_the_foundations_cl->base_costs[ RESOURCE_MANA ] = 0;
 
       add_child( shake_the_foundations_cl );
 
-      shake_the_foundations_lb = new lava_beam_t( player, spell_type::SHAKE_THE_FOUNDATIONS );
+      shake_the_foundations_lb = new lava_beam_t( player, execute_type::SHAKE_THE_FOUNDATIONS );
       shake_the_foundations_lb->background = true;
       shake_the_foundations_lb->base_costs[ RESOURCE_MANA ] = 0;
 
@@ -6972,7 +6967,7 @@ struct ascendance_t : public shaman_spell_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), spell_type::ASCENDANCE );
+        lvb = new lava_burst_t( p(), execute_type::ASCENDANCE );
         add_child( lvb );
       }
     }
@@ -7099,7 +7094,7 @@ struct ascendance_dre_t : public ascendance_t
       }
       else
       {
-        lvb = new lava_burst_t( p(), spell_type::DEEPLY_ROOTED_ELEMENTS );
+        lvb = new lava_burst_t( p(), execute_type::DEEPLY_ROOTED_ELEMENTS );
         add_child( lvb );
       }
     }
@@ -8516,9 +8511,9 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "ghost_wolf" )
     return new ghost_wolf_t( this, options_str );
   if ( name == "lightning_bolt" )
-    return new lightning_bolt_t( this, spell_type::NORMAL, options_str );
+    return new lightning_bolt_t( this, execute_type::NORMAL, options_str );
   if ( name == "chain_lightning" )
-    return new chain_lightning_t( this, spell_type::NORMAL, options_str );
+    return new chain_lightning_t( this, execute_type::NORMAL, options_str );
   if ( name == "stormkeeper" )
     return new stormkeeper_t( this, options_str );
   if ( name == "wind_shear" )
@@ -8557,9 +8552,9 @@ action_t* shaman_t::create_action( util::string_view name, util::string_view opt
   if ( name == "icefury" )
     return new icefury_t( this, options_str );
   if ( name == "lava_beam" )
-    return new lava_beam_t( this, spell_type::NORMAL, options_str );
+    return new lava_beam_t( this, execute_type::NORMAL, options_str );
   if ( name == "lava_burst" )
-    return new lava_burst_t( this, spell_type::NORMAL, options_str );
+    return new lava_burst_t( this, execute_type::NORMAL, options_str );
   if ( name == "liquid_magma_totem" )
     return new liquid_magma_totem_spell_t( this, options_str );
   if ( name == "ancestral_guidance" )
@@ -8898,18 +8893,18 @@ void shaman_t::create_actions()
   // Collect Primordial Wave Lava burst stats separately
   if ( specialization() == SHAMAN_ENHANCEMENT && ( talent.primordial_wave.ok() || covenant.necrolord->ok() ) )
   {
-    action.lightning_bolt_pw = new lightning_bolt_t( this, spell_type::PRIMORDIAL_WAVE );
+    action.lightning_bolt_pw = new lightning_bolt_t( this, execute_type::PRIMORDIAL_WAVE );
   }
 
   if ( specialization() == SHAMAN_ELEMENTAL && ( talent.primordial_wave.ok() || covenant.necrolord->ok() ) )
   {
-    action.lava_burst_pw = new lava_burst_t( this, spell_type::PRIMORDIAL_WAVE );
+    action.lava_burst_pw = new lava_burst_t( this, execute_type::PRIMORDIAL_WAVE );
   }
 
   if ( talent.thorims_invocation.ok() )
   {
-    action.lightning_bolt_ti = new lightning_bolt_t( this, spell_type::THORIMS_INVOCATION );
-    action.chain_lightning_ti = new chain_lightning_t( this, spell_type::THORIMS_INVOCATION );
+    action.lightning_bolt_ti = new lightning_bolt_t( this, execute_type::THORIMS_INVOCATION );
+    action.chain_lightning_ti = new chain_lightning_t( this, execute_type::THORIMS_INVOCATION );
   }
 
   if ( talent.lightning_rod.ok() )
@@ -9733,7 +9728,7 @@ void shaman_t::trigger_deeply_rooted_elements( const action_state_t* state )
   if ( specialization() == SHAMAN_ELEMENTAL )
   {
     auto lvb = debug_cast<lava_burst_t*>( state->action );
-    if ( lvb->type != spell_type::NORMAL )
+    if ( lvb->type != execute_type::NORMAL )
     {
       return;
     }
