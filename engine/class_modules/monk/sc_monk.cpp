@@ -72,7 +72,9 @@ struct monk_action_t : public Base
   bool trigger_bountiful_brew;
   // Whether the ability can trigger the Legendary Sinister Teaching Cooldown Reduction
   bool trigger_sinister_teaching_cdr;
-
+  // Whether the ability can be used during Spinning Crane Kick
+  bool cast_during_sck;
+  
   // Windwalker Tier 28 4-piece info
 
   // Whether the ability can trigger the Windwalker Tier 28 4-piece Primordial Potential
@@ -109,6 +111,7 @@ public:
       sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
+      cast_during_sck( false ),
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
@@ -196,6 +199,21 @@ public:
           break;
         default:
           break;
+      }
+    }
+    
+    // Allow this ability to be cast during SCK
+    if ( this->cast_during_sck && !this->background && !this->dual )
+    {
+      if ( this->usable_while_casting )
+      {
+        this->cast_during_sck = false;
+        sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+      }
+      else
+      {
+        this->usable_while_casting = true;
+        this->use_while_casting = true;
       }
     }
 
@@ -1140,10 +1158,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       return false;
 
     // These abilities are able to be used during Spinning Crane Kick
-    if ( data().id() == 100780    // Tiger Palm
-      || data().id() == 100784    // Blackout Kick 
-      || data().id() == 107428 )  // Rising Sun Kick
-      usable_while_casting = p()->channeling && p()->channeling->id == 101546;
+    if ( cast_during_sck ) 
+      usable_while_casting = p()->channeling &&  ( p()->channeling->id == 101546 /* Windwalker + Mistweaver */ || p()->channeling->id == 322729 /* Brewmaster */ );
 
     return monk_action_t::ready();
   }
@@ -1393,9 +1409,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
     sef_ability                 = sef_ability_e::SEF_TIGER_PALM;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
+    cast_during_sck             = true;
 
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -1636,9 +1650,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     sef_ability                 = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity        = true;
     ap_type                     = attack_power_type::NONE;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
+    cast_during_sck             = true;
 
     attack_power_mod.direct = 0;
 
@@ -1810,10 +1822,8 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
-
+    cast_during_sck             = true;
+    
     if ( p->specialization() == MONK_WINDWALKER )
     {
       if ( p->spec.blackout_kick_2 )
