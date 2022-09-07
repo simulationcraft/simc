@@ -146,6 +146,7 @@ public:
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> surge_of_darkness;
+    propagate_const<buff_t*> mind_melt;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -1098,6 +1099,7 @@ public:
     parse_buff_effects( p().buffs.mind_devourer );
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
     parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
+    parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast
   }
 
   template <typename... Ts>

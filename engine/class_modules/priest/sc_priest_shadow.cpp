@@ -1363,6 +1363,11 @@ struct mind_spike_t final : public priest_spell_t
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
+
+    if ( priest().talents.shadow.mind_melt.enabled() )
+    {
+      priest().buffs.mind_melt->trigger();
+    }
   }
 };
 
@@ -2075,6 +2080,9 @@ void priest_t::create_buffs_shadow()
   buffs.yshaarj_pride =
       make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
 
+  buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
+                        ->set_default_value_from_effect( 1 );
+
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 
@@ -2123,7 +2131,7 @@ void priest_t::init_spells_shadow()
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
   talents.shadow.damnation              = ST( "Damnation" );
-  talents.shadow.mind_melt              = ST( "Mind Melt" );  // NYI
+  talents.shadow.mind_melt              = ST( "Mind Melt" );
   talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
   talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
   talents.shadow.mental_decay           = ST( "Mental Decay" );     // NYI

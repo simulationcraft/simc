@@ -71,6 +71,11 @@ public:
     {
       priest().cooldowns.mindgames->adjust( -manipulation_cdr );
     }
+
+    if ( priest().talents.shadow.mind_melt.enabled() && priest().buffs.mind_melt->check() )
+    {
+      priest().buffs.mind_melt->expire();
+    }
   }
 
   void reset() override
@@ -217,7 +222,7 @@ public:
     if ( priest().buffs.dark_thought->up() )
     {
       priest().buffs.dark_thought->decrement();
-      priest().buffs.vampiric_insight->decrement();  // TODO: Check Prepatch Using a Dark Thought also uses your
+      priest().buffs.vampiric_insight->decrement();  // TODO: Check Pre-patch Using a Dark Thought also uses your
                                                      // Vampiric Insight Proc 03/09/2022
       if ( T28_4PC )
       {
@@ -1273,7 +1278,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
       }
       else
       {
-        // Current ingame extension 19/07/2022
+        // Current in-game extension 19/07/2022
         summoning_duration += timespan_t::from_seconds( 5.0 );
       }
     }
@@ -1313,7 +1318,7 @@ struct summon_mindbender_t final : public summon_pet_t
       }
       else
       {
-        // Current ingame extension 19/07/2022
+        // Current in-game extension 19/07/2022
         summoning_duration += timespan_t::from_seconds( 5.0 );
       }
     }
@@ -1672,8 +1677,7 @@ struct shadow_word_death_t final : public priest_spell_t
         if ( target->health_percentage() <= execute_percent )
         {
           priest().buffs.death_and_madness_reset->trigger();
-          // TODO: this adds in reaction time but im not sure how realistic it is
-          cooldown->reset( true );
+          cooldown->reset( false );
         }
       }
       else
