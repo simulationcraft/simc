@@ -1571,10 +1571,12 @@ struct shadow_crash_damage_t final : public priest_spell_t
 struct shadow_crash_dots_t final : public priest_spell_t
 {
   propagate_const<vampiric_touch_t*> child_vt;
+  double missile_speed;
 
-  shadow_crash_dots_t( priest_t& p )
+  shadow_crash_dots_t( priest_t& p, double _missile_speed )
     : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true ) )  // TODO: verify this is true for all VT interactions
+      child_vt( new vampiric_touch_t( priest(), true ) ),  // TODO: verify this is true for all VT interactions
+      missile_speed( _missile_speed )
   {
     may_miss   = false;
     background = true;
@@ -1613,7 +1615,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
   // Copy travel time from parent spell
   timespan_t travel_time() const override
   {
-    return timespan_t::from_seconds( priest().talents.shadow.shadow_crash->missile_speed() );
+    return timespan_t::from_seconds( missile_speed );
   }
 
   void impact( action_state_t* s ) override
@@ -1633,7 +1635,7 @@ struct shadow_crash_t final : public priest_spell_t
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
       insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
-      shadow_crash_dots( new shadow_crash_dots_t( p ) )
+      shadow_crash_dots( new shadow_crash_dots_t( p, data().missile_speed() ) )
   {
     parse_options( options_str );
 
