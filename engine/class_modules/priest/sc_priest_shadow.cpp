@@ -510,7 +510,7 @@ struct shadow_word_pain_t final : public priest_spell_t
   {
     priest_spell_t::tick( d );
 
-    if ( result_is_hit(d->state->result) && d->state->result_amount > 0 )
+    if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       trigger_power_of_the_dark_side();
 
@@ -521,9 +521,12 @@ struct shadow_word_pain_t final : public priest_spell_t
         priest().buffs.depth_of_the_shadows->trigger();
       }
 
-      if (priest().talents.shadow.tormented_spirits.enabled() && rng().roll(priest().talents.shadow.tormented_spirits->effectN((d->state->result == RESULT_CRIT) ? 2 : 1).percent() ))
+      if ( priest().talents.shadow.tormented_spirits.enabled() &&
+           rng().roll( priest()
+                           .talents.shadow.tormented_spirits->effectN( ( d->state->result == RESULT_CRIT ) ? 2 : 1 )
+                           .percent() ) )
       {
-        priest().trigger_shadowy_apparitions(d->state, false);
+        priest().trigger_shadowy_apparitions( d->state, false );
       }
     }
   }
@@ -1565,13 +1568,72 @@ struct shadow_crash_damage_t final : public priest_spell_t
   }
 };
 
+struct shadow_crash_dots_t final : public priest_spell_t
+{
+  propagate_const<vampiric_touch_t*> child_vt;
+
+  shadow_crash_dots_t( priest_t& p )
+    : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
+      child_vt( new vampiric_touch_t( priest(), true ) )  // TODO: verify this is true for all VT interactions
+  {
+    may_miss   = false;
+    background = true;
+    aoe        = data().effectN( 1 ).base_value();
+
+    child_vt->background = true;
+  }
+
+  std::vector<player_t*>& target_list() const override
+  {
+    // Force regen this every time
+    target_cache.is_valid = false;
+    auto& tl              = priest_spell_t::target_list();
+    double original_size  = tl.size();
+
+    // if target_list is bigger than dot cap shuffle the list
+    if ( as<int>( tl.size() ) > aoe )
+    {
+      // randomize targets
+      rng().shuffle( tl.begin(), tl.end() );
+
+      // sort targets with VT to be at the front
+      std::sort( tl.begin(), tl.end(),
+                 [ this ]( player_t* a, player_t* b ) { return !find_td( a )->dots.vampiric_touch->is_ticking(); } );
+
+      // resize to dot target cap
+      tl.resize( aoe );
+    }
+
+    player->sim->print_debug( "{} shadow_crash dots {} targets of the available {}.", priest(), tl.size(),
+                              original_size );
+
+    return tl;
+  }
+
+  // Copy travel time from parent spell
+  timespan_t travel_time() const override
+  {
+    return timespan_t::from_seconds( priest().talents.shadow.shadow_crash->missile_speed() );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_spell_t::impact( s );
+
+    child_vt->target = s->target;
+    child_vt->execute();
+  }
+};
+
 struct shadow_crash_t final : public priest_spell_t
 {
   double insanity_gain;
+  propagate_const<shadow_crash_dots_t*> shadow_crash_dots;
 
   shadow_crash_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "shadow_crash", p, p.talents.shadow.shadow_crash ),
-      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
+      insanity_gain( data().effectN( 2 ).resource( RESOURCE_INSANITY ) ),
+      shadow_crash_dots( new shadow_crash_dots_t( p ) )
   {
     parse_options( options_str );
 
@@ -1587,6 +1649,13 @@ struct shadow_crash_t final : public priest_spell_t
   timespan_t travel_time() const override
   {
     return timespan_t::from_seconds( data().missile_speed() );
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    shadow_crash_dots->execute();
   }
 };
 
@@ -2046,7 +2115,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
   talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
   // Row 8
-  talents.shadow.mindbender           = ST( "Mindbender" );
+  talents.shadow.mindbender = ST( "Mindbender" );
 
   talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
   talents.shadow.pain_of_death        = ST( "Pain of Death" );        // NYI
@@ -2055,13 +2124,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
-  talents.shadow.fiending_dark      = ST( "Fiending Dark" );      // NYI
-  talents.shadow.monomania          = ST( "Monomania" );          
-  talents.shadow.painbreaker_psalm  = ST( "Painbreaker Psalm" );  // NYI
-  talents.shadow.mastermind         = ST( "Mastermind" );         // NYI
-  talents.shadow.insidious_ire      = ST( "Insidious Ire" );      // TODO: check values
-  talents.shadow.mind_devourer      = ST( "Mind Devourer" );      // TODO: check values
-  talents.shadow.ancient_madness    = ST( "Ancient Madness" );    // TODO: add point scaling
+  talents.shadow.fiending_dark     = ST( "Fiending Dark" );  // NYI
+  talents.shadow.monomania         = ST( "Monomania" );
+  talents.shadow.painbreaker_psalm = ST( "Painbreaker Psalm" );  // NYI
+  talents.shadow.mastermind        = ST( "Mastermind" );         // NYI
+  talents.shadow.insidious_ire     = ST( "Insidious Ire" );      // TODO: check values
+  talents.shadow.mind_devourer     = ST( "Mind Devourer" );      // TODO: check values
+  talents.shadow.ancient_madness   = ST( "Ancient Madness" );    // TODO: add point scaling
   // Row 10
   talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
   talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );
@@ -2227,7 +2296,7 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s, bool spawn_multip
     return;
   }
   // TODO: check if this procs non non-hits
-  int number_of_apparitions_to_trigger = spawn_multiple ? (s->result == RESULT_CRIT ? 2 : 1) : 1;
+  int number_of_apparitions_to_trigger = spawn_multiple ? ( s->result == RESULT_CRIT ? 2 : 1 ) : 1;
 
   for ( priest_td_t* priest_td : _target_data.get_entries() )
   {
