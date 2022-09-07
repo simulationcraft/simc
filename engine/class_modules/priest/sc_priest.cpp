@@ -135,10 +135,7 @@ public:
 
       priest().trigger_shadowy_apparitions( s );
 
-      if ( priest().talents.shadow.psychic_link.enabled() )
-      {
-        priest().trigger_psychic_link( s );
-      }
+      priest().trigger_psychic_link( s );
 
       if ( priest().talents.apathy.enabled() && s->result == RESULT_CRIT )
       {
@@ -254,7 +251,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-             } );
+          } );
         }
       }
     }
@@ -1567,6 +1564,10 @@ struct shadow_word_death_t final : public priest_spell_t
     }
 
     cooldown->hasted = true;
+
+    // 25% damage increase
+    // TODO: does Painbreaker double dip into this? Spelldata is suspicious
+    apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
 
   double composite_target_da_multiplier( player_t* t ) const override
@@ -1620,6 +1621,8 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      priest().trigger_pain_of_death( s );
+
       if ( priest().legendary.painbreaker_psalm->ok() )
       {
         int dots = 0;
@@ -3336,9 +3339,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =

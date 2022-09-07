@@ -1330,6 +1330,8 @@ struct mind_spike_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      priest().trigger_psychic_link( s );
+
       if ( !priest().buffs.surge_of_darkness->check() )
       {
         td.dots.shadow_word_pain->cancel();
@@ -1525,7 +1527,30 @@ struct psychic_link_t final : public priest_spell_t
   void trigger( player_t* target, double original_amount )
   {
     base_dd_min = base_dd_max = ( original_amount * data().effectN( 1 ).percent() );
-    player->sim->print_debug( "{} triggered psychic link on target {}.", priest(), *target );
+    player->sim->print_debug( "{} triggered {} psychic_link on target {}.", priest(), data().effectN( 1 ).percent(),
+                              *target );
+
+    set_target( target );
+    execute();
+  }
+};
+
+// ==========================================================================
+// Pain of Death
+// ==========================================================================
+struct pain_of_death_t final : public priest_spell_t
+{
+  pain_of_death_t( priest_t& p ) : priest_spell_t( "pain_of_death", p, p.talents.shadow.pain_of_death )
+  {
+    background = true;
+    may_crit   = false;
+    may_miss   = false;
+  }
+
+  void trigger( player_t* target, double original_amount )
+  {
+    base_dd_min = base_dd_max = ( original_amount * data().effectN( 2 ).percent() );
+    player->sim->print_debug( "{} triggered pain_of_death on target {}.", priest(), *target );
 
     set_target( target );
     execute();
@@ -2092,7 +2117,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.hallucinations   = ST( "Hallucinations" );
   talents.shadow.tithe_evasion    = ST( "Tithe Evasion" );  // NYI
   talents.shadow.mind_spike       = ST( "Mind Spike" );
-  talents.shadow.vampiric_insight = ST( "Vampiric Insight" );  // TODO: remove mind blast charge
+  talents.shadow.vampiric_insight = ST( "Vampiric Insight" );
   talents.shadow.intangibility    = ST( "Intangibility" );
   talents.shadow.mental_fortitude = ST( "Mental Fortitude" );  // NYI
   // Row 5
@@ -2108,7 +2133,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.malediction        = ST( "Malediction" );
   talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
   talents.shadow.void_torrent       = ST( "Void Torrent" );
-  talents.shadow.shadow_crash       = ST( "Shadow Crash" );    // TODO implement VT
+  talents.shadow.shadow_crash       = ST( "Shadow Crash" );
   talents.shadow.dark_ascension     = ST( "Dark Ascension" );  // NYI
   talents.shadow.unfurling_darkness = ST( "Unfurling Darkness" );
   // Row 7
@@ -2120,7 +2145,7 @@ void priest_t::init_spells_shadow()
   talents.shadow.mindbender = ST( "Mindbender" );
 
   talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
-  talents.shadow.pain_of_death        = ST( "Pain of Death" );        // NYI
+  talents.shadow.pain_of_death        = ST( "Pain of Death" );
   talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );  // NYI
   talents.shadow.derangement          = ST( "Derangement" );          // NYI
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
@@ -2267,6 +2292,11 @@ void priest_t::init_background_actions_shadow()
     background_actions.psychic_link = new actions::spells::psychic_link_t( *this );
   }
 
+  if ( talents.shadow.pain_of_death.enabled() )
+  {
+    background_actions.pain_of_death = new actions::spells::pain_of_death_t( *this );
+  }
+
   // TODO: does this stack in pre-patch?
   if ( legendary.eternal_call_to_the_void->ok() )
   {
@@ -2314,6 +2344,7 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s, bool spawn_multip
 
 // ==========================================================================
 // Trigger Psychic Link on any targets that weren't the original target and have Vampiric Touch ticking on them
+// TODO: consider adding reporting for Mind Spike vs. Mind Blast triggered damage
 // ==========================================================================
 void priest_t::trigger_psychic_link( action_state_t* s )
 {
@@ -2327,6 +2358,25 @@ void priest_t::trigger_psychic_link( action_state_t* s )
     if ( priest_td && ( priest_td->target != s->target ) && priest_td->dots.vampiric_touch->is_ticking() )
     {
       background_actions.psychic_link->trigger( priest_td->target, s->result_amount );
+    }
+  }
+}
+
+// ==========================================================================
+// Trigger Pain of Death on any targets that weren't the original target and have Shadow Word: Pain ticking on them
+// ==========================================================================
+void priest_t::trigger_pain_of_death( action_state_t* s )
+{
+  if ( !talents.shadow.pain_of_death.enabled() )
+  {
+    return;
+  }
+
+  for ( priest_td_t* priest_td : _target_data.get_entries() )
+  {
+    if ( priest_td && ( priest_td->target != s->target ) && priest_td->dots.shadow_word_pain->is_ticking() )
+    {
+      background_actions.pain_of_death->trigger( priest_td->target, s->result_amount );
     }
   }
 }

@@ -31,6 +31,7 @@ struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
+struct pain_of_death_t;
 struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
@@ -492,6 +493,7 @@ public:
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
     propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
     propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
+    propagate_const<actions::spells::pain_of_death_t*> pain_of_death;
   } background_actions;
 
   // Items
@@ -706,6 +708,7 @@ public:
   void trigger_idol_of_cthun( action_state_t* );
   void trigger_shadowy_apparitions( action_state_t*, bool = true );
   void trigger_psychic_link( action_state_t* );
+  void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   bool hungering_void_active( player_t* target ) const;
