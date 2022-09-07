@@ -207,13 +207,13 @@ public:
     {
       if ( this->usable_while_casting )
       {
-        this->cast_during_sck = false;
-        sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+        this->cast_during_sck       = false;
+        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
       }
       else
       {
-        this->usable_while_casting = true;
-        this->use_while_casting = true;
+        this->usable_while_casting  = true;
+        this->use_while_casting     = true;
       }
     }
 
