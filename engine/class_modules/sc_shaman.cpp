@@ -3183,6 +3183,38 @@ struct icy_edge_attack_t : public shaman_attack_t
   }
 };
 
+struct stormstrike_attack_state_t : public action_state_t
+{
+  bool stormbringer;
+
+  stormstrike_attack_state_t( action_t* action_, player_t* target_ ) :
+    action_state_t( action_, target_ ), stormbringer( false )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    stormbringer = false;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const stormstrike_attack_state_t*>( s );
+    stormbringer= lbs->stormbringer;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " stormbringer=" << stormbringer;
+
+    return s;
+  }
+};
 struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry, stormbringer;
@@ -3206,6 +3238,9 @@ struct stormstrike_attack_t : public shaman_attack_t
       add_child( stormblast );
     }
   }
+
+  action_state_t* new_state() override
+  { return new stormstrike_attack_state_t( this, target ); }
 
   double action_multiplier() const override
   {
@@ -3240,6 +3275,14 @@ struct stormstrike_attack_t : public shaman_attack_t
     return m;
   }
 
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    shaman_attack_t::snapshot_internal( s, flags, rt );
+
+    auto state = debug_cast<stormstrike_attack_state_t*>( s );
+    state->stormbringer = stormbringer;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -3248,11 +3291,13 @@ struct stormstrike_attack_t : public shaman_attack_t
     stormbringer = false;
   }
 
-  void impact( action_state_t* state ) override
+  void impact( action_state_t* s ) override
   {
-    shaman_attack_t::impact( state );
+    shaman_attack_t::impact( s );
 
-    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
+    auto state = debug_cast<stormstrike_attack_state_t*>( s );
+
+    if ( state->stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
       stormblast->base_dd_min = stormblast->base_dd_max =
         p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
