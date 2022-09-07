@@ -74,6 +74,8 @@ struct monk_action_t : public Base
   bool trigger_sinister_teaching_cdr;
   // Whether the ability can trigger Resonant Fists
   bool trigger_resonant_fists;
+  // Whether the ability can be used during Spinning Crane Kick
+  bool cast_during_sck;
 
   // Windwalker Tier 28 4-piece info
 
@@ -111,6 +113,7 @@ public:
       sef_ability( sef_ability_e::SEF_NONE ),
       ww_mastery( false ),
       may_combo_strike( false ),
+      cast_during_sck( false ),
       trigger_chiji( false ),
       trigger_faeline_stomp( false ),
       trigger_bountiful_brew( false ),
@@ -241,6 +244,21 @@ public:
           break;
         default:
           break;
+      }
+    }
+
+    // Allow this ability to be cast during SCK
+    if ( this->cast_during_sck && !this->background && !this->dual )
+    {
+      if ( this->usable_while_casting )
+      {
+        this->cast_during_sck       = false;
+        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+      }
+      else
+      {
+        this->usable_while_casting  = true;
+        this->use_while_casting     = true;
       }
     }
 
@@ -1227,7 +1245,10 @@ struct storm_earth_and_fire_t : public monk_spell_t
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd   = timespan_t::from_millis( 750 );
     gcd_type  = gcd_haste_type::ATTACK_HASTE;
+
+    cast_during_sck = true;
     callbacks = harmful = may_miss = may_crit = may_dodge = may_parry = may_block = false;
+
 
     cooldown->charges += (int)p->spec.storm_earth_and_fire_2->effectN( 1 ).base_value();
   }
@@ -1295,6 +1316,7 @@ struct storm_earth_and_fire_fixate_t : public monk_spell_t
   {
     parse_options( options_str );
 
+    cast_during_sck    = true;
     callbacks          = false;
     trigger_gcd        = timespan_t::zero();
     cooldown->duration = timespan_t::zero();
@@ -1341,10 +1363,8 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       return false;
       
     // These abilities are able to be used during Spinning Crane Kick
-    if ( data().id() == 100780    // Tiger Palm
-      || data().id() == 100784    // Blackout Kick 
-      || data().id() == 107428 )  // Rising Sun Kick
-      usable_while_casting = p()->channeling && p()->channeling->id == 101546;
+    if ( cast_during_sck )
+      usable_while_casting = p()->channeling && ( p()->channeling->id == 101546 /* Windwalker + Mistweaver */ || p()->channeling->id == 322729 /* Brewmaster */ );
       
     return monk_action_t::ready();
   }
@@ -1612,9 +1632,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
     sef_ability                 = sef_ability_e::SEF_TIGER_PALM;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
+    cast_during_sck             = true;
     
     add_child( eye_of_the_tiger_damage );
     add_child( eye_of_the_tiger_heal );
@@ -1963,9 +1981,7 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     sef_ability                 = sef_ability_e::SEF_RISING_SUN_KICK;
     affected_by.serenity        = true;
     ap_type                     = attack_power_type::NONE;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
+    cast_during_sck             = true;
 
     attack_power_mod.direct = 0;
 
@@ -2229,9 +2245,7 @@ struct blackout_kick_t : public monk_melee_attack_t
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
-
-    usable_while_casting        = true; // Allow during Spinning Crane Kick
-    use_while_casting           = true;
+    cast_during_sck             = true;
     
     if ( p->specialization() == MONK_WINDWALKER )
     {
@@ -3139,6 +3153,7 @@ struct whirling_dragon_punch_t : public monk_melee_attack_t
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
+    cast_during_sck             = true;
 
     spell_power_mod.direct = 0.0;
 
@@ -3240,6 +3255,7 @@ struct strike_of_the_windlord_t : public monk_melee_attack_t
       mh_attack( nullptr ),
       oh_attack( nullptr )
   {
+    cast_during_sck             = true;
     affected_by.serenity        = false;
     cooldown->hasted            = false;
     trigger_gcd                 = data().gcd();
@@ -3447,6 +3463,7 @@ struct keg_smash_t : public monk_melee_attack_t
     full_amount_targets    = 1;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    cast_during_sck        = true;
 
     attack_power_mod.direct = p.talent.brewmaster.keg_smash->effectN( 2 ).ap_coeff();
     radius                  = p.talent.brewmaster.keg_smash->effectN( 2 ).radius();
@@ -3560,15 +3577,17 @@ struct touch_of_death_t : public monk_melee_attack_t
   touch_of_death_t( monk_t& p, util::string_view options_str )
     : monk_melee_attack_t( "touch_of_death", &p, p.spec.touch_of_death )
   {
-    ww_mastery = true;
+    ww_mastery                  = true;
     may_crit = hasted_ticks     = false;
     may_combo_strike            = true;
     may_proc_bron               = true;
     trigger_faeline_stomp       = true;
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
+    cast_during_sck             = true;
     parse_options( options_str );
     cooldown->duration = data().cooldown();
+
 
     if ( p.legendary.fatal_touch->ok() )
       cooldown->duration += p.legendary.fatal_touch->effectN( 1 ).time_value();
@@ -3725,13 +3744,16 @@ struct touch_of_karma_t : public monk_melee_attack_t
       pct_health( 0.5 ),
       touch_of_karma_dot( new touch_of_karma_dot_t( p ) )
   {
+
     add_option( opt_float( "interval", interval ) );
     add_option( opt_float( "interval_stddev", interval_stddev_opt ) );
     add_option( opt_float( "pct_health", pct_health ) );
     parse_options( options_str );
-    cooldown->duration = data().cooldown();
+
+    cooldown->duration        = data().cooldown();
     base_dd_min = base_dd_max = 0;
     ap_type                   = attack_power_type::NO_WEAPON;
+    cast_during_sck           = true;
 
     double max_pct = data().effectN( 3 ).percent();
 
@@ -3819,6 +3841,7 @@ struct spear_hand_strike_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     is_interrupt          = true;
+    cast_during_sck       = true;
     may_miss = may_block = may_dodge = may_parry = false;
   }
 
@@ -3842,6 +3865,7 @@ struct leg_sweep_t : public monk_melee_attack_t
     parse_options( options_str );
     ignore_false_positive = true;
     may_miss = may_block = may_dodge = may_parry = false;
+    cast_during_sck = true;
 
     if (p->talent.general.tiger_tail_sweep->ok() )
     {
@@ -4053,6 +4077,8 @@ struct roll_t : public monk_spell_t
   roll_t( monk_t* player, util::string_view options_str )
     : monk_spell_t( "roll", player, ( player->talent.general.chi_torpedo ? spell_data_t::nil() : player->spec.roll ) )
   {
+    cast_during_sck = true;
+
     parse_options( options_str );
 
     if ( player->talent.general.roll )
@@ -4086,6 +4112,8 @@ struct chi_torpedo_t : public monk_spell_t
   {
     parse_options( options_str );
 
+    cast_during_sck = true;
+
     if ( player->talent.general.roll )
         cooldown->charges += 1;
 
@@ -4118,7 +4146,8 @@ struct serenity_t : public monk_spell_t
     : monk_spell_t( "serenity", player, player->talent.windwalker.serenity )
   {
     parse_options( options_str );
-    harmful = false;
+    harmful         = false;
+    cast_during_sck = true;
     // Forcing the minimum GCD to 750 milliseconds for all 3 specs
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4274,6 +4303,7 @@ struct breath_of_fire_t : public monk_spell_t
     full_amount_targets    = 1;
     trigger_faeline_stomp  = true;
     trigger_bountiful_brew = true;
+    cast_during_sck        = true;
 
     add_child( p.active_actions.breath_of_fire );
   }
@@ -4371,6 +4401,8 @@ struct fortifying_brew_t : public monk_spell_t
       delivery( new special_delivery_t( p ) ),
       fortifying_ingredients( new fortifying_ingredients_t( p ) )
   {
+    cast_during_sck = true;
+
     parse_options( options_str );
 
     harmful = may_crit = false;
@@ -4416,11 +4448,13 @@ struct exploding_keg_t : public monk_spell_t
   exploding_keg_t( monk_t& p, util::string_view options_str )
     : monk_spell_t( "exploding_keg", &p, p.talent.brewmaster.exploding_keg )
   {
+    cast_during_sck = true;
+
     parse_options( options_str );
 
-    aoe    = -1;
-    radius = data().effectN( 1 ).radius();
-    range  = data().max_range();
+    aoe             = -1;
+    radius          = data().effectN( 1 ).radius();
+    range           = data().max_range();
   }
 
   void impact( action_state_t* state ) override
@@ -4718,7 +4752,8 @@ struct purifying_brew_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    harmful = false;
+    harmful         = false;
+    cast_during_sck = true;
 
     cooldown->charges += (int)p.talent.brewmaster.purifying_brew_rank_2->effectN( 1 ).base_value();
 
@@ -4850,6 +4885,7 @@ struct dampen_harm_t : public monk_spell_t
   dampen_harm_t( monk_t& p, util::string_view options_str ) : monk_spell_t( "dampen_harm", &p, p.talent.general.dampen_harm )
   {
     parse_options( options_str );
+    cast_during_sck = true;
     harmful     = false;
     base_dd_min = 0;
     base_dd_max = 0;
@@ -4873,7 +4909,8 @@ struct diffuse_magic_t : public monk_spell_t
     : monk_spell_t( "diffuse_magic", &p, p.talent.general.diffuse_magic )
   {
     parse_options( options_str );
-    harmful     = false;
+    cast_during_sck = true;
+    harmful         = false;
     base_dd_min = 0;
     base_dd_max = 0;
   }
@@ -4896,8 +4933,9 @@ struct xuen_spell_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    harmful       = false;
-    may_proc_bron = true;
+    cast_during_sck = true;
+    harmful         = false;
+    may_proc_bron   = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -4977,8 +5015,9 @@ struct niuzao_spell_t : public monk_spell_t
   {
     parse_options( options_str );
 
-    harmful       = false;
-    may_proc_bron = true;
+    cast_during_sck = true;
+    harmful         = false;
+    may_proc_bron   = true;
     // Forcing the minimum GCD to 750 milliseconds
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
@@ -5110,6 +5149,7 @@ struct weapons_of_order_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     trigger_ww_t28_4p_potential = true;
+    cast_during_sck             = true;
   }
 
   void execute() override
@@ -5248,6 +5288,7 @@ struct bonedust_brew_t : public monk_spell_t
     base_dd_min                 = 0;
     base_dd_max                 = 0;
     trigger_ww_t28_4p_potential = true;
+    cast_during_sck             = true;
   }
 
   void execute() override
@@ -5425,6 +5466,7 @@ struct faeline_stomp_t : public monk_spell_t
   {
     parse_options( options_str );
     may_combo_strike = true;
+    cast_during_sck  = true;
 
     if ( p.covenant.night_fae )
         aoe = (int)p.covenant.night_fae->effectN( 3 ).base_value();
@@ -5547,7 +5589,8 @@ struct fallen_order_t : public monk_spell_t
   fallen_order_t( monk_t& p, util::string_view options_str ) : monk_spell_t( "fallen_order", &p, p.covenant.venthyr )
   {
     parse_options( options_str );
-    harmful     = false;
+    harmful         = false;
+    cast_during_sck = true;
     base_dd_min = 0;
     base_dd_max = 0;
   }
@@ -6237,6 +6280,7 @@ struct chi_wave_t : public monk_spell_t
     trigger_bountiful_brew      = true;
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
+    cast_during_sck             = true;
     parse_options( options_str );
     hasted_ticks = harmful = false;
     cooldown->hasted       = false;
@@ -6551,6 +6595,7 @@ struct celestial_brew_t : public monk_absorb_t
     harmful = may_crit = false;
     may_proc_bron      = true;
     callbacks          = true;
+    cast_during_sck    = true;
 
     if ( p.talent.brewmaster.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
