@@ -2151,13 +2151,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
-  talents.shadow.fiending_dark     = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania         = ST( "Monomania" );
-  talents.shadow.painbreaker_psalm = ST( "Painbreaker Psalm" );  // NYI
-  talents.shadow.mastermind        = ST( "Mastermind" );         // NYI
-  talents.shadow.insidious_ire     = ST( "Insidious Ire" );      // TODO: check values
-  talents.shadow.mind_devourer     = ST( "Mind Devourer" );      // TODO: check values
-  talents.shadow.ancient_madness   = ST( "Ancient Madness" );    // TODO: add point scaling
+  talents.shadow.fiending_dark      = ST( "Fiending Dark" );  // NYI
+  talents.shadow.monomania          = ST( "Monomania" );
+  talents.shadow.painbreakers_psalm = ST( "Painbreaker's Psalm" );
+  talents.shadow.mastermind         = ST( "Mastermind" );       // NYI
+  talents.shadow.insidious_ire      = ST( "Insidious Ire" );    // TODO: check values
+  talents.shadow.mind_devourer      = ST( "Mind Devourer" );    // TODO: check values
+  talents.shadow.ancient_madness    = ST( "Ancient Madness" );  // TODO: add point scaling
   // Row 10
   talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
   talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );

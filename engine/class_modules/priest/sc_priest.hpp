@@ -297,7 +297,7 @@ public:
       // Row 9
       player_talent_t fiending_dark;
       player_talent_t monomania;
-      player_talent_t painbreaker_psalm;
+      player_talent_t painbreakers_psalm;
       player_talent_t mastermind;
       player_talent_t insidious_ire;
       player_talent_t mind_devourer;
@@ -428,7 +428,8 @@ public:
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> shadowfiend;
-    propagate_const<gain_t*> painbreaker_psalm;
+    propagate_const<gain_t*> painbreaker_psalm;   // SL Legendary
+    propagate_const<gain_t*> painbreakers_psalm;  // DF Talent
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> insanity_throes_of_pain;

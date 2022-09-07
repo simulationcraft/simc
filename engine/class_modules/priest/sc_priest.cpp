@@ -1461,12 +1461,12 @@ struct fade_t final : public priest_spell_t
 // ==========================================================================
 // Shadow Word: Death
 // ==========================================================================
-struct painbreaker_psalm_t final : public priest_spell_t
+struct painbreaker_psalm_legendary_t final : public priest_spell_t
 {
   timespan_t consume_time;
 
-  painbreaker_psalm_t( priest_t& p )
-    : priest_spell_t( "painbreaker_psalm", p, p.legendary.painbreaker_psalm ),
+  painbreaker_psalm_legendary_t( priest_t& p )
+    : priest_spell_t( "painbreaker_psalm_legendary", p, p.legendary.painbreaker_psalm ),
       consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) )
   {
     background = true;
@@ -1493,6 +1493,74 @@ struct painbreaker_psalm_t final : public priest_spell_t
 
     swp->adjust_duration( -consume_time );
     vt->adjust_duration( -consume_time );
+
+    priest().refresh_insidious_ire_buff( s );
+  }
+};
+
+// TODO: debug log is showing this hitting for 0 but in reporting it seems to be correct
+// NOTE: in game this gives a damage event PER dot, might be relevant if this can proc procs (see below)
+struct painbreakers_psalm_t final : public priest_spell_t
+{
+  timespan_t consume_time;
+  double insanity_per_dot;
+
+  painbreakers_psalm_t( priest_t& p )
+    : priest_spell_t( "painbreakers_psalm", p, p.talents.shadow.painbreakers_psalm ),
+      consume_time( timespan_t::from_seconds( data().effectN( 1 ).base_value() ) ),
+      insanity_per_dot( data().effectN( 2 ).resource( RESOURCE_INSANITY ) )
+  {
+    background = true;
+    may_crit = may_miss = false;
+    // TODO: confirm if this can actually proc things
+    callbacks = false;
+
+    // TODO: check if this double dips from any multipliers or takes 100% exactly the calculated dot values.
+    // also check that the STATE_NO_MULTIPLIER does exactly what we expect.
+    snapshot_flags &= ~STATE_NO_MULTIPLIER;
+  }
+
+  void generate_insanity( action_state_t* s )
+  {
+    int dots = 0;
+
+    if ( const priest_td_t* td = priest().find_target_data( s->target ) )
+    {
+      bool swp_ticking = td->dots.shadow_word_pain->is_ticking();
+      bool vt_ticking  = td->dots.vampiric_touch->is_ticking();
+
+      dots = swp_ticking + vt_ticking;
+    }
+
+    double insanity_gain = dots * insanity_per_dot;
+
+    priest().generate_insanity( insanity_gain, priest().gains.painbreakers_psalm, s->action );
+  }
+
+  double consume_damage( action_state_t* s )
+  {
+    priest_td_t& td = get_td( s->target );
+    dot_t* swp      = td.dots.shadow_word_pain;
+    dot_t* vt       = td.dots.vampiric_touch;
+
+    auto swp_damage = priest().tick_damage_over_time( consume_time, td.dots.shadow_word_pain );
+    auto vt_damage  = priest().tick_damage_over_time( consume_time, td.dots.vampiric_touch );
+
+    sim->print_debug( "{} {} calculated dot damage sw:p={} vt={} total={}", *player, *this, swp_damage, vt_damage,
+                      swp_damage + vt_damage );
+
+    swp->adjust_duration( -consume_time );
+    vt->adjust_duration( -consume_time );
+
+    return swp_damage + vt_damage;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    generate_insanity( s );
+    base_dd_min = base_dd_max = consume_damage( s );
+
+    priest_spell_t::impact( s );
 
     priest().refresh_insidious_ire_buff( s );
   }
@@ -1554,7 +1622,13 @@ struct shadow_word_death_t final : public priest_spell_t
 
     if ( priest().legendary.painbreaker_psalm->ok() )
     {
-      impact_action = new painbreaker_psalm_t( p );
+      impact_action = new painbreaker_psalm_legendary_t( p );
+      add_child( impact_action );
+    }
+
+    if ( priest().talents.shadow.painbreakers_psalm.enabled() )
+    {
+      impact_action = new painbreakers_psalm_t( p );
       add_child( impact_action );
     }
 
@@ -1566,7 +1640,6 @@ struct shadow_word_death_t final : public priest_spell_t
     cooldown->hasted = true;
 
     // 25% damage increase
-    // TODO: does Painbreaker double dip into this? Spelldata is suspicious
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
 
@@ -2268,6 +2341,7 @@ void priest_t::create_gains()
   gains.insanity_surrender_to_madness    = get_gain( "Surrender to Madness" );
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.painbreaker_psalm                = get_gain( "Painbreaker Psalm" );
+  gains.painbreakers_psalm               = get_gain( "Painbreaker's Psalm" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
   gains.insanity_throes_of_pain          = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
@@ -2728,7 +2802,7 @@ void priest_t::init_spells()
   // Generic Spells
   specs.mind_blast                    = find_class_spell( "Mind Blast" );
   specs.shadow_word_death_self_damage = find_spell( 32409 );
-  specs.painbreaker_psalm_insanity    = find_spell( 336167 );
+  specs.painbreaker_psalm_insanity    = find_spell( 336167 );  // SL Legendary
   specs.psychic_scream                = find_class_spell( "Psychic Scream" );
   specs.fade                          = find_class_spell( "Fade" );
 
