@@ -374,6 +374,8 @@ void survival( player_t* p )
   cleave -> add_action( "wild_spirits,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
   cleave -> add_action( "resonating_arrow,if=!raid_event.adds.exists|raid_event.adds.remains>=8|active_enemies>=raid_event.adds.count*2" );
   cleave -> add_action( "coordinated_assault,if=!raid_event.adds.exists|raid_event.adds.remains>=10|active_enemies>=raid_event.adds.count*2" );
+  cleave -> add_action( "carve,if=cooldown.wildfire_bomb.full_recharge_time>5&spell_targets>4" );
+  cleave -> add_action( "serpent_sting,target_if=min:remains,if=refreshable&target.time_to_die>15&next_wi_bomb.pheromone&cooldown.wildfire_bomb.full_recharge_time>gcd" );
   cleave -> add_action( "wildfire_bomb,if=full_recharge_time<gcd|buff.mad_bombardier.up|target.time_to_die<5" );
   cleave -> add_action( "carve,if=cooldown.wildfire_bomb.charges_fractional<1" );
   cleave -> add_action( "death_chakram,if=(!raid_event.adds.exists|raid_event.adds.remains>5|active_enemies>=raid_event.adds.count*2)|focus+cast_regen<focus.max&!runeforge.bag_of_munitions.equipped" );
