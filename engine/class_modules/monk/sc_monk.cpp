@@ -2201,6 +2201,13 @@ struct spinning_crane_kick_t : public monk_melee_attack_t
     trigger_ww_t28_4p_potential     = true;
     trigger_ww_t28_4p_power_channel = true;
 
+    // Brewmaster can use SCK again after the GCD
+    if ( p->specialization() == MONK_BREWMASTER )
+    {
+      dot_behavior      = DOT_EXTEND;
+      cast_during_sck   = true;
+    }
+
     may_crit = may_miss = may_block = may_dodge = may_parry = false;
     tick_zero = hasted_ticks = channeled = interrupt_auto_attack = true;
 
