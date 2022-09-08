@@ -131,7 +131,7 @@ public:
         priest().procs.mind_devourer->occur();
       }
 
-      priest().trigger_shadowy_apparitions( s );
+      priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_mb );
 
       priest().trigger_psychic_link( s );
 
@@ -2285,30 +2285,31 @@ void priest_t::create_gains()
 /** Construct priest procs */
 void priest_t::create_procs()
 {
-  procs.shadowy_apparition              = get_proc( "Shadowy Apparition" );
-  procs.shadowy_apparition_overflow     = get_proc( "Shadowy Apparition Insanity lost to overflow" );
-  procs.surge_of_light                  = get_proc( "Surge of Light" );
-  procs.surge_of_light_overflow         = get_proc( "Surge of Light lost to overflow" );
-  procs.serendipity                     = get_proc( "Serendipity (Non-Tier 17 4pc)" );
-  procs.serendipity_overflow            = get_proc( "Serendipity lost to overflow (Non-Tier 17 4pc)" );
-  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
-  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.dissonant_echoes                = get_proc( "Void Bolt resets from Dissonant Echoes" );
-  procs.mind_devourer                   = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.void_tendril_ecttv              = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher_ecttv               = get_proc( "Void Lasher proc from Eternal Call to the Void" );
-  procs.void_tendril                    = get_proc( "Void Tendril proc from Idol of C'Thun" );
-  procs.void_lasher                     = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.dark_thoughts_flay              = get_proc( "Dark Thoughts proc from Mind Flay" );
-  procs.dark_thoughts_sear              = get_proc( "Dark Thoughts proc from Mind Sear" );
-  procs.dark_thoughts_devouring_plague  = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
-  procs.dark_thoughts_missed            = get_proc( "Dark Thoughts proc not consumed" );
-  procs.living_shadow_tier              = get_proc( "Living Shadow T28 4-set procs" );
-  procs.vampiric_insight                = get_proc( "Vampiric Insight procs" );
-  procs.vampiric_insight_overflow       = get_proc( "Vampiric Insight procs lost to overflow" );
-  procs.vampiric_insight_missed         = get_proc( "Vampiric Insight procs not consumed" );
-  procs.void_touched                    = get_proc( "Void Bolt procs from Void Touched" );
-  procs.thing_from_beyond               = get_proc( "Thing from Beyond procs" );
+  procs.shadowy_apparition_vb                  = get_proc( "Shadowy Apparition from Void Bolt" );
+  procs.shadowy_apparition_swp                 = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
+  procs.shadowy_apparition_dp                  = get_proc( "Shadowy Apparition from Devouring Plague" );
+  procs.shadowy_apparition_mb                  = get_proc( "Shadowy Apparition from Mind Blast" );
+  procs.power_of_the_dark_side                 = get_proc( "Power of the Dark Side Penance damage buffed" );
+  procs.power_of_the_dark_side_overflow        = get_proc( "Power of the Dark Side lost to overflow" );
+  procs.dissonant_echoes                       = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.mind_devourer                          = get_proc( "Mind Devourer free Devouring Plague proc" );
+  procs.void_tendril_ecttv                     = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher_ecttv                      = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.void_tendril                           = get_proc( "Void Tendril proc from Idol of C'Thun" );
+  procs.void_lasher                            = get_proc( "Void Lasher proc from Idol of C'Thun" );
+  procs.dark_thoughts_flay                     = get_proc( "Dark Thoughts proc from Mind Flay" );
+  procs.dark_thoughts_sear                     = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_devouring_plague         = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
+  procs.dark_thoughts_missed                   = get_proc( "Dark Thoughts proc not consumed" );
+  procs.living_shadow_tier                     = get_proc( "Living Shadow T28 4-set procs" );
+  procs.vampiric_insight                       = get_proc( "Vampiric Insight procs" );
+  procs.vampiric_insight_overflow              = get_proc( "Vampiric Insight procs lost to overflow" );
+  procs.vampiric_insight_missed                = get_proc( "Vampiric Insight procs not consumed" );
+  procs.thing_from_beyond                      = get_proc( "Thing from Beyond procs" );
+  procs.coalescing_shadows_mind_sear           = get_proc( "Coalescing Shadows from Mind Sear" );
+  procs.coalescing_shadows_mind_flay           = get_proc( "Coalescing Shadows from Mind Fay" );
+  procs.coalescing_shadows_shadow_word_pain    = get_proc( "Coalescing Shadows from Shadow Word: Pain" );
+  procs.coalescing_shadows_shadowy_apparitions = get_proc( "Coalescing Shadows from Shadowy Apparition" );
 }
 
 /** Construct priest benefits */

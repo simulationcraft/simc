@@ -74,6 +74,7 @@ struct mind_sear_tick_t final : public priest_spell_t
     if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
+      priest().procs.coalescing_shadows_mind_sear->occur();
     }
   }
 };
@@ -159,6 +160,7 @@ struct mind_flay_base_t final : public priest_spell_t
     if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
+      priest().procs.coalescing_shadows_mind_flay->occur();
     }
   }
 
@@ -285,6 +287,7 @@ struct silence_t final : public priest_spell_t
       range += rank2->effectN( 1 ).base_value();
     }
 
+    // TODO: this can probably be changed to apply_affecting_aura
     if ( priest().talents.shadow.last_word.enabled() )
     {
       // Spell data has a negative value
@@ -336,6 +339,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
     harmful = false;
 
+    // TODO: check if apply_affecting_aura works here
     if ( priest().talents.sanlayn->ok() )
     {
       cooldown->duration += priest().talents.sanlayn->effectN( 1 ).time_value();
@@ -414,6 +418,7 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().talents.shadow.puppet_master.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
+      priest().procs.coalescing_shadows_shadowy_apparitions->occur();
     }
   }
 };
@@ -436,11 +441,12 @@ struct shadowy_apparition_spell_t final : public priest_spell_t
   }
 
   /** Trigger a shadowy apparition */
-  void trigger( player_t* target )
+  void trigger( player_t* target, proc_t* proc )
   {
-    player->sim->print_debug( "{} triggered shadowy apparition on target {}.", priest(), *target );
+    player->sim->print_debug( "{} triggered shadowy apparition on target {} from {}.", priest(), *target,
+                              proc->name() );
 
-    priest().procs.shadowy_apparition->occur();
+    proc->occur();
     set_target( target );
     execute();
   }
@@ -598,12 +604,13 @@ struct shadow_word_pain_t final : public priest_spell_t
                            .talents.shadow.tormented_spirits->effectN( ( d->state->result == RESULT_CRIT ) ? 2 : 1 )
                            .percent() ) )
       {
-        priest().trigger_shadowy_apparitions( d->state, false );
+        priest().trigger_shadowy_apparitions( d->state, priest().procs.shadowy_apparition_swp, false );
       }
 
       if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
       {
         priest().buffs.coalescing_shadows->trigger();
+        priest().procs.coalescing_shadows_shadow_word_pain->occur();
       }
 
       // TODO: check if this also can proc on initial hit
@@ -732,12 +739,14 @@ struct vampiric_touch_t final : public priest_spell_t
   propagate_const<shadow_word_pain_t*> child_swp;
   propagate_const<unfurling_darkness_t*> child_ud;
   bool casted;
+  double surge_of_darkness_proc_rate;
 
   vampiric_touch_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
-      child_ud( nullptr )
+      child_ud( nullptr ),
+      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->effectN( 2 ).percent() )
   {
     casted                     = _casted;
     may_crit                   = false;
@@ -792,12 +801,6 @@ struct vampiric_touch_t final : public priest_spell_t
     priest_spell_t::impact( s );
 
     priest().refresh_insidious_ire_buff( s );
-
-    // TODO: Copying over hard-code from MoP, needs testing
-    if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
-    {
-      priest().buffs.surge_of_darkness->trigger();
-    }
   }
 
   timespan_t execute_time() const override
@@ -866,7 +869,7 @@ struct vampiric_touch_t final : public priest_spell_t
       vampiric_touch_heal->trigger( d->state->result_amount );
 
       // TODO: Copying over hard-code from MoP, needs testing
-      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
       }
@@ -974,10 +977,12 @@ struct devouring_plague_t final : public priest_spell_t
 
   propagate_const<devouring_plague_heal_t*> devouring_plague_heal;
   bool casted;
+  double surge_of_darkness_proc_rate;
 
   devouring_plague_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
-      devouring_plague_heal( new devouring_plague_heal_t( p ) )
+      devouring_plague_heal( new devouring_plague_heal_t( p ) ),
+      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->effectN( 2 ).percent() )
   {
     casted                     = _casted;
     may_crit                   = true;
@@ -1016,7 +1021,7 @@ struct devouring_plague_t final : public priest_spell_t
     // Damnation does not trigger a SA - 2020-08-08
     if ( casted )
     {
-      priest().trigger_shadowy_apparitions( s );
+      priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_dp );
     }
 
     if ( result_is_hit( s->result ) )
@@ -1027,7 +1032,7 @@ struct devouring_plague_t final : public priest_spell_t
     }
 
     // TODO: Copying over hard-code from MoP, needs testing
-    if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+    if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
     {
       priest().buffs.surge_of_darkness->trigger();
     }
@@ -1043,7 +1048,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().trigger_idol_of_nzoth( d->state->target );
 
       // TODO: Copying over hard-code from MoP, needs testing
-      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( 0.20 ) )
+      if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
       }
@@ -1214,12 +1219,6 @@ struct void_bolt_t final : public priest_spell_t
       priest().buffs.dissonant_echoes->expire();
     }
 
-    // TODO: Determine how this stacks in Dissonant Echoes in pre-patch
-    if ( priest().buffs.void_touched->check() )
-    {
-      priest().buffs.void_touched->expire();
-    }
-
     if ( priest().conduits.dissonant_echoes->ok() && priest().buffs.voidform->check() )
     {
       if ( rng().roll( priest().conduits.dissonant_echoes.percent() ) )
@@ -1232,8 +1231,7 @@ struct void_bolt_t final : public priest_spell_t
 
   bool ready() override
   {
-    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() &&
-         !priest().buffs.void_touched->check() )
+    if ( !priest().buffs.voidform->check() && !priest().buffs.dissonant_echoes->check() )
     {
       return false;
     }
@@ -1245,7 +1243,7 @@ struct void_bolt_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    priest().trigger_shadowy_apparitions( s );
+    priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_vb );
 
     if ( void_bolt_extension )
     {
@@ -2198,8 +2196,6 @@ void priest_t::create_buffs_shadow()
 
   buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this );
 
-  buffs.void_touched = make_buff( this, "void_touched", find_spell( 373375 ) );
-
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
 
   buffs.insidious_ire = make_buff( this, "insidious_ire", talents.shadow.insidious_ire )
@@ -2503,7 +2499,7 @@ void priest_t::init_background_actions_shadow()
 // ==========================================================================
 // Trigger Shadowy Apparitions on all targets affected by vampiric touch
 // ==========================================================================
-void priest_t::trigger_shadowy_apparitions( action_state_t* s, bool spawn_multiple )
+void priest_t::trigger_shadowy_apparitions( action_state_t* s, proc_t* proc, bool spawn_multiple )
 {
   if ( !talents.shadow.shadowy_apparitions.enabled() )
   {
@@ -2518,7 +2514,7 @@ void priest_t::trigger_shadowy_apparitions( action_state_t* s, bool spawn_multip
     {
       for ( int i = 0; i < number_of_apparitions_to_trigger; ++i )
       {
-        background_actions.shadowy_apparitions->trigger( priest_td->target );
+        background_actions.shadowy_apparitions->trigger( priest_td->target, proc );
       }
     }
   }

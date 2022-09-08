@@ -137,7 +137,6 @@ public:
     propagate_const<buff_t*> translucent_image_conduit;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> vampiric_insight;
-    propagate_const<buff_t*> void_touched;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
@@ -458,12 +457,10 @@ public:
   // Procs
   struct
   {
-    propagate_const<proc_t*> serendipity;
-    propagate_const<proc_t*> serendipity_overflow;
-    propagate_const<proc_t*> shadowy_apparition;
-    propagate_const<proc_t*> shadowy_apparition_overflow;
-    propagate_const<proc_t*> surge_of_light;
-    propagate_const<proc_t*> surge_of_light_overflow;
+    propagate_const<proc_t*> shadowy_apparition_vb;
+    propagate_const<proc_t*> shadowy_apparition_swp;
+    propagate_const<proc_t*> shadowy_apparition_dp;
+    propagate_const<proc_t*> shadowy_apparition_mb;
     propagate_const<proc_t*> holy_fire_cd;
     propagate_const<proc_t*> power_of_the_dark_side;
     propagate_const<proc_t*> power_of_the_dark_side_overflow;
@@ -481,8 +478,11 @@ public:
     propagate_const<proc_t*> vampiric_insight;
     propagate_const<proc_t*> vampiric_insight_overflow;
     propagate_const<proc_t*> vampiric_insight_missed;
-    propagate_const<proc_t*> void_touched;
     propagate_const<proc_t*> thing_from_beyond;
+    propagate_const<proc_t*> coalescing_shadows_mind_sear;
+    propagate_const<proc_t*> coalescing_shadows_mind_flay;
+    propagate_const<proc_t*> coalescing_shadows_shadow_word_pain;
+    propagate_const<proc_t*> coalescing_shadows_shadowy_apparitions;
   } procs;
 
   // Special
@@ -715,7 +715,7 @@ public:
   void trigger_shadowflame_prism( player_t* target );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( action_state_t*, bool = true );
+  void trigger_shadowy_apparitions( action_state_t*, proc_t* proc, bool = true );
   void trigger_psychic_link( action_state_t* );
   void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
