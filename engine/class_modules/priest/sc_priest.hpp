@@ -147,6 +147,7 @@ public:
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
+    propagate_const<buff_t*> mind_flay_insanity;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;

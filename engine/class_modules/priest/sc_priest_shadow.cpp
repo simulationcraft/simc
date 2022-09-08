@@ -89,12 +89,10 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 // Mind Flay
 // ==========================================================================
-struct mind_flay_t final : public priest_spell_t
+struct mind_flay_base_t final : public priest_spell_t
 {
-  mind_flay_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "mind_flay", p, p.specs.mind_flay )
+  mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
-    parse_options( options_str );
-
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
@@ -149,6 +147,43 @@ struct mind_flay_t final : public priest_spell_t
 
     return priest_spell_t::ready();
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    priest().buffs.mind_flay_insanity->expire();
+  }
+};
+
+struct mind_flay_t final : public priest_spell_t
+{
+  mind_flay_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
+      _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.find_spell( 391403 ) ) )
+  {
+    parse_options( options_str );
+
+    add_child( _base_spell );
+    add_child( _insanity_spell );
+  }
+
+  void execute() override
+  {
+    if ( priest().buffs.mind_flay_insanity->check() )
+    {
+      _insanity_spell->execute();
+    }
+    else
+    {
+      _base_spell->execute();
+    }
+  }
+
+private:
+  propagate_const<action_t*> _base_spell;
+  propagate_const<action_t*> _insanity_spell;
 };
 
 // ==========================================================================
@@ -970,6 +1005,11 @@ struct devouring_plague_t final : public priest_spell_t
   void execute() override
   {
     priest_spell_t::execute();
+
+    if ( priest().talents.shadow.mind_flay_insanity.enabled() )
+    {
+      priest().buffs.mind_flay_insanity->trigger();
+    }
 
     if ( priest().sets->has_set_bonus( PRIEST_SHADOW, T28, B2 ) &&
          rng().roll( priest().sets->set( PRIEST_SHADOW, T28, B2 )->effectN( 1 ).percent() ) )
@@ -2082,6 +2122,9 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
+
+  buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) )
+                                 ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
 
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
