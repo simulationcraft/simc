@@ -147,13 +147,6 @@ struct mind_flay_base_t final : public priest_spell_t
 
     return priest_spell_t::ready();
   }
-
-  void last_tick( dot_t* d ) override
-  {
-    priest_spell_t::last_tick( d );
-
-    priest().buffs.mind_flay_insanity->expire();
-  }
 };
 
 struct mind_flay_t final : public priest_spell_t
