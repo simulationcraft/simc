@@ -151,6 +151,8 @@ public:
       {
         td.buffs.mind_spike->expire();
       }
+
+      priest().buffs.coalescing_shadows->expire();
     }
   }
 

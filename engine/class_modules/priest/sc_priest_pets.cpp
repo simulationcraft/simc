@@ -449,6 +449,11 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
+      if ( p().o().talents.shadow.puppet_master.enabled() )
+      {
+        p().o().buffs.coalescing_shadows->trigger();
+      }
+
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )

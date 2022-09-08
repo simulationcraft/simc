@@ -23,6 +23,7 @@ namespace spells
 struct mind_sear_tick_t final : public priest_spell_t
 {
   double insanity_gain;
+  double coalescing_shadows_chance = 0.0;
 
   mind_sear_tick_t( priest_t& p, const spell_data_t* s )
     : priest_spell_t( "mind_sear_tick", p, s ),
@@ -40,6 +41,12 @@ struct mind_sear_tick_t final : public priest_spell_t
     energize_amount            = insanity_gain;
     energize_resource          = RESOURCE_INSANITY;
     radius                     = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
+
+    if ( priest().talents.shadow.coalescing_shadows.enabled() )
+    {
+      coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 1 ).percent() +
+                                  priest().talents.shadow.harnessed_shadows->effectN( 2 ).percent();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -62,6 +69,11 @@ struct mind_sear_tick_t final : public priest_spell_t
 
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+    }
+
+    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
+    {
+      priest().buffs.coalescing_shadows->trigger();
     }
   }
 };
@@ -91,12 +103,20 @@ struct mind_sear_t final : public priest_spell_t
 // ==========================================================================
 struct mind_flay_base_t final : public priest_spell_t
 {
+  double coalescing_shadows_chance = 0.0;
+
   mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
     may_crit                   = false;
     channeled                  = true;
     use_off_gcd                = true;
+
+    if ( priest().talents.shadow.coalescing_shadows.enabled() )
+    {
+      coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 2 ).percent() +
+                                  priest().talents.shadow.harnessed_shadows->effectN( 3 ).percent();
+    }
   }
 
   void trigger_mind_flay_dissonant_echoes()
@@ -134,6 +154,11 @@ struct mind_flay_base_t final : public priest_spell_t
 
       td.dots.shadow_word_pain->adjust_duration( dot_extension, true );
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
+    }
+
+    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
+    {
+      priest().buffs.coalescing_shadows->trigger();
     }
   }
 
@@ -346,6 +371,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 struct shadowy_apparition_damage_t final : public priest_spell_t
 {
   double insanity_gain;
+  double coalescing_shadows_chance = 0.0;
 
   shadowy_apparition_damage_t( priest_t& p )
     : priest_spell_t( "shadowy_apparition", p, p.talents.shadow.shadowy_apparition ),
@@ -364,6 +390,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     {
       base_dd_multiplier *= ( 1.0 + priest().conduits.haunting_apparitions.percent() );
     }
+
+    if ( priest().talents.shadow.puppet_master.enabled() )
+    {
+      coalescing_shadows_chance = priest().talents.shadow.puppet_master->proc_chance();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -378,6 +409,11 @@ struct shadowy_apparition_damage_t final : public priest_spell_t
     if ( priest().talents.shadow.idol_of_yoggsaron.enabled() )
     {
       priest().buffs.idol_of_yoggsaron->trigger();
+    }
+
+    if ( priest().talents.shadow.puppet_master.enabled() && rng().roll( coalescing_shadows_chance ) )
+    {
+      priest().buffs.coalescing_shadows->trigger();
     }
   }
 };
@@ -417,6 +453,8 @@ struct shadow_word_pain_t final : public priest_spell_t
 {
   bool casted;
 
+  double coalescing_shadows_chance = 0.0;
+
   shadow_word_pain_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "shadow_word_pain", p, p.dot_spells.shadow_word_pain )
   {
@@ -446,6 +484,12 @@ struct shadow_word_pain_t final : public priest_spell_t
     if ( priest().talents.throes_of_pain.enabled() )
     {
       base_td_multiplier *= ( 1 + priest().talents.throes_of_pain->effectN( 1 ).percent() );
+    }
+
+    if ( priest().talents.shadow.coalescing_shadows.enabled() )
+    {
+      coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 1 ).percent() +
+                                  priest().talents.shadow.harnessed_shadows->effectN( 2 ).percent();
     }
   }
 
@@ -555,6 +599,11 @@ struct shadow_word_pain_t final : public priest_spell_t
                            .percent() ) )
       {
         priest().trigger_shadowy_apparitions( d->state, false );
+      }
+
+      if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
+      {
+        priest().buffs.coalescing_shadows->trigger();
       }
 
       // TODO: check if this also can proc on initial hit
@@ -1437,6 +1486,8 @@ struct mind_spike_t final : public priest_spell_t
         priest().buffs.surge_of_darkness->decrement();
       }
 
+      priest().buffs.coalescing_shadows->expire();
+
       td.buffs.mind_spike->trigger();
     }
   }
@@ -2172,6 +2223,17 @@ void priest_t::create_buffs_shadow()
   buffs.dark_evangelism =
       make_buff( this, "dark_evangelism", find_spell( 391099 ) )->set_trigger_spell( talents.shadow.dark_evangelism );
 
+  buffs.coalescing_shadows = make_buff( this, "coalescing_shadows", talents.shadow.coalescing_shadows_buff )
+                                 ->set_stack_change_callback( ( [ this ]( buff_t*, int old, int cur ) {
+                                   if ( cur < old && old > 0 )
+                                   {
+                                     buffs.coalescing_shadows_dot->trigger();
+                                   }
+                                 } ) );  // TODO: Check ingame if expiry counts as consumption - If not, Custom Buff and
+                                         // override Expire to check for consumed rather than expire.
+  buffs.coalescing_shadows_dot = make_buff( this, "coalescing_shadows_dot", talents.shadow.coalescing_shadows_dot_buff )
+                                     ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
+
   // TODO: Get real damage amplifier and spell data when blizzard implements this.
   buffs.yshaarj_pride =
       make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
@@ -2230,11 +2292,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_sear          = ST( "Mind Sear" );          // NYI
   talents.shadow.mind_sear_insanity = find_spell( 208232 );       // TODO: might not need. Insanity is stored here
   // Row 4
-  talents.shadow.coalescing_shadows = ST( "Shadow Orbs" );  // NYI
-  talents.shadow.hallucinations     = ST( "Hallucinations" );
-  talents.shadow.tithe_evasion      = ST( "Tithe Evasion" );  // NYI
-  talents.shadow.mind_spike         = ST( "Mind Spike" );
-  talents.shadow.vampiric_insight   = ST( "Vampiric Insight" );
+  talents.shadow.coalescing_shadows          = ST( "Coalescing Shadows" );
+  talents.shadow.coalescing_shadows_buff     = find_spell( 391243 );
+  talents.shadow.coalescing_shadows_dot_buff = find_spell( 391244 );
+  talents.shadow.hallucinations              = ST( "Hallucinations" );
+  talents.shadow.tithe_evasion               = ST( "Tithe Evasion" );
+  talents.shadow.mind_spike                  = ST( "Mind Spike" );
+  talents.shadow.vampiric_insight            = ST( "Vampiric Insight" );
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
   talents.shadow.damnation              = ST( "Damnation" );

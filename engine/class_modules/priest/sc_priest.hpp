@@ -150,6 +150,8 @@ public:
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> deathspeaker;
     propagate_const<buff_t*> dark_ascension;
+    propagate_const<buff_t*> coalescing_shadows;
+    propagate_const<buff_t*> coalescing_shadows_dot;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -265,6 +267,8 @@ public:
       const spell_data_t* mind_sear_insanity;
       // Row 4
       player_talent_t coalescing_shadows;
+      const spell_data_t* coalescing_shadows_buff;
+      const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t hallucinations;
       player_talent_t tithe_evasion;
       player_talent_t mind_spike;
@@ -1105,6 +1109,8 @@ public:
     parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast
     // TODO: check why we cant use_default=true to get the value correct
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
+    parse_buff_effects( p().buffs.coalescing_shadows );
+    parse_buff_effects( p().buffs.coalescing_shadows_dot );
   }
 
   template <typename... Ts>
