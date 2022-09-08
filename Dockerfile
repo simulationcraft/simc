@@ -26,6 +26,8 @@ FROM alpine:latest AS build
 
 ARG THREADS=1
 ARG APIKEY=''
+# TODO: replace with working raid profile for dragonflight once we have a fully working one that is tested by CI
+ARG PGO_PROFILE=""
 
 COPY . /app/SimulationCraft/
 
@@ -44,7 +46,7 @@ RUN clang++ -v && make -C /app/SimulationCraft/engine release CXX=clang++ -j $TH
 
 
 # Collect profile guided instrumentation data
-RUN cd /app/SimulationCraft/engine && LLVM_PROFILE_FILE="code-%p.profraw" ./simc T26_Raid.simc single_actor_batch=1 iterations=100
+RUN cd /app/SimulationCraft/engine && LLVM_PROFILE_FILE="code-%p.profraw" ./simc {$PGO_PROFILE} single_actor_batch=1 iterations=100
 
 # Merge profile guided data
 RUN cd /app/SimulationCraft/engine && llvm-profdata merge -output=code.profdata code-*.profraw

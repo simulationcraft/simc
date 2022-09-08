@@ -485,6 +485,7 @@ public:
     buff_t* icy_talons;
     buff_t* empower_rune_weapon;
     buff_t* abomination_limb_talent;
+    buff_t* lichborne; // NYI
 
     // Runeforges
     buff_t* rune_of_hysteria;
@@ -654,7 +655,7 @@ public:
     gain_t* breath_of_sindragosa;
     gain_t* empower_rune_weapon;
     gain_t* frost_fever; // RP generation per tick
-    gain_t* horn_of_winter;
+    // gain_t* horn_of_winter;
     gain_t* koltiras_favor;
     gain_t* frigid_executioner; // Rune refund chance
     gain_t* murderous_efficiency;
@@ -718,7 +719,7 @@ public:
     player_talent_t permafrost;
     player_talent_t improved_death_strike;
     player_talent_t antimagic_barrier; // NYI
-    player_talent_t deaths_advance;
+    player_talent_t march_of_darkness; // NYI
     player_talent_t sacrificial_pact;
     player_talent_t control_undead; // NYI
     player_talent_t enfeeble; // NYI
@@ -736,21 +737,19 @@ public:
     player_talent_t clenching_grasp; // NYI
     // Row 6
     player_talent_t proliferating_chill;
-    player_talent_t runic_attenuation;
     player_talent_t asphyxiate;
     player_talent_t assimilation;
     player_talent_t death_pact;
     player_talent_t grip_of_the_dead;
     player_talent_t deaths_reach;
-    player_talent_t lichborne;
+    player_talent_t unholy_endurance; // NYI
+    player_talent_t gloom_ward; // NYI
     // Row 7
-    player_talent_t runic_corruption;
-    player_talent_t runic_empowerment;
+    player_talent_t runic_attenuation;
     player_talent_t wraith_walk;
     player_talent_t unholy_ground;
-    player_talent_t unholy_endurance; // NYI
+    player_talent_t insidious_chill; // NYI
     // Row 8
-    player_talent_t horn_of_winter;
     player_talent_t blood_draw;
     player_talent_t will_of_the_necropolis;
     player_talent_t deaths_echo;
@@ -941,8 +940,6 @@ public:
     const spell_data_t* exacting_preparation; // For Nadjia soulbind
     const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
-    const spell_data_t* runic_corruption; // buff
-    const spell_data_t* runic_empowerment_gain;
     const spell_data_t* rune_mastery_buff;
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
@@ -955,11 +952,15 @@ public:
     const spell_data_t* bone_shield;
 
     // Frost
+    const spell_data_t* runic_empowerment_gain;
     const spell_data_t* murderous_efficiency_gain;
     const spell_data_t* rage_of_the_frozen_champion; // RP generation spell
     const spell_data_t* piercing_chill_debuff;
+    const spell_data_t* runic_empowerment_chance;
 
     // Unholy
+    const spell_data_t* runic_corruption; // buff
+    const spell_data_t* runic_corruption_chance;
     const spell_data_t* festering_wound_debuff;
     const spell_data_t* rotten_touch_debuff;
     const spell_data_t* death_rot_debuff;
@@ -5080,39 +5081,31 @@ struct dark_transformation_t : public death_knight_spell_t
 
 struct death_and_decay_damage_base_t : public death_knight_spell_t
 {
-  death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
-    death_knight_spell_t( name, p, spell )
-  {
-    aoe = -1;
-    background = dual = true;
-  }
-};
-
-struct death_and_decay_damage_t : public death_and_decay_damage_base_t
-{
   // Values found from testing
   const int PESTILENCE_CAP_PER_TICK = 2;
   const int PESTILENCE_CAP_PER_CAST = 10;
 
   int pestilence_procs_per_tick;
   int pestilence_procs_per_cast;
-
-  death_and_decay_damage_t( util::string_view name, death_knight_t* p, const spell_data_t* s = nullptr ) :
-    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> find_spell( 52212 ) : s ),
+  death_and_decay_damage_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
+    death_knight_spell_t( name, p, spell ),
     pestilence_procs_per_tick( 0 ),
     pestilence_procs_per_cast( 0 )
-  { }
+  {
+    aoe = -1;
+    background = dual = true;
+  }
 
   void execute() override
   {
     pestilence_procs_per_tick = 0;
 
-    death_and_decay_damage_base_t::execute();
+    death_knight_spell_t::execute();
   }
 
   void impact( action_state_t* s ) override
   {
-    death_and_decay_damage_base_t::impact( s );
+    death_knight_spell_t::impact( s );
 
     if ( p() -> talent.unholy.pestilence.ok() &&
          pestilence_procs_per_tick < PESTILENCE_CAP_PER_TICK &&
@@ -5126,6 +5119,13 @@ struct death_and_decay_damage_t : public death_and_decay_damage_base_t
       }
     }
   }
+};
+
+struct death_and_decay_damage_t : public death_and_decay_damage_base_t
+{
+  death_and_decay_damage_t( util::string_view name, death_knight_t* p, const spell_data_t* s = nullptr ) :
+    death_and_decay_damage_base_t( name, p, s == nullptr ? p -> find_spell( 52212 ) : s )
+  { }
 };
 
 struct defile_damage_t : public death_and_decay_damage_base_t
@@ -5265,6 +5265,9 @@ struct death_and_decay_base_t : public death_knight_spell_t
       p() -> active_dnd = nullptr;
     }
 
+    // Reset death and decay damage's pestilence proc per cast counter
+    debug_cast<death_and_decay_damage_base_t*>( damage ) -> pestilence_procs_per_cast = 0;
+
     death_knight_spell_t::execute();
 
     // If bone shield isn't up, Relish in Blood doesn't heal or generate any RP
@@ -5335,14 +5338,6 @@ struct death_and_decay_t : public death_and_decay_base_t
     if ( p -> talent.unholy.defile.ok() || p -> covenant.deaths_due -> ok() )
       background = true;
   }
-
-  void execute() override
-  {
-    // Reset death and decay damage's pestilence proc per cast counter
-    debug_cast<death_and_decay_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
-
-    death_and_decay_base_t::execute();
-  }
 };
 
 struct defile_t : public death_and_decay_base_t
@@ -5381,13 +5376,6 @@ struct deaths_due_t : public death_and_decay_base_t
 
     if ( p -> talent.deaths_echo.ok() )
         cooldown->charges += as<int>( p->talent.deaths_echo->effectN( 1 ).base_value() );
-  }
-
-  void execute() override
-  {
-    debug_cast<deaths_due_damage_t*>( damage ) -> pestilence_procs_per_cast = 0;
-
-    death_and_decay_base_t::execute();
   }
 };
 
@@ -6576,7 +6564,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     }
   }
 };
-
+/*
 // Horn of Winter ===========================================================
 
 struct horn_of_winter_t : public death_knight_spell_t
@@ -6598,6 +6586,7 @@ struct horn_of_winter_t : public death_knight_spell_t
     p() -> replenish_rune( as<unsigned int>( data().effectN( 1 ).base_value() ), p() -> gains.horn_of_winter );
   }
 };
+*/
 
 // Howling Blast ============================================================
 
@@ -7523,9 +7512,11 @@ struct sacrificial_pact_t : public death_knight_heal_t
 struct scourge_strike_base_t : public death_knight_melee_attack_t
 {
   timespan_t summon_duration; // For T28 Ghoul summon, remove after shadowlands
+  double dnd_cleave_targets; // For when in dnd how many targets we can cleave
   scourge_strike_base_t( util::string_view name, death_knight_t* p, const spell_data_t* spell ) :
     death_knight_melee_attack_t( name, p, spell ),
-    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) )
+    summon_duration( timespan_t::from_seconds( p -> find_spell( 364392 ) -> effectN( 3 ).base_value() ) ),
+    dnd_cleave_targets( p -> talent.unholy.scourge_strike -> effectN( 4 ).base_value() )
   {
     weapon = &( player -> main_hand_weapon );
   }
@@ -7541,7 +7532,7 @@ struct scourge_strike_base_t : public death_knight_melee_attack_t
   int n_targets() const override
   {
     if ( p() -> talent.cleaving_strikes.ok() )
-      return p() -> in_death_and_decay() ? data().max_targets() : 0;
+      return p() -> in_death_and_decay() ? dnd_cleave_targets : 0;
     return 0;
   }
 
@@ -9067,10 +9058,10 @@ void death_knight_t::consume_killing_machine( proc_t* proc )
 
 void death_knight_t::trigger_runic_empowerment( double rpcost )
 {
-  if ( ! talent.runic_empowerment.ok() )
+  if ( ! spec.frost_death_knight -> ok() )
     return;
 
-  double base_chance = talent.runic_empowerment -> effectN( 1 ).percent() / 10.0;
+  double base_chance = spell.runic_empowerment_chance -> effectN( 1 ).percent() / 10.0;
 
   if ( ! rng().roll( base_chance * rpcost ) )
     return;
@@ -9083,12 +9074,14 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
 
 void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance )
 {
+  if ( ! spec.unholy_death_knight -> ok() )
+      return;
   double proc_chance = 0.0;
 
   // Use the overriden chance if there's one and RP cost is 0
   proc_chance = (!rpcost && override_chance != -1.0) ? override_chance :
     // Else, use the general proc chance ( 1.6 per RP * RP / 100 as of patch 9.0.2 )
-    talent.runic_corruption->effectN(1).percent() * rpcost / 100.0;
+    spell.runic_corruption_chance->effectN(1).percent() * rpcost / 100.0;
   // Buff duration and refresh behavior handled in runic_corruption_buff_t
   if ( buffs.runic_corruption -> trigger( 1, buff_t::DEFAULT_VALUE(), proc_chance ) && proc )
     proc -> occur();
@@ -9144,6 +9137,11 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
           dk -> cooldown.apocalypse -> adjust( -timespan_t::from_seconds(
           dk -> conduits.convocation_of_the_dead -> effectN( 2 ).base_value() / 10 ) );
         }
+
+        if ( dk-> talent.unholy.festermight.ok() )
+        {
+          dk->buffs.festermight->trigger( n_executes );
+        }
       }
 
       // Triggers once per target per player action:
@@ -9153,12 +9151,6 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n );
       }
-
-      if ( dk-> talent.unholy.festermight.ok() )
-      {
-        dk->buffs.festermight->trigger( n_executes );
-      }
-
       td -> debuff.festering_wound -> decrement( n_executes );
     }
   };
@@ -9318,7 +9310,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
   if ( name == "frostwyrms_fury"          ) return new frostwyrms_fury_t          ( this, options_str );
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
-  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  // if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
@@ -9794,7 +9786,7 @@ void death_knight_t::init_spells()
   talent.permafrost = find_talent_spell( talent_tree::CLASS, "Permafrost" );
   talent.death_pact = find_talent_spell( talent_tree::CLASS, "Death Pact" );
   talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Anti-Magic Barrier" );
-  talent.deaths_advance = find_talent_spell( talent_tree::CLASS, "Deaths Advance" );
+  talent.march_of_darkness = find_talent_spell( talent_tree::CLASS, "March of Darkness" );
   talent.sacrificial_pact = find_talent_spell( talent_tree::CLASS, "Sacrificial Pact" );
   talent.control_undead = find_talent_spell( talent_tree::CLASS, "Control Undead" );
   talent.enfeeble = find_talent_spell( talent_tree::CLASS, "Enfeeble" );
@@ -9810,20 +9802,18 @@ void death_knight_t::init_spells()
   talent.might_of_thassarian = find_talent_spell( talent_tree::CLASS, "Might of Thassarian" );
   // Row 6
   talent.proliferating_chill = find_talent_spell( talent_tree::CLASS, "Proliferating Chill" );
+  talent.gloom_ward = find_talent_spell(talent_tree::CLASS, "Gloom Ward");
   talent.acclimation = find_talent_spell( talent_tree::CLASS, "Acclimation" );
   talent.asphyxiate = find_talent_spell( talent_tree::CLASS, "Asphyxiate" );
   talent.wraith_walk = find_talent_spell( talent_tree::CLASS, "Wraith Walk" );
   talent.grip_of_the_dead = find_talent_spell( talent_tree::CLASS, "Grip of the Dead" );
   talent.deaths_reach = find_talent_spell( talent_tree::CLASS, "Death's Reach" );
-  talent.lichborne = find_talent_spell( talent_tree::CLASS, "Lichborne" );
   // Row 7
-  talent.runic_corruption = find_talent_spell( talent_tree::CLASS, "Runic Corruption" );
-  talent.runic_empowerment = find_talent_spell( talent_tree::CLASS, "Runic Empowerment" );
+  talent.runic_attenuation = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
   talent.assimilation = find_talent_spell( talent_tree::CLASS, "Assimilation" );
   talent.unholy_ground = find_talent_spell( talent_tree::CLASS, "Unholy Ground" );
   // Row 8
-  talent.runic_attenuation = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
-  talent.horn_of_winter = find_talent_spell( talent_tree::CLASS, "Horn of Winter" );
+  talent.insidious_chill = find_talent_spell( talent_tree::CLASS, "Insidious Chill" );
   talent.will_of_the_necropolis = find_talent_spell( talent_tree::CLASS, "Will of the Necropolis" );
   talent.deaths_echo = find_talent_spell( talent_tree::CLASS, "Death's Echo" );
   // Row 9
@@ -9979,7 +9969,7 @@ void death_knight_t::init_spells()
   talent.unholy.unholy_pact = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
   talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
   // Row 7
-  talent.unholy.plaguebearer = find_talent_spell( talent_tree::SPECIALIZATION, 390279 );
+  talent.unholy.plaguebearer = find_talent_spell( talent_tree::SPECIALIZATION, "Plaguebearer" );
   talent.unholy.pestilence = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
   talent.unholy.eternal_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agony" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
@@ -10015,7 +10005,6 @@ void death_knight_t::init_spells()
   spell.final_sentence         = find_spell( 353823 );
   spell.razorice_debuff        = find_spell( 51714 );
   spell.deaths_due             = find_spell( 315442 );
-  spell.runic_corruption       = find_spell( 51460 );
   spell.runic_empowerment_gain = find_spell( 193486 );
   spell.rune_mastery_buff      = find_spell( 374585 );
 
@@ -10035,8 +10024,11 @@ void death_knight_t::init_spells()
   spell.murderous_efficiency_gain   = find_spell( 207062 );
   spell.rage_of_the_frozen_champion = find_spell( 341725 );
   spell.piercing_chill_debuff       = find_spell( 377359 );
+  spell.runic_empowerment_chance    = find_spell( 81229 );
 
   // Unholy
+  spell.runic_corruption           = find_spell( 51460 );
+  spell.runic_corruption_chance    = find_spell( 51462 );
   spell.festering_wound_debuff     = find_spell( 194310 );
   spell.rotten_touch_debuff        = find_spell( 390276 );
   spell.death_rot_debuff           = find_spell( 377540 );
@@ -10063,7 +10055,7 @@ void death_knight_t::init_spells()
   pet_spell.frostbolt        = find_spell( 317792 );
   pet_spell.shadow_bolt      = find_spell( 317791 );
   // Commander of the Dead Talent
-  pet_spell.commander_of_the_dead = find_spell( 215069 );
+  pet_spell.commander_of_the_dead = find_spell( 390264 );
   // Ruptured Viscera Talent
   pet_spell.ruptured_viscera = find_spell( 390220 );
   // Ghoulish Frenzy
@@ -10555,7 +10547,7 @@ void death_knight_t::init_gains()
   gains.breath_of_sindragosa             = get_gain( "Breath of Sindragosa" );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon" );
   gains.frost_fever                      = get_gain( "Frost Fever" );
-  gains.horn_of_winter                   = get_gain( "Horn of Winter" );
+  // gains.horn_of_winter                   = get_gain( "Horn of Winter" );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency" );
   gains.obliteration                     = get_gain( "Obliteration" );
   gains.rage_of_the_frozen_champion      = get_gain( "Rage of the Frozen Champion" );

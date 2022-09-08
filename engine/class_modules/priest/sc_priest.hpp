@@ -31,11 +31,14 @@ struct ascended_eruption_heal_t;
 struct wrathful_faerie_t;
 struct wrathful_faerie_fermata_t;
 struct psychic_link_t;
+struct pain_of_death_t;
 struct shadow_weaving_t;
 struct eternal_call_to_the_void_t;
 struct unholy_transfusion_healing_t;
 struct echoing_void_t;
 struct idol_of_cthun_t;
+struct shadow_word_pain_t;
+struct mental_fortitude_t;
 }  // namespace actions::spells
 
 /**
@@ -65,6 +68,8 @@ public:
     propagate_const<buff_t*> hungering_void;
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
+    propagate_const<buff_t*> apathy;
+    propagate_const<buff_t*> mind_spike;
   } buffs;
 
   priest_t& priest()
@@ -81,15 +86,6 @@ public:
   void target_demise();
 };
 
-enum class living_shadow_action
-{
-  SHADOW_SPIKE,         // Single Target
-  SHADOW_SPIKE_VOLLEY,  // Single Target Channel
-  SHADOW_SEAR,          // AoE Channel
-  SHADOW_NOVA,          // AoE
-  NONE                  // Does Nothing
-};
-
 /**
  * Priest class definition
  * Derived from player_t. Contains everything that defines the priest class.
@@ -104,11 +100,15 @@ public:
   {
     // Generic
     propagate_const<buff_t*> desperate_prayer;
+    absorb_buff_t* power_word_shield;
+    propagate_const<buff_t*> fade;
 
     // Talents
     propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
-    propagate_const<buff_t*> puppet_master;
+    propagate_const<buff_t*> rhapsody;
+    propagate_const<buff_t*> rhapsody_timer;
+    propagate_const<buff_t*> depth_of_the_shadows;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -135,7 +135,6 @@ public:
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> translucent_image_conduit;
-    propagate_const<buff_t*> translucent_image;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> vampiric_insight;
     propagate_const<buff_t*> void_touched;
@@ -144,7 +143,11 @@ public:
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> yshaarj_pride;
-    propagate_const<buff_t*> living_shadow;
+    propagate_const<buff_t*> dark_evangelism;
+    propagate_const<buff_t*> death_and_madness_reset;
+    propagate_const<buff_t*> surge_of_darkness;
+    propagate_const<buff_t*> mind_melt;
+    propagate_const<buff_t*> mind_flay_insanity;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -169,108 +172,156 @@ public:
   {
     // Priest Tree
     // Row 1
-    player_talent_t shadow_word_death;
+    player_talent_t renew;
+    player_talent_t dispel_magic;
+    player_talent_t shadowfiend;
     // Row 2
-    player_talent_t improved_shadow_word_death;
+    player_talent_t prayer_of_mending;
+    player_talent_t leap_of_faith;
+    player_talent_t purify_disease;
     player_talent_t shadow_mend;
     const spell_data_t* shadow_mend_self_damage;
+    player_talent_t shadow_word_death;
     // Row 3
+    player_talent_t focused_mending;
+    player_talent_t holy_nova;
+    player_talent_t move_with_grace;
+    player_talent_t body_and_soul;
     player_talent_t masochism;
     const spell_data_t* masochism_buff;
-    // Row 4
-    player_talent_t power_infusion;
-    player_talent_t improved_mind_blast;
-    player_talent_t twist_of_fate;
-    player_talent_t taming_the_shadows;
-    // Row 5
-    player_talent_t shadowfiend;
-    // Row 6
+    player_talent_t depth_of_the_shadows;
     player_talent_t throes_of_pain;
-    player_talent_t improved_shadowfiend;
+    player_talent_t death_and_madness;
+    const spell_data_t* death_and_madness_insanity;
+    // Row 4
+    player_talent_t spell_warding;
+    player_talent_t rhapsody;
+    const spell_data_t* rhapsody_buff;
+    player_talent_t angelic_feather;
+    player_talent_t shackle_undead;
+    player_talent_t sheer_terror;
+    player_talent_t void_tendrils;
+    player_talent_t mind_control;
+    // Row 5
+    player_talent_t tools_of_the_cloth;
+    player_talent_t mass_dispel;
+    player_talent_t power_infusion;
+    player_talent_t vampiric_embrace;
+    player_talent_t dominant_mind;
+    // Row 6
+    player_talent_t inspiration;
+    player_talent_t blessed_recovery;
+    player_talent_t improved_mass_dispel;
+    player_talent_t psychic_voice;
+    player_talent_t twins_of_the_sun_priestess;
+    player_talent_t void_shield;
+    player_talent_t sanlayn;
+    player_talent_t apathy;
     // Row 7
-    player_talent_t puppet_master;
+    player_talent_t unwavering_will;
+    player_talent_t twist_of_fate;
+    player_talent_t improved_mind_blast;
     // Row 8
+    player_talent_t angels_mercy;
+    player_talent_t binding_heals;
+    player_talent_t halo;
+    player_talent_t divine_star;
     player_talent_t translucent_image;
-    player_talent_t mindbender;
-    // Row 9
-    player_talent_t tithe_evasion;
-    player_talent_t rabid_shadows;
-    // Row 10
+    player_talent_t phantasm;
     player_talent_t mindgames;
-    player_talent_t shadowflame_prism;
+    // Row 9
+    player_talent_t surge_of_light;
+    player_talent_t lights_inspiration;
+    player_talent_t crystalline_reflection;
+    player_talent_t improved_fade;
+    player_talent_t manipulation;
+    // Row 10
+    player_talent_t holy_word_life;
+    player_talent_t angelic_bulwark;
+    player_talent_t void_shift;
+    player_talent_t shattered_perceptions;
 
     struct
     {
       // Shadow Tree
-      // Row 1
-      player_talent_t mind_flay;
       // Row 2
+      player_talent_t silence;
+      const spell_data_t* shadowy_apparition;  // Damage event
+      player_talent_t shadowy_apparitions;     // Passive effect
       player_talent_t mind_sear;
       const spell_data_t* mind_sear_insanity;
       // Row 3
-      player_talent_t death_and_madness;
-      player_talent_t mind_bomb;
-      player_talent_t psychic_voice;
-      player_talent_t misery;
-      const spell_data_t* death_and_madness_insanity;
-      player_talent_t silence;
-      player_talent_t fortress_of_the_mind;
-      // Row 4
-      player_talent_t vampiric_embrace;
-      player_talent_t unfurling_darkness;
-      player_talent_t vampiric_insight;
+      player_talent_t psychic_horror;
       player_talent_t last_word;
+      player_talent_t misery;
+      player_talent_t dark_void;
+      const spell_data_t* dark_void_insanity;
+      player_talent_t auspicious_spirits;
+      player_talent_t tormented_spirits;
       player_talent_t dispersion;
-      // Row 5
-      player_talent_t sanlayn;
+      // Row 4
+      player_talent_t shadow_orbs;
       player_talent_t hallucinations;
-      const spell_data_t* shadowy_apparition;  // Damage event
-      player_talent_t shadowy_apparitions;     // Passive effect
+      player_talent_t tithe_evasion;
+      player_talent_t mind_spike;
+      player_talent_t vampiric_insight;
+      player_talent_t intangibility;
+      player_talent_t mental_fortitude;
+      // Row 5
+      player_talent_t puppet_master;
+      player_talent_t damnation;
+      player_talent_t mind_melt;
+      player_talent_t surge_of_darkness;
+      const spell_data_t* surge_of_darkness_buff;
+      player_talent_t mental_decay;
+      player_talent_t dark_evangelism;
+      // Row 6
+      player_talent_t harnessed_shadows;
+      player_talent_t malediction;
+      player_talent_t psychic_link;
+      player_talent_t void_torrent;
+      player_talent_t shadow_crash;
+      player_talent_t dark_ascension;
+      player_talent_t unfurling_darkness;
+      // Row 7
+      player_talent_t maddening_touch;
+      const spell_data_t* maddening_touch_insanity;
+      player_talent_t whispers_of_the_damned;
+      player_talent_t piercing_shadows;
+      // Row 8
+      player_talent_t mindbender;
+      player_talent_t idol_of_yshaarj;
+      player_talent_t pain_of_death;
+      player_talent_t mind_flay_insanity;
+      player_talent_t derangement;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
+      // Row 9
+      player_talent_t fiending_dark;
       player_talent_t monomania;
-      const spell_data_t* monomania_tickrate;
-      player_talent_t psychic_horror;
-      player_talent_t intangibility;
-      // Row 6
-      player_talent_t psychic_link;
-      player_talent_t auspicious_spirits;
+      player_talent_t painbreakers_psalm;
+      player_talent_t mastermind;
+      player_talent_t insidious_ire;
+      player_talent_t mind_devourer;
+      player_talent_t ancient_madness;
+      // Row 10
+      player_talent_t shadowflame_prism;
+      player_talent_t idol_of_cthun;
+      player_talent_t idol_of_yoggsaron;
+      player_talent_t idol_of_nzoth;
+      player_talent_t lunacy;
       player_talent_t hungering_void;
       const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
       player_talent_t surrender_to_madness;
-      player_talent_t damnation;
-      player_talent_t void_touched;
-      // Row 7
-      player_talent_t shadow_crash;
-      player_talent_t ancient_madness;
-      player_talent_t malediction;
-      player_talent_t void_torrent;
-      // Row 8
-      player_talent_t mental_fortitude;
-      player_talent_t insidious_ire;
-      player_talent_t mind_devourer;
-      // Row 9
-      player_talent_t sanguine_teachings;
-      player_talent_t unleash_the_shadows;
-      player_talent_t rot_and_wither;
-      player_talent_t abyssal_knowledge;
-      // Row 10
-      player_talent_t idol_of_yshaarj;
-      player_talent_t idol_of_nzoth;
-      player_talent_t void_apparitions;
-      player_talent_t living_shadow;
-      const spell_data_t* living_shadow_duration;
-      player_talent_t eidolic_intuition;
-      player_talent_t idol_of_cthun;
-      player_talent_t idol_of_yoggsaron;
     } shadow;
 
+    struct
+    {
+      player_talent_t power_of_the_dark_side;
+    } discipline;
+
     // Shared
-    const spell_data_t* angelic_feather;
-    const spell_data_t* body_and_soul;  // implemented for PW:S
     const spell_data_t* shining_force;
-    const spell_data_t* divine_star;
-    const spell_data_t* halo;
 
     // Discipline
     // T15
@@ -300,10 +351,11 @@ public:
     const spell_data_t* mind_blast;
     const spell_data_t* priest;  // General priest data
     const spell_data_t* shadow_word_death_self_damage;
+    const spell_data_t* psychic_scream;
+    const spell_data_t* fade;
 
     // Discipline
-    const spell_data_t* discipline_priest;       // General discipline data
-    const spell_data_t* power_of_the_dark_side;  // For buffing the damage of penance
+    const spell_data_t* discipline_priest;  // General discipline data
 
     // Holy
     const spell_data_t* holy_priest;  // General holy data
@@ -311,6 +363,7 @@ public:
     const spell_data_t* holy_word_serenity;
 
     // Shadow
+    const spell_data_t* mind_flay;
     const spell_data_t* dark_thought;   // Actual buff, holds proc rate
     const spell_data_t* dark_thoughts;  // Passive effect
     const spell_data_t* shadow_priest;  // General shadow data
@@ -327,7 +380,7 @@ public:
   struct
   {
     const spell_data_t* shadow_word_pain;
-    player_talent_t vampiric_touch;
+    const spell_data_t* vampiric_touch;
     player_talent_t devouring_plague;
   } dot_spells;
 
@@ -345,6 +398,8 @@ public:
     // Shared
     propagate_const<cooldown_t*> wrathful_faerie;
     propagate_const<cooldown_t*> wrathful_faerie_fermata;
+    propagate_const<cooldown_t*> shadow_word_death;
+    propagate_const<cooldown_t*> mindgames;
 
     // Shadow
     propagate_const<cooldown_t*> void_bolt;
@@ -372,10 +427,11 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> insanity_mindgames;
-    propagate_const<gain_t*> insanity_pet;
     propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
-    propagate_const<gain_t*> painbreaker_psalm;
+    propagate_const<gain_t*> shadowfiend;
+    propagate_const<gain_t*> painbreaker_psalm;   // SL Legendary
+    propagate_const<gain_t*> painbreakers_psalm;  // DF Talent
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
     propagate_const<gain_t*> insanity_throes_of_pain;
@@ -383,6 +439,9 @@ public:
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
     propagate_const<gain_t*> hallucinations_vampiric_embrace;
+    propagate_const<gain_t*> insanity_dark_void;
+    propagate_const<gain_t*> insanity_maddening_touch;
+    propagate_const<gain_t*> insanity_whispers_of_the_damned;
   } gains;
 
   // Benefits
@@ -418,7 +477,6 @@ public:
     propagate_const<proc_t*> vampiric_insight_missed;
     propagate_const<proc_t*> void_touched;
     propagate_const<proc_t*> thing_from_beyond;
-    propagate_const<proc_t*> living_shadow;
   } procs;
 
   // Special
@@ -436,6 +494,9 @@ public:
     propagate_const<actions::spells::wrathful_faerie_fermata_t*> wrathful_faerie_fermata;
     propagate_const<actions::spells::echoing_void_t*> echoing_void;
     propagate_const<actions::spells::idol_of_cthun_t*> idol_of_cthun;
+    propagate_const<actions::spells::shadow_word_pain_t*> shadow_word_pain;
+    propagate_const<actions::spells::mental_fortitude_t*> mental_fortitude;
+    propagate_const<actions::spells::pain_of_death_t*> pain_of_death;
   } background_actions;
 
   // Items
@@ -452,7 +513,6 @@ public:
     spawner::pet_spawner_t<pet_t, priest_t> void_lasher;
     spawner::pet_spawner_t<pet_t, priest_t> rattling_mage;
     spawner::pet_spawner_t<pet_t, priest_t> cackling_chemist;
-    spawner::pet_spawner_t<pet_t, priest_t> your_shadow;
     spawner::pet_spawner_t<pet_t, priest_t> your_shadow_tier;
     spawner::pet_spawner_t<pet_t, priest_t> thing_from_beyond;
 
@@ -647,14 +707,13 @@ public:
   void adjust_holy_word_serenity_cooldown();
   double tick_damage_over_time( timespan_t duration, const dot_t* dot ) const;
   void trigger_shadowflame_prism( player_t* target );
-  action_t* get_living_shadow_action( living_shadow_action action );
-  void trigger_living_shadow_action( player_t* target, living_shadow_action action );
-  void cancel_living_shadow_action( living_shadow_action action );
   void trigger_eternal_call_to_the_void( action_state_t* );
   void trigger_idol_of_cthun( action_state_t* );
-  void trigger_shadowy_apparitions( action_state_t* );
+  void trigger_shadowy_apparitions( action_state_t*, bool = true );
   void trigger_psychic_link( action_state_t* );
+  void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
+  void trigger_void_shield( double result_amount );
   bool hungering_void_active( player_t* target ) const;
   void remove_hungering_void( player_t* target );
   void refresh_insidious_ire_buff( action_state_t* s );
@@ -693,77 +752,84 @@ namespace actions
 template <typename Base>
 struct priest_action_t : public Base
 {
-  struct
+  // auto parsed dynamic effects
+  using bfun = std::function<bool()>;
+  struct buff_effect_t
   {
-    bool voidform_da;
-    bool voidform_ta;
-    bool shadowform_da;
-    bool shadowform_ta;
-    bool twist_of_fate_da;
-    bool twist_of_fate_ta;
-    bool shadow_covenant_da;
-    bool shadow_covenant_ta;
-    bool schism;
-  } affected_by;
+    buff_t* buff;
+    double value;
+    bool use_stacks;
+    bfun func;
 
-  double vf_da_multiplier;
-  double vf_ta_multiplier;
+    buff_effect_t( buff_t* b, double v, bool s = true, bfun f = nullptr )
+      : buff( b ), value( v ), use_stacks( s ), func( std::move( f ) )
+    {
+    }
+  };
+
+  using dfun = std::function<buff_t*( priest_td_t* )>;
+  struct debuff_effect_t
+  {
+    dfun func;
+    double value;
+    bool use_stacks;
+
+    debuff_effect_t( dfun f, double v, bool b ) : func( std::move( f ) ), value( v ), use_stacks( b )
+    {
+    }
+  };
+
+  std::vector<buff_effect_t> ta_multiplier_buffeffects;
+  std::vector<buff_effect_t> da_multiplier_buffeffects;
+  std::vector<buff_effect_t> execute_time_buffeffects;
+  std::vector<buff_effect_t> dot_duration_buffeffects;
+  std::vector<buff_effect_t> recharge_multiplier_buffeffects;
+  std::vector<buff_effect_t> cost_buffeffects;
+  std::vector<buff_effect_t> crit_chance_buffeffects;
+  std::vector<debuff_effect_t> target_multiplier_debuffeffects;
+
+protected:
+  priest_t& priest()
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+  const priest_t& priest() const
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  priest_t& p()
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  const priest_t& p() const
+  {
+    return *debug_cast<priest_t*>( ab::player );
+  }
+
+  // typedef for priest_action_t<action_base_t>
+  using base_t = priest_action_t;
 
 public:
   priest_action_t( util::string_view name, priest_t& p, const spell_data_t* s = spell_data_t::nil() )
-    : ab( name, &p, s ), affected_by(), vf_da_multiplier( 1 ), vf_ta_multiplier( 1 )
+    : ab( name, &p, s )
   {
-    init_affected_by();
+    if ( ab::data().ok() )
+    {
+      apply_buff_effects();
+      apply_debuffs_effects();
+    }
+
     ab::may_crit          = true;
     ab::tick_may_crit     = true;
     ab::weapon_multiplier = 0.0;
-
-    if ( p.talents.sins_of_the_many->ok() )
-    {
-      ab::base_dd_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-      ab::base_td_multiplier *= 1.0 + p.talents.sins_of_the_many->effectN( 1 ).percent();
-    }
-
-    if ( affected_by.voidform_da )
-    {
-      vf_da_multiplier = 1 + priest().buffs.voidform->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.voidform_ta )
-    {
-      vf_ta_multiplier = 1 + priest().buffs.voidform->data().effectN( 2 ).percent();
-    }
   }
 
-  /**
-   * Initialize all affected_by members and print out debug info
-   */
-  void init_affected_by()
+  priest_td_t* td( player_t* t ) const
   {
-    struct affect_init_t
-    {
-      const spelleffect_data_t& effect;
-      bool& affects;
-    } affects[] = { { priest().buffs.voidform->data().effectN( 1 ), affected_by.voidform_da },
-                    { priest().buffs.voidform->data().effectN( 2 ), affected_by.voidform_ta },
-                    { priest().buffs.shadowform->data().effectN( 1 ), affected_by.shadowform_da },
-                    { priest().buffs.shadowform->data().effectN( 4 ), affected_by.shadowform_ta },
-                    { priest().buffs.twist_of_fate->data().effectN( 1 ), affected_by.twist_of_fate_da },
-                    { priest().buffs.twist_of_fate->data().effectN( 2 ), affected_by.twist_of_fate_ta },
-                    { priest().buffs.shadow_covenant->data().effectN( 2 ), affected_by.shadow_covenant_da },
-                    { priest().buffs.shadow_covenant->data().effectN( 3 ), affected_by.shadow_covenant_ta },
-                    { priest().talents.schism->effectN( 2 ), affected_by.schism } };
-
-    for ( const auto& a : affects )
-    {
-      a.affects = base_t::data().affected_by( a.effect );
-      if ( a.affects && ab::sim->debug )
-      {
-        ab::sim->print_debug( "{} {} ({}) affected by {} (idx={}).", *ab::player, *this, ab::data().id(),
-                              a.effect.spell()->name_cstr(), a.effect.spell_effect_num() + 1 );
-      }
-    }
+    return p().get_target_data( t );
   }
-
   priest_td_t& get_td( player_t* t )
   {
     return *( priest().get_target_data( t ) );
@@ -776,6 +842,9 @@ public:
 
   void trigger_power_of_the_dark_side()
   {
+    if ( !priest().talents.discipline.power_of_the_dark_side.enabled() )
+      return;
+
     int stack = priest().buffs.power_of_the_dark_side->check();
     if ( priest().buffs.power_of_the_dark_side->trigger() )
     {
@@ -790,80 +859,360 @@ public:
     }
   }
 
+  template <typename T>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod )
+  {
+    for ( size_t i = 1; i <= mod->effect_count(); i++ )
+    {
+      const auto& eff = mod->effectN( i );
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( ( base->affected_by_all( eff ) &&
+             ( ( eff.misc_value1() == P_EFFECT_1 && idx == 1 ) || ( eff.misc_value1() == P_EFFECT_2 && idx == 2 ) ||
+               ( eff.misc_value1() == P_EFFECT_3 && idx == 3 ) || ( eff.misc_value1() == P_EFFECT_4 && idx == 4 ) ||
+               ( eff.misc_value1() == P_EFFECT_5 && idx == 5 ) ) ) ||
+           ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE && eff.trigger_spell_id() == base->id() && idx == 1 ) )
+      {
+        double pct = eff.percent();
+
+        if ( eff.subtype() == A_ADD_FLAT_MODIFIER || eff.subtype() == A_ADD_FLAT_LABEL_MODIFIER )
+          val += pct;
+        else if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+          val *= 1.0 + pct;
+        else if ( eff.subtype() == A_PROC_TRIGGER_SPELL_WITH_VALUE )
+          val = pct;
+        else
+          continue;
+      }
+    }
+  }
+
+  void parse_spell_effects_mods( double&, const spell_data_t*, size_t )
+  {
+  }
+
+  template <typename T, typename... Ts>
+  void parse_spell_effects_mods( double& val, const spell_data_t* base, size_t idx, T mod, Ts... mods )
+  {
+    parse_spell_effects_mods( val, base, idx, mod );
+    parse_spell_effects_mods( val, base, idx, mods... );
+  }
+
+  // Will parse simple buffs that ONLY target the caster and DO NOT have multiple ranks
+  // 1: Add Percent Modifier to Spell Direct Amount
+  // 2: Add Percent Modifier to Spell Periodic Amount
+  // 3: Add Percent Modifier to Spell Cast Time
+  // 4: Add Percent Modifier to Spell Cooldown
+  // 5: Add Percent Modifier to Spell Resource Cost
+  // 6: Add Flat Modifier to Spell Critical Chance
+  template <typename... Ts>
+  void parse_buff_effect( buff_t* buff, bfun f, const spell_data_t* s_data, size_t i, bool use_stacks, bool use_default,
+                          Ts... mods )
+  {
+    const auto& eff = s_data->effectN( i );
+    double val      = eff.percent();
+
+    auto debug_message = [ & ]( std::string_view type ) {
+      if ( buff )
+      {
+        p().sim->print_debug( "buff-effects: {} ({}) {} modified by {}% with buff {} ({}#{})", ab::name(), ab::id, type,
+                              val * 100.0, buff->name(), buff->data().id(), i );
+      }
+      else if ( f )
+      {
+        p().sim->print_debug( "conditional-effects: {} ({}) {} modified by {}% with condition from {} ({}#{})",
+                              ab::name(), ab::id, type, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+      else
+      {
+        p().sim->print_debug( "passive-effects: {} ({}) {} modified by {}% from {} ({}#{})", ab::name(), ab::id, type,
+                              val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      }
+    };
+
+    // TODO: more robust logic around 'party' buffs with radius
+    if ( !( eff.type() == E_APPLY_AURA || eff.type() == E_APPLY_AREA_AURA_PARTY ) || eff.radius() )
+      return;
+
+    if ( i <= 5 )
+      parse_spell_effects_mods( val, s_data, i, mods... );
+
+    if ( !ab::data().affected_by_all( eff ) )
+      return;
+
+    if ( use_default && buff )
+      val = buff->default_value;
+
+    if ( !val )
+      return;
+
+    if ( eff.subtype() == A_ADD_PCT_MODIFIER || eff.subtype() == A_ADD_PCT_LABEL_MODIFIER )
+    {
+      switch ( eff.misc_value1() )
+      {
+        case P_GENERIC:
+          da_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "direct damage" );
+          break;
+        case P_DURATION:
+          dot_duration_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "duration" );
+          break;
+        case P_TICK_DAMAGE:
+          ta_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "tick damage" );
+          break;
+        case P_CAST_TIME:
+          execute_time_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cast time" );
+          break;
+        case P_COOLDOWN:
+          recharge_multiplier_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cooldown" );
+          break;
+        case P_RESOURCE_COST:
+          cost_buffeffects.emplace_back( buff, val, use_stacks, f );
+          debug_message( "cost" );
+          break;
+        default:
+          return;
+      }
+    }
+    else if ( eff.subtype() == A_ADD_FLAT_MODIFIER && eff.misc_value1() == P_CRIT )
+    {
+      crit_chance_buffeffects.emplace_back( buff, val, use_stacks, f );
+      debug_message( "crit chance" );
+    }
+    else
+    {
+      return;
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, bool use_stacks, bool use_default, Ts... mods )
+  {
+    if ( !buff )
+      return;
+
+    const spell_data_t* s_data = &buff->data();
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( buff, nullptr, s_data, i, use_stacks, use_default, mods... );
+    }
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, unsigned ignore_mask, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, ignore_mask, true, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, bool use_default, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, use_default, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, bool stack, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, stack, false, mods... );
+  }
+
+  template <typename... Ts>
+  void parse_buff_effects( buff_t* buff, Ts... mods )
+  {
+    parse_buff_effects<Ts...>( buff, 0U, true, false, mods... );
+  }
+
+  void parse_conditional_effects( const spell_data_t* spell, bfun f, unsigned ignore_mask = 0U )
+  {
+    if ( !spell || !spell->ok() )
+      return;
+
+    for ( size_t i = 1; i <= spell->effect_count(); i++ )
+    {
+      if ( ignore_mask & 1 << ( i - 1 ) )
+        continue;
+
+      parse_buff_effect( nullptr, f, spell, i, false, false );
+    }
+  }
+
+  void parse_passive_effects( const spell_data_t* spell, unsigned ignore_mask = 0U )
+  {
+    parse_conditional_effects( spell, nullptr, ignore_mask );
+  }
+
+  double get_buff_effects_value( const std::vector<buff_effect_t>& buffeffects, bool flat = false,
+                                 bool benefit = true ) const
+  {
+    double return_value = flat ? 0.0 : 1.0;
+
+    for ( const auto& i : buffeffects )
+    {
+      double eff_val = i.value;
+      int mod        = 1;
+
+      if ( i.func && !i.func() )
+        continue;  // continue to next effect if conditional effect function is false
+
+      if ( i.buff )
+      {
+        auto stack = benefit ? i.buff->stack() : i.buff->check();
+
+        if ( !stack )
+          continue;  // continue to next effect if stacks == 0 (buff is down)
+
+        mod = i.use_stacks ? stack : 1;
+      }
+
+      if ( flat )
+        return_value += eff_val * mod;
+      else
+        return_value *= 1.0 + eff_val * mod;
+    }
+
+    return return_value;
+  }
+
+  // Syntax: parse_buff_effects[<S[,S...]>]( buff[, ignore_mask|use_stacks[, use_default]][, spell1[,spell2...] )
+  //  buff = buff to be checked for to see if effect applies
+  //  ignore_mask = optional bitmask to skip effect# n corresponding to the n'th bit
+  //  use_stacks = optional, default true, whether to multiply value by stacks
+  //  use_default = optional, default false, whether to use buff's default value over effect's value
+  //  S = optional list of template parameter(s) to indicate spell(s) with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the buff
+  void apply_buff_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_buff_effects( p().buffs.voidform );
+    parse_buff_effects( p().buffs.shadowform );
+    parse_buff_effects( p().buffs.twist_of_fate, p().talents.twist_of_fate );
+    parse_buff_effects( p().buffs.shadow_covenant );
+    parse_buff_effects( p().buffs.mind_devourer );
+    parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
+    parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
+    parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( const dfun& func, bool use_stacks, const spell_data_t* s_data, Ts... mods )
+  {
+    if ( !s_data->ok() )
+      return;
+
+    for ( size_t i = 1; i <= s_data->effect_count(); i++ )
+    {
+      const auto& eff = s_data->effectN( i );
+      double val      = eff.percent();
+
+      if ( eff.type() != E_APPLY_AURA )
+        continue;
+
+      if ( eff.subtype() != A_MOD_DAMAGE_FROM_CASTER_SPELLS || !ab::data().affected_by_all( eff ) )
+        continue;
+
+      if ( i <= 5 )
+        parse_spell_effects_mods( val, s_data, i, mods... );
+
+      if ( !val )
+        continue;
+
+      p().sim->print_debug( "debuff-effects: {} ({}) damage modified by {}% on targets with debuff {} ({}#{})",
+                            ab::name(), ab::id, val * 100.0, s_data->name_cstr(), s_data->id(), i );
+      target_multiplier_debuffeffects.emplace_back( func, val, use_stacks );
+    }
+  }
+
+  template <typename... Ts>
+  void parse_debuff_effects( dfun func, const spell_data_t* s_data, Ts... mods )
+  {
+    parse_debuff_effects( func, true, s_data, mods... );
+  }
+
+  double get_debuff_effect_values( priest_td_t* t ) const
+  {
+    double return_value = 1.0;
+
+    for ( const auto& i : target_multiplier_debuffeffects )
+    {
+      auto debuff = i.func( t );
+
+      if ( debuff->check() )
+        return_value *= 1.0 + i.value * ( i.use_stacks ? debuff->check() : 1.0 );
+    }
+
+    return return_value;
+  }
+
+  // Syntax: parse_dot_debuffs[<S[,S...]>]( func, spell_data_t* dot[, spell_data_t* spell1[,spell2...] )
+  //  func = function returning the dot_t* of the dot
+  //  dot = spell data of the dot
+  //  S = optional list of template parameter(s) to indicate spell(s)with redirect effects
+  //  spell = optional list of spell(s) with redirect effects that modify the effects on the dot
+  void apply_debuffs_effects()
+  {
+    // using S = const spell_data_t*;
+
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; }, p().talents.schism );
+    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.hungering_void; },
+                          p().talents.shadow.hungering_void_buff );
+  }
+
   double cost() const override
   {
-    double c = ab::cost();
-
+    double c = ab::cost() * std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
     return c;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = ab::composite_target_multiplier( target );
-
-    auto target_data = find_td( target );
-    if ( target_data && target_data->buffs.schism->check() )
-    {
-      m *= 1.0 + target_data->buffs.schism->data().effectN( 2 ).percent();
-    }
-
-    return m;
+    double tm = ab::composite_target_multiplier( t ) * get_debuff_effect_values( td( t ) );
+    return tm;
   }
 
-  double action_da_multiplier() const override
+  double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double m = ab::action_da_multiplier();
-
-    if ( affected_by.voidform_da && priest().buffs.voidform->check() )
-    {
-      m *= vf_da_multiplier;
-    }
-    if ( affected_by.shadowform_da && priest().buffs.shadowform->check() )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.twist_of_fate_da && priest().buffs.twist_of_fate->check() )
-    {
-      // TODO: use percent() based data on the talent when spelldata is fixed
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 1 ).percent();
-    }
-    if ( affected_by.shadow_covenant_da && priest().buffs.shadow_covenant->check() )
-    {
-      m *= 1 + priest().buffs.shadow_covenant->data().effectN( 2 ).percent();
-    }
-    if ( priest().buffs.yshaarj_pride->check() )
-    {
-      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
-    }
-    return m;
+    double ta = ab::composite_ta_multiplier( s ) * get_buff_effects_value( ta_multiplier_buffeffects );
+    return ta;
   }
 
-  double action_ta_multiplier() const override
+  double composite_da_multiplier( const action_state_t* s ) const override
   {
-    double m = ab::action_ta_multiplier();
+    double da = ab::composite_da_multiplier( s ) * get_buff_effects_value( da_multiplier_buffeffects );
+    return da;
+  }
 
-    if ( affected_by.voidform_ta && priest().buffs.voidform->check() )
-    {
-      m *= vf_ta_multiplier;
-    }
-    if ( affected_by.shadowform_ta && priest().buffs.shadowform->check() )
-    {
-      m *= 1.0 + priest().buffs.shadowform->data().effectN( 4 ).percent();
-    }
-    if ( affected_by.twist_of_fate_ta && priest().buffs.twist_of_fate->check() )
-    {
-      // TODO: use percent() based data on the talent when spelldata is fixed
-      m *= 1.0 + priest().buffs.twist_of_fate->data().effectN( 2 ).percent();
-    }
-    if ( affected_by.shadow_covenant_ta && priest().buffs.shadow_covenant->check() )
-    {
-      m *= 1 + priest().buffs.shadow_covenant->data().effectN( 3 ).percent();
-    }
-    if ( priest().buffs.yshaarj_pride->check() )
-    {
-      m *= ( 1.0 + priest().buffs.yshaarj_pride->check_value() );
-    }
-    return m;
+  double composite_crit_chance() const override
+  {
+    double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    return cc;
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = std::max( 0_ms, ab::execute_time() * get_buff_effects_value( execute_time_buffeffects ) );
+    return et;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dd = ab::composite_dot_duration( s ) * get_buff_effects_value( dot_duration_buffeffects );
+    return dd;
+  }
+
+  double recharge_multiplier( const cooldown_t& cd ) const override
+  {
+    double rm = ab::recharge_multiplier( cd ) * get_buff_effects_value( recharge_multiplier_buffeffects, false, false );
+    return rm;
   }
 
   void gain_energize_resource( resource_e resource_type, double amount, gain_t* gain ) override
@@ -877,19 +1226,6 @@ public:
       ab::gain_energize_resource( resource_type, amount, gain );
     }
   }
-
-protected:
-  priest_t& priest()
-  {
-    return *debug_cast<priest_t*>( ab::player );
-  }
-  const priest_t& priest() const
-  {
-    return *debug_cast<priest_t*>( ab::player );
-  }
-
-  // typedef for priest_action_t<action_base_t>
-  using base_t = priest_action_t;
 
 private:
   // typedef for the templated action type, eg. spell_t, attack_t, heal_t
@@ -937,13 +1273,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  priestspace::living_shadow_action living_shadow_action;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false ),
-      living_shadow_action( priestspace::living_shadow_action::NONE )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
   }
@@ -981,9 +1313,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
   void last_tick( dot_t* d ) override
   {
-    if ( priest().channeling && living_shadow_action != living_shadow_action::NONE )
-      priest().cancel_living_shadow_action( living_shadow_action );
-
     base_t::last_tick( d );
   }
 
@@ -993,20 +1322,11 @@ struct priest_spell_t : public priest_action_t<spell_t>
 
     base_t::impact( s );
 
-    if ( living_shadow_action != living_shadow_action::NONE )
-    {
-      priest().trigger_living_shadow_action( s->target, living_shadow_action );
-    }
-    else
-    {
-      sim->print_debug( "{} casts action not replicated by Living Shadow: {}.", priest(), s->action->name_str );
-    }
-
     if ( result_is_hit( s->result ) )
     {
       // TODO: Use proper base_value() from talent struct when fixed
       if ( priest().specialization() == PRIEST_SHADOW && priest().talents.twist_of_fate.enabled() &&
-           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 1 ).base_value() ) )
+           ( save_health_percentage < priest().talents.twist_of_fate->effectN( 3 ).base_value() ) )
       {
         priest().buffs.twist_of_fate->trigger();
       }
@@ -1063,11 +1383,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
       tdm *= priest().shadow_weaving_multiplier( t, spell_id );
     }
 
-    if ( priest().hungering_void_active( t ) )
-    {
-      tdm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
-    }
-
     return tdm;
   }
 
@@ -1080,17 +1395,16 @@ struct priest_spell_t : public priest_action_t<spell_t>
       ttm *= priest().shadow_weaving_multiplier( t, id );
     }
 
-    if ( priest().hungering_void_active( t ) )
-    {
-      ttm *= ( 1 + priest().talents.shadow.hungering_void_buff->effectN( 1 ).percent() );
-    }
-
     return ttm;
   }
 
   void assess_damage( result_amount_type type, action_state_t* s ) override
   {
     base_t::assess_damage( type, s );
+
+    if ( result_is_hit( s->result ) && priest().talents.void_shield.enabled() &&
+         priest().buffs.power_word_shield->check() )
+      priest().trigger_void_shield( s->result_amount * priest().talents.void_shield->effectN( 1 ).percent() );
 
     if ( aoe == 0 && result_is_hit( s->result ) && priest().buffs.vampiric_embrace->up() )
       trigger_vampiric_embrace( s );
@@ -1106,9 +1420,9 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double amount = s->result_amount;
     amount *= priest().buffs.vampiric_embrace->data().effectN( 1 ).percent();
 
-    if ( priest().talents.shadow.sanlayn.enabled() )
+    if ( priest().talents.sanlayn.enabled() )
     {
-      amount *= priest().talents.shadow.sanlayn->effectN( 2 ).percent();
+      amount *= priest().talents.sanlayn->effectN( 2 ).percent();
     }
 
     for ( player_t* ally : sim->player_no_pet_list )

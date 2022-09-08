@@ -789,7 +789,7 @@ public:
   timespan_t execute_time() const override
   {
     timespan_t et = ab::execute_time() * get_buff_effects_value( execute_time_buffeffects );
-    return et;
+    return std::max( 0_ms, et );
   }
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override

@@ -190,7 +190,7 @@ enum class movement_direction_type : int
 
 enum class talent_format
 {
-  NUMBERS,
+  BLIZZARD,
   ARMORY,
   WOWHEAD,
   UNCHANGED

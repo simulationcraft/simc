@@ -4958,7 +4958,6 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         base_crit += effect.percent();
         sim->print_debug( "{} base crit modified by {}", *this, effect.percent() );
         break;
-
       case P_COOLDOWN:
         if ( cooldown->action == this )
         {
@@ -4970,9 +4969,9 @@ void action_t::apply_affecting_effect( const spelleffect_data_t& effect )
         break;
 
       case P_RESOURCE_COST:
-        base_costs[ resource_current ] += effect.base_value();
-        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this,
-                          resource_current, effect.base_value() );
+        base_costs[ resource_current ] += effect.resource( current_resource() );
+        sim->print_debug( "{} base resource cost for resource {} modified by {}", *this, resource_current,
+                          effect.resource( current_resource() ) );
         break;
 
       case P_TARGET:

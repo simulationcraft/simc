@@ -1411,6 +1411,7 @@ class SpellDataGenerator(DataGenerator):
             ( 340214, 0 ),          # Hallowed Discernment heal
             ( 355567, 0 ),          # Equinox
             ( 355455, 0 ),          # Divine Resonance
+            ( 387643, 0 ),          # Sealed Verdict buff
         ),
 
         # Hunter:
@@ -4376,6 +4377,7 @@ class TraitGenerator(DataGenerator):
             fields.append(f'{entry["tree"]}')
             fields.append(f'{entry["class_"]:2d}')
             fields += entry['entry'].field('id')
+            fields += entry['node'].field('id')
             fields += entry['entry'].field('max_ranks')
             fields.append(f'{entry["req_points"]:2d}')
             fields += entry['definition'].field('id')

@@ -45,6 +45,8 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* final_reckoning;
     buff_t* reckoning;
     buff_t* vengeful_shock;
+    buff_t* seal_of_the_crusader;
+    buff_t* calm_before_the_storm;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -96,6 +98,7 @@ public:
     buff_t* devotion_aura;
 
     buff_t* avengers_might;
+    buff_t* avenging_wrath_might;
 
     // Holy
     buff_t* divine_protection;
@@ -131,16 +134,18 @@ public:
     buff_t* fires_of_justice;
     buff_t* righteous_verdict;
     buff_t* zeal;
+    buff_t* sealed_verdict;
 
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
     buff_t* relentless_inquisitor_azerite;
+    buff_t* vanguards_momentum;
 
     // Covenants
     buff_t* vanquishers_hammer;
 
     // Legendaries
-    buff_t* vanguards_momentum;
+    buff_t* vanguards_momentum_legendary;
     buff_t* bulwark_of_righteous_fury;
     buff_t* blessing_of_dusk;
     buff_t* blessing_of_dawn;
@@ -281,9 +286,9 @@ public:
     const spell_data_t* sanctified_wrath_damage;
 
     const spell_data_t* judgment_2;
-    const spell_data_t* avenging_wrath_2;
-    const spell_data_t* avenging_wrath_3;
+    const spell_data_t* improved_avenging_wrath;
     const spell_data_t* hammer_of_wrath_2;
+    const spell_data_t* moment_of_glory;
 
     const spell_data_t* ashen_hallow_how;
 
@@ -297,13 +302,12 @@ public:
 
     // Class
 
-   // 0
+    // 0
     const spell_data_t* lay_on_hands;
     const spell_data_t* blessing_of_freedom;
     const spell_data_t* hammer_of_wrath;
-    const spell_data_t* concentration_aura;
-    const spell_data_t* devotion_aura;
-    const spell_data_t* retribution_aura;
+    const spell_data_t* auras_of_the_resolute;
+    const spell_data_t* auras_of_swift_vengeance;
     const spell_data_t* blinding_light;
     const spell_data_t* repentance;
     const spell_data_t* divine_steed;
@@ -323,7 +327,6 @@ public:
     const spell_data_t* seal_of_mercy;
     const spell_data_t* cleanse_toxins;
     const spell_data_t* blessing_of_sacrifice;
-    const spell_data_t* judgment;  // 1 Holy Power
     const spell_data_t* seal_of_reprisal;
     const spell_data_t* afterimage;
     const spell_data_t* recompense;
@@ -336,12 +339,13 @@ public:
     // 20
     const spell_data_t* seal_of_clarity;
     const spell_data_t* aspirations_of_divinity;
-    //const spell_data_t* avenging_wrath; //Cdr
+    const spell_data_t* avenging_wrath_2; //Cdr
     const spell_data_t* touch_of_light;
     const spell_data_t* incandescence;
     const spell_data_t* hallowed_ground;
     const spell_data_t* of_dusk_and_dawn;
     const spell_data_t* unbreakable_spirit;
+    const spell_data_t* judgment;
     const spell_data_t* seal_of_might;
     const spell_data_t* blessing_of_spellwarding;
     const spell_data_t* improved_blessing_of_protection;
@@ -352,6 +356,15 @@ public:
     const spell_data_t* ret_sanctified_wrath;
     const spell_data_t* seraphim;
     const spell_data_t* the_mad_paragon;
+
+
+    // Shared
+    const spell_data_t* holy_avenging_wrath_might;
+    const spell_data_t* prot_avenging_wrath_might;
+    const spell_data_t* ret_avenging_wrath_might;
+    const spell_data_t* divine_toll;
+    const spell_data_t* divine_resonance;
+    const spell_data_t* relentless_inquisitor;
 
     // Holy -- NYI, Not touching for now
     // T15
@@ -371,7 +384,7 @@ public:
     const spell_data_t* beacon_of_virtue;
 
     // Protection
-   //0
+    // 0
     const spell_data_t* avengers_shield;
     const spell_data_t* blessed_hammer;
     const spell_data_t* hammer_of_the_righteous;
@@ -386,7 +399,7 @@ public:
     const spell_data_t* crusaders_judgment;
     const spell_data_t* consecration_in_flame;
     
-    //8
+    // 8
     const spell_data_t* bastion_of_light;
     const spell_data_t* bulwark_of_order;
     const spell_data_t* light_of_the_titans;
@@ -396,14 +409,13 @@ public:
     const spell_data_t* sentinel;
     const spell_data_t* avenging_wrath_might;
     const spell_data_t* strength_of_conviction;
-    const spell_data_t* relentless_inquisitor;
     const spell_data_t* ferren_marcuss_strength;
     const spell_data_t* tyrs_enforcer;
     const spell_data_t* guardian_of_ancient_kings;
     const spell_data_t* sanctuary;
     const spell_data_t* faith_barricade;
     
-    //20
+    // 20
     const spell_data_t* soaring_shield;
     const spell_data_t* focused_enmity;
     const spell_data_t* faiths_armor;
@@ -412,32 +424,65 @@ public:
     const spell_data_t* gift_of_the_golden_valkyr;
     const spell_data_t* final_stand;
     const spell_data_t* righteous_protector;
-    const spell_data_t* divine_toll;
     const spell_data_t* bulwark_of_righteous_fury;
     const spell_data_t* moment_of_glory;
     const spell_data_t* eye_of_tyr;
     const spell_data_t* improved_sera_and_dt;
-    const spell_data_t* divine_resonance;
 
     // Retribution
-    // T15
+    // 0
+    const spell_data_t* blade_of_justice;
+    const spell_data_t* divine_storm;
+    const spell_data_t* art_of_war;
+    const spell_data_t* timely_judgment;
+    const spell_data_t* improved_crusader_strike;
+    const spell_data_t* holy_crusader;
+    const spell_data_t* holy_blade;
+    const spell_data_t* condemning_blade;
     const spell_data_t* zeal;
-    const spell_data_t* righteous_verdict;
-    const spell_data_t* execution_sentence;
-    // T25
-    const spell_data_t* fires_of_justice;
+    const spell_data_t* shield_of_vengeance;
+    const spell_data_t* divine_protection; // NYI
     const spell_data_t* blade_of_wrath;
-    const spell_data_t* empyrean_power;
 
-    const spell_data_t* eye_for_an_eye;
-    // Skip T40, see Holy
-    // T45
-    const spell_data_t* selfless_healer;
-    const spell_data_t* justicars_vengeance;
-    const spell_data_t* healing_hands;
-    // T50
+    // 8
+    const spell_data_t* highlords_judgment;
+    const spell_data_t* righteous_verdict;
+    const spell_data_t* calm_before_the_storm;
+    const spell_data_t* wake_of_ashes;
+    const spell_data_t* consecrated_blade; // NYI
+    const spell_data_t* seal_of_wrath; // NYI
+    const spell_data_t* expurgation;
+    const spell_data_t* boundless_judgment; // NYI
+    const spell_data_t* sanctification; // NYI
+    const spell_data_t* inner_power; // NYI
+    const spell_data_t* ashes_to_dust;
+    const spell_data_t* path_of_ruin; // NYI
     const spell_data_t* crusade;
+    const spell_data_t* truths_wake; // NYI
+    const spell_data_t* empyrean_power;
+    const spell_data_t* fires_of_justice;
+    const spell_data_t* sealed_verdict; // NYI
+    const spell_data_t* consecrated_ground_ret; // NYI
+    const spell_data_t* sanctified_ground_ret; // NYI
+    const spell_data_t* exorcism; // NYI
+    const spell_data_t* hand_of_hindrance; // NYI
+    const spell_data_t* selfless_healer; // NYI
+    const spell_data_t* healing_hands; // NYI
+    const spell_data_t* tempest_of_the_lightbringer; // NYI
+    const spell_data_t* justicars_vengeance;
+    const spell_data_t* eye_for_an_eye; // NYI
+
+    // 20
+    const spell_data_t* ashes_to_ashes;
+    const spell_data_t* templars_vindication; // NYI
+    const spell_data_t* execution_sentence;
+    const spell_data_t* empyrean_endowment; // NYI
+    const spell_data_t* virtuous_command; // NYI
+    const spell_data_t* final_verdict; // NYI
+    const spell_data_t* executioners_will; // NYI
+    const spell_data_t* executioners_wrath; // NYI
     const spell_data_t* final_reckoning;
+    const spell_data_t* vanguards_momentum;
   } talents;
 
   struct azerite_t
@@ -544,6 +589,7 @@ public:
   virtual void      init() override;
   virtual void      init_scaling() override;
   virtual void      create_buffs() override;
+  virtual void      init_special_effects() override;
   virtual void      init_rng() override;
   virtual void      init_spells() override;
   virtual void      init_action_list() override;
@@ -604,10 +650,10 @@ public:
   int     get_local_enemies( double distance ) const;
   bool    standing_in_consecration() const;
   bool    standing_in_hallow() const;
+  
   // Returns true if AW/Crusade is up, or if the target is below 20% HP.
   // This isn't in HoW's target_ready() so it can be used in the time_to_hpg expression
   bool    get_how_availability( player_t* t ) const;
-
   void         trigger_memory_of_lucid_dreams( double cost );
   virtual void vision_of_perfection_proc() override;
 
@@ -770,7 +816,7 @@ public:
   // Damage increase whitelists
   struct affected_by_t
   {
-    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment; // Shared
+    bool avenging_wrath, judgment, blessing_of_dawn, the_magistrates_judgment, seal_of_reprisal, seal_of_order; // Shared
     bool crusade, divine_purpose, divine_purpose_cost, hand_of_light, final_reckoning, reckoning; // Ret
     bool avenging_crusader; // Holy
   } affected_by;
@@ -807,8 +853,9 @@ public:
     this -> affected_by.avenging_wrath = this -> data().affected_by( p -> spells.avenging_wrath -> effectN( 1 ) );
     this -> affected_by.divine_purpose_cost = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 1 ) );
     this -> affected_by.divine_purpose = this -> data().affected_by( p -> spells.divine_purpose_buff -> effectN( 2 ) );
-    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> legendary.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
+    this -> affected_by.blessing_of_dawn = this -> data().affected_by( p -> talents.of_dusk_and_dawn -> effectN( 1 ).trigger() -> effectN( 1 ) );
     this -> affected_by.the_magistrates_judgment = this -> data().affected_by( p -> buffs.the_magistrates_judgment -> data().effectN( 1 ) );
+    this -> affected_by.seal_of_reprisal = this -> data().affected_by( p-> talents.seal_of_reprisal->effectN( 1 ) );
   }
 
   paladin_t* p()
@@ -937,9 +984,18 @@ public:
       am *= 1.0 + p() -> spells.divine_purpose_buff -> effectN( 2 ).percent();
     }
 
+    if ( affected_by.seal_of_reprisal && p()->talents.seal_of_reprisal->ok() )
+    {
+      am *= 1.0 + p()->talents.seal_of_reprisal->effectN( 1 ).percent();
+    }
     if ( affected_by.blessing_of_dawn && p() -> buffs.blessing_of_dawn -> up() )
     {
-      am *= 1.0 + p() -> legendary.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+      am *= 1.0 + p() -> talents.of_dusk_and_dawn -> effectN ( 1 ).trigger() -> effectN ( 1 ).percent();
+    }
+
+    if ( affected_by.divine_purpose && p()->buffs.blessing_of_dawn->up() && p()->talents.seal_of_order->ok() )
+    {
+      am *= 1.0 + p()->talents.seal_of_order->effectN( 1 ).percent();
     }
 
     return am;
@@ -1340,12 +1396,11 @@ struct holy_power_consumer_t : public Base
     }
 
     // Roll for Divine Purpose
-    if ( p -> talents.divine_purpose -> ok() &&
-         this -> rng().roll( p -> talents.divine_purpose -> effectN( 1 ).percent() )
-      )
+    if ( p->talents.divine_purpose->ok() && this->rng().roll( p->talents.divine_purpose->effectN( 1 ).percent() ) )
     {
-      p -> buffs.divine_purpose -> trigger();
-      p -> procs.divine_purpose -> occur();
+      p->buffs.divine_purpose->trigger();
+      p->procs.divine_purpose->occur();
+
     }
 
     if ( p -> buffs.avenging_wrath -> up() || p -> buffs.crusade -> up() )
@@ -1363,6 +1418,11 @@ struct holy_power_consumer_t : public Base
         st -> last_holy_power_cost = as<int>( ab::base_costs[ RESOURCE_HOLY_POWER ] );
         st -> execute();
       }
+    }
+
+    if ( p -> talents.sealed_verdict -> ok() )
+    {
+      p -> buffs.sealed_verdict -> trigger();
     }
   }
 

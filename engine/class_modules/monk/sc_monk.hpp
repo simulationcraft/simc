@@ -168,6 +168,9 @@ public:
   {
     action_t* rushing_jade_wind;
 
+    // General
+    propagate_const<action_t*> resonant_fists;
+
     // Brewmaster
     propagate_const<action_t*> breath_of_fire;
     propagate_const<heal_t*> celestial_fortune;
@@ -368,6 +371,7 @@ public:
     propagate_const<proc_t*> face_palm;
     propagate_const<proc_t*> glory_of_the_dawn;
     propagate_const<proc_t*> quick_sip;
+    propagate_const<proc_t*> resonant_fists;
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> salsalabim_bof_reset;
     propagate_const<proc_t*> sinister_teaching_reduction;
@@ -781,6 +785,7 @@ public:
     propagate_const<cooldown_t*> invoke_yulon;
     propagate_const<cooldown_t*> keg_smash;
     propagate_const<cooldown_t*> purifying_brew;
+    propagate_const<cooldown_t*> resonant_fists;
     propagate_const<cooldown_t*> rising_sun_kick;
     propagate_const<cooldown_t*> refreshing_jade_wind;
     propagate_const<cooldown_t*> roll;
@@ -1165,6 +1170,7 @@ public:
   void trigger_bonedust_brew( action_state_t* );
   player_t* next_mark_of_the_crane_target( action_state_t* );
   int mark_of_the_crane_counter();
+  bool mark_of_the_crane_max();
   double sck_modifier();
   double clear_stagger();
   double partial_clear_stagger_pct( double );

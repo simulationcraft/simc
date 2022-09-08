@@ -367,8 +367,6 @@ public:
     action_t* flame_shock;
 
     action_t* lightning_rod;
-    action_t* stormblast;
-    action_t* stormblast_oh;
 
     // Legendaries
     action_t* dre_ascendance; // Deeply Rooted Elements
@@ -1198,7 +1196,7 @@ struct hot_hand_buff_t : public buff_t
   {
     set_cooldown( timespan_t::zero() );
     set_trigger_spell( shaman->talent.hot_hand );
-    set_default_value_from_effect( 2 );
+    set_default_value( shaman->talent.hot_hand->effectN( 2 ).percent() );
     set_stack_change_callback(
         [ this ]( buff_t*, int, int ) { shaman->cooldown.lava_lash->adjust_recharge_multiplier(); } );
   }
@@ -3185,18 +3183,64 @@ struct icy_edge_attack_t : public shaman_attack_t
   }
 };
 
+struct stormstrike_attack_state_t : public action_state_t
+{
+  bool stormbringer;
+
+  stormstrike_attack_state_t( action_t* action_, player_t* target_ ) :
+    action_state_t( action_, target_ ), stormbringer( false )
+  { }
+
+  void initialize() override
+  {
+    action_state_t::initialize();
+
+    stormbringer = false;
+  }
+
+  void copy_state( const action_state_t* s ) override
+  {
+    action_state_t::copy_state( s );
+
+    auto lbs = debug_cast<const stormstrike_attack_state_t*>( s );
+    stormbringer= lbs->stormbringer;
+  }
+
+  std::ostringstream& debug_str( std::ostringstream& s ) override
+  {
+    action_state_t::debug_str( s );
+
+    s << " stormbringer=" << stormbringer;
+
+    return s;
+  }
+};
 struct stormstrike_attack_t : public shaman_attack_t
 {
   bool stormflurry, stormbringer;
 
+  action_t* stormblast;
+
   stormstrike_attack_t( util::string_view n, shaman_t* player, const spell_data_t* s, weapon_t* w )
-    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false )
+    : shaman_attack_t( n, player, s ), stormflurry( false ), stormbringer( false ),
+    stormblast( nullptr )
   {
     background = true;
     may_miss = may_dodge = may_parry = false;
     weapon = w;
     school = SCHOOL_PHYSICAL;
+
+    if ( player->talent.stormblast.ok() )
+    {
+      std::string name_str { "stormblast_" };
+      name_str += n;
+      stormblast = new stormblast_t( player, name_str );
+      add_child( stormblast );
+    }
   }
+
+  action_state_t* new_state() override
+  { return new stormstrike_attack_state_t( this, target ); }
 
   double action_multiplier() const override
   {
@@ -3231,6 +3275,14 @@ struct stormstrike_attack_t : public shaman_attack_t
     return m;
   }
 
+  void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
+  {
+    shaman_attack_t::snapshot_internal( s, flags, rt );
+
+    auto state = debug_cast<stormstrike_attack_state_t*>( s );
+    state->stormbringer = stormbringer;
+  }
+
   void execute() override
   {
     shaman_attack_t::execute();
@@ -3239,20 +3291,18 @@ struct stormstrike_attack_t : public shaman_attack_t
     stormbringer = false;
   }
 
-  void impact( action_state_t* state ) override
+  void impact( action_state_t* s ) override
   {
-    shaman_attack_t::impact( state );
+    shaman_attack_t::impact( s );
 
-    if ( stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
+    auto state = debug_cast<stormstrike_attack_state_t*>( s );
+
+    if ( state->stormbringer && p()->talent.stormblast.ok() && result_is_hit( state->result ) )
     {
-      auto sb = weapon->slot == SLOT_MAIN_HAND
-        ? p()->action.stormblast
-        : p()->action.stormblast_oh;
-
-      sb->base_dd_min = sb->base_dd_max =
+      stormblast->base_dd_min = stormblast->base_dd_max =
         p()->talent.stormblast->effectN( 1 ).percent() * state->result_amount;
-      sb->set_target( state->target );
-      sb->execute();
+      stormblast->set_target( state->target );
+      stormblast->execute();
     }
   }
 };
@@ -3640,7 +3690,7 @@ struct lava_lash_t : public shaman_attack_t
 
     if ( p()->buff.hot_hand->up() )
     {
-      m *= 1.0 + p()->buff.hot_hand->data().effectN( 1 ).percent();
+      m *= 1.0 + p()->talent.hot_hand->effectN( 3 ).percent();
     }
 
     // Flametongue imbue only increases Lava Lash damage if it is imbued on the off-hand
@@ -4628,9 +4678,9 @@ struct chain_lightning_t : public chained_base_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto asc_action = p()->find_action( "ascendance" ) )
+        if ( auto ws_action = p()->find_action( "windstrike" ) )
         {
-          asc_action->add_child( this );
+          ws_action->add_child( this );
         }
       }
       default:
@@ -5603,9 +5653,9 @@ struct lightning_bolt_t : public shaman_spell_t
         background = true;
         base_execute_time = 0_s;
         base_costs[ RESOURCE_MANA ] = 0;
-        if ( auto asc_action = p()->find_action( "ascendance" ) )
+        if ( auto ws_action = p()->find_action( "windstrike" ) )
         {
-          asc_action->add_child( this );
+          ws_action->add_child( this );
         }
       }
       default:
@@ -6135,7 +6185,7 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_overload_damage", player->find_spell( 298765 ) )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.2346 * player->talent.mountains_will_fall->effectN( 1 ).percent();
+    spell_power_mod.direct = 0.176 * player->talent.mountains_will_fall->effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
@@ -6178,7 +6228,7 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     earthquake_damage_base_t( player, "earthquake_damage", player->find_spell( 77478 ) )
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
-    spell_power_mod.direct = 0.2346;
+    spell_power_mod.direct = 0.176;
   }
 
   double action_multiplier() const override
@@ -8817,6 +8867,20 @@ std::unique_ptr<expr_t> shaman_t::create_expression( util::string_view name )
     return make_ref_expr( name, vesper_totem_used_charges );
   }
 
+  if ( util::str_compare_ci( splits[ 0 ], "ti_lightning_bolt" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+        return !action.ti_trigger || action.ti_trigger == action.lightning_bolt_ti;
+    } );
+  }
+
+  if ( util::str_compare_ci( splits[ 0 ], "ti_chain_lightning" ) )
+  {
+    return make_fn_expr( name, [ this ]() {
+        return action.ti_trigger == action.chain_lightning_ti;
+    } );
+  }
+
   return player_t::create_expression( name );
 }
 
@@ -8851,12 +8915,6 @@ void shaman_t::create_actions()
   if ( talent.lightning_rod.ok() )
   {
     action.lightning_rod = new lightning_rod_damage_t( this );
-  }
-
-  if ( talent.stormblast.ok() )
-  {
-    action.stormblast = new stormblast_t( this, "stormblast_mh" );
-    action.stormblast_oh = new stormblast_t( this, "stormblast_oh" );
   }
 
   // Generic Actions
