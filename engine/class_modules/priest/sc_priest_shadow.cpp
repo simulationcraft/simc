@@ -105,6 +105,9 @@ struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
 
+  propagate_const<cooldown_t*> fiend_cooldown;
+  timespan_t fiend_cdr;
+
   mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
@@ -116,6 +119,15 @@ struct mind_flay_base_t final : public priest_spell_t
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 2 ).percent() +
                                   priest().talents.shadow.harnessed_shadows->effectN( 3 ).percent();
+    }
+
+    if ( priest().talents.shadow.fiending_dark.enabled() )
+    {
+      fiend_cooldown =
+          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
+      fiend_cdr = priest()
+                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
+                      .time_value();
     }
   }
 
@@ -159,6 +171,11 @@ struct mind_flay_base_t final : public priest_spell_t
     if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
     {
       priest().buffs.coalescing_shadows->trigger();
+    }
+
+    if ( priest().talents.shadow.fiending_dark.enabled() && d->state->result == RESULT_CRIT )
+    {
+      fiend_cooldown->adjust( fiend_cdr );
     }
   }
 
@@ -1172,16 +1189,12 @@ struct void_bolt_t final : public priest_spell_t
   };
 
   void_bolt_extension_t* void_bolt_extension;
-  propagate_const<cooldown_t*> shadowfiend_cooldown;
-  propagate_const<cooldown_t*> mindbender_cooldown;
   timespan_t hungering_void_base_duration;
   timespan_t hungering_void_crit_duration;
 
   void_bolt_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "void_bolt", p, p.specs.void_bolt ),
       void_bolt_extension( nullptr ),
-      shadowfiend_cooldown( p.get_cooldown( "mindbender" ) ),
-      mindbender_cooldown( p.get_cooldown( "shadowfiend" ) ),
       hungering_void_base_duration(
           timespan_t::from_seconds( priest().talents.shadow.hungering_void->effectN( 3 ).base_value() ) ),
       hungering_void_crit_duration(
@@ -1436,6 +1449,8 @@ struct dark_void_t final : public priest_spell_t
 struct mind_spike_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
+  propagate_const<cooldown_t*> fiend_cooldown;
+  timespan_t fiend_cdr;
 
   mind_spike_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
@@ -1443,6 +1458,15 @@ struct mind_spike_t final : public priest_spell_t
 
   {
     parse_options( options_str );
+
+    if ( priest().talents.shadow.fiending_dark.enabled() )
+    {
+      fiend_cooldown =
+          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
+      fiend_cdr = priest()
+                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
+                      .time_value();
+    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1484,6 +1508,11 @@ struct mind_spike_t final : public priest_spell_t
       if ( priest().talents.shadow.surge_of_darkness.enabled() )
       {
         priest().buffs.surge_of_darkness->decrement();
+      }
+
+      if ( priest().talents.shadow.fiending_dark.enabled() && s->result == RESULT_CRIT )
+      {
+        fiend_cooldown->adjust( fiend_cdr );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -2234,9 +2263,9 @@ void priest_t::create_buffs_shadow()
   buffs.coalescing_shadows_dot = make_buff( this, "coalescing_shadows_dot", talents.shadow.coalescing_shadows_dot_buff )
                                      ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
 
-  // TODO: Get real damage amplifier and spell data when blizzard implements this.
-  buffs.yshaarj_pride =
-      make_buff( this, "yshaarj_pride" )->set_duration( timespan_t::zero() )->set_default_value( 0.1 );
+  buffs.devoured_pride = make_buff( this, "devoured_pride", talents.shadow.devoured_pride )
+                             ->set_duration( timespan_t::zero() )
+                             ->set_trigger_spell( talents.shadow.idol_of_yshaarj );
 
   buffs.mind_melt = make_buff( this, "mind_melt", talents.shadow.mind_melt->effectN( 1 ).trigger() )
                         ->set_default_value_from_effect( 1 );
@@ -2321,8 +2350,14 @@ void priest_t::init_spells_shadow()
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
   talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
   // Row 8
-  talents.shadow.mindbender           = ST( "Mindbender" );
-  talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
+  talents.shadow.mindbender      = ST( "Mindbender" );
+  talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
+  // TODO: Implement Stunned/Feared/Enraged Y'shaarj
+  talents.shadow.devoured_pride       = find_spell( 373316 );         // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair     = find_spell( 373317 );         // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger       = find_spell( 373318 );         // Haste - Enrage - NYI
+  talents.shadow.devoured_fear        = find_spell( 373319 );         // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence    = find_spell( 373320 );         // Pet Extension - Default
   talents.shadow.deathspeaker         = ST( "Deathspeaker" );         // NYI
   talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );  // NYI
   talents.shadow.derangement          = ST( "Derangement" );          // NYI

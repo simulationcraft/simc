@@ -142,7 +142,7 @@ public:
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
     propagate_const<buff_t*> idol_of_yoggsaron;
-    propagate_const<buff_t*> yshaarj_pride;
+    propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> dark_evangelism;
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> surge_of_darkness;
@@ -297,6 +297,11 @@ public:
       // Row 8
       player_talent_t mindbender;
       player_talent_t idol_of_yshaarj;
+      const spell_data_t* devoured_pride;
+      const spell_data_t* devoured_despair;
+      const spell_data_t* devoured_anger;
+      const spell_data_t* devoured_fear;
+      const spell_data_t* devoured_violence;
       player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
       player_talent_t derangement;
@@ -664,6 +669,7 @@ public:
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_absorb_multiplier( const action_state_t* s ) const override;
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
+  double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;

@@ -251,7 +251,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-          } );
+             } );
         }
       }
     }
@@ -1269,12 +1269,12 @@ struct summon_shadowfiend_t final : public summon_pet_t
       // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
       if ( target->health_percentage() >= 80.0 )
       {
-        priest().buffs.yshaarj_pride->trigger();
+        priest().buffs.devoured_pride->trigger();
       }
       else
       {
-        // Current in-game extension 19/07/2022
-        summoning_duration += timespan_t::from_seconds( 5.0 );
+        summoning_duration +=
+            timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
       }
     }
 
@@ -1309,12 +1309,12 @@ struct summon_mindbender_t final : public summon_pet_t
       // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
       if ( target->health_percentage() >= 80.0 )
       {
-        priest().buffs.yshaarj_pride->trigger();
+        priest().buffs.devoured_pride->trigger();
       }
       else
       {
-        // Current in-game extension 19/07/2022
-        summoning_duration += timespan_t::from_seconds( 5.0 );
+        summoning_duration +=
+            timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
       }
     }
 
@@ -2440,9 +2440,9 @@ double priest_t::composite_player_pet_damage_multiplier( const action_state_t* s
 {
   double m = player_t::composite_player_pet_damage_multiplier( s, guardian );
   m *= ( 1.0 + specs.shadow_priest->effectN( 3 ).percent() );
-  if ( buffs.yshaarj_pride->check() )
+  if ( buffs.devoured_pride->check() )
   {
-    m *= ( 1.0 + buffs.yshaarj_pride->check_value() );
+    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 2 ).percent() );
   }
   return m;
 }
@@ -2471,6 +2471,18 @@ double priest_t::composite_player_absorb_multiplier( const action_state_t* s ) c
   if ( mastery_spells.grace->ok() )
   {
     m *= 1 + cache.mastery_value();
+  }
+
+  return m;
+}
+
+double priest_t::composite_player_multiplier( school_e school ) const
+{
+  double m = player_t::composite_player_multiplier( school );
+
+  if ( buffs.devoured_pride->check() )
+  {
+    m *= ( 1.0 + talents.shadow.devoured_pride->effectN( 1 ).percent() );
   }
 
   return m;
@@ -3342,9 +3354,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
