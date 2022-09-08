@@ -6447,7 +6447,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike ),
-    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.blood.heartbreaker -> effectN( 1 ).base_value() / 10 ) )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6462,7 +6462,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
   heart_strike_t( util::string_view name, death_knight_t* p ) :
     death_knight_melee_attack_t( name, p, p -> find_spell( 206930 ) ),
-    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
+    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.blood.heartbreaker -> effectN( 1 ).base_value() / 10 ) )
   {
     background = proc = may_crit = true;
     may_miss = false;
