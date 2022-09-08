@@ -1225,6 +1225,53 @@ struct void_bolt_t final : public priest_spell_t
 };
 
 // ==========================================================================
+// Dark Ascension
+// ==========================================================================
+struct dark_ascension_t final : public priest_spell_t
+{
+  double dark_ascension_value;
+
+  dark_ascension_t( priest_t& p, util::string_view options_str )
+    : priest_spell_t( "dark_ascension", p, p.talents.shadow.dark_ascension ),
+      dark_ascension_value( priest().buffs.dark_ascension->default_value )
+  {
+    parse_options( options_str );
+
+    may_miss = false;
+  }
+
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    // Safety checking if the buff is active, shouldn't be possible if the ready() condition is working
+    if ( priest().buffs.dark_evangelism->check() )
+    {
+      int evangelism_stacks = priest().buffs.dark_evangelism->stack();
+
+      player->sim->print_debug(
+          "{} triggered dark_ascension with value={} from stacks={} of dark_evangelism and default_value={}.", priest(),
+          ( dark_ascension_value * evangelism_stacks ), evangelism_stacks, dark_ascension_value );
+
+      // TODO: Triggering with stacks as opposed to changing value so parse_buff_effects works
+      priest().buffs.dark_ascension->trigger( evangelism_stacks );
+      priest().buffs.dark_evangelism->expire();
+    }
+  }
+
+  bool ready() override
+  {
+    // Can only cast this if you have any Dark Evangelism Stacks
+    if ( !priest().buffs.dark_evangelism->check() )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
+  }
+};
+
+// ==========================================================================
 // Void Eruption
 // ==========================================================================
 struct void_eruption_damage_t final : public priest_spell_t
@@ -2136,6 +2183,12 @@ void priest_t::create_buffs_shadow()
                                  ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
 
+  // TODO: use default_value to parse increase instead of stacks
+  buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
+                             ->set_default_value_from_effect( 1 )
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
+                             ->set_max_stack( 5 );
+
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
 
@@ -2319,6 +2372,10 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "mind_spike" )
   {
     return new mind_spike_t( *this, options_str );
+  }
+  if ( name == "dark_ascension" )
+  {
+    return new dark_ascension_t( *this, options_str );
   }
 
   return nullptr;

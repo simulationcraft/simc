@@ -149,6 +149,7 @@ public:
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> mind_flay_insanity;
     propagate_const<buff_t*> deathspeaker;
+    propagate_const<buff_t*> dark_ascension;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -1102,6 +1103,8 @@ public:
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
     parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
     parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast
+    // TODO: check why we cant use_default=true to get the value correct
+    parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
   }
 
   template <typename... Ts>
