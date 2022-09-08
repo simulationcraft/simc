@@ -892,7 +892,6 @@
 4373538, DBFilesClient\CraftingQuality.db2
 4382197, DBFilesClient\CraftingReagentQuality.db2
 4420295, DBFilesClient\TraitCost.db2
-4420296, DBFilesClient\TraitCostDefinition.db2
 4420297, DBFilesClient\TraitNode.db2
 4420298, DBFilesClient\TraitNodeEntry.db2
 4420299, DBFilesClient\TraitNodeEntryXTraitCost.db2

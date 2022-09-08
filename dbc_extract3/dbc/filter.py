@@ -408,32 +408,20 @@ class TraitSet(DataSet):
             if currency.id == 0:
                 continue
 
-            cost_definitions = currency.child_refs('TraitCostDefinition')
-            costs = []
-            if len(cost_definitions) == 0:
-                costs = currency.child_refs('TraitCost')
-            else:
-                costs = [ e.parent_record() for e in cost_definitions ]
-
-            if len(costs) == 0:
+            cost = currency.child_ref('TraitCost')
+            if cost.id == 0:
                 continue
 
-            node_groups = [ c.child_ref('TraitNodeGroupXTraitCost')
-                for c in costs if c.child_ref('TraitNodeGroupXTraitCost').id != 0
-            ]
-
-            if len(node_groups) == 0:
+            node_groups = cost.child_ref('TraitNodeGroupXTraitCost')
+            if node_groups.id == 0:
                 continue
-
-            if len(node_groups) > 1:
-                logging.warn("Multiple node groups defined for trait tree currency")
 
             index = 0
             if currency.flags == 0x4:
                 index = 1
             elif currency.flags == 0x8:
                 index = 2
-            _trait_node_group_map[node_groups[0].id_trait_node_group] = index
+            _trait_node_group_map[node_groups.id_trait_node_group] = index
 
         # Map of trait_node_id, node_data
         _trait_nodes = dict()
