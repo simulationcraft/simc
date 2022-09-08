@@ -5603,14 +5603,16 @@ struct death_strike_heal_t : public death_knight_heal_t
 {
   blood_shield_t* blood_shield;
   timespan_t interval;
-  double minimum_healing;
+  double min_heal_multiplier;
+  double max_heal_multiplier;
   double last_death_strike_cost;
 
   death_strike_heal_t( util::string_view name, death_knight_t* p ) :
     death_knight_heal_t( name, p, p -> find_spell( 45470 ) ),
     blood_shield( p -> specialization() == DEATH_KNIGHT_BLOOD ? new blood_shield_t( p ) : nullptr ),
     interval( timespan_t::from_seconds( p -> talent.death_strike -> effectN( 4 ).base_value() ) ),
-    minimum_healing( p -> talent.death_strike -> effectN( 3 ).percent() ),
+    min_heal_multiplier( p -> talent.death_strike -> effectN( 3 ).percent() ),
+    max_heal_multiplier( p -> talent.death_strike -> effectN( 2 ).percent() ),
     last_death_strike_cost( 0 )
   {
     may_crit = callbacks = false;
@@ -5619,14 +5621,26 @@ struct death_strike_heal_t : public death_knight_heal_t
 
     // Melekus 2020-09-07: DS base healing with Voracious is a lot higher than expected
     // There's a hidden effect in Voracious' spelldata that increases death strike's effect#3 (base healing) by 50%
-    // Rounded down as a percent of player's max hp (7 * 1.5 = 10.5 -> 10), this matches the healing observed ingame.
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/627
-    if ( p -> bugs && p -> talent.blood.voracious.ok() )
+    if ( p -> talent.blood.voracious.ok() )
     {
-      minimum_healing = std::floor( (minimum_healing * (1.0 + p -> talent.blood.voracious -> effectN( 3 ).percent())) * 100 ) / 100;
+      min_heal_multiplier *= 1.0 + p -> talent.blood.voracious -> effectN( 3 ).percent();
+      max_heal_multiplier *= 1.0 + p -> talent.blood.voracious -> effectN( 2 ).percent();
     }
-
-    // TODO: Implement Death Strike rank 2 healing increase for dps specs
+    if ( p -> talent.improved_death_strike.ok() )
+    {
+      // Blood only gets 10%, dps specs get 60%
+      if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
+      {
+        // Min and max pulls from the same effect for blood.
+        min_heal_multiplier *= 1.0 + p -> talent.improved_death_strike -> effectN( 4 ).percent();
+        max_heal_multiplier *= 1.0 + p -> talent.improved_death_strike -> effectN( 4 ).percent();
+      }
+      else
+      {
+        min_heal_multiplier *= 1.0 + p -> talent.improved_death_strike -> effectN( 2 ).percent();
+        max_heal_multiplier *= 1.0 + p -> talent.improved_death_strike -> effectN( 1 ).percent();
+      }
+    }
   }
 
   void init() override
@@ -5638,14 +5652,14 @@ struct death_strike_heal_t : public death_knight_heal_t
 
   double base_da_min( const action_state_t* ) const override
   {
-    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
-                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike -> effectN( 2 ).percent() );
+    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier,
+                              player -> compute_incoming_damage( interval ) * max_heal_multiplier );
   }
 
   double base_da_max( const action_state_t* ) const override
   {
-    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * minimum_healing,
-                              player -> compute_incoming_damage( interval ) * p() -> talent.death_strike -> effectN( 2 ).percent() );
+    return std::max( player -> resources.max[ RESOURCE_HEALTH ] * min_heal_multiplier,
+                              player -> compute_incoming_damage( interval ) * max_heal_multiplier );
   }
 
   double action_multiplier() const override
@@ -5653,10 +5667,6 @@ struct death_strike_heal_t : public death_knight_heal_t
     double m = death_knight_heal_t::action_multiplier();
 
     m *= 1.0 + p() -> buffs.hemostasis -> stack_value();
-
-    // see Voracious bug in constructor
-    if ( ! p() -> bugs )
-      m *= 1.0 + p() -> talent.blood.voracious -> effectN( 2 ).percent();
 
     return m;
   }
@@ -5718,11 +5728,13 @@ struct death_strike_t : public death_knight_melee_attack_t
 {
   action_t* oh_attack;
   action_t* heal;
+  double improved_death_strike_reduction;
 
   death_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "death_strike", p, p -> talent.death_strike ),
     oh_attack( nullptr ),
-    heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) )
+    heal( get_action<death_strike_heal_t>( "death_strike_heal", p ) ),
+    improved_death_strike_reduction( 0 )
   {
     parse_options( options_str );
     may_parry = false;
@@ -5735,12 +5747,13 @@ struct death_strike_t : public death_knight_melee_attack_t
       add_child( oh_attack );
     }
 
-    // 2019-03-01: Since 8.1.5, Death Strike has a rank 2 reducing RP costs for dps specs
-    // RE/RC/Gargoyle behave as if Death Strike costed 35RP, unlike other cost reduction mechanics
-    // We model that by directly changing the base RP cost from spelldata, rather than manipulating cost()
-    // TODO July 19 2022  This needs to be re-examined.  R2 has gone away now, but there is a talent now
-    // Modifying this.  Needs in game testing to find new behavior.
-    // base_costs[ RESOURCE_RUNIC_POWER ] += p -> talent.death_strike_2 -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+    if ( p -> talent.improved_death_strike.ok() )
+    {
+      if ( p -> specialization() == DEATH_KNIGHT_BLOOD )
+        improved_death_strike_reduction += p -> talent.improved_death_strike -> effectN( 5 ).resource( RESOURCE_RUNIC_POWER );
+      else
+        improved_death_strike_reduction += p -> talent.improved_death_strike -> effectN( 3 ).resource( RESOURCE_RUNIC_POWER );
+    }
   }
 
   void init() override
@@ -5783,6 +5796,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     double c = death_knight_melee_attack_t::cost();
 
     c += p() -> buffs.ossuary -> value();
+
+    c += improved_death_strike_reduction;
 
     return c;
   }
