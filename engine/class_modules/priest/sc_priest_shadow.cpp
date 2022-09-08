@@ -556,6 +556,12 @@ struct shadow_word_pain_t final : public priest_spell_t
       {
         priest().trigger_shadowy_apparitions( d->state, false );
       }
+
+      // TODO: check if this also can proc on initial hit
+      if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
+      {
+        priest().buffs.deathspeaker->trigger();
+      }
     }
   }
 };
@@ -1534,6 +1540,16 @@ struct void_torrent_t final : public priest_spell_t
     return dot_duration;
   }
 
+  void tick( dot_t* d ) override
+  {
+    priest_spell_t::tick( d );
+
+    if ( priest().talents.shadow.dark_evangelism.enabled() )
+    {
+      priest().buffs.dark_evangelism->trigger();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
@@ -2118,6 +2134,7 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) )
                                  ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
+  buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
 
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
@@ -2135,6 +2152,7 @@ void priest_t::init_rng_shadow()
 {
   rppm.eternal_call_to_the_void = get_rppm( "eternal_call_to_the_void", legendary.eternal_call_to_the_void );
   rppm.idol_of_cthun            = get_rppm( "idol_of_cthun", talents.shadow.idol_of_cthun );
+  rppm.deathspeaker             = get_rppm( "deathspeaker", talents.shadow.deathspeaker );
 }
 
 void priest_t::init_spells_shadow()
@@ -2143,27 +2161,27 @@ void priest_t::init_spells_shadow()
 
   // Row 2
   talents.shadow.silence             = ST( "Silence" );
+  talents.shadow.dispersion          = ST( "Dispersion" );
   talents.shadow.shadowy_apparition  = find_spell( 148859 );
   talents.shadow.shadowy_apparitions = ST( "Shadowy Apparitions" );
-  talents.shadow.mind_sear           = ST( "Mind Sear" );     // NYI
-  talents.shadow.mind_sear_insanity  = find_spell( 208232 );  // TODO: might not need. Insanity is stored here
   // Row 3
   talents.shadow.psychic_horror     = ST( "Psychic Horror" );
   talents.shadow.last_word          = ST( "Last Word" );
   talents.shadow.misery             = ST( "Misery" );
   talents.shadow.dark_void          = ST( "Dark Void" );
   talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
+  talents.shadow.intangibility      = ST( "Intangibility" );
+  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );  // NYI
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
-  talents.shadow.dispersion         = ST( "Dispersion" );
+  talents.shadow.mind_sear          = ST( "Mind Sear" );          // NYI
+  talents.shadow.mind_sear_insanity = find_spell( 208232 );       // TODO: might not need. Insanity is stored here
   // Row 4
-  talents.shadow.shadow_orbs      = ST( "Shadow Orbs" );  // NYI
-  talents.shadow.hallucinations   = ST( "Hallucinations" );
-  talents.shadow.tithe_evasion    = ST( "Tithe Evasion" );  // NYI
-  talents.shadow.mind_spike       = ST( "Mind Spike" );
-  talents.shadow.vampiric_insight = ST( "Vampiric Insight" );
-  talents.shadow.intangibility    = ST( "Intangibility" );
-  talents.shadow.mental_fortitude = ST( "Mental Fortitude" );  // NYI
+  talents.shadow.coalescing_shadows = ST( "Shadow Orbs" );  // NYI
+  talents.shadow.hallucinations     = ST( "Hallucinations" );
+  talents.shadow.tithe_evasion      = ST( "Tithe Evasion" );  // NYI
+  talents.shadow.mind_spike         = ST( "Mind Spike" );
+  talents.shadow.vampiric_insight   = ST( "Vampiric Insight" );
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
   talents.shadow.damnation              = ST( "Damnation" );
@@ -2186,27 +2204,27 @@ void priest_t::init_spells_shadow()
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
   talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
   // Row 8
-  talents.shadow.mindbender = ST( "Mindbender" );
-
+  talents.shadow.mindbender           = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj      = ST( "Idol of Y'Shaarj" );
-  talents.shadow.pain_of_death        = ST( "Pain of Death" );
+  talents.shadow.deathspeaker         = ST( "Deathspeaker" );         // NYI
   talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );  // NYI
   talents.shadow.derangement          = ST( "Derangement" );          // NYI
   talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
-  talents.shadow.fiending_dark      = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania          = ST( "Monomania" );
-  talents.shadow.mastermind         = ST( "Mastermind" );       // NYI
-  talents.shadow.insidious_ire      = ST( "Insidious Ire" );    // TODO: check values
-  talents.shadow.mind_devourer      = ST( "Mind Devourer" );    // TODO: check values
-  talents.shadow.ancient_madness    = ST( "Ancient Madness" );  // TODO: add point scaling
+  talents.shadow.fiending_dark   = ST( "Fiending Dark" );  // NYI
+  talents.shadow.monomania       = ST( "Monomania" );
+  talents.shadow.pain_of_death   = ST( "Pain of Death" );
+  talents.shadow.mastermind      = ST( "Mastermind" );       // NYI
+  talents.shadow.insidious_ire   = ST( "Insidious Ire" );    // TODO: check values
+  talents.shadow.mind_devourer   = ST( "Mind Devourer" );    // TODO: check values
+  talents.shadow.ancient_madness = ST( "Ancient Madness" );  // TODO: add point scaling
   // Row 10
   talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
   talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );
-  talents.shadow.idol_of_yoggsaron    = ST( "Idol of Yogg-Saron" );
   talents.shadow.idol_of_nzoth        = ST( "Idol of N'Zoth" );
-  talents.shadow.lunacy               = ST( "Lunacy" );          // NYI
+  talents.shadow.lunacy               = ST( "Lunacy" );  // NYI
+  talents.shadow.idol_of_yoggsaron    = ST( "Idol of Yogg-Saron" );
   talents.shadow.hungering_void       = ST( "Hungering Void" );  // Check values
   talents.shadow.hungering_void_buff  = find_spell( 345219 );
   talents.shadow.surrender_to_madness = ST( "Surrender to Madness" );  // Confirm 2m cd is working

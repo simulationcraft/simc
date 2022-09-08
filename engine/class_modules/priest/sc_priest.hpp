@@ -148,6 +148,7 @@ public:
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> mind_flay_insanity;
+    propagate_const<buff_t*> deathspeaker;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -246,27 +247,27 @@ public:
       // Shadow Tree
       // Row 2
       player_talent_t silence;
+      player_talent_t dispersion;
       const spell_data_t* shadowy_apparition;  // Damage event
       player_talent_t shadowy_apparitions;     // Passive effect
-      player_talent_t mind_sear;
-      const spell_data_t* mind_sear_insanity;
       // Row 3
       player_talent_t psychic_horror;
       player_talent_t last_word;
       player_talent_t misery;
       player_talent_t dark_void;
       const spell_data_t* dark_void_insanity;
+      player_talent_t intangibility;
+      player_talent_t mental_fortitude;
       player_talent_t auspicious_spirits;
       player_talent_t tormented_spirits;
-      player_talent_t dispersion;
+      player_talent_t mind_sear;
+      const spell_data_t* mind_sear_insanity;
       // Row 4
-      player_talent_t shadow_orbs;
+      player_talent_t coalescing_shadows;
       player_talent_t hallucinations;
       player_talent_t tithe_evasion;
       player_talent_t mind_spike;
       player_talent_t vampiric_insight;
-      player_talent_t intangibility;
-      player_talent_t mental_fortitude;
       // Row 5
       player_talent_t puppet_master;
       player_talent_t damnation;
@@ -291,7 +292,7 @@ public:
       // Row 8
       player_talent_t mindbender;
       player_talent_t idol_of_yshaarj;
-      player_talent_t pain_of_death;
+      player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
       player_talent_t derangement;
       player_talent_t void_eruption;
@@ -299,6 +300,7 @@ public:
       // Row 9
       player_talent_t fiending_dark;
       player_talent_t monomania;
+      player_talent_t pain_of_death;
       player_talent_t mastermind;
       player_talent_t insidious_ire;
       player_talent_t mind_devourer;
@@ -306,9 +308,9 @@ public:
       // Row 10
       player_talent_t shadowflame_prism;
       player_talent_t idol_of_cthun;
-      player_talent_t idol_of_yoggsaron;
       player_talent_t idol_of_nzoth;
       player_talent_t lunacy;
+      player_talent_t idol_of_yoggsaron;
       player_talent_t hungering_void;
       const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
       player_talent_t surrender_to_madness;
@@ -414,6 +416,7 @@ public:
   {
     propagate_const<real_ppm_t*> eternal_call_to_the_void;
     propagate_const<real_ppm_t*> idol_of_cthun;
+    propagate_const<real_ppm_t*> deathspeaker;
   } rppm;
 
   // Gains

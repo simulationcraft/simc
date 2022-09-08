@@ -1578,7 +1578,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     double tdm = priest_spell_t::composite_target_da_multiplier( t );
 
-    if ( t->health_percentage() < execute_percent )
+    if ( t->health_percentage() < execute_percent || priest().buffs.deathspeaker->check() )
     {
       if ( sim->debug )
       {
@@ -1610,6 +1610,11 @@ struct shadow_word_death_t final : public priest_spell_t
       {
         priest().buffs.death_and_madness_reset->expire();
       }
+    }
+
+    if ( priest().talents.shadow.deathspeaker.enabled() )
+    {
+      priest().buffs.deathspeaker->expire();
     }
   }
 
