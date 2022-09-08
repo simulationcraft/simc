@@ -77,7 +77,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
+    cooldown->charges = data().charges();
   }
 
   bool talbadars_stratagem_active() const
