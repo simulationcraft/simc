@@ -10976,34 +10976,20 @@ void shaman_t::init_action_list_elemental()
     precombat->add_action( "food" );
     precombat->add_action( "augmentation" );
     precombat->add_action( "snapshot_stats", "Snapshot raid buffed stats before combat begins and pre-potting is done." );
-    precombat->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled", "Summon Earth Elemental precombat if you haven't selected Primal Elementalist." );
-    precombat->add_talent( this, "Stormkeeper",
-                           "if=talent.stormkeeper.enabled&(raid_event.adds.count<3|raid_event.adds.in>50)",
-                           "Use Stormkeeper precombat unless some adds will spawn soon." );
-    precombat->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled", "Use Elemental Blast precombat." );
-    precombat->add_action( this, "Lava Burst", "if=!talent.elemental_blast.enabled", "Use Lava Burst precombat is Elemental Blast is not available." );
+    precombat->add_action( this, "Flametongue Weapon", "if=talent.improved_flametongue_weapon.enabled", "Ensure weapon enchant is applied." );
     precombat->add_action( "potion" );
 
     // "Default" APL controlling logic flow to specialized sub-APLs
-    def->add_action( this, "Wind Shear", "", "Interrupt of casts." );
-    def->add_action( "use_items" );
-    def->add_action( this, "Flame Shock", "if=!ticking" );
-    def->add_action( this, "Fire Elemental" );
-    def->add_talent( this, "Storm Elemental", "if=!pet.storm_elemental.active" );
-    def->add_action( this, "Earth Elemental", "if=!talent.primal_elementalist.enabled|!pet.fire_elemental.active&!pet.storm_elemental.active" );
-
+    def->add_action( "spiritwalkers_grace,moving=1,if=movement.distance>6", "Enable more movement." );
+    def->add_action( "wind_shear", "Interrupt of casts." );
     // Racials
     def->add_action( "blood_fury,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "berserking,if=!talent.ascendance.enabled|buff.ascendance.up" );
     def->add_action( "fireblood,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "ancestral_call,if=!talent.ascendance.enabled|buff.ascendance.up|cooldown.ascendance.remains>50" );
     def->add_action( "bag_of_tricks,if=!talent.ascendance.enabled|!buff.ascendance.up" );
-
-    // Covenants
-    def->add_action( "primordial_wave,if=!buff.primordial_wave.up" );
-    def->add_action( "vesper_totem,if=covenant.kyrian" );
-    def->add_action( "chain_harvest,if=covenant.venthyr" );
-    def->add_action( "fae_transfusion,if=covenant.night_fae" );
+    def->add_action( "use_items" );
+    def->add_action( "auto_attack" );
 
     // Pick APL to run
     def->add_action(
@@ -11011,33 +10997,89 @@ void shaman_t::init_action_list_elemental()
     def->add_action( "run_action_list,name=single_target" );
 
     // Aoe APL
-    aoe->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    aoe->add_action( this, "Flame Shock", "target_if=refreshable" );
-    aoe->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-    aoe->add_action( this, "Earth Shock", "if=(talent.echoes_of_great_sundering|runeforge.echoes_of_great_sundering.equipped)&!buff.echoes_of_great_sundering.up" );
-    aoe->add_action( this, "Lava Burst", "if=talent.master_of_the_elements.enabled&maelstrom>=50&buff.lava_surge.up|set_bonus.tier28_4pc" );
-    aoe->add_action( this, "Earthquake" );
-    aoe->add_action( "lava_beam,if=talent.ascendance.enabled" );
-    aoe->add_action( this, "Chain Lightning" );
-    aoe->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
-    aoe->add_action( this, "Frost Shock", "moving=1" );
+    aoe->add_action( "fire_elemental", "Keep your cooldowns rolling." );
+    aoe->add_action( "storm_elemental", "Keep your cooldowns rolling." );
+    aoe->add_action( "stormkeeper", "Keep your cooldowns rolling." );
+    aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&buff.surge_of_power.up&!buff."
+                     "splintered_elements.up",
+                     "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
+                     "keep that logic here)." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up", "Spread Flame Shock using Surge of Power." );
+    aoe->add_action( "ascendance",
+                     "JUST DO IT! "
+                     "https://i.kym-cdn.com/entries/icons/mobile/000/018/147/"
+                     "Shia_LaBeouf__Just_Do_It__Motivational_Speech_(Original_Video_by_LaBeouf__R%C3%B6nkk%C3%B6___"
+                     "Turner)_0-4_screenshot.jpg" );
+    aoe->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
+    aoe->add_action(
+        "earthquake,if=!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    aoe->add_action(
+        "elemental_blast,if=talent.echoes_of_great_sundering.enabled",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    aoe->add_action(
+        "earth_shock,if=talent.echoes_of_great_sundering.enabled",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    aoe->add_action( "lava_beam,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
+    aoe->add_action( "chain_lightning,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
+    aoe->add_action( "chain_lightning,if=buff.power_of_the_maelstrom.up",
+                     "Power of the Maelstrom is strong and should be used." );
+    aoe->add_action(
+        "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
+                     "Surge of Power should against many targets be used with Chain Lightning rather than Lava Burst." );
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
+        "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
+    aoe->add_action(
+        "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)",
+        "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
+    aoe->add_action( "icefury" );
+    aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
+    aoe->add_action( "lava_beam", "" );
+    aoe->add_action( "chain_lightning" );
+    aoe->add_action( "flame_shock,moving=1,target_if=refreshable" );
+    aoe->add_action( "frost_shock,moving=1" );
 
     // Single target APL
-    single_target->add_action( this, "Flame Shock", "target_if=refreshable" );
-    single_target->add_talent( this, "Stormkeeper", "if=talent.stormkeeper.enabled" );
-    single_target->add_talent( this, "Liquid Magma Totem", "if=talent.liquid_magma_totem.enabled" );
-    single_target->add_talent( this, "Ascendance", "if=talent.ascendance.enabled" );
-    single_target->add_action( this, "Lightning Bolt", "if=talent.stormkeeper.enabled&buff.stormkeeper.up&(talent.master_of_the_elements.enabled&buff.master_of_the_elements.up|!talent.master_of_the_elements)" );
-    single_target->add_action( this, "Lava Burst", "if=cooldown_react" );
-    single_target->add_action( this, "Earthquake", "if=(spell_targets.chain_lightning>1&!talent.echoes_of_great_sundering&!runeforge.echoes_of_great_sundering.equipped|buff.echoes_of_great_sundering.up)" );
-    single_target->add_action( this, "Earth Shock" );
-    single_target->add_talent( this, "Elemental Blast", "if=talent.elemental_blast.enabled" );
-    single_target->add_action( this, "Frost Shock", "if=talent.icefury.enabled&buff.icefury.up" );
-    single_target->add_talent( this, "Icefury", "if=talent.icefury.enabled" );
-    single_target->add_action( this, "Lightning Bolt" );
-    single_target->add_action( this, "Flame Shock", "moving=1,target_if=refreshable" );
-    single_target->add_action( this, "Flame Shock", "moving=1,if=movement.distance>6" );
-    single_target->add_action( this, "Frost Shock", "moving=1", "Frost Shock is our movement filler." );
+    single_target->add_action( "fire_elemental", "Keep your cooldowns rolling." );
+    single_target->add_action( "storm_elemental", "Keep your cooldowns rolling." );
+    single_target->add_action(
+        "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&!buff.splintered_elements.up",
+        "Use Primordial Wave as much as possible without wasting buffs." );
+    single_target->add_action( "flame_shock,target_if=min:dot.flame_shock.remains,if=refreshable,cycle_targets=1" );
+    single_target->add_action( "liquid_magma_totem", "Keep your cooldowns rolling." );
+    single_target->add_action( "stormkeeper,if=!buff.ascendance.up" );
+    single_target->add_action( "ascendance,if=!buff.stormkeeper.up" );
+    single_target->add_action( "lightning_bolt,if=buff.stormkeeper.up", "Stormkeeper is strong and should be used." );
+    single_target->add_action( "lightning_bolt,if=buff.surge_of_power.up", "Surge of Power is strong and should be used." );
+    single_target->add_action( "lava_burst,if=buff.windspeakers_lava_resurgence.up", "Windspeaker's Lava Resurgence is strong. Don't sit on it." );
+    single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up",
+                               "Lava Surge is neat. Utilize it." );
+    single_target->add_action(
+        "earthquake,if=buff.echoes_of_great_sundering.up",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    single_target->add_action(
+        "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.windspeakers_lava_resurgence.enabled",
+        "Use Earthquake against two enemies unless you have Windspeaker's Lava Resurgence." );
+    single_target->add_action( "elemental_blast" );
+    single_target->add_action( "earth_shock" );
+    single_target->add_action( "lava_burst,if=buff.flux_melting.up", "Utilize present buffs." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&(!talent.flux_melting.enabled|!buff.flux_melting.up)",
+                               "Spread out your Icefury usage if you can get more use out of accompanied buffs. This "
+                               "line might need something for spreading out Electrified Shocks too." );
+    single_target->add_action(
+        "lightning_bolt,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled",
+        "Utilize the Power of the Maelstrom buff if your Lightning Bolt is empowered by Unrelenting Calamity." );
+    single_target->add_action(
+        "lightning_bolt,if=pet.storm_elemental.active",
+        "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
+    single_target->add_action( "lava_burst" );
+    single_target->add_action( "icefury" );
+    single_target->add_action( "chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Casting Chain Lightning at two targets is mor efficient than Lightning Bolt." );
+    single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
+    single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
+    single_target->add_action( "flame_shock,moving=1,if=movement.distance>6" );
+    single_target->add_action( "frost_shock,moving=1", "Frost Shock is our movement filler." );
   }
 
 }
