@@ -2197,7 +2197,6 @@ void priest_t::init_spells_shadow()
   // Row 9
   talents.shadow.fiending_dark      = ST( "Fiending Dark" );  // NYI
   talents.shadow.monomania          = ST( "Monomania" );
-  talents.shadow.painbreakers_psalm = ST( "Painbreaker's Psalm" );
   talents.shadow.mastermind         = ST( "Mastermind" );       // NYI
   talents.shadow.insidious_ire      = ST( "Insidious Ire" );    // TODO: check values
   talents.shadow.mind_devourer      = ST( "Mind Devourer" );    // TODO: check values
