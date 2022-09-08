@@ -1288,7 +1288,7 @@ public:
   // Unholy
   void      trigger_festering_wound( const action_state_t* state, unsigned n_stacks = 1, proc_t* proc = nullptr );
   void      burst_festering_wound( player_t* target, unsigned n = 1 );
-  void      trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0 );
+  void      trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance = -1.0, bool death_trigger = false );
   // Start the repeated stacking of buffs, called at combat start
   void      start_cold_heart();
   void      start_inexorable_assault();
@@ -3853,7 +3853,7 @@ struct abomination_limb_covenant_damage_t : public death_knight_spell_t
           sim -> print_debug( "{} triggers rime via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_UNHOLY:
-          p() -> trigger_runic_corruption( p() -> procs.al_runic_corruption, 0, 1.0 );
+          p() -> trigger_runic_corruption( p() -> procs.al_runic_corruption, 0, 1.0, false );
           sim -> print_debug( "{} triggers runic corruption via abominations_limb", player -> name() );
           break;
         default:
@@ -3960,7 +3960,7 @@ struct abomination_limb_talent_damage_t : public death_knight_spell_t
           sim -> print_debug( "{} triggers rime via abominations_limb", player -> name() );
           break;
         case DEATH_KNIGHT_UNHOLY:
-          p() -> trigger_runic_corruption( p()->procs.al_runic_corruption, 0, 1.0 );
+          p() -> trigger_runic_corruption( p()->procs.al_runic_corruption, 0, 1.0, false );
           sim -> print_debug( "{} triggers runic corruption via abominations_limb", player -> name() );
           break;
         default:
@@ -8827,7 +8827,7 @@ void death_knight_t::trigger_soul_reaper_death( player_t* target )
     sim -> print_log( "Target {} died while affected by Soul Reaper, player {} gains Runic Corruption buff.",
                       target -> name(), name() );
 
-    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0 );
+    trigger_runic_corruption( procs.sr_runic_corruption, 0, 1.0, true );
     if ( sets -> has_set_bonus ( DEATH_KNIGHT_UNHOLY, T28, B4 ) )
     {
       buffs.harvest_time -> trigger();
@@ -8865,7 +8865,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
 
   if ( talent.unholy.pestilent_pustules.ok() )
   {
-    trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds );
+    trigger_runic_corruption( procs.pp_runic_corruption, 0, talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n_wounds, true );
   }
 
   // Triggers a bursting sores explosion for each wound on the target
@@ -9041,9 +9041,9 @@ void death_knight_t::trigger_runic_empowerment( double rpcost )
   log_rune_status( this );
 }
 
-void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance )
+void death_knight_t::trigger_runic_corruption( proc_t* proc, double rpcost, double override_chance, bool death_trigger )
 {
-  if ( ! spec.unholy_death_knight -> ok() )
+  if ( ! spec.unholy_death_knight -> ok() && death_trigger == false )
       return;
   double proc_chance = 0.0;
 
@@ -9120,7 +9120,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       // Scourge strike aoe is 1 - ( 0.9 ) ^ n targets to proc, or 10% for each target hit
       if ( dk -> talent.unholy.pestilent_pustules.ok() )
       {
-        dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n );
+        dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n, false );
       }
       td -> debuff.festering_wound -> decrement( n_executes );
     }
@@ -10612,9 +10612,12 @@ void death_knight_t::activate()
     }
 
     // On target death triggers
+    if ( talent.soul_reaper.ok() )
+      target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
+
     if ( specialization() == DEATH_KNIGHT_UNHOLY )
     {
-      if ( talent.soul_reaper.ok() || sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
+      if ( sets -> has_set_bonus( DEATH_KNIGHT_UNHOLY, T28, B2 ) )
       {
         target->register_on_demise_callback( this, [this]( player_t* t ) { trigger_soul_reaper_death( t ); } );
       }
