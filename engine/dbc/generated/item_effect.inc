@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.0.45335
-static const std::array<item_effect_t, 8129> __item_effect_data { {
+// Item effects, wow build 10.0.2.45480
+static const std::array<item_effect_t, 8140> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8117,7 +8117,7 @@ static const std::array<item_effect_t, 8129> __item_effect_data { {
   { 171203, 389175, 200217,   0,   1,    0,      -1,      -1 }, // Blazing Essence
   { 171205, 224781, 200218,   0,   1,    0,      -1,      -1 }, // +15 Fishing
   { 171210, 389302, 200236,   0,   1,    0,      -1,      -1 }, // Memory of Nulltheria
-  { 171265, 390124, 200472,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Ember
+  { 171265, 390124, 200472,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Fire
   { 171276, 390235, 200535,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Frost
   { 171277, 390241, 200536,   0,   1,    0,      -1,      -1 }, // Eagle Dive
   { 171304, 390240, 200536,   1,   1,    0,      -1,      -1 }, // Eagle Training
@@ -8129,9 +8129,20 @@ static const std::array<item_effect_t, 8129> __item_effect_data { {
   { 171357, 390643, 200563,   0,   0,    0,      -1,      -1 }, // Monarch's Ritual Stone
   { 171434, 390764, 200563,   1,   1,    0,      -1,      -1 }, // Monarch's Ritual Stone
   { 171477, 391525, 200673,   0,   1,    0,      -1,      -1 }, // Algeti's Gaping Maw
+  { 171638, 391612, 200676,   0,   1,    0,      -1,      -1 }, // Static Buildup
+  { 171604, 391621, 200679,   0,   0,    0,      -1,      -1 }, // Ancient Poison Cloud
+  { 171607, 391637, 200679,   1,   1,    0,      -1,      -1 }, // Essence of Solethus's Shade
+  { 171630, 391949, 200735,   0,   1,    0,      -1,      -1 }, // Magically Magical Faerie Flower
+  { 171632, 391968, 200741,   0,   1,    0,      -1,      -1 }, // Pipspark's Prestigious Pendant of Protection
+  { 171635, 392008, 200755,   0,   1,    0,      -1,      -1 }, // Gruffy's Dented Horn
+  { 171637, 392090, 200760,   0,   1,    0,      -1,      -1 }, // Unstable Arcane Cell
+  { 171643, 392208, 200858,   0,   1,    0,      -1,      -1 }, // Plume of the Forgotten
+  { 171644, 392237, 200859,   0,   1,    0,      -1,      -1 }, // Seasoned Hunter's Trophy
+  { 171647, 392359, 200868,   0,   0,    0,      -1,      -1 }, // Cataclysmic Punch
+  { 171654, 392409, 200880,   0,   1,    0,      -1,      -1 }, // Wind-Sealed Time Capsule
 } };
 
-static const std::array<uint16_t, 8129> __item_effect_id_index { {
+static const std::array<uint16_t, 8140> __item_effect_id_index { {
     410,   411,   412,   413,   414,   415,   416,   419,
     420,   421,   422,   423,   424,   425,   426,   427,
     428,   429,   430,   431,   434,   435,   436,   437,
@@ -9148,6 +9159,7 @@ static const std::array<uint16_t, 8129> __item_effect_id_index { {
    7963,  7947,  8077,  7949,  7827,  7927,  7967,  8072,
    8080,  7926,  7831,  7961,  7966,  7950,  7945,  8121,
    8122,  8123,  8125,  8126,  8127,  7969,  8002,  8124,
-   8128,
+   8128,  8130,  8131,  8132,  8133,  8134,  8135,  8129,
+   8136,  8137,  8138,  8139,
 } };
 

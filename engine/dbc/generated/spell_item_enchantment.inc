@@ -1,5 +1,5 @@
-// Item enchantment data, wow build 10.0.0.45335
-static const std::array<item_enchantment_data_t, 4555> __spell_item_ench_data { {
+// Item enchantment data, wow build 10.0.2.45480
+static const std::array<item_enchantment_data_t, 4559> __spell_item_ench_data { {
   {   13,      0, -1,   0,   1, 2, 50,   0,   0, {   2,   0,   0 }, {    1,    0,    0 }, {      0,      0,      0 }, {  1.0000,  0.0000,  0.0000 },      0, "Sharpened II"                      },
   {   14,      0, -1,   0,   7, 8, 50,   0,   0, {   2,   0,   0 }, {    2,    0,    0 }, {      0,      0,      0 }, {  0.3637,  0.0000,  0.0000 },      0, "Sharpened III"                     },
   {   15,      0, -1,   0,  25, 0, 50,   0,   0, {   4,   0,   0 }, {    8,    0,    0 }, {      0,      0,      0 }, {  0.0720,  0.0000,  0.0000 },   2831, "Reinforced (+$k1 Armor)"           },
@@ -4555,5 +4555,9 @@ static const std::array<item_enchantment_data_t, 4555> __spell_item_ench_data { 
   { 6672,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Mastery"                    },
   { 6673,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Illusion: Fire |A:Professions-Icon-Quality-Tier2-Small:20:20|a" },
   { 6674,      0,  0,   0,   0, 0, 0,   0,   0, {   3,   0,   0 }, {    0,    0,    0 }, { 389782,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Illusion - Fire |A:Professions-Icon-Quality-Tier3-Small:20:20|a" },
+  { 6675,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Air"                        },
+  { 6676,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Earth"                      },
+  { 6677,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Fire"                       },
+  { 6678,      0,  0,   0,   0, 0, 0,   0,   0, {   0,   0,   0 }, {    0,    0,    0 }, {      0,      0,      0 }, {  0.0000,  0.0000,  0.0000 },      0, "Primal Frost"                      },
 } };
 

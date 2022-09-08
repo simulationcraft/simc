@@ -1,4 +1,4 @@
-// Rank class spells, wow build 10.0.0.45335
+// Rank class spells, wow build 10.0.2.45480
 static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
@@ -37,6 +37,7 @@ static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
   { 12,    0, 320364,      0, "Immolation Aura"                   , "Rank 2" },
   { 12,  577, 320377,      0, "Immolation Aura"                   , "Rank 3" },
   { 10,  269, 323999,      0, "Invoke Xuen, the White Tiger"      , "Rank 2" },
+  {  2,    0, 327977,      0, "Judgment"                          , "Rank 2" },
   {  2,   66, 315867,      0, "Judgment"                          , "Rank 3" },
   {  2,   70, 315867,      0, "Judgment"                          , "Rank 3" },
   {  7,    0, 318044,      0, "Lightning Bolt"                    , "Rank 2" },
@@ -55,7 +56,6 @@ static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
   { 12,    0, 320379,      0, "Spectral Sight"                    , "Rank 2" },
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  269, 231627,      0, "Storm, Earth, and Fire"            , "Rank 2" },
-  { 11,  103, 231055,      0, "Tiger's Fury"                      , "Rank 2" },
   { 10,    0, 322113,      0, "Touch of Death"                    , "Rank 2" },
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  269, 325215,      0, "Touch of Death"                    , "Rank 3" },

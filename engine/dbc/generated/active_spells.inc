@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.0.45335
-static const std::array<active_class_spell_t, 263> __active_spells_data { {
+// Active class spells, wow build 10.0.2.45480
+static const std::array<active_class_spell_t, 261> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -13,10 +13,9 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  1,    0,  57755,      0, "Heroic Throw"                       },
   {  1,    0,  88163,      0, "Attack"                             },
   {  1,    0, 163201,      0, "Execute"                            },
-  {  1,   71, 163201,      0, "Execute"                            },
-  {  1,   72,   5308,      0, "Execute"                            },
+  {  1,   72,   5308, 163201, "Execute"                            },
   {  1,   72, 190411,   1680, "Whirlwind"                          },
-  {  1,   73, 163201,      0, "Execute"                            },
+  {  1,   73,  20243,      0, "Devastate"                          },
   {  2,    0,    642,      0, "Divine Shield"                      },
   {  2,    0,    853,      0, "Hammer of Justice"                  },
   {  2,    0,   5502,      0, "Sense Undead"                       },
@@ -183,7 +182,6 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  9,    0, 104773,      0, "Unending Resolve"                   },
   {  9,    0, 119898,      0, "Command Demon"                      },
   {  9,    0, 234153,      0, "Drain Life"                         },
-  {  9,    0, 268358,      0, "Demonic Circle"                     },
   {  9,    0, 334275,      0, "Curse of Exhaustion"                },
   {  9,    0, 342601,      0, "Ritual of Doom"                     },
   {  9,    0, 366222,      0, "Summon Sayaad"                      },
@@ -265,8 +263,8 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.0.45335
-static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
+// Pet active spells, wow build 10.0.2.45480
+static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
   {  3,  17253, "Bite"                               },
@@ -369,6 +367,7 @@ static const std::array<active_pet_spell_t, 133> __active_pet_spells_data { {
   {  9,  17767, "Shadow Bulwark"                     },
   {  9,  19483, "Immolation"                         },
   {  9,  19505, "Devour Magic"                       },
+  {  9,  19647, "Spell Lock"                         },
   {  9,  30151, "Pursuit"                            },
   {  9,  30213, "Legion Strike"                      },
   {  9,  54049, "Shadow Bite"                        },
