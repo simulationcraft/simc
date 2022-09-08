@@ -732,7 +732,7 @@ public:
     // Row 5
     player_talent_t acclimation;
     player_talent_t merciless_strikes;
-    player_talent_t antimagic_zone;
+    player_talent_t antimagic_zone; // NYI
     player_talent_t might_of_thassarian;
     player_talent_t clenching_grasp; // NYI
     // Row 6
