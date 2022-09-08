@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.0.45335 dragonflight-BETA (hotfix 2022-09-01/45335, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45480 dragonflight-BETA (hotfix 2022-09-08/45480, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -356,9 +356,9 @@ Attributes       : ........ ........ .......x ........   ........ ........ .....
                  : Allow Cast While Dead (23), Ignore Caster Damage Modifiers (221), Ignore Caster Healing Modifiers (312)
 Effects          :
 #1 (id=479676)   : School Damage (2): holy | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2874.795 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
+                   Base Value: 0 | Scaled Value: 5627.324 (coefficient=352.5287) | PvP Coefficient: 0.50000 | Radius: 0 - 5 yards | Target: Custom (18) -> AOE enemy (instant) (16)
 #2 (id=479677)   : Direct Heal (10) | Scaling Class: -8
-                   Base Value: 0 | Scaled Value: 2874.795 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 5627.324 (coefficient=352.5287) | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Custom (18) -> AOE friendly (31)
 Description      : Deals $s1 Holy Damage to enemies within $A1.
 
 Heals $s2 to allies within $A1. 
@@ -660,20 +660,16 @@ Effects          :
                    Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Rescue (360995)
                    Family Flags: 24
-#7 (id=905167)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Living Flame (361509)
-                   Family Flags: 22
-#8 (id=910334)   : Apply Aura (6) | Unknown(188)
+#7 (id=905167)   : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
-#9 (id=910335)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
+#8 (id=910334)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2010 | Target: Self (1)
                    Affected Spells (Category): Reversion (366155)
-#10 (id=996879)   : Apply Aura (6) | Hasted Cooldown Duration (416)
+#9 (id=910335)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rescue (360995), Temporal Anomaly (373861)
                    Family Flags: 24, 45
-#11 (id=1003936)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+#10 (id=996879)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Rescue (361195)
                    Family Flags: 36
@@ -955,6 +951,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 358268 | Target: Self (1)
 #10 (id=1015387)  : Apply Aura (6) | Mechanic Immunity (77)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#11 (id=1030729)  : Apply Aura (6) | Unknown(527)
+                   Base Value: 56 | Scaled Value: 56 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Launch yourself and gain $s2% increased movement speed for $d.
 
 Allows Evoker spells to be cast while moving. Does not affect empowered spells.
@@ -1259,7 +1257,7 @@ Cooldown         : 24 seconds
 Category         : 1948: Aerial Mastery (365933 effect#1), Blessing of the Bronze (381748 effect#1)
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Category Cooldown: 0.5 seconds
-Affecting spells : Preservation Evoker (356810 effects: #6, #10)
+Affecting spells : Preservation Evoker (356810 effects: #6, #9)
 Family Flags     : 24
 Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1309,7 +1307,7 @@ Spell Type       : None
 Spell Level      : 4
 Range            : 50000 yards
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2, #11), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Preservation Evoker (356810 effects: #1, #2, #10), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 36
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1416,7 +1414,7 @@ Duration         : 12 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Preservation Evoker (356810 effects: #1, #2, #7), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Preservation Evoker (356810 effects: #1, #2), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -1590,13 +1588,13 @@ Category         : 2035: Borrowed Time (376210 effect#1), Temporal Artificer (38
 Family Flags     : 29
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ .....x..   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Extra Initial Period (169), Ignore Healing Modifiers (219), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902963)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
@@ -1840,7 +1838,7 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 2010: Preservation Evoker (356810 effect#9), Time Keeper (371270 effect#1)
+Category         : 2010: Preservation Evoker (356810 effect#8), Time Keeper (371270 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ .......x 
@@ -2279,8 +2277,8 @@ Effects          :
 Description      : Consuming Essence Burst reduces the remaining cooldown of Fire Breath by $s1 sec.
 
 Name             : Power Nexus (id=369908) [Spell Family (224), Passive] 
-Talent Entry     : Preservation [tree=spec, row=8, col=2, max_rank=1, req_points=20]
-                 : Devastation [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Talent Entry     : Devastation [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+                 : Preservation [tree=spec, row=8, col=2, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -3180,7 +3178,9 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=983265)   : Apply Aura (6) | Dummy (4)
                    Base Value: 80 | Scaled Value: 80 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fire Breath heals a nearby injured ally for $s1% of damage done.
+#2 (id=1030563)  : Dummy (3)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
+Description      : Fire Breath heals a nearby injured ally for $s1% of damage done to up to $s2 targets.
 
 Name             : Recall (id=371806) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=4, col=2, max_rank=1, req_points=0]
@@ -3611,7 +3611,7 @@ Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 6 seconds
 Cooldown         : 6 seconds
-Affecting spells : Preservation Evoker (356810 effect#10), Hover (358267 effect#5), Nozdormu's Teachings (376237 effect#1)
+Affecting spells : Preservation Evoker (356810 effect#9), Hover (358267 effect#5), Nozdormu's Teachings (376237 effect#1)
 Family Flags     : 2, 45
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4246,7 +4246,6 @@ Description      : Azure Strike has a $s1% chance to cause an Essence Burst, mak
 
 Name             : Essence Attunement (id=375722) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=4, col=2, max_rank=1, req_points=0]
-                 : Effect#1 [op=set, values=(1, 1)]
                  : Devastation [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
@@ -5967,7 +5966,6 @@ Description      : Increases the duration of Permeating Chill by |cFFFFFFFF${$s1
 
 Name             : Walloping Blow (id=387341) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=4, max_rank=1, req_points=8]
-                 : Effect#1 [op=set, values=(15, 15)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
