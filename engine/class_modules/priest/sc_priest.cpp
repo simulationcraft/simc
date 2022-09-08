@@ -49,13 +49,6 @@ public:
       base_dd_multiplier *= ( 1.0 + priest().conduits.mind_devourer.percent() );
     }
 
-    // BUG: this is supposed to be removed but is still functioning on Beta
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/936
-    if ( priest().bugs )
-    {
-      cooldown->charges = data().charges() + priest().talents.shadow.vampiric_insight->effectN( 1 ).base_value();
-    }
-
     // Handles CD reduction
     apply_affecting_aura( p.talents.improved_mind_blast );
 
