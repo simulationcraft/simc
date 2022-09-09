@@ -9111,7 +9111,7 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
 
         if ( dk-> talent.unholy.festermight.ok() )
         {
-          dk->buffs.festermight->trigger( n_executes );
+          dk->buffs.festermight->trigger();
         }
       }
 
