@@ -9117,12 +9117,13 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       {
         dk -> trigger_runic_corruption( dk -> procs.pp_runic_corruption, 0, dk -> talent.unholy.pestilent_pustules -> effectN( 1 ).percent() * n, false );
       }
-      td -> debuff.festering_wound -> decrement( n_executes ); 
 
       if ( dk-> talent.unholy.festermight.ok() )
       {
         dk->buffs.festermight->trigger( n_executes );
       }
+
+      td -> debuff.festering_wound -> decrement( n_executes ); 
     }
   };
 
