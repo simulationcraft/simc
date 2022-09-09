@@ -69,7 +69,6 @@ public:
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
-    propagate_const<buff_t*> mind_spike;
   } buffs;
 
   priest_t& priest()
@@ -151,6 +150,7 @@ public:
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
+    propagate_const<buff_t*> mind_spike;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -488,6 +488,15 @@ public:
     propagate_const<proc_t*> coalescing_shadows_mind_flay;
     propagate_const<proc_t*> coalescing_shadows_shadow_word_pain;
     propagate_const<proc_t*> coalescing_shadows_shadowy_apparitions;
+    propagate_const<proc_t*> deathspeaker;
+    propagate_const<proc_t*> surge_of_darkness_vt;
+    propagate_const<proc_t*> surge_of_darkness_dp;
+    propagate_const<proc_t*> hungering_void_crit;
+    propagate_const<proc_t*> mind_spike_dot_clear;
+    propagate_const<proc_t*> mind_melt_waste;
+    propagate_const<proc_t*> idol_of_nzoth_swp;
+    propagate_const<proc_t*> idol_of_nzoth_vt;
+    propagate_const<proc_t*> idol_of_nzoth_dp;
   } procs;
 
   // Special
@@ -735,7 +744,7 @@ public:
   void remove_wrathful_faerie();
   void spawn_thing_from_beyond();
   void remove_wrathful_faerie_fermata();
-  void trigger_idol_of_nzoth( player_t* target );
+  void trigger_idol_of_nzoth( player_t* target, proc_t* proc );
   int shadow_weaving_active_dots( const player_t* target, const unsigned int spell_id ) const;
   double shadow_weaving_multiplier( const player_t* target, const unsigned int spell_id ) const;
   void trigger_unholy_transfusion_healing();
@@ -1117,6 +1126,7 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
+    parse_buff_effects( p().buffs.mind_spike, true );  // Mind Blast crit increase
   }
 
   template <typename... Ts>

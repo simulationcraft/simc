@@ -609,7 +609,7 @@ struct shadow_word_pain_t final : public priest_spell_t
     {
       trigger_power_of_the_dark_side();
 
-      priest().trigger_idol_of_nzoth( d->state->target );
+      priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_swp );
 
       if ( priest().talents.depth_of_the_shadows.enabled() )
       {
@@ -634,6 +634,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
         priest().buffs.deathspeaker->trigger();
+        priest().procs.deathspeaker->occur();
       }
     }
   }
@@ -882,13 +883,14 @@ struct vampiric_touch_t final : public priest_spell_t
             priest().gains.insanity_maddening_touch, d->state->action );
       }
 
-      priest().trigger_idol_of_nzoth( d->state->target );
+      priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_vt );
       vampiric_touch_heal->trigger( d->state->result_amount );
 
       // TODO: Copying over hard-code from MoP, needs testing
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
+        priest().procs.surge_of_darkness_vt->occur();
       }
     }
   }
@@ -1052,6 +1054,7 @@ struct devouring_plague_t final : public priest_spell_t
     if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
     {
       priest().buffs.surge_of_darkness->trigger();
+      priest().procs.surge_of_darkness_dp->occur();
     }
   }
 
@@ -1062,12 +1065,13 @@ struct devouring_plague_t final : public priest_spell_t
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
       devouring_plague_heal->trigger( d->state->result_amount );
-      priest().trigger_idol_of_nzoth( d->state->target );
+      priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_dp );
 
       // TODO: Copying over hard-code from MoP, needs testing
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
+        priest().procs.surge_of_darkness_dp->occur();
       }
     }
   }
@@ -1272,6 +1276,11 @@ struct void_bolt_t final : public priest_spell_t
       // The first Void Bolt on a target will extend Voidform, even if Hungering Void is not active on the target
       if ( ( td.buffs.hungering_void->up() || priest().bugs ) && priest().buffs.voidform->check() )
       {
+        if ( s->result == RESULT_CRIT )
+        {
+          priest().procs.hungering_void_crit->occur();
+        }
+
         timespan_t seconds_to_add_to_voidform =
             s->result == RESULT_CRIT ? hungering_void_crit_duration : hungering_void_base_duration;
         sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
@@ -1494,6 +1503,8 @@ struct mind_spike_t final : public priest_spell_t
         td.dots.shadow_word_pain->cancel();
         td.dots.vampiric_touch->cancel();
         td.dots.devouring_plague->cancel();
+
+        priest().procs.mind_spike_dot_clear->occur();
       }
 
       if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
@@ -1515,7 +1526,7 @@ struct mind_spike_t final : public priest_spell_t
 
       priest().buffs.coalescing_shadows->expire();
 
-      td.buffs.mind_spike->trigger();
+      priest().buffs.mind_spike->trigger();
     }
   }
 
@@ -2283,6 +2294,9 @@ void priest_t::create_buffs_shadow()
                                   ->set_duration( timespan_t::zero() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
+  buffs.mind_spike = make_buff( this, "mind_spike", talents.shadow.mind_spike->effectN( 2 ).trigger() )
+                         ->set_default_value_from_effect( 1 );
+
   // Tier Sets
   buffs.living_shadow_tier =
       make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
@@ -2673,13 +2687,14 @@ void priest_t::refresh_insidious_ire_buff( action_state_t* s )
   }
 }
 
-void priest_t::trigger_idol_of_nzoth( player_t* target )
+void priest_t::trigger_idol_of_nzoth( player_t* target, proc_t* proc )
 {
   if ( !talents.shadow.idol_of_nzoth.enabled() )
     return;
 
   if ( rng().roll( talents.shadow.idol_of_nzoth->effectN( 1 ).percent() ) )
   {
+    proc->occur();
     auto td = get_target_data( target );
     td->buffs.echoing_void->trigger();
     if ( !td->buffs.echoing_void_collapse->check() && rng().roll( talents.shadow.idol_of_nzoth->proc_chance() ) )

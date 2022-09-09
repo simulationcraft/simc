@@ -149,7 +149,7 @@ public:
 
       if ( priest().talents.shadow.mind_spike.enabled() )
       {
-        td.buffs.mind_spike->expire();
+        priest().buffs.mind_spike->expire();
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -176,26 +176,6 @@ public:
     }
 
     return mm;
-  }
-
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double crit = priest_spell_t::composite_target_crit_chance( target );
-
-    if ( priest().talents.shadow.mind_spike )
-    {
-      priest_td_t* td      = priest().get_target_data( target );
-      double crit_increase = td->buffs.mind_spike->check_stack_value();
-      crit += crit_increase;
-
-      if ( crit_increase > 0.0 )
-      {
-        sim->print_debug( "{} mind_blast crit chance increased by {} from mind_spike. crit={}", priest(), crit_increase,
-                          crit );
-      }
-    }
-
-    return crit;
   }
 
   timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
@@ -251,12 +231,16 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-             } );
+          } );
         }
       }
     }
     else if ( priest().buffs.vampiric_insight->up() )
     {
+      if ( priest().buffs.mind_melt->check() )
+      {
+        priest().procs.mind_melt_waste->occur();
+      }
       priest().buffs.vampiric_insight->decrement();
     }
     else
@@ -2184,9 +2168,6 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
           } );
   buffs.apathy =
       make_buff( *this, "apathy", p.talents.apathy->effectN( 1 ).trigger() )->set_default_value_from_effect( 1 );
-  buffs.mind_spike = make_buff( *this, "mind_spike",
-                                p.talents.shadow.mind_spike->effectN( 2 ).trigger() )
-                         ->set_default_value_from_effect( 1 );  // automagic handles the crit bonus on mind_blast
 
   target->register_on_demise_callback( &p, [ this ]( player_t* ) { target_demise(); } );
 }
@@ -2285,23 +2266,17 @@ void priest_t::create_gains()
 /** Construct priest procs */
 void priest_t::create_procs()
 {
+  // Discipline
+  procs.power_of_the_dark_side          = get_proc( "Power of the Dark Side Penance damage buffed" );
+  procs.power_of_the_dark_side_overflow = get_proc( "Power of the Dark Side lost to overflow" );
+  // Shadow - Talents
   procs.shadowy_apparition_vb                  = get_proc( "Shadowy Apparition from Void Bolt" );
   procs.shadowy_apparition_swp                 = get_proc( "Shadowy Apparition from Shadow Word: Pain" );
   procs.shadowy_apparition_dp                  = get_proc( "Shadowy Apparition from Devouring Plague" );
   procs.shadowy_apparition_mb                  = get_proc( "Shadowy Apparition from Mind Blast" );
-  procs.power_of_the_dark_side                 = get_proc( "Power of the Dark Side Penance damage buffed" );
-  procs.power_of_the_dark_side_overflow        = get_proc( "Power of the Dark Side lost to overflow" );
-  procs.dissonant_echoes                       = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.mind_devourer                          = get_proc( "Mind Devourer free Devouring Plague proc" );
-  procs.void_tendril_ecttv                     = get_proc( "Void Tendril proc from Eternal Call to the Void" );
-  procs.void_lasher_ecttv                      = get_proc( "Void Lasher proc from Eternal Call to the Void" );
   procs.void_tendril                           = get_proc( "Void Tendril proc from Idol of C'Thun" );
   procs.void_lasher                            = get_proc( "Void Lasher proc from Idol of C'Thun" );
-  procs.dark_thoughts_flay                     = get_proc( "Dark Thoughts proc from Mind Flay" );
-  procs.dark_thoughts_sear                     = get_proc( "Dark Thoughts proc from Mind Sear" );
-  procs.dark_thoughts_devouring_plague         = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
-  procs.dark_thoughts_missed                   = get_proc( "Dark Thoughts proc not consumed" );
-  procs.living_shadow_tier                     = get_proc( "Living Shadow T28 4-set procs" );
   procs.vampiric_insight                       = get_proc( "Vampiric Insight procs" );
   procs.vampiric_insight_overflow              = get_proc( "Vampiric Insight procs lost to overflow" );
   procs.vampiric_insight_missed                = get_proc( "Vampiric Insight procs not consumed" );
@@ -2310,6 +2285,24 @@ void priest_t::create_procs()
   procs.coalescing_shadows_mind_flay           = get_proc( "Coalescing Shadows from Mind Fay" );
   procs.coalescing_shadows_shadow_word_pain    = get_proc( "Coalescing Shadows from Shadow Word: Pain" );
   procs.coalescing_shadows_shadowy_apparitions = get_proc( "Coalescing Shadows from Shadowy Apparition" );
+  procs.deathspeaker                           = get_proc( "Shadow Word: Death resets from Deathspeaker" );
+  procs.surge_of_darkness_vt                   = get_proc( "Surge of Darkness from Vampiric Touch" );
+  procs.surge_of_darkness_dp                   = get_proc( "Surge of Darkness from Devouring Plague" );
+  procs.hungering_void_crit                    = get_proc( "Void Bolt crit with Hungering Void in Voidform" );
+  procs.mind_spike_dot_clear                   = get_proc( "Mind Spike hard casts that cleared out DoTs" );
+  procs.mind_melt_waste                        = get_proc( "Mind Blast that consumed Mind Melt and Vampiric Insight" );
+  procs.idol_of_nzoth_swp                      = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
+  procs.idol_of_nzoth_vt                       = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
+  procs.idol_of_nzoth_dp                       = get_proc( "Idol of N'Zoth procs from Devouring Plague" );
+  // Shadowlands
+  procs.dissonant_echoes               = get_proc( "Void Bolt resets from Dissonant Echoes" );
+  procs.void_tendril_ecttv             = get_proc( "Void Tendril proc from Eternal Call to the Void" );
+  procs.void_lasher_ecttv              = get_proc( "Void Lasher proc from Eternal Call to the Void" );
+  procs.dark_thoughts_flay             = get_proc( "Dark Thoughts proc from Mind Flay" );
+  procs.dark_thoughts_sear             = get_proc( "Dark Thoughts proc from Mind Sear" );
+  procs.dark_thoughts_devouring_plague = get_proc( "Dark Thoughts proc from T28 2-set Devouring Plague" );
+  procs.dark_thoughts_missed           = get_proc( "Dark Thoughts proc not consumed" );
+  procs.living_shadow_tier             = get_proc( "Living Shadow T28 4-set procs" );
 }
 
 /** Construct priest benefits */
@@ -3355,9 +3348,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
