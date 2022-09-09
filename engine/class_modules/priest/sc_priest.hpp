@@ -151,6 +151,7 @@ public:
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
     propagate_const<buff_t*> mind_spike;
+    propagate_const<buff_t*> piercing_shadows;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -1126,7 +1127,8 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.mind_spike, true );  // Mind Blast crit increase
+    parse_buff_effects( p().buffs.mind_spike, true );              // Mind Blast crit increase
+    parse_buff_effects( p().buffs.piercing_shadows, true, true );  // Damage increase
   }
 
   template <typename... Ts>
@@ -1299,9 +1301,13 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
+  bool triggers_piercing_shadows;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
+    : base_t( name, player, s ),
+      affected_by_shadow_weaving( false ),
+      ignores_automatic_mastery( false ),
+      triggers_piercing_shadows( true )
   {
     weapon_multiplier = 0.0;
   }
@@ -1347,6 +1353,12 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double save_health_percentage = s->target->health_percentage();
 
     base_t::impact( s );
+
+    // TODO: once this is properly working can remove the conditional
+    if ( triggers_piercing_shadows )
+    {
+      priest().buffs.piercing_shadows->trigger();
+    }
 
     if ( result_is_hit( s->result ) )
     {

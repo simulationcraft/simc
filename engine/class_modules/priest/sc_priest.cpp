@@ -342,6 +342,8 @@ struct divine_star_t final : public priest_spell_t
 
     add_child( _heal_spell );
     add_child( _dmg_spell );
+
+    triggers_piercing_shadows = false;
   }
 
   void execute() override
@@ -387,6 +389,8 @@ struct halo_t final : public priest_spell_t
 
     add_child( _heal_spell );
     add_child( _dmg_spell );
+
+    triggers_piercing_shadows = false;
   }
 
   void execute() override
@@ -901,6 +905,7 @@ struct mindgames_t final : public priest_spell_t
   {
     parse_options( options_str );
 
+    triggers_piercing_shadows  = false;
     affected_by_shadow_weaving = true;
 
     if ( priest().conduits.shattered_perceptions->ok() )
@@ -1654,7 +1659,8 @@ struct holy_nova_t final : public priest_spell_t
   holy_nova_t( priest_t& p, util::string_view options_str ) : priest_spell_t( "holy_nova", p, p.talents.holy_nova )
   {
     parse_options( options_str );
-    aoe = -1;
+    aoe                       = -1;
+    triggers_piercing_shadows = false;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override

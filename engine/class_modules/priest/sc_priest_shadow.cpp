@@ -116,6 +116,9 @@ struct mind_flay_base_t final : public priest_spell_t
     channeled                  = true;
     use_off_gcd                = true;
 
+    // BUG: most likely not intended
+    triggers_piercing_shadows = false;
+
     if ( priest().talents.shadow.coalescing_shadows.enabled() )
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 2 ).percent() +
@@ -240,6 +243,8 @@ struct dispersion_t final : public priest_spell_t
     hasted_ticks          = false;
     may_miss              = false;
 
+    triggers_piercing_shadows = false;
+
     if ( priest().talents.shadow.intangibility.enabled() )
     {
       cooldown->duration += priest().talents.shadow.intangibility->effectN( 1 ).time_value();
@@ -297,6 +302,8 @@ struct silence_t final : public priest_spell_t
     parse_options( options_str );
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
+
+    triggers_piercing_shadows = false;
 
     auto rank2 = p.find_rank_spell( "Silence", "Rank 2" );
     if ( rank2->ok() )
@@ -1307,6 +1314,8 @@ struct dark_ascension_t final : public priest_spell_t
     parse_options( options_str );
 
     may_miss = false;
+
+    triggers_piercing_shadows = false;
   }
 
   void execute() override
@@ -2279,7 +2288,14 @@ void priest_t::create_buffs_shadow()
 
   buffs.mind_flay_insanity = make_buff( this, "mind_flay_insanity", find_spell( 391401 ) )
                                  ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
+
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
+
+  // Value in buff effect is 0, overriding this to the base talent's values
+  // TODO: check if this is ever fixed
+  buffs.piercing_shadows =
+      make_buff( this, "piercing_shadows", talents.shadow.piercing_shadows->effectN( 2 ).trigger() )
+          ->set_default_value( talents.shadow.piercing_shadows->effectN( 1 ).percent() );
 
   // TODO: use default_value to parse increase instead of stacks
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
@@ -2295,6 +2311,7 @@ void priest_t::create_buffs_shadow()
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.mind_spike = make_buff( this, "mind_spike", talents.shadow.mind_spike->effectN( 2 ).trigger() )
+                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                          ->set_default_value_from_effect( 1 );
 
   // Tier Sets
@@ -2344,8 +2361,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.mind_melt              = ST( "Mind Melt" );
   talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
   talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
-  talents.shadow.mental_decay           = ST( "Mental Decay" );     // NYI
-  talents.shadow.dark_evangelism        = ST( "Dark Evangelism" );  // NYI
+  talents.shadow.mental_decay           = ST( "Mental Decay" );  // NYI
+  talents.shadow.dark_evangelism        = ST( "Dark Evangelism" );
   // Row 6
   talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
   talents.shadow.malediction        = ST( "Malediction" );
@@ -2358,20 +2375,20 @@ void priest_t::init_spells_shadow()
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
-  talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );        // NYI
+  talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );
   // Row 8
   talents.shadow.mindbender      = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj
-  talents.shadow.devoured_pride       = find_spell( 373316 );         // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair     = find_spell( 373317 );         // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger       = find_spell( 373318 );         // Haste - Enrage - NYI
-  talents.shadow.devoured_fear        = find_spell( 373319 );         // Big Personal Damage - Feared - NYI
-  talents.shadow.devoured_violence    = find_spell( 373320 );         // Pet Extension - Default
-  talents.shadow.deathspeaker         = ST( "Deathspeaker" );         // NYI
-  talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );  // NYI
-  talents.shadow.derangement          = ST( "Derangement" );          // NYI
-  talents.shadow.void_eruption        = ST( "Void Eruption" );        // TODO: confirm CD is 2m
+  talents.shadow.devoured_pride       = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair     = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger       = find_spell( 373318 );  // Haste - Enrage - NYI
+  talents.shadow.devoured_fear        = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence    = find_spell( 373320 );  // Pet Extension - Default
+  talents.shadow.deathspeaker         = ST( "Deathspeaker" );
+  talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );
+  talents.shadow.derangement          = ST( "Derangement" );    // NYI
+  talents.shadow.void_eruption        = ST( "Void Eruption" );  // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage = find_spell( 228360 );
   // Row 9
   talents.shadow.fiending_dark   = ST( "Fiending Dark" );  // NYI
