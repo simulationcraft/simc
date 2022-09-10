@@ -747,7 +747,7 @@ public:
     // Row 3
     player_talent_t forceful_winds;
     player_talent_t improved_maelstrom_weapon;
-    player_talent_t lava_lash2;
+    player_talent_t molten_assault;
     // Row 4
     player_talent_t unruly_winds; // TODO: Spell data still has conduit scaling (prolly non-issue)
     player_talent_t raging_maelstrom;
@@ -3643,7 +3643,7 @@ struct lava_lash_t : public shaman_attack_t
   lava_lash_t( shaman_t* player, util::string_view options_str ) :
     shaman_attack_t( "lava_lash", player, player->talent.lava_lash ),
     mw_dot( nullptr ),
-    max_spread_targets( as<unsigned>( p()->talent.lava_lash2->effectN( 2 ).base_value() ) )
+    max_spread_targets( as<unsigned>( p()->talent.molten_assault->effectN( 2 ).base_value() ) )
   {
     check_spec( SHAMAN_ENHANCEMENT );
     school = SCHOOL_FIRE;
@@ -3770,7 +3770,7 @@ struct lava_lash_t : public shaman_attack_t
 
   void trigger_flame_shock( const action_state_t* state ) const
   {
-    if ( !p()->talent.lava_lash2->ok() )
+    if ( !p()->talent.molten_assault->ok() )
     {
       return;
     }
@@ -9083,7 +9083,7 @@ void shaman_t::init_spells()
   // Row 3
   talent.forceful_winds = _ST( "Forceful Winds" );
   talent.improved_maelstrom_weapon = _ST( "Improved Maelstrom Weapon" );
-  talent.lava_lash2 = find_talent_spell( talent_tree::SPECIALIZATION, 334033 );
+  talent.molten_assault = _ST( "Molten Assault" );
   // Row 4
   talent.unruly_winds = _ST( "Unruly Winds" );
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
@@ -10575,7 +10575,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.elemental_assault );
   action.apply_affecting_aura( talent.elemental_fury );
   action.apply_affecting_aura( talent.improved_lightning_bolt );
-  action.apply_affecting_aura( talent.lava_lash2 );
+  action.apply_affecting_aura( talent.molten_assault );
   action.apply_affecting_aura( talent.natures_fury );
   action.apply_affecting_aura( talent.thundershock );
   action.apply_affecting_aura( talent.totemic_surge );
