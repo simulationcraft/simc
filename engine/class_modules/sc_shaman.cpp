@@ -2614,6 +2614,11 @@ struct spirit_bomb_t : public pet_melee_attack_t<T>
     this -> background = true;
     this -> aoe = -1;
   }
+
+  double composite_target_armor( player_t* ) const override
+  {
+    return 0.0;
+  }
 };
 
 void spirit_wolf_t::create_actions()
@@ -4334,6 +4339,11 @@ struct crash_lightning_t : public shaman_attack_t
         double v = 1.0 + p()->buff.gathering_storms->default_value * num_targets_hit;
         p()->buff.gathering_storms->trigger( 1, v );
       }
+    }
+
+    for ( auto pet : p()->pet.spirit_wolves.active_pets() )
+    {
+      debug_cast<pet::spirit_wolf_t*>( pet )->trigger_alpha_wolf();
     }
 
     p()->buff.cl_crash_lightning->expire();
