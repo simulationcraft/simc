@@ -757,7 +757,6 @@ public:
     player_talent_t doom_winds;
     player_talent_t sundering;
     player_talent_t overflowing_maelstrom;
-    player_talent_t focused_maelstrom;
     player_talent_t windfury_totem;
     player_talent_t fire_nova;
     player_talent_t hailstorm;
@@ -1896,7 +1895,7 @@ public:
     if ( mw_stacks && affected_by_maelstrom_weapon )
     {
       double stack_value = this->p()->talent.improved_maelstrom_weapon->effectN( 2 ).percent() +
-                           this->p()->talent.focused_maelstrom->effectN( 1 ).percent() +
+                           this->p()->talent.raging_maelstrom->effectN( 2 ).percent() +
                            this->p()->conduit.focused_lightning.percent();
 
       mw_multiplier = stack_value * mw_stacks;
@@ -9093,7 +9092,6 @@ void shaman_t::init_spells()
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
   talent.overflowing_maelstrom = _ST( "Overflowing Maelstrom" );
-  talent.focused_maelstrom = _ST( "Focused Maelstrom" );
   talent.windfury_totem = _ST( "Windfury Totem" );
   talent.fire_nova = _ST( "Fire Nova" );
   talent.hailstorm = _ST( "Hailstorm" );
