@@ -656,6 +656,7 @@ public:
 
     const spell_data_t* windfury;
     const spell_data_t* lava_lash_2;
+    const spell_data_t* stormbringer;
 
     // Restoration
     const spell_data_t* purification;
@@ -763,7 +764,7 @@ public:
     player_talent_t elemental_weapons;
     player_talent_t crashing_storms;
     // Row 6
-    player_talent_t stormbringer;
+    player_talent_t storms_wrath;
     player_talent_t crash_lightning;
     player_talent_t stormflurry;
     player_talent_t ice_strike;
@@ -1689,7 +1690,7 @@ public:
       may_proc_windfury( p->talent.windfury_weapon.ok() ),
       may_proc_flametongue( true ),
       may_proc_maelstrom_weapon( true ),
-      may_proc_stormbringer( p->talent.stormbringer.ok() ),
+      may_proc_stormbringer( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
       may_proc_icy_edge( false ),
@@ -1795,8 +1796,10 @@ public:
 
   virtual double stormbringer_proc_chance() const
   {
-    double base_chance = p()->talent.stormbringer->proc_chance() +
-                         p()->cache.mastery() * p()->mastery.enhanced_elements->effectN( 3 ).mastery_value();
+    double base_mul = p()->mastery.enhanced_elements->effectN( 3 ).mastery_value() *
+      ( 1.0 + p()->talent.storms_wrath->effectN( 1 ).percent() );
+    double base_chance = p()->spec.stormbringer->proc_chance() +
+                         p()->cache.mastery() * base_mul;
 
     return base_chance;
   }
@@ -2206,10 +2209,10 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
   virtual double stormbringer_proc_chance() const
   {
-    double base_chance = 0;
-
-    base_chance += p()->talent.stormbringer->proc_chance() +
-                   p()->cache.mastery() * p()->mastery.enhanced_elements->effectN( 3 ).mastery_value();
+    double base_mul = p()->mastery.enhanced_elements->effectN( 3 ).mastery_value() *
+      ( 1.0 + p()->talent.storms_wrath->effectN( 1 ).percent() );
+    double base_chance = p()->spec.stormbringer->proc_chance() +
+                         p()->cache.mastery() * base_mul;
 
     return base_chance;
   }
@@ -8992,6 +8995,7 @@ void shaman_t::init_spells()
   spec.critical_strikes   = find_specialization_spell( "Critical Strikes" );
   spec.dual_wield         = find_specialization_spell( "Dual Wield" );
   spec.enhancement_shaman = find_specialization_spell( "Enhancement Shaman" );
+  spec.stormbringer       = find_specialization_spell( "Stormbringer" );
 
   // Restoration
   spec.purification       = find_specialization_spell( "Purification" );
@@ -9096,7 +9100,7 @@ void shaman_t::init_spells()
   talent.elemental_weapons = _ST( "Elemental Weapons" );
   talent.crashing_storms = _ST( "Crashing Storms" );
   // Row 6
-  talent.stormbringer = _ST( "Stormbringer" );
+  talent.storms_wrath = _ST( "Storm's Wrath" );
   talent.crash_lightning = _ST( "Crash Lightning" );
   talent.stormflurry = _ST( "Stormflurry" );
   talent.ice_strike = _ST( "Ice Strike" );
@@ -9844,8 +9848,10 @@ void shaman_t::trigger_windfury_weapon( const action_state_t* state )
   }
 
   double proc_chance = spell.windfury_weapon->proc_chance();
-  proc_chance += cache.mastery() * mastery.enhanced_elements->effectN( 4 ).mastery_value();
+  double proc_mul = mastery.enhanced_elements->effectN( 4 ).mastery_value() *
+    ( 1.0 + talent.storms_wrath->effectN( 2 ).percent() );
 
+  proc_chance += cache.mastery() * proc_mul;
   proc_chance += buff.doom_winds_buff->stack_value();
 
   if ( buff.doom_winds_talent->up() )
