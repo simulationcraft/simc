@@ -1287,6 +1287,8 @@ public:
   bool affected_by_ns_cast_time;
   bool affected_by_enh_mastery_da;
   bool affected_by_enh_mastery_ta;
+  bool affected_by_lotfw_da;
+  bool affected_by_lotfw_ta;
 
   bool may_proc_bron;
   proc_t* bron_proc;
@@ -1307,6 +1309,8 @@ public:
       affected_by_ns_cast_time( false ),
       affected_by_enh_mastery_da( false ),
       affected_by_enh_mastery_ta( false ),
+      affected_by_lotfw_da( false ),
+      affected_by_lotfw_ta( false ),
       may_proc_bron( false ), bron_proc( nullptr )
   {
     ab::may_crit = true;
@@ -1337,6 +1341,8 @@ public:
 
     affected_by_enh_mastery_da = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 1 ) );
     affected_by_enh_mastery_ta = ab::data().affected_by( player->mastery.enhanced_elements->effectN( 5 ) );
+    affected_by_lotfw_da = ab::data().affected_by( player->find_spell( 384451 )->effectN( 1 ) );
+    affected_by_lotfw_ta = ab::data().affected_by( player->find_spell( 384451 )->effectN( 2 ) );
   }
 
   std::string full_name() const
@@ -1420,6 +1426,12 @@ public:
       m *= 1.0 + p()->cache.mastery_value();
     }
 
+    if ( affected_by_lotfw_da && p()->buff.legacy_of_the_frost_witch->check() &&
+         !p()->legendary.legacy_of_the_frost_witch.ok() )
+    {
+      m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -1430,6 +1442,12 @@ public:
     if ( affected_by_enh_mastery_ta )
     {
       m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    if ( affected_by_lotfw_ta && p()->buff.legacy_of_the_frost_witch->check() &&
+         !p()->legendary.legacy_of_the_frost_witch.ok() )
+    {
+      m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
     }
 
     return m;
@@ -2396,6 +2414,9 @@ struct pet_action_t : public T_ACTION
     return debug_cast<T_PET*>( this->player );
   }
 
+  shaman_t* o() const
+  { return debug_cast<shaman_t*>( p()->owner ); }
+
   void init() override
   {
     T_ACTION::init();
@@ -2616,9 +2637,21 @@ struct spirit_bomb_t : public pet_melee_attack_t<T>
   }
 
   double composite_target_armor( player_t* ) const override
+  { return 0.0; }
+
+  double action_da_multiplier() const override
   {
-    return 0.0;
+    double m = pet_melee_attack_t<T>::action_da_multiplier();
+
+    if ( this->o()->buff.legacy_of_the_frost_witch->check() &&
+         !this->o()->legendary.legacy_of_the_frost_witch.ok() )
+    {
+      m *= 1.0 + this->o()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
+    }
+
+    return m;
   }
+
 };
 
 void spirit_wolf_t::create_actions()
@@ -3269,12 +3302,11 @@ struct stormstrike_attack_t : public shaman_attack_t
       m *= p()->talent.stormflurry->effectN( 2 ).percent();
     }
 
-    if ( !stormflurry && p()->buff.legacy_of_the_frost_witch->check() )
+    if ( !stormflurry &&
+         p()->legendary.legacy_of_the_frost_witch.ok() &&
+         p()->buff.legacy_of_the_frost_witch->check() )
     {
-      double val = p()->legendary.legacy_of_the_frost_witch.ok()
-        ? p()->buff.legacy_of_the_frost_witch->stack_value()
-        : p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
-      m *= 1.0 + val;
+      m *= 1.0 + p()->buff.legacy_of_the_frost_witch->stack_value();
     }
 
     return m;
@@ -4012,7 +4044,10 @@ struct stormstrike_base_t : public shaman_attack_t
       } );
     }
 
-    p()->buff.legacy_of_the_frost_witch->expire();
+    if ( p()->legendary.legacy_of_the_frost_witch.ok() )
+    {
+      p()->buff.legacy_of_the_frost_witch->expire();
+    }
   }
 
   void reset() override
@@ -9676,6 +9711,7 @@ void shaman_t::trigger_legacy_of_the_frost_witch( unsigned consumed_stacks )
   {
     threshold = as<unsigned>( talent.legacy_of_the_frost_witch->effectN( 2 ).base_value() );
   }
+
   if ( lotfw_counter >= threshold )
   {
     lotfw_counter -= threshold;
@@ -10346,7 +10382,7 @@ void shaman_t::create_buffs()
   buff.doom_winds_debuff = make_buff<buff_t>( this, "doom_winds_debuff",
     buff.doom_winds_buff->data().effectN( 2 ).trigger() );
   buff.legacy_of_the_frost_witch = make_buff<buff_t>( this, "legacy_of_the_frost_witch",
-      find_spell( 335901 ) )
+      find_spell( legendary.legacy_of_the_frost_witch.ok() ? 335901 : 384451 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
   buff.primal_lava_actuators = make_buff<buff_t>( this, "primal_lava_actuators",
       find_spell( 335896 ) )
