@@ -773,6 +773,7 @@ public:
     player_talent_t chain_lightning2;
     player_talent_t hot_hand;
     player_talent_t swirling_maelstrom;
+    player_talent_t lashing_flames;
     // Row 8
     player_talent_t feral_spirit;
     // Row 9
@@ -1250,7 +1251,9 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
 
   // Enhancement
   dot.molten_weapon     = target->get_dot( "molten_weapon", p );
-  debuff.lashing_flames = make_buff( *this, "lashing_flames", spell_data_t::not_found() );
+  debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
+      ->set_trigger_spell( p->talent.lashing_flames )
+      ->set_default_value_from_effect( 1 );
 }
 
 // ==========================================================================
@@ -3724,6 +3727,8 @@ struct lava_lash_t : public shaman_attack_t
   void impact( action_state_t* state ) override
   {
     shaman_attack_t::impact( state );
+
+    td( state->target )->debuff.lashing_flames->trigger();
 
     trigger_flame_shock( state );
 
@@ -6680,11 +6685,11 @@ public:
     return m;
   }
 
-  double action_multiplier() const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = shaman_spell_t::action_multiplier();
+    double m = shaman_spell_t::composite_target_multiplier( t );
 
-    m *= 1.0 + td( target )->debuff.lashing_flames->stack_value();
+    m *= 1.0 + td( t )->debuff.lashing_flames->stack_value();
 
     return m;
   }
@@ -9087,6 +9092,7 @@ void shaman_t::init_spells()
   talent.unruly_winds = _ST( "Unruly Winds" );
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.feral_lunge = _ST( "Feral Lunge" );
+  talent.lashing_flames = _ST( "Lashing Flames" );
   talent.primal_lava_actuators = _ST( "Primal Lava Actuators" );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
