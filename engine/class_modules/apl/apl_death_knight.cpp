@@ -343,13 +343,13 @@ void unholy( player_t* p )
   default_->add_action( "auto_attack", "Evaluates current setup for the quantity of Apocalypse CDR effects" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "variable,name=apoc_timing,op=setif,value=((rune.time_to_2)*(4%debuff.festering_wound.stack))+gcd*(4-debuff.festering_wound.stack),value_else=(gcd*2)+2,condition=debuff.festering_wound.stack<4", "Variables" );
-  default_->add_action( "variable,name=garg_pooling,op=setif,value=((cooldown.summon_gargoyle.remains%gcd)%((rune+1)*(runic_power+20)))*100,value_else=gcd*2,condition=runic_power.deficit>60&cooldown.summon_gargoyle.remains<7" );
+  default_->add_action( "variable,name=garg_pooling,op=setif,value=(((cooldown.summon_gargoyle.remains+1)%gcd)%((rune+1)*(runic_power+20)))*100,value_else=gcd*2,condition=runic_power.deficit>60&cooldown.summon_gargoyle.remains<7" );
   default_->add_action( "variable,name=cd_timing,op=setif,value=duration<=pet.gargoyle.remains&pet.gargoyle.active,value_else=duration<=pet.army_ghoul.remains&pet.army_ghoul.active|duration<=pet.apoc_ghoul.remains&pet.apoc_ghoul.active|duration<=buff.dark_transformation.remains&buff.dark_transformation.up,condition=talent.summon_gargoyle&cooldown.gargoyle.remains<61" );
   default_->add_action( "variable,name=festermight_tracker,op=setif,value=debuff.festering_wound.stack>=3,value_else=debuff.festering_wound.stack>=4,condition=(buff.festermight.remains%(2*gcd))>=1&cooldown.apocalypse.remains>variable.apoc_timing&talent.festermight" );
   default_->add_action( "variable,name=aoe_setup_time,op=setif,value=(rune.time_to_2*gcd)*active_enemies,value_else=10,condition=talent.bursting_sores&(cooldown.plaguebearer.remains>(cooldown.any_dnd.remains+10)|!talent.plaguebearer)" );
   default_->add_action( "variable,name=build_wounds,value=debuff.festering_wound.stack<4" );
-  default_->add_action( "variable,name=pop_wounds,value=(variable.festermight_tracker&cooldown.apocalypse.remains>variable.apoc_timing|debuff.festering_wound.up&cooldown.unholy_assault.remains<30&talent.unholy_assault|cooldown.apocalypse.remains>variable.apoc_timing&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd*2|debuff.festering_wound.stack>4)" );
-  default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<variable.garg_pooling&talent.summon_gargoyle|cooldown.dark_transformation.remains<3&talent.eternal_agony" );
+  default_->add_action( "variable,name=pop_wounds,value=(variable.festermight_tracker&cooldown.apocalypse.remains>variable.apoc_timing|debuff.festering_wound.stack>=1&!talent.apocalypse|debuff.festering_wound.up&cooldown.unholy_assault.remains<30&talent.unholy_assault|cooldown.apocalypse.remains>variable.apoc_timing&talent.plaguebringer&talent.superstrain&buff.plaguebringer.remains<gcd*2|debuff.festering_wound.stack>4)" );
+  default_->add_action( "variable,name=pooling_runic_power,value=cooldown.summon_gargoyle.remains<variable.garg_pooling&talent.summon_gargoyle|talent.eternal_agony&cooldown.dark_transformation.remains<3" );
   default_->add_action( "variable,name=pooling_runes,value=talent.soul_reaper&rune<2&target.time_to_pct_35<5&fight_remains>(dot.soul_reaper.remains+5)|talent.eternal_agony&talent.ghoulish_frenzy&cooldown.dark_transformation.remains<4" );
   default_->add_action( "variable,name=st_planning,value=active_enemies<=3&(!raid_event.adds.exists|raid_event.adds.in>15)" );
   default_->add_action( "variable,name=adds_remain,value=active_enemies>=4&(!raid_event.adds.exists|raid_event.adds.exists&(raid_event.adds.remains>5|target.1.time_to_die>10))" );
@@ -396,9 +396,9 @@ void unholy( player_t* p )
   cooldowns->add_action( "apocalypse,if=active_enemies=1&debuff.festering_wound.stack>=4" );
   cooldowns->add_action( "apocalypse,target_if=max:debuff.festering_wound.stack,if=active_enemies>=2&debuff.festering_wound.stack>=4&cooldown.death_and_decay.remains&!death_and_decay.ticking" );
   cooldowns->add_action( "summon_gargoyle,if=runic_power.deficit<60" );
-  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(pet.apoc_ghoul.active&(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>20)|pet.gargoyle.active)" );
+  cooldowns->add_action( "dark_transformation,if=variable.st_planning&(!talent.unholy_command|talent.unholy_command&(!talent.unholy_command.rank=2|pet.gargoyle.active|!talent.apocalypse|pet.apoc_ghoul.active&(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>20)))" );
   cooldowns->add_action( "dark_transformation,if=variable.adds_remain|fight_remains<30" );
-  cooldowns->add_action( "empower_rune_weapon,if=variable.st_planning&(pet.gargoyle.active&pet.gargoyle.remains<=21|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up)|fight_remains<=21" );
+  cooldowns->add_action( "empower_rune_weapon,if=variable.st_planning&(pet.gargoyle.active&pet.gargoyle.remains<=21|!talent.summon_gargoyle&talent.army_of_the_damned&pet.army_ghoul.active&pet.apoc_ghoul.active|!talent.summon_gargoyle&!talent.army_of_the_damned&buff.dark_transformation.up|!talent.summon_gargoyle&!talent.summon_gargoyle&buff.dark_transformation.up)|fight_remains<=21" );
   cooldowns->add_action( "empower_rune_weapon,if=variable.adds_remain&buff.dark_transformation.up" );
   cooldowns->add_action( "abomination_limb_talent,if=variable.st_planning&rune<3" );
   cooldowns->add_action( "sacrificial_pact,if=active_enemies>=2&!buff.dark_transformation.up&cooldown.dark_transformation.remains>6|fight_remains<gcd" );
