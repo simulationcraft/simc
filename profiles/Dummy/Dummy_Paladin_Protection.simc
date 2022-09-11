@@ -1,0 +1,9 @@
+paladin="T28_Paladin_Protection"
+source=default
+spec=protection
+level=60
+race=draenei
+role=tank
+position=front
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

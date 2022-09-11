@@ -863,6 +863,7 @@ option_db_t::option_db_t()
     auto_path.push_back( path + "generators/PreRaids" );
     auto_path.push_back( path + "PreRaids" );
     auto_path.push_back( path + "generators/DungeonSlice" );
+    auto_path.push_back( path + "Dummy" );
     auto_path.push_back( path + "DungeonSlice" );
 
     // Add profiles for each tier

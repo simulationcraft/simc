@@ -1,0 +1,9 @@
+druid="T28_Druid_Balance"
+source=default
+spec=balance
+level=60
+race=troll
+role=spell
+position=back
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

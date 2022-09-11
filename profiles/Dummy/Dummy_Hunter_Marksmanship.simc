@@ -1,0 +1,9 @@
+hunter="T28_Hunter_Marksmanship"
+source=default
+spec=marksmanship
+level=60
+race=troll
+role=attack
+position=ranged_back
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation

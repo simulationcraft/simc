@@ -1,0 +1,10 @@
+rogue="T28_Rogue_Outlaw"
+source=default
+spec=outlaw
+level=60
+race=dwarf
+role=attack
+position=back
+professions=engineering=80/enchanting=125
+actions=use_items
+main_hand=drustlords_greataxe,id=178713,bonus_id=6807/1498/6646,enchant=sinful_revelation
