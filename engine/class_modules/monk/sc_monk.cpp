@@ -8074,7 +8074,7 @@ void monk_t::init_spells()
       talent.windwalker.shadowboxing_treads                 = find_talent_spell(talent_tree::SPECIALIZATION, 331512);
       talent.windwalker.inner_peace                         = _ST( "Inner Peace" );
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
-      talent.windwalker.serenity                            = _ST( "Serentiy" );
+      talent.windwalker.serenity                            = _ST( "Serenity" );
       talent.windwalker.meridian_strikes                    = _ST( "Meridian Strikes" );
       talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );
       // Row 6
