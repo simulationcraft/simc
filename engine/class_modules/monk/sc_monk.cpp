@@ -247,21 +247,6 @@ public:
       }
     }
 
-    // Allow this ability to be cast during SCK
-    if ( this->cast_during_sck && !this->background && !this->dual )
-    {
-      if ( this->usable_while_casting )
-      {
-        this->cast_during_sck       = false;
-        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
-      }
-      else
-      {
-        this->usable_while_casting  = true;
-        this->use_while_casting     = true;
-      }
-    }
-
     // If may_proc_bron is not overridden to trigger, check if it can trigger
     if ( !may_proc_bron )
       may_proc_bron = !this->background &&
@@ -287,6 +272,21 @@ public:
   void init_finished() override
   {
     ab::init_finished();
+
+    // Allow this ability to be cast during SCK
+    if ( this->cast_during_sck && !this->background && !this->dual )
+    {
+      if ( this->usable_while_casting )
+      {
+        this->cast_during_sck = false;
+        p()->sim->print_debug( "{}: cast_during_sck ignored because usable_while_casting = true", this->full_name() );
+      }
+      else
+      {
+        this->usable_while_casting = true;
+        this->use_while_casting    = true;
+      }
+    }
 
     if ( may_proc_bron )
       bron_proc = p()->get_proc( std::string( "Bron's Call to Action: " ) + full_name() );
