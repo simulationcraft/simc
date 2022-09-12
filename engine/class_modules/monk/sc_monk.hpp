@@ -1178,6 +1178,7 @@ public:
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
   void brew_cooldown_reduction( double );
+  bool affected_by_sef( spell_data_t data ) const; // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
