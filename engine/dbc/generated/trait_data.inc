@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.2.45480
+// Player trait definitions, wow build 10.0.2.45505
 static const std::array<trait_data_t, 2377> __trait_data_data { {
   { 1,  1, 94500, 74613, 1,  8, 99502, 383115,      0,  7,  2,  -1,                  "Concussive Blows", {    0,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1, 94501, 74612, 1,  8, 99503, 382549,      0,  7,  4,  -1,                     "Pain and Gain", {    0,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2379,7 +2379,7 @@ static const std::array<trait_data_t, 2377> __trait_data_data { {
   { 2, 13, 87674, 68648, 1,  8, 92676, 365937,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.2.45480
+// Player trait definition effect entries, wow build 10.0.2.45505
 static const std::array<trait_definition_effect_entry_t, 633> __trait_definition_effect_data { {
   { 83994, 0, 0, 52244 },
   { 84000, 0, 0, 52245 },

@@ -1957,6 +1957,8 @@ class SpellDataGenerator(DataGenerator):
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          ( 391710, 2 ), # Ferocious Frenzy damage
+          ( 391786, 2 ), # Tear Open Wounds damage
         ),
         # Demon Hunter:
         (

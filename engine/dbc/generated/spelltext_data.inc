@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.45480
-static const std::array<spelltext_data_t, 18540> __spelltext_data { {
+// Spell text, wow build 10.0.2.45505
+static const std::array<spelltext_data_t, 18542> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -18461,9 +18461,11 @@ static const std::array<spelltext_data_t, 18540> __spelltext_data { {
   { 391693, "From the milks of draenei-farmed, orchid-fed talbuk, clefthoof, and elekks, a wondrously pungent array of fine aged cheeses fills the air!", "Now everyone knows you're a big fan of cheese!", 0 },
   { 391700, "Rake also applies Rake to $s1 additional nearby $Ltarget:targets;.", 0, 0 },
   { 391709, "Ferocious Bite hits all nearby enemies affected by your Rip for $s1% of the damage dealt. Damage reduced beyond $s2 $Ltarget:targets;.", 0, 0 },
+  { 391710, "$@spelldesc391709", 0, 0 },
   { 391722, "$@spelldesc202031", "Damage dealt by Rip increased by $w1%.", 0 },
   { 391776, 0, "You have access to Wrathion's personal cloak collection.", 0 },
   { 391785, "Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.", 0, 0 },
+  { 391786, "$@spelldesc391785", 0, 0 },
   { 391872, "Tiger's Fury causes your next $s1 finishing $Lmove:moves; to restore $391874s1 combo $Lpoint:points;.", 0, 0 },
   { 391873, "$@spelldesc391872", "Your next finishing move restores $391874s1 combo $Lpoint:points;.", 0 },
   { 391874, "$@spelldesc391872", 0, 0 },
@@ -18542,11 +18544,11 @@ static const std::array<spelltext_data_t, 18540> __spelltext_data { {
   { 392615, "Launch a concealed grenade toward the target location, dealing $s1 Nature damage and coating the ground in a sticky substance for $d that slows enemy units within by $384485M1%.", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.45480
+// spelltext hotfix entries, wow build 10.0.2.45505
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.45480
+// Spell description variables, wow build 10.0.2.45505
 static const std::array<spelldesc_vars_data_t, 349> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -18899,7 +18901,7 @@ static const std::array<spelldesc_vars_data_t, 349> __spelldesc_vars_data { {
   {  392536, "$val=$?a317320[${$s1*0.5}][${$s1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.45480
+// spelldesc_vars hotfix entries, wow build 10.0.2.45505
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
