@@ -766,6 +766,18 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration = timespan_t::zero();
       school       = SCHOOL_PHYSICAL;
     }
+
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      // SEF pets benefit from Transfer the Power
+      if ( p()->o()->buff.transfer_the_power->check() )
+        am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
+
+      return am;
+    }
+
   };
 
   struct sef_fists_of_fury_tick_t : public sef_tick_action_t
@@ -972,6 +984,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       energize_type = action_energize::NONE;
     }
+
+    void execute() override
+    {
+      // Currently in game SEF clones do not copy SotWL
+      if ( !p()->o()->bugs )
+        sef_melee_attack_t::execute();
+    }
   };
 
   struct sef_strike_of_the_windlord_t : public sef_melee_attack_t
@@ -985,6 +1004,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       aoe                                          = -1;
       reduced_aoe_targets                          = 1;
       radius                                       = data().effectN( 2 ).base_value();
+    }
+
+    void execute() override
+    {
+      // Currently in game SEF clones do not copy SotWL
+      if ( !p()->o()->bugs )
+        sef_melee_attack_t::execute();
     }
   };
 

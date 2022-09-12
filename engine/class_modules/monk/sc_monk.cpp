@@ -499,8 +499,6 @@ public:
       auto sef_multiplier = ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       total_damage_amplifier *= sef_multiplier;
 
-      p()->sim->print_debug( " JEREMY sef_multiplier {}", sef_multiplier );
-
       // Coordinated Offensive
       if ( p()->conduit.coordinated_offensive->ok() )
         total_damage_amplifier *= ( 2 * ( 1 + p()->conduit.coordinated_offensive.percent() ) + 1 ) / 3;
@@ -908,7 +906,8 @@ public:
   void tick(dot_t* dot) override
   {
     ab::tick(dot);
-    if (!p()->bugs && get_td(dot->state->target)->debuff.bonedust_brew->up())
+
+    if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && get_td( dot->state->target )->debuff.bonedust_brew->up() )
         p()->bonedust_brew_assessor(dot->state);
   }
 
@@ -1028,17 +1027,11 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-        if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-        {
-          double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      // Storm, Earth, and Fire
+      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+          am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-          am *= 1 + sef_multiplier;
-        }
-      }
-
+      // Serenity
       if ( p()->buff.serenity->check() )
       {
         if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -1123,17 +1116,11 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
       case MONK_WINDWALKER:
 
-        if ( p()->buff.storm_earth_and_fire->check() )
-        {
-          // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-          if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-          {
-            double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+        // Storm, Earth, and Fire
+        if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+          am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-            am *= 1 + sef_multiplier;
-          }
-        }
-
+        // Serenity
         if ( p()->buff.serenity->check() )
         {
           if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -1413,17 +1400,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( ww_mastery && p()->buff.combo_strikes->check() )
         am *= 1 + p()->cache.mastery_value();
 
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-        if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-        {
-          double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      // Storm, Earth, and Fire
+      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-          am *= 1 + sef_multiplier;
-        }
-      }
-
+      // Serenity
       if ( p()->buff.serenity->check() )
       {
         if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -2579,6 +2560,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.rushing_jade_wind->trigger();
+
+    // Currently this triggers once on execute and not on ticks
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
   }
 };
 
@@ -7896,7 +7881,7 @@ void monk_t::init_spells()
   talent.general.expel_harm                  = _CT( "Expel Harm" );
   // Row 8
   talent.general.close_to_heart              = _CT( "Close to Heart" );
-  talent.general.escape_from_reality         = _CT( "Escape froom Reality" );
+  talent.general.escape_from_reality         = _CT( "Escape from Reality" );
   talent.general.windwalking                 = _CT( "Windwalking" );
   talent.general.fatal_touch                 = _CT( "Fatal Touch" );
   talent.general.generous_pour               = _CT( "Generous Pour" );
@@ -7954,7 +7939,7 @@ void monk_t::init_spells()
       talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
       talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
       talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
-      talent.brewmaster.shocking_brew              = _ST( "Shocking Blow" );
+      talent.brewmaster.shocking_blow              = _ST( "Shocking Blow" );
       talent.brewmaster.face_palm                  = _ST( "Face Palm" );
       // Row 8
       talent.brewmaster.dragonfire_brew         = _ST( "Dragonfire Brew" );
@@ -8009,7 +7994,7 @@ void monk_t::init_spells()
       // Row 6
       talent.mistweaver.nourishing_chi                      = _ST( "Nourishing Chi" );
       talent.mistweaver.overflowing_mists                   = _ST( "Overflowing Mists" );
-      talent.mistweaver.invoke_yulon_the_jade_serpent       = _ST( "Invooke Yu'lon, the Jade Serpent" );
+      talent.mistweaver.invoke_yulon_the_jade_serpent       = _ST( "Invoke Yu'lon, the Jade Serpent" );
       talent.mistweaver.invoke_chi_ji_the_red_crane         = _ST( "Invoke Chi-Ji, the Red Crane" );
       talent.mistweaver.zen_reverberation                   = _ST( "Zen Reverberation" );
       talent.mistweaver.accumulating_mist                   = _ST( "Accumulating Mist" );
@@ -8047,7 +8032,7 @@ void monk_t::init_spells()
       talent.mistweaver.tear_of_morning                     = _ST( "Tear of Morning" );
       talent.mistweaver.rising_mist                         = _ST( "Rising Mist" );
       talent.mistweaver.bountiful_brew                      = _ST( "Bountiful Brew" );
-      talent.mistweaver.attenuation                         = _ST ("Attenuation");
+      talent.mistweaver.attenuation                         = _ST( "Attenuation" );
   }
 
   // ========
@@ -9206,6 +9191,24 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
         active_actions.bonedust_brew_dmg->target = s->target;
         active_actions.bonedust_brew_dmg->execute();
     }
+}
+
+// monk_t::affected_by_sef ==================================================
+
+bool monk_t::affected_by_sef( spell_data_t data ) const
+{
+  // Storm, Earth, and Fire (monk_spell_t)
+  bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
+
+  // Currently SotWL is not affected by SEF and the pets do not copy the spell
+  if ( data.id() == 205414 || data.id() == 222029 )
+    affected = !bugs;
+
+  // Chi Explosion IS affected by SEF but needs to be overriden here manually
+  else if ( data.id() == 337342 )
+    affected = true;
+
+  return affected;
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================

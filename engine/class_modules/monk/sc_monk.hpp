@@ -487,7 +487,7 @@ public:
       player_talent_t invoke_niuzao_the_black_ox;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
-      player_talent_t shocking_brew;
+      player_talent_t shocking_blow;
       player_talent_t face_palm;
       // 20 Required
       // Row 8
@@ -1178,6 +1178,7 @@ public:
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
   void brew_cooldown_reduction( double );
+  bool affected_by_sef( spell_data_t data ) const; // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;
