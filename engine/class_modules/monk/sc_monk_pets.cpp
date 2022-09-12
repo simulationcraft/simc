@@ -984,6 +984,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
 
       energize_type = action_energize::NONE;
     }
+
+    void execute() override
+    {
+      // Currently in game SEF clones do not copy SotWL
+      if ( !p()->o()->bugs )
+        sef_melee_attack_t::execute();
+    }
   };
 
   struct sef_strike_of_the_windlord_t : public sef_melee_attack_t
@@ -997,6 +1004,13 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       aoe                                          = -1;
       reduced_aoe_targets                          = 1;
       radius                                       = data().effectN( 2 ).base_value();
+    }
+
+    void execute() override
+    {
+      // Currently in game SEF clones do not copy SotWL
+      if ( !p()->o()->bugs )
+        sef_melee_attack_t::execute();
     }
   };
 
