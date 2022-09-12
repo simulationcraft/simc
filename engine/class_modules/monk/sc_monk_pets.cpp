@@ -766,6 +766,18 @@ struct storm_earth_and_fire_pet_t : public monk_pet_t
       dot_duration = timespan_t::zero();
       school       = SCHOOL_PHYSICAL;
     }
+
+    double action_multiplier() const override
+    {
+      double am = sef_melee_attack_t::action_multiplier();
+
+      // SEF pets benefit from Transfer the Power
+      if ( p()->o()->buff.transfer_the_power->check() )
+        am *= 1 + p()->o()->buff.transfer_the_power->check_stack_value();
+
+      return am;
+    }
+
   };
 
   struct sef_fists_of_fury_tick_t : public sef_tick_action_t
