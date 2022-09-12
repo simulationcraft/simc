@@ -2400,6 +2400,9 @@ struct blackout_kick_t : public monk_melee_attack_t
               p()->proc.blackout_kick_cdr->occur();
           }
 
+          if ( p()->talent.windwalker.transfer_the_power->ok() )
+            p()->buff.transfer_the_power->trigger();
+
           p()->cooldown.rising_sun_kick->adjust( cd_reduction, true );
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
         }
