@@ -2579,6 +2579,10 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
     monk_melee_attack_t::execute();
 
     p()->buff.rushing_jade_wind->trigger();
+
+    // Currently this triggers once on execute and not on ticks
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
   }
 };
 
