@@ -499,8 +499,6 @@ public:
       auto sef_multiplier = ( 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent() ) * 3;
       total_damage_amplifier *= sef_multiplier;
 
-      p()->sim->print_debug( " JEREMY sef_multiplier {}", sef_multiplier );
-
       // Coordinated Offensive
       if ( p()->conduit.coordinated_offensive->ok() )
         total_damage_amplifier *= ( 2 * ( 1 + p()->conduit.coordinated_offensive.percent() ) + 1 ) / 3;
@@ -908,6 +906,7 @@ public:
   void tick(dot_t* dot) override
   {
     ab::tick(dot);
+
     if (!p()->bugs && get_td(dot->state->target)->debuff.bonedust_brew->up())
         p()->bonedust_brew_assessor(dot->state);
   }
@@ -1028,17 +1027,11 @@ struct monk_spell_t : public monk_action_t<spell_t>
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-        if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-        {
-          double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      // Storm, Earth, and Fire
+      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+          am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-          am *= 1 + sef_multiplier;
-        }
-      }
-
+      // Serenity
       if ( p()->buff.serenity->check() )
       {
         if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -1123,17 +1116,11 @@ struct monk_heal_t : public monk_action_t<heal_t>
 
       case MONK_WINDWALKER:
 
-        if ( p()->buff.storm_earth_and_fire->check() )
-        {
-          // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-          if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-          {
-            double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+        // Storm, Earth, and Fire
+        if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+          am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-            am *= 1 + sef_multiplier;
-          }
-        }
-
+        // Serenity
         if ( p()->buff.serenity->check() )
         {
           if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -1413,17 +1400,11 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
       if ( ww_mastery && p()->buff.combo_strikes->check() )
         am *= 1 + p()->cache.mastery_value();
 
-      if ( p()->buff.storm_earth_and_fire->check() )
-      {
-        // TODO: Check in 9.1 that Storm, Earth and Fire effects affect Chi Explosion
-        if ( base_t::data().affected_by( p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ) ) || base_t::data().id() == 337342 )
-        {
-          double sef_multiplier = p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
+      // Storm, Earth, and Fire
+      if ( p()->buff.storm_earth_and_fire->check() && p()->affected_by_sef( base_t::data() ) )
+        am *= 1 + p()->talent.windwalker.storm_earth_and_fire->effectN( 1 ).percent();
 
-          am *= 1 + sef_multiplier;
-        }
-      }
-
+      // Serenity
       if ( p()->buff.serenity->check() )
       {
         if ( base_t::data().affected_by( p()->talent.windwalker.serenity->effectN( 2 ) ) )
@@ -9210,6 +9191,24 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
         active_actions.bonedust_brew_dmg->target = s->target;
         active_actions.bonedust_brew_dmg->execute();
     }
+}
+
+// monk_t::affected_by_sef ==================================================
+
+bool monk_t::affected_by_sef( spell_data_t data ) const
+{
+  // Storm, Earth, and Fire (monk_spell_t)
+  bool affected = data.affected_by( talent.windwalker.storm_earth_and_fire->effectN( 1 ) );
+
+  // Currently SotWL is not affected by SEF and the pets do not copy the spell
+  if ( data.id() == 205414 || data.id() == 222029 )
+    affected = !bugs;
+
+  // Chi Explosion IS affected by SEF but needs to be overriden here manually
+  if ( data.id() == 337342 )
+    affected = true;
+
+  return affected;
 }
 
 // monk_t::retarget_storm_earth_and_fire ====================================
