@@ -907,7 +907,7 @@ public:
   {
     ab::tick(dot);
 
-    if (!p()->bugs && get_td(dot->state->target)->debuff.bonedust_brew->up())
+    if ( !p()->bugs && !ab::result_is_miss( dot->state->result ) && get_td( dot->state->target )->debuff.bonedust_brew->up() )
         p()->bonedust_brew_assessor(dot->state);
   }
 
@@ -9205,7 +9205,7 @@ bool monk_t::affected_by_sef( spell_data_t data ) const
     affected = !bugs;
 
   // Chi Explosion IS affected by SEF but needs to be overriden here manually
-  if ( data.id() == 337342 )
+  else if ( data.id() == 337342 )
     affected = true;
 
   return affected;
