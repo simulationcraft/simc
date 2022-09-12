@@ -7881,7 +7881,7 @@ void monk_t::init_spells()
   talent.general.expel_harm                  = _CT( "Expel Harm" );
   // Row 8
   talent.general.close_to_heart              = _CT( "Close to Heart" );
-  talent.general.escape_from_reality         = _CT( "Escape froom Reality" );
+  talent.general.escape_from_reality         = _CT( "Escape from Reality" );
   talent.general.windwalking                 = _CT( "Windwalking" );
   talent.general.fatal_touch                 = _CT( "Fatal Touch" );
   talent.general.generous_pour               = _CT( "Generous Pour" );
@@ -7939,7 +7939,7 @@ void monk_t::init_spells()
       talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
       talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
       talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
-      talent.brewmaster.shocking_brew              = _ST( "Shocking Blow" );
+      talent.brewmaster.shocking_blow              = _ST( "Shocking Blow" );
       talent.brewmaster.face_palm                  = _ST( "Face Palm" );
       // Row 8
       talent.brewmaster.dragonfire_brew         = _ST( "Dragonfire Brew" );
@@ -7994,7 +7994,7 @@ void monk_t::init_spells()
       // Row 6
       talent.mistweaver.nourishing_chi                      = _ST( "Nourishing Chi" );
       talent.mistweaver.overflowing_mists                   = _ST( "Overflowing Mists" );
-      talent.mistweaver.invoke_yulon_the_jade_serpent       = _ST( "Invooke Yu'lon, the Jade Serpent" );
+      talent.mistweaver.invoke_yulon_the_jade_serpent       = _ST( "Invoke Yu'lon, the Jade Serpent" );
       talent.mistweaver.invoke_chi_ji_the_red_crane         = _ST( "Invoke Chi-Ji, the Red Crane" );
       talent.mistweaver.zen_reverberation                   = _ST( "Zen Reverberation" );
       talent.mistweaver.accumulating_mist                   = _ST( "Accumulating Mist" );
@@ -8032,7 +8032,7 @@ void monk_t::init_spells()
       talent.mistweaver.tear_of_morning                     = _ST( "Tear of Morning" );
       talent.mistweaver.rising_mist                         = _ST( "Rising Mist" );
       talent.mistweaver.bountiful_brew                      = _ST( "Bountiful Brew" );
-      talent.mistweaver.attenuation                         = _ST ("Attenuation");
+      talent.mistweaver.attenuation                         = _ST( "Attenuation" );
   }
 
   // ========
