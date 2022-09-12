@@ -3357,6 +3357,12 @@ public:
                             p()->gain.soul_of_the_forest );
       }
 
+      if ( p()->talent.sudden_ambush.ok() )
+      {
+        p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
+                                          consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
+      }
+
       if ( free_cast == free_cast_e::CONVOKE )  // further effects are not processed for convoke fb
         return;
 
@@ -3381,12 +3387,6 @@ public:
            rng().roll( consumed * p()->talent.berserk->effectN( 1 ).percent() ) )
       {
         p()->resource_gain( RESOURCE_COMBO_POINT, berserk_cp, p()->gain.berserk );
-      }
-
-      if ( p()->talent.sudden_ambush.ok() )
-      {
-        p()->buff.sudden_ambush->trigger( 1, buff_t::DEFAULT_VALUE(),
-                                          consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
       }
     }
   }
@@ -4567,7 +4567,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger();
 
-    if ( !free_cast && p()->legendary.eye_of_fearful_symmetry->ok() )
+    if ( !free_cast && p()->talent.eye_of_fearful_symmetry.ok() )
       p()->buff.eye_of_fearful_symmetry->trigger();
   }
 };
