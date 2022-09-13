@@ -4769,6 +4769,8 @@ struct consumption_t : public death_knight_melee_attack_t
       {
         p() -> pets.endless_rune_waltz_pet -> ability.consumption -> execute_on_target( target );
       }
+      if ( p() -> talent.blood.everlasting_bond.ok() )
+        p() -> pets.everlasting_bond_pet -> ability.consumption -> execute_on_target( target );
     }
   }
 };
