@@ -1597,6 +1597,7 @@ class SpellDataGenerator(DataGenerator):
           ( 228645, 5 ), # Dancing Rune Weapon's Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
           ( 377588, 0 ), ( 377589, 0 ), # Ghoulish Frenzy buffs
+          ( 390271, 0 ), # Coil of Devastation debuff
           ( 193486, 0 ), # Runic Empowerment energize spell
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
