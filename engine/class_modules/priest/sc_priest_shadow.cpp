@@ -1486,7 +1486,7 @@ struct mind_spike_t final : public priest_spell_t
 
     if ( priest().talents.shadow.surge_of_darkness && priest().buffs.surge_of_darkness->check() )
     {
-      m *= 1 + priest().talents.shadow.surge_of_darkness_buff->effectN( 4 ).percent();
+      m *= 1 + priest().talents.shadow.surge_of_darkness_buff->effectN( 2 ).percent();
     }
 
     return m;
@@ -2220,9 +2220,9 @@ void priest_t::create_buffs_shadow()
   buffs.unfurling_darkness_cd =
       make_buff( this, "unfurling_darkness_cd",
                  talents.shadow.unfurling_darkness->effectN( 1 ).trigger()->effectN( 2 ).trigger() );
-  buffs.void_torrent = make_buff( this, "void_torrent", talents.shadow.void_torrent );
-  buffs.surge_of_darkness =
-      make_buff( this, "surge_of_darkness", talents.shadow.surge_of_darkness_buff );  // automagic handles the cast time
+  buffs.void_torrent      = make_buff( this, "void_torrent", talents.shadow.void_torrent );
+  buffs.surge_of_darkness = make_buff( this, "surge_of_darkness", talents.shadow.surge_of_darkness_buff )
+                                ->set_default_value_from_effect( 2 );  // automagic handles the cast time
 
   // TODO: Check Buff ID(s) for Mind Devourer
   if ( talents.shadow.mind_devourer.enabled() )
