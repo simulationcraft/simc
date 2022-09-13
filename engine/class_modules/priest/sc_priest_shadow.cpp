@@ -19,15 +19,13 @@ namespace spells
 {
 // ==========================================================================
 // Mind Sear
+// TODO: cancel channel if you run out of Insanity
 // ==========================================================================
 struct mind_sear_tick_t final : public priest_spell_t
 {
-  double insanity_gain;
   double coalescing_shadows_chance = 0.0;
 
-  mind_sear_tick_t( priest_t& p, const spell_data_t* s )
-    : priest_spell_t( "mind_sear_tick", p, s ),
-      insanity_gain( p.talents.shadow.mind_sear_insanity->effectN( 1 ).percent() )
+  mind_sear_tick_t( priest_t& p, const spell_data_t* s ) : priest_spell_t( "mind_sear_tick", p, s )
   {
     affected_by_shadow_weaving = true;
     background                 = true;
@@ -37,9 +35,6 @@ struct mind_sear_tick_t final : public priest_spell_t
     direct_tick                = false;
     use_off_gcd                = true;
     dynamic_tick_action        = true;
-    energize_type              = action_energize::PER_HIT;
-    energize_amount            = insanity_gain;
-    energize_resource          = RESOURCE_INSANITY;
     radius                     = data().effectN( 2 ).radius();  // base radius is 100yd, actual is stored in effect 2
 
     if ( priest().talents.shadow.coalescing_shadows.enabled() )
