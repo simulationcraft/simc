@@ -19,7 +19,7 @@ namespace spells
 {
 // ==========================================================================
 // Mind Sear
-// TODO: cancel channel if you run out of Insanity
+// TODO: if you don't go below 25 insanity until the last tick consume_resource properly
 // ==========================================================================
 struct mind_sear_tick_t final : public priest_spell_t
 {
@@ -91,6 +91,17 @@ struct mind_sear_t final : public priest_spell_t
       base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
+  }
+
+    bool ready() override
+  {
+    // You cannot start a cast if you have less than 1 ticks worth
+    if ( priest().resources.current[RESOURCE_INSANITY] < cost_per_tick(RESOURCE_INSANITY) )
+    {
+      return false;
+    }
+
+    return priest_spell_t::ready();
   }
 };
 
