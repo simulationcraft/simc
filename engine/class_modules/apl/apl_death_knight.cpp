@@ -360,12 +360,12 @@ void unholy( player_t* p )
   aoe->add_action( "any_dnd,if=!death_and_decay.ticking&(talent.bursting_sores&death_knight.fwounded_targets=active_enemies|death_knight.fwounded_targets=8|!talent.bursting_sores|raid_event.adds.remains<=11&raid_event.adds.remains>5|buff.dark_transformation.up&talent.infected_claws&(buff.empower_rune_weapon.up|buff.unholy_assault.up))" );
   aoe->add_action( "plaguebearer,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack>=4&cooldown.any_dnd.remains<3" );
   aoe->add_action( "apocalypse,target_if=min:debuff.festering_wound.stack,if=debuff.festering_wound.up&!death_and_decay.ticking&rune<3" );
+  aoe->add_action( "abomination_limb_talent,if=rune=0" );
   aoe->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=debuff.festering_wound.stack<3&(cooldown.plaguebearer.ready|cooldown.apocalypse.ready&cooldown.any_dnd.remains)" );
   aoe->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=!death_and_decay.ticking" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=death_and_decay.ticking" );
   aoe->add_action( "death_coil,if=!variable.pooling_runic_power&(rune<2&active_enemies<2+(talent.improved_death_coil*3+talent.coil_of_devastation+talent.rotten_touch)|!talent.epidemic)" );
   aoe->add_action( "epidemic,if=!variable.pooling_runic_power" );
-  aoe->add_action( "abomination_limb_talent,if=!death_and_decay.ticking&cooldown.any_dnd.remains&rune<3&cooldown.dark_transformation.remains<3" );
   aoe->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=cooldown.death_and_decay.remains>10" );
 
   cooldowns->add_action( "potion,if=(buff.potion.duration>=pet.gargoyle.remains&pet.gargoyle.active)|(!talent.summon_gargoyle|cooldown.summon_gargoyle.remains>60)&(buff.dark_transformation.up&buff.potion.duration>=buff.dark_transformation.remains|pet.army_ghoul.active&pet.army_ghoul.remains<=buff.potion.duration|pet.apoc_ghoul.active&pet.apoc_ghoul.remains<=buff.potion.duration)|fight_remains<=buff.potion.duration" );
