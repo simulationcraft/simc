@@ -388,7 +388,7 @@ public:
           p()->cooldown.invoke_xuen->adjust( p()->talent.windwalker.xuens_bond->effectN( 2 ).time_value(), true ); // Saved as -100
 
       if ( p()->talent.windwalker.meridian_strikes->ok() )
-          p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 25
+          p()->cooldown.touch_of_death->adjust( -10 * p()->talent.windwalker.meridian_strikes->effectN( 2 ).time_value(), true ); // Saved as 35
 
       if ( p()->talent.windwalker.fury_of_xuen->ok() )
           p()->buff.fury_of_xuen_stacks->trigger();
@@ -3679,9 +3679,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
-      // Bonus damage happens before any multipliers
-//      if ( p()->talent.windwalker.meridian_strikes.ok() )
-//        amount += p()->talent.windwalker.meridian_strikes->effectN(1).sc;
+      if ( p()->talent.windwalker.meridian_strikes.ok() )
+        amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN(1 ).percent();
 
       if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
         amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
