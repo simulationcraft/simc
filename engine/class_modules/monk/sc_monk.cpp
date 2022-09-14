@@ -1881,8 +1881,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     return c;
   }
 
-
-
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -3683,7 +3681,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->talent.windwalker.meridian_strikes.ok() )
-        amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN(1 ).percent();
+        amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
 
       if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
         amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
@@ -6128,6 +6126,8 @@ struct expel_harm_t : public monk_heal_t
     }
 
     /*
+    *  Unclear if this will be used yet
+    * 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
       if ( p()->talent.brewmaster.strength_of_spirit->ok() )
