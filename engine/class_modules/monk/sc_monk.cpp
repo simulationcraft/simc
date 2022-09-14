@@ -1868,19 +1868,6 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     return am;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = monk_melee_attack_t::composite_crit_chance();
-
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      if ( p()->buff.pressure_point->check() )
-        c += p()->buff.pressure_point->check_value();
-    }
-
-    return c;
-  }
-
   void execute() override
   {
     monk_melee_attack_t::execute();
@@ -4098,10 +4085,6 @@ struct roll_t : public monk_spell_t
     if ( player->legendary.swiftsure_wraps.ok() )
       cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
 
-    if ( player->talent.general.roll_out )
-    {
-        //TODO?
-    }
   }
 
 };
@@ -4124,12 +4107,6 @@ struct chi_torpedo_t : public monk_spell_t
 
     if ( player->legendary.swiftsure_wraps.ok() )
       cooldown->charges += (int)player->legendary.swiftsure_wraps->effectN( 1 ).base_value();
-
-
-    if (player->talent.general.roll_out)
-    {
-        //TODO?
-    }
 
   }
 
@@ -4193,8 +4170,6 @@ struct crackling_jade_lightning_t : public monk_spell_t
     min_gcd  = timespan_t::from_millis( 750 );
     gcd_type = gcd_haste_type::SPELL_HASTE;
 
-    if (p.talent.general.heavy_air->ok())
-      range += p.talent.general.heavy_air->effectN( 1 ).base_value();
   }
 
   timespan_t tick_time( const action_state_t* state ) const override
@@ -6076,7 +6051,7 @@ struct expel_harm_t : public monk_heal_t
 {
   expel_harm_dmg_t* dmg;
   expel_harm_t( monk_t& p, util::string_view options_str )
-    : monk_heal_t( "expel_harm", p, p.talent.general.expel_harm ),
+    : monk_heal_t( "expel_harm", p, p.spec.expel_harm ),
       dmg( new expel_harm_dmg_t( &p ) )
   {
     parse_options( options_str );
@@ -6092,12 +6067,25 @@ struct expel_harm_t : public monk_heal_t
     add_child( dmg );
   }
 
+  double composite_crit_chance_multiplier() const override
+  {
+    auto mm = monk_heal_t::composite_crit_chance_multiplier();
+
+    if ( p()->talent.general.vigorous_expulsion->ok() )
+      mm *= 1 + p()->talent.general.vigorous_expulsion->effectN( 2 ).percent();
+
+    return mm;
+  }
+
   double action_multiplier() const override
   {
     double am = monk_heal_t::action_multiplier();
 
     if ( p()->conduit.harm_denial->ok() )
       am *= 1 + p()->conduit.harm_denial.percent();
+
+    if ( p()->talent.general.vigorous_expulsion->ok() )
+      am *= 1 + p()->talent.general.vigorous_expulsion->effectN( 1 ).percent();
 
     return am;
   }
@@ -6142,7 +6130,7 @@ struct expel_harm_t : public monk_heal_t
       // option to simulate the amount of time that the results will use the full amount.
       if ( health_difference < result || !rng().roll( p()->user_options.expel_harm_effectiveness ) )
       {
-        double min_amount = 1 / p()->talent.general.expel_harm->effectN( 2 ).percent();
+        double min_amount = 1 / p()->spec.expel_harm->effectN( 2 ).percent();
         // Normally this would be using health_difference, but since Windwalkers will almost always be set
         // to zero, we want to use a range of 10 and the result to simulate varying amounts of health.
         result = rng().range( min_amount, result );
@@ -6150,7 +6138,7 @@ struct expel_harm_t : public monk_heal_t
 
     }
 
-    result *= p()->talent.general.expel_harm->effectN( 2 ).percent();
+    result *= p()->spec.expel_harm->effectN( 2 ).percent();
 
     if ( p()->specialization() == MONK_BREWMASTER )
     {
