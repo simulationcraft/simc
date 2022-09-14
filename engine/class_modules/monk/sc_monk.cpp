@@ -2683,8 +2683,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
         if ( p()->conduit.calculated_strikes->ok() )
           motc_multiplier += p()->conduit.calculated_strikes.percent();
-        else if ( p()->talent.windwalker.calculated_strikes->ok() )
+        /*else if ( p()->talent.windwalker.calculated_strikes->ok() )
           motc_multiplier += p()->talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+        */
 
         am *= 1 + ( motc_counter() * motc_multiplier );
       }
@@ -7784,8 +7785,9 @@ double monk_t::sck_modifier()
 
       if ( conduit.calculated_strikes->ok() )
         motc_multiplier += conduit.calculated_strikes.percent();
-      else if ( talent.windwalker.calculated_strikes->ok() )
+      /*else if ( talent.windwalker.calculated_strikes->ok() )
         motc_multiplier += talent.windwalker.calculated_strikes->effectN( 1 ).percent();
+      */
 
       if ( spec.spinning_crane_kick_2_ww->ok() )
         current *= 1 + ( mark_of_the_crane_counter() * motc_multiplier );
@@ -9189,6 +9191,8 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
     if (rng().roll(covenant.necrolord->proc_chance()))
     {
         double damage = s->result_amount * covenant.necrolord->effectN(1).percent();
+
+        // TODO: Attenuation
 
         if (conduit.bone_marrow_hops->ok())
             damage *= 1 + conduit.bone_marrow_hops.percent();
