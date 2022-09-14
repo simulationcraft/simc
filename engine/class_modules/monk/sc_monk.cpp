@@ -7854,18 +7854,18 @@ void monk_t::init_spells()
   // Row 2
   talent.general.roll                        = _CT( "Roll" );
   talent.general.calming_presence            = _CT( "Calming Presence" );
-  talent.general.paralysis                   = _CT( "Paralysis" );
+  talent.general.disable                     = _CT( "Disable" );
   // Row 3
   talent.general.tiger_tail_sweep            = _CT( "Tiger Tail Sweep" );
-  talent.general.heavy_air                   = _CT( "Heavy Air" );
+  talent.general.vigorous_expulsion          = _CT( "Vigorous Expulsion" );
   talent.general.vivify                      = find_talent_spell( talent_tree::CLASS, 231602 );
   talent.general.detox                       = _CT( "Detox" );
-  talent.general.disable                     = _CT( "Disable" );
-  talent.general.paralysis_rank_2            = find_talent_spell( talent_tree::CLASS, 344359 );
+  talent.general.paralysis                   = _CT( "Paralysis" );
   // Row 4
   talent.general.grace_of_the_crane          = _CT( "Grace of the Crane" );
   talent.general.vivacious_vivification      = _CT( "Vivacious Vivification" );
   talent.general.ferocity_of_xuen            = _CT( "Ferocity of Xuen" );
+  talent.general.paralysis_rank_2            = find_talent_spell( talent_tree::CLASS, 344359 );
   // Row 5
   talent.general.elusive_mists               = _CT( "Elusive Mists" );
   talent.general.transcendence               = _CT( "Transcendence" );
@@ -7882,12 +7882,12 @@ void monk_t::init_spells()
   talent.general.fortifying_brew_dodge_armor = find_talent_spell( talent_tree::CLASS, 388814 );
   talent.general.fortifying_brew_cooldown    = find_talent_spell( talent_tree::CLASS, 388813 );
   // Row 7
-  talent.general.roll_out                    = _CT( "Roll Out" );
+  talent.general.profound_rebuttal           = _CT( "Profound Rebuttal" );
   talent.general.diffuse_magic               = _CT( "Diffuse Magic" );
   talent.general.eye_of_the_tiger            = _CT( "Eye of the Tiger" );
   talent.general.dampen_harm                 = _CT( "Dampen Harm" );
   talent.general.touch_of_death              = find_talent_spell( talent_tree::CLASS, 322113 );
-  talent.general.expel_harm                  = _CT( "Expel Harm" );
+  talent.general.strength_of_spirit          = _CT( "Expel Harm" );
   // Row 8
   talent.general.close_to_heart              = _CT( "Close to Heart" );
   talent.general.escape_from_reality         = _CT( "Escape from Reality" );
@@ -8119,7 +8119,7 @@ void monk_t::init_spells()
   spec.crackling_jade_lightning  = find_class_spell( "Crackling Jade Lightning" );
   spec.critical_strikes          = find_specialization_spell( "Critical Strikes" );
   //spec.detox                     = find_specialization_spell( "Detox" ); // talent.general.detox
-  //spec.expel_harm                = find_class_spell( "Expel Harm" ); // talent.general.expel_harm
+  spec.expel_harm                = find_class_spell( "Expel Harm" ); 
   spec.expel_harm_2_brm          = find_rank_spell( "Expel Harm", "Rank 2", MONK_BREWMASTER );
   spec.expel_harm_2_mw           = find_rank_spell( "Expel Harm", "Rank 2", MONK_MISTWEAVER );
   spec.expel_harm_2_ww           = find_rank_spell( "Expel Harm", "Rank 2", MONK_WINDWALKER );
