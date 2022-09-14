@@ -9869,7 +9869,17 @@ void monk_t::combat_begin()
     }
 
     if ( talent.windwalker.power_strikes->ok() )
-      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () { buff.power_strikes->trigger(); } );
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () 
+      {        
+        // Currently you gain a Chi if the buff refreshes
+        if ( bugs && buff.power_strikes->up() )
+        {
+          double chi_gain = talent.windwalker.power_strikes->effectN( 1 ).base_value();
+          resource_gain( RESOURCE_CHI, chi_gain, gain.power_strikes );
+        }
+
+        buff.power_strikes->trigger(); 
+      } );
   }
 
   if ( specialization () == MONK_BREWMASTER )
