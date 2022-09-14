@@ -2958,18 +2958,6 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
     apply_dual_wield_two_handed_scaling();
   }
 
-  double bonus_da(const action_state_t* state) const override
-  {
-      double b = monk_melee_attack_t::bonus_da(state);
-
-      if ( p()->talent.windwalker.open_palm_strikes.ok() )
-      {
-          double open_palm_bonus = 0; // TODO
-          b += open_palm_bonus;
-      }
-      return b;
-  }
-
   double composite_target_multiplier( player_t* target ) const override
   {
     double m = monk_melee_attack_t::composite_target_multiplier( target );
@@ -2994,10 +2982,13 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
       am *= 1 + p()->sets->set( MONK_WINDWALKER, T28, B2 )->effectN( 1 ).percent();
 
     if ( p()->talent.windwalker.flashing_fists.ok() )
-        am *= 1 + p()->talent.windwalker.flashing_fists->effectN(1 ).percent();
+      am *= 1 + p()->talent.windwalker.flashing_fists->effectN(1 ).percent();
 
     if ( p()->buff.transfer_the_power->check() )
-        am *= 1 + p()->buff.transfer_the_power->check_stack_value();
+      am *= 1 + p()->buff.transfer_the_power->check_stack_value();
+
+    if ( p()->talent.windwalker.open_palm_strikes->ok() )
+      am *= 1 + p()->talent.windwalker.open_palm_strikes->effectN( 4 ).percent();
 
     return am;
   }
