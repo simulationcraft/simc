@@ -392,18 +392,18 @@ public:
       // Row 2
       player_talent_t roll;
       player_talent_t calming_presence;
-      player_talent_t paralysis;
+      player_talent_t disable;
       // Row 3
       player_talent_t tiger_tail_sweep;
-      player_talent_t heavy_air;
+      player_talent_t vigorous_expulsion;
       player_talent_t vivify;
       player_talent_t detox;
-      player_talent_t disable;
-      player_talent_t paralysis_rank_2;
+      player_talent_t paralysis;
       // Row 4
       player_talent_t grace_of_the_crane;
       player_talent_t vivacious_vivification;
       player_talent_t ferocity_of_xuen;
+      player_talent_t paralysis_rank_2;
       // 8 Required
       // Row 5
       player_talent_t elusive_mists;
@@ -421,12 +421,12 @@ public:
       player_talent_t fortifying_brew_dodge_armor;
       player_talent_t fortifying_brew_cooldown;
       // Row 7
-      player_talent_t roll_out;
+      player_talent_t profound_rebuttal;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
       player_talent_t dampen_harm;
       player_talent_t touch_of_death;
-      player_talent_t expel_harm;
+      player_talent_t strength_of_spirit;
       // 20 Required
       // Row 8
       player_talent_t close_to_heart;
@@ -637,7 +637,7 @@ public:
       player_talent_t whirling_dragon_punch;
       player_talent_t faeline_stomp;
       // Row 10
-      player_talent_t calculated_strikes;
+      player_talent_t attenuation;
       player_talent_t bone_marrow_hops;
       player_talent_t keefers_skyreach;
       player_talent_t invokers_delight;
@@ -657,7 +657,7 @@ public:
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
     //const spell_data_t* detox;
-    //const spell_data_t* expel_harm;
+    const spell_data_t* expel_harm;
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
