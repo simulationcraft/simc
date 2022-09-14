@@ -6064,6 +6064,9 @@ struct expel_harm_t : public monk_heal_t
     if ( p.spec.expel_harm_2_brm->ok() )
       cooldown->duration += p.spec.expel_harm_2_brm->effectN( 1 ).time_value();
 
+    if ( p.talent.general.profound_rebuttal->ok() )
+      crit_multiplier *= 1 + p.talent.general.profound_rebuttal->effectN( 1 ).percent();
+
     add_child( dmg );
   }
 
