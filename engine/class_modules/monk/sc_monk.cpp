@@ -1868,6 +1868,21 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
     return am;
   }
 
+  double composite_crit_chance() const override
+  {
+    double c = monk_melee_attack_t::composite_crit_chance();
+
+    if ( p()->specialization() == MONK_WINDWALKER )
+    {
+      if ( p()->buff.pressure_point->check() )
+        c += p()->buff.pressure_point->check_value();
+    }
+
+    return c;
+  }
+
+
+
   void execute() override
   {
     monk_melee_attack_t::execute();
