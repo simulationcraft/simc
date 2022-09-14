@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45480 dragonflight-BETA (hotfix 2022-09-08/45480, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45505 dragonflight-BETA (hotfix 2022-09-14/45505, no-networking)
 Name             : Incapacitating Roar (id=99) [Spell Family (7)] 
 Talent Entry     : Generic [tree=class, row=8, col=1, max_rank=1, req_points=20, select_idx=100]
 Class            : Druid
@@ -10570,6 +10570,7 @@ Class            : Druid
 School           : Physical
 Spell Type       : None
 Azerite Power Id : 112
+Triggered by     : Layered Mane (279555)
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -10587,6 +10588,30 @@ Effects          :
 #3 (id=735914)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ironfur increases your Agility by $s1, and has a $s2% chance to grant $s3 applications.
+
+Name             : Layered Mane (id=279555) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : None
+Duration         : 7 seconds
+Stacks           : 6 maximum
+Proc Chance      : 101%
+Attributes       : ........ ........ ..x..... ........   .....x.. ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
+                 : .......x ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ....x... ........ 
+                 : ........ ........ ........ ........   ..x..... ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Sheath (18), Allow While Stealthed (37), No Threat (42), Not a Proc (105), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Scales with Casting Item's Level (354)
+Effects          :
+#1 (id=735915)   : Apply Aura (6) | Attribute (29)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
+#2 (id=735916)   : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 279552
+Description      : $@spelldesc279552
+Tooltip          : Agility increased by $w1.
 
 Name             : Twin Moons (id=279620) [Spell Family (7), Passive, Hidden] 
 Talent Entry     : Balance [tree=spec, row=8, col=4, max_rank=1, req_points=20, select_idx=100]
@@ -16995,6 +17020,25 @@ Effects          :
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Ferocious Bite hits all nearby enemies affected by your Rip for $s1% of the damage dealt. Damage reduced beyond $s2 $Ltarget:targets;.
 
+Name             : Ferocious Frenzy (id=391710) [Spell Family (7)] 
+Class            : Druid
+School           : Physical
+Spell Type       : Melee
+Range            : 40 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221)
+Effects          :
+#1 (id=1029376)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc391709
+
 Name             : Sabertooth (id=391722) [Spell Family (7)] 
 Class            : Druid
 School           : Physical
@@ -17037,6 +17081,27 @@ Effects          :
 #2 (id=1029485)  : Apply Aura (6) | Dummy (4)
                    Base Value: 75 | Scaled Value: 75 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Primal Wrath consumes up to $s1 sec of Rip damage on targets it hits and deals $s2% of it instantly.
+
+Name             : Tear Open Wounds (id=391786) [Spell Family (5)] 
+Class            : Druid
+School           : Physical
+Spell Type       : Melee
+Range            : 100 yards
+Affecting spells : Combusting Engine (339986 effect#1)
+Family Flags     : 32
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ......x. 
+                 : ........ x....... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Ignore Line of Sight (66), Do Not Display Range (126), Ignore Damage Taken Modifiers (136), Ignore Caster Damage Modifiers (221), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1029486)  : School Damage (2): physical
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc391785
 
 Name             : Eye of Fearful Symmetry (id=391872) [Spell Family (7), Passive] 
 Talent Entry     : Feral [tree=spec, row=8, col=2, max_rank=2, req_points=20]

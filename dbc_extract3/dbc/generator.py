@@ -1960,6 +1960,7 @@ class SpellDataGenerator(DataGenerator):
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
+          ( 279555, 3 ), # Layered Mane buff
         ),
         # Demon Hunter:
         (

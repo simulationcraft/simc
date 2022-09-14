@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45480 dragonflight-BETA (hotfix 2022-09-08/45480, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45505 dragonflight-BETA (hotfix 2022-09-14/45505, no-networking)
 Name             : Eye of Kilrogg (id=126) [Spell Family (5)] 
 Class            : Warlock
 School           : Shadow
@@ -11727,7 +11727,7 @@ Attributes       : .......x ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=839575)   : Apply Aura (6) | Modify Damage Taken% from Caster's Spells (271)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Enemy (6)
-                   Affected Spells: Immolate (157736), Internal Combustion (266134)
+                   Affected Spells: Immolate (157736), Internal Combustion (266134), Tear Open Wounds (391786)
                    Family Flags: 4, 32
 Tooltip          : Damage taken from the Warlock's Immolate increased by $w1%.
 
