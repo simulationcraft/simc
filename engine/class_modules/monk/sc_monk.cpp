@@ -2332,6 +2332,26 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( result_is_miss( execute_state->result ) )
       return;
 
+    // Teachings of the Monastery
+    // Used by both Windwalker and Mistweaver
+    if ( p()->specialization() == MONK_WINDWALKER || p()->specialization() == MONK_MISTWEAVER )
+    {
+      player_talent_t totm = p()->specialization() == MONK_WINDWALKER ? p()->talent.windwalker.teachings_of_the_monastery 
+                                                                      : p()->talent.mistweaver.teachings_of_the_monastery;
+
+      if ( totm->ok() )
+      {
+        if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
+          p()->buff.teachings_of_the_monastery->expire();
+
+        if ( rng().roll( totm->effectN( 1 ).percent() ) )
+        {
+          p()->cooldown.rising_sun_kick->reset( true );
+          p()->proc.rsk_reset_totm->occur();
+        }
+      }
+    }
+
     switch ( p()->specialization() )
     {
       case MONK_BREWMASTER:
@@ -2349,16 +2369,12 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->buff.hit_scheme->trigger();
         break;
       }
+
       case MONK_MISTWEAVER:
       {
-        if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() &&
-             rng().roll( p()->talent.mistweaver.teachings_of_the_monastery->effectN( 1 ).percent() ) )
-        {
-          p()->cooldown.rising_sun_kick->reset( true );
-          p()->proc.rsk_reset_totm->occur();
-        }
         break;
       }
+
       case MONK_WINDWALKER:
       {
         if ( p()->spec.blackout_kick_3->ok() )
@@ -2388,15 +2404,11 @@ struct blackout_kick_t : public monk_melee_attack_t
           p()->cooldown.fists_of_fury->adjust( cd_reduction, true );
         }
 
-        if ( p()->talent.windwalker.teachings_of_the_monastery->ok() &&
-             rng().roll( p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent() ) )
-        {
-          p()->cooldown.rising_sun_kick->reset( true );
-          p()->proc.rsk_reset_totm->occur();
-        }
         break;
       }
+
       default:
+        assert( 0 );
         break;
     }
 
@@ -2422,16 +2434,23 @@ struct blackout_kick_t : public monk_melee_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
+    // Teachings of the Monastery
     // Used by both Windwalker and Mistweaver
-    if ( p()->buff.teachings_of_the_monastery )
+    if ( p()->specialization() == MONK_WINDWALKER || p()->specialization() == MONK_MISTWEAVER )
     {
-      if ( p()->buff.teachings_of_the_monastery->up() )
+      player_talent_t totm = p()->specialization() == MONK_WINDWALKER ? p()->talent.windwalker.teachings_of_the_monastery
+                                                                      : p()->talent.mistweaver.teachings_of_the_monastery;
+      if ( totm->ok()  )
       {
-        int stacks = p()->buff.teachings_of_the_monastery->current_stack;
-        p()->buff.teachings_of_the_monastery->expire();
+        if ( p()->buff.teachings_of_the_monastery && p()->buff.teachings_of_the_monastery->up() )
+        {
+          int stacks = p()->buff.teachings_of_the_monastery->current_stack;
 
-        for ( int i = 0; i < stacks; i++ )
-          bok_totm_proc->execute();
+          bok_totm_proc->set_target( s->target );
+
+          for ( int i = 0; i < stacks; i++ )
+            bok_totm_proc->execute();
+        }
       }
     }
 
