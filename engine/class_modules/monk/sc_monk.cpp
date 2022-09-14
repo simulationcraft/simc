@@ -2561,12 +2561,9 @@ struct rushing_jade_wind_t : public monk_melee_attack_t
 
     p()->buff.rushing_jade_wind->trigger();
 
-    if ( p()->specialization() == MONK_WINDWALKER )
-    {
-      // Currently this triggers once on execute and not on ticks
-      if ( p()->talent.windwalker.transfer_the_power->ok() )
-        p()->buff.transfer_the_power->trigger();
-    }
+    // Currently this triggers once on execute and not on ticks
+    if ( p()->talent.windwalker.transfer_the_power->ok() )
+      p()->buff.transfer_the_power->trigger();
   }
 };
 
@@ -2954,17 +2951,17 @@ struct fists_of_fury_tick_t : public monk_melee_attack_t
       return b;
   }
 
-  double composite_aoe_multiplier( const action_state_t* state ) const override
+  double composite_target_multiplier( player_t* target ) const override
   {
-    double cam = melee_attack_t::composite_aoe_multiplier( state );
+    double m = monk_melee_attack_t::composite_target_multiplier( target );
 
     // 2022-05-27 Patch 9.2.5 added an -11% effect that is to offset an increased to the single target damage
     // while trying to keep AoE damage the same.
     // ( 70% - 11% ) * 120% = 70.8%
-    if ( state->target != target )
-      cam *= ( p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 20 ).percent() );
+    if ( target != p()->target )
+      m *= ( p()->talent.windwalker.fists_of_fury->effectN( 6 ).percent() + p()->spec.windwalker_monk->effectN( 20 ).percent() );
 
-    return cam;
+    return m;
   }
 
   double action_multiplier() const override
