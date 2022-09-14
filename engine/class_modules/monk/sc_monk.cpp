@@ -6106,6 +6106,13 @@ struct expel_harm_t : public monk_heal_t
     double health_difference =
         p()->resources.max[ RESOURCE_HEALTH ] - std::max( p()->resources.current[ RESOURCE_HEALTH ], 0.0 );
 
+    if ( p()->talent.general.strength_of_spirit->ok() )
+    {
+      double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
+      s->result_total *= 1 + ( health_percent * p()->talent.general.strength_of_spirit->effectN( 1 ).percent() );
+    }
+
+    /*
     if ( p()->specialization() == MONK_BREWMASTER )
     {
       if ( p()->talent.brewmaster.strength_of_spirit->ok() )
@@ -6113,7 +6120,7 @@ struct expel_harm_t : public monk_heal_t
         double health_percent = health_difference / p()->resources.max[RESOURCE_HEALTH];
         s->result_total *= 1 + ( health_percent * p()->talent.brewmaster.strength_of_spirit->effectN( 1 ).percent() );
       }
-    }
+    }*/
 
     monk_heal_t::impact( s );
 
