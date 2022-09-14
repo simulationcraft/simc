@@ -8102,7 +8102,7 @@ void monk_t::init_spells()
       talent.windwalker.whirling_dragon_punch               = _ST( "Whirling Dragon Punch" );
       talent.windwalker.faeline_stomp                       = _ST( "Faeline Stomp" );
       // Row 10
-      talent.windwalker.calculated_strikes                  = _ST( "Calculated Strikes" );
+      talent.windwalker.attenuation                         = _ST( "Attenuation" );
       talent.windwalker.bone_marrow_hops                    = _ST( "Bone Marrow Hops" );
       talent.windwalker.keefers_skyreach                    = _ST( "Keefer's Skyreach" );
       talent.windwalker.invokers_delight                    = _ST( "Invoker's Delight" );
