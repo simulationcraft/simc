@@ -499,6 +499,7 @@ public:
     buff_t* dancing_rune_weapon;
     buff_t* hemostasis;
     buff_t* ossuary;
+    buff_t* perseverance_of_the_ebon_blade;
     buff_t* rune_tap;
     buff_t* tombstone;
     buff_t* vampiric_blood;
@@ -5279,7 +5280,11 @@ struct death_and_decay_base_t : public death_knight_spell_t
       relish_in_blood -> execute();
     }
 
-    p() -> buffs.crimson_scourge -> decrement();
+    if( p() -> buffs.crimson_scourge -> up() )
+    {
+      p() -> buffs.crimson_scourge -> decrement();
+      p() -> buffs.perseverance_of_the_ebon_blade -> trigger();
+    }
 
     if ( p() -> legendary.phearomones -> ok() )
     {
@@ -8815,7 +8820,7 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
     {
       if ( talent.blood.red_thirst.ok() )
       {
-        timespan_t sec = timespan_t::from_seconds( talent.blood.red_thirst -> effectN( 1 ).base_value() / 100 ) *
+        timespan_t sec = talent.blood.red_thirst -> effectN( 1 ).time_value() *
           actual_amount / talent.blood.red_thirst -> effectN( 2 ).base_value();
         cooldown.vampiric_blood -> adjust( -sec );
       }
@@ -10345,6 +10350,10 @@ void death_knight_t::create_buffs()
   buffs.hemostasis = make_buff( this, "hemostasis", talent.blood.hemostasis -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.blood.hemostasis )
         -> set_default_value_from_effect( 1 );
+
+  buffs.perseverance_of_the_ebon_blade = make_buff( this, "perseverance_of_the_ebon_blade", find_spell( 374748 ) )
+        ->set_default_value( talent.blood.perseverance_of_the_ebon_blade->effectN( 1 ).percent() )
+        ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY );
 
   buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
