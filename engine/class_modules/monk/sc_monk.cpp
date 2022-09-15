@@ -1800,7 +1800,7 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     : monk_melee_attack_t( name, p, p->passives.glory_of_the_dawn_damage )
   {
     background                = true;
-    //ww_mastery              = TODO;
+    ww_mastery                = true;
     //trigger_faeline_stomp   = TODO;
     //trigger_bountiful_brew  = TODO;
 
@@ -2054,10 +2054,11 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
 {
   blackout_kick_totm_proc( monk_t* p ) : monk_melee_attack_t( "blackout_kick_totm_proc", p, p->passives.totm_bok_proc )
   {
-    cooldown->duration = timespan_t::zero();
-    background = dual = true;
-    trigger_chiji     = true;
-    trigger_gcd       = timespan_t::zero();
+    ww_mastery          = false;
+    cooldown->duration  = timespan_t::zero();
+    background = dual   = true;
+    trigger_chiji       = true;
+    trigger_gcd         = timespan_t::zero();
   }
 
   void init_finished() override
