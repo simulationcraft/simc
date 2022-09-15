@@ -506,7 +506,6 @@ public:
     // Frost
     buff_t* breath_of_sindragosa;
     buff_t* cold_heart;
-    buff_t* frozen_pulse;
     buff_t* gathering_storm;
     buff_t* inexorable_assault;
     buff_t* killing_machine;
@@ -830,38 +829,40 @@ public:
       player_talent_t remorseless_winter;
       // Row 5
       player_talent_t improved_obliterate;
+      player_talent_t glacial_advance;
       player_talent_t pillar_of_frost;
       player_talent_t improved_rime;
+      player_talent_t frostscythe;
       // Row 6
       player_talent_t rage_of_the_frozen_champion;
       player_talent_t frigid_executioner;
-      player_talent_t improved_killing_machine;
-      player_talent_t inexorable_assault;
+      player_talent_t horn_of_winter;
+      player_talent_t frostreaper;
+      player_talent_t enduring_strength;
+      player_talent_t frostwhelps_aid;
       player_talent_t cold_heart;
-      player_talent_t frozen_pulse;
-      player_talent_t avalanche;
       player_talent_t biting_cold;
       player_talent_t chill_streak;
       // Row 7
       player_talent_t murderous_efficiency;
-      player_talent_t might_of_the_frozen_wastes;
-      player_talent_t enduring_strength;
-      player_talent_t frostwhelps_aid;
-      player_talent_t gathering_storm;
+      player_talent_t inexorable_assault;
+      player_talent_t icecap;
       player_talent_t empower_rune_weapon;
+      player_talent_t gathering_storm;
       player_talent_t enduring_chill;
       player_talent_t piercing_chill;
       // Row 8
-      player_talent_t glacial_advance;
+      player_talent_t might_of_the_frozen_wastes;
       player_talent_t bonegrinder;
+      player_talent_t shattering_strike;
+      player_talent_t avalanche;
+      player_talent_t icebreaker;
       player_talent_t everfrost;
-      player_talent_t frostscythe;
       // Row 9
       player_talent_t cold_blooded_rage;
       player_talent_t frostwyrms_fury;
       player_talent_t invigorating_freeze;
       // Row 10
-      player_talent_t icecap;
       player_talent_t obliteration;
       player_talent_t absolute_zero;
       player_talent_t breath_of_sindragosa;
@@ -1473,17 +1474,6 @@ inline void runes_t::consume( unsigned runes )
 
     waste_start = timespan_t::min();
   }
-
-  // Update Frozen Pulse buff
-  if ( dk -> talent.frost.frozen_pulse.ok() )
-  {
-    auto full_runes = static_cast<int>( dk -> resources.current[ RESOURCE_RUNE ] );
-    if ( ! dk -> buffs.frozen_pulse -> check() &&
-         full_runes < dk -> talent.frost.frozen_pulse -> effectN( 2 ).base_value() )
-    {
-      dk -> buffs.frozen_pulse -> trigger();
-    }
-  }
 }
 
 inline void runes_t::regenerate_immediate( timespan_t seconds )
@@ -1725,16 +1715,6 @@ inline void rune_t::fill_rune( gain_t* gain )
     runes -> dk -> sim -> print_debug( "{} rune waste, waste started, n_full_runes={}",
         runes -> dk -> name(), runes -> runes_full() );
     runes -> waste_start = runes -> dk -> sim -> current_time();
-  }
-
-  if ( runes -> dk -> talent.frost.frozen_pulse.ok() )
-  {
-    auto full_runes = static_cast<int>( runes -> dk -> resources.current[ RESOURCE_RUNE ] );
-    if ( runes -> dk -> buffs.frozen_pulse -> check() &&
-         full_runes >= runes -> dk -> talent.frost.frozen_pulse -> effectN( 2 ).base_value() )
-    {
-      runes -> dk -> buffs.frozen_pulse -> expire();
-    }
   }
 }
 
@@ -3632,17 +3612,7 @@ struct razorice_attack_t : public death_knight_melee_attack_t
   }
 };
 
-// Frozen Pulse =============================================================
-
-struct frozen_pulse_t : public death_knight_spell_t
-{
-  frozen_pulse_t( death_knight_t* player ) :
-    death_knight_spell_t( "frozen_pulse", player, player -> talent.frost.frozen_pulse -> effectN( 1 ).trigger() )
-  {
-    aoe = -1;
-    background = true;
-  }
-};
+// Inexorable Assault =======================================================
 
 struct inexorable_assault_damage_t : public death_knight_spell_t
 {
@@ -3663,11 +3633,9 @@ struct melee_t : public death_knight_melee_attack_t
 {
   int sync_weapons;
   bool first;
-  action_t* frozen_pulse;
 
   melee_t( const char* name, death_knight_t* p, int sw ) :
-    death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true ),
-    frozen_pulse( p -> talent.frost.frozen_pulse.ok() ? new frozen_pulse_t( p ) : nullptr )
+    death_knight_melee_attack_t( name, p ), sync_weapons( sw ), first ( true )
   {
     school            = SCHOOL_PHYSICAL;
     may_glance        = true;
@@ -3728,12 +3696,6 @@ struct melee_t : public death_knight_melee_attack_t
       {
         p() -> trigger_killing_machine( 0, p() -> procs.km_from_crit_aa,
                                            p() -> procs.km_from_crit_aa_wasted );
-      }
-
-      if ( weapon && p() -> buffs.frozen_pulse -> up() )
-      {
-        frozen_pulse -> set_target( s -> target );
-        frozen_pulse -> schedule_execute();
       }
 
       // Crimson scourge doesn't proc if death and decay is ticking
@@ -6203,9 +6165,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
       double m = death_knight_melee_attack_t::composite_target_multiplier ( target );
 
-      if ( get_td( target ) -> debuff.razorice -> stack() == 5 && p() -> talent.frost.shattering_strikes.ok() )
+      if ( get_td( target ) -> debuff.razorice -> stack() == 5 && p() -> talent.frost.shattering_strike.ok() )
       {
-          m *= 1.0 + p() -> talent.frost.shattering_strikes -> effectN().percent();
+          m *= 1.0 + p() -> talent.frost.shattering_strike -> effectN( 1 ).percent();
       }
 
     return m;
@@ -6225,7 +6187,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
       }
 
-      if ( p() -> talent.frost.shattering_strikes.ok() && td -> debuff.razorice -> stack() == 5)
+      if ( p() -> talent.frost.shattering_strike.ok() && td -> debuff.razorice -> stack() == 5)
       {
           td -> debuff.razorice -> expire();
       }
@@ -6235,11 +6197,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
-
-    if ( p() -> talent.frost.unleashed_frenzy.ok() )
-    {
-      p() -> buffs.unleashed_frenzy->trigger();
-    }
 
     if ( p() -> conduits.unleashed_frenzy.ok() )
     {
@@ -6367,9 +6324,15 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
       p() -> replenish_rune( 1, p() -> gains.obliteration );
     }
 
-    // These two are normally called through the standard action, but since we call damage event directly, they need to be manually called
+    // These three are normally called through the standard action, but since we call damage event directly, they need to be manually called
     p() -> buffs.icy_talons -> trigger();
     p() -> trigger_runic_empowerment( ga_rp_cost );
+    
+    if ( p() -> talent.frost.unleashed_frenzy.ok() )
+    {
+      p() -> buffs.unleashed_frenzy->trigger();
+    }
+
     // We also have to add the ga_rp_cost to insatiable hunger legendary accumulator
     if ( p() -> legendary.insatiable_hunger.ok() && p() -> buffs.swarming_mist -> check() )
     {
@@ -6633,8 +6596,10 @@ struct howling_blast_t : public death_knight_spell_t
 
     if ( p() -> talent.frost.icebreaker.ok() )
     {
-      m *= 1.0 + p() -> talent.frost.icebreaker->effectN().percent();
+      m *= 1.0 + p() -> talent.frost.icebreaker->effectN( 1 ).percent();
     }
+
+    return m;
   }
 
   double cost() const override
@@ -6871,7 +6836,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
     // Obliterate does not list Frozen Heart in it's list of affecting spells.  So mastery does not get applied automatically.
-    if ( p() -> talent.frost.improved_killing_machine.ok() && p() -> buffs.killing_machine -> up() )
+    if ( p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
     {
       m *= 1.0 + p() -> cache.mastery_value();
     }
@@ -6885,7 +6850,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     const death_knight_td_t* td = find_td( target );
     // Obliterate does not list razorice in it's list of affecting spells, so debuff does not get applied automatically.
-    if ( td && p() -> talent.frost.improved_killing_machine.ok() && p() -> buffs.killing_machine -> up() )
+    if ( td && p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
     {
       m *= 1.0 + td -> debuff.razorice -> check_stack_value();
     }
@@ -6929,7 +6894,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     if ( ! p() -> options.split_obliterate_schools &&
-         p() -> talent.frost.improved_killing_machine.ok() && p() -> buffs.killing_machine -> up() )
+         p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
     {
       school = SCHOOL_FROST;
     }
@@ -6969,7 +6934,7 @@ struct obliterate_t : public death_knight_melee_attack_t
       oh = new obliterate_strike_t( p, "obliterate_offhand", &( p -> off_hand_weapon ), data().effectN( 3 ).trigger() );
       add_child( oh );
     }
-    if ( p -> options.split_obliterate_schools && p -> talent.frost.improved_killing_machine.ok() )
+    if ( p -> options.split_obliterate_schools && p -> talent.frost.frostreaper.ok() )
     {
       km_mh = new obliterate_strike_t( p, "obliterate_km", &( p -> main_hand_weapon ), mh_data );
       km_mh -> school = SCHOOL_FROST;
@@ -8788,6 +8753,11 @@ double death_knight_t::resource_loss( resource_e resource_type, double amount, g
 
     buffs.icy_talons -> trigger();
 
+    if ( talent.frost.unleashed_frenzy.ok() )
+    {
+      buffs.unleashed_frenzy -> trigger();
+    }
+
     // Effects that only trigger if resources were spent
     if ( actual_amount > 0 )
     {
@@ -9895,38 +9865,40 @@ void death_knight_t::init_spells()
   talent.frost.remorseless_winter = find_talent_spell( talent_tree::SPECIALIZATION, "Remorseless Winter" );
   // Row 5
   talent.frost.improved_obliterate = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Obliterate" );
+  talent.frost.glacial_advance = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Advance" );
   talent.frost.pillar_of_frost = find_talent_spell( talent_tree::SPECIALIZATION, "Pillar of Frost" );
   talent.frost.improved_rime = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Rime" );
+  talent.frost.frostscythe = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   // Row 6
   talent.frost.rage_of_the_frozen_champion = find_talent_spell( talent_tree::SPECIALIZATION, "Rage of the Frozen Champion" );
   talent.frost.frigid_executioner = find_talent_spell( talent_tree::SPECIALIZATION, "Frigid Executioner" );
-  talent.frost.improved_killing_machine = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Killing Machine" );
-  talent.frost.inexorable_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
+  talent.frost.horn_of_winter = find_talent_spell( talent_tree::SPECIALIZATION, "Horn of Winter" );
+  talent.frost.frostreaper = find_talent_spell( talent_tree::SPECIALIZATION, "Frostreaper" );
+  talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
+  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
   talent.frost.cold_heart = find_talent_spell( talent_tree::SPECIALIZATION, "Cold Heart" );
-  talent.frost.frozen_pulse = find_talent_spell( talent_tree::SPECIALIZATION, "Frozen Pulse" );
-  talent.frost.avalanche = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
   talent.frost.biting_cold = find_talent_spell( talent_tree::SPECIALIZATION, "Biting Cold" );
   talent.frost.chill_streak = find_talent_spell( talent_tree::SPECIALIZATION, "Chill Streak" );
   // Row 7
   talent.frost.murderous_efficiency = find_talent_spell( talent_tree::SPECIALIZATION, "Murderous Efficiency" );
-  talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
-  talent.frost.enduring_strength = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Strength" );
-  talent.frost.frostwhelps_aid = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwhelp's Aid" );
-  talent.frost.gathering_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
+  talent.frost.inexorable_assault = find_talent_spell( talent_tree::SPECIALIZATION, "Inexorable Assault" );
+  talent.frost.icecap = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
   talent.frost.empower_rune_weapon = find_talent_spell( talent_tree::SPECIALIZATION, "Empower Rune Weapon" );
+  talent.frost.gathering_storm = find_talent_spell( talent_tree::SPECIALIZATION, "Gathering Storm" );
   talent.frost.enduring_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Enduring Chill" );
   talent.frost.piercing_chill = find_talent_spell( talent_tree::SPECIALIZATION, "Piercing Chill" );
   // Row 8
-  talent.frost.glacial_advance = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Advance" );
+  talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
   talent.frost.bonegrinder = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
+  talent.frost.shattering_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Strike" );
+  talent.frost.avalanche = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
+  talent.frost.icebreaker = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
   talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
-  talent.frost.frostscythe = find_talent_spell( talent_tree::SPECIALIZATION, "Frostscythe" );
   // Row 9
   talent.frost.cold_blooded_rage = find_talent_spell( talent_tree::SPECIALIZATION, "Cold-Blooded Rage" );
   talent.frost.frostwyrms_fury = find_talent_spell( talent_tree::SPECIALIZATION, "Frostwyrm's Fury" );
   talent.frost.invigorating_freeze = find_talent_spell( talent_tree::SPECIALIZATION, "Invigorating Freeze" );
   // Row 10
-  talent.frost.icecap = find_talent_spell( talent_tree::SPECIALIZATION, "Icecap" );
   talent.frost.obliteration = find_talent_spell( talent_tree::SPECIALIZATION, "Obliteration" );
   talent.frost.absolute_zero = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Zero" );
   talent.frost.breath_of_sindragosa = find_talent_spell( talent_tree::SPECIALIZATION, "Breath of Sindragosa" );
@@ -10345,8 +10317,6 @@ void death_knight_t::create_buffs()
   buffs.cold_heart = make_buff( this, "cold_heart", talent.frost.cold_heart -> effectN( 1 ).trigger() );
 
   buffs.empower_rune_weapon = new empower_rune_weapon_buff_t( this );
-
-  buffs.frozen_pulse = make_buff( this, "frozen_pulse", talent.frost.frozen_pulse );
 
   buffs.gathering_storm = make_buff( this, "gathering_storm", find_spell( 211805 ) )
         -> set_trigger_spell( talent.frost.gathering_storm )
