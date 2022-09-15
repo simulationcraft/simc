@@ -5467,6 +5467,7 @@ struct faeline_stomp_t : public monk_spell_t
 
     trigger_ww_t28_4p_potential = true;
     trigger_ww_t28_4p_power     = true;
+    trigger_bountiful_brew      = true;
   }
 
   void execute() override
