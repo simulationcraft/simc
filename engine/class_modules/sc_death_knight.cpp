@@ -10861,7 +10861,7 @@ double death_knight_t::composite_bonus_armor() const
 
   if ( buffs.bone_shield -> check() )
   {
-    ba += spell.bone_shield -> effectN( 1 ).percent() * cache.strength();
+    ba += spell.bone_shield -> effectN( 1 ).percent() * ( 1.0 + talent.blood.reinforced_bones -> effectN( 1 ).percent() ) * cache.strength();
   }
 
   return ba;
