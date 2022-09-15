@@ -937,6 +937,7 @@ public:
     const spell_data_t* final_sentence; // For kyrian legendary rune gain and buff
     const spell_data_t* razorice_debuff;
     const spell_data_t* rune_mastery_buff;
+    const spell_data_t* empower_rune_weapon_main; // Empower Rune Weapon has a unique ID for the spell itself, with each talent just modifying number of charges. 
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -5741,12 +5742,12 @@ struct empower_rune_weapon_buff_t : public buff_t
 {
   empower_rune_weapon_buff_t( death_knight_t* p ) :
 
-    buff_t( p, "empower_rune_weapon", p -> talent.empower_rune_weapon )
+    buff_t( p, "empower_rune_weapon", p -> spell.empower_rune_weapon_main )
   {
     tick_zero = true;
     cooldown -> duration = 0_ms; // Handled in the action
-    set_period( p -> talent.empower_rune_weapon -> effectN( 1 ).period() );
-    set_default_value( p -> talent.empower_rune_weapon -> effectN( 3 ).percent() + p -> conduits.accelerated_cold.percent());
+    set_period( p -> spell.empower_rune_weapon_main -> effectN( 1 ).period() );
+    set_default_value( p -> spell.empower_rune_weapon_main -> effectN( 3 ).percent() + p -> conduits.accelerated_cold.percent());
     add_invalidate( CACHE_HASTE );
     set_refresh_behavior( buff_refresh_behavior::EXTEND);
     set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -5765,7 +5766,7 @@ struct empower_rune_weapon_buff_t : public buff_t
 struct empower_rune_weapon_t : public death_knight_spell_t
 {
   empower_rune_weapon_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "empower_rune_weapon", p, p -> talent.empower_rune_weapon )
+    death_knight_spell_t( "empower_rune_weapon", p, p -> spell.empower_rune_weapon_main )
   {
     parse_options( options_str );
 
@@ -5774,8 +5775,8 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
 
-    // TODO July 19 2022 I believe this was entirely removed
-    //cooldown -> duration += p -> spec.empower_rune_weapon_2->effectN( 1 ).time_value();
+    cooldown -> charges += as<int>( p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() );
+    cooldown -> charges += as<int>( p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value() );
   }
 
   // TODO Remove with conduits
@@ -6165,7 +6166,7 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
       double m = death_knight_melee_attack_t::composite_target_multiplier ( target );
 
-      if ( get_td( target ) -> debuff.razorice -> stack() == 5 && p() -> talent.frost.shattering_strike.ok() )
+      if ( p() -> talent.frost.shattering_strike.ok() && get_td( target ) -> debuff.razorice -> stack() == 5 )
       {
           m *= 1.0 + p() -> talent.frost.shattering_strike -> effectN( 1 ).percent();
       }
@@ -9969,14 +9970,15 @@ void death_knight_t::init_spells()
 
   // Generic spells
   // Shared
-  spell.brittle_debuff         = find_spell( 374557 );
-  spell.dnd_buff               = find_spell( 188290 );
-  spell.exacting_preparation   = find_soulbind_spell( "Exacting Preparation" );
-  spell.final_sentence         = find_spell( 353823 );
-  spell.razorice_debuff        = find_spell( 51714 );
-  spell.deaths_due             = find_spell( 315442 );
-  spell.runic_empowerment_gain = find_spell( 193486 );
-  spell.rune_mastery_buff      = find_spell( 374585 );
+  spell.brittle_debuff           = find_spell( 374557 );
+  spell.dnd_buff                 = find_spell( 188290 );
+  spell.exacting_preparation     = find_soulbind_spell( "Exacting Preparation" );
+  spell.final_sentence           = find_spell( 353823 );
+  spell.razorice_debuff          = find_spell( 51714 );
+  spell.deaths_due               = find_spell( 315442 );
+  spell.runic_empowerment_gain   = find_spell( 193486 );
+  spell.rune_mastery_buff        = find_spell( 374585 );
+  spell.empower_rune_weapon_main = find_spell( 47568 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
