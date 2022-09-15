@@ -6602,11 +6602,11 @@ struct howling_blast_t : public death_knight_spell_t
     return m;
   }
 
-  double composite_target_multiplier( player_t* target ) const override
+  double composite_target_multiplier( player_t* t ) const override
   {
-    double m = death_knight_spell_t::composite_target_multiplier( target );
+    double m = death_knight_spell_t::composite_target_multiplier( t );
 
-    if ( p() -> talent.frost.icebreaker.ok() && target )
+    if ( p() -> talent.frost.icebreaker.ok() && this -> target == t )
     {
       m *= 1.0 + p() -> talent.frost.icebreaker->effectN( 1 ).percent();
     }
