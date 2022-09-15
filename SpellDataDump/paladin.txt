@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45505 dragonflight-BETA (hotfix 2022-09-14/45505, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45569 dragonflight-BETA (, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -97,7 +97,7 @@ Tooltip          : Damage taken reduced by $w1%.
 
 Name             : Divine Protection (id=498) [Spell Family (10)] 
 Talent Entry     : Retribution [tree=spec, row=4, col=2, max_rank=1, req_points=0, select_idx=200]
-                 : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+                 : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -218,7 +218,7 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=5, max_rank=1, req_points=8]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -290,6 +290,38 @@ Effects          :
 Description      : Blesses a party or raid member, granting immunity to movement impairing effects $?s199325[and increasing movement speed by $199325m1% ][]for $d.
 Tooltip          : Immune to movement impairing effects. $?s199325[Movement speed increased by $199325m1%][]
 
+Name             : Cleanse (id=4987) [Spell Family (10)] 
+Class            : Holy Paladin
+School           : Holy
+Spell Type       : Magic
+Resource         : 6.5% Base Mana (0) (id=221)
+Spell Level      : 12
+Range            : 40 yards
+GCD              : 1.5 seconds
+Cooldown         : 8 seconds
+Charges          : 1 (8 seconds cooldown)
+Category         : 1512
+Category Cooldown: 8 seconds
+Affecting spells : Rule of Law (214202 effect#1)
+Family Flags     : 12
+Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .x...... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Allow On Charmed Targets (201), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1749)     : Dispel (38)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Friend (21)
+#2 (id=1750)     : Dispel (38)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Friend (21)
+#3 (id=1751)     : Dispel (38)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Friend (21)
+Description      : Cleanses a friendly target, removing all $?s393024[Poison, Disease, and ][]Magic effects.
+
 Name             : Blessing of Sacrifice (id=6940) [Spell Family (10)] 
 Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=3, max_rank=1, req_points=8]
 Class            : Paladin
@@ -330,7 +362,7 @@ Last $d, or until transferred damage would cause you to fall below $s3% health.
 Tooltip          : $?$w1>0[$w1% of damage taken is redirected to $@auracaster.][Taking ${$s1*$e1}% of damage taken by target ally.]
 
 Name             : Turn Evil (id=10326) [Spell Family (10)] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=5, col=3, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -372,7 +404,7 @@ Range            : 40 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Labels           : 802: Devout Spirit (297412 effect#1), Devout Spirit (310530 effect#1)
-Affecting spells : Avenging Wrath (31884 effects: #2, #3), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3), Sanctuary (105805 effect#5), Selfless Healer (114250 effects: #1, #2), Retribution Paladin (137027 effects: #8, #9), Protection Paladin (137028 effects: #9, #10), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effects: #1, #2), Illumination (387993 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3), Increased Flash of Light Crit Chance (38522 effect#1), Beacon of Light (53563 effect#3), Infusion of Light (54149 effects: #1, #3), Sanctuary (105805 effect#5), Selfless Healer (114250 effects: #1, #2), Retribution Paladin (137027 effects: #8, #9), Protection Paladin (137028 effects: #9, #10), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effects: #1, #2), Illumination (387993 effect#1)
 Triggered by     : Blessing of Dusk (385126)
 Family Flags     : 30, 46
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
@@ -467,7 +499,7 @@ GCD              : 1.5 seconds
 Cooldown         : 7.5 seconds
 Category         : 892
 Category Cooldown: 7.5 seconds
-Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#4), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Holy Shock (272906 effect#1), Focused Light (339984 effect#1), Scintillation (387805 effect#1)
+Affecting spells : Avenging Wrath (31884 effect#6), Protection Paladin (137028 effect#4), Holy Paladin (137029 effect#4), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Holy Shock (272906 effect#1), Focused Light (339984 effect#1), Scintillation (387805 effect#1), Divine Insight (392914 effect#1)
 Family Flags     : 21
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xxx..... ........ 
@@ -537,7 +569,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Charges          : 1 (7.5 seconds cooldown)
 Category         : 1895: Paladin (137026 effect#6), Vanguard's Momentum (337638 effect#1), Vanguard's Momentum (383314 effect#3)
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #7), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Path of Ruin (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), The Mad Paragon (391142 effect#2)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #7), Retribution Paladin (137027 effects: #1, #2, #3, #4), Protection Paladin (137028 effects: #1, #2, #5), Holy Paladin (137029 effects: #5, #10, #11), Avenging Crusader (216331 effect#7), Crusade (231895 effects: #1, #2, #4), Wake of Ashes (255937 effect#4), Mastery: Hand of Light (267316 effects: #1, #2), Ashen Hallow (330382 effects: #1, #2), Final Verdict (337228 effect#1), The Mad Paragon (337594 effect#2), Blessing of Dawn (337747 effects: #1, #2), Path of Ruin (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), The Mad Paragon (391142 effect#2), Veneration (392939 effect#1)
 Family Flags     : 27, 39, 65
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -616,7 +648,7 @@ Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #3, #6), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4), Holy Paladin (137029 effects: #4, #10), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Path of Ruin (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Scintillation (387805 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3, #6), Retribution Paladin (137027 effects: #1, #2), Protection Paladin (137028 effects: #1, #2, #4), Holy Paladin (137029 effects: #4, #10), Rule of Law (214202 effect#1), Judgment (214222 effect#1), Avenging Crusader (216331 effect#8), Crusade (231895 effects: #1, #2), Wake of Ashes (255937 effect#4), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Path of Ruin (383469 effect#3), Blessing of Dawn (385127 effects: #1, #2), Scintillation (387805 effect#1), Divine Insight (392914 effect#1)
 Family Flags     : 21, 65
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   ........ .x...... ........ ......x. 
@@ -638,7 +670,7 @@ School           : Holy
 Spell Type       : Magic
 Spell Level      : 19
 Range            : 100 yards
-Affecting spells : Avenging Wrath (31884 effects: #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Blessing of Dawn (385127 effects: #1, #2), Scintillation (387805 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Holy Shock (272906 effect#1), Blessing of Dawn (337747 effects: #1, #2), Focused Light (339984 effect#1), Blessing of Dawn (385127 effects: #1, #2), Scintillation (387805 effect#1), Divine Insight (392914 effect#1)
 Family Flags     : 46, 48
 Attributes       : ........ ........ x.x..... ...x....   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -733,14 +765,14 @@ Description      : Heals the target for $s2% of the caster's total health over $
 Tooltip          : Healing $/5;s2% every $t1 seconds.
 
 Name             : Aura Mastery (id=31821) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=4, col=3, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
-Spell Level      : 39
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 180 seconds
+Affecting spells : Unwavering Spirit (392911 effect#1)
 Family Flags     : 79
 Attributes       : ........ ........ x....... x.......   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
@@ -1095,8 +1127,7 @@ Healing this ally directly with Flash of Light or Holy Light grants $231642s1 Ho
 Tooltip          : Healed whenever the Paladin heals a nearby ally.
 
 Name             : Infusion of Light (id=53576) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=3, col=2, max_rank=1, req_points=0]
-Class            : Paladin
+Class            : Holy Paladin
 School           : Physical
 Spell Type       : None
 Spell Level      : 23
@@ -1141,7 +1172,7 @@ Attributes       : ........ ........ x.x..... ........   ........ .x...... .....
                  : Not Shapeshifted (16), Do Not Sheath (18), Initiates Combat (Enables Auto-Attack) (41), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=46252)    : School Damage (2): physical
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.27000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | AP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Target: Enemy (6)
 #2 (id=171314)   : Energize Power (30)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: holy_power | Target: Self (1)
 Description      : Hammers the current target for $53595sw1 Physical damage.$?s26573&s203785[
@@ -1234,7 +1265,7 @@ Stacks           : 1 initial, 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ......x. ........ ........ 
                  : Magic Heal
-Affecting spells : Divine Revelations (275463 effect#2), Inflorescence of the Sunwell (337777 effects: #1, #2)
+Affecting spells : Divine Revelations (275463 effect#2), Inflorescence of the Sunwell (337777 effects: #1, #2), Inflorescence of the Sunwell (392907 effects: #1, #2)
 Triggered by     : Infusion of Light (53576)
 Family Flags     : 116
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
@@ -1602,7 +1633,7 @@ Spell Level      : 11
 Range            : 40 yards
 Cast Time        : 2.5 seconds
 GCD              : 1.5 seconds
-Affecting spells : Avenging Wrath (31884 effects: #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effects: #2, #3), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effects: #1, #2), Illumination (387993 effect#1)
+Affecting spells : Avenging Wrath (31884 effects: #2, #3), Beacon of Light (53563 effect#3), Holy Paladin (137029 effects: #1, #2), Beacon of Faith (156910 effect#3), Magnifying Light (185100 effect#1), Tyr's Deliverance (200654 effect#2), Divine Favor (210294 effect#2), Rule of Law (214202 effect#1), Sacred Dawn (243174 effect#1), Blessing of Dawn (337747 effects: #1, #2), Blessing of Dawn (385127 effects: #1, #2), Illumination (387993 effect#1)
 Family Flags     : 46, 74
 Attributes       : ........ ........ x....... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2153,7 +2184,7 @@ Effects          :
 Description      : Reduces the cooldown of your Divine Shield, $?s184662[Shield of Vengeance]?s31850[Ardent Defender][Divine Protection], and Lay on Hands by $s1%.
 
 Name             : Light's Hammer (id=114158) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -2180,7 +2211,7 @@ Effects          :
 Description      : Hurls a Light-infused hammer to the ground, dealing $114919s1 Holy damage to nearby enemies and healing up to 6 nearby allies for $119952s1, every $114918t1 sec for ${$122773d-1.5} sec.
 
 Name             : Holy Prism (id=114165) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=6, col=1, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Holy
@@ -2849,7 +2880,7 @@ Effects          :
 Description      : $@spelldesc146959
 
 Name             : Barrier of Faith (id=148039) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=9, col=2, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=7, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -2903,9 +2934,8 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=218981)   : Apply Aura (6) | Proc Trigger Spell (42): Holy Shield
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 157122 | Target: Self (1)
-#3 (id=232078)   : Apply Aura (6) | Absorb Damage (69)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7e | Misc Value 2: 0xffffffec | Target: Self (1)
-                   Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
+#3 (id=232078)   : Apply Aura (6) | Unknown(528)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your block chance is increased by $s1%, you are able to block spells, and your successful blocks deal $157122s1 Holy damage to your attacker.
 
 Name             : Seraphim (id=152262) [Spell Family (10)] 
@@ -2965,7 +2995,7 @@ Effects          :
 Description      : Remove $s1 beneficial effect from all enemies within $A1 yards and restore $s2 Holy Power.
 
 Name             : Beacon of Faith (id=156910) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -3003,8 +3033,7 @@ Description      : Mark a second target as a Beacon, mimicking the effects of Be
 Tooltip          : Healed whenever the Paladin directly heals a nearby ally.
 
 Name             : Saved by the Light (id=157047) [Passive] 
-Talent Entry     : Holy [tree=spec, row=4, col=3, max_rank=2, req_points=0]
-                 : Effect#2 [op=set, values=(2, 4)]
+Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -3442,7 +3471,7 @@ Effects          :
 Description      : Increases healing done by up to ${$s1}.2%, based on the proximity of your target.
 
 Name             : Light of the Martyr (id=183998) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=5, col=7, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -3659,7 +3688,7 @@ Description      : $@spelldesc183998
 Tooltip          : Suffering $w2 Holy damage every $t2 sec.
 
 Name             : Crusader's Might (id=196926) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=8, col=1, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=2, max_rank=2, req_points=20]
                  : Effect#1 [op=set, values=(-1000, -2000)]
 Class            : Paladin
 School           : Physical
@@ -3813,8 +3842,7 @@ Effects          :
 Description      : Blessing of Freedom also increases movement speed by $m1%.
 
 Name             : Beacon of Virtue (id=200025) [Spell Family (10)] 
-Replaces         : Beacon of Light (id=53563)
-Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20, select_idx=200, override="Beacon of Light" (id=53563)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -3870,8 +3898,7 @@ Effects          :
 Description      : Reduces the damage you take from Blessing of Sacrifice by $s1%.
 
 Name             : Protection of Tyr (id=200430) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=6, col=2, max_rank=2, req_points=8]
-                 : Effect#1 [op=set, values=(5, 10)]
+Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -3894,7 +3921,7 @@ Effects          :
 Description      : Aura Mastery also increases all healing received by party or raid members within $211210A1 yards by $s1%.
 
 Name             : Power of the Silver Hand (id=200474) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=6, max_rank=1, req_points=20]
 Class            : Paladin
 Race             : Human, Orc, Dwarf, Night Elf, Undead, Tauren, Gnome, Troll, Goblin, Blood Elf, Draenei, Dark Iron Dwarf, Vulpera, Mag'har Orc, Mechagnome, Dracthyr, Worgen, Pandaren, Nightborne, Highmountain Tauren, Void Elf, Lightforged Draenei, Zandalari Troll, Kul Tiran (0xffffffffffffffff)
 School           : Physical
@@ -3966,7 +3993,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=295441)   : Apply Aura (6) | Periodic Trigger Spell (23): Tyr's Deliverance every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 200653 | Target: Self (1)
-Description      : Releases the Light within yourself, healing an injured ally within $200653A1 yds for $200654s1 every $t1 sec.
+Description      : Releases the Light within yourself, healing an injured ally within $200653A1 yds for $200654s1 every $t1 sec for $d.
 
 Allies healed also receive $200654s2% increased healing from your Holy Light and Flash of Light spells for $200654d.
 Tooltip          : Healing an injured ally for $200654s1 every $t1 sec.
@@ -3989,7 +4016,7 @@ Attributes       : .......x ........ ........ .......x   ........ ........ .....
                  : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Aura Cancel (31), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295443)   : Dummy (3)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 15 yards | Target: At Caster (22) -> AOE friendly (30)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: At Caster (22) -> AOE friendly (30)
 Description      : $@spelldesc200474
 
 Name             : Tyr's Deliverance (id=200654) [Spell Family (10)] 
@@ -4010,9 +4037,9 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Ignore Line of Sight (66), Do Not Display Range (126), Allow Cast While Casting (135), Aura Points On Client (268), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=295444)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.37500 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.39375 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=334967)   : Apply Aura (6) | Modify Healing Taken% from Caster's Spells (283)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Friend (21)
                    Affected Spells: Flash of Light (19750), Holy Light (82326)
                    Family Flags: 30, 74
 Description      : $@spelldesc200652
@@ -4439,50 +4466,6 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : $?s231895[Crusade][Avenging Wrath] increases healing done by an additional $?s137029[$281573s1%][$281573s2%] and increases damage done by an additional $281573s3%.
 
-Name             : Liadrin's Fury Unleashed (id=208408) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=2, req_points=20]
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Req. Max Level   : 49
-Proc Chance      : 101%
-Proc Flags       : ........ ......x. ........ ........ 
-                 : Magic Heal
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ x....... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ....x...   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ......x. 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), Include In Advanced Combat Log (72), Not In Arena or Rated Battleground (144), Not in Battleground (284), Not In Arena (297), Check Required Target Aura By Caster (382)
-Effects          :
-#1 (id=308362)   : Apply Aura (6) | Proc Trigger Spell (42): Liadrin's Fury Unleashed
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 208410 | Target: Self (1)
-Description      : While Avenging Wrath is active, you gain $208410s1 Holy Power every $208410t1 sec.
-
-Name             : Liadrin's Fury Unleashed (id=208410) [Spell Family (10)] 
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Duration         : Aura (infinite)
-Triggered by     : Liadrin's Fury Unleashed (208408)
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ x....... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ .x...... ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Include In Advanced Combat Log (72), Extra Initial Period (169)
-Effects          :
-#1 (id=308364)   : Apply Aura (6) | Periodic Energize Power (24): every 4 seconds
-                   Base Value: 1 | Scaled Value: 1 | SP Coefficient: 0.25000 | PvP Coefficient: 1.00000 | Misc Value: 9 | Target: Self (1)
-Description      : $@spelldesc208408
-Tooltip          : Generating $s1 Holy Power every $t1 sec.
-
 Name             : Eye of Tyr (desc=Artifact) (id=209202) [Spell Family (10)] 
 Class            : Paladin
 School           : Holy
@@ -4587,6 +4570,32 @@ Effects          :
                    Family Flags: 92
 Description      : $@spelldesc203316
 Tooltip          : Your next Holy Power spender costs $s2 less Holy Power.
+
+Name             : Divine Favor (id=210294) [Spell Family (10)] 
+Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Class            : Paladin
+School           : Physical
+Spell Type       : Magic
+Duration         : Aura (infinite)
+Cooldown         : 45 seconds
+Attributes       : ........ ........ x.x..... .x......   ........ ..x..... ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ..x..... 
+                 : ......x. ........ ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), Cooldown On Event (25), No Threat (42), Do Not Consume if Gained During Cast (79), Can Proc From Procs (122), Cannot Be Stolen (134), Allow Proc While Sitting (147), Aura Points On Client (268), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=311378)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 60 | Scaled Value: 60 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=311382)   : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Flash of Light (19750), Holy Light (82326)
+                   Family Flags: 30, 74
+Description      : The healing of your next Holy Light or Flash of Light is increased by $m1% and its cast time is reduced by $s2%.
+Tooltip          : Holy Light or Flash of Light heal for $w1% more and their cast time is reduced by $s2%.
 
 Name             : Protection of Tyr (id=211210) [Spell Family (10)] 
 Class            : Paladin
@@ -4712,7 +4721,7 @@ Effects          :
 Description      : Cleanses a friendly target, removing all Poison and Disease effects.
 
 Name             : Rule of Law (id=214202) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=4, col=5, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4733,7 +4742,7 @@ Attributes       : ........ ........ x.x..... ........   ........ ..x..... .....
 Effects          :
 #1 (id=318059)   : Apply Aura (6) | Add Percent Modifier (108): Spell Range (5)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
+                   Affected Spells: Lay on Hands (633), Cleanse (4987), Flash of Light (19750), Holy Shock (20473), Holy Shock (25912), Holy Shock (25914), Beacon of Light (53563), Beacon of Light (53652), Holy Light (82326), Word of Glory (85673), Light's Hammer (114158), Holy Prism (114165), Holy Prism (114852), Holy Prism (114871), Beacon of Faith (156910), Light of the Martyr (183998), Beacon of Virtue (200025), Cleanse Toxins (213644), Bestow Faith (223306), Divine Toll (304971), Divine Toll (375576), Divine Resonance (386731), Divine Resonance (387896)
                    Family Flags: 12, 15, 21, 30, 48, 56, 67, 74, 78, 90, 92, 97, 100, 103, 124
 #2 (id=318060)   : Apply Aura (6) | Add Percent Modifier (108): Spell Radius (6)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
@@ -4807,7 +4816,7 @@ Damage is increased by $s2% when used against a stunned target.
 
 Name             : Avenging Crusader (id=216331) [Spell Family (10)] 
 Replaces         : Avenging Wrath (id=31884)
-Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -4965,7 +4974,7 @@ Description      : $@spelldesc190784
 Tooltip          : Increases ground speed by $s4%$?$w1<0[, and reduces damage taken by $w1%][].
 
 Name             : Bestow Faith (id=223306) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
+Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -5124,7 +5133,7 @@ Effects          :
 Description      : Divine Steed now has ${1+$m1} charges.
 
 Name             : Beacon of Light (id=231642) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8, name="Tower of Radiance"]
+Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8, name="Tower of Radiance"]
 Class            : Holy Paladin
 School           : Holy
 Spell Type       : None
@@ -5183,7 +5192,7 @@ Effects          :
 Description      : Judgment causes the target to take $s1% increased damage from your next Holy Power ability.
 
 Name             : Radiant Onslaught (id=231667) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=6, col=3, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -5302,30 +5311,6 @@ Effects          :
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Each Holy Power spent reduces the remaining cooldown on Hammer of Justice by $s1 sec.
 Variables        : $reduction=${$m1/10}
-
-Name             : Tyr's Munificence (id=238060) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
-Class            : Paladin
-School           : Physical
-Spell Type       : None
-Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
-                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Aura Points On Client (268)
-Effects          :
-#1 (id=360745)   : Apply Aura (6) | Add Flat Modifier (107): Spell Radius (6)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 6 | Target: Self (1)
-#2 (id=362005)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 2 (12)
-                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-#3 (id=364070)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Increases the range of Tyr's Deliverance by $s1 yards, healing by ${$s2*$<mult>}%, and the healing bonus by ${$s2*$<mult>}%.
-Variables        : $mult=${2.5}
 
 Name             : Righteous Verdict (id=238062) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -5455,7 +5440,8 @@ Description      : $@spelldesc238132
 Tooltip          : Receiving $w1% increased healing from the Paladin.
 
 Name             : Awakening (id=248033) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=2, req_points=20]
+Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=2, req_points=20]
+                 : Effect#1 [op=set, values=(7, 15)]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -8966,7 +8952,7 @@ Effects          :
 Description      : Every $s1 Shields of the Righteous make your next Word of Glory free.
 
 Name             : Glimmer of Light (id=325966) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -11764,7 +11750,7 @@ Description      : $@spelldesc355100
 Name             : Divine Toll (desc=Kyrian) (id=375576) [Spell Family (10)] 
 Talent Entry     : Protection [free=(Protection), tree=spec, row=9, col=4, max_rank=1, req_points=20]
                  : Retribution [tree=spec, row=9, col=2, max_rank=1, req_points=20]
-                 : Holy [tree=spec, row=9, col=1, max_rank=1, req_points=20]
+                 : Holy [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
@@ -11796,8 +11782,7 @@ Description      : Instantly cast $?c1[Holy Shock]?c2[Avenger's Shield]?c3[Judgm
 Divine Toll's Judgment deals $326011s1% increased damage.][]
 
 Name             : Seasoned Warhorse (id=376996) [Spell Family (10), Passive] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=4, col=3, max_rank=2, req_points=0]
-                 : Effect#1 [op=set, values=(1000, 2000)]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=4, col=3, max_rank=1, req_points=0, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -11819,7 +11804,7 @@ Effects          :
 Description      : Increases the duration of Divine Steed by ${$s1/1000} sec.
 
 Name             : Seal of the Templar (id=377016) [Spell Family (10), Passive] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=4, col=3, max_rank=1, req_points=0, select_idx=300]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -11864,7 +11849,7 @@ Effects          :
 Description      : Consecration's damage is increased by $s1%.
 
 Name             : Seal of Reprisal (id=377053) [Spell Family (10), Passive] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=6, max_rank=2, req_points=8]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=6, col=5, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(5, 10)]
 Class            : Paladin
 School           : Physical
@@ -12738,7 +12723,7 @@ Effects          :
                    Family Flags: 77
 #2 (id=1015173)  : Dummy (3)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Replaces Templar's Verdict with Final Verdict, a devastating strike that deals $383328s1 Holy damage. Has a $s2% chance to activate Hammer of Wrath and reset its cooldown.
+Description      : Replaces Templar's Verdict with Final Verdict, a devastating strike that deals $383328s1 Holy damage. Has a $s2% chance to reset the cooldown of Hammer of Wrath and make it usable on any target, regardless of their health.
 
 Name             : Final Verdict (id=383328) [Spell Family (10)] 
 Class            : Paladin
@@ -12904,7 +12889,9 @@ Description      : $@spelldesc383350
 Tooltip          : Suffering $w1 Radiant damage every $t1 sec.
 
 Name             : Relentless Inquisitor (id=383388) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=2, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=2, req_points=20]
+                 : Effect#2 [op=set, values=(0, 2)]
+                 : Protection [free=(Protection), tree=spec, row=6, col=2, max_rank=1, req_points=8]
                  : Retribution [tree=spec, row=8, col=1, max_rank=2, req_points=20]
                  : Effect#2 [op=set, values=(0, 2)]
 Class            : Paladin
@@ -13292,6 +13279,7 @@ If $@spellname31884 is known, also grants $s1% damage per stack.
 Name             : Avenging Wrath: Might (id=384442) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Protection [free=(Protection), tree=spec, row=6, col=3, max_rank=1, req_points=8, select_idx=100]
                  : Retribution [tree=spec, row=6, col=4, max_rank=1, req_points=8, select_idx=100]
+                 : Holy [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13392,7 +13380,7 @@ Effects          :
 Description      : Golden Path strikes the lowest health ally within it an additional time for |cFFFFFFFF${$s1}.1%|r of its effect.
 
 Name             : Improved Blessing of Protection (id=384909) [Spell Family (10), Passive] 
-Talent Entry     : Holy, Protection, Retribution [tree=class, row=7, col=5, max_rank=1, req_points=8, select_idx=100, override="Blessing of Protection" (id=1022)]
+Talent Entry     : Holy, Protection, Retribution [tree=class, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13701,9 +13689,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
 Effects          :
-#1 (id=1018614)  : Apply Aura (6) | Attribute (29) | Scaling Class: -1
-                   Base Value: 0 | Scaled Value: 157.5573 (coefficient=0.2925) | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Self (1)
-Description      : Increases Primary Stat by $s1.
+#1 (id=1018614)  : Apply Aura (6) | Modify Attribute% (80)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: -2 | Target: Self (1)
+Description      : Increases Primary Stat by $s1%.
 Tooltip          : Strength increased by $s1.
 
 Name             : Resolute Defender (id=385422) [Spell Family (10), Passive] 
@@ -14340,7 +14328,8 @@ $DP=$?a223819[${1+$223819s2/100}][${1}]
 $mult=${$<Mastery>*$<DP>}
 
 Name             : Empyrean Endowment (id=387170) [Spell Family (10), Passive] 
-Talent Entry     : Retribution [tree=spec, row=9, col=3, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=200]
+                 : Retribution [tree=spec, row=9, col=3, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14361,11 +14350,11 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=1021807)  : Dummy (3)
                    Base Value: 25 | Scaled Value: 25 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Judgment empowers your next Templar's Verdict to automatically trigger Divine Storm with $s2% increased effectiveness.
+Description      : Judgment empowers your next $?c3[Templar's Verdict to automatically activate Divine Storm][Word of Glory to automatically activate Light of Dawn] with $s2% increased effectiveness.
 
 This effect can only occur every $387441d.
 
-Tooltip          : Your next Templar's Verdict automatically triggers Divine Storm with $s2% increased effectiveness.
+Tooltip          : Your next $?c3[Templar's Verdict automatically activates Divine Storm][Word of Glory activates Light of Dawn] with $s2% increased effectiveness.
 
 Name             : Eye of Tyr (id=387174) [Spell Family (10)] 
 Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=3, max_rank=1, req_points=20]
@@ -14565,7 +14554,7 @@ Description      : $@spelldesc387640
 Tooltip          : Your next Blade of Justice deals $w1% increased damage.
 
 Name             : Focal Light (id=387781) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=4, col=1, max_rank=2, req_points=0]
+Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(10, 20)]
 Class            : Paladin
 School           : Physical
@@ -14587,7 +14576,7 @@ Effects          :
 Description      : Beacon of Light transfers an additional $s1% of the amount healed.
 
 Name             : Moment of Compassion (id=387786) [Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14606,7 +14595,7 @@ Effects          :
 Description      : Your Flash of Light heals for an additional $s1% when cast on a target affected by your Beacon of Light.
 
 Name             : Empyreal Ward (id=387791) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=6, col=1, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=4, col=4, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14674,7 +14663,7 @@ Effects          :
 Tooltip          : Cannot be slowed below $s1% of normal movement speed.
 
 Name             : Echoing Blessings (id=387801) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=6, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14708,7 +14697,7 @@ Effects          :
 Description      : Blessing of Freedom increases the target's movement speed by $s3%. Blessing of Protection and Blessing of Sacrifice reduce the target's damage taken by $s4%. These effects linger for $339324d after the Blessing ends.
 
 Name             : Scintillation (id=387805) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=2, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7, 15)]
 Class            : Paladin
 School           : Holy
@@ -14731,9 +14720,7 @@ Effects          :
 Description      : Holy Shock has a $s1% increased critical strike chance.
 
 Name             : Divine Revelations (id=387808) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=7, col=2, max_rank=3, req_points=8]
-                 : Effect#1 [op=set, values=(1, 2, 3)]
-                 : Effect#2 [op=set, values=(5, 10, 15)]
+Talent Entry     : Holy [tree=spec, row=7, col=1, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14751,10 +14738,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Aura Points On Client (268)
 Effects          :
 #1 (id=1022852)  : Apply Aura (6) | Proc Trigger Spell (42): Divine Revelations
-                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Trigger Spell: 387810 | Target: Self (1)
+                   Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Trigger Spell: 387810 | Target: Self (1)
 #2 (id=1022853)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : While empowered by Infusion of Light, Flash of Light heals for an additional $s2%, and Holy Light refunds $s1% of maximum mana.
+                   Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : While empowered by Infusion of Light, Flash of Light heals for an additional $s2%, and Holy Light refunds $s1% of your maximum mana.
 
 Name             : Divine Revelations (id=387810) [Spell Family (10), Passive] 
 Class            : Paladin
@@ -14779,7 +14766,7 @@ Effects          :
 Description      : $@spelldesc387808
 
 Name             : Untempered Dedication (id=387814) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Holy [tree=spec, row=7, col=4, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -14828,7 +14815,7 @@ Description      : $@spelldesc387814
 Tooltip          : Light of the Martyr damage and healing increased by $s1%.
 
 Name             : Breaking Dawn (id=387879) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=4, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14846,18 +14833,17 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Increases the range of Light of Dawn to $s1 yds.
 
-Name             : Divine Resonance (id=387893) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=10, col=1, max_rank=1, req_points=20]
+Name             : Divine Resonance (id=387893) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=9, col=1, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Arcane
 Spell Type       : None
 Range            : 30 yards
-Duration         : Aura (infinite)
 Internal Cooldown: 3 seconds
 Proc Chance      : 101%
 Proc Flags       : ........ ..x.x.x. x.x..x.. ........ 
                  : Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -14865,7 +14851,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Not In Spellbook Until Learned (269)
+                 : Passive (6), Not In Spellbook Until Learned (269)
 Effects          :
 #1 (id=1023010)  : Apply Aura (6) | Proc Trigger Spell (42): Divine Resonance
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 387895 | Target: Self (1)
@@ -14922,7 +14908,7 @@ Effects          :
 Description      : $@spelldesc386732
 
 Name             : Illumination (id=387993) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0]
+Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -14943,7 +14929,7 @@ Effects          :
 Description      : Holy Light and Flash of Light healing increased by $s1%.
 
 Name             : Unending Light (NYI) (id=387998) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=200]
+Talent Entry     : Holy [tree=spec, row=3, col=3, max_rank=1, req_points=0, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -14964,7 +14950,7 @@ Effects          :
 Description      : Each Holy Power spent on Light of Dawn increases the healing of your next Word of Glory by $s1%, up to a maximum of $s2%.
 
 Name             : Shining Savior (id=388005) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=5, col=6, max_rank=1, req_points=8]
+Talent Entry     : Holy [tree=spec, row=5, col=2, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -14984,31 +14970,8 @@ Effects          :
                    Family Flags: 78, 82
 Description      : Word of Glory and Light of Dawn healing increased by $s1%.
 
-Name             : Avenging Wrath: Might (NYI) (id=388006) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=9, col=3, max_rank=1, req_points=20, select_idx=100]
-Class            : Paladin
-School           : Holy
-Spell Type       : None
-Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   
-                 : Passive (6)
-Effects          :
-#1 (id=1023413)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-#2 (id=1023414)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Call upon the Light to become an avatar of retribution, increasing your damage and healing $s1% for $s2 sec.
-
-|cFFFFFFFFCombines with other Avenging Wrath abilities.|r
-
 Name             : Blessing of Summer (desc=Night Fae) (id=388007) [Spell Family (10)] 
-Talent Entry     : Holy [tree=spec, row=8, col=2, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Nature
 Spell Type       : None
@@ -15048,7 +15011,7 @@ Description      : Bless an ally for $d, causing their attacks to have a $h% cha
 Tooltip          : Attacks have a $h% chance to deal $w1% additional damage as Holy.
 
 Name             : Maraad's Dying Breath (id=388018) [Spell Family (10), Passive] 
-Talent Entry     : Holy [tree=spec, row=8, col=6, max_rank=1, req_points=20]
+Talent Entry     : Holy [tree=spec, row=8, col=8, max_rank=1, req_points=20]
 Class            : Paladin
 School           : Holy
 Spell Type       : None
@@ -15184,5 +15147,252 @@ Effects          :
                    Affected Spells: Judgment (20271), Judgment (197277), Judgment (214222), Judgment (275773), Judgment (275779)
                    Family Flags: 23
 Description      : Hammer of Wrath deals $s2% additional damage and extends the duration of $?s231895[Crusade]?s216331[Avenging Crusader][Avenging Wrath] by $s1 sec.
+
+Name             : Resplendent Light (id=392902) [Spell Family (10), Passive, Hidden] 
+Talent Entry     : Holy [tree=spec, row=4, col=1, max_rank=1, req_points=0, select_idx=200]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Proc Chance      : 101%
+Proc Flags       : ........ ......x. ........ ........ 
+                 : Magic Heal
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1031446)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 8 | Scaled Value: 8 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#2 (id=1031447)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+#3 (id=1031448)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+Description      : Holy Light heals up to $s2 targets within $392903a1 yds for $s1% of its healing.
+
+Name             : Resplendent Light (id=392903) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 100 yards
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Can't Crit (93), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=1031449)  : Direct Heal (10)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(132) -> AOE friendly (31)
+Description      : $@spelldesc392902
+
+Name             : Inflorescence of the Sunwell (id=392907) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=10, col=3, max_rank=1, req_points=20, select_idx=100]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1031453)  : Apply Aura (6) | Add Flat Modifier (107): Spell Initial Stacks (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Self (1)
+                   Affected Spells: Infusion of Light (54149)
+                   Family Flags: 116
+#2 (id=1031454)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 1 (3)
+                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 3 | Target: Self (1)
+                   Affected Spells: Infusion of Light (54149)
+                   Family Flags: 116
+Description      : Infusion of Light has $s1 additional charge, reduces the cost of Flash of Light by an additional $s2%, and has a $s2% chance to generate an additional Holy Power from Holy Light.
+
+Name             : Unwavering Spirit (id=392911) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=5, col=3, max_rank=1, req_points=8, select_idx=100]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1031466)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
+                   Base Value: -30000 | Scaled Value: -30000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Affected Spells: Aura Mastery (31821)
+                   Family Flags: 79
+Description      : The cooldown of Aura Mastery is reduced by ${$s1/-1000} sec.
+
+Name             : Divine Insight (id=392914) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=3, col=1, max_rank=1, req_points=0, select_idx=200]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1031469)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Holy Shock (20473), Holy Shock (25912), Holy Shock (25914)
+                   Family Flags: 21, 48
+Description      : Holy Shock's healing and damage is increased by $s1%.
+
+Name             : Tirion's Devotion (id=392928) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=4, col=2, max_rank=1, req_points=0]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x.x. ........ ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Heal
+Attributes       : ......x. ........ ........ .......x   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ..x..... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), No Aura Cancel (31), No Aura Icon (60), No Aura Log (202), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1031501)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Lay on Hand's cooldown is reduced by $s1 sec per Holy Power spent.
+
+Name             : Veneration (id=392938) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=8, col=3, max_rank=1, req_points=20]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ....x... ..x.x.x. x.x..x.. ........ 
+                 : Yellow Melee, Generic Heal, Generic Hostile Spell, Magic Heal, Magic Hostile Spell, Periodic, Trap Triggered
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1031516)  : Apply Aura (6) | Proc Trigger Spell (42): Veneration
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 392939 | Target: Self (1)
+Description      : Flash of Light, Holy Light, and Judgment critical strikes reset the cooldown of Hammer of Wrath and make it usable on any target, regardless of their health.
+
+Name             : Veneration (id=392939) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Range            : 10 yards
+Duration         : 15 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 100%
+Proc Flags       : ....x... ....x... x....... ........ 
+                 : Yellow Melee, Generic Hostile Spell, Magic Hostile Spell
+Triggered by     : Veneration (392938)
+Attributes       : ........ ........ ........ x..x....   .....x.. ........ ........ ........ 
+                 : ........ ......x. ...x.... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ...x.... ........ .xx..... ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : .....x.. ........ ........ ........   ........ ...x.... ........ ........ 
+                 : ........ ........ ......x. ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   .x...... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Allow While Sitting (27), Allow While Stealthed (37), Allow While Invisible (78), Allow While Not Shapeshifted (caster form) (83), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Riding Vehicle (204), Allow While Charmed (261), Allow While Banished Aura State (299), Allow While Stunned By Horror Mechanic (342), Allow While Stunned by Stun Mechanic (378), Allow While Feared By Fear Mechanic (417)
+Effects          :
+#1 (id=1031517)  : Apply Aura (6) | Unknown(262)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Hammer of Wrath (24275)
+                   Family Flags: 39
+Description      : $@spelldesc392938
+Tooltip          : Hammer of Wrath can be used on any target.
+
+Name             : Boundless Salvation (id=392951) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=10, col=4, max_rank=1, req_points=20]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Proc Chance      : 100%
+Proc Flags       : ........ ..x...x. ........ ........ 
+                 : Generic Heal, Magic Heal
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ..x..... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Can Proc From Procs (122)
+Effects          :
+#1 (id=1031543)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 500 | Scaled Value: 500 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1031544)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1000 | Scaled Value: 1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Casting Flash of Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s1/1000}.1 sec.
+
+Casting Holy Light on targets affected by Tyr's Deliverance extends the duration of your Tyr's Deliverance by ${$s2/1000}.1 sec.
+
+Name             : Imbued Infusions (id=392961) [Spell Family (10), Passive] 
+Talent Entry     : Holy [tree=spec, row=5, col=4, max_rank=1, req_points=8]
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6)
+Effects          :
+#1 (id=1031567)  : Apply Aura (6) | Dummy (4)
+                   Base Value: -1000 | Scaled Value: -1000 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Consuming Infusion of Light reduces the cooldown of Holy Shock by ${$s1/-1000}.1 sec.
+
+Name             : Improved Cleanse (id=393024) [Passive, Hidden] 
+Class            : Paladin
+School           : Physical
+Spell Type       : None
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1031676)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Cleanse additionally removes all Disease and Poison effects.
 
 
