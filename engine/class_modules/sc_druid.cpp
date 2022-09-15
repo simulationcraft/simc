@@ -10107,7 +10107,7 @@ void druid_t::create_buffs()
 
   buff.eye_of_fearful_symmetry =
       make_buff( this, "eye_of_fearful_symmetry", talent.eye_of_fearful_symmetry->effectN( 2 ).trigger() )
-          ->set_initial_stack( as<int>( talent.eye_of_fearful_symmetry->effectN( 1 ).base_value() ) );
+          ->set_initial_stack( std::max( 1, as<int>( talent.eye_of_fearful_symmetry->effectN( 1 ).base_value() ) ) );
   buff.eye_of_fearful_symmetry->set_default_value(
       buff.eye_of_fearful_symmetry->data().effectN( 1 ).trigger()->effectN( 1 ).base_value() );
 
