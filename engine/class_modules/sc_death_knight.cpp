@@ -5775,8 +5775,10 @@ struct empower_rune_weapon_t : public death_knight_spell_t
     // Buff handles the ticking, this one just triggers the buff
     dot_duration = base_tick_time = 0_ms;
 
-    cooldown -> charges += as<int>( p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() );
-    cooldown -> charges += as<int>( p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value() );
+    cooldown -> duration = p->spell.empower_rune_weapon_main -> charge_cooldown();
+
+    double charges = p -> spell.empower_rune_weapon_main -> charges() + p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() + p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value();
+    cooldown -> charges = charges;
   }
 
   // TODO Remove with conduits
