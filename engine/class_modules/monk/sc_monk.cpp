@@ -1681,9 +1681,6 @@ struct tiger_palm_t : public monk_melee_attack_t
       if ( p()->buff.power_strikes->check() )
       {
         power_strikes = true;
-
-        double chi_gain = p()->talent.windwalker.power_strikes->effectN( 1 ).base_value();
-        p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.power_strikes );
         p()->buff.power_strikes->expire();
       }
     }
@@ -6750,6 +6747,28 @@ public:
 };
 
 // ===============================================================================
+// Power Strikes Buff
+// ===============================================================================
+
+struct power_strikes_t : public monk_buff_t<buff_t>
+{
+  power_strikes_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
+  {
+    set_default_value( s->effectN( 1 ).base_value() );
+    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
+  }
+
+  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
+  {
+  
+    double chi_gain = p().talent.windwalker.power_strikes->effectN( 1 ).base_value();
+    p().resource_gain( RESOURCE_CHI, chi_gain, p().gain.power_strikes );
+
+    buff_t::expire_override( expiration_stacks, remaining_duration );
+  }
+};
+
+// ===============================================================================
 // Fortifying Brew Buff
 // ===============================================================================
 struct fortifying_brew_t : public monk_buff_t<buff_t>
@@ -8771,8 +8790,7 @@ void monk_t::create_buffs ()
     buff.whirling_dragon_punch = make_buff ( this, "whirling_dragon_punch", find_spell ( 196742 ) )
       ->set_refresh_behavior ( buff_refresh_behavior::NONE );
 
-    buff.power_strikes = make_buff ( this, "power_strikes", talent.windwalker.power_strikes->effectN ( 1 ).trigger () )
-      ->set_default_value ( talent.windwalker.power_strikes->effectN ( 1 ).trigger ()->effectN ( 1 ).base_value () );
+    buff.power_strikes = new buffs::power_strikes_t ( *this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() );
 
     // Covenant Abilities
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
@@ -9878,17 +9896,7 @@ void monk_t::combat_begin()
     }
 
     if ( talent.windwalker.power_strikes->ok() )
-      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () 
-      {        
-        // Currently you gain a Chi if the buff refreshes
-        if ( bugs && buff.power_strikes->up() )
-        {
-          double chi_gain = talent.windwalker.power_strikes->effectN( 1 ).base_value();
-          resource_gain( RESOURCE_CHI, chi_gain, gain.power_strikes );
-        }
-
-        buff.power_strikes->trigger(); 
-      } );
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () { buff.power_strikes->trigger(); } );
   }
 
   if ( specialization () == MONK_BREWMASTER )
