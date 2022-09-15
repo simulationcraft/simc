@@ -866,6 +866,7 @@ public:
     const spell_data_t* whirling_dragon_punch_tick;
     const spell_data_t* fury_of_xuen_stacking_buff;
     const spell_data_t* fury_of_xuen_haste_buff;
+    const spell_data_t* glory_of_the_dawn_damage;
 
     // Covenants
     const spell_data_t* bonedust_brew_dmg;
