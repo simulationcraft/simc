@@ -563,6 +563,19 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
+      int stack = priest().buffs.shadowy_insight->check();
+      if ( priest().buffs.shadowy_insight->trigger() )
+      {
+        if ( priest().buffs.shadowy_insight->check() == stack )
+        {
+          priest().procs.shadowy_insight_overflow->occur();
+        }
+        else
+        {
+          priest().procs.shadowy_insight->occur();
+        }
+      }
+
       if ( priest().talents.depth_of_the_shadows.enabled() )
       {
         priest().buffs.depth_of_the_shadows->trigger();
@@ -869,19 +882,6 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
-      int stack = priest().buffs.shadowy_insight->check();
-      if ( priest().buffs.shadowy_insight->trigger() )
-      {
-        if ( priest().buffs.shadowy_insight->check() == stack )
-        {
-          priest().procs.shadowy_insight_overflow->occur();
-        }
-        else
-        {
-          priest().procs.shadowy_insight->occur();
-        }
-      }
-
       if ( priest().talents.shadow.maddening_touch.enabled() &&
            rng().roll( priest().talents.shadow.maddening_touch->effectN( 1 ).percent() ) )
       {
