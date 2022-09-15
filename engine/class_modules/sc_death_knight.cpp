@@ -654,7 +654,7 @@ public:
     gain_t* breath_of_sindragosa;
     gain_t* empower_rune_weapon;
     gain_t* frost_fever; // RP generation per tick
-    // gain_t* horn_of_winter;
+    gain_t* horn_of_winter;
     gain_t* koltiras_favor;
     gain_t* frigid_executioner; // Rune refund chance
     gain_t* murderous_efficiency;
@@ -1934,7 +1934,8 @@ struct death_knight_pet_t : public pet_t
   {
     pet_t::create_buffs();
 
-    commander_of_the_dead = make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead ) -> set_default_value_from_effect( 1 );
+    commander_of_the_dead = make_buff( this, "commander_of_the_dead", dk() -> pet_spell.commander_of_the_dead )
+        -> set_default_value( dk() -> pet_spell.commander_of_the_dead -> effectN( 1 ).percent() );
   }
 };
 
@@ -6198,9 +6199,23 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     return m;
   }
 
+  double composite_target_multiplier(player_t* target) const override
+  {
+      double m = death_knight_melee_attack_t::composite_target_multiplier ( target );
+
+      if ( get_td( target ) -> debuff.razorice -> stack() == 5 && p() -> talent.frost.shattering_strikes.ok() )
+      {
+          m *= 1.0 + p() -> talent.frost.shattering_strikes -> effectN().percent();
+      }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     death_knight_melee_attack_t::impact( s );
+
+    death_knight_td_t* td = get_td( s -> target );
 
     if ( result_is_hit( s -> result ) )
     {
@@ -6208,6 +6223,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
       {
         p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
+      }
+
+      if ( p() -> talent.frost.shattering_strikes.ok() && td -> debuff.razorice -> stack() == 5)
+      {
+          td -> debuff.razorice -> expire();
       }
     }
   }
@@ -6225,7 +6245,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     {
       p() -> buffs.unleashed_frenzy_conduit->trigger();
     }
-
   }
 };
 
@@ -6512,13 +6531,13 @@ struct heart_strike_t : public death_knight_melee_attack_t
     }
   }
 };
-/*
+
 // Horn of Winter ===========================================================
 
 struct horn_of_winter_t : public death_knight_spell_t
 {
   horn_of_winter_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "horn_of_winter", p, p -> talent.horn_of_winter )
+    death_knight_spell_t( "horn_of_winter", p, p -> talent.frost.horn_of_winter )
   {
     parse_options( options_str );
     harmful = false;
@@ -6534,7 +6553,6 @@ struct horn_of_winter_t : public death_knight_spell_t
     p() -> replenish_rune( as<unsigned int>( data().effectN( 1 ).base_value() ), p() -> gains.horn_of_winter );
   }
 };
-*/
 
 // Howling Blast ============================================================
 
@@ -6609,6 +6627,16 @@ struct howling_blast_t : public death_knight_spell_t
     return m;
   }
 
+  double composite_target_multiplier( player_t* target ) const override
+  {
+    double m = death_knight_spell_t::composite_target_multiplier( target );
+
+    if ( p() -> talent.frost.icebreaker.ok() )
+    {
+      m *= 1.0 + p() -> talent.frost.icebreaker->effectN().percent();
+    }
+  }
+
   double cost() const override
   {
     if ( p() -> buffs.rime -> check() )
@@ -6666,6 +6694,7 @@ struct howling_blast_t : public death_knight_spell_t
     {
       avalanche -> set_target( target );
       avalanche -> execute();
+      get_td( target ) -> debuff.razorice -> trigger();
     }
 
     if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion.ok() )
@@ -9282,7 +9311,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "frostscythe"              ) return new frostscythe_t              ( this, options_str );
   if ( name == "frostwyrms_fury"          ) return new frostwyrms_fury_t          ( this, options_str );
   if ( name == "glacial_advance"          ) return new glacial_advance_t          ( this, options_str );
-  // if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
+  if ( name == "horn_of_winter"           ) return new horn_of_winter_t           ( this, options_str );
   if ( name == "howling_blast"            ) return new howling_blast_t            ( this, options_str );
   if ( name == "obliterate"               ) return new obliterate_t               ( this, options_str );
   if ( name == "pillar_of_frost"          ) return new pillar_of_frost_t          ( this, options_str );
@@ -10516,7 +10545,7 @@ void death_knight_t::init_gains()
   gains.breath_of_sindragosa             = get_gain( "Breath of Sindragosa" );
   gains.empower_rune_weapon              = get_gain( "Empower Rune Weapon" );
   gains.frost_fever                      = get_gain( "Frost Fever" );
-  // gains.horn_of_winter                   = get_gain( "Horn of Winter" );
+  gains.horn_of_winter                   = get_gain( "Horn of Winter" );
   gains.murderous_efficiency             = get_gain( "Murderous Efficiency" );
   gains.obliteration                     = get_gain( "Obliteration" );
   gains.rage_of_the_frozen_champion      = get_gain( "Rage of the Frozen Champion" );
