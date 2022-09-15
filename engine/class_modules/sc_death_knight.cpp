@@ -501,6 +501,7 @@ public:
     buff_t* ossuary;
     buff_t* perseverance_of_the_ebon_blade;
     buff_t* rune_tap;
+    buff_t* sanguine_ground;
     buff_t* tombstone;
     buff_t* vampiric_blood;
     buff_t* voracious;
@@ -951,6 +952,7 @@ public:
     // Blood
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
+    const spell_data_t* sanguine_ground;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -5296,6 +5298,12 @@ struct death_and_decay_base_t : public death_knight_spell_t
     {
       p() -> buffs.unholy_ground -> trigger();
       p() -> buffs.unholy_ground -> set_duration(data().duration() + 500_ms);
+    }
+
+    if ( p() -> talent.blood.sanguine_ground.ok() )
+    {
+      p() -> buffs.sanguine_ground -> trigger();
+      p() -> buffs.sanguine_ground -> set_duration(data().duration() + 500_ms);
     }
 
     make_event<ground_aoe_event_t>( *sim, player, ground_aoe_params_t()
@@ -10038,6 +10046,7 @@ void death_knight_t::init_spells()
   // Blood
   spell.blood_shield        = find_spell( 77535 );
   spell.bone_shield         = find_spell( 195181 );
+  spell.sanguine_ground     = find_spell( 391459 );
   // T28 Blood
   spell.endless_rune_waltz_energize = find_spell( 368938 );
   spell.endless_rune_waltz_4pc      = find_spell( 363590 );
@@ -10357,6 +10366,11 @@ void death_knight_t::create_buffs()
 
   buffs.rune_tap = make_buff( this, "rune_tap", talent.blood.rune_tap )
         -> set_cooldown( 0_ms ); // Handled by the action
+
+  buffs.sanguine_ground = make_buff( this, "sanguine_ground", spell.sanguine_ground )
+        ->set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE )
+        ->set_schools_from_effect( 1 )
+        ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   buffs.tombstone = make_buff<absorb_buff_t>( this, "tombstone", talent.blood.tombstone )
         -> set_cooldown( 0_ms ); // Handled by the action
@@ -10709,8 +10723,8 @@ void death_knight_t::assess_heal( school_e school, result_amount_type t, action_
   if ( buffs.vampiric_blood -> up() )
     s -> result_total *= 1.0 + buffs.vampiric_blood -> data().effectN( 1 ).percent() + talent.blood.improved_vampiric_blood -> effectN( 1 ).percent();
 
-  if( in_death_and_decay() )
-    s -> result_total *= 1.0 + talent.blood.sanguine_ground -> effectN( 2 ).percent();
+  if( talent.blood.sanguine_ground.ok() && in_death_and_decay() )
+    s -> result_total *= 1.0 + spell.sanguine_ground -> effectN( 2 ).percent();
 
   player_t::assess_heal( school, t, s );
 }
@@ -11039,11 +11053,6 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( buffs.bonegrinder_frost->up() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.bonegrinder_frost->value();
-  }
-
-  if ( talent.blood.sanguine_ground.ok() && in_death_and_decay() )
-  {
-    m *= 1.0 + talent.blood.sanguine_ground -> effectN( 1 ).percent();
   }
 
   return m;
