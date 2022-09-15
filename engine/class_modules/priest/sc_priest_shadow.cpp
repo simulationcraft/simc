@@ -93,10 +93,10 @@ struct mind_sear_t final : public priest_spell_t
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
 
-    bool ready() override
+  bool ready() override
   {
     // You cannot start a cast if you have less than 1 ticks worth
-    if ( priest().resources.current[RESOURCE_INSANITY] < cost_per_tick(RESOURCE_INSANITY) )
+    if ( priest().resources.current[ RESOURCE_INSANITY ] < cost_per_tick( RESOURCE_INSANITY ) )
     {
       return false;
     }
@@ -121,9 +121,6 @@ struct mind_flay_base_t final : public priest_spell_t
     may_crit                   = false;
     channeled                  = true;
     use_off_gcd                = true;
-
-    // BUG: most likely not intended
-    triggers_piercing_shadows = false;
 
     if ( priest().talents.shadow.coalescing_shadows.enabled() )
     {
@@ -249,8 +246,6 @@ struct dispersion_t final : public priest_spell_t
     hasted_ticks          = false;
     may_miss              = false;
 
-    triggers_piercing_shadows = false;
-
     if ( priest().talents.shadow.intangibility.enabled() )
     {
       cooldown->duration += priest().talents.shadow.intangibility->effectN( 1 ).time_value();
@@ -308,8 +303,6 @@ struct silence_t final : public priest_spell_t
     parse_options( options_str );
     may_miss = may_crit   = false;
     ignore_false_positive = is_interrupt = true;
-
-    triggers_piercing_shadows = false;
 
     auto rank2 = p.find_rank_spell( "Silence", "Rank 2" );
     if ( rank2->ok() )
@@ -381,9 +374,9 @@ struct vampiric_embrace_t final : public priest_spell_t
     priest_spell_t::execute();
     priest().buffs.vampiric_embrace->trigger();
 
-    if ( priest().talents.shadow.hallucinations.enabled() )
+    if ( priest().specs.hallucinations->ok() )
     {
-      priest().generate_insanity( priest().talents.shadow.hallucinations->effectN( 1 ).base_value() / 100,
+      priest().generate_insanity( priest().specs.hallucinations->effectN( 1 ).base_value() / 100,
                                   priest().gains.hallucinations_vampiric_embrace, nullptr );
     }
   }
@@ -517,6 +510,7 @@ struct shadow_word_pain_t final : public priest_spell_t
       dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();
     }
 
+    // TODO: this can likely be automatically done
     if ( priest().talents.throes_of_pain.enabled() )
     {
       base_td_multiplier *= ( 1 + priest().talents.throes_of_pain->effectN( 1 ).percent() );
@@ -875,16 +869,16 @@ struct vampiric_touch_t final : public priest_spell_t
 
     if ( result_is_hit( d->state->result ) && d->state->result_amount > 0 )
     {
-      int stack = priest().buffs.vampiric_insight->check();
-      if ( priest().buffs.vampiric_insight->trigger() )
+      int stack = priest().buffs.shadowy_insight->check();
+      if ( priest().buffs.shadowy_insight->trigger() )
       {
-        if ( priest().buffs.vampiric_insight->check() == stack )
+        if ( priest().buffs.shadowy_insight->check() == stack )
         {
-          priest().procs.vampiric_insight_overflow->occur();
+          priest().procs.shadowy_insight_overflow->occur();
         }
         else
         {
-          priest().procs.vampiric_insight->occur();
+          priest().procs.shadowy_insight->occur();
         }
       }
 
@@ -1211,16 +1205,9 @@ struct void_bolt_t final : public priest_spell_t
   };
 
   void_bolt_extension_t* void_bolt_extension;
-  timespan_t hungering_void_base_duration;
-  timespan_t hungering_void_crit_duration;
 
   void_bolt_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "void_bolt", p, p.specs.void_bolt ),
-      void_bolt_extension( nullptr ),
-      hungering_void_base_duration(
-          timespan_t::from_seconds( priest().talents.shadow.hungering_void->effectN( 3 ).base_value() ) ),
-      hungering_void_crit_duration(
-          timespan_t::from_seconds( priest().talents.shadow.hungering_void->effectN( 4 ).base_value() ) )
+    : priest_spell_t( "void_bolt", p, p.specs.void_bolt ), void_bolt_extension( nullptr )
   {
     parse_options( options_str );
     use_off_gcd                = true;
@@ -1280,29 +1267,6 @@ struct void_bolt_t final : public priest_spell_t
       void_bolt_extension->target = s->target;
       void_bolt_extension->schedule_execute();
     }
-
-    if ( priest().talents.shadow.hungering_void.enabled() )
-    {
-      priest_td_t& td = get_td( s->target );
-      // Check if this buff is active, every Void Bolt after the first should get this
-      // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/678
-      // The first Void Bolt on a target will extend Voidform, even if Hungering Void is not active on the target
-      if ( ( td.buffs.hungering_void->up() || priest().bugs ) && priest().buffs.voidform->check() )
-      {
-        if ( s->result == RESULT_CRIT )
-        {
-          priest().procs.hungering_void_crit->occur();
-        }
-
-        timespan_t seconds_to_add_to_voidform =
-            s->result == RESULT_CRIT ? hungering_void_crit_duration : hungering_void_base_duration;
-        sim->print_debug( "{} extending Voidform duration by {} seconds.", priest(), seconds_to_add_to_voidform );
-        // TODO: add some type of tracking for this increase
-        priest().buffs.voidform->extend_duration( player, seconds_to_add_to_voidform );
-      }
-      priest().remove_hungering_void( s->target );
-      td.buffs.hungering_void->trigger();
-    }
   }
 };
 
@@ -1320,8 +1284,6 @@ struct dark_ascension_t final : public priest_spell_t
     parse_options( options_str );
 
     may_miss = false;
-
-    triggers_piercing_shadows = false;
   }
 
   void execute() override
@@ -1468,6 +1430,9 @@ struct dark_void_t final : public priest_spell_t
   }
 };
 
+// ==========================================================================
+// Mind Spike
+// ==========================================================================
 struct mind_spike_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
@@ -1513,15 +1478,6 @@ struct mind_spike_t final : public priest_spell_t
     {
       priest().trigger_psychic_link( s );
 
-      if ( !priest().buffs.surge_of_darkness->check() )
-      {
-        td.dots.shadow_word_pain->cancel();
-        td.dots.vampiric_touch->cancel();
-        td.dots.devouring_plague->cancel();
-
-        priest().procs.mind_spike_dot_clear->occur();
-      }
-
       if ( s->result == RESULT_CRIT && priest().talents.shadow.whispers_of_the_damned.enabled() )
       {
         priest().generate_insanity(
@@ -1558,67 +1514,6 @@ struct mind_spike_t final : public priest_spell_t
     {
       priest().buffs.mind_melt->trigger();
     }
-  }
-};
-
-// ==========================================================================
-// Surrender to Madness
-// ==========================================================================
-struct void_eruption_stm_damage_t final : public priest_spell_t
-{
-  propagate_const<action_t*> void_bolt;
-
-  void_eruption_stm_damage_t( priest_t& p )
-    : priest_spell_t( "void_eruption_stm_damage", p, p.talents.shadow.void_eruption_damage ), void_bolt( nullptr )
-  {
-    // This Void Eruption only hits a single target
-    may_miss                   = false;
-    background                 = true;
-    affected_by_shadow_weaving = true;
-  }
-
-  void init() override
-  {
-    priest_spell_t::init();
-    void_bolt = player->find_action( "void_bolt" );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-    priest_spell_t::impact( s );
-  }
-};
-
-struct surrender_to_madness_t final : public priest_spell_t
-{
-  surrender_to_madness_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "surrender_to_madness", p, p.talents.shadow.surrender_to_madness )
-  {
-    parse_options( options_str );
-
-    impact_action = new void_eruption_stm_damage_t( p );
-    add_child( impact_action );
-  }
-
-  void execute() override
-  {
-    priest_spell_t::execute();
-
-    priest().buffs.surrender_to_madness->trigger();
-
-    if ( !priest().buffs.voidform->check() )
-    {
-      priest().buffs.voidform->trigger();
-    }
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_spell_t::impact( s );
-
-    priest_td_t& td = get_td( s->target );
-    td.buffs.surrender_to_madness_debuff->trigger();
   }
 };
 
@@ -1951,9 +1846,6 @@ struct voidform_t final : public priest_buff_t<buff_t>
     // Set cooldown to 0s, cooldown is stored in Void Eruption
     cooldown->duration = timespan_t::from_seconds( 0 );
 
-    // Using Surrender within Voidform does not reset the duration - might be a bug?
-    set_refresh_behavior( buff_refresh_behavior::DISABLED );
-
     // Use a stack change callback to trigger voidform effects.
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
@@ -2078,11 +1970,11 @@ struct mental_fortitude_buff_t final : public absorb_buff_t
 };
 
 // ==========================================================================
-// Vampiric Insight
+// Shadowy Insight
 // ==========================================================================
-struct vampiric_insight_t final : public priest_buff_t<buff_t>
+struct shadowy_insight_t final : public priest_buff_t<buff_t>
 {
-  vampiric_insight_t( priest_t& p ) : base_t( p, "vampiric_insight", p.find_spell( 375981 ) )
+  shadowy_insight_t( priest_t& p ) : base_t( p, "shadowy_insight", p.find_spell( 375981 ) )
   {
     // TODO: determine what rppm value actually is, mostly guesses right now
     // These values are not found in spell data
@@ -2102,7 +1994,7 @@ struct vampiric_insight_t final : public priest_buff_t<buff_t>
     {
       for ( int i = 0; i < expiration_stacks; i++ )
       {
-        priest().procs.vampiric_insight_missed->occur();
+        priest().procs.shadowy_insight_missed->occur();
       }
     }
 
@@ -2111,7 +2003,7 @@ struct vampiric_insight_t final : public priest_buff_t<buff_t>
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
   {
-    if ( !priest().talents.shadow.vampiric_insight.enabled() )
+    if ( !priest().talents.shadow.shadowy_insight.enabled() )
       return false;
 
     return priest_buff_t::trigger( stacks, value, chance, duration );
@@ -2185,25 +2077,7 @@ void priest_t::generate_insanity( double num_amount, gain_t* g, action_t* action
 {
   if ( specialization() == PRIEST_SHADOW )
   {
-    double amount                           = num_amount;
-    double amount_from_surrender_to_madness = 0.0;
-
-    if ( buffs.surrender_to_madness->check() )
-    {
-      double total_amount = amount * ( 1.0 + talents.shadow.surrender_to_madness->effectN( 2 ).percent() );
-
-      amount_from_surrender_to_madness = amount * talents.shadow.surrender_to_madness->effectN( 2 ).percent();
-
-      // Make sure the maths line up.
-      assert( total_amount == amount + amount_from_surrender_to_madness );
-    }
-
-    resource_gain( RESOURCE_INSANITY, amount, g, action );
-
-    if ( amount_from_surrender_to_madness > 0.0 )
-    {
-      resource_gain( RESOURCE_INSANITY, amount_from_surrender_to_madness, gains.insanity_surrender_to_madness, action );
-    }
+    resource_gain( RESOURCE_INSANITY, num_amount, g, action );
   }
 }
 
@@ -2220,12 +2094,6 @@ void priest_t::create_buffs_shadow()
   // Talents
   buffs.ancient_madness        = make_buff<buffs::ancient_madness_t>( *this );
   buffs.death_and_madness_buff = make_buff<buffs::death_and_madness_buff_t>( *this );
-  buffs.surrender_to_madness   = make_buff( this, "surrender_to_madness", talents.shadow.surrender_to_madness );
-  buffs.surrender_to_madness_death =
-      make_buff( this, "surrender_to_madness_death", talents.shadow.surrender_to_madness )
-          ->set_duration( timespan_t::zero() )
-          ->set_default_value( 0.0 )
-          ->set_chance( 1.0 );
   buffs.unfurling_darkness =
       make_buff( this, "unfurling_darkness", talents.shadow.unfurling_darkness->effectN( 1 ).trigger() );
   buffs.unfurling_darkness_cd =
@@ -2249,7 +2117,7 @@ void priest_t::create_buffs_shadow()
                               ->set_chance( conduits.mind_devourer->effectN( 2 ).percent() );
   }
 
-  buffs.vampiric_insight = make_buff<buffs::vampiric_insight_t>( *this );
+  buffs.shadowy_insight = make_buff<buffs::shadowy_insight_t>( *this );
 
   buffs.mental_fortitude = new buffs::mental_fortitude_buff_t( this );
 
@@ -2296,12 +2164,6 @@ void priest_t::create_buffs_shadow()
                                  ->set_default_value( talents.shadow.mind_flay_insanity->effectN( 1 ).percent() );
 
   buffs.deathspeaker = make_buff( this, "deathspeaker", talents.shadow.deathspeaker->effectN( 1 ).trigger() );
-
-  // Value in buff effect is 0, overriding this to the base talent's values
-  // TODO: check if this is ever fixed
-  buffs.piercing_shadows =
-      make_buff( this, "piercing_shadows", talents.shadow.piercing_shadows->effectN( 2 ).trigger() )
-          ->set_default_value( talents.shadow.piercing_shadows->effectN( 1 ).percent() );
 
   // TODO: use default_value to parse increase instead of stacks
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
@@ -2351,74 +2213,70 @@ void priest_t::init_spells_shadow()
   talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );  // NYI
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
   talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
-  talents.shadow.mind_sear          = ST( "Mind Sear" );          // NYI
-  talents.shadow.mind_sear_insanity = find_spell( 208232 );       // TODO: might not need. Insanity is stored here
   // Row 4
   talents.shadow.coalescing_shadows          = ST( "Coalescing Shadows" );
   talents.shadow.coalescing_shadows_buff     = find_spell( 391243 );
   talents.shadow.coalescing_shadows_dot_buff = find_spell( 391244 );
-  talents.shadow.hallucinations              = ST( "Hallucinations" );
-  talents.shadow.tithe_evasion               = ST( "Tithe Evasion" );
-  talents.shadow.mind_spike                  = ST( "Mind Spike" );
-  talents.shadow.vampiric_insight            = ST( "Vampiric Insight" );
+  talents.shadow.mind_sear                   = ST( "Mind Sear" );      // NYI
+  talents.shadow.mind_sear_insanity          = find_spell( 208232 );   // TODO: might not need. Insanity is stored here
+  talents.shadow.void_eruption               = ST( "Void Eruption" );  // TODO: confirm CD is 2m
+  talents.shadow.void_eruption_damage        = find_spell( 228360 );
+  talents.shadow.dark_ascension              = ST( "Dark Ascension" );  // NYI
+
+  talents.shadow.shadowy_insight = ST( "Shadowy Insight" );
+  talents.shadow.mind_spike      = ST( "Mind Spike" );
   // Row 5
   talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
-  talents.shadow.damnation              = ST( "Damnation" );
-  talents.shadow.mind_melt              = ST( "Mind Melt" );
+  talents.shadow.shadow_crash           = ST( "Shadow Crash" );
+  talents.shadow.ancient_madness        = ST( "Ancient Madness" );  // TODO: add point scaling
   talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
   talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
   talents.shadow.mental_decay           = ST( "Mental Decay" );  // NYI
-  talents.shadow.dark_evangelism        = ST( "Dark Evangelism" );
   // Row 6
   talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
-  talents.shadow.malediction        = ST( "Malediction" );
-  talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
-  talents.shadow.void_torrent       = ST( "Void Torrent" );
-  talents.shadow.shadow_crash       = ST( "Shadow Crash" );
-  talents.shadow.dark_ascension     = ST( "Dark Ascension" );  // NYI
   talents.shadow.unfurling_darkness = ST( "Unfurling Darkness" );
+  talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
+  talents.shadow.mind_melt          = ST( "Mind Melt" );
   // Row 7
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
+  talents.shadow.dark_evangelism          = ST( "Dark Evangelism" );
   talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
-  talents.shadow.piercing_shadows         = ST( "Piercing Shadows" );
   // Row 8
   talents.shadow.mindbender      = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj
-  talents.shadow.devoured_pride       = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair     = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger       = find_spell( 373318 );  // Haste - Enrage - NYI
-  talents.shadow.devoured_fear        = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
-  talents.shadow.devoured_violence    = find_spell( 373320 );  // Pet Extension - Default
-  talents.shadow.deathspeaker         = ST( "Deathspeaker" );
-  talents.shadow.mind_flay_insanity   = ST( "Mind Flay: Insanity" );
-  talents.shadow.derangement          = ST( "Derangement" );    // NYI
-  talents.shadow.void_eruption        = ST( "Void Eruption" );  // TODO: confirm CD is 2m
-  talents.shadow.void_eruption_damage = find_spell( 228360 );
+  talents.shadow.devoured_pride     = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair   = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger     = find_spell( 373318 );  // Haste - Enrage - NYI
+  talents.shadow.devoured_fear      = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence  = find_spell( 373320 );  // Pet Extension - Default
+  talents.shadow.deathspeaker       = ST( "Deathspeaker" );
+  talents.shadow.mind_flay_insanity = ST( "Mind Flay: Insanity" );
+  talents.shadow.derangement        = ST( "Derangement" );  // NYI
+  talents.shadow.damnation          = ST( "Damnation" );
+  talents.shadow.void_torrent       = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.fiending_dark   = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania       = ST( "Monomania" );
-  talents.shadow.pain_of_death   = ST( "Pain of Death" );
-  talents.shadow.mastermind      = ST( "Mastermind" );       // NYI
-  talents.shadow.insidious_ire   = ST( "Insidious Ire" );    // TODO: check values
-  talents.shadow.mind_devourer   = ST( "Mind Devourer" );    // TODO: check values
-  talents.shadow.ancient_madness = ST( "Ancient Madness" );  // TODO: add point scaling
+  talents.shadow.fiending_dark = ST( "Fiending Dark" );  // NYI
+  talents.shadow.monomania     = ST( "Monomania" );
+  talents.shadow.pain_of_death = ST( "Pain of Death" );
+
+  talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
+  talents.shadow.mastermind    = ST( "Mastermind" );     // NYI
+  talents.shadow.malediction   = ST( "Malediction" );
   // Row 10
-  talents.shadow.shadowflame_prism    = ST( "Shadowflame Prism" );
-  talents.shadow.idol_of_cthun        = ST( "Idol of C'Thun" );
-  talents.shadow.idol_of_nzoth        = ST( "Idol of N'Zoth" );
-  talents.shadow.lunacy               = ST( "Lunacy" );  // NYI
-  talents.shadow.idol_of_yoggsaron    = ST( "Idol of Yogg-Saron" );
-  talents.shadow.hungering_void       = ST( "Hungering Void" );  // Check values
-  talents.shadow.hungering_void_buff  = find_spell( 345219 );
-  talents.shadow.surrender_to_madness = ST( "Surrender to Madness" );  // Confirm 2m cd is working
+  talents.shadow.shadowflame_prism = ST( "Shadowflame Prism" );
+  talents.shadow.idol_of_cthun     = ST( "Idol of C'Thun" );
+  talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
+  talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );
+  talents.shadow.mind_devourer     = ST( "Mind Devourer" );  // TODO: check values
 
   // General Spells
-  specs.mind_flay  = find_specialization_spell( "Mind Flay" );
-  specs.shadowform = find_specialization_spell( "Shadowform" );
-  specs.void_bolt  = find_spell( 205448 );
-  specs.voidform   = find_spell( 194249 );
+  specs.mind_flay      = find_specialization_spell( "Mind Flay" );
+  specs.shadowform     = find_specialization_spell( "Shadowform" );
+  specs.void_bolt      = find_spell( 205448 );
+  specs.voidform       = find_spell( 194249 );
+  specs.hallucinations = find_spell( 280752 );  // check this is correct
 
   // Still need these for pre-patch since 2p/4p still works with DT and not VI
   specs.dark_thought  = find_specialization_spell( "Dark Thought" );
@@ -2468,10 +2326,6 @@ action_t* priest_t::create_action_shadow( util::string_view name, util::string_v
   if ( name == "dispersion" )
   {
     return new dispersion_t( *this, options_str );
-  }
-  if ( name == "surrender_to_madness" )
-  {
-    return new surrender_to_madness_t( *this, options_str );
   }
   if ( name == "silence" )
   {
@@ -2637,37 +2491,6 @@ void priest_t::trigger_pain_of_death( action_state_t* s )
 void priest_t::trigger_shadow_weaving( action_state_t* s )
 {
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
-}
-
-// ==========================================================================
-// Check for the Hungering Void talent and find the debuff on that target
-// ==========================================================================
-bool priest_t::hungering_void_active( player_t* target ) const
-{
-  if ( !talents.shadow.hungering_void.enabled() )
-    return false;
-  const priest_td_t* td = find_target_data( target );
-  if ( !td )
-    return false;
-
-  return td->buffs.hungering_void->check();
-}
-
-// ==========================================================================
-// Remove Hungering Void on any targets that don't match
-// ==========================================================================
-void priest_t::remove_hungering_void( player_t* target )
-{
-  if ( !talents.shadow.hungering_void.enabled() )
-    return;
-
-  for ( priest_td_t* priest_td : _target_data.get_entries() )
-  {
-    if ( priest_td && ( priest_td->target != target ) && priest_td->buffs.hungering_void->check() )
-    {
-      priest_td->buffs.hungering_void->expire();
-    }
-  }
 }
 
 bool priest_t::is_monomania_up( player_t* target ) const

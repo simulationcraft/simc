@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.2.45505
-static const std::array<item_name_description_t, 709> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.2.45569
+static const std::array<item_name_description_t, 715> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -709,5 +709,11 @@ static const std::array<item_name_description_t, 709> __item_name_description_da
   { 13976, "Primal Infused"                              },
   { 13979, "Primal Storms"                               },
   { 13980, "War Mode"                                    },
+  { 13981, "Obsidian"                                    },
+  { 13982, "Sabellian"                                   },
+  { 13983, "Emerald"                                     },
+  { 13984, "Crimson"                                     },
+  { 13985, "Cobalt"                                      },
+  { 13986, "Sandshaped"                                  },
 } };
 

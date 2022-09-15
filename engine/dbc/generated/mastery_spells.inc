@@ -1,4 +1,4 @@
-// Mastery abilities, wow build 10.0.2.45505
+// Mastery abilities, wow build 10.0.2.45569
 static const std::array<mastery_spell_entry_t, 38> __mastery_spell_data { {
   {   62, 190740 }, // Mastery: Savant (Arcane Mage)
   {   63,  12846 }, // Mastery: Ignite (Fire Mage)
@@ -9,7 +9,7 @@ static const std::array<mastery_spell_entry_t, 38> __mastery_spell_data { {
   {   71, 262111 }, // Mastery: Deep Wounds (Arms Warrior)
   {   72,  76856 }, // Mastery: Unshackled Fury (Fury Warrior)
   {   73,  76857 }, // Mastery: Critical Block (Protection Warrior)
-  {  102, 326085 }, // Mastery: Total Eclipse (Balance Druid)
+  {  102, 393014 }, // Mastery: Astral Invocation (Balance Druid)
   {  103,  77493 }, // Mastery: Razor Claws (Feral Druid)
   {  104, 155783 }, // Mastery: Nature's Guardian (Guardian Druid)
   {  105,  77495 }, // Mastery: Harmony (Restoration Druid)

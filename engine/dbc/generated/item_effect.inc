@@ -1,5 +1,5 @@
-// Item effects, wow build 10.0.2.45505
-static const std::array<item_effect_t, 8143> __item_effect_data { {
+// Item effects, wow build 10.0.2.45569
+static const std::array<item_effect_t, 8146> __item_effect_data { {
   { 116657, 317388,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116658, 317389,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
   { 116661, 317407,      0,   0,   1,    0,      -1,      -1 }, // Shroud of Resolve
@@ -8143,9 +8143,12 @@ static const std::array<item_effect_t, 8143> __item_effect_data { {
   { 171644, 392237, 200859,   0,   1,    0,      -1,      -1 }, // Seasoned Hunter's Trophy
   { 171647, 392359, 200868,   0,   0,    0,      -1,      -1 }, // Cataclysmic Punch
   { 171654, 392409, 200880,   0,   1,    0,      -1,      -1 }, // Wind-Sealed Time Capsule
+  { 171766, 390124, 201158,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Fire
+  { 171768, 390124, 201160,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Fire
+  { 171769, 390124, 201161,   0,   0, 1197,      -1,    1000 }, // Scepter of Spectacle: Fire
 } };
 
-static const std::array<uint16_t, 8143> __item_effect_id_index { {
+static const std::array<uint16_t, 8146> __item_effect_id_index { {
     410,   411,   412,   413,   414,   415,   416,   419,
     420,   421,   422,   423,   424,   425,   426,   427,
     428,   429,   430,   431,   434,   435,   436,   437,
@@ -9163,6 +9166,7 @@ static const std::array<uint16_t, 8143> __item_effect_id_index { {
    7927,  7967,  8074,  8082,  7926,  7831,  7961,  7966,
    7950,  7945,  8124,  8125,  8126,  8128,  8129,  8130,
    7969,  8002,  8127,  8131,  8133,  8134,  8135,  8136,
-   8137,  8138,  8132,  8139,  8140,  8141,  8142,
+   8137,  8138,  8132,  8139,  8140,  8141,  8142,  8143,
+   8144,  8145,
 } };
 

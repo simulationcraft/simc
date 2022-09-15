@@ -62,10 +62,8 @@ public:
   {
     propagate_const<buff_t*> schism;
     propagate_const<buff_t*> death_and_madness_debuff;
-    propagate_const<buff_t*> surrender_to_madness_debuff;
     propagate_const<buff_t*> wrathful_faerie;
     propagate_const<buff_t*> wrathful_faerie_fermata;
-    propagate_const<buff_t*> hungering_void;
     propagate_const<buff_t*> echoing_void;
     propagate_const<buff_t*> echoing_void_collapse;
     propagate_const<buff_t*> apathy;
@@ -123,8 +121,6 @@ public:
     propagate_const<buff_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
-    propagate_const<buff_t*> surrender_to_madness;
-    propagate_const<buff_t*> surrender_to_madness_death;
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
@@ -135,7 +131,7 @@ public:
     propagate_const<buff_t*> dark_thought;
     propagate_const<buff_t*> translucent_image_conduit;
     propagate_const<buff_t*> mind_devourer;
-    propagate_const<buff_t*> vampiric_insight;
+    propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;
     propagate_const<buff_t*> insidious_ire;
     propagate_const<buff_t*> thing_from_beyond;
@@ -151,7 +147,6 @@ public:
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
     propagate_const<buff_t*> mind_spike;
-    propagate_const<buff_t*> piercing_shadows;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -194,11 +189,12 @@ public:
     player_talent_t masochism;
     const spell_data_t* masochism_buff;
     player_talent_t depth_of_the_shadows;
-    player_talent_t throes_of_pain;
+    player_talent_t phantasm;
     player_talent_t death_and_madness;
     const spell_data_t* death_and_madness_insanity;
     // Row 4
     player_talent_t spell_warding;
+    player_talent_t blessed_recovery;
     player_talent_t rhapsody;
     const spell_data_t* rhapsody_buff;
     player_talent_t angelic_feather;
@@ -206,15 +202,15 @@ public:
     player_talent_t sheer_terror;
     player_talent_t void_tendrils;
     player_talent_t mind_control;
+    player_talent_t dominate_mind;
     // Row 5
     player_talent_t tools_of_the_cloth;
     player_talent_t mass_dispel;
     player_talent_t power_infusion;
     player_talent_t vampiric_embrace;
-    player_talent_t dominant_mind;
+    player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
-    player_talent_t blessed_recovery;
     player_talent_t improved_mass_dispel;
     player_talent_t psychic_voice;
     player_talent_t twins_of_the_sun_priestess;
@@ -224,14 +220,13 @@ public:
     // Row 7
     player_talent_t unwavering_will;
     player_talent_t twist_of_fate;
-    player_talent_t improved_mind_blast;
+    player_talent_t throes_of_pain;
     // Row 8
     player_talent_t angels_mercy;
     player_talent_t binding_heals;
     player_talent_t halo;
     player_talent_t divine_star;
     player_talent_t translucent_image;
-    player_talent_t phantasm;
     player_talent_t mindgames;
     // Row 9
     player_talent_t surge_of_light;
@@ -263,37 +258,34 @@ public:
       player_talent_t mental_fortitude;
       player_talent_t auspicious_spirits;
       player_talent_t tormented_spirits;
-      player_talent_t mind_sear;
-      const spell_data_t* mind_sear_insanity;
       // Row 4
       player_talent_t coalescing_shadows;
       const spell_data_t* coalescing_shadows_buff;
       const spell_data_t* coalescing_shadows_dot_buff;
-      player_talent_t hallucinations;
-      player_talent_t tithe_evasion;
+      player_talent_t mind_sear;
+      const spell_data_t* mind_sear_insanity;
+      player_talent_t void_eruption;
+      const spell_data_t* void_eruption_damage;
+      player_talent_t dark_ascension;
+      player_talent_t shadowy_insight;
       player_talent_t mind_spike;
-      player_talent_t vampiric_insight;
       // Row 5
       player_talent_t puppet_master;
-      player_talent_t damnation;
-      player_talent_t mind_melt;
+      player_talent_t shadow_crash;
+      player_talent_t ancient_madness;
+      player_talent_t mental_decay;
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
-      player_talent_t mental_decay;
-      player_talent_t dark_evangelism;
       // Row 6
       player_talent_t harnessed_shadows;
-      player_talent_t malediction;
-      player_talent_t psychic_link;
-      player_talent_t void_torrent;
-      player_talent_t shadow_crash;
-      player_talent_t dark_ascension;
       player_talent_t unfurling_darkness;
+      player_talent_t psychic_link;
+      player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
       const spell_data_t* maddening_touch_insanity;
+      player_talent_t dark_evangelism;
       player_talent_t whispers_of_the_damned;
-      player_talent_t piercing_shadows;
       // Row 8
       player_talent_t mindbender;
       player_talent_t idol_of_yshaarj;
@@ -305,25 +297,21 @@ public:
       player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
       player_talent_t derangement;
-      player_talent_t void_eruption;
-      const spell_data_t* void_eruption_damage;
+      player_talent_t damnation;
+      player_talent_t void_torrent;
       // Row 9
       player_talent_t fiending_dark;
       player_talent_t monomania;
       player_talent_t pain_of_death;
-      player_talent_t mastermind;
       player_talent_t insidious_ire;
-      player_talent_t mind_devourer;
-      player_talent_t ancient_madness;
+      player_talent_t mastermind;
+      player_talent_t malediction;
       // Row 10
       player_talent_t shadowflame_prism;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_nzoth;
-      player_talent_t lunacy;
       player_talent_t idol_of_yoggsaron;
-      player_talent_t hungering_void;
-      const spell_data_t* hungering_void_buff;  // not linked from hungering void talent spell
-      player_talent_t surrender_to_madness;
+      player_talent_t mind_devourer;
     } shadow;
 
     struct
@@ -381,6 +369,7 @@ public:
     const spell_data_t* shadowform;
     const spell_data_t* void_bolt;
     const spell_data_t* voidform;
+    const spell_data_t* hallucinations;
 
     // Legendary Effects
     const spell_data_t* cauterizing_shadows_health;
@@ -439,7 +428,6 @@ public:
     propagate_const<gain_t*> insanity_eternal_call_to_the_void_mind_sear;
     propagate_const<gain_t*> insanity_mind_sear;
     propagate_const<gain_t*> insanity_mindgames;
-    propagate_const<gain_t*> insanity_surrender_to_madness;
     propagate_const<gain_t*> mindbender;
     propagate_const<gain_t*> shadowfiend;
     propagate_const<gain_t*> painbreaker_psalm;
@@ -481,9 +469,9 @@ public:
     propagate_const<proc_t*> dark_thoughts_devouring_plague;
     propagate_const<proc_t*> dark_thoughts_missed;
     propagate_const<proc_t*> living_shadow_tier;
-    propagate_const<proc_t*> vampiric_insight;
-    propagate_const<proc_t*> vampiric_insight_overflow;
-    propagate_const<proc_t*> vampiric_insight_missed;
+    propagate_const<proc_t*> shadowy_insight;
+    propagate_const<proc_t*> shadowy_insight_overflow;
+    propagate_const<proc_t*> shadowy_insight_missed;
     propagate_const<proc_t*> thing_from_beyond;
     propagate_const<proc_t*> coalescing_shadows_mind_sear;
     propagate_const<proc_t*> coalescing_shadows_mind_flay;
@@ -492,8 +480,6 @@ public:
     propagate_const<proc_t*> deathspeaker;
     propagate_const<proc_t*> surge_of_darkness_vt;
     propagate_const<proc_t*> surge_of_darkness_dp;
-    propagate_const<proc_t*> hungering_void_crit;
-    propagate_const<proc_t*> mind_spike_dot_clear;
     propagate_const<proc_t*> mind_melt_waste;
     propagate_const<proc_t*> idol_of_nzoth_swp;
     propagate_const<proc_t*> idol_of_nzoth_vt;
@@ -681,7 +667,6 @@ public:
   double composite_player_heal_multiplier( const action_state_t* s ) const override;
   double composite_player_multiplier( school_e school ) const override;
   double composite_player_target_multiplier( player_t* t, school_e school ) const override;
-  double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double matching_gear_multiplier( attribute_e attr ) const override;
   void target_mitigation( school_e, result_amount_type, action_state_t* ) override;
   void init_action_list() override;
@@ -736,8 +721,6 @@ public:
   void trigger_pain_of_death( action_state_t* );
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
-  bool hungering_void_active( player_t* target ) const;
-  void remove_hungering_void( player_t* target );
   void refresh_insidious_ire_buff( action_state_t* s );
   bool is_monomania_up( player_t* target ) const;
   void trigger_wrathful_faerie();
@@ -1127,8 +1110,7 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.mind_spike, true );              // Mind Blast crit increase
-    parse_buff_effects( p().buffs.piercing_shadows, true, true );  // Damage increase
+    parse_buff_effects( p().buffs.mind_spike, true );  // Mind Blast crit increase
   }
 
   template <typename... Ts>
@@ -1191,8 +1173,6 @@ public:
     // using S = const spell_data_t*;
 
     parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.schism; }, p().talents.schism );
-    parse_debuff_effects( []( priest_td_t* t ) -> buff_t* { return t->buffs.hungering_void; },
-                          p().talents.shadow.hungering_void_buff );
   }
 
   double cost() const override
@@ -1301,37 +1281,20 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
-  bool triggers_piercing_shadows;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s ),
-      affected_by_shadow_weaving( false ),
-      ignores_automatic_mastery( false ),
-      triggers_piercing_shadows( true )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
   }
 
   bool usable_moving() const override
   {
-    if ( priest().buffs.surrender_to_madness->check() )
-    {
-      return true;
-    }
-
     return base_t::usable_moving();
   }
 
   bool ready() override
   {
-    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.surrender_to_madness.enabled() )
-    {
-      if ( priest().buffs.surrender_to_madness_death->check() )
-      {
-        return false;
-      }
-    }
-
     if ( priest().specialization() == PRIEST_DISCIPLINE && priest().talents.shadow_covenant->ok() )
     {
       if ( school == SCHOOL_HOLY && priest().buffs.shadow_covenant->check() )
@@ -1353,12 +1316,6 @@ struct priest_spell_t : public priest_action_t<spell_t>
     double save_health_percentage = s->target->health_percentage();
 
     base_t::impact( s );
-
-    // TODO: once this is properly working can remove the conditional
-    if ( triggers_piercing_shadows )
-    {
-      priest().buffs.piercing_shadows->trigger();
-    }
 
     if ( result_is_hit( s->result ) )
     {
