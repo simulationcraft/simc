@@ -11376,11 +11376,14 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
-  /*
   void register_hotfixes() const override
   {
+      hotfix::register_effect( "Death Knight", "2022-09-15", "Icecap's CDR per Crit reduced to 2s per Crit in notes, not represented in game", 306334 )
+      .field( "base_value" )
+      .operation( hotfix::HOTFIX_SET )
+      .modifier( 20 )
+      .verification_value( 40 );
   }
-  */
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
