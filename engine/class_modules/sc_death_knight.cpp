@@ -519,6 +519,7 @@ public:
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
     buff_t* frostwhelps_aid;
+    buff_t* shattering_strike;
 
     // Unholy
     buff_t* dark_transformation;
@@ -3025,17 +3026,15 @@ struct death_knight_action_t : public Base
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
 
     // TODO July 19 2022
-    // Spelldata for Might of the frozen wastes is still all sorts of jank.  Commenting out this section until we have better data
-    /*
+    // Spelldata for Might of the frozen wastes is still all sorts of jank.
     // When using a 2H, might of the frozen wastes rank 1 effect#2 buffs the direct damage, but not td
     if ( p -> main_hand_weapon.group() == WEAPON_2H )
     {
-      if ( this -> data().affected_by( p -> spec.might_of_the_frozen_wastes -> effectN( 2 ) ) )
+      if ( this -> data().affected_by( p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ) ) )
       {
-        this -> base_dd_multiplier *= 1.0 + p -> spec.might_of_the_frozen_wastes -> effectN( 2 ).percent();
+        this -> base_dd_multiplier *= 1.0 + p -> talent.frost.might_of_the_frozen_wastes -> effectN( 2 ).percent();
       }
     }
-    */
   }
 
   std::string full_name() const
@@ -5777,8 +5776,7 @@ struct empower_rune_weapon_t : public death_knight_spell_t
 
     cooldown -> duration = p->spell.empower_rune_weapon_main -> charge_cooldown();
 
-    double charges = p -> spell.empower_rune_weapon_main -> charges() + p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() + p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value();
-    cooldown -> charges = charges;
+    cooldown -> charges = p -> spell.empower_rune_weapon_main -> charges() + p -> talent.empower_rune_weapon -> effectN( 1 ).base_value() + p -> talent.frost.empower_rune_weapon -> effectN( 1 ).base_value();
   }
 
   // TODO Remove with conduits
@@ -6164,11 +6162,11 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
     return m;
   }
 
-  double composite_target_multiplier(player_t* target) const override
+  double composite_da_multiplier( const action_state_t* state ) const override
   {
-      double m = death_knight_melee_attack_t::composite_target_multiplier ( target );
+      double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
 
-      if ( p() -> talent.frost.shattering_strike.ok() && get_td( target ) -> debuff.razorice -> stack() == 5 )
+      if ( p() -> buffs.shattering_strike -> up() )
       {
           m *= 1.0 + p() -> talent.frost.shattering_strike -> effectN( 1 ).percent();
       }
@@ -6188,11 +6186,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
       {
         p() -> trigger_killing_machine( p() -> talent.frost.cold_blooded_rage -> effectN( 2 ).percent(), p() -> procs.km_from_cold_blooded_rage,
                                           p() -> procs.km_from_cold_blooded_rage_wasted );
-      }
-
-      if ( p() -> talent.frost.shattering_strike.ok() && td -> debuff.razorice -> stack() == 5)
-      {
-          td -> debuff.razorice -> expire();
       }
     }
   }
@@ -6241,6 +6234,14 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
+    death_knight_td_t* td = get_td( execute_state -> target );
+
+    if ( p() -> talent.frost.shattering_strike.ok() && td -> debuff.razorice -> stack() == 5 )
+    {
+      td -> debuff.razorice -> expire();
+      p() -> buffs.shattering_strike -> trigger();
+    }
+
     death_knight_melee_attack_t::execute();
 
     if ( hit_any_target )
@@ -6250,6 +6251,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
         oh -> set_target( target );
         oh -> execute();
       }
+      p() -> buffs.shattering_strike -> expire();
     }
 
     // TODO remove with conduits
@@ -8966,7 +8968,7 @@ void death_knight_t::trigger_killing_machine( double chance, proc_t* proc, proc_
     double km_proc_chance = 0.13;
     if ( talent.frost.might_of_the_frozen_wastes.ok() && main_hand_weapon.group() == WEAPON_2H )
     {
-      km_proc_chance = ++km_proc_attempts * 0.7;
+      km_proc_chance = 1.0;
     }
     else
     {
@@ -10369,6 +10371,10 @@ void death_knight_t::create_buffs()
         -> set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
         -> add_invalidate ( CACHE_MASTERY )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
+
+  buffs.shattering_strike = make_buff( this, "shattering_strike", talent.frost.shattering_strike )
+        -> set_default_value( talent.frost.shattering_strike -> effectN( 1 ).percent() )
+        -> set_duration( 0_ms );
 
   // Unholy
   buffs.dark_transformation = new dark_transformation_buff_t( this );
