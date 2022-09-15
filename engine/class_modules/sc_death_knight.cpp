@@ -6532,6 +6532,13 @@ struct avalanche_t : public death_knight_spell_t
     aoe = -1;
     background = true;
   }
+
+  void impact(action_state_t* state) override
+  {
+    death_knight_spell_t::impact( state );
+
+    get_td( state -> target ) -> debuff.razorice -> trigger();
+  }
 };
 
 struct howling_blast_t : public death_knight_spell_t
@@ -6664,7 +6671,6 @@ struct howling_blast_t : public death_knight_spell_t
     {
       avalanche -> set_target( target );
       avalanche -> execute();
-      get_td( target ) -> debuff.razorice -> trigger();
     }
 
     if ( p() -> buffs.rime -> check() && p() -> legendary.rage_of_the_frozen_champion.ok() )
