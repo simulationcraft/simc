@@ -6234,7 +6234,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
 
   void execute() override
   {
-    death_knight_td_t* td = get_td( execute_state -> target );
+    const death_knight_td_t* td = p() -> find_target_data( target );
 
     if ( p() -> talent.frost.shattering_strike.ok() && td -> debuff.razorice -> stack() == 5 )
     {
@@ -6599,7 +6599,7 @@ struct howling_blast_t : public death_knight_spell_t
   {
     double m = death_knight_spell_t::composite_target_multiplier( target );
 
-    if ( p() -> talent.frost.icebreaker.ok() )
+    if ( p() -> talent.frost.icebreaker.ok() && target )
     {
       m *= 1.0 + p() -> talent.frost.icebreaker->effectN( 1 ).percent();
     }
