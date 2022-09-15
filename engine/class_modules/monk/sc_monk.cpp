@@ -1797,9 +1797,14 @@ struct tiger_palm_t : public monk_melee_attack_t
 struct glory_of_the_dawn_t : public monk_melee_attack_t
 {
   glory_of_the_dawn_t( monk_t* p, const std::string& name )
-    : monk_melee_attack_t( name, p, p->talent.windwalker.glory_of_the_dawn )
+    : monk_melee_attack_t( name, p, p->passives.glory_of_the_dawn_damage )
   {
-    background = true;
+    background                = true;
+    //ww_mastery              = TODO;
+    //trigger_faeline_stomp   = TODO;
+    //trigger_bountiful_brew  = TODO;
+
+    apply_dual_wield_two_handed_scaling();
   }
 
   double action_multiplier() const override
@@ -1818,15 +1823,12 @@ struct glory_of_the_dawn_t : public monk_melee_attack_t
     return am;
   }
 
-  void impact( action_state_t* s ) override
+  void execute() override
   {
-    monk_melee_attack_t::impact( s );
+    monk_melee_attack_t::execute();
 
-    if ( result_is_hit( s->result ) )
-    {
-      p()->resource_gain( RESOURCE_CHI, 
-          p()->talent.windwalker.glory_of_the_dawn->effectN( 3 ).base_value(), p()->gain.glory_of_the_dawn );
-    }
+    p()->resource_gain( RESOURCE_CHI,
+      p()->passives.glory_of_the_dawn_damage->effectN( 3 ).base_value() );// , p()->gain.glory_of_the_dawn );
   }
 };
 
@@ -1969,7 +1971,8 @@ struct rising_sun_kick_t : public monk_melee_attack_t
     trigger_attack        = new rising_sun_kick_dmg_t( p, "rising_sun_kick_dmg" );
     trigger_attack->stats = stats;
 
-    gotd = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+    gotd        = new glory_of_the_dawn_t( p, "glory_of_the_dawn" );
+
     add_child( gotd );
   }
 
@@ -7906,7 +7909,7 @@ void monk_t::init_spells()
   talent.general.eye_of_the_tiger            = _CT( "Eye of the Tiger" );
   talent.general.dampen_harm                 = _CT( "Dampen Harm" );
   talent.general.touch_of_death              = find_talent_spell( talent_tree::CLASS, 322113 );
-  talent.general.strength_of_spirit          = _CT( "Expel Harm" );
+  talent.general.strength_of_spirit          = _CT( "Strength of Spirit" );
   // Row 8
   talent.general.close_to_heart              = _CT( "Close to Heart" );
   talent.general.escape_from_reality         = _CT( "Escape from Reality" );
@@ -8376,6 +8379,7 @@ void monk_t::init_spells()
   passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
   passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
   passives.thunderfist                      = find_spell( 242390 );
+  passives.glory_of_the_dawn_damage         = find_spell( 392959 );
 
   // Covenants
   passives.bonedust_brew_dmg                    = find_spell( 325217 );
