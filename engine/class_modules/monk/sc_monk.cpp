@@ -7798,6 +7798,9 @@ int monk_t::mark_of_the_crane_counter()
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
+  if ( !talent.windwalker.mark_of_the_crane->ok() )
+    return true;
+
   int count = mark_of_the_crane_counter();
   int targets = (int)sim->target_non_sleeping_list.data().size();
 
