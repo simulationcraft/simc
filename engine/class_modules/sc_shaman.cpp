@@ -7919,7 +7919,7 @@ struct healing_stream_totem_spell_t : public shaman_totem_t<heal_t, shaman_heal_
 {
   healing_stream_totem_spell_t( shaman_t* p, util::string_view options_str ) :
     shaman_totem_t<heal_t, shaman_heal_t>( "healing_stream_totem", p, options_str,
-        p->talent.healing_stream_totem )
+        p->find_spell( 5394 ) )
   { }
 
   void execute() override
@@ -10643,6 +10643,7 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity );
   action.apply_affecting_aura( talent.crashing_storms );
+  action.apply_affecting_aura( talent.healing_stream_totem );
   // TODO: Can be enabled once Blizzard fixes spell data, also disable manual cooldown charges in
   // stormkeeper_t
   //action.apply_affecting_aura( talent.stormkeeper );
