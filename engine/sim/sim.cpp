@@ -2256,7 +2256,9 @@ void sim_t::init_fight_style()
       //Based on the Hero Dungeon setup
       max_time = timespan_t::from_seconds( 360.0 );
 
-      optimal_raid = 1;
+      optimal_raid = 0;
+      // it's reasonable to assume there will be a lust in the group
+      overrides.bloodlust = 1;
 
       shadowlands_opts.enable_rune_words = false;
 
