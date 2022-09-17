@@ -4333,7 +4333,7 @@ struct crash_lightning_t : public shaman_attack_t
     parse_options( options_str );
 
     aoe     = -1;
-    reduced_aoe_targets = 1.0;
+    reduced_aoe_targets = 6.0;
     full_amount_targets = 1;
     weapon  = &( p()->main_hand_weapon );
     ap_type = attack_power_type::WEAPON_BOTH;
