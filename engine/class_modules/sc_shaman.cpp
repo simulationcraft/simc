@@ -3193,6 +3193,7 @@ struct crash_lightning_attack_t : public shaman_attack_t
     background = true;
     aoe        = -1;
     may_proc_ability_procs = false;
+    reduced_aoe_targets = 6.0;
   }
 
   void init() override
@@ -4172,6 +4173,12 @@ struct ice_strike_t : public shaman_attack_t
 
     p()->trigger_swirling_maelstrom();
     p()->buff.ice_strike->trigger();
+
+    if ( result_is_hit( execute_state->result ) && p()->buff.crash_lightning->up() )
+    {
+      p()->action.crash_lightning_aoe->set_target( execute_state->target );
+      p()->action.crash_lightning_aoe->schedule_execute();
+    }
   }
 };
 
