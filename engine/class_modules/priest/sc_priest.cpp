@@ -172,6 +172,11 @@ public:
       mm *= 1 + priest().talents.shadow.mastermind->effectN( 1 ).percent();
     }
 
+    if ( priest().talents.shadow.mind_melt && priest().buffs.mind_melt->check() )
+    {
+      mm *= 1 + priest().buffs.mind_melt->check() * priest().buffs.mind_melt->data().effectN( 2 ).percent();
+    }
+
     return mm;
   }
 

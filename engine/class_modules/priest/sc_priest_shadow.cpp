@@ -784,7 +784,7 @@ struct vampiric_touch_t final : public priest_spell_t
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
       child_ud( nullptr ),
-      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->effectN( 2 ).percent() )
+      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->proc_chance() )
   {
     casted                     = _casted;
     may_crit                   = false;
@@ -1008,7 +1008,7 @@ struct devouring_plague_t final : public priest_spell_t
   devouring_plague_t( priest_t& p, bool _casted = false )
     : priest_spell_t( "devouring_plague", p, p.dot_spells.devouring_plague ),
       devouring_plague_heal( new devouring_plague_heal_t( p ) ),
-      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->effectN( 2 ).percent() )
+      surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->proc_chance() )
   {
     casted                     = _casted;
     may_crit                   = true;
