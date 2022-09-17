@@ -2101,13 +2101,8 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     base_t( token, p, s ), overload( nullptr ), proc_sb( nullptr ), proc_moe( nullptr ),
     exec_type( execute_type::NORMAL )
   {
-    affected_by_stormkeeper_cast_time =
-      data().affected_by( p->talent.stormkeeper->effectN( 1 ) ) ||
-      data().affected_by( p->talent.stormkeeper2->effectN( 1 ) );
-
-    affected_by_stormkeeper_damage =
-      data().affected_by( p->talent.stormkeeper->effectN( 2 ) ) ||
-      data().affected_by( p->talent.stormkeeper2->effectN( 2 ) );
+    affected_by_stormkeeper_cast_time = data().affected_by( p->find_spell( 191634 )->effectN( 1 ) );
+    affected_by_stormkeeper_damage = data().affected_by( p->find_spell( 191634 )->effectN( 2 ) );
 
     may_proc_stormbringer = false;
   }
@@ -2154,9 +2149,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
 
     if ( affected_by_stormkeeper_damage && p()->buff.stormkeeper->up() )
     {
-      m *= 1.0 + ( p()->talent.stormkeeper.ok()
-          ? p()->talent.stormkeeper->effectN( 2 ).percent()
-          : p()->talent.stormkeeper2->effectN( 2 ).percent() );
+      m *= 1.0 + p()->buff.stormkeeper->stack_value();
     }
 
     return m;
@@ -2169,9 +2162,7 @@ struct shaman_spell_t : public shaman_spell_base_t<spell_t>
     if ( affected_by_stormkeeper_cast_time && p()->buff.stormkeeper->up() )
     {
       // stormkeeper has a -100% value as effect 1
-      t *= 1.0 + ( p()->talent.stormkeeper.ok()
-        ? p()->talent.stormkeeper->effectN( 1 ).percent()
-        : p()->talent.stormkeeper2->effectN( 1 ).percent() );
+      t *= 1.0 + p()->buff.stormkeeper->data().effectN( 1 ).percent();
     }
 
     return t;
@@ -7175,13 +7166,14 @@ struct ascendance_dre_t : public ascendance_t
 struct stormkeeper_t : public shaman_spell_t
 {
   stormkeeper_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "stormkeeper", player,
-        player->talent.stormkeeper.ok()
-        ? player->talent.stormkeeper
-        : player->talent.stormkeeper2 )
+    shaman_spell_t( "stormkeeper", player, player->find_spell( 191634 ) )
   {
     parse_options( options_str );
     may_crit = harmful = false;
+
+    // TODO: Remove once Blizzard fixes stormkeeper spell data, and enable apply_affecting_aura
+    // handling
+    cooldown->charges = player->talent.stormkeeper.ok() + player->talent.stormkeeper2.ok();
   }
 
   void execute() override
@@ -7189,6 +7181,16 @@ struct stormkeeper_t : public shaman_spell_t
     shaman_spell_t::execute();
 
     p()->buff.stormkeeper->trigger( p()->buff.stormkeeper->max_stack() );
+  }
+
+  bool ready() override
+  {
+    if ( !p()->talent.stormkeeper.ok() && p()->talent.stormkeeper2.ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
   }
 };
 
@@ -9197,7 +9199,7 @@ void shaman_t::init_spells()
   talent.echo_of_the_elements = _ST( "Echo of the Elements" );
   talent.call_of_fire         = _ST( "Call of Fire" );
   // Row 6
-  talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 191634 );
+  talent.stormkeeper = find_talent_spell( talent_tree::SPECIALIZATION, 392714 );
   talent.electrified_shocks = _ST( "Electrified Shocks" );
   talent.flux_melting = _ST( "Flux Melting" );
   talent.aftershock = _ST( "Aftershock" );
@@ -9222,7 +9224,7 @@ void shaman_t::init_spells()
   talent.magma_chamber = _ST( "Magma Chamber" );
   talent.searing_flames = _ST( "Searing Flames" );
   // Row 10
-  talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 383009 );
+  talent.stormkeeper2 = find_talent_spell( talent_tree::SPECIALIZATION, 392763 );
   talent.lightning_rod = _ST( "Lightning Rod" );
   talent.heat_wave = _ST( "Heat Wave" );
   talent.mountains_will_fall = _ST( "Mountains Will Fall" );
@@ -10183,9 +10185,9 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect_type( A_MOD_MASTERY_PCT )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY );
 
-  buff.stormkeeper = make_buff( this, "stormkeeper", talent.stormkeeper.ok() ? talent.stormkeeper : talent.stormkeeper2 )
+  buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
-    ->set_max_stack( talent.stormkeeper->max_stacks() | talent.stormkeeper2->max_stacks() | 1 );
+    ->set_default_value_from_effect( 2 ); // Damage bonus as default value
 
   if ( legendary.ancestral_reminder->ok() )
   {
@@ -10641,6 +10643,10 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.totemic_surge );
   action.apply_affecting_aura( talent.unrelenting_calamity );
   action.apply_affecting_aura( talent.crashing_storms );
+  // TODO: Can be enabled once Blizzard fixes spell data, also disable manual cooldown charges in
+  // stormkeeper_t
+  //action.apply_affecting_aura( talent.stormkeeper );
+  //action.apply_affecting_aura( talent.stormkeeper2 );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
