@@ -223,7 +223,6 @@ struct shaman_td_t : public actor_target_data_t
   struct dots
   {
     dot_t* flame_shock;
-    dot_t* molten_weapon;
   } dot;
 
   struct debuffs
@@ -352,8 +351,6 @@ public:
   {
     spell_t* lightning_shield;
     attack_t* crash_lightning_aoe;
-    spell_t* molten_weapon;
-    action_t* molten_weapon_dot;
     action_t* lightning_bolt_pw;
     action_t* lightning_bolt_ti;
     action_t* chain_lightning_ti;
@@ -465,6 +462,7 @@ public:
     buff_t* icy_edge;
     buff_t* molten_weapon;
     buff_t* crackling_surge;
+    buff_t* earthen_weapon;
     buff_t* gathering_storms;
     buff_t* static_accumulation;
     buff_t* doom_winds_talent;
@@ -870,10 +868,6 @@ public:
   shaman_spell_t* flametongue;
   shaman_attack_t* hailstorm;
 
-  // Elemental Spirits attacks
-  shaman_attack_t* molten_weapon;
-  shaman_attack_t* icy_edge;
-
   shaman_t( sim_t* sim, util::string_view name, race_e r = RACE_TAUREN )
     : player_t( sim, SHAMAN, name, r ),
       lava_surge_during_lvb( false ),
@@ -934,10 +928,6 @@ public:
     flametongue = nullptr;
     hailstorm   = nullptr;
 
-    // Elemental Spirits attacks
-    molten_weapon = nullptr;
-    icy_edge      = nullptr;
-
     if ( specialization() == SHAMAN_ELEMENTAL || specialization() == SHAMAN_ENHANCEMENT )
       resource_regeneration = regen_type::DISABLED;
     else
@@ -958,7 +948,6 @@ public:
   void trigger_windfury_weapon( const action_state_t* );
   void trigger_maelstrom_weapon( const action_state_t* );
   void trigger_flametongue_weapon( const action_state_t* );
-  void trigger_icy_edge( const action_state_t* );
   void trigger_stormbringer( const action_state_t* state, double proc_chance = -1.0, proc_t* proc_obj = nullptr );
   void trigger_lightning_shield( const action_state_t* state );
   void trigger_hot_hand( const action_state_t* state );
@@ -1108,39 +1097,6 @@ struct lightning_shield_buff_t : public buff_t
   }
 };
 
-struct icy_edge_buff_t : public buff_t
-{
-  icy_edge_buff_t( shaman_t* p ) : buff_t( p, "icy_edge", p->find_spell( 224126 ) )
-  {
-    set_duration( s_data->duration() );
-    set_max_stack( 10 );
-    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-};
-
-struct molten_weapon_buff_t : public buff_t
-{
-  molten_weapon_buff_t( shaman_t* p ) : buff_t( p, "molten_weapon", p->find_spell( 224125 ) )
-  {
-    set_duration( s_data->duration() );
-    set_default_value( 1.0 + s_data->effectN( 1 ).percent() );
-    set_max_stack( 10 );
-    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-};
-
-struct crackling_surge_buff_t : public buff_t
-{
-  crackling_surge_buff_t( shaman_t* p ) : buff_t( p, "crackling_surge", p->find_spell( 224127 ) )
-  {
-    set_duration( s_data->duration() );
-    set_default_value( s_data->effectN( 1 ).percent() );
-    set_max_stack( 10 );
-    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-};
-
 struct maelstrom_weapon_buff_t : public buff_t
 {
   shaman_t* shaman;
@@ -1251,7 +1207,6 @@ shaman_td_t::shaman_td_t( player_t* target, shaman_t* p ) : actor_target_data_t(
     ->set_default_value_from_effect( 1 );
 
   // Enhancement
-  dot.molten_weapon     = target->get_dot( "molten_weapon", p );
   debuff.lashing_flames = make_buff( *this, "lashing_flames", p->find_spell( 334168 ) )
       ->set_trigger_spell( p->talent.lashing_flames )
       ->set_default_value_from_effect( 1 );
@@ -1282,7 +1237,14 @@ public:
   double maelstrom_gain;
   double maelstrom_gain_coefficient;
 
-  bool affected_by_molten_weapon;
+  bool affected_by_molten_weapon_da;
+  bool affected_by_molten_weapon_ta;
+  bool affected_by_crackling_surge_da;
+  bool affected_by_crackling_surge_ta;
+  bool affected_by_icy_edge_da;
+  bool affected_by_icy_edge_ta;
+  bool affected_by_earthen_weapon_da;
+  bool affected_by_earthen_weapon_ta;
   bool affected_by_natures_fury;
   bool affected_by_ns_cost;
   bool affected_by_ns_cast_time;
@@ -1304,7 +1266,12 @@ public:
       gain( player->get_gain( s->id() > 0 ? s->name_cstr() : n ) ),
       maelstrom_gain( 0 ),
       maelstrom_gain_coefficient( 1.0 ),
-      affected_by_molten_weapon( false ),
+      affected_by_molten_weapon_da( false ),
+      affected_by_molten_weapon_ta( false ),
+      affected_by_crackling_surge_da( false ),
+      affected_by_crackling_surge_ta( false ),
+      affected_by_icy_edge_da( false ),
+      affected_by_icy_edge_ta( false ),
       affected_by_natures_fury( false ),
       affected_by_ns_cost( false ),
       affected_by_ns_cast_time( false ),
@@ -1329,8 +1296,25 @@ public:
       ab::energize_type = action_energize::NONE;  // disable resource generation from spell data.
     }
 
-    affected_by_molten_weapon =
-        ab::data().affected_by_label( player->find_spell( 224125 )->effectN( 1 ).misc_value2() );
+    affected_by_molten_weapon_da =
+        ab::data().affected_by( player->find_spell( 224125 )->effectN( 1 ) );
+    affected_by_molten_weapon_ta =
+        ab::data().affected_by( player->find_spell( 224125 )->effectN( 2 ) );
+
+    affected_by_crackling_surge_da =
+        ab::data().affected_by( player->find_spell( 224127 )->effectN( 1 ) );
+    affected_by_crackling_surge_ta =
+        ab::data().affected_by( player->find_spell( 224127 )->effectN( 2 ) );
+
+    affected_by_icy_edge_da =
+        ab::data().affected_by( player->find_spell( 224126 )->effectN( 1 ) );
+    affected_by_icy_edge_ta =
+        ab::data().affected_by( player->find_spell( 224126 )->effectN( 2 ) );
+
+    affected_by_earthen_weapon_da =
+        ab::data().affected_by( player->find_spell( 392375 )->effectN( 1 ) );
+    affected_by_earthen_weapon_ta =
+        ab::data().affected_by( player->find_spell( 392375 )->effectN( 2 ) );
 
     affected_by_natures_fury =
       ab::data().affected_by( player->talent.natures_fury->effectN( 1 ) ) ||
@@ -1433,6 +1417,38 @@ public:
       m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
     }
 
+    if ( affected_by_molten_weapon_da && p()->buff.molten_weapon->check() )
+    {
+      for ( int x = 1; x <= p()->buff.molten_weapon->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.molten_weapon->value();
+      }
+    }
+
+    if ( affected_by_crackling_surge_da && p()->buff.crackling_surge->up() )
+    {
+      for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_icy_edge_da && p()->buff.icy_edge->up() )
+    {
+      for ( int x = 1; x <= p()->buff.icy_edge->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.icy_edge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_da && p()->buff.earthen_weapon->up() )
+    {
+      for ( int x = 1; x <= p()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.earthen_weapon->value();
+      }
+    }
+
     return m;
   }
 
@@ -1451,16 +1467,33 @@ public:
       m *= 1.0 + p()->talent.legacy_of_the_frost_witch->effectN( 1 ).percent();
     }
 
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = ab::action_multiplier();
-
-    if ( affected_by_molten_weapon && p()->buff.molten_weapon->check() )
+    if ( affected_by_molten_weapon_ta && p()->buff.molten_weapon->check() )
     {
-      m *= std::pow( p()->buff.molten_weapon->check_value(), p()->buff.molten_weapon->check() );
+      m *= 1.0 + p()->buff.molten_weapon->stack_value();
+    }
+
+    if ( affected_by_crackling_surge_ta && p()->buff.crackling_surge->up() )
+    {
+      for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.crackling_surge->value();
+      }
+    }
+
+    if ( affected_by_icy_edge_ta && p()->buff.icy_edge->up() )
+    {
+      for ( int x = 1; x <= p()->buff.icy_edge->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.icy_edge->value();
+      }
+    }
+
+    if ( affected_by_earthen_weapon_ta && p()->buff.earthen_weapon->up() )
+    {
+      for ( int x = 1; x <= p()->buff.earthen_weapon->check(); x++ )
+      {
+        m *= 1.0 + p()->buff.earthen_weapon->value();
+      }
     }
 
     return m;
@@ -1701,7 +1734,6 @@ public:
   bool may_proc_stormbringer;
   bool may_proc_lightning_shield;
   bool may_proc_hot_hand;
-  bool may_proc_icy_edge;
   bool may_proc_ability_procs;  // For things that explicitly state they proc from "abilities"
 
   proc_t *proc_wf, *proc_ft, *proc_fb, *proc_mw, *proc_sb, *proc_ls, *proc_hh;
@@ -1714,7 +1746,6 @@ public:
       may_proc_stormbringer( p->spec.stormbringer->ok() ),
       may_proc_lightning_shield( false ),
       may_proc_hot_hand( p->talent.hot_hand.ok() ),
-      may_proc_icy_edge( false ),
       may_proc_ability_procs( true ),
       proc_wf( nullptr ),
       proc_ft( nullptr ),
@@ -1812,7 +1843,6 @@ public:
     p()->trigger_flametongue_weapon( state );
     p()->trigger_lightning_shield( state );
     p()->trigger_hot_hand( state );
-    p()->trigger_icy_edge( state );
   }
 
   virtual double stormbringer_proc_chance() const
@@ -3163,14 +3193,6 @@ struct windfury_attack_t : public shaman_attack_t
       m *= 1.0 + p()->talent.doom_winds->effectN( 2 ).percent();
     }
 
-    if ( p()->buff.crackling_surge->up() )
-    {
-      for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
-      {
-        m *= 1.0 + p()->buff.crackling_surge->value();
-      }
-    }
-
     return m;
   }
 
@@ -3286,14 +3308,6 @@ struct stormstrike_attack_t : public shaman_attack_t
   double action_multiplier() const override
   {
     double m = shaman_attack_t::action_multiplier();
-
-    if ( p()->buff.crackling_surge->up() )
-    {
-      for ( int x = 1; x <= p()->buff.crackling_surge->check(); x++ )
-      {
-        m *= 1.0 + p()->buff.crackling_surge->value();
-      }
-    }
 
     if ( p()->buff.gathering_storms->up() )
     {
@@ -3551,7 +3565,6 @@ struct melee_t : public shaman_attack_t
     if ( p()->specialization() == SHAMAN_ENHANCEMENT && p()->dual_wield() )
       base_hit -= 0.19;
 
-    may_proc_icy_edge         = true;
     may_proc_flametongue      = true;
   }
 
@@ -3777,21 +3790,6 @@ struct lava_lash_t : public shaman_attack_t
       p()->action.crash_lightning_aoe->set_target( state->target );
       p()->action.crash_lightning_aoe->schedule_execute();
     }
-
-    if ( p()->buff.molten_weapon->up() )
-    {
-      trigger_molten_weapon_dot( state->target, state->result_amount );
-    }
-  }
-
-  void trigger_molten_weapon_dot( player_t* t, double dmg ) const
-  {
-    double wolf_count_multi = p()->buff.molten_weapon->data().effectN( 2 ).percent() *
-                              p()->buff.molten_weapon->check();
-    double feed_amount      = wolf_count_multi * dmg;
-    residual_action::trigger( p()->action.molten_weapon_dot,  // ignite spell
-                              t,                              // target
-                              feed_amount );
   }
 
   void move_random_target( std::vector<player_t*>& in, std::vector<player_t*>& out ) const
@@ -9404,6 +9402,10 @@ void shaman_t::summon_feral_spirits( timespan_t duration, unsigned n, bool t28 )
   if ( !talent.elemental_spirits->ok() )
   {
     pet.spirit_wolves.spawn( duration, n );
+    for ( unsigned i = 0; i < n; ++i )
+    {
+      buff.earthen_weapon->trigger( 1, buff_t::DEFAULT_VALUE(), -1, duration );
+    }
   }
   else
   {
@@ -9976,31 +9978,6 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
   }
 }
 
-void shaman_t::trigger_icy_edge( const action_state_t* state )
-{
-  shaman_attack_t* attack = debug_cast<shaman_attack_t*>( state->action );
-
-  if ( !attack->may_proc_icy_edge )
-    return;
-
-  if ( !buff.icy_edge->up() )
-    return;
-
-  if ( buff.ghost_wolf->check() )
-  {
-    return;
-  }
-
-  if ( buff.icy_edge->up() )
-  {
-    for ( int x = 1; x <= buff.icy_edge->check(); x++ )
-    {
-      icy_edge->set_target( state->target );
-      icy_edge->execute();
-    }
-  }
-}
-
 void shaman_t::trigger_flametongue_weapon( const action_state_t* state )
 {
   assert( debug_cast<shaman_attack_t*>( state->action ) != nullptr &&
@@ -10178,8 +10155,6 @@ void shaman_t::trigger_swirling_maelstrom()
   }
 }
 
-}
-
 // shaman_t::init_buffs =====================================================
 
 void shaman_t::create_buffs()
@@ -10344,9 +10319,22 @@ void shaman_t::create_buffs()
                             ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
                             ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
 
-  buff.icy_edge         = new icy_edge_buff_t( this );
-  buff.molten_weapon    = new molten_weapon_buff_t( this );
-  buff.crackling_surge  = new crackling_surge_buff_t( this );
+  buff.icy_edge = make_buff<buff_t>( this, "icy_edge", find_spell( 224126 ) )
+    ->set_max_stack( 10 )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
+  buff.molten_weapon    = make_buff<buff_t>( this, "molten_weapon", find_spell( 224125 ) )
+    ->set_max_stack( 10 )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
+  buff.crackling_surge  = make_buff<buff_t>( this, "crackling_surge", find_spell( 224127 ) )
+    ->set_max_stack( 10 )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
+  buff.earthen_weapon = make_buff<buff_t>( this, "earthen_weapon", find_spell( 392375 ) )
+    ->set_max_stack( 10 )
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_default_value_from_effect( 1 );
   buff.gathering_storms = make_buff( this, "gathering_storms", find_spell( 198300 ) )
       ->set_default_value( talent.gathering_storms->effectN( 1 ).percent() );
 
@@ -11385,13 +11373,6 @@ void shaman_t::init_action_list()
       specialization() == SHAMAN_ENHANCEMENT
       ? &( off_hand_weapon )
       : &( main_hand_weapon ) );
-
-  if ( specialization() == SHAMAN_ENHANCEMENT )
-  {
-    icy_edge = new icy_edge_attack_t( "icy_edge", this, &( main_hand_weapon ) );
-
-    action.molten_weapon_dot = new molten_weapon_dot_t( this );
-  }
 
   if ( legendary.raging_vesper_vortex.ok() )
   {
