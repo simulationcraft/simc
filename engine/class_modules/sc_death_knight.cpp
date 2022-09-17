@@ -6470,10 +6470,24 @@ struct glacial_advance_t : public death_knight_spell_t
 
 // Heart Strike =============================================================
 
+struct leeching_strike_t : public death_knight_heal_t
+{
+  action_t* damage;
+  leeching_strike_t( util::string_view name, death_knight_t* p ) :
+    death_knight_heal_t( name, p, p -> find_spell( 377633 ) )
+  {
+    background = true;
+    may_crit = callbacks = false;
+    target = p;
+    base_pct_heal = data().effectN( 1 ).percent();
+  }
+};
+
 struct heart_strike_t : public death_knight_melee_attack_t
 {
   double heartbreaker_rp_gen;
   bool is_t28_counterattack;
+  action_t* leeching_strike;
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike ),
@@ -6487,6 +6501,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     //energize_amount += p -> spec.heart_strike_2 -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     is_t28_counterattack = false;
+    leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
 
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
@@ -6503,6 +6518,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
     energize_amount = p -> spell.endless_rune_waltz_energize -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER );
     base_multiplier *= 1.0 + p -> talent.blood.improved_heart_strike -> effectN( 1 ).percent();
     is_t28_counterattack = true;
+    leeching_strike = get_action<leeching_strike_t>("leeching_strike", p);
   }
 
   void init() override
@@ -6591,6 +6607,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
     if ( p() -> covenant.deaths_due -> ok() && p() -> in_death_and_decay() )
     {
       p() -> buffs.deaths_due->trigger();
+    }
+
+    if ( p() -> talent.blood.leeching_strike.ok() && get_td( state -> target ) -> dot.blood_plague -> is_ticking() )
+    {
+      leeching_strike -> execute();
     }
   }
 };
