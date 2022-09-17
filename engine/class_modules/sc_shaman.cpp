@@ -4051,6 +4051,11 @@ struct stormstrike_base_t : public shaman_attack_t
     {
       p()->buff.legacy_of_the_frost_witch->expire();
     }
+
+    if ( p()->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      p()->trigger_deeply_rooted_elements( execute_state );
+    }
   }
 
   void reset() override
@@ -5603,7 +5608,7 @@ struct lava_burst_t : public shaman_spell_t
       p()->trigger_splintered_elements( p()->action.lava_burst_pw );
     }
 
-    if ( type == execute_type::NORMAL )
+    if ( type == execute_type::NORMAL && p()->specialization() == SHAMAN_ELEMENTAL )
     {
       p()->trigger_deeply_rooted_elements( execute_state );
     }
