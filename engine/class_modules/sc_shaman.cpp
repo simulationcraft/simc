@@ -967,6 +967,7 @@ public:
   void trigger_splintered_elements( action_t* secondary );
   void trigger_flash_of_lightning();
   void trigger_lightning_rod_damage( const action_state_t* state );
+  void trigger_swirling_maelstrom();
 
   // Legendary
   void trigger_legacy_of_the_frost_witch( unsigned consumed_stacks );
@@ -4169,15 +4170,7 @@ struct ice_strike_t : public shaman_attack_t
   {
     shaman_attack_t::execute();
 
-    if ( p()->talent.swirling_maelstrom.ok() )
-    {
-      p()->buff.maelstrom_weapon->trigger( p()->talent.swirling_maelstrom->effectN( 1 ).base_value() );
-      for ( auto i = 0; i < p()->talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
-      {
-        p()->proc.maelstrom_weapon_sm->occur();
-      }
-    }
-
+    p()->trigger_swirling_maelstrom();
     p()->buff.ice_strike->trigger();
   }
 };
@@ -5303,18 +5296,11 @@ struct fire_nova_t : public shaman_spell_t
     return tl.size();
   }
 
-  void execute() override
+  void impact( action_state_t* state ) override
   {
-    shaman_spell_t::execute();
+    shaman_spell_t::impact( state );
 
-    if ( p()->talent.swirling_maelstrom.ok() )
-    {
-      p()->buff.maelstrom_weapon->trigger( p()->talent.swirling_maelstrom->effectN( 1 ).base_value() );
-      for ( auto i = 0; i < p()->talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
-      {
-        p()->proc.maelstrom_weapon_sm->occur();
-      }
-    }
+    p()->trigger_swirling_maelstrom();
   }
 };
 
@@ -6911,6 +6897,12 @@ struct frost_shock_t : public shaman_spell_t
 
     shaman_spell_t::execute();
 
+    if ( p()->buff.hailstorm->check() >=
+         p()->talent.swirling_maelstrom->effectN( 2 ).base_value() )
+    {
+      p()->trigger_swirling_maelstrom();
+    }
+
     p()->buff.flux_melting->trigger();
 
     p()->buff.icefury->decrement();
@@ -7048,7 +7040,8 @@ struct ascendance_t : public shaman_spell_t
 
     if ( background )
     {
-      p()->buff.ascendance->extend_duration_or_trigger( p()->legendary.deeply_rooted_elements.ok()
+      p()->buff.ascendance->extend_duration_or_trigger(
+          p()->legendary.deeply_rooted_elements.ok()
           ? p()->legendary.deeply_rooted_elements->effectN( 1 ).time_value()
           : p()->talent.deeply_rooted_elements->effectN( 1 ).time_value(), player );
     }
@@ -10156,6 +10149,22 @@ void shaman_t::trigger_lightning_rod_damage( const action_state_t* state )
     action.lightning_rod->set_target( target );
     action.lightning_rod->execute();
   } );
+}
+
+void shaman_t::trigger_swirling_maelstrom()
+{
+  if ( !talent.swirling_maelstrom.ok() )
+  {
+    return;
+  }
+
+  buff.maelstrom_weapon->trigger( talent.swirling_maelstrom->effectN( 1 ).base_value() );
+  for ( auto i = 0; i < talent.swirling_maelstrom->effectN( 1 ).base_value(); ++i )
+  {
+    proc.maelstrom_weapon_sm->occur();
+  }
+}
+
 }
 
 // shaman_t::init_buffs =====================================================
