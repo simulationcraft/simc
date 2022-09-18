@@ -9818,13 +9818,13 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
   return true;
 }
 
-// Blizzad in-game talent tree export hash
+// Blizzard in-game talent tree export hash
 bool player_t::parse_talents_blizzard( std::string_view hash )
 {
   static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
-  auto do_error = [ hash, this ]() {
-    sim->error( "Player {} has invalid talent tree hash {}", name(), hash );
+  auto do_error = [ hash, this ]( std::string_view msg = {} ) {
+    sim->error( "Player {} has invalid talent tree hash {}{}{}", name(), hash, msg.empty() ? "" : ": ", msg );
     return false;
   };
 
@@ -9839,7 +9839,7 @@ bool player_t::parse_talents_blizzard( std::string_view hash )
   size_t byte_size    = 6;
 
   if ( version_bits + spec_bits + tree_bits < hash.size() * byte_size )
-    do_error();
+    do_error( "Not enough characters" );
 
   auto get_bit = [ byte_size, hash ]( size_t bits, size_t& head ) -> size_t {
     size_t val = 0;
@@ -9857,7 +9857,18 @@ bool player_t::parse_talents_blizzard( std::string_view hash )
 
   auto version_id = get_bit( version_bits, head );
   auto spec_id    = get_bit( spec_bits, head );
-  auto tree_hash  = get_bit( tree_bits, head );
+
+  if ( version_id != 1 )
+    do_error( "Invalid hash version" );
+
+  if ( spec_id != specialization() )
+    do_error( "Wrong specialization" );
+
+  // as per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua:
+  // treeHash is a 128bit hash, passed as an array of 16, 8-bit values
+  int8_t tree_hash[ 16 ];
+  for ( size_t i = 0; i < 16; i++ )
+    tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
 
   return true;
 }
@@ -9932,6 +9943,9 @@ bool generate_trait_map( player_t* player, talent_tree tree,
 
 bool player_t::parse_talents_wowhead( std::string_view talent_url )
 {
+  sim->error( "Wowhead talent parsing is temporarily disabled until the new algorithm can be implemented." );
+  return false;
+
   static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 
   auto split = util::string_split<std::string_view>( talent_url, "/" );
