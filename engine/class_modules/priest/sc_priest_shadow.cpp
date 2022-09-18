@@ -1290,29 +1290,11 @@ struct dark_ascension_t final : public priest_spell_t
   {
     priest_spell_t::execute();
 
-    // Safety checking if the buff is active, shouldn't be possible if the ready() condition is working
-    if ( priest().buffs.dark_evangelism->check() )
-    {
-      int evangelism_stacks = priest().buffs.dark_evangelism->stack();
-
-      player->sim->print_debug(
-          "{} triggered dark_ascension with value={} from stacks={} of dark_evangelism and default_value={}.", priest(),
-          ( dark_ascension_value * evangelism_stacks ), evangelism_stacks, dark_ascension_value );
-
-      // TODO: Triggering with stacks as opposed to changing value so parse_buff_effects works
-      priest().buffs.dark_ascension->trigger( evangelism_stacks );
-      priest().buffs.dark_evangelism->expire();
-    }
+    priest().buffs.dark_ascension->trigger();
   }
 
   bool ready() override
   {
-    // Can only cast this if you have any Dark Evangelism Stacks
-    if ( !priest().buffs.dark_evangelism->check() )
-    {
-      return false;
-    }
-
     return priest_spell_t::ready();
   }
 };
@@ -2168,8 +2150,7 @@ void priest_t::create_buffs_shadow()
   // TODO: use default_value to parse increase instead of stacks
   buffs.dark_ascension = make_buff( this, "dark_ascension", talents.shadow.dark_ascension )
                              ->set_default_value_from_effect( 1 )
-                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                             ->set_max_stack( 5 );
+                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 
   // Conduits (Shadowlands)
   buffs.dissonant_echoes = make_buff( this, "dissonant_echoes", find_spell( 343144 ) );
