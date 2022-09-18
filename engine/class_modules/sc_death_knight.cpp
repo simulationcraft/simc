@@ -495,6 +495,7 @@ public:
     // Blood
     absorb_buff_t* blood_shield;
     buff_t* bone_shield;
+    buff_t* coagulopathy;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
     buff_t* hemostasis;
@@ -2578,6 +2579,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   // Main drw is the only one that can apply BP.  Technically speaking all spells are only cast from main DRW pet
   // However, we allow all of the copies to cast thier own in simc for accounting purposes.
   bool main_drw_guardian;
+  buff_t* coagulopathy;
 
   dot_t* get_blood_plague( player_t* target )
   {
@@ -2615,6 +2617,15 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       // DRW usually behaves the same regardless of talents, but BP ticks are affected by rapid decomposition
       this -> base_tick_time *= 1.0 + dk() -> talent.blood.rapid_decomposition -> effectN( 1 ).percent();
+    }
+
+    double composite_ta_multiplier( const action_state_t* state ) const override
+    {
+      double m = drw_action_t::composite_ta_multiplier( state );
+
+      m *= 1.0 + pet() -> coagulopathy -> stack_value();
+
+      return m;
     }
   };
 
@@ -2667,6 +2678,13 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       m *= 1.0 + dk() -> buffs.hemostasis -> stack_value();
 
       return m;
+    }
+
+    void execute() override
+    {
+      drw_action_t::execute();
+
+      pet() -> coagulopathy -> trigger();
     }
   };
 
@@ -2778,6 +2796,29 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
     ability.consumption   = new consumption_t  ( this );
+  }
+
+  void create_buffs() override
+  {
+    death_knight_pet_t::create_buffs();
+
+    coagulopathy = make_buff( this, "coagulopathy", dk() -> talent.blood.coagulopathy -> effectN( 2 ).trigger() )
+        -> set_trigger_spell( dk() -> talent.blood.coagulopathy )
+        -> set_default_value_from_effect( 1 );
+  }
+
+  double composite_player_target_multiplier( player_t* target, school_e school ) const
+  {
+    double m = death_knight_pet_t::composite_player_target_multiplier( target, school );
+
+    auto td = dk() -> find_target_data( target );
+
+    if ( td && td -> dot.blood_plague -> is_ticking() )
+    {
+      m *= 1.0 + dk() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void arise() override
@@ -3154,6 +3195,11 @@ struct death_knight_action_t : public Base
       m *= 1.0 + td -> debuff.brittle -> check_stack_value();
     }
 
+    if ( td && td -> dot.blood_plague -> is_ticking() )
+    {
+      m *= 1.0 + p() -> talent.blood.coagulopathy -> effectN( 1 ).percent();
+    }
+
     return m;
   }
 
@@ -3398,6 +3444,15 @@ struct blood_plague_t : public death_knight_disease_t
 
     if ( auto td = find_td( t ) )
       m *= 1.0 + td -> debuff.debilitating_malady -> check_stack_value();
+
+    return m;
+  }
+
+  double composite_ta_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_disease_t::composite_ta_multiplier( state );
+
+    m *= 1.0 + p() -> buffs.coagulopathy -> stack_value();
 
     return m;
   }
@@ -5825,6 +5880,8 @@ struct death_strike_t : public death_knight_melee_attack_t
     debug_cast<death_strike_heal_t*>( heal ) -> last_death_strike_cost = cost();
 
     death_knight_melee_attack_t::execute();
+
+    p() -> buffs.coagulopathy -> trigger();
 
     if ( oh_attack )
       oh_attack -> execute();
@@ -10371,6 +10428,10 @@ void death_knight_t::create_buffs()
 
   buffs.ossuary = make_buff( this, "ossuary", find_spell( 219788 ) )
         -> set_default_value_from_effect( 1, 0.1 );
+
+  buffs.coagulopathy = make_buff( this, "coagulopathy", talent.blood.coagulopathy -> effectN( 2 ).trigger() )
+        -> set_trigger_spell( talent.blood.coagulopathy )
+        -> set_default_value_from_effect( 1 );
 
   buffs.crimson_scourge = make_buff( this, "crimson_scourge", find_spell( 81141 ) )
     -> set_trigger_spell( talent.blood.crimson_scourge );
