@@ -1291,6 +1291,11 @@ struct dark_ascension_t final : public priest_spell_t
     priest_spell_t::execute();
 
     priest().buffs.dark_ascension->trigger();
+
+    if ( priest().talents.shadow.ancient_madness.enabled() )
+    {
+      priest().buffs.ancient_madness->trigger();
+    }
   }
 
   bool ready() override
