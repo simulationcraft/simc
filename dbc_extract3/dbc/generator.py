@@ -1412,6 +1412,7 @@ class SpellDataGenerator(DataGenerator):
             ( 355567, 0 ),          # Equinox
             ( 355455, 0 ),          # Divine Resonance
             ( 387643, 0 ),          # Sealed Verdict buff
+            ( 382522, 0 ),          # Consecrated Blade buff
         ),
 
         # Hunter:
