@@ -3176,13 +3176,15 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
   auto mind_sear_id = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
   auto mind_flay_id = specs.mind_flay->id();
+  auto mind_flay_insanity_id = 391403;
   auto action_id    = s->action->id;
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
   if ( rppm.idol_of_cthun->trigger() )
   {
-    if ( action_id == mind_flay_id )
+    // TODO: Keep checking that MFI doesn't work with this. It actually doesn't but I made it anyway. It should be a bug.
+    if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
     {
       procs.void_tendril->occur();
       auto spawned_pets = pets.void_tendril.spawn();
