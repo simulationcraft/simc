@@ -417,7 +417,6 @@ public:
     const spell_data_t* unstable_affliction_2; // DF - Baked into Affliction talent (Soul Shard on demise)
     const spell_data_t* unstable_affliction_3; // DF - Baked into Affliction talent (21 second total duration)
     const spell_data_t* summon_darkglare_2; // DF - Baked into Affliction talent (2 minute cooldown)
-    const spell_data_t* deliberate_corruption; // DF - REMOVED? (Still on Tier Set, unsure if this still functions)
 
     // Demonology only
     const spell_data_t* demonology; //Spec aura

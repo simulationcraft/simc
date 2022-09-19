@@ -506,30 +506,12 @@ struct seed_of_corruption_t : public affliction_spell_t
   }
 };
 
-// 9.2 Tier Set
-struct deliberate_corruption_t : public affliction_spell_t
-{
-  deliberate_corruption_t( warlock_t* p )
-    : affliction_spell_t( "deliberate_corruption", p, p->find_spell( 367831 ) )
-  {
-    background      = true;
-    affected_by_woc = false;
-    
-    // 2022-02-03 PTR - Deliberate Corruption was changed to a single tick DoT, presumably to automatically pick up this modifier in-game
-    if ( p->talents.absolute_corruption->ok() )
-      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent();
-  }
-};
-
 struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
-      deliberate_corruption_t* deliberate_corruption;
-
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) ), 
-          deliberate_corruption( new deliberate_corruption_t( p ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
       {
         aoe = 1;
         background = true;
@@ -566,14 +548,6 @@ struct malefic_rapture_t : public affliction_spell_t
           if ( !p()->talents.absolute_corruption->ok() )
           {
             td->dots_corruption->adjust_duration( dot_extension );
-          }
-          else
-          {
-            auto td = this->td( s->target );
-            if ( td->dots_corruption->is_ticking() )
-            {
-              deliberate_corruption->execute_on_target( s->target );
-            }
           }
         }
       }
