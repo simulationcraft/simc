@@ -148,21 +148,12 @@ public:
     spell_t* rain_of_fire; //TODO: DF - This is the definition for the ground aoe event, how is it used?
     spell_t* bilescourge_bombers; //TODO: DF - This is the definition for the ground aoe event, how is it used?
     spell_t* summon_random_demon; //TODO: DF - This is the definition for a helper action for Nether Portal, does it belong here?
-    melee_attack_t* soul_strike; //TODO: DF - Is this still unused?
   } active;
 
   // DF - Does everything go in this struct? Probably yes, though spell_data_t could be replaced with player_talent_t
   // Talents
   struct talents_t
   {
-    // DF - Remove unimplemented spells that are irrelevant for simc (stamina scaling no longer in place for Demonology either?)
-    const spell_data_t* demon_skin;
-    const spell_data_t* burning_rush;
-    const spell_data_t* dark_pact;
-    const spell_data_t* darkfury;
-    const spell_data_t* mortal_coil;
-    const spell_data_t* howl_of_terror;
-
     // Shared
     const spell_data_t* grimoire_of_sacrifice; // DF - Should be unchanged, but verify spec-based limitation (Aff/Destro only)
 

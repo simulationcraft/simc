@@ -1001,12 +1001,6 @@ void warlock_t::init_spells()
   spec.demonic_core     = find_specialization_spell( "Demonic Core" );
 
   // Talents
-  talents.demon_skin                = find_talent_spell( "Demon Skin" );
-  talents.burning_rush              = find_talent_spell( "Burning Rush" );
-  talents.dark_pact                 = find_talent_spell( "Dark Pact" );
-  talents.darkfury                  = find_talent_spell( "Darkfury" );
-  talents.mortal_coil               = find_talent_spell( "Mortal Coil" );
-  talents.howl_of_terror            = find_talent_spell( "Howl of Terror" );
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
