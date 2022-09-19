@@ -345,7 +345,6 @@ public:
     item_runeforge_t balespiders_burning_core; // DF - Now a Demonology talent
     item_runeforge_t forces_of_the_horned_nightmare; // DF - Now a Demonology talent
     item_runeforge_t grim_inquisitors_dread_calling; // DF - Now a Demonology talent
-    item_runeforge_t implosive_potential; // DF - REMOVED
     // Destruction
     item_runeforge_t cinders_of_the_azjaqir; // DF - Reworked into Improved Conflagrate
     item_runeforge_t embers_of_the_diabolic_raiment; // DF - Now a Destruction talent
@@ -513,8 +512,6 @@ public:
     propagate_const<buff_t*> tyrants_soul; // DF - REMOVED
 
     // Legendaries
-    propagate_const<buff_t*> implosive_potential; // DF - REMOVED
-    propagate_const<buff_t*> implosive_potential_small; // DF - REMOVED
     propagate_const<buff_t*> shard_of_annihilation; // DF - REMOVED
 
   } buffs;

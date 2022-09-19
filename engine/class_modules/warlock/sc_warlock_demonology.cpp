@@ -495,13 +495,6 @@ struct implosion_t : public demonology_spell_t
 
   void execute() override
   {
-    p()->buffs.implosive_potential->expire();
-    p()->buffs.implosive_potential_small->expire();
-
-    auto imps_consumed = as<int>( p()->warlock_pet_list.wild_imps.n_active_pets() );
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-      imps_consumed += as<int>( p()->warlock_pet_list.malicious_imps.n_active_pets() ); // T28 Malicious Imps count for Implosive Potential
-
     // Travel speed is not in spell data, in game test appears to be 65 yds/sec as of 2020-12-04
     timespan_t imp_travel_time = this->calc_imp_travel_time( 65 );
 
@@ -564,11 +557,6 @@ struct implosion_t : public demonology_spell_t
         }
       }
     }
-
-    if ( p()->legendary.implosive_potential.ok() && target_list().size() >= as<size_t>( p()->legendary.implosive_potential->effectN( 1 ).base_value() ) )
-      p()->buffs.implosive_potential->trigger( imps_consumed );
-    else if ( p()->legendary.implosive_potential.ok() )
-      p()->buffs.implosive_potential_small->trigger( imps_consumed );
 
     demonology_spell_t::execute();
   }
@@ -1148,18 +1136,6 @@ void warlock_t::create_buffs_demonology()
           ->set_trigger_spell( legendary.balespiders_burning_core )
           ->set_default_value( legendary.balespiders_burning_core->effectN( 1 ).trigger()->effectN( 1 ).percent() );
 
-  //TODO: SL Beta - check max stacks, refresh behavior, etc
-  buffs.implosive_potential = make_buff<buff_t>(this, "implosive_potential", find_spell(337139))
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value( legendary.implosive_potential->effectN( 2 ).percent() )
-          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
-
-  //For ease of use and tracking, the lesser version will have (small) appended to a separate buff
-  buffs.implosive_potential_small = make_buff<buff_t>(this, "implosive_potential_small", find_spell(337139))
-          ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-          ->set_default_value( legendary.implosive_potential->effectN( 3 ).percent() )
-          ->set_max_stack( std::max( 1, as<int>( legendary.implosive_potential->effectN( 4 ).base_value() ) ) ); // Hotfixed to cap of 15 on 2022-04-04
-
   buffs.dread_calling = make_buff<buff_t>( this, "dread_calling", find_spell( 342997 ) )
                             ->set_default_value( legendary.grim_inquisitors_dread_calling->effectN( 1 ).percent() );
 
@@ -1220,7 +1196,6 @@ void warlock_t::init_spells_demonology()
   legendary.balespiders_burning_core       = find_runeforge_legendary( "Balespider's Burning Core" );
   legendary.forces_of_the_horned_nightmare = find_runeforge_legendary( "Forces of the Horned Nightmare" );
   legendary.grim_inquisitors_dread_calling = find_runeforge_legendary( "Grim Inquisitor's Dread Calling" );
-  legendary.implosive_potential            = find_runeforge_legendary( "Implosive Potential" );
 
   // Conduits
   conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
