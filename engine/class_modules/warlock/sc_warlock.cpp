@@ -226,7 +226,6 @@ struct soul_rot_t : public warlock_spell_t
   {
     parse_options( options_str );
     aoe = 1 + as<int>( p->covenant.soul_rot->effectN( 3 ).base_value() );
-    radius *= 1.0 + p->conduit.soul_eater.percent();
   }
 
   void execute() override
@@ -254,8 +253,6 @@ struct soul_rot_t : public warlock_spell_t
     {
       pm *= 2.0; //Hardcoded in tooltip, primary takes double damage
     }
-
-    pm *= 1.0 + p()->conduit.soul_eater.percent();
 
     return pm;
   }
@@ -905,7 +902,6 @@ void warlock_t::init_spells()
   legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
 
   // Conduits
-  conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities

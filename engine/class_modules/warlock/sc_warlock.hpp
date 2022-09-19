@@ -357,8 +357,6 @@ public:
   struct conduit_t
   {
     // Conduits
-    // Covenant Abilities
-    conduit_data_t soul_eater; // DF - REMOVED
     // Affliction
     conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer; // DF - REMOVED
