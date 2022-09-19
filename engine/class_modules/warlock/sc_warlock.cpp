@@ -497,7 +497,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                       ->set_stack_change_callback( [ &p ]( buff_t* b, int, int cur ) {
                         if ( cur == 0 )
                         {
-                          p.get_target_data( p.havoc_target )->debuffs_odr->expire();
                           p.havoc_target = nullptr;
                         }
                         else
@@ -509,9 +508,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
-
-  // SL - Legendary
-  debuffs_odr = make_buff( *this, "odr_shawl_of_the_ymirjar", source->find_spell(337164) );
 
   // SL - Conduit
   //Spell data appears to be missing for a "debuff" type effect, creating a fake one to model the behavior

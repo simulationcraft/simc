@@ -61,7 +61,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_havoc;
   // DF - Pyrogenics (Rain of Fire increases Fire damage taken)
 
-  propagate_const<buff_t*> debuffs_odr; // DF - REMOVED
   propagate_const<buff_t*> debuffs_combusting_engine; // DF - REMOVED
 
   // Demo
@@ -370,7 +369,6 @@ public:
     item_runeforge_t cinders_of_the_azjaqir; // DF - Reworked into Improved Conflagrate
     item_runeforge_t embers_of_the_diabolic_raiment; // DF - Now a Destruction talent
     item_runeforge_t madness_of_the_azjaqir; // DF - Now a Destruction talent
-    item_runeforge_t odr_shawl_of_the_ymirjar; // DF - REMOVED
     // Covenant
     item_runeforge_t shard_of_annihilation; // DF - REMOVED
     item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent

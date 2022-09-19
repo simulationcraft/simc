@@ -76,10 +76,6 @@ public:
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
 
-    // SL - Legendary
-    if ( td->debuffs_odr->check() && data().affected_by( td->debuffs_odr->data().effectN( 1 ) ) )
-      m *= 1.0 + td->debuffs_odr->data().effectN( 1 ).percent();
-
     return m;
   }
 
@@ -227,10 +223,6 @@ struct havoc_t : public destruction_spell_t
     destruction_spell_t::impact( s );
 
     td( s->target )->debuffs_havoc->trigger();
-
-    // SL - Legendary
-    if ( p()->legendary.odr_shawl_of_the_ymirjar->ok() )
-      td( s->target )->debuffs_odr->trigger();
   }
 };
 
@@ -1234,7 +1226,6 @@ void warlock_t::init_spells_destruction()
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
   legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
   legendary.madness_of_the_azjaqir         = find_runeforge_legendary( "Madness of the Azj'Aqir" );
-  legendary.odr_shawl_of_the_ymirjar       = find_runeforge_legendary( "Odr, Shawl of the Ymirjar" );
 
   // Conduits
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
