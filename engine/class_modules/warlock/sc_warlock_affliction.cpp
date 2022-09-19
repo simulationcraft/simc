@@ -875,23 +875,6 @@ struct vile_taint_t : public affliction_spell_t
     aoe                      = -1;
   }
 };
-
-struct dark_soul_t : public affliction_spell_t
-{
-  dark_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "dark_soul", p, p->talents.dark_soul_misery )
-  {
-    parse_options( options_str );
-    harmful = may_crit = may_miss = false;
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-
-    p()->buffs.dark_soul_misery->trigger();
-  }
-};
 }  // namespace actions_affliction
 
 namespace buffs_affliction
@@ -927,8 +910,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new phantom_singularity_t( this, options_str );
   if ( action_name == "siphon_life" )
     return new siphon_life_t( this, options_str );
-  if ( action_name == "dark_soul" )
-    return new dark_soul_t( this, options_str );
   if ( action_name == "vile_taint" )
     return new vile_taint_t( this, options_str );
   if ( action_name == "malefic_rapture" )
@@ -942,9 +923,6 @@ void warlock_t::create_buffs_affliction()
   // spells
   buffs.drain_life = make_buff( this, "drain_life" );
   // talents
-  buffs.dark_soul_misery = make_buff( this, "dark_soul", talents.dark_soul_misery )
-                               ->set_default_value( talents.dark_soul_misery->effectN( 1 ).percent() )
-                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
   buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
                         ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
                         ->set_trigger_spell( talents.nightfall );
@@ -986,10 +964,8 @@ void warlock_t::init_spells_affliction()
   talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
-  talents.dark_caller         = find_talent_spell( "Dark Caller" ); //9.1 PTR - Removed as talent
   talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
-  talents.dark_soul_misery    = find_talent_spell( "Dark Soul: Misery" );
 
   // Legendaries
   legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );

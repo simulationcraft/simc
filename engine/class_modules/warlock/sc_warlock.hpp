@@ -218,9 +218,6 @@ public:
     // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
     // DF - Decaying Soul Satchel (Formerly SL Legendary)
 
-    const spell_data_t* dark_caller; // DF - REMOVED
-    const spell_data_t* dark_soul_misery; // DF - REMOVED
-
     // DEMO
     // DF - Call Dreadstalkers (2 dogs, check if leap included)
 
@@ -473,7 +470,6 @@ public:
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
-    propagate_const<buff_t*> dark_soul_misery; // DF - REMOVED
     propagate_const<buff_t*> calamitous_crescendo;
     propagate_const<buff_t*> soul_rot; // DF - Now Affliction only. Buff for determining if Drain Life is zero cost and aoe.
     propagate_const<buff_t*> wrath_of_consumption; // DF - Now comes from Affliction talent.
