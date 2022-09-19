@@ -763,16 +763,6 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
   return m;
 }
 
-double warlock_t::composite_spell_crit_chance() const
-{
-  double sc = player_t::composite_spell_crit_chance();
-
-  if ( buffs.dark_soul_instability->check() )
-    sc += buffs.dark_soul_instability->check_value();
-
-  return sc;
-}
-
 double warlock_t::composite_spell_haste() const
 {
   double h = player_t::composite_spell_haste();
@@ -791,16 +781,6 @@ double warlock_t::composite_melee_haste() const
     h *= 1.0 / ( 1.0 + buffs.reverse_entropy->check_value() );
 
   return h;
-}
-
-double warlock_t::composite_melee_crit_chance() const
-{
-  double mc = player_t::composite_melee_crit_chance();
-
-  if ( buffs.dark_soul_instability->check() )
-    mc += buffs.dark_soul_instability->check_value();
-
-  return mc;
 }
 
 double warlock_t::composite_mastery() const

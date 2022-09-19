@@ -192,23 +192,6 @@ struct shadowburn_t : public destruction_spell_t
   }
 };
 
-struct dark_soul_instability_t : public destruction_spell_t
-{
-  dark_soul_instability_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "dark_soul_instability", p, p->talents.dark_soul_instability )
-  {
-    parse_options( options_str );
-    harmful = may_crit = may_miss = false;
-  }
-
-  void execute() override
-  {
-    destruction_spell_t::execute();
-
-    p()->buffs.dark_soul_instability->trigger();
-  }
-};
-
 // Spells
 struct havoc_t : public destruction_spell_t
 {
@@ -300,22 +283,9 @@ struct conflagrate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->trigger(
-        as<int>( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0 ) ) );
+    p()->buffs.backdraft->trigger();
 
     sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
-  }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    if ( p()->talents.flashover )
-    {
-      m *= 1.0 + p()->talents.flashover->effectN( 3 ).percent();
-    }
-
-    return m;
   }
 };
 
@@ -1110,8 +1080,6 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
     return new cataclysm_t( this, options_str );
   if ( action_name == "channel_demonfire" )
     return new channel_demonfire_t( this, options_str );
-  if ( action_name == "dark_soul_instability" )
-    return new dark_soul_instability_t( this, options_str );
 
   return nullptr;
 }
@@ -1120,9 +1088,7 @@ void warlock_t::create_buffs_destruction()
   // destruction buffs
   buffs.backdraft =
       make_buff( this, "backdraft", find_spell( 117828 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_max_stack( as<int>( find_spell( 117828 )->max_stacks() +
-                                    ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) ) );
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
                               ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
@@ -1135,11 +1101,6 @@ void warlock_t::create_buffs_destruction()
   // later
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
                             ->set_default_value( find_spell( 335236 )->_duration );
-
-  buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
-                                    ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
-                                    ->add_invalidate( CACHE_CRIT_CHANCE )
-                                    ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
   // Legendaries
   buffs.madness_of_the_azjaqir =
@@ -1176,7 +1137,6 @@ void warlock_t::init_spells_destruction()
   spec.summon_infernal_2 = find_specialization_spell( 335175 );
 
   // Talents
-  talents.flashover   = find_talent_spell( "Flashover" );
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1192,7 +1152,6 @@ void warlock_t::init_spells_destruction()
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
-  talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );

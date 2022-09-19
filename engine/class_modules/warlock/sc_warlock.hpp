@@ -328,9 +328,6 @@ public:
     // DF - Chaos Incarnate (Choice against Dimensional Rift, maximum mastery value for some spells)
     // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)
     // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
-
-    const spell_data_t* flashover; // DF - REMOVED    
-    const spell_data_t* dark_soul_instability; // DF - REMOVED
   } talents;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -501,7 +498,6 @@ public:
     propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> dark_soul_instability; // DF - REMOVED
     propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
     propagate_const<buff_t*> ritual_of_ruin;
     propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
@@ -635,10 +631,8 @@ public:
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
-  double composite_spell_crit_chance() const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
-  double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
