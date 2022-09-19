@@ -339,7 +339,6 @@ public:
     item_runeforge_t relic_of_demonic_synergy; // DF - Now class talent
     item_runeforge_t wilfreds_sigil_of_superior_summoning; // DF - Now a talent in all 3 spec trees
     // Affliction
-    item_runeforge_t perpetual_agony_of_azjaqir; // DF - REMOVED
     item_runeforge_t sacrolashs_dark_strike; // DF - Now an Affliction talent
     item_runeforge_t wrath_of_consumption; // DF - Now an Affliction talent
     // Demonology

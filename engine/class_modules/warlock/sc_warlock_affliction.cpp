@@ -255,9 +255,6 @@ struct agony_t : public affliction_spell_t
       increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
     }
 
-    if ( p()->legendary.perpetual_agony_of_azjaqir->ok() )
-      increment_max *= 1.0 + p()->legendary.perpetual_agony_of_azjaqir->effectN( 1 ).percent();
-
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
     if ( p()->agony_accumulator >= 1 )
@@ -956,10 +953,6 @@ void warlock_t::init_spells_affliction()
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
   talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
-
-  // Legendaries
-  legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
-  //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
   // Conduits
   conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" ); //9.1 PTR - Removed
