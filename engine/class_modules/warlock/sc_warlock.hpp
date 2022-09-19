@@ -61,8 +61,6 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_havoc;
   // DF - Pyrogenics (Rain of Fire increases Fire damage taken)
 
-  propagate_const<buff_t*> debuffs_combusting_engine; // DF - REMOVED
-
   // Demo
   propagate_const<dot_t*> dots_doom;
 
@@ -394,7 +392,6 @@ public:
     conduit_data_t tyrants_soul; // DF - REMOVED
     // Destruction
     conduit_data_t ashen_remains; // DF - Now a Destruction talent
-    conduit_data_t combusting_engine; // DF - REMOVED
     conduit_data_t duplicitous_havoc; // DF - REMOVED
     conduit_data_t infernal_brand; // DF - Now a Destruction talent
   } conduit;

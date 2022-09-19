@@ -509,14 +509,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
                         range::for_each( p.havoc_spells, []( action_t* a ) { a->target_cache.is_valid = false; } );
                       } );
 
-  // SL - Conduit
-  //Spell data appears to be missing for a "debuff" type effect, creating a fake one to model the behavior
-  //TOCHECK regularly to see if this can be less kludged
-  debuffs_combusting_engine = make_buff( *this, "combusting_engine" )
-                                  ->set_duration( 30_s )
-                                  ->set_max_stack( 40 )
-                                  ->set_default_value( source->find_conduit_spell("Combusting Engine").percent() );
-
   // Demo
   dots_doom         = target->get_dot( "doom", &p );
 
