@@ -365,7 +365,6 @@ public:
     conduit_data_t fel_commando; // DF - Now a Demonology talent
     // Destruction
     conduit_data_t ashen_remains; // DF - Now a Destruction talent
-    conduit_data_t duplicitous_havoc; // DF - REMOVED
     conduit_data_t infernal_brand; // DF - Now a Destruction talent
   } conduit;
 
@@ -902,7 +901,7 @@ public:
     if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
     {
         // SL - Conduit
-        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent();
         p()->havoc_spells.push_back(this);
     }
   }

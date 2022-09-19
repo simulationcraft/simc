@@ -898,9 +898,6 @@ void warlock_t::init_spells()
 
   legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
 
-  // Conduits
-  conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
-
   // Covenant Abilities
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
