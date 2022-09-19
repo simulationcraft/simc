@@ -35,7 +35,6 @@ struct warlock_td_t : public actor_target_data_t
   // Cross-spec
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_drain_life_aoe; // Affliction - Soul Rot effect
-  propagate_const<dot_t*> dots_scouring_tithe; // DF - REMOVED
   propagate_const<dot_t*> dots_impending_catastrophe; // DF - REMOVED
   propagate_const<dot_t*> dots_soul_rot; // DF - Affliction only
   propagate_const<dot_t*> dots_corruption; // DF - Removed from Destruction
@@ -374,7 +373,6 @@ public:
     item_runeforge_t madness_of_the_azjaqir; // DF - Now a Destruction talent
     item_runeforge_t odr_shawl_of_the_ymirjar; // DF - REMOVED
     // Covenant
-    item_runeforge_t languishing_soul_detritus; // DF - REMOVED
     item_runeforge_t shard_of_annihilation; // DF - REMOVED
     item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent
     item_runeforge_t contained_perpetual_explosion; // DF - REMOVED
@@ -388,7 +386,6 @@ public:
     conduit_data_t catastrophic_origin; // DF - REMOVED
     conduit_data_t soul_eater; // DF - REMOVED
     conduit_data_t fatal_decimation; // DF - REMOVED
-    conduit_data_t soul_tithe; // DF - REMOVED
     // Affliction
     conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer; // DF - REMOVED
@@ -413,7 +410,6 @@ public:
     // Covenant Abilities
     const spell_data_t* decimating_bolt;        // DF - REMOVED
     const spell_data_t* impending_catastrophe;  // DF - REMOVED
-    const spell_data_t* scouring_tithe;         // DF - REMOVED
     const spell_data_t* soul_rot;               // DF - Now an Affliction talent
   } covenant;
 
@@ -434,7 +430,6 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
-    propagate_const<cooldown_t*> scouring_tithe; // DF - REMOVED
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
@@ -544,13 +539,11 @@ public:
     // Covenants
     propagate_const<buff_t*> decimating_bolt; // DF - REMOVED
     propagate_const<buff_t*> tyrants_soul; // DF - REMOVED
-    propagate_const<buff_t*> soul_tithe; // DF - REMOVED
 
     // Legendaries
     propagate_const<buff_t*> malefic_wrath; // DF - REMOVED
     propagate_const<buff_t*> implosive_potential; // DF - REMOVED
     propagate_const<buff_t*> implosive_potential_small; // DF - REMOVED
-    propagate_const<buff_t*> languishing_soul_detritus; // DF - REMOVED
     propagate_const<buff_t*> shard_of_annihilation; // DF - REMOVED
 
   } buffs;
@@ -582,9 +575,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-
-    // SL
-    gain_t* scouring_tithe; // DF - REMOVED
 
     // T28
     gain_t* return_soul; // Demonology 4pc
@@ -797,7 +787,6 @@ public:
   gain_t* gain;
   bool can_havoc; // DF - Also need to utilize this for Mayhem
   bool affected_by_woc; // DF - This is now an Affliction talent, see if this hardcoded bool is still needed
-  bool affected_by_soul_tithe; // DF - REMOVED
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -819,8 +808,6 @@ public:
 
     //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
     affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
-
-    affected_by_soul_tithe = data().affected_by( p->find_spell( 340238 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -899,9 +886,6 @@ public:
   double action_multiplier() const override
   {
     double pm = spell_t::action_multiplier();
-
-    if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
-      pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
 
     pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 

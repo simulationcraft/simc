@@ -344,47 +344,6 @@ struct impending_catastrophe_t : public warlock_spell_t
   }
 };
 
-struct scouring_tithe_t : public warlock_spell_t
-{
-  double LSD_alt_value; //Secondary buff value for Languishing Soul Detritus legendary
-
-  scouring_tithe_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "scouring_tithe", p, p->covenant.scouring_tithe ) 
-  {
-    parse_options( options_str );
-    can_havoc = true;
-
-    LSD_alt_value = p->find_spell( 360953 )->effectN( 2 ).percent();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    warlock_spell_t::last_tick( d );
-
-    if ( !d->target->is_sleeping() )
-    {
-      p()->cooldowns.scouring_tithe->reset( true );
-      if ( p()->legendary.languishing_soul_detritus.ok() )
-        p()->buffs.languishing_soul_detritus->trigger( 1, LSD_alt_value );
-    }
-  }
-  
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-    {
-      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-    }
-
-    return m;
-  }
-};
-
 struct soul_rot_t : public warlock_spell_t
 {
   soul_rot_t( warlock_t* p, util::string_view options_str )
@@ -628,7 +587,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
-  dots_scouring_tithe = target->get_dot( "scouring_tithe", &p );
   dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
   dots_soul_rot       = target->get_dot( "soul_rot", &p );
 
@@ -724,24 +682,6 @@ void warlock_td_t::target_demise()
     warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.drain_soul );
   }
 
-  if ( dots_scouring_tithe->is_ticking() )
-  {
-    warlock.sim->print_log( "Player {} demised. Warlock {} gains 5 shards from Scouring Tithe.", target->name(),
-                            warlock.name() );
-
-    warlock.resource_gain( RESOURCE_SOUL_SHARD, 5, warlock.gains.scouring_tithe );
-
-    if ( warlock.conduit.soul_tithe.value() > 0 )
-    {
-      warlock.buffs.soul_tithe->trigger();
-    }
-
-    if ( warlock.legendary.languishing_soul_detritus.ok() )
-    {
-      warlock.buffs.languishing_soul_detritus->trigger();
-    }
-  }
-
   if ( debuffs_haunt->check() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} reset Haunt's cooldown.", target->name(), warlock.name() );
@@ -819,9 +759,6 @@ int warlock_td_t::count_affliction_dots()
   if ( dots_siphon_life->is_ticking() )
     count++;
 
-  if ( dots_scouring_tithe->is_ticking() )
-    count++;
-
   if ( dots_impending_catastrophe->is_ticking() )
     count++;
 
@@ -856,7 +793,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
   cooldowns.phantom_singularity = get_cooldown( "phantom_singularity" );
   cooldowns.darkglare           = get_cooldown( "summon_darkglare" );
   cooldowns.demonic_tyrant      = get_cooldown( "summon_demonic_tyrant" );
-  cooldowns.scouring_tithe      = get_cooldown( "scouring_tithe" );
   cooldowns.infernal            = get_cooldown( "summon_infernal" );
   cooldowns.shadowburn          = get_cooldown( "shadowburn" );
 
@@ -931,10 +867,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( buffs.tyrants_soul->check() )
       m *= 1.0 + buffs.tyrants_soul->current_value;
-
-    if ( buffs.soul_tithe->check() )
-      m *= 1.0 + buffs.soul_tithe->check_stack_value();
-
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
@@ -1092,8 +1024,6 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "decimating_bolt" )
     return new decimating_bolt_t( this, options_str );
-  if ( action_name == "scouring_tithe" )
-    return new scouring_tithe_t( this, options_str );
   if ( action_name == "impending_catastrophe" )
     return new impending_catastrophe_t( this, options_str );
   if ( action_name == "soul_rot" )
@@ -1178,20 +1108,12 @@ void warlock_t::create_buffs()
                               ->set_default_value( 2.0 )
                               ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
 
-  // Conduits
-  buffs.soul_tithe = make_buff(this, "soul_tithe", find_spell(340238))
-    ->set_default_value(conduit.soul_tithe.percent());
-
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
 
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
-
-  buffs.languishing_soul_detritus = make_buff( this, "languishing_soul_detritus", find_spell( 356255 ) )
-                                        ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-                                        ->set_default_value( find_spell( 356255 )->effectN( 2 ).percent() );
 
   buffs.shard_of_annihilation = make_buff( this, "shard_of_annihilation", find_spell( 356342 ) );
 
@@ -1241,7 +1163,6 @@ void warlock_t::init_spells()
   //Wrath is implemented here to catch any potential cross-spec periodic effects
   legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
-  legendary.languishing_soul_detritus = find_runeforge_legendary( "Languishing Soul Detritus" );
   legendary.shard_of_annihilation = find_runeforge_legendary( "Shard of Annihilation" );
   legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
   legendary.contained_perpetual_explosion = find_runeforge_legendary( "Contained Perpetual Explosion" );
@@ -1250,13 +1171,11 @@ void warlock_t::init_spells()
   conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
   conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
   conduit.fatal_decimation     = find_conduit_spell( "Fatal Decimation" );      // Necrolord
-  conduit.soul_tithe           = find_conduit_spell( "Soul Tithe" );            // Kyrian
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
   covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
   covenant.impending_catastrophe = find_covenant_spell( "Impending Catastrophe" );  // Venthyr
-  covenant.scouring_tithe        = find_covenant_spell( "Scouring Tithe" );         // Kyrian
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
 
@@ -1286,7 +1205,6 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
-  gains.scouring_tithe = get_gain( "souring_tithe" );
   gains.return_soul = get_gain( "return_soul" );
 }
 
@@ -1547,7 +1465,6 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
     td->dots_impending_catastrophe->adjust_duration( darkglare_extension );
-    td->dots_scouring_tithe->adjust_duration( darkglare_extension );
     td->dots_soul_rot->adjust_duration( darkglare_extension );
   }
 }
