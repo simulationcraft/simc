@@ -358,10 +358,6 @@ public:
   {
     // Conduits
     // Affliction
-    conduit_data_t cold_embrace; //9.1 PTR - Removed
-    conduit_data_t corrupting_leer; // DF - REMOVED
-    conduit_data_t focused_malignancy; // DF - REMOVED
-    conduit_data_t rolling_agony; // DF - REMOVED
     conduit_data_t withering_bolt; // DF - Now an Affliction talent
     // Demonology
     conduit_data_t borne_of_blood; // DF - Now a Demonology talent
@@ -546,7 +542,6 @@ public:
 
     // aff
     proc_t* nightfall;
-    proc_t* corrupting_leer; // DF - REMOVED
     proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
@@ -592,7 +587,6 @@ public:
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
-  void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;

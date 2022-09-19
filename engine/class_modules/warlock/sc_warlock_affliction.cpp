@@ -175,7 +175,6 @@ struct agony_t : public affliction_spell_t
     may_crit                   = false;
 
     dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
-    dot_duration += p->conduit.rolling_agony.time_value();
   }
 
   void last_tick( dot_t* d ) override
@@ -241,8 +240,6 @@ struct agony_t : public affliction_spell_t
     {
       p()->buffs.inevitable_demise->trigger();
     }
-
-    p()->malignancy_reduction_helper();
 
     affliction_spell_t::tick( d );
   }
@@ -358,13 +355,6 @@ struct unstable_affliction_t : public affliction_spell_t
     affliction_spell_t::last_tick( d );
 
     p()->ua_target = nullptr;
-  }
-
-  void tick( dot_t* d ) override
-  {
-    p()->malignancy_reduction_helper();
-
-    affliction_spell_t::tick( d );
   }
 };
 
@@ -552,11 +542,6 @@ struct malefic_rapture_t : public affliction_spell_t
         double m = affliction_spell_t::composite_da_multiplier( s );
 
         m *= p()->get_target_data( s->target )->count_affliction_dots();
-
-        if ( td( s->target )->dots_unstable_affliction->is_ticking() )
-        {
-          m *= 1.0 + p()->conduit.focused_malignancy.percent();
-        }
 
         if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
         {
@@ -883,10 +868,6 @@ void warlock_t::init_spells_affliction()
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
   // Conduits
-  conduit.cold_embrace       = find_conduit_spell( "Cold Embrace" ); //9.1 PTR - Removed
-  conduit.corrupting_leer    = find_conduit_spell( "Corrupting Leer" );
-  conduit.focused_malignancy = find_conduit_spell( "Focused Malignancy" );
-  conduit.rolling_agony      = find_conduit_spell( "Rolling Agony" );
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
 
@@ -904,7 +885,6 @@ void warlock_t::init_rng_affliction()
 void warlock_t::init_procs_affliction()
 {
   procs.nightfall            = get_proc( "nightfall" );
-  procs.corrupting_leer      = get_proc( "corrupting_leer" );
   procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
