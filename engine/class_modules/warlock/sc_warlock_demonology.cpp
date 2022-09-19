@@ -300,16 +300,6 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->talents.demonic_calling->ok() )
       p()->buffs.demonic_calling->trigger();
-
-    p()->buffs.decimating_bolt->decrement();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    demonology_spell_t::impact( s );
-
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
   }
 
   double action_multiplier() const override
@@ -327,28 +317,6 @@ struct demonbolt_t : public demonology_spell_t
     }
 
     m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
-
-    m *= 1 + p()->buffs.decimating_bolt->check_value();
-
-    return m;
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = demonology_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 5 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = demonology_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 6 ).percent();
 
     return m;
   }

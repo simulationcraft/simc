@@ -276,87 +276,6 @@ struct soul_rot_t : public warlock_spell_t
   }
 };
 
-struct decimating_bolt_dmg_t : public warlock_spell_t
-{
-  decimating_bolt_dmg_t( warlock_t* p ) : warlock_spell_t( "decimating_bolt_tick_t", p, p->find_spell( 327059 ) )
-  {
-    background = true;
-    may_miss   = false;
-  }
-
-  double composite_target_multiplier( player_t* target ) const override
-  {
-    double m = warlock_spell_t::composite_target_multiplier( target );
-
-    //This currently matches the bonus multiplier to the spec spells, but is not guaranteed to stay this way. Last checked on PTR 2021-03-07
-    m *= 2.0 - target->health_percentage() * 0.01;
-
-    return m;
-  };
-
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->conduit.fatal_decimation.percent();
-
-    return m;
-  }
-};
-
-struct decimating_bolt_t : public warlock_spell_t
-{
-  action_t* decimating_bolt_dmg;
-
-  decimating_bolt_t( warlock_t* p, util::string_view options_str ) : 
-    warlock_spell_t( "decimating_bolt", p, p->covenant.decimating_bolt ),
-    decimating_bolt_dmg( new decimating_bolt_dmg_t( p ) )
-
-  {
-    parse_options( options_str );
-    can_havoc = true;
-    travel_speed = p->find_spell( 327072 )->missile_speed();
-
-    add_child( decimating_bolt_dmg );
-  }
-
-  void impact( action_state_t* s ) override
-  {
-
-    warlock_spell_t::impact( s );
-    
-    auto e = make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
-      .pulse_time( 0.1_s )
-      .target( s->target )
-      .n_pulses( 4 )
-      .action( decimating_bolt_dmg ), true );
-
-    if ( s->chain_target > 0 )
-      e->pulse_state->persistent_multiplier *= base_aoe_multiplier;
-
-  };
-
-  void execute() override
-  {
-    //TOCHECK: the formulae for Decimating Bolt bonus damage does not appear in spell data, and should be
-    //checked regularly to ensure accuracy
-    // TODO: Need to check the behavior of havoc decimating bolt, and which strength of buff is given.
-    double value = p()->buffs.decimating_bolt->default_value - 0.01 * target->health_percentage();
-    if ( p()->talents.fire_and_brimstone->ok() )
-      value *= 0.4;
-    p()->buffs.decimating_bolt->trigger( 3, value );
-    
-    if ( p()->legendary.shard_of_annihilation.ok() )
-    {
-      //Note: For Drain Soul, 3 stacks appear to be triggered but all are removed when the Decimating Bolt buff is
-      p()->buffs.shard_of_annihilation->trigger( 3 );
-    }
-
-    warlock_spell_t::execute();
-  }
-
-};
-
 // TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
@@ -860,8 +779,6 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new corruption_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
-  if ( action_name == "decimating_bolt" )
-    return new decimating_bolt_t( this, options_str );
   if ( action_name == "soul_rot" )
     return new soul_rot_t( this, options_str );
   if ( action_name == "interrupt" )
@@ -938,20 +855,12 @@ void warlock_t::create_buffs()
   // Covenants
   buffs.soul_rot = make_buff(this, "soul_rot", covenant.soul_rot);
 
-  // 4.0 is the multiplier for a 0% health mob
-  buffs.decimating_bolt =
-      make_buff( this, "decimating_bolt", find_spell( 325299 ) )
-                              ->set_default_value( 2.0 )
-                              ->set_max_stack( talents.drain_soul->ok() ? 1 : 3 );
-
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
                                ->set_default_value_from_effect( 1 );
 
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
-
-  buffs.shard_of_annihilation = make_buff( this, "shard_of_annihilation", find_spell( 356342 ) );
 
   buffs.decaying_soul_satchel_haste = make_buff( this, "decaying_soul_satchel_haste", find_spell( 356369 ) )
                                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
@@ -993,16 +902,13 @@ void warlock_t::init_spells()
   //Wrath is implemented here to catch any potential cross-spec periodic effects
   legendary.wrath_of_consumption = find_runeforge_legendary("Wrath of Consumption");
 
-  legendary.shard_of_annihilation = find_runeforge_legendary( "Shard of Annihilation" );
   legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
 
   // Conduits
   conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
-  conduit.fatal_decimation     = find_conduit_spell( "Fatal Decimation" );      // Necrolord
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
-  covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
 

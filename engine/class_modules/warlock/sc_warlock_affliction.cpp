@@ -127,9 +127,6 @@ struct shadow_bolt_t : public affliction_spell_t
         }
       }
     }
-
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
   }
 
   double action_multiplier() const override
@@ -138,8 +135,6 @@ struct shadow_bolt_t : public affliction_spell_t
 
     if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
       m *= 1.0 + p()->buffs.nightfall->default_value;
-
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }
@@ -155,26 +150,6 @@ struct shadow_bolt_t : public affliction_spell_t
     return m;
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = affliction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   void schedule_execute( action_state_t* s ) override
   {
     affliction_spell_t::schedule_execute( s );
@@ -186,7 +161,6 @@ struct shadow_bolt_t : public affliction_spell_t
     if ( time_to_execute == 0_ms )
       p()->buffs.nightfall->decrement();
 
-    p()->buffs.decimating_bolt->decrement();
   }
 };
 
@@ -702,19 +676,6 @@ struct drain_soul_t : public affliction_spell_t
     hasted_ticks = may_crit = true;
   }
 
-  void execute() override
-  {
-    dot_t* dot = get_dot( target );
-    if ( dot->is_ticking() )
-    {
-      p()->buffs.decimating_bolt->decrement();
-
-      if ( p()->legendary.shard_of_annihilation.ok() )
-        p()->buffs.shard_of_annihilation->decrement( 3 );
-    }
-    affliction_spell_t::execute();
-  }
-
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
@@ -746,45 +707,12 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
-
     //Withering Bolt does x% more damage per DoT on the target
     //TODO: Check what happens if a DoT falls off mid-channel
     m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
-
-  double composite_crit_chance() const override
-  {
-    double c = affliction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 3 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = affliction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 4 ).percent();
-
-    return m;
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    affliction_spell_t::last_tick( d );
-
-    p()->buffs.decimating_bolt->decrement();
-
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement( 3 );
-  }
-
 };
 
 struct haunt_t : public affliction_spell_t

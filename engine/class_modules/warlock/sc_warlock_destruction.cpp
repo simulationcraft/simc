@@ -355,26 +355,6 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = destruction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
@@ -385,15 +365,6 @@ struct incinerate_fnb_t : public destruction_spell_t
     // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
     if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
       m *= 1.0 + p()->conduit.ashen_remains.percent();
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }
@@ -463,39 +434,15 @@ struct incinerate_t : public destruction_spell_t
       fnb_action->set_target( target );
       fnb_action->execute();
     }
-    p()->buffs.decimating_bolt->decrement();
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
-
     //As of 9.0.5, critical strike gains should also be increased by Embers of the Diabolic Raiment. Checked on PTR 2021-03-07
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = destruction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
@@ -510,16 +457,6 @@ struct incinerate_t : public destruction_spell_t
 
     return m;
   }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
-
-    return m;
-  }
-
 };
 
 

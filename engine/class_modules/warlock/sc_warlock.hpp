@@ -350,7 +350,6 @@ public:
     item_runeforge_t embers_of_the_diabolic_raiment; // DF - Now a Destruction talent
     item_runeforge_t madness_of_the_azjaqir; // DF - Now a Destruction talent
     // Covenant
-    item_runeforge_t shard_of_annihilation; // DF - REMOVED
     item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent
   } legendary;
 
@@ -360,7 +359,6 @@ public:
     // Conduits
     // Covenant Abilities
     conduit_data_t soul_eater; // DF - REMOVED
-    conduit_data_t fatal_decimation; // DF - REMOVED
     // Affliction
     conduit_data_t cold_embrace; //9.1 PTR - Removed
     conduit_data_t corrupting_leer; // DF - REMOVED
@@ -382,7 +380,6 @@ public:
   struct covenant_t
   {
     // Covenant Abilities
-    const spell_data_t* decimating_bolt;        // DF - REMOVED
     const spell_data_t* soul_rot;               // DF - Now an Affliction talent
   } covenant;
 
@@ -508,11 +505,7 @@ public:
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
 
     // Covenants
-    propagate_const<buff_t*> decimating_bolt; // DF - REMOVED
     propagate_const<buff_t*> tyrants_soul; // DF - REMOVED
-
-    // Legendaries
-    propagate_const<buff_t*> shard_of_annihilation; // DF - REMOVED
 
   } buffs;
 
