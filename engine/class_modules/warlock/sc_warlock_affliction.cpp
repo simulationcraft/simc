@@ -140,7 +140,6 @@ struct shadow_bolt_t : public affliction_spell_t
       m *= 1.0 + p()->buffs.nightfall->default_value;
 
     m *= 1.0 + p()->buffs.decimating_bolt->check_value();
-    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
     return m;
   }
@@ -680,12 +679,6 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       affliction_spell_t::execute();
 
-      if (p()->legendary.malefic_wrath->ok())
-      {
-        p()->buffs.malefic_wrath->trigger();
-        p()->procs.malefic_wrath->occur();
-      }
-
       p()->buffs.calamitous_crescendo->expire();
     }
 
@@ -757,7 +750,6 @@ struct drain_soul_t : public affliction_spell_t
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
     m *= 1.0 + p()->buffs.decimating_bolt->check_value();
-    m *= 1.0 + p()->buffs.malefic_wrath->check_stack_value();
 
     //Withering Bolt does x% more damage per DoT on the target
     //TODO: Check what happens if a DoT falls off mid-channel
@@ -930,8 +922,6 @@ void warlock_t::create_buffs_affliction()
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() )
                                 ->set_trigger_spell( talents.inevitable_demise );
 
-  buffs.malefic_wrath = make_buff( this, "malefic_wrath", find_spell( 337125 ) )->set_default_value_from_effect( 1 );
-
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
 }
 
@@ -968,7 +958,6 @@ void warlock_t::init_spells_affliction()
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
   // Legendaries
-  legendary.malefic_wrath              = find_runeforge_legendary( "Malefic Wrath" );
   legendary.perpetual_agony_of_azjaqir = find_runeforge_legendary( "Perpetual Agony of Azj'Aqir" );
   //Wrath of Consumption and Sacrolash's Dark Strike are implemented in main module
 
@@ -995,7 +984,6 @@ void warlock_t::init_procs_affliction()
 {
   procs.nightfall            = get_proc( "nightfall" );
   procs.corrupting_leer      = get_proc( "corrupting_leer" );
-  procs.malefic_wrath        = get_proc( "malefic_wrath" );
   procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )

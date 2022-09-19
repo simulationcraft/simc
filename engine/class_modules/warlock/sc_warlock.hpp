@@ -339,7 +339,6 @@ public:
     item_runeforge_t relic_of_demonic_synergy; // DF - Now class talent
     item_runeforge_t wilfreds_sigil_of_superior_summoning; // DF - Now a talent in all 3 spec trees
     // Affliction
-    item_runeforge_t malefic_wrath; // DF - REMOVED
     item_runeforge_t perpetual_agony_of_azjaqir; // DF - REMOVED
     item_runeforge_t sacrolashs_dark_strike; // DF - Now an Affliction talent
     item_runeforge_t wrath_of_consumption; // DF - Now an Affliction talent
@@ -515,7 +514,6 @@ public:
     propagate_const<buff_t*> tyrants_soul; // DF - REMOVED
 
     // Legendaries
-    propagate_const<buff_t*> malefic_wrath; // DF - REMOVED
     propagate_const<buff_t*> implosive_potential; // DF - REMOVED
     propagate_const<buff_t*> implosive_potential_small; // DF - REMOVED
     propagate_const<buff_t*> shard_of_annihilation; // DF - REMOVED
@@ -562,7 +560,6 @@ public:
     // aff
     proc_t* nightfall;
     proc_t* corrupting_leer; // DF - REMOVED
-    proc_t* malefic_wrath; // DF - REMOVED
     proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
