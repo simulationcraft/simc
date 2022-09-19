@@ -35,7 +35,6 @@ struct warlock_td_t : public actor_target_data_t
   // Cross-spec
   propagate_const<dot_t*> dots_drain_life;
   propagate_const<dot_t*> dots_drain_life_aoe; // Affliction - Soul Rot effect
-  propagate_const<dot_t*> dots_impending_catastrophe; // DF - REMOVED
   propagate_const<dot_t*> dots_soul_rot; // DF - Affliction only
   propagate_const<dot_t*> dots_corruption; // DF - Removed from Destruction
 
@@ -375,7 +374,6 @@ public:
     // Covenant
     item_runeforge_t shard_of_annihilation; // DF - REMOVED
     item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent
-    item_runeforge_t contained_perpetual_explosion; // DF - REMOVED
   } legendary;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -383,7 +381,6 @@ public:
   {
     // Conduits
     // Covenant Abilities
-    conduit_data_t catastrophic_origin; // DF - REMOVED
     conduit_data_t soul_eater; // DF - REMOVED
     conduit_data_t fatal_decimation; // DF - REMOVED
     // Affliction
@@ -409,7 +406,6 @@ public:
   {
     // Covenant Abilities
     const spell_data_t* decimating_bolt;        // DF - REMOVED
-    const spell_data_t* impending_catastrophe;  // DF - REMOVED
     const spell_data_t* soul_rot;               // DF - Now an Affliction talent
   } covenant;
 

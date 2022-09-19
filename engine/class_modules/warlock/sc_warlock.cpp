@@ -218,132 +218,6 @@ struct corruption_t : public warlock_spell_t
   }
 };
 
-struct impending_catastrophe_t : public warlock_spell_t
-{
-  //Not implemented: Impending Catastrophe applies a random curse in addition to the DoT
-  struct impending_catastrophe_dot_t : public warlock_spell_t
-  {
-    int impact_count; //Used to store target count for Contained Perpetual Explosion
-    double legendary_bonus_1; //base bonus % increase
-    double legendary_bonus_2; //additional % increase per extra target hit
-
-    impending_catastrophe_dot_t( warlock_t* p )
-      : warlock_spell_t( "impending_catastrophe_dot", p, p->find_spell( 322170 ) )
-    {
-      background = true;
-      may_miss   = false;
-      dual       = true;
-      tick_zero = true;
-      impact_count = 0;
-      legendary_bonus_1 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 1 ).percent() : 0.0;
-      legendary_bonus_2 = p->legendary.contained_perpetual_explosion.ok() ? p->legendary.contained_perpetual_explosion->effectN( 2 ).percent() : 0.0;
-    }
-  
-    timespan_t composite_dot_duration( const action_state_t* s ) const override
-    {
-     if ( s->chain_target == 0 )
-       return dot_duration * ( 1.0 + p()->conduit.catastrophic_origin.percent() );
-
-     return dot_duration;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-      {
-        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-        m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-      }
-
-      return m;
-    }
-
-    double composite_ta_multiplier( const action_state_t* s ) const override
-    {
-      double m = warlock_spell_t::composite_ta_multiplier( s );
-
-      // PTR 2022-01-25 Legendary now capped to a maximum of 10 targets
-      int clamped_impact_count = p()->min_version_check( VERSION_9_2_0 ) ? std::min(impact_count, 10) : impact_count;
-
-      //PTR 2022-01-26 Legendary is still multiplying these bonuses together, though the tooltip implies they should add
-      if ( p()->bugs )
-        m *= ( 1.0 + legendary_bonus_1 ) * ( 1.0 + legendary_bonus_2 * clamped_impact_count );
-      else
-        m *= 1.0 + legendary_bonus_1 + legendary_bonus_2 * clamped_impact_count;
-	
-      return m;
-    }
-  };
-
-  struct impending_catastrophe_impact_t : public warlock_spell_t
-  {
-    impending_catastrophe_impact_t( warlock_t* p )
-      : warlock_spell_t( "impending_catastrophe_impact", p, p->find_spell( 322167 ) )
-    {
-      background = true;
-      may_miss   = false;
-      dual       = true;
-    }
-
-    double action_multiplier() const override
-    {
-      double m = warlock_spell_t::action_multiplier();
-
-      if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-      {
-        double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-        double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-        m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-      }
-
-      return m;
-    }
-  };
-
-  impending_catastrophe_impact_t* impending_catastrophe_impact;
-  impending_catastrophe_dot_t* impending_catastrophe_dot;
-
-  impending_catastrophe_t( warlock_t* p, util::string_view options_str ) : 
-    warlock_spell_t( "impending_catastrophe", p, p->covenant.impending_catastrophe ),
-    impending_catastrophe_impact( new impending_catastrophe_impact_t( p ) ),
-    impending_catastrophe_dot( new impending_catastrophe_dot_t( p ) )
-  {
-    parse_options( options_str );
-    travel_speed = 16;
-    aoe = -1;
-   
-    add_child( impending_catastrophe_impact );
-    add_child( impending_catastrophe_dot );
-  }
-
-  //Currently we model the "pass-through" damage as occuring on all targets when the projectile hits
-  void impact( action_state_t* s ) override
-  {
-    warlock_spell_t::impact( s );
-
-    impending_catastrophe_dot->set_target( s->target );
-    impending_catastrophe_dot->execute();
-
-    impending_catastrophe_impact->set_target( s->target );
-    impending_catastrophe_impact->execute();
-  }
-
-  void execute() override
-  {
-    warlock_spell_t::execute();
-
-    if ( p()->legendary.contained_perpetual_explosion.ok() )
-    {
-      impending_catastrophe_dot->impact_count = std::max( num_targets_hit - 1, 0 ); //Primary target is not counted
-    }
-  }
-};
-
 struct soul_rot_t : public warlock_spell_t
 {
   soul_rot_t( warlock_t* p, util::string_view options_str )
@@ -587,7 +461,6 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
-  dots_impending_catastrophe = target->get_dot( "impending_catastrophe_dot", &p );
   dots_soul_rot       = target->get_dot( "soul_rot", &p );
 
   // Aff
@@ -757,9 +630,6 @@ int warlock_td_t::count_affliction_dots()
     count++;
 
   if ( dots_siphon_life->is_ticking() )
-    count++;
-
-  if ( dots_impending_catastrophe->is_ticking() )
     count++;
 
   return count;
@@ -1024,8 +894,6 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "decimating_bolt" )
     return new decimating_bolt_t( this, options_str );
-  if ( action_name == "impending_catastrophe" )
-    return new impending_catastrophe_t( this, options_str );
   if ( action_name == "soul_rot" )
     return new soul_rot_t( this, options_str );
   if ( action_name == "interrupt" )
@@ -1165,17 +1033,14 @@ void warlock_t::init_spells()
 
   legendary.shard_of_annihilation = find_runeforge_legendary( "Shard of Annihilation" );
   legendary.decaying_soul_satchel = find_runeforge_legendary( "Decaying Soul Satchel" );
-  legendary.contained_perpetual_explosion = find_runeforge_legendary( "Contained Perpetual Explosion" );
 
   // Conduits
-  conduit.catastrophic_origin  = find_conduit_spell( "Catastrophic Origin" );   // Venthyr
   conduit.soul_eater           = find_conduit_spell( "Soul Eater" );            // Night Fae
   conduit.fatal_decimation     = find_conduit_spell( "Fatal Decimation" );      // Necrolord
   conduit.duplicitous_havoc    = find_conduit_spell("Duplicitous Havoc");       // Needed in main for covenants
 
   // Covenant Abilities
   covenant.decimating_bolt       = find_covenant_spell( "Decimating Bolt" );        // Necrolord
-  covenant.impending_catastrophe = find_covenant_spell( "Impending Catastrophe" );  // Venthyr
   covenant.soul_rot              = find_covenant_spell( "Soul Rot" );               // Night Fae
 }
 
@@ -1464,7 +1329,6 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_phantom_singularity->adjust_duration( darkglare_extension );
     td->dots_vile_taint->adjust_duration( darkglare_extension );
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
-    td->dots_impending_catastrophe->adjust_duration( darkglare_extension );
     td->dots_soul_rot->adjust_duration( darkglare_extension );
   }
 }
