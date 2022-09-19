@@ -363,7 +363,6 @@ public:
     conduit_data_t borne_of_blood; // DF - Now a Demonology talent
     conduit_data_t carnivorous_stalkers; // DF - Now a Demonology talent
     conduit_data_t fel_commando; // DF - Now a Demonology talent
-    conduit_data_t tyrants_soul; // DF - REMOVED
     // Destruction
     conduit_data_t ashen_remains; // DF - Now a Destruction talent
     conduit_data_t duplicitous_havoc; // DF - REMOVED
@@ -497,10 +496,6 @@ public:
     // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
     // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
     // DF - Chaos Incarnate? (passive max mastery on certain spells)
-
-    // Covenants
-    propagate_const<buff_t*> tyrants_soul; // DF - REMOVED
-
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked

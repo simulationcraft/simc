@@ -1201,20 +1201,6 @@ struct demonfire_t : public warlock_pet_spell_t
   }
 };
 
-void demonic_tyrant_t::demise()
-{
-  if ( !current.sleeping )
-  {
-    if ( o()->conduit.tyrants_soul.value() > 0 )
-    {
-      o()->buffs.demonic_core->trigger( 1 );
-      o()->buffs.tyrants_soul->trigger();
-    }
-  }
-
-  warlock_pet_t::demise();
-}
-
 action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_view options_str )
 {
   if ( name == "demonfire" )

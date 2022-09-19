@@ -1094,10 +1094,6 @@ void warlock_t::create_buffs_demonology()
   buffs.nether_portal =
       make_buff( this, "nether_portal", talents.nether_portal )->set_duration( talents.nether_portal->duration() );
 
-  // Conduits
-  buffs.tyrants_soul = make_buff( this, "tyrants_soul", find_spell( 339784 ) )
-                           ->set_default_value( conduit.tyrants_soul.percent() );
-
   // Legendaries
   buffs.balespiders_burning_core =
       make_buff( this, "balespiders_burning_core", legendary.balespiders_burning_core->effectN( 1 ).trigger() )
@@ -1169,7 +1165,6 @@ void warlock_t::init_spells_demonology()
   conduit.borne_of_blood       = find_conduit_spell( "Borne of Blood" );
   conduit.carnivorous_stalkers = find_conduit_spell( "Carnivorous Stalkers" );
   conduit.fel_commando         = find_conduit_spell( "Fel Commando" );
-  conduit.tyrants_soul         = find_conduit_spell( "Tyrant's Soul" );
 
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 

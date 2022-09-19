@@ -638,9 +638,6 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
     if ( buffs.demonic_power->check() )
       m *= 1.0 + buffs.demonic_power->default_value;
-
-    if ( buffs.tyrants_soul->check() )
-      m *= 1.0 + buffs.tyrants_soul->current_value;
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
