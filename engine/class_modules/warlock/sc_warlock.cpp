@@ -244,7 +244,7 @@ struct corruption_t : public warlock_spell_t
     double m = warlock_spell_t::composite_ta_multiplier( s );
 
     // Ripped from affliction_spell_t - See what we can do to unify this under warlock_spell_t
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
     {
       m *= 1.0 + p()->cache.mastery_value();
     }
@@ -275,7 +275,7 @@ struct corruption_t : public warlock_spell_t
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 2 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
     }
@@ -1060,6 +1060,7 @@ void warlock_t::init_spells()
 
   // Affliction
   warlock_base.agony = find_spell( "Agony" ); // Should be ID 980
+  warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
 
   // Talents
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro

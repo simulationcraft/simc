@@ -56,7 +56,7 @@ public:
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 2 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
     }
@@ -68,7 +68,7 @@ public:
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
     }
