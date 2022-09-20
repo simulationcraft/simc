@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45569 dragonflight-BETA (, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45632 dragonflight-BETA (hotfix 2022-09-20/45632, no-networking)
 Name             : Haste (id=65) 
 Class            : Paladin
 School           : Nature
@@ -12358,6 +12358,30 @@ Effects          :
 Description      : Consecration periodic damage has a chance to grant you $s1 Holy Power.
 
 Chances increase up to $s2 targets within Consecration.
+
+Name             : Consecrated Blade (id=382522) [Spell Family (10)] 
+Class            : Paladin
+School           : Holy
+Spell Type       : None
+Duration         : 12 seconds
+Stacks           : 1 initial, 1 maximum
+Proc Chance      : 101%
+Proc Flags       : ....x... ........ ........ ........ 
+                 : Yellow Melee
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Not In Spellbook (143), Aura Points On Client (268)
+Effects          :
+#1 (id=1013907)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : @spelldesc382275
+Tooltip          : Your next Blade of Justice casts Consecration.
 
 Name             : Calm Before the Storm (id=382536) [Spell Family (10), Passive, Hidden] 
 Talent Entry     : Retribution [tree=spec, row=5, col=3, max_rank=1, req_points=8]
