@@ -1058,6 +1058,9 @@ void warlock_t::init_spells()
   spec.immolate         = find_specialization_spell( "Immolate" );
   spec.demonic_core     = find_specialization_spell( "Demonic Core" );
 
+  // Affliction
+  warlock_base.agony = find_spell( "Agony" ); // Should be ID 980
+
   // Talents
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
