@@ -283,6 +283,113 @@ struct corruption_t : public warlock_spell_t
   }
 };
 
+struct shadow_bolt_t : public warlock_spell_t
+{
+  shadow_bolt_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "Shadow Bolt", p, p->warlock_base.shadow_bolt )
+  {
+    parse_options( options_str );
+
+    if ( p->specialization() == WARLOCK_DEMONOLOGY )
+    {
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount   = 1;
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    //if (p()->buffs.nightfall->check())
+    //{
+    //  return 0_ms;
+    //}
+
+    return warlock_spell_t::execute_time();
+  }
+
+  bool ready() override
+  {
+    //if ( p()->talents.drain_soul->ok() )
+    //  return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    //if ( time_to_execute == 0_ms )
+    //  p()->buffs.nightfall->decrement();
+    //
+    //if ( p()->talents.demonic_calling->ok() )
+    //  p()->buffs.demonic_calling->trigger();
+
+    //if ( p()->legendary.balespiders_burning_core->ok() )
+    //  p()->buffs.balespiders_burning_core->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    //if ( result_is_hit( s->result ) )
+    //{
+    //  if ( p()->talents.shadow_embrace->ok() )
+    //    td( s->target )->debuffs_shadow_embrace->trigger();
+
+    //  if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+    //  {        
+    //    auto tdata = this->td( s->target );
+    //    // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
+    //    bool tierDotsActive = tdata->dots_agony->is_ticking()
+    //                       && tdata->dots_corruption->is_ticking()
+    //                       && tdata->dots_unstable_affliction->is_ticking();
+
+    //    if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
+    //    {
+    //      p()->procs.calamitous_crescendo->occur();
+    //      p()->buffs.calamitous_crescendo->trigger();
+    //    }
+    //  }
+    //}
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    //if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
+    //  m *= 1.0 + p()->buffs.nightfall->default_value;
+
+    //if ( p()->talents.sacrificed_souls->ok() )
+    //{
+    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+    //}
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( t );
+
+    ////Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
+    ////TODO: Check what happens if a DoT falls off mid-cast and mid-flight
+    //m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
+
+    //auto td = this->td( t );
+
+    //if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    //{
+    //  m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+    //}
+
+    return m;
+  }
+};
+
 struct soul_rot_t : public warlock_spell_t
 {
   soul_rot_t( warlock_t* p, util::string_view options_str )
@@ -836,6 +943,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new drain_life_t( this, options_str );
   if ( action_name == "corruption" && specialization() != WARLOCK_DESTRUCTION )
     return new corruption_t( this, options_str, false );
+  if ( action_name == "shadow_bolt" && specialization() != WARLOCK_DESTRUCTION )
+    return new shadow_bolt_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "soul_rot" )
@@ -943,6 +1052,7 @@ void warlock_t::init_spells()
   spec.demonic_embrace = find_spell( 288843 );
   warlock_base.drain_life = find_spell( "Drain Life" ); // Should be ID 234153
   warlock_base.corruption = find_spell( 172 ); // 172 is base spell, DoT info is in Effect 1's trigger (146739)
+  warlock_base.shadow_bolt = find_spell( 686 ); // This is the same spell ID for both Affliction and Demonology
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
