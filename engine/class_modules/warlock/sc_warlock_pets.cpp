@@ -174,7 +174,7 @@ warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
                               ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
 
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
-                        ->set_default_value( pet.o()->min_version_check( VERSION_9_2_0 ) ? pet.o()->find_spell( 6360 )->effectN( 2 ).percent() : 0.0 )
+                        ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
 }
 

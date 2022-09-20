@@ -13,10 +13,6 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
-  VERSION_9_2_0,
-  VERSION_9_1_0,
-  VERSION_9_0_5,
-  VERSION_9_0_0,
   VERSION_ANY
 };
 
@@ -521,9 +517,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-
-    // T28
-    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs
@@ -556,7 +549,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_9_2_0_data; // DF - Remove this, possibly add pre-patch spell for automatic switchover for DF
+  // DF - Possibly add pre-patch spell for automatic switchover for DF
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
