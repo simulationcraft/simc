@@ -749,11 +749,11 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   if ( action_name == "summon_felguard" )
     return new summon_main_pet_t( "felguard", this );
   if ( action_name == "summon_sayaad" )
-    return new summon_main_pet_t( "sayaad", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+    return new summon_main_pet_t( "sayaad", this, 366222 );
   if ( action_name == "summon_succubus" )
-    return new summon_main_pet_t( "succubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+    return new summon_main_pet_t( "succubus", this, 366222 );
   if ( action_name  == "summon_incubus" )
-    return new summon_main_pet_t( "incubus", this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+    return new summon_main_pet_t( "incubus", this, 366222 );
   if ( action_name == "summon_voidwalker" )
     return new summon_main_pet_t( "voidwalker", this );
   if ( action_name == "summon_imp" )
@@ -761,7 +761,7 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   if ( action_name == "summon_pet" )
   {
     if ( default_pet == "sayaad" || default_pet == "succubus" || default_pet == "incubus" )
-      return new summon_main_pet_t( default_pet, this, min_version_check( VERSION_9_2_0 ) ? 366222 : 712 );
+      return new summon_main_pet_t( default_pet, this, 366222 );
 
     return new summon_main_pet_t( default_pet, this );
   }
@@ -876,8 +876,6 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
-
-  version_9_2_0_data = find_spell( 363953 ); // For 9.2 PTR version checking, Calamitous Crescendo data
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
@@ -1199,11 +1197,6 @@ bool warlock_t::min_version_check( version_check_e version ) const
   {
     case VERSION_PTR:
       return is_ptr();
-    case VERSION_9_2_0:
-      return !( version_9_2_0_data == spell_data_t::not_found() );
-    case VERSION_9_1_0:
-    case VERSION_9_0_5:
-    case VERSION_9_0_0:
     case VERSION_ANY:
       return true;
   }
