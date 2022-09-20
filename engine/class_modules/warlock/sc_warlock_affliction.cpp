@@ -56,7 +56,7 @@ public:
   {
     double pm = warlock_spell_t::composite_da_multiplier( s );
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 2 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
     }
@@ -68,7 +68,7 @@ public:
   {
     double pm = warlock_spell_t::composite_ta_multiplier( s );
 
-    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
     {
       pm *= 1.0 + p()->cache.mastery_value();
     }
@@ -169,12 +169,13 @@ struct agony_t : public affliction_spell_t
 {
   double chance;
 
-  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->spec.agony )
+  agony_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "Agony", p, p->warlock_base.agony )
   {
     parse_options( options_str );
-    may_crit                   = false;
+    may_crit = false;
 
-    dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
+    // Unclear in DF beta if Agony Rank 2 is intended to still be learned
+    //dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
   }
 
   void last_tick( dot_t* d ) override
@@ -189,8 +190,8 @@ struct agony_t : public affliction_spell_t
 
   void init() override
   {
-    dot_max_stack +=
-        as<int>( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 1 ).base_value() : 0 );
+    //dot_max_stack +=
+    //    as<int>( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 1 ).base_value() : 0 );
 
     affliction_spell_t::init();
   }
@@ -200,13 +201,13 @@ struct agony_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
 
-    if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
-      (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
-    {
-      td ( execute_state->target )
-        ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
-          td( execute_state->target )->dots_agony->current_stack() );
-    }
+    //if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
+    //  (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
+    //{
+    //  td ( execute_state->target )
+    //    ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
+    //      td( execute_state->target )->dots_agony->current_stack() );
+    //}
   }
 
   void tick( dot_t* d ) override
@@ -223,10 +224,10 @@ struct agony_t : public affliction_spell_t
     double active_agonies = p()->get_active_dots( internal_id );
     increment_max *= std::pow( active_agonies, -2.0 / 3.0 );
 
-    if ( p()->talents.creeping_death->ok() )
-    {
-      increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-    }
+    //if ( p()->talents.creeping_death->ok() )
+    //{
+    //  increment_max *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+    //}
 
     p()->agony_accumulator += rng().range( 0.0, increment_max );
 
@@ -236,10 +237,10 @@ struct agony_t : public affliction_spell_t
       p()->agony_accumulator -= 1.0;
     }
 
-    if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
-    {
-      p()->buffs.inevitable_demise->trigger();
-    }
+    //if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
+    //{
+    //  p()->buffs.inevitable_demise->trigger();
+    //}
 
     affliction_spell_t::tick( d );
   }

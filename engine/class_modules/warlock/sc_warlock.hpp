@@ -100,6 +100,7 @@ public:
 
     // Affliction
     const spell_data_t* agony;
+    // Agony Rank 2, if it is still intended, should be here as well
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
 
     // Demonology
@@ -427,7 +428,7 @@ public:
     // Affliction only
     const spell_data_t* affliction; //Spec aura
     const spell_data_t* agony; // DF - Base spell for Affliction
-    const spell_data_t* agony_2; // DF - Baked into base Agony (10 stacks default)
+    const spell_data_t* agony_2; // DF - Still seems to be learned while leveling up, TOCHECK
     const spell_data_t* corruption_2; // DF - Baked into Xavian Teachings talent
     const spell_data_t* corruption_3; // DF - Baked into Xavian Teachings talent
     const spell_data_t* summon_darkglare; // DF - Now an Affliction talent
