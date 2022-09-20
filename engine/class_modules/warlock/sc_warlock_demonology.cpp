@@ -183,17 +183,7 @@ struct hand_of_guldan_t : public demonology_spell_t
         {
           auto ev = make_event<imp_delay_event_t>( *sim, p(), rng().gauss( 180.0 * i, 25.0 ), 180.0 * i );
           this->p()->wild_imp_spawns.push_back( ev );
-        }
-
-        // T28 4pc bonus can summon a Malicious Imp using the same behavior as a Wild Imp
-        // Since they are a random proc, there is not currently a need for custom expressions.
-        // Just going to spawn it at meteor impact time for now
-        if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) && p()->rng().roll( p()->sets->set( WARLOCK_DEMONOLOGY, T28, B4 )->effectN( 1 ).percent() * shards_used ) )
-        {
-          p()->warlock_pet_list.malicious_imps.spawn( 1 );
-          p()->procs.malicious_imp->occur();
-        }
-        
+        }        
       }
     }
   };
@@ -493,36 +483,6 @@ struct implosion_t : public demonology_spell_t
         } );
 
         launch_counter++;
-      }
-    }
-
-    if ( p()->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B4 ) )
-    {
-      launch_counter = 0;
-      for ( auto mimp : p()->warlock_pet_list.malicious_imps )
-      {
-        if ( !mimp->is_sleeping() )
-        {
-          implosion_aoe_t* ex = explosion;
-          player_t* tar = target;
-          double dist = p()->get_player_distance( *tar );
-
-          mimp->trigger_movement( dist, movement_direction_type::TOWARDS );
-          mimp->imploded = true; // Used to trigger Spite
-          mimp->interrupt();
-
-          make_event( sim, 10_ms * launch_counter + imp_travel_time, [ ex, tar, mimp ] {
-            if ( mimp && !mimp->is_sleeping() )
-            {
-              ex->casts_left = ( mimp->resources.current[ RESOURCE_ENERGY ] / 20 );
-              ex->set_target( tar );
-              ex->next_imp = mimp;
-              ex->execute();
-            }
-          } );
-
-          launch_counter++;
-        }
       }
     }
 
@@ -1106,8 +1066,6 @@ void warlock_t::create_buffs_demonology()
   // to track pets
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
-  buffs.malicious_imps = make_buff( this, "malicious_imps" )->set_max_stack( 40 );
-
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
                         ->set_duration( find_spell( 193332 )->duration() );
 
@@ -1172,8 +1130,6 @@ void warlock_t::init_spells_demonology()
   warlock_pet_list.wild_imps.set_default_duration( find_spell( 104317 )->duration() );
 
   warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
-
-  warlock_pet_list.malicious_imps.set_default_duration( find_spell( 364198 )->duration() );
 }
 
 void warlock_t::init_gains_demonology()

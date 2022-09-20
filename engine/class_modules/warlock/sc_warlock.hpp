@@ -117,7 +117,6 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-    spawner::pet_spawner_t<pets::demonology::malicious_imp_pet_t, warlock_t> malicious_imps;
     // DF - New Wild Imp variant - Imp Gang Boss
 
 
@@ -466,7 +465,6 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
-    propagate_const<buff_t*> malicious_imps; // DF - REMOVED? (Comes from Tier Set, unsure if still functional)
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
@@ -547,7 +545,6 @@ public:
     proc_t* portal_summon;
     proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
     proc_t* horned_nightmare; // DF - Now a Demonology talent
-    proc_t* malicious_imp; // DF - Comes from SL Tier Set, may not be functional in DF
 
     // destro
     proc_t* reverse_entropy;
