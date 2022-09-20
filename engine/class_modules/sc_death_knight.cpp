@@ -5663,6 +5663,7 @@ struct blood_shield_buff_t : public absorb_buff_t
     set_absorb_school( SCHOOL_PHYSICAL );
     set_absorb_source( player -> get_stats( "blood_shield" ) );
     modify_duration( player -> talent.blood.iron_heart ->effectN( 1 ).time_value() );
+    add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
   }
 };
 
@@ -5859,6 +5860,13 @@ struct death_strike_t : public death_knight_melee_attack_t
     m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
 
     m *= 1.0 + p() -> buffs.heartrend -> stack_value();
+
+    // Death Strike is affected by bloodshot, even for the applying DS.  This is because in game, blood shield gets applied before DS damage is calculated.
+    // So we apply the modifier here, but only if bloodshield is not up, to avoid double dip by the base multipler when blood shield is up and bloodshot is talented.
+    if ( p() -> talent.blood.bloodshot.ok() && !p() -> buffs.blood_shield -> up() )
+    {
+      m *= 1.0 + p() -> talent.blood.bloodshot -> effectN( 1 ).percent();
+    }
 
     return m;
   }
@@ -11226,6 +11234,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( buffs.bonegrinder_frost->up() && dbc::is_school( school, SCHOOL_FROST ) )
   {
     m *= 1.0 + buffs.bonegrinder_frost->value();
+  }
+
+  if ( talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
+  {
+    m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
   }
 
   return m;
