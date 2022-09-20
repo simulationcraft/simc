@@ -368,6 +368,7 @@ void unholy( player_t* p )
   generic->add_action( "death_coil,if=!variable.pooling_runic_power&(buff.sudden_doom.react|runic_power.deficit<=40|rune<3)|pet.gargoyle.active|fight_remains<(30%gcd)" );
   generic->add_action( "any_dnd,if=active_enemies>=2&death_knight.fwounded_targets=active_enemies" );
   generic->add_action( "wound_spender,target_if=max:debuff.festering_wound.stack,if=variable.pop_wounds" );
+  generic->add_action( "festering_strike,target_if=max:debuff.festering_wound.stack,if=variable.build_wounds&cooldown.apocalypse.remains<variable.apoc_timing" );
   generic->add_action( "festering_strike,target_if=min:debuff.festering_wound.stack,if=variable.build_wounds" );
 
   racials->add_action( "arcane_torrent,if=runic_power.deficit>20&(pet.gargoyle.active|!talent.summon_gargoyle.enabled)" );
