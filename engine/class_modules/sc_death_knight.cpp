@@ -434,6 +434,7 @@ struct death_knight_td_t : public actor_target_data_t {
 
     // Blood
     buff_t* mark_of_blood;
+    buff_t* tightening_grasp;
 	
     // Frost
     buff_t* everfrost_conduit;
@@ -954,6 +955,7 @@ public:
     const spell_data_t* blood_shield;
     const spell_data_t* bone_shield;
     const spell_data_t* sanguine_ground;
+    const spell_data_t* tightening_grasp_debuff;
 
     // Frost
     const spell_data_t* runic_empowerment_gain;
@@ -1346,6 +1348,10 @@ inline death_knight_td_t::death_knight_td_t( player_t* target, death_knight_t* p
   // Blood
   debuff.mark_of_blood    = make_buff( *this, "mark_of_blood", p -> talent.blood.mark_of_blood )
                            -> set_cooldown( 0_ms );  // Handled by the action
+
+  // Sep 19 2022.  Currently bugged, providing 10% instead of 5% as it's adding the spell, and debuff values
+  debuff.tightening_grasp = make_buff( *this, "tightening_grasp", p -> spell.tightening_grasp_debuff )
+                              -> set_default_value( p -> talent.blood.tightening_grasp -> effectN( 2 ).percent() + p -> spell.tightening_grasp_debuff -> effectN( 1 ).percent() );
   // Frost
   debuff.razorice         = make_buff( *this, "razorice", p -> spell.razorice_debuff )
                             -> set_default_value_from_effect( 1 )
@@ -3069,6 +3075,7 @@ struct death_knight_action_t : public Base
     // Other whitelists
     bool razorice;
     bool brittle;
+    bool tightening_grasp;
   } affected_by;
 
   bool may_proc_bron;
@@ -3110,6 +3117,7 @@ struct death_knight_action_t : public Base
 
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
+    this -> affected_by.tightening_grasp = this -> data().affected_by( p -> spell.tightening_grasp_debuff -> effectN( 1 ) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.  Commenting out this section until we have better data
@@ -3193,6 +3201,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.brittle )
     {
       m *= 1.0 + td -> debuff.brittle -> check_stack_value();
+    }
+
+    if ( td && this -> affected_by.tightening_grasp )
+    {
+      m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
     }
 
     if ( td && td -> dot.blood_plague -> is_ticking() )
@@ -6525,6 +6538,30 @@ struct glacial_advance_t : public death_knight_spell_t
   }
 };
 
+struct gorefiends_grasp_t : public death_knight_spell_t
+{
+  gorefiends_grasp_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "gorefiends_grasp", p, p -> talent.blood.gorefiends_grasp )
+  {
+    parse_options( options_str );
+    aoe = -1;
+
+    cooldown->duration -= p -> talent.blood.tightening_grasp -> effectN( 1 ).time_value();
+  }
+
+  void impact ( action_state_t* state ) override
+  {
+    death_knight_spell_t::impact( state );
+
+    if ( p() -> talent.blood.tightening_grasp.ok() )
+    {
+      auto td = get_td( state -> target );
+      td -> debuff.tightening_grasp -> trigger();
+    }
+  }
+
+};
+
 // Heart Strike =============================================================
 
 struct leeching_strike_t : public death_knight_heal_t
@@ -9403,6 +9440,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "dancing_rune_weapon"      ) return new dancing_rune_weapon_t      ( this, options_str );
   if ( name == "dark_command"             ) return new dark_command_t             ( this, options_str );
   if ( name == "deaths_caress"            ) return new deaths_caress_t            ( this, options_str );
+  if ( name == "gorefiends_grasp"         ) return new gorefiends_grasp_t         ( this, options_str );
   if ( name == "heart_strike"             ) return new heart_strike_t             ( this, options_str );
   if ( name == "mark_of_blood"            ) return new mark_of_blood_t            ( this, options_str );
   if ( name == "marrowrend"               ) return new marrowrend_t               ( this, options_str );
@@ -9975,7 +10013,7 @@ void death_knight_t::init_spells()
   // Row 8
   talent.blood.mark_of_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Mark of Blood" );
   talent.blood.tombstone = find_talent_spell( talent_tree::SPECIALIZATION, "Tombstone" );
-  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiends Grasp" );
+  talent.blood.gorefiends_grasp = find_talent_spell( talent_tree::SPECIALIZATION, "Gorefiend's Grasp" );
   talent.blood.sanguine_ground = find_talent_spell( talent_tree::SPECIALIZATION, "Sanguine Ground" );
   // Row 9
   talent.blood.shattering_bone = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Bone" );
@@ -10125,6 +10163,7 @@ void death_knight_t::init_spells()
   spell.blood_shield        = find_spell( 77535 );
   spell.bone_shield         = find_spell( 195181 );
   spell.sanguine_ground     = find_spell( 391459 );
+  spell.tightening_grasp_debuff = find_spell( 374776 );
   // T28 Blood
   spell.endless_rune_waltz_energize = find_spell( 368938 );
   spell.endless_rune_waltz_4pc      = find_spell( 363590 );
@@ -11201,6 +11240,11 @@ double death_knight_t::composite_player_target_pet_damage_multiplier( player_t* 
     if ( td -> debuff.brittle -> up() )
     {
       m *= 1.0 + td -> debuff.brittle -> value();
+    }
+
+    if ( td -> debuff.tightening_grasp -> up() && !guardian )
+    {
+      m *= 1.0 + td -> debuff.tightening_grasp -> value();
     }
 
     // Currently morbidity only has spelldata to affect pets, not guardians

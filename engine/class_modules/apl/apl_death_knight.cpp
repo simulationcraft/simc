@@ -109,6 +109,7 @@ void blood( player_t* p )
   default_->add_action( "sacrificial_pact,if=(!covenant.night_fae|buff.deaths_due.remains>6)&buff.dancing_rune_weapon.remains>4&(pet.ghoul.remains<2|target.time_to_die<gcd)","Attempt to sacrifice the ghoul if we predictably will not do much in the near future" );
   default_->add_action( "call_action_list,name=covenants" );
   default_->add_action( "blood_tap,if=(rune<=2&rune.time_to_4>gcd&charges_fractional>=1.8)|rune.time_to_3>gcd" );
+  default_->add_action( "gorefiends_grasp,if=talent.tightening_grasp.enabled&cooldown.dancing_rune_weapon.remains<2*gcd" );
   default_->add_action( "dancing_rune_weapon,if=!buff.dancing_rune_weapon.up" );
   default_->add_action( "run_action_list,name=drw_up,if=buff.dancing_rune_weapon.up" );
   default_->add_action( "call_action_list,name=standard" );
