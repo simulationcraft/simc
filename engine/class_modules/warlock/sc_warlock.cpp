@@ -21,24 +21,24 @@ struct drain_life_t : public warlock_spell_t
   //target currently affected by Drain Life if possible).
   struct drain_life_dot_t : public warlock_spell_t
   {
-    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "drain_life_aoe", p, p->find_spell( "Drain Life" ) )
+    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
     {
       parse_options( options_str );
       dual = true;
       background = true;
       may_crit = false;
 
-      // SL - Legendary
-      dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-      base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      //// SL - Legendary
+      //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
     }
 
     double bonus_ta( const action_state_t* s ) const override
     {
       double ta = warlock_spell_t::bonus_ta( s );
 
-      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-        ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
       return ta;
     }
@@ -52,10 +52,10 @@ struct drain_life_t : public warlock_spell_t
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      {
-        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-      }
+      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      //{
+      //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+      //}
 
       return m;
     }
@@ -68,7 +68,7 @@ struct drain_life_t : public warlock_spell_t
 
   drain_life_dot_t* aoe_dot;
 
-  drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( p, "Drain Life" )
+  drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life )
   {
     parse_options( options_str );
 
@@ -79,49 +79,49 @@ struct drain_life_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
 
-    // SL - Legendary
-    dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-    base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    //// SL - Legendary
+    //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
   }
 
   void execute() override
   {
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
-    {
-      if ( p()->buffs.drain_life->check() )
-        p()->buffs.inevitable_demise->expire();
-    }
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
+    //{
+    //  if ( p()->buffs.drain_life->check() )
+    //    p()->buffs.inevitable_demise->expire();
+    //}
 
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
 
-    if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
-    {
-      const auto& tl = target_list();
-      
-      for ( auto& t : tl )
-      {
-        //Don't apply aoe version to primary target
-        if ( t == target )
-          continue;
+    //if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
+    //{
+    //  const auto& tl = target_list();
+    //  
+    //  for ( auto& t : tl )
+    //  {
+    //    //Don't apply aoe version to primary target
+    //    if ( t == target )
+    //      continue;
 
-        auto data = td( t );
-        if ( data->dots_soul_rot->is_ticking() )
-        {
-          aoe_dot->set_target( t );
-          aoe_dot->execute();
-        }
-      }
-    }
+    //    auto data = td( t );
+    //    if ( data->dots_soul_rot->is_ticking() )
+    //    {
+    //      aoe_dot->set_target( t );
+    //      aoe_dot->execute();
+    //    }
+    //  }
+    //}
   }
 
   double bonus_ta( const action_state_t* s ) const override
   {
     double ta = warlock_spell_t::bonus_ta( s );
 
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
     return ta;
   }
@@ -142,77 +142,249 @@ struct drain_life_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-    {
-      m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-    }
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    //{
+    //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+    //}
     return m;
   }
 
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
-    p()->buffs.inevitable_demise->expire();
+    //p()->buffs.inevitable_demise->expire();
 
     warlock_spell_t::last_tick( d );
 
-    if ( p()->covenant.soul_rot->ok() )
-    {
-      const auto& tl = target_list();
+    //if ( p()->covenant.soul_rot->ok() )
+    //{
+    //  const auto& tl = target_list();
 
-      for ( auto& t : tl )
-      {
-        auto data = td( t );
-        if ( data->dots_drain_life_aoe->is_ticking() )
-          data->dots_drain_life_aoe->cancel();
-      }
-    }
+    //  for ( auto& t : tl )
+    //  {
+    //    auto data = td( t );
+    //    if ( data->dots_drain_life_aoe->is_ticking() )
+    //      data->dots_drain_life_aoe->cancel();
+    //  }
+    //}
   }
 };  
 
 struct corruption_t : public warlock_spell_t
 {
-  corruption_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
+  corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
+    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption )
   {
-    auto otherSP = p->find_spell( 146739 );
     parse_options( options_str );
-    may_crit                   = false;
     tick_zero                  = false;
     affected_by_woc            = true;
 
+    // DoT information is in trigger spell (146739)
     spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
     base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
+    dot_duration               = data().effectN( 1 ).trigger()->duration();
 
-    spell_power_mod.direct = 0;
+    spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    // 172 does not have spell duration any more.
-    // were still lazy though so we aren't making a seperate spell for this.
-    dot_duration               = otherSP->duration();
+    //if ( !p->spec.corruption_3->ok() || seed_action )
+    //{
+    //  spell_power_mod.direct = 0; //Rank 3 is required for direct damage
+    //}
+
+    //// 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
+    //base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
+
+    //if ( p->talents.absolute_corruption->ok() )
+    //{
+    //  dot_duration = sim->expected_iteration_time > 0_ms
+    //                     ? 2 * sim->expected_iteration_time
+    //                     : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
+    //  base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
+    //}
+
+    //if ( p->spec.corruption_2->ok() )
+    //{
+    //  base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
+    //}
+
   }
 
-  double action_multiplier() const override
+  void tick( dot_t* d ) override
   {
-    double m = warlock_spell_t::action_multiplier();
+    //if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
+    //{
+    //  // TOCHECK regularly.
+    //  // Blizzard did not publicly release how nightfall was changed.
+    //  // We determined this is the probable functionality copied from Agony by first confirming the
+    //  // DR formula was the same and then confirming that you can get procs on 1st tick.
+    //  // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+    //  // Last checked 09-28-2020.
+    //  double increment_max = 0.13;
 
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
-    {
-      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
+    //  double active_corruptions = p()->get_active_dots( internal_id );
+    //  increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
 
-      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
-    }
+    //  p()->corruption_accumulator += rng().range( 0.0, increment_max );
 
-    return m;
+    //  if ( p()->corruption_accumulator >= 1 )
+    //  {
+    //    p()->procs.nightfall->occur();
+    //    p()->buffs.nightfall->trigger();
+    //    p()->corruption_accumulator -= 1.0;
+
+    //  }
+    //}
+    //affliction_spell_t::tick( d );
+
+    warlock_spell_t::tick( d );
   }
 
   double composite_ta_multiplier(const action_state_t* s) const override
   {
     double m = warlock_spell_t::composite_ta_multiplier( s );
 
-    // SL - Legendary
-    if ( p()->legendary.sacrolashs_dark_strike->ok() )
-      m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
+    // Ripped from affliction_spell_t - See what we can do to unify this under warlock_spell_t
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 1 ) ) )
+    {
+      m *= 1.0 + p()->cache.mastery_value();
+    }
+
+    //// SL - Legendary
+    //if ( p()->legendary.sacrolashs_dark_strike->ok() )
+    //  m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
+
+    return m;
+  }
+
+  // The following were taken from affliction_spell_t - See what we can do to unify this under warlock_spell_t
+  void init() override
+  {
+    warlock_spell_t::init();
+
+    //if ( p()->talents.creeping_death->ok() )
+    //{
+    //  if ( data().affected_by( p()->talents.creeping_death->effectN( 1 ) ) )
+    //    base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
+    //  if ( data().affected_by( p()->talents.creeping_death->effectN( 2 ) ) )
+    //    dot_duration *= 1.0 + p()->talents.creeping_death->effectN( 2 ).percent();
+    //}
+  }
+
+  // direct action multiplier
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double pm = warlock_spell_t::composite_da_multiplier( s );
+
+    if ( this->data().affected_by( p()->mastery_spells.potent_afflictions->effectN( 2 ) ) )
+    {
+      pm *= 1.0 + p()->cache.mastery_value();
+    }
+    return pm;
+  }
+};
+
+struct shadow_bolt_t : public warlock_spell_t
+{
+  shadow_bolt_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "Shadow Bolt", p, p->warlock_base.shadow_bolt )
+  {
+    parse_options( options_str );
+
+    if ( p->specialization() == WARLOCK_DEMONOLOGY )
+    {
+      energize_type     = action_energize::ON_CAST;
+      energize_resource = RESOURCE_SOUL_SHARD;
+      energize_amount   = 1;
+    }
+  }
+
+  timespan_t execute_time() const override
+  {
+    //if (p()->buffs.nightfall->check())
+    //{
+    //  return 0_ms;
+    //}
+
+    return warlock_spell_t::execute_time();
+  }
+
+  bool ready() override
+  {
+    //if ( p()->talents.drain_soul->ok() )
+    //  return false;
+
+    return warlock_spell_t::ready();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    //if ( time_to_execute == 0_ms )
+    //  p()->buffs.nightfall->decrement();
+    //
+    //if ( p()->talents.demonic_calling->ok() )
+    //  p()->buffs.demonic_calling->trigger();
+
+    //if ( p()->legendary.balespiders_burning_core->ok() )
+    //  p()->buffs.balespiders_burning_core->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    warlock_spell_t::impact( s );
+
+    //if ( result_is_hit( s->result ) )
+    //{
+    //  if ( p()->talents.shadow_embrace->ok() )
+    //    td( s->target )->debuffs_shadow_embrace->trigger();
+
+    //  if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+    //  {        
+    //    auto tdata = this->td( s->target );
+    //    // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
+    //    bool tierDotsActive = tdata->dots_agony->is_ticking()
+    //                       && tdata->dots_corruption->is_ticking()
+    //                       && tdata->dots_unstable_affliction->is_ticking();
+
+    //    if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
+    //    {
+    //      p()->procs.calamitous_crescendo->occur();
+    //      p()->buffs.calamitous_crescendo->trigger();
+    //    }
+    //  }
+    //}
+  }
+
+  double action_multiplier() const override
+  {
+    double m = warlock_spell_t::action_multiplier();
+
+    //if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
+    //  m *= 1.0 + p()->buffs.nightfall->default_value;
+
+    //if ( p()->talents.sacrificed_souls->ok() )
+    //{
+    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+    //}
+
+    return m;
+  }
+
+  double composite_target_multiplier( player_t* t ) const override
+  {
+    double m = warlock_spell_t::composite_target_multiplier( t );
+
+    ////Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
+    ////TODO: Check what happens if a DoT falls off mid-cast and mid-flight
+    //m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
+
+    //auto td = this->td( t );
+
+    //if ( td->debuffs_from_the_shadows->check() && data().affected_by( td->debuffs_from_the_shadows->data().effectN( 1 ) ) )
+    //{
+    //  m *= 1.0 + td->debuffs_from_the_shadows->check_value();
+    //}
 
     return m;
   }
@@ -769,8 +941,10 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
   // Base Spells
   if ( action_name == "drain_life" )
     return new drain_life_t( this, options_str );
-  if ( action_name == "corruption" )
-    return new corruption_t( this, options_str );
+  if ( action_name == "corruption" && specialization() != WARLOCK_DESTRUCTION )
+    return new corruption_t( this, options_str, false );
+  if ( action_name == "shadow_bolt" && specialization() != WARLOCK_DESTRUCTION )
+    return new shadow_bolt_t( this, options_str );
   if ( action_name == "grimoire_of_sacrifice" )
     return new grimoire_of_sacrifice_t( this, options_str );  // aff and destro
   if ( action_name == "soul_rot" )
@@ -876,6 +1050,9 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
+  warlock_base.drain_life = find_spell( "Drain Life" ); // Should be ID 234153
+  warlock_base.corruption = find_spell( 172 ); // 172 is base spell, DoT info is in Effect 1's trigger (146739)
+  warlock_base.shadow_bolt = find_spell( 686 ); // This is the same spell ID for both Affliction and Demonology
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );

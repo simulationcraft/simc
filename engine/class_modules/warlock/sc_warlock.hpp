@@ -90,6 +90,29 @@ public:
 
   unsigned active_pets;
 
+  // This should hold any spell data that is guaranteed in the base class or spec, without talents or other external systems required
+  struct base_t
+  {
+    // Shared
+    const spell_data_t* drain_life;
+    const spell_data_t* corruption;
+    const spell_data_t* shadow_bolt;
+
+    // Affliction
+    const spell_data_t* agony;
+    const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
+
+    // Demonology
+    const spell_data_t* hand_of_guldan;
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
+
+    // Destruction
+    const spell_data_t* immolate; // Replaces Corruption
+    const spell_data_t* incinerate; // Replaces Shadow Bolt
+    const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
+  } warlock_base;
+
   // Main pet held in active/last, guardians should be handled by pet spawners. TODO: Use spawner for Infernal/Darkglare?
   struct pets_t
   {
