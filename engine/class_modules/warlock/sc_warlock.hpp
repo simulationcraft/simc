@@ -94,22 +94,22 @@ public:
   struct base_t
   {
     // Shared
-    spell_data_t* drain_life;
-    spell_data_t* corruption;
-    spell_data_t* shadow_bolt;
+    const spell_data_t* drain_life;
+    const spell_data_t* corruption;
+    const spell_data_t* shadow_bolt;
 
     // Affliction
-    spell_data_t* agony;
+    const spell_data_t* agony;
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
 
     // Demonology
-    spell_data_t* hand_of_guldan;
-    spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* hand_of_guldan;
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
 
     // Destruction
-    spell_data_t* immolate; // Replaces Corruption
-    spell_data_t* incinerate; // Replaces Shadow Bolt
+    const spell_data_t* immolate; // Replaces Corruption
+    const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
   } warlock_base;
 
