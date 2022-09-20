@@ -21,24 +21,24 @@ struct drain_life_t : public warlock_spell_t
   //target currently affected by Drain Life if possible).
   struct drain_life_dot_t : public warlock_spell_t
   {
-    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "drain_life_aoe", p, p->find_spell( "Drain Life" ) )
+    drain_life_dot_t( warlock_t* p, util::string_view options_str) : warlock_spell_t( "Drain Life (AoE)", p, p->warlock_base.drain_life )
     {
       parse_options( options_str );
       dual = true;
       background = true;
       may_crit = false;
 
-      // SL - Legendary
-      dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-      base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      //// SL - Legendary
+      //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+      //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
     }
 
     double bonus_ta( const action_state_t* s ) const override
     {
       double ta = warlock_spell_t::bonus_ta( s );
 
-      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-        ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
       return ta;
     }
@@ -52,10 +52,10 @@ struct drain_life_t : public warlock_spell_t
     {
       double m = warlock_spell_t::action_multiplier();
 
-      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      {
-        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-      }
+      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      //{
+      //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+      //}
 
       return m;
     }
@@ -68,7 +68,7 @@ struct drain_life_t : public warlock_spell_t
 
   drain_life_dot_t* aoe_dot;
 
-  drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( p, "Drain Life" )
+  drain_life_t( warlock_t* p, util::string_view options_str ) : warlock_spell_t( "Drain Life", p, p->warlock_base.drain_life )
   {
     parse_options( options_str );
 
@@ -79,49 +79,49 @@ struct drain_life_t : public warlock_spell_t
     hasted_ticks = false;
     may_crit     = false;
 
-    // SL - Legendary
-    dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
-    base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    //// SL - Legendary
+    //dot_duration *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
+    //base_tick_time *= 1.0 + p->legendary.claw_of_endereth->effectN( 1 ).percent();
   }
 
   void execute() override
   {
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
-    {
-      if ( p()->buffs.drain_life->check() )
-        p()->buffs.inevitable_demise->expire();
-    }
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
+    //{
+    //  if ( p()->buffs.drain_life->check() )
+    //    p()->buffs.inevitable_demise->expire();
+    //}
 
     warlock_spell_t::execute();
 
     p()->buffs.drain_life->trigger();
 
-    if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
-    {
-      const auto& tl = target_list();
-      
-      for ( auto& t : tl )
-      {
-        //Don't apply aoe version to primary target
-        if ( t == target )
-          continue;
+    //if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
+    //{
+    //  const auto& tl = target_list();
+    //  
+    //  for ( auto& t : tl )
+    //  {
+    //    //Don't apply aoe version to primary target
+    //    if ( t == target )
+    //      continue;
 
-        auto data = td( t );
-        if ( data->dots_soul_rot->is_ticking() )
-        {
-          aoe_dot->set_target( t );
-          aoe_dot->execute();
-        }
-      }
-    }
+    //    auto data = td( t );
+    //    if ( data->dots_soul_rot->is_ticking() )
+    //    {
+    //      aoe_dot->set_target( t );
+    //      aoe_dot->execute();
+    //    }
+    //  }
+    //}
   }
 
   double bonus_ta( const action_state_t* s ) const override
   {
     double ta = warlock_spell_t::bonus_ta( s );
 
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
     return ta;
   }
@@ -142,31 +142,31 @@ struct drain_life_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-    {
-      m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-    }
+    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    //{
+    //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+    //}
     return m;
   }
 
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
-    p()->buffs.inevitable_demise->expire();
+    //p()->buffs.inevitable_demise->expire();
 
     warlock_spell_t::last_tick( d );
 
-    if ( p()->covenant.soul_rot->ok() )
-    {
-      const auto& tl = target_list();
+    //if ( p()->covenant.soul_rot->ok() )
+    //{
+    //  const auto& tl = target_list();
 
-      for ( auto& t : tl )
-      {
-        auto data = td( t );
-        if ( data->dots_drain_life_aoe->is_ticking() )
-          data->dots_drain_life_aoe->cancel();
-      }
-    }
+    //  for ( auto& t : tl )
+    //  {
+    //    auto data = td( t );
+    //    if ( data->dots_drain_life_aoe->is_ticking() )
+    //      data->dots_drain_life_aoe->cancel();
+    //  }
+    //}
   }
 };  
 
@@ -876,6 +876,7 @@ void warlock_t::init_spells()
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
+  warlock_base.drain_life = find_spell( "Drain Life" ); // Should be ID 234153
 
   // Specialization Spells
   spec.immolate         = find_specialization_spell( "Immolate" );
