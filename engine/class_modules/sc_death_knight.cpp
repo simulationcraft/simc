@@ -618,6 +618,7 @@ public:
 
     // Blood
     action_t* mark_of_blood_heal;
+    action_t* shattering_bone;
 
     // Unholy
     action_t* bursting_sores;
@@ -6538,6 +6539,8 @@ struct glacial_advance_t : public death_knight_spell_t
   }
 };
 
+// Gorefiend's Grasp ========================================================
+
 struct gorefiends_grasp_t : public death_knight_spell_t
 {
   gorefiends_grasp_t( death_knight_t* p, util::string_view options_str ) :
@@ -7850,6 +7853,31 @@ struct shackle_the_unworthy_t : public death_knight_spell_t
   }
 };
 
+// Shattering Bone ==========================================================
+
+struct shattering_bone_t : public death_knight_spell_t
+{
+  shattering_bone_t( death_knight_t* p ) :
+    death_knight_spell_t( "shattering bone", p, p -> find_spell( 377642 ) )
+    {
+      background = true;
+      aoe = -1;
+      base_multiplier *= 1.0 + p -> talent.blood.shattering_bone -> effectN( 2 ).percent();
+    }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_spell_t::composite_da_multiplier( state );
+
+    if ( p() -> in_death_and_decay() )
+    {
+      m *= p() -> talent.blood.shattering_bone -> effectN( 1 ).base_value();
+    }
+
+    return m;
+  }
+};
+
 // Soul Reaper ==============================================================
 
 struct soul_reaper_execute_t : public death_knight_spell_t
@@ -8127,6 +8155,8 @@ struct tombstone_t : public death_knight_spell_t
     {
       p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap -> effectN( 2 ).base_value() ) * charges );
     }
+    if ( charges > 0 )
+      p() -> active_spells.shattering_bone -> execute_on_target( target );
   }
 };
 
@@ -9375,6 +9405,10 @@ void death_knight_t::create_actions()
     if ( talent.blood.mark_of_blood.ok() )
     {
       active_spells.mark_of_blood_heal = new mark_of_blood_heal_t( this );
+    }
+    if ( talent.blood.shattering_bone.ok() )
+    {
+      active_spells.shattering_bone = new shattering_bone_t( this );
     }
   }
 
@@ -10880,6 +10914,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
   {
     cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( talent.blood.blood_tap -> effectN( 2 ).base_value() ) );
   }
+
+  active_spells.shattering_bone -> execute_on_target( target );
 
   cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
   cooldown.dancing_rune_weapon -> adjust( talent.blood.insatiable_blade -> effectN( 1 ).time_value() );
