@@ -499,6 +499,7 @@ public:
     buff_t* coagulopathy;
     buff_t* crimson_scourge;
     buff_t* dancing_rune_weapon;
+    buff_t* heartrend;
     buff_t* hemostasis;
     buff_t* ossuary;
     buff_t* perseverance_of_the_ebon_blade;
@@ -2683,6 +2684,9 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       // DRW isn't usually affected by talents, and doesn't proc hemostasis, yet its death strike damage is increased by hemostasis
       // https://github.com/SimCMinMax/WoW-BugTracker/issues/241
       m *= 1.0 + dk() -> buffs.hemostasis -> stack_value();
+
+      // DRW DS damage is buffed by player heartrend buff
+      m *= 1.0 + dk() -> buffs.heartrend -> stack_value();
 
       return m;
     }
@@ -5854,6 +5858,8 @@ struct death_strike_t : public death_knight_melee_attack_t
 
     m *= 1.0 + p() -> legendary.deaths_certainty->effectN( 2 ).percent();
 
+    m *= 1.0 + p() -> buffs.heartrend -> stack_value();
+
     return m;
   }
 
@@ -5919,6 +5925,7 @@ struct death_strike_t : public death_knight_melee_attack_t
       p() -> legendary.deaths_certainty -> effectN( 1 ).base_value() / 10 ) );
 
     p() -> buffs.hemostasis -> expire();
+    p() -> buffs.heartrend -> expire();
   }
 };
 
@@ -6653,6 +6660,11 @@ struct heart_strike_t : public death_knight_melee_attack_t
   void execute() override
   {
     death_knight_melee_attack_t::execute();
+
+    if ( p() -> talent.blood.heartrend.ok() )
+    {
+      p() -> buffs.heartrend -> trigger();
+    }
 
     if ( p() -> buffs.dancing_rune_weapon -> up() )
     {
@@ -10510,6 +10522,10 @@ void death_knight_t::create_buffs()
     -> set_trigger_spell( talent.blood.crimson_scourge );
 
   buffs.dancing_rune_weapon = new dancing_rune_weapon_buff_t( this );
+
+  buffs.heartrend = make_buff( this, "heartrend", find_spell( 377656 ) )
+        -> set_default_value( talent.blood.heartrend -> effectN ( 1 ).percent() )
+        -> set_chance( 0.10 );  // Sept 20 2022.  Chance was found via testing for 30 mins.  Other people have mentioned the same proc rate.  Not in spelldata.
 
   buffs.hemostasis = make_buff( this, "hemostasis", talent.blood.hemostasis -> effectN( 1 ).trigger() )
         -> set_trigger_spell( talent.blood.hemostasis )
