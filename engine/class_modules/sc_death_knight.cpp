@@ -6343,8 +6343,6 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
     death_knight_melee_attack_t::impact( s );
 
-    death_knight_td_t* td = get_td( s -> target );
-
     if ( result_is_hit( s -> result ) )
     {
       if ( p() -> talent.frost.cold_blooded_rage.ok() && s -> result == RESULT_CRIT )
@@ -6497,7 +6495,7 @@ struct glacial_advance_damage_tier28_4pc_t : public glacial_advance_damage_t
     // These three are normally called through the standard action, but since we call damage event directly, they need to be manually called
     p() -> buffs.icy_talons -> trigger();
     p() -> trigger_runic_empowerment( ga_rp_cost );
-    
+
     if ( p() -> talent.frost.unleashed_frenzy.ok() )
     {
       p() -> buffs.unleashed_frenzy->trigger();
@@ -8183,7 +8181,7 @@ struct tombstone_t : public death_knight_spell_t
     {
       p() -> cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( p() -> talent.blood.blood_tap -> effectN( 2 ).base_value() ) * charges );
     }
-    if ( charges > 0 )
+    if ( charges > 0 && p() -> talent.blood.shattering_bone.ok() )
       p() -> active_spells.shattering_bone -> execute_on_target( target );
   }
 };
@@ -10961,7 +10959,8 @@ void death_knight_t::bone_shield_handler( const action_state_t* state ) const
     cooldown.blood_tap -> adjust( -1.0 * timespan_t::from_seconds( talent.blood.blood_tap -> effectN( 2 ).base_value() ) );
   }
 
-  active_spells.shattering_bone -> execute_on_target( target );
+  if ( talent.blood.shattering_bone.ok() )
+    active_spells.shattering_bone -> execute_on_target( target );
 
   cooldown.dancing_rune_weapon -> adjust( legendary.crimson_rune_weapon -> effectN( 1 ).time_value() );
   cooldown.dancing_rune_weapon -> adjust( talent.blood.insatiable_blade -> effectN( 1 ).time_value() );
