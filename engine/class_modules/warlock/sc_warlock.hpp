@@ -521,9 +521,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-
-    // T28
-    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs

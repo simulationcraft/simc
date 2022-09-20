@@ -928,7 +928,6 @@ void warlock_t::init_gains()
   gains.miss_refund  = get_gain( "miss_refund" );
   gains.shadow_bolt  = get_gain( "shadow_bolt" );
   gains.soul_conduit = get_gain( "soul_conduit" );
-  gains.return_soul = get_gain( "return_soul" );
 }
 
 void warlock_t::init_procs()
