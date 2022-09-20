@@ -689,7 +689,6 @@ const char* util::pet_type_string( pet_e type )
     case PET_SERVICE_IMP:         return "service_imp";
     case PET_SERVICE_FELHUNTER:   return "service_felhunter";
     case PET_OBSERVER:            return "observer";
-    case PET_MALICIOUS_IMP:       return "malicious_imp";
     case PET_GHOUL:               return "ghoul";
     case PET_BLOODWORMS:          return "bloodworms";
     case PET_DANCING_RUNE_WEAPON: return "dancing_rune_weapon";
