@@ -392,18 +392,18 @@ public:
       // Row 2
       player_talent_t roll;
       player_talent_t calming_presence;
-      player_talent_t paralysis;
+      player_talent_t disable;
       // Row 3
       player_talent_t tiger_tail_sweep;
-      player_talent_t heavy_air;
+      player_talent_t vigorous_expulsion;
       player_talent_t vivify;
       player_talent_t detox;
-      player_talent_t disable;
-      player_talent_t paralysis_rank_2;
+      player_talent_t paralysis;
       // Row 4
       player_talent_t grace_of_the_crane;
       player_talent_t vivacious_vivification;
       player_talent_t ferocity_of_xuen;
+      player_talent_t paralysis_rank_2;
       // 8 Required
       // Row 5
       player_talent_t elusive_mists;
@@ -421,12 +421,12 @@ public:
       player_talent_t fortifying_brew_dodge_armor;
       player_talent_t fortifying_brew_cooldown;
       // Row 7
-      player_talent_t roll_out;
+      player_talent_t profound_rebuttal;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
       player_talent_t dampen_harm;
       player_talent_t touch_of_death;
-      player_talent_t expel_harm;
+      player_talent_t strength_of_spirit;
       // 20 Required
       // Row 8
       player_talent_t close_to_heart;
@@ -487,7 +487,7 @@ public:
       player_talent_t invoke_niuzao_the_black_ox;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
-      player_talent_t shocking_brew;
+      player_talent_t shocking_blow;
       player_talent_t face_palm;
       // 20 Required
       // Row 8
@@ -637,7 +637,7 @@ public:
       player_talent_t whirling_dragon_punch;
       player_talent_t faeline_stomp;
       // Row 10
-      player_talent_t calculated_strikes;
+      player_talent_t attenuation;
       player_talent_t bone_marrow_hops;
       player_talent_t keefers_skyreach;
       player_talent_t invokers_delight;
@@ -657,7 +657,7 @@ public:
     const spell_data_t* crackling_jade_lightning;
     const spell_data_t* critical_strikes;
     //const spell_data_t* detox;
-    //const spell_data_t* expel_harm;
+    const spell_data_t* expel_harm;
     const spell_data_t* expel_harm_2_brm;
     const spell_data_t* expel_harm_2_mw;
     const spell_data_t* expel_harm_2_ww;
@@ -858,6 +858,7 @@ public:
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
+    const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
@@ -1178,6 +1179,7 @@ public:
   bool has_stagger();
   double calculate_last_stagger_tick_damage( int n ) const;
   void brew_cooldown_reduction( double );
+  bool affected_by_sef( spell_data_t data ) const; // Custom handler for SEF bugs
 
   // Storm Earth and Fire targeting logic
   std::vector<player_t*> create_storm_earth_and_fire_target_list() const;

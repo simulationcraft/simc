@@ -50,6 +50,8 @@ struct paladin_td_t : public actor_target_data_t
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
+
+  bool standing_in_consecration();
 };
 
 struct paladin_t : public player_t
@@ -82,6 +84,9 @@ public:
     action_t* divine_toll;
     action_t* seasons[NUM_SEASONS];
     action_t* divine_resonance;
+
+    // talent stuff
+    action_t* background_cons;
 
     // Conduit stuff
     action_t* virtuous_command;
@@ -135,6 +140,7 @@ public:
     buff_t* righteous_verdict;
     buff_t* zeal;
     buff_t* sealed_verdict;
+    buff_t* consecrated_blade;
 
     buff_t* empyrean_power;
     buff_t* empyrean_power_azerite;
@@ -661,6 +667,7 @@ public:
   std::unique_ptr<expr_t> create_ashen_hallow_expression( util::string_view expr_str );
 
   ground_aoe_event_t* active_consecration;
+  std::set<ground_aoe_event_t*> all_active_consecrations;
   ground_aoe_event_t* active_hallow_damaging;
   ground_aoe_event_t* active_hallow_healing;
   buff_t* active_aura;

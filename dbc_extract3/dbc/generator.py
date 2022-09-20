@@ -1412,6 +1412,7 @@ class SpellDataGenerator(DataGenerator):
             ( 355567, 0 ),          # Equinox
             ( 355455, 0 ),          # Divine Resonance
             ( 387643, 0 ),          # Sealed Verdict buff
+            ( 382522, 0 ),          # Consecrated Blade buff
         ),
 
         # Hunter:
@@ -1447,7 +1448,7 @@ class SpellDataGenerator(DataGenerator):
           ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
           ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
-          ( 378885, 2 ), # Salvo (MM Bombardment talent buff)
+          ( 386875, 2 ), # Bombardment
         ),
 
         # Rogue:
@@ -1597,6 +1598,7 @@ class SpellDataGenerator(DataGenerator):
           ( 228645, 5 ), # Dancing Rune Weapon's Heart Strike
           ( 334895, 5 ), # Frenzied Monstrosity Buff that appears on the main ghoul pet (different from the player buff)
           ( 377588, 0 ), ( 377589, 0 ), # Ghoulish Frenzy buffs
+          ( 390271, 0 ), # Coil of Devastation debuff
           ( 193486, 0 ), # Runic Empowerment energize spell
           ( 377656, 0 ), # Heartrend Buff
           ( 377633, 0 ), # Leeching Strike
@@ -1786,6 +1788,7 @@ class SpellDataGenerator(DataGenerator):
           ( 163272, 0 ), # Chi Sphere chi refund
           ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
           ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
+          ( 392883, 0 ), # Vivacious Vivification buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
           ( 115129, 1 ), # Expel Harm Damage
@@ -1959,6 +1962,9 @@ class SpellDataGenerator(DataGenerator):
           ( 372019, 3 ), # Vicious Cycle mangle buff
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          ( 391710, 2 ), # Ferocious Frenzy damage
+          ( 391786, 2 ), # Tear Open Wounds damage
+          ( 279555, 3 ), # Layered Mane buff
         ),
         # Demon Hunter:
         (

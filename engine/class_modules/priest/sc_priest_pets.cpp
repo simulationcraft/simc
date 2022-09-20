@@ -311,7 +311,7 @@ struct base_fiend_pet_t : public priest_pet_t
   void demise() override
   {
     priest_pet_t::demise();
-    o().buffs.yshaarj_pride->cancel();
+    o().buffs.devoured_pride->cancel();
   }
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override;
@@ -449,17 +449,16 @@ struct fiend_melee_t : public priest_pet_melee_t
         p().o().trigger_shadow_weaving( s );
       }
 
+      if ( p().o().talents.shadow.puppet_master.enabled() )
+      {
+        p().o().buffs.coalescing_shadows->trigger();
+      }
+
       if ( p().o().talents.shadowfiend.enabled() || p().o().talents.shadow.mindbender.enabled() )
       {
         if ( p().o().specialization() == PRIEST_SHADOW )
         {
           double amount = p().insanity_gain();
-          if ( p().o().buffs.surrender_to_madness->check() )
-          {
-            p().o().resource_gain( RESOURCE_INSANITY,
-                                   amount * p().o().talents.shadow.surrender_to_madness->effectN( 2 ).percent(),
-                                   p().o().gains.insanity_surrender_to_madness );
-          }
           p().o().resource_gain( RESOURCE_INSANITY, amount, p().gains.fiend, nullptr );
         }
         else

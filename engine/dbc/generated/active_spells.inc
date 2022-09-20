@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.45480
-static const std::array<active_class_spell_t, 261> __active_spells_data { {
+// Active class spells, wow build 10.0.2.45632
+static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -39,6 +39,7 @@ static const std::array<active_class_spell_t, 261> __active_spells_data { {
   {  2,    0, 290608,      0, "Crusader's Direhorn"                },
   {  2,    0, 363613,      0, "Summon Lightforged Ruinstrider"     },
   {  2,    0, 391054,      0, "Intercession"                       },
+  {  2,   65,   4987,      0, "Cleanse"                            },
   {  2,   65,  53563,      0, "Beacon of Light"                    },
   {  2,   65, 212056,      0, "Absolution"                         },
   {  2,   65, 275773,  20271, "Judgment"                           },
@@ -117,6 +118,7 @@ static const std::array<active_class_spell_t, 261> __active_spells_data { {
   {  5,  256, 212036,      0, "Mass Resurrection"                  },
   {  5,  257,    527,      0, "Purify"                             },
   {  5,  257,   2060,      0, "Heal"                               },
+  {  5,  257,  14914,   8092, "Holy Fire"                          },
   {  5,  257, 212036,      0, "Mass Resurrection"                  },
   {  5,  258,  15407,    585, "Mind Flay"                          },
   {  5,  258,  34914,      0, "Vampiric Touch"                     },
@@ -263,7 +265,7 @@ static const std::array<active_class_spell_t, 261> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.45480
+// Pet active spells, wow build 10.0.2.45632
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

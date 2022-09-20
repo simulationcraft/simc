@@ -340,6 +340,17 @@ struct consecration_t : public paladin_spell_t
     add_child( damage_tick );
   }
 
+  consecration_t( paladin_t* p )
+    : paladin_spell_t( "consecration", p, p->find_spell( "Consecration" ) ),
+      damage_tick( new consecration_tick_t( p ) )
+  {
+    dot_duration = 0_ms;  // the periodic event is handled by ground_aoe_event_t
+    may_miss = harmful = false;
+    background = true;
+
+    add_child( damage_tick );
+  }
+
   void init_finished() override
   {
     paladin_spell_t::init_finished();
@@ -387,10 +398,16 @@ struct consecration_t : public paladin_spell_t
                         switch ( type )
                         {
                           case ground_aoe_params_t::EVENT_CREATED:
-                            p()->active_consecration = event;
+                            if ( ! background ) {
+                              p()->active_consecration = event;
+                            }
+                            p()->all_active_consecrations.insert(event);
                             break;
                           case ground_aoe_params_t::EVENT_DESTRUCTED:
-                            p()->active_consecration = nullptr;
+                            if ( ! background ) {
+                              p()->active_consecration = nullptr;
+                            }
+                            p()->all_active_consecrations.erase(event);
                             break;
                           default:
                             break;
@@ -400,8 +417,8 @@ struct consecration_t : public paladin_spell_t
 
   void execute() override
   {
-    // Cancel the current consecration if it exists
-    if ( p()->active_consecration != nullptr )
+    // If this is an active Cons, cancel the current consecration if it exists
+    if ( !background && p()->active_consecration != nullptr )
       event_t::cancel( p()->active_consecration );
 
     paladin_spell_t::execute();
@@ -786,6 +803,9 @@ struct melee_t : public paladin_melee_attack_t
             {
               if ( p()->talents.blade_of_wrath->ok() )
                 p()->buffs.blade_of_wrath->trigger();
+
+              if ( p()->talents.consecrated_blade->ok() )
+                p()->buffs.consecrated_blade->trigger();
 
               p()->cooldowns.blade_of_justice->reset( true );
             }
@@ -1907,6 +1927,26 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.calm_before_the_storm = make_buff( *this, "calm_before_the_storm", paladin->find_spell( 382538 ) );
 }
 
+bool paladin_td_t::standing_in_consecration()
+{
+  paladin_t *p = static_cast<paladin_t*>(source);
+  if ( !p->sim->distance_targeting_enabled ) {
+    return !p->all_active_consecrations.empty();
+  }
+
+  // new
+  for ( ground_aoe_event_t* active_cons : p->all_active_consecrations )
+  {
+    double distance = target->get_position_distance( active_cons -> params -> x(), active_cons -> params -> y() );
+
+    // exit with true if we're in range of any one Cons center
+    if ( distance <= p->find_spell( 81297 )->effectN( 1 ).radius() )
+      return true;
+  }
+
+  return false;
+}
+
 // paladin_t::create_actions ================================================
 
 void paladin_t::create_actions()
@@ -1973,6 +2013,11 @@ void paladin_t::create_actions()
 
   if ( sets->has_set_bonus( PALADIN_PROTECTION, T28, B4 ))
     cooldowns.t28_4p_prot_icd->duration = tier_sets.glorious_purpose_4pc->internal_cooldown();
+
+  if ( talents.consecrated_blade->ok() )
+  {
+    active.background_cons = new consecration_t( this );
+  }
 
   player_t::create_actions();
 }

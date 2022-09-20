@@ -18,6 +18,8 @@ struct warlock_pet_td_t : public actor_target_data_t
 {
   propagate_const<buff_t*> debuff_infernal_brand;
   propagate_const<buff_t*> debuff_whiplash;
+  // DF - Should From the Shadows be added here or only on owner target data?
+  // DF - Should Fel Sunder be added here or only on owner target data?
 
   warlock_pet_t& pet;
   warlock_pet_td_t( player_t*, warlock_pet_t& );
@@ -33,10 +35,17 @@ struct warlock_pet_t : public pet_t
   {
     propagate_const<buff_t*> embers;  // Infernal Shard Generation
     propagate_const<buff_t*> demonic_strength; // Talent that buffs Felguard
-    propagate_const<buff_t*> demonic_consumption; // Talent that buffs Demonic Tyrant
+    propagate_const<buff_t*> demonic_consumption; // DF - REMOVED (Replace with Reign of Tyranny buffs)
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
-    propagate_const<buff_t*> grim_inquisitors_dread_calling; // Buff used by SL Legendary
-    propagate_const<buff_t*> demonic_synergy; // Buff used by SL Legendary (Relic of Demonic Synergy)
+    propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - Now comes from Demonology talent
+    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    // DF - Demonic Inspiration
+    // DF - Wrathful Minion
+    // DF - The Expendables
+    // DF - Command Aura
+    // DF - Pit Lord buff (Soul Gluttony)
+    // DF - Guillotine + Fiendish Wrath (Guillotine talent)
+    // DF - Review permanent passive pet buffs and determine if they should be implemented or just assumed based on presence of talents
   } buffs;
 
   bool is_main_pet          = false;
@@ -407,6 +416,7 @@ private:
   void reschedule_firebolt();
 };
 
+// DF - Determine if still available (comes from SL Tier Set)
 struct malicious_imp_pet_t : public warlock_pet_t
 {
   action_t* firebolt;
@@ -425,6 +435,8 @@ struct malicious_imp_pet_t : public warlock_pet_t
 private:
   void reschedule_firebolt();
 };
+
+// DF - Imp Gang Boss
 
 struct dreadstalker_t : public warlock_pet_t
 {
@@ -451,9 +463,10 @@ struct vilefiend_t : public warlock_simple_pet_t
 struct demonic_tyrant_t : public warlock_pet_t
 {
   demonic_tyrant_t( warlock_t*, util::string_view = "demonic_tyrant" );
-  void demise() override;
   action_t* create_action( util::string_view, util::string_view ) override;
 };
+
+// DF - Pit Lord
 
 namespace random_demons
 {

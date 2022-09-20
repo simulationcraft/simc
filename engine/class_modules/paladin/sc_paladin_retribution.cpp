@@ -268,8 +268,15 @@ struct blade_of_justice_t : public paladin_melee_attack_t
   void execute() override
   {
     paladin_melee_attack_t::execute();
+
     if ( p() -> buffs.blade_of_wrath -> up() )
       p() -> buffs.blade_of_wrath -> expire();
+
+    if ( p() -> buffs.consecrated_blade -> up() )
+    {
+      p() -> active.background_cons -> schedule_execute();
+      p() -> buffs.consecrated_blade -> expire();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -647,7 +654,6 @@ struct judgment_ret_t : public judgment_t
     background = true;
 
     // according to skeletor this is given the bonus of 326011
-    // TODO(mserrano) - fix this once spell data has been re-extracted
     if ( is_divine_toll )
       base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
   }
@@ -669,7 +675,7 @@ struct judgment_ret_t : public judgment_t
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> spec.judgment_4 -> ok() )
+      if ( p() -> talents.judgment -> ok() )
         td( s -> target ) -> debuff.judgment -> trigger();
 
       if ( p() -> spec.judgment_3 -> ok() )
@@ -803,17 +809,17 @@ struct zeal_t : public paladin_melee_attack_t
 
 void paladin_t::create_ret_actions()
 {
-  if ( talents.ret_sanctified_wrath )
+  if ( talents.ret_sanctified_wrath->ok() )
   {
     active.sanctified_wrath = new sanctified_wrath_t( this );
   }
 
-  if ( talents.zeal )
+  if ( talents.zeal->ok() )
   {
     active.zeal = new zeal_t( this );
   }
 
-  if ( talents.final_reckoning )
+  if ( talents.final_reckoning->ok() )
   {
     active.reckoning = new reckoning_t( this );
   }
@@ -867,6 +873,7 @@ void paladin_t::create_buffs_retribution()
                                         -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                                         -> set_default_value( find_spell( 383311 ) -> effectN( 1 ).percent() );
   buffs.sealed_verdict = make_buff( this, "sealed_verdict", find_spell( 387643 ) );
+  buffs.consecrated_blade = make_buff( this, "consecrated_blade", find_spell( 382522 ) );
 
   // Azerite
   buffs.empyrean_power_azerite = make_buff( this, "empyrean_power_azerite", find_spell( 286393 ) )

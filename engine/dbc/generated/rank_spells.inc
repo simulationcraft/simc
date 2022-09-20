@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.0.2.45480
-static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
+// Rank class spells, wow build 10.0.2.45632
+static const std::array<rank_class_spell_t, 68> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -29,6 +29,7 @@ static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
   {  9,    0, 342914,      0, "Fear"                              , "Rank 2" },
   { 12,  581, 320639,      0, "Fel Devastation"                   , "Rank 2" },
   {  9,  266, 334591,      0, "Fel Firebolt"                      , "Rank 2" },
+  { 12,  581, 320962,      0, "Fiery Brand"                       , "Rank 2" },
   { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   {  5,  256, 285485,      0, "Focused Will"                      , "Rank 2" },
   {  5,  257, 285485,      0, "Focused Will"                      , "Rank 2" },
@@ -46,7 +47,7 @@ static const std::array<rank_class_spell_t, 67> __rank_spells_data { {
   {  8,   64, 321684,      0, "Mastery: Icicles"                  , "Rank 2" },
   {  4,  259, 319473,      0, "Mastery: Potent Assassin"          , "Rank 2" },
   { 12,  581, 321067,      0, "Metamorphosis"                     , "Rank 2" },
-  { 12,  581, 321068,      0, "Metamorphosis"                     , "Rank 3" },
+  { 12,  581, 321068,      0, "Metamorphosis"                     , "Rank 2" },
   { 11,    0, 326646,      0, "Moonfire"                          , "Rank 2" },
   { 10,  269, 262840,      0, "Rising Sun Kick"                   , "Rank 2" },
   { 12,  581, 321021,      0, "Soul Cleave"                       , "Rank 2" },

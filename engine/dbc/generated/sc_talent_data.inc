@@ -1,5 +1,5 @@
-// 527 talents, wow build 10.0.2.45480
-static std::array<talent_data_t, 527> __talent_data { {
+// 526 talents, wow build 10.0.2.45632
+static std::array<talent_data_t, 526> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
   { "War Machine"                       , 15760, 0x00, 0x0001,   73,   0,   0,  316733,       0,  0 },
@@ -94,7 +94,6 @@ static std::array<talent_data_t, 527> __talent_data { {
   { "Wellspring"                        , 21199, 0x00, 0x0040,  264,   1,   6,  197995,       0,  0 },
   { "Glimmer of Light"                  , 21201, 0x00, 0x0002,   65,   0,   6,  325966,       0,  0 },
   { "Righteous Protector"               , 21202, 0x00, 0x0002,   66,   1,   6,  204074,       0,  0 },
-  { "Beacon of Virtue"                  , 21203, 0x00, 0x0002,   65,   2,   6,  200025,   53563,  0 },
   { "Anger Management"                  , 21204, 0x00, 0x0001,   71,   0,   6,  152278,       0,  0 },
   { "Purgatory"                         , 21207, 0x00, 0x0020,  250,   0,   6,  114556,       0,  0 },
   { "Red Thirst"                        , 21208, 0x00, 0x0020,  250,   1,   6,  205723,       0,  0 },
@@ -310,7 +309,7 @@ static std::array<talent_data_t, 527> __talent_data { {
   { "Incarnation: Guardian of Ursoc"    , 22388, 0x00, 0x0400,  104,   2,   4,  102558,   50334,  0 },
   { "Twin Moons"                        , 22389, 0x00, 0x0400,  102,   0,   5,  279620,       0,  0 },
   { "Guardian of Elune"                 , 22390, 0x00, 0x0400,  104,   2,   5,  155578,       0,  0 },
-  { "Warbreaker"                        , 22391, 0x00, 0x0001,   71,   1,   4,  262161,  167105,  0 },
+  { "Warbreaker"                        , 22391, 0x00, 0x0001,   71,   1,   4,  262161,       0,  0 },
   { "Collateral Damage"                 , 22392, 0x00, 0x0001,   71,   0,   4,  334779,       0,  0 },
   { "Frothing Berserker"                , 22393, 0x00, 0x0001,   72,   1,   4,  215571,       0,  0 },
   { "In For The Kill"                   , 22394, 0x00, 0x0001,   71,   0,   5,  248621,       0,  0 },

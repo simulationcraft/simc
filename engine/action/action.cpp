@@ -644,7 +644,7 @@ void action_t::parse_spell_data( const spell_data_t& spell_data )
     weapon = &( player->off_hand_weapon );
   }
 
-  if ( spell_data.charges() > 0 && spell_data.charge_cooldown() > timespan_t::zero() )
+  if ( spell_data.charge_cooldown() > timespan_t::zero() )
   {
     cooldown->duration = spell_data.charge_cooldown();
     cooldown->charges  = spell_data.charges();

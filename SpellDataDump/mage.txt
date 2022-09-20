@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45480 dragonflight-BETA (hotfix 2022-09-08/45480, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45632 dragonflight-BETA (hotfix 2022-09-20/45632, no-networking)
 Name             : Invisibility (id=66) [Spell Family (3)] 
 Talent Entry     : Generic [tree=class, row=1, col=3, max_rank=1, req_points=0]
 Class            : Paladin, Mage

@@ -174,7 +174,7 @@ warlock_pet_td_t::warlock_pet_td_t( player_t* target, warlock_pet_t& p ) :
                               ->set_default_value( pet.o()->find_conduit_spell( "Infernal Brand" ).percent() );
 
   debuff_whiplash = make_buff( *this, "whiplash", pet.o()->find_spell( 6360 ) )
-                        ->set_default_value( pet.o()->min_version_check( VERSION_9_2_0 ) ? pet.o()->find_spell( 6360 )->effectN( 2 ).percent() : 0.0 )
+                        ->set_default_value( pet.o()->find_spell( 6360 )->effectN( 2 ).percent() )
                         ->set_max_stack( pet.o()->find_spell( 6360 )->max_stacks() - 1 ); // Data erroneously has 11 as the maximum stack
 }
 
@@ -857,115 +857,6 @@ void wild_imp_pet_t::demise()
 
 /// Wild Imp End
 
-/// Malicious Imp (Tier 28) Begin
-
-malicious_imp_pet_t::malicious_imp_pet_t( warlock_t* owner )
-  : warlock_pet_t( owner , "malicious_imp", PET_MALICIOUS_IMP ),
-  firebolt( nullptr ), doombolt( nullptr ), spite( nullptr ),
-  imploded( false )
-{
-  resource_regeneration = regen_type::DISABLED;
-
-  // PTR Testing 2021-12-04: Malicious Imp coeff values seem to be the same as Wild Imp
-  owner_coeff.health    = 0.15;
-}
-
-// Malicious Imp's Fel Firebolt is the same spell as Wild Imp's, so we may not need a separate implementation
-// Doombolt and Spite are hopefully automagic from spell data
-
-struct spite_t : warlock_pet_spell_t
-{
-  spite_t( warlock_pet_t* p ) : warlock_pet_spell_t( "spite", p, p->find_spell( 364262 ) )
-  {
-    aoe=-1;
-  }
-};
-
-void malicious_imp_pet_t::init_base_stats()
-{
-  warlock_pet_t::init_base_stats();
-
-  resources.base[ RESOURCE_ENERGY ]                  = 100;
-  resources.base_regen_per_second[ RESOURCE_ENERGY ] = 0;
-}
-
-void malicious_imp_pet_t::reschedule_firebolt()
-{
-  if ( executing || is_sleeping() || player_t::buffs.movement->check() || player_t::buffs.stunned->check() )
-    return;
-
-  timespan_t gcd_adjust = gcd_ready - sim->current_time();
-  if ( gcd_adjust > 0_ms )
-  {
-    make_event( sim, gcd_adjust, [ this ]() {
-      firebolt->set_target( o()->target );
-      firebolt->schedule_execute();
-    } );
-  }
-  else
-  {
-    firebolt->set_target( o()->target );
-    firebolt->schedule_execute();
-  }
-}
-
-void malicious_imp_pet_t::create_actions()
-{
-  warlock_pet_t::create_actions();
-
-  firebolt = new fel_firebolt_t( this );
-  doombolt = new warlock_pet_spell_t( "doombolt", this, find_spell( 364261 ) );
-  spite = new spite_t( this );
-}
-
-void malicious_imp_pet_t::schedule_ready( timespan_t, bool )
-{
-  reschedule_firebolt();
-}
-
-void malicious_imp_pet_t::arise()
-{
-  warlock_pet_t::arise();
-
-  imploded = false;
-
-  o()->buffs.malicious_imps->increment();
-
-  firebolt->set_target( o()->target );
-  firebolt->schedule_execute();
-}
-
-void malicious_imp_pet_t::demise()
-{
-  if ( !current.sleeping )
-  {
-    o()->buffs.malicious_imps->decrement();
-
-    if ( imploded )
-    {
-      spite->execute_on_target( o()->target );
-    }
-    else
-    {
-      doombolt->execute_on_target( o()->target );
-    }
-
-    if ( expiration )
-      event_t::cancel( expiration );
-
-  }
-
-  warlock_pet_t::demise();
-}
-
-void malicious_imp_pet_t::finish_moving()
-{
-  warlock_pet_t::finish_moving();
-  reschedule_firebolt();
-}
-
-/// Malicious Imp End
-
 /// Dreadstalker Begin
 
 dreadstalker_t::dreadstalker_t( warlock_t* owner ) : warlock_pet_t( owner, "dreadstalker", PET_DREADSTALKER )
@@ -1200,20 +1091,6 @@ struct demonfire_t : public warlock_pet_spell_t
     return da;
   }
 };
-
-void demonic_tyrant_t::demise()
-{
-  if ( !current.sleeping )
-  {
-    if ( o()->conduit.tyrants_soul.value() > 0 )
-    {
-      o()->buffs.demonic_core->trigger( 1 );
-      o()->buffs.tyrants_soul->trigger();
-    }
-  }
-
-  warlock_pet_t::demise();
-}
 
 action_t* demonic_tyrant_t::create_action( util::string_view name, util::string_view options_str )
 {
