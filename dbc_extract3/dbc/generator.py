@@ -1600,6 +1600,8 @@ class SpellDataGenerator(DataGenerator):
           ( 377588, 0 ), ( 377589, 0 ), # Ghoulish Frenzy buffs
           ( 390271, 0 ), # Coil of Devastation debuff
           ( 193486, 0 ), # Runic Empowerment energize spell
+          ( 377656, 0 ), # Heartrend Buff
+          ( 377633, 0 ), # Leeching Strike
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus
