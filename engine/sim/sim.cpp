@@ -2255,13 +2255,10 @@ void sim_t::init_fight_style()
     case FIGHT_STYLE_DUNGEON_SLICE:
       //Based on the Hero Dungeon setup
       max_time = timespan_t::from_seconds( 360.0 );
-      //Disables all raidbuffs, except those provided by scrolls or the character itself.
+
       optimal_raid = 0;
-      overrides.arcane_intellect = 1;
-      overrides.battle_shout = 1;
-      overrides.power_word_fortitude = 1;
+      // it's reasonable to assume there will be a lust in the group
       overrides.bloodlust = 1;
-      overrides.windfury_totem = 0;
 
       shadowlands_opts.enable_rune_words = false;
 
