@@ -1073,6 +1073,8 @@ void warlock_t::init_spells()
   // Destruction
   warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
   warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
+  warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
+  warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
 
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();

@@ -375,27 +375,27 @@ struct incinerate_t : public destruction_spell_t
   {
     parse_options( options_str );
 
-    add_child( fnb_action );
+    //add_child( fnb_action );
 
     can_havoc = true;
 
-    backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
+    //backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
+    //backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
-    energize_type     = action_energize::PER_HIT;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 244670 )->effectN( 1 ).base_value() ) / 10.0;
-    energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+    parse_effect_data( p->warlock_base.incinerate_energize->effectN( 1 ) );
 
-    energize_amount *= energize_mult;
+    //energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+    //energize_amount *= energize_mult;
+
+    energize_mult = 1.0;
   }
 
   timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
 
-    if ( p()->buffs.backdraft->check() )
-      h *= backdraft_cast_mult;
+    //if ( p()->buffs.backdraft->check() )
+    //  h *= backdraft_cast_mult;
 
     return h;
   }
@@ -407,8 +407,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    if ( p()->buffs.backdraft->check() )
-      t *= backdraft_gcd_mult;
+    //if ( p()->buffs.backdraft->check() )
+    //  t *= backdraft_gcd_mult;
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -420,13 +420,13 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->decrement();
+    //p()->buffs.backdraft->decrement();
 
-    if ( p()->talents.fire_and_brimstone->ok() )
-    {
-      fnb_action->set_target( target );
-      fnb_action->execute();
-    }
+    //if ( p()->talents.fire_and_brimstone->ok() )
+    //{
+    //  fnb_action->set_target( target );
+    //  fnb_action->execute();
+    //}
   }
 
   void impact( action_state_t* s ) override
@@ -442,11 +442,11 @@ struct incinerate_t : public destruction_spell_t
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
+    //auto td = this->td( t );
 
-    // SL - Conduit
-    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-      m *= 1.0 + p()->conduit.ashen_remains.percent();
+    //// SL - Conduit
+    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     return m;
   }
