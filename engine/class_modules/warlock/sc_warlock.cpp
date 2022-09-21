@@ -433,7 +433,7 @@ struct soul_rot_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->mastery_spells.chaotic_energies->ok() )
+    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->warlock_base.chaotic_energies->ok() )
     {
       double destro_mastery_value = p()->cache.mastery_value() / 2.0;
       double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
@@ -1069,6 +1069,13 @@ void warlock_t::init_spells()
   warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Passive. Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
   warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
+
+  // Destruction
+  warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
+  warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
+  warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
+  warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
+  warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
 
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();

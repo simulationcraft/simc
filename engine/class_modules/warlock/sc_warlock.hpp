@@ -113,7 +113,9 @@ public:
 
     // Destruction
     const spell_data_t* immolate; // Replaces Corruption
+    const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
     const spell_data_t* incinerate; // Replaces Shadow Bolt
+    const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
   } warlock_base;
 
