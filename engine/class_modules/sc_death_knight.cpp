@@ -6552,7 +6552,7 @@ struct gorefiends_grasp_t : public death_knight_spell_t
     parse_options( options_str );
     aoe = -1;
 
-    cooldown->duration -= p -> talent.blood.tightening_grasp -> effectN( 1 ).time_value();
+    cooldown->duration += p -> talent.blood.tightening_grasp -> effectN( 1 ).time_value();
   }
 
   void impact ( action_state_t* state ) override
