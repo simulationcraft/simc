@@ -211,22 +211,15 @@ struct havoc_t : public destruction_spell_t
 
 struct immolate_t : public destruction_spell_t
 {
-  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->find_spell( 348 ) )
+  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate )
   {
     parse_options( options_str );
-    const spell_data_t* dmg_spell = player->find_spell( 157736 );
 
     can_havoc = true;
 
-    //TODO: Check immolate interactions with destro mastery
+    parse_effect_data( p->warlock_base.immolate_dot->effectN( 1 ) );
 
-    // All of the DoT data for Immolate is in spell 157736
-    base_tick_time       = dmg_spell->effectN( 1 ).period();
-    dot_duration         = dmg_spell->duration();
-    spell_power_mod.tick = dmg_spell->effectN( 1 ).sp_coeff();
-    hasted_ticks         = true;
-    tick_may_crit        = true;
-    affected_by_woc      = true;
+    affected_by_woc = true;
   }
 
   void tick( dot_t* d ) override

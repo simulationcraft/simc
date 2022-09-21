@@ -1070,6 +1070,10 @@ void warlock_t::init_spells()
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
   warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
+  // Destruction
+  warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
+  warlock_base.immolate_dot = find_spell( 157736 ); // DoT data
+
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
