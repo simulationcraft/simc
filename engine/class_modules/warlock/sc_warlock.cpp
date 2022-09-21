@@ -1082,10 +1082,6 @@ void warlock_t::init_spells()
   warlock_t::init_spells_demonology();
   warlock_t::init_spells_destruction();
 
-  // Specialization Spells
-  spec.immolate         = find_specialization_spell( "Immolate" );
-  spec.demonic_core     = find_specialization_spell( "Demonic Core" );
-
   // Talents
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );

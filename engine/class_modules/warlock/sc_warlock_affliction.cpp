@@ -815,11 +815,9 @@ void warlock_t::init_spells_affliction()
   using namespace actions_affliction;
   // General
   spec.affliction                   = find_specialization_spell( 137043 );
-  mastery_spells.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
 
   // Specialization Spells
   spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
-  spec.agony               = find_specialization_spell( "Agony" );
   spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
   spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
