@@ -84,7 +84,7 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->mastery_spells.master_demonologist->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.master_demonologist->effectN( 2 ) ) )
       pm *= 1.0 + p()->cache.mastery_value();
 
     return pm;
@@ -131,25 +131,18 @@ struct hand_of_guldan_t : public demonology_spell_t
   struct hog_impact_t : public demonology_spell_t
   {
     int shards_used;
-    const spell_data_t* summon_spell;
     timespan_t meteor_time;
 
     hog_impact_t( warlock_t* p, util::string_view options_str )
-      : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->find_spell( 86040 ) ),
+      : demonology_spell_t( "Hand of Gul'dan (Impact)", p, p->warlock_base.hog_impact ),
         shards_used( 0 ),
-        summon_spell( p->find_spell( 104317 ) ),
         meteor_time( 400_ms )
     {
       parse_options(options_str);
       aoe = -1;
       dual = true;
 
-      parse_effect_data( s_data->effectN( 1 ) );
-    }
-
-    void execute() override
-    {
-      demonology_spell_t::execute();
+      parse_effect_data( s_data->effectN( 1 ) ); // TOCHECK: is this needed?
     }
 
     timespan_t travel_time() const override
@@ -195,9 +188,6 @@ struct hand_of_guldan_t : public demonology_spell_t
       impact_spell( new hog_impact_t( p, options_str ) )
   {
     parse_options( options_str );
-
-    //impact_spell->meteor_time = timespan_t::from_seconds( data().missile_speed() );
-    impact_spell->meteor_time = 400_ms; //See comments in impact spell for current behavior
   }
 
   timespan_t travel_time() const override
@@ -207,7 +197,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
   bool ready() override
   {
-    if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] == 0.0 )
+    if ( p()->resources.current[ RESOURCE_SOUL_SHARD ] < 1.0 )
     {
       return false;
     }
@@ -221,11 +211,11 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
-    if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
-      p()->buffs.demonic_core->trigger();
+    //if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
+    //  p()->buffs.demonic_core->trigger();
 
-    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
-      p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
+    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    //  p()->buffs.dread_calling->increment( shards_used, p()->buffs.dread_calling->default_value );
   }
 
   void consume_resource() override
@@ -246,12 +236,12 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     impact_spell->execute_on_target( s->target );
 
-    if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
-         rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
-    {
-      p()->procs.horned_nightmare->occur();
-      make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
-    }
+    //if ( p()->legendary.forces_of_the_horned_nightmare.ok() &&
+    //     rng().roll( p()->legendary.forces_of_the_horned_nightmare->effectN( 1 ).percent() ) )
+    //{
+    //  p()->procs.horned_nightmare->occur();
+    //  make_event( *sim, 400_ms, [ this, t = target ] { impact_spell->execute_on_target( t ); } );
+    //}
   }
 
 };
@@ -1027,7 +1017,7 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
 
 void warlock_t::create_buffs_demonology()
 {
-  buffs.demonic_core = make_buff( this, "demonic_core", find_spell( 264173 ) );
+  buffs.demonic_core = make_buff( this, "demonic_core", warlock_base.demonic_core_buff );
 
   buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
                             ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );
@@ -1127,7 +1117,7 @@ void warlock_t::init_spells_demonology()
   active.summon_random_demon = new actions_demonology::summon_random_demon_t( this, "" );
 
   // Initialize some default values for pet spawners
-  warlock_pet_list.wild_imps.set_default_duration( find_spell( 104317 )->duration() );
+  warlock_pet_list.wild_imps.set_default_duration( warlock_base.wild_imp->duration() );
 
   warlock_pet_list.dreadstalkers.set_default_duration( find_spell( 193332 )->duration() );
 }

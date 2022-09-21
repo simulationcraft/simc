@@ -105,7 +105,10 @@ public:
 
     // Demonology
     const spell_data_t* hand_of_guldan;
+    const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
+    const spell_data_t* wild_imp; // Data for pet summoning
     const spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
 
     // Destruction
