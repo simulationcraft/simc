@@ -1017,7 +1017,7 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
 
 void warlock_t::create_buffs_demonology()
 {
-  buffs.demonic_core = make_buff( this, "demonic_core", find_spell( 264173 ) );
+  buffs.demonic_core = make_buff( this, "demonic_core", warlock_base.demonic_core_buff );
 
   buffs.power_siphon = make_buff( this, "power_siphon", find_spell( 334581 ) )
                             ->set_default_value( find_spell( 334581 )->effectN( 1 ).percent() );

@@ -1058,6 +1058,8 @@ void warlock_t::init_spells()
   warlock_base.hand_of_guldan = find_spell( "Hand of Gul'dan" ); // Should be ID 105174
   warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
   warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
+  warlock_base.demonic_core = find_spell( "Demonic Core" ); // Passive. Should be ID 267102
+  warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
 
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
