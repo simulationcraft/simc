@@ -1043,25 +1043,34 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
+  // Automatic requirement checking and relevant .inc file (/engine/dbc/generated/):
+  // find_class_spell - active_spells.inc
+  // find_specialization_spell - specialization_spells.inc
+  // find_mastery_spell - mastery_spells.inc
+  // find_talent_spell - ??
+  //
+  // If there is no need to check whether a spell is known by the actor, can fall back on find_spell
+
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
-  warlock_base.drain_life = find_spell( "Drain Life" ); // Should be ID 234153
-  warlock_base.corruption = find_spell( 172 ); // 172 is base spell, DoT info is in Effect 1's trigger (146739)
-  warlock_base.shadow_bolt = find_spell( 686 ); // This is the same spell ID for both Affliction and Demonology
+  warlock_base.drain_life = find_class_spell( "Drain Life" ); // Should be ID 234153
+  warlock_base.corruption = find_class_spell( "Corruption" ); // Should be ID 172, DoT info is in Effect 1's trigger (146739)
+  warlock_base.shadow_bolt = find_class_spell( "Shadow Bolt" ); // Should be ID 686, same for both Affliction and Demonology
 
   // Affliction
-  warlock_base.agony = find_spell( "Agony" ); // Should be ID 980
+  warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
 
   // Demonology
-  warlock_base.hand_of_guldan = find_spell( "Hand of Gul'dan" ); // Should be ID 105174
+  warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
   warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
   warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
-  warlock_base.demonic_core = find_spell( "Demonic Core" ); // Passive. Should be ID 267102
+  warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Passive. Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
   warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
+  // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
   warlock_t::init_spells_destruction();
