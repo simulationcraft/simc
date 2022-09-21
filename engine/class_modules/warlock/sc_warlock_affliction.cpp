@@ -175,7 +175,7 @@ struct agony_t : public affliction_spell_t
     may_crit = false;
 
     // Unclear in DF beta if Agony Rank 2 is intended to still be learned
-    //dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
+    dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
   }
 
   void last_tick( dot_t* d ) override
@@ -268,7 +268,7 @@ struct corruption_t : public affliction_spell_t
     dot_duration               = otherSP->duration();
     
     // 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
-    base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
+    base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN(2).percent();
 
     if ( p->talents.absolute_corruption->ok() )
     {
@@ -813,14 +813,9 @@ void warlock_t::create_buffs_affliction()
 void warlock_t::init_spells_affliction()
 {
   using namespace actions_affliction;
-  // General
-  spec.affliction                   = find_specialization_spell( 137043 );
-  mastery_spells.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
 
   // Specialization Spells
   spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
-  spec.agony               = find_specialization_spell( "Agony" );
-  spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
   spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );

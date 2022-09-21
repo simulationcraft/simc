@@ -1056,9 +1056,6 @@ void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;
 
-  spec.destruction                = find_specialization_spell( 137046 );
-  mastery_spells.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
-
   spec.conflagrate       = find_specialization_spell( "Conflagrate" );
   spec.conflagrate_2     = find_specialization_spell( 231793 );
   spec.havoc             = find_specialization_spell( "Havoc" );

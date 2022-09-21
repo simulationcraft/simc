@@ -97,11 +97,13 @@ public:
     const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* nethermancy; // Int bonus for all cloth slots. TOCHECK: As of 2022-09-21 this is possibly bugged on beta and not working
 
     // Affliction
     const spell_data_t* agony;
-    // Agony Rank 2, if it is still intended, should be here as well
+    const spell_data_t* agony_2; // Rank 2 still learned on level up, grants increased max stacks
     const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
+    const spell_data_t* affliction_warlock; // Spec aura
 
     // Demonology
     const spell_data_t* hand_of_guldan;
@@ -110,6 +112,7 @@ public:
     const spell_data_t* demonic_core; // The passive responsible for the proc chance
     const spell_data_t* demonic_core_buff; // Buff spell data
     const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
+    const spell_data_t* demonology_warlock; // Spec aura
 
     // Destruction
     const spell_data_t* immolate; // Replaces Corruption
@@ -117,6 +120,7 @@ public:
     const spell_data_t* incinerate; // Replaces Shadow Bolt
     const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
     const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
+    const spell_data_t* destruction_warlock; // Spec aura
   } warlock_base;
 
   // Main pet held in active/last, guardians should be handled by pet spawners. TODO: Use spawner for Infernal/Darkglare?
@@ -399,15 +403,6 @@ public:
     const spell_data_t* soul_rot;               // DF - Now an Affliction talent
   } covenant;
 
-  // DF - May want to consolidate this into a "core" or "base" spells section along with the starting spells
-  // Mastery Spells
-  struct mastery_spells_t
-  {
-    const spell_data_t* potent_afflictions;
-    const spell_data_t* master_demonologist;
-    const spell_data_t* chaotic_energies;
-  } mastery_spells;
-
   // DF - To review while implementing talents for new additions
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
@@ -423,17 +418,7 @@ public:
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
   struct specs_t
   {
-    // All Specs
-    const spell_data_t* nethermancy; // DF - This should still be in game, but check NOTE: Level req is missing, this matches in game behavior.
-    const spell_data_t* demonic_embrace; // DF - Now a class talent, but also may be irrelevant
-    // DF - Corruption is a core spell for Aff/Demo but not Destro
-    // DF - Drain Life is a core spell for all 3 specs
-    // DF - Shadow Bolt is a core spell for Aff/Demo, though very different behavior
-
     // Affliction only
-    const spell_data_t* affliction; //Spec aura
-    const spell_data_t* agony; // DF - Base spell for Affliction
-    const spell_data_t* agony_2; // DF - Still seems to be learned while leveling up, TOCHECK
     const spell_data_t* corruption_2; // DF - Baked into Xavian Teachings talent
     const spell_data_t* corruption_3; // DF - Baked into Xavian Teachings talent
     const spell_data_t* summon_darkglare; // DF - Now an Affliction talent
@@ -443,23 +428,17 @@ public:
     const spell_data_t* summon_darkglare_2; // DF - Baked into Affliction talent (2 minute cooldown)
 
     // Demonology only
-    const spell_data_t* demonology; //Spec aura
     const spell_data_t* call_dreadstalkers_2; // DF - Partially baked in to Demonology talent (Cast time reduction REMOVED, leap ability retained)
-    const spell_data_t* demonic_core; // DF - This is a core spell for Demonology even when Demonbolt is not talented
     const spell_data_t* fel_firebolt_2; // DF - Baked into base Wild Imp behavior (Fel Firebolt energy cost reduction of 20%)
     const spell_data_t* summon_demonic_tyrant_2; // DF - Baked into Soulbound Tyrant talent
-    // DF - Hand of Gul'dan is a core spell for Demonology
 
     // Destruction only
-    const spell_data_t* destruction; //Spec aura
     const spell_data_t* conflagrate; // DF - Now a Destruction talent (base 2 charges)
     const spell_data_t* conflagrate_2; // DF - Baked into Conflagrate talent (used to be 1->2 charges)
     const spell_data_t* havoc; // DF - Now a Destruction talent
     const spell_data_t* havoc_2; // DF - Baked into Havoc talent (12 second total duration)
-    const spell_data_t* immolate; // DF - Now a core spell for Destruction (replaces Corruption)
     const spell_data_t* rain_of_fire_2; // DF - Should be irrelevant now (used to be increased Rain of Fire damage)
     const spell_data_t* summon_infernal_2; // DF - Should be irrelevant now (used to be increased impact damage)
-    // DF - Incinerate is a core spell for Destruction (replaces Shadow Bolt)
   } spec;
 
   // DF - Many new effects to be added here as talents are implemented

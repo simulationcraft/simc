@@ -726,7 +726,6 @@ warlock_t::warlock_t( sim_t* sim, util::string_view name, race_e r )
     legendary(),
     conduit(),
     covenant(),
-    mastery_spells(),
     cooldowns(),
     spec(),
     buffs(),
@@ -801,11 +800,11 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
 
   if ( specialization() == WARLOCK_DESTRUCTION )
   {
-    m *= 1.0 + spec.destruction->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.destruction_warlock->effectN( 3 ).percent();
   }
   if ( specialization() == WARLOCK_DEMONOLOGY )
   {
-    m *= 1.0 + spec.demonology->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.demonology_warlock->effectN( 3 ).percent();
     m *= 1.0 + cache.mastery_value();
 
     if ( buffs.demonic_power->check() )
@@ -813,7 +812,7 @@ double warlock_t::composite_player_pet_damage_multiplier( const action_state_t* 
   }
   if ( specialization() == WARLOCK_AFFLICTION )
   {
-    m *= 1.0 + spec.affliction->effectN( 3 ).percent();
+    m *= 1.0 + warlock_base.affliction_warlock->effectN( 3 ).percent();
   }
   return m;
 }
@@ -889,9 +888,6 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
 double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
-  if ( attr == ATTR_STAMINA )
-    m *= 1.0 + spec.demonic_embrace->effectN( 1 ).percent();
-    
   return m;
 }
 
@@ -900,7 +896,7 @@ double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
-    return spec.nethermancy->effectN( 1 ).percent();
+    return warlock_base.nethermancy->effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -1052,15 +1048,16 @@ void warlock_t::init_spells()
   // If there is no need to check whether a spell is known by the actor, can fall back on find_spell
 
   // General
-  spec.nethermancy = find_spell( 86091 );
-  spec.demonic_embrace = find_spell( 288843 );
+  warlock_base.nethermancy = find_spell( 86091 );
   warlock_base.drain_life = find_class_spell( "Drain Life" ); // Should be ID 234153
   warlock_base.corruption = find_class_spell( "Corruption" ); // Should be ID 172, DoT info is in Effect 1's trigger (146739)
   warlock_base.shadow_bolt = find_class_spell( "Shadow Bolt" ); // Should be ID 686, same for both Affliction and Demonology
 
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
+  warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
+  warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" );
 
   // Demonology
   warlock_base.hand_of_guldan = find_class_spell( "Hand of Gul'dan" ); // Should be ID 105174
@@ -1069,6 +1066,7 @@ void warlock_t::init_spells()
   warlock_base.demonic_core = find_specialization_spell( "Demonic Core" ); // Passive. Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
   warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
+  warlock_base.demonology_warlock = find_specialization_spell( "Demonology Warlock" );
 
   // Destruction
   warlock_base.immolate = find_class_spell( "Immolate" ); // Should be ID 348, contains direct damage and cast data
@@ -1076,15 +1074,12 @@ void warlock_t::init_spells()
   warlock_base.incinerate = find_class_spell( "Incinerate" ); // Should be ID 29722
   warlock_base.incinerate_energize = find_spell( 244670 ); // Used for resource gain information
   warlock_base.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
+  warlock_base.destruction_warlock = find_specialization_spell( "Destruction Warlock" );
 
   // DF - REMOVE THESE?
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
   warlock_t::init_spells_destruction();
-
-  // Specialization Spells
-  spec.immolate         = find_specialization_spell( "Immolate" );
-  spec.demonic_core     = find_specialization_spell( "Demonic Core" );
 
   // Talents
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
@@ -1678,17 +1673,17 @@ void warlock_t::apply_affecting_auras( action_t& action )
 {
   player_t::apply_affecting_auras( action );
 
-  if ( spec.demonology )
+  if ( warlock_base.demonology_warlock )
   {
-    action.apply_affecting_aura( spec.demonology );
+    action.apply_affecting_aura( warlock_base.demonology_warlock );
   }
-  if ( spec.destruction )
+  if ( warlock_base.destruction_warlock )
   {
-    action.apply_affecting_aura( spec.destruction );
+    action.apply_affecting_aura( warlock_base.destruction_warlock );
   }
-  if ( spec.affliction )
+  if ( warlock_base.affliction_warlock )
   {
-    action.apply_affecting_aura( spec.affliction );
+    action.apply_affecting_aura( warlock_base.affliction_warlock );
   }
 }
 
