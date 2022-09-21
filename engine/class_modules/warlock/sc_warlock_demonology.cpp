@@ -84,7 +84,7 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( this->data().affected_by( p()->mastery_spells.master_demonologist->effectN( 2 ) ) )
+    if ( this->data().affected_by( p()->warlock_base.master_demonologist->effectN( 2 ) ) )
       pm *= 1.0 + p()->cache.mastery_value();
 
     return pm;

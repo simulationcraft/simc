@@ -754,7 +754,7 @@ void warlock_t::invalidate_cache( cache_e c )
   switch ( c )
   {
     case CACHE_MASTERY:
-      if ( mastery_spells.master_demonologist->ok() )
+      if ( warlock_base.master_demonologist->ok() )
         player_t::invalidate_cache( CACHE_PLAYER_DAMAGE_MULTIPLIER );
       break;
 
@@ -1060,6 +1060,7 @@ void warlock_t::init_spells()
   warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
   warlock_base.demonic_core = find_spell( "Demonic Core" ); // Passive. Should be ID 267102
   warlock_base.demonic_core_buff = find_spell( 264173 ); // Buff data
+  warlock_base.master_demonologist = find_mastery_spell( WARLOCK_DEMONOLOGY );
 
   warlock_t::init_spells_affliction();
   warlock_t::init_spells_demonology();
