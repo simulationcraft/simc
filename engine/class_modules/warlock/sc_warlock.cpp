@@ -1055,6 +1055,7 @@ void warlock_t::init_spells()
 
   // Affliction
   warlock_base.agony = find_class_spell( "Agony" ); // Should be ID 980
+  warlock_base.agony_2 = find_spell( 231792 ); // Rank 2, +4 to max stacks
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
   warlock_base.affliction_warlock = find_specialization_spell( "Affliction Warlock" );
 
