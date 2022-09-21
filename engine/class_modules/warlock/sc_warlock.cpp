@@ -1043,10 +1043,6 @@ void warlock_t::init_spells()
 {
   player_t::init_spells();
 
-  warlock_t::init_spells_affliction();
-  warlock_t::init_spells_demonology();
-  warlock_t::init_spells_destruction();
-
   // General
   spec.nethermancy = find_spell( 86091 );
   spec.demonic_embrace = find_spell( 288843 );
@@ -1054,13 +1050,22 @@ void warlock_t::init_spells()
   warlock_base.corruption = find_spell( 172 ); // 172 is base spell, DoT info is in Effect 1's trigger (146739)
   warlock_base.shadow_bolt = find_spell( 686 ); // This is the same spell ID for both Affliction and Demonology
 
-  // Specialization Spells
-  spec.immolate         = find_specialization_spell( "Immolate" );
-  spec.demonic_core     = find_specialization_spell( "Demonic Core" );
-
   // Affliction
   warlock_base.agony = find_spell( "Agony" ); // Should be ID 980
   warlock_base.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
+
+  // Demonology
+  warlock_base.hand_of_guldan = find_spell( "Hand of Gul'dan" ); // Should be ID 105174
+  warlock_base.hog_impact = find_spell( 86040 ); // Contains impact damage data
+  warlock_base.wild_imp = find_spell( 104317 ); // Contains pet summoning information
+
+  warlock_t::init_spells_affliction();
+  warlock_t::init_spells_demonology();
+  warlock_t::init_spells_destruction();
+
+  // Specialization Spells
+  spec.immolate         = find_specialization_spell( "Immolate" );
+  spec.demonic_core     = find_specialization_spell( "Demonic Core" );
 
   // Talents
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
