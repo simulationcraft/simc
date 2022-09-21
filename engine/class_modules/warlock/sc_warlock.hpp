@@ -97,6 +97,7 @@ public:
     const spell_data_t* drain_life;
     const spell_data_t* corruption;
     const spell_data_t* shadow_bolt;
+    const spell_data_t* nethermancy; // Int bonus for all cloth slots. TOCHECK: As of 2022-09-21 this is possibly bugged on beta and not working
 
     // Affliction
     const spell_data_t* agony;
@@ -414,10 +415,6 @@ public:
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
   struct specs_t
   {
-    // All Specs
-    const spell_data_t* nethermancy; // DF - This should still be in game, but check NOTE: Level req is missing, this matches in game behavior.
-    const spell_data_t* demonic_embrace; // DF - Now a class talent, but also may be irrelevant
-
     // Affliction only
     const spell_data_t* affliction; //Spec aura
     const spell_data_t* agony_2; // DF - Still seems to be learned while leveling up, TOCHECK

@@ -889,9 +889,6 @@ double warlock_t::resource_regen_per_second( resource_e r ) const
 double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
 {
   double m = player_t::composite_attribute_multiplier( attr );
-  if ( attr == ATTR_STAMINA )
-    m *= 1.0 + spec.demonic_embrace->effectN( 1 ).percent();
-    
   return m;
 }
 
@@ -900,7 +897,7 @@ double warlock_t::composite_attribute_multiplier( attribute_e attr ) const
 double warlock_t::matching_gear_multiplier( attribute_e attr ) const
 {
   if ( attr == ATTR_INTELLECT )
-    return spec.nethermancy->effectN( 1 ).percent();
+    return warlock_base.nethermancy->effectN( 1 ).percent();
 
   return 0.0;
 }
@@ -1052,8 +1049,7 @@ void warlock_t::init_spells()
   // If there is no need to check whether a spell is known by the actor, can fall back on find_spell
 
   // General
-  spec.nethermancy = find_spell( 86091 );
-  spec.demonic_embrace = find_spell( 288843 );
+  warlock_base.nethermancy = find_spell( 86091 );
   warlock_base.drain_life = find_class_spell( "Drain Life" ); // Should be ID 234153
   warlock_base.corruption = find_class_spell( "Corruption" ); // Should be ID 172, DoT info is in Effect 1's trigger (146739)
   warlock_base.shadow_bolt = find_class_spell( "Shadow Bolt" ); // Should be ID 686, same for both Affliction and Demonology
