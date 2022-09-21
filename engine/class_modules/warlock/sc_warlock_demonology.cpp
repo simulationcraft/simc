@@ -1080,8 +1080,6 @@ void warlock_t::create_buffs_demonology()
 
 void warlock_t::init_spells_demonology()
 {
-  spec.demonology                    = find_specialization_spell( 137044 );
-
   spec.call_dreadstalkers_2    = find_specialization_spell( 334727 );
   spec.fel_firebolt_2          = find_specialization_spell( 334591 );
   spec.summon_demonic_tyrant_2 = find_specialization_spell( 334585 );

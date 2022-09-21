@@ -268,7 +268,7 @@ struct corruption_t : public affliction_spell_t
     dot_duration               = otherSP->duration();
     
     // 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
-    base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
+    base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN(2).percent();
 
     if ( p->talents.absolute_corruption->ok() )
     {
@@ -813,8 +813,6 @@ void warlock_t::create_buffs_affliction()
 void warlock_t::init_spells_affliction()
 {
   using namespace actions_affliction;
-  // General
-  spec.affliction                   = find_specialization_spell( 137043 );
 
   // Specialization Spells
   spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
