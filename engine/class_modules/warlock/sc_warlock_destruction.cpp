@@ -84,7 +84,7 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( p()->mastery_spells.chaotic_energies->ok() && destro_mastery )
+    if ( p()->warlock_base.chaotic_energies->ok() && destro_mastery )
     {
       double destro_mastery_value = p()->cache.mastery_value() / 2.0;
       double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
