@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.2.45569
+// Player trait definitions, wow build 10.0.2.45632
 static const std::array<trait_data_t, 2377> __trait_data_data { {
   { 1,  1,  98326, 77889, 1,  8, 103328, 384090,  57755,  5,  7, 200,                     "Titanic Throw", {   71,    0,    0,    0 }, {    0,    0,    0,    0 } },
   { 1,  1,  98328, 77892, 1,  8, 103330, 382461,      0,  7,  1,  -1,                    "Honed Reflexes", {   71,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2379,7 +2379,7 @@ static const std::array<trait_data_t, 2377> __trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.2.45569
+// Player trait definition effect entries, wow build 10.0.2.45632
 static const std::array<trait_definition_effect_entry_t, 694> __trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },

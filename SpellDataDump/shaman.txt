@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45569 dragonflight-BETA (, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45632 dragonflight-BETA (hotfix 2022-09-20/45632, no-networking)
 Name             : Block (desc=Passive) (id=107) [Passive] 
 Class            : Warrior, Paladin, Shaman
 School           : Physical
@@ -19,7 +19,7 @@ Description      : Gives a chance to block enemy melee and ranged attacks.
 
 Name             : Purge (id=370) [Spell Family (11)] 
 Talent Entry     : Generic [tree=class, row=4, col=6, max_rank=1, req_points=0, select_idx=100]
-                 : Effect#1 [op=set, values=(13, 25)]
+                 : Effect#1 [op=set, values=(1, 1)]
 Class            : Shaman
 School           : Nature
 Spell Type       : Magic
@@ -13497,9 +13497,9 @@ Description      : Astral Shift reduces damage taken by an additional $s1%.
 
 Name             : Thunderous Paws (id=378075) [Spell Family (11), Passive] 
 Talent Entry     : Generic [tree=class, row=2, col=4, max_rank=1, req_points=0, select_idx=200]
-                 : Effect#1 [op=set, values=(5000, 10000)]
+                 : Effect#1 [op=set, values=(15, 15)]
                  : Effect#2 [op=set, values=(1500, 3000)]
-                 : Effect#3 [op=set, values=(8, 15)]
+                 : Effect#3 [op=set, values=(5000, 10000)]
 Class            : Shaman
 School           : Nature
 Spell Type       : None
@@ -16722,7 +16722,7 @@ Description      : $@spelldesc319930
 
 Name             : Unruly Winds (id=390288) [Spell Family (11), Passive, Hidden] 
 Talent Entry     : Enhancement [tree=spec, row=4, col=1, max_rank=1, req_points=0]
-                 : Effect#1 [op=set, values=(-3000, -6000)]
+                 : Effect#1 [op=set, values=(100, 100)]
                  : Effect#2 [op=set, values=(2, 4)]
 Class            : Shaman
 School           : Physical

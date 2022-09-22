@@ -13,10 +13,6 @@ struct warlock_t;
 enum version_check_e
 {
   VERSION_PTR,
-  VERSION_9_2_0,
-  VERSION_9_1_0,
-  VERSION_9_0_5,
-  VERSION_9_0_0,
   VERSION_ANY
 };
 
@@ -34,11 +30,9 @@ struct warlock_td_t : public actor_target_data_t
 {
   // Cross-spec
   propagate_const<dot_t*> dots_drain_life;
-  propagate_const<dot_t*> dots_drain_life_aoe; // SL - Soul Rot covenant effect
-  propagate_const<dot_t*> dots_scouring_tithe;
-  propagate_const<dot_t*> dots_impending_catastrophe;
-  propagate_const<dot_t*> dots_soul_rot;
-  propagate_const<dot_t*> dots_corruption;
+  propagate_const<dot_t*> dots_drain_life_aoe; // Affliction - Soul Rot effect
+  propagate_const<dot_t*> dots_soul_rot; // DF - Affliction only
+  propagate_const<dot_t*> dots_corruption; // DF - Removed from Destruction
 
   // Aff
   propagate_const<dot_t*> dots_agony;
@@ -50,7 +44,9 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<dot_t*> dots_vile_taint;
 
   propagate_const<buff_t*> debuffs_haunt;
-  propagate_const<buff_t*> debuffs_shadow_embrace; //9.1 PTR - Same behavior as 9.0 but enabled by talent
+  propagate_const<buff_t*> debuffs_shadow_embrace;
+  // DF - Malefic Affliction (debuff on target for talent)
+  // DF - Dread Touch (debuff on target for talent)
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -59,17 +55,13 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_eradication;
   propagate_const<buff_t*> debuffs_roaring_blaze;
   propagate_const<buff_t*> debuffs_havoc;
-
-  // SL - Legendary
-  propagate_const<buff_t*> debuffs_odr;
-
-  // SL - Conduit
-  propagate_const<buff_t*> debuffs_combusting_engine;
+  // DF - Pyrogenics (Rain of Fire increases Fire damage taken)
 
   // Demo
   propagate_const<dot_t*> dots_doom;
 
   propagate_const<buff_t*> debuffs_from_the_shadows;
+  // DF - Fel Sunder? (Felstorm increases target's damage taken; could be in pet module instead)
 
   double soc_threshold; //Aff - Seed of Corruption counts damage from cross-spec spells such as Drain Life
 
@@ -90,13 +82,46 @@ struct warlock_t : public player_t
 {
 public:
   player_t* havoc_target;
-  player_t* ua_target; //Used for handling Unstable Affliction target swaps
+  player_t* ua_target; // Used for handling Unstable Affliction target swaps
   std::vector<action_t*> havoc_spells;  // Used for smarter target cache invalidation.
   double agony_accumulator;
   double corruption_accumulator;
   std::vector<event_t*> wild_imp_spawns;      // Used for tracking incoming imps from HoG
 
   unsigned active_pets;
+
+  // This should hold any spell data that is guaranteed in the base class or spec, without talents or other external systems required
+  struct base_t
+  {
+    // Shared
+    const spell_data_t* drain_life;
+    const spell_data_t* corruption;
+    const spell_data_t* shadow_bolt;
+    const spell_data_t* nethermancy; // Int bonus for all cloth slots. TOCHECK: As of 2022-09-21 this is possibly bugged on beta and not working
+
+    // Affliction
+    const spell_data_t* agony;
+    const spell_data_t* agony_2; // Rank 2 still learned on level up, grants increased max stacks
+    const spell_data_t* potent_afflictions; // Affliction Mastery - Increased DoT and Malefic Rapture damage
+    const spell_data_t* affliction_warlock; // Spec aura
+
+    // Demonology
+    const spell_data_t* hand_of_guldan;
+    const spell_data_t* hog_impact; // Secondary spell responsible for impact damage
+    const spell_data_t* wild_imp; // Data for pet summoning
+    const spell_data_t* demonic_core; // The passive responsible for the proc chance
+    const spell_data_t* demonic_core_buff; // Buff spell data
+    const spell_data_t* master_demonologist; // Demonology Mastery - Increased demon damage
+    const spell_data_t* demonology_warlock; // Spec aura
+
+    // Destruction
+    const spell_data_t* immolate; // Replaces Corruption
+    const spell_data_t* immolate_dot; // Primary spell data only contains information on direct damage
+    const spell_data_t* incinerate; // Replaces Shadow Bolt
+    const spell_data_t* incinerate_energize; // Soul Shard data is in a separate spell
+    const spell_data_t* chaotic_energies; // Destruction Mastery - Increased spell damage with random range
+    const spell_data_t* destruction_warlock; // Spec aura
+  } warlock_base;
 
   // Main pet held in active/last, guardians should be handled by pet spawners. TODO: Use spawner for Infernal/Darkglare?
   struct pets_t
@@ -111,7 +136,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::infernal_t, warlock_t>
         roc_infernals;  // Infernal(s) summoned by Rain of Chaos
     spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t>
-        blasphemy;  // T28 Destruction 4pc pet
+        blasphemy;  // DF - Now a Destruction Talent
 
     std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
 
@@ -121,9 +146,12 @@ public:
     spawner::pet_spawner_t<pets::demonology::grimoire_felguard_pet_t, warlock_t> grimoire_felguards;
 
     spawner::pet_spawner_t<pets::demonology::wild_imp_pet_t, warlock_t> wild_imps;
-    spawner::pet_spawner_t<pets::demonology::malicious_imp_pet_t, warlock_t> malicious_imps;
+    // DF - New Wild Imp variant - Imp Gang Boss
 
-    //Nether Portal demons - Check regularly for accuracy!
+
+    // DF - Soulkeeper and Inquisitor Eye are not guardians (Bilescourge Bombers/Arcane Familiar are more appropriate matches, respectively)
+
+    // DF - Nether Portal demons - check spawn rates
     spawner::pet_spawner_t<pets::demonology::random_demons::shivarra_t, warlock_t> shivarra;
     spawner::pet_spawner_t<pets::demonology::random_demons::darkhound_t, warlock_t> darkhounds;
     spawner::pet_spawner_t<pets::demonology::random_demons::bilescourge_t, warlock_t> bilescourges;
@@ -135,193 +163,247 @@ public:
     spawner::pet_spawner_t<pets::demonology::random_demons::eyes_of_guldan_t, warlock_t> eyes_of_guldan;
     spawner::pet_spawner_t<pets::demonology::random_demons::prince_malchezaar_t, warlock_t> prince_malchezaar;
 
+    // DF - New post-NP summon: Pit Lord
+
     pets_t( warlock_t* w );
   } warlock_pet_list;
 
   std::vector<std::string> pet_name_list;
 
-  //TODO: Refactor or remove this whole damn section
+  //TODO: DF - Rename this section and leverage for some common purpose like 
   struct active_t
   {
-    spell_t* rain_of_fire; //TODO: SL Beta - This is the definition for the ground aoe event, should we move this?
-    spell_t* bilescourge_bombers; //TODO: SL Beta - This is the definition for the ground aoe event, should we move this?
-    spell_t* summon_random_demon; //TODO: SL Beta - This is the definition for a helper action for Nether Portal, should we move this?
-    melee_attack_t* soul_strike; //TODO: SL Beta - This is currently unused, Felguard pets are using manual spellID. Fix or remove.
+    spell_t* rain_of_fire; //TODO: DF - This is the definition for the ground aoe event, how is it used?
+    spell_t* bilescourge_bombers; //TODO: DF - This is the definition for the ground aoe event, how is it used?
+    spell_t* summon_random_demon; //TODO: DF - This is the definition for a helper action for Nether Portal, does it belong here?
   } active;
 
+  // DF - Does everything go in this struct? Probably yes, though spell_data_t could be replaced with player_talent_t
   // Talents
   struct talents_t
   {
-    // shared
-    // tier 30 - Not Implemented
-    const spell_data_t* demon_skin;
-    const spell_data_t* burning_rush;
-    const spell_data_t* dark_pact;
+    // Shared
+    const spell_data_t* grimoire_of_sacrifice; // DF - Should be unchanged, but verify spec-based limitation (Aff/Destro only)
 
-    // tier 40 - Not Implemented
-    const spell_data_t* darkfury;
-    const spell_data_t* mortal_coil;
-    const spell_data_t* howl_of_terror;
-
-    // tier 45 (Aff/Destro)
-    const spell_data_t* grimoire_of_sacrifice;
-
-    // tier 50
-    const spell_data_t* soul_conduit; //(t45 for demo)
+    // Class Tree
+    const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
+    // DF - Demonic Embrace is a stamina talent, may be irrelevant now
+    // DF - Demonic Inspiration (Pet haste on soul shard fill)
+    // DF - Wrathful Minion (Pet damage on soul shard fill)
+    // DF - Demonic Fortitude is a health talent, may be irrelevant now
+    // DF - Grimoire of Synergy (moved from SL Legendary power)
+    // DF - Claw of Endereth (moved from SL Legendary power)
+    // DF - Summon Soulkeeper (Active ground aoe which spends hidden stacking buff)
+    // DF - Inquisitor's Gaze (Non-guardian pet summon which behaves like Arcane Familiar)
 
     // AFF
-    // tier 15
+    // DF - Malefic Rapture
+
+    // DF - Unstable Affliction
+    // DF - Seed of Corruption
+
     const spell_data_t* nightfall; //TODO: RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
-    const spell_data_t* inevitable_demise;
-    const spell_data_t* drain_soul;
-
-    // tier 25
-    const spell_data_t* writhe_in_agony;
-    const spell_data_t* absolute_corruption;
-    const spell_data_t* siphon_life;
-
-    // tier 35
+    // DF - Xavian Teachings (Formerly Corruption Rank 2 + 3)
     const spell_data_t* sow_the_seeds;
-    const spell_data_t* phantom_singularity; //TODO: Dot duration uses hardcoded tick count and should be pulled from spell data instead
-    const spell_data_t* vile_taint;
 
-    // tier 45
-    const spell_data_t* shadow_embrace; //9.1 PTR - Replaces Dark Caller
-    const spell_data_t* dark_caller; //9.1 PTR - Removed as talent
+    const spell_data_t* shadow_embrace; // DF - Now a 2 point talent
+    // DF - Harvester of Souls (2 point talent, instant damage proc chance on Corruption ticks)
+    const spell_data_t* writhe_in_agony; // DF - Now a 2 point talent
+    // DF - Agonizing Corruption (2 point talent, Seed of Corruption applies Agony stacks)
+
+    const spell_data_t* drain_soul; // DF - Unchanged, still replaces Shadow Bolt
+    const spell_data_t* absolute_corruption; // DF - Now a choice against Siphon Life
+    const spell_data_t* siphon_life; // DF - Now a choice against Absolute Corruption
+    const spell_data_t* phantom_singularity; // DF - Now a choice against Vile Taint, TODO: Dot duration uses hardcoded tick count see if spell data available
+    const spell_data_t* vile_taint; // DF - New functionality (applies Agony on targets hit)
+
+    // DF - Soul Tap (Sacrifice Soul Leech for Soul Shard)
+    const spell_data_t* inevitable_demise; // DF - Now a 2 point talent
+    // DF - Soul Swap (Spend Soul Shard to apply core dots)
+    // DF - Soul Flame (2 point talent, AoE damage on kills)
+    // Grimoire of Sacrifice (shared with Destruction)
+    
+    // DF - Pandemic Invocation (2 point talent, late DoT refresh deals damage and has Soul Shard chance)
+    // DF - Withering Bolt (2 point talent, moved from SL Conduit)
+    // DF - Sacrolash's Dark Strike (2 point talent, moved from SL Legendary)
+
+    const spell_data_t* creeping_death; // DF - No long reduces duration
     const spell_data_t* haunt;
-    // grimoire of sacrifice
+    // DF - Summon Darkglare 
+    // DF - Soul Rot (formerly SL Covenant Ability, now Affliction only)
 
-    // tier 50
-    // soul conduit
-    const spell_data_t* creeping_death;
-    const spell_data_t* dark_soul_misery;
+    // DF - Malefic Affliction (2 point talent, stacking damage increase to current Unstable Affliction)
+    // DF - Calamitous Crescendo (Formerly SL Tier Bonus)
+    // DF - Seized Vitality (2 point talent, additional Haunt damage)
+    // DF - Antoran Plating (2 point talent, increased Darkglare damage and duration)
+    // DF - Wrath of Consumption (Formerly SL Legendary)
+    // DF - Soul Eater's Gluttony (2 point talent, Soul Rot CDR from Unstable Affliction)
+
+    // DF - Doom Blossom (Choice against Dread Touch, damage proc on Corruption ticks based on Malefic Affliction)
+    // DF - Dread Touch (Choice against Doom Blossom, increased DoT damage based on Malefic Affliction)
+    // DF - Haunted Soul (Haunt increase ALL DoT damage while active)
+    // DF - Wilfred's Sigil of Superior Summoning (Choice against Grim Reach, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
+    // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
+    // DF - Decaying Soul Satchel (Formerly SL Legendary)
 
     // DEMO
-    // tier 15
+    // DF - Call Dreadstalkers (2 dogs, check if leap included)
+
+    // DF - Demonbolt (Demonic Core is a guaranteed passive, even though this talent is optional)
     const spell_data_t* dreadlash;
-    const spell_data_t* bilescourge_bombers;
-    const spell_data_t* demonic_strength; //TODO: Investigate pet buff usage
+    // DF - Fel Commando (Formerly SL Conduit)
 
-    // tier 25
-    const spell_data_t* demonic_calling;
+    // DF - Borne of Blood (Formerly SL Conduit)
+    const spell_data_t* summon_vilefiend; // DF - Now a choice against Soul Strike
+    const spell_data_t* soul_strike; // DF - Now a choice against Summon Vilefiend
+    const spell_data_t* bilescourge_bombers; // DF - Now a choice against Demonic Strength
+    const spell_data_t* demonic_strength; // DF - Now a choice against Bilescourge Bombers
+    const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it
+
+    // DF - Implosion (presumably unchanged, double-check Wild Imp flight behavior)
+    // DF - Shadow's Bite (Demonbolt damage increase after Dreadstalkers despawn)
+    // DF - Carnivorous Stalkers (Formerly SL Conduit)
+    // DF - Fel and Steel (Felstorm and Dreadbite damage increase)
+    // DF - Fel Might (Shorter Felstorm CD)
+
     const spell_data_t* power_siphon;
-    const spell_data_t* doom; //TODO: Haste/refresh behavior needs checking still
+    const spell_data_t* inner_demons; // DF - Now a 2 point talent
+    const spell_data_t* demonic_calling; // DF - Now a 2 point talent
+    const spell_data_t* grimoire_felguard;
 
-    // tier 35
-    const spell_data_t* from_the_shadows;
-    const spell_data_t* soul_strike;
-    const spell_data_t* summon_vilefiend;
+    // DF - Bloodbound Imps (Increased Demonic Core proc chance from Wild Imps)
+    // DF - Grim Inquisitor's Dread Calling (Formerly SL Legendary)
+    const spell_data_t* doom; // DF - Base functionality presumably unchanged but requires double checking due to new talents
+    // DF - Demonic Meteor (Chance to proc Hand of Gul'dan off Hand of Gul'dan)
+    // DF - Fel Sunder (Increase damage taken debuff when hit by Felstorm)    
 
-    // tier 45
-    // soul conduit
-    const spell_data_t* inner_demons;
-    const spell_data_t* grimoire_felguard; //TODO: Check summoning/buff durations and if permanent Felguard is affected by this ability
+    // DF - Balespider's Burning Core (Formerly SL Legendary, now a 2 point talent)
+    // DF - Imp Gang Boss (2 point talent, Wild Imp has chance to be this pet instead)
+    // DF - Kazaak's Final Curse (2 point talent, Doom deals increased damage based on active demon count)
+    // DF - Ripped Through the Portal (Formerly SL Tier Bonus, now a 2 point talent)
+    // DF - Houndmaster's Gambit (2 point talent, Shadow Bolt and Demonbolt have a chance to reset Call Dreadstalkers)
+    
+    const spell_data_t* nether_portal; // DF - Cooldown may be reverted, will require constant checking until launch
+    // DF - Summon Demonic Tyrant - Presumably unchanged, but new talents require checking against this summon
+    // DF - Antoran Armaments (Increased Felguard damage and Soul Strike cleave)
 
-    // tier 50
-    const spell_data_t* sacrificed_souls; //TODO: Check what pets/guardians count for this talent. Also relevant for demonic consumption
-    const spell_data_t* demonic_consumption;
-    const spell_data_t* nether_portal;
+    // DF - Ner'zhul's Volition (2 point talent, chance to summon additional demons from Nether Portal)
+    // DF - Stolen Power (Stacking buff from Wild Imps, at max get increased Shadow Bolt or Demonbolt damage)
+    const spell_data_t* sacrificed_souls; // DF - Now a 2 point talent, needs checking against new pets for compatibility
+    // DF - Soulbound Tyrant (2 point talent, formerly a Rank 2 effect on Summon Demonic Tyrant)
+    // DF - Forces of the Horned Nightmare (Formerly SL Legendary, now a 2 point talent)
+    // DF - The Expendables (Per-pet stacking buff to damage when a Wild Imp expires)
+    // DF - Command Aura (2 point talent, increased Wild Imp and Dreadstalker damage while Felguard active)
+
+    // DF - Gul'dan's Ambition (Summon Pit Lord at end of Nether Portal)
+    const spell_data_t* demonic_consumption; // DF - HEAVILY REWORKED, RENAMED "Reign of Tyranny", now a choice against Wilfred's
+    // DF - Wilfred's Sigil of Superior Summoning (Choice against Reign of Tyranny, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
+    // DF - Guillotine (Felguard AoE plus autoattack cleave cooldown)
 
     // DESTRO
-    // tier 15
-    const spell_data_t* flashover;
-    const spell_data_t* eradication;
-    const spell_data_t* soul_fire; //TODO: Confirm refresh/pandemic behavior matchup for immolates
+    // DF - Chaos Bolt
 
-    // tier 25
-    const spell_data_t* reverse_entropy; //Note: talent spell (not the buff spell) contains RPPM data
-    const spell_data_t* internal_combustion;
+    // DF - Conflagrate (base 2 charges)
+    const spell_data_t* reverse_entropy; // DF - Now a choice against Internal Combustion, make sure to find correct RPPM location in data with new talent structure
+    const spell_data_t* internal_combustion; // DF - Now a choice against Reverse Entropy
+    // DF - Rain of Fire
+
+    // DF - Backdraft (max 2 stacks, also now affects Soul Fire)
+    // DF - Mayhem (Choice against Havoc, single target spells have a chance to cleave)
+    // DF - Havoc (Choice against Mayhem, core functionality unchanged)
+    // DF - Pyrogenics (Enemies affected by Rain of Fire take increased Fire damage)
+
+    const spell_data_t* roaring_blaze; // DF - Now a choice against Improved Conflagrate
+    // DF - Improved Conflagrate (Choice against Roaring Blaze, 1 additional charge for Conflagrate)
+    // DF - Explosive Potential (Reduces Conflagrate cooldown)
+    const spell_data_t* channel_demonfire;
+    // DF - Pandemonium (Choice against Cry Havoc, additional effects for Mayhem/Havoc)
+    // DF - Cry Havoc (Choice against Pandemonium, duplicated Chaos Bolts deal AoE damage)
+    // DF - Improved Immolate (2 point talent, duration increase)
+    const spell_data_t* inferno; // DF - Now a choice against Cataclysm, check that target cap nerfs remain
+    const spell_data_t* cataclysm; // DF - Now a choice against Inferno
+
+    const spell_data_t* soul_fire;
     const spell_data_t* shadowburn;
+    // DF - Raging Demonfire (2 point talent, additional Demonfire bolts and bolts extend Immolate)
+    // DF - Rolling Havoc (2 point talent, increased damage buff when spells are duplicated by Mayhem/Havoc)
+    // DF - Backlash (Crit chance increase, damage proc when physically attacked)
+    const spell_data_t* fire_and_brimstone; // DF - Now a 2 point talent
 
-    // tier 35
-    const spell_data_t* inferno; //TODO: Confirm interaction between Inferno and Rank 2 Rain of Fire, as well as if soul shard generation is per-target hit
-    const spell_data_t* fire_and_brimstone;
-    const spell_data_t* cataclysm;
+    // DF - Decimation (Incinerate and Conflagrate casts reduce Soul Fire cooldown)
+    // DF - Conflagration of Chaos (2 point talent, Conflagrate/Shadowburn has chance to make next cast of it a guaranteed crit)
+    // DF - Flashpoint (2 point talent, stacking haste buff from Immolate ticks on high-health targets)
+    // DF - Scalding Flames (2 point talent, increased Immolate damage)
 
-    // tier 45
-    const spell_data_t* roaring_blaze; //TODO: Confirm interaction between roaring blaze and eradication
-    const spell_data_t* rain_of_chaos;
-    // grimoire of sacrifice
+    // DF - Ruin (2 point talent, damage increase to several spells)
+    const spell_data_t* eradication; // DF - Now a 2 point talent
+    // DF - Ashen Remains (2 point talent, formerly SL Conduit)
+    // Grimoire of Sacrifice (shared with Affliction)
 
-    // tier 50
-    // soul conduit
-    const spell_data_t* channel_demonfire; //TODO: Confirm aoe behavior on each tick is correct in sims
-    const spell_data_t* dark_soul_instability;
+    // DF - Summon Infernal
+    // DF - Embers of the Diabolic (formerly SL Legendary)
+    // DF - Ritual of Ruin (formerly SL Tier Bonus, functionality slightly modified)
+    
+    // DF - Crashing Chaos (2 point talent, Summon Infernal reduces cost of next X casts)
+    // DF - Infernal Brand (2 point talent, formerly SL Conduit)
+    // DF - Power Overwhelming (2 point talent, stacking mastery buff for spending Soul Shards)
+    // DF - Madness of the Azj'aqir (2 point talent, formerly SL Legendary, now applies to more spells)
+    // DF - Master Ritualist (2 point talent, reduces proc cost of Ritual of Ruin)
+    // DF - Burn to Ashes (2 point talent, Chaos Bolt and Rain of Fire increase damage of next 2 Incinerates)
+
+    const spell_data_t* rain_of_chaos; // DF - Now a choice against Wilfred's, check deck of cards RNG
+    // DF - Wilfred's Sigil of Superior Summoning (Choice against Rain of Chaos, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
+    // DF - Chaos Incarnate (Choice against Dimensional Rift, maximum mastery value for some spells)
+    // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)
+    // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
   } talents;
 
+  // DF - This struct will be retired, need to determine if needed for pre-patch
   struct legendary_t
   {
     // Legendaries
     // Cross-spec
-    item_runeforge_t claw_of_endereth;
-    item_runeforge_t relic_of_demonic_synergy; //TODO: Do pet and warlock procs share a single RPPM?
-    item_runeforge_t wilfreds_sigil_of_superior_summoning;
+    item_runeforge_t claw_of_endereth; // DF - Now class talent
+    item_runeforge_t relic_of_demonic_synergy; // DF - Now class talent
+    item_runeforge_t wilfreds_sigil_of_superior_summoning; // DF - Now a talent in all 3 spec trees
     // Affliction
-    item_runeforge_t malefic_wrath;
-    item_runeforge_t perpetual_agony_of_azjaqir;
-    item_runeforge_t sacrolashs_dark_strike; //TODO: Check if slow effect (unimplemented atm) can proc anything important
-    item_runeforge_t wrath_of_consumption;
+    item_runeforge_t sacrolashs_dark_strike; // DF - Now an Affliction talent
+    item_runeforge_t wrath_of_consumption; // DF - Now an Affliction talent
     // Demonology
-    item_runeforge_t balespiders_burning_core;
-    item_runeforge_t forces_of_the_horned_nightmare;
-    item_runeforge_t grim_inquisitors_dread_calling;
-    item_runeforge_t implosive_potential;
+    item_runeforge_t balespiders_burning_core; // DF - Now a Demonology talent
+    item_runeforge_t forces_of_the_horned_nightmare; // DF - Now a Demonology talent
+    item_runeforge_t grim_inquisitors_dread_calling; // DF - Now a Demonology talent
     // Destruction
-    item_runeforge_t cinders_of_the_azjaqir;
-    item_runeforge_t embers_of_the_diabolic_raiment;
-    item_runeforge_t madness_of_the_azjaqir;
-    item_runeforge_t odr_shawl_of_the_ymirjar;
+    item_runeforge_t cinders_of_the_azjaqir; // DF - Reworked into Improved Conflagrate
+    item_runeforge_t embers_of_the_diabolic_raiment; // DF - Now a Destruction talent
+    item_runeforge_t madness_of_the_azjaqir; // DF - Now a Destruction talent
     // Covenant
-    item_runeforge_t languishing_soul_detritus;
-    item_runeforge_t shard_of_annihilation;
-    item_runeforge_t decaying_soul_satchel;
-    item_runeforge_t contained_perpetual_explosion;
+    item_runeforge_t decaying_soul_satchel; // DF - Now an Affliction talent
   } legendary;
 
+  // DF - This struct will be retired, need to determine if needed for pre-patch
   struct conduit_t
   {
     // Conduits
-    // Covenant Abilities
-    conduit_data_t catastrophic_origin;   // Venthyr
-    conduit_data_t soul_eater;            // Night Fae
-    conduit_data_t fatal_decimation;      // Necrolord
-    conduit_data_t soul_tithe;            // Kyrian
     // Affliction
-    conduit_data_t cold_embrace; //9.1 PTR - Removed
-    conduit_data_t corrupting_leer;
-    conduit_data_t focused_malignancy;
-    conduit_data_t rolling_agony;
-    conduit_data_t withering_bolt; //9.1 PTR - New, replaces Cold Embrace
+    conduit_data_t withering_bolt; // DF - Now an Affliction talent
     // Demonology
-    conduit_data_t borne_of_blood;
-    conduit_data_t carnivorous_stalkers;
-    conduit_data_t fel_commando;
-    conduit_data_t tyrants_soul;
+    conduit_data_t borne_of_blood; // DF - Now a Demonology talent
+    conduit_data_t carnivorous_stalkers; // DF - Now a Demonology talent
+    conduit_data_t fel_commando; // DF - Now a Demonology talent
     // Destruction
-    conduit_data_t ashen_remains;
-    conduit_data_t combusting_engine;
-    conduit_data_t duplicitous_havoc;
-    conduit_data_t infernal_brand;
+    conduit_data_t ashen_remains; // DF - Now a Destruction talent
+    conduit_data_t infernal_brand; // DF - Now a Destruction talent
   } conduit;
 
+  // DF - This struct will be retired, need to determine if needed for pre-patch
   struct covenant_t
   {
     // Covenant Abilities
-    const spell_data_t* decimating_bolt;        // Necrolord
-    const spell_data_t* impending_catastrophe;  // Venthyr
-    const spell_data_t* scouring_tithe;         // Kyrian
-    const spell_data_t* soul_rot;               // Night Fae
+    const spell_data_t* soul_rot;               // DF - Now an Affliction talent
   } covenant;
 
-  // Mastery Spells
-  struct mastery_spells_t
-  {
-    const spell_data_t* potent_afflictions;
-    const spell_data_t* master_demonologist;
-    const spell_data_t* chaotic_energies;
-  } mastery_spells;
-
-  //TODO: Are there any other cooldown reducing/resetting mechanisms not currently in this struct?
+  // DF - To review while implementing talents for new additions
   // Cooldowns - Used for accessing cooldowns outside of their respective actions, such as reductions/resets
   struct cooldowns_t
   {
@@ -329,67 +411,56 @@ public:
     propagate_const<cooldown_t*> phantom_singularity;
     propagate_const<cooldown_t*> darkglare;
     propagate_const<cooldown_t*> demonic_tyrant;
-    propagate_const<cooldown_t*> scouring_tithe;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
   } cooldowns;
 
-  //TODO: this struct is supposedly for passives per the comment here, but that is potentially outdated. Consider refactoring and reorganizing ALL of this.
-  //TODO: Does find spec spell have rank support? If so, USE IT in assigning data to these
-  // Passives
+  // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section
   struct specs_t
   {
-    // All Specs
-    const spell_data_t* nethermancy; //The probably actual spell controlling armor type bonus. NOTE: Level req is missing, this matches in game behavior.
-    const spell_data_t* demonic_embrace; //Warlock stamina passive
-    //TODO: Corruption is now class-wide
-    //TODO: Ritual of Doom?
-
     // Affliction only
-    const spell_data_t* affliction; //Spec aura
-    const spell_data_t* agony; //This is the primary active ability
-    const spell_data_t* agony_2; //Rank 2 passive (increased stacks)
-    const spell_data_t* corruption_2; //Rank 2 passive (instant cast)
-    const spell_data_t* corruption_3; //Rank 3 passive (damage on cast component)
-    const spell_data_t* summon_darkglare; //This is the active summon ability
-    const spell_data_t* unstable_affliction;  //This is the primary active ability
-    const spell_data_t* unstable_affliction_2; //Rank 2 passive (soul shard on death)
-    const spell_data_t* unstable_affliction_3; //Rank 3 passive (increased duration)
-    const spell_data_t* summon_darkglare_2; //9.1 PTR - Now a passive learned at level 58
-    const spell_data_t* deliberate_corruption; //9.2 PTR - Tier set causes instant corruption damage with Absolute Corruption talented
+    const spell_data_t* corruption_2; // DF - Baked into Xavian Teachings talent
+    const spell_data_t* corruption_3; // DF - Baked into Xavian Teachings talent
+    const spell_data_t* summon_darkglare; // DF - Now an Affliction talent
+    const spell_data_t* unstable_affliction;  // DF - Now an Affliction talent
+    const spell_data_t* unstable_affliction_2; // DF - Baked into Affliction talent (Soul Shard on demise)
+    const spell_data_t* unstable_affliction_3; // DF - Baked into Affliction talent (21 second total duration)
+    const spell_data_t* summon_darkglare_2; // DF - Baked into Affliction talent (2 minute cooldown)
 
     // Demonology only
-    const spell_data_t* demonology; //Spec aura
-    const spell_data_t* call_dreadstalkers_2; //Rank 2 passive (reduced cast time, increased pet move speed)
-    const spell_data_t* demonic_core; //Spec passive for the ability. See also: buffs.demonic_core
-    const spell_data_t* fel_firebolt_2; //Rank 2 passive (reduced energy)
-    const spell_data_t* summon_demonic_tyrant_2; //Rank 2 passive (instant soul shard generation)
-    //TODO: Should Implosion be in this list? Currently in spells.implosion_aoe
+    const spell_data_t* call_dreadstalkers_2; // DF - Partially baked in to Demonology talent (Cast time reduction REMOVED, leap ability retained)
+    const spell_data_t* fel_firebolt_2; // DF - Baked into base Wild Imp behavior (Fel Firebolt energy cost reduction of 20%)
+    const spell_data_t* summon_demonic_tyrant_2; // DF - Baked into Soulbound Tyrant talent
 
     // Destruction only
-    const spell_data_t* destruction; //Spec aura
-    const spell_data_t* conflagrate; //TODO: This is the primary active ability, but is not currently being used. Fix this.
-    const spell_data_t* conflagrate_2; //Rank 2 passive (increased charges)
-    const spell_data_t* havoc; //This is the primary active ability
-    //TODO: debuffs_havoc is currently referencing the spellID directly for rank 2, fix or remove.
-    const spell_data_t* havoc_2; //Rank 2 passive (increased duration)
-    const spell_data_t* immolate; //TODO: this is supposed to be the primary active ability but is not being used at the moment - fix this
-    const spell_data_t* rain_of_fire_2; //Rank 2 passive (increased damage)
-    const spell_data_t* summon_infernal_2; //Rank 2 passive (impact damage)
+    const spell_data_t* conflagrate; // DF - Now a Destruction talent (base 2 charges)
+    const spell_data_t* conflagrate_2; // DF - Baked into Conflagrate talent (used to be 1->2 charges)
+    const spell_data_t* havoc; // DF - Now a Destruction talent
+    const spell_data_t* havoc_2; // DF - Baked into Havoc talent (12 second total duration)
+    const spell_data_t* rain_of_fire_2; // DF - Should be irrelevant now (used to be increased Rain of Fire damage)
+    const spell_data_t* summon_infernal_2; // DF - Should be irrelevant now (used to be increased impact damage)
   } spec;
 
+  // DF - Many new effects to be added here as talents are implemented
   // Buffs
   struct buffs_t
   {
     propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
     propagate_const<buff_t*> grimoire_of_sacrifice; //Buff which grants damage proc
+    // DF - Summon Soulkeeper has a hidden stacking buff
+    // DF - Determine if dummy buff should be added for Inquisitor's Eye
+    propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
 
     // Affliction Buffs
     propagate_const<buff_t*> drain_life; //Dummy buff used internally for handling Inevitable Demise cases
     propagate_const<buff_t*> nightfall;
     propagate_const<buff_t*> inevitable_demise;
-    propagate_const<buff_t*> dark_soul_misery;
     propagate_const<buff_t*> calamitous_crescendo;
+    propagate_const<buff_t*> soul_rot; // DF - Now Affliction only. Buff for determining if Drain Life is zero cost and aoe.
+    propagate_const<buff_t*> wrath_of_consumption; // DF - Now comes from Affliction talent.
+    propagate_const<buff_t*> decaying_soul_satchel_haste; // DF - Now comes from Affliction talent
+    propagate_const<buff_t*> decaying_soul_satchel_crit; // These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
+    // DF - Haunted Soul - Buff on player while active
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -398,44 +469,33 @@ public:
     propagate_const<buff_t*> inner_demons;
     propagate_const<buff_t*> nether_portal;
     propagate_const<buff_t*> wild_imps; //Buff for tracking how many Wild Imps are currently out (does NOT include imps waiting to be spawned)
-    propagate_const<buff_t*> malicious_imps; // Buff for tracking T28 4pc pet
     propagate_const<buff_t*> dreadstalkers; //Buff for tracking number of Dreadstalkers currently out
     propagate_const<buff_t*> vilefiend; //Buff for tracking if Vilefiend is currently out
     propagate_const<buff_t*> tyrant; //Buff for tracking if Demonic Tyrant is currently out
-    propagate_const<buff_t*> portal_summons; //TODO: Fix tracking with this or remove
+    propagate_const<buff_t*> portal_summons; // DF - This dummy buff may be unused for any practical purpose and could be removed
     propagate_const<buff_t*> grimoire_felguard; //Buff for tracking if GFG pet is currently out
     propagate_const<buff_t*> prince_malchezaar; //Buff for tracking Malchezaar (who is currently disabled in sims)
     propagate_const<buff_t*> eyes_of_guldan; //Buff for tracking if rare random summon is currently out
+    propagate_const<buff_t*> dread_calling; // DF - Now comes from Demonology talent
+    propagate_const<buff_t*> balespiders_burning_core; // DF - Now comes from Demonology talent
+    // DF - Shadow's Bite (Demonbolt damage buff on player)
+    // DF - Stolen Power (stacking buff from Wild Imp casts) - Could actually be two buffs, currently broken
 
     // Destruction Buffs
-    propagate_const<buff_t*> backdraft; //Buff associated with Conflagrate
+    propagate_const<buff_t*> backdraft; // DF - Max 2 stacks
     propagate_const<buff_t*> reverse_entropy;
     propagate_const<buff_t*> rain_of_chaos;
-    propagate_const<buff_t*> dark_soul_instability;
-    propagate_const<buff_t*> impending_ruin;
+    propagate_const<buff_t*> impending_ruin; // DF - Impending Ruin and Ritual of Ruin now come from Destruction talent
     propagate_const<buff_t*> ritual_of_ruin;
-    // Possible TODO: There is a new buff for Blasphemy when the pet is out, may be useful for simplifying mechanics/APL
-    // Requires manually adding spell ID to generator
-
-    // Covenants
-    propagate_const<buff_t*> decimating_bolt;
-    propagate_const<buff_t*> tyrants_soul;
-    propagate_const<buff_t*> soul_tithe;
-    propagate_const<buff_t*> soul_rot; // Buff for determining if Drain Life is zero cost and aoe.
-
-    // Legendaries
-    propagate_const<buff_t*> madness_of_the_azjaqir;
-    propagate_const<buff_t*> balespiders_burning_core;
-    propagate_const<buff_t*> malefic_wrath;
-    propagate_const<buff_t*> wrath_of_consumption;
-    propagate_const<buff_t*> implosive_potential;
-    propagate_const<buff_t*> implosive_potential_small;
-    propagate_const<buff_t*> dread_calling;
-    propagate_const<buff_t*> demonic_synergy;
-    propagate_const<buff_t*> languishing_soul_detritus; //TODO: Check what happens with Havoc and triggering both scenarios at once
-    propagate_const<buff_t*> shard_of_annihilation;
-    propagate_const<buff_t*> decaying_soul_satchel_haste; //These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
-    propagate_const<buff_t*> decaying_soul_satchel_crit;
+    propagate_const<buff_t*> madness_of_the_azjaqir; // DF - Now comes from Destruction talent
+    // DF - Mayhem could be a hidden aura, if not a dummy buff could possibly simplify implementation anyway
+    // DF - Rolling Havoc (stacking damage increase when Mayhem/Havoc cleaves)
+    // DF - Backlash? (passive crit increase)
+    // DF - Flashpoint (stacking haste from Immolate ticks)
+    // DF - Crashing Chaos (cost reduction after Infernal summon)
+    // DF - Power Overwhelming (stacking mastery when spending Soul Shards)
+    // DF - Burn to Ashes (increased Incinerate damage after Chaos Bolt/Rain of Fire)
+    // DF - Chaos Incarnate? (passive max mastery on certain spells)
   } buffs;
 
   //TODO: Determine if any gains are not currently being tracked
@@ -465,12 +525,6 @@ public:
     gain_t* shadow_bolt;
     gain_t* doom;
     gain_t* summon_demonic_tyrant;
-
-    // SL
-    gain_t* scouring_tithe;
-
-    // T28
-    gain_t* return_soul; // Demonology 4pc
   } gains;
 
   // Procs
@@ -480,8 +534,6 @@ public:
 
     // aff
     proc_t* nightfall;
-    proc_t* corrupting_leer;
-    proc_t* malefic_wrath;
     proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
 
@@ -492,9 +544,8 @@ public:
     proc_t* three_shard_hog;
     proc_t* summon_random_demon;
     proc_t* portal_summon;
-    proc_t* carnivorous_stalkers; // SL - Conduit
-    proc_t* horned_nightmare; // SL - Legendary
-    proc_t* malicious_imp; // T28 4pc
+    proc_t* carnivorous_stalkers; // DF - Now a Demonology talent
+    proc_t* horned_nightmare; // DF - Now a Demonology talent
 
     // destro
     proc_t* reverse_entropy;
@@ -506,7 +557,7 @@ public:
   int initial_soul_shards;
   std::string default_pet;
   shuffled_rng_t* rain_of_chaos_rng;
-  const spell_data_t* version_9_2_0_data;
+  // DF - Possibly add pre-patch spell for automatic switchover for DF
 
   warlock_t( sim_t* sim, util::string_view name, race_e r );
 
@@ -527,7 +578,6 @@ public:
   timespan_t time_to_imps( int count );
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
-  void malignancy_reduction_helper();
   bool min_version_check( version_check_e version ) const;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
@@ -550,10 +600,8 @@ public:
   double composite_player_target_pet_damage_multiplier( player_t* target, bool guardian ) const override;
   double composite_rating_multiplier( rating_e rating ) const override;
   void invalidate_cache( cache_e ) override;
-  double composite_spell_crit_chance() const override;
   double composite_spell_haste() const override;
   double composite_melee_haste() const override;
-  double composite_melee_crit_chance() const override;
   double composite_mastery() const override;
   double resource_regen_per_second( resource_e ) const override;
   double composite_attribute_multiplier( attribute_e attr ) const override;
@@ -678,10 +726,8 @@ struct warlock_spell_t : public spell_t
 {
 public:
   gain_t* gain;
-  bool can_havoc; //Needed in main module for cross-spec spells such as Covenants
-  bool affected_by_woc; // SL - Legendary (Wrath of Consumption) checker
-  bool affected_by_soul_tithe; // SL - Covenant (Kyrian) checker
-  //TODO: Refactor affected_by stuff to be more streamlined
+  bool can_havoc; // DF - Also need to utilize this for Mayhem
+  bool affected_by_woc; // DF - This is now an Affliction talent, see if this hardcoded bool is still needed
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -703,8 +749,6 @@ public:
 
     //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
     affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
-
-    affected_by_soul_tithe = data().affected_by( p->find_spell( 340238 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -784,9 +828,6 @@ public:
   {
     double pm = spell_t::action_multiplier();
 
-    if ( p()->buffs.soul_tithe->check() && affected_by_soul_tithe )
-      pm *= 1.0 + p()->buffs.soul_tithe->check_stack_value();
-
     pm *= 1.0 + p()->buffs.demonic_synergy->check_stack_value();
 
     return pm;
@@ -857,7 +898,7 @@ public:
     if ( p()->specialization() == WARLOCK_DESTRUCTION && can_havoc )
     {
         // SL - Conduit
-        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent() + p()->conduit.duplicitous_havoc.percent();
+        base_aoe_multiplier *= p()->spec.havoc->effectN(1).percent();
         p()->havoc_spells.push_back(this);
     }
   }

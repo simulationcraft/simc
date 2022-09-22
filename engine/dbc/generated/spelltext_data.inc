@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.45569
-static const std::array<spelltext_data_t, 18597> __spelltext_data { {
+// Spell text, wow build 10.0.2.45632
+static const std::array<spelltext_data_t, 18593> __spelltext_data { {
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
   {     56, "Stuns target for $d.", "Stunned.", 0 },
@@ -17010,7 +17010,6 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 382292, "While inside Ice Block, you heal for ${$s1*10}% of your maximum health over the duration.", 0, 0 },
   { 382293, "$?s110959[Greater ][]Invisibility increases your movement speed by $?a137021[${$s1*0.40}][$s1]% for $337278d.", 0, 0 },
   { 382297, "Successfully interrupting an enemy with Counterspell reduces its cooldown by ${$s1/1000} sec.", 0, 0 },
-  { 382307, "Your spells and abilities have a chance to Arcanocrystalize the energies around you, granting a fluctuating secondary stat for $382963d.", 0, 0 },
   { 382309, "When you critically heal with your Healing Wave, Healing Surge, or Riptide you summon an Ancestral spirit to aid you, instantly healing the lowest percentage health friendly party or raid target within 40 yards for $s1% of the amount healed.", 0, 0 },
   { 382310, "Rallying Cry's duration and health granted are increased by |cFFFFFFFF$s1%|r.", 0, 0 },
   { 382312, "$@spelldesc369159  If you spend at least 10 seconds eating you will become well fed and gain $382145s1 of your highest secondary stat for $382145d.\r\n\r\nGood fortune to you!", 0, 0 },
@@ -17044,6 +17043,7 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 382515, "Vanish grants you a shield for $386165d, absorbing damage equal to $s1% of your maximum health.", 0, 0 },
   { 382517, "Eviscerate and Black Powder increase your Shadow damage dealt by $383405s1% for $383405d.", 0, 0 },
   { 382518, "Shadowstrike increases the damage of your next $?s200758[Gloomblade][Backstab] by $s1%, stacking up to $s2 times.", 0, 0 },
+  { 382522, "@spelldesc382275", "Your next Blade of Justice casts Consecration.", 0 },
   { 382523, "Vanish reduces the remaining cooldown of your other Rogue abilities by $s1 sec.", 0, 0 },
   { 382524, "After Shadow Dance ends, $?s200758[Gloomblade][Backstab] deals an additional $s1% damage as Shadow, fading by ${$s3/$s1}.1% per sec.", 0, 0 },
   { 382525, "Eviscerate, Rupture, and Black Powder increase the damage of the next use of the same finishing move by $s1%. Lasts $s2 sec.", 0, 0 },
@@ -17090,7 +17090,6 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 382956, "If Whirlwind $?a137048[or Revenge ][]hits $s1 or more enemies, it hits them $s2 additional time for $s3% damage.", 0, 0 },
   { 382957, "Hurl a Smoldering Inferno at the target that deals between 21,456-32,516 Fire damage. Damage dealt is determined by the top-most card of the deck.\r\n\r\nEquip: Periodically shuffle the deck while in combat.", 0, 0 },
   { 382958, 0, "Shuffles cards. (DNT)", 0 },
-  { 382963, "$@spelldesc382307", "$?$w2!=0[Haste increased by $w2.][]$?$w3!=0[Critical Strike increased by $w3.][]$?$w4!=0[Versatility increased by $w4.][]$?$w5!=0[Mastery increased by $w5.][]", 0 },
   { 382998, "$@spelldesc382820\r\n", 0, 0 },
   { 383009, "Charge yourself with lightning, causing your next $n Lightning Bolts or Chain Lightnings to deal $s2% more damage and be instant cast.", "Your next Lightning Bolt or Chain Lightning will deal $s2% increased damage and be instant cast.", 0 },
   { 383010, "Increases the number of Elemental Shields you can have active on yourself by 1.\r\n\r\nYou can have Earth Shield on yourself and one ally at the same time.", 0, 0 },
@@ -17199,8 +17198,6 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 383604, "Casting Scorch on targets below $s2% health increase the target's damage taken from you by $s3% for $383608d, stacking up to $383608u times. \r\n\r\nAdditionally, Scorch critical strikes  increase your movement speed by $236060s1% for $236060d.", 0, 0 },
   { 383605, "Increases auto attack damage with one-handed weapons by $s1% and your auto attack critical strikes have a $s2% chance to Enrage you.\r\n", 0, 0 },
   { 383608, "$@spelldesc383604", "Taking $383604s3% increased damage from $@auracaster's spells and abilities.", 0 },
-  { 383611, "Your attacks have a chance to eviscerate the target for $s1 Physical damage. Deals twice the damage when behind your target.", 0, 0 },
-  { 383612, "$@spelldesc383611", 0, 0 },
   { 383634, "While Combustion is active your Fire Blast and Phoenix Flames recharge $383637s2% faster.", 0, 0 },
   { 383637, "$@spelldesc383634", "Your Fire Blast and Phoenix Flames recharge $s1% faster.", 0 },
   { 383659, "Pyroblast has a $s1% reduced cast time and a $s2% increased critical strike chance. The duration of Combustion is reduced by $s3%. ", 0, 0 },
@@ -17361,9 +17358,7 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 384532, "Grants the Watcher's Blessing for 5-12s and an absorb shield for $384532s1 damage. \r\nIf the shield depletes while Watcher's Blessing is active, gain $384560s1 versatility for the same duration. Duration is determined by the top-most card of the deck. \r\n\r\nEquip: Periodically shuffle the deck while in combat. ", "Granted the Watcher's Blessing and an absorb shield for $w1 damage.", 0 },
   { 384534, "Throw at a location, attaching itself to the surface or a nearby enemy. Detonates after $s1 sec, swapping your position with itself and any attached enemy.\r\n\r\nItem quality affects the distance this can be thrown. Only usable outdoors.", 0, 0 },
   { 384560, 0, "Gain $w1 Versatility.", 0 },
-  { 384580, "Your spells have a chance to wrap your target in winds, slicing an enemy for $s1 Nature damage or granting $s2 Haste to an ally over $384584d.", 0, 0 },
   { 384581, "Arcane Barrage deals an additional $s2% damage against targets below $s1% health.", 0, 0 },
-  { 384584, "$@spelldesc383611", "Suffering ${$w1*($d/$t1)} Nature damage over $d.", 0 },
   { 384590, "While active, you automatically assume your Visage when you leave combat or after Soaring.\r\n\r\nActivate to disable this effect.", 0, "Racial" },
   { 384594, "Taking damage has a chance to increase your primary stat by $384598s1 and grant $384598s2 armor to yourself and $384605i closest allies for $384598d.", 0, 0 },
   { 384598, "$@spelldesc384594", "Strength increased by $w1. Armor increased by $w2.", 0 },
@@ -17379,7 +17374,6 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 384646, "$@spelldesc382108", "Consume to gain $w1 Versatility and $w2 maximum health per stack for 12 sec.", 0 },
   { 384649, "Spells and abilities have a chance to ignite a fire within your heart, causing your next heal to leave a Burning Ember. The ember flares up after $387028d, cauterizing wounds for $s1 and expelling $s2 fire damage to nearby enemies.", 0, 0 },
   { 384651, "Arcane Orb gains $s1 additional charge.", 0, 0 },
-  { 384654, "$@spelldesc383611", 0, 0 },
   { 384656, "Moonfire increases your Arcane damage to the target, and Sunfire increases your Nature damage to the target, by $s1%.", 0, 0 },
   { 384658, "$@spelldesc384636", "Maximum health increased by $w3, and Versatility increased by $w1.", 0 },
   { 384661, "Taking damage has a chance to activate the scale, shielding you from $s2 damage and increasing your armor by $s3 while the shield holds. The shield explodes when broken, dealing $s4 Physical damage split between all nearby enemies.", 0, 0 },
@@ -17692,6 +17686,7 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 386868, "$spelldesc381990", "Dispatch deals $w1% increased damage and costs $w2% less Energy.", 0 },
   { 386869, "Damage taken reduced by $s1%.", 0, 0 },
   { 386870, "When Barbed Shot causes Frenzy to stack up to $s1, your pet will immediately use its special attack and deal $s2% bonus damage.", 0, 0 },
+  { 386875, "$@spelldesc378880", "Your next Multi-Shot will grant you Trick Shots.", 0 },
   { 386876, "While Trueshot is active you gain $386877s1% critical strike chance and $386877s2% increased critical damage dealt every $t1 sec, stacking up to $386877u times.", 0, 0 },
   { 386877, "$@spelldesc386876", "Critical strike chance increased by $s1%. Critical damage dealt increased by $s2%.", 0 },
   { 386878, "$@spelldesc386876", 0, 0 },
@@ -18230,6 +18225,7 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 390264, "$@spelldesc390259", "All damage done increased by $s1%.", 0 },
   { 390268, "Death Coil and Epidemic increase the duration of Dark Transformation by $s1 sec.", 0, 0 },
   { 390270, "Death Coil causes the target to take an additional $s1% of the direct damage dealt over $253367d.", 0, 0 },
+  { 390271, "$@spelldesc390270", "Suffering $w1 Shadow damage every $t sec.", 0 },
   { 390275, "Sudden Doom causes your next Death Coil to also increase your $?s207311[Clawing Shadows][Scourge Strike] damage against the target by $390276s1% for $390276d.", 0, 0 },
   { 390276, "$@spelldesc390275", "Scourge Strike damage taken from $@auracaster is increased by $s1%.", 0 },
   { 390279, "Inflict disease upon your enemies spreading Festering Wounds equal to the amount currently active on your target to $s1 nearby enemies.", 0, 0 },
@@ -18599,12 +18595,12 @@ static const std::array<spelltext_data_t, 18597> __spelltext_data { {
   { 393057, "$@spelldesc337483", "Increases the damage done by your next Chi Explosion by $s1%.\r\n\r\nChi Explosion is triggered whenever you use Spinning Crane Kick.", 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.45569
+// spelltext hotfix entries, wow build 10.0.2.45632
 static constexpr std::array<hotfix::client_hotfix_entry_t, 1> __spelltext_hotfix_data { {
   {  389578,  0, "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400aA1.", "Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds." },
 } };
 
-// Spell description variables, wow build 10.0.2.45569
+// Spell description variables, wow build 10.0.2.45632
 static const std::array<spelldesc_vars_data_t, 349> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -18957,7 +18953,7 @@ static const std::array<spelldesc_vars_data_t, 349> __spelldesc_vars_data { {
   {  393040, "$damage=$?s202354[${9*$191037s1}][${9*$191037s1}]" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.45569
+// spelldesc_vars hotfix entries, wow build 10.0.2.45632
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 

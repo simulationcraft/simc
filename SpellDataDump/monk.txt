@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45569 dragonflight-BETA (, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45632 dragonflight-BETA (hotfix 2022-09-20/45632, no-networking)
 Name             : Dual Wield (desc=Passive) (id=674) [Passive] 
 Class            : Frost Warrior, Hunter, Rogue, Death Knight, Monk, Demon Hunter
 School           : Physical
@@ -16017,6 +16017,7 @@ This effect cannot occur more than once every $m3  seconds.
 Tooltip          : When a hit deals more than 20% of your maximum health, reduce all damage by $w1% for $390239d.
 
 Name             : Resonant Fists (id=389578) [Spell Family (53), Passive] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=9, col=2, max_rank=2, req_points=20]
 Class            : Monk
 School           : Physical
@@ -16038,7 +16039,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1025905)  : Apply Aura (6) | Proc Trigger Spell (42): Resonant Fists
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 391400 | Target: Self (1)
-Description      : Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400aA1.
+Description      : Your attacks have a chance to resonate, dealing $391400s1 Nature damage to enemies within $391400a1 yds.
 
 Name             : Save Them All (id=389579) [Spell Family (53), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=1, max_rank=2, req_points=20]
