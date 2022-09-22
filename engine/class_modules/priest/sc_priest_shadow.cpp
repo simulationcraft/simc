@@ -112,9 +112,6 @@ struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
 
-  propagate_const<cooldown_t*> fiend_cooldown;
-  timespan_t fiend_cdr;
-
   mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
@@ -126,15 +123,6 @@ struct mind_flay_base_t final : public priest_spell_t
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 2 ).percent() +
                                   priest().talents.shadow.harnessed_shadows->effectN( 3 ).percent();
-    }
-
-    if ( priest().talents.shadow.fiending_dark.enabled() )
-    {
-      fiend_cooldown =
-          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
-      fiend_cdr = priest()
-                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
-                      .time_value();
     }
   }
 
@@ -184,11 +172,6 @@ struct mind_flay_base_t final : public priest_spell_t
     if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( d->state );
-    }
-
-    if ( priest().talents.shadow.fiending_dark.enabled() && d->state->result == RESULT_CRIT )
-    {
-      fiend_cooldown->adjust( fiend_cdr );
     }
   }
 
@@ -1403,8 +1386,6 @@ struct dark_void_t final : public priest_spell_t
 struct mind_spike_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
-  propagate_const<cooldown_t*> fiend_cooldown;
-  timespan_t fiend_cdr;
 
   mind_spike_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
@@ -1412,15 +1393,6 @@ struct mind_spike_t final : public priest_spell_t
 
   {
     parse_options( options_str );
-
-    if ( priest().talents.shadow.fiending_dark.enabled() )
-    {
-      fiend_cooldown =
-          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
-      fiend_cdr = priest()
-                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
-                      .time_value();
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1455,11 +1427,6 @@ struct mind_spike_t final : public priest_spell_t
       if ( priest().talents.shadow.surge_of_darkness.enabled() )
       {
         priest().buffs.surge_of_darkness->decrement();
-      }
-
-      if ( priest().talents.shadow.fiending_dark.enabled() && s->result == RESULT_CRIT )
-      {
-        fiend_cooldown->adjust( fiend_cdr );
       }
 
       priest().buffs.coalescing_shadows->expire();

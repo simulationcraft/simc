@@ -299,7 +299,6 @@ public:
       player_talent_t damnation;
       player_talent_t void_torrent;
       // Row 9
-      player_talent_t fiending_dark;
       player_talent_t screams_of_the_void;
       player_talent_t pain_of_death;
       player_talent_t insidious_ire;
