@@ -1070,6 +1070,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new soul_rot_t( this, options_str );
   if ( action_name == "interrupt" )
     return new interrupt_t( action_name, this, options_str );
+  if ( action_name == "seed_of_corruption" )
+    return new seed_of_corruption_t( this, options_str );
 
   return nullptr;
 }

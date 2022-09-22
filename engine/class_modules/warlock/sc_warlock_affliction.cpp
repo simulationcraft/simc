@@ -771,9 +771,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new unstable_affliction_t( this, options_str );
   if ( action_name == "summon_darkglare" )
     return new summon_darkglare_t( this, options_str );
-  // aoe
-  if ( action_name == "seed_of_corruption" )
-    return new seed_of_corruption_t( this, options_str );
   // talents
   if ( action_name == "drain_soul" )
     return new drain_soul_t( this, options_str );
