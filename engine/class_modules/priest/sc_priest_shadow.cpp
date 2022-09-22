@@ -181,6 +181,11 @@ struct mind_flay_base_t final : public priest_spell_t
       priest().procs.coalescing_shadows_mind_flay->occur();
     }
 
+    if ( priest().talents.shadow.psychic_link.enabled() )
+    {
+      priest().trigger_psychic_link( d->state );
+    }
+
     if ( priest().talents.shadow.fiending_dark.enabled() && d->state->result == RESULT_CRIT )
     {
       fiend_cooldown->adjust( fiend_cdr );
