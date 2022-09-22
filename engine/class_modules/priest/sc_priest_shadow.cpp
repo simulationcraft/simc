@@ -2179,7 +2179,6 @@ void priest_t::init_spells_shadow()
   talents.shadow.damnation          = ST( "Damnation" );
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.fiending_dark       = ST( "Fiending Dark" );  // NYI
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
 

@@ -1286,7 +1286,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( priest().talents.shadow.void_eruption.enabled() && resource_current == RESOURCE_INSANITY )
     {
       vf_extension = base_cost() / priest().talents.shadow.void_eruption->effectN( 4 ).base_value() *
-                     timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 2 ).base_value() );
+                     timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() );
     }
   }
 
