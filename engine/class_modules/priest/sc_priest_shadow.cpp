@@ -2210,8 +2210,8 @@ void priest_t::init_spells_shadow()
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
 
-  talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.encroaching_shadows   = ST( "Encroaching Shadows" );
+  talents.shadow.insidious_ire       = ST( "Insidious Ire" );  // TODO: check values
+  talents.shadow.encroaching_shadows = ST( "Encroaching Shadows" );
   // Row 10
   talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
   talents.shadow.idol_of_cthun       = ST( "Idol of C'Thun" );
