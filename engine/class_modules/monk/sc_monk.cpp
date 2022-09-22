@@ -589,9 +589,8 @@ public:
           {
               // Reduce stagger damage
               auto amount_cleared =
-                  p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() ); // Saved as 1
+                  p()->active_actions.stagger_self_damage->clear_partial_damage_pct( p()->talent.brewmaster.quick_sip->effectN(1).percent() );
               p()->sample_datas.quick_sip_cleared->add( amount_cleared );
-              p()->buff.recent_purifies->trigger( 1, amount_cleared );
               p()->proc.quick_sip->occur();
 
               p()->shuffle_count_secs -= quick_sip_seconds;
@@ -2461,7 +2460,7 @@ struct blackout_kick_t : public monk_melee_attack_t
           if ( p()->legendary.charred_passions->ok() )
             dmg_percent += p()->legendary.charred_passions->effectN( 1 ).percent();
           else if ( p()->talent.brewmaster.charred_passions->ok() )
-            dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).percent();
+            dmg_percent += p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->effectN( 1 ).percent();
 
           charred_passions->base_dd_min = s->result_amount * dmg_percent;
           charred_passions->base_dd_max = s->result_amount * dmg_percent;
@@ -4762,6 +4761,9 @@ struct purifying_brew_t : public monk_spell_t
   {
     monk_spell_t::execute();
 
+    if ( p()->talent.brewmaster.pretense_of_instability->ok() )
+      p()->buff.pretense_of_instability->trigger();
+
     if ( p()->talent.brewmaster.special_delivery->ok() )
     {
       delivery->set_target( target );
@@ -6006,6 +6008,15 @@ struct gift_of_the_ox_t : public monk_heal_t
     monk_heal_t::execute();
 
     p()->buff.gift_of_the_ox->decrement();
+
+    if ( p()->talent.brewmaster.tranquil_spirit->ok() )
+    {
+      // Reduce stagger damage
+      auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+          p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
+      p()->sample_datas.tranquil_spirit->add( amount_cleared );
+      p()->proc.tranquil_spirit->occur();
+    }
   }
 };
 
@@ -6094,6 +6105,16 @@ struct expel_harm_t : public monk_heal_t
 
     if ( p()->specialization() == MONK_WINDWALKER && p()->spec.expel_harm_2_ww->ok() )
         p()->resource_gain( RESOURCE_CHI, p()->spec.expel_harm_2_ww->effectN( 1 ).base_value(), p()->gain.expel_harm );
+
+    if ( p()->talent.brewmaster.tranquil_spirit->ok() )
+    {
+      // Reduce stagger damage
+      auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
+          p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
+      p()->sample_datas.tranquil_spirit->add( amount_cleared );
+      p()->proc.tranquil_spirit->occur();
+    }
+
   }
 
   void impact( action_state_t* s ) override
@@ -6622,6 +6643,9 @@ struct celestial_brew_t : public monk_absorb_t
 
     if ( p()->buff.purified_chi->up() )
       p()->buff.purified_chi->expire();
+
+    if ( p()->talent.brewmaster.pretense_of_instability->ok() )
+      p()->buff.pretense_of_instability->trigger();
 
     if ( p()->talent.brewmaster.special_delivery->ok() )
     {
@@ -7988,7 +8012,7 @@ void monk_t::init_spells()
       talent.brewmaster.attenuation                         = _ST( "Attenuation" );
       talent.brewmaster.stormstouts_last_keg                = _ST( "Stormstout's Last Keg" );
       talent.brewmaster.call_to_arms                        = _ST( "Call to Arms" );
-      talent.brewmaster.effusive_anima_accelerator          = _ST( "Effusive Anima Accelerator" );
+      talent.brewmaster.chi_surge                           = _ST( "Chi Surge" );
   }
 
   // ========
@@ -8641,15 +8665,18 @@ void monk_t::create_buffs ()
     buff.hit_scheme = make_buff( this, "hit_scheme", talent.brewmaster.hit_scheme->effectN( 1 ).trigger() )
       ->set_default_value_from_effect( 1 );
 
+    buff.pretense_of_instability = make_buff( this, "pretense_of_instability", find_spell( 393515 ) )
+      ->add_invalidate( CACHE_DODGE );
+
     buff.purified_chi = make_buff( this, "purified_chi", find_spell( 325092 ) )->set_default_value_from_effect( 1 );
 
     buff.shuffle = make_buff( this, "shuffle", passives.shuffle )
       ->set_duration_multiplier( 3 )
       ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-    buff.training_of_niuzao = make_buff<stat_buff_t>( this, "training_of_niuzao", find_spell( 383733 ) )
+    buff.training_of_niuzao = make_buff( this, "training_of_niuzao", find_spell( 383733 ) )
       ->set_default_value( talent.brewmaster.training_of_niuzao->effectN(1).percent() )
       ->add_invalidate( CACHE_MASTERY );
-    buff.training_of_niuzao->set_max_stack( 3 );
+    buff.training_of_niuzao->set_max_stack( (int)talent.brewmaster.training_of_niuzao->effectN( 3 ).base_value() );
 
     buff.light_stagger = make_buff<buffs::stagger_buff_t>( *this, "light_stagger", find_spell( 124275 ) );
     buff.moderate_stagger = make_buff<buffs::stagger_buff_t>( *this, "moderate_stagger", find_spell( 124274 ) );
@@ -9493,6 +9520,9 @@ double monk_t::composite_dodge() const
   if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
     d += talent.general.ironshell_brew->effectN( 1 ).percent();
 
+  if ( buff.pretense_of_instability->check() )
+    d += buff.pretense_of_instability->data().effectN( 1 ).percent();
+
   return d;
 }
 
@@ -9552,7 +9582,7 @@ double monk_t::composite_base_armor_multiplier() const
     a *= 1 + buff.mighty_pour->data().effectN( 1 ).percent();
 
   if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
-    a *= 1 + talent.general.ironshell_brew->effectN( 1 ).percent();
+    a *= 1 + talent.general.ironshell_brew->effectN( 2 ).percent();
 
   return a;
 }
@@ -10546,6 +10576,7 @@ public:
       double purified_dmg       = p.sample_datas.purified_damage->mean();
       double staggering_strikes = p.sample_datas.staggering_strikes_cleared->mean();
       double quick_sip          = p.sample_datas.quick_sip_cleared->mean();
+      double tranquil_spirit    = p.sample_datas.tranquil_spirit->mean();
       double stagger_total_dmg  = p.sample_datas.stagger_total_damage->mean();
 
       os << "\t\t\t\t<div class=\"player-section custom_section\">\n"
@@ -10590,10 +10621,12 @@ public:
       fmt::print( os, "\t\t\t\t\t\t<p>Total Stagger damage added: {} / {:.2f}%</p>\n", stagger_total_dmg, 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Purifying Brew: {} / {:.2f}%</p>\n", purified_dmg,
                   ( purified_dmg / stagger_total_dmg ) * 100.0 );
-      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
-                  ( staggering_strikes / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", quick_sip,
                   ( quick_sip / stagger_total_dmg ) * 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Staggering Strikes: {} / {:.2f}%</p>\n", staggering_strikes,
+                  ( staggering_strikes / stagger_total_dmg ) * 100.0 );
+      fmt::print( os, "\t\t\t\t\t\t<p>Stagger cleared by Quick Sip: {} / {:.2f}%</p>\n", tranquil_spirit,
+                  ( tranquil_spirit / stagger_total_dmg ) * 100.0 );
       fmt::print( os, "\t\t\t\t\t\t<p>Stagger that directly damaged the player: {} / {:.2f}%</p>\n", stagger_tick_dmg,
                   ( stagger_tick_dmg / stagger_total_dmg ) * 100.0 );
 
