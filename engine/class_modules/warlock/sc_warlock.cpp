@@ -191,8 +191,8 @@ struct corruption_t : public warlock_spell_t
     //  spell_power_mod.direct = 0; //Rank 3 is required for direct damage
     //}
 
-    //// 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
-    //base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
+    // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
+    base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
 
     //if ( p->talents.absolute_corruption->ok() )
     //{
@@ -280,6 +280,129 @@ struct corruption_t : public warlock_spell_t
       pm *= 1.0 + p()->cache.mastery_value();
     }
     return pm;
+  }
+};
+
+// Needs to be here due to Corruption being a shared spell
+struct seed_of_corruption_t : public warlock_spell_t
+{
+  struct seed_of_corruption_aoe_t : public warlock_spell_t
+  {
+    corruption_t* corruption;
+
+    seed_of_corruption_aoe_t( warlock_t* p )
+      : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
+        corruption( new corruption_t( p, "", true ) )
+    {
+      aoe                              = -1;
+      background                       = true;
+      base_costs[ RESOURCE_MANA ]      = 0;
+
+      corruption->background                  = true;
+      corruption->dual                        = true;
+      corruption->base_costs[ RESOURCE_MANA ] = 0;
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      warlock_spell_t::impact( s );
+
+      if ( result_is_hit( s->result ) )
+      {
+        auto tdata = this->td( s->target );
+        if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
+        {
+          tdata->soc_threshold = 0;
+          tdata->dots_seed_of_corruption->cancel();
+        }
+
+        corruption->set_target( s->target );
+        corruption->execute();
+      }
+    }
+
+    // Copied from affliction_spell_t since this needs to be a warlock_spell_t
+    double composite_da_multiplier( const action_state_t* s ) const override
+    {
+      double pm = warlock_spell_t::composite_da_multiplier( s );
+
+      if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 2 ) ) )
+      {
+        pm *= 1.0 + p()->cache.mastery_value();
+      }
+      return pm;
+    }
+  };
+
+  seed_of_corruption_aoe_t* explosion;
+
+  seed_of_corruption_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "seed_of_corruption", p, p->talents.seed_of_corruption ),
+      explosion( new seed_of_corruption_aoe_t( p ) )
+  {
+    parse_options( options_str );
+    may_crit       = false;
+    tick_zero      = false;
+    base_tick_time = dot_duration;
+    hasted_ticks   = false;
+
+    add_child( explosion );
+
+    //if ( p->talents.sow_the_seeds->ok() )
+    //  aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+  }
+
+  void init() override
+  {
+    warlock_spell_t::init();
+    snapshot_flags |= STATE_SP;
+  }
+
+  void execute() override
+  {
+    if ( td( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) )
+    {
+      for ( auto& possible : target_list() )
+      {
+        if ( !( td( possible )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( possible ) ) )
+        {
+          set_target( possible );
+          break;
+        }
+      }
+    }
+
+    warlock_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    // TOCHECK: Does the threshold reset if the duration is refreshed before explosion?
+    if ( result_is_hit( s->result ) )
+    {
+      td( s->target )->soc_threshold = s->composite_spell_power() * p()->talents.seed_of_corruption->effectN( 1 ).percent();
+    }
+
+    warlock_spell_t::impact( s );
+  }
+
+  // If Seed of Corruption is refreshed on a target, it will extend the duration
+  // but still explode at the original time, wiping the "DoT". tick() should be used instead
+  // of last_tick() to model this appropriately.
+  void tick( dot_t* d ) override
+  {
+    warlock_spell_t::tick( d );
+
+    if ( d->remains() > 0_ms )
+      d->cancel();
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    explosion->set_target( d->target );
+    explosion->schedule_execute();
+
+    warlock_spell_t::last_tick( d );
   }
 };
 
@@ -676,7 +799,7 @@ static void accumulate_seed_of_corruption( warlock_td_t* td, double amount )
   else
   {
     if ( td->source->sim->log )
-      td->source->sim->out_log.printf( "remaining damage to explode seed %f", td->soc_threshold );
+      td->source->sim->out_log.print( "Remaining damage to explode Seed on {} is {}", td->target->name_str, td->soc_threshold );
   }
 }
 
@@ -947,6 +1070,8 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new soul_rot_t( this, options_str );
   if ( action_name == "interrupt" )
     return new interrupt_t( action_name, this, options_str );
+  if ( action_name == "seed_of_corruption" )
+    return new seed_of_corruption_t( this, options_str );
 
   return nullptr;
 }
@@ -1082,6 +1207,8 @@ void warlock_t::init_spells()
   warlock_t::init_spells_destruction();
 
   // Talents
+  talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" );
+  talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
