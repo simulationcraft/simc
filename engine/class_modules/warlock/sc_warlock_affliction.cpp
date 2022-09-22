@@ -512,7 +512,7 @@ struct malefic_rapture_t : public affliction_spell_t
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->talents.malefic_rapture_dmg )
       {
         aoe = 1;
         background = true;
@@ -526,10 +526,10 @@ struct malefic_rapture_t : public affliction_spell_t
 
         m *= p()->get_target_data( s->target )->count_affliction_dots();
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        {
-          m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
-        }
+        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        //{
+        //  m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+        //}
 
         return m;
       }
@@ -538,19 +538,19 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         affliction_spell_t::impact( s );
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        {
-          timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-          warlock_td_t* td = p()->get_target_data( s->target );
+        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        //{
+        //  timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
+        //  warlock_td_t* td = p()->get_target_data( s->target );
 
-          td->dots_agony->adjust_duration( dot_extension );
-          td->dots_unstable_affliction->adjust_duration(dot_extension);
+        //  td->dots_agony->adjust_duration( dot_extension );
+        //  td->dots_unstable_affliction->adjust_duration(dot_extension);
 
-          if ( !p()->talents.absolute_corruption->ok() )
-          {
-            td->dots_corruption->adjust_duration( dot_extension );
-          }
-        }
+        //  if ( !p()->talents.absolute_corruption->ok() )
+        //  {
+        //    td->dots_corruption->adjust_duration( dot_extension );
+        //  }
+        //}
       }
 
       void execute() override
@@ -568,7 +568,7 @@ struct malefic_rapture_t : public affliction_spell_t
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
+      : affliction_spell_t( "malefic_rapture", p, p->talents.malefic_rapture )
     {
       parse_options( options_str );
       aoe = -1;
@@ -581,8 +581,8 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       double c = affliction_spell_t::cost();
 
-      if ( p()->buffs.calamitous_crescendo->check() )
-        c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
+      //if ( p()->buffs.calamitous_crescendo->check() )
+      //  c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
         
       return c;      
     }
@@ -591,8 +591,8 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       timespan_t t = affliction_spell_t::execute_time();
 
-      if ( p()->buffs.calamitous_crescendo->check() )
-        t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
+      //if ( p()->buffs.calamitous_crescendo->check() )
+      //  t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
 
       return t;
     }
@@ -610,7 +610,7 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       affliction_spell_t::execute();
 
-      p()->buffs.calamitous_crescendo->expire();
+      //p()->buffs.calamitous_crescendo->expire();
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -824,6 +824,8 @@ void warlock_t::init_spells_affliction()
   spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
+  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
+  talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
   talents.nightfall           = find_talent_spell( "Nightfall" );
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
