@@ -744,7 +744,7 @@ public:
     // Row 6
     player_talent_t proliferating_chill;
     player_talent_t asphyxiate;
-    player_talent_t assimilation;
+    player_talent_t cold_thirst;
     player_talent_t death_pact;
     player_talent_t grip_of_the_dead;
     player_talent_t deaths_reach;
@@ -10022,7 +10022,7 @@ void death_knight_t::init_spells()
   talent.deaths_reach = find_talent_spell( talent_tree::CLASS, "Death's Reach" );
   // Row 7
   talent.runic_attenuation = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
-  talent.assimilation = find_talent_spell( talent_tree::CLASS, "Assimilation" );
+  talent.cold_thirst = find_talent_spell( talent_tree::CLASS, "Coldthirst" );
   talent.unholy_ground = find_talent_spell( talent_tree::CLASS, "Unholy Ground" );
   // Row 8
   talent.insidious_chill = find_talent_spell( talent_tree::CLASS, "Insidious Chill" );
