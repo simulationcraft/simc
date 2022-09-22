@@ -201,6 +201,9 @@ public:
     const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
 
     // DF - Unstable Affliction
+    player_talent_t unstable_affliction;
+    const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (auto-learned on spec switch?)
+    const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (auto-learned on spec switch?)
     // DF - Seed of Corruption
 
     const spell_data_t* nightfall; //TODO: RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
@@ -423,9 +426,6 @@ public:
     const spell_data_t* corruption_2; // DF - Baked into Xavian Teachings talent
     const spell_data_t* corruption_3; // DF - Baked into Xavian Teachings talent
     const spell_data_t* summon_darkglare; // DF - Now an Affliction talent
-    const spell_data_t* unstable_affliction;  // DF - Now an Affliction talent
-    const spell_data_t* unstable_affliction_2; // DF - Baked into Affliction talent (Soul Shard on demise)
-    const spell_data_t* unstable_affliction_3; // DF - Baked into Affliction talent (21 second total duration)
     const spell_data_t* summon_darkglare_2; // DF - Baked into Affliction talent (2 minute cooldown)
 
     // Demonology only

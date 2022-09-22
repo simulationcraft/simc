@@ -613,14 +613,14 @@ void warlock_td_t::target_demise()
     return;
   }
 
-  if ( warlock.spec.unstable_affliction_2->ok() )
+  if ( warlock.talents.unstable_affliction->ok() )
   {
     if ( dots_unstable_affliction->is_ticking() )
     {
-      warlock.sim->print_log( "Player {} demised. Warlock {} gains a shard from Unstable Affliction.", target->name(),
-                              warlock.name() );
+      warlock.sim->print_log( "Player {} demised. Warlock {} gains {} shard(s) from Unstable Affliction.", target->name(),
+                              warlock.name(), warlock.talents.unstable_affliction_2->effectN( 1 ).base_value() );
 
-      warlock.resource_gain( RESOURCE_SOUL_SHARD, 1, warlock.gains.unstable_affliction_refund );
+      warlock.resource_gain( RESOURCE_SOUL_SHARD, warlock.talents.unstable_affliction_2->effectN( 1 ).base_value(), warlock.gains.unstable_affliction_refund );
     }
   }
   if ( dots_drain_soul->is_ticking() )

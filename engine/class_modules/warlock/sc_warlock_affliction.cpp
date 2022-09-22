@@ -329,14 +329,12 @@ struct corruption_t : public affliction_spell_t
 struct unstable_affliction_t : public affliction_spell_t
 {
   unstable_affliction_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "unstable_affliction", p, p->spec.unstable_affliction )
+    : affliction_spell_t( "unstable_affliction", p, p->talents.unstable_affliction )
   {
     parse_options( options_str );
 
-    if ( p->spec.unstable_affliction_3->ok() )
-    {
-      dot_duration += timespan_t::from_millis( p->spec.unstable_affliction_3->effectN( 1 ).base_value() );
-    }
+    // DF - In beta the rank 3 passive appears to be learned as part of the spec automatically
+    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -815,17 +813,17 @@ void warlock_t::init_spells_affliction()
   using namespace actions_affliction;
 
   // Specialization Spells
-  spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
   spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
-  spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
-  spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
   spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
   talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
+  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
+  talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
+  talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
   talents.nightfall           = find_talent_spell( "Nightfall" );
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
