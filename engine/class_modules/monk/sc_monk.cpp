@@ -1679,21 +1679,21 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.power_strikes->check() )
-      {
         power_strikes = true;
-        p()->buff.power_strikes->expire();
-      }
     }
 
     //------------
 
     monk_melee_attack_t::execute();
-    
-    if ( power_strikes )
-      p().resource_gain( RESOURCE_CHI, p().talent.windwalker.power_strikes->effectN( 1 ).base_value(), p().gain.power_strikes );
  
     if ( result_is_miss( execute_state->result ) )
       return;
+
+    if ( power_strikes )
+    {
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.power_strikes->effectN( 1 ).base_value(), p()->gain.power_strikes );
+      p()->buff.power_strikes->expire();
+    }
 
     //-----------
 
