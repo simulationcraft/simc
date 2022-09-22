@@ -6015,7 +6015,7 @@ struct gift_of_the_ox_t : public monk_heal_t
       auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
           p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
       p()->sample_datas.tranquil_spirit->add( amount_cleared );
-      p()->proc.tranquil_spirit->occur();
+      p()->proc.tranquil_spirit_goto->occur();
     }
   }
 };
@@ -6112,7 +6112,7 @@ struct expel_harm_t : public monk_heal_t
       auto amount_cleared = p()->active_actions.stagger_self_damage->clear_partial_damage_pct(
           p()->talent.brewmaster.tranquil_spirit->effectN( 1 ).percent() );
       p()->sample_datas.tranquil_spirit->add( amount_cleared );
-      p()->proc.tranquil_spirit->occur();
+      p()->proc.tranquil_spirit_expel_harm->occur();
     }
 
   }
@@ -8960,7 +8960,8 @@ void monk_t::init_procs()
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset                = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
-  proc.tranquil_spirit                     = get_proc( "Tranquil Spirit" );
+  proc.tranquil_spirit_expel_harm          = get_proc( "Tranquil Spirit - Expel Harm" );
+  proc.tranquil_spirit_goto                = get_proc( "Tranquil Spirit - Gift of the Ox" );
   proc.tumbling_technique_chi_torpedo      = get_proc( "Tumbling Technique Chi Torpedo Reset" );
   proc.tumbling_technique_roll             = get_proc( "Tumbling Technique Roll Reset" );
   proc.xuens_battlegear_reduction          = get_proc( "Xuen's Battlegear CD Reduction" );

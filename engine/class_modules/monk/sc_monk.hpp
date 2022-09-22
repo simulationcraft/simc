@@ -377,7 +377,8 @@ public:
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> salsalabim_bof_reset;
     propagate_const<proc_t*> sinister_teaching_reduction;
-    propagate_const<proc_t*> tranquil_spirit;
+    propagate_const<proc_t*> tranquil_spirit_expel_harm;
+    propagate_const<proc_t*> tranquil_spirit_goto;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;
     propagate_const<proc_t*> tumbling_technique_roll;
     propagate_const<proc_t*> xuens_battlegear_reduction;
