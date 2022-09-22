@@ -793,7 +793,7 @@ public:
       player_talent_t relish_in_blood;
       // Row 6
       player_talent_t leeching_strike;
-      player_talent_t improved_boneshield;
+      player_talent_t improved_bone_shield;
       player_talent_t insatiable_blade;
       player_talent_t blooddrinker;
       player_talent_t consumption;
@@ -6591,7 +6591,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
 
   heart_strike_t( death_knight_t* p, util::string_view options_str ) :
     death_knight_melee_attack_t( "heart_strike", p, p -> talent.blood.heart_strike ),
-    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.blood.heartbreaker -> effectN( 1 ).base_value() / 10 ) )
+    heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
@@ -6607,7 +6607,7 @@ struct heart_strike_t : public death_knight_melee_attack_t
   // Background constructor for procs from T28 4PC.  Remove constructor after Slands
   heart_strike_t( util::string_view name, death_knight_t* p ) :
     death_knight_melee_attack_t( name, p, p -> find_spell( 206930 ) ),
-    heartbreaker_rp_gen( p -> find_spell( 210738 ) -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) + ( p -> talent.blood.heartbreaker -> effectN( 1 ).base_value() / 10 ) )
+    heartbreaker_rp_gen( p -> talent.blood.heartbreaker -> effectN( 1 ).resource( RESOURCE_RUNIC_POWER ) )
   {
     background = proc = may_crit = true;
     may_miss = false;
@@ -9804,7 +9804,7 @@ double death_knight_t::composite_melee_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
 
-  if ( buffs.bone_shield -> up() && talent.blood.improved_boneshield.ok() )
+  if ( buffs.bone_shield -> up() && talent.blood.improved_bone_shield.ok() )
   {
     haste *= buffs.bone_shield -> value();
   }
@@ -9822,7 +9822,7 @@ double death_knight_t::composite_spell_haste() const
 
   haste *= 1.0 / ( 1.0 + buffs.empower_rune_weapon -> check_value() );
 
-  if ( buffs.bone_shield -> up() && talent.blood.improved_boneshield.ok() )
+  if ( buffs.bone_shield -> up() && talent.blood.improved_bone_shield.ok() )
   {
     haste *= buffs.bone_shield -> value();
   }
@@ -10063,7 +10063,7 @@ void death_knight_t::init_spells()
   talent.blood.relish_in_blood = find_talent_spell( talent_tree::SPECIALIZATION, "Relish in Blood" );
   // Row 6
   talent.blood.leeching_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Leeching Strike" );
-  talent.blood.improved_boneshield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Boneshield" );
+  talent.blood.improved_bone_shield = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Bone Shield" );
   talent.blood.insatiable_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Insatiable Blade" );
   talent.blood.blooddrinker = find_talent_spell( talent_tree::SPECIALIZATION, "Blooddrinker" );
   talent.blood.consumption = find_talent_spell( talent_tree::SPECIALIZATION, "Consumption" );
@@ -10501,7 +10501,7 @@ void death_knight_t::create_buffs()
   buffs.blood_shield = new blood_shield_buff_t( this );
 
   buffs.bone_shield = make_buff( this, "bone_shield", spell.bone_shield )
-        -> set_default_value( 1.0 / ( 1.0 + talent.blood.improved_boneshield -> effectN( 1 ).percent() ) ) // Haste buff
+        -> set_default_value( 1.0 / ( 1.0 + talent.blood.improved_bone_shield -> effectN( 1 ).percent() ) ) // Haste buff
         -> set_stack_change_callback( [ this ]( buff_t*, int old_stacks, int new_stacks )
           {
             if ( talent.blood.foul_bulwark.ok() ) // Change player's max health if FB is talented
@@ -10527,7 +10527,7 @@ void death_knight_t::create_buffs()
             if ( ( ! old_stacks && new_stacks ) || ( old_stacks && ! new_stacks ) )
             {
               invalidate_cache( CACHE_BONUS_ARMOR );
-              if ( talent.blood.improved_boneshield.ok() )
+              if ( talent.blood.improved_bone_shield.ok() )
                 invalidate_cache( CACHE_HASTE );
             }
           } )
