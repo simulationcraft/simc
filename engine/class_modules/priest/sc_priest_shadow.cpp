@@ -2211,13 +2211,13 @@ void priest_t::init_spells_shadow()
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
 
   talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.malediction   = ST( "Malediction" );
+  talents.shadow.encroaching_shadows   = ST( "Encroaching Shadows" );
   // Row 10
-  talents.shadow.shadowflame_prism = ST( "Shadowflame Prism" );
-  talents.shadow.idol_of_cthun     = ST( "Idol of C'Thun" );
-  talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
-  talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );
-  talents.shadow.mind_devourer     = ST( "Mind Devourer" );  // TODO: check values
+  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
+  talents.shadow.idol_of_cthun       = ST( "Idol of C'Thun" );
+  talents.shadow.idol_of_nzoth       = ST( "Idol of N'Zoth" );
+  talents.shadow.idol_of_yoggsaron   = ST( "Idol of Yogg-Saron" );
+  talents.shadow.mind_devourer       = ST( "Mind Devourer" );  // TODO: check values
 
   // General Spells
   specs.mind_flay      = find_specialization_spell( "Mind Flay" );

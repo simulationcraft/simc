@@ -118,7 +118,7 @@ public:
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
       {
         priest().trigger_shadowflame_prism( s->target );
       }
@@ -1582,7 +1582,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
     {
       priest().trigger_shadowflame_prism( s->target );
     }
@@ -2907,7 +2907,7 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.derangement );
-  action.apply_affecting_aura( talents.shadow.malediction );
+  action.apply_affecting_aura( talents.shadow.encroaching_shadows );
 }
 
 void priest_t::invalidate_cache( cache_e cache )

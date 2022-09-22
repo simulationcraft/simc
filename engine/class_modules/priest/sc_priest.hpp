@@ -303,9 +303,9 @@ public:
       player_talent_t screams_of_the_void;
       player_talent_t pain_of_death;
       player_talent_t insidious_ire;
-      player_talent_t malediction;
+      player_talent_t encroaching_shadows;
       // Row 10
-      player_talent_t shadowflame_prism;
+      player_talent_t inescapable_torment;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
