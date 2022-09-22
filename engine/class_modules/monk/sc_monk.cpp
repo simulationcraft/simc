@@ -8960,6 +8960,7 @@ void monk_t::init_procs()
   proc.rsk_reset_totm                      = get_proc( "Rising Sun Kick TotM Reset" );
   proc.salsalabim_bof_reset                = get_proc( "Sal'salabim Breath of Fire Reset" );
   proc.sinister_teaching_reduction         = get_proc( "Sinister Teaching CD Reduction" );
+  proc.tranquil_spirit                     = get_proc( "Tranquil Spirit" );
   proc.tumbling_technique_chi_torpedo      = get_proc( "Tumbling Technique Chi Torpedo Reset" );
   proc.tumbling_technique_roll             = get_proc( "Tumbling Technique Roll Reset" );
   proc.xuens_battlegear_reduction          = get_proc( "Xuen's Battlegear CD Reduction" );
