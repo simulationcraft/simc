@@ -3529,6 +3529,13 @@ void player_t::create_buffs()
                                 ->set_max_stack( 1 )
                                 ->set_duration( timespan_t::from_seconds( 6.0 ) );
 
+    buffs.close_to_heart_leech_aura = make_buff( this, "close_to_heart", find_spell( 389684 ) )
+                                        ->add_invalidate( CACHE_LEECH );
+    buffs.generous_pour_avoidance_aura = make_buff( this, "generous pour", find_spell( 389685 ) )
+                                            ->add_invalidate( CACHE_AVOIDANCE );
+    buffs.windwalking_movement_aura = make_buff( this, "windwalking", find_spell( 365080 ) )
+                                        ->add_invalidate( CACHE_RUN_SPEED );
+
     buffs.movement = new movement_buff_t( this );
 
     if ( !is_pet() )
@@ -4671,6 +4678,9 @@ double player_t::temporary_movement_modifier() const
 
     if ( buffs.angelic_feather->check() )
       temporary = std::max( buffs.angelic_feather->data().effectN( 1 ).percent(), temporary );
+
+    if ( buffs.windwalking_movement_aura->check() )
+      temporary = std::max( buffs.windwalking_movement_aura->data().effectN( 1 ).percent(), temporary );
 
     if ( buffs.normalization_increase && buffs.normalization_increase->check() )
     {

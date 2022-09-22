@@ -1465,6 +1465,88 @@ struct monk_melee_attack_t : public monk_action_t<melee_attack_t>
 };
 
 // ==========================================================================
+// Close to Heart Aura Toggle
+// ==========================================================================
+
+struct close_to_heart_aura_t : public monk_spell_t
+{
+  close_to_heart_aura_t( monk_t* player ) : monk_spell_t( "close_to_heart_aura_toggle", player )
+  {
+    harmful     = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    tl.clear();
+
+    for ( auto t : sim->player_non_sleeping_list )
+    {
+      tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_to_buff = tl[ i ];
+
+      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
+    }
+
+    return tl;
+  }
+};
+
+// ==========================================================================
+// Generous Pour Aura Toggle
+// ==========================================================================
+
+struct generous_pour_aura_t : public monk_spell_t
+{
+  generous_pour_aura_t( monk_t* player ) : monk_spell_t( "generous_pour_aura_toggle", player )
+  {
+    harmful     = false;
+    background  = true;
+    trigger_gcd = timespan_t::zero();
+  }
+
+  size_t available_targets( std::vector<player_t*>& tl ) const override
+  {
+    tl.clear();
+
+    for ( auto t : sim->player_non_sleeping_list )
+    {
+      tl.push_back( t );
+    }
+
+    return tl.size();
+  }
+
+  std::vector<player_t*>& check_distance_targeting( std::vector<player_t*>& tl ) const override
+  {
+    size_t i = tl.size();
+    while ( i > 0 )
+    {
+      i--;
+      player_t* target_to_buff = tl[ i ];
+
+      if ( p()->get_player_distance( *target_to_buff ) > 10.0 )
+        tl.erase( tl.begin() + i );
+    }
+
+    return tl;
+  }
+};
+
+// ==========================================================================
 // Windwalking Aura Toggle
 // ==========================================================================
 
@@ -7179,6 +7261,50 @@ struct touch_of_death_ww_buff_t : public monk_buff_t<buff_t>
 };
 
 // ===============================================================================
+// Close to Heart Buff
+// ===============================================================================
+struct close_to_heart_driver_t : public monk_buff_t<buff_t>
+{
+  double leech_increase;
+  close_to_heart_driver_t( monk_t& p, util::string_view n, const spell_data_t* s )
+    : monk_buff_t( p, n, s ), leech_increase( 0 )
+  {
+    set_tick_callback( [ &p, this ]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      range::for_each( p.close_to_heart_aura->target_list(), [ this ]( player_t* target ) {
+        target->buffs.close_to_heart_leech_aura->trigger( 1, ( leech_increase ), 1, timespan_t::from_seconds( 10 ) );
+      } );
+    } );
+    set_cooldown( timespan_t::zero() );
+    set_duration( timespan_t::zero() );
+    set_period( timespan_t::from_seconds( 1 ) );
+    set_tick_behavior( buff_tick_behavior::CLIP );
+    leech_increase = p.talent.general.close_to_heart->effectN( 1 ).percent();
+  }
+};
+
+// ===============================================================================
+// Generous Pour Buff
+// ===============================================================================
+struct generous_pour_driver_t : public monk_buff_t<buff_t>
+{
+  double avoidance_increase;
+  generous_pour_driver_t( monk_t& p, util::string_view n, const spell_data_t* s )
+    : monk_buff_t( p, n, s ), avoidance_increase( 0 )
+  {
+    set_tick_callback( [ &p, this ]( buff_t*, int /* total_ticks */, timespan_t /* tick_time */ ) {
+      range::for_each( p.generous_pour_aura->target_list(), [ this ]( player_t* target ) {
+        target->buffs.generous_pour_avoidance_aura->trigger( 1, ( avoidance_increase ), 1, timespan_t::from_seconds( 10 ) );
+      } );
+    } );
+    set_cooldown( timespan_t::zero() );
+    set_duration( timespan_t::zero() );
+    set_period( timespan_t::from_seconds( 1 ) );
+    set_tick_behavior( buff_tick_behavior::CLIP );
+    avoidance_increase = p.talent.general.generous_pour->effectN( 1 ).percent();
+  }
+};  
+
+// ===============================================================================
 // Windwalking Buff
 // ===============================================================================
 struct windwalking_driver_t : public monk_buff_t<buff_t>
@@ -7477,6 +7603,8 @@ monk_t::monk_t( sim_t* sim, util::string_view name, race_e r )
     heavy_stagger_threshold( 0.03333 )      // Heavy transfers at 66.6% Stagger; 3.34% every 1/2 sec
 {
   // actives
+  close_to_heart_aura = nullptr;
+  generous_pour_aura  = nullptr;
   windwalking_aura = nullptr;
 
   cooldown.anvil_and_stave         = get_cooldown( "anvil_and_stave" );
@@ -8462,6 +8590,9 @@ void monk_t::init_spells()
   
   // General
   active_actions.resonant_fists = new actions::spells::resonant_fists_t( *this );
+  close_to_heart_aura           = new actions::close_to_heart_aura_t( this );
+  generous_pour_aura            = new actions::generous_pour_aura_t( this );
+  windwalking_aura              = new actions::windwalking_aura_t( this );
 
   // Brewmaster
   if ( spec_tree == MONK_BREWMASTER )
@@ -8477,7 +8608,6 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_WINDWALKER )
   {
     active_actions.empowered_tiger_lightning  = new actions::empowered_tiger_lightning_t ( *this );
-    windwalking_aura                          = new actions::windwalking_aura_t ( this );
   }
 
   // Conduit
@@ -8607,9 +8737,13 @@ void monk_t::create_buffs ()
   // General
   buff.chi_torpedo = make_buff ( this, "chi_torpedo", find_spell ( 119085 ) )->set_default_value_from_effect ( 1 );
 
-  buff.fortifying_brew = new buffs::fortifying_brew_t (
+  buff.close_to_heart_driver = new buffs::close_to_heart_driver_t( *this, "close_to_heart_aura_driver", find_spell( 389684 ) );
+
+  buff.fortifying_brew    = new buffs::fortifying_brew_t(
     *this, "fortifying_brew",
     ( specialization () == MONK_BREWMASTER ? passives.fortifying_brew : talent.general.fortifying_brew ) );
+
+  buff.generous_pour_driver = new buffs::generous_pour_driver_t( *this, "generous_pour_aura_driver", find_spell( 389685 ) );
 
   buff.rushing_jade_wind = new buffs::rushing_jade_wind_buff_t ( *this, "rushing_jade_wind",
     ( specialization () == MONK_BREWMASTER ? talent.brewmaster.rushing_jade_wind : 
@@ -8622,6 +8756,8 @@ void monk_t::create_buffs ()
   buff.spinning_crane_kick = make_buff ( this, "spinning_crane_kick", spec.spinning_crane_kick )
     ->set_default_value_from_effect ( 2 )
     ->set_refresh_behavior ( buff_refresh_behavior::PANDEMIC );
+
+  buff.windwalking_driver = new buffs::windwalking_driver_t( *this, "windwalking_aura_driver", find_spell( 365080 ) );
 
   // Brewmaster
   if ( spec_tree == MONK_BREWMASTER )
@@ -8786,8 +8922,6 @@ void monk_t::create_buffs ()
 
     buff.transfer_the_power = make_buff ( this, "transfer_the_power", find_spell ( 195321 ) )
       ->set_default_value ( 1 );
-
-    buff.windwalking_driver = new buffs::windwalking_driver_t ( *this, "windwalking_aura_driver", find_spell ( 166646 ) );
 
     buff.whirling_dragon_punch = make_buff ( this, "whirling_dragon_punch", find_spell ( 196742 ) )
       ->set_refresh_behavior ( buff_refresh_behavior::NONE );
@@ -9877,6 +10011,32 @@ void monk_t::combat_begin()
 {
   base_t::combat_begin();
   
+  if ( talent.general.close_to_heart->ok() )
+  {
+    if ( sim->distance_targeting_enabled )
+    {
+      buff.close_to_heart_driver->trigger();
+    }
+    else
+    {
+      buffs.close_to_heart_leech_aura->trigger( 1, buffs.close_to_heart_leech_aura->data().effectN( 1 ).percent(), 1,
+                                                timespan_t::zero() );
+    }
+  }
+
+   if ( talent.general.generous_pour->ok() )
+  {
+    if ( sim->distance_targeting_enabled )
+    {
+      buff.generous_pour_driver->trigger();
+    }
+    else
+    {
+      buffs.generous_pour_avoidance_aura->trigger( 1, buffs.generous_pour_avoidance_aura->data().effectN( 1 ).percent(), 1,
+                                                timespan_t::zero() );
+    }
+  }
+
   if ( talent.general.windwalking->ok() )
   {
     if ( sim->distance_targeting_enabled )
@@ -10759,8 +10919,12 @@ struct monk_module_t : public module_t
 
   void init( player_t* p ) const override
   {
+    p->buffs.close_to_heart_leech_aura =
+        make_buff( p, "close_to_heart_leech_aura", p->find_spell( 389684 ) )->add_invalidate( CACHE_LEECH );
+    p->buffs.close_to_heart_leech_aura =
+        make_buff( p, "generous_pour_avoidance_aura", p->find_spell( 389685 ) )->add_invalidate( CACHE_AVOIDANCE );
     p->buffs.windwalking_movement_aura =
-        make_buff( p, "windwalking_movement_aura", p->find_spell( 166646 ) )->add_invalidate( CACHE_RUN_SPEED );
+        make_buff( p, "windwalking_movement_aura", p->find_spell( 365080 ) )->add_invalidate( CACHE_RUN_SPEED );
   }
   void combat_begin( sim_t* ) const override
   {

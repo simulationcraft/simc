@@ -145,6 +145,8 @@ public:
   using base_t = player_t;
 
   // Active
+  action_t* close_to_heart_aura;
+  action_t* generous_pour_aura;
   action_t* windwalking_aura;
 
   struct sample_data_t
@@ -218,10 +220,13 @@ public:
   {
     // General
     propagate_const<buff_t*> chi_torpedo;
+    propagate_const<buff_t*> close_to_heart_driver;
     propagate_const<buff_t*> dampen_harm;
     propagate_const<buff_t*> diffuse_magic;
+    propagate_const<buff_t*> generous_pour_driver;
     propagate_const<buff_t*> rushing_jade_wind;
     propagate_const<buff_t*> spinning_crane_kick;
+    propagate_const<buff_t*> windwalking_driver;
 
     // Brewmaster
     propagate_const<buff_t*> bladed_armor;
@@ -280,7 +285,6 @@ public:
     propagate_const<buff_t*> touch_of_death_ww;
     propagate_const<buff_t*> touch_of_karma;
     propagate_const<buff_t*> transfer_the_power;
-    propagate_const<buff_t*> windwalking_driver;
     propagate_const<buff_t*> whirling_dragon_punch;
     propagate_const<buff_t*> power_strikes;
 
