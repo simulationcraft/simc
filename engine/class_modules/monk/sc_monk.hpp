@@ -158,8 +158,9 @@ public:
     sample_data_helper_t* moderate_stagger_damage;
     sample_data_helper_t* heavy_stagger_damage;
     sample_data_helper_t* purified_damage;
-    sample_data_helper_t* staggering_strikes_cleared;
     sample_data_helper_t* quick_sip_cleared;
+    sample_data_helper_t* staggering_strikes_cleared;
+    sample_data_helper_t* tranquil_spirit;
     double buffed_stagger_base;
     double buffed_stagger_pct_player_level, buffed_stagger_pct_target_level;
   } sample_datas;
@@ -234,6 +235,7 @@ public:
     propagate_const<buff_t*> graceful_exit;
     propagate_const<buff_t*> hit_scheme;
     propagate_const<buff_t*> invoke_niuzao;
+    propagate_const<buff_t*> pretense_of_instability;
     propagate_const<buff_t*> purified_chi;
     propagate_const<buff_t*> shuffle;
     propagate_const<buff_t*> training_of_niuzao;
@@ -375,6 +377,7 @@ public:
     propagate_const<proc_t*> rsk_reset_totm;
     propagate_const<proc_t*> salsalabim_bof_reset;
     propagate_const<proc_t*> sinister_teaching_reduction;
+    propagate_const<proc_t*> tranquil_spirit;
     propagate_const<proc_t*> tumbling_technique_chi_torpedo;
     propagate_const<proc_t*> tumbling_technique_roll;
     propagate_const<proc_t*> xuens_battlegear_reduction;
@@ -509,7 +512,7 @@ public:
       player_talent_t attenuation;
       player_talent_t stormstouts_last_keg;
       player_talent_t call_to_arms;
-      player_talent_t effusive_anima_accelerator;
+      player_talent_t chi_surge;
     } brewmaster;
 
     // Mistweaver
