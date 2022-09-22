@@ -74,7 +74,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges();
+    cooldown->charges = data().charges() + priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value();
   }
 
   bool talbadars_stratagem_active() const
@@ -161,23 +161,6 @@ public:
     }
 
     return priest_spell_t::execute_time();
-  }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    auto mm = priest_spell_t::composite_crit_chance_multiplier();
-
-    if ( priest().talents.shadow.mastermind )
-    {
-      mm *= 1 + priest().talents.shadow.mastermind->effectN( 1 ).percent();
-    }
-
-    if ( priest().talents.shadow.mind_melt && priest().buffs.mind_melt->check() )
-    {
-      mm *= 1 + priest().buffs.mind_melt->check() * priest().buffs.mind_melt->data().effectN( 2 ).percent();
-    }
-
-    return mm;
   }
 
   timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
