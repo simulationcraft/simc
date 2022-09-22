@@ -56,6 +56,7 @@ public:
     propagate_const<dot_t*> unholy_transfusion;
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_sear;
+    propagate_const<dot_t*> void_torrent;
   } dots;
 
   struct buffs_t

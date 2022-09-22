@@ -2419,7 +2419,8 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
   if ( talents.shadow.screams_of_the_void.enabled() )
   {
     priest_td_t* td = get_target_data( target );
-    if ( td->dots.mind_flay->is_ticking() || talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+    if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
+         talents.shadow.mind_sear.enabled() && channeling != nullptr &&
                                                  channeling->id == talents.shadow.mind_sear->id() )
     {
       return true;

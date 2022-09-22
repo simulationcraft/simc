@@ -1566,10 +1566,6 @@ struct shadow_word_death_t final : public priest_spell_t
           cooldown->reset( false );
         }
       }
-      else
-      {
-        priest().buffs.death_and_madness_reset->expire();
-      }
     }
 
     if ( priest().talents.shadow.deathspeaker.enabled() )
@@ -2090,6 +2086,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
   dots.mind_flay          = target->get_dot( "mind_flay", &p );
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
+  dots.void_torrent       = target->get_dot( "void_torrent", &p );
 
   buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
@@ -2837,9 +2834,8 @@ void priest_t::create_buffs()
       make_buff( this, "depth_of_the_shadows", talents.depth_of_the_shadows->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1 );
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
-  buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", talents.death_and_madness )
-                                      ->set_quiet( true )
-                                      ->set_duration( timespan_t::from_seconds( 0 ) );
+  buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", find_spell( 390628 ) )
+                                      ->set_trigger_spell( talents.death_and_madness );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
