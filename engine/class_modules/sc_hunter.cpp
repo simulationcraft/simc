@@ -409,20 +409,23 @@ public:
 
     // Marksmanship Tree
     buff_t* precise_shots;
-    buff_t* streamline;
-    buff_t* bullseye;
-    buff_t* volley;
-    buff_t* trick_shots;
-    buff_t* double_tap;
-    buff_t* steady_focus;
     buff_t* lone_wolf;
+    buff_t* streamline;
+    buff_t* deathblow;
+    buff_t* razor_fragments;
+    buff_t* double_tap;
+    buff_t* trick_shots;
+    buff_t* bombardment;
+    buff_t* volley;
+    buff_t* steady_focus;
     buff_t* trueshot;
     buff_t* lock_and_load;
-    buff_t* deathblow;
+    buff_t* bullseye;
+    buff_t* bulletstorm;
+    buff_t* eagletalons_true_focus;
+    buff_t* salvo;
     buff_t* unerring_vision_hidden;
     buff_t* unerring_vision;
-    buff_t* eagletalons_true_focus;
-    buff_t* bombardment;
 
     // Beast Mastery Tree
     std::array<buff_t*, BARBED_SHOT_BUFFS_MAX> barbed_shot;
@@ -453,6 +456,7 @@ public:
     buff_t* nesingwarys_apparatus;
     buff_t* secrets_of_the_vigil;
     buff_t* pact_of_the_soulstalkers;
+    buff_t* eagletalons_true_focus_runeforge;
 
     // Tier Set Bonuses
     buff_t* killing_frenzy;
@@ -513,6 +517,9 @@ public:
   struct procs_t
   {
     proc_t* lethal_shots;
+    proc_t* calling_the_shots;
+    proc_t* windrunners_guidance;
+
     proc_t* wild_call;
     proc_t* wild_instincts;
 
@@ -557,51 +564,55 @@ public:
 
     // Marksmanship Tree
     spell_data_ptr_t aimed_shot;
-    spell_data_ptr_t improved_arcane_shot;
+
+    spell_data_ptr_t crack_shot;
     spell_data_ptr_t improved_steady_shot;
     spell_data_ptr_t precise_shots;
 
     spell_data_ptr_t rapid_fire;
-    spell_data_ptr_t killing_blow;
-    spell_data_ptr_t focused_aim;
-
-    spell_data_ptr_t streamline;
-    spell_data_ptr_t careful_aim;
-    spell_data_ptr_t bullseye;
-    spell_data_ptr_t hunters_knowledge;
+    spell_data_ptr_t lone_wolf;
     spell_data_ptr_t chimaera_shot;
 
-    spell_data_ptr_t surging_shots;
-    spell_data_ptr_t lethal_shots;
-    spell_data_ptr_t multishot_mm;
-    spell_data_ptr_t true_aim;
-    spell_data_ptr_t bursting_shot;
+    spell_data_ptr_t streamline;
+    spell_data_ptr_t killing_blow;
+    spell_data_ptr_t hunters_knowledge;
+    spell_data_ptr_t careful_aim;
 
-    spell_data_ptr_t volley;
-    spell_data_ptr_t trick_shots;
+    spell_data_ptr_t lethal_shots;
+    spell_data_ptr_t surging_shots;
+    spell_data_ptr_t deathblow;
+    spell_data_ptr_t true_aim;
+    spell_data_ptr_t focused_aim;
+
+    spell_data_ptr_t multishot_mm;
+    spell_data_ptr_t razor_fragments;
     spell_data_ptr_t double_tap;
     spell_data_ptr_t dead_eye;
+    spell_data_ptr_t bursting_shot;
 
-    spell_data_ptr_t steady_focus;
-    spell_data_ptr_t lone_wolf;
-    spell_data_ptr_t legacy_of_the_windrunners;
-
+    spell_data_ptr_t trick_shots;
     spell_data_ptr_t bombardment;
-    spell_data_ptr_t razor_fragments;
-    spell_data_ptr_t sharpshooter;
-    spell_data_ptr_t trueshot;
-    spell_data_ptr_t lock_and_load;
-    spell_data_ptr_t windrunners_guidance;
+    spell_data_ptr_t volley;
+    spell_data_ptr_t steady_focus;
+    spell_data_ptr_t serpentstalkers_trickery;
 
     spell_data_ptr_t light_ammo;
     spell_data_ptr_t heavy_ammo;
-    spell_data_ptr_t calling_the_shots;
-    spell_data_ptr_t serpentstalkers_trickery;
-    spell_data_ptr_t deathblow;
+    spell_data_ptr_t trueshot;
+    spell_data_ptr_t lock_and_load;
+    spell_data_ptr_t bullseye;
 
-    // TODO Salvo
-    spell_data_ptr_t unerring_vision; // TODO: crit buff broken in game
+    spell_data_ptr_t bulletstorm;
+    spell_data_ptr_t sharpshooter;
     spell_data_ptr_t eagletalons_true_focus;
+    spell_data_ptr_t legacy_of_the_windrunners;
+
+    spell_data_ptr_t salvo;
+    spell_data_ptr_t calling_the_shots;
+    spell_data_ptr_t unerring_vision;
+    spell_data_ptr_t windrunners_barrage;
+    spell_data_ptr_t readiness;
+    spell_data_ptr_t windrunners_guidance;
 
     // Beast Mastery Tree
     spell_data_ptr_t barbed_shot;
@@ -756,6 +767,8 @@ public:
     unsigned steady_focus_counter = 0;
     // Focus used for Focused Trickery (363666)
     double focus_used_FT = 0;
+    // Focus used for Calling the Shots (260404)
+    double focus_used_CTS = 0;
     unsigned dire_pack_counter = 0;
     unsigned bombardment_counter = 0;
   } state;
@@ -893,7 +906,7 @@ public:
   void trigger_birds_of_prey( player_t* t );
   void trigger_bloodseeker_update();
   void trigger_lethal_shots();
-  void trigger_calling_the_shots();
+  void trigger_calling_the_shots( action_t* action, double cost );
   bool trigger_focused_trickery( action_t* action, double cost );
   void trigger_latent_poison_injectors( const action_state_t* s );
   void trigger_bombardment();
@@ -911,6 +924,7 @@ public:
   bool track_cd_waste;
   maybe_bool triggers_wild_spirits;
   maybe_bool triggers_focused_trickery; // 4pc
+  maybe_bool triggers_calling_the_shots;
 
   struct {
     // bm
@@ -956,15 +970,14 @@ public:
     ab::apply_affecting_aura( p -> talents.improved_traps );
 
     // Marksmanship Tree passives
-    ab::apply_affecting_aura( p -> talents.improved_arcane_shot );
-    ab::apply_affecting_aura( p -> talents.killing_blow );
-    ab::apply_affecting_aura( p -> talents.focused_aim );
+    ab::apply_affecting_aura( p -> talents.crack_shot );
     ab::apply_affecting_aura( p -> talents.streamline );
+    ab::apply_affecting_aura( p -> talents.killing_blow );
     ab::apply_affecting_aura( p -> talents.hunters_knowledge );
     ab::apply_affecting_aura( p -> talents.surging_shots );
     ab::apply_affecting_aura( p -> talents.true_aim );
+    ab::apply_affecting_aura( p -> talents.focused_aim );
     ab::apply_affecting_aura( p -> talents.dead_eye );
-    ab::apply_affecting_aura( p -> talents.windrunners_guidance );
 
     // Beast Mastery Tree Passives
     ab::apply_affecting_aura( p -> talents.loaded_quiver );
@@ -1037,10 +1050,22 @@ public:
       triggers_focused_trickery = false;
     }
 
+    if ( p() -> talents.calling_the_shots.ok() )
+    {
+      if ( triggers_calling_the_shots.is_none() )
+        triggers_calling_the_shots = !ab::background && !ab::proc && ab::base_cost() > 0;
+    }
+    else
+    {
+      triggers_calling_the_shots = false;
+    }
+
     if ( triggers_wild_spirits )
       ab::sim -> print_debug( "{} action {} set to proc Wild Spirits", ab::player -> name(), ab::name() );
     if ( triggers_focused_trickery )
       ab::sim -> print_debug( "{} action {} set to proc Focused Trickery 4pc", ab::player -> name(), ab::name() );
+    if ( triggers_calling_the_shots )
+      ab::sim -> print_debug( "{} action {} set to proc Calling the Shots", ab::player -> name(), ab::name() );
   }
 
   timespan_t gcd() const override
@@ -1071,6 +1096,9 @@ public:
 
     if ( triggers_focused_trickery )
       p() -> trigger_focused_trickery( this, ab::base_cost() );
+
+    if ( triggers_calling_the_shots )
+      p() -> trigger_calling_the_shots( this, ab::cost() );
   }
 
   void impact( action_state_t* s ) override
@@ -1145,8 +1173,8 @@ public:
   {
     double c = ab::cost();
 
-    if ( p() -> buffs.eagletalons_true_focus -> check() )
-      c *= 1 + p() -> buffs.eagletalons_true_focus -> check_value();
+    if ( p() -> buffs.eagletalons_true_focus_runeforge -> check() )
+      c *= 1 + p() -> buffs.eagletalons_true_focus_runeforge -> check_value();
 
     return ceil( c );
   }
@@ -2539,8 +2567,7 @@ struct trick_shots_t : public buff_t
     buff_t::expire_override( remaining_stacks, remaining_duration );
 
     hunter_t* p = debug_cast<hunter_t*>( player );
-    if ( p -> talents.razor_fragments.ok() )
-      p -> buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+    p -> buffs.razor_fragments -> trigger();
   }
 };
 
@@ -2636,12 +2663,21 @@ void hunter_t::trigger_lethal_shots()
   }
 }
 
-void hunter_t::trigger_calling_the_shots()
+void hunter_t::trigger_calling_the_shots( action_t* action, double cost )
 {
   if ( !talents.calling_the_shots.ok() )
     return;
 
-  cooldowns.trueshot -> adjust( - talents.calling_the_shots -> effectN( 1 ).time_value() );
+  state.focus_used_CTS += cost;
+  sim -> print_debug( "{} action {} spent {} focus, calling the shots now at {}", name(), action->name(), cost, state.focus_used_CTS );
+
+  const double calling_the_shots_value = talents.calling_the_shots -> effectN( 2 ).base_value();
+  while ( state.focus_used_CTS >= calling_the_shots_value )
+  {
+    state.focus_used_CTS -= calling_the_shots_value;
+    cooldowns.trueshot -> adjust( - talents.calling_the_shots -> effectN( 1 ).time_value() );
+    procs.calling_the_shots -> occur();
+  }
 }
 
 void hunter_t::consume_trick_shots()
@@ -2836,6 +2872,8 @@ struct barrage_t: public hunter_spell_t
     may_miss = may_crit = false;
     channeled = true;
     triggers_wild_spirits = false;
+    // 19-9-22 TODO: barrage is the only ability not counting toward cts
+    triggers_calling_the_shots = false;
 
     tick_action = p -> get_background_action<damage_t>( "barrage_damage" );
     starved_proc = p -> get_proc( "starved: barrage" );
@@ -2856,17 +2894,40 @@ struct kill_shot_t : hunter_ranged_attack_t
 {
   struct state_data_t
   {
+    bool razor_fragments_up = false;
     bool flayers_mark_up = false;
 
     friend void sc_format_to( const state_data_t& data, fmt::format_context::iterator out ) {
-      fmt::format_to( out, "flayers_mark_up={:d}", data.flayers_mark_up );
+      fmt::format_to( out, "razor_fragments_up={:d} flayers_mark_up={:d}", data.razor_fragments_up, data.flayers_mark_up );
     }
   };
   using state_t = hunter_action_state_t<state_data_t>;
 
+  // talent
   struct razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
   {
+    double result_mod;
+
     razor_fragments_t( util::string_view n, hunter_t* p )
+      : residual_periodic_action_t( n, p, p -> find_spell( 385638 ) )
+    {
+      result_mod = p -> find_spell( 388998 ) -> effectN( 3 ).percent();
+      aoe = as<int>( p -> find_spell( 388998 ) -> effectN( 2 ).base_value() );
+    }
+
+    void init() override
+    {
+      residual_periodic_action_t::init();
+
+      snapshot_flags |= STATE_TGT_MUL_TA;
+      update_flags |= STATE_TGT_MUL_TA;
+    }
+  };
+
+  // runeforge
+  struct pouch_of_razor_fragments_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+  {
+    pouch_of_razor_fragments_t( util::string_view n, hunter_t* p )
       : residual_periodic_action_t( n, p, p -> find_spell( 356620 ) )
     {
     }
@@ -2881,6 +2942,7 @@ struct kill_shot_t : hunter_ranged_attack_t
   };
 
   double health_threshold_pct;
+  pouch_of_razor_fragments_t* razor_fragments_runeforge = nullptr;
   razor_fragments_t* razor_fragments = nullptr;
 
   kill_shot_t( hunter_t* p, util::string_view options_str ):
@@ -2889,10 +2951,15 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    if ( p -> legendary.pouch_of_razor_fragments.ok() ||
-         p -> talents.razor_fragments.ok() )
+    if ( p -> legendary.pouch_of_razor_fragments.ok() )
     {
-      razor_fragments = p -> get_background_action<razor_fragments_t>( "pouch_of_razor_fragments" );
+      razor_fragments_runeforge = p -> get_background_action<pouch_of_razor_fragments_t>( "pouch_of_razor_fragments" );
+      add_child( razor_fragments_runeforge );
+    }
+
+    if ( p -> talents.razor_fragments.ok() )
+    {
+      razor_fragments = p -> get_background_action<razor_fragments_t>( "razor_fragments" );
       add_child( razor_fragments );
     }
   }
@@ -2904,6 +2971,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     p() -> buffs.flayers_mark -> up(); // benefit tracking
 
     p() -> buffs.deathblow -> decrement();
+    p() -> buffs.razor_fragments -> decrement();
+
     p() -> buffs.flayers_mark -> decrement();
     p() -> buffs.empowered_release -> decrement();
 
@@ -2914,14 +2983,25 @@ struct kill_shot_t : hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    if ( razor_fragments && debug_cast<state_t*>( s ) -> flayers_mark_up )
+    if ( razor_fragments && debug_cast<state_t*>( s ) -> razor_fragments_up )
     {
-      double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
+      double amount = s -> result_amount * razor_fragments -> result_mod;
       if ( amount > 0 )
       {
         std::vector<player_t*>& tl = target_list();
         for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments -> aoe ) ) ) )
           residual_action::trigger( razor_fragments, t, amount );
+      }
+    }
+
+    if ( razor_fragments_runeforge && debug_cast<state_t*>( s ) -> flayers_mark_up )
+    {
+      double amount = s -> result_amount * p() -> legendary.pouch_of_razor_fragments -> effectN( 1 ).percent();
+      if ( amount > 0 )
+      {
+        std::vector<player_t*>& tl = target_list();
+        for ( player_t* t : util::make_span( tl ).first( std::min( tl.size(), size_t( razor_fragments_runeforge -> aoe ) ) ) )
+          residual_action::trigger( razor_fragments_runeforge, t, amount );
       }
     }
   }
@@ -2948,6 +3028,8 @@ struct kill_shot_t : hunter_ranged_attack_t
     am *= 1 + p() -> buffs.flayers_mark -> check_value();
     am *= 1 + p() -> buffs.empowered_release -> check_value();
 
+    am *= 1 + p() -> buffs.razor_fragments -> check_value();
+
     return am;
   }
 
@@ -2959,7 +3041,9 @@ struct kill_shot_t : hunter_ranged_attack_t
   void snapshot_state( action_state_t* s, result_amount_type type ) override
   {
     hunter_ranged_attack_t::snapshot_state( s, type );
-    debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check();
+    debug_cast<state_t*>( s ) -> razor_fragments_up = p() -> buffs.razor_fragments -> check();
+    // TODO seems to be a bit more complicated but basically only one triggers at once and the talent seems to take precedent over rungeforge
+    debug_cast<state_t*>( s ) -> flayers_mark_up = p() -> buffs.flayers_mark -> check() && !p() -> buffs.razor_fragments -> check();
   }
 };
 
@@ -2981,11 +3065,47 @@ struct arcane_shot_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t::execute();
 
     p() -> trigger_lethal_shots();
-    p() -> trigger_calling_the_shots();
     p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
+  }
+
+  double cost() const override
+  {
+    double c = hunter_ranged_attack_t::cost();
+
+    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
+    if ( p() -> buffs.eagletalons_true_focus -> check() )
+      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
+
+    return c;
+  }
+};
+
+// Wind Arrow =========================================================================
+
+struct wind_arrow_t final : public hunter_ranged_attack_t
+{
+  wind_arrow_t( util::string_view n, hunter_t* p ):
+    hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
+  {
+    dual = true;
+    proc = true;
+    // LotW arrows behave more like AiS re cast time/speed
+    // TODO: RETEST for DL & test its behavior on lnl AiSes
+    base_execute_time = p -> talents.aimed_shot -> cast_time();
+    travel_speed = p -> talents.aimed_shot -> missile_speed();
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p() -> talents.windrunners_guidance.ok() && rng().roll( p() -> talents.windrunners_guidance -> effectN( 1 ).percent() ) ) {
+      p() -> buffs.trueshot -> trigger( p() -> talents.windrunners_guidance -> effectN( 2 ).time_value() );
+      p() -> procs.windrunners_guidance -> occur();
+    }
   }
 };
 
@@ -2993,10 +3113,19 @@ struct arcane_shot_t: public hunter_ranged_attack_t
 
 struct wailing_arrow_t: public hunter_ranged_attack_t
 {
+  struct {
+    int st_count = 0;
+    int aoe_count = 0;
+    wind_arrow_t* action = nullptr;
+  } windrunners_barrage;
+
   struct damage_t final : hunter_ranged_attack_t
   {
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) )
+    int windrunners_barrage_count = 0;
+    wind_arrow_t* windrunners_barrage_action = nullptr;
+
+    damage_t( util::string_view n, hunter_t* p, wind_arrow_t* wind_arrow, int aoe_count ):
+      hunter_ranged_attack_t( n, p, p -> find_spell( 354831 ) ), windrunners_barrage_count( aoe_count ), windrunners_barrage_action( wind_arrow )
     {
       aoe = -1;
       attack_power_mod.direct = data().effectN( 1 ).ap_coeff();
@@ -3004,6 +3133,25 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
 
       dual = true;
       triggers_wild_spirits = false;
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      if ( windrunners_barrage_action && execute_state && execute_state -> chain_target > 0)
+      {
+        // 19-9-22 TODO: splits arrows evenly among secondary targets but discards remainders
+        int per_target = std::max( windrunners_barrage_count / execute_state -> chain_target, 1 );
+        int targets = std::min( windrunners_barrage_count, execute_state -> chain_target );
+        std::vector<player_t*>& tl = target_list();
+
+        for ( int t = 1; t <= targets; t++ )
+        {
+          for ( int i = 0; i < per_target; i++)
+            windrunners_barrage_action -> execute_on_target( tl[ t ]);
+        }
+      }
     }
   };
 
@@ -3013,9 +3161,34 @@ struct wailing_arrow_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
-    impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage" );
+    if ( p -> talents.windrunners_barrage.ok() )
+    {
+      windrunners_barrage.st_count = as<int>( p -> talents.windrunners_barrage -> effectN( 1 ).base_value() );
+      windrunners_barrage.aoe_count = as<int>( p -> talents.windrunners_barrage -> effectN( 2 ).base_value() );
+      windrunners_barrage.action = p -> get_background_action<wind_arrow_t>( "windrunners_barrage" );
+      add_child(windrunners_barrage.action);
+    }
+
+    impact_action = p -> get_background_action<damage_t>( "wailing_arrow_damage", windrunners_barrage.action, windrunners_barrage.aoe_count );
     impact_action -> stats = stats;
     stats -> action_list.push_back( impact_action );
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    // 19-9-22 TODO: currently no arrows are fired at the main target
+    if ( windrunners_barrage.action )
+    {
+      for ( int i = 0; i < windrunners_barrage.st_count; i++ )
+        windrunners_barrage.action -> execute_on_target( target );
+    }
+
+    if ( p() -> talents.readiness.ok() ) {
+      p() -> cooldowns.rapid_fire -> reset( false );
+      p() -> cooldowns.aimed_shot -> reset( p() -> talents.readiness -> effectN( 2 ).base_value() );
+    }
   }
 
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
@@ -3053,6 +3226,21 @@ struct explosive_shot_t : public hunter_ranged_attack_t
   timespan_t calculate_dot_refresh_duration( const dot_t* dot, timespan_t triggered_duration ) const override
   {
     return dot -> time_to_next_tick() + triggered_duration;
+  }
+};
+
+struct explosive_shot_background_t : public explosive_shot_t
+{
+  explosive_shot_background_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
+  {
+    dual = true;
+    base_costs[ RESOURCE_FOCUS ] = 0;
+    triggers_wild_spirits = false;
+  }
+
+  timespan_t travel_time() const override
+  {
+    return 0_s;
   }
 };
 
@@ -3285,30 +3473,12 @@ struct single_target_event_t final : public event_t
   }
 };
 
-struct explosive_shot_munitions_t : explosive_shot_t
-{
-  explosive_shot_munitions_t( util::string_view, hunter_t* p ) : explosive_shot_t( p, "" )
-  {
-    background = dual = true;
-  }
-
-  timespan_t travel_time() const override
-  {
-    return 0_s;
-  }
-
-  double cost() const override
-  {
-    return 0.0;
-  }
-};
-
 } // namespace death_chakram
 
 struct death_chakram_t : death_chakram::base_t
 {
   death_chakram::single_target_t* single_target;
-  death_chakram::explosive_shot_munitions_t* explosive = nullptr;
+  explosive_shot_background_t* explosive = nullptr;
 
   death_chakram_t( hunter_t* p, util::string_view options_str ):
     death_chakram::base_t( "death_chakram", p, p -> talents.death_chakram ),
@@ -3326,7 +3496,7 @@ struct death_chakram_t : death_chakram::base_t
     school = single_target -> school;
 
     if ( p -> legendary.bag_of_munitions.ok() )
-      explosive = p -> get_background_action<death_chakram::explosive_shot_munitions_t>( "explosive_shot_munitions" );
+      explosive = p -> get_background_action<explosive_shot_background_t>( "explosive_shot_munitions" );
   }
 
   void init() override
@@ -3752,12 +3922,22 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::execute();
 
-    p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
     p() -> trigger_bombardment();
 
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
+  }
+
+  double cost() const override
+  {
+    double c = hunter_ranged_attack_t::cost();
+
+    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
+    if ( p() -> buffs.eagletalons_true_focus -> check() )
+      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
+
+    return c;
   }
 
   void schedule_travel( action_state_t* s ) override
@@ -3829,21 +4009,31 @@ struct aimed_shot_base_t: public hunter_ranged_attack_t
     hunter_ranged_attack_t( name, p, p -> talents.aimed_shot )
   {
     radius = 8;
-    base_aoe_multiplier = p -> talents.trick_shots -> effectN( 4 ).percent()
+    base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 4 ).percent()
       + p -> conduits.deadly_chain.percent()
       + p -> talents.heavy_ammo -> effectN( 3 ).percent();
 
-    trick_shots.target_count = 1 + as<int>( p -> talents.trick_shots -> effectN( 1 ).base_value()
+    trick_shots.target_count = 1 + as<int>( p -> find_spell( 257621 ) -> effectN( 1 ).base_value()
       + p -> talents.light_ammo -> effectN( 1 ).base_value()
       + p -> talents.heavy_ammo -> effectN( 1 ).base_value() );
 
     triggers_focused_trickery = false; // manually triggered where required
+    triggers_calling_the_shots = false;
 
     if ( p -> talents.careful_aim.ok() )
     {
       careful_aim.high = p -> talents.careful_aim -> effectN( 1 ).base_value();
       careful_aim.low = p -> talents.careful_aim -> effectN( 2 ).base_value();
       careful_aim.multiplier = p -> talents.careful_aim -> effectN( 3 ).percent();
+    }
+  }
+
+  void execute() override
+  {
+    hunter_ranged_attack_t::execute();
+
+    if ( p() -> talents.bulletstorm -> ok() && execute_state && execute_state -> chain_target > 0 ) {
+      p() -> buffs.bulletstorm -> increment( execute_state -> chain_target );
     }
   }
 
@@ -3948,21 +4138,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     }
   };
 
-  struct legacy_of_the_windrunners_t final : public hunter_ranged_attack_t
-  {
-    legacy_of_the_windrunners_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> find_spell( 191043 ) )
-    {
-      dual = true;
-      proc = true;
-      // LotW arrows behave more like AiS re cast time/speed
-      // TODO: RETEST for DL & test its behavior on lnl AiSes
-      base_execute_time = p -> talents.aimed_shot -> cast_time();
-      travel_speed = p -> talents.aimed_shot -> missile_speed();
-    }
-  };
-
-
   bool lock_and_loaded = false;
   bool secrets_of_the_vigil_up = false;
   struct {
@@ -3978,9 +4153,9 @@ struct aimed_shot_t : public aimed_shot_base_t
     proc_t* proc;
   } surging_shots;
   struct {
-    double chance = 0;
     int count = 0;
-    legacy_of_the_windrunners_t* action = nullptr;
+    double chance = 0;
+    wind_arrow_t* action = nullptr;
   } legacy_of_the_windrunners;
 
   aimed_shot_t( hunter_t* p, util::string_view options_str ) :
@@ -4014,9 +4189,9 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     if ( p -> talents.legacy_of_the_windrunners.ok() )
     {
-      legacy_of_the_windrunners.chance = p -> talents.legacy_of_the_windrunners -> proc_chance();
-      legacy_of_the_windrunners.count = p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value();
-      legacy_of_the_windrunners.action = p -> get_background_action<legacy_of_the_windrunners_t>( "legacy_of_the_windrunners" );
+      legacy_of_the_windrunners.count = as<int>( p -> talents.legacy_of_the_windrunners -> effectN( 1 ).base_value() );
+      legacy_of_the_windrunners.chance = p -> talents.legacy_of_the_windrunners -> effectN( 2 ).percent();
+      legacy_of_the_windrunners.action = p -> get_background_action<wind_arrow_t>( "legacy_of_the_windrunners" );
       add_child( legacy_of_the_windrunners.action );
     }
   }
@@ -4029,6 +4204,10 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     double c = aimed_shot_base_t::cost();
 
+    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
+    if ( p() -> buffs.eagletalons_true_focus -> check() )
+      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 1 ).percent();
+
     if ( casting ? secrets_of_the_vigil_up : p() -> buffs.secrets_of_the_vigil -> check() )
       c *= 1 + p() -> buffs.secrets_of_the_vigil -> default_value;
 
@@ -4040,12 +4219,6 @@ struct aimed_shot_t : public aimed_shot_base_t
     lock_and_loaded = p() -> buffs.lock_and_load -> up();
 
     aimed_shot_base_t::schedule_execute( s );
-
-    if ( rng().roll( legacy_of_the_windrunners.chance ) )
-    {
-      for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
-        legacy_of_the_windrunners.action -> schedule_execute();
-    }
   }
 
   void execute() override
@@ -4060,6 +4233,7 @@ struct aimed_shot_t : public aimed_shot_base_t
 
     // XXX: 2022-02-28 All triggers now happen before the cast.
     p() -> trigger_focused_trickery( this, base_cost() );
+    p() -> trigger_calling_the_shots( this, cost() );
 
     aimed_shot_base_t::execute();
 
@@ -4077,7 +4251,7 @@ struct aimed_shot_t : public aimed_shot_base_t
     secrets_of_the_vigil_up = false;
 
     p() -> buffs.precise_shots -> trigger( 1 + rng().range( p() -> buffs.precise_shots -> max_stack() ) );
-    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 2 ).percent() );
+    p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> proc_chance() );
 
     p() -> buffs.trick_shots -> up(); // benefit tracking
     p() -> consume_trick_shots();
@@ -4094,6 +4268,12 @@ struct aimed_shot_t : public aimed_shot_base_t
     {
       surging_shots.proc -> occur();
       p() -> cooldowns.rapid_fire -> reset( true );
+    }
+
+    if ( rng().roll( legacy_of_the_windrunners.chance ) )
+    {
+      for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
+        legacy_of_the_windrunners.action -> execute_on_target( target );
     }
   }
 
@@ -4211,14 +4391,14 @@ struct rapid_fire_t: public hunter_spell_t
 
     damage_t( util::string_view n, hunter_t* p ):
       hunter_ranged_attack_t( n, p, p -> find_spell( 257045 ) ),
-      trick_shots_targets( as<int>( p -> talents.trick_shots -> effectN( 3 ).base_value()
+      trick_shots_targets( as<int>( p -> find_spell( 257621 ) -> effectN( 3 ).base_value()
         + p -> talents.light_ammo -> effectN( 2 ).base_value()
         + p -> talents.heavy_ammo -> effectN( 2 ).base_value() ) )
     {
       dual = true;
       direct_tick = true;
       radius = 8;
-      base_aoe_multiplier = p -> talents.trick_shots -> effectN( 5 ).percent()
+      base_aoe_multiplier = p -> find_spell( 257621 ) -> effectN( 5 ).percent()
         + p -> conduits.deadly_chain.percent()
         + p -> talents.heavy_ammo -> effectN( 4 ).percent();
 
@@ -4325,7 +4505,6 @@ struct rapid_fire_t: public hunter_spell_t
     hunter_spell_t::execute();
 
     p() -> buffs.streamline -> trigger();
-    // XXX: check trigger behaviour re channel start/finish
     p() -> buffs.deathblow -> trigger( -1, buff_t::DEFAULT_VALUE(), p() -> talents.deathblow -> effectN( 1 ).percent() );
   }
 
@@ -4335,6 +4514,9 @@ struct rapid_fire_t: public hunter_spell_t
 
     damage -> parent_dot = d; // BfA Surging Shots shenanigans
     damage -> execute_on_target( d -> target );
+
+    if ( p() -> talents.bulletstorm -> ok() && d -> current_tick == 1 && damage -> execute_state && damage -> execute_state -> chain_target > 0 )
+      p() -> buffs.bulletstorm -> increment( damage -> execute_state -> chain_target );
   }
 
   void last_tick( dot_t* d ) override
@@ -4409,6 +4591,8 @@ struct rapid_fire_t: public hunter_spell_t
 
 struct multishot_mm_t: public hunter_ranged_attack_t
 {
+  explosive_shot_background_t* explosive = nullptr;
+
   multishot_mm_t( hunter_t* p, util::string_view options_str ):
     hunter_ranged_attack_t( "multishot", p, p -> talents.multishot_mm )
   {
@@ -4416,6 +4600,9 @@ struct multishot_mm_t: public hunter_ranged_attack_t
 
     aoe = -1;
     reduced_aoe_targets = p -> find_spell( 2643 ) -> effectN( 1 ).base_value();
+
+    if ( p -> talents.salvo.ok() )
+      explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
   }
 
   void execute() override
@@ -4425,21 +4612,39 @@ struct multishot_mm_t: public hunter_ranged_attack_t
     p() -> buffs.precise_shots -> up(); // benefit tracking
     p() -> buffs.precise_shots -> decrement();
 
-    p() -> buffs.bombardment -> up(); // benefit tracking
-    p() -> buffs.bombardment -> expire();
-
-    p() -> trigger_calling_the_shots();
     p() -> trigger_lethal_shots();
 
-    if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() )
+    if ( p() -> talents.trick_shots.ok() && num_targets_hit >= p() -> talents.trick_shots -> effectN( 2 ).base_value() || p() -> buffs.bombardment -> up() )
       p() -> buffs.trick_shots -> trigger();
+
+    p() -> buffs.bombardment -> expire();
+
+    if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+    {
+      std::vector<player_t*>& tl = target_list();
+      size_t targets = std::max<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+      for ( size_t t = 0; t < targets; t++ )
+        explosive -> execute_on_target( tl[ t ] );
+      p() -> buffs.salvo -> trigger();
+    }
+  }
+
+  double cost() const override
+  {
+    double c = hunter_ranged_attack_t::cost();
+
+    // 19-9-22 TODO: talent focus reduction is not properly affecting the buff values
+    if ( p() -> buffs.eagletalons_true_focus -> check() )
+      c *= 1 + p() -> talents.eagletalons_true_focus -> effectN( 3 ).percent();
+
+    return c;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
   {
     double m = hunter_ranged_attack_t::composite_da_multiplier( s );
 
-    m *= p() -> buffs.bombardment -> check_stack_value();
+    m *= 1.0 + p() -> buffs.bulletstorm -> check_stack_value();
 
     return m;
   }
@@ -5024,8 +5229,9 @@ struct a_murder_of_crows_t : public hunter_spell_t
     hunter_spell_t::execute();
 
     // XXX: 2022-01-22 Focused Trickery uses the "base base" cost before passive aura reductions
-    if ( p() -> bugs )
-      p()->trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
+    if ( p() -> bugs ) {
+      p() -> trigger_focused_trickery( this, data().cost( POWER_FOCUS ) );
+    }
   }
 };
 
@@ -5655,28 +5861,19 @@ struct bloodshed_t : hunter_spell_t
 
 struct trueshot_t: public hunter_spell_t
 {
-  timespan_t precast_time = 0_ms;
-
   trueshot_t( hunter_t* p, util::string_view options_str ):
     hunter_spell_t( "trueshot", p, p -> talents.trueshot )
   {
-    add_option( opt_obsoleted( "precast_time" ) );
-    add_option( opt_obsoleted( "precast_etf_equip" ) );
     parse_options( options_str );
 
     harmful = false;
-
-    precast_time = clamp( precast_time, 0_ms, data().duration() );
   }
 
   void execute() override
   {
     hunter_spell_t::execute();
 
-    trigger_buff( p() -> buffs.trueshot, precast_time );
-    trigger_buff( p() -> buffs.unerring_vision_hidden, precast_time );
-
-    adjust_precast_cooldown( precast_time );
+    p() -> buffs.trueshot -> trigger();
   }
 };
 
@@ -5710,15 +5907,20 @@ struct double_tap_t: public hunter_spell_t
 
 // Volley ===========================================================================
 
-struct volley_t : hunter_spell_t
+struct volley_t : public hunter_spell_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
+    attacks::explosive_shot_background_t* explosive = nullptr;
+
     damage_t( util::string_view n, hunter_t* p )
       : hunter_ranged_attack_t( n, p, p -> find_spell( 260247 ) )
     {
       aoe = -1;
       background = dual = ground_aoe = true;
+
+      if ( p -> talents.salvo.ok() )
+        explosive = p -> get_background_action<attacks::explosive_shot_background_t>( "explosive_shot_salvo" );
     }
 
     void impact( action_state_t* s ) override
@@ -5728,6 +5930,20 @@ struct volley_t : hunter_spell_t
       // XXX: Wild Spirits kludge
       if ( s -> chain_target == 0 && p() -> buffs.wild_spirits -> check() )
         triggers_wild_spirits = false;
+    }
+
+    void execute() override
+    {
+      hunter_ranged_attack_t::execute();
+
+      if ( p() -> talents.salvo.ok() && !p() -> buffs.salvo -> check() )
+      {
+        std::vector<player_t*>& tl = target_list();
+        size_t targets = std::max<size_t>( tl.size(), as<size_t>( p() -> talents.salvo -> effectN( 1 ).base_value() ) );
+        for ( size_t t = 0; t < targets; t++ )
+          explosive -> execute_on_target( tl[ t ] );
+        p() -> buffs.salvo -> trigger();
+      }
     }
   };
 
@@ -6435,51 +6651,56 @@ void hunter_t::init_spells()
   if (specialization() == HUNTER_MARKSMANSHIP)
   {
     talents.aimed_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Aimed Shot", HUNTER_MARKSMANSHIP );
-    talents.improved_arcane_shot              = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Arcane Shot", HUNTER_MARKSMANSHIP );
+
+    talents.crack_shot                        = find_talent_spell( talent_tree::SPECIALIZATION, "Crack Shot", HUNTER_MARKSMANSHIP );
     talents.improved_steady_shot              = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Steady Shot", HUNTER_MARKSMANSHIP );
     talents.precise_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Precise Shots", HUNTER_MARKSMANSHIP );
 
     talents.rapid_fire                        = find_talent_spell( talent_tree::SPECIALIZATION, "Rapid Fire", HUNTER_MARKSMANSHIP );
-    talents.killing_blow                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Blow", HUNTER_MARKSMANSHIP );
-    talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
-
-    talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
-    talents.careful_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Careful Aim", HUNTER_MARKSMANSHIP );
-    talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
-    talents.hunters_knowledge                 = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Knowledge", HUNTER_MARKSMANSHIP );
+    talents.lone_wolf                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lone Wolf", HUNTER_MARKSMANSHIP );
     talents.chimaera_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Chimaera Shot", HUNTER_MARKSMANSHIP );
 
-    talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
-    talents.lethal_shots                      = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Shots", HUNTER_MARKSMANSHIP );
-    talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
-    talents.true_aim                          = find_talent_spell( talent_tree::SPECIALIZATION, "True Aim", HUNTER_MARKSMANSHIP );
-    talents.bursting_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Shot", HUNTER_MARKSMANSHIP );
+    talents.streamline                        = find_talent_spell( talent_tree::SPECIALIZATION, "Streamline", HUNTER_MARKSMANSHIP );
+    talents.killing_blow                      = find_talent_spell( talent_tree::SPECIALIZATION, "Killing Blow", HUNTER_MARKSMANSHIP );
+    talents.hunters_knowledge                 = find_talent_spell( talent_tree::SPECIALIZATION, "Hunter's Knowledge", HUNTER_MARKSMANSHIP );
+    talents.careful_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Careful Aim", HUNTER_MARKSMANSHIP );
 
-    talents.volley                            = find_talent_spell( talent_tree::SPECIALIZATION, "Volley", HUNTER_MARKSMANSHIP );
-    talents.trick_shots                       = find_talent_spell( talent_tree::SPECIALIZATION, "Trick Shots", HUNTER_MARKSMANSHIP );
+    talents.lethal_shots                      = find_talent_spell( talent_tree::SPECIALIZATION, "Lethal Shots", HUNTER_MARKSMANSHIP );
+    talents.surging_shots                     = find_talent_spell( talent_tree::SPECIALIZATION, "Surging Shots", HUNTER_MARKSMANSHIP );
+    talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
+    talents.true_aim                          = find_talent_spell( talent_tree::SPECIALIZATION, "True Aim", HUNTER_MARKSMANSHIP );
+    talents.focused_aim                       = find_talent_spell( talent_tree::SPECIALIZATION, "Focused Aim", HUNTER_MARKSMANSHIP );
+
+    talents.multishot_mm                      = find_talent_spell( talent_tree::SPECIALIZATION, "Multi-Shot", HUNTER_MARKSMANSHIP );
+    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
     talents.double_tap                        = find_talent_spell( talent_tree::SPECIALIZATION, "Double Tap", HUNTER_MARKSMANSHIP );
     talents.dead_eye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Dead Eye", HUNTER_MARKSMANSHIP );
+    talents.bursting_shot                     = find_talent_spell( talent_tree::SPECIALIZATION, "Bursting Shot", HUNTER_MARKSMANSHIP );
 
-    talents.steady_focus                      = find_talent_spell( talent_tree::SPECIALIZATION, "Steady Focus", HUNTER_MARKSMANSHIP );
-    talents.lone_wolf                         = find_talent_spell( talent_tree::SPECIALIZATION, "Lone Wolf", HUNTER_MARKSMANSHIP );
-    talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
-
+    talents.trick_shots                       = find_talent_spell( talent_tree::SPECIALIZATION, "Trick Shots", HUNTER_MARKSMANSHIP );
     talents.bombardment                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bombardment", HUNTER_MARKSMANSHIP );
-    talents.razor_fragments                   = find_talent_spell( talent_tree::SPECIALIZATION, "Razor Fragments", HUNTER_MARKSMANSHIP );
-    talents.sharpshooter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpshooter", HUNTER_MARKSMANSHIP );
-    talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
-    talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
-    talents.windrunners_guidance              = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner's Guidance", HUNTER_MARKSMANSHIP );
+    talents.volley                            = find_talent_spell( talent_tree::SPECIALIZATION, "Volley", HUNTER_MARKSMANSHIP );
+    talents.steady_focus                      = find_talent_spell( talent_tree::SPECIALIZATION, "Steady Focus", HUNTER_MARKSMANSHIP );
+    talents.serpentstalkers_trickery          = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentstalker's Trickery", HUNTER_MARKSMANSHIP );
 
     talents.light_ammo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Light Ammo", HUNTER_MARKSMANSHIP );
     talents.heavy_ammo                        = find_talent_spell( talent_tree::SPECIALIZATION, "Heavy Ammo", HUNTER_MARKSMANSHIP );
-    talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
-    talents.serpentstalkers_trickery          = find_talent_spell( talent_tree::SPECIALIZATION, "Serpentstalker's Trickery", HUNTER_MARKSMANSHIP );
-    talents.deathblow                         = find_talent_spell( talent_tree::SPECIALIZATION, "Deathblow", HUNTER_MARKSMANSHIP );
+    talents.trueshot                          = find_talent_spell( talent_tree::SPECIALIZATION, "Trueshot", HUNTER_MARKSMANSHIP );
+    talents.lock_and_load                     = find_talent_spell( talent_tree::SPECIALIZATION, "Lock and Load", HUNTER_MARKSMANSHIP );
+    talents.bullseye                          = find_talent_spell( talent_tree::SPECIALIZATION, "Bullseye", HUNTER_MARKSMANSHIP );
 
-    talents.unerring_vision                   = find_talent_spell( talent_tree::SPECIALIZATION, "Unerring Vision", HUNTER_MARKSMANSHIP );
+    talents.bulletstorm                       = find_talent_spell( talent_tree::SPECIALIZATION, "Bulletstorm", HUNTER_MARKSMANSHIP );
+    talents.sharpshooter                      = find_talent_spell( talent_tree::SPECIALIZATION, "Sharpshooter", HUNTER_MARKSMANSHIP );
     talents.eagletalons_true_focus            = find_talent_spell( talent_tree::SPECIALIZATION, "Eagletalon's True Focus", HUNTER_MARKSMANSHIP );
     talents.wailing_arrow                     = find_talent_spell( talent_tree::SPECIALIZATION, "Wailing Arrow", HUNTER_MARKSMANSHIP );
+    talents.legacy_of_the_windrunners         = find_talent_spell( talent_tree::SPECIALIZATION, "Legacy of the Windrunners", HUNTER_MARKSMANSHIP );
+
+    talents.salvo                             = find_talent_spell( talent_tree::SPECIALIZATION, "Salvo", HUNTER_MARKSMANSHIP );
+    talents.calling_the_shots                 = find_talent_spell( talent_tree::SPECIALIZATION, "Calling the Shots", HUNTER_MARKSMANSHIP );
+    talents.unerring_vision                   = find_talent_spell( talent_tree::SPECIALIZATION, "Unerring Vision", HUNTER_MARKSMANSHIP );
+    talents.windrunners_barrage               = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner's Barrage", HUNTER_MARKSMANSHIP );
+    talents.readiness                         = find_talent_spell( talent_tree::SPECIALIZATION, "Readiness", HUNTER_MARKSMANSHIP );
+    talents.windrunners_guidance              = find_talent_spell( talent_tree::SPECIALIZATION, "Windrunner's Guidance", HUNTER_MARKSMANSHIP );
   }
 
   // Beast Mastery Tree
@@ -6730,13 +6951,13 @@ void hunter_t::create_buffs()
   // Marksmanship Tree
 
   buffs.bombardment =
-    make_buff( this, "bombardment", find_spell( 378885 ) )
-      -> set_default_value( talents.bombardment -> effectN( 1 ).percent() )
+    make_buff( this, "bombardment", find_spell( 386875 ) )
       -> set_chance( talents.bombardment.ok() );
 
   buffs.precise_shots =
     make_buff( this, "precise_shots", find_spell( 260242 ) )
       -> set_default_value( talents.precise_shots -> effectN( 1 ).percent() )
+      -> set_chance( talents.precise_shots.ok() )
       -> apply_affecting_conduit( conduits.powerful_precision );
 
   buffs.streamline =
@@ -6785,17 +7006,24 @@ void hunter_t::create_buffs()
           cooldowns.aimed_shot -> adjust_recharge_multiplier();
           cooldowns.rapid_fire -> adjust_recharge_multiplier();
 
-          if ( cur == 0 )
+          if ( cur == 0 ) {
             buffs.eagletalons_true_focus -> expire();
-          else if ( old == 0 && ( talents.eagletalons_true_focus.ok() || legendary.eagletalons_true_focus.ok() ) )
-            buffs.eagletalons_true_focus -> trigger();
-
-          if ( cur == 0 )
-          {
+            buffs.eagletalons_true_focus_runeforge -> expire();
+            
             buffs.unerring_vision_hidden -> expire();
             buffs.unerring_vision -> expire();
           }
+          else if ( old == 0 )
+          {
+            buffs.unerring_vision_hidden -> trigger();
+
+            if ( legendary.eagletalons_true_focus.ok() )
+              buffs.eagletalons_true_focus_runeforge -> trigger();
+            if ( talents.eagletalons_true_focus.ok() )
+              buffs.eagletalons_true_focus -> trigger();
+          }
         } )
+      -> apply_affecting_aura( legendary.eagletalons_true_focus )
       -> apply_affecting_aura( talents.eagletalons_true_focus )
       -> apply_affecting_conduit( conduits.sharpshooters_focus );
 
@@ -6810,27 +7038,45 @@ void hunter_t::create_buffs()
           // XXX: check refreshes
           if ( old == 0 ) {
             cooldowns.kill_shot -> reset( true );
-            if ( talents.razor_fragments.ok() )
-              buffs.flayers_mark -> trigger( -1, buff_t::DEFAULT_VALUE(), 1.0 );
+            buffs.razor_fragments -> trigger();
           }
         } );
 
+  buffs.razor_fragments =
+    make_buff( this, "razor_fragments", find_spell( 388998 ) )
+    -> set_chance( talents.razor_fragments.ok() )
+    -> set_default_value_from_effect( 1 );
+
   buffs.unerring_vision_hidden =
-    make_buff( this, "unerring_vision_hidden", find_spell( 274446 ) )
+    make_buff( this, "unerring_vision_hidden", find_spell( 386876 ) )
       -> set_quiet( true )
       -> set_tick_zero( true )
+      -> set_chance( talents.unerring_vision.ok() )
       -> set_tick_callback(
         [ this ]( buff_t*, int, const timespan_t& ) {
-          // buffs.unerring_vision -> trigger();
+          buffs.unerring_vision -> trigger();
         } );
 
   buffs.unerring_vision =
-    make_buff<stat_buff_t>( this, "unerring_vision", talents.unerring_vision );
+    make_buff<stat_buff_t>(this, "unerring_vision", find_spell( 386877 ) )
+      -> add_invalidate( CACHE_CRIT_CHANCE );
+
+  buffs.eagletalons_true_focus_runeforge =
+    make_buff( this, "eagletalons_true_focus_runeforge", find_spell( 336851 ) )
+      -> set_default_value_from_effect( 1 )
+      -> set_trigger_spell( find_spell( 336849 ) );
 
   buffs.eagletalons_true_focus =
-    make_buff( this, "eagletalons_true_focus", find_spell( 336851 ) )
-    -> set_default_value_from_effect( 1 )
-    -> set_trigger_spell( find_spell( 336849 ) );
+    make_buff( this, "eagletalons_true_focus", find_spell( 389450 ) )
+    -> set_trigger_spell( find_spell( 389449 ) );
+
+  buffs.bulletstorm =
+    make_buff( this, "bulletstorm", find_spell( 389020 ) )
+      -> set_default_value_from_effect( 1 )
+      -> set_refresh_behavior( buff_refresh_behavior::DISABLED );
+
+  buffs.salvo = 
+    make_buff( this, "salvo", find_spell( 388909 ) );
 
   // Beast Mastery Tree
 
@@ -7102,9 +7348,17 @@ void hunter_t::init_procs()
 {
   player_t::init_procs();
 
-  procs.lethal_shots    = get_proc( "Lethal Shots" );
-  procs.wild_call       = get_proc( "Wild Call" );
-  procs.wild_instincts  = get_proc( "Wild Instincts");
+  if ( talents.lethal_shots.ok() )
+    procs.lethal_shots        = get_proc( "Lethal Shots" );
+
+  if ( talents.calling_the_shots.ok() )
+    procs.calling_the_shots   = get_proc( "Calling the Shots" );
+
+  if ( talents.windrunners_guidance.ok() )
+    procs.windrunners_guidance = get_proc( "Windrunner's Guidance" );
+
+  procs.wild_call           = get_proc( "Wild Call" );
+  procs.wild_instincts      = get_proc( "Wild Instincts");
 
   if ( tier_set.focused_trickery_4pc.ok() )
     procs.focused_trickery_trick_shots = get_proc( "Focused Trickery Trick Shots" );
@@ -7305,8 +7559,8 @@ double hunter_t::composite_melee_crit_chance() const
   double crit = player_t::composite_melee_crit_chance();
 
   crit += specs.critical_strikes -> effectN( 1 ).percent();
-
   crit += talents.keen_eyesight -> effectN( 1 ).percent();
+  crit += buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 1 ).percent();
 
   return crit;
 }
@@ -7318,8 +7572,8 @@ double hunter_t::composite_spell_crit_chance() const
   double crit = player_t::composite_spell_crit_chance();
 
   crit += specs.critical_strikes->effectN( 1 ).percent();
-
   crit += talents.keen_eyesight->effectN( 1 ).percent();
+  crit += buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 1 ).percent();
 
   return crit;
 }
@@ -7355,6 +7609,7 @@ double hunter_t::composite_player_critical_damage_multiplier( const action_state
 
   m *= 1.0 + talents.sharpshooter -> effectN( 1 ).percent();
   m *= 1.0 + talents.sharp_edges -> effectN( 1 ).percent();
+  m += 1.0 + buffs.unerring_vision -> stack() * buffs.unerring_vision -> data().effectN( 2 ).percent();
 
   return m;
 }

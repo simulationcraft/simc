@@ -1,5 +1,5 @@
-// Active class spells, wow build 10.0.2.45569
-static const std::array<active_class_spell_t, 263> __active_spells_data { {
+// Active class spells, wow build 10.0.2.45698
+static const std::array<active_class_spell_t, 265> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
   {  1,    0,   1464,      0, "Slam"                               },
@@ -98,8 +98,10 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  4,  261,     53,   1752, "Backstab"                           },
   {  4,  261,   1943,      0, "Rupture"                            },
   {  4,  261, 114014,      0, "Shuriken Toss"                      },
+  {  4,  261, 185313,      0, "Shadow Dance"                       },
   {  4,  261, 185438,   8676, "Shadowstrike"                       },
   {  4,  261, 197835,      0, "Shuriken Storm"                     },
+  {  4,  261, 212283,      0, "Symbols of Death"                   },
   {  5,    0,     17,      0, "Power Word: Shield"                 },
   {  5,    0,    453,      0, "Mind Soothe"                        },
   {  5,    0,    585,      0, "Smite"                              },
@@ -172,6 +174,7 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  9,    0,    691,      0, "Summon Felhunter"                   },
   {  9,    0,    697,      0, "Summon Voidwalker"                  },
   {  9,    0,    698,      0, "Ritual of Summoning"                },
+  {  9,    0,    702,      0, "Curse of Weakness"                  },
   {  9,    0,    755,      0, "Health Funnel"                      },
   {  9,    0,   1098,      0, "Subjugate Demon"                    },
   {  9,    0,   5697,      0, "Unending Breath"                    },
@@ -184,7 +187,6 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   {  9,    0, 104773,      0, "Unending Resolve"                   },
   {  9,    0, 119898,      0, "Command Demon"                      },
   {  9,    0, 234153,      0, "Drain Life"                         },
-  {  9,    0, 334275,      0, "Curse of Exhaustion"                },
   {  9,    0, 342601,      0, "Ritual of Doom"                     },
   {  9,    0, 366222,      0, "Summon Sayaad"                      },
   {  9,  265,    980,      0, "Agony"                              },
@@ -265,7 +267,7 @@ static const std::array<active_class_spell_t, 263> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.45569
+// Pet active spells, wow build 10.0.2.45698
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },
@@ -355,7 +357,7 @@ static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  7, 118345, "Pulverize"                          },
   {  7, 157331, "Wind Gust"                          },
   {  7, 157348, "Call Lightning"                     },
-  {  7, 157375, "Eye of the Storm"                   },
+  {  7, 157375, "Tempest"                            },
   {  8,  31707, "Waterbolt"                          },
   {  8,  33395, "Freeze"                             },
   {  8, 135029, "Water Jet"                          },

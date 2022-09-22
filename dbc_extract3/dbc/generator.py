@@ -1448,7 +1448,7 @@ class SpellDataGenerator(DataGenerator):
           ( 363760, 1 ), # Killing Frenzy (T28 BM 4pc)
           ( 363805, 3 ), # Mad Bombardier (T28 SV 4pc)
           ( 378016, 0 ), # Latent Poison Injectors (talent dd action)
-          ( 378885, 2 ), # Salvo (MM Bombardment talent buff)
+          ( 386875, 2 ), # Bombardment
         ),
 
         # Rogue:
@@ -1600,6 +1600,8 @@ class SpellDataGenerator(DataGenerator):
           ( 377588, 0 ), ( 377589, 0 ), # Ghoulish Frenzy buffs
           ( 390271, 0 ), # Coil of Devastation debuff
           ( 193486, 0 ), # Runic Empowerment energize spell
+          ( 377656, 0 ), # Heartrend Buff
+          ( 377633, 0 ), # Leeching Strike
           ( 364197, 0 ), ( 366008, 0 ), ( 368938, 0 ), # T28 Endless Rune Waltz Blood Set Bonus
           ( 363885, 0 ), ( 364173, 0 ), ( 363887, 0 ), ( 367954, 0 ), # T28 Harvest Time Unholy Set Bonus
           ( 364384, 0 ), # T28 Arctic Assault Frost Set Bonus

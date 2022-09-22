@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45569 dragonflight-BETA (, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45698 dragonflight-BETA (hotfix 2022-09-22/45698, no-networking)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -42,14 +42,14 @@ Tooltip          : Cannot benefit from Heroism or other similar effects.
 
 Name             : Chi Torpedo (id=115008) [Spell Family (53)] 
 Replaces         : Roll (id=109132)
-Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Generic [tree=class, row=6, col=5, max_rank=1, req_points=8, select_idx=200, override="Roll" (id=109132)]
 Class            : Monk, Evoker
 School           : Physical
 Spell Type       : None
 Spell Level      : 1
 Duration         : 1.1 seconds
 Charges          : 1 (20 seconds cooldown)
-Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Blessing of the Bronze (381751 effect#1)
+Category         : 1365: Celerity (115173 effect#1), Celerity (115173 effect#2), Roll Buff (222625 effect#1), Improved Roll (328669 effect#1), Blessing of the Bronze (381751 effect#1)
 Family Flags     : 7, 33
 Attributes       : ....x... ........ x......x .......x   .....x.. ..x..... .x...... ....x... 
                  : ........ ........ ........ ........   ..x..... .....x.. ........ ........ 
@@ -155,7 +155,9 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Self (1) -> Unknown(55)
 #2 (id=315358)   : Apply Aura (6) | Cast while Moving (377)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting.
+Description      : Teleports you $A1 yards forward, unless something is in the way. Unaffected by the global cooldown and castable while casting.$?a382289[
+
+Gain a shield that absorbs $382289s1% of your maximum health for $382290d after you Shimmer.][]
 Tooltip          : Shimmering.
 
 Name             : Vindicaar Matrix Crystal (id=251463) 
@@ -411,7 +413,7 @@ School           : Firestorm
 Spell Type       : Magic
 Range            : 100 yards
 Duration         : 1 seconds
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Lay Waste (371034 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Lay Waste (371034 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 34
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
@@ -486,7 +488,7 @@ Travel Time      : 0.65 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Emerald Blossom (365261 effect#1), Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2)
+Affecting spells : Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2)
 Family Flags     : 3, 10
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -512,7 +514,7 @@ School           : Nature
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Bountiful Bloom (370886 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 38, 49
 Attributes       : ........ ........ ........ x.......   .....x.. ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -525,7 +527,7 @@ Attributes       : ........ ........ ........ x.......   .....x.. ........ .....
                  : Allow While Mounted (24), Allow While Stealthed (37), Not a Proc (105), Allow While Stunned (163), Allow While Fleeing (177), Allow While Confused (178), Allow While Charmed (261), Allow While Banished Aura State (299), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=889395)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.50000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.50000 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: AOE friendly (31)
 #2 (id=889396)   : Dummy (3)
                    Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 1.00000 | Radius: 12 yards | Target: Self (1)
 Description      : $@spelldesc355913
@@ -578,7 +580,7 @@ Spell Type       : Magic
 Range            : 100 yards
 GCD              : 1.5 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Call of Ysera (373835 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Call of Ysera (373835 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 21
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...... ........ ......x. 
@@ -591,7 +593,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=889437)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.85000 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Unknown(59) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.11000 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Unknown(59) -> AOE friendly (31)
 #2 (id=983057)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc355936
@@ -623,6 +625,18 @@ Effects          :
                    Base Value: -80 | Scaled Value: -80 | PvP Coefficient: 1.00000 | Target: Self (1)
 #4 (id=910446)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -36 | Scaled Value: -36 | PvP Coefficient: 1.00000 | Target: Self (1)
+#5 (id=1031848)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
+                   Family Flags: 1
+#6 (id=1031849)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
+                   Family Flags: 1
+#7 (id=1032442)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#8 (id=1032443)  : Apply Aura (6) | Unknown(531)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -639,26 +653,26 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Grovetender's Gift (387763)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: -40 | Scaled Value: -40 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Grovetender's Gift (387763)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
 #4 (id=900194)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Deep Breath (353759), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Living Flame (361500), Azure Strike (362969), Unravel (368432), Firestorm (369374), Shattering Star (370452)
                    Family Flags: 0
 #5 (id=903547)   : Apply Aura (6) | Modify Mana Regen% (379)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Target: Self (1)
 #6 (id=903851)   : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
                    Base Value: -6000 | Scaled Value: -6000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Rescue (360995)
+                   Affected Spells: Verdant Embrace (360995)
                    Family Flags: 24
 #7 (id=905167)   : Apply Aura (6) | Unknown(188)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -667,12 +681,16 @@ Effects          :
                    Affected Spells (Category): Reversion (366155)
 #9 (id=910335)   : Apply Aura (6) | Hasted Cooldown Duration (416)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rescue (360995), Temporal Anomaly (373861)
+                   Affected Spells: Verdant Embrace (360995), Temporal Anomaly (373861)
                    Family Flags: 24, 45
 #10 (id=996879)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Rescue (361195)
+                   Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
+#11 (id=1032445)  : Apply Aura (6) | Modify Pet Damage Done% (429)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+#12 (id=1032446)  : Apply Aura (6) | Unknown(531)
+                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -703,7 +721,7 @@ Resource         : 3 Essence (19) (id=232532)
 Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 3 seconds
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Hover (358267 effect#5), Essence Burst (359618 effect#1), Essence Burst (369299 effects: #1, #2), Natural Convergence (369913 effects: #1, #2), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Energy Loop (372233 effect#2), Arcane Intensity (375618 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 2, 3, 6, 38
 Attributes       : ........ ........ ........ ........   ..x..... ......x. ........ .....x.. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -799,7 +817,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 12 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Blast Furnace (375510 effect#1), Heat Wave (375725 effect#1), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Blast Furnace (375510 effect#1), Heat Wave (375725 effect#1), Full Belly (377087 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Triggered by     : Full Belly (377087)
 Family Flags     : 0, 35
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -882,7 +900,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Missile Speed is Delay (in sec) (292), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=891601)   : Trigger Missiles (32)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 357212 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 393568 | Target: Enemy (6)
 Description      : Lob a ball of flame, dealing $357212s1 Fire damage to the target and nearby enemies.
 
 Name             : Pyre (desc=Red) (id=357212) [Spell Family (224)] 
@@ -891,8 +909,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
-Triggered by     : Pyre (357211)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 5, 38
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -905,9 +922,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Do Not Display Range (126), Allow Cast While Casting (135), Allow Cast While Channeling (308), Use Spell Base Level For Scaling (332)
 Effects          :
 #1 (id=891602)   : School Damage (2): fire
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: At Enemy (53) -> AOE enemy (instant) (16)
-#2 (id=1022521)  : Dummy (3)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.81000 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc357211
 
 Name             : Hover (id=358267) [Spell Family (224)] 
@@ -926,12 +941,12 @@ Family Flags     : 13
 Attributes       : ........ ........ ........ ........   ........ .......x ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x..... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ..x.....   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Immunity Purges Effect (47), Can Proc From Procs (122), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
+                 : Immunity Purges Effect (47), Can Proc From Procs (122), Vehicle Immunity Category (218), Aura Points On Client (268), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=893446)   : Apply Aura (6) | Unknown(235)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
@@ -1050,7 +1065,7 @@ Spell Type       : Magic
 Range            : 100 yards
 GCD              : 1.5 seconds
 Velocity         : 36 yards/sec
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 18
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1099,7 +1114,7 @@ Proc Chance      : 100%
 Proc Flags       : ........ ......x. x....... ........ 
                  : Magic Heal, Magic Hostile Spell
 Affecting spells : Essence Attunement (375722 effect#1)
-Triggered by     : Continuum (369375)
+Triggered by     : Eye of Infinity (369375)
 Family Flags     : 43
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ xx...... ........ 
@@ -1245,7 +1260,7 @@ Effects          :
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 4 | Target: Friend (21)
 Description      : Cleanses harmful effects from the target, removing all Magic and Poison effects.
 
-Name             : Rescue (desc=Green) (id=360995) [Spell Family (224)] 
+Name             : Verdant Embrace (desc=Green) (id=360995) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=1, req_points=0]
 Class            : Evoker
 School           : Nature
@@ -1259,7 +1274,7 @@ Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effe
 Category Cooldown: 0.5 seconds
 Affecting spells : Preservation Evoker (356810 effects: #6, #9)
 Family Flags     : 24
-Attributes       : ........ ........ ........ ........   ........ ........ ...x.... ....x... 
+Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1267,7 +1282,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ ...x.
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Exclude Caster (51), No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : No Aura Icon (60), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898467)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
@@ -1300,14 +1315,14 @@ Effects          :
 Description      : Brings all dead party members back to life with $s1% health and mana. Cannot be cast when in combat.
 
 
-Name             : Rescue (id=361195) [Spell Family (224)] 
+Name             : Verdant Embrace (id=361195) [Spell Family (224)] 
 Class            : Evoker
 School           : Nature
 Spell Type       : None
 Spell Level      : 4
 Range            : 50000 yards
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2, #10), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2, #10), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 36
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
@@ -1320,7 +1335,7 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
                  : Do Not Sheath (18), Do Not Display Range (126), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=898900)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.30000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.58000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc360995
 
 Name             : Fluttering Seedlings (id=361361) [Spell Family (224)] 
@@ -1330,7 +1345,7 @@ Spell Type       : None
 Range            : 40 yards
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 14
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1343,7 +1358,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Allow Class Ability Procs (416)
 Effects          :
 #1 (id=899173)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.90000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.54000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Regenerate an ally for the next $d, healing them for $s1 every $t1 sec.
 Tooltip          : Regenerating $s1 every $t1 sec.
 
@@ -1385,7 +1400,7 @@ Duration         : 12 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Tyranny (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Engulfing Blaze (370837 effect#2), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 7, 50
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -1414,7 +1429,7 @@ Duration         : 12 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
 Stacks           : 3 maximum
 Proc Chance      : 101%
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Engulfing Blaze (370837 effect#2), Call of Ysera (373835 effect#2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Attuned to the Dream (376930 effects: #1, #2), Inner Radiance (386405 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 7, 22
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ......x.   .......x .x...... ........ ......x. 
@@ -1427,7 +1442,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Active Threat (94), DoT Stacking Rule (103), Not a Proc (105), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423), Do Not Display Cast Time (441)
 Effects          :
 #1 (id=899463)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 2.75000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 1.65000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=907224)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.10000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : $@spelldesc361469
@@ -1491,7 +1506,7 @@ Spell Type       : Magic
 Resource         : 0.9% Base Mana (0) (id=265427) w/ Preservation Evoker (id=356810)
 Range            : 25 yards
 GCD              : 1.5 seconds
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Protracted Talons (369909 effect#1), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Protracted Talons (369909 effect#1), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Honed Aggression (371038 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 12
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1537,7 +1552,7 @@ Spell Type       : Magic
 Range            : 100 yards
 Duration         : 15 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   .......x ........ ........ ......x. 
@@ -1550,9 +1565,9 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : DoT Stacking Rule (103), Do Not Display Range (126), Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902905)   : Apply Aura (6) | Periodic Heal (8): every 3 seconds
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.50000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.30000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
 #2 (id=999067)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 4.00000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.40000 | PvP Coefficient: 1.00000 | Radius: 8 yards | Target: AOE friendly (31)
 Description      : $@spelldesc359816
 Tooltip          : Healing for $w1 every $t1 sec.
 
@@ -1584,17 +1599,17 @@ Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 4 seconds
 Charges          : 1 (240 seconds cooldown)
-Category         : 2035: Borrowed Time (376210 effect#1), Temporal Artificer (381922 effect#1)
+Category         : 2035: Erasure (376210 effect#1), Temporal Artificer (381922 effect#1)
 Family Flags     : 29
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ .....x..   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... .x...... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Ignore Line of Sight (66), Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902963)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
@@ -1702,7 +1717,7 @@ Range            : 25 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Hover (358267 effect#5), Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1), Ouroboros (387350 effect#1)
 Family Flags     : 1, 2, 3, 11, 38
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1715,7 +1730,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Aura Expires Offline (130), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=904256)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 2.00000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.20000 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=904257)   : Apply Aura (6) | Dummy (4)
                    Base Value: 70 | Scaled Value: 70 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Wrap an ally with temporal energy, healing them for $s1 and causing your next non-Echo healing spell to cast an additional time on that ally at $s2% of normal healing.
@@ -1741,7 +1756,7 @@ Effects          :
                    Affected Spells: Emerald Blossom (355913)
                    Family Flags: 10
 
-Name             : Emerald Blossom (desc=Rank 2) (id=365262) [Spell Family (224), Passive] 
+Name             : Improved Emerald Blossom (id=365262) [Spell Family (224), Passive] 
 Class            : Preservation Evoker
 School           : Physical
 Spell Type       : None
@@ -1806,7 +1821,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=907194)   : Apply Aura (6) | Modify Cooldown Charge (Category) (411)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 1948 | Target: Self (1)
-                   Affected Spells (Category): Hover (358267), Rescue (360995)
+                   Affected Spells (Category): Hover (358267), Verdant Embrace (360995)
 Description      : Hover gains $s1 additional charge.
 
 Name             : Ruby Embers (id=365937) [Spell Family (224), Passive] 
@@ -1838,12 +1853,12 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 1 (9 seconds cooldown)
-Category         : 2010: Preservation Evoker (356810 effect#8), Time Keeper (371270 effect#1)
+Category         : 2010: Preservation Evoker (356810 effect#8), Punctuality (371270 effect#1)
 Stacks           : 1 maximum
 Proc Chance      : 100%
 Proc Flags       : ........ ........ ........ .......x 
                  
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Grace Period (376239 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Grace Period (376239 effect#1), Timeless Magic (376240 effect#1), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 8
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1856,7 +1871,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Spell Haste Affects Periodic (173), Periodic Can Crit (265), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=907578)   : Apply Aura (6) | Periodic Heal (8): every 2 seconds
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.57000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.34200 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=1003140)  : Apply Aura (6) | Unknown(504)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 Description      : Repair an ally's injuries, healing them for $o1 over $d. When Reversion critically heals, its duration is extended by $t1 sec.
@@ -1930,7 +1945,7 @@ Range            : 40 yards
 Velocity         : 60 yards/sec
 Duration         : 3 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Spiritbloom (367226 effect#3), Attuned to the Dream (376930 effects: #1, #2), Spiritbloom (382731 effect#3), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Spiritbloom (367226 effect#3), Attuned to the Dream (376930 effects: #1, #2), Spiritbloom (382731 effect#3), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1, 27
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ .x...... ........ ........ 
@@ -1943,7 +1958,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : No Aura Icon (60), Not a Proc (105), No Aura Log (202), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=910753)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.65000 | PvP Coefficient: 1.00000 | Target: Friend (21)
+                   Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 5.08500 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #2 (id=915159)   : Apply Aura (6) | Dummy (4)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Friend (21)
 #3 (id=982930)   : Dummy (3)
@@ -2006,7 +2021,7 @@ Spell Level      : 60
 Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 9 seconds
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2192,7 +2207,7 @@ School           : Fire
 Spell Type       : Magic
 Range            : 100 yards
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Tyranny (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Shattering Star (370452 effect#3), Spellweaver's Dominance (370845 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0
 Attributes       : ........ ........ .......x x..x....   ...x.x.x ........ ........ ........ 
                  : ..x..... ......x. ...x.... ......x.   ........ .x...... ........ .x....x. 
@@ -2208,7 +2223,7 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 (coefficient=0, delta coefficient=0.05) | SP Coefficient: 0.27600 | PvP Coefficient: 1.00000 | Radius: 0 - 8 yards | Target: Unknown(87) -> AOE enemy (instant) (16)
 Description      : $@spelldesc368847
 
-Name             : Continuum (id=369375) [Spell Family (224), Passive] 
+Name             : Eye of Infinity (id=369375) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=6, col=6, max_rank=1, req_points=8, select_idx=100]
 Class            : Evoker
 School           : Spellfrost
@@ -2420,7 +2435,7 @@ GCD              : 1.5 seconds
 Velocity         : 40 yards/sec
 Duration         : 4 seconds
 Cooldown         : 15 seconds
-Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Essence Burst (359618 effect#1), Tyranny (370845 effect#1), Eternity's Span (375757 effect#2), Focusing Iris (386336 effect#1), Arcane Vigor (386342 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #1, #2), Preservation Evoker (356810 effects: #3, #4), Essence Burst (359618 effect#1), Spellweaver's Dominance (370845 effect#1), Eternity's Span (375757 effect#2), Focusing Iris (386336 effect#1), Arcane Vigor (386342 effect#1), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 0, 20
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -2558,7 +2573,7 @@ Effects          :
 Description      : Compress time to make your next empowered spell cast instantly at its maximum empower level.
 Tooltip          : Your next empowered spell casts instantly at its maximum empower level.
 
-Name             : Fly With Me (id=370665) [Spell Family (224)] 
+Name             : Rescue (id=370665) [Spell Family (224)] 
 Talent Entry     : Generic [tree=class, row=8, col=5, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -2677,7 +2692,7 @@ Description      : Red spells extend the duration of your Fire Breath's damage o
 
 Name             : Scintillation (id=370821) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=9, col=3, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(4, 8)]
+                 : Effect#1 [op=set, values=(30, 60)]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
@@ -2695,8 +2710,10 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=982356)   : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Disintegrate has a $s1% chance each time it deals damage to launch a level 1 Eternity Surge at your target.
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1033150)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Disintegrate has a $s2% chance each time it deals damage to launch a level 1 Eternity Surge at $s1% power.
 
 Name             : Engulfing Blaze (id=370837) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=5, col=1, max_rank=1, req_points=8, select_idx=200]
@@ -2743,7 +2760,7 @@ Effects          :
 #1 (id=982392)   : Apply Aura (6) | Dummy (4)
                    Base Value: 2000 | Scaled Value: 2000 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Casting an empower spell increases your Essence regeneration rate by $<rate>% for ${$s1/1000} sec.
-Variables        : $rate=${50}
+Variables        : $rate=${100}
 
 Name             : Empath (id=370840) [Spell Family (224)] 
 Class            : Evoker
@@ -2765,7 +2782,7 @@ Effects          :
 Description      : $@spelldesc376138
 Tooltip          : Essence regeneration rate increased by $w1%.
 
-Name             : Tyranny (id=370845) [Spell Family (224), Passive] 
+Name             : Spellweaver's Dominance (id=370845) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=8, col=4, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -2843,7 +2860,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=982459)   : Apply Aura (6) | Dummy (4)
                    Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fly With Me protects you and your ally from harm, absorbing damage equal to $s1% of your maximum health for $370889d.
+Description      : Rescue protects you and your ally from harm, absorbing damage equal to $s1% of your maximum health for $370889d.
 
 Name             : Twin Guardian (id=370889) [Spell Family (224)] 
 Class            : Evoker
@@ -3140,7 +3157,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Allies healed by Dream Breath are healed for an additional $s1% over $381923d.
 
-Name             : Time Keeper (id=371270) [Spell Family (224), Passive] 
+Name             : Punctuality (id=371270) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=7, col=3, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
@@ -3160,7 +3177,7 @@ Effects          :
                    Affected Spells (Category): Reversion (366155)
 Description      : Reversion has ${$s1+1} charges.
 
-Name             : Life Giver's Flame (id=371426) [Spell Family (224), Passive] 
+Name             : Life-Giver's Flame (id=371426) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=5, col=4, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(40, 80)]
 Class            : Evoker
@@ -3490,7 +3507,7 @@ Duration         : 5 seconds
 Proc Chance      : 100%
 Proc Flags       : ........ ...x...x ........ .......x 
                  : Generic Heal Taken, Magic Heal Taken
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ..x...x. 
@@ -3525,15 +3542,15 @@ Attributes       : ......x. ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=998372)   : Apply Aura (6) | Dummy (4)
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Rescue temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.
+Description      : Verdant Embrace temporarily bonds your life with an ally, causing healing either of you receive to also heal the bonded partner for $s1% of the amount. Lasts $373267d.
 
-Name             : Rescue (id=373514) [Spell Family (224), Hidden] 
+Name             : Verdant Embrace (id=373514) [Spell Family (224), Hidden] 
 Class            : Evoker
 School           : Nature
 Spell Type       : None
 Spell Level      : 4
 Range            : 50000 yards
-Triggered by     : Rescue (360995)
+Triggered by     : Verdant Embrace (360995)
 Attributes       : .......x ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ......x. 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3568,7 +3585,7 @@ Effects          :
                    Base Value: 40 | Scaled Value: 40 | PvP Coefficient: 1.00000 | Target: Self (1)
 #2 (id=999320)   : Apply Aura (6) | Dummy (4)
                    Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Rescue increases the healing of your next Dream Breath by $373835s1%, or your next Living Flame by $373835s2%.
+Description      : Verdant Embrace increases the healing of your next Dream Breath by $373835s1%, or your next Living Flame by $373835s2%.
 
 Name             : Call of Ysera (id=373835) [Spell Family (224)] 
 Class            : Evoker
@@ -3737,7 +3754,7 @@ Effects          :
                    Affected School(s): All
 #3 (id=1002102)  : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
-Description      : The flames of life surround you$?a375574[, increasing healing received by $s3% for $d, and][ for $d,] healing you over $374349d for $s1% of damage taken.
+Description      : The flames of life surround you for $d. While this effect is active$?a375574[ your healing received is increased by $s3%, and ][, ]$s1% of damage you take is healed back over $374349d.
 Tooltip          : $w1% of damage taken is being healed over time.
 
 Name             : Renewing Blaze (desc=Red) (id=374349) [Spell Family (224)] 
@@ -4135,13 +4152,13 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1002083)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Direct Amount (0)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value 2: 1466 (Label) | Target: Self (1)
-                   Affected Spells (Label): Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Rescue (360995), Rescue (361195), Dream Flight (363502), Expunge (365585), Spiritbloom (367226), Spiritbloom (367230), Emerald Communion (370960), Dream Breath (382614), Spiritbloom (382731)
+                   Affected Spells (Label): Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Verdant Embrace (361195), Dream Flight (363502), Expunge (365585), Spiritbloom (367226), Spiritbloom (367230), Emerald Communion (370960), Dream Breath (382614), Spiritbloom (382731)
 #2 (id=1002084)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Periodic Amount (22)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Misc Value 2: 1466 (Label) | Target: Self (1)
-                   Affected Spells (Label): Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Rescue (360995), Rescue (361195), Dream Flight (363502), Expunge (365585), Spiritbloom (367226), Spiritbloom (367230), Emerald Communion (370960), Dream Breath (382614), Spiritbloom (382731)
+                   Affected Spells (Label): Emerald Blossom (355913), Emerald Blossom (355916), Dream Breath (355936), Dream Breath (355941), Dream Flight (359816), Sleep Walk (360806), Naturalize (360823), Verdant Embrace (360995), Verdant Embrace (361195), Dream Flight (363502), Expunge (365585), Spiritbloom (367226), Spiritbloom (367230), Emerald Communion (370960), Dream Breath (382614), Spiritbloom (382731)
 Description      : Green spells restore $s1% more health.
 
-Name             : Pyrexia (id=375574) [Spell Family (224), Passive] 
+Name             : Foci of Life (id=375574) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=9, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Fire
@@ -4421,10 +4438,14 @@ Description      : Casting an empower spell extends the duration of Dragonrage b
 
 Name             : Burnout (id=375801) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=9, col=1, max_rank=2, req_points=20]
-                 : Effect#1 [op=set, values=(4, 8)]
+                 : Effect#1 [op=set, values=(8, 16)]
 Class            : Evoker
 School           : Fire
 Spell Type       : None
+Internal Cooldown: 1 seconds
+Proc Chance      : 101%
+Proc Flags       : ........ ........ x.x..... ........ 
+                 : Magic Hostile Spell, Periodic
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ .......x ........ ........   ........ ........ ........ ........ 
@@ -4436,31 +4457,33 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Not In Spellbook (143), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002421)  : Apply Aura (6) | Dummy (4)
-                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Fire Breath reduces the cast time of Living Flame by $<rate>% for $s1 sec.
+                   Base Value: 6 | Scaled Value: 6 | PvP Coefficient: 1.00000 | Target: Self (1)
+Description      : Fire Breath damage has $s1% chance to cause your next Living Flame to be instant cast, stacking $375802u times.
 Variables        : $rate=${30}
 
 Name             : Burnout (id=375802) [Spell Family (224)] 
 Class            : Evoker
 School           : Fire
 Spell Type       : Magic
-Duration         : 6 seconds
+Duration         : 15 seconds
+Stacks           : 1 initial, 2 maximum
+Proc Chance      : 101%
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .......x ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Do Not Consume if Gained During Cast (79), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1002422)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cast Time (10)
-                   Base Value: -30 | Scaled Value: -30 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
-                   Affected Spells: Living Flame (361469), Living Flame (361500), Living Flame (361509)
-                   Family Flags: 7
+                   Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 10 | Target: Self (1)
+                   Affected Spells: Living Flame (361469)
+                   Family Flags: 52
 Description      : $@spelldesc375801
-Tooltip          : Living Flame's cast time is reduced by $w1%.
+Tooltip          : Next Living Flame's cast time is reduced by $w1%.
 
 Name             : Empath (id=376138) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=5, col=2, max_rank=1, req_points=8, select_idx=100]
@@ -4502,7 +4525,7 @@ Effects          :
                    Family Flags: 30
 Description      : Spiritbloom's cooldown is reduced by ${$s1/-1000} sec.
 
-Name             : Suffused With Power (id=376164) [Spell Family (224), Passive] 
+Name             : Instinctive Arcana (id=376164) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=5, col=2, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(2, 4)]
 Class            : Evoker
@@ -4610,7 +4633,7 @@ Effects          :
 Description      : Time Dilation delays ${$<base>+$s1}% of damage taken.
 Variables        : $base=${50}
 
-Name             : Borrowed Time (id=376210) [Spell Family (224), Passive] 
+Name             : Erasure (id=376210) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=8, col=5, max_rank=1, req_points=20, select_idx=100]
 Class            : Evoker
 School           : Physical
@@ -4716,6 +4739,55 @@ Effects          :
                    Family Flags: 8, 11, 19
 Description      : Reversion, Time Dilation, and Echo last $s1% longer.
 
+Name             : Surge Forward (desc=Racial) (id=376743) 
+Class            : Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Duration         : 3 seconds
+Triggered by     : Surge Forward (386449)
+Attributes       : ........ ........ ........ x.......   ........ ........ ........ ....x... 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), No Aura Icon (60), Allow during spell override (404)
+Effects          :
+#1 (id=1003907)  : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#2 (id=1020535)  : Unknown(289)
+                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Trigger Spell: 386449 | Target: Self (1)
+Description      : Flap forward a short distance, gaining speed.
+|cFFFFFFFFMax $386449u Charges|r
+
+Name             : Skyward Ascent (desc=Racial) (id=376744) 
+Class            : Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+GCD              : 1.5 seconds
+Triggered by     : Skyward Ascent (386451)
+Attributes       : ........ ........ ........ x.......   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Allow While Mounted (24), Allow during spell override (404)
+Effects          :
+#1 (id=1003908)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Custom (18) -> Self (1)
+#2 (id=1020539)  : Unknown(289)
+                   Base Value: -1 | Scaled Value: -1 | PvP Coefficient: 1.00000 | Trigger Spell: 386451 | Target: Self (1)
+Description      : Flap upward, gaining height at the cost of some momentum.
+|cFFFFFFFFMax 1 Charge|r
+
 Name             : Power Swell (id=376850) [Spell Family (224)] 
 Class            : Evoker
 School           : Arcane
@@ -4732,7 +4804,7 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : No Aura Cancel (31), Aura Points On Client (268), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1004197)  : Apply Aura (6) | Modify Power Regen (110)
-                   Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
+                   Base Value: 100 | Scaled Value: 100 | PvP Coefficient: 1.00000 | Misc Value: 19 | Target: Self (1)
 Description      : $@spelldesc370839
 Tooltip          : Essence regeneration rate increased by $w1%.
 
@@ -4755,7 +4827,7 @@ Effects          :
                    Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Your Living Flame has a $s1% chance to cause an Essence Burst, making your next Disintegrate or Pyre cost no Essence.
 
-Name             : Ruin (id=376888) [Spell Family (224), Passive] 
+Name             : Tyranny (id=376888) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=7, col=2, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Physical
@@ -4792,11 +4864,11 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1004428)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Grovetender's Gift (387763)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #2 (id=1004429)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Grovetender's Gift (387763)
+                   Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #3 (id=1004430)  : Apply Aura (6) | Modify Healing Recevied% (118)
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Misc Value: 127 | Target: Self (1)
@@ -4862,7 +4934,7 @@ Effects          :
 Description      : Emerald Communion increases your maximum health by $s1 for $d.
 Tooltip          : Health increased by $s1%.
 
-Name             : Sacral Empowerment (id=377099) [Spell Family (224), Passive] 
+Name             : Spark of Insight (id=377099) [Spell Family (224), Passive] 
 Talent Entry     : Preservation [tree=spec, row=8, col=1, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -4899,7 +4971,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1004752)  : Apply Aura (6) | Dummy (4)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-Description      : Each time you gain Essence Burst, your critical healing is increased by $377102s1% for $377102d.
+Description      : Each time you gain Essence Burst, your critical healing is increased by $s1% for $377102d.
 
 Name             : Exhilarating Burst (id=377102) [Spell Family (224)] 
 Class            : Evoker
@@ -5033,7 +5105,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012780)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.
 
@@ -5057,7 +5129,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012782)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 1948 | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Category): Hover (358267), Rescue (360995)
+                   Affected Spells (Category): Hover (358267), Verdant Embrace (360995)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Hover reduced by $s1%.
 
@@ -5081,7 +5153,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012783)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Aspect of the Cheetah reduced by $s1%.
 
@@ -5180,7 +5252,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012789)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
@@ -5204,7 +5276,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012790)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Sprint reduced by $s1%.
 
@@ -5228,7 +5300,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012792)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Spiritwalker's Grace and Spirit Walk reduced by $s1%.
 
@@ -5252,7 +5324,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012793)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Demonic Circle: Teleport reduced by $s1%.
 
@@ -5405,6 +5477,49 @@ $sTwoDoT=${$357209o2*(2/3)}
 $sThreeDoT=${$357209o2}
 $sFourDoT=${$357209o2*(4/3)}
 
+Name             : Tempest Barrier (id=382289) [Spell Family (3), Passive, Hidden] 
+Talent Entry     : Generic [tree=class, row=2, col=3, max_rank=2, req_points=0]
+                 : Effect#1 [op=set, values=(3, 6)]
+Class            : Mage, Evoker
+School           : Arcane
+Spell Type       : None
+Proc Chance      : 101%
+Attributes       : ......xx ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7)
+Effects          :
+#1 (id=1013589)  : Apply Aura (6) | Proc Trigger Spell (42): Tempest Barrier
+                   Base Value: 3 | Scaled Value: 3 | PvP Coefficient: 0.50000 | Trigger Spell: 382290 | Target: Self (1)
+Description      : Gain a shield that absorbs $s1% of your maximum health for $382290d after you Blink.
+
+Name             : Tempest Barrier (id=382290) [Spell Family (3)] 
+Class            : Mage, Evoker
+School           : Arcane
+Spell Type       : Magic
+Duration         : 15 seconds
+Triggered by     : Tempest Barrier (382289)
+Attributes       : ........ ........ x.x..... ........   ........ ..x..... ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ...x....   ........ ........ ........ ........ 
+                 : ........ ....xx.. ........ ........   ........ ........ ........ x....... 
+                 : ........ ........ ........ ........   ........ ........ ...x.... ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ..x..... 
+                 : ........ ........ ........ ........   
+                 : Not Shapeshifted (16), Do Not Sheath (18), No Threat (42), Aura Never Bounces (148), Ignore Healing Modifiers (219), Aura Points On Client (268), Not In Spellbook Until Learned (269), Ignore Caster Healing Modifiers (312), Ignore Target Absorb Modifiers (371), Allow Class Ability Procs (416), Always Allow Negative Healing Percent Modifiers (442)
+Effects          :
+#1 (id=1013590)  : Apply Aura (6) | Absorb Damage (69)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 0x7f | Target: Self (1)
+                   Affected School(s): All
+Description      : $@spelldesc382289
+Tooltip          : Absorbs $w1 damage.
+
 Name             : Eternity Surge (desc=Blue) (id=382411) [Spell Family (224)] 
 Class            : Evoker
 School           : Spellfrost
@@ -5546,7 +5661,7 @@ Effects          :
                    Base Value: 10 | Scaled Value: 10 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Empower spells cause time to flow $s1% faster for you for $390148d.
 
-Name             : Might of the Aspects (id=386272) [Spell Family (224), Passive] 
+Name             : Titanic Wrath (id=386272) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=6, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(7.5, 15)]
 Class            : Evoker
@@ -5713,6 +5828,52 @@ Effects          :
                    Family Flags: 7, 49
 Description      : Your Living Flame and Emerald Blossom are $s1% more effective on yourself.
 
+Name             : Surge Forward (id=386449) [Hidden] 
+Class            : Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 2 maximum
+Proc Chance      : 101%
+Triggered by     : Surge Forward (376743)
+Attributes       : .......x ........ ........ x......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
+Effects          :
+#1 (id=1020533)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 376743 | Target: Self (1)
+Description      : $@spelldesc376743
+
+Name             : Skyward Ascent (id=386451) [Hidden] 
+Class            : Evoker
+Race             : Dracthyr (0x18000)
+School           : Physical
+Spell Type       : None
+Duration         : Aura (infinite)
+Stacks           : 1 maximum
+Proc Chance      : 101%
+Triggered by     : Skyward Ascent (376744)
+Attributes       : .......x ........ ........ x......x   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ....x... ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Allow While Mounted (24), No Aura Cancel (31), Aura Points On Client (268), Allow during spell override (404)
+Effects          :
+#1 (id=1020536)  : Apply Aura (6) | Unknown(408)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Trigger Spell: 376744 | Target: Self (1)
+Description      : $@spelldesc376744
+
 Name             : Boon of the Covenants (id=387168) [Spell Family (224)] 
 Class            : Evoker
 Covenant         : Kyrian
@@ -5761,11 +5922,11 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021786)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Grovetender's Gift (387763)
+                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Panacea (387763)
                    Family Flags: 0, 1
 #2 (id=1021787)  : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
                    Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Grovetender's Gift (387763)
+                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Panacea (387763)
                    Family Flags: 0, 1
 Description      : $@spelldesc387168
 
@@ -5809,7 +5970,7 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1021842)  : Apply Aura (6) | Add Flat Modifier (107): Spell Critical Chance (7)
                    Base Value: 1 | Scaled Value: 1 | PvP Coefficient: 1.00000 | Misc Value: 7 | Target: Self (1)
-                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Rescue (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Grovetender's Gift (387763)
+                   Affected Spells: Deep Breath (353759), Emerald Blossom (355916), Dream Breath (355941), Disintegrate (356995), Fire Breath (357209), Pyre (357212), Eternity Surge (359077), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361500), Living Flame (361509), Azure Strike (362969), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Unravel (368432), Firestorm (369374), Shattering Star (370452), Lifebind (373267), Panacea (387763)
                    Family Flags: 0, 1
 Description      : Increases critical strike chance by |cFFFFFFFF${$s1}.1%|r.
 
@@ -6035,7 +6196,7 @@ Effects          :
                    Family Flags: 51
 Description      : Boon of the Covenants passively increases your damage and healing by an additional ${$s1}.1%.
 
-Name             : Grovetender's Gift (id=387761) [Spell Family (224), Passive] 
+Name             : Panacea (id=387761) [Spell Family (224), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8]
 Class            : Evoker
 School           : Nature
@@ -6054,11 +6215,11 @@ Effects          :
                    Base Value: 2 | Scaled Value: 2 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Emerald Blossom instantly heals you for $387763s1 when cast.
 
-Name             : Grovetender's Gift (id=387763) [Spell Family (224)] 
+Name             : Panacea (id=387763) [Spell Family (224)] 
 Class            : Evoker
 School           : Nature
 Spell Type       : None
-Affecting spells : Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
+Affecting spells : Devastation Evoker (356809 effects: #5, #6), Preservation Evoker (356810 effects: #1, #2), Attuned to the Dream (376930 effects: #1, #2), Boon of the Covenants (387169 effects: #1, #2), Spark of Savagery (387201 effect#1)
 Family Flags     : 1
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -6141,5 +6302,25 @@ Description      : Increases haste by $s1% for all party and raid members for $d
 
 Allies receiving this effect will become Exhausted and unable to benefit from Fury of the Aspects or similar effects again for $57723d.
 Tooltip          : Haste increased by $w1%.
+
+Name             : Pyre (id=393568) [Spell Family (224), Hidden] 
+Class            : Evoker
+School           : Fire
+Spell Type       : None
+Range            : 100 yards
+Triggered by     : Pyre (357211)
+Attributes       : .......x ........ ........ .....x..   ...x...x ..x..... ........ ........ 
+                 : x....... ........ ........ ....x...   ........ ........ .x...... ........ 
+                 : .......x ........ .......x ........   ........ ........ ........ ........ 
+                 : ..x..... ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   ....x... ........ ....x... ........ 
+                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ........ ........ ........   x....... ........ ........ ........ 
+                 : ........ ........ ........ ........   
+                 : Do Not Display (Spellbook, Aura Icon, Combat Log) (7), No Immunities (29), No Redirection (35), No Reflection (39), No Threat (42), Allow Dead Target (64), Not an Action (92), Suppress Target Procs (113), Allow Cast While Casting (135), Suppress Weapon Procs (151), Not an Attack (194), Missile Speed is Delay (in sec) (292), Allow Cast While Channeling (308), Allow Class Ability Procs (416)
+Effects          :
+#1 (id=1032624)  : Dummy (3)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Enemy (6)
+Description      : $@spelldesc369089
 
 

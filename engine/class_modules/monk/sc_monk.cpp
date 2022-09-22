@@ -509,9 +509,7 @@ public:
               p()->covenant.necrolord->effectN( 1 ).percent() *                                                 // Damage amplifier from Bonedust Brew
               ( 1 + ( p()->conduit.bone_marrow_hops->ok()
                           ? p()->conduit.bone_marrow_hops.percent()                                            // Damage amplifier from Bone Marrow Hops conduit
-                          : ( p()->talent.windwalker.bone_marrow_hops->ok()
-                                        ? p()->talent.windwalker.bone_marrow_hops->effectN( 1 ).percent()     // Damage amplifier from Bone Marrow Hops talent
-                                        : 0 ) ) ) *  
+                          : 0 ) ) *  
           
               ( static_cast<double>( targets_affected ) / target_count ) );                                   // Delta targets affected by Bonedust Brew
 
@@ -1627,8 +1625,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( p->legendary.keefers_skyreach->ok() )
       range += p->legendary.keefers_skyreach->effectN( 1 ).base_value();
-    else if ( p->talent.windwalker.keefers_skyreach && p->talent.windwalker.keefers_skyreach->ok() )
-      range += p->talent.windwalker.keefers_skyreach->effectN( 1 ).base_value();
+    else if ( p->talent.windwalker.skyreach && p->talent.windwalker.skyreach->ok() )
+      range += p->talent.windwalker.skyreach->effectN( 1 ).base_value();
   }
 
   double action_multiplier() const override
@@ -2623,8 +2621,8 @@ struct sck_tick_action_t : public monk_melee_attack_t
     reduced_aoe_targets = p->spec.spinning_crane_kick->effectN( 1 ).base_value();
     radius              = data->effectN( 1 ).radius();
 
-    if ( p->talent.windwalker.feathers_of_a_hundred_flocks.ok() )
-        radius *= 1 + p->talent.windwalker.feathers_of_a_hundred_flocks->effectN( 1 ).percent();
+    if ( p->talent.windwalker.widening_whirl.ok() )
+        radius *= 1 + p->talent.windwalker.widening_whirl->effectN( 1 ).percent();
 
     if ( p->specialization() == MONK_WINDWALKER )
       apply_dual_wield_two_handed_scaling();
@@ -3615,8 +3613,8 @@ struct touch_of_death_t : public monk_melee_attack_t
 
   bool ready() override
   {
-    if ( p()->talent.general.touch_of_death->ok() &&
-         ( target->health_percentage() < p()->talent.general.touch_of_death->effectN( 1 ).percent() ) )
+    if ( p()->talent.general.improved_touch_of_death->ok() &&
+         ( target->health_percentage() < p()->talent.general.improved_touch_of_death->effectN( 1 ).percent() ) )
       return monk_melee_attack_t::ready();
     if ( ( target->true_level <= p()->true_level ) &&
          ( target->current_health() <= p()->resources.max[ RESOURCE_HEALTH ] ) )
@@ -3633,7 +3631,7 @@ struct touch_of_death_t : public monk_melee_attack_t
     {
       case MONK_WINDWALKER:
 
-        if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
+        if ( p()->talent.windwalker.forbidden_touch->ok() )
         {
           if ( p()->buff.hidden_masters_forbidden_touch->up() )
             p()->buff.hidden_masters_forbidden_touch->expire();
@@ -3673,15 +3671,15 @@ struct touch_of_death_t : public monk_melee_attack_t
     double amount = p()->resources.initial[RESOURCE_HEALTH];
 
     if ( target->true_level > p()->true_level )
-      amount *= p()->talent.general.touch_of_death->effectN( 2 ).percent();  // 35% HP
+      amount *= p()->talent.general.improved_touch_of_death->effectN( 2 ).percent();  // 35% HP
 
     if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->talent.windwalker.meridian_strikes.ok() )
         amount *= 1 + p()->talent.windwalker.meridian_strikes->effectN( 1 ).percent();
 
-      if ( p()->talent.windwalker.hidden_masters_forbidden_touch->ok() )
-        amount *= 1 + p()->talent.windwalker.hidden_masters_forbidden_touch->effectN( 2 ).percent();
+      if ( p()->talent.windwalker.forbidden_touch->ok() )
+        amount *= 1 + p()->talent.windwalker.forbidden_touch->effectN( 2 ).percent();
 
       // Damage is only affected by Windwalker's Mastery
       // Versatility does not affect the damage of Touch of Death.
@@ -4083,7 +4081,7 @@ struct roll_t : public monk_spell_t
 
     parse_options( options_str );
 
-    if ( player->talent.general.roll )
+    if ( player->talent.general.improved_roll )
         cooldown->charges += 1;
 
     if ( player->talent.general.celerity )
@@ -4112,7 +4110,7 @@ struct chi_torpedo_t : public monk_spell_t
 
     cast_during_sck = true;
 
-    if ( player->talent.general.roll )
+    if ( player->talent.general.improved_roll )
         cooldown->charges += 1;
 
     if ( player->legendary.swiftsure_wraps.ok() )
@@ -4397,8 +4395,8 @@ struct fortifying_brew_t : public monk_spell_t
 
     harmful = may_crit = false;
 
-    if ( p.talent.general.fortifying_brew_cooldown )
-      cooldown->duration += p.talent.general.fortifying_brew_cooldown->effectN( 1 ).time_value();
+    if ( p.talent.general.expeditious_fortification )
+      cooldown->duration += p.talent.general.expeditious_fortification->effectN( 1 ).time_value();
   }
 
   void execute() override
@@ -4745,7 +4743,7 @@ struct purifying_brew_t : public monk_spell_t
     harmful         = false;
     cast_during_sck = true;
 
-    cooldown->charges += (int)p.talent.brewmaster.purifying_brew_rank_2->effectN( 1 ).base_value();
+    cooldown->charges += (int)p.talent.brewmaster.improved_purifying_brew->effectN( 1 ).base_value();
 
     if ( p.talent.brewmaster.light_brewing->ok() )
       cooldown->duration *= 1 + p.talent.brewmaster.light_brewing->effectN( 2 ).percent();  // -20
@@ -4781,7 +4779,7 @@ struct purifying_brew_t : public monk_spell_t
       p()->buff.blackout_combo->expire();
     }
 
-    if ( p()->talent.brewmaster.celestial_brew_rank_2->ok() )
+    if ( p()->talent.brewmaster.improved_celestial_brew->ok() )
     {
       int count = 1;
       for ( auto&& buff : { p()->buff.light_stagger, p()->buff.moderate_stagger, p()->buff.heavy_stagger } )
@@ -5279,6 +5277,8 @@ struct bonedust_brew_t : public monk_spell_t
     base_dd_max                 = 0;
     trigger_ww_t28_4p_potential = true;
     cast_during_sck             = true;
+    if ( p.talent.windwalker.dust_in_the_wind->ok() )
+      radius *= 1 + p.talent.windwalker.dust_in_the_wind->effectN( 1 ).percent();
   }
 
   void execute() override
@@ -5322,14 +5322,6 @@ struct bonedust_brew_damage_t : public monk_spell_t
         p()->buff.bonedust_brew_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
       }
-      else if ( p()->talent.windwalker.bone_marrow_hops->ok() )
-      {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->talent.windwalker.bone_marrow_hops->effectN( 2 ).time_value(), true );
-
-        p()->buff.bonedust_brew_hidden->decrement();
-        p()->proc.bonedust_brew_reduction->occur();
-      }
     }
   }
 };
@@ -5355,14 +5347,6 @@ struct bonedust_brew_heal_t : public monk_heal_t
       {
         // Saved at -500
         p()->cooldown.bonedust_brew->adjust( p()->conduit.bone_marrow_hops->effectN( 2 ).time_value(), true );
-
-        p()->buff.bonedust_brew_hidden->decrement();
-        p()->proc.bonedust_brew_reduction->occur();
-      }
-      else if ( p()->talent.windwalker.bone_marrow_hops->ok() )
-      {
-        // Saved at -500
-        p()->cooldown.bonedust_brew->adjust( p()->talent.windwalker.bone_marrow_hops->effectN( 2 ).time_value(), true );
 
         p()->buff.bonedust_brew_hidden->decrement();
         p()->proc.bonedust_brew_reduction->occur();
@@ -5871,8 +5855,8 @@ struct vivify_t : public monk_heal_t
   {
     double am = monk_heal_t::action_multiplier();
 
-    if ( p()->talent.general.vivify->ok() )
-      am *= 1 + p()->talent.general.vivify->effectN( 1 ).percent();
+    if ( p()->talent.general.improved_vivify->ok() )
+      am *= 1 + p()->talent.general.improved_vivify->effectN( 1 ).percent();
 
     if ( p()->buff.uplifting_trance->check() )
       am *= 1 + p()->buff.uplifting_trance->check_value();
@@ -7706,7 +7690,7 @@ void monk_t::trigger_keefers_skyreach( action_state_t* s )
       get_target_data( s->target )->debuff.skyreach_exhaustion->trigger();
     }
   }
-  else if ( talent.windwalker.keefers_skyreach->ok() )
+  else if ( talent.windwalker.skyreach->ok() )
   {
     if ( !get_target_data( s->target )->debuff.skyreach_exhaustion->up() )
     {
@@ -7883,60 +7867,60 @@ void monk_t::init_spells()
   // General
   // ========
   // Row 1
-  talent.general.soothing_mist               = _CT( "Soothing Mist" );
-  talent.general.rising_sun_kick             = _CT( "Rising Sun Kick" );
-  talent.general.tigers_lust                 = _CT( "Tiger's Lust" );
+  talent.general.soothing_mist                              = _CT( "Soothing Mist" );
+  talent.general.rising_sun_kick                            = _CT( "Rising Sun Kick" );
+  talent.general.tigers_lust                                = _CT( "Tiger's Lust" );
   // Row 2
-  talent.general.roll                        = _CT( "Roll" );
-  talent.general.calming_presence            = _CT( "Calming Presence" );
-  talent.general.disable                     = _CT( "Disable" );
+  talent.general.improved_roll                              = _CT( "Improved Roll" );
+  talent.general.calming_presence                           = _CT( "Calming Presence" );
+  talent.general.disable                                    = _CT( "Disable" );
   // Row 3
-  talent.general.tiger_tail_sweep            = _CT( "Tiger Tail Sweep" );
-  talent.general.vigorous_expulsion          = _CT( "Vigorous Expulsion" );
-  talent.general.vivify                      = find_talent_spell( talent_tree::CLASS, 231602 );
-  talent.general.detox                       = _CT( "Detox" );
-  talent.general.paralysis                   = _CT( "Paralysis" );
+  talent.general.tiger_tail_sweep                           = _CT( "Tiger Tail Sweep" );
+  talent.general.vigorous_expulsion                         = _CT( "Vigorous Expulsion" );
+  talent.general.improved_vivify                            = _CT( "Improved Vivify" );
+  talent.general.detox                                      = _CT( "Detox" );
+  talent.general.paralysis                                  = _CT( "Paralysis" );
   // Row 4
-  talent.general.grace_of_the_crane          = _CT( "Grace of the Crane" );
-  talent.general.vivacious_vivification      = _CT( "Vivacious Vivification" );
-  talent.general.ferocity_of_xuen            = _CT( "Ferocity of Xuen" );
-  talent.general.paralysis_rank_2            = find_talent_spell( talent_tree::CLASS, 344359 );
+  talent.general.grace_of_the_crane                         = _CT( "Grace of the Crane" );
+  talent.general.vivacious_vivification                     = _CT( "Vivacious Vivification" );
+  talent.general.ferocity_of_xuen                           = _CT( "Ferocity of Xuen" );
+  talent.general.paralysis_rank_2                           = find_talent_spell( talent_tree::CLASS, 344359 );
   // Row 5
-  talent.general.elusive_mists               = _CT( "Elusive Mists" );
-  talent.general.transcendence               = _CT( "Transcendence" );
-  talent.general.spear_hand_strike           = _CT( "Spear Hand Strike" );
-  talent.general.fortifying_brew             = find_talent_spell( talent_tree::CLASS, 388917 );
+  talent.general.elusive_mists                              = _CT( "Elusive Mists" );
+  talent.general.transcendence                              = _CT( "Transcendence" );
+  talent.general.spear_hand_strike                          = _CT( "Spear Hand Strike" );
+  talent.general.fortifying_brew                            = find_talent_spell( talent_tree::CLASS, 388917 );
   // Row 6
-  talent.general.chi_wave                    = _CT( "Chi Wave" );
-  talent.general.chi_burst                   = _CT( "Chi Burst" );
-  talent.general.provoke                     = _CT( "Provoke" );
-  talent.general.ring_of_peace               = _CT( "Ring of Peace" );
-  talent.general.fast_feet                   = _CT( "Fast Feet" );
-  talent.general.celerity                    = _CT( "Celerity" );
-  talent.general.chi_torpedo                 = _CT( "Chi Torpedo" );
-  talent.general.fortifying_brew_dodge_armor = find_talent_spell( talent_tree::CLASS, 388814 );
-  talent.general.fortifying_brew_cooldown    = find_talent_spell( talent_tree::CLASS, 388813 );
+  talent.general.chi_wave                                   = _CT( "Chi Wave" );
+  talent.general.chi_burst                                  = _CT( "Chi Burst" );
+  talent.general.hasty_provocation                          = _CT( "Hasty Provocation" );
+  talent.general.ring_of_peace                              = _CT( "Ring of Peace" );
+  talent.general.fast_feet                                  = _CT( "Fast Feet" );
+  talent.general.celerity                                   = _CT( "Celerity" );
+  talent.general.chi_torpedo                                = _CT( "Chi Torpedo" );
+  talent.general.ironshell_brew                             = _CT( "Ironshell Brew" );
+  talent.general.expeditious_fortification                  = _CT( "Expeditious Fortification" );
   // Row 7
-  talent.general.profound_rebuttal           = _CT( "Profound Rebuttal" );
-  talent.general.diffuse_magic               = _CT( "Diffuse Magic" );
-  talent.general.eye_of_the_tiger            = _CT( "Eye of the Tiger" );
-  talent.general.dampen_harm                 = _CT( "Dampen Harm" );
-  talent.general.touch_of_death              = find_talent_spell( talent_tree::CLASS, 322113 );
-  talent.general.strength_of_spirit          = _CT( "Strength of Spirit" );
+  talent.general.profound_rebuttal                          = _CT( "Profound Rebuttal" );
+  talent.general.diffuse_magic                              = _CT( "Diffuse Magic" );
+  talent.general.eye_of_the_tiger                           = _CT( "Eye of the Tiger" );
+  talent.general.dampen_harm                                = _CT( "Dampen Harm" );
+  talent.general.improved_touch_of_death                    = _CT( "Improved Touch of Death" );
+  talent.general.strength_of_spirit                         = _CT( "Strength of Spirit" );
   // Row 8
-  talent.general.close_to_heart              = _CT( "Close to Heart" );
-  talent.general.escape_from_reality         = _CT( "Escape from Reality" );
-  talent.general.windwalking                 = _CT( "Windwalking" );
-  talent.general.fatal_touch                 = _CT( "Fatal Touch" );
-  talent.general.generous_pour               = _CT( "Generous Pour" );
+  talent.general.close_to_heart                             = _CT( "Close to Heart" );
+  talent.general.escape_from_reality                        = _CT( "Escape from Reality" );
+  talent.general.windwalking                                = _CT( "Windwalking" );
+  talent.general.fatal_touch                                = _CT( "Fatal Touch" );
+  talent.general.generous_pour                              = _CT( "Generous Pour" );
   // Row 9
-  //talent.general.save_them_all                = _CT( "Save Them All" );
-  talent.general.resonant_fists              = _CT( "Resonant Fists" );
-  //talent.general.bounce_back                  = _CT( "Bounce Back" );
+  talent.general.save_them_all                              = _CT( "Save Them All" );
+  talent.general.resonant_fists                             = _CT( "Resonant Fists" );
+  talent.general.bounce_back                                = _CT( "Bounce Back" );
   // Row 10
-  talent.general.summon_jade_serpent_statue  = _CT( "Summon Jade Serpent Statue" );
-  talent.general.summon_white_tiger_statue   = _CT( "Summon White Tiger Statue" );
-  talent.general.summon_black_ox_statue      = _CT( "Summon Black Ox Statue" );
+  talent.general.summon_jade_serpent_statue                 = _CT( "Summon Jade Serpent Statue" );
+  talent.general.summon_white_tiger_statue                  = _CT( "Summon White Tiger Statue" );
+  talent.general.summon_black_ox_statue                     = _CT( "Summon Black Ox Statue" );
 
   // ========
   // Brewmaster
@@ -7945,54 +7929,54 @@ void monk_t::init_spells()
   if ( spec_tree == MONK_BREWMASTER )
   {
       // Row 1
-      talent.brewmaster.keg_smash               = _ST( "Keg Smash" );
+      talent.brewmaster.keg_smash                           = _ST( "Keg Smash" );
       // Row 2
-      talent.brewmaster.stagger                 = _ST( "Stagger" );
+      talent.brewmaster.stagger                             = _ST( "Stagger" );
       // Row 3
-      talent.brewmaster.purifying_brew          = _ST( "Purifying Brew" );
-      talent.brewmaster.shuffle                 = _ST( "Shuffle" );
+      talent.brewmaster.purifying_brew                      = _ST( "Purifying Brew" );
+      talent.brewmaster.shuffle                             = _ST( "Shuffle" );
       // Row 4
-      talent.brewmaster.hit_scheme              = _ST( "Hit Scheme" );
-      talent.brewmaster.gift_of_the_ox          = _ST( "Gift of the Ox" );
-      talent.brewmaster.healing_elixir          = _ST( "Healing Elixir" );
-      talent.brewmaster.quick_sip               = _ST( "Quick Sip" );
-      talent.brewmaster.rushing_jade_wind       = _ST( "Rushing Jade Wind" );
-      talent.brewmaster.special_delivery        = _ST( "Special Delivery" );
+      talent.brewmaster.hit_scheme                          = _ST( "Hit Scheme" );
+      talent.brewmaster.gift_of_the_ox                      = _ST( "Gift of the Ox" );
+      talent.brewmaster.healing_elixir                      = _ST( "Healing Elixir" );
+      talent.brewmaster.quick_sip                           = _ST( "Quick Sip" );
+      talent.brewmaster.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
+      talent.brewmaster.special_delivery                    = _ST( "Special Delivery" );
       // Row 5
-      talent.brewmaster.celestial_flames        = _ST( "Celestial Flames" );
-      talent.brewmaster.celestial_brew          = _ST( "Celestial Brew" );
-      talent.brewmaster.staggering_strikes      = _ST( "Staggering Strikes" );
-      talent.brewmaster.graceful_exit           = _ST( "Graceful Exit" );
-      talent.brewmaster.zen_meditation          = _ST( "Zen Meditation" );
-      talent.brewmaster.clash                   = _ST( "Clash" );
+      talent.brewmaster.celestial_flames                    = _ST( "Celestial Flames" );
+      talent.brewmaster.celestial_brew                      = _ST( "Celestial Brew" );
+      talent.brewmaster.staggering_strikes                  = _ST( "Staggering Strikes" );
+      talent.brewmaster.graceful_exit                       = _ST( "Graceful Exit" );
+      talent.brewmaster.zen_meditation                      = _ST( "Zen Meditation" );
+      talent.brewmaster.clash                               = _ST( "Clash" );
       // Row 6
-      talent.brewmaster.breath_of_fire          = _ST( "Breath of Fire" );
-      talent.brewmaster.celestial_brew_rank_2   = find_talent_spell(talent_tree::SPECIALIZATION, 322510);
-      talent.brewmaster.purifying_brew_rank_2   = find_talent_spell(talent_tree::SPECIALIZATION, 343743);
-      talent.brewmaster.strength_of_spirit      = _ST( "Strength of Spirit" );
-      talent.brewmaster.gai_plins_imperial_brew = _ST( "Gai Plin's Imperial Brew" );
-      talent.brewmaster.fundamental_observation = _ST( "Fundamental Observation" );
-      talent.brewmaster.shadowboxing_treads     = find_talent_spell( talent_tree::SPECIALIZATION, 387638 );
-      talent.brewmaster.fluidity_of_motion      = _ST( "Fluidity of Motion" );
+      talent.brewmaster.breath_of_fire                      = _ST( "Breath of Fire" );
+      talent.brewmaster.improved_celestial_brew             = _ST( "Improved Celestial Brew" );
+      talent.brewmaster.improved_purifying_brew             = _ST( "Improved Purifying Brew" );
+      talent.brewmaster.tranquil_spirit                     = _ST( "Tranquil Spirit" );
+      talent.brewmaster.gai_plins_imperial_brew             = _ST( "Gai Plin's Imperial Brew" );
+      talent.brewmaster.fundamental_observation             = _ST( "Fundamental Observation" );
+      talent.brewmaster.shadowboxing_treads                 = find_talent_spell( talent_tree::SPECIALIZATION, 387638 );
+      talent.brewmaster.fluidity_of_motion                  = _ST( "Fluidity of Motion" );
       // Row 7
-      talent.brewmaster.scalding_brew              = _ST( "Scalding Brew" );
-      talent.brewmaster.salsalabims_strength       = _ST( "Sal'salabim's Strength" );
-      talent.brewmaster.fortifying_brew_stagger    = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
-      talent.brewmaster.black_ox_brew              = _ST( "Black Ox Brew" );
-      talent.brewmaster.bob_and_weave              = _ST( "Bob and Weave" );
-      talent.brewmaster.invoke_niuzao_the_black_ox = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
-      talent.brewmaster.light_brewing              = _ST( "Light Brewing" );
-      talent.brewmaster.training_of_niuzao         = _ST( "Training of Niuzao" );
-      talent.brewmaster.shocking_blow              = _ST( "Shocking Blow" );
-      talent.brewmaster.face_palm                  = _ST( "Face Palm" );
+      talent.brewmaster.scalding_brew                       = _ST( "Scalding Brew" );
+      talent.brewmaster.salsalabims_strength                = _ST( "Sal'salabim's Strength" );
+      talent.brewmaster.fortifying_brew_stagger             = find_talent_spell(talent_tree::SPECIALIZATION, 322960);
+      talent.brewmaster.black_ox_brew                       = _ST( "Black Ox Brew" );
+      talent.brewmaster.bob_and_weave                       = _ST( "Bob and Weave" );
+      talent.brewmaster.invoke_niuzao_the_black_ox          = find_talent_spell( talent_tree::SPECIALIZATION, 132578 ); //_ST( "Invoke Niuzao, the Black Ox" ); This pulls Rank 2 (322740) for some reason
+      talent.brewmaster.light_brewing                       = _ST( "Light Brewing" );
+      talent.brewmaster.training_of_niuzao                  = _ST( "Training of Niuzao" );
+      talent.brewmaster.pretense_of_instability             = _ST( "Pretense of Instability" );
+      talent.brewmaster.face_palm                           = _ST( "Face Palm" );
       // Row 8
-      talent.brewmaster.dragonfire_brew         = _ST( "Dragonfire Brew" );
-      talent.brewmaster.charred_passions        = _ST( "Charred Passions" );
-      talent.brewmaster.high_tolerance          = _ST( "High Tolerance" );
-      talent.brewmaster.walk_with_the_ox        = _ST( "Walk with the Ox" );
-      talent.brewmaster.elusive_footwork        = _ST( "Elusive Footwork" );
-      talent.brewmaster.anvil_and_stave         = _ST( "Anvil & Stave" );
-      talent.brewmaster.counterstrike           = _ST( "Counterstrike" );
+      talent.brewmaster.dragonfire_brew                     = _ST( "Dragonfire Brew" );
+      talent.brewmaster.charred_passions                    = _ST( "Charred Passions" );
+      talent.brewmaster.high_tolerance                      = _ST( "High Tolerance" );
+      talent.brewmaster.walk_with_the_ox                    = _ST( "Walk with the Ox" );
+      talent.brewmaster.elusive_footwork                    = _ST( "Elusive Footwork" );
+      talent.brewmaster.anvil_and_stave                     = _ST( "Anvil & Stave" );
+      talent.brewmaster.counterstrike                       = _ST( "Counterstrike" );
       // Row 9
       talent.brewmaster.bonedust_brew                       = _ST( "Bonedust Brew" );
       talent.brewmaster.invoke_niuzao_the_black_ox_rank_2   = find_talent_spell(talent_tree::SPECIALIZATION, 322740);
@@ -8026,23 +8010,22 @@ void monk_t::init_spells()
       talent.mistweaver.teachings_of_the_monastery          = _ST( "Teachings of the Monastery" );
       talent.mistweaver.revival                             = _ST( "Revival" );
       talent.mistweaver.restoral                            = _ST( "Restoral" );
-      talent.mistweaver.healing_elixir                      = _ST( "Healing Elixir" );
+      talent.mistweaver.song_of_chi_ji                      = _ST( "Song of Chi-Ji" );
       talent.mistweaver.mastery_of_mist                     = _ST( "Mastery of Mist" );
       // Row 5
       talent.mistweaver.spirit_of_the_crane                 = _ST( "Spirit of the Crane" );
       talent.mistweaver.mists_of_life                       = _ST( "Mists of Life" );
       talent.mistweaver.uplifting_spirits                   = _ST( "Uplifting Spirits" );
+      talent.mistweaver.font_of_life                        = _ST( "Font of Life" );
       talent.mistweaver.zen_pulse                           = _ST( "Zen Pulse" );
-      talent.mistweaver.lifecycles                          = _ST( "Lifecycles" );
-      talent.mistweaver.mana_tea                            = _ST( "Mana Tea" );
+      talent.mistweaver.healing_elixir                      = _ST( "Healing Elixir" );
       // Row 6
       talent.mistweaver.nourishing_chi                      = _ST( "Nourishing Chi" );
       talent.mistweaver.overflowing_mists                   = _ST( "Overflowing Mists" );
       talent.mistweaver.invoke_yulon_the_jade_serpent       = _ST( "Invoke Yu'lon, the Jade Serpent" );
       talent.mistweaver.invoke_chi_ji_the_red_crane         = _ST( "Invoke Chi-Ji, the Red Crane" );
-      talent.mistweaver.zen_reverberation                   = _ST( "Zen Reverberation" );
+      talent.mistweaver.echoing_reverberation               = _ST( "Echoing Reverberation" );
       talent.mistweaver.accumulating_mist                   = _ST( "Accumulating Mist" );
-      talent.mistweaver.song_of_chi_ji                      = _ST( "Song of Chi-Ji" );
       talent.mistweaver.rapid_diffusion                     = _ST( "Rapid Diffusion" );
       // Row 7
       talent.mistweaver.calming_coalescence                 = _ST( "Calming Coalescence" );
@@ -8051,10 +8034,11 @@ void monk_t::init_spells()
       talent.mistweaver.refreshing_jade_wind                = _ST( "Refreshing Jade Wind" );
       talent.mistweaver.enveloping_breath                   = _ST( "Enveloping Breath" );
       talent.mistweaver.dancing_mists                       = _ST( "Dancing Mists" );
-      talent.mistweaver.font_of_life                        = _ST( "Font of Life" );
+      talent.mistweaver.lifecycles                          = _ST( "Lifecycles" );
+      talent.mistweaver.mana_tea                            = _ST( "Mana Tea" );
       // Row 8
       talent.mistweaver.faeline_stomp                       = _ST( "Faeline Stomp" );
-      talent.mistweaver.ancient_teachings_of_the_monastery  = _ST( "Ancient Teachings of the Monastery" );
+      talent.mistweaver.ancient_teachings                   = _ST( "Ancient Teachings" );
       talent.mistweaver.clouded_focus                       = _ST( "Clouded Focus" );
       talent.mistweaver.jade_bond                           = _ST( "Jade Bond" );
       talent.mistweaver.gift_of_the_celestials              = _ST( "Gift of the Celestials" );
@@ -8063,20 +8047,21 @@ void monk_t::init_spells()
       talent.mistweaver.bonedust_brew                       = _ST( "Bonedust Brew" );
       // Row 9
       talent.mistweaver.ancient_concordance                 = _ST( "Ancient Concordance" );
-      talent.mistweaver.peaceful_mending                    = _ST( "Peaceful Mending" );
+      talent.mistweaver.resplendent_mist                    = _ST( "Resplendent Mist" );
       talent.mistweaver.secret_infusion                     = _ST( "Secret Infusion" );
       talent.mistweaver.misty_peaks                         = _ST( "Misty Peaks" );
-      talent.mistweaver.resplendent_mist                    = _ST( "Resplendent Mist" );
+      talent.mistweaver.peaceful_mending                    = _ST( "Peaceful Mending" );
+      talent.mistweaver.bountiful_brew                      = _ST( "Bountiful Brew" );
+      talent.mistweaver.attenuation                         = _ST( "Attenuation" );
       // Row 10
       talent.mistweaver.awakened_faeline                    = _ST( "Awakened Faeline" );
-      talent.mistweaver.restorative_proliferation           = _ST( "Restorative Proliferation" );
+      talent.mistweaver.tea_of_serenity                     = _ST( "Tea of Serenity" );
       talent.mistweaver.tea_of_plenty                       = _ST( "Tea of Plenty" );
       talent.mistweaver.unison                              = _ST( "Unison" );
+      talent.mistweaver.mending_proliferation               = _ST( "Mending Proliferation" );
       talent.mistweaver.invokers_delight                    = _ST( "Invoker's Delight" );
       talent.mistweaver.tear_of_morning                     = _ST( "Tear of Morning" );
       talent.mistweaver.rising_mist                         = _ST( "Rising Mist" );
-      talent.mistweaver.bountiful_brew                      = _ST( "Bountiful Brew" );
-      talent.mistweaver.attenuation                         = _ST( "Attenuation" );
   }
 
   // ========
@@ -8092,7 +8077,7 @@ void monk_t::init_spells()
       talent.windwalker.ascension                           = _ST( "Ascension" );
       talent.windwalker.power_strikes                       = _ST( "Power Strikes" );
       // Row 3
-      talent.windwalker.feathers_of_a_hundred_flocks        = _ST( "Feathers of a Hundred Flocks" );
+      talent.windwalker.widening_whirl                      = _ST( "Widening Whirl" );
       talent.windwalker.touch_of_the_tiger                  = _ST( "Touch of the Tiger" );
       talent.windwalker.hardened_soles                      = _ST( "Hardened Soles" );
       talent.windwalker.flashing_fists                      = _ST( "Flashing Fists" );
@@ -8117,7 +8102,7 @@ void monk_t::init_spells()
       talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
-      talent.windwalker.hidden_masters_forbidden_touch      = _ST( "Hidden Master's Forbidden Touch" );
+      talent.windwalker.forbidden_touch                     = _ST( "Forbidden Touch" );
       talent.windwalker.invoke_xuen_the_white_tiger         = _ST( "Invoke Xuen, the White Tiger" );
       talent.windwalker.teachings_of_the_monastery          = _ST( "Teachings of the Monastery" );
       talent.windwalker.thunderfist                         = _ST( "Thunderfist" );
@@ -8138,8 +8123,8 @@ void monk_t::init_spells()
       talent.windwalker.faeline_stomp                       = _ST( "Faeline Stomp" );
       // Row 10
       talent.windwalker.attenuation                         = _ST( "Attenuation" );
-      talent.windwalker.bone_marrow_hops                    = _ST( "Bone Marrow Hops" );
-      talent.windwalker.keefers_skyreach                    = _ST( "Keefer's Skyreach" );
+      talent.windwalker.dust_in_the_wind                    = _ST( "Dust in the Wind" );
+      talent.windwalker.skyreach                            = _ST( "Skyreach" );
       talent.windwalker.invokers_delight                    = _ST( "Invoker's Delight" );
       talent.windwalker.way_of_the_fae                      = _ST( "Way of the Fae" );
       talent.windwalker.faeline_harmony                     = _ST( "Faeline Harmony" );
@@ -9229,8 +9214,6 @@ void monk_t::bonedust_brew_assessor(action_state_t* s)
 
         if (conduit.bone_marrow_hops->ok())
             damage *= 1 + conduit.bone_marrow_hops.percent();
-        else if (talent.windwalker.bone_marrow_hops->ok())
-          damage *= 1 + talent.windwalker.bone_marrow_hops->effectN( 1 ).percent();
 
         active_actions.bonedust_brew_dmg->base_dd_min = damage;
         active_actions.bonedust_brew_dmg->base_dd_max = damage;
@@ -9507,8 +9490,8 @@ double monk_t::composite_dodge() const
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
   }
 
-  if ( buff.fortifying_brew->check() && talent.general.fortifying_brew_dodge_armor->ok() )
-    d += talent.general.fortifying_brew_dodge_armor->effectN( 1 ).percent();
+  if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
+    d += talent.general.ironshell_brew->effectN( 1 ).percent();
 
   return d;
 }
@@ -9568,8 +9551,8 @@ double monk_t::composite_base_armor_multiplier() const
   if ( buff.mighty_pour->check() )
     a *= 1 + buff.mighty_pour->data().effectN( 1 ).percent();
 
-  if ( buff.fortifying_brew->check() && talent.general.fortifying_brew_dodge_armor->ok() )
-    a *= 1 + talent.general.fortifying_brew_dodge_armor->effectN( 1 ).percent();
+  if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
+    a *= 1 + talent.general.ironshell_brew->effectN( 1 ).percent();
 
   return a;
 }

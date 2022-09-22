@@ -1,4 +1,4 @@
-// 526 talents, wow build 10.0.2.45569
+// 526 talents, wow build 10.0.2.45698
 static std::array<talent_data_t, 526> __talent_data { {
   { "Second Wind"                       , 15757, 0x00, 0x0001,   71,   0,   3,   29838,       0,  0 },
   { "Punish"                            , 15759, 0x00, 0x0001,   73,   1,   0,  275334,       0,  0 },
@@ -112,7 +112,7 @@ static std::array<talent_data_t, 526> __talent_data { {
   { "Ravager"                           , 21667, 0x00, 0x0001,   71,   2,   6,  152277,  227847,  0 },
   { "Beacon of Faith"                   , 21671, 0x00, 0x0002,   65,   1,   6,  156910,       0,  0 },
   { "Ascendance"                        , 21675, 0x00, 0x0040,  262,   2,   6,  114050,       0,  0 },
-  { "Incarnation: Chosen of Elune"      , 21702, 0x00, 0x0400,    0,   2,   4,  102560,  194223,  0 },
+  { "Incarnation: Chosen of Elune"      , 21702, 0x00, 0x0400,  102,   2,   4,  102560,       0,  0 },
   { "Incarnation: Avatar of Ashamane"   , 21704, 0x00, 0x0400,  103,   2,   4,  102543,       0,  0 },
   { "Cultivation"                       , 21705, 0x00, 0x0400,  105,   1,   4,  200390,       0,  0 },
   { "Starlord"                          , 21706, 0x00, 0x0400,  102,   1,   4,  202345,       0,  0 },
@@ -226,7 +226,6 @@ static std::array<talent_data_t, 526> __talent_data { {
   { "Repentance"                        , 22180, 0x00, 0x0002,    0,   1,   2,   20066,       0,  0 },
   { "Eye for an Eye"                    , 22183, 0x00, 0x0002,   70,   2,   3,  205191,       0,  0 },
   { "Hand of the Protector"             , 22189, 0x00, 0x0002,   66,   0,   5,  315924,       0,  0 },
-  { "Avenging Crusader"                 , 22190, 0x00, 0x0002,   65,   1,   5,  216331,   31884,  0 },
   { "Crusade"                           , 22215, 0x00, 0x0002,   70,   1,   6,  231895,   31884,  0 },
   { "Focused Thunder"                   , 22218, 0x00, 0x0200,  270,   0,   6,  197895,       0,  0 },
   { "Song of Chi-Ji"                    , 22219, 0x00, 0x0200,  270,   1,   3,  198898,       0,  0 },
@@ -482,7 +481,7 @@ static std::array<talent_data_t, 526> __talent_data { {
   { "Furious Charge"                    , 23097, 0x00, 0x0001,   72,   0,   3,  202224,       0,  0 },
   { "Bolster"                           , 23099, 0x00, 0x0001,   73,   2,   6,  280001,       0,  0 },
   { "Camouflage"                        , 23100, 0x00, 0x0004,    0,   2,   2,  199483,       0,  0 },
-  { "Dead Eye"                          , 23104, 0x00, 0x0004,  254,   1,   5,  321460,       0,  0 },
+  { "Deadeye"                           , 23104, 0x00, 0x0004,  254,   1,   5,  321460,       0,  0 },
   { "Chakrams"                          , 23105, 0x00, 0x0004,  255,   2,   6,  259391,       0,  0 },
   { "Eye of the Tiger"                  , 23106, 0x00, 0x0200,    0,   0,   0,  196607,       0,  0 },
   { "Summon Jade Serpent Statue"        , 23107, 0x00, 0x0200,  270,   0,   5,  115313,       0,  0 },
@@ -526,5 +525,6 @@ static std::array<talent_data_t, 526> __talent_data { {
   { "Moment of Glory"                   , 23468, 0x00, 0x0002,   66,   2,   1,  327193,       0,  0 },
   { "Blessed Hammer"                    , 23469, 0x00, 0x0002,   66,   2,   0,  204019,   35395,  0 },
   { "Acrobatic Strikes"                 , 23470, 0x00, 0x0008,  260,   0,   1,  196924,       0,  0 },
+  { "Avenging Crusader"                 , 23680, 0x00, 0x0002,   65,   1,   5,  216331,   31884,  0 },
 } };
 

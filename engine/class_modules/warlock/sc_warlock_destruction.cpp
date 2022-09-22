@@ -76,10 +76,6 @@ public:
     if ( td->debuffs_roaring_blaze->check() && data().affected_by( td->debuffs_roaring_blaze->data().effectN( 1 ) ) )
       m *= 1.0 + td->debuffs_roaring_blaze->data().effectN( 1 ).percent();
 
-    // SL - Legendary
-    if ( td->debuffs_odr->check() && data().affected_by( td->debuffs_odr->data().effectN( 1 ) ) )
-      m *= 1.0 + td->debuffs_odr->data().effectN( 1 ).percent();
-
     return m;
   }
 
@@ -88,7 +84,7 @@ public:
   {
     double pm = warlock_spell_t::action_multiplier();
 
-    if ( p()->mastery_spells.chaotic_energies->ok() && destro_mastery )
+    if ( p()->warlock_base.chaotic_energies->ok() && destro_mastery )
     {
       double destro_mastery_value = p()->cache.mastery_value() / 2.0;
       double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
@@ -196,23 +192,6 @@ struct shadowburn_t : public destruction_spell_t
   }
 };
 
-struct dark_soul_instability_t : public destruction_spell_t
-{
-  dark_soul_instability_t( warlock_t* p, util::string_view options_str )
-    : destruction_spell_t( "dark_soul_instability", p, p->talents.dark_soul_instability )
-  {
-    parse_options( options_str );
-    harmful = may_crit = may_miss = false;
-  }
-
-  void execute() override
-  {
-    destruction_spell_t::execute();
-
-    p()->buffs.dark_soul_instability->trigger();
-  }
-};
-
 // Spells
 struct havoc_t : public destruction_spell_t
 {
@@ -227,31 +206,20 @@ struct havoc_t : public destruction_spell_t
     destruction_spell_t::impact( s );
 
     td( s->target )->debuffs_havoc->trigger();
-
-    // SL - Legendary
-    if ( p()->legendary.odr_shawl_of_the_ymirjar->ok() )
-      td( s->target )->debuffs_odr->trigger();
   }
 };
 
 struct immolate_t : public destruction_spell_t
 {
-  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->find_spell( 348 ) )
+  immolate_t( warlock_t* p, util::string_view options_str ) : destruction_spell_t( "immolate", p, p->warlock_base.immolate )
   {
     parse_options( options_str );
-    const spell_data_t* dmg_spell = player->find_spell( 157736 );
 
     can_havoc = true;
 
-    //TODO: Check immolate interactions with destro mastery
+    parse_effect_data( p->warlock_base.immolate_dot->effectN( 1 ) );
 
-    // All of the DoT data for Immolate is in spell 157736
-    base_tick_time       = dmg_spell->effectN( 1 ).period();
-    dot_duration         = dmg_spell->duration();
-    spell_power_mod.tick = dmg_spell->effectN( 1 ).sp_coeff();
-    hasted_ticks         = true;
-    tick_may_crit        = true;
-    affected_by_woc      = true;
+    affected_by_woc = true;
   }
 
   void tick( dot_t* d ) override
@@ -262,30 +230,6 @@ struct immolate_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate_crits );
 
     p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1, p()->gains.immolate );
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    destruction_spell_t::last_tick( d );
-
-    td( d->target )->debuffs_combusting_engine->expire();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    destruction_spell_t::impact( s );
-
-    td( s->target )->debuffs_combusting_engine->expire();
-  }
-
-  double composite_ta_multiplier( const action_state_t* s ) const override 
-  {
-    double m = destruction_spell_t::composite_ta_multiplier( s );
-
-    if ( td( s->target )->debuffs_combusting_engine->check() )
-      m *= 1.0 + td( s->target )->debuffs_combusting_engine->check_stack_value();
-
-    return m;
   }
 };
 
@@ -326,32 +270,15 @@ struct conflagrate_t : public destruction_spell_t
 
     if ( p()->talents.roaring_blaze->ok() && result_is_hit( s->result ) )
       td( s->target )->debuffs_roaring_blaze->trigger();
-
-    //TODO: Check if combusting engine stacks up when there is no immolate on the target (currently implemented as NO)
-    if ( p()->conduit.combusting_engine.value() > 0 && result_is_hit( s->result ) && td( s->target )->dots_immolate->is_ticking() )
-      td( s->target )->debuffs_combusting_engine->increment( 1, td( s->target)->debuffs_combusting_engine->default_value );
   }
 
   void execute() override
   {
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->trigger(
-        as<int>( 1 + ( p()->talents.flashover->ok() ? p()->talents.flashover->effectN( 1 ).base_value() : 0 ) ) );
+    p()->buffs.backdraft->trigger();
 
     sim->print_log( "{}: Action {} {} charges remain", player->name(), name(), this->cooldown->current_charge );
-  }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    if ( p()->talents.flashover )
-    {
-      m *= 1.0 + p()->talents.flashover->effectN( 3 ).percent();
-    }
-
-    return m;
   }
 };
 
@@ -421,26 +348,6 @@ struct incinerate_fnb_t : public destruction_spell_t
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_fnb_crits );
   }
 
-  double composite_crit_chance() const override
-  {
-    double c = destruction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
-
-    return m;
-  }
-
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
@@ -451,15 +358,6 @@ struct incinerate_fnb_t : public destruction_spell_t
     // TOCHECK - Couldn't find affected_by spelldata to reference the spells 08-24-2020.
     if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
       m *= 1.0 + p()->conduit.ashen_remains.percent();
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
 
     return m;
   }
@@ -477,27 +375,27 @@ struct incinerate_t : public destruction_spell_t
   {
     parse_options( options_str );
 
-    add_child( fnb_action );
+    //add_child( fnb_action );
 
     can_havoc = true;
 
-    backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
-    backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
+    //backdraft_cast_mult = 1.0 + p->buffs.backdraft->data().effectN( 1 ).percent();
+    //backdraft_gcd_mult = 1.0 + p->buffs.backdraft->data().effectN( 2 ).percent();
 
-    energize_type     = action_energize::PER_HIT;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = ( p->find_spell( 244670 )->effectN( 1 ).base_value() ) / 10.0;
-    energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+    parse_effect_data( p->warlock_base.incinerate_energize->effectN( 1 ) );
 
-    energize_amount *= energize_mult;
+    //energize_mult     = 1.0 + ( p->legendary.embers_of_the_diabolic_raiment->ok() ? p->legendary.embers_of_the_diabolic_raiment->effectN( 1 ).percent() : 0.0 );
+    //energize_amount *= energize_mult;
+
+    energize_mult = 1.0;
   }
 
   timespan_t execute_time() const override
   {
     timespan_t h = spell_t::execute_time();
 
-    if ( p()->buffs.backdraft->check() )
-      h *= backdraft_cast_mult;
+    //if ( p()->buffs.backdraft->check() )
+    //  h *= backdraft_cast_mult;
 
     return h;
   }
@@ -509,8 +407,8 @@ struct incinerate_t : public destruction_spell_t
     if ( t == 0_ms )
       return t;
 
-    if ( p()->buffs.backdraft->check() )
-      t *= backdraft_gcd_mult;
+    //if ( p()->buffs.backdraft->check() )
+    //  t *= backdraft_gcd_mult;
 
     if ( t < min_gcd )
       t = min_gcd;
@@ -522,70 +420,36 @@ struct incinerate_t : public destruction_spell_t
   {
     destruction_spell_t::execute();
 
-    p()->buffs.backdraft->decrement();
+    //p()->buffs.backdraft->decrement();
 
-    if ( p()->talents.fire_and_brimstone->ok() )
-    {
-      fnb_action->set_target( target );
-      fnb_action->execute();
-    }
-    p()->buffs.decimating_bolt->decrement();
+    //if ( p()->talents.fire_and_brimstone->ok() )
+    //{
+    //  fnb_action->set_target( target );
+    //  fnb_action->execute();
+    //}
   }
 
   void impact( action_state_t* s ) override
   {
     destruction_spell_t::impact( s );
 
-    if ( p()->legendary.shard_of_annihilation.ok() )
-      p()->buffs.shard_of_annihilation->decrement();
-
     //As of 9.0.5, critical strike gains should also be increased by Embers of the Diabolic Raiment. Checked on PTR 2021-03-07
     if ( s->result == RESULT_CRIT )
       p()->resource_gain( RESOURCE_SOUL_SHARD, 0.1 * energize_mult, p()->gains.incinerate_crits );
-  }
-
-  double composite_crit_chance() const override
-  {
-    double c = destruction_spell_t::composite_crit_chance();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      c += p()->buffs.shard_of_annihilation->data().effectN( 1 ).percent();
-    
-    return c;
-  }
-
-  double composite_crit_damage_bonus_multiplier() const override
-  {
-    double m = destruction_spell_t::composite_crit_damage_bonus_multiplier();
-
-    if ( p()->buffs.shard_of_annihilation->check() )
-      m += p()->buffs.shard_of_annihilation->data().effectN( 2 ).percent();
-
-    return m;
   }
 
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = destruction_spell_t::composite_target_multiplier( t );
 
-    auto td = this->td( t );
+    //auto td = this->td( t );
 
-    // SL - Conduit
-    if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
-      m *= 1.0 + p()->conduit.ashen_remains.percent();
-
-    return m;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = destruction_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buffs.decimating_bolt->check_value();
+    //// SL - Conduit
+    //if ( td->dots_immolate->is_ticking() && p()->conduit.ashen_remains->ok() )
+    //  m *= 1.0 + p()->conduit.ashen_remains.percent();
 
     return m;
   }
-
 };
 
 
@@ -1146,8 +1010,6 @@ action_t* warlock_t::create_action_destruction( util::string_view action_name, u
     return new cataclysm_t( this, options_str );
   if ( action_name == "channel_demonfire" )
     return new channel_demonfire_t( this, options_str );
-  if ( action_name == "dark_soul_instability" )
-    return new dark_soul_instability_t( this, options_str );
 
   return nullptr;
 }
@@ -1156,9 +1018,7 @@ void warlock_t::create_buffs_destruction()
   // destruction buffs
   buffs.backdraft =
       make_buff( this, "backdraft", find_spell( 117828 ) )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-          ->set_max_stack( as<int>( find_spell( 117828 )->max_stacks() +
-                                    ( talents.flashover ? talents.flashover->effectN( 2 ).base_value() : 0 ) ) );
+          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buffs.reverse_entropy = make_buff( this, "reverse_entropy", talents.reverse_entropy )
                               ->set_default_value( find_spell( 266030 )->effectN( 1 ).percent() )
@@ -1171,11 +1031,6 @@ void warlock_t::create_buffs_destruction()
   // later
   buffs.rain_of_chaos = make_buff( this, "rain_of_chaos", find_spell( 266087 ) )
                             ->set_default_value( find_spell( 335236 )->_duration );
-
-  buffs.dark_soul_instability = make_buff( this, "dark_soul_instability", talents.dark_soul_instability )
-                                    ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
-                                    ->add_invalidate( CACHE_CRIT_CHANCE )
-                                    ->set_default_value( talents.dark_soul_instability->effectN( 1 ).percent() );
 
   // Legendaries
   buffs.madness_of_the_azjaqir =
@@ -1201,9 +1056,6 @@ void warlock_t::init_spells_destruction()
 {
   using namespace actions_destruction;
 
-  spec.destruction                = find_specialization_spell( 137046 );
-  mastery_spells.chaotic_energies = find_mastery_spell( WARLOCK_DESTRUCTION );
-
   spec.conflagrate       = find_specialization_spell( "Conflagrate" );
   spec.conflagrate_2     = find_specialization_spell( 231793 );
   spec.havoc             = find_specialization_spell( "Havoc" );
@@ -1212,7 +1064,6 @@ void warlock_t::init_spells_destruction()
   spec.summon_infernal_2 = find_specialization_spell( 335175 );
 
   // Talents
-  talents.flashover   = find_talent_spell( "Flashover" );
   talents.eradication = find_talent_spell( "Eradication" );
   talents.soul_fire   = find_talent_spell( "Soul Fire" );
 
@@ -1228,17 +1079,14 @@ void warlock_t::init_spells_destruction()
   talents.rain_of_chaos = find_talent_spell( "Rain of Chaos" );
 
   talents.channel_demonfire     = find_talent_spell( "Channel Demonfire" );
-  talents.dark_soul_instability = find_talent_spell( "Dark Soul: Instability" );
 
   // Legendaries
   legendary.cinders_of_the_azjaqir         = find_runeforge_legendary( "Cinders of the Azj'Aqir" );
   legendary.embers_of_the_diabolic_raiment = find_runeforge_legendary( "Embers of the Diabolic Raiment" );
   legendary.madness_of_the_azjaqir         = find_runeforge_legendary( "Madness of the Azj'Aqir" );
-  legendary.odr_shawl_of_the_ymirjar       = find_runeforge_legendary( "Odr, Shawl of the Ymirjar" );
 
   // Conduits
   conduit.ashen_remains     = find_conduit_spell( "Ashen Remains" );
-  conduit.combusting_engine = find_conduit_spell( "Combusting Engine" );
   conduit.infernal_brand    = find_conduit_spell( "Infernal Brand" );
   //conduit.duplicitous_havoc is done in main module
 }

@@ -1,5 +1,5 @@
-// Item name descriptions, wow build 10.0.2.45569
-static const std::array<item_name_description_t, 715> __item_name_description_data { {
+// Item name descriptions, wow build 10.0.2.45698
+static const std::array<item_name_description_t, 722> __item_name_description_data { {
   {     2, "Now with extra description"                  },
   {    20, "Season 10"                                   },
   {   226, "Season 10 Elite"                             },
@@ -715,5 +715,12 @@ static const std::array<item_name_description_t, 715> __item_name_description_da
   { 13984, "Crimson"                                     },
   { 13985, "Cobalt"                                      },
   { 13986, "Sandshaped"                                  },
+  { 13987, "World and Weekly Quests"                     },
+  { 13988, "Dungeons"                                    },
+  { 13989, "Quest Rewards"                               },
+  { 13990, "World Drops"                                 },
+  { 13991, "Professions"                                 },
+  { 13992, "World Drop"                                  },
+  { 13993, "Crafted"                                     },
 } };
 

@@ -6120,6 +6120,13 @@ struct earthquake_damage_base_t : public shaman_spell_t
     ground_aoe = background = true;
   }
 
+  void init() override
+  {
+    shaman_spell_t::init();
+
+    snapshot_flags |= STATE_MUL_PERSISTENT;
+  }
+
   double composite_target_armor( player_t* ) const override
   { return 0; }
 

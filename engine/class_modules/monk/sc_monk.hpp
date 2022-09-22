@@ -390,13 +390,13 @@ public:
       player_talent_t rising_sun_kick;
       player_talent_t tigers_lust;
       // Row 2
-      player_talent_t roll;
+      player_talent_t improved_roll;
       player_talent_t calming_presence;
       player_talent_t disable;
       // Row 3
       player_talent_t tiger_tail_sweep;
       player_talent_t vigorous_expulsion;
-      player_talent_t vivify;
+      player_talent_t improved_vivify;
       player_talent_t detox;
       player_talent_t paralysis;
       // Row 4
@@ -413,19 +413,19 @@ public:
       // Row 6
       player_talent_t chi_wave;
       player_talent_t chi_burst;
-      player_talent_t provoke;
+      player_talent_t hasty_provocation;
       player_talent_t ring_of_peace;
       player_talent_t fast_feet;
       player_talent_t celerity;
       player_talent_t chi_torpedo;
-      player_talent_t fortifying_brew_dodge_armor;
-      player_talent_t fortifying_brew_cooldown;
+      player_talent_t ironshell_brew;
+      player_talent_t expeditious_fortification;
       // Row 7
       player_talent_t profound_rebuttal;
       player_talent_t diffuse_magic;
       player_talent_t eye_of_the_tiger;
       player_talent_t dampen_harm;
-      player_talent_t touch_of_death;
+      player_talent_t improved_touch_of_death;
       player_talent_t strength_of_spirit;
       // 20 Required
       // Row 8
@@ -471,9 +471,9 @@ public:
       player_talent_t clash;
       // Row 6
       player_talent_t breath_of_fire;
-      player_talent_t celestial_brew_rank_2;
-      player_talent_t purifying_brew_rank_2;
-      player_talent_t strength_of_spirit;
+      player_talent_t improved_celestial_brew;
+      player_talent_t improved_purifying_brew;
+      player_talent_t tranquil_spirit;
       player_talent_t gai_plins_imperial_brew;
       player_talent_t fundamental_observation;
       player_talent_t shadowboxing_treads;
@@ -487,7 +487,7 @@ public:
       player_talent_t invoke_niuzao_the_black_ox;
       player_talent_t light_brewing;
       player_talent_t training_of_niuzao;
-      player_talent_t shocking_blow;
+      player_talent_t pretense_of_instability;
       player_talent_t face_palm;
       // 20 Required
       // Row 8
@@ -528,24 +528,23 @@ public:
       player_talent_t teachings_of_the_monastery;
       player_talent_t revival;
       player_talent_t restoral;
-      player_talent_t healing_elixir;
+      player_talent_t song_of_chi_ji;
       player_talent_t mastery_of_mist;
       // 8 Required
       // Row 5
       player_talent_t spirit_of_the_crane;
       player_talent_t mists_of_life;
       player_talent_t uplifting_spirits;
+      player_talent_t font_of_life;
       player_talent_t zen_pulse;
-      player_talent_t lifecycles;
-      player_talent_t mana_tea;
+      player_talent_t healing_elixir;
       // Row 6
       player_talent_t nourishing_chi;
       player_talent_t overflowing_mists;
       player_talent_t invoke_yulon_the_jade_serpent;
       player_talent_t invoke_chi_ji_the_red_crane;
-      player_talent_t zen_reverberation;
+      player_talent_t echoing_reverberation;
       player_talent_t accumulating_mist;
-      player_talent_t song_of_chi_ji;
       player_talent_t rapid_diffusion;
       // Row 7
       player_talent_t calming_coalescence;
@@ -554,11 +553,12 @@ public:
       player_talent_t refreshing_jade_wind;
       player_talent_t enveloping_breath;
       player_talent_t dancing_mists;
-      player_talent_t font_of_life;
+      player_talent_t lifecycles;
+      player_talent_t mana_tea;
       // 20 Required
       // Row 8
       player_talent_t faeline_stomp;
-      player_talent_t ancient_teachings_of_the_monastery;
+      player_talent_t ancient_teachings;
       player_talent_t clouded_focus;
       player_talent_t jade_bond;
       player_talent_t gift_of_the_celestials;
@@ -567,20 +567,21 @@ public:
       player_talent_t bonedust_brew;
       // Row 9
       player_talent_t ancient_concordance;
-      player_talent_t peaceful_mending;
+      player_talent_t resplendent_mist;
       player_talent_t secret_infusion;
       player_talent_t misty_peaks;
-      player_talent_t resplendent_mist;
+      player_talent_t peaceful_mending;
+      player_talent_t bountiful_brew;
+      player_talent_t attenuation;
       // Row 10
       player_talent_t awakened_faeline;
-      player_talent_t restorative_proliferation;
+      player_talent_t tea_of_serenity;
       player_talent_t tea_of_plenty;
       player_talent_t unison;
+      player_talent_t mending_proliferation;
       player_talent_t invokers_delight;
       player_talent_t tear_of_morning;
       player_talent_t rising_mist;
-      player_talent_t bountiful_brew;
-      player_talent_t attenuation;
     } mistweaver;
 
     // Windwalker
@@ -592,7 +593,7 @@ public:
       player_talent_t ascension;
       player_talent_t power_strikes;
       // Row 3
-      player_talent_t feathers_of_a_hundred_flocks;
+      player_talent_t widening_whirl;
       player_talent_t touch_of_the_tiger;
       player_talent_t hardened_soles;
       player_talent_t flashing_fists;
@@ -617,7 +618,7 @@ public:
       player_talent_t strike_of_the_windlord;
       // Row 7
       player_talent_t rushing_jade_wind;
-      player_talent_t hidden_masters_forbidden_touch;
+      player_talent_t forbidden_touch;
       player_talent_t invoke_xuen_the_white_tiger;
       player_talent_t teachings_of_the_monastery;
       player_talent_t thunderfist;
@@ -638,8 +639,8 @@ public:
       player_talent_t faeline_stomp;
       // Row 10
       player_talent_t attenuation;
-      player_talent_t bone_marrow_hops;
-      player_talent_t keefers_skyreach;
+      player_talent_t dust_in_the_wind;
+      player_talent_t skyreach;
       player_talent_t invokers_delight;
       player_talent_t way_of_the_fae;
       player_talent_t faeline_harmony;

@@ -1,5 +1,5 @@
-// Rank class spells, wow build 10.0.2.45569
-static const std::array<rank_class_spell_t, 68> __rank_spells_data { {
+// Rank class spells, wow build 10.0.2.45698
+static const std::array<rank_class_spell_t, 63> __rank_spells_data { {
   {  2,   66, 358934,      0, "Aegis of Light"                    , "Rank 2" },
   { 10,  269, 322719,      0, "Afterlife"                         , "Rank 2" },
   {  9,  265, 231792,      0, "Agony"                             , "Rank 2" },
@@ -18,7 +18,6 @@ static const std::array<rank_class_spell_t, 68> __rank_spells_data { {
   { 12,  581, 320381,      0, "Demonic Wards"                     , "Rank 2" },
   { 12,  581, 320382,      0, "Demonic Wards"                     , "Rank 3" },
   { 10,  269, 343731,      0, "Disable"                           , "Rank 2" },
-  { 13, 1468, 365262,      0, "Emerald Blossom"                   , "Rank 2" },
   { 11,    0, 343238,      0, "Entangling Roots"                  , "Rank 2" },
   {  4,  261, 231716,      0, "Eviscerate"                        , "Rank 2" },
   { 10,  268, 322102,      0, "Expel Harm"                        , "Rank 2" },
@@ -33,7 +32,7 @@ static const std::array<rank_class_spell_t, 68> __rank_spells_data { {
   { 10,  269, 344487,      0, "Flying Serpent Kick"               , "Rank 2" },
   {  5,  256, 285485,      0, "Focused Will"                      , "Rank 2" },
   {  5,  257, 285485,      0, "Focused Will"                      , "Rank 2" },
-  { 10,  269, 325208,      0, "Fortifying Brew"                   , "Rank 2" },
+  {  2,   65, 272906,      0, "Holy Shock"                        , "Rank 2" },
   {  5,  257,  63733,      0, "Holy Words"                        , "Rank 2" },
   { 12,    0, 320364,      0, "Immolation Aura"                   , "Rank 2" },
   { 12,  577, 320377,      0, "Immolation Aura"                   , "Rank 3" },
@@ -57,16 +56,12 @@ static const std::array<rank_class_spell_t, 68> __rank_spells_data { {
   { 12,    0, 320379,      0, "Spectral Sight"                    , "Rank 2" },
   { 10,  269, 343730,      0, "Spinning Crane Kick"               , "Rank 2" },
   { 10,  269, 231627,      0, "Storm, Earth, and Fire"            , "Rank 2" },
-  { 10,    0, 322113,      0, "Touch of Death"                    , "Rank 2" },
   { 10,  268, 325095,      0, "Touch of Death"                    , "Rank 3" },
   { 10,  269, 325215,      0, "Touch of Death"                    , "Rank 3" },
   { 11,    0, 159456,      0, "Travel Form"                       , "Rank 2" },
   {  9,  265, 231791,      0, "Unstable Affliction"               , "Rank 2" },
   {  9,  265, 334315,      0, "Unstable Affliction"               , "Rank 3" },
   {  1,    0, 319158,      0, "Victory Rush"                      , "Rank 2" },
-  { 10,  268, 231602,      0, "Vivify"                            , "Rank 2" },
-  { 10,  269, 231602,      0, "Vivify"                            , "Rank 2" },
-  {  5,  258, 231688,      0, "Void Bolt"                         , "Rank 2" },
   {  2,   66, 315921,      0, "Word of Glory"                     , "Rank 2" },
 } };
 
