@@ -759,7 +759,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Death Knight TODO: 9-69 values
+  { // Death Knight TODO: 9-59 values
     //    Str     Agi     Sta     Int     Spi
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 },
@@ -1005,7 +1005,7 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {      0,      0,      0,      0,      0 },
     {      0,      0,      0,      0,      0 }, // 120
   },
-  { // Mage TODO: 17-59 values
+  { // Mage TODO: 19-59 values
     //    Str     Agi     Sta     Int     Spi
     {      8,     12,     15,     20,      0 },
     {      9,     14,     17,     22,      0 },
@@ -1023,8 +1023,8 @@ static constexpr stat_data_t __gt_class_stats_by_level[][120] =
     {     20,     31,     40,     46,      0 },
     {     21,     33,     42,     48,      0 }, // 15
     {     22,     34,     44,     50,      0 },
-    {     23,     35,     48,     52,      0 },
-    {     24,     37,     50,     54,      0 },
+    {     23,     35,     46,     52,      0 },
+    {     24,     37,     49,     54,      0 },
     {     25,     38,     53,     56,      0 },
     {     26,     39,     55,     58,      0 }, // 20
     {     26,     41,     57,     60,      0 },
