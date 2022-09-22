@@ -300,10 +300,9 @@ public:
       player_talent_t void_torrent;
       // Row 9
       player_talent_t fiending_dark;
-      player_talent_t monomania;
+      player_talent_t screams_of_the_void;
       player_talent_t pain_of_death;
       player_talent_t insidious_ire;
-      player_talent_t mastermind;
       player_talent_t malediction;
       // Row 10
       player_talent_t shadowflame_prism;
@@ -721,7 +720,7 @@ public:
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
-  bool is_monomania_up( player_t* target ) const;
+  bool is_screams_of_the_void_up( player_t* target ) const;
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();

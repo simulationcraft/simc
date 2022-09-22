@@ -2907,7 +2907,6 @@ void priest_t::apply_affecting_auras( action_t& action )
 
   // Shadow Talents
   action.apply_affecting_aura( talents.shadow.derangement );
-  action.apply_affecting_aura( talents.shadow.mastermind );
   action.apply_affecting_aura( talents.shadow.malediction );
 }
 

@@ -596,26 +596,13 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double crit = priest_spell_t::composite_target_crit_chance( target );
-
-    // TODO: convert to new monomania
-    if ( priest().is_monomania_up( target ) )
-    {
-      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
-    }
-
-    return crit;
-  }
-
   timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_monomania_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
 
     return t;
@@ -851,26 +838,13 @@ struct vampiric_touch_t final : public priest_spell_t
     return priest_spell_t::execute_time();
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double crit = priest_spell_t::composite_target_crit_chance( target );
-
-    // TODO: convert to new monomania
-    if ( priest().is_monomania_up( target ) )
-    {
-      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
-    }
-
-    return crit;
-  }
-
   timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_monomania_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
 
     return t;
@@ -2232,12 +2206,11 @@ void priest_t::init_spells_shadow()
   talents.shadow.damnation          = ST( "Damnation" );
   talents.shadow.void_torrent       = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.fiending_dark = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania     = ST( "Monomania" );
-  talents.shadow.pain_of_death = ST( "Pain of Death" );
+  talents.shadow.fiending_dark       = ST( "Fiending Dark" );  // NYI
+  talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
+  talents.shadow.pain_of_death       = ST( "Pain of Death" );
 
   talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.mastermind    = ST( "Mastermind" );     // NYI
   talents.shadow.malediction   = ST( "Malediction" );
   // Row 10
   talents.shadow.shadowflame_prism = ST( "Shadowflame Prism" );
@@ -2468,12 +2441,13 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
-bool priest_t::is_monomania_up( player_t* target ) const
+bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 {
-  if ( talents.shadow.monomania.enabled() )
+  if ( talents.shadow.screams_of_the_void.enabled() )
   {
     priest_td_t* td = get_target_data( target );
-    if ( td->dots.mind_flay->is_ticking() || td->dots.mind_sear->is_ticking() )
+    if ( td->dots.mind_flay->is_ticking() || talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+                                                 channeling->id == talents.shadow.mind_sear->id() )
     {
       return true;
     }
