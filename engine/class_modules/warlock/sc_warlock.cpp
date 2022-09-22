@@ -291,7 +291,7 @@ struct seed_of_corruption_t : public warlock_spell_t
     corruption_t* corruption;
 
     seed_of_corruption_aoe_t( warlock_t* p )
-      : warlock_spell_t( "Seed of Corruption (AoE)", p, p->find_spell( 27285 ) ),
+      : warlock_spell_t( "Seed of Corruption (AoE)", p, p->talents.seed_of_corruption_aoe ),
         corruption( new corruption_t( p, "", true ) )
     {
       aoe                              = -1;
