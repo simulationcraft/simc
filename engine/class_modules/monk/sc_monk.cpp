@@ -1676,10 +1676,7 @@ struct tiger_palm_t : public monk_melee_attack_t
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
       if ( p()->buff.power_strikes->check() )
-      {
         power_strikes = true;
-        p()->buff.power_strikes->expire();
-      }
     }
 
     //------------
@@ -1688,6 +1685,12 @@ struct tiger_palm_t : public monk_melee_attack_t
  
     if ( result_is_miss( execute_state->result ) )
       return;
+
+    if ( power_strikes )
+    {
+      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.power_strikes->effectN( 1 ).base_value(), p()->gain.power_strikes );
+      p()->buff.power_strikes->expire();
+    }
 
     //-----------
 
@@ -6758,15 +6761,6 @@ struct power_strikes_t : public monk_buff_t<buff_t>
     set_default_value( s->effectN( 1 ).base_value() );
     set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
   }
-
-  void expire_override( int expiration_stacks, timespan_t remaining_duration ) override
-  {
-  
-    double chi_gain = p().talent.windwalker.power_strikes->effectN( 1 ).base_value();
-    p().resource_gain( RESOURCE_CHI, chi_gain, p().gain.power_strikes );
-
-    buff_t::expire_override( expiration_stacks, remaining_duration );
-  }
 };
 
 // ===============================================================================
@@ -7806,6 +7800,9 @@ int monk_t::mark_of_the_crane_counter()
 // Currently at maximum stacks for target count
 bool monk_t::mark_of_the_crane_max()
 {
+  if ( !talent.windwalker.mark_of_the_crane->ok() )
+    return true;
+
   int count = mark_of_the_crane_counter();
   int targets = (int)sim->target_non_sleeping_list.data().size();
 

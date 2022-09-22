@@ -462,11 +462,11 @@ void windwalker( player_t* p )
 
   if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
     cd_sef->add_action( p, "Touch of Death",
-                        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
+                        "if=combo_strike&(fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
   else
     cd_sef->add_action(
         p, "Touch of Death",
-        "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10" );
+        "if=combo_strike&(fight_remains>(180-runeforge.fatal_touch*120)|buff.storm_earth_and_fire.down&(!covenant.necrolord|buff.bonedust_brew.up)|fight_remains<10)" );
 
 
   cd_sef->add_action( "fallen_order,if=raid_event.adds.in>30|raid_event.adds.up" );
@@ -562,22 +562,14 @@ void windwalker( player_t* p )
   cd_sef->add_action( "fleshcraft,if=soulbind.pustule_eruption&!pet.xuen_the_white_tiger.active&buff.storm_earth_and_fire.down&buff.bonedust_brew.down" );
  
   // Serenity Cooldowns
-
-  if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
-    cd_serenity->add_action(
-      "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|pet.xuen_the_white_tiger.active&cooldown.serenity.remains>30|fight_remains<20", "Serenity Cooldowns");
-  else
-    cd_serenity->add_action(
-      "variable,name=serenity_burst,op=set,value=cooldown.serenity.remains<1|cooldown.serenity.remains>30|fight_"
-      "remains<20", "Serenity Cooldowns");
-
+  cd_serenity->add_action( "summon_white_tiger_statue,if=pet.xuen_the_white_tiger.active", "Serenity Cooldowns" );
   cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&(covenant.necrolord|talent.bonedust_brew)&cooldown.bonedust_brew.remains<=5|fight_remains<25" );
   cd_serenity->add_action( "invoke_xuen_the_white_tiger,if=!variable.hold_xuen&!(covenant.necrolord|talent.bonedust_brew)&(cooldown.rising_sun_kick.remains<2|!covenant.kyrian)|fight_remains<25" );
 
   cd_serenity->add_action(
     "weapons_of_order,if=(raid_event.adds.in>45|raid_event.adds.up)&cooldown.rising_sun_kick.remains<execute_time&cooldown.invoke_xuen_the_white_tiger.remains>(20+20*(runeforge.invokers_delight|talent.invokers_delight))&(!runeforge.xuens_treasure&!talent.xuens_battlegear|cooldown.fists_of_fury.remains)|fight_remains<35" );
   cd_serenity->add_action(
-    "bonedust_brew,if=(!buff.bonedust_brew.up&cooldown.serenity.up&spinning_crane_kick.max)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10&spinning_crane_kick.max)|fight_remains<10&soulbind.lead_by_example" );
+    "bonedust_brew,if=(!buff.bonedust_brew.up&cooldown.serenity.up)|(!buff.bonedust_brew.up&fight_remains<30&fight_remains>10)|fight_remains<10&soulbind.lead_by_example" );
  
   cd_serenity->add_action(
     "serenity,if=(covenant.necrolord|talent.bonedust_brew)&(fight_remains<30&cooldown.bonedust_brew.remains<2|buff.bonedust_brew.up&buff.bonedust_brew.remains>=8)&(pet.xuen_the_white_tiger.active|cooldown.invoke_xuen_the_white_tiger.remains>10)|fight_remains<15" );
@@ -588,12 +580,12 @@ void windwalker( player_t* p )
   if ( monk->talent.windwalker.invoke_xuen_the_white_tiger->ok() )
   {
     cd_serenity->add_action( p, "Touch of Death",
-      "if=fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10" );
+      "if=combo_strike&(fight_remains>(180-runeforge.fatal_touch*120)|pet.xuen_the_white_tiger.active&(!covenant.necrolord|buff.bonedust_brew.up)|(cooldown.invoke_xuen_the_white_tiger.remains>fight_remains)&buff.bonedust_brew.up|fight_remains<10)" );
     cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|pet.xuen_the_white_tiger.active|fight_remains<10" );
   }
   else
   {
-    cd_serenity->add_action( p, "Touch of Death", "if=fight_remains>(180-runeforge.fatal_touch*120)|buff.bonedust_brew.up|fight_remains<10" );
+    cd_serenity->add_action( p, "Touch of Death", "if=combo_strike&(fight_remains>(180-runeforge.fatal_touch*120)|buff.bonedust_brew.up|fight_remains<10)" );
     cd_serenity->add_action( "touch_of_karma,if=fight_remains>90|fight_remains<16" );
   }
 
@@ -604,15 +596,15 @@ void windwalker( player_t* p )
   for ( const auto& racial_action : racial_actions )
   {
     if ( racial_action == "ancestral_call" )
-      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
     else if ( racial_action == "blood_fury" )
-      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
     else if ( racial_action == "fireblood" )
-      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
     else if ( racial_action == "berserking" )
-      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
     else if ( racial_action == "bag_of_tricks" )
-      cd_serenity->add_action( racial_action + ",if=variable.serenity_burst" );
+      cd_serenity->add_action( racial_action + ",if=buff.serenity.up|fight_remains<20" );
     else if ( racial_action != "arcane_torrent" )
       cd_serenity->add_action( racial_action );
   }
@@ -622,7 +614,7 @@ void windwalker( player_t* p )
 
   // Serenity On-use items
   if ( p->items[SLOT_MAIN_HAND].name_str == "jotungeirr_destinys_call" )
-    cd_serenity->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str + ",if=variable.serenity_burst|fight_remains<20" );
+    cd_serenity->add_action( "use_item,name=" + p->items[SLOT_MAIN_HAND].name_str + ",if=buff.serenity.up|fight_remains<20" );
 
   for ( const auto& item : p->items )
   {
@@ -630,17 +622,17 @@ void windwalker( player_t* p )
     if ( item.has_special_effect( SPECIAL_EFFECT_SOURCE_ITEM, SPECIAL_EFFECT_USE ) )
     {
       if ( item.name_str == "inscrutable_quantum_device" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "wrathstone" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "overcharged_anima_battery" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "shadowgrasp_totem" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=pet.xuen_the_white_tiger.active|fight_remains<20|!runeforge.invokers_delight&!talent.invokers_delight" );
       else if ( (int)item.name_str.find( "gladiators_badge" ) != -1 )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "the_first_sigil" )
-        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=variable.serenity_burst|fight_remains<20" );
+        cd_serenity->add_action( "use_item,name=" + item.name_str + ",if=buff.serenity.up|fight_remains<20" );
       else if ( item.name_str == "wraps_of_electrostatic_potential" )
         cd_serenity->add_action( "use_item,name=" + item.name_str );
       else if ( item.name_str == "ring_of_collapsing_futures" )
@@ -660,9 +652,9 @@ void windwalker( player_t* p )
   def_actions->add_action( "whirling_dragon_punch", "Default Actions" );
   def_actions->add_action( "spinning_crane_kick,if=combo_strike&buff.dance_of_chiji.up" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up" );
-  def_actions->add_action( "strike_of_the_windlord,if=active_enemies>1" );
+  def_actions->add_action( "strike_of_the_windlord,if=active_enemies>1&(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
   def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>=2" );
-  def_actions->add_action( "strike_of_the_windlord" );
+  def_actions->add_action( "strike_of_the_windlord&(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
   def_actions->add_action( "spinning_crane_kick,if=combo_strike&(buff.bonedust_brew.up|buff.weapons_of_order_ww.up)&active_enemies>1&spinning_crane_kick.modifier>2.8" );
   def_actions->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&spinning_crane_kick.modifier>3.9&(!talent.teachings_of_the_monastery|!talent.shadowboxing_treads|active_enemies>=9)" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(!talent.xuens_battlegear&!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
