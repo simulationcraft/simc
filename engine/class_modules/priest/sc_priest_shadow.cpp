@@ -217,6 +217,7 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
+      priest().buffs.mind_flay_insanity->expire();
     }
     else
     {
