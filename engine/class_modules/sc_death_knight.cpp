@@ -10441,6 +10441,7 @@ void death_knight_t::create_buffs()
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
+      -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   // TODO remove with conduits
