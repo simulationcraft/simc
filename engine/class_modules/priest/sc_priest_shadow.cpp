@@ -2169,22 +2169,22 @@ void priest_t::init_spells_shadow()
   talents.shadow.mindbender      = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj
-  talents.shadow.devoured_pride     = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair   = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger     = find_spell( 373318 );  // Haste - Enrage - NYI
-  talents.shadow.devoured_fear      = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
-  talents.shadow.devoured_violence  = find_spell( 373320 );  // Pet Extension - Default
-  talents.shadow.deathspeaker       = ST( "Deathspeaker" );
-  talents.shadow.mind_flay_insanity = ST( "Mind Flay: Insanity" );
-  talents.shadow.derangement        = ST( "Derangement" );  // NYI
-  talents.shadow.damnation          = ST( "Damnation" );
-  talents.shadow.void_torrent       = ST( "Void Torrent" );
+  talents.shadow.devoured_pride      = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair    = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger      = find_spell( 373318 );  // Haste - Enrage - NYI
+  talents.shadow.devoured_fear       = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence   = find_spell( 373320 );  // Pet Extension - Default
+  talents.shadow.deathspeaker        = ST( "Deathspeaker" );
+  talents.shadow.mind_flay_insanity  = ST( "Mind Flay: Insanity" );
+  talents.shadow.encroaching_shadows = ST( "Encroaching Shadows" );
+  talents.shadow.damnation           = ST( "Damnation" );
+  talents.shadow.void_torrent        = ST( "Void Torrent" );
   // Row 9
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
 
-  talents.shadow.insidious_ire       = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.encroaching_shadows = ST( "Encroaching Shadows" );
+  talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
+  talents.shadow.malediction   = ST( "Malediction" );
   // Row 10
   talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
   talents.shadow.idol_of_cthun       = ST( "Idol of C'Thun" );

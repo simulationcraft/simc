@@ -2906,8 +2906,8 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.discipline_priest );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.derangement );
   action.apply_affecting_aura( talents.shadow.encroaching_shadows );
+  action.apply_affecting_aura( talents.shadow.malediction );
 }
 
 void priest_t::invalidate_cache( cache_e cache )
