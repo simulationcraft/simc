@@ -191,8 +191,8 @@ struct corruption_t : public warlock_spell_t
     //  spell_power_mod.direct = 0; //Rank 3 is required for direct damage
     //}
 
-    //// 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
-    //base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
+    // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
+    base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
 
     //if ( p->talents.absolute_corruption->ok() )
     //{

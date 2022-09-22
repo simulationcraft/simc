@@ -765,8 +765,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 
   if ( action_name == "shadow_bolt" )
     return new shadow_bolt_t( this, options_str );
-  if ( action_name == "corruption" )
-    return new corruption_t( this, options_str, false );
   if ( action_name == "agony" )
     return new agony_t( this, options_str );
   if ( action_name == "unstable_affliction" )
