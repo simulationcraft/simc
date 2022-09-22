@@ -1837,13 +1837,8 @@ struct voidform_t final : public priest_buff_t<buff_t>
     set_stack_change_callback( [ this ]( buff_t*, int, int cur ) {
       if ( cur )
       {
-        priest().cooldowns.mind_blast->adjust_max_charges( 1 );
         priest().cooldowns.mind_blast->reset( true, -1 );
         priest().cooldowns.void_bolt->reset( true );
-      }
-      else
-      {
-        priest().cooldowns.mind_blast->adjust_max_charges( -1 );
       }
     } );
   }

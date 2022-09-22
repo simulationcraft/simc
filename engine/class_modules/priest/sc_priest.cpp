@@ -74,7 +74,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges();
+    cooldown->charges = data().charges() + priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value();
   }
 
   bool talbadars_stratagem_active() const
