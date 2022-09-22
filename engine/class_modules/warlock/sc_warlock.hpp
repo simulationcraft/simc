@@ -198,6 +198,8 @@ public:
 
     // AFF
     // DF - Malefic Rapture
+    player_talent_t malefic_rapture;
+    const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
 
     // DF - Unstable Affliction
     // DF - Seed of Corruption
