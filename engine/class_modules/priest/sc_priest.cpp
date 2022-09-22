@@ -144,11 +144,6 @@ public:
             priest().gains.insanity_whispers_of_the_damned, s->action );
       }
 
-      if ( priest().talents.shadow.mind_spike.enabled() )
-      {
-        priest().buffs.mind_spike->expire();
-      }
-
       priest().buffs.coalescing_shadows->expire();
     }
   }

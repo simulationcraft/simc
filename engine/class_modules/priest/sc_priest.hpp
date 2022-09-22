@@ -146,7 +146,6 @@ public:
     propagate_const<buff_t*> dark_ascension;
     propagate_const<buff_t*> coalescing_shadows;
     propagate_const<buff_t*> coalescing_shadows_dot;
-    propagate_const<buff_t*> mind_spike;
 
     // Runeforge Legendary
     propagate_const<buff_t*> the_penitent_one;
@@ -1110,7 +1109,6 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.mind_spike, true );  // Mind Blast crit increase
   }
 
   template <typename... Ts>

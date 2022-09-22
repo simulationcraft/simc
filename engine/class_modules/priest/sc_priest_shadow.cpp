@@ -1483,8 +1483,6 @@ struct mind_spike_t final : public priest_spell_t
       }
 
       priest().buffs.coalescing_shadows->expire();
-
-      priest().buffs.mind_spike->trigger();
     }
   }
 
@@ -2158,10 +2156,6 @@ void priest_t::create_buffs_shadow()
   buffs.talbadars_stratagem = make_buff( this, "talbadars_stratagem", find_spell( 342415 ) )
                                   ->set_duration( timespan_t::zero() )
                                   ->set_refresh_behavior( buff_refresh_behavior::DURATION );
-
-  buffs.mind_spike = make_buff( this, "mind_spike", talents.shadow.mind_spike->effectN( 2 ).trigger() )
-                         ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
-                         ->set_default_value_from_effect( 1 );
 
   // Tier Sets
   buffs.living_shadow_tier =
