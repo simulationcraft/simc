@@ -200,11 +200,9 @@ public:
     player_talent_t malefic_rapture;
     const spell_data_t* malefic_rapture_dmg; // Damage events use this ID, but primary talent contains the spcoeff
 
-    // DF - Unstable Affliction
     player_talent_t unstable_affliction;
     const spell_data_t* unstable_affliction_2; // Soul Shard on demise, still seems to be separate spell (auto-learned on spec switch?)
     const spell_data_t* unstable_affliction_3; // +5 seconds to duration, still seems to be separate spell (auto-learned on spec switch?)
-    // DF - Seed of Corruption
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
