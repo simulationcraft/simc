@@ -1393,6 +1393,7 @@ struct mind_spike_t final : public priest_spell_t
 
   {
     parse_options( options_str );
+    affected_by_shadow_weaving = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
