@@ -175,7 +175,7 @@ struct agony_t : public affliction_spell_t
     may_crit = false;
 
     // Unclear in DF beta if Agony Rank 2 is intended to still be learned
-    //dot_max_stack = as<int>( data().max_stacks() + p->spec.agony_2->effectN( 1 ).base_value() );
+    dot_max_stack = as<int>( data().max_stacks() + p->warlock_base.agony_2->effectN( 1 ).base_value() );
   }
 
   void last_tick( dot_t* d ) override
@@ -246,97 +246,15 @@ struct agony_t : public affliction_spell_t
   }
 };
 
-struct corruption_t : public affliction_spell_t
-{
-  corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-    : affliction_spell_t( "corruption", p, p->find_spell( 172 ) )   // 172 triggers 146739
-  {
-    auto otherSP = p->find_spell( 146739 );
-    parse_options( options_str );
-    tick_zero                  = false;
-
-    if ( !p->spec.corruption_3->ok() || seed_action )
-    {
-      spell_power_mod.direct = 0; //Rank 3 is required for direct damage
-    }
-
-    spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
-    base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
-
-    // 172 does not have spell duration any more.
-    // were still lazy though so we aren't making a seperate spell for this.
-    dot_duration               = otherSP->duration();
-    
-    // 2021-10-03 : Corruption's direct damage does not appear to be included in spec aura, only tick damage
-    base_td_multiplier *= 1.0 + p->spec.affliction->effectN(2).percent();
-
-    if ( p->talents.absolute_corruption->ok() )
-    {
-      dot_duration = sim->expected_iteration_time > 0_ms
-                         ? 2 * sim->expected_iteration_time
-                         : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
-      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
-    }
-
-    if ( p->spec.corruption_2->ok())
-    {
-      base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
-    }
-
-    affected_by_woc = true; //Hardcoding this in for now because of how this spell is hacked together!
-  }
-
-  void tick( dot_t* d ) override
-  {
-    if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
-    {
-      // TOCHECK regularly.
-      // Blizzard did not publicly release how nightfall was changed.
-      // We determined this is the probable functionality copied from Agony by first confirming the
-      // DR formula was the same and then confirming that you can get procs on 1st tick.
-      // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-      // Last checked 09-28-2020.
-      double increment_max = 0.13;
-
-      double active_corruptions = p()->get_active_dots( internal_id );
-      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-      p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-      if ( p()->corruption_accumulator >= 1 )
-      {
-        p()->procs.nightfall->occur();
-        p()->buffs.nightfall->trigger();
-        p()->corruption_accumulator -= 1.0;
-
-      }
-    }
-    affliction_spell_t::tick( d );
-  }
-
-  double composite_ta_multiplier(const action_state_t* s) const override
-  {
-    double m = affliction_spell_t::composite_ta_multiplier( s );
-
-    // SL - Legendary
-    if ( p()->legendary.sacrolashs_dark_strike->ok() )
-      m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
-
-    return m;
-  }
-};
-
 struct unstable_affliction_t : public affliction_spell_t
 {
   unstable_affliction_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "unstable_affliction", p, p->spec.unstable_affliction )
+    : affliction_spell_t( "unstable_affliction", p, p->talents.unstable_affliction )
   {
     parse_options( options_str );
 
-    if ( p->spec.unstable_affliction_3->ok() )
-    {
-      dot_duration += timespan_t::from_millis( p->spec.unstable_affliction_3->effectN( 1 ).base_value() );
-    }
+    // DF - In beta the rank 3 passive appears to be learned as part of the spec automatically
+    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
   }
 
   void execute() override
@@ -388,131 +306,12 @@ struct summon_darkglare_t : public affliction_spell_t
   }
 };
 
-// AOE
-struct seed_of_corruption_t : public affliction_spell_t
-{
-  struct seed_of_corruption_aoe_t : public affliction_spell_t
-  {
-    corruption_t* corruption;
-
-    seed_of_corruption_aoe_t( warlock_t* p )
-      : affliction_spell_t( "seed_of_corruption_aoe", p, p->find_spell( 27285 ) ),
-        corruption( new corruption_t( p, "", true ) )
-    {
-      aoe                              = -1;
-      background                       = true;
-      base_costs[ RESOURCE_MANA ]      = 0;
-
-      corruption->background                  = true;
-      corruption->dual                        = true;
-      corruption->base_costs[ RESOURCE_MANA ] = 0;
-    }
-
-    double bonus_da( const action_state_t* s ) const override
-    {
-      double da = affliction_spell_t::bonus_da( s );
-      return da;
-    }
-
-    void impact( action_state_t* s ) override
-    {
-      affliction_spell_t::impact( s );
-
-      if ( result_is_hit( s->result ) )
-      {
-        auto tdata = this->td( s->target );
-        if ( tdata->dots_seed_of_corruption->is_ticking() && tdata->soc_threshold > 0 )
-        {
-          tdata->soc_threshold = 0;
-          tdata->dots_seed_of_corruption->cancel();
-        }
-
-        corruption->set_target( s->target );
-        corruption->execute();
-      }
-    }
-  };
-
-  double threshold_mod;
-  double sow_the_seeds_targets;
-  seed_of_corruption_aoe_t* explosion;
-
-  seed_of_corruption_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "seed_of_corruption", p, p->find_spell( 27243 ) ),
-      threshold_mod( 3.0 ),
-      sow_the_seeds_targets( p->talents.sow_the_seeds->effectN( 1 ).base_value() ),
-      explosion( new seed_of_corruption_aoe_t( p ) )
-  {
-    parse_options( options_str );
-    may_crit       = false;
-    tick_zero      = false;
-    base_tick_time = dot_duration;
-    hasted_ticks   = false;
-    add_child( explosion );
-    if ( p->talents.sow_the_seeds->ok() )
-      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
-  }
-
-  void init() override
-  {
-    affliction_spell_t::init();
-    snapshot_flags |= STATE_SP;
-  }
-
-  void execute() override
-  {
-    if ( td( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) )
-    {
-      for ( auto& possible : target_list() )
-      {
-        if ( !( td( possible )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( possible ) ) )
-        {
-          set_target( possible );
-          break;
-        }
-      }
-    }
-
-    affliction_spell_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    // TOCHECK: Does the threshold reset if the duration is refreshed before explosion?
-    if ( result_is_hit( s->result ) )
-    {
-      td( s->target )->soc_threshold = s->composite_spell_power();
-    }
-
-    affliction_spell_t::impact( s );
-  }
-
-  // Seed of Corruption is currently bugged on pure single target, extending the duration
-  // but still exploding at the original time, wiping the debuff. tick() should be used instead
-  // of last_tick() for now to model this more appropriately. TOCHECK regularly
-  void tick( dot_t* d ) override
-  {
-    affliction_spell_t::tick( d );
-
-    if ( d->remains() > 0_ms )
-      d->cancel();
-  }
-
-  void last_tick( dot_t* d ) override
-  {
-    explosion->set_target( d->target );
-    explosion->schedule_execute();
-
-    affliction_spell_t::last_tick( d );
-  }
-};
-
 struct malefic_rapture_t : public affliction_spell_t
 {
     struct malefic_rapture_damage_instance_t : public affliction_spell_t
     {
       malefic_rapture_damage_instance_t( warlock_t *p, double spc ) :
-          affliction_spell_t( "malefic_rapture_damage", p, p->find_spell( 324540 ) )
+          affliction_spell_t( "malefic_rapture_damage", p, p->talents.malefic_rapture_dmg )
       {
         aoe = 1;
         background = true;
@@ -526,10 +325,10 @@ struct malefic_rapture_t : public affliction_spell_t
 
         m *= p()->get_target_data( s->target )->count_affliction_dots();
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        {
-          m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
-        }
+        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        //{
+        //  m *= 1.0 + p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 1 ).percent();
+        //}
 
         return m;
       }
@@ -538,19 +337,19 @@ struct malefic_rapture_t : public affliction_spell_t
       {
         affliction_spell_t::impact( s );
 
-        if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
-        {
-          timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
-          warlock_td_t* td = p()->get_target_data( s->target );
+        //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
+        //{
+        //  timespan_t dot_extension =  p()->sets->set( WARLOCK_AFFLICTION, T28, B2 )->effectN( 2 ).time_value() * 1000;
+        //  warlock_td_t* td = p()->get_target_data( s->target );
 
-          td->dots_agony->adjust_duration( dot_extension );
-          td->dots_unstable_affliction->adjust_duration(dot_extension);
+        //  td->dots_agony->adjust_duration( dot_extension );
+        //  td->dots_unstable_affliction->adjust_duration(dot_extension);
 
-          if ( !p()->talents.absolute_corruption->ok() )
-          {
-            td->dots_corruption->adjust_duration( dot_extension );
-          }
-        }
+        //  if ( !p()->talents.absolute_corruption->ok() )
+        //  {
+        //    td->dots_corruption->adjust_duration( dot_extension );
+        //  }
+        //}
       }
 
       void execute() override
@@ -568,7 +367,7 @@ struct malefic_rapture_t : public affliction_spell_t
     };
 
     malefic_rapture_t( warlock_t* p, util::string_view options_str )
-      : affliction_spell_t( "malefic_rapture", p, p->find_spell( 324536 ) )
+      : affliction_spell_t( "malefic_rapture", p, p->talents.malefic_rapture )
     {
       parse_options( options_str );
       aoe = -1;
@@ -581,8 +380,8 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       double c = affliction_spell_t::cost();
 
-      if ( p()->buffs.calamitous_crescendo->check() )
-        c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
+      //if ( p()->buffs.calamitous_crescendo->check() )
+      //  c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
         
       return c;      
     }
@@ -591,8 +390,8 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       timespan_t t = affliction_spell_t::execute_time();
 
-      if ( p()->buffs.calamitous_crescendo->check() )
-        t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
+      //if ( p()->buffs.calamitous_crescendo->check() )
+      //  t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
 
       return t;
     }
@@ -610,7 +409,7 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       affliction_spell_t::execute();
 
-      p()->buffs.calamitous_crescendo->expire();
+      //p()->buffs.calamitous_crescendo->expire();
     }
 
     size_t available_targets( std::vector<player_t*>& tl ) const override
@@ -767,17 +566,12 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 
   if ( action_name == "shadow_bolt" )
     return new shadow_bolt_t( this, options_str );
-  if ( action_name == "corruption" )
-    return new corruption_t( this, options_str, false );
   if ( action_name == "agony" )
     return new agony_t( this, options_str );
   if ( action_name == "unstable_affliction" )
     return new unstable_affliction_t( this, options_str );
   if ( action_name == "summon_darkglare" )
     return new summon_darkglare_t( this, options_str );
-  // aoe
-  if ( action_name == "seed_of_corruption" )
-    return new seed_of_corruption_t( this, options_str );
   // talents
   if ( action_name == "drain_soul" )
     return new drain_soul_t( this, options_str );
@@ -813,22 +607,19 @@ void warlock_t::create_buffs_affliction()
 void warlock_t::init_spells_affliction()
 {
   using namespace actions_affliction;
-  // General
-  spec.affliction                   = find_specialization_spell( 137043 );
-  mastery_spells.potent_afflictions = find_mastery_spell( WARLOCK_AFFLICTION );
 
   // Specialization Spells
-  spec.unstable_affliction = find_specialization_spell( "Unstable Affliction" );
-  spec.agony               = find_specialization_spell( "Agony" );
-  spec.agony_2             = find_spell( 231792 );
   spec.summon_darkglare    = find_specialization_spell( "Summon Darkglare" );
   spec.corruption_2        = find_specialization_spell( "Corruption", "Rank 2" );
   spec.corruption_3        = find_specialization_spell( "Corruption", "Rank 3" );
-  spec.unstable_affliction_2 = find_specialization_spell( "Unstable Affliction", "Rank 2" );
-  spec.unstable_affliction_3 = find_specialization_spell( "Unstable Affliction", "Rank 3" );
   spec.summon_darkglare_2         = find_specialization_spell( "Summon Darkglare", "Rank 2" ); //9.1 PTR - Now a passive learned at level 58
 
   // Talents
+  talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
+  talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
+  talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
+  talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
+  talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
   talents.nightfall           = find_talent_spell( "Nightfall" );
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );

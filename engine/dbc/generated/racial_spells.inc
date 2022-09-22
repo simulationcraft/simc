@@ -1,5 +1,5 @@
-// Racial abilities, wow build 10.0.2.45632
-static const std::array<racial_spell_entry_t, 153> __racial_spell_data { {
+// Racial abilities, wow build 10.0.2.45698
+static const std::array<racial_spell_entry_t, 155> __racial_spell_data { {
   { 0x0000000000000001, 0x00000000,  20599, "Diplomacy"                          },
   { 0x0000000000000001, 0x00000000,  20598, "The Human Spirit"                   },
   { 0x0000000000000001, 0x00000000,  59752, "Will to Survive"                    },
@@ -99,7 +99,9 @@ static const std::array<racial_spell_entry_t, 153> __racial_spell_data { {
   { 0x0000000000018000, 0x00000000, 358731, "Glide"                              },
   { 0x0000000000018000, 0x00000000, 358733, "Glide"                              },
   { 0x0000000000018000, 0x00000000, 381451, "Principles of Soaring"              },
+  { 0x0000000000018000, 0x00001000, 376744, "Skyward Ascent"                     },
   { 0x0000000000018000, 0x00001000, 369536, "Soar"                               },
+  { 0x0000000000018000, 0x00001000, 376743, "Surge Forward"                      },
   { 0x0000000000018000, 0x00000000, 368970, "Tail Swipe"                         },
   { 0x0000000000018000, 0x00000000, 351239, "Visage"                             },
   { 0x0000000000018000, 0x00000000, 368437, "Visage"                             },
