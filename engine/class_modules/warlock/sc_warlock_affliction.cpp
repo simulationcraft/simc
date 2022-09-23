@@ -536,6 +536,8 @@ void warlock_t::init_spells_affliction()
   talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
   talents.nightfall_buff = find_spell( 264571 );
   
+  talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );

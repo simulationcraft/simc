@@ -186,10 +186,11 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    //if ( !p->spec.corruption_3->ok() || seed_action )
-    //{
-    //  spell_power_mod.direct = 0; //Rank 3 is required for direct damage
-    //}
+    if ( p->talents.xavian_teachings.ok() && !seed_action )
+    {
+      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
+      base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+    }
 
     // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
     base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
@@ -201,12 +202,6 @@ struct corruption_t : public warlock_spell_t
     //                     : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
     //  base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
     //}
-
-    //if ( p->spec.corruption_2->ok() )
-    //{
-    //  base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
-    //}
-
   }
 
   void tick( dot_t* d ) override
