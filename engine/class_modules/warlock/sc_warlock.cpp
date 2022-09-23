@@ -458,10 +458,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    //if ( result_is_hit( s->result ) )
-    //{
-    //  if ( p()->talents.shadow_embrace->ok() )
-    //    td( s->target )->debuffs_shadow_embrace->trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      if ( p()->talents.shadow_embrace->ok() )
+        td( s->target )->debuffs_shadow_embrace->trigger();
 
     //  if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
     //  {        
@@ -477,7 +477,7 @@ struct shadow_bolt_t : public warlock_spell_t
     //      p()->buffs.calamitous_crescendo->trigger();
     //    }
     //  }
-    //}
+    }
   }
 
   double action_multiplier() const override
@@ -688,10 +688,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 );
-  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                               ->set_max_stack( 3 );
+  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
+                               ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
@@ -956,7 +954,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
     if ( talents.shadow_embrace->ok() )
     {
-      m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( guardian ? 3 : 2 ).percent();
+      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
     }
   }
 

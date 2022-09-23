@@ -211,7 +211,8 @@ public:
     player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     player_talent_t sow_the_seeds;
 
-    const spell_data_t* shadow_embrace; // DF - Now a 2 point talent
+    player_talent_t shadow_embrace; // DF - Now a 2 point talent
+    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     // DF - Harvester of Souls (2 point talent, instant damage proc chance on Corruption ticks)
     const spell_data_t* writhe_in_agony; // DF - Now a 2 point talent
     // DF - Agonizing Corruption (2 point talent, Seed of Corruption applies Agony stacks)

@@ -337,6 +337,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
+// REMEMBER TO CHECK SHADOW EMBRACE TO THIS WHEN RETALENTIZING
 // REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
@@ -540,6 +541,9 @@ void warlock_t::init_spells_affliction()
 
   talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
 
+  talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
+  talents.shadow_embrace_debuff = find_spell( 32390 );
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
@@ -549,7 +553,6 @@ void warlock_t::init_spells_affliction()
 
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
-  talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
   // Conduits
