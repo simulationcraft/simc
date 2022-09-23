@@ -431,6 +431,8 @@ struct player_t : public actor_t
     buff_t* movement;
     buff_t* stampeding_roar;
     buff_t* shadowmeld;
+    buff_t* close_to_heart_leech_aura;
+    buff_t* generous_pour_avoidance_aura;
     buff_t* windwalking_movement_aura;
     buff_t* stoneform;
     buff_t* stunned;

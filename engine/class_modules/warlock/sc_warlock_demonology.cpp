@@ -91,41 +91,6 @@ public:
   }
 };
 
-struct shadow_bolt_t : public demonology_spell_t
-{
-  shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : demonology_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
-  {
-    parse_options( options_str );
-    energize_type     = action_energize::ON_CAST;
-    energize_resource = RESOURCE_SOUL_SHARD;
-    energize_amount   = 1;
-  }
-
-  void execute() override
-  {
-    demonology_spell_t::execute();
-
-    if ( p()->talents.demonic_calling->ok() )
-      p()->buffs.demonic_calling->trigger();
-
-    if ( p()->legendary.balespiders_burning_core->ok() )
-      p()->buffs.balespiders_burning_core->trigger();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = demonology_spell_t::action_multiplier();
-
-    if ( p()->talents.sacrificed_souls->ok() )
-    {
-      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    }
-
-    return m;
-  }
-};
-
 struct hand_of_guldan_t : public demonology_spell_t
 {
   struct hog_impact_t : public demonology_spell_t
@@ -980,8 +945,6 @@ action_t* warlock_t::create_action_demonology( util::string_view action_name, ut
 {
   using namespace actions_demonology;
 
-  if ( action_name == "shadow_bolt" )
-    return new shadow_bolt_t( this, options_str );
   if ( action_name == "demonbolt" )
     return new demonbolt_t( this, options_str );
   if ( action_name == "hand_of_guldan" )

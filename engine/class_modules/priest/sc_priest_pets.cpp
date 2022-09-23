@@ -232,7 +232,7 @@ namespace fiend
 {
 namespace actions
 {
-struct shadowflame_prism_t;
+struct inescapable_torment_t;
 struct shadowflame_prism_legendary_t;
 }  // namespace actions
 
@@ -241,7 +241,7 @@ struct shadowflame_prism_legendary_t;
  */
 struct base_fiend_pet_t : public priest_pet_t
 {
-  propagate_const<actions::shadowflame_prism_t*> shadowflame_prism;
+  propagate_const<actions::inescapable_torment_t*> inescapable_torment;
   propagate_const<actions::shadowflame_prism_legendary_t*> shadowflame_prism_legendary;
 
   struct gains_t
@@ -259,7 +259,7 @@ struct base_fiend_pet_t : public priest_pet_t
 
   base_fiend_pet_t( sim_t* sim, priest_t& owner, util::string_view name, enum fiend_type type )
     : priest_pet_t( sim, owner, name ),
-      shadowflame_prism( nullptr ),
+      inescapable_torment( nullptr ),
       shadowflame_prism_legendary( nullptr ),
       gains(),
       fiend_type( type ),
@@ -502,12 +502,12 @@ struct shadowflame_rift_t final : public priest_pet_spell_t
 };
 
 // ==========================================================================
-// Shadowflame Fissure
+// Inescapable Torment Damage
 // ==========================================================================
-struct shadowflame_fissure_t final : public priest_pet_spell_t
+struct inescapable_torment_damage_t final : public priest_pet_spell_t
 {
-  shadowflame_fissure_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_fissure", p, p.o().find_spell( 373442 ) )
+  inescapable_torment_damage_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "inescapable_torment_damage", p, p.o().find_spell( 373442 ) )
   {
     background                 = true;
     affected_by_shadow_weaving = true;
@@ -525,6 +525,8 @@ struct shadowflame_fissure_t final : public priest_pet_spell_t
         spell_power_mod.direct *= 0.408;
         break;
     }
+
+    spell_power_mod.direct *= ( 1 + p.o().talents.shadow.inescapable_torment->effectN( 4 ).percent() );
   }
 };
 
@@ -563,19 +565,19 @@ struct shadowflame_prism_legendary_t final : public priest_pet_spell_t
 };
 
 // ==========================================================================
-// Shadowflame Prism
+// Inescapable Torment
 // ==========================================================================
-struct shadowflame_prism_t final : public priest_pet_spell_t
+struct inescapable_torment_t final : public priest_pet_spell_t
 {
   timespan_t duration;
 
-  shadowflame_prism_t( base_fiend_pet_t& p )
-    : priest_pet_spell_t( "shadowflame_prism", p, p.o().find_spell( 373427 ) ),
+  inescapable_torment_t( base_fiend_pet_t& p )
+    : priest_pet_spell_t( "inescapable_torment", p, p.o().talents.shadow.inescapable_torment ),
       duration( timespan_t::from_seconds( data().effectN( 3 ).base_value() ) )
   {
     background = true;
 
-    impact_action = new shadowflame_fissure_t( p );
+    impact_action = new inescapable_torment_damage_t( p );
     add_child( impact_action );
   }
 
@@ -619,7 +621,7 @@ void base_fiend_pet_t::init_background_actions()
 {
   priest_pet_t::init_background_actions();
 
-  shadowflame_prism           = new fiend::actions::shadowflame_prism_t( *this );
+  inescapable_torment         = new fiend::actions::inescapable_torment_t( *this );
   shadowflame_prism_legendary = new fiend::actions::shadowflame_prism_legendary_t( *this );
 }
 
@@ -1139,11 +1141,11 @@ void priest_t::trigger_shadowflame_prism( player_t* target )
   auto current_pet = get_current_main_pet( *this );
   if ( current_pet && !current_pet->is_sleeping() )
   {
-    if ( current_pet->o().talents.shadow.shadowflame_prism.enabled() )
+    if ( current_pet->o().talents.shadow.inescapable_torment.enabled() )
     {
-      assert( current_pet->shadowflame_prism );
-      current_pet->shadowflame_prism->set_target( target );
-      current_pet->shadowflame_prism->execute();
+      assert( current_pet->inescapable_torment );
+      current_pet->inescapable_torment->set_target( target );
+      current_pet->inescapable_torment->execute();
     }
     else
     {

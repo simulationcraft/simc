@@ -74,7 +74,7 @@ public:
 
     // Reset charges to initial value, since it can get out of sync when previous iteration ends with charge-giving
     // buffs up.
-    cooldown->charges = data().charges();
+    cooldown->charges = data().charges() + priest().talents.shadow.shadowy_insight->effectN( 2 ).base_value();
   }
 
   bool talbadars_stratagem_active() const
@@ -118,7 +118,7 @@ public:
 
     if ( result_is_hit( s->result ) )
     {
-      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+      if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
       {
         priest().trigger_shadowflame_prism( s->target );
       }
@@ -144,11 +144,6 @@ public:
             priest().gains.insanity_whispers_of_the_damned, s->action );
       }
 
-      if ( priest().talents.shadow.mind_spike.enabled() )
-      {
-        priest().buffs.mind_spike->expire();
-      }
-
       priest().buffs.coalescing_shadows->expire();
     }
   }
@@ -161,23 +156,6 @@ public:
     }
 
     return priest_spell_t::execute_time();
-  }
-
-  double composite_crit_chance_multiplier() const override
-  {
-    auto mm = priest_spell_t::composite_crit_chance_multiplier();
-
-    if ( priest().talents.shadow.mastermind )
-    {
-      mm *= 1 + priest().talents.shadow.mastermind->effectN( 1 ).percent();
-    }
-
-    if ( priest().talents.shadow.mind_melt && priest().buffs.mind_melt->check() )
-    {
-      mm *= 1 + priest().buffs.mind_melt->check() * priest().buffs.mind_melt->data().effectN( 2 ).percent();
-    }
-
-    return mm;
   }
 
   timespan_t cooldown_base_duration( const cooldown_t& cooldown ) const override
@@ -233,7 +211,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-          } );
+             } );
         }
       }
     }
@@ -1588,10 +1566,6 @@ struct shadow_word_death_t final : public priest_spell_t
           cooldown->reset( false );
         }
       }
-      else
-      {
-        priest().buffs.death_and_madness_reset->expire();
-      }
     }
 
     if ( priest().talents.shadow.deathspeaker.enabled() )
@@ -1604,7 +1578,7 @@ struct shadow_word_death_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.shadowflame_prism.enabled() )
+    if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
     {
       priest().trigger_shadowflame_prism( s->target );
     }
@@ -2112,6 +2086,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
   dots.mind_flay          = target->get_dot( "mind_flay", &p );
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
+  dots.void_torrent       = target->get_dot( "void_torrent", &p );
 
   buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
@@ -2859,9 +2834,8 @@ void priest_t::create_buffs()
       make_buff( this, "depth_of_the_shadows", talents.depth_of_the_shadows->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1 );
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
-  buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", talents.death_and_madness )
-                                      ->set_quiet( true )
-                                      ->set_duration( timespan_t::from_seconds( 0 ) );
+  buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", find_spell( 390628 ) )
+                                      ->set_trigger_spell( talents.death_and_madness );
 
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
@@ -2928,8 +2902,7 @@ void priest_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( specs.discipline_priest );
 
   // Shadow Talents
-  action.apply_affecting_aura( talents.shadow.derangement );
-  action.apply_affecting_aura( talents.shadow.mastermind );
+  action.apply_affecting_aura( talents.shadow.encroaching_shadows );
   action.apply_affecting_aura( talents.shadow.malediction );
 }
 
@@ -3174,16 +3147,17 @@ void priest_t::trigger_eternal_call_to_the_void( action_state_t* s )
 // Idol of C'Thun Talent Trigger
 void priest_t::trigger_idol_of_cthun( action_state_t* s )
 {
-  auto mind_sear_id = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
-  auto mind_flay_id = specs.mind_flay->id();
+  auto mind_sear_id          = talents.shadow.mind_sear->effectN( 1 ).trigger()->id();
+  auto mind_flay_id          = specs.mind_flay->id();
   auto mind_flay_insanity_id = 391403;
-  auto action_id    = s->action->id;
+  auto action_id             = s->action->id;
   if ( !talents.shadow.idol_of_cthun.enabled() )
     return;
 
   if ( rppm.idol_of_cthun->trigger() )
   {
-    // TODO: Keep checking that MFI doesn't work with this. It actually doesn't but I made it anyway. It should be a bug.
+    // TODO: Keep checking that MFI doesn't work with this. It actually doesn't but I made it anyway. It should be a
+    // bug.
     if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
     {
       procs.void_tendril->occur();
@@ -3301,9 +3275,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
