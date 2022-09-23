@@ -342,8 +342,8 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     add_child( explosion );
 
-    //if ( p->talents.sow_the_seeds->ok() )
-    //  aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+    if ( p->talents.sow_the_seeds->ok() )
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
   }
 
   void init() override

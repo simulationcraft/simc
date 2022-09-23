@@ -538,13 +538,15 @@ void warlock_t::init_spells_affliction()
   
   talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
 
+  talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
   talents.writhe_in_agony     = find_talent_spell( "Writhe in Agony" );
   talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );
   talents.siphon_life         = find_talent_spell( "Siphon Life" );
-  talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
+
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
   talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
