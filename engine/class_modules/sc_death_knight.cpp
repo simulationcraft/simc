@@ -5461,14 +5461,34 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
+    // Currently Death Rot only triggers on the main target
+    if ( p() -> talent.unholy.death_rot.ok() )
+    {
+      get_td( target ) -> debuff.death_rot -> trigger();
+      
+      if ( p() -> buffs.sudden_doom -> check() )
+      {
+        get_td( target ) -> debuff.death_rot -> trigger();
+      }
+    }
+
+    // Currently Rotten Touch only triggers on the main target
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      get_td( target ) -> debuff.rotten_touch -> trigger();
+    }
+
     p() -> buffs.sudden_doom -> decrement();
   }
+
+  /* 
+  Currently Death Rot and Death Rot only trigger on the main target, not all targets hit. 
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
-    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result ) )
     {
       get_td( state -> target ) -> debuff.death_rot -> trigger();
       
@@ -5484,6 +5504,7 @@ struct death_coil_t : public death_knight_spell_t
       get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
+  */
 };
 
 // Death Strike =============================================================
@@ -5888,6 +5909,23 @@ struct epidemic_t : public death_knight_spell_t
 
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
+
+    if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
+    {
+      p() -> buffs.dark_transformation -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
+    }
+
+    // Currently Death Rot only triggers on the main target
+    if ( p() -> talent.unholy.death_rot.ok() )
+    {
+      get_td( target ) -> debuff.death_rot -> trigger();
+      
+      if ( p() -> buffs.sudden_doom -> check() )
+      {
+        get_td( target ) -> debuff.death_rot -> trigger();
+      }
+    }
 
     p() -> buffs.sudden_doom -> decrement();
   }
@@ -11377,6 +11415,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
+  /*
   void register_hotfixes() const override
   {
       hotfix::register_effect( "Death Knight", "2022-09-15", "Icecap's CDR per Crit reduced to 2s per Crit in notes, not represented in game", 306334 )
@@ -11385,6 +11424,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 20 )
       .verification_value( 40 );
   }
+  */
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
