@@ -2570,7 +2570,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
   // Main drw is the only one that can apply BP.  Technically speaking all spells are only cast from main DRW pet
   // However, we allow all of the copies to cast thier own in simc for accounting purposes.
   bool main_drw_guardian;
-  buff_t* coagulopathy;
 
   dot_t* get_blood_plague( player_t* target )
   {
@@ -2614,7 +2613,7 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     {
       double m = drw_action_t::composite_ta_multiplier( state );
 
-      m *= 1.0 + pet() -> coagulopathy -> stack_value();
+      m *= 1.0 + dk() -> buffs.coagulopathy -> stack_value();
 
       return m;
     }
@@ -2672,13 +2671,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
       m *= 1.0 + dk() -> buffs.heartrend -> stack_value();
 
       return m;
-    }
-
-    void execute() override
-    {
-      drw_action_t::execute();
-
-      pet() -> coagulopathy -> trigger();
     }
   };
 
@@ -2790,15 +2782,6 @@ struct dancing_rune_weapon_pet_t : public death_knight_pet_t
     ability.heart_strike  = new heart_strike_t ( this );
     ability.marrowrend    = new marrowrend_t   ( this );
     ability.consumption   = new consumption_t  ( this );
-  }
-
-  void create_buffs() override
-  {
-    death_knight_pet_t::create_buffs();
-
-    coagulopathy = make_buff( this, "coagulopathy", dk() -> talent.blood.coagulopathy -> effectN( 2 ).trigger() )
-        -> set_trigger_spell( dk() -> talent.blood.coagulopathy )
-        -> set_default_value_from_effect( 1 );
   }
 
   double composite_player_target_multiplier( player_t* target, school_e school ) const
