@@ -206,7 +206,8 @@ public:
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
-    const spell_data_t* nightfall; //TODO: RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
+    player_talent_t nightfall; //TODO: RNG information is missing from spell data. Confirmed 2022-09-22: Buff stacks to 2, can refresh at max stacks, duration refreshes when proc occurs
+    const spell_data_t* nightfall_buff;
     // DF - Xavian Teachings (Formerly Corruption Rank 2 + 3)
     const spell_data_t* sow_the_seeds;
 

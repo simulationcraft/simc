@@ -424,7 +424,7 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
-// lvl 15 - nightfall|drain soul|haunt
+// REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
   drain_soul_t( warlock_t* p, util::string_view options_str )
@@ -594,9 +594,9 @@ void warlock_t::create_buffs_affliction()
   // spells
   buffs.drain_life = make_buff( this, "drain_life" );
   // talents
-  buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
-                        ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
+  buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
+
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", find_spell( 334320 ) )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() )
                                 ->set_trigger_spell( talents.inevitable_demise );
@@ -617,10 +617,14 @@ void warlock_t::init_spells_affliction()
   // Talents
   talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
+
   talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
   talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
   talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
-  talents.nightfall           = find_talent_spell( "Nightfall" );
+  
+  talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
+  talents.nightfall_buff = find_spell( 264571 );
+  
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
