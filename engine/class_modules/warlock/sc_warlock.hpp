@@ -211,11 +211,11 @@ public:
     player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     player_talent_t sow_the_seeds;
 
-    player_talent_t shadow_embrace; // DF - Now a 2 point talent
+    player_talent_t shadow_embrace;
     const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
     player_talent_t harvester_of_souls;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
-    const spell_data_t* writhe_in_agony; // DF - Now a 2 point talent
+    player_talent_t writhe_in_agony; // 2022-09-23 DF Beta - Writhe In Agony's second point is not registering in-game
     // DF - Agonizing Corruption (2 point talent, Seed of Corruption applies Agony stacks)
 
     const spell_data_t* drain_soul; // DF - Unchanged, still replaces Shadow Bolt
