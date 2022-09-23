@@ -2191,38 +2191,6 @@ struct blackout_kick_totm_proc : public monk_melee_attack_t
     if ( result_is_miss( execute_state->result ) )
       return;
 
-    switch ( p()->specialization() )
-    {
-      case MONK_MISTWEAVER:
-
-        if ( p()->talent.mistweaver.teachings_of_the_monastery->ok() &&
-          rng().roll( p()->talent.mistweaver.teachings_of_the_monastery->effectN( 1 ).percent() ) )
-        {
-          p()->cooldown.rising_sun_kick->reset( true );
-          p()->proc.rsk_reset_totm->occur();
-        }
-        break;
-
-      case MONK_WINDWALKER:
-      
-        if ( p()->talent.windwalker.teachings_of_the_monastery->ok() &&
-          rng().roll( p()->talent.windwalker.teachings_of_the_monastery->effectN( 1 ).percent() ) )
-        {
-          p()->cooldown.rising_sun_kick->reset( true );
-          p()->proc.rsk_reset_totm->occur();
-        }  
-        break;
-
-      case MONK_BREWMASTER:
-
-        trigger_shuffle( p()->spec.blackout_kick->effectN( 2 ).base_value() );
-        break;
-
-      default:
-        assert( 0 );
-        break;
-    }
-
     if ( p()->conduit.tumbling_technique->ok() &&
       rng().roll( p()->conduit.tumbling_technique->effectN( 1 ).percent() ) )
     {
