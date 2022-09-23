@@ -103,24 +103,22 @@ struct agony_t : public affliction_spell_t
 
   void init() override
   {
-    //dot_max_stack +=
-    //    as<int>( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 1 ).base_value() : 0 );
+    dot_max_stack += as<int>( p()->talents.writhe_in_agony->effectN( 1 ).base_value() );
 
     affliction_spell_t::init();
   }
 
-  //TODO - Agony gains a stack when executed on a target that already has Agony
   void execute() override
   {
     affliction_spell_t::execute();
 
-    //if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
-    //  (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
-    //{
-    //  td ( execute_state->target )
-    //    ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
-    //      td( execute_state->target )->dots_agony->current_stack() );
-    //}
+    if ( p()->talents.writhe_in_agony->ok() )
+    {
+      int delta = (int)( p()->talents.writhe_in_agony->effectN( 3 ).base_value() ) - td( execute_state->target )->dots_agony->current_stack();
+
+      if ( delta > 0 )
+        td( execute_state->target )->dots_agony->increment( delta );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -547,10 +545,12 @@ void warlock_t::init_spells_affliction()
   talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
   talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
 
+  talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
-  talents.writhe_in_agony     = find_talent_spell( "Writhe in Agony" );
+
   talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );
   talents.siphon_life         = find_talent_spell( "Siphon Life" );
 
