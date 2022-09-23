@@ -519,7 +519,7 @@ public:
     buff_t* enduring_strength_builder;
     buff_t* enduring_strength;
     buff_t* frostwhelps_aid;
-    buff_t* shattering_strike;
+    buff_t* shattering_blade;
 
     // Unholy
     buff_t* dark_transformation;
@@ -577,6 +577,7 @@ public:
     cooldown_t* abomination_limb;
     cooldown_t* death_and_decay_dynamic; // Shared cooldown object for death and decay, defile and death's due
     cooldown_t* shackle_the_unworthy_icd; // internal cooldown between shackle the unworthy's spreading effect
+    cooldown_t* mind_freeze;
 
     // Blood
     cooldown_t* bone_shield_icd; // internal cooldown between bone shield stack consumption
@@ -595,7 +596,7 @@ public:
     cooldown_t* apocalypse;
     cooldown_t* army_of_the_dead;
     cooldown_t* dark_transformation;
-    cooldown_t* plaguebearer;
+    cooldown_t* vile_contagion;
 
     // T28
     cooldown_t* endless_rune_waltz_icd;  // internal cooldown for Blood T28 4PC counterattack
@@ -633,6 +634,7 @@ public:
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
     gain_t* spirit_drain;
+    gain_t* coldthirst;
     gain_t* start_of_combat_overflow;
 
     // Covenant
@@ -713,7 +715,7 @@ public:
     player_talent_t cleaving_strikes;
     // Row 3
     player_talent_t blinding_sleet;
-    player_talent_t anticipation;
+    player_talent_t coldthirst;
     player_talent_t permafrost;
     player_talent_t improved_death_strike;
     player_talent_t antimagic_barrier; // NYI
@@ -855,7 +857,7 @@ public:
       // Row 8
       player_talent_t might_of_the_frozen_wastes;
       player_talent_t bonegrinder;
-      player_talent_t shattering_strike;
+      player_talent_t shattering_blade;
       player_talent_t avalanche;
       player_talent_t icebreaker;
       player_talent_t everfrost;
@@ -881,7 +883,7 @@ public:
       player_talent_t dark_transformation;
       // Row 4
       player_talent_t unholy_blight;
-      player_talent_t festering_strike_r2; // Horrible naming convention, plz change blizz
+      player_talent_t improved_festering_strike; // Horrible naming convention, plz change blizz
       player_talent_t runic_mastery;
       player_talent_t infected_claws;
       // Row 5
@@ -905,7 +907,7 @@ public:
       player_talent_t unholy_pact;
       player_talent_t defile;
       // Row 7
-      player_talent_t plaguebearer;
+      player_talent_t vile_contagion;
       player_talent_t pestilence;
       player_talent_t eternal_agony;
       player_talent_t coil_of_devastation;
@@ -939,6 +941,7 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* rune_mastery_buff;
     const spell_data_t* empower_rune_weapon_main; // Empower Rune Weapon has a unique ID for the spell itself, with each talent just modifying number of charges. 
+    const spell_data_t* coldthirst_gain; // Coldthirst has a unique ID for the gain and cooldown reduction
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1076,7 +1079,7 @@ public:
     proc_t* fw_necroblast;
     proc_t* fw_pestilence;
     proc_t* fw_unholy_assault;
-    proc_t* fw_plaguebearer;
+    proc_t* fw_vile_contagion;
   } procs;
 
   struct soulbind_conduits_t
@@ -1209,6 +1212,7 @@ public:
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
+    cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -5461,14 +5465,34 @@ struct death_coil_t : public death_knight_spell_t
         timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
     }
 
+    // Currently Death Rot only triggers on the main target
+    if ( p() -> talent.unholy.death_rot.ok() )
+    {
+      get_td( target ) -> debuff.death_rot -> trigger();
+      
+      if ( p() -> buffs.sudden_doom -> check() )
+      {
+        get_td( target ) -> debuff.death_rot -> trigger();
+      }
+    }
+
+    // Currently Rotten Touch only triggers on the main target
+    if ( p() -> talent.unholy.rotten_touch.ok() && p() -> buffs.sudden_doom -> check() )
+    {
+      get_td( target ) -> debuff.rotten_touch -> trigger();
+    }
+
     p() -> buffs.sudden_doom -> decrement();
   }
+
+  /* 
+  Currently Death Rot and Rotten Touch only trigger on the main target, not all targets hit. 
 
   void impact( action_state_t* state ) override
   {
     death_knight_spell_t::impact( state );
 
-    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result) )
+    if ( p() -> talent.unholy.death_rot.ok() && result_is_hit( state -> result ) )
     {
       get_td( state -> target ) -> debuff.death_rot -> trigger();
       
@@ -5484,6 +5508,7 @@ struct death_coil_t : public death_knight_spell_t
       get_td( state -> target ) -> debuff.rotten_touch -> trigger();
     }
   }
+  */
 };
 
 // Death Strike =============================================================
@@ -5889,6 +5914,23 @@ struct epidemic_t : public death_knight_spell_t
     p() -> cooldown.army_of_the_dead -> adjust( -timespan_t::from_seconds(
       p() -> talent.unholy.army_of_the_damned -> effectN( 2 ).base_value() / 10 ) );
 
+    if ( p() -> buffs.dark_transformation -> up() && p() -> talent.unholy.eternal_agony.ok() )
+    {
+      p() -> buffs.dark_transformation -> extend_duration( p(),
+        timespan_t::from_seconds( p() -> talent.unholy.eternal_agony -> effectN( 1 ).base_value() ) );
+    }
+
+    // Currently Death Rot only triggers on the main target
+    if ( p() -> talent.unholy.death_rot.ok() )
+    {
+      get_td( target ) -> debuff.death_rot -> trigger();
+      
+      if ( p() -> buffs.sudden_doom -> check() )
+      {
+        get_td( target ) -> debuff.death_rot -> trigger();
+      }
+    }
+
     p() -> buffs.sudden_doom -> decrement();
   }
 };
@@ -5936,7 +5978,7 @@ struct festering_wound_t : public death_knight_spell_t
 
     base_multiplier *= 1.0 + p -> talent.unholy.bursting_sores -> effectN( 1 ).percent();
 
-    base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
 
     if ( p -> conduits.convocation_of_the_dead.ok() )
     {
@@ -5970,9 +6012,9 @@ struct festering_strike_t : public death_knight_melee_attack_t
     parse_options( options_str );
     triggers_shackle_the_unworthy = true;
 
-    if ( p -> talent.unholy.festering_strike_r2 -> ok() )
+    if ( p -> talent.unholy.improved_festering_strike -> ok() )
     {
-      base_multiplier *= 1.0 + p -> talent.unholy.festering_strike_r2 -> effectN( 1 ).percent();
+      base_multiplier *= 1.0 + p -> talent.unholy.improved_festering_strike -> effectN( 1 ).percent();
     }
   }
 
@@ -6166,9 +6208,9 @@ struct frost_strike_strike_t : public death_knight_melee_attack_t
   {
       double m = death_knight_melee_attack_t::composite_da_multiplier ( state );
 
-      if ( p() -> buffs.shattering_strike -> up() )
+      if ( p() -> buffs.shattering_blade -> up() )
       {
-          m *= 1.0 + p() -> talent.frost.shattering_strike -> effectN( 1 ).percent();
+          m *= 1.0 + p() -> talent.frost.shattering_blade -> effectN( 1 ).percent();
       }
 
     return m;
@@ -6236,10 +6278,10 @@ struct frost_strike_t : public death_knight_melee_attack_t
   {
     const death_knight_td_t* td = p() -> find_target_data( target );
 
-    if ( p() -> talent.frost.shattering_strike.ok() && td -> debuff.razorice -> stack() == 5 )
+    if ( p() -> talent.frost.shattering_blade.ok() && td -> debuff.razorice -> stack() == 5 )
     {
       td -> debuff.razorice -> expire();
-      p() -> buffs.shattering_strike -> trigger();
+      p() -> buffs.shattering_blade -> trigger();
     }
 
     death_knight_melee_attack_t::execute();
@@ -6251,7 +6293,7 @@ struct frost_strike_t : public death_knight_melee_attack_t
         oh -> set_target( target );
         oh -> execute();
       }
-      p() -> buffs.shattering_strike -> expire();
+      p() -> buffs.shattering_blade -> expire();
     }
 
     // TODO remove with conduits
@@ -6776,6 +6818,16 @@ struct mind_freeze_t : public death_knight_spell_t
         p() -> conduits.spirit_drain.value() / 10,
         p() -> gains.spirit_drain, this );
     }
+
+    if ( p()->talent.coldthirst.ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, 
+          p() -> spell.coldthirst_gain -> effectN( 1 ).base_value() / 10,
+          p() -> gains.coldthirst, this );
+
+      p() -> cooldown.mind_freeze -> adjust( p() -> spell.coldthirst_gain -> effectN( 2 ).time_value() );
+
+    }
   }
 
   bool target_ready( player_t* candidate_target ) override
@@ -7181,15 +7233,15 @@ struct pillar_of_frost_t : public death_knight_spell_t
   }
 };
 
-// Plaguebearer =============================================================
+// Vile Contagion =============================================================
 
-struct plaguebearer_t : public death_knight_spell_t
+struct vile_contagion_t : public death_knight_spell_t
 {
-  plaguebearer_t( death_knight_t* p, util::string_view options_str ) :
-    death_knight_spell_t( "plaguebearer", p, p -> talent.unholy.plaguebearer )
+  vile_contagion_t( death_knight_t* p, util::string_view options_str ) :
+    death_knight_spell_t( "vile_contagion", p, p -> talent.unholy.vile_contagion )
   {
     parse_options( options_str );
-    aoe = p->talent.unholy.plaguebearer->effectN(1).base_value();
+    aoe = p->talent.unholy.vile_contagion->effectN(1).base_value();
   }
 
   void init() override
@@ -7219,7 +7271,7 @@ struct plaguebearer_t : public death_knight_spell_t
     {
       unsigned n_stacks = get_td( target )->debuff.festering_wound->stack();
 
-      p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_plaguebearer );
+      p() -> trigger_festering_wound( s, n_stacks, p() -> procs.fw_vile_contagion );
     }
   }
 };
@@ -9314,7 +9366,7 @@ action_t* death_knight_t::create_action( util::string_view name, util::string_vi
   if ( name == "summon_gargoyle"          ) return new summon_gargoyle_t          ( this, options_str );
   if ( name == "unholy_assault"           ) return new unholy_assault_t           ( this, options_str );
   if ( name == "unholy_blight"            ) return new unholy_blight_t            ( this, options_str );
-  if ( name == "plaguebearer"             ) return new plaguebearer_t             ( this, options_str );
+  if ( name == "vile_contagion"           ) return new vile_contagion_t           ( this, options_str );
 
   // Covenant Actions
   if ( name == "swarming_mist"            ) return new swarming_mist_t            ( this, options_str );
@@ -9763,7 +9815,7 @@ void death_knight_t::init_spells()
   talent.cleaving_strikes = find_talent_spell( talent_tree::CLASS, "Cleaving Strikes" );
   // Row 3
   talent.blinding_sleet = find_talent_spell( talent_tree::CLASS, "Blinding Sleet" );
-  talent.anticipation = find_talent_spell( talent_tree::CLASS, "Anticipation" );
+  talent.coldthirst = find_talent_spell( talent_tree::CLASS, "Coldthirst" );
   talent.permafrost = find_talent_spell( talent_tree::CLASS, "Permafrost" );
   talent.death_pact = find_talent_spell( talent_tree::CLASS, "Death Pact" );
   talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Anti-Magic Barrier" );
@@ -9901,7 +9953,7 @@ void death_knight_t::init_spells()
   // Row 8
   talent.frost.might_of_the_frozen_wastes = find_talent_spell( talent_tree::SPECIALIZATION, "Might of the Frozen Wastes" );
   talent.frost.bonegrinder = find_talent_spell( talent_tree::SPECIALIZATION, "Bonegrinder" );
-  talent.frost.shattering_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Strike" );
+  talent.frost.shattering_blade = find_talent_spell( talent_tree::SPECIALIZATION, "Shattering Blade" );
   talent.frost.avalanche = find_talent_spell( talent_tree::SPECIALIZATION, "Avalanche" );
   talent.frost.icebreaker = find_talent_spell( talent_tree::SPECIALIZATION, "Icebreaker" );
   talent.frost.everfrost = find_talent_spell( talent_tree::SPECIALIZATION, "Everfrost" );
@@ -9917,7 +9969,7 @@ void death_knight_t::init_spells()
 
   //////// Unholy
   // Row 1
-  talent.unholy.festering_strike = find_talent_spell( talent_tree::SPECIALIZATION, 85948 );
+  talent.unholy.festering_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Festering Strike");
   // Row 2
   talent.unholy.scourge_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Scourge Strike" );
   talent.unholy.raise_dead = find_talent_spell( talent_tree::SPECIALIZATION, "Raise Dead" );
@@ -9926,7 +9978,7 @@ void death_knight_t::init_spells()
   talent.unholy.dark_transformation = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Transformation" );
   // Row 4
   talent.unholy.unholy_blight = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Blight" );
-  talent.unholy.festering_strike_r2 = find_talent_spell( talent_tree::SPECIALIZATION, 316867 ); // Cmon blizz, lets get creative with names!
+  talent.unholy.improved_festering_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Improved Festering Strike" ); // Cmon blizz, lets get creative with names!
   talent.unholy.runic_mastery = find_talent_spell( talent_tree::SPECIALIZATION, "Runic Mastery" );
   talent.unholy.infected_claws = find_talent_spell( talent_tree::SPECIALIZATION, "Infected Claws" );
   // Row 5
@@ -9950,7 +10002,7 @@ void death_knight_t::init_spells()
   talent.unholy.unholy_pact = find_talent_spell( talent_tree::SPECIALIZATION, "Unholy Pact" );
   talent.unholy.defile = find_talent_spell( talent_tree::SPECIALIZATION, "Defile" );
   // Row 7
-  talent.unholy.plaguebearer = find_talent_spell( talent_tree::SPECIALIZATION, "Plaguebearer" );
+  talent.unholy.vile_contagion = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Contagion" );
   talent.unholy.pestilence = find_talent_spell( talent_tree::SPECIALIZATION, "Pestilence" );
   talent.unholy.eternal_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Eternal Agony" );
   talent.unholy.coil_of_devastation = find_talent_spell( talent_tree::SPECIALIZATION, "Coil of Devastation" );
@@ -9989,6 +10041,7 @@ void death_knight_t::init_spells()
   spell.runic_empowerment_gain   = find_spell( 193486 );
   spell.rune_mastery_buff        = find_spell( 374585 );
   spell.empower_rune_weapon_main = find_spell( 47568 );
+  spell.coldthirst_gain          = find_spell( 378849 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
@@ -10378,8 +10431,8 @@ void death_knight_t::create_buffs()
         -> add_invalidate ( CACHE_MASTERY )
         -> set_default_value( talent.frost.frostwhelps_aid -> effectN( 3 ).percent() * 2 );
 
-  buffs.shattering_strike = make_buff( this, "shattering_strike", talent.frost.shattering_strike )
-        -> set_default_value( talent.frost.shattering_strike -> effectN( 1 ).percent() )
+  buffs.shattering_blade = make_buff( this, "shattering_blade", talent.frost.shattering_blade )
+        -> set_default_value( talent.frost.shattering_blade -> effectN( 1 ).percent() )
         -> set_duration( 0_ms );
 
   // Unholy
@@ -10441,6 +10494,7 @@ void death_knight_t::create_buffs()
 
   buffs.unleashed_frenzy = make_buff( this, "unleashed_frenzy", talent.frost.unleashed_frenzy->effectN( 1 ).trigger() )
       -> add_invalidate( CACHE_STRENGTH )
+      -> set_cooldown( talent.frost.unleashed_frenzy -> internal_cooldown() )
       -> set_default_value( talent.frost.unleashed_frenzy -> effectN( 1 ).percent() );
 
   // TODO remove with conduits
@@ -10518,6 +10572,7 @@ void death_knight_t::init_gains()
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
+  gains.coldthirst                       = get_gain( "Coldthirst" );
 
   // Blood
   gains.blood_tap                        = get_gain( "Blood Tap" );
@@ -10589,7 +10644,7 @@ void death_knight_t::init_procs()
   procs.fw_pestilence       = get_proc( "Festering Wound from Pestilence" );
   procs.fw_unholy_assault   = get_proc( "Festering Wound from Unholy Assault" );
   procs.fw_necroblast       = get_proc( "Festering Wound from Necroblast" );
-  procs.fw_plaguebearer     = get_proc( "Festering Wound from Plaguebearer" );
+  procs.fw_vile_contagion   = get_proc( "Festering Wound from Vile Contagion" );
 
   procs.reanimated_shambler = get_proc( "Reanimated Shambler" );
 }
@@ -11376,6 +11431,7 @@ struct death_knight_module_t : public module_t {
     unique_gear::register_special_effect( 334836, runeforge::reanimated_shambler );
   }
 
+  /*
   void register_hotfixes() const override
   {
       hotfix::register_effect( "Death Knight", "2022-09-15", "Icecap's CDR per Crit reduced to 2s per Crit in notes, not represented in game", 306334 )
@@ -11384,6 +11440,7 @@ struct death_knight_module_t : public module_t {
       .modifier( 20 )
       .verification_value( 40 );
   }
+  */
 
   void init( player_t* ) const override {}
   bool valid() const override { return true; }
