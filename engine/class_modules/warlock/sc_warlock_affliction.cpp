@@ -77,93 +77,6 @@ public:
   }
 };
 
-struct shadow_bolt_t : public affliction_spell_t
-{
-  shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
-  {
-    parse_options( options_str );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.nightfall->check() )
-    {
-      return 0_ms;
-    }
-
-    return affliction_spell_t::execute_time();
-  }
-
-  bool ready() override
-  {
-    if ( p()->talents.drain_soul->ok() )
-      return false;
-
-    return affliction_spell_t::ready();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    affliction_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.shadow_embrace->ok() )
-        td( s->target )->debuffs_shadow_embrace->trigger();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      {        
-        auto tdata = this->td( s->target );
-        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-        bool tierDotsActive = tdata->dots_agony->is_ticking()
-                           && tdata->dots_corruption->is_ticking()
-                           && tdata->dots_unstable_affliction->is_ticking();
-
-        if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
-        {
-          p()->procs.calamitous_crescendo->occur();
-          p()->buffs.calamitous_crescendo->trigger();
-        }
-      }
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = affliction_spell_t::action_multiplier();
-
-    if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-      m *= 1.0 + p()->buffs.nightfall->default_value;
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = affliction_spell_t::composite_target_multiplier( t );
-
-    //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
-    //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
-
-    return m;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    affliction_spell_t::schedule_execute( s );
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-    if ( time_to_execute == 0_ms )
-      p()->buffs.nightfall->decrement();
-
-  }
-};
-
 // Dots
 struct agony_t : public affliction_spell_t
 {
@@ -564,8 +477,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 {
   using namespace actions_affliction;
 
-  if ( action_name == "shadow_bolt" )
-    return new shadow_bolt_t( this, options_str );
   if ( action_name == "agony" )
     return new agony_t( this, options_str );
   if ( action_name == "unstable_affliction" )
