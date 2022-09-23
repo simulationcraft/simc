@@ -110,7 +110,10 @@ actions.cds+=/call_action_list,name=vanish,if=!stealthed.all&master_assassin_rem
 actions.cds+=/use_item,name=windscar_whetstone,if=spell_targets.fan_of_knives>desired_targets|raid_event.adds.in>60|fight_remains<7
 actions.cds+=/use_item,name=cache_of_acquired_treasures,if=buff.acquired_axe.up&(spell_targets.fan_of_knives=1&raid_event.adds.in>60|spell_targets.fan_of_knives>1)|fight_remains<25
 actions.cds+=/use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking
-actions.cds+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&(spell_targets.fan_of_knives>(1-!raid_event.adds.up))&raid_event.adds.in<30&raid_event.adds.count>2
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&spell_targets.fan_of_knives>1&(!raid_event.adds.up|raid_event.adds.remains>35)&raid_event.adds.count<spell_targets.fan_of_knives*2
+actions.cds+=/use_item,name=chains_of_domination,if=target.time_to_die>5&(raid_event.adds.in<2|raid_event.adds.count<spell_targets.fan_of_knives*2)|fight_remains<5
 
 # Direct damage abilities
 # Envenom at 4+ (5+ with DS) CP. Immediately on 2+ targets, with Vendetta, or with TB; otherwise wait for some energy. Also wait if Exsg combo is coming up.

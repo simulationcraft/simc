@@ -117,7 +117,10 @@ actions.cds+=/use_item,name=wraps_of_electrostatic_potential
 actions.cds+=/use_item,name=ring_of_collapsing_futures,if=buff.temptation.down|fight_remains<30
 actions.cds+=/use_item,name=cache_of_acquired_treasures,if=(covenant.venthyr&buff.acquired_axe.up|!covenant.venthyr&buff.acquired_wand.up)&(spell_targets.shuriken_storm=1&raid_event.adds.in>60|fight_remains<25|variable.use_priority_rotation)|buff.acquired_axe.up&spell_targets.shuriken_storm>1
 actions.cds+=/use_item,name=bloodstained_handkerchief,target_if=max:target.time_to_die*(!dot.cruel_garrote.ticking),if=!dot.cruel_garrote.ticking
-actions.cds+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<30
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=!buff.scars_of_fraternal_strife_4.up|fight_remains<35
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&(spell_targets.fan_of_knives>(1-!raid_event.adds.up))&raid_event.adds.in<30&raid_event.adds.count>2
+actions.cds+=/use_item,name=scars_of_fraternal_strife,if=buff.scars_of_fraternal_strife_4.up&spell_targets.fan_of_knives>1&(!raid_event.adds.up|raid_event.adds.remains>35)&raid_event.adds.count<spell_targets.fan_of_knives*2
+actions.cds+=/use_item,name=chains_of_domination,if=target.time_to_die>5&(raid_event.adds.in<2|raid_event.adds.count<spell_targets.fan_of_knives*2)|fight_remains<5
 # Default fallback for usable items: Use with Symbols of Death.
 actions.cds+=/use_items,if=buff.symbols_of_death.up|fight_remains<20
 
