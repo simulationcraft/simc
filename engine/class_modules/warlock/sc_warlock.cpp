@@ -342,8 +342,8 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     add_child( explosion );
 
-    //if ( p->talents.sow_the_seeds->ok() )
-    //  aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+    if ( p->talents.sow_the_seeds->ok() )
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -352,21 +352,28 @@ struct seed_of_corruption_t : public warlock_spell_t
     snapshot_flags |= STATE_SP;
   }
 
-  void execute() override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    if ( td( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) )
+    warlock_spell_t::available_targets( tl );
+
+    // Targeting behavior appears to be as follows:
+    // 1. If any targets have no current seed (in flight or ticking), they are valid
+    // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
+    // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
+    bool valid_target = false;
+    for ( auto t : tl )
     {
-      for ( auto& possible : target_list() )
+      if ( !( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) ) )
       {
-        if ( !( td( possible )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( possible ) ) )
-        {
-          set_target( possible );
-          break;
-        }
+        valid_target = true;
+        break;
       }
     }
 
-    warlock_spell_t::execute();
+    if ( valid_target )
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return ( p()->get_target_data( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) ); } ), tl.end() );
+
+    return tl.size();
   }
 
   void impact( action_state_t* s ) override
