@@ -577,6 +577,7 @@ public:
     cooldown_t* abomination_limb;
     cooldown_t* death_and_decay_dynamic; // Shared cooldown object for death and decay, defile and death's due
     cooldown_t* shackle_the_unworthy_icd; // internal cooldown between shackle the unworthy's spreading effect
+    cooldown_t* mind_freeze;
 
     // Blood
     cooldown_t* bone_shield_icd; // internal cooldown between bone shield stack consumption
@@ -633,6 +634,7 @@ public:
     gain_t* rune; // Rune regeneration
     gain_t* rune_of_hysteria;
     gain_t* spirit_drain;
+    gain_t* coldthirst;
     gain_t* start_of_combat_overflow;
 
     // Covenant
@@ -939,6 +941,7 @@ public:
     const spell_data_t* razorice_debuff;
     const spell_data_t* rune_mastery_buff;
     const spell_data_t* empower_rune_weapon_main; // Empower Rune Weapon has a unique ID for the spell itself, with each talent just modifying number of charges. 
+    const spell_data_t* coldthirst_gain; // Coldthirst has a unique ID for the gain and cooldown reduction
 
     // Diseases (because they're not stored in spec data, unlike frost fever's rp gen...)
     const spell_data_t* blood_plague;
@@ -1209,6 +1212,7 @@ public:
     cooldown.vampiric_blood           = get_cooldown( "vampiric_blood" );
     cooldown.endless_rune_waltz_icd   = get_cooldown( "endless_rune_waltz_icd" );
     cooldown.enduring_strength_icd    = get_cooldown( "enduring_strength" );
+    cooldown.mind_freeze              = get_cooldown( "mind_freeze" );
 
     resource_regeneration = regen_type::DYNAMIC;
   }
@@ -5482,7 +5486,7 @@ struct death_coil_t : public death_knight_spell_t
   }
 
   /* 
-  Currently Death Rot and Rotten Touch only trigger on the main target, not all targets hit. 
+  Currently Death Rot and Death Rot only trigger on the main target, not all targets hit. 
 
   void impact( action_state_t* state ) override
   {
@@ -6813,6 +6817,16 @@ struct mind_freeze_t : public death_knight_spell_t
       p() -> resource_gain( RESOURCE_RUNIC_POWER,
         p() -> conduits.spirit_drain.value() / 10,
         p() -> gains.spirit_drain, this );
+    }
+
+    if ( p()->talent.coldthirst.ok() )
+    {
+      p() -> resource_gain( RESOURCE_RUNIC_POWER, 
+          p() -> spell.coldthirst_gain -> effectN( 1 ).base_value() / 10,
+          p() -> gains.coldthirst, this );
+
+      p() -> cooldown.mind_freeze -> adjust( p() -> spell.coldthirst_gain -> effectN( 2 ).time_value() );
+
     }
   }
 
@@ -10027,6 +10041,7 @@ void death_knight_t::init_spells()
   spell.runic_empowerment_gain   = find_spell( 193486 );
   spell.rune_mastery_buff        = find_spell( 374585 );
   spell.empower_rune_weapon_main = find_spell( 47568 );
+  spell.coldthirst_gain          = find_spell( 378849 );
 
   // Diseases
   spell.blood_plague    = find_spell( 55078 );
@@ -10557,6 +10572,7 @@ void death_knight_t::init_gains()
   gains.rune_of_hysteria                 = get_gain( "Rune of Hysteria" );
   gains.spirit_drain                     = get_gain( "Spirit Drain" );
   gains.start_of_combat_overflow         = get_gain( "Start of Combat Overflow" );
+  gains.coldthirst                       = get_gain( "Coldthirst" );
 
   // Blood
   gains.blood_tap                        = get_gain( "Blood Tap" );
