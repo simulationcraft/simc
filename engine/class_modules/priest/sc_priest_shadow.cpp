@@ -112,9 +112,6 @@ struct mind_flay_base_t final : public priest_spell_t
 {
   double coalescing_shadows_chance = 0.0;
 
-  propagate_const<cooldown_t*> fiend_cooldown;
-  timespan_t fiend_cdr;
-
   mind_flay_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     affected_by_shadow_weaving = true;
@@ -126,15 +123,6 @@ struct mind_flay_base_t final : public priest_spell_t
     {
       coalescing_shadows_chance = priest().talents.shadow.coalescing_shadows->effectN( 2 ).percent() +
                                   priest().talents.shadow.harnessed_shadows->effectN( 3 ).percent();
-    }
-
-    if ( priest().talents.shadow.fiending_dark.enabled() )
-    {
-      fiend_cooldown =
-          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
-      fiend_cdr = priest()
-                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
-                      .time_value();
     }
   }
 
@@ -181,9 +169,9 @@ struct mind_flay_base_t final : public priest_spell_t
       priest().procs.coalescing_shadows_mind_flay->occur();
     }
 
-    if ( priest().talents.shadow.fiending_dark.enabled() && d->state->result == RESULT_CRIT )
+    if ( priest().talents.shadow.psychic_link.enabled() )
     {
-      fiend_cooldown->adjust( fiend_cdr );
+      priest().trigger_psychic_link( d->state );
     }
   }
 
@@ -217,6 +205,7 @@ struct mind_flay_t final : public priest_spell_t
     if ( priest().buffs.mind_flay_insanity->check() )
     {
       _insanity_spell->execute();
+      priest().buffs.mind_flay_insanity->expire();
     }
     else
     {
@@ -596,26 +585,13 @@ struct shadow_word_pain_t final : public priest_spell_t
     }
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double crit = priest_spell_t::composite_target_crit_chance( target );
-
-    // TODO: convert to new monomania
-    if ( priest().is_monomania_up( target ) )
-    {
-      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
-    }
-
-    return crit;
-  }
-
   timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_monomania_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
 
     return t;
@@ -851,26 +827,13 @@ struct vampiric_touch_t final : public priest_spell_t
     return priest_spell_t::execute_time();
   }
 
-  double composite_target_crit_chance( player_t* target ) const override
-  {
-    double crit = priest_spell_t::composite_target_crit_chance( target );
-
-    // TODO: convert to new monomania
-    if ( priest().is_monomania_up( target ) )
-    {
-      crit += priest().talents.shadow.monomania->effectN( 2 ).percent();
-    }
-
-    return crit;
-  }
-
   timespan_t tick_time( const action_state_t* state ) const override
   {
     timespan_t t = priest_spell_t::tick_time( state );
 
-    if ( priest().is_monomania_up( state->target ) )
+    if ( priest().is_screams_of_the_void_up( state->target ) )
     {
-      t /= ( 1 + priest().talents.shadow.monomania->effectN( 1 ).percent() );
+      t /= ( 1 + priest().talents.shadow.screams_of_the_void->effectN( 1 ).percent() );
     }
 
     return t;
@@ -1423,8 +1386,6 @@ struct dark_void_t final : public priest_spell_t
 struct mind_spike_t final : public priest_spell_t
 {
   timespan_t manipulation_cdr;
-  propagate_const<cooldown_t*> fiend_cooldown;
-  timespan_t fiend_cdr;
 
   mind_spike_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
@@ -1432,15 +1393,7 @@ struct mind_spike_t final : public priest_spell_t
 
   {
     parse_options( options_str );
-
-    if ( priest().talents.shadow.fiending_dark.enabled() )
-    {
-      fiend_cooldown =
-          priest().get_cooldown( priest().talents.shadow.mindbender.enabled() ? "mindbender" : "shadowfiend" );
-      fiend_cdr = priest()
-                      .talents.shadow.fiending_dark->effectN( priest().talents.shadow.mindbender.enabled() ? 2 : 1 )
-                      .time_value();
-    }
+    affected_by_shadow_weaving = true;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -1475,11 +1428,6 @@ struct mind_spike_t final : public priest_spell_t
       if ( priest().talents.shadow.surge_of_darkness.enabled() )
       {
         priest().buffs.surge_of_darkness->decrement();
-      }
-
-      if ( priest().talents.shadow.fiending_dark.enabled() && s->result == RESULT_CRIT )
-      {
-        fiend_cooldown->adjust( fiend_cdr );
       }
 
       priest().buffs.coalescing_shadows->expire();
@@ -2221,30 +2169,28 @@ void priest_t::init_spells_shadow()
   talents.shadow.mindbender      = ST( "Mindbender" );
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj
-  talents.shadow.devoured_pride     = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair   = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger     = find_spell( 373318 );  // Haste - Enrage - NYI
-  talents.shadow.devoured_fear      = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
-  talents.shadow.devoured_violence  = find_spell( 373320 );  // Pet Extension - Default
-  talents.shadow.deathspeaker       = ST( "Deathspeaker" );
-  talents.shadow.mind_flay_insanity = ST( "Mind Flay: Insanity" );
-  talents.shadow.derangement        = ST( "Derangement" );  // NYI
-  talents.shadow.damnation          = ST( "Damnation" );
-  talents.shadow.void_torrent       = ST( "Void Torrent" );
+  talents.shadow.devoured_pride      = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair    = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger      = find_spell( 373318 );  // Haste - Enrage - NYI
+  talents.shadow.devoured_fear       = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence   = find_spell( 373320 );  // Pet Extension - Default
+  talents.shadow.deathspeaker        = ST( "Deathspeaker" );
+  talents.shadow.mind_flay_insanity  = ST( "Mind Flay: Insanity" );
+  talents.shadow.encroaching_shadows = ST( "Encroaching Shadows" );
+  talents.shadow.damnation           = ST( "Damnation" );
+  talents.shadow.void_torrent        = ST( "Void Torrent" );
   // Row 9
-  talents.shadow.fiending_dark = ST( "Fiending Dark" );  // NYI
-  talents.shadow.monomania     = ST( "Monomania" );
-  talents.shadow.pain_of_death = ST( "Pain of Death" );
+  talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
+  talents.shadow.pain_of_death       = ST( "Pain of Death" );
 
   talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.mastermind    = ST( "Mastermind" );     // NYI
   talents.shadow.malediction   = ST( "Malediction" );
   // Row 10
-  talents.shadow.shadowflame_prism = ST( "Shadowflame Prism" );
-  talents.shadow.idol_of_cthun     = ST( "Idol of C'Thun" );
-  talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
-  talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );
-  talents.shadow.mind_devourer     = ST( "Mind Devourer" );  // TODO: check values
+  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
+  talents.shadow.idol_of_cthun       = ST( "Idol of C'Thun" );
+  talents.shadow.idol_of_nzoth       = ST( "Idol of N'Zoth" );
+  talents.shadow.idol_of_yoggsaron   = ST( "Idol of Yogg-Saron" );
+  talents.shadow.mind_devourer       = ST( "Mind Devourer" );  // TODO: check values
 
   // General Spells
   specs.mind_flay      = find_specialization_spell( "Mind Flay" );
@@ -2468,12 +2414,14 @@ void priest_t::trigger_shadow_weaving( action_state_t* s )
   background_actions.shadow_weaving->trigger( s->target, s->result_amount );
 }
 
-bool priest_t::is_monomania_up( player_t* target ) const
+bool priest_t::is_screams_of_the_void_up( player_t* target ) const
 {
-  if ( talents.shadow.monomania.enabled() )
+  if ( talents.shadow.screams_of_the_void.enabled() )
   {
     priest_td_t* td = get_target_data( target );
-    if ( td->dots.mind_flay->is_ticking() || td->dots.mind_sear->is_ticking() )
+    if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
+         talents.shadow.mind_sear.enabled() && channeling != nullptr &&
+                                                 channeling->id == talents.shadow.mind_sear->id() )
     {
       return true;
     }

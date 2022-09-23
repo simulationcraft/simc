@@ -56,6 +56,7 @@ public:
     propagate_const<dot_t*> unholy_transfusion;
     propagate_const<dot_t*> mind_flay;
     propagate_const<dot_t*> mind_sear;
+    propagate_const<dot_t*> void_torrent;
   } dots;
 
   struct buffs_t
@@ -295,18 +296,16 @@ public:
       const spell_data_t* devoured_violence;
       player_talent_t deathspeaker;
       player_talent_t mind_flay_insanity;
-      player_talent_t derangement;
+      player_talent_t encroaching_shadows;
       player_talent_t damnation;
       player_talent_t void_torrent;
       // Row 9
-      player_talent_t fiending_dark;
-      player_talent_t monomania;
+      player_talent_t screams_of_the_void;
       player_talent_t pain_of_death;
       player_talent_t insidious_ire;
-      player_talent_t mastermind;
       player_talent_t malediction;
       // Row 10
-      player_talent_t shadowflame_prism;
+      player_talent_t inescapable_torment;
       player_talent_t idol_of_cthun;
       player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
@@ -721,7 +720,7 @@ public:
   void trigger_shadow_weaving( action_state_t* );
   void trigger_void_shield( double result_amount );
   void refresh_insidious_ire_buff( action_state_t* s );
-  bool is_monomania_up( player_t* target ) const;
+  bool is_screams_of_the_void_up( player_t* target ) const;
   void trigger_wrathful_faerie();
   void trigger_wrathful_faerie_fermata();
   void remove_wrathful_faerie();
@@ -1279,11 +1278,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
 {
   bool affected_by_shadow_weaving;
   bool ignores_automatic_mastery;
+  timespan_t vf_extension = 0_s;
 
   priest_spell_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
     : base_t( name, player, s ), affected_by_shadow_weaving( false ), ignores_automatic_mastery( false )
   {
     weapon_multiplier = 0.0;
+    if ( priest().talents.shadow.void_eruption.enabled() && resource_current == RESOURCE_INSANITY )
+    {
+      vf_extension = base_cost() / priest().talents.shadow.void_eruption->effectN( 4 ).base_value() *
+                     timespan_t::from_millis( priest().talents.shadow.void_eruption->effectN( 3 ).base_value() );
+    }
   }
 
   bool usable_moving() const override
@@ -1302,6 +1307,17 @@ struct priest_spell_t : public priest_action_t<spell_t>
     }
 
     return action_t::ready();
+  }
+
+  void consume_resource() override
+  {
+    if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
+         priest().buffs.voidform->up() && vf_extension > 0_s )
+    {
+      priest().buffs.voidform->extend_duration(&priest(), vf_extension );
+    }
+
+    base_t::consume_resource();
   }
 
   void last_tick( dot_t* d ) override

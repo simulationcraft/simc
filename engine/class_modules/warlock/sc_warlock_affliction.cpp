@@ -77,93 +77,6 @@ public:
   }
 };
 
-struct shadow_bolt_t : public affliction_spell_t
-{
-  shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "Shadow Bolt", p, p->find_spell( 686 ) )
-  {
-    parse_options( options_str );
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.nightfall->check() )
-    {
-      return 0_ms;
-    }
-
-    return affliction_spell_t::execute_time();
-  }
-
-  bool ready() override
-  {
-    if ( p()->talents.drain_soul->ok() )
-      return false;
-
-    return affliction_spell_t::ready();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    affliction_spell_t::impact( s );
-
-    if ( result_is_hit( s->result ) )
-    {
-      if ( p()->talents.shadow_embrace->ok() )
-        td( s->target )->debuffs_shadow_embrace->trigger();
-
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      {        
-        auto tdata = this->td( s->target );
-        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-        bool tierDotsActive = tdata->dots_agony->is_ticking()
-                           && tdata->dots_corruption->is_ticking()
-                           && tdata->dots_unstable_affliction->is_ticking();
-
-        if ( tierDotsActive && rng().roll( p()->sets->set(WARLOCK_AFFLICTION, T28, B4 )->effectN( 1 ).percent() ) )
-        {
-          p()->procs.calamitous_crescendo->occur();
-          p()->buffs.calamitous_crescendo->trigger();
-        }
-      }
-    }
-  }
-
-  double action_multiplier() const override
-  {
-    double m = affliction_spell_t::action_multiplier();
-
-    if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-      m *= 1.0 + p()->buffs.nightfall->default_value;
-
-    return m;
-  }
-
-  double composite_target_multiplier( player_t* t ) const override
-  {
-    double m = affliction_spell_t::composite_target_multiplier( t );
-
-    //Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
-    //TODO: Check what happens if a DoT falls off mid-cast and mid-flight
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
-
-    return m;
-  }
-
-  void schedule_execute( action_state_t* s ) override
-  {
-    affliction_spell_t::schedule_execute( s );
-  }
-
-  void execute() override
-  {
-    affliction_spell_t::execute();
-    if ( time_to_execute == 0_ms )
-      p()->buffs.nightfall->decrement();
-
-  }
-};
-
 // Dots
 struct agony_t : public affliction_spell_t
 {
@@ -190,24 +103,22 @@ struct agony_t : public affliction_spell_t
 
   void init() override
   {
-    //dot_max_stack +=
-    //    as<int>( p()->talents.writhe_in_agony->ok() ? p()->talents.writhe_in_agony->effectN( 1 ).base_value() : 0 );
+    dot_max_stack += as<int>( p()->talents.writhe_in_agony->effectN( 1 ).base_value() );
 
     affliction_spell_t::init();
   }
 
-  //TODO - Agony gains a stack when executed on a target that already has Agony
   void execute() override
   {
     affliction_spell_t::execute();
 
-    //if ( p()->talents.writhe_in_agony->ok() && td( execute_state->target )->dots_agony->current_stack() <
-    //  (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() )
-    //{
-    //  td ( execute_state->target )
-    //    ->dots_agony->increment( (int)p()->talents.writhe_in_agony->effectN( 3 ).base_value() -
-    //      td( execute_state->target )->dots_agony->current_stack() );
-    //}
+    if ( p()->talents.writhe_in_agony->ok() )
+    {
+      int delta = (int)( p()->talents.writhe_in_agony->effectN( 3 ).base_value() ) - td( execute_state->target )->dots_agony->current_stack();
+
+      if ( delta > 0 )
+        td( execute_state->target )->dots_agony->increment( delta );
+    }
   }
 
   void tick( dot_t* d ) override
@@ -424,7 +335,8 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
-// lvl 15 - nightfall|drain soul|haunt
+// REMEMBER TO CHECK SHADOW EMBRACE TO THIS WHEN RETALENTIZING
+// REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
   drain_soul_t( warlock_t* p, util::string_view options_str )
@@ -564,8 +476,6 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
 {
   using namespace actions_affliction;
 
-  if ( action_name == "shadow_bolt" )
-    return new shadow_bolt_t( this, options_str );
   if ( action_name == "agony" )
     return new agony_t( this, options_str );
   if ( action_name == "unstable_affliction" )
@@ -594,9 +504,9 @@ void warlock_t::create_buffs_affliction()
   // spells
   buffs.drain_life = make_buff( this, "drain_life" );
   // talents
-  buffs.nightfall = make_buff( this, "nightfall", find_spell( 264571 ) )
-                        ->set_default_value( find_spell( 264571 )->effectN( 2 ).percent() )
+  buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
+
   buffs.inevitable_demise = make_buff( this, "inevitable_demise", find_spell( 334320 ) )
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() )
                                 ->set_trigger_spell( talents.inevitable_demise );
@@ -617,20 +527,35 @@ void warlock_t::init_spells_affliction()
   // Talents
   talents.malefic_rapture = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Rapture" );
   talents.malefic_rapture_dmg = find_spell( 324540 ); // This spell is the ID seen in logs, but the spcoeff is in the primary talent spell
+
   talents.unstable_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Unstable Affliction" );
   talents.unstable_affliction_2 = find_spell( 231791 ); // Soul Shard on demise
   talents.unstable_affliction_3 = find_spell( 334315 ); // +5 seconds duration
-  talents.nightfall           = find_talent_spell( "Nightfall" );
+  
+  talents.nightfall = find_talent_spell( talent_tree::SPECIALIZATION, "Nightfall" ); // Should be ID 108558
+  talents.nightfall_buff = find_spell( 264571 );
+  
+  talents.xavian_teachings = find_talent_spell( talent_tree::SPECIALIZATION, "Xavian Teachings" ); // Should be ID 317031
+
+  talents.sow_the_seeds = find_talent_spell( talent_tree::SPECIALIZATION, "Sow the Seeds" ); // Should be ID 196226
+
+  talents.shadow_embrace = find_talent_spell( talent_tree::SPECIALIZATION, "Shadow Embrace" ); // Should be ID 32388
+  talents.shadow_embrace_debuff = find_spell( 32390 );
+
+  talents.harvester_of_souls = find_talent_spell( talent_tree::SPECIALIZATION, "Harvester of Souls" ); // Should be ID 201424
+  talents.harvester_of_souls_dmg = find_spell( 218615 ); // Damage and projectile data
+
+  talents.writhe_in_agony = find_talent_spell( talent_tree::SPECIALIZATION, "Writhe in Agony" ); // Should be ID 196102
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
   talents.drain_soul          = find_talent_spell( "Drain Soul" );
   talents.haunt               = find_talent_spell( "Haunt" );
-  talents.writhe_in_agony     = find_talent_spell( "Writhe in Agony" );
+
   talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );
   talents.siphon_life         = find_talent_spell( "Siphon Life" );
-  talents.sow_the_seeds       = find_talent_spell( "Sow the Seeds" );
+
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
-  talents.shadow_embrace      = find_talent_spell( "Shadow Embrace" ); //9.1 PTR - Replaces Dark Caller
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
   // Conduits
@@ -652,6 +577,7 @@ void warlock_t::init_procs_affliction()
 {
   procs.nightfall            = get_proc( "nightfall" );
   procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
+  procs.harvester_of_souls = get_proc( "harvester_of_souls" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {

@@ -168,12 +168,28 @@ struct drain_life_t : public warlock_spell_t
     //  }
     //}
   }
-};  
+};
+
+// This is the damage spell which can be triggered on Corruption ticks for Harvester of Souls
+// NOTE: As of 2022-09-23 on DF beta, spec aura is not currently affecting this spell
+struct harvester_of_souls_t : public warlock_spell_t
+{
+  harvester_of_souls_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "Harvester of Souls", p, p->talents.harvester_of_souls_dmg )
+  {
+    parse_options( options_str );
+
+    background = dual = true;
+  }
+};
 
 struct corruption_t : public warlock_spell_t
 {
+  harvester_of_souls_t* harvester_proc;
+
   corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption )
+    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption ),
+    harvester_proc( new harvester_of_souls_t( p, "" ) )
   {
     parse_options( options_str );
     tick_zero                  = false;
@@ -186,13 +202,16 @@ struct corruption_t : public warlock_spell_t
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
-    //if ( !p->spec.corruption_3->ok() || seed_action )
-    //{
-    //  spell_power_mod.direct = 0; //Rank 3 is required for direct damage
-    //}
+    if ( p->talents.xavian_teachings.ok() && !seed_action )
+    {
+      spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
+      base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
+    }
 
     // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
     base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
+
+    add_child( harvester_proc );
 
     //if ( p->talents.absolute_corruption->ok() )
     //{
@@ -201,42 +220,44 @@ struct corruption_t : public warlock_spell_t
     //                     : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
     //  base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
     //}
-
-    //if ( p->spec.corruption_2->ok() )
-    //{
-    //  base_execute_time *= 1.0 * p->spec.corruption_2->effectN( 1 ).percent();
-    //}
-
   }
 
   void tick( dot_t* d ) override
   {
-    //if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
-    //{
-    //  // TOCHECK regularly.
-    //  // Blizzard did not publicly release how nightfall was changed.
-    //  // We determined this is the probable functionality copied from Agony by first confirming the
-    //  // DR formula was the same and then confirming that you can get procs on 1st tick.
-    //  // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-    //  // Last checked 09-28-2020.
-    //  double increment_max = 0.13;
-
-    //  double active_corruptions = p()->get_active_dots( internal_id );
-    //  increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-    //  p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-    //  if ( p()->corruption_accumulator >= 1 )
-    //  {
-    //    p()->procs.nightfall->occur();
-    //    p()->buffs.nightfall->trigger();
-    //    p()->corruption_accumulator -= 1.0;
-
-    //  }
-    //}
-    //affliction_spell_t::tick( d );
-
     warlock_spell_t::tick( d );
+
+    if ( result_is_hit( d->state->result ) )
+    {
+      if  ( p()->talents.nightfall->ok() )
+      {
+        // TOCHECK regularly.
+        // Blizzard did not publicly release how nightfall was changed.
+        // We determined this is the probable functionality copied from Agony by first confirming the
+        // DR formula was the same and then confirming that you can get procs on 1st tick.
+        // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+        // Last checked 09-28-2020.
+        double increment_max = 0.13;
+
+        double active_corruptions = p()->get_active_dots( internal_id );
+        increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+        p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->corruption_accumulator >= 1 )
+        {
+          p()->procs.nightfall->occur();
+          p()->buffs.nightfall->trigger();
+          p()->corruption_accumulator -= 1.0;
+
+        }
+      }
+
+      if ( p()->talents.harvester_of_souls.ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
+      {
+        harvester_proc->execute_on_target( d->state->target );
+        p()->procs.harvester_of_souls->occur();
+      }
+    }
   }
 
   double composite_ta_multiplier(const action_state_t* s) const override
@@ -348,8 +369,8 @@ struct seed_of_corruption_t : public warlock_spell_t
 
     add_child( explosion );
 
-    //if ( p->talents.sow_the_seeds->ok() )
-    //  aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
+    if ( p->talents.sow_the_seeds->ok() )
+      aoe = 1 + as<int>( p->talents.sow_the_seeds->effectN( 1 ).base_value() );
   }
 
   void init() override
@@ -358,21 +379,28 @@ struct seed_of_corruption_t : public warlock_spell_t
     snapshot_flags |= STATE_SP;
   }
 
-  void execute() override
+  size_t available_targets( std::vector<player_t*>& tl ) const override
   {
-    if ( td( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) )
+    warlock_spell_t::available_targets( tl );
+
+    // Targeting behavior appears to be as follows:
+    // 1. If any targets have no current seed (in flight or ticking), they are valid
+    // 2. With Sow the Seeds, if at least one target is valid, it will only hit valid targets
+    // 3. If no targets are valid according to the above, all targets are instead valid (will refresh DoT on existing target(s) instead)
+    bool valid_target = false;
+    for ( auto t : tl )
     {
-      for ( auto& possible : target_list() )
+      if ( !( td( t )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( t ) ) )
       {
-        if ( !( td( possible )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( possible ) ) )
-        {
-          set_target( possible );
-          break;
-        }
+        valid_target = true;
+        break;
       }
     }
 
-    warlock_spell_t::execute();
+    if ( valid_target )
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* target ){ return ( p()->get_target_data( target )->dots_seed_of_corruption->is_ticking() || has_travel_events_for( target ) ); } ), tl.end() );
+
+    return tl.size();
   }
 
   void impact( action_state_t* s ) override
@@ -423,10 +451,10 @@ struct shadow_bolt_t : public warlock_spell_t
 
   timespan_t execute_time() const override
   {
-    //if (p()->buffs.nightfall->check())
-    //{
-    //  return 0_ms;
-    //}
+    if ( p()->buffs.nightfall->check() )
+    {
+      return 0_ms;
+    }
 
     return warlock_spell_t::execute_time();
   }
@@ -443,8 +471,8 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    //if ( time_to_execute == 0_ms )
-    //  p()->buffs.nightfall->decrement();
+    if ( time_to_execute == 0_ms )
+      p()->buffs.nightfall->decrement();
     //
     //if ( p()->talents.demonic_calling->ok() )
     //  p()->buffs.demonic_calling->trigger();
@@ -457,10 +485,10 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    //if ( result_is_hit( s->result ) )
-    //{
-    //  if ( p()->talents.shadow_embrace->ok() )
-    //    td( s->target )->debuffs_shadow_embrace->trigger();
+    if ( result_is_hit( s->result ) )
+    {
+      if ( p()->talents.shadow_embrace->ok() )
+        td( s->target )->debuffs_shadow_embrace->trigger();
 
     //  if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
     //  {        
@@ -476,15 +504,15 @@ struct shadow_bolt_t : public warlock_spell_t
     //      p()->buffs.calamitous_crescendo->trigger();
     //    }
     //  }
-    //}
+    }
   }
 
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
-    //if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-    //  m *= 1.0 + p()->buffs.nightfall->default_value;
+    if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
+      m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
     //if ( p()->talents.sacrificed_souls->ok() )
     //{
@@ -687,10 +715,8 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 );
-  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", source->find_spell( 32390 ) )
-                               ->set_default_value_from_effect( 1 )
-                               ->set_refresh_behavior( buff_refresh_behavior::DURATION )
-                               ->set_max_stack( 3 );
+  debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
+                               ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
@@ -955,7 +981,7 @@ double warlock_t::composite_player_target_pet_damage_multiplier( player_t* targe
 
     if ( talents.shadow_embrace->ok() )
     {
-      m *= 1.0 + td->debuffs_shadow_embrace->data().effectN( guardian ? 3 : 2 ).percent();
+      m *= 1.0 + td->debuffs_shadow_embrace->check_stack_value(); // Talent spell sets default value according to rank
     }
   }
 
@@ -1209,6 +1235,7 @@ void warlock_t::init_spells()
   // Talents
   talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" );
   talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
+
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 

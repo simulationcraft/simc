@@ -206,13 +206,16 @@ public:
     player_talent_t seed_of_corruption;
     const spell_data_t* seed_of_corruption_aoe; // Explosion damage when Seed ticks
 
-    const spell_data_t* nightfall; //TODO: RNG information is missing from spell data, and data also says buff can potentially stack to 2. Serious testing needed, especially with multiple corruptions out!
-    // DF - Xavian Teachings (Formerly Corruption Rank 2 + 3)
-    const spell_data_t* sow_the_seeds;
+    player_talent_t nightfall; //TODO: RNG information is missing from spell data. Confirmed 2022-09-22: Buff stacks to 2, can refresh at max stacks, duration refreshes when proc occurs
+    const spell_data_t* nightfall_buff;
+    player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
+    player_talent_t sow_the_seeds;
 
-    const spell_data_t* shadow_embrace; // DF - Now a 2 point talent
-    // DF - Harvester of Souls (2 point talent, instant damage proc chance on Corruption ticks)
-    const spell_data_t* writhe_in_agony; // DF - Now a 2 point talent
+    player_talent_t shadow_embrace;
+    const spell_data_t* shadow_embrace_debuff; // Default values set from talent data, but contains debuff info
+    player_talent_t harvester_of_souls;
+    const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
+    player_talent_t writhe_in_agony; // 2022-09-23 DF Beta - Writhe In Agony's second point is not registering in-game
     // DF - Agonizing Corruption (2 point talent, Seed of Corruption applies Agony stacks)
 
     const spell_data_t* drain_soul; // DF - Unchanged, still replaces Shadow Bolt
@@ -537,6 +540,7 @@ public:
     proc_t* nightfall;
     proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
+    proc_t* harvester_of_souls;
 
     // demo
     proc_t* demonic_calling;
