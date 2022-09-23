@@ -211,30 +211,29 @@ struct corruption_t : public warlock_spell_t
 
   void tick( dot_t* d ) override
   {
-    //if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
-    //{
-    //  // TOCHECK regularly.
-    //  // Blizzard did not publicly release how nightfall was changed.
-    //  // We determined this is the probable functionality copied from Agony by first confirming the
-    //  // DR formula was the same and then confirming that you can get procs on 1st tick.
-    //  // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-    //  // Last checked 09-28-2020.
-    //  double increment_max = 0.13;
+    if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
+    {
+      // TOCHECK regularly.
+      // Blizzard did not publicly release how nightfall was changed.
+      // We determined this is the probable functionality copied from Agony by first confirming the
+      // DR formula was the same and then confirming that you can get procs on 1st tick.
+      // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+      // Last checked 09-28-2020.
+      double increment_max = 0.13;
 
-    //  double active_corruptions = p()->get_active_dots( internal_id );
-    //  increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+      double active_corruptions = p()->get_active_dots( internal_id );
+      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
 
-    //  p()->corruption_accumulator += rng().range( 0.0, increment_max );
+      p()->corruption_accumulator += rng().range( 0.0, increment_max );
 
-    //  if ( p()->corruption_accumulator >= 1 )
-    //  {
-    //    p()->procs.nightfall->occur();
-    //    p()->buffs.nightfall->trigger();
-    //    p()->corruption_accumulator -= 1.0;
+      if ( p()->corruption_accumulator >= 1 )
+      {
+        p()->procs.nightfall->occur();
+        p()->buffs.nightfall->trigger();
+        p()->corruption_accumulator -= 1.0;
 
-    //  }
-    //}
-    //affliction_spell_t::tick( d );
+      }
+    }
 
     warlock_spell_t::tick( d );
   }
@@ -423,10 +422,10 @@ struct shadow_bolt_t : public warlock_spell_t
 
   timespan_t execute_time() const override
   {
-    //if (p()->buffs.nightfall->check())
-    //{
-    //  return 0_ms;
-    //}
+    if ( p()->buffs.nightfall->check() )
+    {
+      return 0_ms;
+    }
 
     return warlock_spell_t::execute_time();
   }
@@ -443,8 +442,8 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     warlock_spell_t::execute();
 
-    //if ( time_to_execute == 0_ms )
-    //  p()->buffs.nightfall->decrement();
+    if ( time_to_execute == 0_ms )
+      p()->buffs.nightfall->decrement();
     //
     //if ( p()->talents.demonic_calling->ok() )
     //  p()->buffs.demonic_calling->trigger();
@@ -483,8 +482,8 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::action_multiplier();
 
-    //if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
-    //  m *= 1.0 + p()->buffs.nightfall->default_value;
+    if ( time_to_execute == 0_ms && p()->buffs.nightfall->check() )
+      m *= 1.0 + p()->talents.nightfall_buff->effectN( 2 ).percent();
 
     //if ( p()->talents.sacrificed_souls->ok() )
     //{
