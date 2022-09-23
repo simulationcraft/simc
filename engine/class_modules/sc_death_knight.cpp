@@ -5486,7 +5486,7 @@ struct death_coil_t : public death_knight_spell_t
   }
 
   /* 
-  Currently Death Rot and Death Rot only trigger on the main target, not all targets hit. 
+  Currently Death Rot and Rotten Touch only trigger on the main target, not all targets hit. 
 
   void impact( action_state_t* state ) override
   {
