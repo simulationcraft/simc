@@ -208,7 +208,7 @@ public:
 
     player_talent_t nightfall; //TODO: RNG information is missing from spell data. Confirmed 2022-09-22: Buff stacks to 2, can refresh at max stacks, duration refreshes when proc occurs
     const spell_data_t* nightfall_buff;
-    // DF - Xavian Teachings (Formerly Corruption Rank 2 + 3)
+    player_talent_t xavian_teachings; // Instant cast data in this spell, talent points to base Corruption spell (172) for the direct damage
     const spell_data_t* sow_the_seeds;
 
     const spell_data_t* shadow_embrace; // DF - Now a 2 point talent
