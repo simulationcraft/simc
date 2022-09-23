@@ -168,12 +168,28 @@ struct drain_life_t : public warlock_spell_t
     //  }
     //}
   }
-};  
+};
+
+// This is the damage spell which can be triggered on Corruption ticks for Harvester of Souls
+// NOTE: As of 2022-09-23 on DF beta, spec aura is not currently affecting this spell
+struct harvester_of_souls_t : public warlock_spell_t
+{
+  harvester_of_souls_t( warlock_t* p, util::string_view options_str )
+    : warlock_spell_t( "Harvester of Souls", p, p->talents.harvester_of_souls_dmg )
+  {
+    parse_options( options_str );
+
+    background = dual = true;
+  }
+};
 
 struct corruption_t : public warlock_spell_t
 {
+  harvester_of_souls_t* harvester_proc;
+
   corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
-    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption )
+    : warlock_spell_t( "Corruption", p, p->warlock_base.corruption ),
+    harvester_proc( new harvester_of_souls_t( p, "" ) )
   {
     parse_options( options_str );
     tick_zero                  = false;
@@ -195,6 +211,8 @@ struct corruption_t : public warlock_spell_t
     // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
     base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
 
+    add_child( harvester_proc );
+
     //if ( p->talents.absolute_corruption->ok() )
     //{
     //  dot_duration = sim->expected_iteration_time > 0_ms
@@ -206,31 +224,40 @@ struct corruption_t : public warlock_spell_t
 
   void tick( dot_t* d ) override
   {
-    if ( result_is_hit( d->state->result ) && p()->talents.nightfall->ok() )
+    warlock_spell_t::tick( d );
+
+    if ( result_is_hit( d->state->result ) )
     {
-      // TOCHECK regularly.
-      // Blizzard did not publicly release how nightfall was changed.
-      // We determined this is the probable functionality copied from Agony by first confirming the
-      // DR formula was the same and then confirming that you can get procs on 1st tick.
-      // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-      // Last checked 09-28-2020.
-      double increment_max = 0.13;
-
-      double active_corruptions = p()->get_active_dots( internal_id );
-      increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-      p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-      if ( p()->corruption_accumulator >= 1 )
+      if  ( p()->talents.nightfall->ok() )
       {
-        p()->procs.nightfall->occur();
-        p()->buffs.nightfall->trigger();
-        p()->corruption_accumulator -= 1.0;
+        // TOCHECK regularly.
+        // Blizzard did not publicly release how nightfall was changed.
+        // We determined this is the probable functionality copied from Agony by first confirming the
+        // DR formula was the same and then confirming that you can get procs on 1st tick.
+        // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+        // Last checked 09-28-2020.
+        double increment_max = 0.13;
 
+        double active_corruptions = p()->get_active_dots( internal_id );
+        increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+        p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+        if ( p()->corruption_accumulator >= 1 )
+        {
+          p()->procs.nightfall->occur();
+          p()->buffs.nightfall->trigger();
+          p()->corruption_accumulator -= 1.0;
+
+        }
+      }
+
+      if ( p()->talents.harvester_of_souls.ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
+      {
+        harvester_proc->execute_on_target( d->state->target );
+        p()->procs.harvester_of_souls->occur();
       }
     }
-
-    warlock_spell_t::tick( d );
   }
 
   double composite_ta_multiplier(const action_state_t* s) const override
@@ -1208,6 +1235,7 @@ void warlock_t::init_spells()
   // Talents
   talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" );
   talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
+
   talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
