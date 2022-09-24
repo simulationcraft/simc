@@ -1958,14 +1958,19 @@ class SpellDataGenerator(DataGenerator):
           ( 365476, 1 ), ( 365478, 1 ), # tier 28 balance 2pc ground effect spell
 
           # Dragonflight
+          ( 340546, 0 ), # Tireless Pursuit buff
+          ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
+          # Balance
+          # Feral
+          ( 391710, 2 ), # Ferocious Frenzy damage
+          ( 391786, 2 ), # Tear Open Wounds damage
+          ( 393617, 2 ), # Primal Claws energize
+          # Guardian
           ( 370602, 3 ), # Elune's Favored heal
           ( 372505, 3 ), # Ursoc's Fury absorb
           ( 372019, 3 ), # Vicious Cycle mangle buff
-          ( 340546, 0 ), # Tireless Pursuit buff
-          ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
-          ( 391710, 2 ), # Ferocious Frenzy damage
-          ( 391786, 2 ), # Tear Open Wounds damage
           ( 279555, 3 ), # Layered Mane buff
+          # Restoration
         ),
         # Demon Hunter:
         (

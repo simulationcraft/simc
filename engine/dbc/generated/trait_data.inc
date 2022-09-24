@@ -1,4 +1,4 @@
-// Player trait definitions, wow build 10.0.2.45698
+// Player trait definitions, wow build 10.0.2.45746
 static const std::array<trait_data_t, 2390> __trait_data_data { {
   { 1,  1, 105701, 84394, 1,  0, 110706, 386164,      0,  1,  1,  -1,                     "Battle Stance", {   73,    0,    0,    0 }, {   73,    0,    0,    0 } },
   { 1,  1, 105767, 84454, 1, 20, 110772, 390725,      0, 10,  7,  -1,                        "Sonic Boom", {    0,    0,    0,    0 }, {    0,    0,    0,    0 } },
@@ -2392,7 +2392,7 @@ static const std::array<trait_data_t, 2390> __trait_data_data { {
   { 2, 13,  87674, 68648, 1,  8,  92676, 365937,      0,  5,  1, 100,                       "Ruby Embers", { 1467,    0,    0,    0 }, {    0,    0,    0,    0 } },
 } };
 
-// Player trait definition effect entries, wow build 10.0.2.45698
+// Player trait definition effect entries, wow build 10.0.2.45746
 static const std::array<trait_definition_effect_entry_t, 630> __trait_definition_effect_data { {
   { 85152, 0, 0, 52490 },
   { 85152, 1, 0, 52491 },

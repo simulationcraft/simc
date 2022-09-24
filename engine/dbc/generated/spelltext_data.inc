@@ -1,5 +1,5 @@
-// Spell text, wow build 10.0.2.45698
-static const std::array<spelltext_data_t, 18724> __spelltext_data { {
+// Spell text, wow build 10.0.2.45746
+static const std::array<spelltext_data_t, 18729> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -16590,6 +16590,7 @@ static const std::array<spelltext_data_t, 18724> __spelltext_data { {
   { 377633, "$@spelldesc377629", 0, 0 },
   { 377637, "Dancing Rune Weapon generates $s2 Bone Shield charges. When a charge of Bone Shield is consumed, the cooldown of Dancing Rune Weapon is reduced by ${$s1/-1000} sec.", 0, 0 },
   { 377640, "When Bone Shield is consumed it shatters dealing $s3 shadow damage to nearby enemies. This damage is tripled while you are within your Death and Decay.", 0, 0 },
+  { 377642, "$@spelldesc377640", 0, 0 },
   { 377655, "Heart Strike has a chance to increase the damage of your next Death Strike by $s1%.", 0, 0 },
   { 377656, "$@spelldesc377655", "Your next Death Strike deals an additional $s2% damage.", 0 },
   { 377668, "Summons $s1 additional copy of Dancing Rune Weapon and increases its duration by ${$s2/1000} sec.", 0, 0 },
@@ -18310,6 +18311,7 @@ static const std::array<spelltext_data_t, 18724> __spelltext_data { {
   { 390947, "Circle of Healing heals $s1 additional ally and its cooldown is reduced by ${$s2/-1000} sec.", 0, 0 },
   { 390951, "Temporarily imbues shoulders with a fiery illusion for $ecd.", 0, 0 },
   { 390954, "Increases the critical strike chance of Flash Heal and Heal by $s1%.", 0, 0 },
+  { 390961, "$@spelldesc390990", 0, 0 },
   { 390967, "Increases the healing done by your Mastery: Echo of Light by $s1%.", 0, 0 },
   { 390972, "After damaging or healing a target below $s3% health, gain $s1% increased damage and healing for $390978d.", 0, 0 },
   { 390975, "Perform an elemental invocation, transforming into the elemental summoned for ${$s1/60} min.", 0, 0 },
@@ -18317,10 +18319,12 @@ static const std::array<spelltext_data_t, 18724> __spelltext_data { {
   { 390978, "$@spelldesc390972", "Increases damage and healing by $w1%.", 0 },
   { 390980, "Critical heals from Flash Heal and Heal increase your healing done by your next Holy Word spell by $390989s1%, stacking up to $390989U times.", 0, 0 },
   { 390989, "$@spelldesc390980", "The healing of your next Holy Word spell is increased by $w1%.", 0 },
+  { 390990, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $r yard radius. Lasts $d.\r\n\r\nUsable in the Obsidian Citadel and adjacent lava fields.", "Suffering Nature damage every $t2 sec.", 0 },
   { 390992, "Flash Heal reduces the cast time of your next Heal within $390993d by $390993s2% and increases its healing done by $390993s1%.\r\n\r\nStacks up to $390993U times.", 0, 0 },
   { 390993, "$@spelldesc390992", "The cast time of your next Heal is reduced by $w2% and its healing is increased by $w1%.", 0 },
   { 390994, "Circle of Healing reduces the cooldown of Holy Word: Sanctify, Prayer of Mending reduces the cooldown of Holy Word: Serenity, and Holy Fire reduces the cooldown of Holy Word: Chastise by $s1 sec.", 0, 0 },
   { 390996, "Your $?a137033[Mind Blast and Mind Spike]?a137031[Smite and Holy Fire][Smite and Penance] casts reduce the cooldown of Mindgames by ${$s1/2}.1 sec.", 0, 0 },
+  { 390997, "Causes the earth at the target location to tremble and break, dealing Nature damage every $t1 sec to enemies in $a1 yard radius. Lasts $d.", "Suffering Nature damage every $t2 sec.", 0 },
   { 391023, "Summons an arcana orb outside of the Cobalt Assembly.", "Summons an arcana orb outside of the Cobalt Assembly.", 0 },
   { 391037, "Your combo point generating abilities have a $s1% chance to generate $s2 extra combo $Lpoint:points;.", 0, 0 },
   { 391045, "Rip damage increased by $s1%.", 0, 0 },
@@ -18625,6 +18629,7 @@ static const std::array<spelltext_data_t, 18724> __spelltext_data { {
   { 393568, "$@spelldesc369089", 0, 0 },
   { 393583, "Repair a targeted item to full durability.", 0, 0 },
   { 393611, "Increases the duration of Barkskin and Ironfur by ${$m1/1000}.1 sec.", 0, 0 },
+  { 393617, "$@spelldesc391037", 0, 0 },
   { 393618, "Ironfur increases armor by an additional $s1% and Barkskin reduces damage taken by an additional $s2%.", 0, 0 },
   { 393620, 0, "$?a376918[$@spellaura376918][Your non-periodic spells and abilities have a chance to pelt your target with a magic snowball, causing enemies to take $@376918s1 damage or cause allies to receive ${$@376918s1*1.5} healing.]", 0 },
   { 393665, "$@spelldesc381264", "Crafting speed increased by $w1.", 0 },
@@ -18726,11 +18731,11 @@ static const std::array<spelltext_data_t, 18724> __spelltext_data { {
   { 394323, "$@spelldesc394322", 0, 0 },
 } };
 
-// spelltext hotfix entries, wow build 10.0.2.45698
+// spelltext hotfix entries, wow build 10.0.2.45746
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelltext_hotfix_data { {
 } };
 
-// Spell description variables, wow build 10.0.2.45698
+// Spell description variables, wow build 10.0.2.45746
 static const std::array<spelldesc_vars_data_t, 350> __spelldesc_vars_data { {
   {      17, "$rapture=$?a47536[${(1+$47536s1/100)}][${1}]\r\n$shadow=$?a137033[${1.00}][${1}]\r\n$pvp=$?a134735[${1.1}][${1}]\r\n$weal=$?a390787[${1+$390787s2/100}][${1}]\r\n$shield=${$SP*2.8*(1+$@versadmg)*$<rapture>*$<shadow>*$<pvp>*$<weal>}\r\n" },
   {      53, "$mult=${($max(0,$min($pl-10,10))*11+260)/370}" },
@@ -19084,7 +19089,7 @@ static const std::array<spelldesc_vars_data_t, 350> __spelldesc_vars_data { {
   {  393400, "$mod=$?a137005[${1}]?a212611[${1}]?a137009[${1}]?a137014[${1}]?a137018[${0.5}]?a137022[${2}]?a137026[${1}]?a137030[${3}]?a137034[${0.75}]?a137038[${1}]?a137042[${0.4}]?a137047[${1}]?a353167[${2}][${1}]\r\n$points=${$393786s2/100*$max($AP,$SP)*(1+$@versadmg)}\r\n$final=${$<mod>*$<points>*($353248d/$353248t1+1)}" },
 } };
 
-// spelldesc_vars hotfix entries, wow build 10.0.2.45698
+// spelldesc_vars hotfix entries, wow build 10.0.2.45746
 static constexpr std::array<hotfix::client_hotfix_entry_t, 0> __spelldesc_vars_hotfix_data { {
 } };
 
