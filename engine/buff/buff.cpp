@@ -1012,6 +1012,12 @@ buff_t* buff_t::set_period( timespan_t period )
   return this;
 }
 
+buff_t* buff_t::modify_period( timespan_t duration )
+{
+  set_period( buff_period + duration );
+  return this;
+}
+
 buff_t* buff_t::add_invalidate( cache_e c )
 {
   if ( c == CACHE_NONE )
@@ -1375,6 +1381,11 @@ buff_t* buff_t::apply_affecting_effect( const spelleffect_data_t& effect )
       case P_MAX_STACKS:
         modify_max_stack( as<int>( effect.base_value() ) );
         sim->print_debug( "{} maximum stacks modified by {} to {}", *this, effect.base_value(), max_stack() );
+        break;
+
+      case P_TICK_TIME:
+        modify_period( effect.time_value() );
+        sim->print_debug( "{} tick period modified by {} to {}", *this, effect.time_value(), buff_period );
         break;
 
       case P_EFFECT_1:
