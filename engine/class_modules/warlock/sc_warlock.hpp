@@ -216,7 +216,7 @@ public:
     player_talent_t harvester_of_souls;
     const spell_data_t* harvester_of_souls_dmg; // Talent only controls proc, damage is in separate spell
     player_talent_t writhe_in_agony; // 2022-09-23 DF Beta - Writhe In Agony's second point is not registering in-game
-    // DF - Agonizing Corruption (2 point talent, Seed of Corruption applies Agony stacks)
+    player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
     const spell_data_t* drain_soul; // DF - Unchanged, still replaces Shadow Bolt
     const spell_data_t* absolute_corruption; // DF - Now a choice against Siphon Life

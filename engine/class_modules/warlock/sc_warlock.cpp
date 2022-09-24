@@ -337,6 +337,12 @@ struct seed_of_corruption_t : public warlock_spell_t
           tdata->dots_seed_of_corruption->cancel();
         }
 
+        // 2022-09-24 Agonizing Corruption does not apply Agony, only increments existing ones
+        if ( p()->talents.agonizing_corruption.ok() && tdata->dots_agony->is_ticking() )
+        {
+          tdata->dots_agony->increment( (int)p()->talents.agonizing_corruption->effectN( 1 ).base_value() );
+        }
+
         corruption->set_target( s->target );
         corruption->execute();
       }
