@@ -5308,7 +5308,8 @@ struct death_and_decay_base_t : public death_knight_spell_t
     if( p() -> buffs.crimson_scourge -> up() )
     {
       p() -> buffs.crimson_scourge -> decrement();
-      p() -> buffs.perseverance_of_the_ebon_blade -> trigger();
+      if ( p() -> talent.blood.perseverance_of_the_ebon_blade.ok() )
+        p() -> buffs.perseverance_of_the_ebon_blade -> trigger();
     }
 
     if ( p() -> legendary.phearomones -> ok() )
