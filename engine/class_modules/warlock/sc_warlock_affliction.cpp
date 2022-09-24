@@ -339,7 +339,7 @@ struct malefic_rapture_t : public affliction_spell_t
 struct drain_soul_t : public affliction_spell_t
 {
   drain_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::nil() )
+    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
   {
     parse_options( options_str );
     channeled    = true;
