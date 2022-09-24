@@ -56,7 +56,7 @@ enum free_cast_e
   NATURAL,   // natural orders will legendary
   ONETHS,    // oneths clear vision talent
   ORBIT,     // orbit breaker talent
-  PAWSITIVE, // pawsitive outlook talent
+  FLASHING,  // flashing claws talent
   PILLAR,    // celestial pillar balance tier 28 2pc
   SYZYGY,
   URSOCS,    // ursoc's fury remembered legendary
@@ -388,7 +388,7 @@ public:
     action_t* natures_guardian;
     action_t* rage_of_the_sleeper_reflect;
     action_t* the_natural_orders_will;   // fake holder action for reporting
-    action_t* thrash_bear_pawsitive;
+    action_t* thrash_bear_flashing;
     action_t* thrash_bear_ursocs;        // free thrash from ursoc's fury remembered
 
     // Restoration
@@ -536,6 +536,7 @@ public:
   // Cooldowns
   struct cooldowns_t
   {
+    cooldown_t* berserk_bear;
     cooldown_t* berserk_cat;
     cooldown_t* incarnation;
     cooldown_t* mangle;
@@ -793,11 +794,11 @@ public:
     player_talent_t gore;  // Row 2
     // player_talent_t survival_instincts_bear;
 
-    player_talent_t brambles;  // Row 3
-    player_talent_t bristling_fur;
+    player_talent_t bristling_fur;  // Row 3
+    player_talent_t brambles;
     player_talent_t ursine_adept;
     player_talent_t improved_survival_instincts;
-    player_talent_t improved_mangle;
+    player_talent_t mangle;
 
     player_talent_t innate_resolve;  // Row 4
     player_talent_t infected_wounds_bear;
@@ -805,7 +806,7 @@ public:
     player_talent_t ursocs_endurance;
     player_talent_t gory_fur;
 
-    player_talent_t pawsitive_outlook;  // Row 5
+    player_talent_t flashing_claws;  // Row 5
     player_talent_t tooth_and_claw;
     player_talent_t layered_mane;
     player_talent_t scintillating_moonlight;
@@ -827,18 +828,18 @@ public:
     player_talent_t elunes_favored;
     player_talent_t survival_of_the_fittest;
 
-    player_talent_t dream_of_cenarius;  // Row 9
-    player_talent_t ursocs_fury;
+    player_talent_t ursocs_fury;  // Row 9
+    player_talent_t dream_of_cenarius;
     player_talent_t pulverize;
-    // player_talent_t convoke_the_spirits_bear;
     player_talent_t incarnation_bear;
-    player_talent_t soul_of_the_forest_bear;
+    // player_talent_t convoke_the_spirits_bear;
     player_talent_t blood_frenzy;
-    player_talent_t guardian_of_elune;
+    player_talent_t soul_of_the_forest_bear;
     player_talent_t after_the_wildfire;
+    player_talent_t guardian_of_elune;
 
-    player_talent_t untamed_savagery;  // Row 10
-    player_talent_t rend_and_tear;
+    player_talent_t rend_and_tear;  // Row 10
+    player_talent_t untamed_savagery;
     player_talent_t ursocs_guidance;
     player_talent_t rage_of_the_sleeper;
 
@@ -1065,6 +1066,7 @@ public:
       conduit( conduit_t() ),
       legendary( legendary_t() )
   {
+    cooldown.berserk_bear       = get_cooldown( "berserk_bear" );
     cooldown.berserk_cat        = get_cooldown( "berserk_cat" );
     cooldown.incarnation        = get_cooldown( "incarnation" );
     cooldown.mangle             = get_cooldown( "mangle" );
@@ -4688,16 +4690,29 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
     if ( free_cast || !last_resource_cost )
       return;
 
-    if ( resource_current == RESOURCE_RAGE && p()->talent.after_the_wildfire.ok() )
+    if ( resource_current == RESOURCE_RAGE )
     {
-      auto r_cap = p()->talent.after_the_wildfire->effectN( 2 ).base_value();
-
-      p()->after_the_wildfire_counter += last_resource_cost;
-
-      if ( p()->after_the_wildfire_counter >= r_cap )
+      if ( p()->talent.after_the_wildfire.ok() )
       {
-        p()->after_the_wildfire_counter -= r_cap;
-        p()->active.after_the_wildfire_heal->execute();
+        auto r_cap = p()->talent.after_the_wildfire->effectN( 2 ).base_value();
+
+        p()->after_the_wildfire_counter += last_resource_cost;
+
+        if ( p()->after_the_wildfire_counter >= r_cap )
+        {
+          p()->after_the_wildfire_counter -= r_cap;
+          p()->active.after_the_wildfire_heal->execute();
+        }
+      }
+
+      if ( p()->talent.ursocs_guidance.ok() )
+      {
+        auto cdr = timespan_t::from_seconds( last_resource_cost / -20 );
+
+        if ( p()->talent.incarnation_bear.ok() )
+          p()->cooldown.incarnation->adjust( cdr );
+        else
+          p()->cooldown.berserk_cat->adjust( cdr );
       }
     }
   }
@@ -4874,7 +4889,7 @@ struct mangle_t : public bear_attack_t
   mangle_t( druid_t* p, std::string_view n, std::string_view opt )
     : bear_attack_t( n, p, p->find_class_spell( "Mangle" ), opt ), inc_targets( 0 )
   {
-    if ( p->talent.improved_mangle.ok() )
+    if ( p->talent.mangle.ok() )
       bleed_mul = data().effectN( 3 ).percent();
 
     energize_amount += p->talent.soul_of_the_forest_bear->effectN( 1 ).resource( RESOURCE_RAGE );
@@ -5130,8 +5145,8 @@ struct thrash_bear_t : public bear_attack_t
     dot->target = target;
     dot->schedule_execute();
 
-    if ( p()->talent.pawsitive_outlook.ok() && rng().roll( p()->talent.pawsitive_outlook->effectN( 1 ).percent() ) )
-      make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_pawsitive->execute_on_target( target ); } );
+    if ( p()->talent.flashing_claws.ok() && rng().roll( p()->talent.flashing_claws->effectN( 1 ).percent() ) )
+      make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
 
     if ( p()->legendary.ursocs_fury_remembered->ok() &&
          rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
@@ -9478,47 +9493,47 @@ void druid_t::init_spells()
 
   // Guardian
   sim->print_debug( "Initializing guardian talents..." );
-  talent.ursocs_guidance                = ST( "Ursoc's Guidance" );
-  talent.maul                           = ST( "Maul" );
-  talent.gore                           = ST( "Gore" );
+  talent.after_the_wildfire             = ST( "After the Wildfire" );
+  talent.berserk_persistence            = ST( "Berserk: Persistence" );
+  talent.berserk_ravage                 = ST( "Berserk: Ravage" );
+  talent.berserk_unchecked_aggression   = ST( "Berserk: Unchecked Aggression" );
+  talent.blood_frenzy                   = ST( "Blood Frenzy" );
   talent.brambles                       = ST( "Brambles" );
   talent.bristling_fur                  = ST( "Bristling Fur" );
-  talent.ursine_adept                   = ST( "Ursine Adept" );
-  talent.improved_survival_instincts    = find_talent_spell( talent_tree::SPECIALIZATION, 328767 );  // NNF
-  talent.improved_mangle                = find_talent_spell( talent_tree::SPECIALIZATION, 231064 );  // NNF
-  talent.innate_resolve                 = ST( "Innate Resolve" );
-  talent.infected_wounds_bear           = STS( "Infected Wounds", DRUID_GUARDIAN );
-  talent.berserk_ravage                 = ST( "Berserk: Ravage" );
-  talent.ursocs_endurance               = ST( "Ursoc's Endurance" );
-  talent.gory_fur                       = ST( "Gory Fur" );
-  talent.pawsitive_outlook              = ST( "Pawsitive Outlook" );
-  talent.tooth_and_claw                 = ST( "Tooth and Claw" );
-  talent.layered_mane                   = ST( "Layered Mane" );
-  talent.scintillating_moonlight        = ST( "Scintillating Moonlight" );
+  talent.dream_of_cenarius              = ST( "Dream of Cenarius" );
   talent.earthwarden                    = ST( "Earthwarden" );
+  talent.elunes_favored                 = ST( "Elune's Favored" );
+  talent.flashing_claws                 = ST( "Flashing Claws" );
+  talent.front_of_the_pack              = ST( "Front of the Pack" );
+  talent.fury_of_nature                 = ST( "Fury of Nature" );
+  talent.galactic_guardian              = ST( "Galactic Guardian" );
+  talent.gore                           = ST( "Gore" );
+  talent.gory_fur                       = ST( "Gory Fur" );
+  talent.guardian_of_elune              = ST( "Guardian of Elune" );
+  talent.improved_survival_instincts    = ST( "Improved Survival Instincts" );
+  talent.incarnation_bear               = ST( "Incarnation: Guardian of Ursoc" );
+  talent.infected_wounds_bear           = STS( "Infected Wounds", DRUID_GUARDIAN );
+  talent.innate_resolve                 = ST( "Innate Resolve" );
+  talent.layered_mane                   = ST( "Layered Mane" );
+  talent.mangle                         = ST( "Mangle" );
+  talent.maul                           = ST( "Maul" );
+  talent.pulverize                      = ST( "Pulverize" );
+  talent.rage_of_the_sleeper            = ST( "Rage of the Sleeper" );
+  talent.reinforced_fur                 = ST( "Reinforced Fur" );
+  talent.reinvigoration                 = ST( "Reinvigoration" );
+  talent.rend_and_tear                  = ST( "Rend and Tear" );
+  talent.scintillating_moonlight        = ST( "Scintillating Moonlight" );
+  talent.soul_of_the_forest_bear        = STS( "Soul of the Forest", DRUID_GUARDIAN );
+  talent.survival_of_the_fittest        = ST( "Survival of the Fittest" );
+  talent.tooth_and_claw                 = ST( "Tooth and Claw" );
+  talent.twin_moonfire                  = ST( "Twin Moonfire" );
+  talent.ursine_adept                   = ST( "Ursine Adept" );
+  talent.ursocs_guidance                = ST( "Ursoc's Guidance" );
+  talent.ursocs_endurance               = ST( "Ursoc's Endurance" );
   talent.vicious_cycle                  = ST( "Vicious Cycle" );
   talent.vulnerable_flesh               = ST( "Vulnerable Flesh" );
-  talent.front_of_the_pack              = ST( "Front of the Pack" );
-  talent.reinforced_fur                 = ST( "Reinforced Fur" );
-  talent.galactic_guardian              = ST( "Galactic Guardian" );
-  talent.twin_moonfire                  = ST( "Twin Moonfire" );
-  talent.berserk_unchecked_aggression   = ST( "Berserk: Unchecked Aggression" );
-  talent.fury_of_nature                 = ST( "Fury of Nature" );
-  talent.berserk_persistence            = ST( "Berserk: Persistence" );
-  talent.reinvigoration                 = ST( "Reinvigoration" );
-  talent.elunes_favored                 = ST( "Elune's Favored" );
-  talent.survival_of_the_fittest        = ST( "Survival of the Fittest" );
-  talent.dream_of_cenarius              = ST( "Dream of Cenarius" );
-  talent.ursocs_fury                    = ST( "Ursoc's Fury" );
-  talent.pulverize                      = ST( "Pulverize" );
-  talent.incarnation_bear               = ST( "Incarnation: Guardian of Ursoc" );
-  talent.soul_of_the_forest_bear        = STS( "Soul of the Forest", DRUID_GUARDIAN );
-  talent.blood_frenzy                   = ST( "Blood Frenzy" );
-  talent.guardian_of_elune              = ST( "Guardian of Elune" );
-  talent.after_the_wildfire             = ST( "After the Wildfire" );
   talent.untamed_savagery               = ST( "Untamed Savagery" );
-  talent.rend_and_tear                  = ST( "Rend and Tear" );
-  talent.rage_of_the_sleeper            = ST( "Rage of the Sleeper" );
+  talent.ursocs_fury                    = ST( "Ursoc's Fury" );
 
   // Restoration
   sim->print_debug( "Initializing restoration talents..." );
@@ -9875,6 +9890,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->apply_affecting_aura( talent.improved_barkskin )
+    ->apply_affecting_aura( talent.reinforced_fur )
     ->apply_affecting_aura( talent.ursocs_endurance );
   if ( talent.brambles.ok() )
     buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
@@ -10404,14 +10420,14 @@ void druid_t::create_actions()
   if ( legendary.the_natural_orders_will->ok() )
     active.the_natural_orders_will = new the_natural_orders_will_t( this );
 
-  if ( talent.pawsitive_outlook.ok() )
+  if ( talent.flashing_claws.ok() )
   {
-    auto paw = get_secondary_action_n<thrash_bear_t>( "pawsitive_outlook",
-                                                      apply_override( talent.thrash, spec.bear_form_override ), "" );
-    paw->s_data_reporting = talent.pawsitive_outlook;
-    paw->name_str_reporting = "pawsitive_outlook";
-    paw->set_free_cast( free_cast_e::PAWSITIVE );
-    active.thrash_bear_pawsitive = paw;
+    auto flash = get_secondary_action_n<thrash_bear_t>( "flashing_claws",
+                                                        apply_override( talent.thrash, spec.bear_form_override ), "" );
+    flash->s_data_reporting = talent.flashing_claws;
+    flash->name_str_reporting = "pawsitive_outlook";
+    flash->set_free_cast( free_cast_e::FLASHING );
+    active.thrash_bear_flashing = flash;
   }
 
   if ( talent.rage_of_the_sleeper.ok() )
@@ -10461,7 +10477,7 @@ void druid_t::create_actions()
   find_parent( active.orbit_breaker, "full_moon" );
   find_parent( active.starsurge_oneth, "starsurge" );
   find_parent( active.starfall_oneth, "starfall" );
-  find_parent( active.thrash_bear_pawsitive, "thrash_bear" );
+  find_parent( active.thrash_bear_flashing, "thrash_bear" );
   find_parent( active.thrash_bear_ursocs, "thrash_bear" );
 
   // setup dot_ids used by druid_action_t::get_dot_count()
@@ -12639,8 +12655,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.twin_moons );
   
   // Feral
-  if ( talent.convoke_the_spirits.ok() )
-    action.apply_affecting_aura( spec.ashamanes_guidance );
+  action.apply_affecting_aura( spec.ashamanes_guidance );
   action.apply_affecting_aura( talent.dreadful_bleeding );
   action.apply_affecting_aura( talent.infected_wounds_cat );
   action.apply_affecting_aura( talent.lions_strength );
@@ -12651,11 +12666,12 @@ void druid_t::apply_affecting_auras( action_t& action )
   // Guardian
   action.apply_affecting_aura( talent.improved_survival_instincts );
   action.apply_affecting_aura( talent.innate_resolve );
-  // action.apply_affecting_aura( talent.reinvigoration );  // TODO check if fixed in new builds
+  action.apply_affecting_aura( talent.reinvigoration );
   action.apply_affecting_aura( talent.soul_of_the_forest_bear );
   action.apply_affecting_aura( talent.survival_of_the_fittest );
   action.apply_affecting_aura( talent.twin_moonfire );
   action.apply_affecting_aura( talent.untamed_savagery );
+  action.apply_affecting_aura( talent.ursocs_guidance );
   action.apply_affecting_aura( talent.vulnerable_flesh );
 
   // Restoration
