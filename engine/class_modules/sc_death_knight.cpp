@@ -10045,7 +10045,7 @@ void death_knight_t::init_spells()
   talent.suppression = find_talent_spell( talent_tree::CLASS, "Suppression" );
   talent.brittle = find_talent_spell( talent_tree::CLASS, "Brittle" );
   // Row 5
-  talent.acclimation = find_talent_spell( talent_tree::CLASS "Acclimation" );
+  talent.acclimation = find_talent_spell( talent_tree::CLASS, "Acclimation" );
   talent.merciless_strikes = find_talent_spell( talent_tree::CLASS, "Merciless Strikes" );
   talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Anti-Magic Zone" );
   talent.might_of_thassarian = find_talent_spell( talent_tree::CLASS, "Might of Thassarian" );
