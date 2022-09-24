@@ -722,9 +722,9 @@ public:
     player_talent_t antimagic_shell;
     player_talent_t cleaving_strikes;
     // Row 3
-    player_talent_t blinding_sleet;
+    player_talent_t blinding_sleet; // NYI
     player_talent_t coldthirst;
-    player_talent_t permafrost;
+    player_talent_t permafrost; // NYI
     player_talent_t improved_death_strike;
     player_talent_t antimagic_barrier; // NYI
     player_talent_t march_of_darkness; // NYI
@@ -735,31 +735,31 @@ public:
     player_talent_t icebound_fortitude;
     player_talent_t blood_scent;
     player_talent_t veteran_of_the_third_war;
-    player_talent_t suppression;
+    player_talent_t suppression; // NYI
     player_talent_t brittle;
     // Row 5
-    player_talent_t acclimation;
+    player_talent_t acclimation; // NYI
     player_talent_t merciless_strikes;
     player_talent_t antimagic_zone; // NYI
     player_talent_t might_of_thassarian;
     player_talent_t clenching_grasp; // NYI
     // Row 6
     player_talent_t proliferating_chill;
-    player_talent_t asphyxiate;
-    player_talent_t assimilation;
-    player_talent_t death_pact;
-    player_talent_t grip_of_the_dead;
-    player_talent_t deaths_reach;
+    player_talent_t asphyxiate; // NYI
+    player_talent_t assimilation; // NYI
+    player_talent_t death_pact; // NYI
+    player_talent_t grip_of_the_dead; // NYI
+    player_talent_t deaths_reach; // NYI
     player_talent_t unholy_endurance; // NYI
     player_talent_t gloom_ward; // NYI
     // Row 7
     player_talent_t runic_attenuation;
-    player_talent_t wraith_walk;
+    player_talent_t wraith_walk; // NYI
     player_talent_t unholy_ground;
     player_talent_t insidious_chill; // NYI
     // Row 8
     player_talent_t blood_draw;
-    player_talent_t will_of_the_necropolis;
+    player_talent_t will_of_the_necropolis; // NYI
     player_talent_t deaths_echo;
     // Row 9
     player_talent_t icy_talons;
@@ -10032,7 +10032,7 @@ void death_knight_t::init_spells()
   talent.blinding_sleet = find_talent_spell( talent_tree::CLASS, "Blinding Sleet" );
   talent.coldthirst = find_talent_spell( talent_tree::CLASS, "Coldthirst" );
   talent.permafrost = find_talent_spell( talent_tree::CLASS, "Permafrost" );
-  talent.death_pact = find_talent_spell( talent_tree::CLASS, "Death Pact" );
+  talent.improved_death_strike = find_talent_spell( talent_tree::CLASS, "Improved Death Strike" );
   talent.antimagic_barrier = find_talent_spell( talent_tree::CLASS, "Anti-Magic Barrier" );
   talent.march_of_darkness = find_talent_spell( talent_tree::CLASS, "March of Darkness" );
   talent.sacrificial_pact = find_talent_spell( talent_tree::CLASS, "Sacrificial Pact" );
@@ -10045,34 +10045,35 @@ void death_knight_t::init_spells()
   talent.suppression = find_talent_spell( talent_tree::CLASS, "Suppression" );
   talent.brittle = find_talent_spell( talent_tree::CLASS, "Brittle" );
   // Row 5
+  talent.acclimation = find_talent_spell( talent_tree::CLASS "Acclimation" );
   talent.merciless_strikes = find_talent_spell( talent_tree::CLASS, "Merciless Strikes" );
   talent.antimagic_zone = find_talent_spell( talent_tree::CLASS, "Anti-Magic Zone" );
   talent.might_of_thassarian = find_talent_spell( talent_tree::CLASS, "Might of Thassarian" );
+  talent.clenching_grasp = find_talent_spell( talent_tree::CLASS, "Clenching Grasp" );
   // Row 6
   talent.proliferating_chill = find_talent_spell( talent_tree::CLASS, "Proliferating Chill" );
   talent.gloom_ward = find_talent_spell(talent_tree::CLASS, "Gloom Ward");
-  talent.acclimation = find_talent_spell( talent_tree::CLASS, "Acclimation" );
   talent.asphyxiate = find_talent_spell( talent_tree::CLASS, "Asphyxiate" );
-  talent.wraith_walk = find_talent_spell( talent_tree::CLASS, "Wraith Walk" );
+  talent.assimilation = find_talent_spell( talent_tree::CLASS, "Assimilation" );
+  talent.death_pact = find_talent_spell( talent_tree::CLASS, "Death Pact" );
   talent.grip_of_the_dead = find_talent_spell( talent_tree::CLASS, "Grip of the Dead" );
   talent.deaths_reach = find_talent_spell( talent_tree::CLASS, "Death's Reach" );
   // Row 7
   talent.runic_attenuation = find_talent_spell( talent_tree::CLASS, "Runic Attenuation" );
-  talent.assimilation = find_talent_spell( talent_tree::CLASS, "Assimilation" );
+  talent.wraith_walk = find_talent_spell( talent_tree::CLASS, "Wraith Walk" );
   talent.unholy_ground = find_talent_spell( talent_tree::CLASS, "Unholy Ground" );
   // Row 8
   talent.insidious_chill = find_talent_spell( talent_tree::CLASS, "Insidious Chill" );
+  talent.blood_draw = find_talent_spell( talent_tree::CLASS, "Blood Draw" );
   talent.will_of_the_necropolis = find_talent_spell( talent_tree::CLASS, "Will of the Necropolis" );
   talent.deaths_echo = find_talent_spell( talent_tree::CLASS, "Death's Echo" );
   // Row 9
   talent.icy_talons = find_talent_spell( talent_tree::CLASS, "Icy Talons" );
-  talent.improved_death_strike = find_talent_spell( talent_tree::CLASS, "Improved Death Strike" );
+  talent.rune_mastery = find_talent_spell( talent_tree::CLASS, "Rune Mastery" );
   talent.unholy_bond = find_talent_spell( talent_tree::CLASS, "Unholy Bond" );
   // Row 10
   talent.empower_rune_weapon = find_talent_spell( talent_tree::CLASS, "Empower Rune Weapon" );
-  talent.rune_mastery = find_talent_spell( talent_tree::CLASS, "Rune Mastery" );
   talent.abomination_limb = find_talent_spell( talent_tree::CLASS, "Abomination Limb" );
-  talent.blood_draw = find_talent_spell( talent_tree::CLASS, "Blood Draw" );
   talent.soul_reaper = find_talent_spell( talent_tree::CLASS, "Soul Reaper" );
 
   //////// Blood
