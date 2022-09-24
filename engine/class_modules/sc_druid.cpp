@@ -433,12 +433,12 @@ public:
     buff_t* lycaras_teachings_vers;   // bear form
     buff_t* lycaras_teachings_mast;   // moonkin form
     buff_t* lycaras_teachings;        // placeholder buff
+    buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
     buff_t* tiger_dash;
     buff_t* tireless_pursuit;
     buff_t* ursine_vigor;
-    buff_t* ursocs_endurance;
     buff_t* wild_charge_movement;
 
     // Multi-Spec
@@ -625,7 +625,7 @@ public:
 
     player_talent_t rip;  // Row 3
     player_talent_t swipe;
-    player_talent_t improved_frenzied_regeneration;  // NNF
+    player_talent_t verdant_heart;
     player_talent_t remove_corruption;
     player_talent_t moonkin_form;
 
@@ -640,7 +640,7 @@ public:
     player_talent_t thick_hide;
     player_talent_t tiger_dash;
     player_talent_t wild_charge;
-    player_talent_t new_resto_passive;  // NNF
+    player_talent_t natural_recovery;
     player_talent_t cyclone;
     player_talent_t astral_influence;
 
@@ -650,7 +650,7 @@ public:
     player_talent_t typhoon;
 
     player_talent_t primal_fury;  // Row 7
-    player_talent_t ursocs_endurance;  // NNF
+    player_talent_t matted_fur;
     player_talent_t stampeding_roar;
     player_talent_t wild_growth;
     player_talent_t improved_sunfire;
@@ -802,7 +802,7 @@ public:
     player_talent_t innate_resolve;  // Row 4
     player_talent_t infected_wounds_bear;
     player_talent_t berserk_ravage;
-    player_talent_t ursocs_endurance_bear;
+    player_talent_t ursocs_endurance;
     player_talent_t gory_fur;
 
     player_talent_t pawsitive_outlook;  // Row 5
@@ -3121,7 +3121,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
   druid_heal_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(), std::string_view opt = {} )
     : base_t( n, p, s ),
       affected_by(),
-      imp_fr_mul( p->talent.improved_frenzied_regeneration->effectN( 1 ).percent() ),
+      imp_fr_mul( p->talent.verdant_heart->effectN( 1 ).percent() ),
       iron_mul( 0.0 ),
       photo_mul( p->talent.photosynthesis->effectN( 1 ).percent() ),
       photo_pct( p->talent.photosynthesis->effectN( 2 ).percent() ),
@@ -3166,7 +3166,7 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
       if ( imp_fr_mul && ( p()->buff.barkskin->check() || td( t )->hots.frenzied_regeneration->is_ticking() ) )
         ctm *= 1.0 + imp_fr_mul;
 
-      ctm *= 1.0 + p()->talent.new_resto_passive->effectN( 3 ).percent();
+      ctm *= 1.0 + p()->talent.natural_recovery->effectN( 3 ).percent();
     }
 
     return ctm;
@@ -6488,8 +6488,8 @@ struct barkskin_t : public druid_spell_t
 
     p()->buff.barkskin->trigger();
 
-    if ( p()->talent.ursocs_endurance.ok() )
-      p()->buff.ursocs_endurance->trigger();
+    if ( p()->talent.matted_fur.ok() )
+      p()->buff.matted_fur->trigger();
 
     if ( p()->sets->has_set_bonus( DRUID_GUARDIAN, T28, B2 ) )
     {
@@ -7897,8 +7897,8 @@ struct survival_instincts_t : public druid_spell_t
 
     p()->buff.survival_instincts->trigger();
 
-    if ( p()->talent.ursocs_endurance.ok() )
-      p()->buff.ursocs_endurance->trigger();
+    if ( p()->talent.matted_fur.ok() )
+      p()->buff.matted_fur->trigger();
   }
 };
 
@@ -9335,62 +9335,62 @@ void druid_t::init_spells()
 
   // Class tree
   sim->print_debug( "Initializing class talents..." );
-  talent.rake                           = CT( "Rake" );
-  talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
-  talent.rejuvenation                   = CT( "Rejuvenation" );
-  talent.starfire                       = CT( "Starfire" );
-  talent.thrash                         = CT( "Thrash" );
-  talent.improved_barkskin              = CT( "Improved Barkskin" );
-  talent.swiftmend                      = CT( "Swiftmend" );
-  talent.starsurge                      = CT( "Starsurge" );
-  talent.rip                            = CT( "Rip" );
-  talent.swipe                          = CT( "Swipe" );
-  talent.improved_frenzied_regeneration = find_talent_spell( talent_tree::CLASS, 301768 );  // NNF
-  talent.remove_corruption              = CT( "Remove Corruption" );
-  talent.moonkin_form                   = CT( "Moonkin Form" );
-  talent.maim                           = CT( "Maim" );
-  talent.killer_instinct                = CT( "Killer Instinct" );
-  talent.ironfur                        = CT( "Ironfur" );
-  talent.nurturing_instinct             = CT( "Nurturing Instinct" );
-  talent.hibernate                      = CT( "Hibernate" );
-  talent.feline_swiftness               = CT( "Feline Swiftness" );
-  talent.skull_bash                     = CT( "Skull Bash" );
-  talent.thick_hide                     = CT( "Thick Hide" );
-  talent.wild_charge                    = CT( "Wild Charge" );
-  talent.new_resto_passive              = find_talent_spell( talent_tree::CLASS, 377796 );  // NNF
-  talent.cyclone                        = CT( "Cyclone" );
   talent.astral_influence               = CT( "Astral Influence" );
-  talent.tireless_pursuit               = CT( "Tireless Pursuit" );
-  talent.soothe                         = CT( "Soothe" );
-  talent.sunfire                        = CT( "Sunfire" );
-  talent.typhoon                        = CT( "Typhoon" );
-  talent.primal_fury                    = CT( "Primal Fury" );
-  talent.ursocs_endurance               = CT( "Ursoc's Endurance (NNF)" );
-  talent.stampeding_roar                = CT( "Stampeding Roar" );
-  talent.wild_growth                    = CT( "Wild Growth" );
-  talent.improved_sunfire               = CT( "Improved Sunfire" );
-  talent.mighty_bash                    = CT( "Mighty Bash" );
-  talent.incapacitating_roar            = CT( "Incapacitating Roar" );
-  talent.ursine_vigor                   = CT( "Ursine Vigor" );
-  talent.lycaras_teachings              = CT( "Lycara's Teachings" );
-  talent.improved_rejuvenation          = CT( "Improved Rejuvenation" );
-  talent.ursols_vortex                  = CT( "Ursol's Vortex" );
-  talent.mass_entanglement              = CT( "Mass Entanglement" );
-  talent.wellhoned_instincts            = CT( "Well-Honed Instincts" );
-  talent.improved_stampeding_roar       = CT( "Improved Stampeding Roar");
-  talent.renewal                        = CT( "Renewal" );
-  talent.innervate                      = CT( "Innervate" );
+  talent.cyclone                        = CT( "Cyclone" );
+  talent.feline_swiftness               = CT( "Feline Swiftness" );
+  talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
   talent.furor                          = CT( "Furor" );
   talent.heart_of_the_wild              = CT( "Heart of the Wild" );
+  talent.hibernate                      = CT( "Hibernate" );
+  talent.improved_barkskin              = CT( "Improved Barkskin" );
+  talent.improved_rejuvenation          = CT( "Improved Rejuvenation" );
+  talent.improved_stampeding_roar       = CT( "Improved Stampeding Roar");
+  talent.improved_sunfire               = CT( "Improved Sunfire" );
+  talent.incapacitating_roar            = CT( "Incapacitating Roar" );
+  talent.innervate                      = CT( "Innervate" );
+  talent.ironfur                        = CT( "Ironfur" );
+  talent.killer_instinct                = CT( "Killer Instinct" );
+  talent.lycaras_teachings              = CT( "Lycara's Teachings" );
+  talent.maim                           = CT( "Maim" );
+  talent.mass_entanglement              = CT( "Mass Entanglement" );
+  talent.matted_fur                     = CT( "Matted Fur" );
+  talent.mighty_bash                    = CT( "Mighty Bash" );
+  talent.moonkin_form                   = CT( "Moonkin Form" );
+  talent.natural_recovery               = CT( "Natural Recovery" );
   talent.natures_vigil                  = CT( "Nature's Vigil" );
+  talent.nurturing_instinct             = CT( "Nurturing Instinct" );
+  talent.primal_fury                    = CT( "Primal Fury" );
+  talent.rake                           = CT( "Rake" );
+  talent.rejuvenation                   = CT( "Rejuvenation" );
+  talent.remove_corruption              = CT( "Remove Corruption" );
+  talent.renewal                        = CT( "Renewal" );
+  talent.rip                            = CT( "Rip" );
+  talent.skull_bash                     = CT( "Skull Bash" );
+  talent.soothe                         = CT( "Soothe" );
+  talent.stampeding_roar                = CT( "Stampeding Roar" );
+  talent.starfire                       = CT( "Starfire" );
+  talent.starsurge                      = CT( "Starsurge" );
+  talent.sunfire                        = CT( "Sunfire" );
+  talent.swiftmend                      = CT( "Swiftmend" );
+  talent.swipe                          = CT( "Swipe" );
+  talent.thick_hide                     = CT( "Thick Hide" );
+  talent.thrash                         = CT( "Thrash" );
+  talent.tireless_pursuit               = CT( "Tireless Pursuit" );
+  talent.typhoon                        = CT( "Typhoon" );
+  talent.ursine_vigor                   = CT( "Ursine Vigor" );
+  talent.ursols_vortex                  = CT( "Ursol's Vortex" );
+  talent.verdant_heart                  = CT( "Verdant Heart" );
+  talent.wellhoned_instincts            = CT( "Well-Honed Instincts" );
+  talent.wild_charge                    = CT( "Wild Charge" );
+  talent.wild_growth                    = CT( "Wild Growth" );
 
   // Multi-Spec
   sim->print_debug( "Initializing multi-spec talents..." );
   talent.adaptive_swarm                 = ST( "Adaptive Swarm" );
-  talent.unbridled_swarm                = ST( "Unbridled Swarm" );
   talent.circle_of_life_and_death       = ST( "Circle of Life and Death" );
   talent.convoke_the_spirits            = ST( "Convoke the Spirits" );
   talent.survival_instincts             = ST( "Survival Instincts" );
+  talent.unbridled_swarm                = ST( "Unbridled Swarm" );
 
   // Balance
   sim->print_debug( "Initializing balance talents..." );
@@ -9489,7 +9489,7 @@ void druid_t::init_spells()
   talent.innate_resolve                 = ST( "Innate Resolve" );
   talent.infected_wounds_bear           = STS( "Infected Wounds", DRUID_GUARDIAN );
   talent.berserk_ravage                 = ST( "Berserk: Ravage" );
-  talent.ursocs_endurance_bear          = ST( "Ursoc's Endurance" );
+  talent.ursocs_endurance               = ST( "Ursoc's Endurance" );
   talent.gory_fur                       = ST( "Gory Fur" );
   talent.pawsitive_outlook              = ST( "Pawsitive Outlook" );
   talent.tooth_and_claw                 = ST( "Tooth and Claw" );
@@ -9875,7 +9875,7 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DURATION )
     ->set_tick_behavior( buff_tick_behavior::NONE )
     ->apply_affecting_aura( talent.improved_barkskin )
-    ->apply_affecting_aura( talent.ursocs_endurance_bear );
+    ->apply_affecting_aura( talent.ursocs_endurance );
   if ( talent.brambles.ok() )
     buff.barkskin->set_tick_behavior( buff_tick_behavior::REFRESH );
   if ( legendary.the_natural_orders_will->ok() )
@@ -9921,7 +9921,7 @@ void druid_t::create_buffs()
     ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
     ->apply_affecting_aura( talent.reinforced_fur )
     ->apply_affecting_aura( talent.ursine_adept )
-    ->apply_affecting_aura( talent.ursocs_endurance_bear )
+    ->apply_affecting_aura( talent.ursocs_endurance )
     ->add_invalidate( CACHE_AGILITY )
     ->add_invalidate( CACHE_ARMOR );
 
@@ -9974,6 +9974,10 @@ void druid_t::create_buffs()
       }
     } );
 
+  buff.matted_fur =
+      make_buff<absorb_buff_t>( this, "matted_fur", talent.matted_fur->effectN( 1 ).trigger() )
+          ->set_default_value( talent.matted_fur->effectN( 1 ).average( this ) );
+
   buff.moonkin_form = make_buff<moonkin_form_buff_t>( *this );
 
   buff.natures_vigil = make_buff( this, "natures_vigil", talent.natures_vigil )
@@ -9986,10 +9990,6 @@ void druid_t::create_buffs()
       make_buff( this, "tireless_pursuit", find_spell( 340546 ) )
           ->set_default_value( spec.cat_form_speed->effectN( 1 ).percent() )  // only switching from cat form supported
           ->set_duration( talent.tireless_pursuit->effectN( 1 ).time_value() );
-
-  buff.ursocs_endurance =
-      make_buff<absorb_buff_t>( this, "ursocs_endurance", talent.ursocs_endurance->effectN( 1 ).trigger() )
-          ->set_default_value( talent.ursocs_endurance->effectN( 1 ).average( this ) );
 
   buff.ursine_vigor = make_buff<ursine_vigor_buff_t>( *this );
 
@@ -12662,7 +12662,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.germination );
   action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );
-  action.apply_affecting_aura( talent.new_resto_passive );
+  action.apply_affecting_aura( talent.natural_recovery );
   action.apply_affecting_aura( talent.rampant_growth );
   action.apply_affecting_aura( talent.ready_for_anything );
   action.apply_affecting_aura( talent.sabertooth );
