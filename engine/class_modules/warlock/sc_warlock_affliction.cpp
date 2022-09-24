@@ -335,39 +335,38 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
-// REMEMBER TO CHECK SHADOW EMBRACE TO THIS WHEN RETALENTIZING
 // REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
   drain_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul )
+    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::nil() )
   {
     parse_options( options_str );
     channeled    = true;
-    hasted_ticks = may_crit = true;
   }
 
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
+
     if ( result_is_hit( d->state->result ) )
     {
       if ( p()->talents.shadow_embrace->ok() )
         td( d->target )->debuffs_shadow_embrace->trigger();
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      {
-        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-        bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
-                           && td( d->target )->dots_corruption->is_ticking()
-                           && td( d->target )->dots_unstable_affliction->is_ticking();
+      //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+      //{
+      //  // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
+      //  bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
+      //                     && td( d->target )->dots_corruption->is_ticking()
+      //                     && td( d->target )->dots_unstable_affliction->is_ticking();
 
-        if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
-        {
-          p()->procs.calamitous_crescendo->occur();
-          p()->buffs.calamitous_crescendo->trigger();
-        }
-      }
+      //  if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
+      //  {
+      //    p()->procs.calamitous_crescendo->occur();
+      //    p()->buffs.calamitous_crescendo->trigger();
+      //  }
+      //}
     }
   }
 
@@ -375,12 +374,12 @@ struct drain_soul_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_target_multiplier( t );
 
-    if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
+    if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
     //Withering Bolt does x% more damage per DoT on the target
     //TODO: Check what happens if a DoT falls off mid-channel
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
+    //m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -549,8 +548,11 @@ void warlock_t::init_spells_affliction()
 
   talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
 
+  talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
+  talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
-  talents.drain_soul          = find_talent_spell( "Drain Soul" );
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
   talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );
