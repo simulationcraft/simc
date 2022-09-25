@@ -55,6 +55,7 @@ public:
     propagate_const<dot_t*> devouring_plague;
     propagate_const<dot_t*> unholy_transfusion;
     propagate_const<dot_t*> mind_flay;
+    propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> mind_sear;
     propagate_const<dot_t*> void_torrent;
   } dots;
@@ -102,11 +103,9 @@ public:
     propagate_const<buff_t*> fade;
 
     // Talents
-    propagate_const<buff_t*> masochism;
     propagate_const<buff_t*> twist_of_fate;
     propagate_const<buff_t*> rhapsody;
     propagate_const<buff_t*> rhapsody_timer;
-    propagate_const<buff_t*> depth_of_the_shadows;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -176,19 +175,16 @@ public:
     player_talent_t shadowfiend;
     // Row 2
     player_talent_t prayer_of_mending;
-    player_talent_t leap_of_faith;
+    player_talent_t improved_flash_heal;
     player_talent_t purify_disease;
-    player_talent_t shadow_mend;
-    const spell_data_t* shadow_mend_self_damage;
+    player_talent_t psychic_voice;
     player_talent_t shadow_word_death;
     // Row 3
     player_talent_t focused_mending;
     player_talent_t holy_nova;
-    player_talent_t move_with_grace;
-    player_talent_t body_and_soul;
-    player_talent_t masochism;
-    const spell_data_t* masochism_buff;
-    player_talent_t depth_of_the_shadows;
+    player_talent_t protective_light;
+    player_talent_t from_darkness_comes_light;
+    player_talent_t angelic_feather;
     player_talent_t phantasm;
     player_talent_t death_and_madness;
     const spell_data_t* death_and_madness_insanity;
@@ -197,22 +193,23 @@ public:
     player_talent_t blessed_recovery;
     player_talent_t rhapsody;
     const spell_data_t* rhapsody_buff;
-    player_talent_t angelic_feather;
+    player_talent_t leap_of_faith;
     player_talent_t shackle_undead;
     player_talent_t sheer_terror;
     player_talent_t void_tendrils;
     player_talent_t mind_control;
     player_talent_t dominate_mind;
     // Row 5
-    player_talent_t tools_of_the_cloth;
+    player_talent_t words_of_the_pious;
     player_talent_t mass_dispel;
+    player_talent_t move_with_grace;
     player_talent_t power_infusion;
     player_talent_t vampiric_embrace;
     player_talent_t tithe_evasion;
     // Row 6
     player_talent_t inspiration;
     player_talent_t improved_mass_dispel;
-    player_talent_t psychic_voice;
+    player_talent_t body_and_soul;
     player_talent_t twins_of_the_sun_priestess;
     player_talent_t void_shield;
     player_talent_t sanlayn;
@@ -263,23 +260,22 @@ public:
       const spell_data_t* coalescing_shadows_buff;
       const spell_data_t* coalescing_shadows_dot_buff;
       player_talent_t mind_sear;
-      const spell_data_t* mind_sear_insanity;
       player_talent_t void_eruption;
       const spell_data_t* void_eruption_damage;
       player_talent_t dark_ascension;
-      player_talent_t shadowy_insight;
+      player_talent_t psychic_link;
       player_talent_t mind_spike;
       // Row 5
       player_talent_t puppet_master;
-      player_talent_t shadow_crash;
-      player_talent_t ancient_madness;
       player_talent_t mental_decay;
+      player_talent_t ancient_madness;
+      player_talent_t shadowy_insight;
       player_talent_t surge_of_darkness;
       const spell_data_t* surge_of_darkness_buff;
       // Row 6
       player_talent_t harnessed_shadows;
       player_talent_t unfurling_darkness;
-      player_talent_t psychic_link;
+      player_talent_t shadow_crash;
       player_talent_t mind_melt;
       // Row 7
       player_talent_t maddening_touch;
@@ -288,28 +284,29 @@ public:
       player_talent_t whispers_of_the_damned;
       // Row 8
       player_talent_t mindbender;
+      player_talent_t deathspeaker;
+      player_talent_t mind_flay_insanity;
+      const spell_data_t* mind_flay_insanity_spell;
+      player_talent_t encroaching_shadows;
+      player_talent_t damnation;
+      player_talent_t void_torrent;
+      // Row 9
+      player_talent_t inescapable_torment;
+      player_talent_t screams_of_the_void;
+      player_talent_t pain_of_death;
+      player_talent_t mind_devourer;
+      player_talent_t insidious_ire;
+      player_talent_t malediction;
+      // Row 10
       player_talent_t idol_of_yshaarj;
       const spell_data_t* devoured_pride;
       const spell_data_t* devoured_despair;
       const spell_data_t* devoured_anger;
       const spell_data_t* devoured_fear;
       const spell_data_t* devoured_violence;
-      player_talent_t deathspeaker;
-      player_talent_t mind_flay_insanity;
-      player_talent_t encroaching_shadows;
-      player_talent_t damnation;
-      player_talent_t void_torrent;
-      // Row 9
-      player_talent_t screams_of_the_void;
-      player_talent_t pain_of_death;
-      player_talent_t insidious_ire;
-      player_talent_t malediction;
-      // Row 10
-      player_talent_t inescapable_torment;
       player_talent_t idol_of_cthun;
-      player_talent_t idol_of_nzoth;
       player_talent_t idol_of_yoggsaron;
-      player_talent_t mind_devourer;
+      player_talent_t idol_of_nzoth;
     } shadow;
 
     struct
@@ -1314,7 +1311,7 @@ struct priest_spell_t : public priest_action_t<spell_t>
     if ( priest().specialization() == PRIEST_SHADOW && priest().talents.shadow.void_eruption.enabled() &&
          priest().buffs.voidform->up() && vf_extension > 0_s )
     {
-      priest().buffs.voidform->extend_duration(&priest(), vf_extension );
+      priest().buffs.voidform->extend_duration( &priest(), vf_extension );
     }
 
     base_t::consume_resource();

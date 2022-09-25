@@ -81,10 +81,8 @@ struct mind_sear_t final : public priest_spell_t
   {
     parse_options( options_str );
     channeled           = true;
-    may_crit            = false;
-    hasted_ticks        = false;
     dynamic_tick_action = true;
-    tick_zero           = false;
+    tick_zero           = true;
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
     if ( priest().specialization() == PRIEST_SHADOW )
@@ -145,8 +143,14 @@ struct mind_flay_base_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
-    priest().trigger_idol_of_cthun( d->state );
     trigger_mind_flay_dissonant_echoes();
+
+    // BUG: MF:I does not proc Idol of C'thun
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/940
+    if ( !priest().bugs || this->id != 391403 )
+    {
+      priest().trigger_idol_of_cthun( d->state );
+    }
 
     if ( priest().talents.shadow.dark_evangelism.enabled() )
     {
@@ -163,13 +167,18 @@ struct mind_flay_base_t final : public priest_spell_t
       td.dots.vampiric_touch->adjust_duration( dot_extension, true );
     }
 
-    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) )
+    // BUG: MF:I does not proc Coalescing Shadows
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/941
+    if ( priest().talents.shadow.coalescing_shadows.enabled() && rng().roll( coalescing_shadows_chance ) &&
+         ( !priest().bugs || this->id != 391403 ) )
     {
       priest().buffs.coalescing_shadows->trigger();
       priest().procs.coalescing_shadows_mind_flay->occur();
     }
 
-    if ( priest().talents.shadow.psychic_link.enabled() )
+    // BUG: MF:I does not proc Psychic Link
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/942
+    if ( priest().talents.shadow.psychic_link.enabled() && ( !priest().bugs || this->id != 391403 ) )
     {
       priest().trigger_psychic_link( d->state );
     }
@@ -192,7 +201,7 @@ struct mind_flay_t final : public priest_spell_t
   mind_flay_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_flay", p, p.specs.mind_flay ),
       _base_spell( new mind_flay_base_t( "mind_flay", p, p.specs.mind_flay ) ),
-      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.find_spell( 391403 ) ) )
+      _insanity_spell( new mind_flay_base_t( "mind_flay_insanity", p, p.talents.shadow.mind_flay_insanity_spell ) )
   {
     parse_options( options_str );
 
@@ -565,10 +574,6 @@ struct shadow_word_pain_t final : public priest_spell_t
         }
       }
 
-      if ( priest().talents.depth_of_the_shadows.enabled() )
-      {
-        priest().buffs.depth_of_the_shadows->trigger();
-      }
       if ( priest().buffs.fae_guardians->check() )
       {
         priest_td_t& td = get_td( s->target );
@@ -606,11 +611,6 @@ struct shadow_word_pain_t final : public priest_spell_t
       trigger_power_of_the_dark_side();
 
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_swp );
-
-      if ( priest().talents.depth_of_the_shadows.enabled() )
-      {
-        priest().buffs.depth_of_the_shadows->trigger();
-      }
 
       if ( priest().talents.shadow.tormented_spirits.enabled() &&
            rng().roll( priest()
@@ -1352,14 +1352,10 @@ struct dark_void_t final : public priest_spell_t
     may_miss = false;
     radius   = data().effectN( 1 ).radius_max();
 
+    // BUG: Currently does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
     if ( !priest().bugs )
     {
-      // BUG: only hitting 4 targets where it should be 8 targets
-      // 8 targets is found in spelldata though
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/930
-      aoe = data().effectN( 2 ).base_value();
-      // BUG: Currently does not scale with Mastery
-      // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
       affected_by_shadow_weaving = true;
     }
   }
@@ -2133,64 +2129,63 @@ void priest_t::init_spells_shadow()
   talents.shadow.dark_void          = ST( "Dark Void" );
   talents.shadow.dark_void_insanity = find_spell( 391450 );  // Not linked to Dark Void except in tooltip
   talents.shadow.intangibility      = ST( "Intangibility" );
-  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );  // NYI
+  talents.shadow.mental_fortitude   = ST( "Mental Fortitude" );
   talents.shadow.auspicious_spirits = ST( "Auspicious Spirits" );
-  talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );  // NYI
+  talents.shadow.tormented_spirits  = ST( "Tormented Spirits" );
   // Row 4
   talents.shadow.coalescing_shadows          = ST( "Coalescing Shadows" );
   talents.shadow.coalescing_shadows_buff     = find_spell( 391243 );
   talents.shadow.coalescing_shadows_dot_buff = find_spell( 391244 );
-  talents.shadow.mind_sear                   = ST( "Mind Sear" );      // NYI
-  talents.shadow.mind_sear_insanity          = find_spell( 208232 );   // TODO: might not need. Insanity is stored here
+  talents.shadow.mind_sear                   = ST( "Mind Sear" );
   talents.shadow.void_eruption               = ST( "Void Eruption" );  // TODO: confirm CD is 2m
   talents.shadow.void_eruption_damage        = find_spell( 228360 );
-  talents.shadow.dark_ascension              = ST( "Dark Ascension" );  // NYI
-
-  talents.shadow.shadowy_insight = ST( "Shadowy Insight" );
-  talents.shadow.mind_spike      = ST( "Mind Spike" );
+  talents.shadow.dark_ascension              = ST( "Dark Ascension" );
+  talents.shadow.psychic_link                = ST( "Psychic Link" );
+  talents.shadow.mind_spike                  = ST( "Mind Spike" );
   // Row 5
-  talents.shadow.puppet_master          = ST( "Puppet Master" );  // NYI
-  talents.shadow.shadow_crash           = ST( "Shadow Crash" );
+  talents.shadow.puppet_master          = ST( "Puppet Master" );
+  talents.shadow.mental_decay           = ST( "Mental Decay" );
   talents.shadow.ancient_madness        = ST( "Ancient Madness" );  // TODO: add point scaling
+  talents.shadow.shadowy_insight        = ST( "Shadowy Insight" );
   talents.shadow.surge_of_darkness      = ST( "Surge of Darkness" );
   talents.shadow.surge_of_darkness_buff = find_spell( 87160 );
-  talents.shadow.mental_decay           = ST( "Mental Decay" );  // NYI
   // Row 6
-  talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );  // NYI
+  talents.shadow.harnessed_shadows  = ST( "Harnessed Shadows" );
   talents.shadow.unfurling_darkness = ST( "Unfurling Darkness" );
-  talents.shadow.psychic_link       = ST( "Psychic Link" );  // Add in Mind Spike and confirm values
+  talents.shadow.shadow_crash       = ST( "Shadow Crash" );
   talents.shadow.mind_melt          = ST( "Mind Melt" );
   // Row 7
   talents.shadow.maddening_touch          = ST( "Maddening Touch" );
   talents.shadow.maddening_touch_insanity = find_spell( 391232 );
   talents.shadow.dark_evangelism          = ST( "Dark Evangelism" );
-  talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );  // NYI
+  talents.shadow.whispers_of_the_damned   = ST( "Whispers of the Damned" );
   // Row 8
-  talents.shadow.mindbender      = ST( "Mindbender" );
-  talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
-  // TODO: Implement Stunned/Feared/Enraged Y'shaarj
-  talents.shadow.devoured_pride      = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
-  talents.shadow.devoured_despair    = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
-  talents.shadow.devoured_anger      = find_spell( 373318 );  // Haste - Enrage - NYI
-  talents.shadow.devoured_fear       = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
-  talents.shadow.devoured_violence   = find_spell( 373320 );  // Pet Extension - Default
-  talents.shadow.deathspeaker        = ST( "Deathspeaker" );
-  talents.shadow.mind_flay_insanity  = ST( "Mind Flay: Insanity" );
-  talents.shadow.encroaching_shadows = ST( "Encroaching Shadows" );
-  talents.shadow.damnation           = ST( "Damnation" );
-  talents.shadow.void_torrent        = ST( "Void Torrent" );
+  talents.shadow.mindbender               = ST( "Mindbender" );
+  talents.shadow.deathspeaker             = ST( "Deathspeaker" );
+  talents.shadow.mind_flay_insanity       = ST( "Mind Flay: Insanity" );
+  talents.shadow.mind_flay_insanity_spell = find_spell( 391403 );  // Not linked to talent, actual dmg spell
+  talents.shadow.encroaching_shadows      = ST( "Encroaching Shadows" );
+  talents.shadow.damnation                = ST( "Damnation" );
+  talents.shadow.void_torrent             = ST( "Void Torrent" );
   // Row 9
+  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
-
-  talents.shadow.insidious_ire = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.malediction   = ST( "Malediction" );
-  // Row 10
-  talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
-  talents.shadow.idol_of_cthun       = ST( "Idol of C'Thun" );
-  talents.shadow.idol_of_nzoth       = ST( "Idol of N'Zoth" );
-  talents.shadow.idol_of_yoggsaron   = ST( "Idol of Yogg-Saron" );
   talents.shadow.mind_devourer       = ST( "Mind Devourer" );  // TODO: check values
+  talents.shadow.insidious_ire       = ST( "Insidious Ire" );  // TODO: check values
+  talents.shadow.malediction         = ST( "Malediction" );    // TODO: confirm this works with Void Torrent
+  // Row 10
+  talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
+  // TODO: Implement Stunned/Feared/Enraged Y'shaarj
+  talents.shadow.devoured_pride    = find_spell( 373316 );  // Pet Damage, Your Damage - Healthy
+  talents.shadow.devoured_despair  = find_spell( 373317 );  // Insanity Generation - Stunned - NYI
+  talents.shadow.devoured_anger    = find_spell( 373318 );  // Haste - Enrage - NYI
+  talents.shadow.devoured_fear     = find_spell( 373319 );  // Big Personal Damage - Feared - NYI
+  talents.shadow.devoured_violence = find_spell( 373320 );  // Pet Extension - Default
+
+  talents.shadow.idol_of_cthun     = ST( "Idol of C'Thun" );
+  talents.shadow.idol_of_yoggsaron = ST( "Idol of Yogg-Saron" );
+  talents.shadow.idol_of_nzoth     = ST( "Idol of N'Zoth" );
 
   // General Spells
   specs.mind_flay      = find_specialization_spell( "Mind Flay" );
@@ -2421,7 +2416,14 @@ bool priest_t::is_screams_of_the_void_up( player_t* target ) const
     priest_td_t* td = get_target_data( target );
     if ( td->dots.mind_flay->is_ticking() || td->dots.void_torrent->is_ticking() ||
          talents.shadow.mind_sear.enabled() && channeling != nullptr &&
-                                                 channeling->id == talents.shadow.mind_sear->id() )
+             channeling->id == talents.shadow.mind_sear->id() )
+    {
+      return true;
+    }
+
+    // MF:I does not proc Screams of the Void
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/939
+    if ( !bugs && td->dots.mind_flay_insanity->is_ticking() )
     {
       return true;
     }

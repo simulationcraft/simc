@@ -211,7 +211,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-             } );
+          } );
         }
       }
     }
@@ -900,7 +900,7 @@ struct mindgames_t final : public priest_spell_t
       add_child( child_mindgames_damage_reversal );
     }
 
-    // TODO: this is not working in-game, confirm values later
+    // TODO: convert to apply_affecting_aura
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -1285,95 +1285,6 @@ struct summon_mindbender_t final : public summon_pet_t
     summon_pet_t::execute();
 
     summoning_duration = default_duration;
-  }
-};
-
-// ==========================================================================
-// Shadow Mend
-// TODO: remove DoT once you have taken ${$s1/2} total damage from all sources (186263)
-// ==========================================================================
-struct shadow_mend_self_damage_t final : public priest_spell_t
-{
-  shadow_mend_self_damage_t( priest_t& p )
-    : priest_spell_t( "shadow_mend_self_damage", p, p.talents.shadow_mend_self_damage )
-  {
-    background = true;
-    may_crit   = false;
-    may_miss   = false;
-    target     = player;
-  }
-
-  void trigger( double original_amount )
-  {
-    base_td = original_amount / 20;
-    execute();
-  }
-
-  void init() override
-  {
-    base_t::init();
-
-    // We don't want this counted towards our dps
-    stats->type = stats_e::STATS_NEUTRAL;
-  }
-
-  proc_types proc_type() const override
-  {
-    return PROC1_ANY_DAMAGE_TAKEN;
-  }
-};
-
-struct shadow_mend_t final : public priest_heal_t
-{
-  propagate_const<shadow_mend_self_damage_t*> shadow_mend_self_damage;
-
-  shadow_mend_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "shadow_mend", p, p.talents.shadow_mend ),
-      shadow_mend_self_damage( new shadow_mend_self_damage_t( p ) )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  double composite_da_multiplier( const action_state_t* s ) const override
-  {
-    double m = priest_heal_t::composite_da_multiplier( s );
-
-    if ( priest().talents.depth_of_the_shadows && priest().buffs.depth_of_the_shadows->check() )
-    {
-      player->sim->print_debug( "{} triggered shadow_mend with {} mod.", priest(),
-                                priest().buffs.depth_of_the_shadows->check_stack_value() );
-
-      m *= 1 + priest().buffs.depth_of_the_shadows->check_stack_value();
-    }
-
-    return m;
-  }
-
-  void execute() override
-  {
-    if ( priest().talents.masochism.enabled() )
-    {
-      priest().buffs.masochism->trigger();
-    }
-
-    priest_heal_t::execute();
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    // TODO: add in Masochism HoT
-    if ( !priest().talents.masochism.enabled() && result_is_hit( s->result ) )
-    {
-      shadow_mend_self_damage->trigger( s->result_amount );
-    }
-
-    priest_heal_t::impact( s );
-
-    if ( priest().talents.depth_of_the_shadows.enabled() )
-    {
-      priest().buffs.depth_of_the_shadows->expire();
-    }
   }
 };
 
@@ -1817,6 +1728,11 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
   {
     // Cooldown handled by the action
     cooldown->duration = 0_ms;
+
+    if ( priest().talents.lights_inspiration.enabled() )
+    {
+      health_change *= 1.0 + priest().talents.lights_inspiration->effectN( 1 ).percent();
+    }
   }
 
   void start( int stacks, double value, timespan_t duration ) override
@@ -1848,17 +1764,6 @@ struct desperate_prayer_t final : public priest_buff_t<buff_t>
     sim->print_debug( "{} loses desperate_prayer: health pct change {}%, current health: {} -> {}, max: {} -> {}",
                       player->name(), health_change * 100.0, old_health, player->resources.current[ RESOURCE_HEALTH ],
                       old_max_health, player->resources.max[ RESOURCE_HEALTH ] );
-  }
-};
-
-// ==========================================================================
-// Masochism
-// ==========================================================================
-struct masochism_t final : public priest_buff_t<buff_t>
-{
-  masochism_t( priest_t& p ) : base_t( p, "masochism", p.talents.masochism_buff )
-  {
-    set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_TAKEN );
   }
 };
 
@@ -2085,6 +1990,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.devouring_plague   = target->get_dot( "devouring_plague", &p );
   dots.unholy_transfusion = target->get_dot( "unholy_transfusion", &p );
   dots.mind_flay          = target->get_dot( "mind_flay", &p );
+  dots.mind_flay_insanity = target->get_dot( "mind_flay_insanity", &p );
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
   dots.void_torrent       = target->get_dot( "void_torrent", &p );
 
@@ -2515,10 +2421,6 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new fade_t( *this, options_str );
   }
-  if ( name == "shadow_mend" )
-  {
-    return new shadow_mend_t( *this, options_str );
-  }
   if ( name == "desperate_prayer" )
   {
     return new desperate_prayer_t( *this, options_str );
@@ -2734,44 +2636,42 @@ void priest_t::init_spells()
   talents.dispel_magic = CT( "Dispel Magic" );  // NYI
   talents.shadowfiend  = CT( "Shadowfiend" );
   // Row 2
-  talents.prayer_of_mending       = CT( "Prayer of Mending" );  // NYI
-  talents.leap_of_faith           = CT( "Leap of Faith" );      // NYI
-  talents.purify_disease          = CT( "Purify Disease" );     // NYI
-  talents.shadow_mend             = CT( "Shadow Mend" );
-  talents.shadow_mend_self_damage = find_spell( 187464 );
-  talents.shadow_word_death       = CT( "Shadow Word: Death" );  // TODO: Confirm CD
+  talents.prayer_of_mending   = CT( "Prayer of Mending" );    // NYI
+  talents.improved_flash_heal = CT( "Improved Flash Heal" );  // NYI
+  talents.purify_disease      = CT( "Purify Disease" );       // NYI
+  talents.psychic_voice       = CT( "Psychic Voice" );        // TODO: Confirm
+  talents.shadow_word_death   = CT( "Shadow Word: Death" );   // TODO: Confirm CD
   // Row 3
   talents.focused_mending            = CT( "Focused Mending" );  // NYI
   talents.holy_nova                  = CT( "Holy Nova" );
-  talents.move_with_grace            = CT( "Move With Grace" );  // NYI
-  talents.body_and_soul              = CT( "Body and Soul" );    // NYI
-  talents.masochism                  = CT( "Masochism" );        // TODO: implement heal over time
-  talents.masochism_buff             = find_spell( 193065 );
-  talents.depth_of_the_shadows       = CT( "Depth of the Shadows" );
-  talents.phantasm                   = CT( "Phantasm" );           // NYI
-  talents.death_and_madness          = CT( "Death and Madness" );  // NYI
-  talents.death_and_madness_insanity = find_spell( 321973 );       // TODO: do we still need this?
+  talents.protective_light           = CT( "Protective Light" );           // NYI
+  talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );  // NYI
+  talents.angelic_feather            = CT( "Angelic Feather" );            // Need to swap spell data
+  talents.phantasm                   = CT( "Phantasm" );                   // NYI
+  talents.death_and_madness          = CT( "Death and Madness" );          // NYI
+  talents.death_and_madness_insanity = find_spell( 321973 );               // TODO: do we still need this?
   // Row 4
   talents.spell_warding    = CT( "Spell Warding" );     // NYI
   talents.blessed_recovery = CT( "Blessed Recovery" );  // NYI
   talents.rhapsody         = CT( "Rhapsody" );
   talents.rhapsody_buff    = find_spell( 390636 );
-  talents.angelic_feather  = CT( "Angelic Feather" );  // Need to swap spell data
-  talents.shackle_undead   = CT( "Shackle Undead" );   // NYI
-  talents.sheer_terror     = CT( "Sheer Terror" );     // NYI
-  talents.void_tendrils    = CT( "Void Tendrils" );    // NYI
-  talents.mind_control     = CT( "Mind Control" );     // NYI
-  talents.dominate_mind    = CT( "Dominant Mind" );    // NYI
+  talents.leap_of_faith    = CT( "Leap of Faith" );   // NYI
+  talents.shackle_undead   = CT( "Shackle Undead" );  // NYI
+  talents.sheer_terror     = CT( "Sheer Terror" );    // NYI
+  talents.void_tendrils    = CT( "Void Tendrils" );   // NYI
+  talents.mind_control     = CT( "Mind Control" );    // NYI
+  talents.dominate_mind    = CT( "Dominant Mind" );   // NYI
   // Row 5
-  talents.tools_of_the_cloth = CT( "Tools of the Cloth" );  // NYI
+  talents.words_of_the_pious = CT( "Words of the Pious" );  // NYI
   talents.mass_dispel        = CT( "Mass Dispel" );         // NYI
+  talents.move_with_grace    = CT( "Move With Grace" );     // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );  // confirm spelldata
   // Row 6
   talents.inspiration                = CT( "Inspiration" );                 // NYI
   talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );        // NYI
-  talents.psychic_voice              = CT( "Psychic Voice" );               // TODO: Confirm
+  talents.body_and_soul              = CT( "Body and Soul" );               // NYI
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );  // NYI
   talents.void_shield                = CT( "Void Shield" );                 // NYI
   talents.sanlayn                    = CT( "San'layn" );                    // TODO: Confirm
@@ -2788,8 +2688,8 @@ void priest_t::init_spells()
   talents.translucent_image = CT( "Translucent Image" );
   talents.mindgames         = CT( "Mindgames" );
   // Row 9
-  talents.surge_of_light         = CT( "Surge of Light" );          // NYI
-  talents.lights_inspiration     = CT( "Light's Inspiration" );     // NYI
+  talents.surge_of_light         = CT( "Surge of Light" );  // NYI
+  talents.lights_inspiration     = CT( "Light's Inspiration" );
   talents.crystalline_reflection = CT( "Crystalline Reflection" );  // NYI
   talents.improved_fade          = CT( "Improved Fade" );           // NYI
   talents.manipulation           = CT( "Manipulation" );            // NYI
@@ -2816,7 +2716,6 @@ void priest_t::create_buffs()
                             ->set_default_value_from_effect( 1 )
                             ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER )
                             ->add_invalidate( CACHE_PLAYER_HEAL_MULTIPLIER );
-  buffs.masochism = make_buff<buffs::masochism_t>( *this );
   buffs.rhapsody =
       make_buff( this, "rhapsody", talents.rhapsody_buff )
           ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int ) { buffs.rhapsody_timer->trigger(); } ) );
@@ -2830,9 +2729,6 @@ void priest_t::create_buffs()
                                  buffs.rhapsody->trigger();
                                }
                              } ) );
-  buffs.depth_of_the_shadows =
-      make_buff( this, "depth_of_the_shadows", talents.depth_of_the_shadows->effectN( 1 ).trigger() )
-          ->set_default_value_from_effect( 1 );
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
   buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", find_spell( 390628 ) )
                                       ->set_trigger_spell( talents.death_and_madness );
@@ -3156,8 +3052,6 @@ void priest_t::trigger_idol_of_cthun( action_state_t* s )
 
   if ( rppm.idol_of_cthun->trigger() )
   {
-    // TODO: Keep checking that MFI doesn't work with this. It actually doesn't but I made it anyway. It should be a
-    // bug.
     if ( action_id == mind_flay_id || action_id == mind_flay_insanity_id )
     {
       procs.void_tendril->occur();
@@ -3275,9 +3169,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
