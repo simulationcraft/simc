@@ -481,12 +481,12 @@ public:
     // 20
     const spell_data_t* ashes_to_ashes;
     const spell_data_t* templars_vindication; // NYI
-    const spell_data_t* execution_sentence; // NYI
+    const spell_data_t* execution_sentence; // ?
     const spell_data_t* empyrean_endowment; // NYI
     const spell_data_t* virtuous_command; // NYI
     const spell_data_t* final_verdict; // NYI
-    const spell_data_t* executioners_will; // NYI
-    const spell_data_t* executioners_wrath; // NYI
+    const spell_data_t* executioners_will; // ?
+    const spell_data_t* executioners_wrath; // ?
     const spell_data_t* final_reckoning;
     const spell_data_t* vanguards_momentum;
   } talents;
