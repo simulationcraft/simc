@@ -310,8 +310,8 @@ struct consecration_tick_t : public paladin_spell_t
     double m = paladin_spell_t::composite_target_multiplier( target );
 
     paladin_td_t* td = p()->get_target_data( target );
-    if ( td->debuff.calm_before_the_storm->up() )
-      m *= 1.0 + td->debuff.calm_before_the_storm->data().effectN( 1 ).percent();
+    if ( td->debuff.sanctify->up() )
+      m *= 1.0 + td->debuff.sanctify->data().effectN( 1 ).percent();
 
     return m;
   }
@@ -453,8 +453,6 @@ struct consecration_t : public paladin_spell_t
     else
       make_event<ground_aoe_event_t>( *sim, p(), cons_params, true /* Immediate pulse */ );
   }
-
-
 };
 
 // Divine Shield ==============================================================
@@ -1924,7 +1922,7 @@ paladin_td_t::paladin_td_t( player_t* target, paladin_t* paladin ) : actor_targe
   debuff.vengeful_shock        = make_buff( *this, "vengeful_shock", paladin->conduit.vengeful_shock->effectN( 1 ).trigger() )
                                 ->set_default_value( paladin->conduit.vengeful_shock.percent() );
   debuff.seal_of_the_crusader  = make_buff( *this, "seal_of_the_crusader", paladin->find_spell( 385723 ) );
-  debuff.calm_before_the_storm = make_buff( *this, "calm_before_the_storm", paladin->find_spell( 382538 ) );
+  debuff.sanctify              = make_buff( *this, "sanctify", paladin->find_spell( 382538 ) );
 }
 
 bool paladin_td_t::standing_in_consecration()

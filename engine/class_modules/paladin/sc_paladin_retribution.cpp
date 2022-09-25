@@ -371,8 +371,8 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
 
     if ( result_is_hit( s -> result ) )
     {
-      if ( p() -> talents.calm_before_the_storm -> ok() )
-        td( s -> target ) -> debuff.calm_before_the_storm -> trigger();
+      if ( p() -> talents.sanctify -> ok() )
+        td( s -> target ) -> debuff.sanctify -> trigger();
     }
   }
 };
@@ -629,13 +629,22 @@ struct final_reckoning_t : public paladin_spell_t
 
 // Judgment - Retribution =================================================================
 
+struct seal_of_wrath_t : public paladin_spell_t
+{
+  seal_of_wrath_t( paladin_t* p ) :
+    paladin_spell_t( "seal_of_wrath", p, p -> find_spell( 386911 ) )
+  { }
+};
+
 struct judgment_ret_t : public judgment_t
 {
   int holy_power_generation;
+  seal_of_wrath_t* seal_of_wrath;
 
   judgment_ret_t( paladin_t* p, util::string_view name, util::string_view options_str ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
+    holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
+    seal_of_wrath( nullptr )
   {
     parse_options( options_str );
 
@@ -644,11 +653,18 @@ struct judgment_ret_t : public judgment_t
 
     if ( p -> talents.timely_judgment -> ok() )
       cooldown->duration += timespan_t::from_seconds( p -> talents.timely_judgment -> effectN( 1 ).base_value() );
+
+    if ( p -> talents.seal_of_wrath -> ok() )
+    {
+      seal_of_wrath = new seal_of_wrath_t( p );
+      add_child( seal_of_wrath );
+    }
   }
 
   judgment_ret_t( paladin_t* p, util::string_view name, bool is_divine_toll ) :
     judgment_t( p, name ),
-    holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) )
+    holy_power_generation( as<int>( p -> find_spell( 220637 ) -> effectN( 1 ).base_value() ) ),
+    seal_of_wrath( nullptr )
   {
     // This is for Divine Toll's background judgments
     background = true;
@@ -656,6 +672,12 @@ struct judgment_ret_t : public judgment_t
     // according to skeletor this is given the bonus of 326011
     if ( is_divine_toll )
       base_multiplier *= 1.0 + p -> find_spell( 326011 ) -> effectN( 1 ).percent();
+
+    if ( p -> talents.seal_of_wrath -> ok() )
+    {
+      seal_of_wrath = new seal_of_wrath_t( p );
+      add_child( seal_of_wrath );
+    }
   }
 
   void execute() override
@@ -680,6 +702,15 @@ struct judgment_ret_t : public judgment_t
 
       if ( p() -> spec.judgment_3 -> ok() )
         p() -> resource_gain( RESOURCE_HOLY_POWER, holy_power_generation, p() -> gains.judgment );
+
+      if ( p() -> talents.seal_of_wrath -> ok() )
+      {
+        if ( rng().roll( p() -> talents.seal_of_wrath -> effectN( 1 ).percent() ) )
+        {
+          seal_of_wrath -> set_target( s -> target );
+          seal_of_wrath -> schedule_execute();
+        }
+      }
     }
   }
 };
@@ -912,7 +943,7 @@ void paladin_t::init_spells_retribution()
   talents.blade_of_wrath              = find_talent_spell( talent_tree::SPECIALIZATION, "Blade of Wrath" );
   talents.highlords_judgment          = find_talent_spell( talent_tree::SPECIALIZATION, "Highlord's Judgment" );
   talents.righteous_verdict           = find_talent_spell( talent_tree::SPECIALIZATION, "Righteous Verdict" );
-  talents.calm_before_the_storm       = find_talent_spell( talent_tree::SPECIALIZATION, "Calm Before the Storm" );
+  talents.sanctify                    = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctify" );
   talents.wake_of_ashes               = find_talent_spell( talent_tree::SPECIALIZATION, "Wake of Ashes" );
   talents.consecrated_blade           = find_talent_spell( talent_tree::SPECIALIZATION, "Consecrated Blade" );
   talents.seal_of_wrath               = find_talent_spell( talent_tree::SPECIALIZATION, "Seal of Wrath" );
@@ -921,7 +952,7 @@ void paladin_t::init_spells_retribution()
   talents.sanctification              = find_talent_spell( talent_tree::SPECIALIZATION, "Sanctification" );
   talents.inner_power                 = find_talent_spell( talent_tree::SPECIALIZATION, "Inner Power" );
   talents.ashes_to_dust               = find_talent_spell( talent_tree::SPECIALIZATION, "Ashes to Dust" );
-  talents.path_of_ruin                = find_talent_spell( talent_tree::SPECIALIZATION, "Path of Ruin" );
+  talents.radiant_decree              = find_talent_spell( talent_tree::SPECIALIZATION, "Radiant Decree" );
   talents.crusade                     = find_talent_spell( talent_tree::SPECIALIZATION, "Crusade" );
   talents.truths_wake                 = find_talent_spell( talent_tree::SPECIALIZATION, "Truth's Wake" );
   talents.empyrean_power              = find_talent_spell( talent_tree::SPECIALIZATION, "Empyrean Power" );

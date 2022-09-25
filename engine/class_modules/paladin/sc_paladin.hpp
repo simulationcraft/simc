@@ -46,7 +46,7 @@ struct paladin_td_t : public actor_target_data_t
     buff_t* reckoning;
     buff_t* vengeful_shock;
     buff_t* seal_of_the_crusader;
-    buff_t* calm_before_the_storm;
+    buff_t* sanctify;
   } debuff;
 
   paladin_td_t( player_t* target, paladin_t* paladin );
@@ -453,16 +453,16 @@ public:
     // 8
     const spell_data_t* highlords_judgment;
     const spell_data_t* righteous_verdict;
-    const spell_data_t* calm_before_the_storm;
+    const spell_data_t* sanctify;
     const spell_data_t* wake_of_ashes;
-    const spell_data_t* consecrated_blade; // NYI
-    const spell_data_t* seal_of_wrath; // NYI
+    const spell_data_t* consecrated_blade;
+    const spell_data_t* seal_of_wrath;
     const spell_data_t* expurgation;
     const spell_data_t* boundless_judgment; // NYI
     const spell_data_t* sanctification; // NYI
     const spell_data_t* inner_power; // NYI
     const spell_data_t* ashes_to_dust;
-    const spell_data_t* path_of_ruin; // NYI
+    const spell_data_t* radiant_decree; // NYI
     const spell_data_t* crusade;
     const spell_data_t* truths_wake; // NYI
     const spell_data_t* empyrean_power;
