@@ -106,13 +106,7 @@ struct druid_td_t : public actor_target_data_t
 
   druid_td_t( player_t& target, druid_t& source );
 
-  int hots_ticking() const
-  {
-    return hots.cenarion_ward->is_ticking() + hots.cultivation->is_ticking() +
-           hots.frenzied_regeneration->is_ticking() + hots.germination->is_ticking() + hots.lifebloom->is_ticking() +
-           hots.regrowth->is_ticking() + hots.rejuvenation->is_ticking() + hots.spring_blossoms->is_ticking() +
-           hots.wild_growth->is_ticking();
-  }
+  int hots_ticking() const;
 
   /* Currently this helper method is only used for adapative swarm, which is bugged to not count lunar inspiration.
     The bugged check is implemented locally in adaptive_swarm_damage_t and this is commented out for now until it
@@ -846,55 +840,63 @@ public:
     // Restoration
     player_talent_t lifebloom;  // Row 1
 
-    player_talent_t efflorescence;  // Row 2
+    player_talent_t yseras_gift;  // Row 2
     player_talent_t natures_swiftness;
     player_talent_t omen_of_clarity_tree;
 
-    player_talent_t improved_lifebloom;  // Row 3
-    player_talent_t ready_for_anything;
-    player_talent_t ironbark;
+    player_talent_t grove_tending;  // Row 3
+    player_talent_t natures_splendor;
+    player_talent_t passing_seasons;
+    player_talent_t flash_of_clarity;
 
-    player_talent_t improved_wild_growth;  // Row 4
+    player_talent_t waking_dream;  // Row 4
     player_talent_t improved_regrowth;
-    player_talent_t improved_ironbark;
-
-    player_talent_t unstoppable_growth;  // Row 5
-    player_talent_t tranquility;
-    player_talent_t yseras_gift;
-
-    player_talent_t nourish;  // Row 6
-    player_talent_t soul_of_the_forest_tree;
-    player_talent_t inner_peace;
-    player_talent_t cultivation;
-
-    player_talent_t deep_roots;  // Row 7
     player_talent_t abundance;
     player_talent_t cenarion_ward;
+    player_talent_t nourish;
+
+    player_talent_t efflorescence;  // Row 5
+    player_talent_t tranquility;
+    player_talent_t ironbark;
+
+    player_talent_t soul_of_the_forest_tree;  // Row 6
+    player_talent_t cultivation;
+    player_talent_t inner_peace;
+    player_talent_t dreamstate;
+    player_talent_t improved_wild_growth;
     player_talent_t stonebark;
+    player_talent_t improved_ironbark;
 
-    player_talent_t overgrowth;  // Row 8
-    player_talent_t spring_blossoms;
+    player_talent_t verdancy;  // Row 7
     player_talent_t rampant_growth;
-    player_talent_t autumn_leaves;
-    player_talent_t grove_tending;
-    player_talent_t memory_of_the_mother_tree;
-    player_talent_t invigorate;
+    player_talent_t regenesis;
+    player_talent_t harmonious_blooming;
+    player_talent_t unstoppable_growth;
+    player_talent_t regenerative_heartwood;
 
-    player_talent_t germination;  // Row 9
-    // player_talent_t adaptive_swarm_tree;
-    // player_talent_t convoke_the_spirits_tree;
+    player_talent_t spring_blossoms;  // Row 8
+    player_talent_t overgrowth;
     player_talent_t incarnation_tree;
-    player_talent_t improved_innervate;
-
-    // player_talent_t circle_of_life_and_death_tree;  // Row 10
-    player_talent_t the_dark_titans_lesson;
-    player_talent_t photosynthesis;
-    // player_talent_t unbridled_swarm_tree;
-    player_talent_t cenarius_guidance;
-    player_talent_t ephemeral_incarnation;
+    // player_talent_t convoke_the_spirits_tree;
+    // player_talent_t adaptive_swarm_tree;
     player_talent_t verdant_infusion;
     player_talent_t flourish;
-    player_talent_t vision_of_unending_growth;
+
+    // player_talent_t circle_of_life_and_death_tree;  // Row 9
+    player_talent_t budding_leaves;
+    player_talent_t cenarius_guidance;
+    player_talent_t embrace_of_the_dream;
+    // player_talent_t unbridled_swarm_tree;
+    player_talent_t luxuriant_soil;
+    player_talent_t natural_wisdom;
+    player_talent_t nurturing_dormancy;
+
+    player_talent_t photosynthesis;  // Row 10
+    player_talent_t undergrowth;
+    player_talent_t germination;
+    player_talent_t reforestation;
+    player_talent_t power_of_the_archdruid;
+    player_talent_t invigorate;
   } talent;
 
   // Class Specializations
@@ -2619,8 +2621,9 @@ public:
 
     // Restoration
     parse_buff_effects( p()->buff.abundance );
+    parse_buff_effects<S>( p()->buff.clearcasting_tree, p()->talent.flash_of_clarity );
     parse_buff_effects( p()->buff.incarnation_tree );
-    parse_buff_effects( p()->buff.natures_swiftness );
+    parse_buff_effects<S>( p()->buff.natures_swiftness, p()->talent.natures_splendor );
   }
 
   template <typename... Ts>
@@ -9537,44 +9540,52 @@ void druid_t::init_spells()
 
   // Restoration
   sim->print_debug( "Initializing restoration talents..." );
-  talent.cenarius_guidance              = ST( "Cenarius' Guidance" );
-  talent.lifebloom                      = ST( "Lifebloom" );
-  talent.efflorescence                  = ST( "Efflorescence" );
-  talent.natures_swiftness              = ST( "Nature's Swiftness" );
-  talent.omen_of_clarity_tree           = STS( "Omen of Clarity", DRUID_RESTORATION );
-  talent.improved_lifebloom             = ST( "Improved Lifebloom" );  // TODO: NYI
-  talent.ready_for_anything             = ST( "Ready for Anything" );
-  talent.ironbark                       = ST( "Ironbark" );
-  talent.improved_wild_growth           = ST( "Improved Wild Growth" );
-  talent.improved_regrowth              = ST( "Improved Regrowth" );
-  talent.improved_ironbark              = ST( "Improved Ironbark" );
-  talent.unstoppable_growth             = ST( "Unstoppable Growth" );
-  talent.tranquility                    = ST( "Tranquility" );
-  talent.yseras_gift                    = ST( "Ysera's Gift" );
-  talent.nourish                        = ST( "Nourish" );
-  talent.soul_of_the_forest_tree        = STS( "Soul of the Forest", DRUID_RESTORATION );
-  talent.inner_peace                    = ST( "Inner Peace" );
-  talent.cultivation                    = ST( "Cultivation" );
-  talent.deep_roots                     = ST( "Deep Roots" );  // TODO: NYI
   talent.abundance                      = ST( "Abundance" );
+  talent.budding_leaves                 = ST( "Budding Leaves" );  // TODO: NYI
   talent.cenarion_ward                  = ST( "Cenarion Ward" );
-  talent.stonebark                      = ST( "Stonebark" );
-  talent.overgrowth                     = ST( "Overgrowth" );
-  talent.spring_blossoms                = ST( "Spring Blossoms" );
-  talent.rampant_growth                 = ST( "Rampant Growth" );  // TODO: copy on lb target NYI
-  talent.autumn_leaves                  = ST( "Autumn Leaves [no extension]" );
-  talent.grove_tending                  = ST( "Grove Tending" );
-  talent.memory_of_the_mother_tree      = ST( "Memory of the Mother Tree" );
-  talent.invigorate                     = ST( "Invigorate" );
-  talent.germination                    = ST( "Germination" );
-  talent.incarnation_tree               = ST( "Incarnation: Tree of Life" );
-  talent.improved_innervate             = ST( "Improved Innervate" );
-  talent.the_dark_titans_lesson         = ST( "The Dark Titan's Lesson" );
-  talent.photosynthesis                 = ST( "Photosynthesis" );
-  talent.ephemeral_incarnation          = ST( "Ephemeral Incarnation" );
-  talent.verdant_infusion               = ST( "Verdant Infusion" );
+  talent.cenarius_guidance              = ST( "Cenarius' Guidance" );  // TODO: Incarn bonus NYI
+  talent.cultivation                    = ST( "Cultivation" );
+  talent.dreamstate                     = ST( "Dreamstate" );  // TODO: NYI
+  talent.efflorescence                  = ST( "Efflorescence" );
+  talent.embrace_of_the_dream           = ST( "Embrace of the Dream" );  // TODO: NYI
+  talent.flash_of_clarity               = ST( "Flash of Clarity" );
   talent.flourish                       = ST( "Flourish" );
-  talent.vision_of_unending_growth      = ST( "Vision of Unending Growth" );
+  talent.germination                    = ST( "Germination" );
+  talent.grove_tending                  = ST( "Grove Tending" );
+  talent.harmonious_blooming            = ST( "Harmonious Blooming" );
+  talent.improved_ironbark              = ST( "Improved Ironbark" );
+  talent.improved_regrowth              = ST( "Improved Regrowth" );
+  talent.improved_wild_growth           = ST( "Improved Wild Growth" );
+  talent.incarnation_tree               = ST( "Incarnation: Tree of Life" );
+  talent.inner_peace                    = ST( "Inner Peace" );
+  talent.invigorate                     = ST( "Invigorate" );  // TODO: NYI
+  talent.ironbark                       = ST( "Ironbark" );
+  talent.lifebloom                      = ST( "Lifebloom" );
+  talent.luxuriant_soil                 = ST( "Luxuriant Soil" );  // TODO: NYI
+  talent.natural_wisdom                 = ST( "Natural Wisdom" );  // TODO: NYI
+  talent.natures_splendor               = ST( "Nature's Splendor" );
+  talent.natures_swiftness              = ST( "Nature's Swiftness" );
+  talent.nourish                        = ST( "Nourish" );
+  talent.nurturing_dormancy             = ST( "Nurturing Dormancy" );  // TODO: NYI
+  talent.omen_of_clarity_tree           = STS( "Omen of Clarity", DRUID_RESTORATION );
+  talent.overgrowth                     = ST( "Overgrowth" );
+  talent.passing_seasons                = ST( "Passing Seasons" );
+  talent.photosynthesis                 = ST( "Photosynthesis" );
+  talent.power_of_the_archdruid         = ST( "Power of the Archdruid" );  // TODO: NYI
+  talent.rampant_growth                 = ST( "Rampant Growth" );  // TODO: copy on lb target NYI
+  talent.reforestation                  = ST( "Reforestation" );  // TODO: NYI
+  talent.regenesis                      = ST( "Regenesis" );  // TODO: NYI
+  talent.regenerative_heartwood         = ST( "Regenerative Heartwood" );  // TODO: NYI
+  talent.soul_of_the_forest_tree        = STS( "Soul of the Forest", DRUID_RESTORATION );
+  talent.spring_blossoms                = ST( "Spring Blossoms" );
+  talent.stonebark                      = ST( "Stonebark" );
+  talent.tranquility                    = ST( "Tranquility" );
+  talent.undergrowth                    = ST( "Undergrowth" );  // TODO: NYI
+  talent.unstoppable_growth             = ST( "Unstoppable Growth" );
+  talent.verdancy                       = ST( "Verdancy" );  // TODO: NYI
+  talent.verdant_infusion               = ST( "Verdant Infusion" );  // TODO: NYI
+  talent.waking_dream                   = ST( "Waking Dream" );  // TODO: increased healing per rejuv NYI
+  talent.yseras_gift                    = ST( "Ysera's Gift" );
 
   // Covenants
   cov.kyrian                       = find_covenant_spell( "Kindred Spirits" );
@@ -10233,6 +10244,7 @@ void druid_t::create_buffs()
   if ( talent.yseras_gift.ok() )
   {
     buff.yseras_gift = make_buff( this, "yseras_gift_driver", talent.yseras_gift )
+      ->apply_affecting_aura( talent.waking_dream->effectN( 1 ).trigger() )
       ->set_quiet( true )
       ->set_tick_zero( true )
       ->set_tick_callback( [this]( buff_t*, int, timespan_t ) {
@@ -12159,6 +12171,18 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
     ->set_cooldown( 0_ms );
 }
 
+int druid_td_t::hots_ticking() const
+{
+  auto count = hots.cenarion_ward->is_ticking() + hots.cultivation->is_ticking() +
+               hots.frenzied_regeneration->is_ticking() + hots.germination->is_ticking() + hots.regrowth->is_ticking() +
+               hots.rejuvenation->is_ticking() + hots.spring_blossoms->is_ticking() + hots.wild_growth->is_ticking();
+
+  auto lb_mul = 1 + as<int>( debug_cast<druid_t*>( source )->talent.harmonious_blooming->effectN( 1 ).base_value() );
+  count += lb_mul * hots.lifebloom->is_ticking();
+
+  return count;
+}
+
 const druid_td_t* druid_t::find_target_data( const player_t* target ) const
 {
   assert( target );
@@ -12679,8 +12703,8 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.improved_ironbark );
   action.apply_affecting_aura( talent.inner_peace );
   action.apply_affecting_aura( talent.natural_recovery );
+  action.apply_affecting_aura( talent.passing_seasons );
   action.apply_affecting_aura( talent.rampant_growth );
-  action.apply_affecting_aura( talent.ready_for_anything );
   action.apply_affecting_aura( talent.sabertooth );
   action.apply_affecting_aura( talent.soul_of_the_forest_cat );
 
