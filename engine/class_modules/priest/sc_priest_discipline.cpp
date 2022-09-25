@@ -202,6 +202,8 @@ struct purge_the_wicked_t final : public priest_spell_t
       // tick_zero = false;
       energize_type = action_energize::NONE;  // disable resource generation from spell data
       background    = true;
+
+      apply_affecting_aura( priest().talents.throes_of_pain );
     }
 
     void tick( dot_t* d ) override
@@ -223,6 +225,8 @@ struct purge_the_wicked_t final : public priest_spell_t
     may_crit       = true;
     energize_type  = action_energize::NONE;  // disable resource generation from spell data
     execute_action = new purge_the_wicked_dot_t( p );
+
+    apply_affecting_aura( priest().talents.throes_of_pain );
   }
 };
 

@@ -510,11 +510,8 @@ struct shadow_word_pain_t final : public priest_spell_t
       dot_duration += priest().talents.shadow.misery->effectN( 2 ).time_value();
     }
 
-    // TODO: this can likely be automatically done
-    if ( priest().talents.throes_of_pain.enabled() )
-    {
-      base_td_multiplier *= ( 1 + priest().talents.throes_of_pain->effectN( 1 ).percent() );
-    }
+    // Spell Direct and Periodic 3%/5% gain
+    apply_affecting_aura( priest().talents.throes_of_pain );
 
     if ( priest().talents.shadow.coalescing_shadows.enabled() )
     {

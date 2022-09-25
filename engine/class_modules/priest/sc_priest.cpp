@@ -2027,6 +2027,7 @@ priest_td_t::priest_td_t( player_t* target, priest_t& p ) : actor_target_data_t(
   dots.mind_flay_insanity = target->get_dot( "mind_flay_insanity", &p );
   dots.mind_sear          = target->get_dot( "mind_sear", &p );
   dots.void_torrent       = target->get_dot( "void_torrent", &p );
+  dots.purge_the_wicked   = target->get_dot( "purge_the_wicked", &p );
 
   buffs.schism                   = make_buff( *this, "schism", p.talents.schism );
   buffs.death_and_madness_debuff = make_buff<buffs::death_and_madness_debuff_t>( *this );
@@ -2062,10 +2063,20 @@ void priest_td_t::target_demise()
 {
   priest().sim->print_debug( "{} demised. Priest {} resets targetdata for him.", *target, priest() );
 
-  if ( priest().talents.throes_of_pain.enabled() && dots.shadow_word_pain->is_ticking() )
+  if ( priest().talents.throes_of_pain.enabled() )
   {
-    priest().generate_insanity( priest().talents.throes_of_pain->effectN( 2 ).resource( RESOURCE_INSANITY ),
-                                priest().gains.insanity_throes_of_pain, nullptr );
+    if ( priest().specialization() == PRIEST_SHADOW && dots.shadow_word_pain->is_ticking() )
+    {
+      priest().generate_insanity( priest().talents.throes_of_pain->effectN( 3 ).resource( RESOURCE_INSANITY ),
+                                  priest().gains.throes_of_pain, nullptr );
+    }
+    if ( priest().specialization() != PRIEST_SHADOW &&
+         ( dots.shadow_word_pain->is_ticking() || dots.purge_the_wicked->is_ticking() ) )
+    {
+      double amount =
+          priest().talents.throes_of_pain->effectN( 5 ).percent() / 100.0 * priest().resources.max[ RESOURCE_MANA ];
+      priest().resource_gain( RESOURCE_MANA, amount, priest().gains.throes_of_pain );
+    }
   }
 
   reset();
@@ -2133,7 +2144,7 @@ void priest_t::create_gains()
   gains.mindbender                       = get_gain( "Mindbender" );
   gains.painbreaker_psalm                = get_gain( "Painbreaker Psalm" );
   gains.power_word_solace                = get_gain( "Mana Gained from Power Word: Solace" );
-  gains.insanity_throes_of_pain          = get_gain( "Throes of Pain" );
+  gains.throes_of_pain                   = get_gain( "Throes of Pain" );
   gains.insanity_idol_of_cthun_mind_flay = get_gain( "Insanity Gained from Idol of C'thun Mind Flay's" );
   gains.insanity_idol_of_cthun_mind_sear = get_gain( "Insanity Gained from Idol of C'thun Mind Sear's" );
   gains.hallucinations_power_word_shield = get_gain( "Insanity Gained from Power Word: Shield with Hallucinations" );
@@ -2716,7 +2727,7 @@ void priest_t::init_spells()
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );  // NYI
   talents.twist_of_fate   = CT( "Twist of Fate" );    // TODO: Check spelldata
-  talents.throes_of_pain  = CT( "Throes of Pain" );   // Confirm values
+  talents.throes_of_pain  = CT( "Throes of Pain" );
   // Row 8
   talents.angels_mercy      = CT( "Angel's Mercy" );  // NYI
   talents.binding_heals     = CT( "Binding Heals" );  // NYI

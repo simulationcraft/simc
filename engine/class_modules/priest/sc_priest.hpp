@@ -58,6 +58,7 @@ public:
     propagate_const<dot_t*> mind_flay_insanity;
     propagate_const<dot_t*> mind_sear;
     propagate_const<dot_t*> void_torrent;
+    propagate_const<dot_t*> purge_the_wicked;
   } dots;
 
   struct buffs_t
@@ -427,7 +428,7 @@ public:
     propagate_const<gain_t*> painbreaker_psalm;
     propagate_const<gain_t*> power_of_the_dark_side;
     propagate_const<gain_t*> power_word_solace;
-    propagate_const<gain_t*> insanity_throes_of_pain;
+    propagate_const<gain_t*> throes_of_pain;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_flay;
     propagate_const<gain_t*> insanity_idol_of_cthun_mind_sear;
     propagate_const<gain_t*> hallucinations_power_word_shield;
