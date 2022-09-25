@@ -467,6 +467,7 @@ public:
     buff_t* static_accumulation;
     buff_t* doom_winds_talent;
     buff_t* ice_strike;
+    buff_t* ashen_catalyst;
 
     // Restoration
     buff_t* spirit_walk;
@@ -750,7 +751,7 @@ public:
     player_talent_t unruly_winds; // TODO: Spell data still has conduit scaling (prolly non-issue)
     player_talent_t raging_maelstrom;
     player_talent_t feral_lunge;
-    player_talent_t primal_lava_actuators;
+    player_talent_t ashen_catalyst;
     // Row 5
     player_talent_t doom_winds;
     player_talent_t sundering;
@@ -3745,6 +3746,7 @@ struct lava_lash_t : public shaman_attack_t
     }
 
     m *= 1.0 + p()->buff.primal_lava_actuators->stack_value();
+    m *= 1.0 + p()->buff.ashen_catalyst->stack_value();
 
     return m;
   }
@@ -3766,6 +3768,7 @@ struct lava_lash_t : public shaman_attack_t
     shaman_attack_t::execute();
 
     p()->buff.primal_lava_actuators->expire();
+    p()->buff.ashen_catalyst->expire();
   }
 
   void impact( action_state_t* state ) override
@@ -6809,18 +6812,26 @@ public:
       p()->cooldown.chain_harvest->adjust( -1.0 * elemental_conduit->effectN( 3 ).time_value() );
     }
 
-    if ( ( p()->talent.primal_lava_actuators->ok() || p()->legendary.primal_lava_actuators.ok() ) &&
-          d->state->result_amount > 0 )
+    if ( p()->legendary.primal_lava_actuators.ok() && d->state->result_amount > 0 )
     {
       auto reduction = p()->legendary.primal_lava_actuators->effectN( 1 ).base_value() / 10.0;
       if ( reduction == 0.0 )
       {
-        reduction = p()->talent.primal_lava_actuators->effectN( 1 ).base_value() / 10.0;
+        reduction = p()->talent.ashen_catalyst->effectN( 1 ).base_value() / 10.0;
       }
       reduction /= 1.0 + p()->buff.hot_hand->check_value();
 
       p()->cooldown.lava_lash->adjust( timespan_t::from_seconds( -reduction ) );
       p()->buff.primal_lava_actuators->trigger();
+    }
+
+    if ( p()->talent.ashen_catalyst.ok() && d->state->result_amount > 0 )
+    {
+      auto reduction = p()->talent.ashen_catalyst->effectN( 1 ).base_value() / 10.0;
+      reduction /= 1.0 + p()->buff.hot_hand->check_value();
+
+      p()->cooldown.lava_lash->adjust( timespan_t::from_seconds( -reduction ) );
+      p()->buff.ashen_catalyst->trigger();
     }
 
     if ( p()->talent.searing_flames->ok() && rng().roll( p()->talent.searing_flames->effectN( 2 ).percent() ) )
@@ -9171,7 +9182,7 @@ void shaman_t::init_spells()
   talent.raging_maelstrom = _ST( "Raging Maelstrom" );
   talent.feral_lunge = _ST( "Feral Lunge" );
   talent.lashing_flames = _ST( "Lashing Flames" );
-  talent.primal_lava_actuators = _ST( "Primal Lava Actuators" );
+  talent.ashen_catalyst = _ST( "Ashen Catalyst" );
   // Row 5
   talent.doom_winds = _ST( "Doom Winds" );
   talent.sundering = _ST( "Sundering" );
@@ -10366,6 +10377,9 @@ void shaman_t::create_buffs()
     ->set_default_value_from_effect( 1 );
   buff.gathering_storms = make_buff( this, "gathering_storms", find_spell( 198300 ) )
       ->set_default_value( talent.gathering_storms->effectN( 1 ).percent() );
+  buff.ashen_catalyst = make_buff( this, "ashen_catalyst", find_spell( 390371 ) )
+    ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
+    ->set_trigger_spell( talent.ashen_catalyst );
 
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
