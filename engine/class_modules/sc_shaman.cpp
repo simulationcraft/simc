@@ -5623,6 +5623,17 @@ struct lava_burst_t : public shaman_spell_t
 
     return shaman_spell_t::execute_time();
   }
+
+  bool ready() override
+  {
+    if ( player->specialization() == SHAMAN_ENHANCEMENT &&
+         p()->talent.elemental_blast.ok() )
+    {
+      return false;
+    }
+
+    return shaman_spell_t::ready();
+  }
 };
 
 // Lightning Bolt Spell =====================================================
@@ -5929,7 +5940,12 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
 struct elemental_blast_t : public shaman_spell_t
 {
   elemental_blast_t( shaman_t* player, util::string_view options_str ) :
-    shaman_spell_t( "elemental_blast", player, player->talent.elemental_blast )
+    shaman_spell_t( "elemental_blast", player,
+      player->specialization() == SHAMAN_ELEMENTAL
+        ? player->talent.elemental_blast
+        : player->talent.elemental_blast.ok()
+          ? player->find_spell( 117014 )
+          : spell_data_t::not_found() )
   {
     parse_options( options_str );
     if ( player->specialization() == SHAMAN_ELEMENTAL )
@@ -5942,6 +5958,14 @@ struct elemental_blast_t : public shaman_spell_t
       }
 
       resource_current = RESOURCE_MAELSTROM;
+      cooldown->duration = 0_ms;
+    }
+    else if ( player->specialization() == SHAMAN_ENHANCEMENT )
+    {
+      if ( player->talent.elemental_blast.ok() && player->talent.lava_burst.ok() )
+      {
+        cooldown->charges += player->find_spell( 394152 )->effectN( 2 ).base_value();
+      }
     }
   }
 
@@ -5953,7 +5977,6 @@ struct elemental_blast_t : public shaman_spell_t
 
     return m;
   }
-
 
   void execute() override
   {
