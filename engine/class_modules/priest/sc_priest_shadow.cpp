@@ -561,18 +561,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-      int stack = priest().buffs.shadowy_insight->check();
-      if ( priest().buffs.shadowy_insight->trigger() )
-      {
-        if ( priest().buffs.shadowy_insight->check() == stack )
-        {
-          priest().procs.shadowy_insight_overflow->occur();
-        }
-        else
-        {
-          priest().procs.shadowy_insight->occur();
-        }
-      }
 
       if ( priest().buffs.fae_guardians->check() )
       {
@@ -611,6 +599,19 @@ struct shadow_word_pain_t final : public priest_spell_t
       trigger_power_of_the_dark_side();
 
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_swp );
+
+      int stack = priest().buffs.shadowy_insight->check();
+      if ( priest().buffs.shadowy_insight->trigger() )
+      {
+        if ( priest().buffs.shadowy_insight->check() == stack )
+        {
+          priest().procs.shadowy_insight_overflow->occur();
+        }
+        else
+        {
+          priest().procs.shadowy_insight->occur();
+        }
+      }
 
       if ( priest().talents.shadow.tormented_spirits.enabled() &&
            rng().roll( priest()
@@ -1902,7 +1903,7 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   {
     // TODO: determine what rppm value actually is, mostly guesses right now
     // These values are not found in spell data
-    set_rppm( RPPM_HASTE, 3.0 );
+    set_chance( 0.1 );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
