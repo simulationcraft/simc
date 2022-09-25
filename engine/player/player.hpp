@@ -735,6 +735,7 @@ private:
     resource_callback_function_t callback;
   };
   std::vector<resource_callback_entry_t> resource_callbacks;
+  mutable std::unordered_map<unsigned int, const spell_data_t*> spell_cache;
 
   /// Per-player custom dbc data
   std::unique_ptr<dbc_override_t> dbc_override_;
