@@ -1547,6 +1547,7 @@ class SpellDataGenerator(DataGenerator):
             ( 373442, 5 ),          # Shadowflame Prism Talent damage spell Shadowflame Fissure
             ( 373375, 0 ),          # Void Touched talent buff
             ( 375981, 0 ),          # Vampiric Insight talent buff
+            ( 375904, 0 ),          # Mindgames Damage reversal healing spell
             # Shadow Priest
             ( 373204, 0 ),          # Mind Devourer Talent buff
             ( 376914, 5 ),          # Living Shadow Shadow Spike
