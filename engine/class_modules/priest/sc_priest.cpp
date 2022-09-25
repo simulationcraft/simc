@@ -809,8 +809,8 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
 
     // Formula found in parent spelldata for $healing
     // $healing=${($SPS*$s5/100)*(1+$@versadmg)*$m3/100}
-    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 5 ).base_value() / 100 ) *
-                             ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+    spell_power_mod.direct = ( priest().talents.mindgames->effectN( 5 ).base_value() / 100 ) *
+                             ( priest().talents.mindgames->effectN( 3 ).base_value() / 100 );
 
     if ( priest().conduits.shattered_perceptions->ok() )
     {
@@ -822,7 +822,6 @@ struct mindgames_healing_reversal_t final : public priest_spell_t
       base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
 
-    // TODO: this is not working in-game, confirm values later
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -844,8 +843,8 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
 
     // Formula found in parent spelldata for $damage
     // $damage=${($SPS*$s2/100)*(1+$@versadmg)*$m3/100}
-    spell_power_mod.direct = ( priest().covenant.mindgames->effectN( 2 ).base_value() / 100 ) *
-                             ( priest().covenant.mindgames->effectN( 3 ).base_value() / 100 );
+    spell_power_mod.direct = ( priest().talents.mindgames->effectN( 2 ).base_value() / 100 ) *
+                             ( priest().talents.mindgames->effectN( 3 ).base_value() / 100 );
 
     if ( priest().conduits.shattered_perceptions->ok() )
     {
@@ -857,7 +856,6 @@ struct mindgames_damage_reversal_t final : public priest_heal_t
       base_dd_multiplier *= ( 1.0 + priest().legendary.shadow_word_manipulation->effectN( 2 ).percent() );
     }
 
-    // TODO: this is not working in-game, confirm values later
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -869,14 +867,12 @@ struct mindgames_t final : public priest_spell_t
 {
   propagate_const<mindgames_healing_reversal_t*> child_mindgames_healing_reversal;
   propagate_const<mindgames_damage_reversal_t*> child_mindgames_damage_reversal;
-  double insanity_gain;
   timespan_t shattered_perceptions_increase;
 
   mindgames_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mindgames", p, p.talents.mindgames ),
       child_mindgames_healing_reversal( nullptr ),
       child_mindgames_damage_reversal( nullptr ),
-      insanity_gain( p.find_spell( 323706 )->effectN( 2 ).base_value() ),
       shattered_perceptions_increase( p.conduits.shattered_perceptions->effectN( 3 ).time_value() )
   {
     parse_options( options_str );
@@ -900,7 +896,6 @@ struct mindgames_t final : public priest_spell_t
       add_child( child_mindgames_damage_reversal );
     }
 
-    // TODO: convert to apply_affecting_aura
     if ( priest().talents.shattered_perceptions.enabled() )
     {
       base_dd_multiplier *= ( 1.0 + priest().talents.shattered_perceptions->effectN( 1 ).percent() );
@@ -911,21 +906,15 @@ struct mindgames_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
-    // Mindgames gives a total of 20 insanity
-    // 10 if the target deals enough dmg to break the shield
-    // 10 if the targets heals enough to break the shield
-    double insanity = 0;
     // Healing reversal creates damage
     if ( child_mindgames_healing_reversal )
     {
-      insanity += insanity_gain;
       child_mindgames_healing_reversal->target = s->target;
       child_mindgames_healing_reversal->execute();
     }
     // Damage reversal creates healing
     if ( child_mindgames_damage_reversal )
     {
-      insanity += insanity_gain;
       child_mindgames_damage_reversal->execute();
     }
 
@@ -944,8 +933,6 @@ struct mindgames_t final : public priest_spell_t
       make_event( *sim, delay,
                   [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks.total_seconds() ); } );
     }
-
-    priest().generate_insanity( insanity, priest().gains.insanity_mindgames, s->action );
   }
 };
 
@@ -2628,8 +2615,8 @@ void priest_t::init_spells()
   covenant.boon_of_the_ascended       = find_covenant_spell( "Boon of the Ascended" );
   covenant.fae_guardians              = find_covenant_spell( "Fae Guardians" );
   covenant.mindgames                  = find_covenant_spell( "Mindgames" );
-  covenant.mindgames_healing_reversal = find_spell( 323707 );
-  covenant.mindgames_damage_reversal  = find_spell( 323706 );
+  covenant.mindgames_healing_reversal = find_spell( 323707 );  // TODO: Swap to new DF spells
+  covenant.mindgames_damage_reversal  = find_spell( 323706 );  // TODO: Swap to new DF spells 375902 + 375904
   covenant.unholy_nova                = find_covenant_spell( "Unholy Nova" );
 
   // Priest Tree Talents
