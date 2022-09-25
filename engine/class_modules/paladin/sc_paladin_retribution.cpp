@@ -18,7 +18,8 @@ namespace buffs {
     set_refresh_behavior( buff_refresh_behavior::DISABLED );
     // TODO(mserrano): fix this when Blizzard turns the spelldata back to sane
     //  values
-    damage_modifier = data().effectN( 1 ).percent() / 10.0;
+    if ( p -> talents.avenging_wrath -> ok() )
+      damage_modifier = data().effectN( 1 ).percent() / 10.0;
     haste_bonus = data().effectN( 3 ).percent() / 10.0;
 
     // increase duration if we have Light's Decree
