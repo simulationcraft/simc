@@ -11070,11 +11070,20 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( "fire_elemental", "Keep your cooldowns rolling." );
     aoe->add_action( "storm_elemental", "Keep your cooldowns rolling." );
     aoe->add_action( "stormkeeper", "Keep your cooldowns rolling." );
-    aoe->add_action( "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&buff.surge_of_power.up&!buff."
-                     "splintered_elements.up",
-                     "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
-                     "keep that logic here)." );
-    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up", "Spread Flame Shock using Surge of Power." );
+    aoe->add_action(
+        "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up&buff.surge_of_power.up&!"
+        "buff.splintered_elements.up",
+        "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
+        "keep that logic here)." );
+    aoe->add_action(
+        "primordial_wave,target_if=min:dot.flame_shock.remains,if=!buff.primordial_wave.up"
+        "&talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled&!buff.splintered_elements.up",
+        "Spread Flame Shock using Surge of Power. Don't waste buffs by resets (resets are gone, but I'll "
+        "keep that logic here)." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=buff.surge_of_power.up",
+                     "Spread Flame Shock using Surge of Power." );
+    aoe->add_action( "flame_shock,target_if=refreshable,if=talent.deeply_rooted_elements.enabled&!talent.surge_of_power.enabled",
+                     "Spread Flame Shock to gamble on Deeply Rooted Element procs." );
     aoe->add_action( "ascendance",
                      "JUST DO IT! "
                      "https://i.kym-cdn.com/entries/icons/mobile/000/018/147/"
@@ -11085,8 +11094,16 @@ void shaman_t::init_action_list_elemental()
         "earthquake,if=!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
     aoe->add_action(
+        "elemental_blast,target_if=min:debuff.lightning_rod.remains,if=talent.echoes_of_great_sundering.enabled",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. "
+        "Spread Lightning Rod to as many targets as possible." );
+    aoe->add_action(
         "elemental_blast,if=talent.echoes_of_great_sundering.enabled",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+    aoe->add_action(
+        "earth_shock,target_if=min:debuff.lightning_rod.remains,if=talent.echoes_of_great_sundering.enabled",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. "
+        "Spread Lightning Rod to as many targets as possible." );
     aoe->add_action(
         "earth_shock,if=talent.echoes_of_great_sundering.enabled",
         "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
@@ -11095,15 +11112,18 @@ void shaman_t::init_action_list_elemental()
     aoe->add_action( "chain_lightning,if=buff.power_of_the_maelstrom.up",
                      "Power of the Maelstrom is strong and should be used." );
     aoe->add_action(
+        "lava_beam,if=active_enemies>=6&buff.surge_of_power.up",
+        "Against 6 targets or more Surge of Power should be used with Lava Beam rather than Lava Burst." );
+    aoe->add_action(
         "chain_lightning,if=active_enemies>=6&buff.surge_of_power.up",
-                     "Surge of Power should against many targets be used with Chain Lightning rather than Lava Burst." );
+        "Against 6 targets or more Surge of Power should be used with Chain Lightning rather than Lava Burst." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=buff.lava_surge.up&talent.deeply_rooted_elements.enabled",
         "Gamble away for Deeply Rooted Elements procs whenever Lava Surge makes Lava Burst more efficient." );
     aoe->add_action(
         "lava_burst,target_if=dot.flame_shock.remains,if=cooldown_react&buff.lava_surge.up&talent.master_of_the_elements.enabled&(maelstrom>=60-5*talent.eye_of_the_storm.rank-2*talent.flow_of_power.enabled)&(!talent.echoes_of_great_sundering.enabled|buff.echoes_of_great_sundering.up)",
         "Cast Lava Burst to buff your immediately follow-up Earthquake with Master of the Elements." );
-    aoe->add_action( "icefury" );
+    aoe->add_action( "icefury,if=talent.electrified_shocks.enabled" );
     aoe->add_action( "frost_shock,if=buff.icefury.up&talent.electrified_shocks.enabled&!debuff.electrified_shocks.up", "Spread out your Frost Shock casts to empower as many Chain Lightnings as possible." );
     aoe->add_action( "lava_beam", "" );
     aoe->add_action( "chain_lightning" );
@@ -11136,7 +11156,7 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lava_burst,if=buff.flux_melting.up", "Utilize present buffs." );
     single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&!debuff.electrified_shocks.up|&buff.icefury.remains<6)",
+    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&!debuff.electrified_shocks.up|buff.icefury.remains<6)",
                                "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
     single_target->add_action(
         "lightning_bolt,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled",
