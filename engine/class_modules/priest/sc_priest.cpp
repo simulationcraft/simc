@@ -34,7 +34,7 @@ public:
   mind_blast_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_blast", p, p.specs.mind_blast ),
       mind_blast_insanity( p.specs.shadow_priest->effectN( 12 ).resource( RESOURCE_INSANITY ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
 
@@ -436,7 +436,7 @@ struct smite_t final : public priest_spell_t
       holy_word_chastise( priest().find_specialization_spell( 88625 ) ),
       smite_rank2( priest().find_rank_spell( "Smite", "Rank 2" ) ),
       holy_word_chastise_cooldown( p.get_cooldown( "holy_word_chastise" ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
   {
     parse_options( options_str );
     if ( smite_rank2->ok() )
@@ -1441,7 +1441,7 @@ struct shadow_word_death_t final : public priest_spell_t
 
     cooldown->hasted = true;
 
-    // 25% damage increase
+    // 13%/25% damage increase
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
 
@@ -2648,10 +2648,10 @@ void priest_t::init_spells()
   talents.holy_nova                  = CT( "Holy Nova" );
   talents.protective_light           = CT( "Protective Light" );           // NYI
   talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );  // NYI
-  talents.angelic_feather            = CT( "Angelic Feather" );            // Need to swap spell data
-  talents.phantasm                   = CT( "Phantasm" );                   // NYI
-  talents.death_and_madness          = CT( "Death and Madness" );          // NYI
-  talents.death_and_madness_insanity = find_spell( 321973 );               // TODO: do we still need this?
+  talents.angelic_feather            = CT( "Angelic Feather" );
+  talents.phantasm                   = CT( "Phantasm" );  // NYI
+  talents.death_and_madness          = CT( "Death and Madness" );
+  talents.death_and_madness_insanity = find_spell( 321973 );
   // Row 4
   talents.spell_warding    = CT( "Spell Warding" );     // NYI
   talents.blessed_recovery = CT( "Blessed Recovery" );  // NYI
@@ -2671,13 +2671,13 @@ void priest_t::init_spells()
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );  // confirm spelldata
   // Row 6
-  talents.inspiration                = CT( "Inspiration" );                 // NYI
-  talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );        // NYI
-  talents.body_and_soul              = CT( "Body and Soul" );               // NYI
+  talents.inspiration                = CT( "Inspiration" );           // NYI
+  talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
+  talents.body_and_soul              = CT( "Body and Soul" );
   talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );  // NYI
-  talents.void_shield                = CT( "Void Shield" );                 // NYI
-  talents.sanlayn                    = CT( "San'layn" );                    // TODO: Confirm
-  talents.apathy                     = CT( "Apathy" );                      // NYI
+  talents.void_shield                = CT( "Void Shield" );
+  talents.sanlayn                    = CT( "San'layn" );  // TODO: Confirm
+  talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );  // NYI
   talents.twist_of_fate   = CT( "Twist of Fate" );    // TODO: Check spelldata
@@ -2685,21 +2685,21 @@ void priest_t::init_spells()
   // Row 8
   talents.angels_mercy      = CT( "Angel's Mercy" );  // NYI
   talents.binding_heals     = CT( "Binding Heals" );  // NYI
-  talents.halo              = CT( "Halo" );           // TODO: Confirm this still works
-  talents.divine_star       = CT( "Divine Star" );    // TODO: Confirm this still works
+  talents.halo              = CT( "Halo" );
+  talents.divine_star       = CT( "Divine Star" );
   talents.translucent_image = CT( "Translucent Image" );
   talents.mindgames         = CT( "Mindgames" );
   // Row 9
   talents.surge_of_light         = CT( "Surge of Light" );  // NYI
   talents.lights_inspiration     = CT( "Light's Inspiration" );
   talents.crystalline_reflection = CT( "Crystalline Reflection" );  // NYI
-  talents.improved_fade          = CT( "Improved Fade" );           // NYI
-  talents.manipulation           = CT( "Manipulation" );            // NYI
+  talents.improved_fade          = CT( "Improved Fade" );
+  talents.manipulation = CT( "Manipulation" );  // Spell data is not great here, actual/tooltip value is cut in half
   // Row 10
-  talents.holy_word_life        = CT( "Holy Word: Life" );        // NYI
-  talents.angelic_bulwark       = CT( "Angelic Bulwark" );        // NYI
-  talents.void_shift            = CT( "Void Shift" );             // NYI
-  talents.shattered_perceptions = CT( "Shattered Perceptions" );  // NYI
+  talents.holy_word_life        = CT( "Holy Word: Life" );  // NYI
+  talents.angelic_bulwark       = CT( "Angelic Bulwark" );  // NYI
+  talents.void_shift            = CT( "Void Shift" );       // NYI
+  talents.shattered_perceptions = CT( "Shattered Perceptions" );
 }
 
 void priest_t::create_buffs()

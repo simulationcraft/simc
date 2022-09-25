@@ -44,7 +44,7 @@ struct holy_fire_t final : public holy_fire_base_t
 
   holy_fire_t( priest_t& player, util::string_view options_str )
     : holy_fire_base_t( "holy_fire", player, player.find_class_spell( "Holy Fire" ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
 
   {
     parse_options( options_str );

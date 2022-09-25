@@ -563,7 +563,6 @@ struct shadow_word_pain_t final : public priest_spell_t
 
     if ( result_is_hit( s->result ) )
     {
-
       if ( priest().buffs.fae_guardians->check() )
       {
         priest_td_t& td = get_td( s->target );
@@ -1388,7 +1387,7 @@ struct mind_spike_t final : public priest_spell_t
 
   mind_spike_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "mind_spike", p, p.talents.shadow.mind_spike ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
 
   {
     parse_options( options_str );
@@ -1582,7 +1581,8 @@ struct pain_of_death_t final : public priest_spell_t
   void trigger( player_t* target, double original_amount )
   {
     base_dd_min = base_dd_max = ( original_amount * data().effectN( 2 ).percent() );
-    player->sim->print_debug( "{} triggered pain_of_death on target {}.", priest(), *target );
+    player->sim->print_debug( "{} triggered pain_of_death on target {} for {}% of damage.", priest(), *target,
+                              data().effectN( 2 ).percent() * 100 );
 
     set_target( target );
     execute();
@@ -2075,8 +2075,8 @@ void priest_t::create_buffs_shadow()
                                    {
                                      buffs.coalescing_shadows_dot->trigger();
                                    }
-                                 } ) );  // TODO: Check ingame if expiry counts as consumption - If not, Custom Buff and
-                                         // override Expire to check for consumed rather than expire.
+                                 } ) );  // TODO: Check in game if expiry counts as consumption - If not, Custom Buff
+                                         // and override Expire to check for consumed rather than expire.
   buffs.coalescing_shadows_dot = make_buff( this, "coalescing_shadows_dot", talents.shadow.coalescing_shadows_dot_buff )
                                      ->set_trigger_spell( talents.shadow.coalescing_shadows_buff );
 

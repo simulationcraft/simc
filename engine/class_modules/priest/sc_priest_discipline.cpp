@@ -91,7 +91,7 @@ struct penance_t final : public priest_spell_t
   penance_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "penance", p, p.find_class_spell( "Penance" ) ),
       penance_tick_action( new penance_tick_t( p, stats ) ),
-      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() ) )
+      manipulation_cdr( timespan_t::from_seconds( priest().talents.manipulation->effectN( 1 ).base_value() / 2 ) )
 
   {
     parse_options( options_str );
