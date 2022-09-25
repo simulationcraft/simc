@@ -462,12 +462,12 @@ public:
     const spell_data_t* sanctification; // NYI
     const spell_data_t* inner_power; // NYI
     const spell_data_t* ashes_to_dust;
-    const spell_data_t* radiant_decree; // NYI
+    const spell_data_t* radiant_decree;
     const spell_data_t* crusade;
-    const spell_data_t* truths_wake; // NYI
+    const spell_data_t* truths_wake;
     const spell_data_t* empyrean_power;
     const spell_data_t* fires_of_justice;
-    const spell_data_t* sealed_verdict; // NYI
+    const spell_data_t* sealed_verdict;
     const spell_data_t* consecrated_ground_ret; // NYI
     const spell_data_t* sanctified_ground_ret; // NYI
     const spell_data_t* exorcism; // NYI
@@ -481,7 +481,7 @@ public:
     // 20
     const spell_data_t* ashes_to_ashes;
     const spell_data_t* templars_vindication; // NYI
-    const spell_data_t* execution_sentence;
+    const spell_data_t* execution_sentence; // NYI
     const spell_data_t* empyrean_endowment; // NYI
     const spell_data_t* virtuous_command; // NYI
     const spell_data_t* final_verdict; // NYI
@@ -753,7 +753,8 @@ struct execution_sentence_debuff_t : public buff_t
 {
   execution_sentence_debuff_t( paladin_td_t* td )
     : buff_t( *td, "execution_sentence", debug_cast<paladin_t*>( td->source )->talents.execution_sentence ),
-      accumulated_damage( 0.0 )
+      accumulated_damage( 0.0 ),
+      extended_count( 0 )
   {
     set_cooldown( 0_ms );  // handled by the ability
   }
@@ -762,6 +763,7 @@ struct execution_sentence_debuff_t : public buff_t
   {
     buff_t::reset();
     accumulated_damage = 0.0;
+    extended_count = 0;
   }
 
   void expire_override( int stacks, timespan_t duration ) override
@@ -769,6 +771,7 @@ struct execution_sentence_debuff_t : public buff_t
     buff_t::expire_override( stacks, duration );
 
     accumulated_damage = 0.0;
+    extended_count = 0;
   }
 
   void accumulate_damage( const action_state_t* s )
@@ -784,8 +787,18 @@ struct execution_sentence_debuff_t : public buff_t
     return accumulated_damage;
   }
 
+  void do_will_extension()
+  {
+    if ( extended_count >= 8 ) return;
+
+    extended_count += 1;
+    // TODO(mserrano): pull this out of spelldata
+    extend_duration( player, timespan_t::from_seconds( 1 ) );
+  }
+
 private:
   double accumulated_damage;
+  int extended_count;
 };
 
 struct forbearance_t : public buff_t

@@ -570,6 +570,12 @@ struct templars_verdict_t : public holy_power_consumer_t<paladin_melee_attack_t>
         }
       }
     }
+
+    paladin_td_t* tgt = td( s -> target );
+    if ( p() -> talents.executioners_will -> ok() && tgt -> debuff.execution_sentence -> up() )
+    {
+      tgt -> debuff.execution_sentence -> do_will_extension();
+    }
   }
 
   double action_multiplier() const override
@@ -801,7 +807,7 @@ struct wake_of_ashes_t : public paladin_spell_t
 {
   struct truths_wake_conduit_t : public paladin_spell_t
   {
-    truths_wake_t( paladin_t* p ) :
+    truths_wake_conduit_t( paladin_t* p ) :
       paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
     {
       hasted_ticks = false;
