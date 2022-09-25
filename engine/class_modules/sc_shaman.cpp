@@ -2942,18 +2942,18 @@ struct fire_elemental_t : public primal_elemental_t
 
 struct storm_elemental_t : public primal_elemental_t
 {
-  struct eye_of_the_storm_aoe_t : public pet_spell_t<storm_elemental_t>
+  struct tempest_aoe_t : public pet_spell_t<storm_elemental_t>
   {
     int tick_number   = 0;
     double damage_amp = 0.0;
 
-    eye_of_the_storm_aoe_t( storm_elemental_t* player, util::string_view options )
-      : super( player, "eye_of_the_storm_aoe", player->find_spell( 269005 ), options )
+    tempest_aoe_t( storm_elemental_t* player, util::string_view options )
+      : super( player, "tempest_aoe", player->find_spell( 269005 ), options )
     {
       aoe        = -1;
       background = true;
 
-      // parent spell (eye_of_the_storm_t) has the damage increase percentage
+      // parent spell (tempest_t) has the damage increase percentage
       damage_amp = player->o()->find_spell( 157375 )->effectN( 2 ).percent();
     }
 
@@ -2965,15 +2965,15 @@ struct storm_elemental_t : public primal_elemental_t
     }
   };
 
-  struct eye_of_the_storm_t : public pet_spell_t<storm_elemental_t>
+  struct tempest_t : public pet_spell_t<storm_elemental_t>
   {
-    eye_of_the_storm_aoe_t* breeze = nullptr;
+    tempest_aoe_t* breeze = nullptr;
 
-    eye_of_the_storm_t( storm_elemental_t* player, util::string_view options )
-      : super( player, "eye_of_the_storm", player->find_spell( 157375 ), options )
+    tempest_t( storm_elemental_t* player, util::string_view options )
+      : super( player, "tempest", player->find_spell( 157375 ), options )
     {
       channeled   = true;
-      tick_action = breeze = new eye_of_the_storm_aoe_t( player, options );
+      tick_action = breeze = new tempest_aoe_t( player, options );
     }
 
     void tick( dot_t* d ) override
@@ -3032,7 +3032,7 @@ struct storm_elemental_t : public primal_elemental_t
     action_priority_list_t* def = get_action_priority_list( "default" );
     if ( o()->talent.primal_elementalist->ok() )
     {
-      def->add_action( "eye_of_the_storm,if=buff.call_lightning.remains>=10" );
+      def->add_action( "tempest,if=buff.call_lightning.remains>=10" );
     }
     def->add_action( "call_lightning" );
     def->add_action( "wind_gust" );
@@ -3057,8 +3057,8 @@ struct storm_elemental_t : public primal_elemental_t
 
   action_t* create_action( util::string_view name, util::string_view options_str ) override
   {
-    if ( name == "eye_of_the_storm" )
-      return new eye_of_the_storm_t( this, options_str );
+    if ( name == "tempest" )
+      return new tempest_t( this, options_str );
     if ( name == "call_lightning" )
       return new call_lightning_t( this, options_str );
     if ( name == "wind_gust" )
@@ -7178,9 +7178,6 @@ struct stormkeeper_t : public shaman_spell_t
     parse_options( options_str );
     may_crit = harmful = false;
 
-    // TODO: Remove once Blizzard fixes stormkeeper spell data, and enable apply_affecting_aura
-    // handling
-    cooldown->charges = player->talent.stormkeeper.ok() + player->talent.stormkeeper2.ok();
   }
 
   void execute() override
@@ -9509,7 +9506,7 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
         pet.pet_earth_elemental->demise();
       }
       pet.pet_storm_elemental->summon( duration );
-      pet.pet_storm_elemental->get_cooldown( "eye_of_the_storm" )->reset( false );
+      pet.pet_storm_elemental->get_cooldown( "tempest" )->reset( false );
     }
     else
     {
@@ -10651,10 +10648,8 @@ void shaman_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.unrelenting_calamity );
   action.apply_affecting_aura( talent.crashing_storms );
   action.apply_affecting_aura( talent.healing_stream_totem );
-  // TODO: Can be enabled once Blizzard fixes spell data, also disable manual cooldown charges in
-  // stormkeeper_t
-  //action.apply_affecting_aura( talent.stormkeeper );
-  //action.apply_affecting_aura( talent.stormkeeper2 );
+  action.apply_affecting_aura( talent.stormkeeper );
+  action.apply_affecting_aura( talent.stormkeeper2 );
 }
 
 // shaman_t::generate_bloodlust_options =====================================
@@ -10799,7 +10794,7 @@ void shaman_t::init_action_list_elemental()
 
   action_priority_list_t* single_target    = get_action_priority_list( "single_target" );
   action_priority_list_t* aoe              = get_action_priority_list( "aoe" );
-
+  
   if ( options.rotation == ROTATION_STANDARD )
   {
     action_priority_list_t* se_single_target = get_action_priority_list( "se_single_target" );
@@ -11131,25 +11126,28 @@ void shaman_t::init_action_list_elemental()
     single_target->add_action( "lava_burst,if=cooldown_react&buff.lava_surge.up",
                                "Lava Surge is neat. Utilize it." );
     single_target->add_action(
-        "earthquake,if=buff.echoes_of_great_sundering.up",
-        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease." );
+        "earthquake,if=buff.echoes_of_great_sundering.up&(!talent.elemental_blast.enabled&active_enemies<2|active_enemies>1)",
+        "Use the talents you selected. Did you invest only 1 point in it? In this case this'll be a DPS decrease. Additionally Elemental Blast is stronger than EoGS. In this case don't use Earthquake on single target." );
     single_target->add_action(
         "earthquake,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)&!talent.windspeakers_lava_resurgence.enabled",
         "Use Earthquake against two enemies unless you have Windspeaker's Lava Resurgence." );
     single_target->add_action( "elemental_blast" );
     single_target->add_action( "earth_shock" );
     single_target->add_action( "lava_burst,if=buff.flux_melting.up", "Utilize present buffs." );
-    single_target->add_action( "frost_shock,if=buff.icefury.up&(!talent.flux_melting.enabled|!buff.flux_melting.up)",
-                               "Spread out your Icefury usage if you can get more use out of accompanied buffs. This "
-                               "line might need something for spreading out Electrified Shocks too." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&talent.flux_melting.enabled&!buff.flux_melting.up",
+                               "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&(talent.electrified_shocks.enabled&!debuff.electrified_shocks.up|&buff.icefury.remains<6)",
+                               "Spread out your Icefury usage if you can get more use out of accompanied buffs." );
     single_target->add_action(
         "lightning_bolt,if=buff.power_of_the_maelstrom.up&talent.unrelenting_calamity.enabled",
         "Utilize the Power of the Maelstrom buff if your Lightning Bolt is empowered by Unrelenting Calamity." );
+    single_target->add_action( "icefury" );
     single_target->add_action(
         "lightning_bolt,if=pet.storm_elemental.active",
         "Spam Lightning Bolt if Storm Elemental is active. But honor all previous priorities." );
     single_target->add_action( "lava_burst" );
-    single_target->add_action( "icefury" );
+    single_target->add_action( "frost_shock,if=buff.icefury.up&!talent.electrified_shocks.enabled&!talent.flux_melting.enabled",
+                               "Use your Icefury buffs if you didn't improve the talent." );
     single_target->add_action( "chain_lightning,if=active_enemies>1&(spell_targets.chain_lightning>1|spell_targets.lava_beam>1)", "Casting Chain Lightning at two targets is mor efficient than Lightning Bolt." );
     single_target->add_action( "lightning_bolt", "Filler spell. Always available. Always the bottom line." );
     single_target->add_action( "flame_shock,moving=1,target_if=refreshable" );
