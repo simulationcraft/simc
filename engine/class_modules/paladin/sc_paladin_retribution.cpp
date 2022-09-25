@@ -912,6 +912,61 @@ struct zeal_t : public paladin_melee_attack_t
   { background = true; }
 };
 
+struct exorcism_t : public paladin_spell_t
+{
+  struct exorcism_dot_t : public paladin_spell_t
+  {
+    exorcism_dot_t( paladin_t* p ) :
+      paladin_spell_t( "exorcism_dot", p, p -> find_spell( 383208 ) )
+    { }
+
+    int n_targets() const override
+    {
+      // TODO(mserrano): change this to use the target instead
+      // technically this should be based on the target, but for now just use the paladin themselves
+      if ( p() -> standing_in_consecration() )
+        return -1;
+
+      return paladin_spell_t::n_targets();
+    }
+  };
+
+  // Exorcism damage is stored in a different spell
+  struct exorcism_damage_t : public paladin_spell_t
+  {
+    exorcism_damage_t( paladin_t *p ) :
+      paladin_spell_t( "exorcism_dmg", p, p -> find_spell( 383921 ) )
+    {
+      dual = background = true;
+    }
+  };
+
+  exorcism_dot_t* dot_action;
+
+  exorcism_t( paladin_t* p, util::string_view options_str ) :
+    paladin_spell_t( "exorcism", p, p -> talents.exorcism ),
+    dot_action( nullptr )
+  {
+    parse_options( options_str );
+
+    impact_action = new exorcism_damage_t( p );
+    impact_action -> stats = stats;
+
+    dot_action = new exorcism_dot_t( p );
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    paladin_spell_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      dot_action -> target = s -> target;
+      dot_action -> schedule_execute();
+    }
+  }
+};
+
 // Initialization
 
 void paladin_t::create_ret_actions()
@@ -954,6 +1009,7 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
   if ( name == "radiant_decree"            ) return new radiant_decree_t           ( this, options_str );
+  if ( name == "exorcism"                  ) return new exorcism_t                 ( this, options_str );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
