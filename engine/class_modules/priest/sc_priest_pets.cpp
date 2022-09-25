@@ -973,6 +973,21 @@ struct void_lasher_mind_sear_tick_t final : public priest_pet_spell_t
     affected_by_shadow_weaving = true;
   }
 
+  void init() override
+  {
+    priest_pet_spell_t::init();
+
+    // TODO: remove after launch
+    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
+    }
+    else
+    {
+      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
+    }
+  }
+
   timespan_t composite_dot_duration( const action_state_t* ) const override
   {
     // Not hasted
@@ -1011,21 +1026,6 @@ struct void_lasher_mind_sear_t final : public priest_pet_spell_t
     channeled    = true;
     hasted_ticks = false;
     tick_action  = new void_lasher_mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
-  }
-
-  void init() override
-  {
-    priest_pet_spell_t::init();
-
-    // TODO: remove after launch
-    if ( p().o().talents.shadow.idol_of_cthun.enabled() )
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "idol_of_cthun" );
-    }
-    else
-    {
-      merge_pet_stats_to_owner_action( p().o(), p(), *this, "eternal_call_to_the_void" );
-    }
   }
 };
 
