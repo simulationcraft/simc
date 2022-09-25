@@ -378,20 +378,6 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 };
 
-// Radiant Decree
-
-struct radiant_decree_t : public holy_power_consumer_t<paladin_melee_attack_t>
-{
-  radiant_decree_t( paladin_t* p, util::string_view options_str ) :
-    holy_power_consumer_t( "radiant_decree", p, p -> talents.radiant_decree )
-  {
-    parse_options( options_str );
-
-    if ( !( p -> talents.radiant_decree -> ok() ) )
-      background = true;
-  }
-};
-
 struct echoed_spell_event_t : public event_t
 {
   paladin_melee_attack_t* echo;
@@ -801,9 +787,19 @@ struct shield_of_vengeance_t : public paladin_absorb_t
 
 // Wake of Ashes (Retribution) ================================================
 
+struct truths_wake_t : public paladin_spell_t
+{
+  truths_wake_t( paladin_t* p ) :
+    paladin_spell_t( "truths_wake", p, p -> find_spell( 383351 ) )
+  {
+    hasted_ticks = false;
+    tick_may_crit = false;
+  }
+};
+
 struct wake_of_ashes_t : public paladin_spell_t
 {
-  struct truths_wake_t : public paladin_spell_t
+  struct truths_wake_conduit_t : public paladin_spell_t
   {
     truths_wake_t( paladin_t* p ) :
       paladin_spell_t( "truths_wake", p, p -> find_spell( 339376 ) )
@@ -813,10 +809,13 @@ struct wake_of_ashes_t : public paladin_spell_t
     }
   };
 
+
+  truths_wake_conduit_t* truths_wake_conduit;
   truths_wake_t* truths_wake;
 
   wake_of_ashes_t( paladin_t* p, util::string_view options_str ) :
     paladin_spell_t( "wake_of_ashes", p, p -> talents.wake_of_ashes ),
+    truths_wake_conduit( nullptr ),
     truths_wake( nullptr )
   {
     parse_options( options_str );
@@ -825,6 +824,12 @@ struct wake_of_ashes_t : public paladin_spell_t
     aoe = -1;
 
     if ( p -> conduit.truths_wake -> ok() )
+    {
+      truths_wake_conduit = new truths_wake_conduit_t( p );
+      add_child( truths_wake_conduit );
+    }
+
+    if ( p -> talents.truths_wake -> ok() )
     {
       truths_wake = new truths_wake_t( p );
       add_child( truths_wake );
@@ -835,12 +840,62 @@ struct wake_of_ashes_t : public paladin_spell_t
   {
     paladin_spell_t::impact( s );
 
-    if ( result_is_hit( s -> result ) && p() -> conduit.truths_wake -> ok() )
+    if ( result_is_hit( s -> result ) )
     {
-      double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
-      truths_wake -> base_td = s -> result_raw * truths_wake_mul;
-      truths_wake -> set_target( s -> target );
-      truths_wake -> execute();
+      if ( p() -> conduit.truths_wake -> ok() )
+      {
+        double truths_wake_mul = p() -> conduit.truths_wake.percent() / p() -> conduit.truths_wake -> effectN( 2 ).base_value();
+        truths_wake_conduit -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake_conduit -> set_target( s -> target );
+        truths_wake_conduit -> execute();
+      }
+
+      if ( p() -> talents.truths_wake -> ok() )
+      {
+        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent();
+        truths_wake -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake -> set_target( s -> target );
+        truths_wake -> execute();
+      }
+    }
+  }
+};
+
+// Radiant Decree
+
+struct radiant_decree_t : public holy_power_consumer_t<paladin_spell_t>
+{
+  truths_wake_t* truths_wake;
+
+  radiant_decree_t( paladin_t* p, util::string_view options_str ) :
+    holy_power_consumer_t( "radiant_decree", p, p -> talents.radiant_decree ),
+    truths_wake( nullptr )
+  {
+    parse_options( options_str );
+
+    if ( !( p -> talents.radiant_decree -> ok() ) )
+      background = true;
+
+    if ( p -> talents.truths_wake -> ok() )
+    {
+      truths_wake = new truths_wake_t( p );
+      add_child( truths_wake );
+    }
+  }
+
+  void impact( action_state_t* s) override
+  {
+    holy_power_consumer_t::impact( s );
+
+    if ( result_is_hit( s -> result ) )
+    {
+      if ( p() -> talents.truths_wake -> ok() )
+      {
+        double truths_wake_mul = p() -> talents.truths_wake -> effectN( 1 ).percent();
+        truths_wake -> base_td = s -> result_raw * truths_wake_mul;
+        truths_wake -> set_target( s -> target );
+        truths_wake -> execute();
+      }
     }
   }
 };
