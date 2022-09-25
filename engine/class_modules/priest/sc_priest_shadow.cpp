@@ -93,6 +93,10 @@ struct mind_sear_t final : public priest_spell_t
 
   bool ready() override
   {
+    if ( priest().buffs.mind_devourer->check() )
+    {
+      return true;
+    }
     // You cannot start a cast if you have less than 1 ticks worth
     if ( priest().resources.current[ RESOURCE_INSANITY ] < cost_per_tick( RESOURCE_INSANITY ) )
     {
@@ -100,6 +104,26 @@ struct mind_sear_t final : public priest_spell_t
     }
 
     return priest_spell_t::ready();
+  }
+
+  // TODO: parse_buff_effects doesn't support tick based resource cost modifications
+  bool consume_cost_per_tick( const dot_t& dot ) override
+  {
+    if ( priest().buffs.mind_devourer->up() )
+    {
+      player->sim->print_debug( "{} {} consumes ticking cost 0 insanity (current={}).", priest(), *this,
+                                player->resources.current[ RESOURCE_INSANITY ] );
+      return true;
+    }
+
+    return priest_spell_t::consume_cost_per_tick( dot );
+  }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    priest().buffs.mind_devourer->expire();
   }
 };
 
@@ -2171,9 +2195,9 @@ void priest_t::init_spells_shadow()
   talents.shadow.inescapable_torment = ST( "Inescapable Torment" );
   talents.shadow.screams_of_the_void = ST( "Screams of the Void" );
   talents.shadow.pain_of_death       = ST( "Pain of Death" );
-  talents.shadow.mind_devourer       = ST( "Mind Devourer" );  // TODO: check values
+  talents.shadow.mind_devourer       = ST( "Mind Devourer" );
   talents.shadow.insidious_ire       = ST( "Insidious Ire" );  // TODO: check values
-  talents.shadow.malediction         = ST( "Malediction" );    // TODO: confirm this works with Void Torrent
+  talents.shadow.malediction         = ST( "Malediction" );
   // Row 10
   talents.shadow.idol_of_yshaarj = ST( "Idol of Y'Shaarj" );
   // TODO: Implement Stunned/Feared/Enraged Y'shaarj

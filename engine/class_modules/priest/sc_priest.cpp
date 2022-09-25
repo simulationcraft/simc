@@ -2720,7 +2720,7 @@ void priest_t::init_spells()
   talents.move_with_grace    = CT( "Move With Grace" );     // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
-  talents.tithe_evasion      = CT( "Tithe Evasion" );  // confirm spelldata
+  talents.tithe_evasion      = CT( "Tithe Evasion" );
   // Row 6
   talents.inspiration                = CT( "Inspiration" );           // NYI
   talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
