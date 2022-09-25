@@ -468,6 +468,7 @@ public:
     buff_t* doom_winds_talent;
     buff_t* ice_strike;
     buff_t* ashen_catalyst;
+    buff_t* witch_doctors_ancestry;
 
     // Restoration
     buff_t* spirit_walk;
@@ -778,7 +779,7 @@ public:
     // Row 9
     player_talent_t primal_maelstrom;
     player_talent_t elemental_assault;
-    player_talent_t witch_doctors_wolf_bones;
+    player_talent_t witch_doctors_ancestry;
     player_talent_t legacy_of_the_frost_witch;
     player_talent_t static_accumulation;
     // Row 10
@@ -1116,9 +1117,14 @@ struct maelstrom_weapon_buff_t : public buff_t
     {
       shaman->cooldown.feral_spirits->adjust(
             -( stacks == -1 ? 1 : stacks ) *
-            ( shaman->legendary.witch_doctors_wolf_bones.ok()
-            ? shaman->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value()
-            : shaman->talent.witch_doctors_wolf_bones->effectN( 2 ).time_value() ) );
+            shaman->legendary.witch_doctors_wolf_bones->effectN( 2 ).time_value() );
+    }
+
+    if ( shaman->buff.witch_doctors_ancestry->check() )
+    {
+      shaman->cooldown.feral_spirits->adjust(
+            -( stacks == -1 ? 1 : stacks ) *
+            shaman->talent.witch_doctors_ancestry->effectN( 2 ).time_value() );
     }
   }
 };
@@ -9208,7 +9214,7 @@ void shaman_t::init_spells()
   // Row 9
   talent.primal_maelstrom = _ST( "Primal Maelstrom" );
   talent.elemental_assault = _ST( "Elemental Assault" );
-  talent.witch_doctors_wolf_bones = _ST( "Witch Doctor's Wolf Bones" );
+  talent.witch_doctors_ancestry = _ST( "Witch Doctor's Ancestry" );
   talent.legacy_of_the_frost_witch = _ST( "Legacy of the Frost Witch" );
   talent.static_accumulation = _ST( "Static Accumulation" );
   // Row 10
@@ -10010,6 +10016,7 @@ void shaman_t::trigger_maelstrom_weapon( const action_state_t* state )
 
   double proc_chance = talent.maelstrom_weapon->proc_chance();
   proc_chance += buff.witch_doctors_wolf_bones->stack_value();
+  proc_chance += buff.witch_doctors_ancestry->stack_value();
 
   if ( rng().roll( proc_chance ) )
   {
@@ -10380,6 +10387,9 @@ void shaman_t::create_buffs()
   buff.ashen_catalyst = make_buff( this, "ashen_catalyst", find_spell( 390371 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC )
     ->set_trigger_spell( talent.ashen_catalyst );
+  buff.witch_doctors_ancestry = make_buff<buff_t>( this, "witch_doctors_ancestry",
+      talent.witch_doctors_ancestry )
+    ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
 
   // Buffs stormstrike and lava lash after using crash lightning
   buff.crash_lightning = make_buff( this, "crash_lightning", find_spell( 187878 ) );
@@ -10441,9 +10451,7 @@ void shaman_t::create_buffs()
       find_spell( 335896 ) )
     ->set_default_value_from_effect_type( A_ADD_PCT_MODIFIER, P_GENERIC );
   buff.witch_doctors_wolf_bones = make_buff<buff_t>( this, "witch_doctors_wolf_bones",
-      legendary.witch_doctors_wolf_bones.ok()
-      ? legendary.witch_doctors_wolf_bones
-      : talent.witch_doctors_wolf_bones )
+      legendary.witch_doctors_wolf_bones )
     ->set_default_value_from_effect_type( A_ADD_FLAT_MODIFIER, P_PROC_CHANCE );
   buff.elemental_equilibrium = make_buff<buff_t>( this, "elemental_equilibrium",
       find_spell( 347348 ) )
@@ -11788,6 +11796,7 @@ void shaman_t::combat_begin()
   player_t::combat_begin();
 
   buff.witch_doctors_wolf_bones->trigger();
+  buff.witch_doctors_ancestry->trigger();
 }
 
 // shaman_t::reset ==========================================================
