@@ -470,7 +470,7 @@ public:
     const spell_data_t* sealed_verdict;
     const spell_data_t* consecrated_ground_ret; // NYI
     const spell_data_t* sanctified_ground_ret; // NYI
-    const spell_data_t* exorcism; // NYI
+    const spell_data_t* exorcism;
     const spell_data_t* hand_of_hindrance; // NYI
     const spell_data_t* selfless_healer; // NYI
     const spell_data_t* healing_hands; // NYI
