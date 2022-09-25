@@ -1426,8 +1426,13 @@ struct shadow_word_death_t final : public priest_spell_t
       cooldown->duration += priest().legendary.kiss_of_death->effectN( 1 ).time_value();
     }
 
-    cooldown->hasted = true;
-
+    // BUG: CD is static 20s and not affected by haste
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/943
+    if ( !priest().bugs )
+    {
+      cooldown->hasted = true;
+    }
+    
     // 13%/25% damage increase
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }
