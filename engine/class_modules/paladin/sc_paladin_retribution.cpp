@@ -378,6 +378,20 @@ struct divine_storm_t: public holy_power_consumer_t<paladin_melee_attack_t>
   }
 };
 
+// Radiant Decree
+
+struct radiant_decree_t : public holy_power_consumer_t<paladin_melee_attack_t>
+{
+  radiant_decree_t( paladin_t* p, util::string_view options_str ) :
+    holy_power_consumer_t( "radiant_decree", p, p -> talents.radiant_decree )
+  {
+    parse_options( options_str );
+
+    if ( !( p -> talents.radiant_decree -> ok() ) )
+      background = true;
+  }
+};
+
 struct echoed_spell_event_t : public event_t
 {
   paladin_melee_attack_t* echo;
@@ -878,6 +892,7 @@ action_t* paladin_t::create_action_retribution( util::string_view name, util::st
   if ( name == "justicars_vengeance"       ) return new justicars_vengeance_t      ( this, options_str );
   if ( name == "shield_of_vengeance"       ) return new shield_of_vengeance_t      ( this, options_str );
   if ( name == "final_reckoning"           ) return new final_reckoning_t          ( this, options_str );
+  if ( name == "radiant_decree"            ) return new radiant_decree_t           ( this, options_str );
 
   if ( specialization() == PALADIN_RETRIBUTION )
   {
