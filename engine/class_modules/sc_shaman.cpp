@@ -725,11 +725,11 @@ public:
     // Row 9
     player_talent_t lightning_lasso;
     player_talent_t thundershock;
-    player_talent_t call_of_the_elements; // TODO: NYI
+    player_talent_t totemic_recall; // TODO: NYI
     // Row 10
     player_talent_t ancestral_guidance;
     player_talent_t creation_core; // TODO: NYI
-    player_talent_t improved_call_of_the_elements; // TODO: NYI
+    player_talent_t call_of_the_elements; // TODO: NYI
 
     // Spec - Shared
     player_talent_t ancestral_wolf_affinity; // TODO: NYI
@@ -9160,11 +9160,11 @@ void shaman_t::init_spells()
   // Row 9
   talent.lightning_lasso         = _CT( "Lightning Lasso" );
   talent.thundershock            = _CT( "Thundershock" );
-  talent.call_of_the_elements    = _CT( "Call of the Elements" );
+  talent.totemic_recall          = _CT( "Totemic Recall" );
   // Row 10
   talent.ancestral_guidance      = _CT( "Ancestral Guidance" );
   talent.creation_core           = _CT( "Creation Core" );
-  talent.improved_call_of_the_elements = _CT( "Improved Call of the Elements" );
+  talent.call_of_the_elements = _CT( "Call of the Elements" );
 
   // Spec - Shared
   talent.ancestral_wolf_affinity = _ST( "Ancestral Wolf Affinity" );
