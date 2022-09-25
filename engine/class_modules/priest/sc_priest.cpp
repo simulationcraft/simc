@@ -1635,8 +1635,11 @@ struct desperate_prayer_t final : public priest_heal_t
 // ==========================================================================
 struct power_word_shield_t final : public priest_absorb_t
 {
+  double insanity;
+
   power_word_shield_t( priest_t& p, util::string_view options_str )
-    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) )
+    : priest_absorb_t( "power_word_shield", p, p.find_class_spell( "Power Word: Shield" ) ),
+      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
     spell_power_mod.direct = 2.8;  // hardcoded into tooltip, last checked 2022-09-04
@@ -1652,8 +1655,7 @@ struct power_word_shield_t final : public priest_absorb_t
   {
     if ( priest().specs.hallucinations->ok() )
     {
-      priest().generate_insanity( priest().specs.hallucinations->effectN( 1 ).base_value() / 100,
-                                  priest().gains.hallucinations_power_word_shield, nullptr );
+      priest().generate_insanity( insanity, priest().gains.hallucinations_power_word_shield, nullptr );
     }
 
     priest_absorb_t::execute();

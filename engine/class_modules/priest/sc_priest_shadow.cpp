@@ -353,8 +353,11 @@ struct silence_t final : public priest_spell_t
 // ==========================================================================
 struct vampiric_embrace_t final : public priest_spell_t
 {
+  double insanity;
+
   vampiric_embrace_t( priest_t& p, util::string_view options_str )
-    : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace )
+    : priest_spell_t( "vampiric_embrace", p, p.talents.vampiric_embrace ),
+      insanity( priest().specs.hallucinations->effectN( 1 ).trigger()->effectN( 1 ).resource( RESOURCE_INSANITY ) )
   {
     parse_options( options_str );
 
@@ -374,8 +377,7 @@ struct vampiric_embrace_t final : public priest_spell_t
 
     if ( priest().specs.hallucinations->ok() )
     {
-      priest().generate_insanity( priest().specs.hallucinations->effectN( 1 ).base_value() / 100,
-                                  priest().gains.hallucinations_vampiric_embrace, nullptr );
+      priest().generate_insanity( insanity, priest().gains.hallucinations_vampiric_embrace, nullptr );
     }
   }
 
@@ -2192,9 +2194,9 @@ void priest_t::init_spells_shadow()
   specs.shadowform     = find_specialization_spell( "Shadowform" );
   specs.void_bolt      = find_spell( 205448 );
   specs.voidform       = find_spell( 194249 );
-  specs.hallucinations = find_spell( 280752 );  // check this is correct
+  specs.hallucinations = find_spell( 280752 );
 
-  // Still need these for pre-patch since 2p/4p still works with DT and not VI
+  // Still need these for pre-patch since 2p/4p still works with DT and not SI
   specs.dark_thought  = find_specialization_spell( "Dark Thought" );
   specs.dark_thoughts = find_specialization_spell( "Dark Thoughts" );
 
