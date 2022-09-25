@@ -1432,7 +1432,7 @@ struct shadow_word_death_t final : public priest_spell_t
     {
       cooldown->hasted = true;
     }
-    
+
     // 13%/25% damage increase
     apply_affecting_aura( p.talents.shadow.pain_of_death );
   }

@@ -1100,7 +1100,7 @@ public:
     parse_buff_effects( p().buffs.mind_devourer );
     parse_buff_effects( p().buffs.dark_evangelism, p().talents.shadow.dark_evangelism );
     parse_buff_effects( p().buffs.surge_of_darkness, false );  // Mind Spike instant cast
-    parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast
+    parse_buff_effects( p().buffs.mind_melt );                 // Mind Blast instant cast and Crit increase
     // TODO: check why we cant use_default=true to get the value correct
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
