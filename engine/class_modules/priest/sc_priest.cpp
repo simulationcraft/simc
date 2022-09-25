@@ -1659,6 +1659,51 @@ struct power_word_shield_t final : public priest_absorb_t
   }
 };
 
+// ==========================================================================
+// Power Word: Life
+// ==========================================================================
+struct power_word_life_t final : public priest_heal_t
+{
+  double execute_percent;
+  double execute_modifier;
+
+  power_word_life_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "power_word_life", p, p.talents.power_word_life ),
+      execute_percent( data().effectN( 2 ).base_value() ),
+      execute_modifier( data().effectN( 3 ).percent() )
+  {
+    parse_options( options_str );
+    harmful = false;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_heal_t::composite_da_multiplier( s );
+
+    if ( s->target->health_percentage() < execute_percent )
+    {
+      if ( sim->debug )
+      {
+        sim->print_debug( "{} below {}% HP. Increasing {} healing by {}", s->target->name_str, execute_percent, *this,
+                          execute_modifier );
+      }
+      m *= 1 + execute_modifier;
+    }
+
+    return m;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    if ( target->health_percentage() <= execute_percent )
+    {
+      cooldown->adjust( timespan_t::from_seconds( data().effectN( 4 ).base_value() ) );
+    }
+  }
+};
+
 }  // namespace heals
 
 }  // namespace actions
@@ -2457,6 +2502,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new psychic_scream_t( *this, options_str );
   }
+  if ( name == "power_word_life" )
+  {
+    return new power_word_life_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -2682,7 +2731,7 @@ void priest_t::init_spells()
   talents.improved_fade          = CT( "Improved Fade" );
   talents.manipulation = CT( "Manipulation" );  // Spell data is not great here, actual/tooltip value is cut in half
   // Row 10
-  talents.holy_word_life        = CT( "Holy Word: Life" );  // NYI
+  talents.power_word_life       = CT( "Power Word: Life" );
   talents.angelic_bulwark       = CT( "Angelic Bulwark" );  // NYI
   talents.void_shift            = CT( "Void Shift" );       // NYI
   talents.shattered_perceptions = CT( "Shattered Perceptions" );

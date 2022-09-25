@@ -232,7 +232,7 @@ public:
     player_talent_t improved_fade;
     player_talent_t manipulation;
     // Row 10
-    player_talent_t holy_word_life;
+    player_talent_t power_word_life;
     player_talent_t angelic_bulwark;
     player_talent_t void_shift;
     player_talent_t shattered_perceptions;
