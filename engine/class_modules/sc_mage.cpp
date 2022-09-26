@@ -4447,6 +4447,7 @@ struct icy_veins_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
+    // TODO: check if this is the case with the talent as well
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.rune_of_power->trigger();
@@ -6642,9 +6643,9 @@ void mage_t::create_buffs()
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
                              ->set_chance( runeforge.freezing_winds.ok() );
-  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 327509 ) )
+  buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 382148 ) )
                              ->set_default_value_from_effect( 1 )
-                             ->set_chance( runeforge.slick_ice.ok() );
+                             ->set_chance( talents.slick_ice->ok() || runeforge.slick_ice.ok() );
 
   buffs.disciplinary_command        = make_buff( this, "disciplinary_command", find_spell( 327371 ) )
                                         ->set_default_value_from_effect( 1 );
