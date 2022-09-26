@@ -2168,17 +2168,27 @@ void buff_t::start( int stacks, double value, timespan_t duration )
   }
 
   timespan_t period = tick_time();
-  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() &&
-       ( period <= d || d == timespan_t::zero() ) )
+  if ( tick_behavior != buff_tick_behavior::NONE && period > timespan_t::zero() && ( period <= d || d == 0_ms ) )
   {
-    current_tick = 0;
+    // non-async or the first async stack should not have an existing tick_event
+    assert( !tick_event || ( stack_behavior == buff_stack_behavior::ASYNCHRONOUS && current_stack > 1 ) );
 
-    assert( !tick_event );
-    tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
+    // cancel tick_event for buffs that are both async & clip
+    if ( tick_event && tick_behavior == buff_tick_behavior::CLIP )
+    {
+      event_t::cancel( tick_event );
+    }
+
+    // start new tick_event for normal, 1st stack of async, and async & clip buffs
+    if ( !tick_event )
+    {
+      current_tick = 0;
+      tick_event = make_event<tick_t>( *sim, this, period, current_value, reverse ? reverse_stack_reduction : stacks );
+    }
 
     if ( ( tick_zero || ( tick_on_application && before_stacks == 0 ) ) && tick_callback )
     {
-      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), timespan_t::zero() );
+      tick_callback( this, expiration.empty() ? -1 : static_cast<int>( remains() / period ), 0_ms );
     }
   }
 }
