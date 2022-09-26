@@ -2000,6 +2000,8 @@ class SpellDataGenerator(DataGenerator):
           ( 333105, 1 ), ( 333110, 1 ), # Sigil of the Illidari Legendary fake Fel Devastation spells
           ( 346502, 1 ), ( 346503, 1 ), # New Sigil of the Illidari Legendary fake Fel Devastation spells
           ( 337567, 1 ), # Chaotic Blades legendary buff
+          ( 390197, 1 ), # Ragefire talent damage spell
+          ( 390195, 1 ), # Chaos Theory talent buff
 
           # Vengeance
           ( 203557, 2 ), # Felblade proc rate
