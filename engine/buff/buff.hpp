@@ -123,6 +123,7 @@ public:
   bool tick_zero;
   bool tick_on_application; // Immediately tick when the buff first goes up, but not on refreshes
   bool partial_tick; // Allow non-full duration ticks at the end of the buff period
+  bool freeze_stacks; // Do not increment/decrement stack on each tick
 
   // tmp data collection
 protected:
@@ -219,14 +220,6 @@ public:
   double check_stack_value() const
   {
     return current_stack * check_value();
-  }
-
-  /**
-   * Return true if tick should not call bump() or decrement()
-   */
-  virtual bool freeze_stacks()
-  {
-    return false;
   }
 
   // Get the base buff duration modified by the duration multiplier, if applicable
@@ -360,6 +353,7 @@ public:
   buff_t* set_tick_zero( bool v ) { tick_zero = v; return this; }
   buff_t* set_tick_on_application( bool v ) { tick_on_application = v; return this; }
   buff_t* set_partial_tick( bool v ) { partial_tick = v; return this; }
+  buff_t* set_freeze_stacks( bool v ) { freeze_stacks = v; return this; }
   buff_t* set_tick_time_behavior( buff_tick_time_behavior b ) { tick_time_behavior = b; return this; }
   buff_t* set_rppm( rppm_scale_e scale = RPPM_NONE, double freq = -1, double mod = -1);
   buff_t* set_trigger_spell( const spell_data_t* s );

@@ -1316,6 +1316,8 @@ struct mirrors_of_torment_t final : public buff_t
   {
     set_cooldown( 0_ms );
     set_reverse( true );
+    // Stacks are handled manually by the tick callback.
+    set_freeze_stacks( true );
     icd->duration = data().internal_cooldown();
 
     auto p = debug_cast<mage_t*>( source );
@@ -1373,12 +1375,6 @@ struct mirrors_of_torment_t final : public buff_t
   {
     buff_t::reset();
     successful_triggers = 0;
-  }
-
-  bool freeze_stacks() override
-  {
-    // Stacks are handled manually by the tick callback.
-    return true;
   }
 };
 

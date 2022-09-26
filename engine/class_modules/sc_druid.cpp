@@ -1903,10 +1903,9 @@ struct tiger_dash_buff_t : public druid_buff_t<buff_t>
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect_type( A_MOD_INCREASE_SPEED );
+    set_freeze_stacks( true );
     set_tick_callback( []( buff_t* b, int, timespan_t ) { b->current_value -= b->data().effectN( 2 ).percent(); } );
   }
-
-  bool freeze_stacks() override { return true; }
 };
 
 // Ursine Vigor =============================================================

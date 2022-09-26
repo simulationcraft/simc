@@ -201,7 +201,7 @@ struct tick_t : public buff_event_t
       buff->tick_callback( buff, total_ticks, tick_time );
     }
 
-    if ( !buff->freeze_stacks() )
+    if ( !buff->freeze_stacks )
     {
       if ( !buff->reverse )
       {
@@ -632,6 +632,7 @@ buff_t::buff_t( sim_t* sim, player_t* target, player_t* source, util::string_vie
     tick_zero( false ),
     tick_on_application( false ),
     partial_tick( false ),
+    freeze_stacks( false ),
     last_start(),
     last_trigger(),
     last_expire(),
