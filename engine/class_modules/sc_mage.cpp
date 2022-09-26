@@ -1539,13 +1539,14 @@ struct mage_spell_t : public spell_t
   {
     bool chill = false;
     bool from_the_ashes = false;
+    bool icy_propulsion = false;
     bool ignite = false;
     bool touch_of_the_magi = true;
 
     target_trigger_type_e hot_streak = TT_NONE;
     target_trigger_type_e kindling = TT_NONE;
 
-    bool icy_propulsion = true;
+    bool icy_propulsion_conduit = true;
     bool radiant_spark = false;
   } triggers;
 
@@ -1624,6 +1625,10 @@ public:
       snapshot_flags |= STATE_FROZEN | STATE_FROZEN_MUL;
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
     }
+
+    // TODO: this is just an approximation for now, test all spells
+    if ( harmful && aoe != -1 )
+      triggers.icy_propulsion = true;
   }
 
   void init_finished() override
@@ -1794,8 +1799,12 @@ public:
     if ( s->result_total <= 0.0 )
       return;
 
-    if ( triggers.icy_propulsion && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
+    // TODO: what happens if you have both
+    if ( triggers.icy_propulsion_conduit && s->result == RESULT_CRIT && p()->buffs.icy_veins->check() )
       p()->cooldowns.icy_veins->adjust( -0.1 * p()->conduits.icy_propulsion.time_value( conduit_data_t::S ) );
+
+    if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
+      p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
 
     if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
@@ -3080,7 +3089,7 @@ struct blizzard_shard_t final : public frost_mage_spell_t
   {
     aoe = -1;
     background = ground_aoe = triggers.chill = true;
-    triggers.icy_propulsion = false;
+    triggers.icy_propulsion_conduit = false;
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
   }
 
@@ -3504,7 +3513,7 @@ struct ebonbolt_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 257538 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
-    triggers.icy_propulsion = !p->bugs;
+    triggers.icy_propulsion_conduit = !p->bugs;
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -4185,7 +4194,7 @@ struct glacial_fragments_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = p->runeforge.glacial_fragments->effectN( 3 ).base_value();
     background = true;
-    affected_by.shatter = triggers.icy_propulsion = false; // TODO: does this work with Shatter in DF?
+    affected_by.shatter = triggers.icy_propulsion_conduit = false; // TODO: does this work with Shatter in DF?
   }
 };
 
@@ -4962,7 +4971,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     channeled = triggers.chill = triggers.radiant_spark = true;
-    triggers.icy_propulsion = false;
+    triggers.icy_propulsion_conduit = false;
   }
 
   void init_finished() override
