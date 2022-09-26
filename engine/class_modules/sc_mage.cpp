@@ -3857,6 +3857,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
   {
     aoe = -1;
     reduced_aoe_targets = data().effectN( 2 ).base_value();
+    base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
     background = triggers.bone_chilling = true;
   }
@@ -3953,6 +3954,8 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     int pulse_count = 20;
     timespan_t pulse_time = 0.5_s;
+    // TODO: Double check Freezing Winds and Cold Front interactions
+    pulse_count += as<int>( p()->talents.everlasting_frost->effectN( 2 ).time_value() / pulse_time );
     timespan_t duration = ( pulse_count - 1 ) * pulse_time;
     p()->ground_aoe_expiration[ AOE_FROZEN_ORB ] = sim->current_time() + duration;
 
