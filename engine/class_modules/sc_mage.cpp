@@ -3804,6 +3804,8 @@ struct frostbolt_t final : public frost_mage_spell_t
   double fof_chance;
   double bf_chance;
 
+  bool fractured_frost_active = true;
+
   frostbolt_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     frost_mage_spell_t( n, p, p->find_class_spell( "Frostbolt" ) ),
     fof_chance(),
@@ -3837,6 +3839,14 @@ struct frostbolt_t final : public frost_mage_spell_t
     proc_fof = p()->get_proc( "Fingers of Frost from Frostbolt" );
 
     frost_mage_spell_t::init_finished();
+  }
+
+  int n_targets() const override
+  {
+    if ( p()->talents.fractured_frost->ok() && fractured_frost_active )
+      return as<int>( p()->talents.fractured_frost->effectN( 3 ).base_value() );
+    else
+      return frost_mage_spell_t::n_targets();
   }
 
   timespan_t gcd() const override
@@ -3877,7 +3887,11 @@ struct frostbolt_t final : public frost_mage_spell_t
 
   void execute() override
   {
+    // We treat Fractured Frost as always active outside of the spell execute, this makes sure
+    // that simc properly invalidates target caches etc.
+    fractured_frost_active = p()->rng().roll( p()->talents.fractured_frost->effectN( 2 ).percent() );
     frost_mage_spell_t::execute();
+    fractured_frost_active = true;
 
     // TODO: icicle overflow is currently broken with the splintering cold icicle
     int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
