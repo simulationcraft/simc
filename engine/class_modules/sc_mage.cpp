@@ -7322,16 +7322,22 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
 {
   assert( source );
 
-  bool active  = buffs.brain_freeze->check();
-  bool success = trigger_delayed_buff( buffs.brain_freeze, chance, delay );
+  bool success = rng().roll( chance );
   if ( success )
   {
-    // TODO: Should this be in buff_t::execute/trigger_delayed_buff?
-    auto cd = cooldowns.flurry;
-    if ( active )
-      make_event( sim, delay, [ cd, chance ] { cd->reset( chance < 1.0 ); } );
+    if ( buffs.brain_freeze->check() )
+    {
+      make_event( sim, delay, [ this, chance ]
+      {
+        buffs.brain_freeze->execute();
+        cooldowns.flurry->reset( chance < 1.0 );
+      } );
+    }
     else
-      cd->reset( chance < 1.0 );
+    {
+      buffs.brain_freeze->execute();
+      cooldowns.flurry->reset( chance < 1.0 );
+    }
 
     source->occur();
     procs.brain_freeze->occur();
