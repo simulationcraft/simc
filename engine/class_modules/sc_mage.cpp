@@ -4992,9 +4992,6 @@ struct summon_water_elemental_t final : public frost_mage_spell_t
     parse_options( options_str );
     harmful = track_cd_waste = false;
     ignore_false_positive = true;
-
-    if ( p->talents.lonely_winter->ok() )
-      background = true;
   }
 
   void execute() override
@@ -5444,7 +5441,7 @@ struct freeze_t final : public action_t
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
 
-    if ( p->talents.lonely_winter->ok() )
+    if ( !p->talents.summon_water_elemental->ok() )
       background = true;
   }
 
@@ -5992,7 +5989,7 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( specialization() == MAGE_FROST && !talents.lonely_winter->ok() && find_action( "summon_water_elemental" ) )
+  if ( specialization() == MAGE_FROST && talents.summon_water_elemental->ok() && find_action( "summon_water_elemental" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
   auto a = find_action( "mirror_image" );
