@@ -1130,7 +1130,12 @@ struct void_spike_t final : public priest_pet_spell_t
     : priest_pet_spell_t( "void_spike", p, p.o().find_spell( 373279 ) )
   {
     parse_options( options );
-    affected_by_shadow_weaving = false;
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !p.o().bugs )
+    {
+      affected_by_shadow_weaving = true;
+    }
   }
 
   void init() override

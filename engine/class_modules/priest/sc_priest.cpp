@@ -1296,13 +1296,18 @@ struct echoing_void_t final : public priest_spell_t
 {
   echoing_void_t( priest_t& p ) : priest_spell_t( "echoing_void", p, p.find_spell( 373304 ) )
   {
-    affected_by_shadow_weaving = false;
-    background                 = true;
-    proc                       = false;
-    callbacks                  = true;
-    may_miss                   = false;
-    aoe                        = -1;
-    range                      = 10.0;
+    background = true;
+    proc       = false;
+    callbacks  = true;
+    may_miss   = false;
+    aoe        = -1;
+    range      = 10.0;
+
+    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !priest().bugs )
+    {
+      affected_by_shadow_weaving = true;
+    }
   }
 };
 

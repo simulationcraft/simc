@@ -213,13 +213,13 @@ struct corruption_t : public warlock_spell_t
 
     add_child( harvester_proc );
 
-    //if ( p->talents.absolute_corruption->ok() )
-    //{
-    //  dot_duration = sim->expected_iteration_time > 0_ms
-    //                     ? 2 * sim->expected_iteration_time
-    //                     : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
-    //  base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2021-10-03: Only tick damage is affected
-    //}
+    if ( p->talents.absolute_corruption->ok() )
+    {
+      dot_duration = sim->expected_iteration_time > 0_ms
+                         ? 2 * sim->expected_iteration_time
+                         : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
+      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
+    }
   }
 
   void tick( dot_t* d ) override
@@ -443,7 +443,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 struct shadow_bolt_t : public warlock_spell_t
 {
   shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "Shadow Bolt", p, p->warlock_base.shadow_bolt )
+    : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
   {
     parse_options( options_str );
 
@@ -463,14 +463,6 @@ struct shadow_bolt_t : public warlock_spell_t
     }
 
     return warlock_spell_t::execute_time();
-  }
-
-  bool ready() override
-  {
-    //if ( p()->talents.drain_soul->ok() )
-    //  return false;
-
-    return warlock_spell_t::ready();
   }
 
   void execute() override
