@@ -3756,7 +3756,9 @@ struct flurry_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
+    // TODO: icicle overflow is currently broken with the splintering cold icicle
+    int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
+    for (int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
     p()->expression_support.remaining_winters_chill = 2;
 
     bool brain_freeze = p()->buffs.brain_freeze->up();
@@ -3868,7 +3870,9 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
 
-    p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
+    // TODO: icicle overflow is currently broken with the splintering cold icicle
+    int icicle_count = p()->rng().roll( p()->talents.splintering_cold->effectN( 2 ).percent() ) ? 2 : 1;
+    for ( int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.frostbolt );
 
     handle_procs();
 
