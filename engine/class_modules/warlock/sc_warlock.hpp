@@ -218,7 +218,7 @@ public:
     player_talent_t writhe_in_agony; // 2022-09-23 DF Beta - Writhe In Agony's second point is not registering in-game
     player_talent_t agonizing_corruption; // Only applies to targets which already have Agony
 
-    player_talent_t drain_soul; // This represents the talent node but not much else
+    player_talent_t drain_soul; // This represents the talent node but not much else. 2022-09-25 Some weird behavior with Nightfall has been documented.
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
     const spell_data_t* absolute_corruption; // DF - Now a choice against Siphon Life
     const spell_data_t* siphon_life; // DF - Now a choice against Absolute Corruption

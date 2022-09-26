@@ -335,9 +335,13 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
-// REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
+  // 2022-09-25 Current Drain Soul behavior with Nightfall:
+  // Drain Soul ordinarily behaves like a hasted duration DoT, using pandemic behavior for chaining
+  // However, Nightfall is increasing tick rate without affecting duration, creating more ticks than usual
+  // In most cases, the regular duration is used when calculating the refreshed duration
+  // The one exception is a fresh cast of a Nightfall-buffed Drain Soul, which lasts slightly longer to ensure each tick is a full tick
   struct drain_soul_state_t : public action_state_t
   {
     double tick_time_multiplier;
@@ -393,7 +397,7 @@ struct drain_soul_t : public affliction_spell_t
     auto dur = ( dot_duration * s->haste );
 
     if ( debug_cast<const drain_soul_state_t*>( s )->rounded_channel )
-      dur =tick_time( s ) * std::ceil( dur / tick_time( s ) );
+      dur = tick_time( s ) * std::ceil( dur / tick_time( s ) );
 
     return dur;
   }
