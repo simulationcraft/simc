@@ -3646,6 +3646,7 @@ struct flurry_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     may_miss = may_crit = affected_by.shatter = false;
+    cooldown->charges += as<int>( p->talents.perpetual_winter->effectN( 1 ).base_value() );
 
     add_child( flurry_bolt );
     if ( p->spec.icicles->ok() )
