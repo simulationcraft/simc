@@ -335,39 +335,111 @@ struct malefic_rapture_t : public affliction_spell_t
 
 // Talents
 
-// REMEMBER TO CHECK SHADOW EMBRACE TO THIS WHEN RETALENTIZING
-// REMEMBER TO ADD NIGHTFALL TO THIS WHEN RETALENTIZING
 struct drain_soul_t : public affliction_spell_t
 {
+  // 2022-09-25 Current Drain Soul behavior with Nightfall:
+  // Drain Soul ordinarily behaves like a hasted duration DoT, using pandemic behavior for chaining
+  // However, Nightfall is increasing tick rate without affecting duration, creating more ticks than usual
+  // In most cases, the regular duration is used when calculating the refreshed duration
+  // The one exception is a fresh cast of a Nightfall-buffed Drain Soul, which lasts slightly longer to ensure each tick is a full tick
+  struct drain_soul_state_t : public action_state_t
+  {
+    double tick_time_multiplier;
+    bool rounded_channel;
+
+    drain_soul_state_t( action_t* action, player_t* target )
+      : action_state_t( action, target ),
+      tick_time_multiplier( 1.0 ),
+      rounded_channel( false )
+    { }
+
+    void initialize() override
+    {
+      action_state_t::initialize();
+      tick_time_multiplier = 1.0;
+      rounded_channel = false;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
+      s << " rounded_channel=" << rounded_channel;
+      return s;
+    }
+
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+      tick_time_multiplier = debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+      rounded_channel = debug_cast<const drain_soul_state_t*>( s )->rounded_channel;
+    }
+  };
+
   drain_soul_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul )
+    : affliction_spell_t( "drain_soul", p, p->talents.drain_soul.ok() ? p->talents.drain_soul_dot : spell_data_t::not_found() )
   {
     parse_options( options_str );
     channeled    = true;
-    hasted_ticks = may_crit = true;
+  }
+
+  action_state_t* new_state() override
+  { return new drain_soul_state_t( this, target ); }
+
+  void snapshot_state( action_state_t* s, result_amount_type rt ) override
+  {
+    debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->buffs.nightfall->data().effectN( 3 ).percent() : 0 );
+    debug_cast<drain_soul_state_t*>( s )->rounded_channel = ( !td( s->target )->dots_drain_soul->is_ticking() && p()->buffs.nightfall->check() );
+    affliction_spell_t::snapshot_state( s, rt );
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    auto dur = ( dot_duration * s->haste );
+
+    if ( debug_cast<const drain_soul_state_t*>( s )->rounded_channel )
+      dur = tick_time( s ) * std::ceil( dur / tick_time( s ) );
+
+    return dur;
+  }
+
+  timespan_t tick_time( const action_state_t* s ) const override
+  {
+    timespan_t t = affliction_spell_t::tick_time( s );
+
+    t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
+
+    return t;
+  }
+
+  void execute() override
+  {
+    affliction_spell_t::execute();
+
+    p()->buffs.nightfall->decrement();
   }
 
   void tick( dot_t* d ) override
   {
     affliction_spell_t::tick( d );
+
     if ( result_is_hit( d->state->result ) )
     {
       if ( p()->talents.shadow_embrace->ok() )
         td( d->target )->debuffs_shadow_embrace->trigger();
 
-      if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
-      {
-        // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
-        bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
-                           && td( d->target )->dots_corruption->is_ticking()
-                           && td( d->target )->dots_unstable_affliction->is_ticking();
+      //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B4 ) )
+      //{
+      //  // TOFIX - As of 2022-02-03 PTR, the bonus appears to still be only checking that *any* target has these dots. May need to implement this behavior.
+      //  bool tierDotsActive = td( d->target )->dots_agony->is_ticking() 
+      //                     && td( d->target )->dots_corruption->is_ticking()
+      //                     && td( d->target )->dots_unstable_affliction->is_ticking();
 
-        if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
-        {
-          p()->procs.calamitous_crescendo->occur();
-          p()->buffs.calamitous_crescendo->trigger();
-        }
-      }
+      //  if ( tierDotsActive && rng().roll( p()->sets->set( WARLOCK_AFFLICTION, T28, B4 )->effectN( 2 ).percent() ) )
+      //  {
+      //    p()->procs.calamitous_crescendo->occur();
+      //    p()->buffs.calamitous_crescendo->trigger();
+      //  }
+      //}
     }
   }
 
@@ -375,12 +447,12 @@ struct drain_soul_t : public affliction_spell_t
   {
     double m = affliction_spell_t::composite_target_multiplier( t );
 
-    if ( t->health_percentage() < p()->talents.drain_soul->effectN( 3 ).base_value() )
+    if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
     //Withering Bolt does x% more damage per DoT on the target
     //TODO: Check what happens if a DoT falls off mid-channel
-    m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
+    //m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
 
     return m;
   }
@@ -549,8 +621,11 @@ void warlock_t::init_spells_affliction()
 
   talents.agonizing_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Agonizing Corruption" ); // Should be ID 386922
 
+  talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
+  talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
-  talents.drain_soul          = find_talent_spell( "Drain Soul" );
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
   talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );

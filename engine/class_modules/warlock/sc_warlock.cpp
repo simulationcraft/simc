@@ -443,7 +443,7 @@ struct seed_of_corruption_t : public warlock_spell_t
 struct shadow_bolt_t : public warlock_spell_t
 {
   shadow_bolt_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "Shadow Bolt", p, p->warlock_base.shadow_bolt )
+    : warlock_spell_t( "Shadow Bolt", p, p->talents.drain_soul.ok() ? spell_data_t::not_found() : p->warlock_base.shadow_bolt )
   {
     parse_options( options_str );
 
@@ -463,14 +463,6 @@ struct shadow_bolt_t : public warlock_spell_t
     }
 
     return warlock_spell_t::execute_time();
-  }
-
-  bool ready() override
-  {
-    //if ( p()->talents.drain_soul->ok() )
-    //  return false;
-
-    return warlock_spell_t::ready();
   }
 
   void execute() override
