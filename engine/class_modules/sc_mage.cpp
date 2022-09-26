@@ -4083,12 +4083,9 @@ struct frozen_orb_t final : public frost_mage_spell_t
 
     adjust_orb_count( travel_time(), false );
 
-    if ( background )
-      return;
-
     // TODO: check cold front interactions
-    p()->buffs.freezing_rain->trigger();
     p()->buffs.freezing_winds->trigger();
+    if ( !background ) p()->buffs.freezing_rain->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6654,10 +6651,10 @@ void mage_t::create_buffs()
   buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) )
                              ->set_chance( runeforge.cold_front.ok() );
   buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) );
-  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 327478 ) )
+  buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
-                             ->set_chance( runeforge.freezing_winds.ok() );
+                             ->set_chance( talents.freezing_winds->ok() || runeforge.freezing_winds.ok() );
   buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 382148 ) )
                              ->set_default_value_from_effect( 1 )
                              ->set_chance( talents.slick_ice->ok() || runeforge.slick_ice.ok() );
