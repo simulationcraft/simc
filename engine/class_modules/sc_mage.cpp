@@ -6573,7 +6573,7 @@ void mage_t::create_buffs()
 
   // Fire
   buffs.combustion   = make_buff<buffs::combustion_t>( this );
-  buffs.pyrotechnics = make_buff( this, "fireball", find_spell( 157644 ) )
+  buffs.pyrotechnics = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
                          ->set_chance( talents.pyrotechnics->ok() )
                          ->set_default_value_from_effect( 1 )
                          ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
