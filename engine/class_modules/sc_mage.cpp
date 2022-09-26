@@ -337,6 +337,7 @@ public:
     buff_t* icicles;
     buff_t* icy_veins;
     buff_t* ray_of_frost;
+    buff_t* snowstorm;
 
 
     // Shared
@@ -405,6 +406,7 @@ public:
     cooldown_t* mirrors_of_torment;
     cooldown_t* phoenix_flames;
     cooldown_t* presence_of_mind;
+    cooldown_t* snowstorm;
   } cooldowns;
 
   // Gains
@@ -3081,6 +3083,18 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    // TODO: should this be moved to execute?
+    if ( p()->cooldowns.snowstorm->up() && rng().roll( p()->talents.snowstorm->proc_chance() ) )
+    {
+      p()->cooldowns.snowstorm->start( p()->talents.snowstorm->internal_cooldown() );
+      p()->buffs.snowstorm->trigger();
+    }
+  }
+
   double action_multiplier() const override
   {
     double am = frost_mage_spell_t::action_multiplier();
@@ -3239,6 +3253,21 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.chill = consumes_winters_chill = triggers.radiant_spark = true;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = frost_mage_spell_t::action_multiplier();
+
+    am *= 1.0 + p()->buffs.snowstorm->check_stack_value();
+
+    return am;
+  }
+
+  void execute() override
+  {
+    frost_mage_spell_t::execute();
+    p()->buffs.snowstorm->expire();
   }
 };
 
@@ -5791,6 +5820,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.mirrors_of_torment = get_cooldown( "mirrors_of_torment" );
   cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
   cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
+  cooldowns.snowstorm          = get_cooldown( "snowstorm"          );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -6496,6 +6526,8 @@ void mage_t::create_buffs()
                              ->set_chance( talents.freezing_rain->ok() );
   buffs.ray_of_frost     = make_buff( this, "ray_of_frost", find_spell( 208141 ) )
                              ->set_default_value_from_effect( 1 );
+  buffs.snowstorm        = make_buff( this, "snowstorm", find_spell( 381522 ) )
+                             ->set_default_value( talents.snowstorm->effectN( 2 ).percent() );
 
 
   // Shared
