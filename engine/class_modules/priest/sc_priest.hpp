@@ -562,6 +562,8 @@ public:
     // to the number of allies
     // 20m raid this stacks in 1-2s
     int pallid_command_allies = 50;
+
+    bool power_infusion_fiend = false;
   } options;
 
   // Legendaries

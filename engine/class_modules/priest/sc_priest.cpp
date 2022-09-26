@@ -211,7 +211,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-          } );
+             } );
         }
       }
     }
@@ -529,9 +529,22 @@ struct power_infusion_t final : public priest_spell_t
     priest_spell_t::execute();
 
     // Trigger PI on the actor only if casting on itself or having the legendary
-    if ( priest().options.self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() )
+    if ( priest().options.self_power_infusion || priest().legendary.twins_of_the_sun_priestess->ok() ||
+         priest().talents.twins_of_the_sun_priestess->ok() )
     {
       player->buffs.power_infusion->trigger();
+
+      if ( priest().options.power_infusion_fiend && priest().options.self_power_infusion &&
+           ( priest().legendary.twins_of_the_sun_priestess->ok() ||
+             priest().talents.twins_of_the_sun_priestess->ok() ) )
+      {
+        pet_t* current_pet =
+            priest().talents.shadow.mindbender.enabled() ? priest().pets.mindbender : priest().pets.shadowfiend;
+        if ( current_pet && !current_pet->is_sleeping() )
+        {
+          current_pet->buffs.power_infusion->trigger();
+        }
+      }
     }
   }
 };
@@ -3029,6 +3042,7 @@ void priest_t::create_options()
   add_option( opt_int( "priest.shadow_word_manipulation_seconds_remaining",
                        options.shadow_word_manipulation_seconds_remaining, 0, 8 ) );
   add_option( opt_int( "priest.pallid_command_allies", options.pallid_command_allies, 0, 50 ) );
+  add_option( opt_bool( "priest.power_infusion_fiend", options.power_infusion_fiend ) );
 }
 
 std::string priest_t::create_profile( save_e type )
@@ -3222,9 +3236,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =

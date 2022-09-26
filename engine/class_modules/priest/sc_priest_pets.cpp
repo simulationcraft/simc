@@ -126,6 +126,56 @@ struct priest_pet_t : public pet_t
     return RESOURCE_ENERGY;
   }
 
+  void create_buffs() override
+  {
+    pet_t::create_buffs();
+
+    buffs.power_infusion = make_buff( this, "power_infusion", find_spell( 10060 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_cooldown( 0_ms )
+                               ->add_invalidate( CACHE_HASTE );
+  }
+
+  double composite_melee_haste() const override
+  {
+    double h = pet_t::composite_melee_haste();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_spell_haste() const override
+  {
+    double h = pet_t::composite_spell_haste();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_melee_speed() const override
+  {
+    double h = pet_t::composite_melee_speed();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
+  double composite_spell_speed() const override
+  {
+    double h = pet_t::composite_spell_speed();
+
+    if ( buffs.power_infusion )
+      h *= 1.0 / ( 1.0 + buffs.power_infusion->check_value() );
+
+    return h;
+  }
+
   priest_t& o()
   {
     return static_cast<priest_t&>( *owner );
