@@ -6589,7 +6589,7 @@ void mage_t::create_buffs()
                              ->set_default_value( 0.1 * talents.bone_chilling->effectN( 1 ).percent() )
                              ->set_chance( talents.bone_chilling->ok() );
   buffs.chain_reaction   = make_buff( this, "chain_reaction", find_spell( 278310 ) )
-                             ->set_default_value_from_effect( 1 )
+                             ->set_default_value( talents.chain_reaction->effectN( 1 ).percent() )
                              ->set_chance( talents.chain_reaction->ok() );
   buffs.freezing_rain    = make_buff( this, "freezing_rain", find_spell( 270232 ) )
                              ->set_default_value_from_effect( 2 )
