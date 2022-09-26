@@ -3609,13 +3609,10 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( p()->state.brain_freeze_active )
-    {
-      auto wc = get_td( s->target )->debuffs.winters_chill;
-      wc->trigger( wc->max_stack() );
-      for ( int i = 0; i < wc->max_stack(); i++ )
-        p()->procs.winters_chill_applied->occur();
-    }
+    auto wc = get_td( s->target )->debuffs.winters_chill;
+    wc->trigger( wc->max_stack() );
+    for ( int i = 0; i < wc->max_stack(); i++ )
+      p()->procs.winters_chill_applied->occur();
   }
 
   double action_multiplier() const override
@@ -3651,14 +3648,6 @@ struct flurry_t final : public frost_mage_spell_t
 
     // Snapshot haste for bolt impact timing.
     snapshot_flags |= STATE_HASTE;
-  }
-
-  timespan_t execute_time() const override
-  {
-    if ( p()->buffs.brain_freeze->check() )
-      return 0_ms;
-
-    return frost_mage_spell_t::execute_time();
   }
 
   void execute() override
