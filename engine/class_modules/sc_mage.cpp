@@ -2440,6 +2440,7 @@ struct icicle_t final : public frost_mage_spell_t
     callbacks = false;
     // TODO: This base damage may have been removed, but this should be verified not just using tooltip values.
     base_dd_min = base_dd_max = 1.0;
+    crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice->ok() )
     {
@@ -3709,6 +3710,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
     // Because of the additional procs gained from the bad luck protection
@@ -3988,6 +3990,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice->ok() )
     {
