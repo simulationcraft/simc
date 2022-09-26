@@ -459,6 +459,8 @@ public:
     proc_t* brain_freeze_water_jet;
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
+    proc_t* fingers_of_frost_flash_freeze;
+    proc_t* fingers_of_frost_freezing_winds;
     proc_t* fingers_of_frost_wasted;
     proc_t* winters_chill_applied;
     proc_t* winters_chill_consumed;
@@ -2472,6 +2474,7 @@ struct icicle_t final : public frost_mage_spell_t
     callbacks = false;
     // TODO: This base damage may have been removed, but this should be verified not just using tooltip values.
     base_dd_min = base_dd_max = 1.0;
+    base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice->ok() )
@@ -2486,6 +2489,13 @@ struct icicle_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.icicles->decrement();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+    p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
+    // TODO: check if splitting ice doubles the procs
   }
 
   double spell_direct_power_coefficient( const action_state_t* s ) const override
@@ -4073,6 +4083,7 @@ struct glacial_spike_t final : public frost_mage_spell_t
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228600 )->effectN( 1 ) );
     calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = true;
+    base_multiplier *= 1.0 + p->talents.flash_freeze->effectN( 2 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     if ( p->talents.splitting_ice->ok() )
@@ -4115,7 +4126,12 @@ struct glacial_spike_t final : public frost_mage_spell_t
     // expiration events.
     p()->buffs.icicles->expire();
     while ( !p()->icicles.empty() )
+    {
       p()->get_icicle();
+      p()->trigger_fof( p()->talents.flash_freeze->effectN( 1 ).percent(), p()->procs.fingers_of_frost_flash_freeze );
+      // TODO: check if splitting ice doubles the procs
+      // TODO: what happens if buff stacks and icicle count don't match up
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -6576,10 +6592,9 @@ void mage_t::create_buffs()
   buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) )
                              ->set_chance( runeforge.cold_front.ok() );
   buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) );
-  proc_t* fw_fof = get_proc( "Fingers of Frost from Freezing Winds" );
   buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 327478 ) )
-                             ->set_tick_callback( [ this, fw_fof ] ( buff_t*, int, timespan_t )
-                               { trigger_fof( 1.0, fw_fof ); } )
+                             ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
+                               { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
                              ->set_chance( runeforge.freezing_winds.ok() );
   buffs.slick_ice        = make_buff( this, "slick_ice", find_spell( 327509 ) )
                              ->set_default_value_from_effect( 1 )
@@ -6682,14 +6697,16 @@ void mage_t::init_procs()
       procs.infernal_cascade_expires = get_proc( "Infernal Cascade expires during Combustion" );
       break;
     case MAGE_FROST:
-      procs.brain_freeze            = get_proc( "Brain Freeze" );
-      procs.brain_freeze_mirrors    = get_proc( "Brain Freeze from Mirrors of Torment" );
-      procs.brain_freeze_water_jet  = get_proc( "Brain Freeze from Water Jet" );
-      procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
-      procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
-      procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
-      procs.winters_chill_applied   = get_proc( "Winter's Chill stacks applied" );
-      procs.winters_chill_consumed  = get_proc( "Winter's Chill stacks consumed" );
+      procs.brain_freeze                    = get_proc( "Brain Freeze" );
+      procs.brain_freeze_mirrors            = get_proc( "Brain Freeze from Mirrors of Torment" );
+      procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
+      procs.brain_freeze_used               = get_proc( "Brain Freeze used" );
+      procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
+      procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
+      procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
+      procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
+      procs.winters_chill_consumed          = get_proc( "Winter's Chill stacks consumed" );
       break;
     default:
       break;
