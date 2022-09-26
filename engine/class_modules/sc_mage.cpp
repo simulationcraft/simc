@@ -394,6 +394,7 @@ public:
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
     cooldown_t* fire_blast;
+    cooldown_t* flurry;
     cooldown_t* from_the_ashes;
     cooldown_t* frost_nova;
     cooldown_t* frost_storm;
@@ -5667,6 +5668,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.combustion         = get_cooldown( "combustion"         );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
+  cooldowns.flurry             = get_cooldown( "flurry"             );
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
   cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
   cooldowns.frost_storm        = get_cooldown( "frost_storm"        );
@@ -7307,9 +7309,17 @@ bool mage_t::trigger_brain_freeze( double chance, proc_t* source, timespan_t del
 {
   assert( source );
 
+  bool active  = buffs.brain_freeze->check();
   bool success = trigger_delayed_buff( buffs.brain_freeze, chance, delay );
   if ( success )
   {
+    // TODO: Should this be in buff_t::execute/trigger_delayed_buff?
+    auto cd = cooldowns.flurry;
+    if ( active )
+      make_event( sim, delay, [ cd, chance ] { cd->reset( chance < 1.0 ); } );
+    else
+      cd->reset( chance < 1.0 );
+
     source->occur();
     procs.brain_freeze->occur();
   }
