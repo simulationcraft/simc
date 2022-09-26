@@ -3922,6 +3922,7 @@ struct frostbolt_t final : public frost_mage_spell_t
       // * cold_front_ready: FO is triggered, 3 stacks after
       // Other outcomes are also possible, although rare. This is most
       // likely due to batching.
+      // TODO: double check if this is still the case
       if ( s->chain_target == 0 )
       {
         for ( unsigned i = 0; i < s->n_targets; i++ )
@@ -6072,7 +6073,7 @@ void mage_t::create_actions()
   if ( runeforge.molten_skyfall.ok() )
     action.legendary_meteor = get_action<meteor_t>( "legendary_meteor", this, "", true );
 
-  if ( runeforge.cold_front.ok() )
+  if ( talents.cold_front->ok() || runeforge.cold_front.ok() )
     action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
 
   if ( runeforge.harmonic_echo.ok() )
@@ -6648,9 +6649,9 @@ void mage_t::create_buffs()
                                      ->set_chance( runeforge.sun_kings_blessing.ok() );
   buffs.sun_kings_blessing_ready = make_buff( this, "sun_kings_blessing_ready", find_spell( 333315 ) );
 
-  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) )
-                             ->set_chance( runeforge.cold_front.ok() );
-  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) );
+  buffs.cold_front       = make_buff( this, "cold_front", find_spell( 327327 ) ) // TODO: now 382113, needs whitelisting
+                             ->set_chance( talents.cold_front->ok() || runeforge.cold_front.ok() );
+  buffs.cold_front_ready = make_buff( this, "cold_front_ready", find_spell( 327330 ) ); // TODO: now 382114, needs whitelisting
   buffs.freezing_winds   = make_buff( this, "freezing_winds", find_spell( 382106 ) )
                              ->set_tick_callback( [ this ] ( buff_t*, int, timespan_t )
                                { trigger_fof( 1.0, procs.fingers_of_frost_freezing_winds ); } )
