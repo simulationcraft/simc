@@ -482,7 +482,6 @@ struct siphon_life_t : public affliction_spell_t
     : affliction_spell_t( "siphon_life", p, p->talents.siphon_life )
   {
     parse_options( options_str );
-    may_crit                   = false;
   }
 };
 
@@ -626,11 +625,13 @@ void warlock_t::init_spells_affliction()
 
   talents.absolute_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Corruption" ); // Should be ID 196103
 
+  talents.siphon_life = find_talent_spell( talent_tree::SPECIALIZATION, "Siphon Life" ); // Should be ID 63106
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
 
   talents.haunt               = find_talent_spell( "Haunt" );
 
-  talents.siphon_life         = find_talent_spell( "Siphon Life" );
+
 
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
   talents.vile_taint          = find_talent_spell( "Vile Taint" );

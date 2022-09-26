@@ -221,7 +221,7 @@ public:
     player_talent_t drain_soul; // This represents the talent node but not much else. 2022-09-25 Some weird behavior with Nightfall has been documented.
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
     player_talent_t absolute_corruption; // DF - Now a choice against Siphon Life
-    const spell_data_t* siphon_life; // DF - Now a choice against Absolute Corruption
+    player_talent_t siphon_life; // DF - Now a choice against Absolute Corruption
     const spell_data_t* phantom_singularity; // DF - Now a choice against Vile Taint, TODO: Dot duration uses hardcoded tick count see if spell data available
     const spell_data_t* vile_taint; // DF - New functionality (applies Agony on targets hit)
 
