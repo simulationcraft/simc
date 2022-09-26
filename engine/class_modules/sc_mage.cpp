@@ -1500,7 +1500,7 @@ struct mage_spell_t : public spell_t
     // Misc
     bool combustion = true;
     bool ice_floes = false;
-    bool shatter = false;
+    bool shatter = true;
 
     bool deathborne_cleave = false;
     bool radiant_spark = true;
@@ -1590,7 +1590,8 @@ public:
     if ( affected_by.frost_mage )
       base_multiplier *= 1.0 + p()->spec.frost_mage->effectN( 1 ).percent();
 
-    if ( harmful && affected_by.shatter )
+    // Save some CPU time by not computing frozen flags/frozen multiplier for Arcane and Fire.
+    if ( harmful && affected_by.shatter && p()->specialization() == MAGE_FROST )
     {
       snapshot_flags |= STATE_FROZEN | STATE_FROZEN_MUL;
       update_flags   |= STATE_FROZEN | STATE_FROZEN_MUL;
@@ -2278,9 +2279,7 @@ struct frost_mage_spell_t : public mage_spell_t
     track_shatter(),
     shatter_source(),
     impact_flags()
-  {
-    affected_by.shatter = true;
-  }
+  { }
 
   void init() override
   {
@@ -3834,7 +3833,7 @@ struct frost_nova_t final : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    affected_by.shatter = triggers.radiant_spark = true;
+    triggers.radiant_spark = true;
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
@@ -4057,7 +4056,7 @@ struct glacial_fragments_t final : public frost_mage_spell_t
     aoe = -1;
     reduced_aoe_targets = p->runeforge.glacial_fragments->effectN( 3 ).base_value();
     background = true;
-    affected_by.shatter = triggers.icy_propulsion = false;
+    affected_by.shatter = triggers.icy_propulsion = false; // TODO: does this work with Shatter in DF?
   }
 };
 
