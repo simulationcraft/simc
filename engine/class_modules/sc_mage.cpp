@@ -3855,6 +3855,15 @@ struct frostbolt_t final : public frost_mage_spell_t
     return am;
   }
 
+  double frozen_multiplier( const action_state_t* s ) const override
+  {
+    double fm = frost_mage_spell_t::frozen_multiplier( s );
+
+    fm *= 1.0 + p()->talents.deep_shatter->effectN( 1 ).percent();
+
+    return fm;
+  }
+
   void execute() override
   {
     frost_mage_spell_t::execute();
@@ -4355,20 +4364,20 @@ struct ice_lance_t final : public frost_mage_spell_t
 
   double frozen_multiplier( const action_state_t* s ) const override
   {
-    double m = frost_mage_spell_t::frozen_multiplier( s );
+    double fm = frost_mage_spell_t::frozen_multiplier( s );
 
-    m *= 3.0;
-    m *= 1.0 + p()->conduits.ice_bite.percent();
+    fm *= 3.0;
+    fm *= 1.0 + p()->conduits.ice_bite.percent();
 
     unsigned frozen = cast_state( s )->frozen;
     if ( frozen &  FF_FINGERS_OF_FROST
       && frozen & ~FF_FINGERS_OF_FROST)
     {
       // TODO: rank 2 currently gives the same dmg increase as rank 1
-      m *= 1.0 + p()->talents.wintertide->effectN( 2 ).percent();
+      fm *= 1.0 + p()->talents.wintertide->effectN( 2 ).percent();
     }
 
-    return m;
+    return fm;
   }
 };
 
