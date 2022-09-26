@@ -1720,8 +1720,15 @@ public:
   }
 
   // Damage multiplier that applies only if the target is frozen.
-  virtual double frozen_multiplier( const action_state_t* ) const
-  { return 1.0; }
+  virtual double frozen_multiplier( const action_state_t* s ) const
+  {
+    double fm = 1.0;
+
+    if ( cast_state( s )->frozen & FF_ROOT )
+      fm *= 1.0 + p()->talents.subzero->effectN( 1 ).percent();
+
+    return fm;
+  }
 
   void snapshot_internal( action_state_t* s, unsigned flags, result_amount_type rt ) override
   {
