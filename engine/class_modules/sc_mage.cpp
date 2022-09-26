@@ -459,12 +459,12 @@ public:
     proc_t* brain_freeze_mirrors;
     proc_t* brain_freeze_snap_freeze;
     proc_t* brain_freeze_water_jet;
-    proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
     proc_t* fingers_of_frost_snap_freeze;
     proc_t* fingers_of_frost_wasted;
+    proc_t* flurry_cast;
     proc_t* winters_chill_applied;
     proc_t* winters_chill_consumed;
   } procs;
@@ -3777,10 +3777,7 @@ struct flurry_t final : public frost_mage_spell_t
     p()->state.brain_freeze_active = brain_freeze;
     p()->buffs.brain_freeze->decrement();
 
-    if ( brain_freeze )
-    {
-      p()->procs.brain_freeze_used->occur();
-    }
+    p()->procs.flurry_cast->occur();
   }
 
   void impact( action_state_t* s ) override
@@ -6761,12 +6758,12 @@ void mage_t::init_procs()
       procs.brain_freeze_mirrors            = get_proc( "Brain Freeze from Mirrors of Torment" );
       procs.brain_freeze_snap_freeze        = get_proc( "Brain Freeze from Snap Freeze" );
       procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
-      procs.brain_freeze_used               = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
       procs.fingers_of_frost_snap_freeze    = get_proc( "Fingers of Frost from Snap Freeze" );
       procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
+      procs.flurry_cast                     = get_proc( "Flurry cast" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
       procs.winters_chill_consumed          = get_proc( "Winter's Chill stacks consumed" );
       break;
@@ -7845,7 +7842,7 @@ public:
           "</tr>\n"
           "</thead>\n";
 
-    double bff = p.procs.brain_freeze_used->count.pretty_mean();
+    double flurry = p.procs.flurry_cast->count.pretty_mean();
 
     for ( const shatter_source_t* data : p.shatter_source_list )
     {
@@ -7857,7 +7854,7 @@ public:
       {
         fmt::print( os, "<td class=\"right\">{}</td>", nonzero( mean, "" ) );
         fmt::print( os, "<td class=\"right\">{}</td>", nonzero( 100.0 * mean / total, "%" ) );
-        if ( util ) fmt::print( os, "<td class=\"right\">{}</td>", nonzero( bff > 0.0 ? 100.0 * mean / bff : 0.0, "%" ) );
+        if ( util ) fmt::print( os, "<td class=\"right\">{}</td>", nonzero( flurry > 0.0 ? 100.0 * mean / flurry : 0.0, "%" ) );
       };
 
       std::string name = data->name_str;
