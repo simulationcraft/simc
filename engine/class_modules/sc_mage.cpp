@@ -3517,7 +3517,7 @@ struct fireball_t final : public fire_mage_spell_t
   {
     double c = fire_mage_spell_t::composite_crit_chance();
 
-    c += p()->buffs.fireball->check_stack_value();
+    c += p()->buffs.pyrotechnics->check_stack_value();
 
     return c;
   }
