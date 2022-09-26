@@ -624,11 +624,12 @@ void warlock_t::init_spells_affliction()
   talents.drain_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Drain Soul" ); // Should be ID 388667
   talents.drain_soul_dot = find_spell( 198590 ); // This contains all the channel data
 
+  talents.absolute_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Absolute Corruption" ); // Should be ID 196103
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
 
   talents.haunt               = find_talent_spell( "Haunt" );
 
-  talents.absolute_corruption = find_talent_spell( "Absolute Corruption" );
   talents.siphon_life         = find_talent_spell( "Siphon Life" );
 
   talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
