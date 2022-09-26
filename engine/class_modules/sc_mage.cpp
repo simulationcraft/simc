@@ -456,11 +456,13 @@ public:
 
     proc_t* brain_freeze;
     proc_t* brain_freeze_mirrors;
+    proc_t* brain_freeze_snap_freeze;
     proc_t* brain_freeze_water_jet;
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
+    proc_t* fingers_of_frost_snap_freeze;
     proc_t* fingers_of_frost_wasted;
     proc_t* winters_chill_applied;
     proc_t* winters_chill_consumed;
@@ -4448,6 +4450,13 @@ struct icy_veins_t final : public frost_mage_spell_t
     p()->buffs.slick_ice->expire();
     p()->buffs.icy_veins->trigger();
     p()->buffs.rune_of_power->trigger();
+
+    if ( p()->talents.snap_freeze->ok() )
+    {
+      // TODO: check what the delay is if BF is already up
+      p()->trigger_brain_freeze( 1.0, p()->procs.brain_freeze_snap_freeze );
+      p()->trigger_fof( 1.0, p()->procs.fingers_of_frost_snap_freeze );
+    }
   }
 };
 
@@ -6736,11 +6745,13 @@ void mage_t::init_procs()
     case MAGE_FROST:
       procs.brain_freeze                    = get_proc( "Brain Freeze" );
       procs.brain_freeze_mirrors            = get_proc( "Brain Freeze from Mirrors of Torment" );
+      procs.brain_freeze_snap_freeze        = get_proc( "Brain Freeze from Snap Freeze" );
       procs.brain_freeze_water_jet          = get_proc( "Brain Freeze from Water Jet" );
       procs.brain_freeze_used               = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost                = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
+      procs.fingers_of_frost_snap_freeze    = get_proc( "Fingers of Frost from Snap Freeze" );
       procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
       procs.winters_chill_consumed          = get_proc( "Winter's Chill stacks consumed" );
