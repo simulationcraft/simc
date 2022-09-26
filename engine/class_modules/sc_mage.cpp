@@ -1510,7 +1510,7 @@ struct mage_spell_t : public spell_t
 
   struct triggers_t
   {
-    bool bone_chilling = false;
+    bool chill = false;
     bool from_the_ashes = false;
     bool ignite = false;
     bool touch_of_the_magi = true;
@@ -2390,8 +2390,9 @@ struct frost_mage_spell_t : public mage_spell_t
       if ( s->chain_target == 0 )
         record_shatter_source( s, shatter_source );
 
-      if ( triggers.bone_chilling )
-        p()->buffs.bone_chilling->trigger();
+      // TODO: should this be moved to mage_spell_t?
+      if ( triggers.chill )
+        trigger_chill_effect( s );
 
       if ( auto td = find_td( s->target ) )
       {
@@ -2403,6 +2404,14 @@ struct frost_mage_spell_t : public mage_spell_t
         }
       }
     }
+  }
+
+  void trigger_chill_effect( const action_state_t* s )
+  {
+    // TODO: double check if frostbite and bone chilling trigger from the same spells
+    p()->buffs.bone_chilling->trigger();
+    if ( p()->rng().roll( p()->talents.frostbite->proc_chance() ) )
+      p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 
   void trigger_cold_front()
@@ -3027,7 +3036,7 @@ struct blizzard_shard_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->find_spell( 190357 ) )
   {
     aoe = -1;
-    background = ground_aoe = triggers.bone_chilling = true;
+    background = ground_aoe = triggers.chill = true;
     triggers.icy_propulsion = false;
     base_multiplier *= 1.0 + p->conduits.shivering_core.percent();
   }
@@ -3205,7 +3214,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.bone_chilling = consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.chill = consumes_winters_chill = triggers.radiant_spark = true;
   }
 };
 
@@ -3598,7 +3607,7 @@ struct flurry_bolt_t final : public frost_mage_spell_t
   flurry_bolt_t( std::string_view n, mage_t* p ) :
     frost_mage_spell_t( n, p, p->find_spell( 228354 ) )
   {
-    background = triggers.bone_chilling = triggers.radiant_spark = true;
+    background = triggers.chill = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
   }
 
@@ -3698,7 +3707,7 @@ struct frostbolt_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
-    triggers.bone_chilling = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
+    triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
 
     double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
@@ -3859,7 +3868,7 @@ struct frozen_orb_bolt_t final : public frost_mage_spell_t
     reduced_aoe_targets = data().effectN( 2 ).base_value();
     base_multiplier *= 1.0 + p->talents.everlasting_frost->effectN( 1 ).percent();
     base_multiplier *= 1.0 + p->conduits.unrelenting_cold.percent();
-    background = triggers.bone_chilling = true;
+    background = triggers.chill = true;
   }
 
   void init_finished() override
@@ -4828,7 +4837,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     frost_mage_spell_t( n, p, p->talents.ray_of_frost )
   {
     parse_options( options_str );
-    channeled = triggers.bone_chilling = triggers.radiant_spark = true;
+    channeled = triggers.chill = triggers.radiant_spark = true;
     triggers.icy_propulsion = false;
   }
 
@@ -4844,7 +4853,7 @@ struct ray_of_frost_t final : public frost_mage_spell_t
     p()->buffs.ray_of_frost->trigger();
 
     // Ray of Frost triggers Bone Chilling on each tick, as well as on execute.
-    p()->buffs.bone_chilling->trigger();
+    trigger_chill_effect( d->state );
 
     // TODO: Now happens at 2.5 and 5 through a hidden buff (spell_id 269748).
     if ( d->current_tick == 3 || d->current_tick == 5 )
