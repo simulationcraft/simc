@@ -281,6 +281,7 @@ public:
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
     action_t* pet_freeze;
+    action_t* pet_water_jet;
     action_t* tormenting_backlash;
     action_t* touch_of_the_magi_explosion;
 
@@ -452,6 +453,7 @@ public:
 
     proc_t* brain_freeze;
     proc_t* brain_freeze_mirrors;
+    proc_t* brain_freeze_water_jet;
     proc_t* brain_freeze_used;
     proc_t* fingers_of_frost;
     proc_t* fingers_of_frost_wasted;
@@ -1027,6 +1029,21 @@ struct freeze_t final : public mage_pet_spell_t
   }
 };
 
+struct water_jet_t final : public mage_pet_spell_t
+{
+  water_jet_t( std::string_view n, water_elemental_pet_t* p ) :
+    mage_pet_spell_t( n, p, p->find_pet_spell( "Water Jet" ) )
+  {
+    channeled = true;
+  }
+
+  void execute() override
+  {
+    mage_pet_spell_t::execute();
+    o()->trigger_brain_freeze( 1.0, o()->procs.brain_freeze_water_jet );
+  }
+};
+
 action_t* water_elemental_pet_t::create_action( std::string_view name, std::string_view options_str )
 {
   if ( name == "waterbolt" ) return new waterbolt_t( name, this, options_str );
@@ -1037,6 +1054,11 @@ action_t* water_elemental_pet_t::create_action( std::string_view name, std::stri
 void water_elemental_pet_t::create_actions()
 {
   o()->action.pet_freeze = get_action<freeze_t>( "freeze", this );
+
+  // /!\ WARNING /!\
+  // This is a foreground action (and thus get_action shouldn't be used). Handle with care.
+  // TODO: Do we want autocast option just like in Legion?
+  o()->action.pet_water_jet = new water_jet_t( "water_jet", this );
 
   mage_pet_t::create_actions();
 }
@@ -5430,14 +5452,15 @@ struct stop_burn_phase_t final : public action_t
   }
 };
 
-// Proxy Freeze Action ======================================================
+// Proxy Water Elemental Actions ======================================================
 
 struct freeze_t final : public action_t
 {
   freeze_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    action_t( ACTION_OTHER, n, p, p->find_class_spell( "Freeze" ) )
+    action_t( ACTION_OTHER, n, p )
   {
     parse_options( options_str );
+    trigger_gcd = 0_ms;
     may_miss = may_crit = callbacks = false;
     dual = usable_while_casting = ignore_false_positive = true;
 
@@ -5458,6 +5481,52 @@ struct freeze_t final : public action_t
 
     // Make sure the cooldown is actually ready and not just within cooldown tolerance.
     if ( !p->action.pet_freeze->cooldown->up() || !p->action.pet_freeze->ready() )
+      return false;
+
+    return action_t::ready();
+  }
+};
+
+struct water_jet_t final : public action_t
+{
+  water_jet_t( std::string_view n, mage_t* p, std::string_view options_str ) :
+    action_t( ACTION_OTHER, n, p )
+  {
+    parse_options( options_str );
+    trigger_gcd = 0_ms;
+    may_miss = may_crit = callbacks = false;
+    dual = usable_while_casting = ignore_false_positive = true;
+
+    if ( !p->talents.summon_water_elemental->ok() )
+      background = true;
+  }
+
+  void execute() override
+  {
+    mage_t* mage = debug_cast<mage_t*>( player );
+    pet_t* pet = mage->pets.water_elemental;
+
+    pet->interrupt();
+    event_t::cancel( pet->readying );
+
+    mage->action.pet_water_jet->set_target( target );
+    mage->action.pet_water_jet->schedule_execute();
+  }
+
+  bool ready() override
+  {
+    mage_t* mage = debug_cast<mage_t*>( player );
+    pet_t* pet = mage->pets.water_elemental;
+
+    if ( !pet || pet->is_sleeping() )
+      return false;
+
+    // Make sure the cooldown is actually ready and not just within cooldown tolerance.
+    if ( !mage->action.pet_water_jet->cooldown->up() || !mage->action.pet_water_jet->ready() )
+      return false;
+
+    // Prevent recasting if Water Elemental is already executing Water Jet
+    if ( pet->executing == mage->action.pet_water_jet )
       return false;
 
     return action_t::ready();
@@ -5791,6 +5860,7 @@ action_t* mage_t::create_action( std::string_view name, std::string_view options
   if ( name == "summon_water_elemental" ) return new summon_water_elemental_t( name, this, options_str );
 
   if ( name == "freeze"                 ) return new                 freeze_t( name, this, options_str );
+  if ( name == "water_jet"              ) return new              water_jet_t( name, this, options_str );
 
   // Shared spells
   if ( name == "arcane_explosion"       ) return new       arcane_explosion_t( name, this, options_str );
@@ -6540,6 +6610,7 @@ void mage_t::init_procs()
     case MAGE_FROST:
       procs.brain_freeze            = get_proc( "Brain Freeze" );
       procs.brain_freeze_mirrors    = get_proc( "Brain Freeze from Mirrors of Torment" );
+      procs.brain_freeze_water_jet  = get_proc( "Brain Freeze from Water Jet" );
       procs.brain_freeze_used       = get_proc( "Brain Freeze used" );
       procs.fingers_of_frost        = get_proc( "Fingers of Frost" );
       procs.fingers_of_frost_wasted = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
