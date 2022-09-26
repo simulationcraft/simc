@@ -290,6 +290,7 @@ public:
     {
       action_t* frostbolt;
       action_t* flurry;
+      action_t* ice_lance;
     } icicle;
   } action;
 
@@ -4274,6 +4275,8 @@ struct ice_lance_t final : public frost_mage_spell_t
       glacial_fragments = get_action<glacial_fragments_t>( "glacial_fragments", p );
       add_child( glacial_fragments );
     }
+    if ( p->talents.hailstones->ok() )
+      add_child( p->action.icicle.ice_lance );
   }
 
   void init_finished() override
@@ -4317,6 +4320,17 @@ struct ice_lance_t final : public frost_mage_spell_t
     }
 
     return source;
+  }
+
+  void schedule_travel( action_state_t* s )
+  {
+    frost_mage_spell_t::schedule_travel( s );
+
+    // We need access to the action state corresponding to the main target so that we
+    // can use mage_spell_t::frozen to figure out the frozen state at the moment of cast.
+    // TODO: this is almost surely a bug since you can shatter Ice Lance without getting Icicle and vice versa
+    if ( s->chain_target == 0 && frozen( s ) && p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
+      p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
   }
 
   void execute() override
@@ -6033,6 +6047,7 @@ void mage_t::create_actions()
   {
     action.icicle.frostbolt = get_action<icicle_t>( "frostbolt_icicle", this );
     action.icicle.flurry    = get_action<icicle_t>( "flurry_icicle", this );
+    action.icicle.ice_lance = get_action<icicle_t>( "ice_lance_icicle", this );
   }
 
   if ( talents.arcane_familiar->ok() )
