@@ -3756,6 +3756,7 @@ struct frostbolt_t final : public frost_mage_spell_t
     parse_effect_data( p->find_spell( 228597 )->effectN( 1 ) );
     triggers.chill = calculate_on_impact = track_shatter = consumes_winters_chill = triggers.radiant_spark = affected_by.deathborne_cleave = true;
     base_multiplier *= 1.0 + p->talents.lonely_winter->effectN( 1 ).percent();
+    base_multiplier *= 1.0 + p->talents.wintertide->effectN( 1 ).percent();
     crit_bonus_multiplier *= 1.0 + p->talents.piercing_cold->effectN( 1 ).percent();
 
     double ft_multiplier = 1.0 + p->talents.frozen_touch->effectN( 1 ).percent();
@@ -4306,6 +4307,14 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     m *= 3.0;
     m *= 1.0 + p()->conduits.ice_bite.percent();
+
+    unsigned frozen = cast_state( s )->frozen;
+    if ( frozen &  FF_FINGERS_OF_FROST
+      && frozen & ~FF_FINGERS_OF_FROST)
+    {
+      // TODO: rank 2 currently gives the same dmg increase as rank 1
+      m *= 1.0 + p()->talents.wintertide->effectN( 2 ).percent();
+    }
 
     return m;
   }
