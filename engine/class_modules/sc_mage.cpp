@@ -273,6 +273,7 @@ public:
     action_t* arcane_echo;
     action_t* conflagration_flare_up;
     action_t* frost_storm_comet_storm;
+    action_t* glacial_assault;
     action_t* harmonic_echo;
     action_t* ignite;
     action_t* legendary_frozen_orb;
@@ -3625,6 +3626,17 @@ struct flamestrike_t final : public hot_streak_spell_t
 
 // Flurry Spell =============================================================
 
+struct glacial_assault_t : public frost_mage_spell_t
+{
+  glacial_assault_t( std::string_view n, mage_t* p ) :
+    frost_mage_spell_t( n, p, p->find_spell( 379029 ) )
+  {
+    // TODO: check interactions with other effects (radiant spark, overflowing energy, etc)
+    background  = true;
+    aoe = -1;
+  }
+};
+
 struct flurry_bolt_t final : public frost_mage_spell_t
 {
   flurry_bolt_t( std::string_view n, mage_t* p ) :
@@ -3645,6 +3657,15 @@ struct flurry_bolt_t final : public frost_mage_spell_t
     wc->trigger( wc->max_stack() );
     for ( int i = 0; i < wc->max_stack(); i++ )
       p()->procs.winters_chill_applied->occur();
+
+    if ( rng().roll( p()->talents.glacial_assault->effectN( 1 ).percent() ) )
+    {
+      make_event<ground_aoe_event_t>( *sim, p(), ground_aoe_params_t()
+        .pulse_time( 1.0_s )
+        .target( s->target )
+        .n_pulses( 1 )
+        .action( p()->action.glacial_assault ) );
+    }
   }
 
   double action_multiplier() const override
@@ -3673,6 +3694,8 @@ struct flurry_t final : public frost_mage_spell_t
     add_child( flurry_bolt );
     if ( p->spec.icicles->ok() )
       add_child( p->action.icicle.flurry );
+    if ( p->action.glacial_assault )
+      add_child( p->action.glacial_assault );
   }
 
   void init() override
@@ -5918,6 +5941,9 @@ void mage_t::create_actions()
     action.living_bomb_dot_spread = get_action<living_bomb_dot_t>( "living_bomb_dot_spread", this, false );
     action.living_bomb_explosion  = get_action<living_bomb_explosion_t>( "living_bomb_explosion", this );
   }
+
+  if ( talents.glacial_assault->ok() )
+    action.glacial_assault = get_action<glacial_assault_t>( "glacial_assault", this );
 
   if ( talents.touch_of_the_magi->ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
