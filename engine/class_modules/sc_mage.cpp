@@ -4320,7 +4320,7 @@ struct ice_lance_t final : public frost_mage_spell_t
     return source;
   }
 
-  void schedule_travel( action_state_t* s )
+  void schedule_travel( action_state_t* s ) override
   {
     frost_mage_spell_t::schedule_travel( s );
 
