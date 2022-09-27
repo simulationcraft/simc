@@ -7514,27 +7514,45 @@ struct starfall_t : public druid_spell_t
   {
     starfall_damage_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 191037 ) )
     {
-      background = dual = update_eclipse = true;
-      aoe = -1;
-      // starfall radius encoded in separate spell
-      radius = p->find_spell( 50286 )->effectN( 1 ).radius();
+      background = dual = true;
     }
 
+    double action_multiplier() const override
+    {
+      return druid_spell_t::action_multiplier() * std::max( 1, p()->buff.starfall->check() );
+    }
+  };
+
+  struct starfall_driver_t : public druid_spell_t
+  {
+    timespan_t delay;
+
+    starfall_driver_t( druid_t* p, std::string_view n )
+      : druid_spell_t( n, p, p->talent.starfall->effectN( 3 ).trigger() )
+    {
+      background = dual = true;
+      aoe = -1;
+
+      impact_action =
+        p->get_secondary_action_n<starfall_damage_t>( name_str.substr( 0, name_str.find_last_of( '_' ) ) + "_damage" );
+      delay = timespan_t::from_seconds( impact_action->travel_delay );
+    }
+
+    // fake travel time to simulate execution delay for individual stars
     timespan_t travel_time() const override
     {
-      // seems to have a random travel time between 1x - 2x travel delay
-      return timespan_t::from_seconds( travel_delay * rng().range( 1.0, 2.0 ) );
+      return rng().range( 0_ms, delay );
     }
 
-    void impact( action_state_t* s ) override
+    void execute() override
     {
-      druid_spell_t::impact( s );
+      druid_spell_t::execute();
 
       p()->eclipse_handler.tick_starfall();
     }
   };
 
-  action_t* damage;
+  action_t* driver;
   cooldown_t* orig_cd;
 
   starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
@@ -7544,9 +7562,13 @@ struct starfall_t : public druid_spell_t
   {
     may_miss = may_crit = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
+    dot_duration = 0_ms;
+    form_mask |= NO_FORM;
 
-    damage = p->get_secondary_action_n<starfall_damage_t>( name_str + "_dmg" );
-    damage->stats = stats;
+    driver = p->get_secondary_action_n<starfall_driver_t>( name_str + "_driver" );
+    driver->stats = stats;
+    assert( driver->impact_action );
+    driver->impact_action->stats = stats;
   }
 
   bool ready() override
@@ -7606,7 +7628,7 @@ struct starfall_t : public druid_spell_t
     druid_spell_t::execute();
 
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      damage->schedule_execute();
+      driver->schedule_execute();
     } );
 
     p()->buff.starfall->trigger();
@@ -10077,9 +10099,11 @@ void druid_t::create_buffs()
     ->set_default_value( talent.solstice->effectN( 1 ).percent() );
 
   buff.starfall = make_buff( this, "starfall", talent.starfall )
-    ->set_period( 1_s )
-    ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-    ->set_tick_zero( true );
+    ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
+    ->set_tick_on_application( true )  // TODO: confirm true?
+    ->set_freeze_stacks( true )
+    ->set_partial_tick( true )  // TODO: confirm true?
+    ->set_tick_behavior( buff_tick_behavior::REFRESH );  // TODO: confirm true?
 
   buff.starlord = make_buff( this, "starlord", find_spell( 279709 ) )
     ->set_default_value( talent.starlord->effectN( 1 ).percent() )
