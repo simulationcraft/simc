@@ -576,7 +576,7 @@ public:
     const spell_data_t* natures_guardian;
     const spell_data_t* natures_guardian_AP;
     const spell_data_t* razor_claws;
-    const spell_data_t* total_eclipse;
+    const spell_data_t* astral_invocation;
   } mastery;
 
   // Procs
@@ -1136,6 +1136,7 @@ public:
   double composite_spell_power( school_e school ) const override;
   double composite_spell_power_multiplier() const override;
   double composite_player_multiplier( school_e school ) const override;
+  double composite_player_target_multiplier( player_t* target, school_e school ) const override;
   std::unique_ptr<expr_t> create_action_expression(action_t& a, std::string_view name_str) override;
   std::unique_ptr<expr_t> create_expression( std::string_view name ) override;
   action_t* create_action( std::string_view name, std::string_view options ) override;
@@ -9666,7 +9667,7 @@ void druid_t::init_spells()
   mastery.natures_guardian    = find_mastery_spell( DRUID_GUARDIAN );
   mastery.natures_guardian_AP = check( mastery.natures_guardian->ok(), 159195 );
   mastery.razor_claws         = find_mastery_spell( DRUID_FERAL );
-  mastery.total_eclipse       = find_mastery_spell( DRUID_BALANCE );
+  mastery.astral_invocation   = find_mastery_spell( DRUID_BALANCE );
 
   eclipse_handler.init();  // initialize this here since we need talent info to properly init
 }
@@ -11277,7 +11278,8 @@ double druid_t::composite_player_multiplier( school_e school ) const
 {
   auto cpm = player_t::composite_player_multiplier( school );
 
-  if ( school == SCHOOL_ARCANE && get_form() == BEAR_FORM ) // TODO: confirm these are school based
+  // TODO: confirm these are school based
+  if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && get_form() == BEAR_FORM )
   {
     cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
@@ -11290,6 +11292,24 @@ double druid_t::composite_player_multiplier( school_e school ) const
     cpm *= 1.0 + buff.eclipse_solar->value();
 
   return cpm;
+}
+
+double druid_t::composite_player_target_multiplier( player_t* target, school_e school ) const
+{
+  auto cptm = player_t::composite_player_target_multiplier( target, school );
+
+  if ( specialization() == DRUID_BALANCE )
+  {
+    auto td = get_target_data( target );
+
+    if ( dbc::has_common_school( school, SCHOOL_ARCANE ) && td->dots.moonfire->is_ticking() )
+      cptm *= 1.0 + cache.mastery_value();
+
+    if ( dbc::has_common_school( school, SCHOOL_NATURE ) && td->dots.sunfire->is_ticking() )
+      cptm *= 1.0 + cache.mastery_value();
+  }
+
+  return cptm;
 }
 
 // Expressions ==============================================================
