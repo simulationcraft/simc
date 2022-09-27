@@ -1612,6 +1612,9 @@ struct living_flame_t : public evoker_spell_t
       p()->buff.essence_burst->trigger();
       p()->proc.ruby_essence_burst->occur();
     }
+
+    if ( p()->buff.burnout->up() )
+      p()->buff.burnout->decrement();
   }
 };
 
@@ -2058,7 +2061,9 @@ void evoker_t::create_buffs()
     ->set_cooldown( 0_ms );
 
   // Devastation Traits
-  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )->set_cooldown( talent.burnout->cooldown() );
+  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
+                     ->set_cooldown( talent.burnout->cooldown() )
+                     ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
     ->set_default_value_from_effect( 1 );
