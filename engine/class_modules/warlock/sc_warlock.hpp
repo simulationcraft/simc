@@ -222,7 +222,8 @@ public:
     const spell_data_t* drain_soul_dot; // This is the previous talent spell, contains all channel data
     player_talent_t absolute_corruption; // DF - Now a choice against Siphon Life
     player_talent_t siphon_life; // DF - Now a choice against Absolute Corruption
-    const spell_data_t* phantom_singularity; // DF - Now a choice against Vile Taint, TODO: Dot duration uses hardcoded tick count see if spell data available
+    player_talent_t phantom_singularity; // DF - Now a choice against Vile Taint
+    const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
     const spell_data_t* vile_taint; // DF - New functionality (applies Agony on targets hit)
 
     // DF - Soul Tap (Sacrifice Soul Leech for Soul Shard)

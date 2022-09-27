@@ -488,7 +488,7 @@ struct siphon_life_t : public affliction_spell_t
 struct phantom_singularity_tick_t : public affliction_spell_t
 {
   phantom_singularity_tick_t( warlock_t* p )
-    : affliction_spell_t( "phantom_singularity_tick", p, p->find_spell( 205246 ) )
+    : affliction_spell_t( "phantom_singularity_tick", p, p->talents.phantom_singularity_tick )
   {
     background = true;
     may_miss   = false;
@@ -519,7 +519,7 @@ struct phantom_singularity_t : public affliction_spell_t
 
   timespan_t composite_dot_duration( const action_state_t* s ) const override
   {
-    return s->action->tick_time( s ) * 8.0;
+    return ( s->action->tick_time( s ) / base_tick_time ) * dot_duration ;
   }
 };
 
@@ -627,13 +627,16 @@ void warlock_t::init_spells_affliction()
 
   talents.siphon_life = find_talent_spell( talent_tree::SPECIALIZATION, "Siphon Life" ); // Should be ID 63106
 
+  talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
+  talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
 
   talents.haunt               = find_talent_spell( "Haunt" );
 
 
 
-  talents.phantom_singularity = find_talent_spell( "Phantom Singularity" );
+
   talents.vile_taint          = find_talent_spell( "Vile Taint" );
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
