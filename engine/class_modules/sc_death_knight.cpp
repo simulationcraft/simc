@@ -10287,7 +10287,7 @@ void death_knight_t::init_spells()
   spell.festering_wound_debuff     = find_spell( 194310 );
   spell.rotten_touch_debuff        = find_spell( 390276 );
   spell.death_rot_debuff           = find_spell( 377540 );
-  spell.coil_of_devastation_debuff = find_spell( 253367 );
+  spell.coil_of_devastation_debuff = find_spell( 390271 );
   spell.feasting_strikes_gain      = find_spell( 390162 );
   spell.ghoulish_frenzy_player     = find_spell( 377587 );
   spell.plaguebringer_buff         = find_spell( 390178 );
