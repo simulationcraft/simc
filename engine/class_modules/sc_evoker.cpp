@@ -147,7 +147,7 @@ struct evoker_t : public player_t
     player_talent_t expunge;
     player_talent_t natural_convergence;  // row 2
     player_talent_t permeating_chill;
-    player_talent_t rescue;
+    player_talent_t verdant_embrace;
     player_talent_t forger_of_mountains;  // row 3
     player_talent_t innate_magic;
     player_talent_t obsidian_bulwark;
@@ -160,7 +160,7 @@ struct evoker_t : public player_t
     player_talent_t tailwind;
     player_talent_t cauterizing_flame;
     player_talent_t roar_of_exhilaration;  // row 5
-    player_talent_t suffused_with_power;
+    player_talent_t instinctive_arcana;
     player_talent_t tip_the_scales;
     player_talent_t attuned_to_the_dream;
     player_talent_t sleep_walk;
@@ -175,14 +175,14 @@ struct evoker_t : public player_t
     player_talent_t unravel;  // row 8
     player_talent_t protracted_talons;
     player_talent_t oppressing_roar;
-    player_talent_t fly_with_me;
+    player_talent_t rescue;
     player_talent_t lush_growth;
     player_talent_t renewing_blaze;
     player_talent_t leaping_flames;  // row 9
     player_talent_t overawe;
     player_talent_t aerial_mastery;
     player_talent_t twin_guardian;
-    player_talent_t pyrexia;
+    player_talent_t foci_of_life;
     player_talent_t fire_within;
     player_talent_t terror_of_the_skies;  // row 10
     player_talent_t time_spiral;
@@ -207,19 +207,19 @@ struct evoker_t : public player_t
     player_talent_t essence_attunement;
     player_talent_t firestorm;  // row 6
     player_talent_t heat_wave;
-    player_talent_t might_of_the_aspects;
+    player_talent_t titanic_wrath;
     player_talent_t honed_aggression;
     player_talent_t eternitys_span;
-    player_talent_t continuum;
+    player_talent_t eye_of_infinity;
     player_talent_t casuality;
     player_talent_t catalyze;  // row 7
-    player_talent_t ruin;
+    player_talent_t tyranny;
     player_talent_t charged_blast;
     player_talent_t shattering_star;
     player_talent_t snapfire;  // row 8
     player_talent_t font_of_magic;
     player_talent_t onyx_legacy;
-    player_talent_t tyranny;
+    player_talent_t spellweavers_dominance;
     player_talent_t focusing_iris;
     player_talent_t arcane_vigor;
     player_talent_t burnout;  // row 9
@@ -259,7 +259,7 @@ struct evoker_t : public player_t
   {
     propagate_const<proc_t*> ruby_essence_burst;
     propagate_const<proc_t*> azure_essence_burst;
-    propagate_const<proc_t*> continuum;
+    propagate_const<proc_t*> eye_of_infinity;
   } proc;
 
   // RPPMs
@@ -935,7 +935,7 @@ public:
     // TODO: confirm this applies only to all evoker offensive spells
     if ( p()->specialization() == EVOKER_DEVASTATION )
     {
-      if ( !p()->buff.dragonrage->check() || !p()->talent.ruin.ok() )
+      if ( !p()->buff.dragonrage->check() || !p()->talent.tyranny.ok() )
         tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
       else
         tm *= 1.0 + p()->cache.mastery_value();
@@ -948,10 +948,10 @@ public:
   {
     auto mult = ab::composite_persistent_multiplier( s );
 
-    if ( current_resource() == RESOURCE_ESSENCE && p()->talent.might_of_the_aspects.ok() &&
+    if ( current_resource() == RESOURCE_ESSENCE && p()->talent.titanic_wrath.ok() &&
          p()->buff.essence_burst->check() )
     {
-      mult *= 1.0 + p()->talent.might_of_the_aspects->effectN( 1 ).percent();
+      mult *= 1.0 + p()->talent.titanic_wrath->effectN( 1 ).percent();
     }
 
     // iridescence blue affects the entire channel for disintegrate
@@ -1234,9 +1234,6 @@ struct fire_breath_t : public empowered_charge_spell_t
     {
       base_t::execute();
 
-      if ( p()->talent.burnout.ok() )
-        p()->buff.burnout->trigger();
-
       if ( p()->talent.leaping_flames.ok() )
         p()->buff.leaping_flames->trigger( empower_value( execute_state ) );
     }
@@ -1252,6 +1249,22 @@ struct fire_breath_t : public empowered_charge_spell_t
 
       return t;
     }
+
+    void tick( dot_t* d ) override
+    {
+      empowered_release_spell_t::tick( d );
+
+      if ( p()->talent.burnout.ok() )
+      {
+        p()->buff.burnout->trigger();
+        if ( p()->buff.burnout->cooldown->down() )
+        {
+          // TODO: Confirm next build, as of 27/09/2022 the ICD is triggered on attempt not success
+          p()->buff.burnout->cooldown->start();
+        }
+      }
+    }
+
   };
 
   fire_breath_t( evoker_t* p, std::string_view options_str )
@@ -1285,10 +1298,10 @@ struct eternity_surge_t : public empowered_charge_spell_t
     {
       base_t::impact( s );
 
-      if ( p()->talent.continuum.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
+      if ( p()->talent.eye_of_infinity.ok() && result_is_hit( s->result ) && s->result == RESULT_CRIT )
       {
         p()->buff.essence_burst->trigger();
-        p()->proc.continuum->occur();
+        p()->proc.eye_of_infinity->occur();
       }
     }
   };
@@ -1388,11 +1401,12 @@ struct disintegrate_t : public evoker_spell_t
   {
     evoker_spell_t::tick( d );
 
-    if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 1 ).percent() ) )
+    if ( p()->talent.scintillation.ok() && rng().roll( p()->talent.scintillation->effectN( 2 ).percent() ) )
     {
-      auto emp_state = eternity_surge->get_state();
+      auto emp_state    = eternity_surge->get_state();
       emp_state->target = d->state->target;
       eternity_surge->snapshot_state( emp_state, eternity_surge->amount_type( emp_state ) );
+      emp_state->persistent_multiplier *= p()->talent.scintillation->effectN( 1 ).percent();
       debug_cast<empowered_state_t*>( emp_state )->empower = EMPOWER_1;
 
       eternity_surge->schedule_execute( emp_state );
@@ -1890,7 +1904,7 @@ void evoker_t::init_procs()
 
   proc.ruby_essence_burst  = get_proc( "Ruby Essence Burst" );
   proc.azure_essence_burst = get_proc( "Azure Essence Burst" );
-  proc.continuum           = get_proc( "Continuum" );
+  proc.eye_of_infinity           = get_proc( "eye_of_infinity" );
 }
 
 void evoker_t::init_base_stats()
@@ -1928,7 +1942,7 @@ void evoker_t::init_spells()
   talent.quell                = CT( "Quell" );  // Row 4
   talent.tailwind             = CT( "Tailwind" );
   talent.roar_of_exhilaration = CT( "Roar of Exhilaration" );  // Row 5
-  talent.suffused_with_power  = CT( "Suffused With Power" );
+  talent.instinctive_arcana   = CT( "Instinctive Arcana" );
   talent.tip_the_scales       = CT( "Tip the Scales" );
   talent.attuned_to_the_dream = CT( "Attuned to the Dream" );  // healing received NYI
   talent.draconic_legacy      = CT( "Draconic Legacy" );  // Row 6
@@ -1943,46 +1957,46 @@ void evoker_t::init_spells()
   talent.leaping_flames       = CT( "Leaping Flames" );  // Row 9
   talent.aerial_mastery       = CT( "Aerial Mastery" );
   // Devastation Traits
-  talent.pyre                 = ST( "Pyre" );  // Row 1
-  talent.ruby_essence_burst   = ST( "Ruby Essence Burst" );  // Row 2
-  talent.azure_essence_burst  = ST( "Azure Essence Burst" );
-  talent.dense_energy         = ST( "Dense Energy" );  // Row 3
-  talent.imposing_presence    = ST( "Imposing Presence" );
-  talent.eternity_surge       = ST( "Eternity Surge" );
-  talent.volatility           = ST( "Volatility" );  // Row 4
-  talent.power_nexus          = ST( "Power Nexus" );
-  talent.dragonrage           = ST( "Dragonrage" );
-  talent.lay_waste            = ST( "Lay Waste" );
-  talent.arcane_intensity     = ST( "Arcane Intensity" );
-  talent.ruby_embers          = ST( "Ruby Embers" );  // Row 5
-  talent.engulfing_blaze      = ST( "Engulfing Blaze" );
-  talent.animosity            = ST( "Animosity" );
-  talent.essence_attunement   = ST( "Essence Attunement" );
-  talent.firestorm            = ST( "Firestorm" );  // Row 6
-  talent.heat_wave            = ST( "Heat Wave" );
-  talent.might_of_the_aspects = ST( "Might of the Aspects" );
-  talent.honed_aggression     = ST( "Honed Aggression" );
-  talent.eternitys_span       = ST( "Eternity's Span" );
-  talent.continuum            = ST( "Continuum" );
-  talent.casuality            = ST( "Causality" );
-  talent.catalyze             = ST( "Catalyze" );  // Row 7
-  talent.ruin                 = ST( "Ruin" );
-  talent.charged_blast        = ST( "Charged Blast" );
-  talent.shattering_star      = ST( "Shattering Star" );
-  talent.snapfire             = ST( "Snapfire" );  // Row 8
-  talent.font_of_magic        = ST( "Font of Magic" );
-  talent.onyx_legacy          = ST( "Onyx Legacy" );
-  talent.tyranny              = ST( "Tyranny" );
-  talent.focusing_iris        = ST( "Focusing Iris" );
-  talent.arcane_vigor         = ST( "Arcane Vigor" );
-  talent.burnout              = ST( "Burnout" );  // Row 9
-  talent.imminent_destruction = ST( "Imminent Destruction" );
-  talent.scintillation        = ST( "Scintillation" );
-  talent.power_swell          = ST( "Power Swell" );
-  talent.feed_the_flames      = ST( "Feed the Flames" );  // Row 10
-  talent.everburning_flame    = ST( "Everburning Flame" );
-  talent.cascading_power      = ST( "Cascading Power" );
-  talent.iridescence          = ST( "Iridescence" );
+  talent.pyre                   = ST( "Pyre" );                // Row 1
+  talent.ruby_essence_burst     = ST( "Ruby Essence Burst" );  // Row 2
+  talent.azure_essence_burst    = ST( "Azure Essence Burst" );
+  talent.dense_energy           = ST( "Dense Energy" );  // Row 3
+  talent.imposing_presence      = ST( "Imposing Presence" );
+  talent.eternity_surge         = ST( "Eternity Surge" );
+  talent.volatility             = ST( "Volatility" );  // Row 4
+  talent.power_nexus            = ST( "Power Nexus" );
+  talent.dragonrage             = ST( "Dragonrage" );
+  talent.lay_waste              = ST( "Lay Waste" );
+  talent.arcane_intensity       = ST( "Arcane Intensity" );
+  talent.ruby_embers            = ST( "Ruby Embers" );  // Row 5
+  talent.engulfing_blaze        = ST( "Engulfing Blaze" );
+  talent.animosity              = ST( "Animosity" );
+  talent.essence_attunement     = ST( "Essence Attunement" );
+  talent.firestorm              = ST( "Firestorm" );  // Row 6
+  talent.heat_wave              = ST( "Heat Wave" );
+  talent.titanic_wrath          = ST( "Titanic Wrath" );
+  talent.honed_aggression       = ST( "Honed Aggression" );
+  talent.eternitys_span         = ST( "Eternity's Span" );
+  talent.eye_of_infinity        = ST( "Eye of Infinity" );
+  talent.casuality              = ST( "Causality" );
+  talent.catalyze               = ST( "Catalyze" );  // Row 7
+  talent.tyranny                = ST( "Tyranny" );
+  talent.charged_blast          = ST( "Charged Blast" );
+  talent.shattering_star        = ST( "Shattering Star" );
+  talent.snapfire               = ST( "Snapfire" );  // Row 8
+  talent.font_of_magic          = ST( "Font of Magic" );
+  talent.onyx_legacy            = ST( "Onyx Legacy" );
+  talent.spellweavers_dominance = ST( "Spellweaver's Dominance" );
+  talent.focusing_iris          = ST( "Focusing Iris" );
+  talent.arcane_vigor           = ST( "Arcane Vigor" );
+  talent.burnout                = ST( "Burnout" );  // Row 9
+  talent.imminent_destruction   = ST( "Imminent Destruction" );
+  talent.scintillation          = ST( "Scintillation" );
+  talent.power_swell            = ST( "Power Swell" );
+  talent.feed_the_flames        = ST( "Feed the Flames" );  // Row 10
+  talent.everburning_flame      = ST( "Everburning Flame" );
+  talent.cascading_power        = ST( "Cascading Power" );
+  talent.iridescence            = ST( "Iridescence" );
   // Preservation Traits
 
   // Evoker Specialization Spells
@@ -2041,8 +2055,7 @@ void evoker_t::create_buffs()
     ->set_cooldown( 0_ms );
 
   // Devastation Traits
-  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
-    ->set_duration( timespan_t::from_seconds( talent.burnout->effectN( 1 ).base_value() ) );
+  buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )->set_cooldown( talent.burnout->cooldown() );
 
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
     ->set_default_value_from_effect( 1 );
@@ -2178,7 +2191,7 @@ void evoker_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.imposing_presence );
   action.apply_affecting_aura( talent.lay_waste );
   action.apply_affecting_aura( talent.onyx_legacy );
-  action.apply_affecting_aura( talent.tyranny );
+  action.apply_affecting_aura( talent.spellweavers_dominance );
 
   // Preservation Traits
 }
@@ -2243,8 +2256,8 @@ double evoker_t::composite_player_multiplier( school_e s ) const
 {
   double m = player_t::composite_player_multiplier( s );
 
-  if ( talent.suffused_with_power.ok() && talent.suffused_with_power->effectN( 1 ).has_common_school( s ) )
-    m *= 1 + talent.suffused_with_power->effectN( 1 ).percent();
+  if ( talent.instinctive_arcana.ok() && talent.instinctive_arcana->effectN( 1 ).has_common_school( s ) )
+    m *= 1 + talent.instinctive_arcana->effectN( 1 ).percent();
 
   return m;
 }
