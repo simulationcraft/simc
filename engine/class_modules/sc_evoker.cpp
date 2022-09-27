@@ -1065,7 +1065,10 @@ struct empowered_charge_spell_t : public empowered_base_t
     channeled = true;
 
     // TODO: convert to full empower expression support
-    add_option( opt_int( "empower_to", empower_to, 1, max_empower ) );
+    add_option( opt_int( "empower_to", empower_to, 1, EMPOWER_MAX ) );
+
+    empower_to = std::min( (int) max_empower, empower_to );
+
     parse_options( options_str );
 
     dot_duration = base_tick_time = base_empower_duration =
