@@ -41,8 +41,6 @@ enum eclipse_state_e
   IN_SOLAR,
   IN_LUNAR,
   IN_BOTH,
-  SOLAR_NEXT,
-  LUNAR_NEXT,
   MAX_STATE
 };
 
@@ -248,7 +246,6 @@ struct eclipse_handler_t
   void tick_fury_of_elune();
 
   void advance_eclipse();
-  void snapshot_eclipse();
 
   void trigger_both( timespan_t );
   void extend_both( timespan_t );
@@ -304,7 +301,6 @@ public:
     int convoke_the_spirits_deck = 5;
 
     // Balance
-    timespan_t eclipse_snapshot_period = 3_s;  // how often to re-snapshot mastery onto eclipse
     double initial_astral_power = 0.0;
     int initial_moon_stage = static_cast<int>( moon_stage_e::NEW_MOON );
     double initial_pulsar_value = 0.0;
@@ -455,8 +451,6 @@ public:
     buff_t* solstice;
     buff_t* starfall;
     buff_t* starlord;  // talent
-    buff_t* starsurge_lunar;  // stacking eclipse empowerment for each eclipse
-    buff_t* starsurge_solar;
     buff_t* timeworn_dreambinder;
     buff_t* warrior_of_elune;
 
@@ -677,7 +671,6 @@ public:
     // Balance
     player_talent_t eclipse;  // Row 1
 
-    player_talent_t improved_eclipse;  // Row 2
     player_talent_t improved_moonfire;
 
     player_talent_t force_of_nature;  // Row 3
@@ -1713,50 +1706,16 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
 // Eclipse Buff =============================================================
 struct eclipse_buff_t : public druid_buff_t<buff_t>
 {
-  double empowerment;
-  double mastery_value;
   bool is_lunar;
   bool is_solar;
 
   eclipse_buff_t( druid_t& p, std::string_view n, const spell_data_t* s )
     : base_t( p, n, s ),
-      empowerment( 0.0 ),
-      mastery_value( 0.0 ),
       is_lunar( data().id() == p.spec.eclipse_lunar->id() ),
       is_solar( data().id() == p.spec.eclipse_solar->id() )
   {
     add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
-    set_default_value_from_effect( 2, 0.01 * ( 1.0 + p.talent.umbral_intensity->effectN( 1 ).percent() ) );
-
-    // Empowerment value for both spec & affinity starsurge is hardcoded into spec starsurge. Both eclipse use the same
-    // value, but parse them separately in case this changes in the future, as it was different in the past.
-    auto ss = p.find_spell( 78674 );
-
-    if ( is_solar )
-      empowerment = ss->effectN( 2 ).percent() + p.talent.improved_starsurge->effectN( 1 ).percent();
-    else if ( is_lunar )
-      empowerment = ss->effectN( 3 ).percent() + p.talent.improved_starsurge->effectN( 2 ).percent();
-
-    // TODO: use spell data when these are implemented in game
-    if ( p.talent.blessing_of_anshe.ok() )
-    {
-      if ( is_solar )
-        set_duration( data().duration() + 3_s );
-      else if ( is_lunar )
-        set_duration( data().duration() - 3_s );
-    }
-    else if ( p.talent.blessing_of_elune.ok() )
-    {
-      if ( is_solar )
-        set_duration( data().duration() - 3_s );
-      else if ( is_lunar )
-        set_duration( data().duration() + 3_s );
-    }
-  }
-
-  void snapshot_mastery()
-  {
-    mastery_value = p().cache.mastery_value();
+    set_default_value_from_effect_type( A_MOD_DAMAGE_PERCENT_DONE );
   }
 
   void trigger_celestial_pillar()
@@ -1767,7 +1726,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
   void execute( int s, double v, timespan_t d ) override
   {
-    snapshot_mastery();
     base_t::execute( s, v, d );
 
     trigger_celestial_pillar();
@@ -1775,23 +1733,9 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
   void extend_duration( player_t* player, timespan_t d ) override
   {
-    snapshot_mastery();
     base_t::extend_duration( player, d );
 
     trigger_celestial_pillar();
-  }
-
-  double value() override
-  {
-    double v = base_t::value();
-
-    if ( is_solar )
-      v += empowerment * p().buff.starsurge_solar->stack();
-
-    if ( is_lunar )
-      v += empowerment * p().buff.starsurge_lunar->stack();
-
-    return v;
   }
 
   void expire_override( int s, timespan_t d ) override
@@ -1799,8 +1743,6 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     base_t::expire_override( s, d );
 
     p().eclipse_handler.advance_eclipse();
-    p().buff.starsurge_solar->expire();
-    p().buff.starsurge_lunar->expire();
   }
 };
 
@@ -2525,12 +2467,7 @@ public:
       }
 
       if ( i.mastery )
-      {
-        if ( p()->specialization() == DRUID_BALANCE )
-          eff_val += debug_cast<buffs::eclipse_buff_t*>( i.buff )->mastery_value;
-        else
-          eff_val += p()->cache.mastery_value();
-      }
+        eff_val += p()->cache.mastery_value();
 
       if ( flat )
         return_value += eff_val * mod;
@@ -2574,9 +2511,8 @@ public:
     // Balance
     parse_buff_effects( p()->buff.balance_of_all_things_arcane );
     parse_buff_effects( p()->buff.balance_of_all_things_nature );
-    // effect#2 holds the eclipse bonus effect, handled separately in eclipse_buff_t
-    parse_buff_effects<S, S>( p()->buff.eclipse_solar, 0b10U, p()->mastery.total_eclipse, p()->talent.improved_eclipse );
-    parse_buff_effects<S, S>( p()->buff.eclipse_lunar, 0b10U, p()->mastery.total_eclipse, p()->talent.improved_eclipse );
+    parse_buff_effects<S>( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
+    parse_buff_effects<S>( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
     parse_buff_effects( p()->buff.incarnation_moonkin );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
     parse_buff_effects( p()->buff.oneths_free_starfall );
@@ -2885,11 +2821,9 @@ private:
   using ab = druid_spell_base_t<spell_t>;
 
 public:
-  bool update_eclipse;
-
   druid_spell_t( std::string_view n, druid_t* p, const spell_data_t* s = spell_data_t::nil(),
                  std::string_view opt = {} )
-    : ab( n, p, s ), update_eclipse( false )
+    : ab( n, p, s )
   {
     parse_options( opt );
   }
@@ -2961,14 +2895,6 @@ public:
 
     if ( rng().roll( chance ) )
       p()->active.shooting_stars->execute_on_target( t );
-  }
-
-  void execute() override
-  {
-    if ( update_eclipse )
-      p()->eclipse_handler.snapshot_eclipse();
-
-    ab::execute();
   }
 
   std::unique_ptr<expr_t> create_expression( std::string_view name_str ) override
@@ -6913,7 +6839,6 @@ struct full_moon_t : public moon_base_t
     aoe = -1;
     reduced_aoe_targets = 1.0;
     full_amount_targets = 1;
-    update_eclipse = true;
 
     // Since this can be free_cast, only energize for Balance
     if ( !p->spec.astral_power->ok() )
@@ -7749,7 +7674,6 @@ struct starsurge_t : public druid_spell_t
   starsurge_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : druid_spell_t( n, p, s, opt ), goldrinn( nullptr ), moonkin_form_in_precombat( false )
   {
-    update_eclipse = true;
     form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
 
     if ( p->talent.power_of_goldrinn.ok() )
@@ -9435,7 +9359,6 @@ void druid_t::init_spells()
   sim->print_debug( "Initializing balance talents..." );
   talent.eclipse                        = ST( "Eclipse" );
   talent.elunes_guidance                = ST( "Elune's Guidance" );
-  talent.improved_eclipse               = ST( "Improved Eclipse" );
   talent.improved_moonfire              = ST( "Improved Moonfire" );
   talent.force_of_nature                = ST( "Force of Nature" );
   talent.natures_balance                = ST( "Nature's Balance" );
@@ -10109,16 +10032,6 @@ void druid_t::create_buffs()
     ->set_default_value( talent.starlord->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
-
-  buff.starsurge_lunar = make_buff( this, "starsurge_empowerment_lunar", talent.starsurge )
-    ->set_cooldown( 0_ms )
-    ->set_duration( 0_ms )
-    ->set_max_stack( 30 );  // Arbitrary cap. Adjust if needed.
-
-  buff.starsurge_solar = make_buff( this, "starsurge_empowerment_solar", talent.starsurge )
-    ->set_cooldown( 0_ms )
-    ->set_duration( 0_ms )
-    ->set_max_stack( 30 );  // Arbitrary cap. Adjust if needed.
 
   buff.timeworn_dreambinder =
       make_buff( this, "timeworn_dreambinder", talent.timeworn_dreambinder->effectN( 1 ).trigger() )
@@ -11019,16 +10932,6 @@ void druid_t::arise()
   if ( talent.natures_balance.ok() )
     buff.natures_balance->trigger();
 
-  if ( talent.eclipse.ok() )
-  {
-    persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, [ this ]() {
-      eclipse_handler.snapshot_eclipse();
-      make_repeating_event( *sim, options.eclipse_snapshot_period, [ this ]() {
-          eclipse_handler.snapshot_eclipse();
-      } );
-    }, options.eclipse_snapshot_period ) );
-  }
-
   if ( buff.yseras_gift )
     persistent_event_delay.push_back( make_event<persistent_delay_event_t>( *sim, this, buff.yseras_gift ) );
 }
@@ -11379,7 +11282,13 @@ double druid_t::composite_player_multiplier( school_e school ) const
     cpm *= 1.0 + talent.elunes_favored->effectN( 1 ).percent();
     cpm *= 1.0 + talent.fury_of_nature->effectN( 1 ).percent();
   }
+
+  if ( buff.eclipse_lunar->check() && buff.eclipse_lunar->has_common_school( school ) )
+    cpm *= 1.0 + buff.eclipse_lunar->value();
   
+  if ( buff.eclipse_solar->check() && buff.eclipse_solar->has_common_school( school ) )
+    cpm *= 1.0 + buff.eclipse_solar->value();
+
   return cpm;
 }
 
@@ -11730,12 +11639,13 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
         eclipse_state_e state = eclipse_handler.state;
         if ( state == ANY_NEXT )
           return 0;
-        if ( eclipse_handler.state == SOLAR_NEXT )
+        if ( eclipse_handler.state == IN_SOLAR )
           return 1;
-        if ( eclipse_handler.state == LUNAR_NEXT )
+        if ( eclipse_handler.state == IN_LUNAR )
           return 2;
-        else
+        if ( eclipse_handler.state == IN_BOTH )
           return 3;
+        return 4;
       } );
     }
     else if ( util::str_compare_ci( splits[ 1 ], "any_next" ) )
@@ -11758,38 +11668,6 @@ std::unique_ptr<expr_t> druid_t::create_expression( std::string_view name_str )
     else if ( util::str_compare_ci( splits[ 1 ], "in_both" ) )
       return make_fn_expr( name_str, [ this ]() {
         return eclipse_handler.state == IN_BOTH;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "solar_next" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == SOLAR_NEXT;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "solar_in" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == SOLAR_NEXT ? eclipse_handler.starfire_counter : 0;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "solar_in_2" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == SOLAR_NEXT && eclipse_handler.starfire_counter == 2;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "solar_in_1" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == SOLAR_NEXT && eclipse_handler.starfire_counter == 1;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "lunar_next" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == LUNAR_NEXT;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "lunar_in" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == LUNAR_NEXT ? eclipse_handler.wrath_counter : 0;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "lunar_in_2" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == LUNAR_NEXT && eclipse_handler.wrath_counter == 2;
-      } );
-    else if ( util::str_compare_ci( splits[ 1 ], "lunar_in_1" ) )
-      return make_fn_expr( name_str, [ this ]() {
-        return eclipse_handler.state == LUNAR_NEXT && eclipse_handler.wrath_counter == 1;
       } );
   }
 
@@ -11886,7 +11764,6 @@ void druid_t::create_options()
   add_option( opt_func( "druid.adaptive_swarm_prepull_setup", parse_swarm_setup ) );
 
   // Balance
-  add_option( opt_timespan( "druid.eclipse_snapshot_period", options.eclipse_snapshot_period ) );
   add_option( opt_float( "druid.initial_astral_power", options.initial_astral_power ) );
   add_option( opt_int( "druid.initial_moon_stage", options.initial_moon_stage ) );
   add_option( opt_float( "druid.initial_pulsar_value", options.initial_pulsar_value ) );
@@ -12395,7 +12272,7 @@ void eclipse_handler_t::cast_wrath()
   if ( iter.wrath && p->in_combat )
     ( *iter.wrath )[ state ]++;
 
-  if ( state == ANY_NEXT || state == LUNAR_NEXT )
+  if ( state == ANY_NEXT )
   {
     wrath_counter--;
     advance_eclipse();
@@ -12409,7 +12286,7 @@ void eclipse_handler_t::cast_starfire()
   if ( iter.starfire && p->in_combat )
     ( *iter.starfire )[ state ]++;
 
-  if ( state == ANY_NEXT || state == SOLAR_NEXT )
+  if ( state == ANY_NEXT )
   {
     starfire_counter--;
     advance_eclipse();
@@ -12422,34 +12299,9 @@ void eclipse_handler_t::cast_starsurge()
 
   if ( iter.starsurge && p->in_combat )
     ( *iter.starsurge )[ state ]++;
-
-  bool stellar_inspiration_proc = false;
-
-  if ( p->rng().roll( p->talent.stellar_inspiration->effectN( 1 ).percent() ) )
-    stellar_inspiration_proc = true;
-
-  if ( p->buff.eclipse_solar->up() )
-  {
-    p->buff.starsurge_solar->trigger();
-
-    if ( stellar_inspiration_proc )
-      p->buff.starsurge_solar->trigger();
-  }
-
-  if ( p->buff.eclipse_lunar->up() )
-  {
-    p->buff.starsurge_lunar->trigger();
-
-    if ( stellar_inspiration_proc )
-      p->buff.starsurge_lunar->trigger();
-  }
 }
 
-void eclipse_handler_t::cast_ca_inc()
-{
-  p->buff.starsurge_lunar->expire();
-  p->buff.starsurge_solar->expire();
-}
+void eclipse_handler_t::cast_ca_inc() {}
 
 void eclipse_handler_t::cast_moon( moon_stage_e moon )
 {
@@ -12513,32 +12365,24 @@ void eclipse_handler_t::advance_eclipse()
 
   if ( state == IN_SOLAR )
   {
-    state = LUNAR_NEXT;
     p->uptime.eclipse_solar->update( false, p->sim->current_time() );
     p->uptime.eclipse_none->update( true, p->sim->current_time() );
   }
 
   if ( state == IN_LUNAR )
   {
-    state = SOLAR_NEXT;
     p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
     p->uptime.eclipse_none->update( true, p->sim->current_time() );
   }
 
   if ( state == IN_BOTH )
   {
-    state = ANY_NEXT;
+    p->uptime.eclipse_solar->update( false, p->sim->current_time() );
+    p->uptime.eclipse_lunar->update( false, p->sim->current_time() );
     p->uptime.eclipse_none->update( true, p->sim->current_time() );
   }
-}
 
-void eclipse_handler_t::snapshot_eclipse()
-{
-  if ( p->buff.eclipse_lunar->check() )
-    debug_cast<buffs::eclipse_buff_t*>( p->buff.eclipse_lunar )->snapshot_mastery();
-
-  if ( p->buff.eclipse_solar->check() )
-    debug_cast<buffs::eclipse_buff_t*>( p->buff.eclipse_solar )->snapshot_mastery();
+  state = ANY_NEXT;
 }
 
 void eclipse_handler_t::trigger_both( timespan_t d = 0_ms )
@@ -12788,9 +12632,7 @@ public:
                            const eclipse_handler_t::data_array& data )
   {
     double iter  = data[ eclipse_state_e::MAX_STATE ];
-    double none  = data[ eclipse_state_e::ANY_NEXT ] +
-                   data[ eclipse_state_e::SOLAR_NEXT ] +
-                   data[ eclipse_state_e::LUNAR_NEXT ];
+    double none  = data[ eclipse_state_e::ANY_NEXT ];
     double solar = data[ eclipse_state_e::IN_SOLAR ];
     double lunar = data[ eclipse_state_e::IN_LUNAR ];
     double both  = data[ eclipse_state_e::IN_BOTH ];
