@@ -247,6 +247,9 @@ public:
   // Icicles
   std::vector<icicle_tuple_t> icicles;
 
+  // Time Manipulation
+  std::vector<cooldown_t*> time_manipulation_cooldowns;
+
   // Events
   struct events_t
   {
@@ -956,6 +959,7 @@ public:
   bool      trigger_crowd_control( const action_state_t* s, spell_mechanic type, timespan_t duration = timespan_t::min() );
   void      trigger_disciplinary_command( school_e );
   void      trigger_sinful_delight( specialization_e );
+  void      trigger_time_manipulation();
 };
 
 namespace pets {
@@ -1539,6 +1543,7 @@ struct mage_spell_t : public spell_t
     bool ice_floes = false;
     bool overflowing_energy = true;
     bool shatter = true;
+    bool time_manipulation = false;
 
     bool deathborne_cleave = false;
     bool radiant_spark = true;
@@ -1645,6 +1650,12 @@ public:
     {
       triggers.icy_propulsion = true;
       triggers.overflowing_energy = true;
+    }
+
+    if ( affected_by.time_manipulation
+      && range::find( p()->time_manipulation_cooldowns, cooldown ) == p()->time_manipulation_cooldowns.end() )
+    {
+      p()->time_manipulation_cooldowns.push_back( cooldown );
     }
   }
 
@@ -2983,9 +2994,14 @@ struct arcane_missiles_t final : public arcane_mage_spell_t
     // Set up the hidden Clearcasting buff before executing the spell
     // so that tick time and dot duration have the correct values.
     if ( p()->buffs.clearcasting->check() )
+    {
       p()->buffs.clearcasting_channel->trigger();
+      p()->trigger_time_manipulation();
+    }
     else
+    {
       p()->buffs.clearcasting_channel->expire();
+    }
 
     arcane_mage_spell_t::execute();
   }
@@ -3311,6 +3327,7 @@ struct cone_of_cold_t final : public frost_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.chill = consumes_winters_chill = triggers.radiant_spark = true;
+    affected_by.time_manipulation = p->talents.freezing_cold->ok();
   }
 
   double action_multiplier() const override
@@ -3452,7 +3469,7 @@ struct dragons_breath_t final : public fire_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.from_the_ashes = triggers.radiant_spark = true;
+    triggers.from_the_ashes = triggers.radiant_spark = affected_by.time_manipulation = true;
     crit_bonus_multiplier *= 1.0 + p->talents.alexstraszas_fury->effectN( 2 ).percent();
 
     if ( p->talents.alexstraszas_fury->ok() )
@@ -4005,7 +4022,7 @@ struct frost_nova_t final : public mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.radiant_spark = true;
+    triggers.radiant_spark = affected_by.time_manipulation = true;
     cooldown->charges += as<int>( p->talents.ice_ward->effectN( 1 ).base_value() );
   }
 
@@ -4353,9 +4370,13 @@ struct ice_lance_t final : public frost_mage_spell_t
 
     // We need access to the action state corresponding to the main target so that we
     // can use mage_spell_t::frozen to figure out the frozen state at the moment of cast.
-    // TODO: this is almost surely a bug since you can shatter Ice Lance without getting Icicle and vice versa
-    if ( s->chain_target == 0 && frozen( s ) && p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
-      p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
+    // TODO: this is almost surely a bug since you can shatter Ice Lance without getting Icicle/TM and vice versa
+    if ( s->chain_target == 0 && frozen( s ) )
+    {
+      p()->trigger_time_manipulation();
+      if ( p()->rng().roll( p()->talents.hailstones->effectN( 1 ).percent() ) )
+        p()->trigger_icicle_gain( s->target, p()->action.icicle.ice_lance );
+    }
   }
 
   void execute() override
@@ -4462,7 +4483,7 @@ struct ice_nova_t final : public frost_mage_spell_t
     // TODO: currently deals full damage to all targets, probably a bug
     // reduced_aoe_targets = 1.0;
     // full_amount_targets = 1;
-    consumes_winters_chill = triggers.radiant_spark = true;
+    consumes_winters_chill = triggers.radiant_spark = affected_by.time_manipulation = true;
   }
 
   void impact( action_state_t* s ) override
@@ -4596,7 +4617,10 @@ struct fire_blast_t final : public fire_mage_spell_t
   void execute() override
   {
     fire_mage_spell_t::execute();
+
     p()->trigger_sinful_delight( MAGE_FIRE );
+    if ( p()->specialization() == MAGE_FIRE )
+      p()->trigger_time_manipulation();
   }
 
   void impact( action_state_t* s ) override
@@ -5980,6 +6004,15 @@ void mage_t::trigger_sinful_delight( specialization_e spec )
 {
   if ( runeforge.sinful_delight.ok() && specialization() == spec )
     cooldowns.mirrors_of_torment->adjust( -runeforge.sinful_delight->effectN( 1 ).time_value() );
+}
+
+void mage_t::trigger_time_manipulation()
+{
+  if ( !talents.time_manipulation->ok() )
+    return;
+
+  timespan_t t = talents.time_manipulation->effectN( 1 ).time_value();
+  for ( auto cd : time_manipulation_cooldowns ) cd->adjust( t, false );
 }
 
 action_t* mage_t::create_action( std::string_view name, std::string_view options_str )
