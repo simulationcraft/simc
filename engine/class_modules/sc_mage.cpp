@@ -502,6 +502,7 @@ public:
     // Fire
     const spell_data_t* fire_mage;
     const spell_data_t* ignite;
+    const spell_data_t* pyroblast_clearcasting_driver;
 
     // Frost
     const spell_data_t* frost_mage;
@@ -2080,8 +2081,7 @@ struct fire_mage_spell_t : public mage_spell_t
   void handle_hot_streak( action_state_t* s )
   {
     mage_t* p = this->p();
-    // TODO: what happened to the Hot Streak spell?
-    if ( p->specialization() != MAGE_FIRE )
+    if ( !p->spec.pyroblast_clearcasting_driver->ok() )
       return;
 
     bool guaranteed = s->composite_crit_chance() >= 1.0;
@@ -6525,10 +6525,11 @@ void mage_t::init_spells()
   talents.glacial_spike          = find_talent_spell( talent_tree::SPECIALIZATION, "Glacial Spike"          );
 
   // Spec Spells
-  spec.arcane_charge = find_specialization_spell( "Arcane Charge" );
-  spec.arcane_mage   = find_specialization_spell( "Arcane Mage" );
-  spec.fire_mage     = find_specialization_spell( "Fire Mage"   );
-  spec.frost_mage    = find_specialization_spell( "Frost Mage"  );
+  spec.arcane_charge                 = find_specialization_spell( "Arcane Charge" );
+  spec.arcane_mage                   = find_specialization_spell( "Arcane Mage" );
+  spec.fire_mage                     = find_specialization_spell( "Fire Mage"   );
+  spec.pyroblast_clearcasting_driver = find_specialization_spell( "Pyroblast Clearcasting Driver" );
+  spec.frost_mage                    = find_specialization_spell( "Frost Mage"  );
 
   // Mastery
   spec.savant    = find_mastery_spell( MAGE_ARCANE );
