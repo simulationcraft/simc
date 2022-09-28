@@ -5201,7 +5201,7 @@ struct scorch_t final : public fire_mage_spell_t
   {
     fire_mage_spell_t::impact( s );
 
-    if ( result_is_hit( s->result ) && improved_scorch_active( target ) )
+    if ( result_is_hit( s->result ) && improved_scorch_active( s->target ) )
       get_td( s->target )->debuffs.improved_scorch->trigger();
   }
 
