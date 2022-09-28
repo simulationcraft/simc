@@ -1168,7 +1168,7 @@ struct combustion_t final : public buff_t
   combustion_t( mage_t* p ) :
     buff_t( p, "combustion", p->find_spell( 190319 ) ),
     current_amount(),
-    multiplier( data().effectN( 3 ).percent() )
+    multiplier( p->talents.improved_combustion->effectN( 3 ).percent() )
   {
     set_cooldown( 0_ms );
     set_default_value_from_effect( 1 );
