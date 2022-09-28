@@ -227,7 +227,7 @@ public:
     player_talent_t vile_taint; // Base talent, AoE cast data
     const spell_data_t* vile_taint_dot; // DoT data
 
-    // DF - Soul Tap (Sacrifice Soul Leech for Soul Shard)
+    player_talent_t soul_tap; // Sacrifice Soul Leech for Soul Shard. TODO: Add controls to limit usage
     const spell_data_t* inevitable_demise; // DF - Now a 2 point talent
     // DF - Soul Swap (Spend Soul Shard to apply core dots)
     // DF - Soul Flame (2 point talent, AoE damage on kills)
@@ -514,6 +514,7 @@ public:
     gain_t* agony;
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
+    gain_t* soul_tap;
 
     gain_t* conflagrate;
     gain_t* incinerate;
