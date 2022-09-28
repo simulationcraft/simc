@@ -218,6 +218,19 @@ struct mind_flay_base_t final : public priest_spell_t
 
     return priest_spell_t::ready();
   }
+
+  void last_tick( dot_t* d ) override
+  {
+    priest_spell_t::last_tick( d );
+
+    // Track when the APL/sim cancels MF:I before you get all ticks off
+    if ( this->id == 391403 && d->current_tick < d->num_ticks() )
+    {
+      player->sim->print_debug( "{} ended {} at {} tick. total ticks={}", priest(), d->name_str, d->current_tick,
+                                d->num_ticks() );
+      priest().procs.mind_flay_insanity_wasted->occur();
+    }
+  }
 };
 
 struct mind_flay_t final : public priest_spell_t

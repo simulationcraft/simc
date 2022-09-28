@@ -479,6 +479,7 @@ public:
     propagate_const<proc_t*> idol_of_nzoth_swp;
     propagate_const<proc_t*> idol_of_nzoth_vt;
     propagate_const<proc_t*> idol_of_nzoth_dp;
+    propagate_const<proc_t*> mind_flay_insanity_wasted;
   } procs;
 
   // Special

@@ -211,7 +211,7 @@ public:
             priest().pets.your_shadow_tier.spawn( priest().t28_4pc_summon_duration );
             priest().t28_4pc_summon_event    = nullptr;
             priest().t28_4pc_summon_duration = timespan_t::from_seconds( 0 );
-             } );
+          } );
         }
       }
     }
@@ -2206,6 +2206,7 @@ void priest_t::create_procs()
   procs.idol_of_nzoth_swp                      = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
   procs.idol_of_nzoth_vt                       = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.idol_of_nzoth_dp                       = get_proc( "Idol of N'Zoth procs from Devouring Plague" );
+  procs.mind_flay_insanity_wasted = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
   // Shadowlands
   procs.dissonant_echoes               = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.void_tendril_ecttv             = get_proc( "Void Tendril proc from Eternal Call to the Void" );
@@ -3241,9 +3242,9 @@ struct priest_module_t final : public module_t
   void init( player_t* p ) const override
   {
     p->buffs.guardian_spirit   = make_buff( p, "guardian_spirit",
-                                            p->find_spell( 47788 ) );  // Let the ability handle the CD
+                                          p->find_spell( 47788 ) );  // Let the ability handle the CD
     p->buffs.pain_suppression  = make_buff( p, "pain_suppression",
-                                            p->find_spell( 33206 ) );  // Let the ability handle the CD
+                                           p->find_spell( 33206 ) );  // Let the ability handle the CD
     p->buffs.benevolent_faerie = make_buff<buffs::benevolent_faerie_t>( p, "benevolent_faerie" );
     // TODO: Whitelist Buff 356968 instead of hacking this.
     p->buffs.bwonsamdis_pact_benevolent =
