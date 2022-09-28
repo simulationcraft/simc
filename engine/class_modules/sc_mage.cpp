@@ -893,7 +893,10 @@ public:
   double composite_player_pet_damage_multiplier( const action_state_t*, bool ) const override;
   double composite_player_target_pet_damage_multiplier( player_t*, bool ) const override;
   double composite_player_target_multiplier( player_t*, school_e ) const override;
+  double composite_melee_crit_chance() const override;
   double composite_spell_crit_chance() const override;
+  double composite_melee_haste() const override;
+  double composite_spell_haste() const override;
   double composite_rating_multiplier( rating_e ) const override;
   double matching_gear_multiplier( attribute_e ) const override;
   void update_movement( timespan_t ) override;
@@ -7046,13 +7049,41 @@ double mage_t::composite_rating_multiplier( rating_e r ) const
   return rm;
 }
 
+double mage_t::composite_melee_crit_chance() const
+{
+  double c = player_t::composite_melee_crit_chance();
+
+  c += talents.tome_of_rhonin->effectN( 1 ).percent();
+
+  return c;
+}
+
 double mage_t::composite_spell_crit_chance() const
 {
   double c = player_t::composite_spell_crit_chance();
 
+  c += talents.tome_of_rhonin->effectN( 1 ).percent();
   c += talents.critical_mass->effectN( 1 ).percent();
 
   return c;
+}
+
+double mage_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
+
+  return h;
+}
+
+double mage_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  h /= 1.0 + talents.tome_of_antonidas->effectN( 1 ).percent();
+
+  return h;
 }
 
 double mage_t::matching_gear_multiplier( attribute_e attr ) const
