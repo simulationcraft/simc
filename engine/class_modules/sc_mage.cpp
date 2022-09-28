@@ -344,6 +344,7 @@ public:
     // Shared
     buff_t* ice_floes;
     buff_t* incanters_flow;
+    buff_t* overflowing_energy;
     buff_t* rune_of_power;
     buff_t* time_warp;
 
@@ -1536,6 +1537,7 @@ struct mage_spell_t : public spell_t
     // Misc
     bool combustion = true;
     bool ice_floes = false;
+    bool overflowing_energy = true;
     bool shatter = true;
 
     bool deathborne_cleave = false;
@@ -1549,6 +1551,7 @@ struct mage_spell_t : public spell_t
     bool from_the_ashes = false;
     bool icy_propulsion = false;
     bool ignite = false;
+    bool overflowing_energy = false;
     bool touch_of_the_magi = true;
 
     target_trigger_type_e hot_streak = TT_NONE;
@@ -1627,6 +1630,9 @@ public:
     if ( affected_by.frost_mage )
       base_multiplier *= 1.0 + p()->spec.frost_mage->effectN( 1 ).percent();
 
+    if ( affected_by.overflowing_energy )
+      crit_bonus_multiplier *= 1.0 + p()->talents.overflowing_energy->effectN( 1 ).percent();
+
     // Save some CPU time by not computing frozen flags/frozen multiplier for Arcane and Fire.
     if ( harmful && affected_by.shatter && p()->specialization() == MAGE_FROST )
     {
@@ -1636,7 +1642,10 @@ public:
 
     // TODO: this is just an approximation for now, test all spells
     if ( harmful && aoe != -1 )
+    {
       triggers.icy_propulsion = true;
+      triggers.overflowing_energy = true;
+    }
   }
 
   void init_finished() override
@@ -1711,6 +1720,9 @@ public:
 
     if ( affected_by.combustion )
       c += p()->buffs.combustion->check_value();
+
+    if ( affected_by.overflowing_energy )
+      c += p()->buffs.overflowing_energy->check_value();
 
     return c;
   }
@@ -1813,6 +1825,16 @@ public:
 
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
       p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
+
+    if ( triggers.overflowing_energy && p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    {
+      // TODO: should we use events here just like with Fevered Incantation? OF doesn't trigger from AoE spells
+      // so multiple simultaneous triggers happen rather rarely
+      if ( s->result == RESULT_CRIT )
+        p()->buffs.overflowing_energy->expire();
+      else
+        p()->buffs.overflowing_energy->trigger();
+    }
 
     if ( p()->runeforge.fevered_incantation->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
@@ -6618,13 +6640,16 @@ void mage_t::create_buffs()
 
 
   // Shared
-  buffs.ice_floes      = make_buff<buffs::ice_floes_t>( this );
-  buffs.incanters_flow = make_buff<buffs::incanters_flow_t>( this )
-                           ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
-  buffs.rune_of_power  = make_buff<buffs::rune_of_power_t>( this );
-  buffs.time_warp      = make_buff( this, "time_warp", find_spell( 342242 ) )
-                           ->set_default_value_from_effect( 1 )
-                           ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+  buffs.ice_floes          = make_buff<buffs::ice_floes_t>( this );
+  buffs.incanters_flow     = make_buff<buffs::incanters_flow_t>( this )
+                               ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.overflowing_energy = make_buff( this, "overflowing_energy", find_spell( 394195 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_chance( talents.overflowing_energy->ok() );
+  buffs.rune_of_power      = make_buff<buffs::rune_of_power_t>( this );
+  buffs.time_warp          = make_buff( this, "time_warp", find_spell( 342242 ) )
+                               ->set_default_value_from_effect( 1 )
+                               ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
   // Runeforge Legendaries
   buffs.arcane_harmony = make_buff( this, "arcane_harmony", find_spell( 332777 ) )
