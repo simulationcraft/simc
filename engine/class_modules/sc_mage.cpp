@@ -1837,13 +1837,13 @@ public:
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
       p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
 
-    if ( triggers.overflowing_energy && p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       // TODO: should we use events here just like with Fevered Incantation? OF doesn't trigger from AoE spells
       // so multiple simultaneous triggers happen rather rarely
       if ( s->result == RESULT_CRIT )
         p()->buffs.overflowing_energy->expire();
-      else
+      else if ( triggers.overflowing_energy )
         p()->buffs.overflowing_energy->trigger();
     }
 
