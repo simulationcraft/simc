@@ -5505,7 +5505,7 @@ struct radiant_spark_t final : public mage_spell_t
 struct shifting_power_pulse_t final : public mage_spell_t
 {
   shifting_power_pulse_t( std::string_view n, mage_t* p ) :
-    mage_spell_t( n, p, p->find_spell( 325130 ) )
+    mage_spell_t( n, p, p->find_spell( 382445 ) ) // TODO: do we want to do anything aobut the covenant one? (id 325130)
   {
     background = true;
     aoe = -1;
@@ -5526,7 +5526,7 @@ struct shifting_power_t final : public mage_spell_t
   timespan_t reduction;
 
   shifting_power_t( std::string_view n, mage_t* p, std::string_view options_str ) :
-    mage_spell_t( n, p, p->find_covenant_spell( "Shifting Power" ) ),
+    mage_spell_t( n, p, p->talents.shifting_power->ok() ? p->talents.shifting_power : p->find_covenant_spell( "Shifting Power" ) ),
     shifting_power_cooldowns(),
     reduction( data().effectN( 2 ).time_value() + p->conduits.discipline_of_the_grove.time_value() )
   {
