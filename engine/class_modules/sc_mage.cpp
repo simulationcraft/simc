@@ -410,6 +410,7 @@ public:
     cooldown_t* frost_storm;
     cooldown_t* frozen_orb;
     cooldown_t* icy_veins;
+    cooldown_t* incendiary_eruptions;
     cooldown_t* mirrors_of_torment;
     cooldown_t* phoenix_flames;
     cooldown_t* presence_of_mind;
@@ -3705,6 +3706,18 @@ struct flame_patch_t final : public fire_mage_spell_t
   {
     return result_amount_type::DMG_OVER_TIME;
   }
+
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && p()->cooldowns.incendiary_eruptions->up() && rng().roll( p()->talents.incendiary_eruptions->proc_chance() ) )
+    {
+      p()->cooldowns.incendiary_eruptions->start( p()->talents.incendiary_eruptions->internal_cooldown() );
+      // TODO: Rather than reusing actions.living_bomb_dot, it would be better to split the actions so that stats are nicely split in reports.
+      p()->action.living_bomb_dot->execute_on_target( s->target );
+    }
+  }
 };
 
 // Flamestrike Spell ========================================================
@@ -5993,20 +6006,21 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   uptime()
 {
   // Cooldowns
-  cooldowns.combustion         = get_cooldown( "combustion"         );
-  cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
-  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
-  cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
-  cooldowns.flurry             = get_cooldown( "flurry"             );
-  cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
-  cooldowns.frost_nova         = get_cooldown( "frost_nova"         );
-  cooldowns.frost_storm        = get_cooldown( "frost_storm"        );
-  cooldowns.frozen_orb         = get_cooldown( "frozen_orb"         );
-  cooldowns.icy_veins          = get_cooldown( "icy_veins"          );
-  cooldowns.mirrors_of_torment = get_cooldown( "mirrors_of_torment" );
-  cooldowns.phoenix_flames     = get_cooldown( "phoenix_flames"     );
-  cooldowns.presence_of_mind   = get_cooldown( "presence_of_mind"   );
-  cooldowns.snowstorm          = get_cooldown( "snowstorm"          );
+  cooldowns.combustion           = get_cooldown( "combustion"           );
+  cooldowns.cone_of_cold         = get_cooldown( "cone_of_cold"         );
+  cooldowns.fervent_flickering   = get_cooldown( "fervent_flickering"   );
+  cooldowns.fire_blast           = get_cooldown( "fire_blast"           );
+  cooldowns.flurry               = get_cooldown( "flurry"               );
+  cooldowns.from_the_ashes       = get_cooldown( "from_the_ashes"       );
+  cooldowns.frost_nova           = get_cooldown( "frost_nova"           );
+  cooldowns.frost_storm          = get_cooldown( "frost_storm"          );
+  cooldowns.frozen_orb           = get_cooldown( "frozen_orb"           );
+  cooldowns.icy_veins            = get_cooldown( "icy_veins"            );
+  cooldowns.incendiary_eruptions = get_cooldown( "incendiary_eruptions" );
+  cooldowns.mirrors_of_torment   = get_cooldown( "mirrors_of_torment"   );
+  cooldowns.phoenix_flames       = get_cooldown( "phoenix_flames"       );
+  cooldowns.presence_of_mind     = get_cooldown( "presence_of_mind"     );
+  cooldowns.snowstorm            = get_cooldown( "snowstorm"            );
 
   // Options
   resource_regeneration = regen_type::DYNAMIC;
@@ -6170,7 +6184,7 @@ void mage_t::create_actions()
   if ( talents.conflagration->ok() )
     action.conflagration_flare_up = get_action<conflagration_flare_up_t>( "conflagration_flare_up", this );
 
-  if ( talents.living_bomb->ok() )
+  if ( talents.living_bomb->ok() || talents.incendiary_eruptions->ok() )
   {
     action.living_bomb_dot        = get_action<living_bomb_dot_t>( "living_bomb_dot", this, true );
     action.living_bomb_dot_spread = get_action<living_bomb_dot_t>( "living_bomb_dot_spread", this, false );
