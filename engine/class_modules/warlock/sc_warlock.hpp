@@ -224,7 +224,8 @@ public:
     player_talent_t siphon_life; // DF - Now a choice against Absolute Corruption
     player_talent_t phantom_singularity; // DF - Now a choice against Vile Taint
     const spell_data_t* phantom_singularity_tick; // Actual AoE spell information in here
-    const spell_data_t* vile_taint; // DF - New functionality (applies Agony on targets hit)
+    player_talent_t vile_taint; // Base talent, AoE cast data
+    const spell_data_t* vile_taint_dot; // DoT data
 
     // DF - Soul Tap (Sacrifice Soul Leech for Soul Shard)
     const spell_data_t* inevitable_demise; // DF - Now a 2 point talent

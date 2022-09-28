@@ -525,13 +525,24 @@ struct phantom_singularity_t : public affliction_spell_t
 
 struct vile_taint_t : public affliction_spell_t
 {
+  struct vile_taint_dot_t : public affliction_spell_t
+  {
+    vile_taint_dot_t( warlock_t* p ) : affliction_spell_t( "Vile Taint (DoT)", p, p->talents.vile_taint_dot )
+    {
+      tick_zero = true;
+      execute_action = new agony_t( p, "" );
+      execute_action->dual = true;
+      execute_action->base_costs[ RESOURCE_MANA ] = 0.0;
+    }
+  };
+
   vile_taint_t( warlock_t* p, util::string_view options_str )
     : affliction_spell_t( "vile_taint", p, p->talents.vile_taint )
   {
     parse_options( options_str );
 
-    hasted_ticks = tick_zero = true;
-    aoe                      = -1;
+    impact_action = new vile_taint_dot_t( p );
+    add_child( impact_action );
   }
 };
 }  // namespace actions_affliction
@@ -630,6 +641,9 @@ void warlock_t::init_spells_affliction()
   talents.phantom_singularity = find_talent_spell( talent_tree::SPECIALIZATION, "Phantom Singularity" ); // Should be ID 205179
   talents.phantom_singularity_tick = find_spell( 205246 ); // AoE damage info
 
+  talents.vile_taint = find_talent_spell( talent_tree::SPECIALIZATION, "Vile Taint" ); // Should be ID 278350
+  talents.vile_taint_dot = find_spell( 386931 ); // DoT info here
+
   talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
 
   talents.haunt               = find_talent_spell( "Haunt" );
@@ -637,7 +651,7 @@ void warlock_t::init_spells_affliction()
 
 
 
-  talents.vile_taint          = find_talent_spell( "Vile Taint" );
+ 
   talents.creeping_death      = find_talent_spell( "Creeping Death" );
 
   // Conduits
