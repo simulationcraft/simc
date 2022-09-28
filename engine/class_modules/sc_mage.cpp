@@ -4988,6 +4988,11 @@ struct phoenix_flames_splash_t final : public fire_mage_spell_t
     callbacks = false;
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.radiant_spark = true;
+
+    if ( p->talents.alexstraszas_fury->ok() )
+    {
+      base_crit = 1.0;
+    }
   }
 };
 
