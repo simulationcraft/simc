@@ -720,7 +720,6 @@ double dbc::fmt_value( double v, effect_type_t type, effect_subtype_t sub_type )
         case A_MOD_RANGED_ATTACK_POWER_PCT:
         case A_MOD_TOTAL_STAT_PERCENTAGE:
         case A_MOD_INCREASES_SPELL_PCT_TO_HIT:
-        case A_MOD_RATING_FROM_STAT:
         case A_MOD_CASTING_SPEED_NOT_STACK: // Wrath of Air, note this can go > +-100, but only on NPC (and possibly item) abilities
         case A_MOD_SPELL_DAMAGE_OF_ATTACK_POWER:
         case A_MOD_SPELL_HEALING_OF_ATTACK_POWER:
