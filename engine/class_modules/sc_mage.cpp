@@ -1837,7 +1837,7 @@ public:
     if ( triggers.icy_propulsion && s->result == RESULT_CRIT )
       p()->cooldowns.icy_veins->adjust( -p()->talents.icy_propulsion->effectN( 1 ).time_value() );
 
-    if ( p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
+    if ( callbacks && p()->talents.overflowing_energy->ok() && s->result_type == result_amount_type::DMG_DIRECT )
     {
       // TODO: should we use events here just like with Fevered Incantation? OF doesn't trigger from AoE spells
       // so multiple simultaneous triggers happen rather rarely
@@ -4795,6 +4795,9 @@ struct meteor_impact_t final : public fire_mage_spell_t
     background = split_aoe_damage = true;
     aoe = -1;
     triggers.ignite = triggers.radiant_spark = true;
+
+    if ( p->specialization() != MAGE_FIRE )
+      base_multiplier *= 1.2; // There's currently no spell data for this
   }
 
   void impact( action_state_t* s ) override
