@@ -1357,6 +1357,23 @@ struct deep_breath_t : public evoker_spell_t
       // base action.
       return execute_state && execute_state->target ? 0_ms : evoker_spell_t::travel_time();
     }
+
+    double composite_target_multiplier( player_t* t ) const override
+    {
+      double tm = evoker_action_t::composite_target_multiplier( t );
+
+      // Preliminary testing shows this is linear with target hp %.
+      // TODO: confirm this applies only to all evoker offensive spells
+      if ( p()->specialization() == EVOKER_DEVASTATION )
+      {
+        if ( !p()->talent.tyranny.ok() )
+          tm *= 1.0 + p()->cache.mastery_value() * t->health_percentage() / 100;
+        else
+          tm *= 1.0 + p()->cache.mastery_value();
+      }
+
+      return tm;
+    }
   };
 
   action_t* damage;
