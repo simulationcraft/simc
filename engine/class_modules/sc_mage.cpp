@@ -3066,6 +3066,7 @@ struct blast_wave_t final : public fire_mage_spell_t
     parse_options( options_str );
     aoe = -1;
     triggers.radiant_spark = true;
+    cooldown->duration += p->talents.volatile_detonation->effectN( 1 ).time_value();
   }
 };
 
