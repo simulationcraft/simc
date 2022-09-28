@@ -5240,13 +5240,16 @@ struct summon_water_elemental_t final : public frost_mage_spell_t
 
 struct time_warp_t final : public mage_spell_t
 {
+  bool temporal_warp = false;
+
   time_warp_t( std::string_view n, mage_t* p, std::string_view options_str ) :
     mage_spell_t( n, p, p->find_class_spell( "Time Warp" ) )
   {
     parse_options( options_str );
     harmful = false;
+    temporal_warp = p->talents.temporal_warp->ok() || p->runeforge.temporal_warp.ok();
 
-    if ( sim->overrides.bloodlust && !p->runeforge.temporal_warp.ok() )
+    if ( sim->overrides.bloodlust && !temporal_warp )
       background = true;
   }
 
@@ -5256,6 +5259,8 @@ struct time_warp_t final : public mage_spell_t
 
     if ( player->buffs.exhaustion->check() )
       p()->buffs.temporal_warp->trigger();
+    else if ( p()->talents.temporal_warp->ok() )
+      make_event( *sim, 0_ms, [ this ] { cooldown->reset( false ); } );
 
     for ( player_t* p : sim->player_non_sleeping_list )
     {
@@ -5269,7 +5274,7 @@ struct time_warp_t final : public mage_spell_t
 
   bool ready() override
   {
-    if ( player->buffs.exhaustion->check() && !p()->runeforge.temporal_warp.ok() )
+    if ( player->buffs.exhaustion->check() && !temporal_warp )
       return false;
 
     return mage_spell_t::ready();
@@ -6707,7 +6712,7 @@ void mage_t::create_buffs()
   buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 327355 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-                           ->set_chance( runeforge.temporal_warp.ok() );
+                           ->set_chance( talents.temporal_warp->ok() || runeforge.temporal_warp.ok() );
 
   buffs.fevered_incantation      = make_buff( this, "fevered_incantation", find_spell( 333049 ) )
                                      ->set_default_value_from_effect( 1 )
