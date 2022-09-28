@@ -3403,6 +3403,8 @@ struct counterspell_t final : public mage_spell_t
     if ( success && p()->conduits.grounding_surge.ok() )
       // At this point, Counterspell's cooldown hasn't started yet. Do the CDR in a separate event.
       make_event( *sim, [ this ] { cooldown->adjust( -100 * p()->conduits.grounding_surge.time_value() ); } );
+    if ( success && p()->talents.quick_witted->ok() )
+      make_event( *sim, [ this ] { cooldown->adjust( -p()->talents.quick_witted->effectN( 1 ).time_value() ); } );
   }
 
   bool target_ready( player_t* candidate_target ) override
