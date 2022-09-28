@@ -3105,6 +3105,7 @@ struct blink_t final : public mage_spell_t
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
     cooldown->duration += p->conduits.flow_of_time.time_value();
+    cooldown->duration += p->talents.flow_of_time->effectN( 1 ).time_value();
 
     if ( p->talents.shimmer->ok() )
       background = true;
@@ -5142,6 +5143,7 @@ struct shimmer_t final : public mage_spell_t
     base_teleport_distance = data().effectN( 1 ).radius_max();
     movement_directionality = movement_direction_type::OMNI;
     cooldown->duration += p->conduits.flow_of_time.time_value();
+    cooldown->duration += p->talents.flow_of_time->effectN( 2 ).time_value();
   }
 };
 
