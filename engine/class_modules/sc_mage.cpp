@@ -4432,8 +4432,9 @@ struct ice_nova_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    reduced_aoe_targets = 1.0;
-    full_amount_targets = 1;
+    // TODO: currently deals full damage to all targets, probably a bug
+    // reduced_aoe_targets = 1.0;
+    // full_amount_targets = 1;
     consumes_winters_chill = triggers.radiant_spark = true;
   }
 
