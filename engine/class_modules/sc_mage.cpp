@@ -3773,8 +3773,7 @@ struct flurry_t final : public frost_mage_spell_t
     for (int i = 0; i < icicle_count; i++ ) p()->trigger_icicle_gain( target, p()->action.icicle.flurry );
     p()->expression_support.remaining_winters_chill = 2;
 
-    bool brain_freeze = p()->buffs.brain_freeze->up();
-    p()->state.brain_freeze_active = brain_freeze;
+    p()->state.brain_freeze_active = p()->buffs.brain_freeze->up();
     p()->buffs.brain_freeze->decrement();
 
     p()->procs.flurry_cast->occur();
@@ -6204,13 +6203,12 @@ void mage_t::create_pets()
 {
   player_t::create_pets();
 
-  if ( specialization() == MAGE_FROST && talents.summon_water_elemental->ok() && find_action( "summon_water_elemental" ) )
+  if ( talents.summon_water_elemental->ok() && find_action( "summon_water_elemental" ) )
     pets.water_elemental = new pets::water_elemental::water_elemental_pet_t( sim, this );
 
-  auto a = find_action( "mirror_image" );
-  if ( a && a->data().ok() )
+  if ( talents.mirror_image->ok() && find_action( "mirror_image" ) )
   {
-    for ( int i = 0; i < as<int>( a->data().effectN( 2 ).base_value() ); i++ )
+    for ( int i = 0; i < as<int>( talents.mirror_image->effectN( 2 ).base_value() ); i++ )
     {
       auto image = new pets::mirror_image::mirror_image_pet_t( sim, this );
       if ( i > 0 )
