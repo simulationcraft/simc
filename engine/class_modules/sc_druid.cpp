@@ -47,17 +47,16 @@ enum eclipse_state_e
 enum free_cast_e
 {
   NONE = 0,
-  APEX,      // apex predators's craving
-  CONVOKE,   // convoke_the_spirits night_fae covenant ability
-  GALACTIC,  // galactic guardian talent
-  LYCARAS,   // lycaras fleeting glimpse legendary
-  NATURAL,   // natural orders will legendary
-  ONETHS,    // oneths clear vision talent
-  ORBIT,     // orbit breaker talent
-  FLASHING,  // flashing claws talent
-  PILLAR,    // celestial pillar balance tier 28 2pc
-  SYZYGY,
-  URSOCS,    // ursoc's fury remembered legendary
+  APEX,        // apex predators's craving
+  CONVOKE,     // convoke_the_spirits night_fae covenant ability
+  GALACTIC,    // galactic guardian talent
+  LYCARAS,     // lycaras fleeting glimpse legendary
+  NATURAL,     // natural orders will legendary
+  STARWEAVER,  // starweaver talent
+  ORBIT,       // orbit breaker talent
+  FLASHING,    // flashing claws talent
+  PILLAR,      // celestial pillar balance tier 28 2pc
+  URSOCS,      // ursoc's fury remembered legendary
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -360,8 +359,8 @@ public:
     action_t* goldrinns_fang;            // rawr
     action_t* orbit_breaker;
     action_t* shooting_stars;
-    action_t* starfall_oneth;            // free starfall from oneth's clear vision
-    action_t* starsurge_oneth;           // free starsurge from oneth's clear vision
+    action_t* starfall_starweaver;       // free starfall from starweaver's warp
+    action_t* starsurge_starweaver;      // free starsurge from starweaver's weft
     action_t* syzygy;
 
     // Feral
@@ -444,14 +443,13 @@ public:
     buff_t* celestial_infusion;  // AP ticks for 2T28
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
-    buff_t* oneths_free_starfall;
-    buff_t* oneths_free_starsurge;
-    buff_t* owlkin_frenzy;
+    buff_t* starweavers_warp;  // free starfall
+    buff_t* starweavers_weft;  // free starsurge
     buff_t* primordial_arcanic_pulsar;
     buff_t* solstice;
     buff_t* starfall;
     buff_t* starlord;  // talent
-    buff_t* timeworn_dreambinder;
+    buff_t* rattled_stars;
     buff_t* warrior_of_elune;
 
     // Feral
@@ -671,53 +669,56 @@ public:
     // Balance
     player_talent_t eclipse;  // Row 1
 
-    player_talent_t improved_moonfire;
-
-    player_talent_t force_of_nature;  // Row 3
-    player_talent_t natures_balance;
+    player_talent_t shooting_stars;  // Row 2
     player_talent_t warrior_of_elune;
+    player_talent_t starfall;
 
-    player_talent_t starfall;  // Row 4
-    player_talent_t improved_moonkin_form;  // NNF
-    player_talent_t celestial_alignment;
+    player_talent_t solstice;  // Row 3
+    player_talent_t umbral_intensity;
+    // player_talent_t umbral_embrace;
+    player_talent_t aetherial_kindling;
+    // player_talent_t lunar_shrapnel;
 
-    player_talent_t improved_starsurge;  // Row 5
+    player_talent_t stellar_flare;  // Row 4
+    player_talent_t twin_moons;
     player_talent_t solar_beam;
-    player_talent_t shooting_stars;
+    player_talent_t force_of_nature;
 
-    player_talent_t improved_starfall;  // Row 6
-    player_talent_t power_of_goldrinn;
-    player_talent_t starlord;
-
-    player_talent_t stellar_drift;  // Row 7
+    player_talent_t orbit_breaker;  // Row 5
     player_talent_t stellar_inspiration;
     player_talent_t light_of_the_sun;
-    player_talent_t umbral_intensity;
-    player_talent_t precise_alignment;
+    player_talent_t natures_balance;
+    player_talent_t rattle_the_stars;
+    player_talent_t starweaver;
 
-    player_talent_t blessing_of_anshe;  // Row 8
-    player_talent_t blessing_of_elune;
-    player_talent_t soul_of_the_forest_moonkin;
-    player_talent_t fury_of_the_skies;
-    player_talent_t stellar_flare;
-    player_talent_t twin_moons;
-    player_talent_t solstice;
+    // player_talent_t waning_twilight;  // Row 6
+    player_talent_t celestial_alignment;
+    player_talent_t starlord;
 
-    player_talent_t timeworn_dreambinder;  // Row 9 NNF
-    player_talent_t oneths_clear_vision;  // NNF
-    player_talent_t umbral_infusion;  // NNF
-    // player_talent_t convoke_the_spirits_moonkin;
-    player_talent_t incarnation_moonkin;
-    // player_talent_t circle_of_life_and_death_moonkin;
-    player_talent_t primordial_arcanic_pulsar;
+    // player_talent_t astral_communion;  // Row 7
+    // player_talent_t natures_grace;
     player_talent_t syzygy;
+    player_talent_t primordial_arcanic_pulsar;
+    player_talent_t soul_of_the_forest_moonkin;
+    // player_talent_t wild_mushroom;
 
-    player_talent_t fury_of_elune;  // Row 10
-    player_talent_t new_moon;
+    // player_talent_t circle_of_life_and_death_moonkin;  // Row 8
+    player_talent_t incarnation_moonkin;
+    // player_talent_t convoke_the_spirits_moonkin;
+    player_talent_t power_of_goldrinn;
+    // player_talent_t fungal_growth;
+
+    // player_talent_t denizen of the dream;  // Row 9
+    // player_talent_t astral_smolder;
     player_talent_t elunes_guidance;
     player_talent_t balance_of_all_things;
-    // player_talent_t adaptive_swarm_moonkin;
-    player_talent_t orbit_breaker;
+    player_talent_t fury_of_elune;
+    player_talent_t new_moon;
+
+    // player_talent_t friend_of_the_fae;  // Row 10
+    // player_talent_t sundered_firmament;
+    // player_talent_t stellar_innervation;
+    // player_talent_t radiant_moonlight
 
     // Feral
     player_talent_t tigers_fury;  // Row 1
@@ -926,7 +927,6 @@ public:
     const spell_data_t* full_moon;
     const spell_data_t* half_moon;
     const spell_data_t* shooting_stars_dmg;
-    const spell_data_t* stellar_drift_whitelist;
 
     // Feral
     const spell_data_t* feral;
@@ -1660,9 +1660,12 @@ struct celestial_alignment_buff_t : public druid_buff_t<buff_t>
     : base_t( p, n, p.apply_override( s, p.talent.syzygy ) ), inc( b )
   {
     set_cooldown( 0_ms );
-    set_default_value_from_effect_type( A_HASTE_ALL );
-    modify_duration( p.talent.precise_alignment->effectN( 1 ).time_value() );
-    set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+
+    if ( p.talent.celestial_alignment.ok() )
+    {
+      set_default_value_from_effect_type( A_HASTE_ALL );
+      set_pct_buff_type( STAT_PCT_BUFF_HASTE );
+    }
 
     if ( inc )
     {
@@ -2202,7 +2205,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || f == free_cast_e::APEX || f == free_cast_e::ONETHS || f == free_cast_e::URSOCS )
+    if ( !f || f == free_cast_e::APEX || f == free_cast_e::STARWEAVER || f == free_cast_e::URSOCS )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -2510,17 +2513,17 @@ public:
     }
 
     // Balance
-    parse_buff_effects( p()->buff.balance_of_all_things_arcane );
-    parse_buff_effects( p()->buff.balance_of_all_things_nature );
+    parse_buff_effects<S>( p()->buff.balance_of_all_things_arcane, p()->talent.balance_of_all_things );
+    parse_buff_effects<S>( p()->buff.balance_of_all_things_nature, p()->talent.balance_of_all_things );
     parse_buff_effects<S>( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
     parse_buff_effects<S>( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
-    parse_buff_effects( p()->buff.incarnation_moonkin );
+    parse_buff_effects<S>( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );  // TODO: cost reduction NYI
+    parse_buff_effects( p()->buff.rattled_stars );
+    parse_buff_effects( p()->buff.starweavers_warp );
+    parse_buff_effects( p()->buff.starweavers_weft );
     parse_buff_effects( p()->buff.warrior_of_elune, false );
-    parse_buff_effects( p()->buff.oneths_free_starfall );
-    parse_buff_effects( p()->buff.oneths_free_starsurge );
-    parse_buff_effects( p()->buff.owlkin_frenzy );
-    parse_buff_effects( p()->buff.timeworn_dreambinder );
-    parse_conditional_effects( p()->talent.umbral_infusion, [ this ]() {
+// TODO: check if elune's guidance is bugs like this
+/*    parse_conditional_effects( p()->talent.umbral_infusion, [ this ]() {
       if ( ( p()->eclipse_handler.state == eclipse_state_e::IN_LUNAR &&
              p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) > 50_ms ) ||
            ( p()->eclipse_handler.state == eclipse_state_e::IN_SOLAR &&
@@ -2530,7 +2533,7 @@ public:
         return true;
       }
       return false;
-    } );
+    } );*/
 
     // Feral
     parse_buff_effects( p()->buff.apex_predators_craving );
@@ -2623,14 +2626,10 @@ public:
   {
     using S = const spell_data_t*;
 
-    parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; }, false,
-                          p()->spec.adaptive_swarm_damage, p()->spec.balance );
+    parse_dot_debuffs( []( druid_td_t* t ) -> dot_t* { return t->dots.adaptive_swarm_damage; },
+                       false, p()->spec.adaptive_swarm_damage );
     parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.thrash_bear; },
                           p()->spec.thrash_bear_dot, p()->talent.rend_and_tear );
-    parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.moonfire; },
-                          p()->spec.moonfire_dmg, p()->talent.fury_of_the_skies );
-    parse_dot_debuffs<S>( []( druid_td_t* t ) -> dot_t* { return t->dots.sunfire; },
-                          p()->spec.sunfire_dmg, p()->talent.fury_of_the_skies );
   }
 
   double cost() const override
@@ -2870,17 +2869,6 @@ public:
         }
       }
     }
-  }
-
-  bool usable_moving() const override
-  {
-    if ( p()->talent.stellar_drift.ok() && p()->buff.starfall->check() &&
-         data().affected_by( p()->spec.stellar_drift_whitelist->effectN( 1 ) ) )
-    {
-      return true;
-    }
-
-    return ab::usable_moving();
   }
 
   void trigger_shooting_stars( player_t* t )
@@ -7479,12 +7467,11 @@ struct starfall_t : public druid_spell_t
   };
 
   action_t* driver;
-  cooldown_t* orig_cd;
 
   starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
 
   starfall_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt ), orig_cd( cooldown )
+    : druid_spell_t( n, p, s, opt )
   {
     may_miss = may_crit = false;
     queue_failed_proc = p->get_proc( "starfall queue failed" );
@@ -7497,24 +7484,12 @@ struct starfall_t : public druid_spell_t
     driver->impact_action->stats = stats;
   }
 
-  bool ready() override
-  {
-    if ( p()->buff.oneths_free_starfall->check() && !cooldown->is_ready() )
-      cooldown = p()->active.starfall_oneth->cooldown;
-
-    return druid_spell_t::ready();
-  }
-
-  timespan_t cooldown_duration() const override
-  {
-    return ( free_cast ) ? 0_ms : druid_spell_t::cooldown_duration();
-  }
-
   void consume_resource() override
   {
     druid_spell_t::consume_resource();
 
-    if ( p()->talent.umbral_infusion.ok() )
+// TODO: check if elune's guidance bugs like this
+/*    if ( p()->talent.umbral_infusion.ok() )
     {
       if ( ( p()->eclipse_handler.state == IN_LUNAR &&
              p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
@@ -7523,24 +7498,23 @@ struct starfall_t : public druid_spell_t
       {
         p()->proc.bugged_umbral_infusion->occur();
       }
-    }
+    }*/
   }
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.oneths_free_starfall->up() )
+    if ( !free_cast && p()->buff.starweavers_warp->up() )
     {
-      cooldown = orig_cd;
-      p()->active.starfall_oneth->execute_on_target( target );
+      p()->active.starfall_starweaver->execute_on_target( target );
       return;
     }
 
-    if ( p()->talent.improved_starfall.ok() )
+    if ( p()->talent.aetherial_kindling.ok() )
     {
-      int ext = as<int>( p()->talent.improved_starfall->effectN( 1 ).base_value() );
+      auto ext = p()->talent.aetherial_kindling->effectN( 1 ).base_value();
 
-      if ( rng().roll( p()->talent.stellar_inspiration->effectN( 1 ).percent() ) )
-        ext *= 2;
+      if ( rng().roll( p()->talent.stellar_inspiration->effectN( 2 ).percent() ) )
+        ext += p()->talent.stellar_inspiration->effectN( 3 ).base_value();
 
       std::vector<player_t*>& tl = target_list();
 
@@ -7562,17 +7536,16 @@ struct starfall_t : public druid_spell_t
     if ( free_cast == free_cast_e::CONVOKE || free_cast == free_cast_e::LYCARAS )
       return;  // convoke/lycaras doesn't process any further
 
-    if ( p()->buff.oneths_free_starfall->check() )
-      p()->buff.oneths_free_starfall->expire();
+    p()->buff.starweavers_warp->expire();
 
     if ( p()->talent.starlord.ok() )
       p()->buff.starlord->trigger();
 
-    if ( p()->talent.timeworn_dreambinder.ok() )
-      p()->buff.timeworn_dreambinder->trigger();
+    if ( p()->talent.rattle_the_stars.ok() )
+      p()->buff.rattled_stars->trigger();
 
-    if ( p()->talent.oneths_clear_vision.ok() )
-      p()->buff.oneths_free_starsurge->trigger();
+    if ( p()->talent.starweaver.ok() )
+      p()->buff.starweavers_weft->trigger();
   }
 };
 
@@ -7625,9 +7598,7 @@ struct starfire_t : public druid_spell_t
       return;
     }
 
-    if ( p()->buff.owlkin_frenzy->up() )
-      p()->buff.owlkin_frenzy->decrement();
-    else if ( p()->buff.warrior_of_elune->up() )
+    if ( p()->buff.warrior_of_elune->up() )
       p()->buff.warrior_of_elune->decrement();
 
     p()->eclipse_handler.cast_starfire();
@@ -7654,6 +7625,21 @@ struct starfire_t : public druid_spell_t
   }
 };
 
+// Stellar Flare ============================================================
+// must come before starsurge_t due to stellar inspiration
+struct stellar_flare_t : public druid_spell_t
+{
+  stellar_flare_t( druid_t* p, std::string_view opt )
+    : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
+  {}
+
+  stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
+    : druid_spell_t( n, p, s, opt )
+  {
+    dot_name = "stellar_flare";
+  }
+};
+
 // Starsurge Spell ==========================================================
 struct starsurge_offspec_t : public druid_spell_t
 {
@@ -7667,15 +7653,24 @@ struct starsurge_offspec_t : public druid_spell_t
 
 struct starsurge_t : public druid_spell_t
 {
+  spell_t* flare;
   spell_t* goldrinn;
+
   bool moonkin_form_in_precombat;
 
   starsurge_t( druid_t* p, std::string_view opt ) : starsurge_t( p, "starsurge", p->talent.starsurge, opt ) {}
 
   starsurge_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt ), goldrinn( nullptr ), moonkin_form_in_precombat( false )
+    : druid_spell_t( n, p, s, opt ), flare( nullptr ), goldrinn( nullptr ), moonkin_form_in_precombat( false )
   {
     form_mask |= NO_FORM; // spec version can be cast with no form despite spell data form mask
+
+    if ( p->talent.stellar_inspiration.ok() )
+    {
+      flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_inspiration" );
+      flare->name_str_reporting = "stellar_flare";
+      add_child( flare );
+    }
 
     if ( p->talent.power_of_goldrinn.ok() )
     {
@@ -7736,7 +7731,8 @@ struct starsurge_t : public druid_spell_t
   {
     druid_spell_t::consume_resource();
 
-    if ( p()->talent.umbral_infusion.ok() )
+// TODO: check if elune's guidance bugs like this
+/*    if ( p()->talent.umbral_infusion.ok() )
     {
       if ( ( p()->eclipse_handler.state == IN_LUNAR &&
              p()->buff.eclipse_lunar->elapsed( p()->sim->current_time() ) <= 50_ms ) ||
@@ -7745,14 +7741,14 @@ struct starsurge_t : public druid_spell_t
       {
         p()->proc.bugged_umbral_infusion->occur();
       }
-    }
+    }*/
   }
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.oneths_free_starsurge->up() )
+    if ( !free_cast && p()->buff.starweavers_weft->up() )
     {
-      p()->active.starsurge_oneth->execute_on_target( target );
+      p()->active.starsurge_starweaver->execute_on_target( target );
       return;
     }
 
@@ -7764,30 +7760,17 @@ struct starsurge_t : public druid_spell_t
     if ( free_cast == free_cast_e::CONVOKE )
       return;  // convoke doesn't process any further
 
-    if ( p()->buff.oneths_free_starsurge->check() )
-      p()->buff.oneths_free_starsurge->expire();
+    p()->buff.starweavers_weft->expire();
 
     if ( p()->talent.starlord.ok() )
       p()->buff.starlord->trigger();
 
-    if ( p()->talent.timeworn_dreambinder.ok() )
-      p()->buff.timeworn_dreambinder->trigger();
+    if ( p()->talent.rattle_the_stars.ok() )
+      p()->buff.rattled_stars->trigger();
 
-    if ( p()->talent.oneths_clear_vision.ok() )
-      p()->buff.oneths_free_starfall->trigger();
+    if ( p()->talent.starweaver.ok() )
+      p()->buff.starweavers_warp->trigger();
   }
-};
-
-// Stellar Flare ============================================================
-struct stellar_flare_t : public druid_spell_t
-{
-  stellar_flare_t( druid_t* p, std::string_view opt )
-    : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
-  {}
-
-  stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
-    : druid_spell_t( n, p, s, opt )
-  {}
 };
 
 // Sunfire Spell ============================================================
@@ -9358,38 +9341,29 @@ void druid_t::init_spells()
 
   // Balance
   sim->print_debug( "Initializing balance talents..." );
+  talent.aetherial_kindling             = ST( "Aetherial Kindling" );
+  talent.celestial_alignment            = ST( "Celestial Alignment" );
   talent.eclipse                        = ST( "Eclipse" );
   talent.elunes_guidance                = ST( "Elune's Guidance" );
-  talent.improved_moonfire              = ST( "Improved Moonfire" );
   talent.force_of_nature                = ST( "Force of Nature" );
-  talent.natures_balance                = ST( "Nature's Balance" );
-  talent.warrior_of_elune               = ST( "Warrior of Elune" );
-  talent.starfall                       = ST( "Starfall" );
-  talent.improved_moonkin_form          = ST( "Owlkin Frenzy" );
-  talent.celestial_alignment            = ST( "Celestial Alignment" );
-  talent.improved_starsurge             = ST( "Improved Starsurge" );
-  talent.solar_beam                     = ST( "Solar Beam" );
-  talent.shooting_stars                 = ST( "Shooting Stars" );
-  talent.improved_starfall              = find_talent_spell( talent_tree::SPECIALIZATION, 327541 );  /// NNF
-  talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
-  talent.starlord                       = ST( "Starlord" );
-  talent.stellar_drift                  = ST( "Stellar Drift" );
-  talent.stellar_inspiration            = ST( "Stellar Inspiration" );
-  talent.light_of_the_sun               = ST( "Light of the Sun" );
-  talent.umbral_intensity               = ST( "Umbral Intensity" );
-  talent.precise_alignment              = ST( "Precise Alignment" );
-  talent.blessing_of_anshe              = ST( "Blessing of An'she" );
-  talent.blessing_of_elune              = ST( "Blessing of Elune" );
-  talent.soul_of_the_forest_moonkin     = STS( "Soul of the Forest", DRUID_BALANCE );
-  talent.fury_of_the_skies              = ST( "Fury of the Skies" );
-  talent.stellar_flare                  = ST( "Stellar Flare" );
-  talent.twin_moons                     = ST( "Twin Moons" );
-  talent.solstice                       = ST( "Solstice" );
-  talent.timeworn_dreambinder           = ST( "Timeworn Dreambinder [NNF]" );  // NNF
-  talent.oneths_clear_vision            = ST( "Oneth's Clear Vision [NNF]" );  // NNF
-  talent.umbral_infusion                = ST( "Umbral Infusion [NNF]" );  // NNF
   talent.incarnation_moonkin            = ST( "Incarnation: Chosen of Elune" );
+  talent.light_of_the_sun               = ST( "Light of the Sun" );
+  talent.natures_balance                = ST( "Nature's Balance" );
+  talent.power_of_goldrinn              = ST( "Power of Goldrinn" );
   talent.primordial_arcanic_pulsar      = ST( "Primordial Arcanic Pulsar" );
+  talent.rattle_the_stars               = ST( "Rattle the Stars" );
+  talent.shooting_stars                 = ST( "Shooting Stars" );
+  talent.solar_beam                     = ST( "Solar Beam" );
+  talent.solstice                       = ST( "Solstice" );
+  talent.soul_of_the_forest_moonkin     = STS( "Soul of the Forest", DRUID_BALANCE );
+  talent.starfall                       = ST( "Starfall" );
+  talent.starlord                       = ST( "Starlord" );
+  talent.starweaver                     = ST( "Starweaver" );
+  talent.stellar_flare                  = ST( "Stellar Flare" );
+  talent.stellar_inspiration            = ST( "Stellar Inspiration" );
+  talent.twin_moons                     = ST( "Twin Moons" );
+  talent.umbral_intensity               = ST( "Umbral Intensity" );
+  talent.warrior_of_elune               = ST( "Warrior of Elune" );
   talent.syzygy                         = ST( "Syzygy" );
   talent.fury_of_elune                  = ST( "Fury of Elune" );
   talent.new_moon                       = ST( "New Moon" );
@@ -9643,7 +9617,6 @@ void druid_t::init_spells()
   spec.full_moon                = check( talent.new_moon.ok(), 274283 );
   spec.half_moon                = check( talent.new_moon.ok(), 274282 );
   spec.shooting_stars_dmg       = check( talent.shooting_stars.ok(), 202497 );  // shooting stars damage
-  spec.stellar_drift_whitelist  = check( talent.stellar_drift.ok(), 202461 );
 
   // Feral Abilities
   spec.feral                    = find_specialization_spell( "Feral Druid" );
@@ -9972,14 +9945,11 @@ void druid_t::create_buffs()
     ->set_default_value( query_aura_effect( find_spell( 50322 ), A_MOD_DAMAGE_PERCENT_TAKEN )->percent() );
 
   // Balance buffs
-  // Default value is ONLY used for APL expression, so set via base_value() and not percent()
-  buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 339946 ) )
-    ->set_default_value_from_effect( 1, 1.0 )
+  buff.balance_of_all_things_arcane = make_buff( this, "balance_of_all_things_arcane", find_spell( 394050 ) )
     ->set_reverse( true )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION);
 
-  buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 339943 ) )
-    ->set_default_value_from_effect( 1, 1.0 )
+  buff.balance_of_all_things_nature = make_buff( this, "balance_of_all_things_nature", find_spell( 394049 ) )
     ->set_reverse( true )
     ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
@@ -10007,17 +9977,11 @@ void druid_t::create_buffs()
       resource_gain( RESOURCE_ASTRAL_POWER, nb_ap, gain.natures_balance );
     } );
 
-  buff.oneths_free_starfall = make_buff( this, "oneths_perception", find_spell( 339800 ) )
-    ->set_chance( talent.oneths_clear_vision->effectN( 1 ).percent() );
-
-  buff.oneths_free_starsurge = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
-    ->set_chance( talent.oneths_clear_vision->effectN( 2 ).percent() );
-
-  buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
-    ->set_chance( talent.improved_moonkin_form->effectN( 1 ).percent() );
-
-  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 338825 ) ) 
+  buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 393961 ) ) 
     ->set_default_value( options.initial_pulsar_value );
+
+  buff.rattled_stars = make_buff( this, "rattled_stars", talent.rattle_the_stars->effectN( 1 ).trigger() )
+    ->set_refresh_behavior( buff_refresh_behavior::DURATION );
 
   buff.solstice = make_buff( this, "solstice", talent.solstice->effectN( 1 ).trigger() )
     ->set_default_value( talent.solstice->effectN( 1 ).percent() );
@@ -10034,9 +9998,11 @@ void druid_t::create_buffs()
     ->set_refresh_behavior( buff_refresh_behavior::DISABLED )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.timeworn_dreambinder =
-      make_buff( this, "timeworn_dreambinder", talent.timeworn_dreambinder->effectN( 1 ).trigger() )
-          ->set_refresh_behavior( buff_refresh_behavior::DURATION );
+  buff.starweavers_warp = make_buff( this, "oneths_perception", find_spell( 339800 ) )
+    ->set_chance( talent.starweaver->effectN( 1 ).percent() );
+
+  buff.starweavers_weft = make_buff( this, "oneths_clear_vision", find_spell( 339797 ) )
+    ->set_chance( talent.starweaver->effectN( 2 ).percent() );
 
   buff.warrior_of_elune = make_buff( this, "warrior_of_elune", talent.warrior_of_elune )
     ->set_cooldown( 0_ms )
@@ -10302,23 +10268,24 @@ void druid_t::create_actions()
     active.celestial_pillar = pillar;
   }
 
-  if ( talent.oneths_clear_vision.ok() )
+  if ( talent.starweaver.ok() )
   {
-    auto ss = get_secondary_action_n<starsurge_t>( "oneths_clear_vision", talent.starsurge, "" );
-    ss->s_data_reporting = &buff.oneths_free_starsurge->data();
-    ss->set_free_cast( free_cast_e::ONETHS );
-    active.starsurge_oneth = ss;
+    auto ss = get_secondary_action_n<starsurge_t>( "starweavers_weft", talent.starsurge, "" );
+    ss->s_data_reporting = &buff.starweavers_weft->data();
+    ss->set_free_cast( free_cast_e::STARWEAVER );
+    active.starsurge_starweaver = ss;
 
-    auto sf = get_secondary_action_n<starfall_t>( "oneths_perception", talent.starfall, "" );
-    sf->s_data_reporting = &buff.oneths_free_starfall->data();
-    sf->set_free_cast( free_cast_e::ONETHS );
-    active.starfall_oneth = sf;
+    auto sf = get_secondary_action_n<starfall_t>( "starweavers_warp", talent.starfall, "" );
+    sf->s_data_reporting = &buff.starweavers_warp->data();
+    sf->set_free_cast( free_cast_e::STARWEAVER );
+    active.starfall_starweaver = sf;
   }
 
   if ( talent.orbit_breaker.ok() )
   {
     auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
     fm->s_data_reporting = talent.orbit_breaker;
+    fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
     fm->set_free_cast( free_cast_e::ORBIT );
     active.orbit_breaker = fm;
   }
@@ -10424,8 +10391,8 @@ void druid_t::create_actions()
   find_parent( active.ferocious_bite_apex, "ferocious_bite" );
   find_parent( active.galactic_guardian, "moonfire" );
   find_parent( active.orbit_breaker, "full_moon" );
-  find_parent( active.starsurge_oneth, "starsurge" );
-  find_parent( active.starfall_oneth, "starfall" );
+  find_parent( active.starsurge_starweaver, "starsurge" );
+  find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
   find_parent( active.thrash_bear_ursocs, "thrash_bear" );
 
@@ -11996,9 +11963,6 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
       cooldown.rage_from_melees->start( cooldown.rage_from_melees->duration );
     }
 
-    if ( buff.moonkin_form->check() )
-      buff.owlkin_frenzy->trigger();
-
     if ( buff.cenarion_ward->up() )
       buff.cenarion_ward->expire();
 
@@ -12561,8 +12525,7 @@ void druid_t::apply_affecting_auras( action_t& action )
   action.apply_affecting_aura( talent.circle_of_life_and_death );
 
   // Balance
-  action.apply_affecting_aura( talent.improved_moonfire );
-  action.apply_affecting_aura( talent.stellar_drift );
+  action.apply_affecting_aura( talent.elunes_guidance );
   action.apply_affecting_aura( talent.twin_moons );
   
   // Feral
