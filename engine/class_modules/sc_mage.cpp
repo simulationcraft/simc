@@ -401,6 +401,7 @@ public:
   {
     cooldown_t* combustion;
     cooldown_t* cone_of_cold;
+    cooldown_t* fervent_flickering;
     cooldown_t* fire_blast;
     cooldown_t* flurry;
     cooldown_t* from_the_ashes;
@@ -2603,6 +2604,12 @@ struct ignite_t final : public residual_action_t
 
     if ( rng().roll( p()->talents.conflagration->effectN( 1 ).percent() ) )
       p()->action.conflagration_flare_up->execute_on_target( d->target );
+
+    if ( p()->cooldowns.fervent_flickering->up() && rng().roll( p()->talents.fervent_flickering->proc_chance() ) )
+    {
+      p()->cooldowns.fervent_flickering->start( p()->talents.fervent_flickering->internal_cooldown() );
+      p()->cooldowns.fire_blast->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value() );
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -5962,6 +5969,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   // Cooldowns
   cooldowns.combustion         = get_cooldown( "combustion"         );
   cooldowns.cone_of_cold       = get_cooldown( "cone_of_cold"       );
+  cooldowns.fervent_flickering = get_cooldown( "fervent_flickering" );
   cooldowns.fire_blast         = get_cooldown( "fire_blast"         );
   cooldowns.flurry             = get_cooldown( "flurry"             );
   cooldowns.from_the_ashes     = get_cooldown( "from_the_ashes"     );
