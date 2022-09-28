@@ -3326,7 +3326,8 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   {
     parse_options( options_str );
     aoe = -1;
-    triggers.chill = consumes_winters_chill = triggers.radiant_spark = true;
+    consumes_winters_chill = triggers.radiant_spark = true;
+    triggers.chill = !p->talents.freezing_cold->ok();
     affected_by.time_manipulation = p->talents.freezing_cold->ok();
   }
 
@@ -3343,6 +3344,14 @@ struct cone_of_cold_t final : public frost_mage_spell_t
   {
     frost_mage_spell_t::execute();
     p()->buffs.snowstorm->expire();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    frost_mage_spell_t::impact( s );
+
+    if ( p()->talents.freezing_cold->ok() )
+      p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
 
