@@ -139,6 +139,7 @@ struct mage_td_t final : public actor_target_data_t
   {
     buff_t* frozen;
     buff_t* grisly_icicle;
+    buff_t* improved_scorch;
     buff_t* touch_of_the_magi;
     buff_t* winters_chill;
 
@@ -2199,6 +2200,15 @@ struct fire_mage_spell_t : public mage_spell_t
       return false;
 
     return target->health_percentage() < p()->talents.searing_touch->effectN( 1 ).base_value() * p()->options.searing_touch_duration_multiplier;
+  }
+
+  bool improved_scorch_active( player_t* target ) const
+  {
+    if ( !p()->talents.improved_scorch->ok() )
+      return false;
+
+    // Because this is currently the same as Searing Touch, mage.searing_touch_duration_multiplier is applied here.
+    return target->health_percentage() < p()->talents.improved_scorch->effectN( 2 ).base_value() * p()->options.searing_touch_duration_multiplier;
   }
 
   void trigger_molten_skyfall()
@@ -5169,6 +5179,14 @@ struct scorch_t final : public fire_mage_spell_t
     return c;
   }
 
+  void impact( action_state_t* s ) override
+  {
+    fire_mage_spell_t::impact( s );
+
+    if ( result_is_hit( s->result ) && improved_scorch_active( target ) )
+      get_td( s->target )->debuffs.improved_scorch->trigger();
+  }
+
   bool usable_moving() const override
   { return true; }
 };
@@ -5919,6 +5937,9 @@ mage_td_t::mage_td_t( player_t* target, mage_t* mage ) :
 
   debuffs.frozen            = make_buff( *this, "frozen" )
                                 ->set_duration( mage->options.frozen_duration );
+  debuffs.improved_scorch   = make_buff( *this, "improved_scorch", mage->find_spell( 383608 ) )
+                                ->set_schools_from_effect( 1 )
+                                ->set_default_value( mage->talents.improved_scorch->effectN( 3 ).percent() );
   debuffs.touch_of_the_magi = make_buff<buffs::touch_of_the_magi_t>( this );
   debuffs.winters_chill     = make_buff( *this, "winters_chill", mage->find_spell( 228358 ) );
 
@@ -7109,6 +7130,9 @@ double mage_t::composite_player_target_multiplier( player_t* target, school_e sc
 
     if ( td->debuffs.frost_storm->has_common_school( school ) )
       m *= 1.0 + td->debuffs.frost_storm->check_stack_value();
+
+    if ( td->debuffs.improved_scorch->has_common_school( school ) )
+      m *= 1.0 + td->debuffs.improved_scorch->check_stack_value();
 
     auto totm = td->debuffs.touch_of_the_magi;
     if ( totm->check() && totm->has_common_school( school ) )
