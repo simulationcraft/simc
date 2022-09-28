@@ -1310,6 +1310,8 @@ struct rune_of_power_t final : public buff_t
     // Rune of Power has a tiny application delay in game. However, the delay
     // would add quite a lot of complexity to the APLs. It also rarely matters
     // in terms of modeling, so we treat Rune of Power as a normal activated buff.
+
+    // TODO: Add Rune of Power to Arcane Surge
   }
 
   bool trigger( int stacks, double value, double chance, timespan_t duration ) override
