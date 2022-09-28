@@ -2062,7 +2062,7 @@ void evoker_t::create_buffs()
 
   // Devastation Traits
   buff.burnout = make_buff( this, "burnout", find_spell( 375802 ) )
-                     ->set_cooldown( talent.burnout->cooldown() )
+                     ->set_cooldown( talent.burnout->internal_cooldown() )
                      ->set_chance( talent.burnout->effectN( 1 ).percent() );
 
   buff.charged_blast = make_buff( this, "charged_blast", talent.charged_blast->effectN( 1 ).trigger() )
