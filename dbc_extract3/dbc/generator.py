@@ -1970,6 +1970,7 @@ class SpellDataGenerator(DataGenerator):
           ( 188046, 1 ), # Denizen of the Dream pet attack
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
           ( 393942, 1 ), ( 393944, 1 ), # Starweaver
+          ( 395022, 1 ), # Incarnation unknown spell
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
