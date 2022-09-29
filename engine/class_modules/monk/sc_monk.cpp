@@ -2704,7 +2704,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
       if ( this->find_td( target ) && this->find_td( target )->debuff.mark_of_the_crane->check() )
         count++;
 
-      if ( count == p()->passives.cyclone_strikes->max_stacks() )
+      if ( count == (int)p()->passives.cyclone_strikes->max_stacks() )
         break;
     }
 
@@ -3270,6 +3270,17 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_dodge = may_parry = may_block = may_miss = true;
     dual = background                            = true;
   }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
+  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -3287,6 +3298,17 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     aoe                                          = -1;
     may_dodge = may_parry = may_block = may_miss  = true;
     dual = background                             = true;
+  }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
   }
 
   void impact( action_state_t* s ) override
@@ -7886,7 +7908,7 @@ int monk_t::mark_of_the_crane_counter()
     if ( target_data[ target ] && target_data[ target ]->debuff.mark_of_the_crane->check() )
       count++;
 
-    if ( count == passives.cyclone_strikes->max_stacks() )
+    if ( count == (int)passives.cyclone_strikes->max_stacks() )
       break;
   }
 
@@ -7902,7 +7924,7 @@ bool monk_t::mark_of_the_crane_max()
   int count = mark_of_the_crane_counter();
   int targets = (int)sim->target_non_sleeping_list.data().size();
 
-  if ( count == 0 || (targets - count) > 0 && count < (int)passives.cyclone_strikes->max_stacks() )
+  if ( count == 0 || ( ( targets - count ) > 0 && count < (int)passives.cyclone_strikes->max_stacks() ) )
     return false;
 
   return true;
@@ -8210,13 +8232,14 @@ void monk_t::init_spells()
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
       talent.windwalker.serenity                            = _ST( "Serenity" );
       talent.windwalker.meridian_strikes                    = _ST( "Meridian Strikes" );
-      talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );
+      talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
       // Row 6
       talent.windwalker.dance_of_chiji                      = _ST( "Dance of Chi-Ji" );
-      talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
+      talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );     
       talent.windwalker.drinking_horn_cover                 = _ST( "Drinking Horn Cover" );
       talent.windwalker.spiritual_focus                     = _ST( "Spiritual Focus" );
-      talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
+      talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
+     
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
       talent.windwalker.forbidden_touch                     = _ST( "Forbidden Touch" );
@@ -9616,13 +9639,13 @@ double monk_t::composite_dodge() const
   {
     if ( buff.elusive_brawler->check() )
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
+
+    if ( buff.pretense_of_instability->check() )
+      d += buff.pretense_of_instability->data().effectN( 1 ).percent();
   }
 
   if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
     d += talent.general.ironshell_brew->effectN( 1 ).percent();
-
-  if ( buff.pretense_of_instability->check() )
-    d += buff.pretense_of_instability->data().effectN( 1 ).percent();
 
   return d;
 }
@@ -9634,7 +9657,7 @@ double monk_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   if ( specialization() == MONK_BREWMASTER )
-  c += spec.brewmaster_monk->effectN( 13 ).percent();
+    c += spec.brewmaster_monk->effectN( 13 ).percent();
 
   return c;
 }

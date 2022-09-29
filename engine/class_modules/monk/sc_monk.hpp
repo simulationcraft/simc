@@ -617,13 +617,13 @@ public:
       player_talent_t storm_earth_and_fire;
       player_talent_t serenity;
       player_talent_t meridian_strikes;
-      player_talent_t jade_ignition;
+      player_talent_t strike_of_the_windlord;
       // Row 6
       player_talent_t dance_of_chiji;
-      player_talent_t hit_combo;
+      player_talent_t jade_ignition;
       player_talent_t drinking_horn_cover;
       player_talent_t spiritual_focus;
-      player_talent_t strike_of_the_windlord;
+      player_talent_t hit_combo;
       // Row 7
       player_talent_t rushing_jade_wind;
       player_talent_t forbidden_touch;
