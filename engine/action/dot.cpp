@@ -1091,8 +1091,8 @@ void dot_t::dot_end_event_t::execute()
     dot->tick();
   }
 
-  dot->last_tick();
   dot->current_action->consume_cost_per_tick( *dot );
+  dot->last_tick();
 }
 
 void sc_format_to( const dot_t& dot, fmt::format_context::iterator out )
