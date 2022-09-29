@@ -470,6 +470,7 @@ public:
     proc_t* fingers_of_frost_flash_freeze;
     proc_t* fingers_of_frost_freezing_winds;
     proc_t* fingers_of_frost_snap_freeze;
+    proc_t* fingers_of_frost_time_anomaly;
     proc_t* fingers_of_frost_wasted;
     proc_t* flurry_cast;
     proc_t* winters_chill_applied;
@@ -5890,8 +5891,12 @@ struct time_anomaly_tick_event_t final : public event_t
 
   enum ta_proc_type_e
   {
-    // TA_ARCANE_POWER,
-    TA_EVOCATION,
+    TA_ARCANE_SURGE,
+    TA_CLEARCASTING,
+    TA_COMBUSTION,
+    TA_FIRE_BLAST,
+    TA_ICY_VEINS,
+    TA_FINGERS_OF_FROST,
     TA_TIME_WARP
   };
 
@@ -5914,10 +5919,20 @@ struct time_anomaly_tick_event_t final : public event_t
 
       std::vector<ta_proc_type_e> possible_procs;
 
-      // if ( !mage->buffs.arcane_power->check() )
-      //   possible_procs.push_back( TA_ARCANE_POWER );
-      if ( !mage->buffs.evocation->check() )
-        possible_procs.push_back( TA_EVOCATION );
+      auto spec = mage->specialization();
+
+      // TODO: these conditions haven't been tested
+      // TODO: arcane surge
+      if ( spec == MAGE_ARCANE && !mage->buffs.clearcasting->at_max_stacks() )
+        possible_procs.push_back( TA_CLEARCASTING );
+      if ( spec == MAGE_FIRE && !mage->buffs.combustion->check() )
+        possible_procs.push_back( TA_COMBUSTION );
+      if ( spec == MAGE_FIRE && mage->cooldowns.fire_blast->current_charge != mage->cooldowns.fire_blast->charges )
+        possible_procs.push_back( TA_FIRE_BLAST );
+      if ( spec == MAGE_FROST && !mage->buffs.icy_veins->check() )
+        possible_procs.push_back( TA_ICY_VEINS );
+      if ( spec == MAGE_FROST && !mage->buffs.fingers_of_frost->at_max_stacks() )
+        possible_procs.push_back( TA_FINGERS_OF_FROST );
       if ( !mage->buffs.time_warp->check() )
         possible_procs.push_back( TA_TIME_WARP );
 
@@ -5926,11 +5941,22 @@ struct time_anomaly_tick_event_t final : public event_t
         auto proc = possible_procs[ rng().range( possible_procs.size() ) ];
         switch ( proc )
         {
-          // case TA_ARCANE_POWER:
-          //   mage->buffs.arcane_power->trigger( 1000 * mage->talents.time_anomaly->effectN( 1 ).time_value() );
-          //   break;
-          case TA_EVOCATION:
-            mage->trigger_evocation( 1000 * mage->talents.time_anomaly->effectN( 2 ).time_value(), false );
+          case TA_ARCANE_SURGE:
+            break;
+          case TA_CLEARCASTING:
+            mage->buffs.clearcasting->trigger(); // TODO: does this need delayed trigger?
+            break;
+          case TA_COMBUSTION:
+            mage->buffs.combustion->trigger( 1000 * mage->talents.time_anomaly->effectN( 4 ).time_value() );
+            break;
+          case TA_FIRE_BLAST:
+            mage->cooldowns.fire_blast->reset( true );
+            break;
+          case TA_FINGERS_OF_FROST:
+            mage->trigger_fof( 1.0, mage->procs.fingers_of_frost_time_anomaly );
+            break;
+          case TA_ICY_VEINS:
+            mage->buffs.icy_veins->trigger( 1000 * mage->talents.time_anomaly->effectN( 5 ).time_value() );
             break;
           case TA_TIME_WARP:
             mage->buffs.time_warp->trigger();
@@ -6768,7 +6794,7 @@ void mage_t::create_buffs()
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
                            ->set_chance( runeforge.siphon_storm.ok() );
-  buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 327355 ) )
+  buffs.temporal_warp  = make_buff( this, "temporal_warp", find_spell( 386540 ) )
                            ->set_default_value_from_effect( 1 )
                            ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
                            ->set_chance( talents.temporal_warp->ok() || runeforge.temporal_warp.ok() );
@@ -6902,6 +6928,7 @@ void mage_t::init_procs()
       procs.fingers_of_frost_flash_freeze   = get_proc( "Fingers of Frost from Flash Freeze" );
       procs.fingers_of_frost_freezing_winds = get_proc( "Fingers of Frost from Freezing Winds" );
       procs.fingers_of_frost_snap_freeze    = get_proc( "Fingers of Frost from Snap Freeze" );
+      procs.fingers_of_frost_time_anomaly   = get_proc( "Fingers of Frost from Time Anomaly" );
       procs.fingers_of_frost_wasted         = get_proc( "Fingers of Frost wasted due to Winter's Chill" );
       procs.flurry_cast                     = get_proc( "Flurry cast" );
       procs.winters_chill_applied           = get_proc( "Winter's Chill stacks applied" );
