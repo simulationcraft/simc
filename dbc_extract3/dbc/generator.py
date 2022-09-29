@@ -1964,6 +1964,9 @@ class SpellDataGenerator(DataGenerator):
           ( 340546, 0 ), # Tireless Pursuit buff
           ( 378989, 0 ), ( 378990, 0 ), ( 378991, 0 ), ( 378992, 0 ), # Lycara's Teachings buffs
           # Balance
+          ( 188046, 1 ), # Denizen of the Dream pet attack
+          ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
+          ( 393942, 1 ), ( 393944, 1 ), # Starweaver
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
