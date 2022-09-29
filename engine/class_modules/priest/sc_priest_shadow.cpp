@@ -1579,9 +1579,9 @@ struct void_torrent_t final : public priest_spell_t
 // ==========================================================================
 // Psychic Link
 // ==========================================================================
-struct psychic_link_t final : public priest_spell_t
+struct psychic_link_base_t final : public priest_spell_t
 {
-  psychic_link_t( priest_t& p ) : priest_spell_t( "psychic_link", p, p.talents.shadow.psychic_link )
+  psychic_link_base_t( util::string_view n, priest_t& p, const spell_data_t* s ) : priest_spell_t( n, p, s )
   {
     background = true;
     may_crit   = false;
@@ -1589,15 +1589,67 @@ struct psychic_link_t final : public priest_spell_t
     radius     = data().effectN( 1 ).radius_max();
   }
 
-  void trigger( player_t* target, double original_amount )
+  void trigger( player_t* target, double original_amount, std::string action_name )
   {
     base_dd_min = base_dd_max = ( original_amount * data().effectN( 1 ).percent() );
-    player->sim->print_debug( "{} triggered {} psychic_link on target {}.", priest(), data().effectN( 1 ).percent(),
-                              *target );
+    player->sim->print_debug( "{} triggered {} psychic_link on target {} from {}.", priest(),
+                              data().effectN( 1 ).percent(), *target, action_name );
 
     set_target( target );
     execute();
   }
+};
+
+struct psychic_link_t final : public priest_spell_t
+{
+  psychic_link_t( priest_t& p )
+    : priest_spell_t( "psychic_link", p, p.talents.shadow.psychic_link ),
+      _pl_mind_blast( new psychic_link_base_t( "psychic_link_mind_blast", p, p.talents.shadow.psychic_link ) ),
+      _pl_mind_spike( new psychic_link_base_t( "psychic_link_mind_spike", p, p.talents.shadow.psychic_link ) ),
+      _pl_mind_flay( new psychic_link_base_t( "psychic_link_mind_flay", p, p.talents.shadow.psychic_link ) ),
+      _pl_mind_flay_insanity(
+          new psychic_link_base_t( "psychic_link_mind_flay_insanity", p, p.talents.shadow.psychic_link ) )
+  {
+    background  = true;
+    radius      = data().effectN( 1 ).radius_max();
+    callbacks   = false;
+    base_dd_min = base_dd_max = 0;
+
+    add_child( _pl_mind_blast );
+    add_child( _pl_mind_spike );
+    add_child( _pl_mind_flay );
+    add_child( _pl_mind_flay_insanity );
+  }
+
+  void trigger( player_t* target, double original_amount, std::string action_name )
+  {
+    if ( action_name == "mind_blast" )
+    {
+      _pl_mind_blast->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "mind_spike" )
+    {
+      _pl_mind_spike->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "mind_flay" )
+    {
+      _pl_mind_flay->trigger( target, original_amount, action_name );
+    }
+    else if ( action_name == "mind_flay_insanity" )
+    {
+      _pl_mind_flay_insanity->trigger( target, original_amount, action_name );
+    }
+    else
+    {
+      player->sim->print_debug( "{} tried to trigger psychic_link from unknown action {}.", priest(), action_name );
+    }
+  }
+
+private:
+  propagate_const<psychic_link_base_t*> _pl_mind_blast;
+  propagate_const<psychic_link_base_t*> _pl_mind_spike;
+  propagate_const<psychic_link_base_t*> _pl_mind_flay;
+  propagate_const<psychic_link_base_t*> _pl_mind_flay_insanity;
 };
 
 // ==========================================================================
@@ -2414,7 +2466,7 @@ void priest_t::trigger_psychic_link( action_state_t* s )
   {
     if ( priest_td && ( priest_td->target != s->target ) && priest_td->dots.vampiric_touch->is_ticking() )
     {
-      background_actions.psychic_link->trigger( priest_td->target, s->result_amount );
+      background_actions.psychic_link->trigger( priest_td->target, s->result_amount, s->action->name_str );
     }
   }
 }
