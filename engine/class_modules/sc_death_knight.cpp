@@ -3051,6 +3051,7 @@ struct death_knight_action_t : public Base
     bool razorice;
     bool brittle;
     bool tightening_grasp;
+    bool death_rot;
   } affected_by;
 
   bool may_proc_bron;
@@ -3093,6 +3094,7 @@ struct death_knight_action_t : public Base
     this -> affected_by.razorice = this ->  data().affected_by( p -> spell.razorice_debuff -> effectN( 1 ) );
     this -> affected_by.brittle = this -> data().affected_by( p -> spell.brittle_debuff -> effectN( 1 ) );
     this -> affected_by.tightening_grasp = this -> data().affected_by( p -> spell.tightening_grasp_debuff -> effectN( 1 ) );
+    this -> affected_by.death_rot = this -> data().affected_by( p -> spell.death_rot_debuff -> effectN( 1 0) );
 
     // TODO July 19 2022
     // Spelldata for Might of the frozen wastes is still all sorts of jank.
@@ -3179,6 +3181,11 @@ struct death_knight_action_t : public Base
     if ( td && this -> affected_by.tightening_grasp )
     {
       m *= 1.0 + td -> debuff.tightening_grasp -> check_stack_value();
+    }
+
+    if ( td && this -> affected_by.death_rot )
+    {
+      m *= 1.0 + td -> debuff.death_rot -> check_stack_value();
     }
 
     if ( td && td -> dot.blood_plague -> is_ticking() )
@@ -11257,11 +11264,6 @@ double death_knight_t::composite_player_target_multiplier( player_t* target, sch
   if( td && td -> debuff.abominations_frenzy -> up() )
   {
     m *= 1.0 + td -> debuff.abominations_frenzy -> value();
-  }
-
-  if ( td && td->debuff.death_rot->up() && dbc::is_school( s, SCHOOL_SHADOW ) )
-  {
-    m *= 1.0 + td->debuff.death_rot->stack_value();
   }
 
   if ( td && talent.unholy.morbidity.ok() )
