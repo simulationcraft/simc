@@ -2704,7 +2704,7 @@ struct sck_tick_action_t : public monk_melee_attack_t
       if ( this->find_td( target ) && this->find_td( target )->debuff.mark_of_the_crane->check() )
         count++;
 
-      if ( count == p()->passives.cyclone_strikes->max_stacks() )
+      if ( count == (int)p()->passives.cyclone_strikes->max_stacks() )
         break;
     }
 
@@ -7886,7 +7886,7 @@ int monk_t::mark_of_the_crane_counter()
     if ( target_data[ target ] && target_data[ target ]->debuff.mark_of_the_crane->check() )
       count++;
 
-    if ( count == passives.cyclone_strikes->max_stacks() )
+    if ( count == (int)passives.cyclone_strikes->max_stacks() )
       break;
   }
 
@@ -7902,7 +7902,7 @@ bool monk_t::mark_of_the_crane_max()
   int count = mark_of_the_crane_counter();
   int targets = (int)sim->target_non_sleeping_list.data().size();
 
-  if ( count == 0 || (targets - count) > 0 && count < (int)passives.cyclone_strikes->max_stacks() )
+  if ( count == 0 || ( ( targets - count ) > 0 && count < (int)passives.cyclone_strikes->max_stacks() ) )
     return false;
 
   return true;
