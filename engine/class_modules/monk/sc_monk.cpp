@@ -8210,13 +8210,14 @@ void monk_t::init_spells()
       talent.windwalker.storm_earth_and_fire                = _ST( "Storm, Earth, and Fire" );
       talent.windwalker.serenity                            = _ST( "Serenity" );
       talent.windwalker.meridian_strikes                    = _ST( "Meridian Strikes" );
-      talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );
+      talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
       // Row 6
       talent.windwalker.dance_of_chiji                      = _ST( "Dance of Chi-Ji" );
-      talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
+      talent.windwalker.jade_ignition                       = _ST( "Jade Ignition" );     
       talent.windwalker.drinking_horn_cover                 = _ST( "Drinking Horn Cover" );
       talent.windwalker.spiritual_focus                     = _ST( "Spiritual Focus" );
-      talent.windwalker.strike_of_the_windlord              = _ST( "Strike of the Windlord" );
+      talent.windwalker.hit_combo                           = _ST( "Hit Combo" );
+     
       // Row 7
       talent.windwalker.rushing_jade_wind                   = _ST( "Rushing Jade Wind" );
       talent.windwalker.forbidden_touch                     = _ST( "Forbidden Touch" );
