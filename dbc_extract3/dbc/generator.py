@@ -1790,8 +1790,11 @@ class SpellDataGenerator(DataGenerator):
           # General
           ( 138311, 0 ), # Energy Sphere energy refund
           ( 163272, 0 ), # Chi Sphere chi refund
+          ( 365080, 0 ), # Windwalking Movement Buff
           ( 388814, 0 ), # Fortifying Brew Increases Dodge and Armor
           ( 389541, 0 ), # White Tiger Statue - Claw of the White Tiger
+          ( 389684, 0 ), # Close to Heart Leech Buff
+          ( 389685, 0 ), # Generous Pour Avoidance Buff
           ( 392883, 0 ), # Vivacious Vivification buff
           # Brewmaster
           ( 195630, 1 ), # Brewmaster Mastery Buff
