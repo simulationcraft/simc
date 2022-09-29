@@ -1,4 +1,4 @@
-// Gem properties, wow build 10.0.2.45746
+// Gem properties, wow build 10.0.2.45779
 static const std::array<gem_property_data_t, 2050> __gem_property_data { {
   {    2,  2686, 0x00000002 }, // +$k1 Strength
   {    3,  2687, 0x00000008 }, // +$k1 Agility
@@ -2041,14 +2041,14 @@ static const std::array<gem_property_data_t, 2050> __gem_property_data { {
   { 4015,  6486, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier2-Small:20:20|a
   { 4016,  6487, 0x0000000e }, // Speed increased by $k1 |A:Professions-Icon-Quality-Tier3-Small:20:20|a
   { 4017,  6499, 0x00020000 }, // $spell@spelldesc382957
-  { 4018,  6502, 0x00080000 }, // $spell@spelldesc384044
-  { 4019,  6504, 0x00080000 }, // $spell@spelldesc384081
-  { 4020,  6505, 0x00080000 }, // $spell@spelldesc384098
+  { 4018,  6502, 0x01000000 }, // $spell@spelldesc384044
+  { 4019,  6504, 0x01000000 }, // $spell@spelldesc384081
+  { 4020,  6505, 0x01000000 }, // $spell@spelldesc384098
   { 4021,  6506, 0x00080000 }, // $spell@spelldesc384141
-  { 4022,  6507, 0x00080000 }, // $spell@spelldesc384266
-  { 4023,  6508, 0x00080000 }, // $spell@spelldesc385520
-  { 4024,  6519, 0x00080000 }, // This device always malfunctions.
-  { 4025,  6535, 0x00080000 }, // $spell@spelldesc386674 |n$spell@spelldesc386681
-  { 4026,  6691, 0x00080000 }, // $spell@spelldesc393795
+  { 4022,  6507, 0x01000000 }, // $spell@spelldesc384266
+  { 4023,  6508, 0x01000000 }, // $spell@spelldesc385520
+  { 4024,  6519, 0x01000000 }, // This device always malfunctions.
+  { 4025,  6535, 0x01000000 }, // $spell@spelldesc386674 |n$spell@spelldesc386681
+  { 4026,  6691, 0x01000000 }, // $spell@spelldesc393795
 } };
 

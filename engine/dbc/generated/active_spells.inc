@@ -1,4 +1,4 @@
-// Active class spells, wow build 10.0.2.45746
+// Active class spells, wow build 10.0.2.45779
 static const std::array<active_class_spell_t, 265> __active_spells_data { {
   {  1,    0,    100,      0, "Charge"                             },
   {  1,    0,    355,      0, "Taunt"                              },
@@ -98,7 +98,6 @@ static const std::array<active_class_spell_t, 265> __active_spells_data { {
   {  4,  261,     53,   1752, "Backstab"                           },
   {  4,  261,   1943,      0, "Rupture"                            },
   {  4,  261, 114014,      0, "Shuriken Toss"                      },
-  {  4,  261, 185313,      0, "Shadow Dance"                       },
   {  4,  261, 185438,   8676, "Shadowstrike"                       },
   {  4,  261, 197835,      0, "Shuriken Storm"                     },
   {  4,  261, 212283,      0, "Symbols of Death"                   },
@@ -245,6 +244,7 @@ static const std::array<active_class_spell_t, 265> __active_spells_data { {
   { 12,  577, 162794, 344862, "Chaos Strike"                       },
   { 12,  577, 188499,      0, "Blade Dance"                        },
   { 12,  577, 195072, 344865, "Fel Rush"                           },
+  { 12,  577, 198589,      0, "Blur"                               },
   { 12,  581, 187827, 191427, "Metamorphosis"                      },
   { 12,  581, 189110, 344865, "Infernal Strike"                    },
   { 12,  581, 203720,      0, "Demon Spikes"                       },
@@ -267,7 +267,7 @@ static const std::array<active_class_spell_t, 265> __active_spells_data { {
   { 13, 1468, 361178,      0, "Mass Return"                        },
 } };
 
-// Pet active spells, wow build 10.0.2.45746
+// Pet active spells, wow build 10.0.2.45779
 static const std::array<active_pet_spell_t, 134> __active_pet_spells_data { {
   {  3,   2649, "Growl"                              },
   {  3,  16827, "Claw"                               },

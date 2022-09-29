@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45698 dragonflight-BETA (hotfix 2022-09-22/45698, no-networking)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-09-29/45779)
 Name             : Command (desc=Racial Passive) (id=21563) [Spell Family (9), Passive] 
 Class            : Warrior, Paladin, Hunter, Rogue, Priest, Death Knight, Shaman, Mage, Warlock, Monk, Druid, Demon Hunter, Evoker
 Race             : Orc (0x2)
@@ -182,7 +182,6 @@ Effects          :
 Description      : Unlock powers at the Vindicaar's Matrix Core to use while on Argus. 
 
 Name             : Tiger Dash (id=252216) [Spell Family (7)] 
-Replaces         : Dash (id=1850)
 Talent Entry     : Generic [tree=class, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Druid, Evoker
 School           : Physical
@@ -488,7 +487,7 @@ Travel Time      : 0.65 seconds
 Duration         : 2 seconds
 Cooldown         : 30 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
-Affecting spells : Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2)
+Affecting spells : Preservation Evoker (356810 effect#13), Emerald Blossom (365261 effect#1), Improved Emerald Blossom (365262 effect#1), Essence Burst (369299 effects: #1, #2)
 Family Flags     : 3, 10
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -539,7 +538,7 @@ School           : Nature
 Spell Type       : None
 Resource         : 4.5% Base Mana (0) (id=232309)
 Duration         : 2.5 seconds
-Cooldown         : 25 seconds
+Cooldown         : 35 seconds
 Category         : 2054
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Category Cooldown: 0.5 seconds
@@ -563,15 +562,19 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Inhale, gathering the power of the Dream. Release to exhale, healing $s1 injured allies in a 30 yd cone in front of you.
 
-|cFFFFFFFFI:|r   Heals for $<sOneHeal> and incurs a 25 sec cooldown.
+|cFFFFFFFFI:|r   Heals for $<sOneHeal> and incurs a $<sOneCD> sec cooldown.
 
-|cFFFFFFFFII:|r  Heals for $<sTwoHeal> and incurs a 20 sec cooldown.
+|cFFFFFFFFII:|r  Heals for $<sTwoHeal> and incurs a $<sTwoCD> sec cooldown.
 
-|cFFFFFFFFIII:|r Heals for $<sThreeHeal> and incurs a 15 sec cooldown.
+|cFFFFFFFFIII:|r Heals for $<sThreeHeal> and incurs a $<sThreeCD> sec cooldown.
 Variables        : $sOneHeal=${2*$355941s1}
 $sTwoHeal=${2.25*$355941s1}
 $sThreeHeal=${2.5*$355941s1}
-$sFourHeal=${2.75*$355941s1}
+$sFourHeal=${2.75*$355941s1}
+$sOneCD=${35}
+$sTwoCD=${30}
+$sThreeCD=${25}
+$sFourCD=${20}
 
 Name             : Dream Breath (id=355941) [Spell Family (224)] 
 Class            : Evoker
@@ -593,7 +596,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : Not a Proc (105), Do Not Display Range (126), Not In Spellbook (143), Aura Points On Client (268), Do Not Log on Learn (355)
 Effects          :
 #1 (id=889437)   : Direct Heal (10)
-                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.11000 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Unknown(59) -> AOE friendly (31)
+                   Base Value: 0 | Scaled Value: 0 | SP Coefficient: 1.27000 | PvP Coefficient: 1.00000 | Radius: 30 yards | Target: Unknown(59) -> AOE friendly (31)
 #2 (id=983057)   : Dummy (3)
                    Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000
 Description      : $@spelldesc355936
@@ -637,6 +640,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=1032443)  : Apply Aura (6) | Unknown(531)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+#9 (id=1034033)  : Apply Aura (6) | Unknown(188)
+                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
 
 Name             : Preservation Evoker (id=356810) [Spell Family (224), Passive, Hidden] 
 Class            : Preservation Evoker
@@ -653,11 +658,11 @@ Attributes       : ....x.xx x....... ........ ........   ........ ........ .....
                  : Is Ability (4), Passive (6), Do Not Display (Spellbook, Aura Icon, Combat Log) (7), Do Not Log (8), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=890886)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #2 (id=896453)   : Apply Aura (6) | Add Percent Modifier (108): Spell Periodic Amount (22)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 22 | Target: Self (1)
                    Affected Spells: Emerald Blossom (355916), Dream Breath (355941), Verdant Embrace (361195), Fluttering Seedlings (361361), Living Flame (361509), Dream Flight (363502), Echo (364343), Reversion (366155), Spiritbloom (367230), Lifebind (373267), Panacea (387763)
                    Family Flags: 1
 #3 (id=900193)   : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
@@ -675,7 +680,7 @@ Effects          :
                    Affected Spells: Verdant Embrace (360995)
                    Family Flags: 24
 #7 (id=905167)   : Apply Aura (6) | Unknown(188)
-                   Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: -10 | Scaled Value: -10 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=910334)   : Apply Aura (6) | Hasted Cooldown Duration (Category) (457)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Misc Value: 2010 | Target: Self (1)
                    Affected Spells (Category): Reversion (366155)
@@ -688,9 +693,13 @@ Effects          :
                    Affected Spells: Verdant Embrace (361195)
                    Family Flags: 36
 #11 (id=1032445)  : Apply Aura (6) | Modify Pet Damage Done% (429)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
 #12 (id=1032446)  : Apply Aura (6) | Unknown(531)
-                   Base Value: 20 | Scaled Value: 20 | PvP Coefficient: 1.00000 | Target: Self (1)
+                   Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
+#13 (id=1034767)  : Apply Aura (6) | Add Flat Modifier (107): Spell Range (5)
+                   Base Value: 5 | Scaled Value: 5 | PvP Coefficient: 1.00000 | Misc Value: 5 | Target: Self (1)
+                   Affected Spells: Emerald Blossom (355913), Verdant Embrace (360995), Living Flame (361469), Expunge (365585), Cauterizing Flame (374251)
+                   Family Flags: 10, 24, 52, 57, 61
 
 Name             : Initial Evoker (id=356816) [Spell Family (224), Passive, Hidden] 
 Class            : Unknown (1465) Evoker
@@ -744,7 +753,7 @@ Class            : Evoker
 School           : Arcane
 Spell Type       : None
 Resource         : 2% Base Mana (0) (id=232449)
-Range            : 25 yards
+Range            : 30 yards
 Duration         : 8 seconds
 Cooldown         : 60 seconds
 Affecting spells : Delay Harm (376207 effect#1), Timeless Magic (376240 effect#1)
@@ -856,10 +865,10 @@ Attributes       : ........ ........ ........ .......x   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ .x...... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ......x. ........ 
                  : ........ ...x.... ........ ........   ........ ........ ........ ........ 
                  : ........ ..x..... ........ ........   
-                 : No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Cheap Missile AOI (374), Face Destination (395)
+                 : No Aura Cancel (31), Always Line of Sight (185), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Face Destination (395)
 Effects          :
 #1 (id=891598)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Unknown(138)
@@ -958,6 +967,8 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
                    Affected Spells: Disintegrate (356995), Sleep Walk (360806), Living Flame (361469), Echo (364343), Firestorm (368847), Temporal Anomaly (373861)
                    Family Flags: 2
+#6 (id=893451)   : Apply Aura (6) | Dummy (4)
+                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 #7 (id=893455)   : Apply Aura (6) | Periodic Dummy (226): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | Value Multiplier: 1 | PvP Coefficient: 1.00000 | Target: Self (1)
 #8 (id=893467)   : Apply Aura (6) | Dummy (4)
@@ -1141,8 +1152,6 @@ School           : Nature
 Spell Type       : None
 Stacks           : 1 maximum
 Proc Chance      : 101%
-Affecting spells : Essence Burst (369299 effects: #1, #2), Time Lord (372527 effect#1), Timeless Magic (376240 effect#1), Ouroboros (387350 effect#1)
-Family Flags     : 11
 Attributes       : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1171,15 +1180,15 @@ Duration         : 6 seconds
 Cooldown         : 120 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Family Flags     : 37
-Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
+Attributes       : ........ ........ ........ .......x   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ......x. ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ ....x... ........ ........   ........ ........ ......x. ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ......x. ........ 
                  : ........ ........ ........ ........   ........ ........ ..x..... ........ 
                  : ........ ..x..... ........ ........   
-                 : Spellcast Override In Spellbook (310), Do Not Enforce Shapeshift Requirements (434)
+                 : No Aura Cancel (31), Aura Points On Client (268), Spellcast Override In Spellbook (310), Reset cooldown upon ending an encounter (333), Cheap Missile AOI (374), Do Not Enforce Shapeshift Requirements (434)
 Effects          :
 #1 (id=896508)   : Dummy (3)
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 6 yards | Target: Unknown(87)
@@ -1239,7 +1248,7 @@ School           : Nature
 Spell Type       : Magic
 Resource         : 1.3% Base Mana (0) (id=232435)
 Spell Level      : 59
-Range            : 25 yards
+Range            : 30 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
@@ -1272,7 +1281,7 @@ Cooldown         : 24 seconds
 Category         : 1948: Aerial Mastery (365933 effect#1), Blessing of the Bronze (381748 effect#1)
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Category Cooldown: 0.5 seconds
-Affecting spells : Preservation Evoker (356810 effects: #6, #9)
+Affecting spells : Preservation Evoker (356810 effects: #6, #9, #13)
 Family Flags     : 24
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ....x... 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1373,7 +1382,7 @@ Range            : 25 yards
 Cast Time        : 2 seconds
 GCD              : 1.5 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
-Affecting spells : Hover (358267 effect#5), Engulfing Blaze (370837 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Inner Radiance (386405 effect#1)
+Affecting spells : Preservation Evoker (356810 effect#13), Hover (358267 effect#5), Engulfing Blaze (370837 effects: #1, #2), Enkindled (375554 effects: #1, #2), Ancient Flame (375583 effect#1), Burnout (375802 effect#1), Inner Radiance (386405 effect#1)
 Family Flags     : 2, 7, 52
 Attributes       : ........ ........ ........ ........   ........ ..x..... ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1600,16 +1609,17 @@ GCD              : 1.5 seconds
 Duration         : 4 seconds
 Charges          : 1 (240 seconds cooldown)
 Category         : 2035: Erasure (376210 effect#1), Temporal Artificer (381922 effect#1)
+Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Family Flags     : 29
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ..x..... ........ ........ .....x..   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ .x...x.. ........ ........ 
                  : ........ ........ ........ ...x....   ........ ........ ........ ........ 
                  : ........ ....x... .x...... ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ...x.... ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ...x.... ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Ignore Line of Sight (66), Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Do Not Log on Learn (355), Allow Class Ability Procs (416)
+                 : Ignore Line of Sight (66), Can't Crit (93), Extra Initial Period (169), Spell Haste Affects Periodic (173), Ignore Healing Modifiers (219), Aura Points On Client (268), Haste Affects Duration (273), Reset cooldown upon ending an encounter (333), Do Not Log on Learn (355), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=902963)   : Apply Aura (6) | Periodic Heal (8): every 1 seconds
                    Base Value: 0 | Scaled Value: 0 | SP Coefficient: 0.40000 | PvP Coefficient: 1.00000 | Radius: 0 - 40 yards | Target: At Caster (22) -> AOE friendly (30)
@@ -1639,10 +1649,10 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x......x ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
+                 : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416), Nameplate Personal Buffs/Debuffs (423)
 Effects          :
 #1 (id=903598)   : Apply Aura (6) | Modify Armor% (101)
                    Base Value: 200 | Scaled Value: 200 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -1713,7 +1723,7 @@ School           : Arcane
 Spell Type       : None
 Resource         : 2 Essence (19) (id=232564)
 Resource         : 1.7% Base Mana (0) (id=232652)
-Range            : 25 yards
+Range            : 30 yards
 Cast Time        : 1.5 seconds
 GCD              : 1.5 seconds
 Duration         : 15 seconds
@@ -1790,6 +1800,8 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
+Affecting spells : Preservation Evoker (356810 effect#13)
+Family Flags     : 57
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -1849,7 +1861,7 @@ Class            : Evoker
 School           : Arcane
 Spell Type       : None
 Resource         : 2.5% Base Mana (0) (id=232600)
-Range            : 25 yards
+Range            : 30 yards
 GCD              : 1.5 seconds
 Duration         : 12 seconds
 Charges          : 1 (9 seconds cooldown)
@@ -1902,7 +1914,7 @@ Class            : Evoker
 School           : Nature
 Spell Type       : None
 Resource         : 3.8% Base Mana (0) (id=232620)
-Range            : 25 yards
+Range            : 30 yards
 Duration         : 2.5 seconds
 Cooldown         : 30 seconds
 Category         : 2055
@@ -2170,11 +2182,11 @@ Attributes       : ........ ........ ..x..... ........   ........ ........ .....
 Effects          :
 #1 (id=914512)   : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Cost (14)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 14 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Fluttering Seedlings (359793), Echo (364343), Field of Dreams (370062)
+                   Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Field of Dreams (370062)
                    Family Flags: 6, 10, 11
 #2 (id=1027211)  : Apply Aura (6) | Add Percent Modifier (108): Spell Resource Generation (34)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 34 | Target: Self (1)
-                   Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Fluttering Seedlings (359793), Echo (364343), Field of Dreams (370062)
+                   Affected Spells: Emerald Blossom (355913), Disintegrate (356995), Echo (364343), Field of Dreams (370062)
                    Family Flags: 6, 10, 11
 Description      : $@spelldesc369297
 Tooltip          : Your next Essence ability is free.
@@ -2557,10 +2569,10 @@ Attributes       : ........ ........ ..x..... .x......   ........ ..x..... .x...
                  : ......x. ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Do Not Sheath (18), Cooldown On Event (25), No Threat (42), No AutoCast (AI) (49), Suppress Caster Procs (112), Suppress Target Procs (113), Cannot Be Stolen (134), Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=981949)   : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: -100 | Scaled Value: -100 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
@@ -2766,7 +2778,7 @@ Name             : Empath (id=370840) [Spell Family (224)]
 Class            : Evoker
 School           : Arcane
 Spell Type       : None
-Duration         : 10 seconds
+Duration         : 8 seconds
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3474,7 +3486,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=997216)   : Apply Aura (6) | Add Percent Modifier (108): Spell Effect 2 (12)
                    Base Value: 50 | Scaled Value: 50 | PvP Coefficient: 1.00000 | Misc Value: 12 | Target: Self (1)
-                   Affected Spells: Fluttering Seedlings (359793), Echo (364343), Field of Dreams (370062)
+                   Affected Spells: Echo (364343), Field of Dreams (370062)
                    Family Flags: 11
 Description      : Echo replicates $s1% more healing.
 
@@ -3648,10 +3660,12 @@ Description      : Send forward a vortex of temporal energy, absorbing $<shield>
 Variables        : $shield=${$SP*1.75*(1+$@versadmg)}
 
 Name             : Zephyr (id=374227) [Spell Family (224)] 
+Hotfixed         : Description
 Talent Entry     : Generic [tree=class, row=10, col=3, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
 Spell Type       : None
+Max Targets      : 5
 GCD              : 1.5 seconds
 Duration         : 8 seconds
 Cooldown         : 120 seconds
@@ -3660,18 +3674,21 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ....x... ........ ........   ........ ........ ........ ........ 
-                 : ........ ........ ........ ........   ........ ........ ........ ........ 
+                 : ........ .....x.. ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   x....... ........ ........ ........ 
                  : ........ ........ ........ ........   
-                 : Aura Points On Client (268), Allow Class Ability Procs (416)
+                 : Aura Points On Client (268), Reset cooldown upon ending an encounter (333), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=999972)   : Apply Aura (6) | Modify AoE Damage Taken% (229)
-                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 25 yards | Target: Unknown(20)
+                   Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 127 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Target 1 (20 -> 18), Target 2 (0 -> 31)
 #2 (id=999973)   : Apply Aura (6) | Increase Speed% (31)
-                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: Unknown(20)
+                   Base Value: 30 | Scaled Value: 30 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Target 1 (20 -> 18), Target 2 (0 -> 31)
 #3 (id=999974)   : Apply Aura (6) | Levitate (106)
-                   Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Radius: 25 yards | Target: Unknown(20)
-Description      : Conjure an updraft to lift your party members within $A1 yds into the air, reducing damage taken from area-of-effect attacks by $s1% and increasing movement speed by $s2% for $d.
+                   Base Value: 4 | Scaled Value: 4 | PvP Coefficient: 1.00000 | Radius: 0 - 20 yards | Target: Custom (18) -> AOE friendly (31)
+Hotfixed         : Base Value (0 -> 4), Target 1 (20 -> 18), Target 2 (0 -> 31)
+Description      : Conjure an updraft to lift you and your $s3 nearest allies within $A1 yds into the air, reducing damage taken from area-of-effect attacks by $s1% and increasing movement speed by $s2% for $d.
 Tooltip          : Damage taken from area-of-effect attacks reduced by $w1%.
 Movement speed increased by $w2%.
 
@@ -3686,6 +3703,8 @@ Range            : 25 yards
 GCD              : 1.5 seconds
 Cooldown         : 60 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
+Affecting spells : Preservation Evoker (356810 effect#13)
+Family Flags     : 61
 Attributes       : ........ ........ ..x..... ........   ........ ........ ........ ........ 
                  : ........ ........ ...x.... ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -3808,6 +3827,7 @@ GCD              : 1.5 seconds
 Duration         : 14 seconds
 Cooldown         : 120 seconds
 Labels           : 1464: Lifeforce Mender (376179 effect#2)
+                 : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
 Family Flags     : 44
 Attributes       : ........ ........ ........ ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ........ ........ ........ ........ 
@@ -4398,7 +4418,7 @@ Effects          :
                    Base Value: 382731 | Scaled Value: 382731 | PvP Coefficient: 1.00000 | Misc Value: 367226 | Misc Value 2: 0x2 | Target: Self (1)
 Description      : Your empower spells' maximum level is increased by 1.
 
-Name             : Cascading Power (id=375796) [Spell Family (224), Passive] 
+Name             : Hoarded Power (id=375796) [Spell Family (224), Passive] 
 Talent Entry     : Devastation [tree=spec, row=10, col=2, max_rank=1, req_points=20]
 Class            : Evoker
 School           : Physical
@@ -4520,7 +4540,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
                  : Passive (6), Allow Class Ability Procs (416)
 Effects          :
 #1 (id=1003006)  : Apply Aura (6) | Add Flat Modifier (107): Spell Cooldown (11)
-                   Base Value: -15000 | Scaled Value: -15000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
+                   Base Value: -10000 | Scaled Value: -10000 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
                    Affected Spells: Spiritbloom (367226), Spiritbloom (382731)
                    Family Flags: 30
 Description      : Spiritbloom's cooldown is reduced by ${$s1/-1000} sec.
@@ -4735,7 +4755,7 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1003142)  : Apply Aura (6) | Add Percent Modifier (108): Spell Duration (1)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Misc Value: 1 | Target: Self (1)
-                   Affected Spells: Time Dilation (357170), Fluttering Seedlings (359793), Echo (364343), Reversion (366155), Field of Dreams (370062)
+                   Affected Spells: Time Dilation (357170), Echo (364343), Reversion (366155), Field of Dreams (370062)
                    Family Flags: 8, 11, 19
 Description      : Reversion, Time Dilation, and Echo last $s1% longer.
 
@@ -5105,7 +5125,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012780)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of $?s252216[Tiger Dash][Dash] reduced by $s1%.
 
@@ -5153,7 +5173,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012783)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Aspect of the Cheetah reduced by $s1%.
 
@@ -5252,7 +5272,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012789)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Leap of Faith reduced by $s1%.
 
@@ -5276,7 +5296,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012790)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Sprint reduced by $s1%.
 
@@ -5300,7 +5320,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012792)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Spiritwalker's Grace and Spirit Walk reduced by $s1%.
 
@@ -5324,7 +5344,7 @@ Attributes       : ........ ........ x....... ........   ........ ..x..... .x...
 Effects          :
 #1 (id=1012793)  : Apply Aura (6) | Apply Percent Modifier w/ Label (218): Spell Cooldown (11)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 11 | Misc Value 2: 1381 (Label) | Radius: 100 yards | Target: Raid Members (56)
-                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
+                   Affected Spells (Label): Dash (1850), Sprint (2983), Spirit Walk (58875), Leap of Faith (73325), Spiritwalker's Grace (79206), Angelic Feather (121536), Aspect of the Cheetah (186257), Tiger Dash (252216)
 Description      : $@spelldesc364342
 Tooltip          : Cooldown of Demonic Circle: Teleport reduced by $s1%.
 
@@ -5563,7 +5583,7 @@ School           : Nature
 Spell Type       : None
 Resource         : 4.5% Base Mana (0) (id=265453)
 Duration         : 3.25 seconds
-Cooldown         : 25 seconds
+Cooldown         : 35 seconds
 Category         : 2054
 Labels           : 1466: Lush Growth (375561 effect#1), Lush Growth (375561 effect#2)
 Category Cooldown: 0.5 seconds
@@ -5587,17 +5607,21 @@ Effects          :
                    Base Value: 0 | Scaled Value: 0 | PvP Coefficient: 1.00000 | Target: Self (1)
 Description      : Inhale, gathering the power of the Dream. Release to exhale, healing $s1 injured allies in a 30 yd cone in front of you.
 
-|cFFFFFFFFI:|r   Heals for $<sOneHeal> and incurs a 25 sec cooldown.
+|cFFFFFFFFI:|r   Heals for $<sOneHeal> and incurs a $<sOneCD> sec cooldown.
 
-|cFFFFFFFFII:|r  Heals for $<sTwoHeal> and incurs a 20 sec cooldown.
+|cFFFFFFFFII:|r  Heals for $<sTwoHeal> and incurs a $<sTwoCD> sec cooldown.
 
-|cFFFFFFFFIII:|r Heals for $<sThreeHeal> and incurs a 15 sec cooldown.
+|cFFFFFFFFIII:|r Heals for $<sThreeHeal> and incurs a $<sThreeCD> sec cooldown.
 
-|cFFFFFFFFIV:|r Heals for $<sFourHeal> and incurs a 10 sec cooldown.
+|cFFFFFFFFIV:|r Heals for $<sFourHeal> and incurs a $<sFourCD> sec cooldown.
 Variables        : $sOneHeal=${2*$355941s1}
 $sTwoHeal=${2.25*$355941s1}
 $sThreeHeal=${2.5*$355941s1}
-$sFourHeal=${2.75*$355941s1}
+$sFourHeal=${2.75*$355941s1}
+$sOneCD=${35}
+$sTwoCD=${30}
+$sThreeCD=${25}
+$sFourCD=${20}
 
 Name             : Spiritbloom (desc=Green) (id=382731) [Spell Family (224)] 
 Class            : Evoker
@@ -6169,7 +6193,7 @@ Attributes       : ........ ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1022092)  : Apply Aura (6) | Add Percent Modifier (108): Spell Direct Amount (0)
                    Base Value: 15 | Scaled Value: 15 | PvP Coefficient: 1.00000 | Target: Self (1)
-                   Affected Spells: Fluttering Seedlings (359793), Echo (364343), Field of Dreams (370062)
+                   Affected Spells: Echo (364343), Field of Dreams (370062)
                    Family Flags: 11
 Tooltip          : Your next Echo deals $s1% increased healing.
 
