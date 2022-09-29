@@ -167,14 +167,9 @@ struct mind_flay_base_t final : public priest_spell_t
     priest_spell_t::tick( d );
 
     priest().trigger_eternal_call_to_the_void( d->state );
+    priest().trigger_idol_of_cthun( d->state );
+    // Shadowlands only
     trigger_mind_flay_dissonant_echoes();
-
-    // BUG: MF:I does not proc Idol of C'thun
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/940
-    if ( !priest().bugs || this->id != 391403 )
-    {
-      priest().trigger_idol_of_cthun( d->state );
-    }
 
     if ( priest().talents.shadow.dark_evangelism.enabled() )
     {
@@ -200,9 +195,7 @@ struct mind_flay_base_t final : public priest_spell_t
       priest().procs.coalescing_shadows_mind_flay->occur();
     }
 
-    // BUG: MF:I does not proc Psychic Link
-    // https://github.com/SimCMinMax/WoW-BugTracker/issues/942
-    if ( priest().talents.shadow.psychic_link.enabled() && ( !priest().bugs || this->id != 391403 ) )
+    if ( priest().talents.shadow.psychic_link.enabled() )
     {
       priest().trigger_psychic_link( d->state );
     }
@@ -892,7 +885,6 @@ struct vampiric_touch_t final : public priest_spell_t
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_vt );
       vampiric_touch_heal->trigger( d->state->result_amount );
 
-      // TODO: Copying over hard-code from MoP, needs testing
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
@@ -1056,7 +1048,6 @@ struct devouring_plague_t final : public priest_spell_t
       priest().refresh_insidious_ire_buff( s );
     }
 
-    // TODO: Copying over hard-code from MoP, needs testing
     if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
     {
       priest().buffs.surge_of_darkness->trigger();
@@ -1073,7 +1064,6 @@ struct devouring_plague_t final : public priest_spell_t
       devouring_plague_heal->trigger( d->state->result_amount );
       priest().trigger_idol_of_nzoth( d->state->target, priest().procs.idol_of_nzoth_dp );
 
-      // TODO: Copying over hard-code from MoP, needs testing
       if ( priest().talents.shadow.surge_of_darkness.enabled() && rng().roll( surge_of_darkness_proc_rate ) )
       {
         priest().buffs.surge_of_darkness->trigger();
@@ -1371,7 +1361,7 @@ struct void_eruption_t final : public priest_spell_t
 // ==========================================================================
 // Dark Void
 // Currently only hits targets that it will DoT
-// TODO: adjust targeting logic to be more accurate
+// TODO: adjust targeting logic to be more accurate above 8 targets
 // ==========================================================================
 struct dark_void_t final : public priest_spell_t
 {
@@ -1385,8 +1375,9 @@ struct dark_void_t final : public priest_spell_t
   {
     parse_options( options_str );
 
-    may_miss = false;
-    radius   = data().effectN( 1 ).radius_max();
+    may_miss         = false;
+    radius           = data().effectN( 1 ).radius_max();
+    cooldown->hasted = true;
 
     // BUG: Currently does not scale with Mastery
     // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
@@ -1996,7 +1987,6 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
     this->reactable = true;
 
     // Create a stack change callback to adjust the number of Mind Blast charges.
-
     set_stack_change_callback(
         [ this ]( buff_t*, int old, int cur ) { priest().cooldowns.mind_blast->adjust_max_charges( cur - old ); } );
   }
@@ -2140,17 +2130,16 @@ void priest_t::create_buffs_shadow()
 
   buffs.thing_from_beyond = make_buff( this, "thing_from_beyond", find_spell( 373277 ) );
 
-  buffs.idol_of_yoggsaron = make_buff( this, "idol_of_yogg-saron", talents.shadow.idol_of_yoggsaron )
-                                ->set_duration( timespan_t::zero() )
-                                ->set_max_stack( 50 )
-                                ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
-                                  if ( cur == b->max_stack() )
-                                  {
-                                    b->expire();
-                                    procs.thing_from_beyond->occur();
-                                    spawn_thing_from_beyond();
-                                  }
-                                } ) );
+  buffs.idol_of_yoggsaron =
+      make_buff( this, "idol_of_yogg-saron", talents.shadow.idol_of_yoggsaron->effectN( 2 ).trigger() )
+          ->set_stack_change_callback( ( [ this ]( buff_t* b, int, int cur ) {
+            if ( cur == b->max_stack() )
+            {
+              b->expire();
+              procs.thing_from_beyond->occur();
+              spawn_thing_from_beyond();
+            }
+          } ) );
 
   buffs.dark_evangelism =
       make_buff( this, "dark_evangelism", find_spell( 391099 ) )->set_trigger_spell( talents.shadow.dark_evangelism );
