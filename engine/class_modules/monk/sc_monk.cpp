@@ -9639,13 +9639,13 @@ double monk_t::composite_dodge() const
   {
     if ( buff.elusive_brawler->check() )
       d += buff.elusive_brawler->current_stack * cache.mastery_value();
+
+    if ( buff.pretense_of_instability->check() )
+      d += buff.pretense_of_instability->data().effectN( 1 ).percent();
   }
 
   if ( buff.fortifying_brew->check() && talent.general.ironshell_brew->ok() )
     d += talent.general.ironshell_brew->effectN( 1 ).percent();
-
-  if ( buff.pretense_of_instability->check() )
-    d += buff.pretense_of_instability->data().effectN( 1 ).percent();
 
   return d;
 }
@@ -9657,7 +9657,7 @@ double monk_t::composite_crit_avoidance() const
   double c = player_t::composite_crit_avoidance();
 
   if ( specialization() == MONK_BREWMASTER )
-  c += spec.brewmaster_monk->effectN( 13 ).percent();
+    c += spec.brewmaster_monk->effectN( 13 ).percent();
 
   return c;
 }
