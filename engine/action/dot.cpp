@@ -1092,7 +1092,12 @@ void dot_t::dot_end_event_t::execute()
   }
 
   dot->current_action->consume_cost_per_tick( *dot );
-  dot->last_tick();
+
+  // If consume_cost_per_tick expires the DoT it also calls last_tick so we don't need to do it again
+  if ( dot->state )
+  {
+    dot->last_tick();
+  }
 }
 
 void sc_format_to( const dot_t& dot, fmt::format_context::iterator out )

@@ -82,11 +82,15 @@ struct mind_sear_t final : public priest_spell_t
     parse_options( options_str );
     channeled           = true;
     dynamic_tick_action = true;
-    tick_zero           = true;
     radius = data().effectN( 1 ).trigger()->effectN( 2 ).radius();  // need to set radius in here so that the APL
                                                                     // functions correctly
     if ( priest().specialization() == PRIEST_SHADOW )
-      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
+    {
+      base_costs_per_tick[ RESOURCE_MANA ]     = 0.0;
+      
+      // TODO: spelldata insanity cost per tick is wrong, manually overriding from tooltip data
+      base_costs_per_tick[ RESOURCE_INSANITY ] = data().effectN( 3 ).base_value();
+    }
 
     tick_action = new mind_sear_tick_t( p, data().effectN( 1 ).trigger() );
   }
@@ -97,8 +101,8 @@ struct mind_sear_t final : public priest_spell_t
     {
       return true;
     }
-    // You cannot start a cast if you have less than 1 ticks worth
-    if ( priest().resources.current[ RESOURCE_INSANITY ] < cost_per_tick( RESOURCE_INSANITY ) )
+    // You cannot start a cast if you have less than 2 ticks worth
+    if ( priest().resources.current[ RESOURCE_INSANITY ] < cost_per_tick( RESOURCE_INSANITY ) * 2 )
     {
       return false;
     }
