@@ -3270,6 +3270,17 @@ struct strike_of_the_windlord_main_hand_t : public monk_melee_attack_t
     may_dodge = may_parry = may_block = may_miss = true;
     dual = background                            = true;
   }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
+  }
 };
 
 struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
@@ -3287,6 +3298,17 @@ struct strike_of_the_windlord_off_hand_t : public monk_melee_attack_t
     aoe                                          = -1;
     may_dodge = may_parry = may_block = may_miss  = true;
     dual = background                             = true;
+  }
+
+  // Damage must be divided on non-main target by the number of targets
+  double composite_aoe_multiplier( const action_state_t* state ) const override
+  {
+    if ( state->target != target )
+    {
+      return 1.0 / state->n_targets;
+    }
+
+    return 1.0;
   }
 
   void impact( action_state_t* s ) override
