@@ -4258,6 +4258,13 @@ struct glacial_spike_t final : public frost_mage_spell_t
   void impact( action_state_t* s ) override
   {
     frost_mage_spell_t::impact( s );
+
+    if ( s->result == RESULT_CRIT )
+    {
+      timespan_t cdr = -p()->talents.icy_propulsion->effectN( 1 ).time_value();
+      p()->cooldowns.icy_veins->adjust( p()->spec.icicles->effectN( 2 ).base_value() * cdr );
+    }
+
     p()->trigger_crowd_control( s, MECHANIC_ROOT );
   }
 };
