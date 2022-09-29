@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45779
-static const std::array<spelltext_data_t, 18779> __spelltext_data { {
+static const std::array<spelltext_data_t, 18786> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -15529,7 +15529,9 @@ static const std::array<spelltext_data_t, 18779> __spelltext_data { {
   { 360686, "Track slime wherever you go for $d.\r\n\r\nCan only be used by those pledged to the Necrolords or those who have reached Renown 80 with the Necrolords.", "You're tracking slime everywhere!", 0 },
   { 360806, "Disorient an enemy for $d, causing them to sleep walk towards you. Damage has a chance to awaken them.", "Asleep.", "Green" },
   { 360823, "Cleanses harmful effects from the target, removing all Magic and Poison effects.", 0, "Green" },
+  { 360826, "$@spelldesc360194", "Bleeding for $w1 damage every $t1 sec.", 0 },
   { 360829, "$@spelldesc323999", 0, 0 },
+  { 360830, "$@spelldesc360194", "Suffering $w1 damage every $t1 seconds.", 0 },
   { 360880, "Craft a Mark of the Regal Dredbat.", 0, 0 },
   { 360882, "Craft a Mark of the Duskwing Raven.", 0, 0 },
   { 360885, "Craft a Mark of the Midnight Runestag.", 0, 0 },
@@ -18757,6 +18759,11 @@ static const std::array<spelltext_data_t, 18779> __spelltext_data { {
   { 394321, "Gain $s1 additional max combo point.\r\n\r\nYour finishing moves that consume more than $s3 combo points have increased effects, and your finishing moves deal $s4% increased damage.", 0, 0 },
   { 394322, "Place near blocked caves to clear the entrances.\r\n\r\nExplosives! Handle with care!!\r\n\r\nInflicts $394323s1 Fire damage to enemies in a $394323a1 radius. Beware, explosives will damage friendly targets in the blast area.", 0, 0 },
   { 394323, "$@spelldesc394322", 0, 0 },
+  { 394324, "$@spelldesc2823", "Suffering $w1 Nature damage every $t1 seconds.", 0 },
+  { 394325, "Poisoned weapons have a chance to deal $s1 Nature damage to a target already affected by Deadly Poison.", 0, 0 },
+  { 394326, "$@spelldesc315584", "Suffering $w1 Nature damage every $t1 seconds.", 0 },
+  { 394327, "$@spelldesc8679", "Healing effects reduced by $w2%.", 0 },
+  { 394328, "$@spelldesc381664", "Envenom consumes stacks to amplify its damage.", 0 },
   { 394329, "Odyn's Fury Enrages you and then greatly empowers Raging Blow for $394330d.", 0, 0 },
   { 394330, "$@spelldesc394329", "Raging Blow is greatly empowered.", 0 },
   { 394331, "$@spelldesc360194", 0, 0 },
