@@ -654,7 +654,7 @@ void windwalker( player_t* p )
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&buff.weapons_of_order.up" );
   def_actions->add_action( "strike_of_the_windlord,if=active_enemies>1&(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
   def_actions->add_action( "blackout_kick,target_if=min:debuff.mark_of_the_crane.remains,if=buff.teachings_of_the_monastery.stack>=2" );
-  def_actions->add_action( "strike_of_the_windlord&(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
+  def_actions->add_action( "strike_of_the_windlord,if=(!talent.bonedust_brew&!covenant.necrolord|buff.bonedust_brew.up|cooldown.bonedust_brew.remains>15)" );
   def_actions->add_action( "spinning_crane_kick,if=combo_strike&(buff.bonedust_brew.up|buff.weapons_of_order_ww.up)&active_enemies>1&spinning_crane_kick.modifier>2.8" );
   def_actions->add_action( "spinning_crane_kick,if=buff.bonedust_brew.up&spinning_crane_kick.modifier>3.9&(!talent.teachings_of_the_monastery|!talent.shadowboxing_treads|active_enemies>=9)" );
   def_actions->add_action( "rising_sun_kick,target_if=min:debuff.mark_of_the_crane.remains,if=combo_strike&(!talent.xuens_battlegear&!runeforge.xuens_treasure|cooldown.fists_of_fury.remains)" );
