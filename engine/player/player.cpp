@@ -3990,8 +3990,6 @@ double player_t::composite_melee_crit_chance() const
   if ( current.attack_crit_per_agility )
     ac += ( cache.agility() / current.attack_crit_per_agility / 100.0 );
 
-  ac += sim->auras.mark_of_the_wild->check_value();
-
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     ac += b->check_stack_value();
 
@@ -4294,8 +4292,6 @@ double player_t::composite_spell_crit_chance() const
     sc += ( cache.intellect() / current.spell_crit_per_intellect / 100.0 );
   }
 
-  sc += sim->auras.mark_of_the_wild->check_value();
-
   for ( auto b : buffs.stat_pct_buffs[ STAT_PCT_BUFF_CRIT ] )
     sc += b->check_stack_value();
 
@@ -4367,6 +4363,7 @@ double player_t::composite_damage_versatility() const
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
+  cdv += sim->auras.mark_of_the_wild->check_value();
 
   return cdv;
 }
@@ -4390,7 +4387,7 @@ double player_t::composite_heal_versatility() const
 
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
-
+  chv += sim->auras.mark_of_the_wild->check_value();
   return chv;
 }
 
@@ -4413,6 +4410,7 @@ double player_t::composite_mitigation_versatility() const
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
+  cmv += sim->auras.mark_of_the_wild->check_value() / 2;
 
   return cmv;
 }
