@@ -232,7 +232,8 @@ public:
     const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
     player_talent_t soul_swap; // Spend Soul Shard to apply core dots (Corruption, Agony, UA)
     const spell_data_t* soul_swap_ua; // Separate copy of Unstable Affliction data, since UA is applied even without the talent
-    // DF - Soul Flame (2 point talent, AoE damage on kills)
+    player_talent_t soul_flame; // AoE damage on kills
+    const spell_data_t* soul_flame_proc; // The actual spell damage data
     // Grimoire of Sacrifice (shared with Destruction)
     
     // DF - Pandemic Invocation (2 point talent, late DoT refresh deals damage and has Soul Shard chance)
@@ -369,6 +370,11 @@ public:
     // DF - Dimensional Rift (Choice against Chaos Incarnate, charge cooldown instant spell which deals damage and grants fragments)
     // DF - Avatar of Destruction (Formerly SL Tier Bonus, summons Blasphemy when consuming Ritual of Ruin)
   } talents;
+
+  struct proc_actions_t
+  {
+    action_t* soul_flame_proc;
+  } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
   struct legendary_t
@@ -591,6 +597,7 @@ public:
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
+  void create_actions() override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;
