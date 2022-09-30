@@ -1787,12 +1787,15 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
     trigger_sundered_firmament();
   }
 
+  /* TODO: re-enable if this comes back, otherwise remove by launch
   void extend_duration( player_t* player, timespan_t d ) override
   {
     base_t::extend_duration( player, d );
 
     trigger_sundered_firmament();
-  }
+  }*/
+
+
 
   void expire_override( int s, timespan_t d ) override
   {
