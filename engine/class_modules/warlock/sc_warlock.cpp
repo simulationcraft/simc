@@ -600,6 +600,17 @@ struct soul_rot_t : public warlock_spell_t
   }
 };
 
+struct soul_flame_t : public warlock_spell_t
+{
+  soul_flame_t( warlock_t* p ) : warlock_spell_t( "soul_flame", p, p->talents.soul_flame_proc )
+  {
+    background = true;
+    aoe = -1;
+
+    base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
+  }
+};
+
 // TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
@@ -815,6 +826,13 @@ void warlock_td_t::target_demise()
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
+  }
+
+  if ( warlock.talents.soul_flame.ok() && !warlock.proc_actions.soul_flame_proc->target_list().empty() )
+  {
+    warlock.sim->print_log( "Player {} demised. Warlock {} triggers Soul Flame on all targets in range.", target->name(), warlock.name() );
+
+    warlock.proc_actions.soul_flame_proc->execute();
   }
 }
 
@@ -1104,6 +1122,14 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
     return new seed_of_corruption_t( this, options_str );
 
   return nullptr;
+}
+
+void warlock_t::create_actions()
+{
+  if ( specialization() == WARLOCK_AFFLICTION && talents.soul_flame.ok() )
+    proc_actions.soul_flame_proc = new warlock::actions::soul_flame_t( this );
+
+  player_t::create_actions();
 }
 
 action_t* warlock_t::create_action( util::string_view action_name, util::string_view options_str )

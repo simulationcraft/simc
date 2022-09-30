@@ -711,6 +711,9 @@ void warlock_t::init_spells_affliction()
   talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
   talents.soul_swap_ua = find_spell( 316099 ); // Needed for when you have Soul Swap but not UA talented
 
+  talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
+  talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
 
