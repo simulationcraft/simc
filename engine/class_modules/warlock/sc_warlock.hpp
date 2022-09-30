@@ -238,7 +238,8 @@ public:
     const spell_data_t* soul_flame_proc; // The actual spell damage data
     // Grimoire of Sacrifice (shared with Destruction)
     
-    // DF - Pandemic Invocation (2 point talent, late DoT refresh deals damage and has Soul Shard chance)
+    player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
+    const spell_data_t* pandemic_invocation_proc; // Damage data
     // DF - Withering Bolt (2 point talent, moved from SL Conduit)
     // DF - Sacrolash's Dark Strike (2 point talent, moved from SL Legendary)
 
@@ -376,6 +377,7 @@ public:
   struct proc_actions_t
   {
     action_t* soul_flame_proc;
+    action_t* pandemic_invocation_proc;
   } proc_actions;
 
   // DF - This struct will be retired, need to determine if needed for pre-patch
@@ -525,6 +527,7 @@ public:
     gain_t* drain_soul;
     gain_t* unstable_affliction_refund;
     gain_t* soul_tap;
+    gain_t* pandemic_invocation;
 
     gain_t* conflagrate;
     gain_t* incinerate;
@@ -555,6 +558,7 @@ public:
     proc_t* calamitous_crescendo;
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* harvester_of_souls;
+    proc_t* pandemic_invocation_shard;
 
     // demo
     proc_t* demonic_calling;

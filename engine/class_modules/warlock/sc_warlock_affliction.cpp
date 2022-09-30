@@ -121,6 +121,19 @@ struct agony_t : public affliction_spell_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    auto dot_data = td( s->target )->dots_agony;
+
+    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
+      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+
+    affliction_spell_t::impact( s );
+
+    if ( pi_trigger )
+      p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+  }
+
   void tick( dot_t* d ) override
   {
     td( d->state->target )->dots_agony->increment( 1 );
@@ -184,6 +197,19 @@ struct unstable_affliction_t : public affliction_spell_t
     p()->ua_target = target;
 
     affliction_spell_t::execute();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    auto dot_data = td( s->target )->dots_unstable_affliction;
+
+    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
+      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+
+    affliction_spell_t::impact( s );
+
+    if ( pi_trigger )
+      p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
   }
 
   void last_tick( dot_t* d) override
@@ -489,6 +515,19 @@ struct siphon_life_t : public affliction_spell_t
   {
     parse_options( options_str );
   }
+  
+  void impact( action_state_t* s ) override
+  {
+    auto dot_data = td( s->target )->dots_siphon_life;
+
+    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
+      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+
+    affliction_spell_t::impact( s );
+
+    if ( pi_trigger )
+      p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+  }
 };
 
 struct phantom_singularity_tick_t : public affliction_spell_t
@@ -714,6 +753,9 @@ void warlock_t::init_spells_affliction()
   talents.soul_flame = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Flame" ); // Should be ID 199471
   talents.soul_flame_proc = find_spell( 199581 ); // AoE damage data
 
+  talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
+  talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
 
@@ -732,6 +774,7 @@ void warlock_t::init_gains_affliction()
   gains.unstable_affliction_refund = get_gain( "unstable_affliction_refund" );
   gains.drain_soul                 = get_gain( "drain_soul" );
   gains.soul_tap = get_gain( "soul_tap" );
+  gains.pandemic_invocation = get_gain( "pandemic_invocation" );
 }
 
 void warlock_t::init_rng_affliction()
@@ -743,6 +786,7 @@ void warlock_t::init_procs_affliction()
   procs.nightfall            = get_proc( "nightfall" );
   procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
   procs.harvester_of_souls = get_proc( "harvester_of_souls" );
+  procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {

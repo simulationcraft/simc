@@ -228,6 +228,19 @@ struct corruption_t : public warlock_spell_t
     }
   }
 
+  void impact( action_state_t* s ) override
+  {
+    auto dot_data = td( s->target )->dots_corruption;
+
+    bool pi_trigger = p()->talents.pandemic_invocation.ok() && dot_data->is_ticking()
+      && dot_data->remains() < timespan_t::from_millis( p()->talents.pandemic_invocation->effectN( 1 ).base_value() );
+
+    warlock_spell_t::impact( s );
+
+    if ( pi_trigger )
+      p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
+  }
+
   void tick( dot_t* d ) override
   {
     warlock_spell_t::tick( d );
@@ -608,6 +621,29 @@ struct soul_flame_t : public warlock_spell_t
     aoe = -1;
 
     base_dd_multiplier = 1.0 + p->talents.soul_flame->effectN( 2 ).percent();
+  }
+};
+
+// TOCHECK: As of 2022-09-30, talent values are pointing to the incorrect effects
+// Everything should be pointed to the correct effect data but values may be garbage until this is fixed by Blizzard
+struct pandemic_invocation_t : public warlock_spell_t
+{
+  pandemic_invocation_t( warlock_t* p ) : warlock_spell_t( "pandemic_invocation", p, p->talents.pandemic_invocation_proc )
+  {
+    background = true;
+
+    base_dd_multiplier *= 1.0 + p->talents.pandemic_invocation->effectN( 3 ).percent();
+  }
+
+  void execute() override
+  {
+    warlock_spell_t::execute();
+
+    if ( rng().roll( p()->talents.pandemic_invocation->effectN( 2 ).percent() / 100.0 ) )
+    {
+      p()->resource_gain( RESOURCE_SOUL_SHARD, 1, p()->gains.pandemic_invocation );
+      p()->procs.pandemic_invocation_shard->occur();
+    }
   }
 };
 
@@ -1125,9 +1161,14 @@ action_t* warlock_t::create_action_warlock( util::string_view action_name, util:
 
 void warlock_t::create_actions()
 {
-  if ( specialization() == WARLOCK_AFFLICTION && talents.soul_flame.ok() )
-    proc_actions.soul_flame_proc = new warlock::actions::soul_flame_t( this );
+  if ( specialization() == WARLOCK_AFFLICTION )
+  {
+    if ( talents.soul_flame.ok() )
+      proc_actions.soul_flame_proc = new warlock::actions::soul_flame_t( this );
 
+    if ( talents.pandemic_invocation.ok() )
+      proc_actions.pandemic_invocation_proc = new warlock::actions::pandemic_invocation_t( this );
+  }
   player_t::create_actions();
 }
 
