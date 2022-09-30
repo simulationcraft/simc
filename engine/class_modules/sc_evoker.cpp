@@ -228,7 +228,7 @@ struct evoker_t : public player_t
     player_talent_t power_swell;
     player_talent_t feed_the_flames;  // row 10
     player_talent_t everburning_flame;
-    player_talent_t cascading_power;
+    player_talent_t hoarded_power;
     player_talent_t iridescence;
 
     // Preservation Traits
@@ -970,7 +970,7 @@ public:
     if ( cr != RESOURCE_ESSENCE || base_cost() == 0 || proc )
       return;
 
-    if ( p()->buff.essence_burst->up() && !rng().roll( p()->talent.cascading_power->effectN( 1 ).percent() ) )
+    if ( p()->buff.essence_burst->up() && !rng().roll( p()->talent.hoarded_power->effectN( 1 ).percent() ) )
     {
       p()->buff.essence_burst->decrement();
 
@@ -2018,7 +2018,7 @@ void evoker_t::init_spells()
   talent.power_swell            = ST( "Power Swell" );
   talent.feed_the_flames        = ST( "Feed the Flames" );  // Row 10
   talent.everburning_flame      = ST( "Everburning Flame" );
-  talent.cascading_power        = ST( "Cascading Power" );
+  talent.hoarded_power          = ST( "Hoarded Power" );
   talent.iridescence            = ST( "Iridescence" );
   // Preservation Traits
 
