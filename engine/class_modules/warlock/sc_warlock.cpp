@@ -226,6 +226,9 @@ struct corruption_t : public warlock_spell_t
                          : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
       base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
     }
+
+    if ( p->talents.creeping_death->ok() )
+      base_tick_time *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override

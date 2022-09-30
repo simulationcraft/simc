@@ -243,7 +243,7 @@ public:
     player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 
-    const spell_data_t* creeping_death; // DF - No long reduces duration
+    player_talent_t creeping_death; // DF - No long reduces duration
     const spell_data_t* haunt;
     // DF - Summon Darkglare 
     // DF - Soul Rot (formerly SL Covenant Ability, now Affliction only)
