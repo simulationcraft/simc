@@ -183,7 +183,9 @@ public:
   struct talents_t
   {
     // Shared
-    const spell_data_t* grimoire_of_sacrifice; // DF - Should be unchanged, but verify spec-based limitation (Aff/Destro only)
+    player_talent_t grimoire_of_sacrifice; // Aff/Destro only
+    const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
+    const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
 
     // Class Tree
     const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
@@ -461,7 +463,7 @@ public:
   struct buffs_t
   {
     propagate_const<buff_t*> demonic_power; //Buff from Summon Demonic Tyrant (increased demon damage + duration)
-    propagate_const<buff_t*> grimoire_of_sacrifice; //Buff which grants damage proc
+    propagate_const<buff_t*> grimoire_of_sacrifice; // Buff which grants damage proc
     // DF - Summon Soulkeeper has a hidden stacking buff
     // DF - Determine if dummy buff should be added for Inquisitor's Eye
     propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
@@ -932,11 +934,18 @@ public:
 
 struct grimoire_of_sacrifice_damage_t : public warlock_spell_t
 {
-  grimoire_of_sacrifice_damage_t(warlock_t* p)
-    : warlock_spell_t("grimoire_of_sacrifice_damage_proc", p, p->find_spell(196100))
+  grimoire_of_sacrifice_damage_t( warlock_t* p )
+    : warlock_spell_t( "grimoire_of_sacrifice_damage_proc", p, p->talents.grimoire_of_sacrifice_proc )
   {
     background = true;
     proc = true;
+
+    // 2022-09-30 - It seems like the damage is either double dipping on the spec aura effect, or is benefiting from pet damage multiplier as well
+    // Using the latter for now as that seems *slightly* less silly
+    if ( p->specialization() == WARLOCK_AFFLICTION )
+      base_dd_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 3 ).percent();
+    if ( p->specialization() == WARLOCK_DESTRUCTION )
+      base_dd_multiplier *= 1.0 + p->warlock_base.destruction_warlock->effectN( 3 ).percent();
   }
 };
 

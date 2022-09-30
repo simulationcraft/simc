@@ -611,7 +611,6 @@ struct soul_flame_t : public warlock_spell_t
   }
 };
 
-// TOCHECK: Does the damage proc affect Seed of Corruption? If so, this needs to be split into specs as well
 struct grimoire_of_sacrifice_t : public warlock_spell_t
 {
   grimoire_of_sacrifice_t( warlock_t* p, util::string_view options_str )
@@ -1193,9 +1192,8 @@ void warlock_t::create_buffs()
   create_buffs_demonology();
   create_buffs_destruction();
 
-  buffs.grimoire_of_sacrifice =
-      make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice->effectN( 2 ).trigger() )
-          ->set_chance( 1.0 );
+  buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
+                                    ->set_chance( 1.0 );
 
   // Covenants
   buffs.soul_rot = make_buff(this, "soul_rot", covenant.soul_rot);
@@ -1266,7 +1264,10 @@ void warlock_t::init_spells()
   talents.seed_of_corruption = find_talent_spell( talent_tree::SPECIALIZATION, "Seed of Corruption" );
   talents.seed_of_corruption_aoe = find_spell( 27285 ); // Explosion damage
 
-  talents.grimoire_of_sacrifice     = find_talent_spell( "Grimoire of Sacrifice" );       // Aff/Destro
+  talents.grimoire_of_sacrifice = find_talent_spell( talent_tree::SPECIALIZATION, "Grimoire of Sacrifice" ); // Aff/Destro only. Should be ID 108503
+  talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
+  talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
+
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
@@ -1430,7 +1431,7 @@ void warlock_t::init_special_effects()
   {
     auto const sac_effect = new special_effect_t( this );
     sac_effect->name_str = "grimoire_of_sacrifice_effect";
-    sac_effect->spell_id = 196099;
+    sac_effect->spell_id = talents.grimoire_of_sacrifice_buff->id();
     sac_effect->execute_action = new warlock::actions::grimoire_of_sacrifice_damage_t( this );
     special_effects.push_back( sac_effect );
 
