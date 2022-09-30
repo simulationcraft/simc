@@ -1,5 +1,5 @@
 // Spell text, wow build 10.0.2.45779
-static const std::array<spelltext_data_t, 18806> __spelltext_data { {
+static const std::array<spelltext_data_t, 18811> __spelltext_data { {
   {     11, "Deals $s1 Frost damage to the target.", 0, 0 },
   {     17, "Shields an ally for $d, absorbing $<shield> damage.", "Absorbs $w1 damage.", 0 },
   {     53, "Stab the target, causing ${$s2*$<mult>} Physical damage. Damage increased by $s4% when you are behind your target$?s319949[, and critical strikes apply Find Weakness for $319949s1 sec][].\r\n\r\n|cFFFFFFFFAwards $s3 combo $lpoint:points;.|r", 0, 0 },
@@ -18702,6 +18702,7 @@ static const std::array<spelltext_data_t, 18806> __spelltext_data { {
   { 393958, "After an Eclipse ends, you gain $393959s1% Haste for $393959d.", 0, 0 },
   { 393959, "$@spelldesc393958", "Haste increased by $s1%.", 0 },
   { 393960, "Every $s1 Astral Power spent grants Celestial Alignment for $s2 sec.", 0, 0 },
+  { 393961, "$@spelldesc393960", "${$w1~} Arcane Power collected by Primordial Arcanic Pulsar.", 0 },
   { 393965, "If your Ravager helps kill an enemy, your next Ravager lasts ${$393966s1/1000}.1 sec longer and deals $393966s2% increased damage.\r\n", 0, 0 },
   { 393966, "$@spelldesc390713", "Your next Bladestorm lasts ${$390713s1/1000}.1 sec longer.", 0 },
   { 393967, "Execute increases Execute's damage dealt by $393968s1% for $393968d, stacking up to $393968u times.", 0, 0 },
@@ -18743,7 +18744,11 @@ static const std::array<spelltext_data_t, 18806> __spelltext_data { {
   { 394094, "Every other Eclipse creates a Fury of Elune at $s1% effectiveness that follows your current target for $s2 sec.", 0, 0 },
   { 394095, "$@spelldesc385627", "Kingsbane damage increased by $s1%.", 0 },
   { 394101, "While in your Consecration, you may block harmful periodic effects.", 0, 0 },
+  { 394103, "$@spelldesc394094", 0, 0 },
+  { 394106, "$@spelldesc394094", 0, 0 },
+  { 394108, "$@spelldesc394094", "Generating ${$o1/10} Astral Power over $d.", 0 },
   { 394110, "After you use Transcendence: Transfer, you can use Transcendence: Transfer again within $343249d, ignoring its cooldown.\r\n\r\nDuring this time, if you cast Vivify on yourself, its healing is increased by $s1% and $343249m2% of its cost is refunded.", 0, 0 },
+  { 394111, "$@spelldesc202770", 0, 0 },
   { 394115, "During Solar Eclipse, Sunfire generates $s1% additional Astral Power. During Lunar Eclipse, Moonfire generates $s1% additional Astral Power.", 0, 0 },
   { 394119, "$@spelldesc379005", 0, 0 },
   { 394121, "Full Moon becomes Full Moon once more before resetting to New Moon.\r\n\r\nFury of Elune's cooldown is reduced by ${$s1/-1000} sec.", 0, 0 },

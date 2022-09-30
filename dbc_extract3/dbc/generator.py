@@ -1971,6 +1971,8 @@ class SpellDataGenerator(DataGenerator):
           ( 394049, 1 ), ( 394050, 1 ), # Balance of All Things
           ( 393942, 1 ), ( 393944, 1 ), # Starweaver
           ( 395022, 1 ), # Incarnation unknown spell
+          ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
+          ( 394103,1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage

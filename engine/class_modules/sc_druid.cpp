@@ -10535,8 +10535,8 @@ void druid_t::create_actions()
 
   if ( talent.sundered_firmament.ok() )
   {
-    auto firmament = get_secondary_action_n<fury_of_elune_t>( "sundered_firmament", find_spell( 365478 ),
-                                                           find_spell( 365640 ), buff.sundered_firmament, "" );
+    auto firmament = get_secondary_action_n<fury_of_elune_t>( "sundered_firmament", find_spell( 394106 ),
+                                                           find_spell( 394111 ), buff.sundered_firmament, "" );
     firmament->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     firmament->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
     firmament->set_free_cast( free_cast_e::FIRMAMENT );
