@@ -289,9 +289,8 @@ struct corruption_t : public warlock_spell_t
       m *= 1.0 + p()->cache.mastery_value();
     }
 
-    //// SL - Legendary
-    //if ( p()->legendary.sacrolashs_dark_strike->ok() )
-    //  m *= 1.0 + p()->legendary.sacrolashs_dark_strike->effectN( 1 ).percent();
+    if ( p()->talents.sacrolashs_dark_strike->ok() )
+      m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
 
     return m;
   }
