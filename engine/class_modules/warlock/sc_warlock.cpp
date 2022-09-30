@@ -37,6 +37,7 @@ struct drain_life_t : public warlock_spell_t
     {
       double ta = warlock_spell_t::bonus_ta( s );
 
+      // This code is currently unneeded, unless a bonus tick amount effect comes back into existence
       //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
       //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
@@ -52,10 +53,10 @@ struct drain_life_t : public warlock_spell_t
     {
       double m = warlock_spell_t::action_multiplier();
 
-      //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-      //{
-      //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-      //}
+      if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+      {
+        m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+      }
 
       return m;
     }
@@ -86,11 +87,11 @@ struct drain_life_t : public warlock_spell_t
 
   void execute() override
   {
-    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
-    //{
-    //  if ( p()->buffs.drain_life->check() )
-    //    p()->buffs.inevitable_demise->expire();
-    //}
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() > 0 )
+    {
+      if ( p()->buffs.drain_life->check() )
+        p()->buffs.inevitable_demise->expire();
+    }
 
     warlock_spell_t::execute();
 
@@ -120,6 +121,7 @@ struct drain_life_t : public warlock_spell_t
   {
     double ta = warlock_spell_t::bonus_ta( s );
 
+    // This code is currently unneeded, unless a bonus tick amount effect comes back into existence
     //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
     //  ta = ta / ( 1.0 + p()->buffs.inevitable_demise->check_stack_value() );
 
@@ -132,27 +134,31 @@ struct drain_life_t : public warlock_spell_t
     {
       return 0.0;
     }
-    else
-    {
-      return warlock_spell_t::cost_per_tick( r );
-    }
+
+    auto c = warlock_spell_t::cost_per_tick( r );
+
+    if ( r == RESOURCE_MANA && p()->buffs.inevitable_demise->check() )
+      c *= 1.0 + p()->talents.inevitable_demise_buff->effectN( 3 ).percent() * p()->buffs.inevitable_demise->check();
+    
+    return c;
   }
 
   double action_multiplier() const override
   {
     double m = warlock_spell_t::action_multiplier();
 
-    //if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
-    //{
-    //  m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
-    //}
+    if ( p()->talents.inevitable_demise->ok() && p()->buffs.inevitable_demise->check() )
+    {
+      m *= 1.0 + p()->buffs.inevitable_demise->check_stack_value();
+    }
+
     return m;
   }
 
   void last_tick( dot_t* d ) override
   {
     p()->buffs.drain_life->expire();
-    //p()->buffs.inevitable_demise->expire();
+    p()->buffs.inevitable_demise->expire();
 
     warlock_spell_t::last_tick( d );
 

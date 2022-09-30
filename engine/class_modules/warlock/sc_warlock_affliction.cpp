@@ -148,10 +148,10 @@ struct agony_t : public affliction_spell_t
       p()->agony_accumulator -= 1.0;
     }
 
-    //if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
-    //{
-    //  p()->buffs.inevitable_demise->trigger();
-    //}
+    if ( result_is_hit( d->state->result ) && p()->talents.inevitable_demise->ok() && !p()->buffs.drain_life->check() )
+    {
+      p()->buffs.inevitable_demise->trigger();
+    }
 
     affliction_spell_t::tick( d );
   }
@@ -610,9 +610,8 @@ void warlock_t::create_buffs_affliction()
   buffs.nightfall = make_buff( this, "nightfall", talents.nightfall_buff )
                         ->set_trigger_spell( talents.nightfall );
 
-  buffs.inevitable_demise = make_buff( this, "inevitable_demise", find_spell( 334320 ) )
-                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() )
-                                ->set_trigger_spell( talents.inevitable_demise );
+  buffs.inevitable_demise = make_buff( this, "inevitable_demise", talents.inevitable_demise_buff )
+                                ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
 
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
 }
@@ -667,7 +666,8 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_tap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Tap" ); // Should be ID 387073
 
-  talents.inevitable_demise   = find_talent_spell( "Inevitable Demise" );
+  talents.inevitable_demise   = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
+  talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
 
   talents.haunt               = find_talent_spell( "Haunt" );
 

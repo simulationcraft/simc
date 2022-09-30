@@ -228,7 +228,8 @@ public:
     const spell_data_t* vile_taint_dot; // DoT data
 
     player_talent_t soul_tap; // Sacrifice Soul Leech for Soul Shard. TODO: Add controls to limit usage
-    const spell_data_t* inevitable_demise; // DF - Now a 2 point talent
+    player_talent_t inevitable_demise; // The talent version of the ability
+    const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
     // DF - Soul Swap (Spend Soul Shard to apply core dots)
     // DF - Soul Flame (2 point talent, AoE damage on kills)
     // Grimoire of Sacrifice (shared with Destruction)
