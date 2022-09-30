@@ -450,6 +450,7 @@ public:
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* natures_grace;
+    buff_t* owlkin_frenzy;
     buff_t* starweavers_warp;  // free starfall
     buff_t* starweavers_weft;  // free starsurge
     buff_t* primordial_arcanic_pulsar;
@@ -2592,6 +2593,7 @@ public:
     parse_buff_effects<S>( p()->buff.eclipse_lunar, p()->talent.umbral_intensity );
     parse_buff_effects<S>( p()->buff.eclipse_solar, p()->talent.umbral_intensity );
     parse_buff_effects<S>( p()->buff.incarnation_moonkin, p()->talent.elunes_guidance );
+    parse_buff_effects( p()->buff.owlkin_frenzy );
     parse_buff_effects( p()->buff.rattled_stars );
     parse_buff_effects( p()->buff.starweavers_warp );
     parse_buff_effects( p()->buff.starweavers_weft );
@@ -7705,7 +7707,12 @@ struct starfire_t : public druid_spell_t
     }
 
     p()->buff.umbral_embrace->expire();
-    p()->buff.warrior_of_elune->decrement();
+
+    if ( p()->buff.owlkin_frenzy->up() )
+      p()->buff.owlkin_frenzy->expire();
+    else if ( p()->buff.warrior_of_elune->up() )
+      p()->buff.warrior_of_elune->decrement();
+
     p()->eclipse_handler.cast_starfire();
   }
 
@@ -10213,6 +10220,9 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
+  buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
+    ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
+
   buff.primordial_arcanic_pulsar = make_buff( this, "primordial_arcanic_pulsar", find_spell( 393961 ) ) 
     ->set_default_value( options.initial_pulsar_value );
 
@@ -12271,6 +12281,9 @@ void druid_t::assess_damage_imminent_pre_absorb( school_e school, result_amount_
       resource_gain( RESOURCE_RAGE, spec.bear_form_passive->effectN( 3 ).base_value(), gain.rage_from_melees );
       cooldown.rage_from_melees->start( cooldown.rage_from_melees->duration );
     }
+
+    if ( buff.moonkin_form->check() )
+      buff.owlkin_frenzy->trigger();
 
     buff.cenarion_ward->expire();
 
