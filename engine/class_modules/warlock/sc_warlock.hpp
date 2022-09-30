@@ -240,7 +240,7 @@ public:
     
     player_talent_t pandemic_invocation; // Late DoT refresh deals damage and has Soul Shard chance
     const spell_data_t* pandemic_invocation_proc; // Damage data
-    // DF - Withering Bolt (2 point talent, moved from SL Conduit)
+    player_talent_t withering_bolt; // Increased damage on Shadow Bolt/Drain Soul based on active DoT count on target
     // DF - Sacrolash's Dark Strike (2 point talent, moved from SL Legendary)
 
     const spell_data_t* creeping_death; // DF - No long reduces duration

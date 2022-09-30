@@ -482,9 +482,8 @@ struct drain_soul_t : public affliction_spell_t
     if ( t->health_percentage() < p()->talents.drain_soul_dot->effectN( 3 ).base_value() )
       m *= 1.0 + p()->talents.drain_soul->effectN( 2 ).percent();
 
-    //Withering Bolt does x% more damage per DoT on the target
-    //TODO: Check what happens if a DoT falls off mid-channel
-    //m *= 1.0 + p()->conduit.withering_bolt.percent() * p()->get_target_data( t )->count_affliction_dots();
+    if ( p()->talents.withering_bolt.ok() )
+      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
 
     return m;
   }
@@ -755,6 +754,8 @@ void warlock_t::init_spells_affliction()
 
   talents.pandemic_invocation = find_talent_spell( talent_tree::SPECIALIZATION, "Pandemic Invocation" ); // Should be ID 386759
   talents.pandemic_invocation_proc = find_spell( 386760 ); // Proc damage data
+
+  talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
   talents.haunt               = find_talent_spell( "Haunt" );
 
