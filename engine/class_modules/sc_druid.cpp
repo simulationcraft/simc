@@ -950,6 +950,7 @@ public:
     const spell_data_t* bear_form_2;
     const spell_data_t* berserk_bear;  // berserk cast/buff spell
     const spell_data_t* galactic_guardian_buff;
+    const spell_data_t* incarnation_bear;
     const spell_data_t* lightning_reflexes;
 
     // Resto
@@ -4746,7 +4747,7 @@ struct berserk_bear_t : public berserk_bear_base_t
 struct incarnation_bear_t : public berserk_bear_base_t
 {
   incarnation_bear_t( druid_t* p, std::string_view opt )
-    : berserk_bear_base_t( "incarnation_guardian_of_ursoc", p, p->talent.incarnation_bear, opt )
+    : berserk_bear_base_t( "incarnation_guardian_of_ursoc", p, p->spec.incarnation_bear, opt )
   {
     buff = p->buff.incarnation_bear;
   }
@@ -4877,7 +4878,7 @@ struct mangle_t : public bear_attack_t
     if ( p->talent.incarnation_bear.ok() )
     {
       inc_targets = as<int>(
-          p->query_aura_effect( p->talent.incarnation_bear, A_ADD_FLAT_MODIFIER, P_TARGET, s_data )->base_value() );
+          p->query_aura_effect( p->spec.incarnation_bear, A_ADD_FLAT_MODIFIER, P_TARGET, s_data )->base_value() );
     }
   }
 
@@ -9850,6 +9851,7 @@ void druid_t::init_spells()
   spec.berserk_bear             = check( talent.berserk_ravage.ok() ||
                                          talent.berserk_unchecked_aggression.ok() ||
                                          talent.berserk_persistence.ok(), 50334 );
+  spec.incarnation_bear         = check( talent.incarnation_bear.ok(), 102558 );
   spec.lightning_reflexes       = find_specialization_spell( "Lightning Reflexes" );
 
   // Restoration Abilities
@@ -10305,7 +10307,7 @@ void druid_t::create_buffs()
       make_buff<berserk_bear_buff_t>( *this, "berserk_bear", spec.berserk_bear );
 
   buff.incarnation_bear =
-      make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", talent.incarnation_bear, true );
+      make_buff<berserk_bear_buff_t>( *this, "incarnation_guardian_of_ursoc", spec.incarnation_bear, true );
 
   buff.architects_aligner = make_buff<architects_aligner_buff_t>( *this );
 
