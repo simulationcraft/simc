@@ -7064,11 +7064,9 @@ struct moonfire_t : public druid_spell_t
     {
       double dam = druid_spell_t::composite_da_multiplier( s );
 
-      if ( ( free_cast != free_cast_e::GALACTIC || ( p()->talent.twin_moonfire.ok() && s->n_targets > 1 ) ) &&  // TODO: confirm every build
-           p()->buff.galactic_guardian->check() )
-      {
+      // MF proc'd by gg is affected by any existing gg buff.
+      if ( p()->buff.galactic_guardian->check() )
         dam *= 1.0 + gg_mul;
-      }
 
       if ( feral_override_da && !p()->buff.moonkin_form->check() )
         dam *= 1.0 + feral_override_da;
