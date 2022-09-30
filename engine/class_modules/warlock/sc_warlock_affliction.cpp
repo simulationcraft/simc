@@ -759,7 +759,7 @@ void warlock_t::init_spells_affliction()
 
   talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
 
-  talents.haunt               = find_talent_spell( "Haunt" );
+  talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
 
 

@@ -763,9 +763,10 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_unstable_affliction = target->get_dot( "unstable_affliction", &p );
   dots_vile_taint          = target->get_dot( "vile_taint", &p );
 
-  debuffs_haunt = make_buff( *this, "haunt", source->find_spell( 48181 ) )
+  debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
                       ->set_default_value_from_effect( 2 );
+
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
