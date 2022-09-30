@@ -39,8 +39,6 @@ public:
     {
       if ( data().affected_by( p()->talents.creeping_death->effectN( 1 ) ) )
         base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-      if ( data().affected_by( p()->talents.creeping_death->effectN( 2 ) ) )
-        dot_duration *= 1.0 + p()->talents.creeping_death->effectN( 2 ).percent();
     }
   }
 
@@ -759,13 +757,15 @@ void warlock_t::init_spells_affliction()
 
   talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
 
+  talents.creeping_death = find_talent_spell( talent_tree::SPECIALIZATION, "Creeping Death" ); // Should be ID 264000
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
 
 
 
  
-  talents.creeping_death      = find_talent_spell( "Creeping Death" );
+
 
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
