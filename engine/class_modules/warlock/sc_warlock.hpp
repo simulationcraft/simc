@@ -244,7 +244,7 @@ public:
     player_talent_t sacrolashs_dark_strike; // Increased Corruption ticking damage, and ticks extend Curses (not implemented)
 
     player_talent_t creeping_death; // DF - No long reduces duration
-    const spell_data_t* haunt;
+    player_talent_t haunt;
     // DF - Summon Darkglare 
     // DF - Soul Rot (formerly SL Covenant Ability, now Affliction only)
 
