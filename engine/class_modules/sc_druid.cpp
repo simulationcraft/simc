@@ -8166,10 +8166,17 @@ struct wild_mushroom_t : public druid_spell_t
 
   struct wild_mushroom_damage_t : public druid_spell_t
   {
+    action_t* driver;
     action_t* fungal;
+    double ap_per;
+    double ap_max;
 
-    wild_mushroom_damage_t( druid_t* p )
-      : druid_spell_t( "wild_mushroom_damage", p, p->find_spell( 88751 ) ), fungal( nullptr )
+    wild_mushroom_damage_t( druid_t* p, action_t* a )
+      : druid_spell_t( "wild_mushroom_damage", p, p->find_spell( 88751 ) ),
+        driver( a ),
+        fungal( nullptr ),
+        ap_per( 5 ),
+        ap_max( data().effectN( 2 ).base_value() )
     {
       background = true;
       aoe = -1;
@@ -8177,8 +8184,16 @@ struct wild_mushroom_t : public druid_spell_t
       if ( p->talent.fungal_growth.ok() )
       {
         fungal = p->get_secondary_action<fungal_growth_t>( "fungal_growth" );
-        add_child( fungal );
+        driver->add_child( fungal );
       }
+    }
+
+    void execute() override
+    {
+      druid_spell_t::execute();
+
+      gain_energize_resource( RESOURCE_ASTRAL_POWER, std::min( ap_max, ap_per * num_targets_hit ),
+                              driver->energize_gain( execute_state ) );
     }
 
     void impact( action_state_t* s ) override
@@ -8201,7 +8216,7 @@ struct wild_mushroom_t : public druid_spell_t
   {
     harmful = false;
 
-    damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage" );
+    damage = p->get_secondary_action<wild_mushroom_damage_t>( "wild_mushroom_damage", this );
     damage->stats = stats;
   }
 
