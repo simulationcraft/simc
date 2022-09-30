@@ -543,9 +543,8 @@ struct shadow_bolt_t : public warlock_spell_t
   {
     double m = warlock_spell_t::composite_target_multiplier( t );
 
-    ////Withering Bolt does 2x% more per DoT on the target for Shadow Bolt
-    ////TODO: Check what happens if a DoT falls off mid-cast and mid-flight
-    //m *= 1.0 + p()->conduit.withering_bolt.percent() * 2.0 * p()->get_target_data( t )->count_affliction_dots();
+    if ( p()->talents.withering_bolt.ok() )
+      m *= 1.0 + p()->talents.withering_bolt->effectN( 1 ).percent() * std::min( (int)p()->talents.withering_bolt->effectN( 2 ).base_value(), p()->get_target_data( t )->count_affliction_dots() );
 
     //auto td = this->td( t );
 
