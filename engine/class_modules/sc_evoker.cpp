@@ -5,6 +5,7 @@
 
 #include "config.hpp"
 #include "simulationcraft.hpp"
+#include "sim/option.hpp"
 #include "class_modules/apl/apl_evoker.hpp"
 
 namespace
@@ -88,7 +89,8 @@ struct evoker_t : public player_t
   // Options
   struct options_t
   {
-
+    bool t29_2pc = false;
+    bool t29_4pc = false;
   } option;
 
   // Action pointers
@@ -120,6 +122,9 @@ struct evoker_t : public player_t
     propagate_const<buff_t*> iridescence_red;
     propagate_const<buff_t*> power_swell;
     propagate_const<buff_t*> snapfire;
+    propagate_const<buff_t*> fury_of_the_aspects;
+    propagate_const<buff_t*> scales_of_the_awakened_2pc;
+    
     // Preservation Traits
   } buff;
 
@@ -315,6 +320,8 @@ struct evoker_t : public player_t
   double composite_armor() const override;
   double composite_attribute_multiplier( attribute_e ) const override;
   double composite_player_multiplier( school_e ) const override;
+  double composite_spell_haste() const override;
+  double composite_melee_haste() const override;
   stat_e convert_hybrid_stat( stat_e ) const override;
   double passive_movement_modifier() const override;
   double resource_regen_per_second( resource_e ) const override;
@@ -783,6 +790,11 @@ public:
   double composite_crit_chance() const override
   {
     double cc = ab::composite_crit_chance() + get_buff_effects_value( crit_chance_buffeffects, true );
+    
+    // TODO: CHANGE TO ACTUAL SET BONUS
+    if ( p()->option.t29_2pc && p()->buff.scales_of_the_awakened_2pc->check() )
+      cc += p()->buff.scales_of_the_awakened_2pc->check_value();
+
     return cc;
   }
 
@@ -994,6 +1006,17 @@ struct empowered_base_t : public evoker_spell_t
 
   action_state_t* new_state() override
   { return new empowered_state_t( this, target ); }
+
+  double composite_crit_chance() const override
+  {
+    double cc = evoker_spell_t::composite_crit_chance();
+
+    // TODO: CHANGE TO ACTUAL SET BONUS
+    if ( p()->option.t29_2pc )
+      cc += 0.05;
+
+    return cc;
+  }
 };
 
 struct empowered_release_spell_t : public empowered_base_t
@@ -1034,6 +1057,18 @@ struct empowered_release_spell_t : public empowered_base_t
         p()->buff.iridescence_blue->trigger();
       else if ( spell_color == SPELL_RED )
         p()->buff.iridescence_red->trigger();
+    }
+
+    // TODO: USE REAL SET BONUS
+    if ( p()->option.t29_2pc )
+    {
+      p()->buff.scales_of_the_awakened_2pc->extend_duration_or_trigger();
+    }
+    
+    // TODO: USE REAL SET BONUS
+    if ( p()->option.t29_4pc && rng().roll(0.25) )
+    {
+      p()->buff.fury_of_the_aspects->extend_duration_or_trigger( 6_s );
     }
 
     if ( p()->talent.power_swell.ok() )
@@ -2108,12 +2143,27 @@ void evoker_t::create_buffs()
         cooldown.firestorm->adjust( b->data().effectN( 3 ).time_value() );
     } );
 
+  buff.fury_of_the_aspects = make_buff( this, "fury_of_the_aspects", find_class_spell( "Fury of the Aspects" ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_cooldown( 0_s )
+                                 ->add_invalidate( CACHE_HASTE );
+
+  // TODO: USE 2PC DATA RATHER THAN HARD CODE
+  buff.scales_of_the_awakened_2pc = make_buff<buff_t>( this, "scales_of_the_awakened_2pc" )
+                                        ->add_invalidate( CACHE_CRIT_CHANCE )
+                                        ->add_invalidate( CACHE_SPELL_CRIT_CHANCE )
+                                        ->set_default_value( 0.05 )
+                                        ->set_duration( 6_s );
+
   // Preservation Traits
 }
 
 void evoker_t::create_options()
 {
   player_t::create_options();
+  // TODO: REMOVE WHEN SPELL DATA
+  add_option( opt_bool( "evoker.t29_2pc", option.t29_2pc ) );
+  add_option( opt_bool( "evoker.t29_4pc", option.t29_4pc ) );
 }
 
 void evoker_t::analyze( sim_t& sim )
@@ -2286,6 +2336,28 @@ double evoker_t::composite_player_multiplier( school_e s ) const
 
   return m;
 }
+
+double evoker_t::composite_spell_haste() const
+{
+  double h = player_t::composite_spell_haste();
+
+  if ( buff.fury_of_the_aspects )
+    h *= 1.0 / ( 1.0 + buff.fury_of_the_aspects->check_value() );
+
+  return h;
+}
+
+
+double evoker_t::composite_melee_haste() const
+{
+  double h = player_t::composite_melee_haste();
+
+  if ( buff.fury_of_the_aspects )
+    h *= 1.0 / ( 1.0 + buff.fury_of_the_aspects->check_value() );
+
+  return h;
+}
+
 
 stat_e evoker_t::convert_hybrid_stat( stat_e stat ) const
 {
