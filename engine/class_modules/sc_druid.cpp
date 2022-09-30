@@ -911,12 +911,13 @@ public:
     const spell_data_t* critical_strikes;  // Feral & Guardian
     const spell_data_t* leather_specialization;
 
-    // Baseline Abilities
+    // Baseline
     const spell_data_t* bear_form_override;  // swipe/thrash
     const spell_data_t* bear_form_passive;
     const spell_data_t* cat_form_override;  // swipe/thrash
     const spell_data_t* cat_form_passive;
     const spell_data_t* cat_form_speed;
+    const spell_data_t* feral_affinity;
     const spell_data_t* moonfire_2;
     const spell_data_t* moonfire_dmg;
     const spell_data_t* wrath;
@@ -9808,12 +9809,13 @@ void druid_t::init_spells()
   spec.critical_strikes         = find_specialization_spell( "Critical Strikes" );
   spec.leather_specialization   = find_specialization_spell( "Leather Specialization" );
 
-  // Baseline Abilties
+  // Baseline
   spec.bear_form_override       = find_spell( 106829 );
   spec.bear_form_passive        = find_spell( 1178 );
   spec.cat_form_override        = find_spell( 48629 );
   spec.cat_form_passive         = find_spell( 3025 );
   spec.cat_form_speed           = find_spell( 113636 );
+  spec.feral_affinity           = find_specialization_spell( "Feral Affinity" );
   spec.moonfire_2               = find_rank_spell( "Moonfire", "Rank 2" );
   spec.moonfire_dmg             = find_spell( 164812 );
   spec.wrath                    = find_specialization_spell( "Wrath" );
@@ -9901,13 +9903,13 @@ void druid_t::init_base_stats()
                                                     || options.affinity_resources;
   resources.active_resource[ RESOURCE_ASTRAL_POWER ] = specialization() == DRUID_BALANCE;
 
+  // Energy Regen
   resources.base_regen_per_second[ RESOURCE_ENERGY ] = 10;
-  if ( specialization() == DRUID_FERAL )
-  {
-    resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
-        1.0 + query_aura_effect( spec.feral, A_MOD_POWER_REGEN_PERCENT, P_EFFECT_1 )->percent();
-    resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.tireless_energy->effectN( 2 ).percent();
-  }
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+      1.0 + query_aura_effect( spec.feral_affinity, A_MOD_POWER_REGEN_PERCENT, POWER_ENERGY )->percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *=
+      1.0 + query_aura_effect( spec.feral, A_MOD_POWER_REGEN_PERCENT, POWER_ENERGY )->percent();
+  resources.base_regen_per_second[ RESOURCE_ENERGY ] *= 1.0 + talent.tireless_energy->effectN( 2 ).percent();
 
   base_gcd = 1.5_s;
 }
