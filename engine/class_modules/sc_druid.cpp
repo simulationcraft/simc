@@ -81,6 +81,7 @@ struct druid_td_t : public actor_target_data_t
     dot_t* sickle_of_the_lion;
     dot_t* stellar_flare;
     dot_t* sunfire;
+    dot_t* tear;
     dot_t* thrash_bear;
     dot_t* thrash_cat;
   } dots;
@@ -4015,7 +4016,8 @@ struct ferocious_bite_t : public cat_attack_t
                    t_td->dots.thrash_cat->is_ticking() +
                    t_td->dots.frenzied_assault->is_ticking() +
                    t_td->dots.feral_frenzy->is_ticking() +
-                   t_td->dots.sickle_of_the_lion->is_ticking();
+                   t_td->dots.sickle_of_the_lion->is_ticking() +
+                   t_td->dots.tear->is_ticking();
 
       tm *= 1.0 + p()->talent.taste_for_blood->effectN( 1 ).percent() * bleeds;
     }
@@ -12333,6 +12335,7 @@ druid_td_t::druid_td_t( player_t& target, druid_t& source )
   dots.sickle_of_the_lion    = target.get_dot( "sickle_of_the_lion", &source );
   dots.stellar_flare         = target.get_dot( "stellar_flare", &source );
   dots.sunfire               = target.get_dot( "sunfire", &source );
+  dots.tear                  = target.get_dot( "tear", &source );
   dots.thrash_bear           = target.get_dot( "thrash_bear", &source );
   dots.thrash_cat            = target.get_dot( "thrash_cat", &source );
 
