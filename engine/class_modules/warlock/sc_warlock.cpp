@@ -1562,6 +1562,11 @@ bool warlock_t::min_version_check( version_check_e version ) const
   return false;
 }
 
+action_t* warlock_t::pass_corruption_action( warlock_t* p )
+{
+  return debug_cast<action_t*>( new actions::corruption_t( p, "", false ) );
+}
+
 // Function for returning the the number of imps that will spawn in a specified time period.
 int warlock_t::imps_spawned_during( timespan_t period )
 {

@@ -230,7 +230,8 @@ public:
     player_talent_t soul_tap; // Sacrifice Soul Leech for Soul Shard. TODO: Add controls to limit usage
     player_talent_t inevitable_demise; // The talent version of the ability
     const spell_data_t* inevitable_demise_buff; // The buff version referenced by the talent tooltip
-    // DF - Soul Swap (Spend Soul Shard to apply core dots)
+    player_talent_t soul_swap; // Spend Soul Shard to apply core dots (Corruption, Agony, UA)
+    const spell_data_t* soul_swap_ua; // Separate copy of Unstable Affliction data, since UA is applied even without the talent
     // DF - Soul Flame (2 point talent, AoE damage on kills)
     // Grimoire of Sacrifice (shared with Destruction)
     
@@ -589,6 +590,7 @@ public:
   int imps_spawned_during( timespan_t period );
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   bool min_version_check( version_check_e version ) const;
+  action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
   void create_pets() override;

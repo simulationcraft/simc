@@ -168,6 +168,12 @@ struct unstable_affliction_t : public affliction_spell_t
     dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
   }
 
+  unstable_affliction_t( warlock_t* p )
+    : affliction_spell_t( "unstable_affliction", p, p->talents.soul_swap_ua )
+  {
+    dot_duration += timespan_t::from_millis( p->talents.unstable_affliction_3->effectN( 1 ).base_value() );
+  }
+
   void execute() override
   {
     if ( p()->ua_target && p()->ua_target != target )
@@ -564,6 +570,37 @@ struct soul_tap_t : public affliction_spell_t
   }
 };
 
+struct soul_swap_t : public affliction_spell_t
+{
+  action_t* corruption;
+  agony_t* agony;
+  unstable_affliction_t* ua;
+
+  soul_swap_t( warlock_t* p, util::string_view options_str )
+    : affliction_spell_t( "Soul Swap", p, p->talents.soul_swap )
+  {
+    may_crit = false;
+
+    corruption = p->pass_corruption_action( p );
+    corruption->dual = true;
+
+    agony = new agony_t( p, "" );
+    agony->dual = true;
+
+    ua = new unstable_affliction_t( p );
+    ua->dual = true;
+  }
+
+  void execute() override
+  {
+    affliction_spell_t::execute();
+
+    corruption->execute_on_target( target );
+    agony->execute_on_target( target );
+    ua->execute_on_target( target );
+  }
+};
+
 }  // namespace actions_affliction
 
 namespace buffs_affliction
@@ -598,6 +635,8 @@ action_t* warlock_t::create_action_affliction( util::string_view action_name, ut
     return new malefic_rapture_t( this, options_str );
   if ( action_name == "soul_tap" )
     return new soul_tap_t( this, options_str );
+  if ( action_name == "soul_swap" )
+    return new soul_swap_t( this, options_str );
 
   return nullptr;
 }
@@ -666,8 +705,11 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_tap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Tap" ); // Should be ID 387073
 
-  talents.inevitable_demise   = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
+  talents.inevitable_demise = find_talent_spell( talent_tree::SPECIALIZATION, "Inevitable Demise" ); // Should be ID 334319
   talents.inevitable_demise_buff = find_spell( 334320 ); // Buff data
+
+  talents.soul_swap = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Swap" ); // Should be ID 386951
+  talents.soul_swap_ua = find_spell( 316099 ); // Needed for when you have Soul Swap but not UA talented
 
   talents.haunt               = find_talent_spell( "Haunt" );
 
