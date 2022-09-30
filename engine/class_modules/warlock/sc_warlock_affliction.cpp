@@ -757,6 +757,8 @@ void warlock_t::init_spells_affliction()
 
   talents.withering_bolt = find_talent_spell( talent_tree::SPECIALIZATION, "Withering Bolt" ); // Should be ID 386976
 
+  talents.sacrolashs_dark_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Sacrolash's Dark Strike" ); // Should be ID 386986
+
   talents.haunt               = find_talent_spell( "Haunt" );
 
 
