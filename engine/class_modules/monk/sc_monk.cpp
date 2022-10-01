@@ -1760,8 +1760,8 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
     else if ( p()->specialization() == MONK_WINDWALKER )
     {
-      if ( p()->buff.power_strikes->check() )
-        power_strikes = true;
+        if (p()->buff.power_strikes->up())
+          power_strikes = true;
     }
 
     //------------
@@ -1773,7 +1773,8 @@ struct tiger_palm_t : public monk_melee_attack_t
 
     if ( power_strikes )
     {
-      p()->resource_gain( RESOURCE_CHI, p()->talent.windwalker.power_strikes->effectN( 1 ).base_value(), p()->gain.power_strikes );
+      auto chi_gain = p()->passives.power_strikes_chi->effectN( 1 ).base_value();
+      p()->resource_gain( RESOURCE_CHI, chi_gain, p()->gain.power_strikes );
       p()->buff.power_strikes->expire();
     }
 
@@ -1849,6 +1850,10 @@ struct tiger_palm_t : public monk_melee_attack_t
       default:
         break;
     }
+
+    shaohoas_might = false;
+    face_palm      = false;
+    power_strikes  = false;
   }
 
   void impact( action_state_t* s ) override
@@ -1871,9 +1876,6 @@ struct tiger_palm_t : public monk_melee_attack_t
     }
 
     p()->trigger_keefers_skyreach( s );
-    shaohoas_might = false;
-    face_palm      = false;
-    power_strikes  = false;
   }
 };
 
@@ -6877,19 +6879,6 @@ public:
 };
 
 // ===============================================================================
-// Power Strikes Buff
-// ===============================================================================
-
-struct power_strikes_t : public monk_buff_t<buff_t>
-{
-  power_strikes_t( monk_t& p, util::string_view n, const spell_data_t* s ) : monk_buff_t( p, n, s )
-  {
-    set_default_value( s->effectN( 1 ).base_value() );
-    set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS );
-  }
-};
-
-// ===============================================================================
 // Fortifying Brew Buff
 // ===============================================================================
 struct fortifying_brew_t : public monk_buff_t<buff_t>
@@ -7084,7 +7073,7 @@ struct invoke_xuen_the_white_tiger_buff_t : public monk_buff_t<buff_t>
   static void invoke_xuen_callback( buff_t* b, int, timespan_t )
   {
     auto* p                                     = debug_cast<monk_t*>( b->player );
-    double empowered_tiger_lightning_multiplier = p->talent.windwalker.empowered_tiger_lightning->effectN( 2 ).percent();
+    double empowered_tiger_lightning_multiplier = p->spec.invoke_xuen_2->effectN( 2 ).percent();
 
     for ( auto target : p->sim->target_non_sleeping_list )
     {
@@ -8430,7 +8419,7 @@ void monk_t::init_spells()
       //spec.flying_serpent_kick        = find_specialization_spell( "Flying Serpent Kick" ); // talent.windwalker.flying_serpent_kick
       spec.flying_serpent_kick_2        = find_rank_spell( "Flying Serpent Kick", "Rank 2" );
       //spec.invoke_xuen                = find_specialization_spell( "Invoke Xuen, the White Tiger" ); // talent.windwalker.invoke_xuen_the_white_tiger
-      //spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" ); // talent.windwalker.empowered_tiger_lightning
+      spec.invoke_xuen_2              = find_rank_spell( "Invoke Xuen, the White Tiger", "Rank 2" );
       spec.reverse_harm                 = find_spell(342928);
       spec.stance_of_the_fierce_tiger   = find_specialization_spell( "Stance of the Fierce Tiger" );
       //spec.storm_earth_and_fire       = find_specialization_spell( "Storm, Earth, and Fire" );
@@ -8563,15 +8552,16 @@ void monk_t::init_spells()
   passives.fists_of_fury_tick               = find_spell( 117418 );
   passives.flying_serpent_kick_damage       = find_spell( 123586 );
   passives.focus_of_xuen                    = find_spell( 252768 );
+  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
+  passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
   passives.glory_of_the_dawn_damage         = find_spell( 392959 );
   passives.hidden_masters_forbidden_touch   = find_spell( 213114 );
   passives.hit_combo                        = find_spell( 196741 );
   passives.mark_of_the_crane                = find_spell( 228287 );
+  passives.power_strikes_chi                = find_spell( 121283 );
+  passives.thunderfist                      = find_spell( 242390 );
   passives.touch_of_karma_tick              = find_spell( 124280 );
   passives.whirling_dragon_punch_tick       = find_spell( 158221 );
-  passives.fury_of_xuen_stacking_buff       = find_spell( 287062 );
-  passives.fury_of_xuen_haste_buff          = find_spell( 287063 );
-  passives.thunderfist                      = find_spell( 242390 );
 
   // Covenants
   passives.bonedust_brew_dmg                    = find_spell( 325217 );
@@ -8971,7 +8961,8 @@ void monk_t::create_buffs ()
     buff.whirling_dragon_punch = make_buff ( this, "whirling_dragon_punch", find_spell ( 196742 ) )
       ->set_refresh_behavior ( buff_refresh_behavior::NONE );
 
-    buff.power_strikes = new buffs::power_strikes_t ( *this, "power_strikes", talent.windwalker.power_strikes->effectN( 1 ).trigger() );
+    buff.power_strikes = make_buff( this, "power_strikes", find_spell ( 129914 )  )
+                             ->set_default_value_from_effect( 1 );
 
     // Covenant Abilities
     buff.weapons_of_order_ww = make_buff ( this, "weapons_of_order_ww", find_spell ( 311054 ) )
@@ -10144,8 +10135,9 @@ void monk_t::combat_begin()
       sim->print_debug( "Combat starting chi has been set to {}", resources.current[RESOURCE_CHI] );
     }
 
-    if ( talent.windwalker.power_strikes->ok() )
-      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 1 ).period(), [ this ] () { buff.power_strikes->trigger(); } );
+    if (talent.windwalker.power_strikes->ok())
+      make_repeating_event( sim, talent.windwalker.power_strikes->effectN( 2 ).period(),
+                            [ this ]() { buff.power_strikes->trigger(); } );
   }
 
   if ( specialization () == MONK_BREWMASTER )

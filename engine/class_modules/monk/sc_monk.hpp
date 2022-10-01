@@ -761,7 +761,7 @@ public:
     //const spell_data_t* flying_serpent_kick;
     const spell_data_t* flying_serpent_kick_2;
     //const spell_data_t* invoke_xuen;
-    //const spell_data_t* invoke_xuen_2;
+    const spell_data_t* invoke_xuen_2;
     const spell_data_t* reverse_harm;
     const spell_data_t* stance_of_the_fierce_tiger;
     const spell_data_t* storm_earth_and_fire;
@@ -874,15 +874,16 @@ public:
     const spell_data_t* fists_of_fury_tick;
     const spell_data_t* flying_serpent_kick_damage;
     const spell_data_t* focus_of_xuen;
+    const spell_data_t* fury_of_xuen_stacking_buff;
+    const spell_data_t* fury_of_xuen_haste_buff;
     const spell_data_t* glory_of_the_dawn_damage;
     const spell_data_t* hidden_masters_forbidden_touch;
     const spell_data_t* hit_combo;
     const spell_data_t* mark_of_the_crane;
+    const spell_data_t* power_strikes_chi;
     const spell_data_t* thunderfist;
     const spell_data_t* touch_of_karma_tick;
     const spell_data_t* whirling_dragon_punch_tick;
-    const spell_data_t* fury_of_xuen_stacking_buff;
-    const spell_data_t* fury_of_xuen_haste_buff;
 
     // Covenants
     const spell_data_t* bonedust_brew_dmg;
