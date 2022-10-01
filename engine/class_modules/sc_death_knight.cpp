@@ -6306,15 +6306,19 @@ struct frostscythe_t : public death_knight_melee_attack_t
       }
     }
 
-    p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
-
-    // Frostscythe procs rime at half the chance of Obliterate
-    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
-
     if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
     {
       p() -> buffs.killing_machine -> trigger();
     }
+
+    else
+    {
+      p() -> consume_killing_machine( p() -> procs.killing_machine_fsc );
+    }
+
+    // Frostscythe procs rime at half the chance of Obliterate
+    p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
+
   }
 
   double composite_crit_chance() const override
