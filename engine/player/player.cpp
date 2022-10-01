@@ -4354,6 +4354,8 @@ double player_t::composite_damage_versatility() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    cdv += sim->auras.mark_of_the_wild->check_value();
+
     if ( buffs.legendary_tank_buff )
       cdv += buffs.legendary_tank_buff->check_value();
   }
@@ -4363,7 +4365,6 @@ double player_t::composite_damage_versatility() const
 
   cdv += racials.mountaineer->effectN( 1 ).percent();
   cdv += racials.brush_it_off->effectN( 1 ).percent();
-  cdv += sim->auras.mark_of_the_wild->check_value();
 
   return cdv;
 }
@@ -4378,6 +4379,8 @@ double player_t::composite_heal_versatility() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    chv += sim->auras.mark_of_the_wild->check_value();
+
     if ( buffs.legendary_tank_buff )
       chv += buffs.legendary_tank_buff->check_value();
   }
@@ -4387,7 +4390,7 @@ double player_t::composite_heal_versatility() const
 
   chv += racials.mountaineer->effectN( 1 ).percent();
   chv += racials.brush_it_off->effectN( 1 ).percent();
-  chv += sim->auras.mark_of_the_wild->check_value();
+
   return chv;
 }
 
@@ -4401,6 +4404,8 @@ double player_t::composite_mitigation_versatility() const
 
   if ( !is_pet() && !is_enemy() && type != HEALING_ENEMY )
   {
+    cmv += sim->auras.mark_of_the_wild->check_value() / 2;
+
     if ( buffs.legendary_tank_buff )
       cmv += buffs.legendary_tank_buff->check_value() / 2;
   }
@@ -4410,7 +4415,6 @@ double player_t::composite_mitigation_versatility() const
 
   cmv += racials.mountaineer->effectN( 1 ).percent() / 2;
   cmv += racials.brush_it_off->effectN( 1 ).percent() / 2;
-  cmv += sim->auras.mark_of_the_wild->check_value() / 2;
 
   return cmv;
 }
