@@ -255,7 +255,7 @@ public:
     player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
     player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
     const spell_data_t* wrath_of_consumption_buff;
-    // DF - Soul Eater's Gluttony (2 point talent, Soul Rot CDR from Unstable Affliction)
+    player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
 
     // DF - Doom Blossom (Choice against Dread Touch, damage proc on Corruption ticks based on Malefic Affliction)
     // DF - Dread Touch (Choice against Doom Blossom, increased DoT damage based on Malefic Affliction)
@@ -437,6 +437,7 @@ public:
     propagate_const<cooldown_t*> demonic_tyrant;
     propagate_const<cooldown_t*> infernal;
     propagate_const<cooldown_t*> shadowburn;
+    propagate_const<cooldown_t*> soul_rot;
   } cooldowns;
 
   // DF - Retire this section, combine remnants with the mastery_spells struct above in a "core" or "base" spells section

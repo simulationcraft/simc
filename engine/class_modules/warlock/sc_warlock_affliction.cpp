@@ -210,6 +210,18 @@ struct unstable_affliction_t : public affliction_spell_t
       p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
   }
 
+  void tick( dot_t* d ) override
+  {
+    affliction_spell_t::tick( d );
+
+    if ( p()->talents.souleaters_gluttony.ok() )
+    {
+      timespan_t adjustment = timespan_t::from_seconds( p()->talents.souleaters_gluttony->effectN( 1 ).base_value() );
+      adjustment = adjustment / p()->talents.souleaters_gluttony->effectN( 2 ).base_value();
+      p()->cooldowns.soul_rot->adjust( -adjustment );
+    }
+  }
+
   void last_tick( dot_t* d) override
   {
     affliction_spell_t::last_tick( d );
@@ -819,6 +831,8 @@ void warlock_t::init_spells_affliction()
 
   talents.wrath_of_consumption = find_talent_spell( talent_tree::SPECIALIZATION, "Wrath of Consumption" ); // Should be ID 387065
   talents.wrath_of_consumption_buff = find_spell( 387066 );
+
+  talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
