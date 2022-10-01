@@ -2031,9 +2031,9 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
 {
   shadowy_insight_t( priest_t& p ) : base_t( p, "shadowy_insight", p.find_spell( 375981 ) )
   {
-    // TODO: determine what rppm value actually is, mostly guesses right now
-    // These values are not found in spell data
-    set_rppm( RPPM_HASTE, 3.0 );
+    // BUG: RPPM value not found in spelldata
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/956
+    set_rppm( RPPM_HASTE, 2.4 );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
