@@ -9259,6 +9259,11 @@ struct denizen_of_the_dream_t : public action_t
       dur( p->find_spell( 394076 )->duration() )
   {}
 
+  result_e calculate_result( action_state_t* ) const override
+  {
+    return result_e::RESULT_NONE;
+  }
+
   void execute() override
   {
     action_t::execute();
