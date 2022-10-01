@@ -2642,7 +2642,8 @@ void print_html_gain( report::sc_html_stream& os, const player_t& p, const gain_
                  "<td class=\"right\">{:.2f}</td>"
                  "<td class=\"right\">{:.2f}%</td>"
                  "<td class=\"right\">{:.2f}</td>",
-                 find_matching_decorator( p, g.name() ), util::inverse_tokenize( util::resource_type_string( i ) ),
+                 find_matching_decorator( p, g.name() ),
+                 util::inverse_tokenize( util::resource_type_string( i ) ),
                  g.count[ i ],
                  g.actual[ i ],
                  ( g.actual[ i ] ? g.actual[ i ] / total_gains[ i ] * 100.0 : 0.0 ),
@@ -4452,9 +4453,10 @@ void print_html_uptime_table( report::sc_html_stream& os, const player_t& p )
     bool show_uptime   = !uptime->uptime_sum.simple;
     bool show_duration = !uptime->uptime_instance.simple;
 
-    std::string name  = util::encode_html( uptime->name_str );
+    std::string name  = find_matching_decorator( p, uptime->name_str );
     std::string span  = name;
-    std::string token = util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
+    std::string token =
+        util::tokenize_fn( highchart::build_id( p, "_" + util::remove_special_chars( name ) + "_benefit" ) );
 
     os << "<tbody>\n";
     if ( p.sim->report_details && ( show_uptime || show_duration ) )

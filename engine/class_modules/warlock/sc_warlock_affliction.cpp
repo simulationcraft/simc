@@ -336,6 +336,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
       //if ( p()->buffs.calamitous_crescendo->check() )
       //  c *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 4 ).percent();
+
+      if ( p()->buffs.tormented_crescendo->check() )
+        c *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 4 ).percent();
         
       return c;      
     }
@@ -346,6 +349,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
       //if ( p()->buffs.calamitous_crescendo->check() )
       //  t *= 1.0 + p()->buffs.calamitous_crescendo->data().effectN( 3 ).percent();
+
+      if ( p()->buffs.tormented_crescendo->check() )
+        t *= 1.0 + p()->talents.tormented_crescendo_buff->effectN( 3 ).percent();
 
       return t;
     }
@@ -363,6 +369,7 @@ struct malefic_rapture_t : public affliction_spell_t
     {
       affliction_spell_t::execute();
 
+      p()->buffs.tormented_crescendo->decrement();
       //p()->buffs.calamitous_crescendo->expire();
     }
 
@@ -483,6 +490,14 @@ struct drain_soul_t : public affliction_spell_t
       //    p()->buffs.calamitous_crescendo->trigger();
       //  }
       //}
+      if ( p()->talents.tormented_crescendo.ok() )
+      {
+        if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 2 ).percent() ) )
+        {
+          p()->procs.tormented_crescendo->occur();
+          p()->buffs.tormented_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -505,6 +520,9 @@ struct haunt_t : public affliction_spell_t
   haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "haunt", p, p->talents.haunt )
   {
     parse_options( options_str );
+
+    if ( p->talents.seized_vitality.ok() )
+      base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -702,6 +720,8 @@ void warlock_t::create_buffs_affliction()
                                 ->set_default_value( talents.inevitable_demise->effectN( 1 ).percent() ); // There are effects in the buff data, but are they unused for the damage?
 
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
+
+  buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
 }
 
 void warlock_t::init_spells_affliction()
@@ -781,6 +801,10 @@ void warlock_t::init_spells_affliction()
   talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
   talents.malefic_affliction_debuff = find_spell( 389845 ); // Debuff data, infinite duration, cancelled by UA ending
 
+  talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
+  talents.tormented_crescendo_buff = find_spell( 387079 );
+
+  talents.seized_vitality = find_talent_spell( talent_tree::SPECIALIZATION, "Seized Vitality" ); // Should be ID 387250
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
@@ -804,6 +828,7 @@ void warlock_t::init_procs_affliction()
   procs.calamitous_crescendo = get_proc( "calamitous_crescendo" );
   procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
+  procs.tormented_crescendo = get_proc( "tormented_crescendo" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {

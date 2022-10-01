@@ -523,6 +523,14 @@ struct shadow_bolt_t : public warlock_spell_t
     //      p()->buffs.calamitous_crescendo->trigger();
     //    }
     //  }
+      if ( p()->talents.tormented_crescendo.ok() )
+      {
+        if ( p()->crescendo_check( p() ) && rng().roll( p()->talents.tormented_crescendo->effectN( 1 ).percent() ) )
+        {
+          p()->procs.tormented_crescendo->occur();
+          p()->buffs.tormented_crescendo->trigger();
+        }
+      }
     }
   }
 
@@ -1601,6 +1609,26 @@ void warlock_t::darkglare_extension_helper( warlock_t* p, timespan_t darkglare_e
     td->dots_unstable_affliction->adjust_duration( darkglare_extension );
     td->dots_soul_rot->adjust_duration( darkglare_extension );
   }
+}
+
+bool warlock_t::crescendo_check( warlock_t* p )
+{
+  bool agony = false;
+  bool corruption = false;
+  for ( const auto target : p->sim->target_non_sleeping_list )
+  {
+    warlock_td_t* td = p->get_target_data( target );
+    if ( !td )
+      continue;
+
+    agony = agony || td->dots_agony->is_ticking();
+    corruption = corruption || td->dots_corruption->is_ticking();
+
+    if ( agony && corruption )
+      break;
+  }
+
+  return agony && corruption && ( p->ua_target && p->get_target_data( p->ua_target )->dots_unstable_affliction->is_ticking() );
 }
 
 // Use this as a helper function when two versions are needed simultaneously (ie a PTR cycle)

@@ -1973,7 +1973,9 @@ class SpellDataGenerator(DataGenerator):
           ( 393942, 1 ), ( 393944, 1 ), # Starweaver
           ( 395022, 1 ), # Incarnation unknown spell
           ( 393961, 1 ), # Primordial Arcanic Pulsar counter buff
-          ( 394103,1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
+          ( 394103, 1 ), ( 394106, 1 ), ( 394108, 1 ), ( 394111, 1 ), # Sundered Firmament
+          ( 393869, 1 ), # Lunar Shrapnel damage
+          ( 395336, 0 ), ( 378987, 0 ), # Protector of the Pack
           # Feral
           ( 391710, 2 ), # Ferocious Frenzy damage
           ( 391786, 2 ), # Tear Open Wounds damage
