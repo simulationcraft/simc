@@ -2165,7 +2165,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
       }
       
-      if ( dk() -> rng().roll( 0.15 ) )
+      if ( dk() -> options.t29_4pc && dk() -> rng().roll( 0.15 ) )
       {
         dk() -> buffs.t29_4pc_unholy -> trigger();
       }
