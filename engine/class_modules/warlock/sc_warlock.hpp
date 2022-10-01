@@ -46,7 +46,7 @@ struct warlock_td_t : public actor_target_data_t
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
   propagate_const<buff_t*> debuffs_malefic_affliction;
-  // DF - Dread Touch (debuff on target for talent)
+  propagate_const<buff_t*> debuffs_dread_touch;
 
   // Destro
   propagate_const<dot_t*> dots_immolate;
@@ -259,7 +259,8 @@ public:
 
     player_talent_t doom_blossom; // Damage proc on Corruption ticks based on Malefic Affliction stacks
     const spell_data_t* doom_blossom_proc;
-    // DF - Dread Touch (Choice against Doom Blossom, increased DoT damage based on Malefic Affliction)
+    player_talent_t dread_touch; // Increased DoT damage based on Malefic Affliction procs
+    const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
     // DF - Haunted Soul (Haunt increase ALL DoT damage while active)
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Grim Reach, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
     // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
@@ -850,6 +851,10 @@ public:
   double composite_target_multiplier( player_t* t ) const override
   {
     double m = spell_t::composite_target_multiplier( t );
+
+    if ( p()->talents.dread_touch.ok() && td( t )->debuffs_dread_touch->check() && data().affected_by( p()->talents.dread_touch_debuff->effectN( 1 ) ) )
+      m *= 1.0 + td( t )->debuffs_dread_touch->check_stack_value();
+
     return m;
   }
 

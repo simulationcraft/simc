@@ -781,6 +781,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_malefic_affliction = make_buff( *this, "malefic_affliction", p.talents.malefic_affliction_debuff )
                                    ->set_default_value( p.talents.malefic_affliction->effectN( 1 ).percent() );
 
+  debuffs_dread_touch = make_buff( *this, "dread_touch", p.talents.dread_touch_debuff )
+                            ->set_default_value( p.talents.dread_touch_debuff->effectN( 1 ).percent() );
+
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
 

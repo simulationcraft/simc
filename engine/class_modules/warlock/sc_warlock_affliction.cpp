@@ -308,6 +308,9 @@ struct malefic_rapture_t : public affliction_spell_t
 
           if ( target_data->dots_unstable_affliction->is_ticking() )
           {
+            if ( p()->talents.dread_touch.ok() && ( target_data->debuffs_malefic_affliction->check() >= (int)p()->talents.malefic_affliction_debuff->max_stacks() ) )
+              target_data->debuffs_dread_touch->trigger();
+
             target_data->debuffs_malefic_affliction->trigger();
           }
         }
@@ -836,6 +839,9 @@ void warlock_t::init_spells_affliction()
 
   talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
   talents.doom_blossom_proc = find_spell( 389869 ); // AoE damage data
+
+  talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
+  talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
