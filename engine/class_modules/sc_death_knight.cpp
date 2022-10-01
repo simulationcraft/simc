@@ -2160,6 +2160,11 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       {
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
       }
+      
+      if ( dk() -> rng().roll( 0.15 ) )
+      {
+        dk() -> buff.t29_4pc_unholy -> trigger();
+      }
     }
 
     bool ready() override
@@ -2238,6 +2243,8 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     m *= 1.0 + ( ghoulish_frenzy -> value() / 100 ) ;
 
+    m *= 1.0 + vile_infusion -> value();
+
     return m;
   }
 
@@ -2265,6 +2272,9 @@ struct ghoul_pet_t : public base_ghoul_pet_t
 
     if ( ghoulish_frenzy -> up() )
       haste *= 1.0 / ( 1.0 + ghoulish_frenzy -> data().effectN( 2 ).percent() );
+
+    if ( vile_infusion -> up() )
+      haste *= 1.0 / ( 1.0 + vile_infusion -> value() );
 
     return haste;
   }
@@ -2322,6 +2332,10 @@ struct ghoul_pet_t : public base_ghoul_pet_t
     ghoulish_frenzy = make_buff( this, "ghoulish_frenzy", dk() -> pet_spell.ghoulish_frenzy )
       -> set_default_value_from_effect( 1 )
       -> set_duration( 0_s );
+
+    vile_infusion = make_buff( this, "vile_infusion" )
+        -> set_default_value( 0.1 )
+        -> set_duration( 10_s );
   }
 };
 
@@ -4995,7 +5009,7 @@ struct dark_transformation_buff_t : public buff_t
 
     debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> frenzied_monstrosity -> expire();
 
-    debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy->expire();
+    debug_cast<pets::ghoul_pet_t*>( p -> pets.ghoul_pet ) -> ghoulish_frenzy -> expire();
 
     p -> buffs.ghoulish_frenzy -> expire();
   }
@@ -9066,6 +9080,8 @@ void death_knight_t::create_options()
   add_option( opt_bool( "disable_aotd", options.disable_aotd ) );
   add_option( opt_bool( "split_ghoul_regen", options.split_ghoul_regen ) );
   add_option( opt_bool( "split_obliterate_schools", options.split_obliterate_schools ) );
+  add_option( opt_bool( "death_knight.t29_2pc", options.t29_2pc ) );
+  add_option( opt_bool( "death_knight.t29_4pc", options.t29_4pc ) );
 }
 
 void death_knight_t::copy_from( player_t* source )
@@ -9168,6 +9184,11 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
   if ( talent.unholy.festermight.ok() )
   {
     buffs.festermight->trigger( n_wounds );
+  }
+
+  if ( dk().options.t29_2pc -> ok() )
+  {
+      pets.ghoul_pet -> vile_infusion -> trigger( n_wounds );
   }
 }
 
@@ -10717,6 +10738,13 @@ void death_knight_t::create_buffs()
                           ->set_default_value( talent.unholy.festermight->effectN( 1 ).percent() )
                           ->set_refresh_behavior( buff_refresh_behavior::DISABLED );
 
+  buffs.t29_4pc_unholy = make_buff( this, "t29_4pc_unholy" )
+           -> set_duration ( 8_s )
+           -> set_default_value( 0.1 )
+           -> set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+           -> add_invalidate( CACHE_HASTE )
+           -> add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
   // Conduits
   buffs.eradicating_blow = make_buff( this, "eradicating_blow", find_spell( 337936 ) )
         -> set_default_value( conduits.eradicating_blow.percent() )
@@ -11305,6 +11333,11 @@ double death_knight_t::composite_player_multiplier( school_e school ) const
   if ( talent.blood.bloodshot.ok() && buffs.blood_shield -> up() && dbc::is_school( school, SCHOOL_PHYSICAL ) )
   {
     m *= 1.0 + talent.blood.bloodshot -> effectN( 1 ).percent();
+  }
+
+  if ( buffs.t29_4pc_unholy->up() )
+  {
+    m *= 1.0 + buffs.t29_4pc_unholy -> value();
   }
 
   return m;
