@@ -6274,6 +6274,23 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> buffs.enduring_strength_builder -> trigger();
       p() -> cooldown.enduring_strength_icd -> start();
     }
+
+    if ( p().options.t29_4pc -> ok() && p() -> rng().roll( 0.15 ) )
+    {
+      p() -> buffs.killing_machine -> trigger();
+    }
+  }
+
+  double composite_da_multiplier( const action_state_t* state ) const override
+  {
+    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+
+    if ( p() -> p().options.t29_2pc -> ok() && state -> result == RESULT_CRIT )
+    {
+      m *= 1.0 + 0.15;
+    }
+
+    return m;
   }
 
   void execute() override
@@ -7126,6 +7143,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
+    if ( p() -> p().options.t29_2pc -> ok() && state -> result == RESULT_CRIT )
+    {
+      m *= 1.0 + 0.15;
+    }
+
     return m;
   }
 
@@ -7173,6 +7195,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       inexorable_assault -> schedule_execute();
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
+    }
+
+    if ( p().options.t29_4pc -> ok() && p() -> rng().roll( 0.15 ) )
+    {
+      p() -> buffs.killing_machine -> trigger();
     }
   }
 
