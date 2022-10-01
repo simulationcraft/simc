@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-09-29/45779)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-01/45779, no-networking)
 Name             : Frostbolt of Ages (id=11) 
 Class            : Paladin
 School           : Frost
@@ -243,12 +243,12 @@ Description      : Stuns the target for $d.
 Tooltip          : Stunned.
 
 Name             : Blessing of Protection (id=1022) [Spell Family (10)] 
+Hotfixed         : Learn Level (32 -> 0), Required Level (32 -> 0), Description
 Talent Entry     : Generic [tree=class, row=6, col=4, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 15% Base Mana (0) (id=107)
-Spell Level      : 32
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
@@ -256,7 +256,7 @@ Cooldown         : 1.5 seconds
 Charges          : 1 (300 seconds cooldown)
 Category         : 1392: Uther's Counsel (378425 effect#2), Improved Blessing of Protection (384909 effect#1)
 Mechanic         : Invulneraility
-Affecting spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Uther's Counsel (378425 effect#1), Echoing Blessings (387801 effect#4)
+Affecting spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effect#4)
 Family Flags     : 7
 Attributes       : ........ ........ x.x..... ........   ........ .......x ........ ........ 
                  : ...x.... x....... .....x.. ........   ........ ........ ........ ........ 
@@ -278,7 +278,9 @@ Effects          :
                    Affected School(s): Arcane, Fire, Frost, Holy, Nature, Shadow
 Description      : Blesses a party or raid member, granting immunity to Physical damage and harmful effects for $d.
 
-Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
+Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.$?c2[
+
+Shares a cooldown with Blessing of Spellwarding.][]
 Tooltip          : Immune to Physical damage and harmful effects.
 
 Name             : Blessing of Freedom (id=1044) [Spell Family (10)] 
@@ -4291,8 +4293,8 @@ Effects          :
 Description      : Avenger's Shield hits $s1 additional targets, and grants you an absorb shield for $s2% of all damage it deals.
 
 Name             : Blessing of Spellwarding (id=204018) [Spell Family (10)] 
-Replaces         : Blessing of Protection (id=1022)
-Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8, select_idx=200, override="Blessing of Protection" (id=1022)]
+Hotfixed         : Cooldown (180000 -> 1500), Category (2083 -> 1392), Affecting Spells, Description
+Talent Entry     : Generic [free=(Protection), tree=spec, row=-1, col=-1, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
@@ -4301,12 +4303,12 @@ Spell Level      : 1
 Range            : 40 yards
 GCD              : 1.5 seconds
 Duration         : 10 seconds
-Cooldown         : 180 seconds
-Charges          : 1 (180 seconds cooldown)
-Category         : 2083
+Cooldown         : 1.5 seconds
+Charges          : 1 (300 seconds cooldown)
+Category         : 1392: Uther's Counsel (378425 effect#2), Improved Blessing of Protection (384909 effect#1)
 Mechanic         : Invulneraility
-Affecting spells : Uther's Guard (207558 effect#2), Uther's Counsel (378425 effect#1), Echoing Blessings (387801 effect#6)
-Family Flags     : 28
+Affecting spells : Uther's Guard (207558 effect#2), Echoing Blessings (339316 effect#4), Echoing Blessings (387801 effects: #4, #6)
+Family Flags     : 7, 28
 Attributes       : ........ ........ x.x..... ........   ........ ........ ........ ........ 
                  : ........ x....... .....x.. ........   ........ ........ ........ ........ 
                  : ........ ........ ........ ........   ..x..... ........ ........ ........ 
@@ -4325,7 +4327,9 @@ Effects          :
                    Affected School(s): Physical
 Description      : Blesses a party or raid member, granting immunity to magical damage and harmful effects for $d.
 
-Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
+Cannot be used on a target with Forbearance. Causes Forbearance for $25771d.
+
+Shares a cooldown with Blessing of Protection.
 Tooltip          : Immune to magical damage and harmful effects.
 
 Name             : Blessed Hammer (id=204019) [Spell Family (10)] 
@@ -4836,12 +4840,12 @@ Effects          :
 Description      : Returns all dead party members to life with $s1% of maximum health and mana.  Cannot be cast when in combat.
 
 Name             : Cleanse Toxins (id=213644) [Spell Family (10)] 
+Hotfixed         : Learn Level (12 -> 0), Required Level (12 -> 0)
 Talent Entry     : Protection, Retribution [tree=class, row=4, col=1, max_rank=1, req_points=0]
 Class            : Paladin
 School           : Holy
 Spell Type       : Magic
 Resource         : 6.5% Base Mana (0) (id=11319)
-Spell Level      : 12
 Range            : 40 yards
 GCD              : 1.5 seconds
 Cooldown         : 8 seconds
@@ -10482,7 +10486,7 @@ Effects          :
                    Family Flags: 4
 #4 (id=867796)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Blessing of Protection (1022)
+                   Affected Spells: Blessing of Protection (1022), Blessing of Spellwarding (204018)
                    Family Flags: 7
 #5 (id=867797)   : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -5 | Scaled Value: -5 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
@@ -12167,7 +12171,7 @@ Effects          :
 Description      : $@spelldesc378285
 
 Name             : Light of the Titans (id=378405) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=4, max_rank=2, req_points=8]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=3, max_rank=2, req_points=8]
                  : Effect#1 [op=set, values=(0, 100)]
 Class            : Paladin
 School           : Physical
@@ -12219,6 +12223,7 @@ Description      : $@spelldesc378405
 Tooltip          : Healing for $w1 every $t1 sec.
 
 Name             : Uther's Counsel (id=378425) [Spell Family (10), Passive, Hidden] 
+Hotfixed         : Description
 Talent Entry     : Protection [free=(Protection), tree=spec, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Holy
@@ -12236,12 +12241,13 @@ Attributes       : ......xx ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1006821)  : Apply Aura (6) | Add Percent Modifier (108): Spell Cooldown (11)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 11 | Target: Self (1)
-                   Affected Spells: Lay on Hands (633), Divine Shield (642), Blessing of Protection (1022), Blessing of Spellwarding (204018)
-                   Family Flags: 7, 15, 22, 28
+                   Affected Spells: Lay on Hands (633), Divine Shield (642)
+                   Family Flags: 15, 22
+Hotfixed         : Affects Spells
 #2 (id=1012224)  : Apply Aura (6) | Modify Recharge Time% (Category) (454)
                    Base Value: -20 | Scaled Value: -20 | PvP Coefficient: 1.00000 | Misc Value: 1392 | Target: Self (1)
-                   Affected Spells (Category): Blessing of Protection (1022)
-Description      : Your Lay on Hands, Divine Shield, and $?s204018[Blessing of Spellwarding][Blessing of Protection] have $s1% reduced cooldown.
+                   Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
+Description      : Your Lay on Hands, Divine Shield, Blessing of Protection, and Blessing of Spellwarding have $s1% reduced cooldown.
 
 Name             : Soaring Shield (id=378457) [Spell Family (10), Passive] 
 Talent Entry     : Protection [free=(Protection), tree=spec, row=8, col=1, max_rank=1, req_points=20, select_idx=200]
@@ -12494,7 +12500,7 @@ Effects          :
 Description      : Cooldown of Seraphim is reduced by ${-$s2/1000} sec and Divine Toll by ${-$s1/1000} sec.
 
 Name             : Crusader's Resolve (id=380188) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=200]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13646,7 +13652,8 @@ Effects          :
 Description      : Golden Path strikes the lowest health ally within it an additional time for ${$s1}.1% of its effect.
 
 Name             : Improved Blessing of Protection (id=384909) [Spell Family (10), Passive] 
-Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8, select_idx=100]
+Hotfixed         : Description
+Talent Entry     : Generic [tree=class, row=7, col=5, max_rank=1, req_points=8]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -13662,8 +13669,8 @@ Attributes       : ......x. ........ ........ ........   ........ ........ .....
 Effects          :
 #1 (id=1017827)  : Apply Aura (6) | Modify Recharge Time (Category) (453)
                    Base Value: -60000 | Scaled Value: -60000 | PvP Coefficient: 1.00000 | Misc Value: 1392 | Target: Self (1)
-                   Affected Spells (Category): Blessing of Protection (1022)
-Description      : Reduces the cooldown of Blessing of Protection by ${-$s1/1000} sec.
+                   Affected Spells (Category): Blessing of Protection (1022), Blessing of Spellwarding (204018)
+Description      : Reduces the cooldown of Blessing of Protection$?c2[ and Blessing of Spellwarding][] by ${-$s1/1000} sec.
 
 Name             : Recompense (id=384914) [Spell Family (10), Passive] 
 Talent Entry     : Generic [tree=class, row=7, col=3, max_rank=1, req_points=8, select_idx=200]
@@ -14973,7 +14980,7 @@ Effects          :
                    Family Flags: 4
 #4 (id=1022841)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 3 (23)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 23 | Target: Self (1)
-                   Affected Spells: Blessing of Protection (1022)
+                   Affected Spells: Blessing of Protection (1022), Blessing of Spellwarding (204018)
                    Family Flags: 7
 #5 (id=1022842)  : Apply Aura (6) | Add Flat Modifier (107): Spell Effect 4 (32)
                    Base Value: -15 | Scaled Value: -15 | PvP Coefficient: 1.00000 | Misc Value: 32 | Target: Self (1)
@@ -16082,7 +16089,7 @@ Description      : Parry increased by $s1%.
 Tooltip          : Parry increased by $s1%.
 
 Name             : Strength in Adversity (id=393071) [Spell Family (10), Passive] 
-Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=5, max_rank=1, req_points=8, select_idx=100]
+Talent Entry     : Protection [free=(Protection), tree=spec, row=5, col=4, max_rank=1, req_points=8, select_idx=100]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
@@ -16126,7 +16133,7 @@ Description      : Empowers you with the spirit of ancient kings, reducing all d
 Tooltip          : Damage taken reduced by $86657s2%.
 
 Name             : Improved Ardent Defender (id=393114) [Spell Family (10), Passive, Hidden] 
-Talent Entry     : Protection [tree=spec, row=5, col=3, max_rank=1, req_points=8]
+Talent Entry     : Generic [free=(Protection), tree=spec, row=-1, col=-1, max_rank=1, req_points=8, select_idx=200]
 Class            : Paladin
 School           : Physical
 Spell Type       : None
