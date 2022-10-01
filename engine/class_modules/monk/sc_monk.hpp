@@ -318,6 +318,13 @@ public:
     propagate_const<buff_t*> primordial_power;
     propagate_const<buff_t*> primordial_power_hidden_gcd;
     propagate_const<buff_t*> primordial_power_hidden_channel;
+
+    // T29 Set Bonus
+    propagate_const<buff_t*> t29_2p_ww;
+    propagate_const<buff_t*> t29_4p_ww_kick;
+    propagate_const<buff_t*> t29_4p_ww_fof;
+    propagate_const<buff_t*> t29_4p_ww_fof_hidden;
+    propagate_const<buff_t*> brewmasters_rhythm;
   } buff;
 
 public:
@@ -1065,6 +1072,8 @@ public:
     double faeline_stomp_uptime;
     int chi_burst_healing_targets;
     int motc_override;
+    int t29_2p;
+    int t29_4p;
   } user_options;
 
   // Blizzard rounds it's stagger damage; anything higher than half a percent beyond
@@ -1104,6 +1113,7 @@ public:
   double composite_dodge() const override;
   double composite_mastery() const override;
   double composite_mastery_rating() const override;
+  double composite_damage_versatility() const override;
   double composite_crit_avoidance() const override;
   double temporary_movement_modifier() const override;
   double composite_player_dd_multiplier( school_e, const action_t* action ) const override;
