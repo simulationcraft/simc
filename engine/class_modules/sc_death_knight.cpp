@@ -1182,6 +1182,8 @@ public:
     bool disable_aotd = false;
     bool split_ghoul_regen = false;
     bool split_obliterate_schools = true;
+    bool t29_2pc = false;
+    bool t29_4pc = false;
   } options;
 
   // Runes
@@ -9215,7 +9217,7 @@ void death_knight_t::trigger_festering_wound_death( player_t* target )
     buffs.festermight->trigger( n_wounds );
   }
 
-  if ( dk().options.t29_2pc -> ok() )
+  if ( options.t29_2pc -> ok() )
   {
       pets.ghoul_pet -> vile_infusion -> trigger( n_wounds );
   }
