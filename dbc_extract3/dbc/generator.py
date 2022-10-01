@@ -1783,7 +1783,8 @@ class SpellDataGenerator(DataGenerator):
           ( 367680, 0 ),    # T28 - Blasphemy
           ( 367819, 0 ),    # T28 - Blasphemous Existence
           ( 367831, 0 ),    # T28 - Deliberate Corruption
-          ( 387079, 0 )    # Tormented Crescendo buff
+          ( 387079, 0 ),    # Tormented Crescendo buff
+          ( 387310, 0 ),    # Haunted Soul buff
         ),
 
         # Monk:
