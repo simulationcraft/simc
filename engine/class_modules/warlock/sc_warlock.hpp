@@ -253,7 +253,8 @@ public:
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
     player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
-    // DF - Wrath of Consumption (Formerly SL Legendary)
+    player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
+    const spell_data_t* wrath_of_consumption_buff;
     // DF - Soul Eater's Gluttony (2 point talent, Soul Rot CDR from Unstable Affliction)
 
     // DF - Doom Blossom (Choice against Dread Touch, damage proc on Corruption ticks based on Malefic Affliction)
@@ -756,7 +757,6 @@ struct warlock_spell_t : public spell_t
 public:
   gain_t* gain;
   bool can_havoc; // DF - Also need to utilize this for Mayhem
-  bool affected_by_woc; // DF - This is now an Affliction talent, see if this hardcoded bool is still needed
 
   warlock_spell_t( warlock_t* p, util::string_view n ) : warlock_spell_t( n, p, p->find_class_spell( n ) )
   {
@@ -775,9 +775,6 @@ public:
     weapon_multiplier = 0.0;
     gain              = player->get_gain( name_str );
     can_havoc         = false;
-
-    //TOCHECK: Is there a way to link this to the buffs.x spell data so we don't have to remember this is hardcoded?
-    affected_by_woc   = data().affected_by( p->find_spell( 337130 )->effectN( 1 ) );
   }
 
   warlock_t* p()
@@ -866,7 +863,7 @@ public:
   {
     double m = spell_t::composite_ta_multiplier( s );
 
-    if ( p()->legendary.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && affected_by_woc )
+    if ( p()->talents.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && data().affected_by( p()->talents.wrath_of_consumption_buff->effectN( 1 ) ) )
       m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
 
     return m;

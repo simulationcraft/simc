@@ -191,20 +191,96 @@ struct harvester_of_souls_t : public warlock_spell_t
 
 struct corruption_t : public warlock_spell_t
 {
-  harvester_of_souls_t* harvester_proc;
+  struct corruption_dot_t : public warlock_spell_t
+  {
+    harvester_of_souls_t* harvester_proc;
+
+    corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption (DoT)", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
+      harvester_proc( new harvester_of_souls_t( p, "" ) )
+    {
+      tick_zero = false;
+      background = dual = true;
+
+      add_child( harvester_proc );
+
+      if ( p->talents.absolute_corruption->ok() )
+      {
+        dot_duration = sim->expected_iteration_time > 0_ms
+                           ? 2 * sim->expected_iteration_time
+                           : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
+        base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
+      }
+
+      if ( p->talents.creeping_death->ok() )
+        base_tick_time *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
+    }
+
+    void tick( dot_t* d ) override
+    {
+      warlock_spell_t::tick( d );
+
+      if ( result_is_hit( d->state->result ) )
+      {
+        if  ( p()->talents.nightfall->ok() )
+        {
+          // TOCHECK regularly.
+          // Blizzard did not publicly release how nightfall was changed.
+          // We determined this is the probable functionality copied from Agony by first confirming the
+          // DR formula was the same and then confirming that you can get procs on 1st tick.
+          // The procs also have a regularity that suggest it does not use a proc chance or rppm.
+          // Last checked 09-28-2020.
+          double increment_max = 0.13;
+
+          double active_corruptions = p()->get_active_dots( internal_id );
+          increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
+
+          p()->corruption_accumulator += rng().range( 0.0, increment_max );
+
+          if ( p()->corruption_accumulator >= 1 )
+          {
+            p()->procs.nightfall->occur();
+            p()->buffs.nightfall->trigger();
+            p()->corruption_accumulator -= 1.0;
+
+          }
+        }
+
+        if ( p()->talents.harvester_of_souls.ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
+        {
+          harvester_proc->execute_on_target( d->state->target );
+          p()->procs.harvester_of_souls->occur();
+        }
+      }
+    }
+
+    double composite_ta_multiplier(const action_state_t* s) const override
+    {
+      double m = warlock_spell_t::composite_ta_multiplier( s );
+
+      // Ripped from affliction_spell_t - See what we can do to unify this under warlock_spell_t
+      if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
+      {
+        m *= 1.0 + p()->cache.mastery_value();
+      }
+
+      if ( p()->talents.sacrolashs_dark_strike->ok() )
+        m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
+
+      return m;
+    }
+  };
+
+  corruption_dot_t* periodic;
 
   corruption_t( warlock_t* p, util::string_view options_str, bool seed_action )
     : warlock_spell_t( "Corruption", p, p->warlock_base.corruption ),
-    harvester_proc( new harvester_of_souls_t( p, "" ) )
+    periodic( new corruption_dot_t( p ) )
   {
     parse_options( options_str );
     tick_zero                  = false;
-    affected_by_woc            = true;
 
     // DoT information is in trigger spell (146739)
-    spell_power_mod.tick       = data().effectN( 1 ).trigger()->effectN( 1 ).sp_coeff();
-    base_tick_time             = data().effectN( 1 ).trigger()->effectN( 1 ).period();
-    dot_duration               = data().effectN( 1 ).trigger()->duration();
+    impact_action = periodic;
 
     spell_power_mod.direct = 0; // By default, Corruption does not deal instant damage
 
@@ -213,22 +289,6 @@ struct corruption_t : public warlock_spell_t
       spell_power_mod.direct = data().effectN( 3 ).sp_coeff(); // Talent uses this effect in base spell for damage
       base_execute_time *= 1.0 + p->talents.xavian_teachings->effectN( 1 ).percent();
     }
-
-    // 2022-09-21 : Manually reapply spec aura to tick damage (direct damage is not affected!). TODO: Create separate DoT spell triggered by this?
-    base_td_multiplier *= 1.0 + p->warlock_base.affliction_warlock->effectN( 2 ).percent();
-
-    add_child( harvester_proc );
-
-    if ( p->talents.absolute_corruption->ok() )
-    {
-      dot_duration = sim->expected_iteration_time > 0_ms
-                         ? 2 * sim->expected_iteration_time
-                         : 2 * sim->max_time * ( 1.0 + sim->vary_combat_length );  // "infinite" duration
-      base_td_multiplier *= 1.0 + p->talents.absolute_corruption->effectN( 2 ).percent(); // 2022-09-25: Only tick damage is affected
-    }
-
-    if ( p->talents.creeping_death->ok() )
-      base_tick_time *= 1.0 + p->talents.creeping_death->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -242,74 +302,6 @@ struct corruption_t : public warlock_spell_t
 
     if ( pi_trigger )
       p()->proc_actions.pandemic_invocation_proc->execute_on_target( s->target );
-  }
-
-  void tick( dot_t* d ) override
-  {
-    warlock_spell_t::tick( d );
-
-    if ( result_is_hit( d->state->result ) )
-    {
-      if  ( p()->talents.nightfall->ok() )
-      {
-        // TOCHECK regularly.
-        // Blizzard did not publicly release how nightfall was changed.
-        // We determined this is the probable functionality copied from Agony by first confirming the
-        // DR formula was the same and then confirming that you can get procs on 1st tick.
-        // The procs also have a regularity that suggest it does not use a proc chance or rppm.
-        // Last checked 09-28-2020.
-        double increment_max = 0.13;
-
-        double active_corruptions = p()->get_active_dots( internal_id );
-        increment_max *= std::pow( active_corruptions, -2.0 / 3.0 );
-
-        p()->corruption_accumulator += rng().range( 0.0, increment_max );
-
-        if ( p()->corruption_accumulator >= 1 )
-        {
-          p()->procs.nightfall->occur();
-          p()->buffs.nightfall->trigger();
-          p()->corruption_accumulator -= 1.0;
-
-        }
-      }
-
-      if ( p()->talents.harvester_of_souls.ok() && rng().roll( p()->talents.harvester_of_souls->effectN( 1 ).percent() ) )
-      {
-        harvester_proc->execute_on_target( d->state->target );
-        p()->procs.harvester_of_souls->occur();
-      }
-    }
-  }
-
-  double composite_ta_multiplier(const action_state_t* s) const override
-  {
-    double m = warlock_spell_t::composite_ta_multiplier( s );
-
-    // Ripped from affliction_spell_t - See what we can do to unify this under warlock_spell_t
-    if ( this->data().affected_by( p()->warlock_base.potent_afflictions->effectN( 1 ) ) )
-    {
-      m *= 1.0 + p()->cache.mastery_value();
-    }
-
-    if ( p()->talents.sacrolashs_dark_strike->ok() )
-      m *= 1.0 + p()->talents.sacrolashs_dark_strike->effectN( 1 ).percent();
-
-    return m;
-  }
-
-  // The following were taken from affliction_spell_t - See what we can do to unify this under warlock_spell_t
-  void init() override
-  {
-    warlock_spell_t::init();
-
-    //if ( p()->talents.creeping_death->ok() )
-    //{
-    //  if ( data().affected_by( p()->talents.creeping_death->effectN( 1 ) ) )
-    //    base_tick_time *= 1.0 + p()->talents.creeping_death->effectN( 1 ).percent();
-    //  if ( data().affected_by( p()->talents.creeping_death->effectN( 2 ) ) )
-    //    dot_duration *= 1.0 + p()->talents.creeping_death->effectN( 2 ).percent();
-    //}
   }
 
   // direct action multiplier
@@ -748,7 +740,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 
   // Aff
-  dots_corruption          = target->get_dot( "corruption", &p );
+  dots_corruption          = target->get_dot( "corruption_dot", &p );
   dots_agony               = target->get_dot( "agony", &p );
   dots_drain_soul          = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );
@@ -848,14 +840,14 @@ void warlock_td_t::target_demise()
                            warlock.gains.shadowburn_refund );
   }
 
-  if ( dots_agony->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  if ( dots_agony->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Agony.", target->name(), warlock.name() );
 
     warlock.buffs.wrath_of_consumption->trigger();
   }
 
-  if ( dots_corruption->is_ticking() && warlock.legendary.wrath_of_consumption.ok() )
+  if ( dots_corruption->is_ticking() && warlock.talents.wrath_of_consumption.ok() )
   {
     warlock.sim->print_log( "Player {} demised. Warlock {} triggers Wrath of Consumption from Corruption.", target->name(), warlock.name() );
 
@@ -1239,8 +1231,8 @@ void warlock_t::create_buffs()
                        ->set_cooldown( 0_ms );
 
   // Legendaries
-  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )
-                               ->set_default_value_from_effect( 1 );
+  buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", talents.wrath_of_consumption_buff )
+                               ->set_default_value( talents.wrath_of_consumption->effectN( 2 ).percent() );
 
   buffs.demonic_synergy = make_buff( this, "demonic_synergy", find_spell( 337060 ) )
                               ->set_default_value( legendary.relic_of_demonic_synergy->effectN( 1 ).percent() * ( this->specialization() == WARLOCK_DEMONOLOGY ? 1.5 : 1.0 ) );
