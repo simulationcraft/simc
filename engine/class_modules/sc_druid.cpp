@@ -7826,10 +7826,6 @@ struct stellar_flare_t : public druid_spell_t
     : stellar_flare_t( p, "stellar_flare", p->talent.stellar_flare, opt )
   {}
 
-  stellar_flare_t( druid_t* p, std::string_view n, std::string_view opt )
-    : stellar_flare_t( p, n, p->talent.stellar_flare, opt )
-  {}
-
   stellar_flare_t( druid_t* p, std::string_view n, const spell_data_t* s, std::string_view opt )
     : druid_spell_t( n, p, s, opt )
   {
@@ -7874,7 +7870,7 @@ struct starsurge_t : public druid_spell_t
 
     if ( p->talent.stellar_inspiration.ok() )
     {
-      flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_inspiration", "" );
+      flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_inspiration", p->find_spell( 202347 ), "" );
       flare->name_str_reporting = "stellar_flare";
       flare->energize_type = action_energize::NONE;
     }
