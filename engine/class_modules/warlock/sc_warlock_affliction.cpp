@@ -221,27 +221,19 @@ struct unstable_affliction_t : public affliction_spell_t
 struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "summon_darkglare", p, p->spec.summon_darkglare )
+    : affliction_spell_t( "summon_darkglare", p, p->talents.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-
-  if ( p->spec.summon_darkglare_2->ok() )
-      cooldown->duration += timespan_t::from_millis( p->spec.summon_darkglare_2->effectN( 1 ).base_value() );
   }
 
   void execute() override
   {
     affliction_spell_t::execute();
 
-    for ( auto& darkglare : p()->warlock_pet_list.darkglare )
-    {
-      if ( darkglare->is_sleeping() )
-      {
-        darkglare->summon( data().duration() );
-      }
-    }
-    timespan_t darkglare_extension = timespan_t::from_seconds( p()->spec.summon_darkglare->effectN( 2 ).base_value() );
+    p()->warlock_pet_list.darkglare.spawn( p()->talents.summon_darkglare->duration() );
+
+    timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
     p()->darkglare_extension_helper( p(), darkglare_extension );
   }
@@ -761,7 +753,7 @@ void warlock_t::init_spells_affliction()
 
   talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
-
+  talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
 
  

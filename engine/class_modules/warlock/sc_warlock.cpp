@@ -1733,14 +1733,6 @@ void warlock_t::create_all_pets()
       infernal = new pets::destruction::infernal_t( this );
     }
   }
-
-  if ( specialization() == WARLOCK_AFFLICTION )
-  {
-    for ( auto& pet : warlock_pet_list.darkglare )
-    {
-      pet = new pets::affliction::darkglare_t( this );
-    }
-  }
 }
 
 //TODO: Are these expressions outdated?
@@ -1959,6 +1951,7 @@ struct warlock_module_t : public module_t
 warlock::warlock_t::pets_t::pets_t( warlock_t* w )
   : active( nullptr ),
     last( nullptr ),
+    darkglare( "darkglare", w ),
     roc_infernals( "roc_infernal", w ),
     blasphemy( "blasphemy", w ),
     dreadstalkers( "dreadstalker", w ),
