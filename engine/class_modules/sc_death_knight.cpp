@@ -6278,11 +6278,6 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> buffs.enduring_strength_builder -> trigger();
       p() -> cooldown.enduring_strength_icd -> start();
     }
-
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
-    {
-      p() -> buffs.killing_machine -> trigger();
-    }
   }
 
   double composite_da_multiplier( const action_state_t* state ) const override
@@ -6315,6 +6310,11 @@ struct frostscythe_t : public death_knight_melee_attack_t
 
     // Frostscythe procs rime at half the chance of Obliterate
     p() -> buffs.rime -> trigger( 1, buff_t::DEFAULT_VALUE(), p() -> buffs.rime->manual_chance / 2.0 );
+
+    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    {
+      p() -> buffs.killing_machine -> trigger();
+    }
   }
 
   double composite_crit_chance() const override
@@ -7200,11 +7200,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> buffs.inexorable_assault -> decrement();
       p() -> cooldown.inexorable_assault_icd -> start();
     }
-
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
-    {
-      p() -> buffs.killing_machine -> trigger();
-    }
   }
 
   void execute() override
@@ -7225,6 +7220,11 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
 
     // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
+
+    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    {
+      p() -> buffs.killing_machine -> trigger();
+    }
   }
 };
 
