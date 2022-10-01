@@ -249,7 +249,8 @@ public:
 
     player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
     const spell_data_t* malefic_affliction_debuff; // Target debuff applied on Malefic Rapture casts
-    // DF - Calamitous Crescendo (Formerly SL Tier Bonus)
+    player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
+    const spell_data_t* tormented_crescendo_buff;
     // DF - Seized Vitality (2 point talent, additional Haunt damage)
     // DF - Antoran Plating (2 point talent, increased Darkglare damage and duration)
     // DF - Wrath of Consumption (Formerly SL Legendary)
@@ -479,6 +480,7 @@ public:
     propagate_const<buff_t*> wrath_of_consumption; // DF - Now comes from Affliction talent.
     propagate_const<buff_t*> decaying_soul_satchel_haste; // DF - Now comes from Affliction talent
     propagate_const<buff_t*> decaying_soul_satchel_crit; // These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
+    propagate_const<buff_t*> tormented_crescendo;
     // DF - Haunted Soul - Buff on player while active
 
     // Demonology Buffs
@@ -559,6 +561,7 @@ public:
     std::array<proc_t*, 8> malefic_rapture; // This length should be at least equal to the maximum number of Affliction DoTs that can be active on a target.
     proc_t* harvester_of_souls;
     proc_t* pandemic_invocation_shard;
+    proc_t* tormented_crescendo;
 
     // demo
     proc_t* demonic_calling;
@@ -603,6 +606,7 @@ public:
   void darkglare_extension_helper( warlock_t* p, timespan_t darkglare_extension );
   bool min_version_check( version_check_e version ) const;
   action_t* pass_corruption_action( warlock_t* p ); // Horrible, horrible hack for getting Corruption in Aff module until things are re-merged
+  bool crescendo_check( warlock_t* p ); 
   void create_actions() override;
   action_t* create_action( util::string_view name, util::string_view options ) override;
   pet_t* create_pet( util::string_view name, util::string_view type = {} ) override;
