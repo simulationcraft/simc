@@ -97,24 +97,24 @@ struct drain_life_t : public warlock_spell_t
 
     p()->buffs.drain_life->trigger();
 
-    //if ( p()->covenant.soul_rot->ok() && p()->buffs.soul_rot->check() )
-    //{
-    //  const auto& tl = target_list();
-    //  
-    //  for ( auto& t : tl )
-    //  {
-    //    //Don't apply aoe version to primary target
-    //    if ( t == target )
-    //      continue;
+    if ( p()->talents.soul_rot->ok() && p()->buffs.soul_rot->check() )
+    {
+      const auto& tl = target_list();
+      
+      for ( auto& t : tl )
+      {
+        //Don't apply aoe version to primary target
+        if ( t == target )
+          continue;
 
-    //    auto data = td( t );
-    //    if ( data->dots_soul_rot->is_ticking() )
-    //    {
-    //      aoe_dot->set_target( t );
-    //      aoe_dot->execute();
-    //    }
-    //  }
-    //}
+        auto data = td( t );
+        if ( data->dots_soul_rot->is_ticking() )
+        {
+          aoe_dot->set_target( t );
+          aoe_dot->execute();
+        }
+      }
+    }
   }
 
   double bonus_ta( const action_state_t* s ) const override
@@ -162,17 +162,17 @@ struct drain_life_t : public warlock_spell_t
 
     warlock_spell_t::last_tick( d );
 
-    //if ( p()->covenant.soul_rot->ok() )
-    //{
-    //  const auto& tl = target_list();
+    if ( p()->talents.soul_rot->ok() )
+    {
+      const auto& tl = target_list();
 
-    //  for ( auto& t : tl )
-    //  {
-    //    auto data = td( t );
-    //    if ( data->dots_drain_life_aoe->is_ticking() )
-    //      data->dots_drain_life_aoe->cancel();
-    //  }
-    //}
+      for ( auto& t : tl )
+      {
+        auto data = td( t );
+        if ( data->dots_drain_life_aoe->is_ticking() )
+          data->dots_drain_life_aoe->cancel();
+      }
+    }
   }
 };
 
@@ -562,11 +562,11 @@ struct shadow_bolt_t : public warlock_spell_t
 struct soul_rot_t : public warlock_spell_t
 {
   soul_rot_t( warlock_t* p, util::string_view options_str )
-    : warlock_spell_t( "soul_rot", p, p->covenant.soul_rot )
+    : warlock_spell_t( "soul_rot", p, p->talents.soul_rot )
 
   {
     parse_options( options_str );
-    aoe = 1 + as<int>( p->covenant.soul_rot->effectN( 3 ).base_value() );
+    aoe = 1 + as<int>( p->talents.soul_rot->effectN( 3 ).base_value() );
   }
 
   void execute() override
@@ -580,34 +580,20 @@ struct soul_rot_t : public warlock_spell_t
   {
     warlock_spell_t::impact( s );
 
-    if ( p()->legendary.decaying_soul_satchel.ok() )
-    {
-      p()->buffs.decaying_soul_satchel_haste->trigger();
-      p()->buffs.decaying_soul_satchel_crit->trigger();
-    }
+    //if ( p()->legendary.decaying_soul_satchel.ok() )
+    //{
+    //  p()->buffs.decaying_soul_satchel_haste->trigger();
+    //  p()->buffs.decaying_soul_satchel_crit->trigger();
+    //}
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
   {
-    double pm = warlock_spell_t::composite_ta_multiplier( s );
+    double m = warlock_spell_t::composite_ta_multiplier( s );
+
     if ( s->chain_target == 0 )
     {
-      pm *= 2.0; //Hardcoded in tooltip, primary takes double damage
-    }
-
-    return pm;
-  }
-
-  double action_multiplier() const override
-  {
-    double m = warlock_spell_t::action_multiplier();
-
-    if ( p()->specialization() == WARLOCK_DESTRUCTION && p()->warlock_base.chaotic_energies->ok() )
-    {
-      double destro_mastery_value = p()->cache.mastery_value() / 2.0;
-      double chaotic_energies_rng = rng().range( 0, destro_mastery_value );
-
-      m *= 1.0 + chaotic_energies_rng + ( destro_mastery_value );
+      m *= 1.0 + p()->talents.soul_rot->effectN( 4 ).base_value() / 10; //Primary takes increased damage
     }
 
     return m;
@@ -751,7 +737,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 {
   dots_drain_life = target->get_dot( "drain_life", &p );
   dots_drain_life_aoe = target->get_dot( "drain_life_aoe", &p );
-  dots_soul_rot       = target->get_dot( "soul_rot", &p );
+  dots_soul_rot = target->get_dot( "soul_rot", &p );
 
   // Aff
   dots_corruption          = target->get_dot( "corruption", &p );
@@ -1238,8 +1224,8 @@ void warlock_t::create_buffs()
   buffs.grimoire_of_sacrifice = make_buff( this, "grimoire_of_sacrifice", talents.grimoire_of_sacrifice_buff )
                                     ->set_chance( 1.0 );
 
-  // Covenants
-  buffs.soul_rot = make_buff(this, "soul_rot", covenant.soul_rot);
+  buffs.soul_rot = make_buff(this, "soul_rot", talents.soul_rot)
+                       ->set_cooldown( 0_ms );
 
   // Legendaries
   buffs.wrath_of_consumption = make_buff( this, "wrath_of_consumption", find_spell( 337130 ) )

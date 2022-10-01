@@ -245,7 +245,7 @@ public:
     player_talent_t creeping_death; // DF - No long reduces duration
     player_talent_t haunt;
     player_talent_t summon_darkglare; 
-    // DF - Soul Rot (formerly SL Covenant Ability, now Affliction only)
+    player_talent_t soul_rot; // DF - now Affliction only
 
     // DF - Malefic Affliction (2 point talent, stacking damage increase to current Unstable Affliction)
     // DF - Calamitous Crescendo (Formerly SL Tier Bonus)

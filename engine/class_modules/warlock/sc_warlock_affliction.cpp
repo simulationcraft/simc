@@ -755,7 +755,7 @@ void warlock_t::init_spells_affliction()
 
   talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
-
+  talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
  
 
 
