@@ -272,7 +272,6 @@ public:
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
-  unsigned orbit_breaker_count;
   bool sundered_firmament_track;
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
@@ -452,6 +451,7 @@ public:
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* natures_grace;
+    buff_t* orbit_breaker;
     buff_t* owlkin_frenzy;
     buff_t* starweavers_warp;  // free starfall
     buff_t* starweavers_weft;  // free starsurge
@@ -2990,7 +2990,7 @@ public:
 
   void trigger_shooting_stars( player_t* t )
   {
-    if ( !p()->talent.shooting_stars.ok() || !p()->active.shooting_stars )
+    if ( !p()->active.shooting_stars )
       return;
 
     double chance = p()->talent.shooting_stars->effectN( 1 ).percent();
@@ -3122,15 +3122,7 @@ struct shooting_stars_t : public druid_spell_t
     druid_spell_t::execute();
 
     if ( p()->talent.orbit_breaker.ok() )
-    {
-      p()->orbit_breaker_count++;
-
-      if ( p()->orbit_breaker_count >= as<unsigned>( p()->talent.orbit_breaker->effectN( 1 ).base_value() ) )
-      {
-        p()->orbit_breaker_count = 0U;
-        p()->active.orbit_breaker->execute_on_target( target );
-      }
-    }
+      p()->buff.orbit_breaker->trigger();
   }
 };
 }  // namespace spells
@@ -7081,9 +7073,6 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p, std::string_view n )
       : druid_spell_t( n, p, p->spec.moonfire_dmg ), gg_mul( 0.0 ), feral_override_da( 0.0 ), feral_override_ta( 0.0 )
     {
-      if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
-        p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
-
       may_miss = false;
       dual = background = true;
 
@@ -7831,6 +7820,13 @@ struct stellar_flare_t : public druid_spell_t
   {
     dot_name = "stellar_flare";
   }
+
+  void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
+
+    trigger_shooting_stars( d->target );
+  }
 };
 
 // Starsurge Spell ==========================================================
@@ -7972,9 +7968,6 @@ struct sunfire_t : public druid_spell_t
   {
     sunfire_damage_t( druid_t* p ) : druid_spell_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
-      if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
-        p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
-
       dual = background   = true;
       aoe                 = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
@@ -10332,6 +10325,15 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
+  buff.orbit_breaker = make_buff( this, "orbit_breaker" )
+    ->set_quiet( true )
+    ->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) )
+    ->set_expire_at_max_stack( true )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+      if ( b->at_max_stacks() )
+        active.orbit_breaker->execute_on_target( active.shooting_stars->target );
+    } );
+
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
 
@@ -10633,6 +10635,9 @@ void druid_t::create_actions()
     active.orbit_breaker = fm;
   }
 
+  if ( talent.shooting_stars.ok() )
+    active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
+
   if ( talent.starweaver.ok() )
   {
     auto ss = get_secondary_action_n<starsurge_t>( "starweavers_weft", talent.starsurge, "" );
@@ -10765,6 +10770,7 @@ void druid_t::create_actions()
   // setup dot_ids used by druid_action_t::get_dot_count()
   setup_dot_ids<sunfire_t::sunfire_damage_t>();
   setup_dot_ids<moonfire_t::moonfire_damage_t, lunar_inspiration_t>();
+  setup_dot_ids<stellar_flare_t>();
   setup_dot_ids<rake_t::rake_bleed_t>();
   setup_dot_ids<rip_t>();
 }
@@ -11250,7 +11256,6 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  orbit_breaker_count = 0U;
   sundered_firmament_track = false;
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
