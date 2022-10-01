@@ -356,6 +356,7 @@ public:
 
     // Balance
     action_t* astral_smolder;
+    action_t* denizen_of_the_dream;      // placeholder action
     action_t* orbit_breaker;
     action_t* shooting_stars;
     action_t* starfall_starweaver;       // free starfall from starweaver's warp
@@ -419,7 +420,6 @@ public:
 
     // Class
     buff_t* dash;
-    buff_t* furor;
     buff_t* heart_of_the_wild;
     buff_t* innervate;
     buff_t* ironfur;
@@ -431,6 +431,8 @@ public:
     buff_t* matted_fur;
     buff_t* moonkin_form;
     buff_t* natures_vigil;
+    buff_t* protector_of_the_pack_moonfire;
+    buff_t* protector_of_the_pack_regrowth;
     buff_t* tiger_dash;
     buff_t* tireless_pursuit;
     buff_t* ursine_vigor;
@@ -542,11 +544,6 @@ public:
     cooldown_t* tigers_fury;
     cooldown_t* warrior_of_elune;
     cooldown_t* rage_from_melees;
-
-    cooldown_t* furor_caster_form;  // rawr?
-    cooldown_t* furor_bear_form;
-    cooldown_t* furor_cat_form;
-    cooldown_t* furor_moonkin_form;
   } cooldown;
 
   // Gains
@@ -666,7 +663,7 @@ public:
     player_talent_t renewal;
     player_talent_t innervate;
 
-    player_talent_t furor;  // Row 10
+    player_talent_t protector_of_the_pack;  // Row 10
     player_talent_t heart_of_the_wild;
     player_talent_t natures_vigil;
 
@@ -1089,11 +1086,6 @@ public:
     cooldown.rage_from_melees   = get_cooldown( "rage_from_melees" );
     cooldown.rage_from_melees->duration = 1_s;
 
-    cooldown.furor_caster_form  = get_cooldown( "furor_caster_form" );
-    cooldown.furor_bear_form    = get_cooldown( "furor_bear_form" );
-    cooldown.furor_cat_form     = get_cooldown( "furor_cat_form" );
-    cooldown.furor_moonkin_form = get_cooldown( "furor_moonkin_form" );
-
     resource_regeneration = regen_type::DYNAMIC;
 
     regen_caches[ CACHE_HASTE ]        = true;
@@ -1131,6 +1123,7 @@ public:
   void merge( player_t& other ) override;
   void datacollection_begin() override;
   void datacollection_end() override;
+  void analyze( sim_t& ) override;
   timespan_t available() const override;
   double composite_melee_attack_power() const override;
   double composite_melee_attack_power_by_type( attack_power_type type ) const override;
@@ -1285,6 +1278,14 @@ struct denizen_of_the_dream_t : public pet_t
         dam = 233;
 
       base_dd_min = base_dd_max = dam;
+      name_str_reporting = "fey_missile";
+
+      auto proxy = debug_cast<druid_t*>( p->owner )->active.denizen_of_the_dream;
+      auto it = range::find( proxy->child_action, data().id(), &action_t::id );
+      if ( it != proxy->child_action.end() )
+        stats = ( *it )->stats;
+      else
+        proxy->add_child( this );
     }
 
     void execute() override
@@ -1308,6 +1309,14 @@ struct denizen_of_the_dream_t : public pet_t
     if ( n == "fey_missile" ) return new fey_missile_t( this );
 
     return pet_t::create_action( n, opt );
+  }
+
+  void arise() override
+  {
+    pet_t::arise();
+
+    if ( o()->talent.friend_of_the_fae.ok() )
+      o()->buff.friend_of_the_fae->trigger();
   }
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
@@ -1787,9 +1796,12 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 
   void execute( int s, double v, timespan_t d ) override
   {
+    bool was_active = check();
+
     base_t::execute( s, v, d );
 
-    trigger_sundered_firmament();
+    if ( !was_active)
+      trigger_sundered_firmament();
   }
 
   /* TODO: re-enable if this comes back, otherwise remove by launch
@@ -1816,14 +1828,14 @@ struct eclipse_buff_t : public druid_buff_t<buff_t>
 // Fury of Elune AP =========================================================
 struct fury_of_elune_buff_t : public druid_buff_t<buff_t>
 {
-  fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s ) : base_t( p, n, s )
+  fury_of_elune_buff_t( druid_t& p, std::string_view n, const spell_data_t* s, double mul = 1.0 ) : base_t( p, n, s )
   {
     set_cooldown( 0_ms );
     set_refresh_behavior( buff_refresh_behavior::DURATION );
 
     auto eff = p.query_aura_effect( &data(), A_PERIODIC_ENERGIZE, RESOURCE_ASTRAL_POWER );
-    auto ap = eff->resource( RESOURCE_ASTRAL_POWER );
-    set_default_value( eff->resource( RESOURCE_ASTRAL_POWER ) / eff->period().total_seconds() );
+    auto ap = eff->resource( RESOURCE_ASTRAL_POWER ) * mul;
+    set_default_value( ap / eff->period().total_seconds() );
 
     auto gain = p.get_gain( n );
     set_tick_callback( [ ap, gain, this ]( buff_t*, int, timespan_t ) {
@@ -1902,6 +1914,29 @@ struct kindred_empowerment_buff_t : public druid_buff_t<buff_t>
     pool -= amount;
 
     ( *damage )->execute_on_target( s->target, amount );
+  }
+};
+
+// Protector of the Pack =====================================================
+struct protector_of_the_pack_buff_t : public druid_buff_t<buff_t>
+{
+  double mul;
+  double cap_coeff;  // from tooltip desc
+
+  protector_of_the_pack_buff_t( druid_t& p, std::string_view n, const spell_data_t* s )
+    : base_t( p, n, s ), mul( p.talent.protector_of_the_pack->effectN( 1 ).percent() ), cap_coeff( 1.2 )
+  {
+    set_name_reporting( "protector_of_the_pack" );
+  }
+
+  void add_amount( double amt )
+  {
+    auto cap = p().cache.spell_power( SCHOOL_MAX ) * cap_coeff;
+
+    if ( current_value >= cap )
+      return;
+
+    current_value = std::min( cap, current_value + amt * mul );
   }
 };
 
@@ -2244,18 +2279,31 @@ public:
   {
     ab::assess_damage( t, s );
 
-    // TODO: check if these are better suited for assessors, add batching
-    if ( p()->buff.natures_vigil->check() &&
-         ( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) && s->n_targets == 1 )
+    if ( !s->result_amount || !( t == result_amount_type::DMG_DIRECT || t == result_amount_type::DMG_OVER_TIME ) )
+      return;
+
+    // TODO: add batching
+    if ( p()->buff.natures_vigil->check() && s->n_targets == 1 )
     {
       p()->active.natures_vigil_heal->execute_on_target(
           p(), p()->buff.natures_vigil->check_value() * s->result_amount );
     }
 
-    if ( p()->get_form() == BEAR_FORM && s->action->get_school() == SCHOOL_ARCANE && p()->talent.elunes_favored.ok() )
+    if ( p()->get_form() == BEAR_FORM && dbc::has_common_school( s->action->get_school(), SCHOOL_ARCANE ) &&
+         p()->talent.elunes_favored.ok() )
     {
       p()->active.elunes_favored_heal->execute_on_target(
           p(), p()->talent.elunes_favored->effectN( 1 ).percent() * s->result_amount );
+    }
+
+    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() != DRUID_RESTORATION )
+    {
+      auto b = p()->buff.protector_of_the_pack_regrowth;
+
+      if ( !b->check() )
+        b->trigger();
+
+      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
     }
   }
 
@@ -2578,6 +2626,8 @@ public:
     // Class
     parse_buff_effects( p()->buff.cat_form );
     parse_buff_effects( p()->buff.moonkin_form );
+    parse_buff_effects( p()->buff.protector_of_the_pack_moonfire, false, true );
+    parse_buff_effects( p()->buff.protector_of_the_pack_regrowth, false, true );
 
     switch( p()->specialization() )
     {
@@ -2706,11 +2756,8 @@ public:
 
     c *= std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
 
-    if ( free_cast || p()->buff.furor->up() ||
-         ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
-    {
-      c *= 0.0;
-    }
+    if ( free_cast || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
+      return 0.0;
 
     return c;
   }
@@ -3195,6 +3242,24 @@ struct druid_heal_t : public druid_spell_base_t<heal_t>
 
     if ( affected_by.soul_of_the_forest && p()->buff.soul_of_the_forest_tree->up() )
       p()->buff.soul_of_the_forest_tree->expire();
+  }
+
+  void assess_damage( result_amount_type t, action_state_t* s ) override
+  {
+    base_t::assess_damage( t, s );
+
+    if ( !s->result_amount || !( t == result_amount_type::HEAL_DIRECT || t == result_amount_type::HEAL_OVER_TIME ) )
+      return;
+
+    if ( p()->talent.protector_of_the_pack.ok() && p()->specialization() == DRUID_RESTORATION )
+    {
+      auto b = p()->buff.protector_of_the_pack_moonfire;
+
+      if ( !b->check() )
+        b->trigger();
+
+      debug_cast<buffs::protector_of_the_pack_buff_t*>( b )->add_amount( s->result_amount );
+    }
   }
 };
 }  // namespace heals
@@ -5669,7 +5734,10 @@ struct regrowth_t : public druid_heal_t
       p()->buff.protective_growth->trigger();
 
     if ( !free_cast )
+    {
       p()->buff.natures_swiftness->expire();
+      p()->buff.protector_of_the_pack_regrowth->expire();
+    }
   }
 
   void last_tick( dot_t* d ) override
@@ -7142,6 +7210,8 @@ struct moonfire_t : public druid_spell_t
         if ( free_cast != free_cast_e::GALACTIC )
           trigger_gore();
 
+        p()->buff.protector_of_the_pack_moonfire->expire();
+
         if ( !free_cast )
           p()->buff.galactic_guardian->expire();
       }
@@ -7785,8 +7855,8 @@ struct starsurge_t : public druid_spell_t
     }
   };
 
-  spell_t* flare;
-  spell_t* goldrinn;
+  action_t* flare;
+  action_t* goldrinn;
 
   bool moonkin_form_in_precombat;
 
@@ -7801,6 +7871,7 @@ struct starsurge_t : public druid_spell_t
     {
       flare = p->get_secondary_action_n<stellar_flare_t>( "stellar_flare_inspiration" );
       flare->name_str_reporting = "stellar_flare";
+      flare->energize_type = action_energize::NONE;
     }
 
     if ( p->talent.power_of_goldrinn.ok() )
@@ -9166,6 +9237,26 @@ struct persistent_delay_event_t : public event_t
   void execute() override { exec_fn(); }
 };
 
+// Denizen of the Dream Proxy Action ========================================
+struct denizen_of_the_dream_t : public action_t
+{
+  druid_t* druid;
+  timespan_t dur;
+
+  denizen_of_the_dream_t( druid_t* p )
+    : action_t( action_e::ACTION_OTHER, "denizen_of_the_dream", p, p->talent.denizen_of_the_dream ),
+      druid( p ),
+      dur( p->find_spell( 394076 )->duration() )
+  {}
+
+  void execute() override
+  {
+    action_t::execute();
+
+    druid->pets.denizen_of_the_dream.spawn( dur );
+  }
+};
+
 // Lycara's Fleeting Glimpse Proxy Action ===================================
 struct lycaras_fleeting_glimpse_t : public action_t
 {
@@ -9515,7 +9606,6 @@ void druid_t::init_spells()
   talent.cyclone                        = CT( "Cyclone" );
   talent.feline_swiftness               = CT( "Feline Swiftness" );
   talent.frenzied_regeneration          = CT( "Frenzied Regeneration" );
-  talent.furor                          = CT( "Furor" );
   talent.heart_of_the_wild              = CT( "Heart of the Wild" );
   talent.hibernate                      = CT( "Hibernate" );
   talent.improved_barkskin              = CT( "Improved Barkskin" );
@@ -9536,6 +9626,7 @@ void druid_t::init_spells()
   talent.natures_vigil                  = CT( "Nature's Vigil" );
   talent.nurturing_instinct             = CT( "Nurturing Instinct" );
   talent.primal_fury                    = CT( "Primal Fury" );
+  talent.protector_of_the_pack          = CT( "Protector of the Pack" );
   talent.rake                           = CT( "Rake" );
   talent.rejuvenation                   = CT( "Rejuvenation" );
   talent.remove_corruption              = CT( "Remove Corruption" );
@@ -10012,16 +10103,6 @@ void druid_t::init_finished()
   else if ( specialization() == DRUID_RESTORATION )
     spec_override.attack_power = query_aura_effect( spec.restoration, A_404 )->percent();
 
-  if ( talent.furor.ok() )
-  {
-    auto dur = timespan_t::from_seconds( talent.furor->effectN( 1 ).base_value() );
-
-    cooldown.furor_caster_form->duration  = dur;
-    cooldown.furor_bear_form->duration    = dur;
-    cooldown.furor_cat_form->duration     = dur;
-    cooldown.furor_moonkin_form->duration = dur;
-  }
-
   // PRECOMBAT WRATH SHENANIGANS
   // we do this here so all precombat actions have gone throught init() and init_finished() so if-expr are properly
   // parsed and we can adjust wrath travel times accordingly based on subsequent precombat actions that will sucessfully
@@ -10102,8 +10183,6 @@ void druid_t::create_buffs()
                                                     buff.lycaras_fleeting_glimpse->buff_duration().total_seconds() );
 
   // Class
-  buff.furor = make_buff( this, "furor", find_spell( 378987 ) );
-
   buff.heart_of_the_wild = make_buff( this, "heart_of_the_wild", talent.heart_of_the_wild )
     ->set_cooldown( 0_ms );
 
@@ -10175,6 +10254,12 @@ void druid_t::create_buffs()
     ->set_cooldown( 0_ms )
     ->set_default_value_from_effect( 3, 0.01 );
 
+  buff.protector_of_the_pack_moonfire =
+      make_buff<protector_of_the_pack_buff_t>( *this, "protector_of_the_pack_moonfire", find_spell( 378987 ) );
+
+  buff.protector_of_the_pack_regrowth =
+      make_buff<protector_of_the_pack_buff_t>( *this, "protector_of_the_pack_regrowth", find_spell( 395336 ) );
+
   buff.tiger_dash = make_buff<tiger_dash_buff_t>( *this );
 
   buff.tireless_pursuit =
@@ -10219,7 +10304,8 @@ void druid_t::create_buffs()
 
   buff.fury_of_elune = make_buff<fury_of_elune_buff_t>( *this, "fury_of_elune", talent.fury_of_elune );
 
-  buff.sundered_firmament = make_buff<fury_of_elune_buff_t>( *this, "sundered_firmament", find_spell( 394108 ) )
+  buff.sundered_firmament = make_buff<fury_of_elune_buff_t>( *this, "sundered_firmament", find_spell( 394108 ),
+                                                             talent.sundered_firmament->effectN( 1 ).percent() )
     ->set_refresh_behavior( buff_refresh_behavior::EXTEND );
 
   buff.natures_balance = make_buff( this, "natures_balance", talent.natures_balance );
@@ -10523,6 +10609,9 @@ void druid_t::create_actions()
   // Balance
   if ( talent.astral_smolder.ok() )
     active.astral_smolder = get_secondary_action<astral_smolder_t>( "astral_smolder" );
+
+  if ( talent.denizen_of_the_dream.ok() )
+    active.denizen_of_the_dream = new denizen_of_the_dream_t( this );
 
   if ( talent.orbit_breaker.ok() )
   {
@@ -11014,7 +11103,7 @@ void druid_t::init_special_effects()
 {
   player_t::init_special_effects();
 
-  if ( talent.denizen_of_the_dream )
+  if ( talent.denizen_of_the_dream.ok() )
   {
     struct denizen_of_the_dream_cb_t : public dbc_proc_callback_t
     {
@@ -11032,10 +11121,7 @@ void druid_t::init_special_effects()
 
       void execute( action_t* a, action_state_t* s ) override
       {
-        p()->pets.denizen_of_the_dream.spawn( dur );
-
-        if ( p()->talent.friend_of_the_fae.ok() )
-          p()->buff.friend_of_the_fae->trigger();
+        p()->active.denizen_of_the_dream->execute();
       }
 
       druid_t* p() { return static_cast<druid_t*>( listener ); }
@@ -11189,6 +11275,14 @@ void druid_t::datacollection_end()
   eclipse_handler.datacollection_end();
 }
 
+void druid_t::analyze( sim_t& sim )
+{
+  if ( active.denizen_of_the_dream )
+    range::for_each( active.denizen_of_the_dream->child_action, [ this ]( action_t* a ) { a->stats->player = this; } );
+
+  player_t::analyze( sim );
+}
+
 // druid_t::mana_regen_per_second ===========================================
 double druid_t::resource_regen_per_second( resource_e r ) const
 {
@@ -11207,7 +11301,7 @@ double druid_t::resource_regen_per_second( resource_e r ) const
 timespan_t druid_t::available() const
 {
   if ( primary_resource() != RESOURCE_ENERGY )
-    return 100_ms;
+    return player_t::available();
 
   double energy = resources.current[ RESOURCE_ENERGY ];
 
@@ -12326,25 +12420,12 @@ void druid_t::shapeshift( form_e f )
   buff.cat_form->expire();
   buff.moonkin_form->expire();
 
-  auto do_form = [ this ]( buff_t* form_buff, cooldown_t* furor_cd ) {
-    if ( form_buff )
-      form_buff->trigger();
-
-    if ( in_combat && talent.furor.ok() )
-    {
-      if ( furor_cd->up() )
-        buff.furor->trigger();
-
-      furor_cd->start();
-    }
-  };
-
   switch ( f )
   {
-    case BEAR_FORM:    do_form( buff.bear_form,    cooldown.furor_bear_form    ); break;
-    case CAT_FORM:     do_form( buff.cat_form,     cooldown.furor_cat_form     ); break;
-    case MOONKIN_FORM: do_form( buff.moonkin_form, cooldown.furor_moonkin_form ); break;
-    case NO_FORM:      do_form( nullptr,           cooldown.furor_caster_form  ); break;
+    case BEAR_FORM:    buff.bear_form->trigger();    break;
+    case CAT_FORM:     buff.cat_form->trigger();     break;
+    case MOONKIN_FORM: buff.moonkin_form->trigger(); break;
+    case NO_FORM:                                    break;
     default: assert( 0 ); break;
   }
 
