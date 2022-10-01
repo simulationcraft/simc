@@ -1710,16 +1710,15 @@ namespace affliction
 darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
   : warlock_pet_t( owner, name, PET_DARKGLARE, name != "darkglare" )
 {
-  action_list_str += "dark_glare";
+  action_list_str += "eye_beam";
 }
 
-struct dark_glare_t : public warlock_pet_spell_t
+struct eye_beam_t : public warlock_pet_spell_t
 {
-  dark_glare_t( warlock_pet_t* p ) : warlock_pet_spell_t( "dark_glare", p, p->find_spell( 205231 ) )
+  eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_beam", p, p->find_spell( 205231 ) )
   {
   }
 
-  // TOCHECK: Does this update correctly if dots are lost/gained while Darkglare is active?
   double action_multiplier() const override
   {
     double m = warlock_pet_spell_t::action_multiplier();
@@ -1731,16 +1730,27 @@ struct dark_glare_t : public warlock_pet_spell_t
       dots += p()->o()->get_target_data( target )->count_affliction_dots();
     }
 
-    m *= 1.0 + ( dots * p()->o()->spec.summon_darkglare->effectN( 3 ).percent() );
+    m *= 1.0 + ( dots * p()->o()->talents.summon_darkglare->effectN( 3 ).percent() );
 
     return m;
+  }
+  
+  bool ready() override
+  {
+    for ( player_t* target : sim->target_non_sleeping_list )
+    {
+      if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
+        return warlock_pet_spell_t::ready();
+    }
+
+    return false;
   }
 };
 
 action_t* darkglare_t::create_action( util::string_view name, util::string_view options_str )
 {
-  if ( name == "dark_glare" )
-    return new dark_glare_t( this );
+  if ( name == "eye_beam" )
+    return new eye_beam_t( this );
 
   return warlock_pet_t::create_action( name, options_str );
 }

@@ -214,34 +214,37 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
+    td( p()->ua_target )->debuffs_malefic_affliction->cancel();
     p()->ua_target = nullptr;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = affliction_spell_t::composite_ta_multiplier( s );
+
+    if ( p()->talents.malefic_affliction.ok() && td( s->target )->debuffs_malefic_affliction->check() )
+      m *= 1.0 + td( s->target )->debuffs_malefic_affliction->check_stack_value();
+
+    return m;
   }
 };
 
 struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
-    : affliction_spell_t( "summon_darkglare", p, p->spec.summon_darkglare )
+    : affliction_spell_t( "summon_darkglare", p, p->talents.summon_darkglare )
   {
     parse_options( options_str );
     harmful = may_crit = may_miss = false;
-
-  if ( p->spec.summon_darkglare_2->ok() )
-      cooldown->duration += timespan_t::from_millis( p->spec.summon_darkglare_2->effectN( 1 ).base_value() );
   }
 
   void execute() override
   {
     affliction_spell_t::execute();
 
-    for ( auto& darkglare : p()->warlock_pet_list.darkglare )
-    {
-      if ( darkglare->is_sleeping() )
-      {
-        darkglare->summon( data().duration() );
-      }
-    }
-    timespan_t darkglare_extension = timespan_t::from_seconds( p()->spec.summon_darkglare->effectN( 2 ).base_value() );
+    p()->warlock_pet_list.darkglare.spawn( p()->talents.summon_darkglare->duration() );
+
+    timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
     p()->darkglare_extension_helper( p(), darkglare_extension );
   }
@@ -277,6 +280,16 @@ struct malefic_rapture_t : public affliction_spell_t
       void impact ( action_state_t* s ) override
       {
         affliction_spell_t::impact( s );
+
+        if ( p()->talents.malefic_affliction.ok() )
+        {
+          auto target_data = td( s->target );
+
+          if ( target_data->dots_unstable_affliction->is_ticking() )
+          {
+            target_data->debuffs_malefic_affliction->trigger();
+          }
+        }
 
         //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
         //{
@@ -761,11 +774,12 @@ void warlock_t::init_spells_affliction()
 
   talents.haunt = find_talent_spell( talent_tree::SPECIALIZATION, "Haunt" ); // Should be ID 48181
 
+  talents.summon_darkglare = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Darkglare" ); // Should be ID 205180
 
-
-
+  talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
  
-
+  talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
+  talents.malefic_affliction_debuff = find_spell( 389845 ); // Debuff data, infinite duration, cancelled by UA ending
 
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace

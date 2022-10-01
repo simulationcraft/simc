@@ -45,7 +45,7 @@ struct warlock_td_t : public actor_target_data_t
 
   propagate_const<buff_t*> debuffs_haunt;
   propagate_const<buff_t*> debuffs_shadow_embrace;
-  // DF - Malefic Affliction (debuff on target for talent)
+  propagate_const<buff_t*> debuffs_malefic_affliction;
   // DF - Dread Touch (debuff on target for talent)
 
   // Destro
@@ -129,7 +129,6 @@ public:
     warlock_pet_t* active;
     warlock_pet_t* last;
     static const int INFERNAL_LIMIT  = 1;
-    static const int DARKGLARE_LIMIT = 1;
 
     //TODO: Refactor infernal code including new talent Rain of Chaos
     std::array<pets::destruction::infernal_t*, INFERNAL_LIMIT> infernals;
@@ -138,7 +137,7 @@ public:
     spawner::pet_spawner_t<pets::destruction::blasphemy_t, warlock_t>
         blasphemy;  // DF - Now a Destruction Talent
 
-    std::array<pets::affliction::darkglare_t*, DARKGLARE_LIMIT> darkglare;
+    spawner::pet_spawner_t<pets::affliction::darkglare_t, warlock_t> darkglare;
 
     spawner::pet_spawner_t<pets::demonology::dreadstalker_t, warlock_t> dreadstalkers;
     spawner::pet_spawner_t<pets::demonology::vilefiend_t, warlock_t> vilefiends;
@@ -245,10 +244,11 @@ public:
 
     player_talent_t creeping_death; // DF - No long reduces duration
     player_talent_t haunt;
-    // DF - Summon Darkglare 
-    // DF - Soul Rot (formerly SL Covenant Ability, now Affliction only)
+    player_talent_t summon_darkglare; 
+    player_talent_t soul_rot; // DF - now Affliction only
 
-    // DF - Malefic Affliction (2 point talent, stacking damage increase to current Unstable Affliction)
+    player_talent_t malefic_affliction; // Stacking damage increase to Unstable Affliction until UA is cancelled/swapped/ends
+    const spell_data_t* malefic_affliction_debuff; // Target debuff applied on Malefic Rapture casts
     // DF - Calamitous Crescendo (Formerly SL Tier Bonus)
     // DF - Seized Vitality (2 point talent, additional Haunt damage)
     // DF - Antoran Plating (2 point talent, increased Darkglare damage and duration)

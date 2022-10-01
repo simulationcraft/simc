@@ -1015,6 +1015,9 @@ struct monk_spell_t : public monk_action_t<spell_t>
         pm *= 1 + p()->cache.mastery_value();
     }
 
+    if ( p()->buff.brewmasters_rhythm->check() )
+      pm *= 1 + p()->buff.brewmasters_rhythm->check_stack_value();
+
     return pm;
   }
 
@@ -1857,9 +1860,15 @@ struct tiger_palm_t : public monk_melee_attack_t
          p()->talent.windwalker.mark_of_the_crane->ok() )
       p()->trigger_mark_of_the_crane( s );
 
-    // Bonedust Brew
-    if ( p()->specialization() == MONK_BREWMASTER && get_td( s->target )->debuff.bonedust_brew->up() )
-      brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+    if ( p()->specialization() == MONK_BREWMASTER )
+    {
+      // Bonedust Brew
+      if ( get_td( s->target )->debuff.bonedust_brew->up() )
+        brew_cooldown_reduction( p()->covenant.necrolord->effectN( 3 ).base_value() );
+
+       if ( p()->user_options.t29_2p == 1 )
+        p()->buff.brewmasters_rhythm->trigger();
+    }
 
     p()->trigger_keefers_skyreach( s );
     shaohoas_might = false;
@@ -1946,6 +1955,9 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
         am *= 1 + p()->talent.windwalker.rising_star->effectN( 1 ).percent();
     }
 
+    if ( p()->buff.t29_2p_ww->check() )
+      am *= 1 + p()->buff.t29_2p_ww->check_value();
+
     return am;
   }
 
@@ -2020,6 +2032,15 @@ struct rising_sun_kick_dmg_t : public monk_melee_attack_t
       // Apply Mark of the Crane
       if ( p()->talent.windwalker.mark_of_the_crane->ok() )
         p()->trigger_mark_of_the_crane( s );
+
+      if ( p()->buff.t29_2p_ww->up() )
+        p()->buff.t29_2p_ww->decrement();
+
+      if (p()->buff.t29_4p_ww_kick->up()) {
+        p()->buff.t29_4p_ww_fof->trigger();
+        p()->buff.t29_4p_ww_kick->decrement();
+      }
+        
     }
   }
 };
@@ -2742,6 +2763,9 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
       if ( p()->talent.windwalker.crane_vortex->ok() )
         am *= 1 + p()->talent.windwalker.crane_vortex->effectN( 1 ).percent();
+
+      if ( p()->buff.t29_2p_ww->check() )
+        am *= 1 + p()->buff.t29_2p_ww->check_value();
     }
     else if ( p()->specialization() == MONK_BREWMASTER )
     {
@@ -2761,6 +2785,15 @@ struct sck_tick_action_t : public monk_melee_attack_t
 
     if ( p()->spec.spinning_crane_kick_2_brm->ok() )
       trigger_shuffle( p()->spec.spinning_crane_kick_2_brm->effectN( 1 ).base_value() );
+
+    if ( p()->buff.t29_2p_ww->up() )
+      p()->buff.t29_2p_ww->decrement();
+
+    if ( p()->buff.t29_4p_ww_kick->up() )
+    {
+      p()->buff.t29_4p_ww_fof->trigger();
+      p()->buff.t29_4p_ww_kick->decrement();
+    }
   }
 
   void impact( action_state_t* s ) override
@@ -2799,6 +2832,10 @@ struct sck_tick_action_t : public monk_melee_attack_t
             p()->cooldown.charred_passions->start(
               p()->talent.brewmaster.charred_passions->effectN( 1 ).trigger()->internal_cooldown() );
         }
+      }
+
+      if (p()->user_options.t29_2p == 1) {
+        p()->buff.brewmasters_rhythm->trigger();
       }
     }
   }
@@ -3126,6 +3163,16 @@ struct fists_of_fury_t : public monk_melee_attack_t
         p()->buff.whirling_dragon_punch->set_duration( p()->cooldown.rising_sun_kick->remains() );
       p()->buff.whirling_dragon_punch->trigger();
     }
+
+    if (p()->user_options.t29_2p == 1)
+      p()->buff.t29_2p_ww->trigger();
+    if ( p()->user_options.t29_4p == 1)
+      p()->buff.t29_4p_ww_kick->trigger();
+
+    if (p()->buff.t29_4p_ww_fof->up()) {
+      p()->buff.t29_4p_ww_fof_hidden->trigger( p()->buff.t29_4p_ww_fof->stack(), timespan_t::from_seconds( 4 ) );
+      p()->buff.t29_4p_ww_fof->expire();
+    }
   }
 
   void last_tick( dot_t* dot ) override
@@ -3136,6 +3183,9 @@ struct fists_of_fury_t : public monk_melee_attack_t
       p()->buff.pressure_point->trigger();
     else if ( p()->talent.windwalker.xuens_battlegear->ok() )
         p()->buff.pressure_point->trigger();
+
+    if ( p()->buff.t29_4p_ww_fof_hidden->up() )
+      p()->buff.t29_4p_ww_fof_hidden->expire();
   }
 };
 
@@ -4874,8 +4924,12 @@ struct purifying_brew_t : public monk_spell_t
       p()->cooldown.purifying_brew->reset( true, 1 );
 
     // Reduce stagger damage
+    auto purifying_percent = data().effectN( 1 ).percent();
+    if ( p()->buff.brewmasters_rhythm->up() )
+      purifying_percent += p()->buff.brewmasters_rhythm->stack() * 0.03;
+
     auto amount_cleared =
-        p()->active_actions.stagger_self_damage->clear_partial_damage_pct( data().effectN( 1 ).percent() );
+        p()->active_actions.stagger_self_damage->clear_partial_damage_pct( purifying_percent );
     p()->sample_datas.purified_damage->add( amount_cleared );
     p()->buff.recent_purifies->trigger( 1, amount_cleared );
 
@@ -9014,6 +9068,31 @@ void monk_t::create_buffs ()
                                              ->set_max_stack( passives.primordial_power->max_stacks() )
                                              ->set_stack_behavior( buff_stack_behavior::ASYNCHRONOUS )
                                              ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
+
+  // Tier 29 Set Bonus
+  buff.t29_2p_ww = make_buff( this, "t29_2p_ww", spell_data_t::nil() )
+                       ->set_duration( timespan_t::from_seconds( 30 ) )
+                       ->set_default_value( 0.3 ) 
+                       ->set_reverse( true )
+                       ->set_reverse_stack_count( 2 );
+  buff.t29_4p_ww_kick = make_buff( this, "t29_4p_ww_kick", spell_data_t::nil() )
+                            ->set_duration( timespan_t::from_seconds( 30 ) )
+                            ->set_reverse( true )
+                            ->set_reverse_stack_count( 3 );
+  buff.t29_4p_ww_fof = make_buff( this, "t29_4p_ww_fof", spell_data_t::nil() )
+                           ->set_duration( timespan_t::from_seconds( 30 ) )
+                           ->set_max_stack( 3 );
+  buff.t29_4p_ww_fof_hidden = make_buff( this, "t29_4p_ww_fof_hidden", spell_data_t::nil() )
+                                  ->set_duration( timespan_t::from_seconds( 4 ) )
+                                  ->set_default_value( 0.05 )
+                                  ->set_max_stack( 3 )
+                                  ->set_quiet( true )
+                                  ->add_invalidate(CACHE_DAMAGE_VERSATILITY);
+  buff.brewmasters_rhythm = make_buff( this, "brewmasters_rhythm", spell_data_t::nil() )
+                                ->set_duration( timespan_t::from_seconds( 10 ) )
+                                ->set_default_value( 0.01 )
+                                ->set_max_stack( 4 )
+                                ->add_invalidate( CACHE_PLAYER_DAMAGE_MULTIPLIER );
 }
 
 // monk_t::init_gains =======================================================
@@ -9693,6 +9772,18 @@ double monk_t::composite_mastery_rating() const
   return m;
 }
 
+// monk_t::composite_damage_versatility ====================================
+
+double monk_t::composite_damage_versatility() const
+{
+  double m = player_t::composite_damage_versatility();
+
+  if ( buff.t29_4p_ww_fof_hidden->check() )
+    m += buff.t29_4p_ww_fof_hidden->check_stack_value();
+
+  return m;
+}
+
 // monk_t::composite_armor_multiplier ===================================
 
 double monk_t::composite_base_armor_multiplier() const
@@ -9866,6 +9957,8 @@ void monk_t::create_options()
   add_option( opt_float( "monk.faeline_stomp_uptime", user_options.faeline_stomp_uptime, 0.0, 1.0 ) );
   add_option( opt_int( "monk.chi_burst_healing_targets", user_options.chi_burst_healing_targets, 0, 30 ) );
   add_option( opt_int( "monk.motc_override", user_options.motc_override, 0, 5 ) );
+  add_option( opt_int( "monk.t29_2p", user_options.t29_2p, 0, 1 ) );
+  add_option( opt_int( "monk.t29_4p", user_options.t29_4p, 0, 1 ) );
 }
 
 // monk_t::copy_from =========================================================
