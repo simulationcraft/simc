@@ -257,7 +257,8 @@ public:
     const spell_data_t* wrath_of_consumption_buff;
     player_talent_t souleaters_gluttony; // Soul Rot CDR from Unstable Affliction
 
-    // DF - Doom Blossom (Choice against Dread Touch, damage proc on Corruption ticks based on Malefic Affliction)
+    player_talent_t doom_blossom; // Damage proc on Corruption ticks based on Malefic Affliction stacks
+    const spell_data_t* doom_blossom_proc;
     // DF - Dread Touch (Choice against Doom Blossom, increased DoT damage based on Malefic Affliction)
     // DF - Haunted Soul (Haunt increase ALL DoT damage while active)
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Grim Reach, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
@@ -564,6 +565,7 @@ public:
     proc_t* harvester_of_souls;
     proc_t* pandemic_invocation_shard;
     proc_t* tormented_crescendo;
+    proc_t* doom_blossom;
 
     // demo
     proc_t* demonic_calling;
