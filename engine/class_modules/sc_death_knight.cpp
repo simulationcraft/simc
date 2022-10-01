@@ -6275,7 +6275,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> cooldown.enduring_strength_icd -> start();
     }
 
-    if ( p().options.t29_4pc -> ok() && p() -> rng().roll( 0.15 ) )
+    if ( p().options.t29_4pc -> ok() && buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
     {
       p() -> buffs.killing_machine -> trigger();
     }
@@ -7197,7 +7197,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> cooldown.inexorable_assault_icd -> start();
     }
 
-    if ( p().options.t29_4pc -> ok() && p() -> rng().roll( 0.15 ) )
+    if ( p().options.t29_4pc -> ok() && buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
     {
       p() -> buffs.killing_machine -> trigger();
     }
