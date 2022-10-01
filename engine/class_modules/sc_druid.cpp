@@ -7823,6 +7823,13 @@ struct stellar_flare_t : public druid_spell_t
   {
     dot_name = "stellar_flare";
   }
+
+  void tick( dot_t* d ) override
+  {
+    druid_spell_t::tick( d );
+
+    trigger_shooting_stars( d->target );
+  }
 };
 
 // Starsurge Spell ==========================================================
