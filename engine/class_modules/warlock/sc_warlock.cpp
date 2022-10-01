@@ -278,7 +278,6 @@ struct corruption_t : public warlock_spell_t
   {
     parse_options( options_str );
     tick_zero                  = false;
-    affected_by_woc            = true;
 
     // DoT information is in trigger spell (146739)
     impact_action = periodic;
@@ -741,7 +740,7 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   dots_soul_rot = target->get_dot( "soul_rot", &p );
 
   // Aff
-  dots_corruption          = target->get_dot( "corruption", &p );
+  dots_corruption          = target->get_dot( "corruption_dot", &p );
   dots_agony               = target->get_dot( "agony", &p );
   dots_drain_soul          = target->get_dot( "drain_soul", &p );
   dots_phantom_singularity = target->get_dot( "phantom_singularity", &p );

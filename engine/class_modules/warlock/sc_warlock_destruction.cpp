@@ -218,8 +218,6 @@ struct immolate_t : public destruction_spell_t
     can_havoc = true;
 
     parse_effect_data( p->warlock_base.immolate_dot->effectN( 1 ) );
-
-    affected_by_woc = true;
   }
 
   void tick( dot_t* d ) override
