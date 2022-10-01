@@ -9454,6 +9454,11 @@ void death_knight_t::burst_festering_wound( player_t* target, unsigned n )
       }
 
       td -> debuff.festering_wound -> decrement( n_executes ); 
+
+      if ( dk -> options.t29_2pc )
+      {
+        dk -> pets.ghoul_pet -> vile_infusion -> trigger( n_executes );
+      }
     }
   };
 
