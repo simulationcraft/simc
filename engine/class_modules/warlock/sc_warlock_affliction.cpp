@@ -214,7 +214,18 @@ struct unstable_affliction_t : public affliction_spell_t
   {
     affliction_spell_t::last_tick( d );
 
+    td( p()->ua_target )->debuffs_malefic_affliction->cancel();
     p()->ua_target = nullptr;
+  }
+
+  double composite_ta_multiplier( const action_state_t* s ) const override
+  {
+    double m = affliction_spell_t::composite_ta_multiplier( s );
+
+    if ( p()->talents.malefic_affliction.ok() && td( s->target )->debuffs_malefic_affliction->check() )
+      m *= 1.0 + td( s->target )->debuffs_malefic_affliction->check_stack_value();
+
+    return m;
   }
 };
 
@@ -269,6 +280,16 @@ struct malefic_rapture_t : public affliction_spell_t
       void impact ( action_state_t* s ) override
       {
         affliction_spell_t::impact( s );
+
+        if ( p()->talents.malefic_affliction.ok() )
+        {
+          auto target_data = td( s->target );
+
+          if ( target_data->dots_unstable_affliction->is_ticking() )
+          {
+            target_data->debuffs_malefic_affliction->trigger();
+          }
+        }
 
         //if ( p()->sets->has_set_bonus( WARLOCK_AFFLICTION, T28, B2 ) )
         //{
@@ -757,7 +778,8 @@ void warlock_t::init_spells_affliction()
 
   talents.soul_rot = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Rot" ); // Should be ID 386997
  
-
+  talents.malefic_affliction = find_talent_spell( talent_tree::SPECIALIZATION, "Malefic Affliction" ); // Should be ID 389761
+  talents.malefic_affliction_debuff = find_spell( 389845 ); // Debuff data, infinite duration, cancelled by UA ending
 
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
