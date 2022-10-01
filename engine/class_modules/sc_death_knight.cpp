@@ -6279,7 +6279,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
       p() -> cooldown.enduring_strength_icd -> start();
     }
 
-    if ( options.t29_4pc && buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
     {
       p() -> buffs.killing_machine -> trigger();
     }
@@ -6289,7 +6289,7 @@ struct frostscythe_t : public death_knight_melee_attack_t
   {
     double m = death_knight_melee_attack_t::composite_da_multiplier( state );
 
-    if ( options.t29_2pc && state -> result == RESULT_CRIT )
+    if ( p() -> options.t29_2pc && state -> result == RESULT_CRIT )
     {
       m *= 1.0 + 0.15;
     }
@@ -7147,7 +7147,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       m *= 1.0 + p() -> cache.mastery_value();
     }
 
-    if ( options.t29_2pc && state -> result == RESULT_CRIT )
+    if ( p() -> options.t29_2pc && state -> result == RESULT_CRIT )
     {
       m *= 1.0 + 0.15;
     }
@@ -7201,7 +7201,7 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
       p() -> cooldown.inexorable_assault_icd -> start();
     }
 
-    if ( options.t29_4pc && buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
     {
       p() -> buffs.killing_machine -> trigger();
     }
