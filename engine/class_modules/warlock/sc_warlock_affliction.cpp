@@ -229,6 +229,8 @@ struct unstable_affliction_t : public affliction_spell_t
   }
 };
 
+// TOCHECK: As of 2022-10-01, the damage bonus portion of Malevolent Visionary is not working
+// Data looks fine and is hooked up correctly in simc, most likely a server-side bug
 struct summon_darkglare_t : public affliction_spell_t
 {
   summon_darkglare_t( warlock_t* p, util::string_view options_str )
@@ -242,7 +244,14 @@ struct summon_darkglare_t : public affliction_spell_t
   {
     affliction_spell_t::execute();
 
-    p()->warlock_pet_list.darkglare.spawn( p()->talents.summon_darkglare->duration() );
+    timespan_t summon_duration = p()->talents.summon_darkglare->duration();
+
+    if ( p()->talents.malevolent_visionary.ok() )
+    {
+      summon_duration += timespan_t::from_millis( p()->talents.malevolent_visionary->effectN( 2 ).base_value() );
+    }
+
+    p()->warlock_pet_list.darkglare.spawn( summon_duration );
 
     timespan_t darkglare_extension = timespan_t::from_seconds( p()->talents.summon_darkglare->effectN( 2 ).base_value() );
 
@@ -805,6 +814,8 @@ void warlock_t::init_spells_affliction()
   talents.tormented_crescendo_buff = find_spell( 387079 );
 
   talents.seized_vitality = find_talent_spell( talent_tree::SPECIALIZATION, "Seized Vitality" ); // Should be ID 387250
+
+  talents.malevolent_visionary = find_talent_spell( talent_tree::SPECIALIZATION, "Malevolent Visionary" ); // Should be ID 387273
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
