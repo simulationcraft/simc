@@ -1,4 +1,4 @@
-SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-09-29/45779)
+SimulationCraft 1000-01 for World of Warcraft 10.0.2.45779 dragonflight-BETA (hotfix 2022-10-01/45779, no-networking)
 Name             : Backstab (id=53) [Spell Family (8)] 
 Replaces         : Sinister Strike (id=1752)
 Class            : Subtlety Rogue
@@ -11372,11 +11372,13 @@ Description      : An intense application of Numbing Poison reduces the target's
 Tooltip          : Casting slowed by $s1%.
 
 Name             : Deathmark (id=360194) [Spell Family (8)] 
+Hotfixed         : GCD (0 -> 1000)
 Talent Entry     : Assassination [tree=spec, row=5, col=3, max_rank=1, req_points=8]
 Class            : Rogue
 School           : Physical
 Spell Type       : Melee
 Range            : 5 yards
+GCD              : 1 seconds
 Duration         : 18 seconds
 Cooldown         : 120 seconds
 Labels           : 690: Strive for Perfection (296320 effect#2), Strive for Perfection (299367 effect#2), Strive for Perfection (299369 effect#2), Benevolent Faerie (327710 effect#1), Haunted Mask (356968 effect#1)
