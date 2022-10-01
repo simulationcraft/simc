@@ -44,6 +44,18 @@ struct mind_sear_tick_t final : public priest_spell_t
     }
   }
 
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_da_multiplier( s );
+
+    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
+    {
+      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
+    }
+
+    return m;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_spell_t::impact( s );
@@ -86,8 +98,8 @@ struct mind_sear_t final : public priest_spell_t
                                                                     // functions correctly
     if ( priest().specialization() == PRIEST_SHADOW )
     {
-      base_costs_per_tick[ RESOURCE_MANA ]     = 0.0;
-      
+      base_costs_per_tick[ RESOURCE_MANA ] = 0.0;
+
       // TODO: spelldata insanity cost per tick is wrong, manually overriding from tooltip data
       base_costs_per_tick[ RESOURCE_INSANITY ] = data().effectN( 3 ).base_value();
     }
@@ -102,7 +114,8 @@ struct mind_sear_t final : public priest_spell_t
       return true;
     }
     // You cannot start a cast if you have less than 2 ticks worth
-    if ( priest().resources.current[ RESOURCE_INSANITY ] < cost_per_tick( RESOURCE_INSANITY ) * 2 )
+    // TODO replace with cost_per_tick( RESOURCE_INSANITY ) when spelldata is fixed
+    if ( priest().resources.current[ RESOURCE_INSANITY ] < data().effectN( 3 ).base_value() * 2 )
     {
       return false;
     }
@@ -123,11 +136,23 @@ struct mind_sear_t final : public priest_spell_t
     return priest_spell_t::consume_cost_per_tick( dot );
   }
 
+  void execute() override
+  {
+    priest_spell_t::execute();
+
+    if ( priest().options.t29_4pc )
+    {
+      priest().buffs.t29_4pc->trigger();
+    }
+  }
+
   void last_tick( dot_t* d ) override
   {
     priest_spell_t::last_tick( d );
 
     priest().buffs.mind_devourer->expire();
+
+    priest().buffs.t29_2pc->expire();
   }
 };
 
@@ -1025,6 +1050,18 @@ struct devouring_plague_t final : public priest_spell_t
     return debug_cast<devouring_plague_dot_state_t*>( s );
   }
 
+  double composite_persistent_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_spell_t::composite_persistent_multiplier( s );
+
+    if ( priest().options.t29_2pc && priest().buffs.t29_2pc->check() )
+    {
+      m *= 1 + priest().buffs.t29_2pc->check_stack_value();
+    }
+
+    return m;
+  }
+
   void consume_resource() override
   {
     priest_spell_t::consume_resource();
@@ -1090,6 +1127,16 @@ struct devouring_plague_t final : public priest_spell_t
     {
       priest().buffs.dark_thought->trigger();
       priest().procs.dark_thoughts_devouring_plague->occur();
+    }
+
+    if ( priest().options.t29_2pc )
+    {
+      priest().buffs.t29_2pc->expire();
+    }
+
+    if ( priest().options.t29_4pc )
+    {
+      priest().buffs.t29_4pc->trigger();
     }
   }
 
@@ -2186,6 +2233,11 @@ void priest_t::create_buffs_shadow()
   // Tier Sets
   buffs.living_shadow_tier =
       make_buff( this, "living_shadow_tier", find_spell( 363574 ) )->set_duration( timespan_t::zero() );
+  buffs.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 3 )->set_default_value( 0.2 )->set_duration( 10_s );
+  buffs.t29_4pc = make_buff<stat_buff_t>( this, "t29_4pc" )
+                      ->add_invalidate( CACHE_HASTE )
+                      ->set_default_value( 0.05 )
+                      ->set_duration( 8_s );
 }
 
 void priest_t::init_rng_shadow()

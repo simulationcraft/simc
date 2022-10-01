@@ -164,6 +164,8 @@ public:
 
     // Tier Sets
     propagate_const<buff_t*> living_shadow_tier;
+    propagate_const<buff_t*> t29_2pc;
+    propagate_const<buff_t*> t29_4pc;
   } buffs;
 
   // Talents
@@ -565,6 +567,10 @@ public:
     int pallid_command_allies = 50;
 
     bool power_infusion_fiend = false;
+
+    // Temp options till we get tier set data
+    bool t29_2pc = false;
+    bool t29_4pc = false;
   } options;
 
   // Legendaries
