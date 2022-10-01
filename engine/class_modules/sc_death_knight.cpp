@@ -6280,11 +6280,11 @@ struct frostscythe_t : public death_knight_melee_attack_t
     }
   }
 
-  double composite_da_multiplier( const action_state_t* state ) const override
+  double calculate_crit_damage_bonus( action_state_t* s ) const override
   {
-    double m = death_knight_melee_attack_t::composite_da_multiplier( state );
+    double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
 
-    if ( p() -> options.t29_2pc && state -> result == RESULT_CRIT )
+    if ( p() -> options.t29_2pc )
     {
       m *= 1.0 + 0.15;
     }
@@ -7145,9 +7145,16 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     if ( p() -> talent.frost.frostreaper.ok() && p() -> buffs.killing_machine -> up() )
     {
       m *= 1.0 + p() -> cache.mastery_value();
-    }
+    }    
 
-    if ( p() -> options.t29_2pc && state -> result == RESULT_CRIT )
+    return m;
+  }
+
+  double calculate_crit_damage_bonus( action_state_t* s ) const override
+  {
+    double m = death_knight_melee_attack_t::calculate_crit_damage_bonus( s );
+
+    if ( p() -> options.t29_2pc )
     {
       m *= 1.0 + 0.15;
     }
@@ -7221,10 +7228,6 @@ struct obliterate_strike_t : public death_knight_melee_attack_t
     // Improved Killing Machine - revert school after the hit
     if ( ! p() -> options.split_obliterate_schools ) school = SCHOOL_PHYSICAL;
 
-    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
-    {
-      p() -> buffs.killing_machine -> trigger();
-    }
   }
 };
 
@@ -7324,7 +7327,16 @@ struct obliterate_t : public death_knight_melee_attack_t
       }
     }
 
-    p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
+
+    if ( p() -> options.t29_4pc && p() -> buffs.killing_machine -> up() && p() -> rng().roll( 0.15 ) )
+    {
+      p() -> buffs.killing_machine -> trigger();
+    }
+
+    else
+    {
+      p() -> consume_killing_machine( p() -> procs.killing_machine_oblit );
+    }
   }
 
   double cost() const override
