@@ -2033,7 +2033,7 @@ struct shadowy_insight_t final : public priest_buff_t<buff_t>
   {
     // TODO: determine what rppm value actually is, mostly guesses right now
     // These values are not found in spell data
-    set_chance( 0.1 );
+    set_rppm( RPPM_HASTE, 3.0 );
     // Allow player to react to the buff being applied so they can cast Mind Blast.
     this->reactable = true;
 
