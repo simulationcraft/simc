@@ -253,7 +253,8 @@ public:
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
     player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
-    // DF - Wrath of Consumption (Formerly SL Legendary)
+    player_talent_t wrath_of_consumption; // DoT damage buff on target deaths
+    const spell_data_t* wrath_of_consumption_buff;
     // DF - Soul Eater's Gluttony (2 point talent, Soul Rot CDR from Unstable Affliction)
 
     // DF - Doom Blossom (Choice against Dread Touch, damage proc on Corruption ticks based on Malefic Affliction)
