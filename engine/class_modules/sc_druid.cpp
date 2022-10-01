@@ -2990,7 +2990,7 @@ public:
 
   void trigger_shooting_stars( player_t* t )
   {
-    if ( !p()->talent.shooting_stars.ok() || !p()->active.shooting_stars )
+    if ( !p()->active.shooting_stars )
       return;
 
     double chance = p()->talent.shooting_stars->effectN( 1 ).percent();
@@ -7073,9 +7073,6 @@ struct moonfire_t : public druid_spell_t
     moonfire_damage_t( druid_t* p, std::string_view n )
       : druid_spell_t( n, p, p->spec.moonfire_dmg ), gg_mul( 0.0 ), feral_override_da( 0.0 ), feral_override_ta( 0.0 )
     {
-      if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
-        p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
-
       may_miss = false;
       dual = background = true;
 
@@ -7971,9 +7968,6 @@ struct sunfire_t : public druid_spell_t
   {
     sunfire_damage_t( druid_t* p ) : druid_spell_t( "sunfire_dmg", p, p->spec.sunfire_dmg )
     {
-      if ( p->talent.shooting_stars.ok() && !p->active.shooting_stars )
-        p->active.shooting_stars = p->get_secondary_action<shooting_stars_t>( "shooting_stars" );
-
       dual = background   = true;
       aoe                 = p->talent.improved_sunfire.ok() ? -1 : 0;
       base_aoe_multiplier = 0;
@@ -10641,6 +10635,9 @@ void druid_t::create_actions()
     active.orbit_breaker = fm;
   }
 
+  if ( talent.shooting_stars.ok() )
+    active.shooting_stars = get_secondary_action<shooting_stars_t>( "shooting_stars" );
+
   if ( talent.starweaver.ok() )
   {
     auto ss = get_secondary_action_n<starsurge_t>( "starweavers_weft", talent.starsurge, "" );
@@ -10773,6 +10770,7 @@ void druid_t::create_actions()
   // setup dot_ids used by druid_action_t::get_dot_count()
   setup_dot_ids<sunfire_t::sunfire_damage_t>();
   setup_dot_ids<moonfire_t::moonfire_damage_t, lunar_inspiration_t>();
+  setup_dot_ids<stellar_flare_t>();
   setup_dot_ids<rake_t::rake_bleed_t>();
   setup_dot_ids<rip_t>();
 }
