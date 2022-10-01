@@ -520,6 +520,9 @@ struct haunt_t : public affliction_spell_t
   haunt_t( warlock_t* p, util::string_view options_str ) : affliction_spell_t( "haunt", p, p->talents.haunt )
   {
     parse_options( options_str );
+
+    if ( p->talents.seized_vitality.ok() )
+      base_dd_multiplier *= 1.0 + p->talents.seized_vitality->effectN( 1 ).percent();
   }
 
   void impact( action_state_t* s ) override
@@ -801,6 +804,7 @@ void warlock_t::init_spells_affliction()
   talents.tormented_crescendo = find_talent_spell( talent_tree::SPECIALIZATION, "Tormented Crescendo" ); // Should be ID 387075
   talents.tormented_crescendo_buff = find_spell( 387079 );
 
+  talents.seized_vitality = find_talent_spell( talent_tree::SPECIALIZATION, "Seized Vitality" ); // Should be ID 387250
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
