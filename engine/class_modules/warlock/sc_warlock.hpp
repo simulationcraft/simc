@@ -252,7 +252,7 @@ public:
     player_talent_t tormented_crescendo; // Free, instant Malefic Rapture procs from Shadow Bolt/Drain Soul
     const spell_data_t* tormented_crescendo_buff;
     player_talent_t seized_vitality; // Additional Haunt damage
-    // DF - Antoran Plating (2 point talent, increased Darkglare damage and duration)
+    player_talent_t malevolent_visionary; // Longer Darkglare and more damage scaling
     // DF - Wrath of Consumption (Formerly SL Legendary)
     // DF - Soul Eater's Gluttony (2 point talent, Soul Rot CDR from Unstable Affliction)
 

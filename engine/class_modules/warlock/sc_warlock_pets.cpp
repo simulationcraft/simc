@@ -1730,7 +1730,12 @@ struct eye_beam_t : public warlock_pet_spell_t
       dots += p()->o()->get_target_data( target )->count_affliction_dots();
     }
 
-    m *= 1.0 + ( dots * p()->o()->talents.summon_darkglare->effectN( 3 ).percent() );
+    double dot_multiplier = p()->o()->talents.summon_darkglare->effectN( 3 ).percent();
+
+    if ( p()->o()->talents.malevolent_visionary.ok() )
+      dot_multiplier += p()->o()->talents.malevolent_visionary->effectN( 1 ).percent();
+
+    m *= 1.0 + ( dots * dot_multiplier );
 
     return m;
   }
