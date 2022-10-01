@@ -447,6 +447,9 @@ public:
 
     buff_t* fireheart;
 
+    buff_t* t29_2pc;
+    buff_t* t29_4pc;
+
     // Enhancement
     buff_t* maelstrom_weapon;
     buff_t* feral_spirit_maelstrom;
@@ -484,6 +487,9 @@ public:
   struct options_t
   {
     rotation_type_e rotation = ROTATION_STANDARD;
+
+    bool t29_2pc = false;
+    bool t29_4pc = false;
   } options;
 
   // Cooldowns
@@ -4915,6 +4921,11 @@ struct chain_lightning_t : public chained_base_t
     {
       p()->action.ti_trigger = p()->action.chain_lightning_ti;
     }
+
+    if ( p()->options.t29_2pc )
+    {
+      p()->buff.t29_2pc->trigger();
+    }
   }
 
   void impact( action_state_t* state ) override
@@ -5621,6 +5632,11 @@ struct lava_burst_t : public shaman_spell_t
     {
       p()->cooldown.primordial_wave->adjust( p()->talent.rolling_magma->effectN( 1 ).time_value() );
     }
+
+    if ( p()->options.t29_2pc )
+    {
+      p()->buff.t29_2pc->trigger();
+    }
   }
 
   timespan_t execute_time() const override
@@ -5866,6 +5882,12 @@ struct lightning_bolt_t : public shaman_spell_t
     {
       p()->action.ti_trigger = p()->action.lightning_bolt_ti;
     }
+
+    if ( p()->options.t29_2pc )
+    {
+      p()->buff.t29_2pc->trigger();
+    }
+
   }
 
   //void reset_swing_timers()
@@ -6031,6 +6053,11 @@ struct elemental_blast_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+    }
+
+    if ( p()->options.t29_4pc )
+    {
+      p()->buff.t29_4pc->trigger();
     }
   }
 
@@ -6268,6 +6295,11 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+    }
+
     return m;
   }
 };
@@ -6310,6 +6342,11 @@ struct earthquake_damage_t : public earthquake_damage_base_t
     double m = shaman_spell_t::action_multiplier();
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
+
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+    }
 
     return m;
   }
@@ -6381,6 +6418,16 @@ struct earthquake_t : public earthquake_base_t
     if ( p()->buff.magma_chamber->up() )
     {
       p()->buff.magma_chamber->expire();
+    }
+
+    if ( p()->buff.t29_2pc->up() )
+    {
+      p()->buff.t29_2pc->expire();
+    }
+
+    if ( p()->options.t29_4pc )
+    {
+      p()->buff.t29_4pc->trigger();
     }
   }
 };
@@ -6515,6 +6562,11 @@ struct earth_shock_overload_t : public elemental_overload_spell_t
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+    }
+
     return m;
   }
 };
@@ -6538,6 +6590,11 @@ struct earth_shock_t : public shaman_spell_t
   double action_multiplier() const override
   {
     double m = shaman_spell_t::action_multiplier();
+
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+    }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
@@ -6598,6 +6655,16 @@ struct earth_shock_t : public shaman_spell_t
     if ( p()->buff.magma_chamber->up() )
     {
       p()->buff.magma_chamber->expire();
+    }
+
+    if ( p()->buff.t29_2pc->up() )
+    {
+      p()->buff.t29_2pc->expire();    
+    }
+
+    if ( p()->options.t29_4pc )
+    {
+      p()->buff.t29_4pc->trigger();
     }
   }
 
@@ -9033,6 +9100,8 @@ void shaman_t::create_options()
 {
   player_t::create_options();
   add_option( opt_bool( "raptor_glyph", raptor_glyph ) );
+  add_option( opt_bool( "shaman.t29_2pc", options.t29_2pc ) );
+  add_option( opt_bool( "shaman.t29_4pc", options.t29_4pc ) );
   // option allows Elemental Shamans to switch to a different APL
   add_option( opt_func( "rotation", [ this ]( sim_t*, util::string_view, util::string_view val ) {
     if ( util::str_compare_ci( val, "standard" ) )
@@ -10233,6 +10302,13 @@ void shaman_t::create_buffs()
   buff.stormkeeper = make_buff( this, "stormkeeper", find_spell( 191634 ) )
     ->set_cooldown( timespan_t::zero() )  // Handled by the action
     ->set_default_value_from_effect( 2 ); // Damage bonus as default value
+
+  buff.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 10 )->set_default_value( 0.02 )->set_duration( 10_s );
+  buff.t29_4pc = make_buff<buff_t>( this, "t29_4pc" )
+                      ->set_default_value( 10 )
+                      ->set_duration( 10_s )
+                     ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
+                     ->set_pct_buff_type(STAT_PCT_BUFF_MASTERY);
 
   if ( legendary.ancestral_reminder->ok() )
   {
