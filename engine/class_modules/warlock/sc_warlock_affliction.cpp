@@ -833,6 +833,9 @@ void warlock_t::init_spells_affliction()
   talents.wrath_of_consumption_buff = find_spell( 387066 );
 
   talents.souleaters_gluttony = find_talent_spell( talent_tree::SPECIALIZATION, "Soul-Eater's Gluttony" ); // Should be ID 389630
+
+  talents.doom_blossom = find_talent_spell( talent_tree::SPECIALIZATION, "Doom Blossom" ); // Should be ID 389764
+  talents.doom_blossom_proc = find_spell( 389869 ); // AoE damage data
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
@@ -857,6 +860,7 @@ void warlock_t::init_procs_affliction()
   procs.harvester_of_souls = get_proc( "harvester_of_souls" );
   procs.pandemic_invocation_shard = get_proc( "pandemic_invocation_shard" );
   procs.tormented_crescendo = get_proc( "tormented_crescendo" );
+  procs.doom_blossom = get_proc( "doom_blossom" );
 
   for ( size_t i = 0; i < procs.malefic_rapture.size(); i++ )
   {

@@ -189,19 +189,31 @@ struct harvester_of_souls_t : public warlock_spell_t
   }
 };
 
+struct doom_blossom_t : public warlock_spell_t
+{
+  doom_blossom_t( warlock_t* p ) : warlock_spell_t( "Doom Blossom", p, p->talents.doom_blossom_proc )
+  {
+    background = dual = true;
+    aoe = -1;
+  }
+};
+
 struct corruption_t : public warlock_spell_t
 {
   struct corruption_dot_t : public warlock_spell_t
   {
     harvester_of_souls_t* harvester_proc;
+    doom_blossom_t* doom_blossom_proc;
 
     corruption_dot_t( warlock_t* p ) : warlock_spell_t( "Corruption (DoT)", p, p->warlock_base.corruption->effectN( 1 ).trigger() ),
-      harvester_proc( new harvester_of_souls_t( p, "" ) )
+      harvester_proc( new harvester_of_souls_t( p, "" ) ),
+      doom_blossom_proc( new doom_blossom_t( p ) )
     {
       tick_zero = false;
       background = dual = true;
 
       add_child( harvester_proc );
+      add_child( doom_blossom_proc );
 
       if ( p->talents.absolute_corruption->ok() )
       {
@@ -249,6 +261,16 @@ struct corruption_t : public warlock_spell_t
         {
           harvester_proc->execute_on_target( d->state->target );
           p()->procs.harvester_of_souls->occur();
+        }
+
+        if ( p()->talents.doom_blossom.ok() )
+        {
+          auto target_data = td( d->state->target );
+          if ( target_data->debuffs_malefic_affliction->check() && rng().roll( target_data->debuffs_malefic_affliction->check() * p()->talents.doom_blossom->effectN( 1 ).percent() ) )
+          {
+            doom_blossom_proc->execute_on_target( d->state->target );
+            p()->procs.doom_blossom->occur();
+          }
         }
       }
     }
