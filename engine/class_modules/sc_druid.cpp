@@ -272,7 +272,6 @@ public:
   // !!! Runtime variables NOTE: these MUST be properly reset in druid_t::reset() !!!
   // !!!==========================================================================!!!
   moon_stage_e moon_stage;
-  unsigned orbit_breaker_count;
   bool sundered_firmament_track;
   double after_the_wildfire_counter;
   std::vector<event_t*> persistent_event_delay;
@@ -452,6 +451,7 @@ public:
     buff_t* incarnation_moonkin;
     buff_t* natures_balance;
     buff_t* natures_grace;
+    buff_t* orbit_breaker;
     buff_t* owlkin_frenzy;
     buff_t* starweavers_warp;  // free starfall
     buff_t* starweavers_weft;  // free starsurge
@@ -3122,15 +3122,7 @@ struct shooting_stars_t : public druid_spell_t
     druid_spell_t::execute();
 
     if ( p()->talent.orbit_breaker.ok() )
-    {
-      p()->orbit_breaker_count++;
-
-      if ( p()->orbit_breaker_count >= as<unsigned>( p()->talent.orbit_breaker->effectN( 1 ).base_value() ) )
-      {
-        p()->orbit_breaker_count = 0U;
-        p()->active.orbit_breaker->execute_on_target( target );
-      }
-    }
+      p()->buff.orbit_breaker->trigger();
   }
 };
 }  // namespace spells
@@ -10332,6 +10324,15 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
+  buff.orbit_breaker = make_buff( this, "orbit_breaker" )
+    ->set_quiet( true )
+    ->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) )
+    ->set_expire_at_max_stack( true )
+    ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+      if ( b->at_max_stacks() )
+        active.orbit_breaker->execute_on_target( active.shooting_stars->target );
+    } );
+
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
 
@@ -11250,7 +11251,6 @@ void druid_t::reset()
 
   // Reset runtime variables
   moon_stage = static_cast<moon_stage_e>( options.initial_moon_stage );
-  orbit_breaker_count = 0U;
   sundered_firmament_track = false;
   after_the_wildfire_counter = 0.0;
   persistent_event_delay.clear();
