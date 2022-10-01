@@ -756,6 +756,9 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );
 
+  debuffs_malefic_affliction = make_buff( *this, "malefic_affliction", p.talents.malefic_affliction_debuff )
+                                   ->set_default_value( p.talents.malefic_affliction->effectN( 1 ).percent() );
+
   // Destro
   dots_immolate          = target->get_dot( "immolate", &p );
 
