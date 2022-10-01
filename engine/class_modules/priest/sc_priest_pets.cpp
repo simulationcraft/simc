@@ -429,6 +429,23 @@ struct mindbender_pet_t final : public base_fiend_pet_t
   {
     return power_leech_insanity;
   }
+
+  void demise() override
+  {
+    base_fiend_pet_t::demise();
+
+    if ( o().talents.shadow.inescapable_torment )
+    {
+      if ( o().cooldowns.mind_blast->is_ready() )
+      {
+        o().procs.inescapable_torment_missed_mb->occur();
+      }
+      if ( o().cooldowns.shadow_word_death->is_ready() )
+      {
+        o().procs.inescapable_torment_missed_swd->occur();
+      }
+    }
+  }
 };
 
 namespace actions
@@ -1131,7 +1148,8 @@ struct void_spike_t final : public priest_pet_spell_t
   {
     parse_options( options );
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    // BUG: Does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
     if ( !p.o().bugs )
     {
       affected_by_shadow_weaving = true;

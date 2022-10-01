@@ -482,6 +482,11 @@ public:
     propagate_const<proc_t*> idol_of_nzoth_vt;
     propagate_const<proc_t*> idol_of_nzoth_dp;
     propagate_const<proc_t*> mind_flay_insanity_wasted;
+    propagate_const<proc_t*> idol_of_yshaarj_extra_duration;
+    propagate_const<proc_t*> void_torrent_ticks_no_mastery;
+    propagate_const<proc_t*> mindgames_casts_no_mastery;
+    propagate_const<proc_t*> inescapable_torment_missed_mb;
+    propagate_const<proc_t*> inescapable_torment_missed_swd;
   } procs;
 
   // Special

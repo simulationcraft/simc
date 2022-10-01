@@ -60,6 +60,12 @@ struct mind_sear_tick_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    // Benefit Tracking
+    if ( priest().options.t29_2pc )
+    {
+      priest().buffs.t29_2pc->up();
+    }
+
     priest().trigger_eternal_call_to_the_void( s );
     priest().trigger_idol_of_cthun( s );
 
@@ -1076,6 +1082,12 @@ struct devouring_plague_t final : public priest_spell_t
   {
     priest_spell_t::impact( s );
 
+    // Benefit Tracking
+    if ( priest().options.t29_2pc )
+    {
+      priest().buffs.t29_2pc->up();
+    }
+
     // Damnation does not trigger a SA - 2020-08-08
     if ( casted )
     {
@@ -1600,6 +1612,11 @@ struct void_torrent_t final : public priest_spell_t
     if ( priest().talents.shadow.dark_evangelism.enabled() )
     {
       priest().buffs.dark_evangelism->trigger();
+    }
+
+    if ( priest().shadow_weaving_active_dots( target, id ) != 3 )
+    {
+      priest().procs.void_torrent_ticks_no_mastery->occur();
     }
   }
 

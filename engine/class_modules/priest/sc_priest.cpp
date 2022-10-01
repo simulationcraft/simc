@@ -123,6 +123,12 @@ public:
 
     if ( result_is_hit( s->result ) )
     {
+      // Benefit Tracking
+      if ( priest().talents.shadow.insidious_ire.enabled() )
+      {
+        priest().buffs.insidious_ire->up();
+      }
+
       if ( priest().legendary.shadowflame_prism->ok() || priest().talents.shadow.inescapable_torment.enabled() )
       {
         priest().trigger_shadowflame_prism( s->target );
@@ -951,6 +957,11 @@ struct mindgames_t final : public priest_spell_t
       make_event( *sim, delay,
                   [ this, stacks ] { priest().buffs.shadow_word_manipulation->trigger( stacks.total_seconds() ); } );
     }
+
+    if ( priest().specialization() == PRIEST_SHADOW && priest().shadow_weaving_active_dots( target, id ) != 3 )
+    {
+      priest().procs.mindgames_casts_no_mastery->occur();
+    }
   }
 };
 
@@ -1284,6 +1295,7 @@ struct summon_mindbender_t final : public summon_pet_t
       {
         summoning_duration +=
             timespan_t::from_seconds( priest().talents.shadow.devoured_violence->effectN( 1 ).base_value() );
+        priest().procs.idol_of_yshaarj_extra_duration->occur();
       }
     }
 
@@ -1308,7 +1320,8 @@ struct echoing_void_t final : public priest_spell_t
     aoe        = -1;
     range      = 10.0;
 
-    // BUG: https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    // BUG: Does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
     if ( !priest().bugs )
     {
       affected_by_shadow_weaving = true;
@@ -2211,7 +2224,12 @@ void priest_t::create_procs()
   procs.idol_of_nzoth_swp                      = get_proc( "Idol of N'Zoth procs from Shadow Word: Pain" );
   procs.idol_of_nzoth_vt                       = get_proc( "Idol of N'Zoth procs from Vampiric Touch" );
   procs.idol_of_nzoth_dp                       = get_proc( "Idol of N'Zoth procs from Devouring Plague" );
-  procs.mind_flay_insanity_wasted = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
+  procs.mind_flay_insanity_wasted      = get_proc( "Mind Flay: Insanity casts that did not channel for full ticks" );
+  procs.idol_of_yshaarj_extra_duration = get_proc( "Idol of Y'Shaarj Devoured Violence procs" );
+  procs.void_torrent_ticks_no_mastery  = get_proc( "Void Torrent ticks without full Mastery value" );
+  procs.mindgames_casts_no_mastery     = get_proc( "Mindgames casts without full Mastery value" );
+  procs.inescapable_torment_missed_mb  = get_proc( "Inescapable Torment expired when Mind Blast was ready" );
+  procs.inescapable_torment_missed_swd = get_proc( "Inescapable Torment expired when Shadow Word: Death was ready" );
   // Shadowlands
   procs.dissonant_echoes               = get_proc( "Void Bolt resets from Dissonant Echoes" );
   procs.void_tendril_ecttv             = get_proc( "Void Tendril proc from Eternal Call to the Void" );
