@@ -537,6 +537,7 @@ public:
     buff_t* festermight;
     buff_t* ghoulish_frenzy;
     buff_t* plaguebringer; 
+    buff_t* t29_4pc_unholy;
 
     // Conduits
     buff_t* meat_shield;
@@ -2137,6 +2138,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
   gain_t* dark_transformation_gain;
   buff_t* frenzied_monstrosity;
   buff_t* ghoulish_frenzy;
+  buff_t* vile_infusion;
 
   // Generic Dark Transformation pet ability
   struct dt_melee_ability_t : public pet_melee_attack_t<ghoul_pet_t>
@@ -2163,7 +2165,7 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       
       if ( dk() -> rng().roll( 0.15 ) )
       {
-        dk() -> buff.t29_4pc_unholy -> trigger();
+        dk() -> buffs.t29_4pc_unholy -> trigger();
       }
     }
 
