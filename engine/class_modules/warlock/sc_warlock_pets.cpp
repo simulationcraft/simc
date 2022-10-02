@@ -50,6 +50,9 @@ void warlock_pet_t::create_buffs()
                                   ->set_default_value( find_spell( 267972 )->effectN( 1 ).percent() )
                                   ->set_max_stack( 1 );
 
+  buffs.annihilan_training = make_buff( this, "annihilan_training", o()->talents.annihilan_training_buff )
+                                 ->set_default_value( o()->talents.annihilan_training_buff->effectN( 1 ).percent() );
+
   // Destruction
   buffs.embers = make_buff( this, "embers", find_spell( 264364 ) )
                      ->set_period( 500_ms )
@@ -616,6 +619,23 @@ void felguard_pet_t::queue_ds_felstorm()
   }
 }
 
+void felguard_pet_t::arise()
+{
+  warlock_pet_t::arise();
+
+  if ( o()->talents.annihilan_training.ok() )
+    buffs.annihilan_training->trigger();
+}
+
+double felguard_pet_t::composite_player_multiplier( school_e school ) const
+{
+  double m = warlock_pet_t::composite_player_multiplier( school );
+
+  if ( buffs.annihilan_training->check() )
+    m *= 1.0 + buffs.annihilan_training->check_stack_value();
+
+  return m;
+}
 /// Felguard End
 
 /// Grimoire: Felguard Begin

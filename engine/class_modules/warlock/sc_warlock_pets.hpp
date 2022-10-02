@@ -39,6 +39,7 @@ struct warlock_pet_t : public pet_t
     propagate_const<buff_t*> grimoire_of_service; // Buff used by Grimoire: Felguard talent
     propagate_const<buff_t*> grim_inquisitors_dread_calling; // DF - Now comes from Demonology talent
     propagate_const<buff_t*> demonic_synergy; // DF - Now comes from Class talent
+    propagate_const<buff_t*> annihilan_training; // Permanent aura when talented, 10% increased damage to all abilities
     // DF - Demonic Inspiration
     // DF - Wrathful Minion
     // DF - The Expendables
@@ -377,6 +378,8 @@ struct felguard_pet_t : public warlock_pet_t
   void init_base_stats() override;
   action_t* create_action( util::string_view, util::string_view ) override;
   timespan_t available() const override;
+  void arise() override;
+  double composite_player_multiplier( school_e ) const override;
 
   void queue_ds_felstorm();
 };
