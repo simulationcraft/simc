@@ -113,6 +113,7 @@ public:
     propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> translucent_image_conduit;
+    propagate_const<buff_t*> words_of_the_pious;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -1122,6 +1123,7 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
+    parse_buff_effects( p().buffs.words_of_the_pious ); // Spell Direct amount for Smite and Holy Nova
   }
 
   template <typename... Ts>

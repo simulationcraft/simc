@@ -1726,6 +1726,11 @@ struct power_word_shield_t final : public priest_absorb_t
       priest().generate_insanity( insanity, priest().gains.hallucinations_power_word_shield, nullptr );
     }
 
+    if ( priest().talents.words_of_the_pious.enabled() )
+    {
+      priest().buffs.words_of_the_pious->trigger();
+    }
+
     priest_absorb_t::execute();
   }
 
@@ -2805,9 +2810,9 @@ void priest_t::init_spells()
   talents.mind_control     = CT( "Mind Control" );    // NYI
   talents.dominate_mind    = CT( "Dominant Mind" );   // NYI
   // Row 5
-  talents.words_of_the_pious = CT( "Words of the Pious" );  // NYI
-  talents.mass_dispel        = CT( "Mass Dispel" );         // NYI
-  talents.move_with_grace    = CT( "Move With Grace" );     // NYI
+  talents.words_of_the_pious = CT( "Words of the Pious" );
+  talents.mass_dispel        = CT( "Mass Dispel" );      // NYI
+  talents.move_with_grace    = CT( "Move With Grace" );  // NYI
   talents.power_infusion     = CT( "Power Infusion" );
   talents.vampiric_embrace   = CT( "Vampiric Embrace" );
   talents.tithe_evasion      = CT( "Tithe Evasion" );
@@ -2880,6 +2885,8 @@ void priest_t::create_buffs()
   buffs.from_darkness_comes_light =
       make_buff( this, "from_darkness_comes_light", talents.from_darkness_comes_light->effectN( 1 ).trigger() )
           ->set_default_value_from_effect( 1 );
+  buffs.words_of_the_pious = make_buff( this, "words_of_the_pious", talents.words_of_the_pious->effectN( 1 ).trigger() )
+                                 ->set_default_value_from_effect( 1 );
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
