@@ -773,7 +773,11 @@ warlock_td_t::warlock_td_t( player_t* target, warlock_t& p )
 
   debuffs_haunt = make_buff( *this, "haunt", p.talents.haunt )
                       ->set_refresh_behavior( buff_refresh_behavior::PANDEMIC )
-                      ->set_default_value_from_effect( 2 );
+                      ->set_default_value_from_effect( 2 )
+                      ->set_stack_change_callback( [ &p ]( buff_t* b, int old, int cur ) {
+                          if ( cur == 0 )
+                            p.buffs.haunted_soul->expire();
+                        } );
 
   debuffs_shadow_embrace = make_buff( *this, "shadow_embrace", p.talents.shadow_embrace_debuff )
                                ->set_default_value( p.talents.shadow_embrace->effectN( 1 ).percent() );

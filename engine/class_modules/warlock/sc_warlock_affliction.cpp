@@ -556,6 +556,9 @@ struct haunt_t : public affliction_spell_t
     if ( result_is_hit( s->result ) )
     {
       td( s->target )->debuffs_haunt->trigger();
+
+      if ( p()->talents.haunted_soul.ok() )
+        p()->buffs.haunted_soul->trigger();
     }
   }
 };
@@ -746,6 +749,9 @@ void warlock_t::create_buffs_affliction()
   buffs.calamitous_crescendo = make_buff( this, "calamitous_crescendo", find_spell( 364322 ) );
 
   buffs.tormented_crescendo = make_buff( this, "tormented_crescendo", talents.tormented_crescendo_buff );
+
+  buffs.haunted_soul = make_buff( this, "haunted_soul", talents.haunted_soul_buff )
+                           ->set_default_value( talents.haunted_soul_buff->effectN( 1 ).percent() );
 }
 
 void warlock_t::init_spells_affliction()
@@ -842,6 +848,9 @@ void warlock_t::init_spells_affliction()
 
   talents.dread_touch = find_talent_spell( talent_tree::SPECIALIZATION, "Dread Touch" ); // Should be ID 389775
   talents.dread_touch_debuff = find_spell( 389868 ); // Applied to target on proc
+
+  talents.haunted_soul = find_talent_spell( talent_tree::SPECIALIZATION, "Haunted Soul" ); // Should be ID 387301
+  talents.haunted_soul_buff = find_spell( 387310 );
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }
