@@ -815,8 +815,9 @@ struct vampiric_touch_t final : public priest_spell_t
   propagate_const<unfurling_darkness_t*> child_ud;
   bool casted;
   double surge_of_darkness_proc_rate;
+  bool insanity;
 
-  vampiric_touch_t( priest_t& p, bool _casted = false )
+  vampiric_touch_t( priest_t& p, bool _casted = false, bool _insanity = true )
     : priest_spell_t( "vampiric_touch", p, p.dot_spells.vampiric_touch ),
       vampiric_touch_heal( new vampiric_touch_heal_t( p ) ),
       child_swp( nullptr ),
@@ -824,11 +825,18 @@ struct vampiric_touch_t final : public priest_spell_t
       surge_of_darkness_proc_rate( priest().talents.shadow.surge_of_darkness->proc_chance() )
   {
     casted                     = _casted;
+    insanity                   = _insanity;
     may_crit                   = false;
     affected_by_shadow_weaving = true;
 
     // Disable initial hit damage, only Unfurling Darkness uses it
     base_dd_min = base_dd_max = spell_power_mod.direct = 0;
+
+    if ( !insanity )
+    {
+      energize_type          = action_energize::NONE;  // no insanity gain
+      spell_power_mod.direct = 0;
+    }
 
     if ( priest().talents.shadow.misery.enabled() && casted )
     {
@@ -1067,8 +1075,12 @@ struct devouring_plague_t final : public priest_spell_t
 
   void consume_resource() override
   {
-    priest_spell_t::consume_resource();
+    if ( casted )
+    {
+      priest_spell_t::consume_resource();
+    }
 
+    // Damnation does not consume Mind Devourer - 2022-10-01
     if ( priest().buffs.mind_devourer->up() && casted )
     {
       priest().buffs.mind_devourer->decrement();
@@ -1085,7 +1097,7 @@ struct devouring_plague_t final : public priest_spell_t
       priest().buffs.t29_2pc->up();
     }
 
-    // Damnation does not trigger a SA - 2020-08-08
+    // Damnation does not trigger a SA - 2022-10-01
     if ( casted )
     {
       priest().trigger_shadowy_apparitions( s, priest().procs.shadowy_apparition_dp );
@@ -1774,7 +1786,7 @@ struct shadow_crash_dots_t final : public priest_spell_t
 
   shadow_crash_dots_t( priest_t& p, double _missile_speed )
     : priest_spell_t( "shadow_crash_dots", p, p.talents.shadow.shadow_crash->effectN( 3 ).trigger() ),
-      child_vt( new vampiric_touch_t( priest(), true ) ),  // TODO: verify this is true for all VT interactions
+      child_vt( new vampiric_touch_t( priest(), true, false ) ),
       missile_speed( _missile_speed )
   {
     may_miss   = false;
@@ -1872,7 +1884,7 @@ struct damnation_t final : public priest_spell_t
   damnation_t( priest_t& p, util::string_view options_str )
     : priest_spell_t( "damnation", p, p.talents.shadow.damnation ),
       child_swp( new shadow_word_pain_t( priest(), true ) ),  // Damnation still triggers SW:P as if it was hard casted
-      child_vt( new vampiric_touch_t( priest(), false ) ),
+      child_vt( new vampiric_touch_t( priest(), false, true ) ),
       child_dp( new devouring_plague_t( priest(), false ) )
   {
     parse_options( options_str );
