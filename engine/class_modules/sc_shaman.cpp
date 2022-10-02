@@ -617,8 +617,40 @@ public:
     proc_t* searing_flames;
     proc_t* tumbling_waves;
 
+    proc_t* magma_chamber_1;
+    proc_t* magma_chamber_2;
+    proc_t* magma_chamber_3;
+    proc_t* magma_chamber_4;
+    proc_t* magma_chamber_5;
+    proc_t* magma_chamber_6;
+    proc_t* magma_chamber_7;
+    proc_t* magma_chamber_8;
+    proc_t* magma_chamber_9;
+    proc_t* magma_chamber_10;
+    proc_t* magma_chamber_11;
+    proc_t* magma_chamber_12;
+    proc_t* magma_chamber_13;
+    proc_t* magma_chamber_14;
+    proc_t* magma_chamber_15;
+    proc_t* magma_chamber_16;
+    proc_t* magma_chamber_17;
+    proc_t* magma_chamber_18;
+    proc_t* magma_chamber_19;
+    proc_t* magma_chamber_20;
+
     proc_t* t28_4pc_ele_cd_extension;
     proc_t* t28_4pc_ele_cd_reduction;
+
+    proc_t* t29_2pc_ele_1;
+    proc_t* t29_2pc_ele_2;
+    proc_t* t29_2pc_ele_3;
+    proc_t* t29_2pc_ele_4;
+    proc_t* t29_2pc_ele_5;
+    proc_t* t29_2pc_ele_6;
+    proc_t* t29_2pc_ele_7;
+    proc_t* t29_2pc_ele_8;
+    proc_t* t29_2pc_ele_9;
+    proc_t* t29_2pc_ele_10;
 
     proc_t* pyroclastic_shock;
 
@@ -950,6 +982,10 @@ public:
   void summon_feral_spirits( timespan_t duration, unsigned n = 2, bool t28 = false );
   void summon_fire_elemental( timespan_t duration );
   void summon_storm_elemental( timespan_t duration );
+
+  // trackers, big code blocks that shall not be doublicated
+  void track_magma_chamber();
+  void track_t29_2pc_ele();
 
   // triggers
   void trigger_maelstrom_gain( double maelstrom_gain, gain_t* gain = nullptr );
@@ -5953,6 +5989,11 @@ struct elemental_blast_overload_t : public elemental_overload_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1.0 + p()->buff.t29_2pc->check_stack_value();
+    }
+
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -6004,6 +6045,11 @@ struct elemental_blast_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    {
+      m *= 1.0 + p()->buff.t29_2pc->stack_value();
+    }
+
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
 
     return m;
@@ -6034,6 +6080,7 @@ struct elemental_blast_t : public shaman_spell_t
 
     if ( p()->buff.magma_chamber->up() )
     {
+      p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
     }
 
@@ -6053,6 +6100,12 @@ struct elemental_blast_t : public shaman_spell_t
       }
 
       p()->buff.lava_surge->trigger();
+    }
+
+    if ( p()->buff.t29_2pc->up() )
+    {
+      p()->track_t29_2pc_ele();
+      p()->buff.t29_2pc->expire();
     }
 
     if ( p()->options.t29_4pc )
@@ -6203,6 +6256,16 @@ struct earthquake_damage_base_t : public shaman_spell_t
       m *= 1.0 + p()->buff.echoes_of_great_sundering->value();
     }
 
+    if ( p()->buff.magma_chamber->up() )
+    {
+      m *= 1.0 + p()->buff.magma_chamber->stack_value();
+    }
+
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->up() )
+    {
+      m *= 1 + p()->buff.t29_2pc->stack_value();
+    }
+
     return m;
   }
 };
@@ -6287,20 +6350,6 @@ struct earthquake_overload_damage_t : public earthquake_damage_base_t
   {
     // Earthquake modifier is hardcoded rather than using effects, so we set the modifier here
     spell_power_mod.direct = 0.176 * player->talent.mountains_will_fall->effectN( 1 ).percent();
-  }
-
-  double action_multiplier() const override
-  {
-    double m = shaman_spell_t::action_multiplier();
-
-    m *= 1.0 + p()->buff.magma_chamber->stack_value();
-
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
-    {
-      m *= 1 + p()->buff.t29_2pc->check_stack_value();
-    }
-
-    return m;
   }
 };
 
@@ -6417,11 +6466,13 @@ struct earthquake_t : public earthquake_base_t
 
     if ( p()->buff.magma_chamber->up() )
     {
+      p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
     }
 
     if ( p()->buff.t29_2pc->up() )
     {
+      p()->track_t29_2pc_ele();
       p()->buff.t29_2pc->expire();
     }
 
@@ -6591,9 +6642,9 @@ struct earth_shock_t : public shaman_spell_t
   {
     double m = shaman_spell_t::action_multiplier();
 
-    if ( p()->options.t29_2pc && p()->buff.t29_2pc->check() )
+    if ( p()->options.t29_2pc && p()->buff.t29_2pc->up() )
     {
-      m *= 1 + p()->buff.t29_2pc->check_stack_value();
+      m *= 1.0 + p()->buff.t29_2pc->stack_value();
     }
 
     m *= 1.0 + p()->buff.magma_chamber->stack_value();
@@ -6654,11 +6705,13 @@ struct earth_shock_t : public shaman_spell_t
 
     if ( p()->buff.magma_chamber->up() )
     {
+      p()->track_magma_chamber();
       p()->buff.magma_chamber->expire();
     }
 
     if ( p()->buff.t29_2pc->up() )
     {
+      p()->track_t29_2pc_ele();
       p()->buff.t29_2pc->expire();    
     }
 
@@ -9640,6 +9693,118 @@ void shaman_t::summon_storm_elemental( timespan_t duration )
 }
 
 // ==========================================================================
+// Shaman Tracking - code blocks that shall not be doublicated
+// ==========================================================================
+
+void shaman_t::track_magma_chamber()
+{
+  switch ( buff.magma_chamber->check() )
+  {
+    case 1:
+      proc.magma_chamber_1->occur();
+      break;
+    case 2:
+      proc.magma_chamber_2->occur();
+      break;
+    case 3:
+      proc.magma_chamber_3->occur();
+      break;
+    case 4:
+      proc.magma_chamber_4->occur();
+      break;
+    case 5:
+      proc.magma_chamber_5->occur();
+      break;
+    case 6:
+      proc.magma_chamber_6->occur();
+      break;
+    case 7:
+      proc.magma_chamber_7->occur();
+      break;
+    case 8:
+      proc.magma_chamber_8->occur();
+      break;
+    case 9:
+      proc.magma_chamber_9->occur();
+      break;
+    case 10:
+      proc.magma_chamber_10->occur();
+      break;
+    case 11:
+      proc.magma_chamber_11->occur();
+      break;
+    case 12:
+      proc.magma_chamber_12->occur();
+      break;
+    case 13:
+      proc.magma_chamber_13->occur();
+      break;
+    case 14:
+      proc.magma_chamber_14->occur();
+      break;
+    case 15:
+      proc.magma_chamber_15->occur();
+      break;
+    case 16:
+      proc.magma_chamber_16->occur();
+      break;
+    case 17:
+      proc.magma_chamber_17->occur();
+      break;
+    case 18:
+      proc.magma_chamber_18->occur();
+      break;
+    case 19:
+      proc.magma_chamber_19->occur();
+      break;
+    case 20:
+      proc.magma_chamber_20->occur();
+      break;
+    default:
+      break;
+  }
+}
+
+void shaman_t::track_t29_2pc_ele()
+{
+  switch ( buff.t29_2pc->check() )
+  {
+    case 1:
+      proc.t29_2pc_ele_1->occur();
+      break;
+    case 2:
+      proc.t29_2pc_ele_2->occur();
+      break;
+    case 3:
+      proc.t29_2pc_ele_3->occur();
+      break;
+    case 4:
+      proc.t29_2pc_ele_4->occur();
+      break;
+    case 5:
+      proc.t29_2pc_ele_5->occur();
+      break;
+    case 6:
+      proc.t29_2pc_ele_6->occur();
+      break;
+    case 7:
+      proc.t29_2pc_ele_7->occur();
+      break;
+    case 8:
+      proc.t29_2pc_ele_8->occur();
+      break;
+    case 9:
+      proc.t29_2pc_ele_9->occur();
+      break;
+    case 10:
+      proc.t29_2pc_ele_10->occur();
+      break;
+    default:
+      break;
+  }
+}
+
+// ==========================================================================
 // Shaman Ability Triggers
 // ==========================================================================
 
@@ -10305,8 +10470,10 @@ void shaman_t::create_buffs()
 
   buff.t29_2pc = make_buff( this, "t29_2pc" )->set_max_stack( 10 )->set_default_value( 0.02 )->set_duration( 10_s );
   buff.t29_4pc = make_buff<buff_t>( this, "t29_4pc" )
-                      ->set_default_value( 10 )
-                      ->set_duration( 10_s )
+                     // 10% divided by our mastery-point multiplier
+                     ->set_default_value( 10.0 / 1.875 )
+                     ->set_duration( 10_s )
+                     ->set_max_stack(1)
                      ->set_default_value_from_effect_type(A_MOD_MASTERY_PCT)
                      ->set_pct_buff_type(STAT_PCT_BUFF_MASTERY);
 
@@ -10586,6 +10753,26 @@ void shaman_t::init_procs()
   proc.further_beyond       = get_proc( "Further Beyond" );
   proc.lightning_rod        = get_proc( "Lightning Rod" );
   proc.searing_flames       = get_proc( "Searing Flames" );
+  proc.magma_chamber_1      = get_proc( "Magma Chamber 1" );
+  proc.magma_chamber_2      = get_proc( "Magma Chamber 2" );
+  proc.magma_chamber_3      = get_proc( "Magma Chamber 3" );
+  proc.magma_chamber_4      = get_proc( "Magma Chamber 4" );
+  proc.magma_chamber_5      = get_proc( "Magma Chamber 5" );
+  proc.magma_chamber_6      = get_proc( "Magma Chamber 6" );
+  proc.magma_chamber_7      = get_proc( "Magma Chamber 7" );
+  proc.magma_chamber_8      = get_proc( "Magma Chamber 8" );
+  proc.magma_chamber_9      = get_proc( "Magma Chamber 9" );
+  proc.magma_chamber_10      = get_proc( "Magma Chamber 10" );
+  proc.magma_chamber_11      = get_proc( "Magma Chamber 11" );
+  proc.magma_chamber_12      = get_proc( "Magma Chamber 12" );
+  proc.magma_chamber_13      = get_proc( "Magma Chamber 13" );
+  proc.magma_chamber_14      = get_proc( "Magma Chamber 14" );
+  proc.magma_chamber_15      = get_proc( "Magma Chamber 15" );
+  proc.magma_chamber_16      = get_proc( "Magma Chamber 16" );
+  proc.magma_chamber_17      = get_proc( "Magma Chamber 17" );
+  proc.magma_chamber_18      = get_proc( "Magma Chamber 18" );
+  proc.magma_chamber_19      = get_proc( "Magma Chamber 19" );
+  proc.magma_chamber_20      = get_proc( "Magma Chamber 20" );
 
   proc.pyroclastic_shock    = get_proc( "Pyroclastic Shock" );
 
@@ -10602,6 +10789,17 @@ void shaman_t::init_procs()
   proc.t28_4pc_enh       = get_proc( "Set Bonus: Tier28 4PC Enhancement" );
   proc.t28_4pc_ele_cd_reduction = get_proc( "Set Bonus: Tier28 4PC Elemental CD Reduction" );
   proc.t28_4pc_ele_cd_extension = get_proc( "Set Bonus: Tier28 4PC Elemental CD Extension" );
+
+  proc.t29_2pc_ele_1 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 1" );
+  proc.t29_2pc_ele_2 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 2" );
+  proc.t29_2pc_ele_3 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 3" );
+  proc.t29_2pc_ele_4 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 4" );
+  proc.t29_2pc_ele_5 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 5" );
+  proc.t29_2pc_ele_6 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 6" );
+  proc.t29_2pc_ele_7 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 7" );
+  proc.t29_2pc_ele_8 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 8" );
+  proc.t29_2pc_ele_9 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 9" );
+  proc.t29_2pc_ele_10 = get_proc( "Set Bonus: Tier29 2PC Elemental spender empowerement, stack 10" );
 }
 
 // shaman_t::init_uptimes ====================================================
