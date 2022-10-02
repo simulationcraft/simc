@@ -753,6 +753,7 @@
 3026822, DBFilesClient\ItemBonusSequenceSpell.db2
 3043873, DBFilesClient\ItemVisualsXEffect.db2
 3055696, DBFilesClient\CharStartKit.db2
+3055733, DBFilesClient\CreatureLabel.db2
 3055738, DBFilesClient\CreatureXUiWidgetSet.db2
 3055759, DBFilesClient\GarrMissionSet.db2
 3055768, DBFilesClient\ItemBonusTree.db2
@@ -940,7 +941,9 @@
 4556715, DBFilesClient\ProfessionEffectType.db2
 4566929, DBFilesClient\ChrRacesCreateScreenIcon.db2
 4579858, DBFilesClient\UIDeadlyDebuff.db2
+4618887, DBFilesClient\SoundMixGroup.db2
 4620073, DBFilesClient\SharedString.db2
+4621877, DBFilesClient\GameObjectLabel.db2
 4623413, DBFilesClient\ProfessionRating.db2
 4633656, DBFilesClient\MapRenderScale.db2
 4635649, DBFilesClient\TraitSystem.db2
@@ -958,3 +961,4 @@
 4682325, DBFilesClient\GlideEventBlendTimes.db2
 4699082, DBFilesClient\PvpRating.db2
 4724136, DBFilesClient\ChrCustomizationVisReq.db2
+4737221, DBFilesClient\UiWeeklyReward.db2
