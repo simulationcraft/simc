@@ -253,7 +253,7 @@ void frost( player_t* p )
 
   cooldowns->add_action( "potion,if=variable.cooldown_check", "Cooldowns" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&rune<6&!buff.empower_rune_weapon.up&(variable.st_planning|variable.adds_remain)&(cooldown.pillar_of_frost.remains<5|buff.pillar_of_frost.up)|fight_remains<20|!talent.pillar_of_frost" );
-  cooldowns->add_action( "empower_rune_weapon,if=talent.breath_of_sindragosa&!buff.empower_rune_weapon.up&rune<5&(runic_power<(60-(death_knight.runeforge.hysteria*5))|buff.bloodlust.up&runic_power<80)&(buff.breath_of_sindragosa.up|fight_remains<20)" );
+  cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=talent.breath_of_sindragosa&!buff.empower_rune_weapon.up&rune<5&(runic_power<(70-(death_knight.runeforge.hysteria*5))|buff.bloodlust.up&runic_power<80)&(buff.breath_of_sindragosa.up|fight_remains<20)" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.icecap&!talent.obliteration&!talent.breath_of_sindragosa&!buff.empower_rune_weapon.up" );
   cooldowns->add_action( "abomination_limb_talent,if=variable.st_planning&(talent.breath_of_sindragosa&buff.breath_of_sindragosa.up|!talent.breath_of_sindragosa&!talent.pillar_of_frost|talent.pillar_of_frost&cooldown.pillar_of_frost.remains<3)" );
   cooldowns->add_action( "abomination_limb_talent,if=variable.adds_remain" );
