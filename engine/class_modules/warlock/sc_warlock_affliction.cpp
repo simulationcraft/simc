@@ -411,33 +411,25 @@ struct malefic_rapture_t : public affliction_spell_t
 
 struct drain_soul_t : public affliction_spell_t
 {
-  // 2022-09-25 Current Drain Soul behavior with Nightfall:
-  // Drain Soul ordinarily behaves like a hasted duration DoT, using pandemic behavior for chaining
-  // However, Nightfall is increasing tick rate without affecting duration, creating more ticks than usual
-  // In most cases, the regular duration is used when calculating the refreshed duration
-  // The one exception is a fresh cast of a Nightfall-buffed Drain Soul, which lasts slightly longer to ensure each tick is a full tick
+  // TOCHECK: What happens with chained Drain Soul casts?
   struct drain_soul_state_t : public action_state_t
   {
     double tick_time_multiplier;
-    bool rounded_channel;
 
     drain_soul_state_t( action_t* action, player_t* target )
       : action_state_t( action, target ),
-      tick_time_multiplier( 1.0 ),
-      rounded_channel( false )
+      tick_time_multiplier( 1.0 )
     { }
 
     void initialize() override
     {
       action_state_t::initialize();
       tick_time_multiplier = 1.0;
-      rounded_channel = false;
     }
 
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s ) << " tick_time_multiplier=" << tick_time_multiplier;
-      s << " rounded_channel=" << rounded_channel;
       return s;
     }
 
@@ -445,7 +437,6 @@ struct drain_soul_t : public affliction_spell_t
     {
       action_state_t::copy_state( s );
       tick_time_multiplier = debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
-      rounded_channel = debug_cast<const drain_soul_state_t*>( s )->rounded_channel;
     }
   };
 
@@ -461,19 +452,8 @@ struct drain_soul_t : public affliction_spell_t
 
   void snapshot_state( action_state_t* s, result_amount_type rt ) override
   {
-    debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->buffs.nightfall->data().effectN( 3 ).percent() : 0 );
-    debug_cast<drain_soul_state_t*>( s )->rounded_channel = ( !td( s->target )->dots_drain_soul->is_ticking() && p()->buffs.nightfall->check() );
+    debug_cast<drain_soul_state_t*>( s )->tick_time_multiplier = 1.0 + ( p()->buffs.nightfall->check() ? p()->talents.nightfall_buff->effectN( 3 ).percent() : 0 );
     affliction_spell_t::snapshot_state( s, rt );
-  }
-
-  timespan_t composite_dot_duration( const action_state_t* s ) const override
-  {
-    auto dur = ( dot_duration * s->haste );
-
-    if ( debug_cast<const drain_soul_state_t*>( s )->rounded_channel )
-      dur = tick_time( s ) * std::ceil( dur / tick_time( s ) );
-
-    return dur;
   }
 
   timespan_t tick_time( const action_state_t* s ) const override
@@ -483,6 +463,16 @@ struct drain_soul_t : public affliction_spell_t
     t *= debug_cast<const drain_soul_state_t*>( s )->tick_time_multiplier;
 
     return t;
+  }
+
+  timespan_t composite_dot_duration( const action_state_t* s ) const override
+  {
+    timespan_t dur = dot_duration * s->haste;
+
+    if ( p()->buffs.nightfall->check() )
+      dur *= 1.0 + p()->talents.nightfall_buff->effectN( 4 ).percent();
+
+    return dur;
   }
 
   void execute() override
