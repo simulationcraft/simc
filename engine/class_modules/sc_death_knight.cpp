@@ -2164,8 +2164,13 @@ struct ghoul_pet_t : public base_ghoul_pet_t
       {
         dk() -> trigger_festering_wound( state, 1, dk() -> procs.fw_infected_claws );
       }
-      
-      if ( dk() -> options.t29_4pc && dk() -> rng().roll( 0.15 ) )
+    }
+    
+    void execute() override
+    {
+      pet_melee_attack_t::execute();
+
+      if ( dk() -> specialization() == DEATH_KNIGHT_UNHOLY && dk() -> options.t29_4pc && dk() -> rng().roll( 0.15 ) )
       {
         dk() -> buffs.t29_4pc_unholy -> trigger();
       }
