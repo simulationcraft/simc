@@ -317,8 +317,8 @@ struct call_dreadstalkers_t : public demonology_spell_t
       //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
       double base_cost = demonology_spell_t::cost();
 
-      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
-        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+      if ( p()->talents.grand_warlocks_design->ok() )
+        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
       if ( p()->buffs.nether_portal->up() )
       {

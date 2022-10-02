@@ -1330,6 +1330,8 @@ void warlock_t::init_spells()
   talents.grimoire_of_sacrifice_buff = find_spell( 196099 ); // Buff data and RPPM
   talents.grimoire_of_sacrifice_proc = find_spell( 196100 ); // Damage data
 
+  talents.grand_warlocks_design = find_talent_spell( talent_tree::SPECIALIZATION, "Grand Warlock's Design" ); // All 3 specs. Should be ID 387084
+
   talents.soul_conduit              = find_talent_spell( "Soul Conduit" );
 
   // Legendaries
