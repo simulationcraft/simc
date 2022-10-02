@@ -19,7 +19,6 @@ namespace spells
 {
 // ==========================================================================
 // Mind Sear
-// TODO: if you don't go below 25 insanity until the last tick consume_resource properly
 // ==========================================================================
 struct mind_sear_tick_t final : public priest_spell_t
 {
@@ -373,12 +372,8 @@ struct silence_t final : public priest_spell_t
       range += rank2->effectN( 1 ).base_value();
     }
 
-    // TODO: this can probably be changed to apply_affecting_aura
-    if ( priest().talents.shadow.last_word.enabled() )
-    {
-      // Spell data has a negative value
-      cooldown->duration += priest().talents.shadow.last_word->effectN( 1 ).time_value();
-    }
+    // CD Reduction
+    apply_affecting_aura( priest().talents.shadow.last_word );
   }
 
   void impact( action_state_t* state ) override
@@ -634,6 +629,12 @@ struct shadow_word_pain_t final : public priest_spell_t
         }
       }
 
+      if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
+      {
+        priest().buffs.deathspeaker->trigger();
+        priest().procs.deathspeaker->occur();
+      }
+
       priest().refresh_insidious_ire_buff( s );
     }
   }
@@ -687,7 +688,6 @@ struct shadow_word_pain_t final : public priest_spell_t
         priest().procs.coalescing_shadows_shadow_word_pain->occur();
       }
 
-      // TODO: check if this also can proc on initial hit
       if ( priest().talents.shadow.deathspeaker.enabled() && priest().rppm.deathspeaker->trigger() )
       {
         priest().buffs.deathspeaker->trigger();

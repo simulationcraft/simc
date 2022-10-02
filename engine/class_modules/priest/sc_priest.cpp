@@ -1273,7 +1273,7 @@ struct summon_shadowfiend_t final : public summon_pet_t
   {
     if ( priest().talents.shadow.idol_of_yshaarj.enabled() )
     {
-      // TODO: Use Spell Data. Health threshold from blizzard post, no spell data yet.
+      // Health Percentage not in spelldata
       if ( target->health_percentage() >= 80.0 )
       {
         priest().buffs.devoured_pride->trigger();
