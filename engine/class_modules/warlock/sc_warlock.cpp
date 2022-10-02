@@ -607,6 +607,12 @@ struct soul_rot_t : public warlock_spell_t
     //  p()->buffs.decaying_soul_satchel_haste->trigger();
     //  p()->buffs.decaying_soul_satchel_crit->trigger();
     //}
+
+    if ( p()->talents.dark_harvest.ok() )
+    {
+      p()->buffs.dark_harvest_haste->trigger();
+      p()->buffs.dark_harvest_crit->trigger();
+    }
   }
 
   double composite_ta_multiplier( const action_state_t* s ) const override
@@ -1274,6 +1280,14 @@ void warlock_t::create_buffs()
   buffs.decaying_soul_satchel_crit = make_buff( this, "decaying_soul_satchel_crit", find_spell( 356369 ) )
                                          ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
                                          ->set_default_value( find_spell( 356369 )->effectN( 2 ).percent() );
+
+  buffs.dark_harvest_haste = make_buff( this, "dark_harvest_haste", talents.dark_harvest_buff )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
+                                 ->set_default_value( talents.dark_harvest_buff->effectN( 1 ).percent() );
+
+  buffs.dark_harvest_crit = make_buff( this, "dark_harvest_crit", talents.dark_harvest_buff )
+                                ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                ->set_default_value( talents.dark_harvest_buff->effectN( 2 ).percent() );
 }
 
 void warlock_t::init_spells()
