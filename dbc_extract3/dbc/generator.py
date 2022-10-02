@@ -1704,6 +1704,7 @@ class SpellDataGenerator(DataGenerator):
           ( 336889, 0 ),                            # Nether Precision
           ( 337090, 0 ),                            # Siphoned Malice
           ( 363685, 0 ),                            # Arcane Lucidity ready buff
+          ( 203277, 0 ),                            # Flame Accelerant
         ),
 
         # Warlock:

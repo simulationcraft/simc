@@ -329,6 +329,8 @@ public:
     buff_t* combustion;
     buff_t* feel_the_burn;
     buff_t* firemind;
+    buff_t* flame_accelerant;
+    buff_t* flame_accelerant_icd;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* pyroclasm;
@@ -3672,10 +3674,31 @@ struct fireball_t final : public fire_mage_spell_t
     return std::min( t, 0.75_s );
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t t = fire_mage_spell_t::execute_time();
+
+    if ( p()->buffs.flame_accelerant->check() )
+      t *= 1.0 + p()->talents.flame_accelerant->effectN( 2 ).percent();
+
+    return t;
+  }
+
+  double action_multiplier() const override
+  {
+    double am = fire_mage_spell_t::action_multiplier();
+
+    if ( p()->buffs.flame_accelerant->check() )
+      am *= 1.0 + p()->talents.flame_accelerant->effectN( 1 ).percent();
+
+    return am;
+  }
+
   void execute() override
   {
     fire_mage_spell_t::execute();
     p()->buffs.expanded_potential->trigger();
+    p()->buffs.flame_accelerant_icd->trigger();
   }
 
   void impact( action_state_t* s ) override
@@ -6768,34 +6791,53 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion    = make_buff<buffs::combustion_t>( this );
-  buffs.feel_the_burn = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
-                          ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
-                          ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-                          ->set_chance( talents.feel_the_burn.ok() );
+  buffs.combustion           = make_buff<buffs::combustion_t>( this );
+  buffs.feel_the_burn        = make_buff( this, "feel_the_burn", find_spell( 383395 ) )
+                                 ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
+                                 ->set_chance( talents.feel_the_burn.ok() );
   // TODO: 2022-10-02 Firemind currently affects base intellect and not current intellect.
   // This needs to be reimplemented if that bug is not fixed.
-  buffs.firemind      = make_buff( this, "firemind", find_spell( 383501 ) )
-                          ->set_default_value( talents.firemind->effectN( 3 ).percent() )
-                          ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
-                          ->set_chance( talents.firemind.ok() );
-  buffs.heating_up    = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak    = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
-                          ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                            { if ( old == 0 ) buffs.firestorm->trigger(); } );
-  buffs.pyroclasm     = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
-  buffs.pyrotechnics  = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
-                          ->set_chance( talents.pyrotechnics->ok() )
-                          ->set_default_value_from_effect( 1 )
-                          ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
-                            {
-                              if ( cur > old )
-                                buffs.flame_accretion->trigger( cur - old );
-                              else
-                                buffs.flame_accretion->decrement( old - cur );
-                            } );
+  buffs.firemind             = make_buff( this, "firemind", find_spell( 383501 ) )
+                                 ->set_default_value( talents.firemind->effectN( 3 ).percent() )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                                 ->set_chance( talents.firemind.ok() );
+  // TODO: 2022-10-02 Flame Accelerant has several bugs that are not implemented in simc.
+  // 1. Casting a Fireball as the ICD is expiring can result in that Fireball gaining the
+  // bonus damage without stopping the flame_accelerant buff from being applied just after.
+  // 2. Fireball's base cast time without flame_accelerant is 4% too slow with 1 point of
+  // the talent and is 22% too fast with 2 points of the talent.
+  buffs.flame_accelerant     = make_buff( this, "flame_accelerant", find_spell( 203277 ) )
+                                 ->set_can_cancel( false )
+                                 ->set_chance( talents.flame_accelerant->ok() )
+                                 ->set_constant_behavior( buff_constant_behavior::NEVER_CONSTANT );
+  buffs.flame_accelerant_icd = make_buff( this, "flame_accelerant_icd", find_spell( 203278 ) )
+                                 ->set_can_cancel( false )
+                                 ->set_quiet( true )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int, int cur )
+                                   {
+                                     if ( cur == 0 )
+                                       buffs.flame_accelerant->trigger();
+                                     else
+                                       buffs.flame_accelerant->expire();
+                                  } );
+  buffs.heating_up           = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak           = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                                   { if ( old == 0 ) buffs.firestorm->trigger(); } );
+  buffs.pyroclasm            = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
+  buffs.pyrotechnics         = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
+                                 ->set_chance( talents.pyrotechnics->ok() )
+                                 ->set_default_value_from_effect( 1 )
+                                 ->set_stack_change_callback( [ this ] ( buff_t*, int old, int cur )
+                                   {
+                                     if ( cur > old )
+                                       buffs.flame_accretion->trigger( cur - old );
+                                     else
+                                       buffs.flame_accretion->decrement( old - cur );
+                                   } );
 
 
   // Frost
@@ -7341,6 +7383,7 @@ void mage_t::arise()
 {
   player_t::arise();
 
+  buffs.flame_accelerant->trigger();
   buffs.incanters_flow->trigger();
 
   if ( talents.enlightened->ok() )
