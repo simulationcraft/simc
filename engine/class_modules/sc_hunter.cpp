@@ -300,9 +300,8 @@ struct hunter_td_t: public actor_target_data_t
 
   struct debuffs_t
   {
+    buff_t* latent_poison;
     buff_t* latent_poison_injectors;
-
-    buff_t* latent_poison_injection;
     buff_t* death_chakram;
   } debuffs;
 
@@ -368,7 +367,7 @@ public:
   struct {
     spell_data_ptr_t call_of_the_wild;
     spell_data_ptr_t craven_strategem; // NYI (Feign Death Utility)
-    spell_data_ptr_t nesingwarys_apparatus;
+    spell_data_ptr_t nesingwarys_trapping_apparatus;
     spell_data_ptr_t soulforge_embers;
     // Beast Mastery
     spell_data_ptr_t dire_command;
@@ -404,9 +403,6 @@ public:
   // Buffs
   struct buffs_t
   {
-    // Hunter Tree
-    buff_t* nesingwarys_trapping_apparatus;
-
     // Marksmanship Tree
     buff_t* precise_shots;
     buff_t* lone_wolf;
@@ -453,7 +449,7 @@ public:
 
     // Legendaries
     buff_t* butchers_bone_fragments;
-    buff_t* nesingwarys_apparatus;
+    buff_t* nesingwarys_trapping_apparatus;
     buff_t* secrets_of_the_vigil;
     buff_t* pact_of_the_soulstalkers;
     buff_t* eagletalons_true_focus_runeforge;
@@ -508,8 +504,6 @@ public:
 
     gain_t* terms_of_engagement;
 
-    gain_t* nesingwarys_apparatus_direct;
-    gain_t* nesingwarys_apparatus_buff;
     gain_t* reversal_of_fortune;
   } gains;
 
@@ -536,28 +530,29 @@ public:
 
     spell_data_ptr_t improved_kill_shot;
 
-    spell_data_ptr_t hiexplosive_trap;
-
     spell_data_ptr_t improved_traps;
+    spell_data_ptr_t born_to_be_wild;
+
+    spell_data_ptr_t high_explosive_trap;
 
     spell_data_ptr_t beast_master;
     spell_data_ptr_t keen_eyesight;
-    spell_data_ptr_t barrage;
-    spell_data_ptr_t serpent_sting;
+    spell_data_ptr_t master_marksman;
 
     spell_data_ptr_t improved_kill_command;
-    spell_data_ptr_t stampede;
-    spell_data_ptr_t nesingwarys_trapping_apparatus;
-    spell_data_ptr_t master_marksman;
-    spell_data_ptr_t latent_poison_injectors;
+    spell_data_ptr_t serrated_shots;
+    spell_data_ptr_t arctic_bola;
+    spell_data_ptr_t serpent_sting;
 
     spell_data_ptr_t alpha_predator;
     spell_data_ptr_t killer_instinct;
     spell_data_ptr_t steel_trap;
+    spell_data_ptr_t stampede;
     spell_data_ptr_t death_chakram;
-    spell_data_ptr_t chakrams;
-
+    spell_data_ptr_t barrage;
     spell_data_ptr_t explosive_shot;
+    spell_data_ptr_t poison_injection;
+    spell_data_ptr_t hydras_bite;
 
     // Shared
     spell_data_ptr_t wailing_arrow;
@@ -708,21 +703,6 @@ public:
     spell_data_ptr_t ruthless_marauder; // TODO: implement
     spell_data_ptr_t birds_of_prey; // TODO: pending changes
     spell_data_ptr_t coordinated_kill; // TODO: pending changes
-
-    // tier 25
-    spell_data_ptr_t hydras_bite;
-
-    // tier 30
-    spell_data_ptr_t trailblazer;
-    spell_data_ptr_t natural_mending;
-    spell_data_ptr_t camouflage;
-
-    // tier 40
-    spell_data_ptr_t born_to_be_wild;
-    spell_data_ptr_t posthaste;
-    spell_data_ptr_t binding_shot;
-
-    spell_data_ptr_t binding_shackles;
   } talents;
 
   // Specialization Spells
@@ -754,7 +734,7 @@ public:
     action_t* master_marksman = nullptr;
     action_t* barbed_shot = nullptr;
     action_t* wild_spirits = nullptr;
-    action_t* latent_poison_injectors = nullptr;
+    action_t* latent_poison = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
   } actions;
@@ -908,7 +888,7 @@ public:
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   bool trigger_focused_trickery( action_t* action, double cost );
-  void trigger_latent_poison_injectors( const action_state_t* s );
+  void trigger_poison_injection( const action_state_t* s );
   void trigger_bombardment();
   void consume_trick_shots();
 };
@@ -968,6 +948,7 @@ public:
     // Hunter Tree passives
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
     ab::apply_affecting_aura( p -> talents.improved_traps );
+    ab::apply_affecting_aura( p -> talents.born_to_be_wild );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
@@ -994,7 +975,6 @@ public:
     ab::apply_affecting_aura( p -> talents.tactical_advantage );
     ab::apply_affecting_aura( p -> talents.ranger );
 
-    ab::apply_affecting_aura( p -> talents.born_to_be_wild );
     ab::apply_affecting_aura( p -> talents.hydras_bite );
 
     // passive legendary effects
@@ -1217,12 +1197,6 @@ public:
 
       if ( execute_time < remains )
         total_energize *= 1 + p() -> talents.trueshot -> effectN( 5 ).percent();
-    }
-
-    if ( p() -> buffs.nesingwarys_apparatus -> check() &&
-         execute_time < p() -> buffs.nesingwarys_apparatus -> remains() )
-    {
-      total_energize *= 1 + p() -> buffs.nesingwarys_apparatus -> check_value();
     }
 
     if ( p() -> buffs.nesingwarys_trapping_apparatus -> check() &&
@@ -2708,20 +2682,20 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
   return triggered;
 }
 
-void hunter_t::trigger_latent_poison_injectors( const action_state_t* s )
+void hunter_t::trigger_poison_injection( const action_state_t* s )
 {
-  if ( !actions.latent_poison_injectors )
+  if ( !actions.latent_poison )
     return;
 
   auto td = find_target_data( s -> target );
   if ( !td )
     return;
 
-  auto debuff = td -> debuffs.latent_poison_injectors;
+  auto debuff = td -> debuffs.latent_poison;
   if ( ! debuff -> check() )
     return;
 
-  actions.latent_poison_injectors -> execute_on_target( s -> target );
+  actions.latent_poison -> execute_on_target( s -> target );
 
   debuff -> expire();
 }
@@ -3281,11 +3255,11 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::assess_damage( type, s );
 
-    if ( s -> result_amount > 0 && p() -> talents.latent_poison_injectors.ok() )
-      td( s -> target ) -> debuffs.latent_poison_injectors -> trigger();
+    if ( s -> result_amount > 0 && p() -> talents.poison_injection.ok() )
+      td( s -> target ) -> debuffs.latent_poison -> trigger();
 
     if ( s -> result_amount > 0 && p() -> legendary.latent_poison_injectors.ok() )
-      td( s -> target ) -> debuffs.latent_poison_injection -> trigger();
+      td( s -> target ) -> debuffs.latent_poison_injectors -> trigger();
   }
 
   size_t available_targets( std::vector< player_t* >& tl ) const override
@@ -3310,10 +3284,10 @@ struct serpent_sting_t: public hunter_ranged_attack_t
 
 // Latent Poison Injectors ==================================================
 
-struct latent_poison_injectors_t final : hunter_spell_t
+struct latent_poison_t final : hunter_spell_t
 {
-  latent_poison_injectors_t( hunter_t* p ):
-    hunter_spell_t( "latent_poison_injectors", p, p -> find_spell( 378016 ) )
+  latent_poison_t( hunter_t* p ):
+    hunter_spell_t( "latent_poison", p, p -> find_spell( 378016 ) )
   {
     background = true;
     triggers_wild_spirits = false;
@@ -3323,7 +3297,7 @@ struct latent_poison_injectors_t final : hunter_spell_t
   {
     double m = hunter_spell_t::composite_da_multiplier( s );
 
-    m *= td( target ) -> debuffs.latent_poison_injectors -> check();
+    m *= td( target ) -> debuffs.latent_poison -> check();
 
     return m;
   }
@@ -3867,7 +3841,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    p() -> trigger_latent_poison_injectors( s );
+    p() -> trigger_poison_injection( s );
   }
 };
 
@@ -4303,7 +4277,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // TODO: check exact trigger conditions (TrS AiSes etc)
-    p() -> trigger_latent_poison_injectors( s );
+    p() -> trigger_poison_injection( s );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4700,9 +4674,9 @@ struct internal_bleeding_t
 
 struct melee_focus_spender_t: hunter_melee_attack_t
 {
-  struct latent_poison_injection_t final : hunter_spell_t
+  struct latent_poison_injectors_t final : hunter_spell_t
   {
-    latent_poison_injection_t( util::string_view n, hunter_t* p ):
+    latent_poison_injectors_t( util::string_view n, hunter_t* p ):
       hunter_spell_t( n, p, p -> find_spell( 336904 ) )
     {
       triggers_wild_spirits = false;
@@ -4710,7 +4684,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     void trigger( player_t* target )
     {
-      auto debuff = td( target ) -> debuffs.latent_poison_injection;
+      auto debuff = td( target ) -> debuffs.latent_poison_injectors;
       if ( ! debuff -> check() )
         return;
 
@@ -4723,7 +4697,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     {
       double m = hunter_spell_t::composite_da_multiplier( s );
 
-      m *= td( target ) -> debuffs.latent_poison_injection -> check();
+      m *= td( target ) -> debuffs.latent_poison_injectors -> check();
 
       return m;
     }
@@ -4741,7 +4715,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
   };
 
   internal_bleeding_t internal_bleeding;
-  latent_poison_injection_t* latent_poison_injection = nullptr;
+  latent_poison_injectors_t* latent_poison_injectors = nullptr;
   serpent_sting_vv_t* serpent_sting_vv = nullptr;
   struct {
     double chance = 0;
@@ -4753,7 +4727,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     internal_bleeding( p )
   {
     if ( p -> legendary.latent_poison_injectors.ok() )
-      latent_poison_injection = p -> get_background_action<latent_poison_injection_t>( "latent_poison_injection" );
+      latent_poison_injectors = p -> get_background_action<latent_poison_injectors_t>( "latent_poison_injectors" );
 
     if ( p -> talents.vipers_venom.ok() )
       serpent_sting_vv = p -> get_background_action<serpent_sting_vv_t>( "serpent_sting" );
@@ -4791,10 +4765,10 @@ struct melee_focus_spender_t: hunter_melee_attack_t
 
     internal_bleeding.trigger( s );
 
-    if ( latent_poison_injection )
-      latent_poison_injection -> trigger( s -> target );
+    if ( latent_poison_injectors )
+      latent_poison_injectors -> trigger( s -> target );
 
-    p() -> trigger_latent_poison_injectors( s );
+    p() -> trigger_poison_injection( s );
   }
 
   double action_multiplier() const override
@@ -5090,65 +5064,6 @@ struct harpoon_t: public hunter_melee_attack_t
   }
 };
 
-// Chakrams ===================================================================
-
-struct chakrams_t : public hunter_ranged_attack_t
-{
-  /**
-   * In game Chakrams is actually around 5 different spells with 3 'damage' spells alone:
-   *  259398 - the actual 'projectile' that hits the main target, once, and returns
-   *  259396 - the 'aoe' part, does the damage on each projectile impact, except the main target
-   *  267666 - the second spell hitting the main target on impact
-   *
-   * Our implementation here does everything using only 259398 with a bit of
-   * multipliers fiddling. While it does not exactly match the in-game behaviour
-   * it produces exactly the same numbers.
-   *
-   * The big difference to the game are dynamic multipliers because of the timing
-   * of impacts. In-game only 259398, the single hit to the main target, is calculated
-   * on execute. Every other spell is calculated (and 'executed') on the projectile
-   * impacting the respective target.
-   * Unfortunately we don't have support for 'travelling' projectiles (or
-   * for any non-circular aoe for that matter).
-   * Fortunately Survival is melee, so the impact of this should be pretty low.
-   */
-
-  struct damage_t final : public hunter_ranged_attack_t
-  {
-    damage_t( util::string_view n, hunter_t* p ):
-      hunter_ranged_attack_t( n, p, p -> talents.chakrams -> effectN( 1 ).trigger() )
-    {
-      dual = true;
-
-      // Chakrams hits all targets in it's path, as we don't have support for this
-      // just make it hit everything.
-      aoe = -1;
-      radius = 0;
-
-      base_multiplier *= 2;
-      base_aoe_multiplier = 0.5;
-    }
-  };
-  damage_t* damage = nullptr;
-
-  chakrams_t( hunter_t* p, util::string_view options_str ):
-    hunter_ranged_attack_t( "chakrams", p, p -> talents.chakrams )
-  {
-    parse_options( options_str );
-
-    damage = p -> get_background_action<damage_t>( "chakrams_damage" );
-    add_child( damage );
-  }
-
-  void execute() override
-  {
-    hunter_ranged_attack_t::execute();
-
-    damage -> execute_on_target( target );
-    damage -> execute(); // to simulate the 'return' & hitting the main target twice
-  }
-};
-
 } // end attacks
 
 // ==========================================================================
@@ -5324,11 +5239,11 @@ struct trap_base_t : hunter_spell_t
   {
     hunter_spell_t::impact( s );
 
-    if ( p() -> legendary.nesingwarys_apparatus.ok() )
+    if ( p() -> legendary.nesingwarys_trapping_apparatus.ok() )
     {
-      double amount = p() -> buffs.nesingwarys_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
-      p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_apparatus_direct, this );
-      p() -> buffs.nesingwarys_apparatus -> trigger();
+      double amount = p() -> buffs.nesingwarys_trapping_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
+      p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_trapping_apparatus_direct, this );
+      p() -> buffs.nesingwarys_trapping_apparatus -> trigger();
     }
   }
 
@@ -5342,8 +5257,8 @@ struct trap_base_t : hunter_spell_t
 
   double energize_cast_regen( const action_state_t* ) const override
   {
-    if ( p() -> legendary.nesingwarys_apparatus.ok() )
-      return p() -> buffs.nesingwarys_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
+    if ( p() -> legendary.nesingwarys_trapping_apparatus.ok() )
+      return p() -> buffs.nesingwarys_trapping_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
     return 0;
   }
 };
@@ -5379,33 +5294,11 @@ struct freezing_trap_t : public trap_base_t
   {
     parse_options( options_str );
   }
-
-  void impact( action_state_t* s ) override
-  {
-    trap_base_t::impact( s );
-
-    if ( p() -> talents.nesingwarys_trapping_apparatus.ok() )
-    {
-      double amount = p() -> talents.nesingwarys_trapping_apparatus -> effectN( 1 ).resource( RESOURCE_FOCUS );
-      p() -> resource_gain( RESOURCE_FOCUS, amount, p() -> gains.nesingwarys_trapping_apparatus_direct, this );
-      p() -> buffs.nesingwarys_trapping_apparatus -> trigger();
-    }
-  }
-
-  double energize_cast_regen( const action_state_t* s ) const override
-  {
-    double energize = trap_base_t::energize_cast_regen( s );
-
-    if ( p() -> talents.nesingwarys_trapping_apparatus.ok() )
-      energize += p() -> buffs.nesingwarys_trapping_apparatus -> data().effectN( 1 ).resource( RESOURCE_FOCUS );
-
-    return energize;
-  }
 };
 
 // Hi-Explosive Trap =====================================================================
 
-struct hiexplosive_trap_t : public trap_base_t
+struct high_explosive_trap_t : public trap_base_t
 {
   struct damage_t final : hunter_ranged_attack_t
   {
@@ -5416,12 +5309,12 @@ struct hiexplosive_trap_t : public trap_base_t
     }
   };
 
-  hiexplosive_trap_t( hunter_t* p, util::string_view options_str )
-    : trap_base_t( "hiexplosive_trap", p, p -> talents.hiexplosive_trap )
+  high_explosive_trap_t( hunter_t* p, util::string_view options_str )
+    : trap_base_t( "high_explosive_trap", p, p -> talents.high_explosive_trap )
   {
     parse_options( options_str );
 
-    impact_action = p -> get_background_action<damage_t>( "hiexplosive_trap_damage" );
+    impact_action = p -> get_background_action<damage_t>( "high_explosive_trap_damage" );
   }
 };
 
@@ -6363,14 +6256,12 @@ hunter_td_t::hunter_td_t( player_t* target, hunter_t* p ):
   debuffs(),
   dots()
 {
+  debuffs.latent_poison =
+    make_buff( *this, "latent_poison", p -> talents.poison_injection -> effectN( 1 ).trigger() )
+      -> set_trigger_spell( p -> talents.poison_injection );
+
   debuffs.latent_poison_injectors =
-    make_buff( *this, "latent_poison_injectors", p -> talents.latent_poison_injectors -> effectN( 1 ).trigger() )
-      -> set_trigger_spell( p -> talents.latent_poison_injectors );
-
-
-
-  debuffs.latent_poison_injection =
-    make_buff( *this, "latent_poison_injection", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
+    make_buff( *this, "latent_poison_injectors", p -> legendary.latent_poison_injectors -> effectN( 1 ).trigger() )
       -> set_trigger_spell( p -> legendary.latent_poison_injectors );
 
   debuffs.death_chakram =
@@ -6499,7 +6390,6 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "butchery"              ) return new               butchery_t( this, options_str );
   if ( name == "call_of_the_wild"      ) return new       call_of_the_wild_t( this, options_str );
   if ( name == "carve"                 ) return new                  carve_t( this, options_str );
-  if ( name == "chakrams"              ) return new               chakrams_t( this, options_str );
   if ( name == "cobra_shot"            ) return new             cobra_shot_t( this, options_str );
   if ( name == "coordinated_assault"   ) return new    coordinated_assault_t( this, options_str );
   if ( name == "counter_shot"          ) return new           counter_shot_t( this, options_str );
@@ -6512,7 +6402,7 @@ action_t* hunter_t::create_action( util::string_view name,
   if ( name == "flayed_shot"           ) return new            flayed_shot_t( this, options_str );
   if ( name == "freezing_trap"         ) return new          freezing_trap_t( this, options_str );
   if ( name == "harpoon"               ) return new                harpoon_t( this, options_str );
-  if ( name == "hiexplosive_trap"      ) return new       hiexplosive_trap_t( this, options_str );
+  if ( name == "high_explosive_trap"   ) return new    high_explosive_trap_t( this, options_str );
   if ( name == "kill_command"          ) return new           kill_command_t( this, options_str );
   if ( name == "kill_shot"             ) return new              kill_shot_t( this, options_str );
   if ( name == "mongoose_bite"         ) return new          mongoose_bite_t( this, options_str );
@@ -6627,25 +6517,29 @@ void hunter_t::init_spells()
 
   talents.improved_kill_shot                = find_talent_spell( talent_tree::CLASS, "Improved Kill Shot" );
 
-  talents.hiexplosive_trap                  = find_talent_spell( talent_tree::CLASS, "Hi-Explosive Trap" );
+  talents.improved_traps                    = find_talent_spell( talent_tree::CLASS, "Improved Traps" );
+  talents.born_to_be_wild                   = find_talent_spell( talent_tree::CLASS, "Born To Be Wild" );
+
+  talents.high_explosive_trap               = find_talent_spell( talent_tree::CLASS, "High Explosive Trap" );
 
   talents.beast_master                      = find_talent_spell( talent_tree::CLASS, "Beast Master" );
   talents.keen_eyesight                     = find_talent_spell( talent_tree::CLASS, "Keen Eyesight" );
-  talents.barrage                           = find_talent_spell( talent_tree::CLASS, "Barrage" );
-  talents.serpent_sting                     = find_talent_spell( talent_tree::CLASS, "Serpent Sting" );
+  talents.master_marksman                   = find_talent_spell( talent_tree::CLASS, "Master Marksman" );
 
   talents.improved_kill_command             = find_talent_spell( talent_tree::CLASS, "Improved Kill Command" );
-  talents.stampede                          = find_talent_spell( talent_tree::CLASS, "Stampede" );
-  talents.nesingwarys_trapping_apparatus    = find_talent_spell( talent_tree::CLASS, "Nesingwary's Trapping Apparatus" );
-  talents.master_marksman                   = find_talent_spell( talent_tree::CLASS, "Master Marksman" );
-  talents.latent_poison_injectors           = find_talent_spell( talent_tree::CLASS, "Latent Poison Injectors" );
+  talents.serrated_shots                    = find_talent_spell( talent_tree::CLASS, "Serrated Shots" );
+  talents.arctic_bola                       = find_talent_spell( talent_tree::CLASS, "Arctic Bola" );
+  talents.serpent_sting                     = find_talent_spell( talent_tree::CLASS, "Serpent Sting" );
 
   talents.alpha_predator                    = find_talent_spell( talent_tree::CLASS, "Alpha Predator" );
   talents.killer_instinct                   = find_talent_spell( talent_tree::CLASS, "Killer Instinct" );
   talents.steel_trap                        = find_talent_spell( talent_tree::CLASS, "Steel Trap" );
+  talents.stampede                          = find_talent_spell( talent_tree::CLASS, "Stampede" );
   talents.death_chakram                     = find_talent_spell( talent_tree::CLASS, "Death Chakram" );
-  talents.chakrams                          = find_talent_spell( talent_tree::CLASS, "Chakrams" );
   talents.explosive_shot                    = find_talent_spell( talent_tree::CLASS, "Explosive Shot" );
+  talents.barrage                           = find_talent_spell( talent_tree::CLASS, "Barrage" );
+  talents.poison_injection                  = find_talent_spell( talent_tree::CLASS, "Poison Injection" );
+  talents.hydras_bite                       = find_talent_spell( talent_tree::CLASS, "Hydras Bite" );
 
   // Marksmanship Tree
   if (specialization() == HUNTER_MARKSMANSHIP)
@@ -6796,19 +6690,6 @@ void hunter_t::init_spells()
     talents.explosives_expert                 = find_talent_spell( talent_tree::SPECIALIZATION, "Explosives Expert", HUNTER_SURVIVAL );
   }
 
-  // tier 25
-  talents.hydras_bite                       = find_talent_spell( "Hydra's Bite" );
-
-  // tier 30
-  talents.trailblazer                       = find_talent_spell( "Trailblazer" );
-  talents.natural_mending                   = find_talent_spell( "Natural Mending" );
-  talents.camouflage                        = find_talent_spell( "Camouflage" );
-
-  // tier 40
-  talents.born_to_be_wild                   = find_talent_spell( "Born To Be Wild" );
-  talents.posthaste                         = find_talent_spell( "Posthaste" );
-  talents.binding_shot                      = find_talent_spell( "Binding Shot" );
-
   // Mastery
   mastery.master_of_beasts     = find_mastery_spell( HUNTER_BEAST_MASTERY );
   mastery.sniper_training      = find_mastery_spell( HUNTER_MARKSMANSHIP );
@@ -6860,10 +6741,10 @@ void hunter_t::init_spells()
 
   // Runeforge Legendaries
 
-  legendary.call_of_the_wild         = find_runeforge_legendary( "Call of the Wild" );
-  legendary.craven_strategem         = find_runeforge_legendary( "Craven Strategem" );
-  legendary.nesingwarys_apparatus    = find_runeforge_legendary( "Nessingwary's Trapping Apparatus" );
-  legendary.soulforge_embers         = find_runeforge_legendary( "Soulforge Embers" );
+  legendary.call_of_the_wild                = find_runeforge_legendary( "Call of the Wild" );
+  legendary.craven_strategem                = find_runeforge_legendary( "Craven Strategem" );
+  legendary.nesingwarys_trapping_apparatus  = find_runeforge_legendary( "Nessingwary's Trapping Apparatus" );
+  legendary.soulforge_embers                = find_runeforge_legendary( "Soulforge Embers" );
 
   legendary.dire_command             = find_runeforge_legendary( "Dire Command" );
   legendary.flamewakers_cobra_sting  = find_runeforge_legendary( "Flamewaker's Cobra Sting" );
@@ -6933,20 +6814,13 @@ void hunter_t::create_actions()
   if ( talents.master_marksman.ok() )
     actions.master_marksman = new attacks::master_marksman_t( this );
 
-  if ( talents.latent_poison_injectors.ok() )
-    actions.latent_poison_injectors = new attacks::latent_poison_injectors_t( this );
+  if ( talents.poison_injection.ok() )
+    actions.latent_poison = new attacks::latent_poison_t( this );
 }
 
 void hunter_t::create_buffs()
 {
   player_t::create_buffs();
-
-  // Hunter Tree
-
-  buffs.nesingwarys_trapping_apparatus =
-    make_buff( this, "nesingwarys_trapping_apparatus", find_spell( 378761 ) )
-      -> set_default_value( talents.nesingwarys_trapping_apparatus -> effectN( 2 ).percent() )
-      -> set_chance( talents.nesingwarys_trapping_apparatus.ok() );
 
   // Marksmanship Tree
 
@@ -7275,10 +7149,10 @@ void hunter_t::create_buffs()
       -> set_default_value_from_effect( 1 )
       -> set_trigger_spell( legendary.butchers_bone_fragments );
 
-  buffs.nesingwarys_apparatus =
-    make_buff( this, "nesingwarys_trapping_apparatus_runeforge", find_spell( 336744 ) )
+  buffs.nesingwarys_trapping_apparatus =
+    make_buff( this, "nesingwarys_trapping_apparatus", find_spell( 336744 ) )
       -> set_default_value_from_effect( 2 )
-      -> set_chance( legendary.nesingwarys_apparatus.ok() );
+      -> set_chance( legendary.nesingwarys_trapping_apparatus.ok() );
 
   buffs.secrets_of_the_vigil =
     make_buff( this, "secrets_of_the_unblinking_vigil", legendary.secrets_of_the_vigil -> effectN( 1 ).trigger() )
@@ -7300,17 +7174,16 @@ void hunter_t::init_gains()
 {
   player_t::init_gains();
 
-  gains.nesingwarys_trapping_apparatus_direct   = get_gain( "Nesingwary's Trapping Apparatus (Direct)" );
-  gains.nesingwarys_trapping_apparatus_buff     = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
-  gains.trueshot                                = get_gain( "Trueshot" );
+  gains.trueshot               = get_gain( "Trueshot" );
 
   gains.barbed_shot            = get_gain( "barbed_shot" );
   gains.aspect_of_the_wild     = get_gain( "aspect_of_the_wild" );
 
   gains.terms_of_engagement    = get_gain( "terms_of_engagement" );
 
-  gains.nesingwarys_apparatus_direct = get_gain( "Nesingwary's Trapping Apparatus Runeforge (Direct)" );
-  gains.nesingwarys_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus Runeforge (Buff)" );
+  gains.nesingwarys_trapping_apparatus_direct = get_gain( "Nesingwary's Trapping Apparatus (Direct)" );
+  gains.nesingwarys_trapping_apparatus_buff   = get_gain( "Nesingwary's Trapping Apparatus (Buff)" );
+
   gains.reversal_of_fortune    = get_gain( "Reversal of Fortune" );
 }
 
@@ -7767,9 +7640,6 @@ double hunter_t::resource_gain( resource_e type, double amount, gain_t* g, actio
 
     if ( buffs.trueshot -> check() )
       add_gain( talents.trueshot -> effectN( 5 ).percent(), gains.trueshot );
-
-    if ( buffs.nesingwarys_apparatus -> check() )
-      add_gain( buffs.nesingwarys_apparatus -> check_value(), gains.nesingwarys_apparatus_buff );
 
     if ( buffs.nesingwarys_trapping_apparatus -> check() )
       add_gain( buffs.nesingwarys_trapping_apparatus -> check_value(), gains.nesingwarys_trapping_apparatus_buff );
