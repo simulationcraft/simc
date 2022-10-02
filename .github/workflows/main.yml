@@ -19,18 +19,19 @@ env:
 jobs:
   ubuntu-gcc:
     name: ubuntu-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
-    runs-on: ubuntu-18.04
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        cc: [gcc-10, gcc-7]
+        cc: [gcc-12, gcc-7]
         cppVersion: [17, 20]
         include:
           - cc: gcc-7
             cxx: g++-7
             packages: gcc-7 g++-7
-          - cc: gcc-10
-            cxx: g++-10
-            packages: gcc-10 g++-10
+            os: ubuntu-18.04
+          - cc: gcc-12
+            cxx: g++-12
+            os: ubuntu-22.04
         exclude:
           - cc: gcc-7
             cppVersion: 20   
