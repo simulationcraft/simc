@@ -213,7 +213,7 @@ struct hand_of_guldan_t : public demonology_spell_t
 
 struct demonbolt_t : public demonology_spell_t
 {
-  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( p, "Demonbolt" )
+  demonbolt_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Demonbolt", p, p->talents.demonbolt )
   {
     parse_options( options_str );
     energize_type     = action_energize::ON_CAST;
@@ -227,7 +227,7 @@ struct demonbolt_t : public demonology_spell_t
 
     if ( p()->buffs.demonic_core->check() )
     {
-      et *= 1.0 + p()->buffs.demonic_core->data().effectN( 1 ).percent();
+      et *= 1.0 + p()->warlock_base.demonic_core_buff->effectN( 1 ).percent();
     }
 
     return et;
@@ -240,28 +240,28 @@ struct demonbolt_t : public demonology_spell_t
     p()->buffs.demonic_core->up();  // benefit tracking
     p()->buffs.demonic_core->decrement();
 
-    if ( p()->talents.power_siphon->ok() )
-      p()->buffs.power_siphon->decrement();
+    //if ( p()->talents.power_siphon->ok() )
+    //  p()->buffs.power_siphon->decrement();
 
-    if ( p()->talents.demonic_calling->ok() )
-      p()->buffs.demonic_calling->trigger();
+    //if ( p()->talents.demonic_calling->ok() )
+    //  p()->buffs.demonic_calling->trigger();
   }
 
   double action_multiplier() const override
   {
     double m = demonology_spell_t::action_multiplier();
 
-    if ( p()->talents.sacrificed_souls->ok() )
-    {
-      m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
-    }
+    //if ( p()->talents.sacrificed_souls->ok() )
+    //{
+    //  m *= 1.0 + p()->talents.sacrificed_souls->effectN( 1 ).percent() * p()->active_pets;
+    //}
 
-    if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
-    {
-      m *= 1.0 + p()->buffs.power_siphon->default_value;
-    }
+    //if ( p()->talents.power_siphon->ok() && p()->buffs.power_siphon->check() )
+    //{
+    //  m *= 1.0 + p()->buffs.power_siphon->default_value;
+    //}
 
-    m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
+    //m *= 1.0 + p()->buffs.balespiders_burning_core->check_stack_value();
 
     return m;
   }
@@ -1053,6 +1053,8 @@ void warlock_t::init_spells_demonology()
   // Talents
   talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
   talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
+
+  talents.demonbolt = find_talent_spell( talent_tree::SPECIALIZATION, "Demonbolt" ); // Should be ID 264178
 
   talents.dreadlash           = find_talent_spell( "Dreadlash" );
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );

@@ -273,7 +273,7 @@ public:
     player_talent_t call_dreadstalkers;
     const spell_data_t* call_dreadstalkers_2; // Contains duration data
 
-    // DF - Demonbolt (Demonic Core is a guaranteed passive, even though this talent is optional)
+    player_talent_t demonbolt; // Note: Demonic Core is a guaranteed passive, even though this talent is optional
     const spell_data_t* dreadlash;
     // DF - Fel Commando (Formerly SL Conduit)
 
