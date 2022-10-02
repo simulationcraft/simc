@@ -194,8 +194,8 @@ void frost( player_t* p )
   default_->add_action( "variable,name=pooling_runes,value=talent.obliteration&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
   default_->add_action( "variable,name=pooling_runic_power,value=talent.breath_of_sindragosa&cooldown.breath_of_sindragosa.remains<variable.breath_pooling_time|talent.obliteration&runic_power<35&cooldown.pillar_of_frost.remains_expected<variable.oblit_pooling_time" );
   default_->add_action( "remorseless_winter,if=talent.gathering_storm&!talent.obliteration&cooldown.pillar_of_frost.remains&(talent.everfrost|talent.biting_cold)", "Maintain Icy Talons and keep Remorseless Winter rolling" );
-  default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&spell_targets.glacial_advance>=2&(talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up|talent.obliteration&!buff.pillar_of_frost.up)" );
-  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&(talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time|talent.obliteration&!buff.pillar_of_frost.up)" );
+  default_->add_action( "glacial_advance,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&active_enemies>=2&(talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time|talent.obliteration&!buff.pillar_of_frost.up|!talent.breath_of_sindragosa&!talent.obliteration)" );
+  default_->add_action( "frost_strike,if=buff.icy_talons.remains<=gcd*2&talent.icy_talons&(talent.breath_of_sindragosa&!buff.breath_of_sindragosa.up&cooldown.breath_of_sindragosa.remains>variable.breath_pooling_time|talent.obliteration&!buff.pillar_of_frost.up|!talent.breath_of_sindragosa&!talent.obliteration)" );
   default_->add_action( "mind_freeze,if=target.debuff.casting.react", "Interrupt" );
   default_->add_action( "call_action_list,name=racials", "Choose Action list to run" );
   default_->add_action( "call_action_list,name=trinkets" );
