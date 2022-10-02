@@ -7186,7 +7186,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::gain_energize_resource( rt, amt, gain );
 
-      if ( p()->talent.stellar_innervation.ok() )
+      if ( p()->talent.stellar_innervation.ok() && p()->buff.eclipse_lunar->check() )
         p()->resource_gain( rt, amt, p()->gain.stellar_innervation, this );
     }
 
@@ -8114,7 +8114,7 @@ struct sunfire_t : public druid_spell_t
   {
     druid_spell_t::gain_energize_resource( rt, amt, gain );
 
-    if ( p()->talent.stellar_innervation.ok() )
+    if ( p()->talent.stellar_innervation.ok() && p()->buff.eclipse_solar->check() )
       p()->resource_gain( rt, amt, p()->gain.stellar_innervation, this );
   }
 
@@ -11244,7 +11244,7 @@ void druid_t::init_special_effects()
           dbc_proc_callback_t::trigger( a, s );
       }
 
-      void execute( action_t* a, action_state_t* s ) override
+      void execute( action_t*, action_state_t* ) override
       {
         p()->active.denizen_of_the_dream->execute();
       }
