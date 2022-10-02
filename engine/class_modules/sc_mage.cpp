@@ -327,10 +327,11 @@ public:
 
     // Fire
     buff_t* combustion;
-    buff_t* pyrotechnics;
+    buff_t* firemind;
     buff_t* heating_up;
     buff_t* hot_streak;
     buff_t* pyroclasm;
+    buff_t* pyrotechnics;
 
 
     // Frost
@@ -2323,6 +2324,7 @@ struct hot_streak_spell_t : public fire_mage_spell_t
     {
       p()->buffs.hot_streak->decrement();
       p()->buffs.pyroclasm->trigger();
+      p()->buffs.firemind->trigger();
 
       trigger_legendary_buff( p()->buffs.sun_kings_blessing, p()->buffs.sun_kings_blessing_ready );
 
@@ -6729,7 +6731,20 @@ void mage_t::create_buffs()
 
 
   // Fire
-  buffs.combustion   = make_buff<buffs::combustion_t>( this );
+  buffs.combustion  = make_buff<buffs::combustion_t>( this );
+  // TODO: 2022-10-02 Firemind currently affects base intellect and not current intellect.
+  // This needs to be reimplemented if that bug is not fixed.
+  buffs.firemind    = make_buff( this, "firemind", find_spell( 383501 ) )
+                        ->set_default_value( talents.firemind->effectN( 3 ).percent() )
+                        ->set_pct_buff_type( STAT_PCT_BUFF_INTELLECT )
+                        ->set_chance( talents.firemind.ok() );
+  buffs.heating_up  = make_buff( this, "heating_up", find_spell( 48107 ) );
+  buffs.hot_streak  = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
+                        ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
+                          { if ( old == 0 ) buffs.firestorm->trigger(); } );
+  buffs.pyroclasm   = make_buff( this, "pyroclasm", find_spell( 269651 ) )
+                        ->set_default_value_from_effect( 1 )
+                        ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
   buffs.pyrotechnics = make_buff( this, "pyrotechnics", find_spell( 157644 ) )
                          ->set_chance( talents.pyrotechnics->ok() )
                          ->set_default_value_from_effect( 1 )
@@ -6740,13 +6755,6 @@ void mage_t::create_buffs()
                              else
                                buffs.flame_accretion->decrement( old - cur );
                            } );
-  buffs.heating_up   = make_buff( this, "heating_up", find_spell( 48107 ) );
-  buffs.hot_streak   = make_buff<buffs::expanded_potential_buff_t>( this, "hot_streak", find_spell( 48108 ) )
-                         ->set_stack_change_callback( [ this ] ( buff_t*, int old, int )
-                           { if ( old == 0 ) buffs.firestorm->trigger(); } );
-  buffs.pyroclasm    = make_buff( this, "pyroclasm", find_spell( 269651 ) )
-                         ->set_default_value_from_effect( 1 )
-                         ->set_chance( talents.pyroclasm->effectN( 1 ).percent() );
 
 
   // Frost
