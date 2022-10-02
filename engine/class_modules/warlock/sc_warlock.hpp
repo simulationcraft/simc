@@ -265,7 +265,7 @@ public:
     player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
-    // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
+    player_talent_t grim_reach; // Darkglare hits all targets affected by DoTs
     // DF - Decaying Soul Satchel (Formerly SL Legendary)
 
     // DEMO

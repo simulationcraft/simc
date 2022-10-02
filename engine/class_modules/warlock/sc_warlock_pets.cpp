@@ -1717,16 +1717,18 @@ struct eye_beam_t : public warlock_pet_spell_t
 {
   struct grim_reach_t : public warlock_pet_spell_t
   {
-    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "grim_reach", p, p->find_spell( 1 ) )
+    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "grim_reach", p, p->find_spell( 390097 ) )
     {
       background = dual = true;
 
       base_dd_min = base_dd_max = 0.0;
     }
   };
-
+  
+  grim_reach_t* grim_reach;
   eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_beam", p, p->find_spell( 205231 ) )
   {
+    grim_reach = new grim_reach_t( p );
   }
 
   double action_multiplier() const override
@@ -1763,9 +1765,24 @@ struct eye_beam_t : public warlock_pet_spell_t
 
   void impact( action_state_t* s ) override
   {
-    s->result_raw;
+    auto raw_damage = s->result_raw;
 
     warlock_pet_spell_t::impact( s );
+
+    if ( p()->o()->talents.grim_reach.ok() )
+    {
+      grim_reach->base_dd_min = grim_reach->base_dd_max = raw_damage * p()->o()->talents.grim_reach->effectN( 1 ).percent();
+      for ( player_t* target : sim->target_non_sleeping_list )
+      {
+        if ( target == s->target )
+          continue;
+
+        if ( p()->o()->get_target_data( target )->count_affliction_dots() > 0 )
+        {
+          grim_reach->execute_on_target( target );
+        }
+      }
+    }
   }
 };
 
