@@ -2642,7 +2642,9 @@ struct ignite_t final : public residual_action_t
     if ( p()->cooldowns.fervent_flickering->up() && rng().roll( p()->talents.fervent_flickering->proc_chance() ) )
     {
       p()->cooldowns.fervent_flickering->start( p()->talents.fervent_flickering->internal_cooldown() );
-      p()->cooldowns.fire_blast->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value() );
+      cooldown_t* cd = p()->cooldowns.fire_blast;
+      if ( cd->action )
+        cd->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value() / cd->action->recharge_rate_multiplier( *cd ) );
     }
 
     if ( p()->cooldowns.phoenix_reborn->up() && rng().roll( p()->talents.phoenix_reborn->proc_chance() ) )
