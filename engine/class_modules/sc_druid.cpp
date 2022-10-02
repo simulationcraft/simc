@@ -3921,6 +3921,8 @@ struct ferocious_bite_t : public cat_attack_t
     {
       aoe = -1;
       reduced_aoe_targets = p->talent.rampant_ferocity->effectN( 2 ).base_value();
+      background = true;
+      round_base_dmg = false;
     }
 
     action_state_t* new_state() override { return new ferocious_bite_state_t( this, target ); }
@@ -3931,7 +3933,6 @@ struct ferocious_bite_t : public cat_attack_t
     }
 
     double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
-    
     double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
 
     std::vector<player_t*>& target_list() const override
@@ -4393,7 +4394,10 @@ struct primal_wrath_t : public cat_attack_t
       : cat_attack_t( "tear_open_wounds", p, p->find_spell( 391786 ) ),
         rip_dur( timespan_t::from_seconds( p->talent.tear_open_wounds->effectN( 1 ).base_value() ) ),
         rip_mul( p->talent.tear_open_wounds->effectN( 2 ).percent() )
-    {}
+    {
+      background = true;
+      round_base_dmg = false;
+    }
 
     double _get_amount( const action_state_t* s ) const
     {
@@ -4407,7 +4411,6 @@ struct primal_wrath_t : public cat_attack_t
     }
 
     double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
-
     double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
 
     void impact( action_state_t* s ) override
@@ -7579,19 +7582,70 @@ struct stampeding_roar_t : public druid_spell_t
 // Starfall Spell ===========================================================
 struct starfall_t : public druid_spell_t
 {
-  struct lunar_shrapnel_t : public druid_spell_t
+  struct starfall_state_t : public action_state_t
   {
-    lunar_shrapnel_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 393869 ) )
+    player_t* shrapnel_target;
+    double amount;
+
+    starfall_state_t( action_t* a, player_t* t ) : action_state_t( a, t ), shrapnel_target( nullptr ), amount( 0.0 ) {}
+
+    void initialize() override
     {
-      aoe = -1;
-      background = true;
-      name_str_reporting = "lunar_shrapnel";
+      action_state_t::initialize();
+      shrapnel_target = nullptr;
+      amount = 0.0;
+    }
+
+    void copy_state( const action_state_t* s ) override
+    {
+      action_state_t::copy_state( s );
+      shrapnel_target = debug_cast<const starfall_state_t*>( s )->shrapnel_target;
+      amount = debug_cast<const starfall_state_t*>( s )->amount;
+    }
+
+    std::ostringstream& debug_str( std::ostringstream& s ) override
+    {
+      action_state_t::debug_str( s );
+      s << " amount=" << amount << " shrapnel=" << shrapnel_target ? shrapnel_target->name() : "none";
+      return s;
     }
   };
 
-  struct starfall_damage_t : public druid_spell_t
+  struct starfall_base_t : public druid_spell_t
   {
-    starfall_damage_t( druid_t* p, std::string_view n ) : druid_spell_t( n, p, p->find_spell( 191037 ) )
+    starfall_base_t( std::string_view n, druid_t* p, const spell_data_t* s ) : druid_spell_t( n, p, s ) {}
+
+    action_state_t* new_state() override { return new starfall_state_t( this, target ); }
+    starfall_state_t* cast_state( action_state_t* s ) { return debug_cast<starfall_state_t*>( s ); }
+    const starfall_state_t* cast_state( const action_state_t* s ) const { return debug_cast<const starfall_state_t*>( s ); }
+
+  };
+
+  struct lunar_shrapnel_t : public starfall_base_t
+  {
+    double mul;
+
+    lunar_shrapnel_t( druid_t* p, std::string_view n )
+      : starfall_base_t( n, p, p->find_spell( 393869 ) ), mul( p->talent.lunar_shrapnel->effectN( 1 ).percent() )
+    {
+      aoe = -1;
+      reduced_aoe_targets = p->talent.lunar_shrapnel->effectN( 2 ).base_value();
+      background = true;
+      round_base_dmg = false;
+      name_str_reporting = "lunar_shrapnel";
+    }
+
+    double _get_amount( const action_state_t* s ) const { return cast_state( s )->amount * mul; }
+    double base_da_min( const action_state_t* s ) const override { return _get_amount( s ); }
+    double base_da_max( const action_state_t* s ) const override { return _get_amount( s ); }
+  };
+
+  struct starfall_damage_t : public starfall_base_t
+  {
+    lunar_shrapnel_t* shrapnel;
+
+    starfall_damage_t( druid_t* p, std::string_view n )
+      : starfall_base_t( n, p, p->find_spell( 191037 ) ), shrapnel( nullptr )
     {
       background = dual = true;
 
@@ -7600,29 +7654,49 @@ struct starfall_t : public druid_spell_t
         auto first = name_str.find_first_of( '_' );
         auto last  = name_str.find_last_of( '_' );
         auto suf   = name_str.substr( first, last - first );
-        impact_action = p->get_secondary_action_n<lunar_shrapnel_t>( "lunar_shrapnel" + suf );
+        shrapnel = p->get_secondary_action_n<lunar_shrapnel_t>( "lunar_shrapnel" + suf );
       }
     }
 
     double action_multiplier() const override
     {
-      return druid_spell_t::action_multiplier() * std::max( 1, p()->buff.starfall->check() );
+      return starfall_base_t::action_multiplier() * std::max( 1, p()->buff.starfall->check() );
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      starfall_base_t::impact( s );
+
+      if ( cast_state( s )->shrapnel_target && cast_state( s )->shrapnel_target == s->target )
+      {
+        auto state = shrapnel->get_state();
+        state->target = s->target;
+        shrapnel->snapshot_state( state, shrapnel->amount_type( state ) );
+        cast_state( state )->amount = s->result_amount;
+
+        shrapnel->schedule_execute( state );
+      }
     }
   };
 
-  struct starfall_driver_t : public druid_spell_t
+  struct starfall_driver_t : public starfall_base_t
   {
+    starfall_damage_t* damage;
     timespan_t delay;
+    double shrapnel_chance;
 
     starfall_driver_t( druid_t* p, std::string_view n )
-      : druid_spell_t( n, p, p->talent.starfall->effectN( 3 ).trigger() )
+      : starfall_base_t( n, p, p->talent.starfall->effectN( 3 ).trigger() ), shrapnel_chance( 0.0 )
     {
       background = dual = true;
-      aoe = -1;
 
-      impact_action =
-        p->get_secondary_action_n<starfall_damage_t>( name_str.substr( 0, name_str.find_last_of( '_' ) ) + "_damage" );
-      delay = timespan_t::from_seconds( impact_action->travel_delay );
+      auto pre = name_str.substr( 0, name_str.find_last_of( '_' ) );
+      damage = p->get_secondary_action_n<starfall_damage_t>( pre + "_damage" );
+      delay = p->talent.starfall->effectN( 3 ).period();
+
+      // TODO: early estimate, test moar
+      if ( p->talent.lunar_shrapnel.ok() )
+        shrapnel_chance = 0.2;
     }
 
     // fake travel time to simulate execution delay for individual stars
@@ -7631,15 +7705,45 @@ struct starfall_t : public druid_spell_t
       return rng().range( 0_ms, delay );
     }
 
+    void trigger_lunar_shrapnel( action_state_t* s )
+    {
+      auto tl = starfall_base_t::target_list();
+
+      tl.erase( std::remove_if( tl.begin(), tl.end(), [ this ]( player_t* t ) {
+        return !td( t )->dots.moonfire->is_ticking();
+      } ), tl.end() );
+
+      if ( tl.empty() )
+        return;
+
+      auto chance = shrapnel_chance * std::cbrt( tl.size() );
+
+      // Shrapnel triggers on the lowest GUID. For simc purposes we trigger this on the first target with moonfire.
+      if ( rng().roll( chance ) )
+        cast_state( s )->shrapnel_target = tl.front();
+    }
+
     void execute() override
     {
-      druid_spell_t::execute();
+      pre_execute_state = get_state();
+      trigger_lunar_shrapnel( pre_execute_state );
 
-      p()->eclipse_handler.tick_starfall();
+      starfall_base_t::execute();
+    }
+
+    void impact( action_state_t* s ) override
+    {
+      starfall_base_t::impact( s );
+
+      auto state = damage->get_state();
+      state->copy_state( s );
+      damage->snapshot_state( state, damage->amount_type( state ) );
+
+      damage->schedule_execute( state );
     }
   };
 
-  action_t* driver;
+  starfall_driver_t* driver;
 
   starfall_t( druid_t* p, std::string_view opt ) : starfall_t( p, "starfall", p->talent.starfall, opt ) {}
 
@@ -7652,12 +7756,12 @@ struct starfall_t : public druid_spell_t
     form_mask |= NO_FORM;
 
     driver = p->get_secondary_action_n<starfall_driver_t>( name_str + "_driver" );
+    assert( driver->damage );
     driver->stats = stats;
-    assert( driver->impact_action );
-    driver->impact_action->stats = stats;
+    driver->damage->stats = stats;
 
     if ( p->talent.lunar_shrapnel.ok() )
-      add_child( driver->impact_action->impact_action );
+      add_child( driver->damage->shrapnel );
   }
 
   void execute() override
@@ -7676,18 +7780,20 @@ struct starfall_t : public druid_spell_t
         ext += p()->talent.stellar_inspiration->effectN( 3 ).base_value();
 
       std::vector<player_t*>& tl = target_list();
+      auto dur = timespan_t::from_seconds( ext );
 
       for ( const auto& t : tl )
       {
-        td( t )->dots.moonfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
-        td( t )->dots.sunfire->adjust_duration( timespan_t::from_seconds( ext ), 0_ms, -1, false );
+        td( t )->dots.moonfire->adjust_duration( dur, 0_ms, -1, false );
+        td( t )->dots.sunfire->adjust_duration( dur, 0_ms, -1, false );
       }
     }
 
     druid_spell_t::execute();
 
     p()->buff.starfall->set_tick_callback( [ this ]( buff_t*, int, timespan_t ) {
-      driver->schedule_execute();
+      driver->execute();
+      p()->eclipse_handler.tick_starfall();
     } );
 
     p()->buff.starfall->trigger();
@@ -10325,14 +10431,16 @@ void druid_t::create_buffs()
     ->set_default_value_from_effect_type( A_HASTE_ALL )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE );
 
-  buff.orbit_breaker = make_buff( this, "orbit_breaker" )
-    ->set_quiet( true )
-    ->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) )
-    ->set_expire_at_max_stack( true )
-    ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
-      if ( b->at_max_stacks() )
-        active.orbit_breaker->execute_on_target( active.shooting_stars->target );
-    } );
+  buff.orbit_breaker = make_buff( this, "orbit_breaker" )->set_quiet( true );
+  if ( talent.orbit_breaker.ok() )
+  {
+    buff.orbit_breaker->set_max_stack( as<int>( talent.orbit_breaker->effectN( 1 ).base_value() ) )
+      ->set_expire_at_max_stack( true )
+      ->set_stack_change_callback( [ this ]( buff_t* b, int, int ) {
+        if ( b->at_max_stacks() )
+          active.orbit_breaker->execute_on_target( active.shooting_stars->target );
+      } );
+  }
 
   buff.owlkin_frenzy = make_buff( this, "owlkin_frenzy", find_spell( 157228 ) )
     ->set_chance( find_specialization_spell( "Owlkin Frenzy" )->effectN( 1 ).percent() );
