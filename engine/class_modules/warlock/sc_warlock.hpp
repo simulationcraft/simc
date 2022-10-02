@@ -185,6 +185,7 @@ public:
     player_talent_t grimoire_of_sacrifice; // Aff/Destro only
     const spell_data_t* grimoire_of_sacrifice_buff; // 1 hour duration, enables proc functionality, canceled if pet summoned
     const spell_data_t* grimoire_of_sacrifice_proc; // Damage data is here, but RPPM of proc trigger is in buff data
+    player_talent_t grand_warlocks_design; // One spell data for all 3 specs
 
     // Class Tree
     const spell_data_t* soul_conduit; // DF - Verify unchanged other than in class tree now
@@ -263,7 +264,7 @@ public:
     const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
     player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
-    // DF - Wilfred's Sigil of Superior Summoning (Choice against Grim Reach, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
+    // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
     // DF - Decaying Soul Satchel (Formerly SL Legendary)
 
@@ -824,18 +825,18 @@ public:
         make_event<sc_event_t>( *p()->sim, p(), as<int>( last_resource_cost ) );
       }
 
-      if ( p()->legendary.wilfreds_sigil_of_superior_summoning->ok() )
+      if ( p()->talents.grand_warlocks_design.ok() )
       {
         switch ( p()->specialization() )
         {
           case WARLOCK_AFFLICTION:
-            p()->cooldowns.darkglare->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 1 ).time_value(), false );
+            p()->cooldowns.darkglare->adjust( -last_resource_cost * p()->talents.grand_warlocks_design->effectN( 1 ).time_value(), false );
             break;
           case WARLOCK_DEMONOLOGY:
-            p()->cooldowns.demonic_tyrant->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 2 ).time_value(), false );
+            p()->cooldowns.demonic_tyrant->adjust( -last_resource_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
             break;
           case WARLOCK_DESTRUCTION:
-            p()->cooldowns.infernal->adjust( -last_resource_cost * p()->legendary.wilfreds_sigil_of_superior_summoning->effectN( 3 ).time_value(), false );
+            p()->cooldowns.infernal->adjust( -last_resource_cost * p()->talents.grand_warlocks_design->effectN( 3 ).time_value(), false );
             break;
           default:
             break;
