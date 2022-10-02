@@ -1058,6 +1058,9 @@ void warlock_t::init_spells_demonology()
 
   talents.dreadlash = find_talent_spell( talent_tree::SPECIALIZATION, "Dreadlash" ); // Should be ID 264078
 
+  talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
+  talents.annihilan_training_buff = find_spell( 386176 );
+
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
   talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );

@@ -275,7 +275,8 @@ public:
 
     player_talent_t demonbolt; // Note: Demonic Core is a guaranteed passive, even though this talent is optional
     player_talent_t dreadlash;
-    // DF - Fel Commando (Formerly SL Conduit)
+    player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
+    const spell_data_t* annihilan_training_buff; // Applied to pet, not player
 
     // DF - Borne of Blood (Formerly SL Conduit)
     const spell_data_t* summon_vilefiend; // DF - Now a choice against Soul Strike
