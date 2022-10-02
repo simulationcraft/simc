@@ -261,7 +261,8 @@ public:
     const spell_data_t* doom_blossom_proc;
     player_talent_t dread_touch; // Increased DoT damage based on Malefic Affliction procs
     const spell_data_t* dread_touch_debuff; // Applied to target when Dread Touch procs
-    // DF - Haunted Soul (Haunt increase ALL DoT damage while active)
+    player_talent_t haunted_soul; // Haunt increase ALL DoT damage while active
+    const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
     // DF - Wilfred's Sigil of Superior Summoning (Choice against Grim Reach, formerly SL Legendary, NOTE: SHARES NAME WITH OTHER SPEC TALENTS)
     // DF - Grim Reach (Choice against Wilfred's, Darkglare hits all targets affected by DoTs)
     // DF - Decaying Soul Satchel (Formerly SL Legendary)
@@ -485,7 +486,7 @@ public:
     propagate_const<buff_t*> decaying_soul_satchel_haste; // DF - Now comes from Affliction talent
     propagate_const<buff_t*> decaying_soul_satchel_crit; // These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
     propagate_const<buff_t*> tormented_crescendo;
-    // DF - Haunted Soul - Buff on player while active
+    propagate_const<buff_t*> haunted_soul;
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
@@ -873,6 +874,9 @@ public:
 
     if ( p()->talents.wrath_of_consumption.ok() && p()->buffs.wrath_of_consumption->check() && data().affected_by( p()->talents.wrath_of_consumption_buff->effectN( 1 ) ) )
       m *= 1.0 + p()->buffs.wrath_of_consumption->check_stack_value();
+
+    if ( p()->talents.haunted_soul.ok() && p()->buffs.haunted_soul->check() && data().affected_by( p()->talents.haunted_soul_buff->effectN( 1 ) ) )
+      m *= 1.0 + p()->buffs.haunted_soul->check_stack_value();
 
     return m;
   }
