@@ -1123,7 +1123,7 @@ public:
     parse_buff_effects( p().buffs.dark_ascension, true );  // Buffs corresponding non-periodic spells
     parse_buff_effects( p().buffs.coalescing_shadows );
     parse_buff_effects( p().buffs.coalescing_shadows_dot );
-    parse_buff_effects( p().buffs.words_of_the_pious ); // Spell Direct amount for Smite and Holy Nova
+    parse_buff_effects( p().buffs.words_of_the_pious );  // Spell Direct amount for Smite and Holy Nova
   }
 
   template <typename... Ts>
@@ -1267,8 +1267,10 @@ public:
 
 struct priest_heal_t : public priest_action_t<heal_t>
 {
+  bool affected_by_shadow_weaving; // adding this in so that template code for Divine Star/Halo doesn't scream
+
   priest_heal_t( util::string_view name, priest_t& player, const spell_data_t* s = spell_data_t::nil() )
-    : base_t( name, player, s )
+    : base_t( name, player, s ), affected_by_shadow_weaving( false )
   {
   }
 

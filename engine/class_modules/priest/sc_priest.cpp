@@ -295,6 +295,13 @@ public:
     ab::aoe = -1;
 
     ab::proc = ab::background = true;
+
+    // BUG: Currently does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !p.bugs )
+    {
+      ab::affected_by_shadow_weaving = true;
+    }
   }
 
   // Divine Star will damage and heal targets twice, once on the way out and again on the way back. This is determined
@@ -364,6 +371,13 @@ public:
     Base::radius       = Base::data().max_range();
     Base::range        = 0;
     Base::travel_speed = 15;  // Rough estimate, 2021-01-03
+
+    // BUG: Currently does not scale with Mastery
+    // https://github.com/SimCMinMax/WoW-BugTracker/issues/931
+    if ( !p.bugs )
+    {
+      Base::affected_by_shadow_weaving = true;
+    }
   }
 };
 
@@ -2851,8 +2865,8 @@ void priest_t::init_spells()
   talents.sanlayn                    = CT( "San'layn" );
   talents.apathy                     = CT( "Apathy" );
   // Row 7
-  talents.unwavering_will = CT( "Unwavering Will" );  // NYI
-  talents.twist_of_fate   = CT( "Twist of Fate" );    // TODO: Check spelldata
+  talents.unwavering_will = CT( "Unwavering Will" );
+  talents.twist_of_fate   = CT( "Twist of Fate" );
   talents.throes_of_pain  = CT( "Throes of Pain" );
   // Row 8
   talents.angels_mercy      = CT( "Angel's Mercy" );  // NYI
@@ -2862,7 +2876,7 @@ void priest_t::init_spells()
   talents.translucent_image = CT( "Translucent Image" );
   talents.mindgames         = CT( "Mindgames" );
   // Row 9
-  talents.surge_of_light         = CT( "Surge of Light" );  // NYI
+  talents.surge_of_light         = CT( "Surge of Light" );  // TODO: find out buff spell ID
   talents.lights_inspiration     = CT( "Light's Inspiration" );
   talents.crystalline_reflection = CT( "Crystalline Reflection" );  // NYI
   talents.improved_fade          = CT( "Improved Fade" );
