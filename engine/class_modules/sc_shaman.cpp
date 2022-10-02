@@ -6992,14 +6992,27 @@ public:
 
     if ( p()->buff.surge_of_power->up() && sim->target_non_sleeping_list.size() > 1 )
     {
-      spreader->target = state->target;
-      spreader->execute();
+      shaman_td_t* source_td = td( target );
+      player_t* additional_target = nullptr;
+      // If all targets have flame shock, pick the shortest remaining time
+      if ( player->get_active_dots( source_td->dot.flame_shock->current_action->internal_id ) ==
+           sim->target_non_sleeping_list.size() )
+      {
+        additional_target = spreader->shortest_duration_target();
+      }
+      // Pick closest target without Flame Shock
+      else
+      {
+        additional_target = spreader->closest_target();
+      }
+      if ( additional_target )
+      {
+        // expire first to prevent infinity
+        p()->proc.surge_of_power_flame_shock->occur();
+        p()->buff.surge_of_power->expire();
+        p()->trigger_secondary_flame_shock( additional_target );
+      }
     }
-    if ( p()->buff.surge_of_power->check() )
-    {
-      p()->proc.surge_of_power_flame_shock->occur();
-    }
-    p()->buff.surge_of_power->expire();
   }
 };
 
@@ -7921,6 +7934,7 @@ struct magma_eruption_t : public shaman_spell_t
   {
     shaman_spell_t::impact( state );
 
+    // TODO: make more clever if ingame behaviour improves too.
     for ( size_t i = 0;
         i < std::min( target_list().size(), as<size_t>( data().effectN( 2 ).base_value() ) );
         ++i )
