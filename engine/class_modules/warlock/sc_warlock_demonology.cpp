@@ -271,36 +271,37 @@ struct call_dreadstalkers_t : public demonology_spell_t
 {
   int dreadstalker_count;
 
-  call_dreadstalkers_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( p, "Call Dreadstalkers" )
+  call_dreadstalkers_t( warlock_t* p, util::string_view options_str ) : demonology_spell_t( "Call Dreadstalkers", p, p->talents.call_dreadstalkers )
   {
     parse_options( options_str );
     may_crit           = false;
-    dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
-    if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
-    {
-      dreadstalker_count += 1;
-    }
-    base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
+
+    //dreadstalker_count = as<int>( data().effectN( 1 ).base_value() );
+    //if ( p->sets->has_set_bonus( WARLOCK_DEMONOLOGY, T28, B2 ) )
+    //{
+    //  dreadstalker_count += 1;
+    //}
+    //base_execute_time += p->spec.call_dreadstalkers_2->effectN( 1 ).time_value();
   }
 
   double cost() const override
   {
     double c = demonology_spell_t::cost();
 
-    if ( p()->buffs.demonic_calling->check() )
-    {
-      c -= p()->talents.demonic_calling->effectN( 1 ).base_value();
-    }
+    //if ( p()->buffs.demonic_calling->check() )
+    //{
+    //  c -= p()->talents.demonic_calling->effectN( 1 ).base_value();
+    //}
 
     return c;
   }
 
   timespan_t execute_time() const override
   {
-    if ( p()->buffs.demonic_calling->check() )
-    {
-      return timespan_t::zero();
-    }
+    //if ( p()->buffs.demonic_calling->check() )
+    //{
+    //  return timespan_t::zero();
+    //}
 
     return demonology_spell_t::execute_time();
   }
@@ -309,46 +310,47 @@ struct call_dreadstalkers_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
 
-    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( as<unsigned>( dreadstalker_count ) );
+    unsigned count = as<unsigned>( p()->talents.call_dreadstalkers->effectN( 1 ).base_value() );
+    auto dogs = p()->warlock_pet_list.dreadstalkers.spawn( p()->talents.call_dreadstalkers_2->duration(), count );
 
-    if ( p()->buffs.demonic_calling->up() )
-    {  // benefit tracking
+    //if ( p()->buffs.demonic_calling->up() )
+    //{  // benefit tracking
 
-      //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
-      double base_cost = demonology_spell_t::cost();
+    //  //Despite having no cost when Demonic Calling is up, this spell will still proc effects based on shard spending (last checked 2021-03-11)
+    //  double base_cost = demonology_spell_t::cost();
 
-      if ( p()->talents.grand_warlocks_design->ok() )
-        p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
+    //  if ( p()->talents.grand_warlocks_design->ok() )
+    //    p()->cooldowns.demonic_tyrant->adjust( -base_cost * p()->talents.grand_warlocks_design->effectN( 2 ).time_value(), false );
 
-      if ( p()->buffs.nether_portal->up() )
-      {
-        p()->active.summon_random_demon->execute();
-        p()->buffs.portal_summons->trigger();
-        p()->procs.portal_summon->occur();
-      }
+    //  if ( p()->buffs.nether_portal->up() )
+    //  {
+    //    p()->active.summon_random_demon->execute();
+    //    p()->buffs.portal_summons->trigger();
+    //    p()->procs.portal_summon->occur();
+    //  }
 
-      if ( p()->talents.soul_conduit->ok() )
-      {
-        make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
-      }
+    //  if ( p()->talents.soul_conduit->ok() )
+    //  {
+    //    make_event<sc_event_t>( *p()->sim, p(), as<int>( base_cost ) );
+    //  }
 
-      p()->buffs.demonic_calling->decrement();
-    }
+    //  p()->buffs.demonic_calling->decrement();
+    //}
 
-    //TOCHECK: Verify only the new pair of dreadstalkers gets the buff
-    if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
-    {
-      for ( auto d : dogs )
-      {
-        //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
-        if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
-        {
-          d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
-        }
-      }
+    ////TOCHECK: Verify only the new pair of dreadstalkers gets the buff
+    //if ( p()->legendary.grim_inquisitors_dread_calling.ok() )
+    //{
+    //  for ( auto d : dogs )
+    //  {
+    //    //Only apply buff to dogs without a buff. If no stacks of the buff currently exist on the warlock, apply a buff with value of 0
+    //    if ( d->is_active() && !d->buffs.grim_inquisitors_dread_calling->check() )
+    //    {
+    //      d->buffs.grim_inquisitors_dread_calling->trigger( 1, p()->buffs.dread_calling->check_stack_value() );
+    //    }
+    //  }
 
-      p()->buffs.dread_calling->expire();
-    }
+    //  p()->buffs.dread_calling->expire();
+    //}
   }
 };
 
@@ -1020,7 +1022,7 @@ void warlock_t::create_buffs_demonology()
   buffs.wild_imps = make_buff( this, "wild_imps" )->set_max_stack( 40 );
 
   buffs.dreadstalkers = make_buff( this, "dreadstalkers" )->set_max_stack( 8 )
-                        ->set_duration( find_spell( 193332 )->duration() );
+                        ->set_duration( talents.call_dreadstalkers_2->duration() );
 
   buffs.vilefiend = make_buff( this, "vilefiend" )->set_max_stack( 1 )
                     ->set_duration( talents.summon_vilefiend->duration() );
@@ -1049,6 +1051,9 @@ void warlock_t::init_spells_demonology()
 
   // spells
   // Talents
+  talents.call_dreadstalkers = find_talent_spell( talent_tree::SPECIALIZATION, "Call Dreadstalkers" ); // Should be ID 104316
+  talents.call_dreadstalkers_2 = find_spell( 193332 ); // Duration data
+
   talents.dreadlash           = find_talent_spell( "Dreadlash" );
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
   talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );

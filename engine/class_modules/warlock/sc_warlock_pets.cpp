@@ -876,11 +876,11 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   dreadbite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Dreadbite", p, p->find_spell( 205196 ) )
   {
     weapon = &( p->main_hand_weapon );
-    if ( p->o()->talents.dreadlash->ok() )
-    {
-      aoe    = -1;
-      radius = 8;
-    }
+    //if ( p->o()->talents.dreadlash->ok() )
+    //{
+    //  aoe    = -1;
+    //  radius = 8;
+    //}
   }
 
   bool ready() override
@@ -895,10 +895,10 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    if ( p()->o()->talents.dreadlash->ok() )
-    {
-      m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
-    }
+    //if ( p()->o()->talents.dreadlash->ok() )
+    //{
+    //  m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
+    //}
 
     return m;
   }
@@ -914,8 +914,8 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     warlock_pet_melee_attack_t::impact( s );
 
-    if ( p()->o()->talents.from_the_shadows->ok() )
-      this->owner_td( s->target )->debuffs_from_the_shadows->trigger();
+    //if ( p()->o()->talents.from_the_shadows->ok() )
+    //  this->owner_td( s->target )->debuffs_from_the_shadows->trigger();
   }
 };
 
@@ -930,16 +930,16 @@ struct dreadstalker_melee_t : warlock_pet_melee_t
   {
     warlock_pet_melee_t::execute();
 
-    if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
-    {
-      debug_cast< dreadstalker_t* >( p() )->dreadbite_executes++;
-      p()->o()->procs.carnivorous_stalkers->occur();
-      if ( p()->readying )
-      {
-        event_t::cancel( p()->readying );
-        p()->schedule_ready();
-      }
-    }
+    //if ( p()->o()->conduit.carnivorous_stalkers.ok() && rng().roll( p()->o()->conduit.carnivorous_stalkers.percent() ) )
+    //{
+    //  debug_cast< dreadstalker_t* >( p() )->dreadbite_executes++;
+    //  p()->o()->procs.carnivorous_stalkers->occur();
+    //  if ( p()->readying )
+    //  {
+    //    event_t::cancel( p()->readying );
+    //    p()->schedule_ready();
+    //  }
+    //}
   }
 };
 
@@ -974,7 +974,7 @@ void dreadstalker_t::demise()
 timespan_t dreadstalker_t::available() const
 {
   // Dreadstalker does not need to wake up to check for something to do after it has travelled and
-  // done it's dreadbite
+  // done its dreadbite
   return sim->expected_iteration_time * 2;
 }
 
