@@ -853,6 +853,9 @@ void warlock_t::init_spells_affliction()
   talents.haunted_soul_buff = find_spell( 387310 );
 
   talents.grim_reach = find_talent_spell( talent_tree::SPECIALIZATION, "Grim Reach" ); // Should be ID 389992
+
+  talents.dark_harvest = find_talent_spell( talent_tree::SPECIALIZATION, "Dark Harvest" ); // Should be ID 387016
+  talents.dark_harvest_buff = find_spell( 387018 );
   // Conduits
   conduit.withering_bolt     = find_conduit_spell( "Withering Bolt" ); //9.1 PTR - New, replaces Cold Embrace
 }

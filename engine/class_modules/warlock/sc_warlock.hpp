@@ -266,7 +266,8 @@ public:
     const spell_data_t* haunted_soul_buff; // Applied to player while Haunt is active
     // Grand Warlock's Design (formerly Wilfred's). Shared across all 3 specs
     player_talent_t grim_reach; // Darkglare hits all targets affected by DoTs
-    // DF - Decaying Soul Satchel (Formerly SL Legendary)
+    player_talent_t dark_harvest; // Buffs from hitting targets with Soul Rot (Formerly Decaying Soul Satchel)
+    const spell_data_t* dark_harvest_buff; // TOCHECK: As of 2022-10-01, buff data has a different value from talent tooltip, and neither is correct?
 
     // DEMO
     // DF - Call Dreadstalkers (2 dogs, check if leap included)
@@ -488,6 +489,8 @@ public:
     propagate_const<buff_t*> decaying_soul_satchel_crit; // These are one unified buff in-game but splitting them in simc to make it easier to apply stat pcts
     propagate_const<buff_t*> tormented_crescendo;
     propagate_const<buff_t*> haunted_soul;
+    propagate_const<buff_t*> dark_harvest_haste; // One buff in game...
+    propagate_const<buff_t*> dark_harvest_crit; // ...but split into two in simc for better handling
 
     // Demonology Buffs
     propagate_const<buff_t*> demonic_core;
