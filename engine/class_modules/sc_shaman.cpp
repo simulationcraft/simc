@@ -7730,7 +7730,7 @@ struct totem_pulse_event_t : public event_t
   shaman_totem_pet_t<T>* totem;
   timespan_t real_amplitude;
 
-  totem_pulse_event_t<T>( shaman_totem_pet_t<T>& t, timespan_t amplitude )
+  totem_pulse_event_t( shaman_totem_pet_t<T>& t, timespan_t amplitude )
     : event_t( t ), totem( &t ), real_amplitude( amplitude )
   {
     if ( totem->pulse_action->hasted_pulse )
