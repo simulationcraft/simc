@@ -428,11 +428,8 @@ struct vampiric_embrace_t final : public priest_spell_t
 
     harmful = false;
 
-    // TODO: check if apply_affecting_aura works here
-    if ( priest().talents.sanlayn->ok() )
-    {
-      cooldown->duration += priest().talents.sanlayn->effectN( 1 ).time_value();
-    }
+    // Cooldown reduction
+    apply_affecting_aura( priest().talents.sanlayn );
   }
 
   void execute() override

@@ -2820,9 +2820,9 @@ void priest_t::init_spells()
   talents.inspiration                = CT( "Inspiration" );           // NYI
   talents.improved_mass_dispel       = CT( "Improved Mass Dispel" );  // NYI
   talents.body_and_soul              = CT( "Body and Soul" );
-  talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );  // NYI
+  talents.twins_of_the_sun_priestess = CT( "Twins of the Sun Priestess" );
   talents.void_shield                = CT( "Void Shield" );
-  talents.sanlayn                    = CT( "San'layn" );  // TODO: Confirm
+  talents.sanlayn                    = CT( "San'layn" );
   talents.apathy                     = CT( "Apathy" );
   // Row 7
   talents.unwavering_will = CT( "Unwavering Will" );  // NYI
