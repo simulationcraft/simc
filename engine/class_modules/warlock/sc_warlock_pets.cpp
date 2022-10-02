@@ -876,11 +876,12 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   dreadbite_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "Dreadbite", p, p->find_spell( 205196 ) )
   {
     weapon = &( p->main_hand_weapon );
-    //if ( p->o()->talents.dreadlash->ok() )
-    //{
-    //  aoe    = -1;
-    //  radius = 8;
-    //}
+
+    if ( p->o()->talents.dreadlash->ok() )
+    {
+      aoe    = -1;
+      radius = 8.0;
+    }
   }
 
   bool ready() override
@@ -895,10 +896,10 @@ struct dreadbite_t : public warlock_pet_melee_attack_t
   {
     double m = warlock_pet_melee_attack_t::action_multiplier();
 
-    //if ( p()->o()->talents.dreadlash->ok() )
-    //{
-    //  m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
-    //}
+    if ( p()->o()->talents.dreadlash->ok() )
+    {
+      m *= 1.0 + p()->o()->talents.dreadlash->effectN( 1 ).percent();
+    }
 
     return m;
   }
