@@ -109,6 +109,19 @@ struct holy_heal_t final : public priest_heal_t
     harmful = false;
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t et = priest_heal_t::execute_time();
+
+    if ( priest().talents.unwavering_will.enabled() &&
+         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
+    {
+      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
+    }
+
+    return et;
+  }
+
   void impact( action_state_t* s ) override
   {
     priest_heal_t::impact( s );

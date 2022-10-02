@@ -456,6 +456,19 @@ struct smite_t final : public priest_spell_t
     }
   }
 
+  timespan_t execute_time() const override
+  {
+    timespan_t et = priest_spell_t::execute_time();
+
+    if ( priest().talents.unwavering_will.enabled() && priest().specialization() != PRIEST_SHADOW &&
+         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
+    {
+      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
+    }
+
+    return et;
+  }
+
   void execute() override
   {
     priest_spell_t::execute();
@@ -1640,6 +1653,19 @@ struct flash_heal_t final : public priest_heal_t
     harmful = false;
 
     apply_affecting_aura( priest().talents.improved_flash_heal );
+  }
+
+  timespan_t execute_time() const override
+  {
+    timespan_t et = priest_heal_t::execute_time();
+
+    if ( priest().talents.unwavering_will.enabled() &&
+         priest().health_percentage() > priest().talents.unwavering_will->effectN( 2 ).base_value() )
+    {
+      et *= 1 + priest().talents.unwavering_will->effectN( 1 ).percent();
+    }
+
+    return et;
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
