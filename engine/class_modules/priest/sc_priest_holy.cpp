@@ -92,23 +92,6 @@ struct holy_word_serenity_t final : public priest_heal_t
   }
 };
 
-struct flash_heal_t final : public priest_heal_t
-{
-  flash_heal_t( priest_t& p, util::string_view options_str )
-    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
-  {
-    parse_options( options_str );
-    harmful = false;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    priest_heal_t::impact( s );
-
-    priest().adjust_holy_word_serenity_cooldown();
-  }
-};
-
 struct renew_t final : public priest_heal_t
 {
   renew_t( priest_t& p, util::string_view options_str ) : priest_heal_t( "renew", p, p.find_class_spell( "Renew" ) )
@@ -184,11 +167,6 @@ action_t* priest_t::create_action_holy( util::string_view name, util::string_vie
     return new holy_word_serenity_t( *this, options_str );
   }
 
-  if ( name == "flash_heal" )
-  {
-    return new flash_heal_t( *this, options_str );
-  }
-
   if ( name == "renew" )
   {
     return new renew_t( *this, options_str );
@@ -212,7 +190,7 @@ expr_t* priest_t::create_expression_holy( action_t*, util::string_view /*name_st
  */
 void priest_t::adjust_holy_word_serenity_cooldown()
 {
-  if ( !specs.holy_words->ok() )
+  if ( specialization() != PRIEST_HOLY || !specs.holy_words->ok() )
   {
     return;
   }

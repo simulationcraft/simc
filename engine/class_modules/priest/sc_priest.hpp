@@ -107,6 +107,12 @@ public:
     propagate_const<buff_t*> twist_of_fate;
     propagate_const<buff_t*> rhapsody;
     propagate_const<buff_t*> rhapsody_timer;
+    propagate_const<buff_t*> protective_light;
+    propagate_const<buff_t*> from_darkness_comes_light;
+    propagate_const<buff_t*> death_and_madness_buff;
+    propagate_const<buff_t*> death_and_madness_reset;
+    propagate_const<buff_t*> vampiric_embrace;
+    propagate_const<buff_t*> translucent_image_conduit;
 
     // Discipline
     propagate_const<buff_t*> inner_focus;
@@ -122,15 +128,12 @@ public:
     propagate_const<buff_t*> dispersion;
     propagate_const<buff_t*> shadowform;
     propagate_const<buff_t*> shadowform_state;  // Dummy buff to track whether player entered Shadowform initially
-    propagate_const<buff_t*> vampiric_embrace;
     propagate_const<buff_t*> void_torrent;
     propagate_const<buff_t*> voidform;
-    propagate_const<buff_t*> death_and_madness_buff;
     propagate_const<buff_t*> unfurling_darkness;
     propagate_const<buff_t*> unfurling_darkness_cd;  // Blizzard uses a buff to track the ICD
     propagate_const<buff_t*> ancient_madness;
     propagate_const<buff_t*> dark_thought;
-    propagate_const<buff_t*> translucent_image_conduit;
     propagate_const<buff_t*> mind_devourer;
     propagate_const<buff_t*> shadowy_insight;
     propagate_const<absorb_buff_t*> mental_fortitude;
@@ -139,7 +142,6 @@ public:
     propagate_const<buff_t*> idol_of_yoggsaron;
     propagate_const<buff_t*> devoured_pride;
     propagate_const<buff_t*> dark_evangelism;
-    propagate_const<buff_t*> death_and_madness_reset;
     propagate_const<buff_t*> surge_of_darkness;
     propagate_const<buff_t*> mind_melt;
     propagate_const<buff_t*> mind_flay_insanity;
@@ -186,6 +188,7 @@ public:
     player_talent_t focused_mending;
     player_talent_t holy_nova;
     player_talent_t protective_light;
+    const spell_data_t* protective_light_buff;
     player_talent_t from_darkness_comes_light;
     player_talent_t angelic_feather;
     player_talent_t phantasm;

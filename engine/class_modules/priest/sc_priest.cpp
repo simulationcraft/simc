@@ -1629,6 +1629,46 @@ struct psychic_scream_t final : public priest_spell_t
 namespace heals
 {
 // ==========================================================================
+// Flash Heal
+// ==========================================================================
+struct flash_heal_t final : public priest_heal_t
+{
+  flash_heal_t( priest_t& p, util::string_view options_str )
+    : priest_heal_t( "flash_heal", p, p.find_class_spell( "Flash Heal" ) )
+  {
+    parse_options( options_str );
+    harmful = false;
+
+    apply_affecting_aura( priest().talents.improved_flash_heal );
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = priest_heal_t::composite_da_multiplier( s );
+
+    // Value is stored as an int rather than a typical percent
+    m *= 1 + ( priest().buffs.from_darkness_comes_light->check_stack_value() / 100 );
+
+    return m;
+  }
+
+  void execute() override
+  {
+    priest_heal_t::execute();
+
+    priest().buffs.protective_light->trigger();
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    priest_heal_t::impact( s );
+
+    priest().adjust_holy_word_serenity_cooldown();
+    priest().buffs.from_darkness_comes_light->expire();
+  }
+};
+
+// ==========================================================================
 // Desperate Prayer
 // TODO: add Light's Inspiration HoT
 // ==========================================================================
@@ -2569,6 +2609,10 @@ action_t* priest_t::create_action( util::string_view name, util::string_view opt
   {
     return new power_word_life_t( *this, options_str );
   }
+  if ( name == "flash_heal" )
+  {
+    return new flash_heal_t( *this, options_str );
+  }
 
   return base_t::create_action( name, options_str );
 }
@@ -2577,14 +2621,12 @@ void priest_t::create_pets()
 {
   base_t::create_pets();
 
-  // TODO: add find_action back when it supports new talents
-  if ( talents.shadowfiend.enabled() && !talents.shadow.mindbender.enabled() )
+  if ( find_action( "shadowfiend" ) && talents.shadowfiend.enabled() && !talents.shadow.mindbender.enabled() )
   {
     pets.shadowfiend = create_pet( "shadowfiend" );
   }
 
-  // TODO: add find_action back when it supports new talents
-  if ( talents.shadow.mindbender.enabled() )
+  if ( ( find_action( "shadowfiend" ) || find_action( "mindbender" ) ) && talents.shadow.mindbender.enabled() )
   {
     pets.mindbender = create_pet( "mindbender" );
   }
@@ -2736,16 +2778,17 @@ void priest_t::init_spells()
   talents.dispel_magic = CT( "Dispel Magic" );  // NYI
   talents.shadowfiend  = CT( "Shadowfiend" );
   // Row 2
-  talents.prayer_of_mending   = CT( "Prayer of Mending" );    // NYI
-  talents.improved_flash_heal = CT( "Improved Flash Heal" );  // NYI
-  talents.purify_disease      = CT( "Purify Disease" );       // NYI
-  talents.psychic_voice       = CT( "Psychic Voice" );        // TODO: Confirm
-  talents.shadow_word_death   = CT( "Shadow Word: Death" );   // TODO: Confirm CD
+  talents.prayer_of_mending   = CT( "Prayer of Mending" );  // NYI
+  talents.improved_flash_heal = CT( "Improved Flash Heal" );
+  talents.purify_disease      = CT( "Purify Disease" );  // NYI
+  talents.psychic_voice       = CT( "Psychic Voice" );
+  talents.shadow_word_death   = CT( "Shadow Word: Death" );
   // Row 3
   talents.focused_mending            = CT( "Focused Mending" );  // NYI
   talents.holy_nova                  = CT( "Holy Nova" );
-  talents.protective_light           = CT( "Protective Light" );           // NYI
-  talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );  // NYI
+  talents.protective_light           = CT( "Protective Light" );
+  talents.protective_light_buff      = find_spell( 193065 );
+  talents.from_darkness_comes_light  = CT( "From Darkness Comes Light" );
   talents.angelic_feather            = CT( "Angelic Feather" );
   talents.phantasm                   = CT( "Phantasm" );  // NYI
   talents.death_and_madness          = CT( "Death and Madness" );
@@ -2832,7 +2875,11 @@ void priest_t::create_buffs()
   // Tracking buff to see if the free reset is available for SW:D with DaM talented.
   buffs.death_and_madness_reset = make_buff( this, "death_and_madness_reset", find_spell( 390628 ) )
                                       ->set_trigger_spell( talents.death_and_madness );
-
+  buffs.protective_light =
+      make_buff( this, "protective_light", talents.protective_light_buff )->set_default_value_from_effect( 1 );
+  buffs.from_darkness_comes_light =
+      make_buff( this, "from_darkness_comes_light", talents.from_darkness_comes_light->effectN( 1 ).trigger() )
+          ->set_default_value_from_effect( 1 );
   // Shared buffs
   buffs.the_penitent_one = make_buff( this, "the_penitent_one", legendary.the_penitent_one->effectN( 1 ).trigger() )
                                ->set_trigger_spell( legendary.the_penitent_one );
@@ -3046,6 +3093,11 @@ void priest_t::target_mitigation( school_e school, result_amount_type dt, action
   if ( talents.translucent_image.enabled() && buffs.fade->up() )
   {
     s->result_amount *= 1.0 + specs.fade->effectN( 4 ).percent();
+  }
+
+  if ( talents.protective_light.enabled() && buffs.protective_light->up() )
+  {
+    s->result_amount *= 1.0 + talents.protective_light_buff->effectN( 1 ).percent();
   }
 }
 
