@@ -1785,6 +1785,7 @@ class SpellDataGenerator(DataGenerator):
           ( 367831, 0 ),    # T28 - Deliberate Corruption
           ( 387079, 0 ),    # Tormented Crescendo buff
           ( 387310, 0 ),    # Haunted Soul buff
+          ( 390097, 0 )     # Darkglare - Grim Reach
         ),
 
         # Monk:

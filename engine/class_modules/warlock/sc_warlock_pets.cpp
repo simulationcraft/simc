@@ -1715,6 +1715,16 @@ darkglare_t::darkglare_t( warlock_t* owner, util::string_view name )
 
 struct eye_beam_t : public warlock_pet_spell_t
 {
+  struct grim_reach_t : public warlock_pet_spell_t
+  {
+    grim_reach_t( warlock_pet_t* p ) : warlock_pet_spell_t( "grim_reach", p, p->find_spell( 1 ) )
+    {
+      background = dual = true;
+
+      base_dd_min = base_dd_max = 0.0;
+    }
+  };
+
   eye_beam_t( warlock_pet_t* p ) : warlock_pet_spell_t( "eye_beam", p, p->find_spell( 205231 ) )
   {
   }
@@ -1749,6 +1759,13 @@ struct eye_beam_t : public warlock_pet_spell_t
     }
 
     return false;
+  }
+
+  void impact( action_state_t* s ) override
+  {
+    s->result_raw;
+
+    warlock_pet_spell_t::impact( s );
   }
 };
 
