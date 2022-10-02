@@ -1179,6 +1179,7 @@ struct combustion_t final : public buff_t
     set_refresh_behavior( buff_refresh_behavior::DURATION );
     modify_duration( p->talents.improved_combustion->effectN( 1 ).time_value() );
     modify_duration( p->sets->set( MAGE_FIRE, T28, B2 )->effectN( 1 ).time_value() );
+    modify_duration( base_buff_duration * p->talents.tempered_flames->effectN( 3 ).percent() );
 
     set_stack_change_callback( [ this, p ] ( buff_t*, int old, int cur )
     {
@@ -5061,6 +5062,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
+    base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
   }
 
   double action_multiplier() const override
