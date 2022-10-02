@@ -415,6 +415,7 @@ public:
     cooldown_t* incendiary_eruptions;
     cooldown_t* mirrors_of_torment;
     cooldown_t* phoenix_flames;
+    cooldown_t* phoenix_reborn;
     cooldown_t* presence_of_mind;
     cooldown_t* snowstorm;
   } cooldowns;
@@ -2595,15 +2596,32 @@ struct presence_of_mind_t final : public arcane_mage_spell_t
   }
 };
 
+// Phoenix Reborn Spell =====================================================
+// TODO: 2022-10-02 Phoenix Reborn is not flagged to scale with spec auras, Rune of Power, etc.
+// If this is fixed, change spell_t to mage_spell_t or fire_mage_spell_t.
+struct phoenix_reborn_t final : public spell_t
+{
+  phoenix_reborn_t( std::string_view n, mage_t* p ) :
+    spell_t( n, p, p->find_spell( 383479 ) )
+  {
+    background = true;
+  }
+};
+
 // Ignite Spell =============================================================
 
 struct ignite_t final : public residual_action_t
 {
+  action_t* phoenix_reborn;
+
   ignite_t( std::string_view n, mage_t* p ) :
     residual_action_t( n, p, p->find_spell( 12654 ) )
   {
     callbacks = true;
     affected_by.radiant_spark = false;
+
+    if ( p->talents.phoenix_reborn->ok() )
+      phoenix_reborn = get_action<phoenix_reborn_t>( "phoenix_reborn", p );
   }
 
   void init() override
@@ -2625,6 +2643,15 @@ struct ignite_t final : public residual_action_t
     {
       p()->cooldowns.fervent_flickering->start( p()->talents.fervent_flickering->internal_cooldown() );
       p()->cooldowns.fire_blast->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value() );
+    }
+
+    if ( p()->cooldowns.phoenix_reborn->up() && rng().roll( p()->talents.phoenix_reborn->proc_chance() ) )
+    {
+      p()->cooldowns.phoenix_reborn->start( p()->talents.phoenix_reborn->internal_cooldown() );
+      cooldown_t* cd = p()->cooldowns.phoenix_flames;
+      if ( cd->action )
+        cd->adjust( -1000 * p()->talents.fervent_flickering->effectN( 1 ).time_value() / cd->action->recharge_rate_multiplier( *cd ) );
+      phoenix_reborn->execute_on_target( d->target );
     }
   }
 
@@ -6058,6 +6085,7 @@ mage_t::mage_t( sim_t* sim, std::string_view name, race_e r ) :
   cooldowns.incendiary_eruptions = get_cooldown( "incendiary_eruptions" );
   cooldowns.mirrors_of_torment   = get_cooldown( "mirrors_of_torment"   );
   cooldowns.phoenix_flames       = get_cooldown( "phoenix_flames"       );
+  cooldowns.phoenix_reborn       = get_cooldown( "phoenix_reborn"       );
   cooldowns.presence_of_mind     = get_cooldown( "presence_of_mind"     );
   cooldowns.snowstorm            = get_cooldown( "snowstorm"            );
 
