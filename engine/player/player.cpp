@@ -2520,11 +2520,15 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
-  // as per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua:
-  // treeHash is a 128bit hash, passed as an array of 16, 8-bit values
+  // As per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua: treeHash is a 128bit hash,
+  // passed as an array of 16, 8-bit values. For SimC purposes we can ignore it, as invalid/outdated strings can error
+  // in later checks
+  /*
   int8_t tree_hash[ 16 ];
   for ( size_t i = 0; i < 16; i++ )
     tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
+  */
+  get_bit( tree_bits, head );
 
   auto nodes_str = util::string_split<std::string_view>( player->tree_nodes_str, "/" );
   auto _data = trait_data_t::data( maybe_ptr( player->dbc->ptr ) );
@@ -2558,7 +2562,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
       const trait_data_t* trait = nullptr;
       size_t rank = 0;
 
-      if ( bool partial = get_bit( 1, head ) )  // partially ranked normal trait
+      if ( get_bit( 1, head ) )  // partially ranked normal trait
       {
         if ( traits.size() > 1 )
         {
@@ -2569,7 +2573,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         trait = traits.front();
         rank = get_bit( 6, head );
       }
-      else if ( bool choice = get_bit( 1, head ) )  // choice trait
+      else if ( get_bit( 1, head ) )  // choice trait
       {
         size_t index = get_bit( 2, head );
         if ( index >= traits.size() )
