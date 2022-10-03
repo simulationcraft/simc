@@ -247,6 +247,7 @@ void frost( player_t* p )
   breath->add_action( "howling_blast,if=buff.rime.react" );
   breath->add_action( "arcane_torrent,if=runic_power<60" );
 
+  cooldowns->add_action( "potion,if=variable.cooldown_check" );
   cooldowns->add_action( "empower_rune_weapon,if=talent.obliteration&!buff.empower_rune_weapon.up&rune<6&(cooldown.pillar_of_frost.remains<7|buff.pillar_of_frost.up)" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=buff.breath_of_sindragosa.up&talent.breath_of_sindragosa&!buff.empower_rune_weapon.up&(runic_power<70&rune<3|time<10)" );
   cooldowns->add_action( "empower_rune_weapon,use_off_gcd=1,if=!talent.breath_of_sindragosa&!talent.obliteration&!buff.empower_rune_weapon.up&rune<5&(cooldown.pillar_of_frost.remains_expected<7|buff.pillar_of_frost.up|!talent.pillar_of_frost)" );
