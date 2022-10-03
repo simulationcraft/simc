@@ -2179,6 +2179,9 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->bugs )
       m *= 1.0 + p()->talents.wildfire->effectN( 2 ).percent();
 
+    if ( !p()->buffs.combustion->check() )
+      m *= 1.0 + p()->talents.master_of_flame->effectN( 1 ).percent();
+
     return m;
   }
 
@@ -4660,7 +4663,7 @@ struct fire_blast_t final : public fire_mage_spell_t
     }
 
     // Ignite is bugged and spreads to one fewer target than it should.
-    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() ) - ( p->bugs ? 1 : 0 );
+    max_spread_targets = as<int>( p->spec.ignite->effectN( 4 ).base_value() + p->talents.master_of_flame->effectN( 2 ).base_value() ) - ( p->bugs ? 1 : 0 );
   }
 
   // TODO: When an Ignite has a partial tick, how is the bank amount calculated to determine valid spread targets?
