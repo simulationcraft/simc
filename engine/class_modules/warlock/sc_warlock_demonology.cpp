@@ -1072,13 +1072,15 @@ void warlock_t::init_spells_demonology()
 
   talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
 
+  talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
+
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
   talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
   talents.doom                = find_talent_spell( "Doom" );
   talents.from_the_shadows    = find_talent_spell( "From the Shadows" );
-  talents.soul_strike         = find_talent_spell( "Soul Strike" );
+
 
   talents.inner_demons        = find_talent_spell( "Inner Demons" );
   talents.grimoire_felguard   = find_talent_spell( "Grimoire: Felguard" );
