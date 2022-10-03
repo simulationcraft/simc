@@ -7247,11 +7247,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      if ( ( free_spell != free_spell_e::GALACTIC || ( p()->talent.twin_moonfire.ok() && s->n_targets > 1 ) ) && // TODO: check every build
-           p()->buff.galactic_guardian->up() )
-      {
-        p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
-      }
+      p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
     }
 
     void trigger_dot( action_state_t* s ) override
