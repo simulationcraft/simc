@@ -279,7 +279,7 @@ public:
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
-    const spell_data_t* summon_vilefiend; // DF - Now a choice against Soul Strike
+    player_talent_t summon_vilefiend;
     const spell_data_t* soul_strike; // DF - Now a choice against Summon Vilefiend
     const spell_data_t* bilescourge_bombers; // DF - Now a choice against Demonic Strength
     const spell_data_t* demonic_strength; // DF - Now a choice against Bilescourge Bombers
