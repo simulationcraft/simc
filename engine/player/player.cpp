@@ -590,7 +590,7 @@ bool parse_talent_url( sim_t* sim, util::string_view name, util::string_view url
   {
     if ( sim->talent_input_format == talent_format::UNCHANGED )
         sim->talent_input_format = talent_format::BLIZZARD;
-    return p->parse_talents_blizzard( url );
+    return true;
   }
 
   sim->error( "Unable to decode talent string '{}' for player '{}'.\n", url, p->name() );
@@ -2450,9 +2450,163 @@ static void parse_traits(
   }
 }
 
+// Blizzard in-game talent tree export hash
+static void parse_traits_hash( const std::string& talents_str, player_t* player )
+{
+  // Temporary workaround, you can get this string via the simc addon
+  if ( player->tree_nodes_str.empty() )
+  {
+    player->sim->error( "Player {} trying to parse Blizzard talent export hash without tree_node_str.", player->name() );
+    return;
+  }
+
+  if ( player->tree_nodes_str.find_first_not_of( "0123456789/" ) != std::string::npos )
+  {
+    player->sim->error( "Player {} has invalid tree_node_str.", player->name() );
+    return;
+  }
+
+  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+
+  auto do_error = [ player, &talents_str ]( std::string_view msg = {} ) {
+    player->sim->error( "Player {} has invalid talent tree hash {}{}{}", player->name(), talents_str, msg.empty() ? "" : ": ", msg );
+  };
+
+  if ( player->talents_str.find_first_not_of( char_array ) != std::string::npos )
+  {
+    do_error();
+    return;
+  }
+
+  // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
+  size_t version_bits = 8;
+  size_t spec_bits    = 16;
+  size_t tree_bits    = 128;
+  // hardcoded value from Interface/SharedXML/ExportUtil.lua
+  size_t byte_size    = 6;
+
+  if ( version_bits + spec_bits + tree_bits > talents_str.size() * byte_size )
+  {
+    do_error( "Not enough characters" );
+    return;
+  }
+
+  auto get_bit = [ byte_size, &talents_str ]( size_t bits, size_t& head ) -> size_t {
+    size_t val = 0;
+    for ( size_t i = 0; i < bits; i++ )
+    {
+      size_t byte = char_array.find( talents_str[ head / byte_size ] );
+      size_t bit  = head % byte_size;
+      head++;
+      val += ( byte >> bit & 0b1 ) << i;
+    }
+    return val;
+  };
+
+  size_t head = 0;
+
+  auto version_id = get_bit( version_bits, head );
+  auto spec_id    = get_bit( spec_bits, head );
+
+  if ( version_id != 1 )
+  {
+    do_error( "Invalid hash version" );
+    return;
+  }
+
+  if ( spec_id != player->specialization() )
+  {
+    do_error( "Wrong specialization" );
+    return;
+  }
+
+  // as per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua:
+  // treeHash is a 128bit hash, passed as an array of 16, 8-bit values
+  int8_t tree_hash[ 16 ];
+  for ( size_t i = 0; i < 16; i++ )
+    tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
+
+  auto nodes_str = util::string_split<std::string_view>( player->tree_nodes_str, "/" );
+  auto _data = trait_data_t::data( maybe_ptr( player->dbc->ptr ) );
+
+  for ( auto node_str : nodes_str )
+  {
+    bool selected = get_bit( 1, head );
+    if ( selected )
+    {
+      std::vector<const trait_data_t*> traits;
+      auto node = util::to_unsigned( node_str );
+
+      auto _it = _data.begin();
+      while ( _it != _data.end() )
+      {
+        _it = std::find_if( _it, _data.end(), [ node ]( const trait_data_t& t ) { return t.id_node == node; } );
+        if ( _it != _data.end() )
+          traits.push_back( _it++ );
+      }
+
+      if ( traits.empty() )
+      {
+        player->sim->error( "Player {} has invalid tree_node_str, node {} not found.", player->name(), node_str );
+        return;
+      }
+
+      range::sort( traits, []( const trait_data_t* a, const trait_data_t* b ) {
+        return a->selection_index < b->selection_index;
+      } );
+
+      const trait_data_t* trait = nullptr;
+      size_t rank = 0;
+
+      if ( bool partial = get_bit( 1, head ) )  // partially ranked normal trait
+      {
+        if ( traits.size() > 1 )
+        {
+          do_error( fmt::format( "non-choice node {} has multiple entries.", node_str ) );
+          return;
+        }
+
+        trait = traits.front();
+        rank = get_bit( 6, head );
+      }
+      else if ( bool choice = get_bit( 1, head ) )  // choice trait
+      {
+        size_t index = get_bit( 2, head );
+        if ( index >= traits.size() )
+        {
+          do_error( fmt::format( "index {} for choice node {} out of bounds.", index, node_str ) );
+          return;
+        }
+
+        trait = traits[ index ];
+        rank = 1;
+      }
+      else // fully ranked normal trait
+      {
+        if ( traits.size() > 1 )
+        {
+          do_error( fmt::format( "non-choice node {} has multiple entries.", node_str ) );
+          return;
+        }
+
+        trait = traits.front();
+        rank = trait->max_ranks;
+      }
+
+      player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
+                                          as<unsigned>( rank ) );
+    }
+  }
+}
+
 void player_t::init_talents()
 {
   sim->print_debug( "Initializing talents for {}.", *this );
+
+  if ( !talents_str.empty() && sim->talent_input_format == talent_format::BLIZZARD )
+  {
+    parse_traits_hash( talents_str, this );
+  }
 
   if ( !talent_overrides_str.empty() )
   {
@@ -9830,61 +9984,6 @@ bool player_t::parse_talents_armory2( util::string_view talent_url )
   return true;
 }
 
-// Blizzard in-game talent tree export hash
-bool player_t::parse_talents_blizzard( std::string_view hash )
-{
-  static const std::string char_array = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-
-  auto do_error = [ hash, this ]( std::string_view msg = {} ) {
-    sim->error( "Player {} has invalid talent tree hash {}{}{}", name(), hash, msg.empty() ? "" : ": ", msg );
-    return false;
-  };
-
-  if ( hash.find_first_not_of( char_array ) != std::string::npos )
-    do_error();
-
-  // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-  size_t version_bits = 8;
-  size_t spec_bits    = 16;
-  size_t tree_bits    = 128;
-  // hardcoded value from Interface/SharedXML/ExportUtil.lua
-  size_t byte_size    = 6;
-
-  if ( version_bits + spec_bits + tree_bits < hash.size() * byte_size )
-    do_error( "Not enough characters" );
-
-  auto get_bit = [ byte_size, hash ]( size_t bits, size_t& head ) -> size_t {
-    size_t val = 0;
-    for ( size_t i = 0; i < bits; i++ )
-    {
-      size_t byte = char_array.find( hash[ head / byte_size ] );
-      size_t bit  = head % byte_size;
-      head++;
-      val += ( byte >> bit & 0b1 ) << i;
-    }
-    return val;
-  };
-
-  size_t head = 0;
-
-  auto version_id = get_bit( version_bits, head );
-  auto spec_id    = get_bit( spec_bits, head );
-
-  if ( version_id != 1 )
-    do_error( "Invalid hash version" );
-
-  if ( spec_id != specialization() )
-    do_error( "Wrong specialization" );
-
-  // as per Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua:
-  // treeHash is a 128bit hash, passed as an array of 16, 8-bit values
-  int8_t tree_hash[ 16 ];
-  for ( size_t i = 0; i < 16; i++ )
-    tree_hash[ i ] = static_cast<int8_t>( get_bit( 8, head ) );
-
-  return true;
-}
-
 // Wowhead talent calculator link hash
 //
 // Hash uses 6-bit 'bytes' which are used as index values for base64URL encoding
@@ -11834,6 +11933,11 @@ std::string player_t::create_profile( save_e stype )
     {
       recreate_talent_str( sim->talent_input_format );
       profile_str += "talents=" + talents_str + term;
+
+      if ( !tree_nodes_str.empty() )
+      {
+        profile_str += "tree_nodes=" + tree_nodes_str + term;
+      }
     }
 
     if ( !class_talents_str.empty() )
@@ -12123,23 +12227,24 @@ std::string player_t::create_profile( save_e stype )
 
 void player_t::copy_from( player_t* source )
 {
-  origin_str      = source->origin_str;
-  profile_source_ = source->profile_source_;
-  true_level      = source->true_level;
-  race_str        = source->race_str;
-  timeofday       = source->timeofday;
-  zandalari_loa   = source->zandalari_loa;
-  vulpera_tricks  = source->vulpera_tricks;
-  race            = source->race;
-  role            = source->role;
-  _spec           = source->_spec;
-  base.distance   = source->base.distance;
-  position_str    = source->position_str;
-  professions_str = source->professions_str;
+  origin_str        = source->origin_str;
+  profile_source_   = source->profile_source_;
+  true_level        = source->true_level;
+  race_str          = source->race_str;
+  timeofday         = source->timeofday;
+  zandalari_loa     = source->zandalari_loa;
+  vulpera_tricks    = source->vulpera_tricks;
+  race              = source->race;
+  role              = source->role;
+  _spec             = source->_spec;
+  base.distance     = source->base.distance;
+  position_str      = source->position_str;
+  professions_str   = source->professions_str;
   source->recreate_talent_str(talent_format::UNCHANGED );
   parse_talent_url( sim, "talents", source->talents_str );
+  tree_nodes_str    = source->tree_nodes_str;
   class_talents_str = source->class_talents_str;
-  spec_talents_str =  source->spec_talents_str;
+  spec_talents_str  = source->spec_talents_str;
 
   if ( azerite )
   {
@@ -12207,6 +12312,7 @@ void player_t::create_options()
   add_option( opt_string( "thumbnail", report_information.thumbnail_url ) );
   add_option( opt_string( "id", id_str ) );
   add_option( opt_func( "talents", parse_talent_url ) );
+  add_option( opt_string( "tree_nodes", tree_nodes_str ) );
   add_option( opt_func( "talent_override", parse_talent_override ) );
   add_option( opt_string( "race", race_str ) );
   add_option( opt_func( "timeofday", parse_timeofday ) );
