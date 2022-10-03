@@ -1414,9 +1414,8 @@ struct deep_breath_t : public evoker_spell_t
   action_t* damage;
 
   deep_breath_t( evoker_t* p, std::string_view options_str )
-    : evoker_spell_t( "deep_breath", p, p->find_class_spell( "Deep Breath" ) )
+    : evoker_spell_t( "deep_breath", p, p->find_class_spell( "Deep Breath" ), options_str )
   {
-
     damage = p->get_secondary_action<deep_breath_dot_t>( "deep_breath_dot" );
     damage->stats = stats;
   }
