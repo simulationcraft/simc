@@ -5156,6 +5156,7 @@ struct pyroblast_t final : public hot_streak_spell_t
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
     base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
+    base_crit += p->talents.tempered_flames->effectN( 2 ).percent();
 
     if ( !p->talents.controlled_destruction.ok() )
       base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
