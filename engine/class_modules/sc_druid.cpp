@@ -1328,7 +1328,7 @@ struct force_of_nature_t : public pet_t
   struct fon_melee_t : public melee_attack_t
   {
     bool first_attack;
-    fon_melee_t( pet_t* p, const char* name = "melee" )
+    fon_melee_t( pet_t* p, const char* name = "Melee" )
       : melee_attack_t( name, p, spell_data_t::nil() ), first_attack( true )
     {
       school            = SCHOOL_PHYSICAL;
@@ -1379,7 +1379,7 @@ struct force_of_nature_t : public pet_t
 
   druid_t* o() { return static_cast<druid_t*>( owner ); }
 
-  force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "treant", true /*GUARDIAN*/, true )
+  force_of_nature_t( sim_t* sim, druid_t* owner ) : pet_t( sim, owner, "Treant", true /*GUARDIAN*/, true )
   {
     // Treants have base weapon damage + ap from player's sp.
     owner_coeff.ap_from_sp = 0.6;
@@ -6710,9 +6710,19 @@ struct force_of_nature_t : public druid_spell_t
   void init_finished() override
   {
     for ( const auto& treant : p()->pets.force_of_nature )
+    {
       if ( treant )
-        for ( const auto& a : treant->action_list )
-          add_child( a );
+      {
+        for ( auto a : treant->action_list )
+        {
+          auto it = range::find( child_action, a->name_str, &action_t::name_str );
+          if ( it != child_action.end() )
+            a->stats = ( *it )->stats;
+          else
+            add_child( a );
+        }
+      }
+    }
 
     druid_spell_t::init_finished();
   }
