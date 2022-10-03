@@ -2437,7 +2437,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
 
   node -> add_parm( "number", e -> index() + 1 );
   node -> add_parm( "id", e -> id() );
-  node -> add_parm( "type", e -> type() );
+  node -> add_parm( "type", static_cast<int>( e -> type() ) );
 
   if ( _effect_type_strings.contains( e -> raw_type() ) )
   {
@@ -2463,7 +2463,7 @@ void spell_info::effect_to_xml( const dbc_t& dbc,
       break;
   }
 
-  node -> add_parm( "sub_type", e -> subtype() );
+  node -> add_parm( "sub_type", static_cast<int>( e -> subtype() ) );
 
   if ( e -> subtype() > 0 )
   {

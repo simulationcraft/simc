@@ -78,7 +78,7 @@ public:
    * Output using fmt::format formatting syntax.
    */
   template <typename... Args>
-  ofstream& format( util::string_view format, Args&& ... args)
+  ofstream& format( fmt::format_string<Args...> format, Args&& ... args)
   {
     fmt::print( *this, format, std::forward<Args>(args)... );
 
