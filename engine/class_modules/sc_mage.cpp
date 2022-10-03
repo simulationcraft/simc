@@ -335,6 +335,7 @@ public:
     buff_t* hot_streak;
     buff_t* pyroclasm;
     buff_t* pyrotechnics;
+    buff_t* wildfire;
 
 
     // Frost
@@ -2171,7 +2172,15 @@ struct fire_mage_spell_t : public mage_spell_t
   }
 
   virtual double composite_ignite_multiplier( const action_state_t* ) const
-  { return 1.0; }
+  {
+    double m = 1.0;
+
+    // TODO: Wildfire is currently bugged and does not increase Ignite damage.
+    if ( !p()->bugs )
+      m *= 1.0 + p()->talents.wildfire->effectN( 2 ).percent();
+
+    return m;
+  }
 
   void trigger_ignite( action_state_t* s )
   {
@@ -2306,7 +2315,11 @@ struct hot_streak_spell_t : public fire_mage_spell_t
 
   double composite_ignite_multiplier( const action_state_t* s ) const override
   {
-    return debug_cast<const hot_streak_state_t*>( s )->hot_streak ? 2.0 : 1.0;
+    double m = fire_mage_spell_t::composite_ignite_multiplier( s );
+
+    m *= debug_cast<const hot_streak_state_t*>( s )->hot_streak ? 2.0 : 1.0;
+
+    return m;
   }
 
   void schedule_execute( action_state_t* s ) override
@@ -3309,6 +3322,7 @@ struct combustion_t final : public fire_mage_spell_t
 
     p()->buffs.combustion->trigger();
     p()->buffs.rune_of_power->trigger();
+    p()->buffs.wildfire->trigger();
     p()->expression_support.kindling_reduction = 0_ms;
   }
 };
@@ -6838,6 +6852,10 @@ void mage_t::create_buffs()
                                      else
                                        buffs.flame_accretion->decrement( old - cur );
                                    } );
+  buffs.wildfire             = make_buff( this, "wildfire", find_spell( 383492 ) )
+                                 ->set_default_value( talents.wildfire->effectN( 3 ).percent() )
+                                 ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
+                                 ->set_chance( talents.wildfire.ok() );
 
 
   // Frost
