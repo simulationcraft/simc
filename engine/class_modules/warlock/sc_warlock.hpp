@@ -278,7 +278,7 @@ public:
     player_talent_t annihilan_training; // Permanent aura on Felguard that gives 10% damage buff
     const spell_data_t* annihilan_training_buff; // Applied to pet, not player
 
-    // DF - Borne of Blood (Formerly SL Conduit)
+    player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     const spell_data_t* summon_vilefiend; // DF - Now a choice against Soul Strike
     const spell_data_t* soul_strike; // DF - Now a choice against Summon Vilefiend
     const spell_data_t* bilescourge_bombers; // DF - Now a choice against Demonic Strength
@@ -576,6 +576,7 @@ public:
     proc_t* doom_blossom;
 
     // demo
+    proc_t* demonic_knowledge;
     proc_t* demonic_calling;
     proc_t* one_shard_hog;
     proc_t* two_shard_hog;
