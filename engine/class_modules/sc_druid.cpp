@@ -50,19 +50,20 @@ enum eclipse_state_e
   MAX_STATE
 };
 
-enum free_cast_e
+enum free_spell_e
 {
   NONE = 0,
-  APEX,        // apex predators's craving
+  // free procs
   CONVOKE,     // convoke_the_spirits night_fae covenant ability
+  FIRMAMENT,   // sundered firmament talent
+  FLASHING,    // flashing claws talent
   GALACTIC,    // galactic guardian talent
   LYCARAS,     // lycaras fleeting glimpse legendary
   NATURAL,     // natural orders will legendary
-  STARWEAVER,  // starweaver talent
   ORBIT,       // orbit breaker talent
-  FLASHING,    // flashing claws talent
-  FIRMAMENT,   // sundered firmament talent
-  URSOCS,      // ursoc's fury remembered legendary
+  // free casts
+  APEX,        // apex predators's craving
+  STARWEAVER,  // starweaver talent
 };
 
 struct druid_td_t : public actor_target_data_t
@@ -378,7 +379,6 @@ public:
     action_t* rage_of_the_sleeper_reflect;
     action_t* the_natural_orders_will;   // fake holder action for reporting
     action_t* thrash_bear_flashing;
-    action_t* thrash_bear_ursocs;        // free thrash from ursoc's fury remembered
 
     // Restoration
     action_t* yseras_gift;
@@ -2162,7 +2162,7 @@ public:
   // form spell to automatically cast
   action_t* autoshift;
   // Action is cast as a proc or replaces an existing action with a no-cost/no-cd version
-  free_cast_e free_cast;
+  free_spell_e free_spell;
   // Restricts use of a spell based on form.
   unsigned form_mask;
   // Allows a spell that may be cast in NO_FORM but not in current form to be cast by exiting form.
@@ -2175,7 +2175,7 @@ public:
     : ab( n, player, s ),
       dot_name( n ),
       autoshift( nullptr ),
-      free_cast( free_cast_e::NONE ),
+      free_spell( free_spell_e::NONE ),
       form_mask( ab::data().stance_mask() ),
       may_autounshift( true ),
       triggers_galactic_guardian( true ),
@@ -2201,11 +2201,41 @@ public:
 
   druid_td_t* td( player_t* t ) const { return p()->get_target_data( t ); }
 
-  base_t* set_free_cast( free_cast_e f )
+  base_t* set_free_cast( free_spell_e f )
   {
-    free_cast = f;
+    free_spell = f;
     ab::cooldown->duration = 0_ms;
     return this;
+  }
+
+  bool is_free() const
+  {
+    return free_spell;
+  }
+
+  bool is_free_proc() const
+  {
+    switch ( free_spell )
+    {
+      case free_spell_e::APEX:
+      case free_spell_e::STARWEAVER:
+      case free_spell_e::NONE:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  bool is_free_cast() const
+  {
+    switch ( free_spell )
+    {
+      case free_spell_e::APEX:
+      case free_spell_e::STARWEAVER:
+        return true;
+      default:
+        return false;
+    }
   }
 
   dot_t* get_dot( player_t* t ) override
@@ -2252,7 +2282,7 @@ public:
   {
     ab::execute();
 
-    trigger_ravenous_frenzy( free_cast );
+    trigger_ravenous_frenzy( free_spell );
 
     if ( break_stealth )
     {
@@ -2307,7 +2337,7 @@ public:
     }
   }
 
-  virtual void trigger_ravenous_frenzy( free_cast_e f )
+  virtual void trigger_ravenous_frenzy( free_spell_e f )
   {
     if ( ab::background || ab::trigger_gcd == 0_ms || !p()->buff.ravenous_frenzy->check() )
       return;
@@ -2317,7 +2347,7 @@ public:
       return;
 
     // trigger on non-free_cast or free_cast that requires you to actually cast (or UFR)
-    if ( !f || f == free_cast_e::APEX || f == free_cast_e::STARWEAVER || f == free_cast_e::URSOCS )
+    if ( !f || f == free_spell_e::APEX || f == free_spell_e::STARWEAVER || f == free_spell_e::FLASHING )
       p()->buff.ravenous_frenzy->trigger();
   }
 
@@ -2756,7 +2786,7 @@ public:
 
     c *= std::max( 0.0, get_buff_effects_value( cost_buffeffects, false, false ) );
 
-    if ( free_cast || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
+    if ( is_free() || ( p()->specialization() == DRUID_RESTORATION && p()->buff.innervate->up() ) )
       return 0.0;
 
     return c;
@@ -2949,11 +2979,11 @@ public:
   {
     ab::consume_resource();
 
-    if ( ( free_cast || !last_resource_cost ) && free_cast != free_cast_e::STARWEAVER )
-      return;
-
     if ( resource_current == RESOURCE_ASTRAL_POWER )
     {
+      if ( is_free_proc() )
+        return;
+
       if ( p()->talent.primordial_arcanic_pulsar.ok() )
       {
         auto p_cap = p()->talent.primordial_arcanic_pulsar->effectN( 1 ).base_value();
@@ -3050,7 +3080,7 @@ struct druid_form_t : public druid_spell_t
     form_mask = ( NO_FORM | BEAR_FORM | CAT_FORM | MOONKIN_FORM ) & ~form;
   }
 
-  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
+  void trigger_ravenous_frenzy( free_spell_e ) override { return; }
 
   void execute() override
   {
@@ -3342,7 +3372,7 @@ public:
     base_t::consume_resource();
 
     // Treat Omen of Clarity energy savings like an energy gain for tracking purposes.
-    if ( !free_cast && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
+    if ( !is_free() && snapshots.clearcasting && current_resource() == RESOURCE_ENERGY &&
          p()->buff.clearcasting_cat->up() )
     {
       p()->buff.clearcasting_cat->decrement();
@@ -3362,7 +3392,7 @@ public:
 
     if ( consumes_combo_points && hit_any_target )
     {
-      int consumed = as<int>( free_cast ? p()->resources.max[ RESOURCE_COMBO_POINT ]
+      int consumed = as<int>( is_free() ? p()->resources.max[ RESOURCE_COMBO_POINT ]
                                         : p()->resources.current[ RESOURCE_COMBO_POINT ] );
 
       if ( p()->talent.berserk_heart_of_the_lion.ok() )
@@ -3409,7 +3439,7 @@ public:
                                           consumed * p()->talent.sudden_ambush->effectN( 1 ).percent() );
       }
 
-      if ( free_cast == free_cast_e::CONVOKE )  // further effects are not processed for convoke fb
+      if ( free_spell == free_spell_e::CONVOKE )  // further effects are not processed for convoke fb
         return;
 
       if ( p()->buff.tigers_tenacity->check() )
@@ -3418,7 +3448,7 @@ public:
         p()->buff.tigers_tenacity->decrement();
       }
 
-      if ( free_cast )  // rest requires actual CP consumption
+      if ( is_free() )  // rest requires actual CP consumption
         return;
 
       p()->resource_loss( RESOURCE_COMBO_POINT, consumed, nullptr, this );
@@ -4010,7 +4040,7 @@ struct ferocious_bite_t : public cat_attack_t
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.apex_predators_craving->up() )
+    if ( !is_free() && p()->buff.apex_predators_craving->up() )
     {
       p()->active.ferocious_bite_apex->execute_on_target( target );
       return;
@@ -4035,7 +4065,7 @@ struct ferocious_bite_t : public cat_attack_t
     if ( p()->talent.sabertooth.ok() )
     {
       p()->buff.sabertooth->expire();  // existing buff is replaced with new buff, regardless of CP
-      p()->buff.sabertooth->trigger( as<int>( free_cast ? p()->resources.max[ RESOURCE_COMBO_POINT ] : combo_points ) );
+      p()->buff.sabertooth->trigger( as<int>( is_free() ? p()->resources.max[ RESOURCE_COMBO_POINT ] : combo_points ) );
     }
 
     // TODO: determine what's causing damage to be greater than expected
@@ -4054,7 +4084,7 @@ struct ferocious_bite_t : public cat_attack_t
   {
     // Extra energy consumption happens first. In-game it happens before the skill even casts but let's not do that
     // because its dumb.
-    if ( hit_any_target && !free_cast )
+    if ( hit_any_target && !is_free() )
     {
       player->resource_loss( current_resource(), excess_energy );
       stats->consume_resource( current_resource(), excess_energy );
@@ -4062,7 +4092,7 @@ struct ferocious_bite_t : public cat_attack_t
 
     cat_attack_t::consume_resource();
 
-    if ( hit_any_target && free_cast == free_cast_e::APEX )
+    if ( hit_any_target && free_spell == free_spell_e::APEX )
       p()->buff.apex_predators_craving->expire();
   }
 
@@ -4095,7 +4125,7 @@ struct ferocious_bite_t : public cat_attack_t
     // ferocious_bite_max.damage expr calls action_t::calculate_direct_amount, so we must have a separate check for
     // buff.apex_predators_craving, as the free FB from apex is redirected upon execute() which would not have happened
     // when the expr is evaluated
-    if ( p()->buff.apex_predators_craving->up() || free_cast )
+    if ( p()->buff.apex_predators_craving->up() || is_free() )
       return am * 2.0;
 
     am *= p()->resources.current[ RESOURCE_COMBO_POINT ] / p()->resources.max[ RESOURCE_COMBO_POINT ];
@@ -4490,7 +4520,7 @@ struct primal_wrath_t : public cat_attack_t
 
   void execute() override
   {
-    if ( free_cast )
+    if ( is_free() )
       combo_points = as<int>( p()->resources.max[ RESOURCE_COMBO_POINT ] );
     else
       combo_points = as<int>( p()->resources.current[ RESOURCE_COMBO_POINT ] );
@@ -4632,7 +4662,7 @@ struct tigers_fury_t : public cat_attack_t
 
     p()->buff.tigers_fury->trigger();
 
-    if ( !free_cast && p()->talent.tigers_tenacity.ok() )
+    if ( !is_free() && p()->talent.tigers_tenacity.ok() )
       p()->buff.tigers_tenacity->trigger();
   }
 };
@@ -4734,7 +4764,7 @@ struct bear_attack_t : public druid_attack_t<melee_attack_t>
   {
     base_t::consume_resource();
 
-    if ( free_cast || !last_resource_cost )
+    if ( is_free() || !last_resource_cost )
       return;
 
     if ( resource_current == RESOURCE_RAGE )
@@ -4983,13 +5013,13 @@ struct mangle_t : public bear_attack_t
     if ( !hit_any_target )
       return;
 
-    if ( p()->buff.gore->up() && free_cast != free_cast_e::CONVOKE )
+    if ( p()->buff.gore->up() && free_spell != free_spell_e::CONVOKE )
       p()->buff.gore->expire();
 
     if ( p()->talent.gory_fur.ok() )
       p()->buff.gory_fur->trigger();
 
-    if ( p()->buff.vicious_cycle_mangle->up() && free_cast != free_cast_e::CONVOKE )  // TODO: check this
+    if ( p()->buff.vicious_cycle_mangle->up() && free_spell != free_spell_e::CONVOKE )  // TODO: check this
       p()->buff.vicious_cycle_mangle->expire();
 
     if ( p()->talent.vicious_cycle.ok() )
@@ -5061,7 +5091,7 @@ struct pulverize_t : public bear_attack_t
     if ( !result_is_hit( s->result ) )
       return;
 
-    if ( !free_cast )
+    if ( !is_free() )
       td( s->target )->dots.thrash_bear->decrement( consume );
 
     td( s->target )->debuff.pulverize->trigger();
@@ -5071,7 +5101,7 @@ struct pulverize_t : public bear_attack_t
   {
     // Call bear_attack_t::ready() first for proper targeting support.
     // Hardcode stack max since it may not be set if this code runs before Thrash is cast.
-    return bear_attack_t::target_ready( t ) && ( free_cast || td( t )->dots.thrash_bear->current_stack() >= consume );
+    return bear_attack_t::target_ready( t ) && ( is_free() || td( t )->dots.thrash_bear->current_stack() >= consume );
   }
 };
 
@@ -5189,12 +5219,6 @@ struct thrash_bear_t : public bear_attack_t
 
     if ( p()->talent.flashing_claws.ok() && rng().roll( p()->talent.flashing_claws->effectN( 1 ).percent() ) )
       make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_flashing->execute_on_target( target ); } );
-
-    if ( p()->legendary.ursocs_fury_remembered->ok() &&
-         rng().roll( p()->legendary.ursocs_fury_remembered->effectN( 1 ).percent() ) )
-    {
-      make_event( *sim, 500_ms, [ this ]() { p()->active.thrash_bear_ursocs->execute_on_target( target ); } );
-    }
   }
 
   void impact( action_state_t* s ) override
@@ -5728,7 +5752,7 @@ struct regrowth_t : public druid_heal_t
     if ( target == p() && p()->talent.protective_growth.ok() )
       p()->buff.protective_growth->trigger();
 
-    if ( !free_cast )
+    if ( !is_free() )
     {
       p()->buff.natures_swiftness->expire();
       p()->buff.protector_of_the_pack_regrowth->expire();
@@ -6815,7 +6839,7 @@ struct heart_of_the_wild_t : public druid_spell_t
     druid_spell_t::schedule_execute( s );
   }
 
-  void trigger_ravenous_frenzy( free_cast_e ) override { return; }
+  void trigger_ravenous_frenzy( free_spell_e ) override { return; }
 
   void execute() override
   {
@@ -6893,12 +6917,12 @@ struct moon_base_t : public druid_spell_t
 
   void init() override
   {
-    if ( !free_cast )
+    if ( !is_free_proc() )
       cooldown = p()->cooldown.moon_cd;
 
     druid_spell_t::init();
 
-    if ( !free_cast && data().ok() )
+    if ( !is_free() && data().ok() )
     {
       if ( cooldown->duration != 0_ms && cooldown->duration != data().charge_cooldown() )
       {
@@ -6937,7 +6961,7 @@ struct moon_base_t : public druid_spell_t
 
     p()->eclipse_handler.cast_moon( stage );
 
-    if ( free_cast )
+    if ( is_free_proc() )
       return;
 
     advance_stage();
@@ -7209,12 +7233,12 @@ struct moonfire_t : public druid_spell_t
 
       if ( hit_any_target )
       {
-        if ( free_cast != free_cast_e::GALACTIC )
+        if ( free_spell != free_spell_e::GALACTIC )
           trigger_gore();
 
         p()->buff.protector_of_the_pack_moonfire->expire();
 
-        if ( !free_cast )
+        if ( !is_free() )
           p()->buff.galactic_guardian->expire();
       }
     }
@@ -7223,7 +7247,7 @@ struct moonfire_t : public druid_spell_t
     {
       druid_spell_t::impact( s );
 
-      if ( ( free_cast != free_cast_e::GALACTIC || ( p()->talent.twin_moonfire.ok() && s->n_targets > 1 ) ) && // TODO: check every build
+      if ( ( free_spell != free_spell_e::GALACTIC || ( p()->talent.twin_moonfire.ok() && s->n_targets > 1 ) ) && // TODO: check every build
            p()->buff.galactic_guardian->up() )
       {
         p()->resource_gain( RESOURCE_RAGE, p()->buff.galactic_guardian->check_value(), gain );
@@ -7776,7 +7800,7 @@ struct starfall_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.starweavers_warp->up() )
+    if ( !is_free() && p()->buff.starweavers_warp->up() )
     {
       p()->active.starfall_starweaver->execute_on_target( target );
       return;
@@ -7808,7 +7832,7 @@ struct starfall_t : public druid_spell_t
 
     p()->buff.starfall->trigger();
 
-    if ( free_cast == free_cast_e::CONVOKE || free_cast == free_cast_e::LYCARAS )
+    if ( free_spell == free_spell_e::CONVOKE || free_spell == free_spell_e::LYCARAS )
       return;  // convoke/lycaras doesn't process any further
 
     p()->buff.starweavers_warp->expire();
@@ -8050,7 +8074,7 @@ struct starsurge_t : public druid_spell_t
 
   void execute() override
   {
-    if ( !free_cast && p()->buff.starweavers_weft->up() )
+    if ( !is_free() && p()->buff.starweavers_weft->up() )
     {
       p()->active.starsurge_starweaver->execute_on_target( target );
       return;
@@ -8061,7 +8085,7 @@ struct starsurge_t : public druid_spell_t
     if ( goldrinn && rng().roll( p()->talent.power_of_goldrinn->proc_chance() ) )
       goldrinn->execute_on_target( target );
 
-    if ( free_cast == free_cast_e::CONVOKE )
+    if ( free_spell == free_spell_e::CONVOKE )
       return;  // convoke doesn't process any further
 
     p()->buff.starweavers_weft->expire();
@@ -8505,7 +8529,7 @@ struct wrath_t : public druid_spell_t
   {
     druid_spell_t::execute();
 
-    if ( free_cast )
+    if ( is_free_proc() )  // TODO: does umbral embrace proc from free procs?
       return;
 
     p()->buff.umbral_embrace->expire();
@@ -8535,9 +8559,6 @@ struct wrath_t : public druid_spell_t
       residual_action::trigger( p()->active.astral_smolder, s->target,
                                 s->result_amount * p()->talent.astral_smolder->effectN( 1 ).percent() );
     }
-
-    if ( !free_cast && ( p()->specialization() == DRUID_FERAL || p()->specialization() == DRUID_GUARDIAN ) )
-      p()->eclipse_handler.cast_wrath();
   }
 };
 
@@ -8653,7 +8674,7 @@ struct convoke_the_spirits_t : public druid_spell_t
     auto a = p()->get_secondary_action_n<T>( n + "_convoke", std::forward<Ts>( args )... );
     if ( a->name_str_reporting.empty() )
       a->name_str_reporting = n;
-    a->set_free_cast( free_cast_e::CONVOKE );
+    a->set_free_cast( free_spell_e::CONVOKE );
     stats->add_child( a->stats );
     a->gain = gain;
     a->proc = true;
@@ -9404,7 +9425,7 @@ struct lycaras_fleeting_glimpse_t : public action_t
   {
     auto a = druid->get_secondary_action_n<T>( n + "_lycaras", std::forward<Ts>( args )... );
     a->name_str_reporting = n;
-    a->set_free_cast( free_cast_e::LYCARAS );
+    a->set_free_cast( free_spell_e::LYCARAS );
     add_child( a );
     return a;
   }
@@ -9441,12 +9462,12 @@ struct the_natural_orders_will_t : public action_t
     : action_t( action_e::ACTION_OTHER, "the_natural_orders_will", p, p->legendary.the_natural_orders_will )
   {
     ironfur = p->get_secondary_action_n<bear_attacks::ironfur_t>( "ironfur_natural", p->find_spell( 192081 ), "" )
-                  ->set_free_cast( free_cast_e::NATURAL );
+                  ->set_free_cast( free_spell_e::NATURAL );
     ironfur->name_str_reporting = "ironfur";
 
     frenzied = p->get_secondary_action_n<heals::frenzied_regeneration_t>( "frenzied_regeneration_natural",
                                                                           p->find_spell( 22842 ), "" )
-                   ->set_free_cast( free_cast_e::NATURAL );
+                   ->set_free_cast( free_spell_e::NATURAL );
     frenzied->name_str_reporting = "frenzied_regeneration";
   }
 
@@ -10750,7 +10771,7 @@ void druid_t::create_actions()
     auto fm = get_secondary_action_n<full_moon_t>( "orbit breaker", find_spell( 274283 ), "" );
     fm->s_data_reporting = talent.orbit_breaker;
     fm->base_multiplier = talent.orbit_breaker->effectN( 2 ).percent();
-    fm->set_free_cast( free_cast_e::ORBIT );
+    fm->set_free_cast( free_spell_e::ORBIT );
     active.orbit_breaker = fm;
   }
 
@@ -10761,12 +10782,12 @@ void druid_t::create_actions()
   {
     auto ss = get_secondary_action_n<starsurge_t>( "starweavers_weft", talent.starsurge, "" );
     ss->s_data_reporting = &buff.starweavers_weft->data();
-    ss->set_free_cast( free_cast_e::STARWEAVER );
+    ss->set_free_cast( free_spell_e::STARWEAVER );
     active.starsurge_starweaver = ss;
 
     auto sf = get_secondary_action_n<starfall_t>( "starweavers_warp", talent.starfall, "" );
     sf->s_data_reporting = &buff.starweavers_warp->data();
-    sf->set_free_cast( free_cast_e::STARWEAVER );
+    sf->set_free_cast( free_spell_e::STARWEAVER );
     active.starfall_starweaver = sf;
   }
 
@@ -10776,7 +10797,7 @@ void druid_t::create_actions()
                                                            find_spell( 394111 ), buff.sundered_firmament, "" );
     firmament->s_data_reporting = sets->set( DRUID_BALANCE, T28, B2 );
     firmament->damage->base_multiplier = sets->set( DRUID_BALANCE, T28, B2 )->effectN( 1 ).percent();
-    firmament->set_free_cast( free_cast_e::FIRMAMENT );
+    firmament->set_free_cast( free_spell_e::FIRMAMENT );
     active.sundered_firmament = firmament;
   }
 
@@ -10788,7 +10809,7 @@ void druid_t::create_actions()
   {
     auto apex = get_secondary_action_n<ferocious_bite_t>( "apex_predators_craving", "" );
     apex->s_data_reporting = talent.apex_predators_craving;
-    apex->set_free_cast( free_cast_e::APEX );
+    apex->set_free_cast( free_spell_e::APEX );
     active.ferocious_bite_apex = apex;
   }
 
@@ -10815,8 +10836,8 @@ void druid_t::create_actions()
   {
     auto gg = get_secondary_action_n<moonfire_t>( "galactic_guardian", "" );
     gg->s_data_reporting = talent.galactic_guardian;
-    gg->set_free_cast( free_cast_e::GALACTIC );
-    gg->damage->set_free_cast( free_cast_e::GALACTIC );
+    gg->set_free_cast( free_spell_e::GALACTIC );
+    gg->damage->set_free_cast( free_spell_e::GALACTIC );
     active.galactic_guardian = gg;
   }
 
@@ -10832,7 +10853,7 @@ void druid_t::create_actions()
                                                         apply_override( talent.thrash, spec.bear_form_override ), "" );
     flash->s_data_reporting = talent.flashing_claws;
     flash->name_str_reporting = "pawsitive_outlook";
-    flash->set_free_cast( free_cast_e::FLASHING );
+    flash->set_free_cast( free_spell_e::FLASHING );
     active.thrash_bear_flashing = flash;
   }
 
@@ -10842,16 +10863,6 @@ void druid_t::create_actions()
     rots->s_data_reporting = talent.rage_of_the_sleeper;
     rots->name_str_reporting = "rage_of_the_sleeper";
     active.rage_of_the_sleeper_reflect = rots;
-  }
-
-  if ( legendary.ursocs_fury_remembered->ok() )
-  {
-    auto ufr = get_secondary_action_n<thrash_bear_t>( "ursocs_fury_remembered",
-                                                      apply_override( talent.thrash, spec.bear_form_override ), "" );
-    ufr->s_data_reporting = legendary.ursocs_fury_remembered;
-    ufr->name_str_reporting = "ursocs_fury_remembered";
-    ufr->set_free_cast( free_cast_e::URSOCS );
-    active.thrash_bear_ursocs = ufr;
   }
 
   // Restoration
@@ -10884,7 +10895,6 @@ void druid_t::create_actions()
   find_parent( active.starsurge_starweaver, "starsurge" );
   find_parent( active.starfall_starweaver, "starfall" );
   find_parent( active.thrash_bear_flashing, "thrash_bear" );
-  find_parent( active.thrash_bear_ursocs, "thrash_bear" );
 
   // setup dot_ids used by druid_action_t::get_dot_count()
   setup_dot_ids<sunfire_t::sunfire_damage_t>();
