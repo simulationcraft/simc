@@ -907,6 +907,7 @@ public:
   maybe_bool triggers_calling_the_shots;
 
   struct {
+    bool serrated_shots = false;
     // bm
     bool thrill_of_the_hunt = false;
     damage_affected_by bestial_wrath;
@@ -931,16 +932,17 @@ public:
   {
     ab::special = true;
 
+    affected_by.serrated_shots        = ab::data().mechanic() == MECHANIC_BLEED;
+
     affected_by.bullseye_crit_chance  = check_affected_by( this, p -> talents.bullseye -> effectN( 1 ).trigger() -> effectN( 1 ));
     affected_by.lone_wolf             = parse_damage_affecting_aura( this, p -> talents.lone_wolf );
+    affected_by.sniper_training       = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
 
     affected_by.thrill_of_the_hunt    = check_affected_by( this, p -> talents.thrill_of_the_hunt -> effectN( 1 ).trigger() -> effectN( 1 ) );
     affected_by.bestial_wrath         = parse_damage_affecting_aura( this, p -> talents.bestial_wrath );
     affected_by.aotw_crit_chance      = check_affected_by( this, p -> talents.aspect_of_the_wild -> effectN( 1 ) );
     affected_by.aotw_gcd_reduce       = check_affected_by( this, p -> talents.aspect_of_the_wild -> effectN( 3 ) );
-
     affected_by.master_of_beasts      = parse_damage_affecting_aura( this, p -> mastery.master_of_beasts );
-    affected_by.sniper_training       = parse_damage_affecting_aura( this, p -> mastery.sniper_training );
 
     affected_by.mad_bombardier        = check_affected_by( this, p -> tier_set.mad_bombardier_4pc -> effectN( 1 ) );
     affected_by.spirit_bond           = parse_damage_affecting_aura( this, p -> mastery.spirit_bond );
@@ -1129,6 +1131,14 @@ public:
 
     if ( affected_by.spirit_bond.tick )
       am *= 1 + p() -> cache.mastery() * p() -> mastery.spirit_bond -> effectN( affected_by.spirit_bond.tick ).mastery_value();
+
+    if ( affected_by.serrated_shots )
+    {
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        am *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+    }
 
     return am;
   }
@@ -2865,6 +2875,18 @@ struct kill_shot_t : hunter_ranged_attack_t
       snapshot_flags |= STATE_TGT_MUL_TA;
       update_flags |= STATE_TGT_MUL_TA;
     }
+
+    double base_ta(const action_state_t* s) const override
+    {
+      double ta = residual_periodic_action_t::base_ta( s );
+
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+
+      return ta;
+    }
   };
 
   // runeforge
@@ -2881,6 +2903,18 @@ struct kill_shot_t : hunter_ranged_attack_t
 
       snapshot_flags |= STATE_TGT_MUL_TA;
       update_flags |= STATE_TGT_MUL_TA;
+    }
+
+    double base_ta(const action_state_t* s) const override
+    {
+      double ta = residual_periodic_action_t::base_ta( s );
+
+      if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+      else
+        ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+
+      return ta;
     }
   };
 
@@ -3196,6 +3230,8 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   {
     parse_options( options_str );
 
+    affected_by.serrated_shots = true;
+
     if ( p -> talents.hydras_bite.ok() )
       aoe = 1 + static_cast<int>( p -> talents.hydras_bite -> effectN( 1 ).base_value() );
   }
@@ -3286,6 +3322,18 @@ struct master_marksman_t : public residual_action::residual_periodic_action_t<hu
 
     snapshot_flags |= STATE_TGT_MUL_TA;
     update_flags   |= STATE_TGT_MUL_TA;
+  }
+
+  double base_ta(const action_state_t* s) const override
+  {
+    double ta = residual_periodic_action_t::base_ta( s );
+
+    if ( s -> target -> health_percentage() < p() -> talents.serrated_shots -> effectN( 3 ).base_value() )
+      ta *= 1 + p() -> talents.serrated_shots -> effectN( 2 ).percent();
+    else
+      ta *= 1 + p() -> talents.serrated_shots -> effectN( 1 ).percent();
+
+    return ta;
   }
 };
 
@@ -4075,6 +4123,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
+      affected_by.serrated_shots = true;
     }
   };
 
@@ -4677,6 +4726,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
       dual = true;
       base_costs[ RESOURCE_FOCUS ] = 0;
       triggers_wild_spirits = false;
+      affected_by.serrated_shots = true;
     }
   };
 
