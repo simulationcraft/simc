@@ -9,6 +9,7 @@
 #include "player/unique_gear_shadowlands.hpp"
 #include "dbc/temporary_enchant.hpp"
 #include "dbc/item_set_bonus.hpp"
+#include "dbc/trait_data.hpp"
 #include "reports.hpp"
 #include "report/report_helper.hpp"
 #include "report/decorators.hpp"
@@ -262,12 +263,6 @@ std::string output_action_name( const stats_t& s, const player_t* actor )
     name += " (" + util::encode_html( s.player->name_str ) + ")";
 
   return "<span" + class_attr + ">" + name + "</span>";
-}
-
-// returns the character level required for each talent row. first row == 0.
-unsigned talent_character_level( int row )
-{
-  return row == 0 ? 15 : 20 + row * 5;
 }
 
 // print_html_action_info =================================================
@@ -1890,52 +1885,83 @@ void print_html_stats( report::sc_html_stream& os, const player_t& p )
 
 void print_html_talents( report::sc_html_stream& os, const player_t& p )
 {
-  if ( p.collected_data.fight_length.mean() > 0 )
+  if ( !p.collected_data.fight_length.mean() || p.player_traits.empty() )
+    return;
+
+  constexpr unsigned TREE_ROWS = 10;
+  using talentrank_t = std::pair<const trait_data_t*, unsigned>;
+
+  std::array<std::vector<talentrank_t>, TREE_ROWS> class_traits;
+  std::array<std::vector<talentrank_t>, TREE_ROWS> spec_traits;
+  size_t class_points = 0;
+  size_t spec_points = 0;
+
+  for ( auto t : p.player_traits )
   {
-    os << "<div class=\"player-section talents\">\n"
-       << "<h3 class=\"toggle\">Talents</h3>\n"
-       << "<div class=\"toggle-content hide\">\n"
-       << "<table class=\"sc\">\n"
-       << "<tr>\n"
-       << "<th>Level</th>\n"
-       << "<th></th>\n"
-       << "<th></th>\n"
-       << "<th></th>\n"
-       << "</tr>\n";
+    std::array<std::vector<talentrank_t>, TREE_ROWS>* tree;
+    auto trait = trait_data_t::find( std::get<1>( t ) );
+    auto rank = std::get<2>( t );
 
-    for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
+    switch ( std::get<0>( t ) )
     {
-      os.format( "<tr><th class=\"left\">{}</th>\n", talent_character_level( row ) );
-
-      for ( uint32_t col = 0; col < MAX_TALENT_COLS; col++ )
-      {
-        const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr );
-        std::string name = "none";
-        if ( t )
-        {
-          if ( t->spell() )
-            name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
-          else if ( t->name_cstr() )
-            name = util::encode_html( t->name_cstr() );
-
-        // Seems unnecessary...
-        /*if ( t->specialization() != SPEC_NONE )
-          {
-            name += " (";
-            name += util::specialization_string( t->specialization() );
-            name += ")";
-          }*/
-        }
-
-        os.format( "<td class=\"nowrap{}\">{}</td>\n", p.talent_points->has_row_col( row, col ) ? " filler" : "", name );
-      }
-      os << "</tr>\n";
+      case talent_tree::CLASS:          tree = &class_traits; class_points += rank; break;
+      case talent_tree::SPECIALIZATION: tree = &spec_traits;  spec_points += rank;  break;
+      default: continue;
     }
 
-    os << "</table>\n"
-       << "</div>\n"
-       << "</div>\n";
+    tree->at( trait->row - 1 ).emplace_back( trait, rank );
   }
+
+  for ( auto row : class_traits )
+    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+
+  for ( auto row : spec_traits )
+    range::sort( row, []( talentrank_t a, talentrank_t b ) { return a.first->col < b.first->col; } );
+
+  os << "<div class=\"player-section talents\">\n"
+     << "<h3 class=\"toggle\">Talents</h3>\n"
+     << "<div class=\"toggle-content hide\">\n";
+
+  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents ({}) </th></tr>\n",
+              util::player_type_string_long( p.type ),
+              class_points );
+
+  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( auto entry : class_traits[ row ] )
+    {
+      os.format( "<li class=\"nowrap\">{}{} ({})</li>\n",
+                 entry.first->selection_index == -1 ? "" : "*",
+                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                 entry.second );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+
+  os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents ({}) </th></tr>\n",
+             util::spec_string_no_class( p ),
+             spec_points );
+
+  for ( uint32_t row = 0; row < TREE_ROWS; row++ )
+  {
+    os.format( "<tr><th class=\"left\">{}</th><td><ul class=\"float\">\n", row + 1 );
+
+    for ( auto entry : spec_traits[ row ] )
+    {
+      os.format( "<li class=\"nowrap\">{}{} ({})</li>\n",
+                 entry.first->selection_index == -1 ? "" : "*",
+                 report_decorators::decorated_spell_data( *p.sim, p.find_spell( entry.first->id_spell ) ),
+                 entry.second );
+    }
+    os << "</ul></td></tr>\n";
+  }
+  os << "</table>\n";
+
+  os << "</div>\n"
+     << "</div>\n";
 }
 
 // print_html_player_scale_factor_table =====================================
@@ -3887,38 +3913,6 @@ void print_html_player_results_spec_gear( report::sc_html_stream& os, const play
       os.format( "<tr class=\"left\"><th class=\"help\" data-help=\"#help-origin\">Origin</th>\n"
                  "<td><a href=\"{}\" class=\"ext\">{}</a></td></tr>\n",
                  p.origin_str, util::encode_html( p.origin_str ) );
-    }
-
-    if ( !p.talents_str.empty() )
-    {
-      std::string url_string = p.talents_str;
-      if ( !util::str_in_str_ci( url_string, "http" ) )
-        url_string = util::create_blizzard_talent_url( p );
-
-      os.format( "<tr class=\"left\"><th><a href=\"{}\" class=\"ext\">Talents</a></th><td><ul class=\"float\">\n",
-                 util::encode_html( url_string ) );
-
-      for ( uint32_t row = 0; row < MAX_TALENT_ROWS; row++ )
-      {
-        const int col = p.talent_points->choice( row );
-        if ( col < 0 )
-        {
-          os.format( "<li class=\"nowrap\"><strong>{}</strong>: None</li>\n", talent_character_level( row ) );
-          continue;
-        }
-
-        std::string name = "none";
-        if ( const talent_data_t* t = talent_data_t::find( p.type, row, col, p.specialization(), p.dbc->ptr ) )
-        {
-          if ( t->spell() )
-            name = report_decorators::decorated_spell_data( *p.sim, t->spell() );
-          else if ( t->name_cstr() )
-            name = util::encode_html( t->name_cstr() );
-        }
-        os.format( "<li class=\"nowrap\"><strong>{}</strong>: {}</li>\n", talent_character_level( row ), name );
-      }
-
-      os << "</ul></td></tr>\n";
     }
 
     // Set Bonuses
