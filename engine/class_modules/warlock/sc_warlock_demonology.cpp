@@ -614,12 +614,12 @@ struct bilescourge_bombers_t : public demonology_spell_t
   struct bilescourge_bombers_tick_t : public demonology_spell_t
   {
     bilescourge_bombers_tick_t( warlock_t* p )
-      : demonology_spell_t( "bilescourge_bombers_tick", p, p->find_spell( 267213 ) )
+      : demonology_spell_t( "bilescourge_bombers_tick", p, p->talents.bilescourge_bombers_aoe )
     {
-      aoe        = -1;
+      aoe = -1;
       background = dual = direct_tick = true;
-      callbacks                       = false;
-      radius                          = p->talents.bilescourge_bombers->effectN( 1 ).radius();
+      callbacks = false;
+      radius = p->talents.bilescourge_bombers->effectN( 1 ).radius();
     }
   };
 
@@ -627,16 +627,21 @@ struct bilescourge_bombers_t : public demonology_spell_t
     : demonology_spell_t( "bilescourge_bombers", p, p->talents.bilescourge_bombers )
   {
     parse_options( options_str );
-    dot_duration = timespan_t::zero();
+    dot_duration = 0_ms;
     may_miss = may_crit = false;
-    base_tick_time      = data().duration() / 12.0;
-    base_execute_time   = timespan_t::zero();
-
-    if ( !p->active.bilescourge_bombers )
+    base_tick_time      = 500_ms;
+    
+    if ( !p->proc_actions.bilescourge_bombers_aoe_tick )
     {
-      p->active.bilescourge_bombers        = new bilescourge_bombers_tick_t( p );
-      p->active.bilescourge_bombers->stats = stats;
+      p->proc_actions.bilescourge_bombers_aoe_tick = new bilescourge_bombers_tick_t( p );
+      p->proc_actions.bilescourge_bombers_aoe_tick->stats = stats;
     }
+    
+    //if ( !p->active.bilescourge_bombers )
+    //{
+    //  p->active.bilescourge_bombers        = new bilescourge_bombers_tick_t( p );
+    //  p->active.bilescourge_bombers->stats = stats;
+    //}
   }
 
   void execute() override
@@ -648,10 +653,10 @@ struct bilescourge_bombers_t : public demonology_spell_t
                                         .target( execute_state->target )
                                         .x( execute_state->target->x_position )
                                         .y( execute_state->target->y_position )
-                                        .pulse_time( base_tick_time * player->cache.spell_haste() )
-                                        .duration( data().duration() * player->cache.spell_haste() )
+                                        .pulse_time( base_tick_time )
+                                        .duration( p()->talents.bilescourge_bombers->duration() )
                                         .start_time( sim->current_time() )
-                                        .action( p()->active.bilescourge_bombers ) );
+                                        .action( p()->proc_actions.bilescourge_bombers_aoe_tick ) );
   }
 };
 
@@ -1074,8 +1079,11 @@ void warlock_t::init_spells_demonology()
 
   talents.soul_strike = find_talent_spell( talent_tree::SPECIALIZATION, "Soul Strike" ); // Should be ID 264057
 
+  talents.bilescourge_bombers = find_talent_spell( talent_tree::SPECIALIZATION, "Bilescourge Bombers" ); // Should be ID 267211
+  talents.bilescourge_bombers_aoe = find_spell( 267213 );
+
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
-  talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
+
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
   talents.power_siphon        = find_talent_spell( "Power Siphon" );
   talents.doom                = find_talent_spell( "Doom" );
