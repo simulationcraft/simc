@@ -74,17 +74,21 @@ jobs:
           key: ubuntu-${{ matrix.cc }}-for_run-${{ github.sha }}-cpp-${{ matrix.cppVersion }}
 
   ubuntu-clang-build:
-    name: ubuntu-clang-build
+    name: ubuntu-build-${{ matrix.cc }}-C++${{ matrix.cppVersion }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         cppVersion: [17, 20]
-        cc: [clang++-12, clang++-14]
+        cc: [clang++-5.0, clang++-14]
         include:
-          - cc: clang++-12
+          - cc: clang++-5.0
+            packages: clang-5.0
             os: ubuntu-20.04
           - cc: clang++-14
             os: ubuntu-22.04
+        exclude:
+          - cc: clang++-5.0
+            cppVersion: 20
 
     steps:
       - uses: actions/checkout@v3
@@ -99,7 +103,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache
+          sudo apt-get install -y libcurl4-openssl-dev ninja-build ccache ${{ matrix.packages }}
 
       - name: Configure
         env:
@@ -141,7 +145,7 @@ jobs:
       fail-fast: false
       matrix:
         cppVersion: [17, 20]
-        compiler: [clang++-12, clang++-14, gcc-9, gcc-12]
+        compiler: [clang++-5.0, clang++-14, gcc-9, gcc-12]
         type: [spell_query, log_debug, patchwerk, dungeon_slice]
         include:
           - type: spell_query
@@ -152,7 +156,7 @@ jobs:
             simc_flags: $SIMC_PROFILE iterations=10 cleanup_threads=1
           - type: dungeon_slice
             simc_flags: $SIMC_PROFILE iterations=10 fight_style=DungeonSlice cleanup_threads=1
-          - compiler: clang++-12
+          - compiler: clang++-5.0
             os: ubuntu-20.04
           - compiler: clang++-14
             os: ubuntu-22.04
