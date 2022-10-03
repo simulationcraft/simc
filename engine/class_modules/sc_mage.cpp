@@ -5155,8 +5155,10 @@ struct pyroblast_t final : public hot_streak_spell_t
     parse_options( options_str );
     triggers.hot_streak = triggers.kindling = TT_MAIN_TARGET;
     triggers.ignite = triggers.from_the_ashes = triggers.radiant_spark = true;
-    base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
     base_execute_time *= 1.0 + p->talents.tempered_flames->effectN( 1 ).percent();
+
+    if ( !p->talents.controlled_destruction.ok() )
+      base_multiplier *= 1.0 + p->conduits.controlled_destruction.percent();
   }
 
   double action_multiplier() const override
@@ -5167,6 +5169,19 @@ struct pyroblast_t final : public hot_streak_spell_t
       am *= 1.0 + p()->buffs.pyroclasm->check_value();
 
     return am;
+  }
+
+  double composite_da_multiplier( const action_state_t* s ) const override
+  {
+    double m = hot_streak_spell_t::composite_da_multiplier( s );
+
+    if ( s->target->health_percentage() < p()->talents.controlled_destruction->effectN( 2 ).base_value()
+      || s->target->health_percentage() > p()->talents.controlled_destruction->effectN( 3 ).base_value() )
+    {
+      m *= 1.0 + p()->talents.controlled_destruction->effectN( 1 ).percent();
+    }
+
+    return m;
   }
 
   void execute() override
