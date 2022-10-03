@@ -3663,9 +3663,6 @@ struct wild_spirits_t : hunter_spell_t
       hunter_spell_t::execute();
 
       p() -> buffs.wild_spirits -> trigger();
-
-      if ( p() -> rppm.arctic_bola -> trigger() )
-        p() -> actions.arctic_bola -> execute_on_target( target );
     }
   };
 
@@ -3766,6 +3763,9 @@ struct cobra_shot_t: public hunter_ranged_attack_t
 
     if ( rng().roll( p() -> talents.flamewakers_cobra_sting -> effectN( 2 ).percent() ) )
       p() -> buffs.flamewakers_cobra_sting -> trigger();
+
+    if ( p() -> rppm.arctic_bola -> trigger() )
+      p() -> actions.arctic_bola -> execute_on_target( target );
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
