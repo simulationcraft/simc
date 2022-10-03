@@ -521,6 +521,12 @@ public:
     proc_t* secrets_of_the_vigil_ais_reset;
   } procs;
 
+  // RPPM
+  struct rppms_t
+  {
+    real_ppm_t* arctic_bola;
+  } rppm;
+
   // Talents
   struct talents_t
   {
@@ -735,6 +741,7 @@ public:
     action_t* barbed_shot = nullptr;
     action_t* wild_spirits = nullptr;
     action_t* latent_poison = nullptr;
+    action_t* arctic_bola = nullptr;
     // Semi-random actions, needed *ONLY* for properly attributing focus gains
     action_t* aspect_of_the_wild = nullptr;
   } actions;
@@ -951,6 +958,7 @@ public:
     ab::apply_affecting_aura( p -> talents.improved_kill_shot );
     ab::apply_affecting_aura( p -> talents.improved_traps );
     ab::apply_affecting_aura( p -> talents.born_to_be_wild );
+    ab::apply_affecting_aura( p -> talents.arctic_bola );
 
     // Marksmanship Tree passives
     ab::apply_affecting_aura( p -> talents.crack_shot );
@@ -3287,6 +3295,19 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   }
 };
 
+// Arctic Bola ===================================================================
+
+struct arctic_bola_t final : hunter_spell_t
+{
+  arctic_bola_t( hunter_t* p ):
+    hunter_spell_t( "arctic_bola", p, p -> talents.arctic_bola -> effectN( 3 ).trigger() )
+  {
+    background = true;
+    triggers_wild_spirits = false;
+    aoe = as<int>( p -> talents.arctic_bola -> effectN( 1 ).base_value() );
+  }
+};
+
 // Latent Poison ==================================================
 
 struct latent_poison_t final : hunter_spell_t
@@ -3642,6 +3663,9 @@ struct wild_spirits_t : hunter_spell_t
       hunter_spell_t::execute();
 
       p() -> buffs.wild_spirits -> trigger();
+
+      if ( p() -> rppm.arctic_bola -> trigger() )
+        p() -> actions.arctic_bola -> execute_on_target( target );
     }
   };
 
@@ -4264,6 +4288,9 @@ struct aimed_shot_t : public aimed_shot_base_t
       for ( int i = 0; i < legacy_of_the_windrunners.count; i++ )
         legacy_of_the_windrunners.action -> execute_on_target( target );
     }
+
+    if ( p() -> rppm.arctic_bola -> trigger() )
+      p() -> actions.arctic_bola -> execute_on_target( target );
   }
 
   timespan_t execute_time() const override
@@ -4773,6 +4800,9 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     }
 
     p() -> buffs.tip_of_the_spear -> expire();
+
+    if ( p() -> rppm.arctic_bola -> trigger() )
+      p() -> actions.arctic_bola -> execute_on_target( target );
   }
 
   void impact( action_state_t* s ) override
@@ -6832,6 +6862,9 @@ void hunter_t::create_actions()
 
   if ( talents.poison_injection.ok() )
     actions.latent_poison = new attacks::latent_poison_t( this );
+
+  if ( talents.arctic_bola.ok() )
+    actions.arctic_bola = new attacks::arctic_bola_t( this );
 }
 
 void hunter_t::create_buffs()
@@ -7261,6 +7294,8 @@ void hunter_t::init_procs()
 void hunter_t::init_rng()
 {
   player_t::init_rng();
+
+  rppm.arctic_bola = get_rppm( "arctic_bola", talents.arctic_bola );
 }
 
 // hunter_t::init_scaling ===================================================
