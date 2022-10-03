@@ -617,6 +617,36 @@ const char* util::player_type_string( player_e type )
   }
 }
 
+// player_type_string_long ==================================================
+
+const char* util::player_type_string_long( player_e type )
+{
+  switch ( type )
+  {
+    case PLAYER_NONE:     return "None";
+    case DEATH_KNIGHT:    return "Death Knight";
+    case DEMON_HUNTER:    return "Demon Hunter";
+    case DRUID:           return "Druid";
+    case EVOKER:          return "Evoker";
+    case HUNTER:          return "Hunter";
+    case MAGE:            return "Mage";
+    case MONK:            return "Monk";
+    case PALADIN:         return "Paladin";
+    case PRIEST:          return "Priest";
+    case ROGUE:           return "Rogue";
+    case SHAMAN:          return "Shaman";
+    case WARLOCK:         return "Warlock";
+    case WARRIOR:         return "Warrior";
+    case PLAYER_PET:      return "Pet";
+    case PLAYER_GUARDIAN: return "Guardian";
+    case ENEMY:           return "Enemy";
+    case ENEMY_ADD:       return "Add";
+    case ENEMY_ADD_BOSS:  return "Add Boss";
+    case TANK_DUMMY:      return "Tank Dummy";
+    default:              return "Unknown";
+  }
+}
+
 // parse_player_type ========================================================
 
 player_e util::parse_player_type( util::string_view name )

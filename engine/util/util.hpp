@@ -40,6 +40,7 @@ const char* attribute_type_string     ( attribute_e type );
 const char* dot_behavior_type_string  ( dot_behavior_e t );
 const char* meta_gem_type_string      ( meta_gem_e type );
 const char* player_type_string        ( player_e );
+const char* player_type_string_long   ( player_e );
 const char* pet_type_string           ( pet_e type );
 const char* position_type_string      ( position_e );
 const char* fight_style_string        ( fight_style_e name );
