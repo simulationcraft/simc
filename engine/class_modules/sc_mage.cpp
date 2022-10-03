@@ -281,7 +281,7 @@ public:
     action_t* harmonic_echo;
     action_t* ignite;
     action_t* legendary_frozen_orb;
-    action_t* legendary_meteor;
+    action_t* firefall_meteor;
     action_t* living_bomb_dot;
     action_t* living_bomb_dot_spread;
     action_t* living_bomb_explosion;
@@ -328,6 +328,8 @@ public:
     // Fire
     buff_t* combustion;
     buff_t* feel_the_burn;
+    buff_t* firefall;
+    buff_t* firefall_ready;
     buff_t* firemind;
     buff_t* flame_accelerant;
     buff_t* flame_accelerant_icd;
@@ -2241,7 +2243,21 @@ struct fire_mage_spell_t : public mage_spell_t
     if ( !p()->buffs.molten_skyfall_ready->check() )
       return false;
     p()->buffs.molten_skyfall_ready->expire();
-    p()->action.legendary_meteor->execute_on_target( target );
+    p()->action.firefall_meteor->execute_on_target( target );
+    return true;
+  }
+
+  void trigger_firefall()
+  {
+    trigger_legendary_buff( p()->buffs.firefall, p()->buffs.firefall_ready, 2 );
+  }
+
+  bool consume_firefall( player_t* target )
+  {
+    if ( !p()->buffs.firefall_ready->check() )
+      return false;
+    p()->buffs.firefall_ready->expire();
+    p()->action.firefall_meteor->execute_on_target( target );
     return true;
   }
 };
@@ -3741,6 +3757,8 @@ struct fireball_t final : public fire_mage_spell_t
       trigger_deaths_fathom();
       if ( !consume_molten_skyfall( s->target ) )
         trigger_molten_skyfall();
+      if ( !consume_firefall( s->target ) )
+        trigger_firefall();
     }
   }
 
@@ -4943,8 +4961,8 @@ struct meteor_t final : public fire_mage_spell_t
     if ( !data().ok() )
       return;
 
-    action_t* meteor_burn = get_action<meteor_burn_t>( legendary ? "legendary_meteor_burn" : "meteor_burn", p );
-    impact_action = get_action<meteor_impact_t>( legendary ? "legendary_meteor_impact" : "meteor_impact", p, meteor_burn );
+    action_t* meteor_burn = get_action<meteor_burn_t>( legendary ? "firefall_meteor_burn" : "meteor_burn", p );
+    impact_action = get_action<meteor_impact_t>( legendary ? "firefall_meteor_impact" : "meteor_impact", p, meteor_burn );
 
     add_child( meteor_burn );
     add_child( impact_action );
@@ -5166,6 +5184,8 @@ struct pyroblast_t final : public hot_streak_spell_t
     {
       if ( !consume_molten_skyfall( s->target ) )
         trigger_molten_skyfall();
+      if ( !consume_firefall( s->target ) )
+        trigger_firefall();
     }
   }
 
@@ -6306,8 +6326,8 @@ void mage_t::create_actions()
   if ( talents.touch_of_the_magi->ok() )
     action.touch_of_the_magi_explosion = get_action<touch_of_the_magi_explosion_t>( "touch_of_the_magi_explosion", this );
 
-  if ( runeforge.molten_skyfall.ok() )
-    action.legendary_meteor = get_action<meteor_t>( "legendary_meteor", this, "", true );
+  if ( talents.firefall.ok() || runeforge.molten_skyfall.ok() )
+    action.firefall_meteor = get_action<meteor_t>( "firefall_meteor", this, "", true );
 
   if ( talents.cold_front->ok() || runeforge.cold_front.ok() )
     action.legendary_frozen_orb = get_action<frozen_orb_t>( "legendary_frozen_orb", this, "", true );
@@ -6813,6 +6833,9 @@ void mage_t::create_buffs()
                                  ->set_default_value( talents.feel_the_burn->effectN( 1 ).base_value() )
                                  ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
                                  ->set_chance( talents.feel_the_burn.ok() );
+  buffs.firefall             = make_buff( this, "firefall", find_spell( 384035 ) )
+                                       ->set_chance( talents.firefall.ok() );
+  buffs.firefall_ready       = make_buff( this, "firefall_ready", find_spell( 384038 ) );
   // TODO: 2022-10-02 Firemind currently affects base intellect and not current intellect.
   // This needs to be reimplemented if that bug is not fixed.
   buffs.firemind             = make_buff( this, "firemind", find_spell( 383501 ) )
@@ -6915,7 +6938,7 @@ void mage_t::create_buffs()
                                      ->set_default_value_from_effect( 2 )
                                      ->set_trigger_spell( runeforge.firestorm );
   buffs.molten_skyfall           = make_buff( this, "molten_skyfall", find_spell( 333170 ) )
-                                     ->set_chance( runeforge.molten_skyfall.ok() );
+                                     ->set_chance( runeforge.molten_skyfall.ok() && !talents.firefall.ok() );
   buffs.molten_skyfall_ready     = make_buff( this, "molten_skyfall_ready", find_spell( 333182 ) );
   buffs.sun_kings_blessing       = make_buff( this, "sun_kings_blessing", find_spell( 333314 ) )
                                      ->set_chance( runeforge.sun_kings_blessing.ok() );

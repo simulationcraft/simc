@@ -1705,6 +1705,7 @@ class SpellDataGenerator(DataGenerator):
           ( 337090, 0 ),                            # Siphoned Malice
           ( 363685, 0 ),                            # Arcane Lucidity ready buff
           ( 203277, 0 ),                            # Flame Accelerant
+          ( 384035, 0 ), ( 384038, 0 ),             # Firefall
         ),
 
         # Warlock:
