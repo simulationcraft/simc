@@ -7970,9 +7970,9 @@ struct starsurge_offspec_t : public druid_spell_t
 {
   starsurge_offspec_t( druid_t* p, std::string_view opt ) : druid_spell_t( "starsurge", p, p->talent.starsurge, opt )
   {
-    form_mask = MOONKIN_FORM;           // not in spell data for offspec version (id=197626)
+    form_mask = NO_FORM | MOONKIN_FORM;
     base_costs[ RESOURCE_MANA ] = 0.0;  // so we don't need to enable mana regen
-    may_autounshift = false;
+    may_autounshift = true;
   }
 };
 
