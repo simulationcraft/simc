@@ -280,7 +280,7 @@ public:
 
     player_talent_t demonic_knowledge; // Demonic Core chance on Hand of Gul'dan cast
     player_talent_t summon_vilefiend;
-    const spell_data_t* soul_strike; // DF - Now a choice against Summon Vilefiend
+    player_talent_t soul_strike;
     const spell_data_t* bilescourge_bombers; // DF - Now a choice against Demonic Strength
     const spell_data_t* demonic_strength; // DF - Now a choice against Bilescourge Bombers
     const spell_data_t* from_the_shadows; // DF - Should be unchanged but due to Shadowflame effect, new abilities need checking against it

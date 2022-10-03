@@ -585,11 +585,11 @@ void felguard_pet_t::init_base_stats()
   owner_coeff.ap_from_sp = 0.575;
   owner_coeff.sp_from_sp = 1.15;
 
-  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2021-12-01
+  // TOCHECK Felguard has a hardcoded 10% multiplier for its auto attack damage. Seems to still be in effect as of 2022-10-02
   melee_attack->base_dd_multiplier *= 1.1;
   special_action = new axe_toss_t( this, "" );
 
-  if ( o()->talents.soul_strike )
+  if ( o()->talents.soul_strike.ok() )
   {
     soul_strike = new soul_strike_t( this );
   }
