@@ -888,7 +888,7 @@ public:
   void trigger_lethal_shots();
   void trigger_calling_the_shots( action_t* action, double cost );
   bool trigger_focused_trickery( action_t* action, double cost );
-  void trigger_poison_injection( const action_state_t* s );
+  void trigger_latent_poison( const action_state_t* s );
   void trigger_bombardment();
   void consume_trick_shots();
 };
@@ -1266,7 +1266,6 @@ public:
 struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 {
   bool breaks_steady_focus = true;
-  maybe_bool triggers_master_marksman;
 
   hunter_ranged_attack_t( util::string_view n, hunter_t* p,
                           const spell_data_t* s = spell_data_t::nil() ):
@@ -1274,24 +1273,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
   {
     affected_by.precise_shots = p -> talents.precise_shots.ok() &&
       parse_damage_affecting_aura( this, p -> find_spell( 260242 ) ).direct;
-  }
-
-  void init() override
-  {
-    hunter_action_t::init();
-
-    if ( p() -> talents.master_marksman.ok() )
-    {
-      if ( triggers_master_marksman.is_none() )
-        triggers_master_marksman = harmful && special && may_crit;
-    }
-    else
-    {
-      triggers_master_marksman = false;
-    }
-
-    if ( triggers_master_marksman )
-      sim -> print_debug( "{} action {} set to proc Master Marksman", player -> name(), name() );
   }
 
   bool usable_moving() const override
@@ -1303,18 +1284,6 @@ struct hunter_ranged_attack_t: public hunter_action_t < ranged_attack_t >
 
     if ( !background && breaks_steady_focus )
       p() -> state.steady_focus_counter = 0;
-  }
-
-  void impact( action_state_t* s ) override
-  {
-    hunter_action_t::impact( s );
-
-    if ( triggers_master_marksman && s -> result == RESULT_CRIT )
-    {
-      double amount = s -> result_amount * p() -> talents.master_marksman -> effectN( 1 ).percent();
-      if ( amount > 0 )
-        residual_action::trigger( p() -> actions.master_marksman, s -> target, amount );
-    }
   }
 
   double composite_da_multiplier( const action_state_t* s ) const override
@@ -2682,7 +2651,7 @@ bool hunter_t::trigger_focused_trickery( action_t* action, double cost )
   return triggered;
 }
 
-void hunter_t::trigger_poison_injection( const action_state_t* s )
+void hunter_t::trigger_latent_poison( const action_state_t* s )
 {
   if ( !actions.latent_poison )
     return;
@@ -3282,7 +3251,7 @@ struct serpent_sting_t: public hunter_ranged_attack_t
   }
 };
 
-// Latent Poison Injectors ==================================================
+// Latent Poison ==================================================
 
 struct latent_poison_t final : hunter_spell_t
 {
@@ -3300,6 +3269,23 @@ struct latent_poison_t final : hunter_spell_t
     m *= td( target ) -> debuffs.latent_poison -> check();
 
     return m;
+  }
+};
+
+// Master Marksman ====================================================================
+
+struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
+{
+  master_marksman_t( hunter_t* p ):
+    residual_periodic_action_t( "master_marksman", p, p -> find_spell( 269576 ) )
+  { }
+
+  void init() override
+  {
+    residual_periodic_action_t::init();
+
+    snapshot_flags |= STATE_TGT_MUL_TA;
+    update_flags   |= STATE_TGT_MUL_TA;
   }
 };
 
@@ -3560,7 +3546,6 @@ struct resonating_arrow_t : hunter_spell_t
     {
       dual = true;
       aoe = -1;
-      triggers_master_marksman = false;
     }
 
     void execute() override
@@ -3602,7 +3587,6 @@ struct wild_spirits_t : hunter_spell_t
       dual = true;
       aoe = -1;
       triggers_wild_spirits = false;
-      triggers_master_marksman = false;
     }
 
     void execute() override
@@ -3620,7 +3604,6 @@ struct wild_spirits_t : hunter_spell_t
     {
       proc = true;
       callbacks = false;
-      triggers_master_marksman = false;
 
       // 2020-12-07 hotfix:
       //     Damage of Wild Spirits has been increased by 25% for Marksmanship Hunters.
@@ -3841,7 +3824,7 @@ struct barbed_shot_t: public hunter_ranged_attack_t
   {
     hunter_ranged_attack_t::impact( s );
 
-    p() -> trigger_poison_injection( s );
+    p() -> trigger_latent_poison( s );
   }
 };
 
@@ -3924,23 +3907,6 @@ struct chimaera_shot_mm_t: public hunter_ranged_attack_t
   // Don't bother, the results will be discarded anyway.
   result_e calculate_result( action_state_t* ) const override { return RESULT_NONE; }
   double calculate_direct_amount( action_state_t* ) const override { return 0.0; }
-};
-
-// Master Marksman ====================================================================
-
-struct master_marksman_t : public residual_action::residual_periodic_action_t<hunter_ranged_attack_t>
-{
-  master_marksman_t( hunter_t* p ):
-    residual_periodic_action_t( "master_marksman", p, p -> find_spell( 269576 ) )
-  { }
-
-  void init() override
-  {
-    residual_periodic_action_t::init();
-
-    snapshot_flags |= STATE_TGT_MUL_TA;
-    update_flags   |= STATE_TGT_MUL_TA;
-  }
 };
 
 // Bursting Shot ======================================================================
@@ -4277,7 +4243,7 @@ struct aimed_shot_t : public aimed_shot_base_t
       p() -> buffs.secrets_of_the_vigil -> decrement();
 
     // TODO: check exact trigger conditions (TrS AiSes etc)
-    p() -> trigger_poison_injection( s );
+    p() -> trigger_latent_poison( s );
   }
 
   double recharge_rate_multiplier( const cooldown_t& cd ) const override
@@ -4768,7 +4734,7 @@ struct melee_focus_spender_t: hunter_melee_attack_t
     if ( latent_poison_injectors )
       latent_poison_injectors -> trigger( s -> target );
 
-    p() -> trigger_poison_injection( s );
+    p() -> trigger_latent_poison( s );
   }
 
   double action_multiplier() const override
@@ -7362,6 +7328,38 @@ void hunter_t::init_special_effects()
     special_effects.push_back( effect );
 
     auto cb = new bullseye_cb_t( *effect, talents.bullseye -> effectN( 1 ).base_value() );
+    cb -> initialize();
+  }
+
+  if ( talents.master_marksman.ok() )
+  {
+    struct master_marksman_cb_t : public dbc_proc_callback_t
+    {
+      double bleed_amount;
+      action_t* bleed;
+
+      master_marksman_cb_t( const special_effect_t& e, double amount, action_t* bleed ) : dbc_proc_callback_t( e.player, e ),
+        bleed_amount( amount ), bleed( bleed )
+      {
+      }
+
+      void execute( action_t* a, action_state_t* s ) override
+      {
+        dbc_proc_callback_t::execute( a, s );
+
+        double amount = s -> result_amount * bleed_amount;
+        if ( amount > 0 )
+          residual_action::trigger( bleed, s -> target, amount );
+      }
+    };
+
+    auto const effect = new special_effect_t( this );
+    effect -> name_str = "master_marksman";
+    effect -> spell_id = talents.master_marksman -> id();
+    effect -> proc_flags2_ = PF2_CRIT;
+    special_effects.push_back( effect );
+
+    auto cb = new master_marksman_cb_t( *effect, talents.master_marksman -> effectN( 1 ).percent(), actions.master_marksman);
     cb -> initialize();
   }
 }
