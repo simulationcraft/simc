@@ -1920,7 +1920,7 @@ void print_html_talents( report::sc_html_stream& os, const player_t& p )
 
   os << "<div class=\"player-section talents\">\n"
      << "<h3 class=\"toggle\">Talents</h3>\n"
-     << "<div class=\"toggle-content hide\">\n";
+     << "<div class=\"toggle-content\">\n";
 
   os.format( "<table class=\"sc\"><tr><th>Row</th><th>{} Talents ({}) </th></tr>\n",
               util::player_type_string_long( p.type ),
