@@ -176,6 +176,13 @@ struct hand_of_guldan_t : public demonology_spell_t
 
     demonology_spell_t::execute();
 
+    // TOCHECK: Can additional HoG procs trigger this?
+    if ( p()->talents.demonic_knowledge->ok() && rng().roll( p()->talents.demonic_knowledge->effectN( 1 ).percent() ) )
+    {
+      p()->buffs.demonic_core->trigger();
+      p()->procs.demonic_knowledge->occur();
+    }
+
     //if ( rng().roll( p()->conduit.borne_of_blood.percent() ) )
     //  p()->buffs.demonic_core->trigger();
 
@@ -1061,6 +1068,8 @@ void warlock_t::init_spells_demonology()
   talents.annihilan_training = find_talent_spell( talent_tree::SPECIALIZATION, "Annihilan Training" ); // Should be ID 386174
   talents.annihilan_training_buff = find_spell( 386176 );
 
+  talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
+
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
   talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
@@ -1106,6 +1115,7 @@ void warlock_t::init_rng_demonology()
 void warlock_t::init_procs_demonology()
 {
   procs.summon_random_demon = get_proc( "summon_random_demon" );
+  procs.demonic_knowledge = get_proc( "demonic_knowledge" );
 }
 
 }  // namespace warlock
