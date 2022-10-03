@@ -4477,7 +4477,7 @@ struct primal_wrath_t : public cat_attack_t
 
   void impact( action_state_t* s ) override
   {
-    if ( wounds )
+    if ( wounds && td( s->target )->dots.rip->is_ticking() )
       wounds->execute_on_target( s->target );
 
     auto state = rip->get_state();
@@ -7606,7 +7606,7 @@ struct starfall_t : public druid_spell_t
     std::ostringstream& debug_str( std::ostringstream& s ) override
     {
       action_state_t::debug_str( s );
-      s << " amount=" << amount << " shrapnel=" << shrapnel_target ? shrapnel_target->name() : "none";
+      s << " amount=" << amount << " shrapnel=" << ( shrapnel_target ? shrapnel_target->name() : "none" );
       return s;
     }
   };
@@ -9773,6 +9773,7 @@ void druid_t::init_spells()
   sim->print_debug( "Initializing balance talents..." );
   talent.aetherial_kindling             = ST( "Aetherial Kindling" );
   talent.astral_communion               = ST( "Astral Communion" );
+  talent.astral_smolder                 = ST( "Astral Smolder" );
   talent.balance_of_all_things          = ST( "Balance of All Things" );
   talent.celestial_alignment            = ST( "Celestial Alignment" );
   talent.denizen_of_the_dream           = ST( "Denizen of the Dream" );
@@ -10310,22 +10311,22 @@ void druid_t::create_buffs()
   buff.lycaras_teachings_haste = make_buff( this, "lycaras_teachings_haste", find_spell( 378989 ) )
     ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
     ->set_pct_buff_type( STAT_PCT_BUFF_HASTE )
-    ->set_name_reporting( "Lycara's Teachings (Haste)" );
+    ->set_name_reporting( "Haste" );
 
   buff.lycaras_teachings_crit = make_buff( this, "lycaras_teachings_crit", find_spell( 378990 ) )
     ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
     ->set_pct_buff_type( STAT_PCT_BUFF_CRIT )
-    ->set_name_reporting( "Lycara's Teachings (Crit)" );
+    ->set_name_reporting( "Crit" );
 
   buff.lycaras_teachings_vers = make_buff( this, "lycaras_teachings_vers", find_spell( 378991 ) )
     ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
     ->set_pct_buff_type( STAT_PCT_BUFF_VERSATILITY )
-    ->set_name_reporting( "Lycara's Teachings (Vers)" );
+    ->set_name_reporting( "Vers" );
 
   buff.lycaras_teachings_mast = make_buff( this, "lycaras_teachings_mast", find_spell( 378992 ) )
     ->set_default_value( talent.lycaras_teachings->effectN( 1 ).percent() )
     ->set_pct_buff_type( STAT_PCT_BUFF_MASTERY )
-    ->set_name_reporting( "Lycara's Teachings (Mastery)" );
+    ->set_name_reporting( "Mastery" );
 
   buff.lycaras_teachings = make_buff( this, "lycaras_teachings", talent.lycaras_teachings )
     ->set_quiet( true )
