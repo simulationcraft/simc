@@ -2479,11 +2479,13 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
   }
 
   // hardcoded values from Interface/AddOns/Blizzard_ClassTalentUI/Blizzard_ClassTalentImportExport.lua
-  size_t version_bits = 8;
-  size_t spec_bits    = 16;
-  size_t tree_bits    = 128;
+  static constexpr size_t version_bits = 8;    // serialization version
+  static constexpr size_t spec_bits    = 16;   // specialization id
+  static constexpr size_t tree_bits    = 128;  // C_Traits.GetTreeHash(), optionally can be 0-filled
+  static constexpr size_t rank_bits    = 6;    // ranks purchased if node is partially filled
+  static constexpr size_t choice_bits  = 2;    // choice index, 0-based
   // hardcoded value from Interface/SharedXML/ExportUtil.lua
-  size_t byte_size    = 6;
+  static constexpr size_t byte_size    = 6;
 
   if ( version_bits + spec_bits + tree_bits > talents_str.size() * byte_size )
   {
@@ -2491,7 +2493,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
     return;
   }
 
-  auto get_bit = [ byte_size, &talents_str ]( size_t bits, size_t& head ) -> size_t {
+  auto get_bit = [ &talents_str ]( size_t bits, size_t& head ) -> size_t {
     size_t val = 0;
     for ( size_t i = 0; i < bits; i++ )
     {
@@ -2535,8 +2537,7 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
 
   for ( auto node_str : nodes_str )
   {
-    bool selected = get_bit( 1, head );
-    if ( selected )
+    if ( get_bit( 1, head ) )  // selected
     {
       std::vector<const trait_data_t*> traits;
       auto node = util::to_unsigned( node_str );
@@ -2559,8 +2560,8 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         return a->selection_index < b->selection_index;
       } );
 
-      const trait_data_t* trait = nullptr;
-      size_t rank = 0;
+      const trait_data_t* trait = traits.front();
+      size_t rank = trait->max_ranks;
 
       if ( get_bit( 1, head ) )  // partially ranked normal trait
       {
@@ -2570,12 +2571,12 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
           return;
         }
 
-        trait = traits.front();
-        rank = get_bit( 6, head );
+        rank = get_bit( rank_bits, head );
       }
-      else if ( get_bit( 1, head ) )  // choice trait
+
+      if ( get_bit( 1, head ) )  // choice trait
       {
-        size_t index = get_bit( 2, head );
+        size_t index = get_bit( choice_bits, head );
         if ( index >= traits.size() )
         {
           do_error( fmt::format( "index {} for choice node {} out of bounds.", index, node_str ) );
@@ -2583,18 +2584,6 @@ static void parse_traits_hash( const std::string& talents_str, player_t* player 
         }
 
         trait = traits[ index ];
-        rank = 1;
-      }
-      else // fully ranked normal trait
-      {
-        if ( traits.size() > 1 )
-        {
-          do_error( fmt::format( "non-choice node {} has multiple entries.", node_str ) );
-          return;
-        }
-
-        trait = traits.front();
-        rank = trait->max_ranks;
       }
 
       player->player_traits.emplace_back( static_cast<talent_tree>( trait->tree_index ), trait->id_trait_node_entry,
