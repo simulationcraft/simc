@@ -2949,7 +2949,7 @@ public:
   {
     ab::consume_resource();
 
-    if ( free_cast || !last_resource_cost )
+    if ( ( free_cast || !last_resource_cost ) && free_cast != free_cast_e::STARWEAVER )
       return;
 
     if ( resource_current == RESOURCE_ASTRAL_POWER )
