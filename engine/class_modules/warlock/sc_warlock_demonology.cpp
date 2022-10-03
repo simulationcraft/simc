@@ -783,7 +783,7 @@ struct summon_vilefiend_t : public demonology_spell_t
   {
     demonology_spell_t::execute();
     p()->buffs.vilefiend->trigger();
-    p()->warlock_pet_list.vilefiends.spawn( data().duration() );
+    p()->warlock_pet_list.vilefiends.spawn( p()->talents.summon_vilefiend->duration() );
   }
 };
 
@@ -1070,6 +1070,8 @@ void warlock_t::init_spells_demonology()
 
   talents.demonic_knowledge = find_talent_spell( talent_tree::SPECIALIZATION, "Demonic Knowledge" ); // Should be ID 386185
 
+  talents.summon_vilefiend = find_talent_spell( talent_tree::SPECIALIZATION, "Summon Vilefiend" ); // Should be ID 264119
+
   talents.demonic_strength    = find_talent_spell( "Demonic Strength" );
   talents.bilescourge_bombers = find_talent_spell( "Bilescourge Bombers" );
   talents.demonic_calling     = find_talent_spell( "Demonic Calling" );
@@ -1077,7 +1079,7 @@ void warlock_t::init_spells_demonology()
   talents.doom                = find_talent_spell( "Doom" );
   talents.from_the_shadows    = find_talent_spell( "From the Shadows" );
   talents.soul_strike         = find_talent_spell( "Soul Strike" );
-  talents.summon_vilefiend    = find_talent_spell( "Summon Vilefiend" );
+
   talents.inner_demons        = find_talent_spell( "Inner Demons" );
   talents.grimoire_felguard   = find_talent_spell( "Grimoire: Felguard" );
   talents.sacrificed_souls    = find_talent_spell( "Sacrificed Souls" );

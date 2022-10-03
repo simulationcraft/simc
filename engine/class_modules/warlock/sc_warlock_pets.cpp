@@ -1052,7 +1052,7 @@ struct headbutt_t : public warlock_pet_melee_attack_t
 {
   headbutt_t( warlock_pet_t* p ) : warlock_pet_melee_attack_t( "headbutt", p, p->find_spell( 267999 ) )
   {
-    cooldown->duration = timespan_t::from_seconds( 5 );
+    cooldown->duration = 5_s;
   }
 };
 
